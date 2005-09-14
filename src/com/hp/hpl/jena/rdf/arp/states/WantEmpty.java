@@ -8,11 +8,11 @@ package com.hp.hpl.jena.rdf.arp.states;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
 public class WantEmpty extends Frame {
 
-    public WantEmpty(FrameI s, XMLContext x) {
+    public WantEmpty(FrameI s, AbsXMLContext x) {
         super(s, x);
     }
 

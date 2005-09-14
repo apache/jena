@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.3 2005-08-09 03:30:20 jeremy_carroll Exp $
+ * * $Id: URIReference.java,v 1.4 2005-09-14 15:31:12 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -54,12 +54,12 @@ import com.hp.hpl.jena.rdf.arp.states.Frame;
  * @author jjc
  * 
  */
-public class URIReference implements AResourceInternal, ARPErrorNumbers {
+public class URIReference extends TaintImpl implements AResourceInternal, ARPErrorNumbers {
 
     /** Creates new URIReference */
     final private String uri;
 
-    // URIReference(Location l, XMLContext ctxt,String uri) throws
+    // URIReference(Location l, AbsXMLContext ctxt,String uri) throws
     // URISyntaxException, ParseException {
     //        
     // // this.uri = new URI(ctxt.getURI(),URIref.encode(uri));
@@ -143,7 +143,7 @@ public class URIReference implements AResourceInternal, ARPErrorNumbers {
     /**
      * 
      * @param f
-     *            A frame for error reporting. XMLContext of frame is ignored.
+     *            A frame for error reporting. AbsXMLContext of frame is ignored.
      * @param x
      *            The XML context for the base URI
      * @param name
@@ -151,7 +151,7 @@ public class URIReference implements AResourceInternal, ARPErrorNumbers {
      * @return The resulting URI
      * @throws ParseException
      */
-    public static URIReference fromID(Frame f, XMLContext x, String name)
+    public static URIReference fromID(Frame f, AbsXMLContext x, String name)
             throws SAXParseException {
         // Other errors are checked for by the AttributeLexer
         return resolve(f,x,"#"+name);
@@ -160,7 +160,7 @@ public class URIReference implements AResourceInternal, ARPErrorNumbers {
     /**
      * 
      * @param f
-     *            A frame for error reporting. XMLContext of frame is ignored.
+     *            A frame for error reporting. AbsXMLContext of frame is ignored.
      * @param x
      *            The XML context for the base URI
      * @param uri
@@ -168,33 +168,27 @@ public class URIReference implements AResourceInternal, ARPErrorNumbers {
      * @return The resolved URI
      * @throws ParseException
      */
-    public static URIReference resolve(Frame f, XMLContext ctxt, String uri)
+    public static URIReference resolve(Frame f, AbsXMLContext ctxt, String uri)
             throws SAXParseException {
-        f.checkEncoding(uri);
-        RDFURIReference iri = ctxt.resolveAsURI(uri);
-        XMLHandler arp = f.arp;
-        if (uri.indexOf(':') == -1) {
-            if ((!arp.ignoring(IGN_XMLBASE_SIGNIFICANT))
-                    && !ctxt.isSameAsDocument()) {
-                    String other = ctxt.getDocument().resolve(uri);
-                if (!other.equals(iri.toString())) {
-                    f.warning(IGN_XMLBASE_SIGNIFICANT,
-                            "Use of attribute xml:base changes interpretation of relative URI: \""
-                                    + uri + "\".");
-                }
-            }
-        }
-        arp.checkBadURI(iri);
-        return new URIReference(iri.toString());
+
+        Taint taintMe = new TaintImpl();
+        RDFURIReference iri = ctxt.resolveAsURI(f.arp,taintMe,uri);
+        f.checkEncoding(taintMe,uri);
+
+        URIReference rslt = new URIReference(iri.toString());
+        if (taintMe.isTainted())
+            rslt.taint();
+        return rslt;
     }
 
     public static URIReference fromQName(Frame f, String ns, String local)
             throws SAXParseException {
-        f.checkEncoding(local);
+        URIReference rslt = new URIReference(ns + local);
+        f.checkEncoding(rslt,local);
         // TODO: move some of the check upwards ...
         RDFURIReference iri = f.arp.iriFactory().create(ns+local);
-        f.checkBadURI(iri);
-        return new URIReference(ns + local);
+        AbsXMLContext.checkURI(f.arp,rslt,iri);
+        return rslt;
     }
 
     public static URIReference createNoChecks(String uri) {

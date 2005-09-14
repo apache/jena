@@ -8,7 +8,7 @@ package com.hp.hpl.jena.rdf.arp.impl;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.states.Frame;
-
+// TODO: check tainting in calls to constructor
 public class ElementLexer extends QNameLexer  {
     
     final private String uri;
@@ -16,38 +16,38 @@ public class ElementLexer extends QNameLexer  {
     final private String qname;
     public final boolean goodMatch;
     public final boolean badMatch;
-    public ElementLexer(Frame f, String uri,
+    public ElementLexer(Taint t,Frame f, String uri,
                  String localName,
                  String qname, int good, int bad)  throws SAXParseException {
         super(f,good,bad);
         this.uri = uri;
         this.localName = localName;
         this.qname = qname;
-        int match = lookup();
+        int match = lookup(t);
         goodMatch = (good&match) != 0;
         // Note: this.bad excludes good.
         badMatch = (this.bad&match) != 0;
         
         if ((!(goodMatch||badMatch))&&(this.bad&E_RDF)==E_RDF) {
             if (rdfns.equals(uri) && !isKnownRDFProperty(localName)) {
-                frame.warning(WARN_UNKNOWN_RDF_ELEMENT,
+                frame.warning(t,WARN_UNKNOWN_RDF_ELEMENT,
                         qname + " is not a recognized RDF property or type.");
                 
             }
         }
     }
-    boolean isInRdfns() {
+    boolean isInRdfns(Taint me) {
         return rdfns.equals(getUri());
     }
-    void error(int r) throws SAXParseException {
-        frame.warning(
+    void error(Taint me, int r) throws SAXParseException {
+        frame.warning(me,
                 r==E_LI?ERR_LI_AS_TYPE:
                 ERR_BAD_RDF_ELEMENT,
                 getQName() + " is not allowed as an element tag here.");
         
     }
-    void deprecatedAttribute(int r) throws SAXParseException {
-        error(r);
+    void deprecatedAttribute(Taint me,int r) throws SAXParseException {
+        error(me,r);
     }
     String getLocalName() {
         return localName;

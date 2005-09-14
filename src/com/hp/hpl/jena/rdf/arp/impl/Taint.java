@@ -3,30 +3,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp.states;
+package com.hp.hpl.jena.rdf.arp.impl;
 
-import com.hp.hpl.jena.rdf.arp.impl.ANode;
-import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
-
-public class DAMLCollection extends Collection {
-
-    public DAMLCollection(WantsObjectFrameI s, AbsXMLContext x) {
-        super(s, x);
-    }
-
-    void restTriple(ANode subj, ANode obj) {
-        triple(subj,DAML_REST,obj);
-    }
-
-    void firstTriple(ANode subj, ANode obj) {
-        triple(subj,DAML_FIRST,obj);
-        triple(subj,RDF_TYPE,DAML_LIST);
-    }
-
-    ANode nil() {
-        return DAML_NIL;
-    }
-
+public interface Taint {
+  void taint();
+  /**
+   * 
+   * @return True iff {@link #taint} has been called on this object.
+   */
+  boolean isTainted();
 }
 
 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.4 2005-08-09 03:30:19 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.5 2005-09-14 15:31:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -57,11 +57,11 @@ import com.hp.hpl.jena.rdf.arp.lang.LanguageTagSyntaxException;
 public class ParserSupport
 	implements ARPErrorNumbers,  LanguageTagCodes, Names {
     
-    protected void checkBadURI(RDFURIReference uri) throws SAXParseException {
-        arp.checkBadURI(uri);
-    }
+//    protected void checkBadURI(Taint taintMe,RDFURIReference uri) throws SAXParseException {
+//        arp.checkBadURI(taintMe,uri);
+//    }
     
-	protected ParserSupport(XMLHandler arp, XMLContext xml) {
+	protected ParserSupport(XMLHandler arp, AbsXMLContext xml) {
 		this.arp = arp;
         this.xml= xml;
 	}
@@ -69,24 +69,25 @@ public class ParserSupport
         return arp.idsUsed;
     }
     protected final XMLHandler arp;
-    public final XMLContext xml;
+    public final AbsXMLContext xml;
 	/**
 	 * @param str The fully expanded URI
 	 */
-	protected void checkIdSymbol(XMLContext ctxt, String str)
+	protected void checkIdSymbol(Taint taintMe, AbsXMLContext ctxt, String str)
 		throws SAXParseException {
 		if (!arp.ignoring(WARN_REDEFINITION_OF_ID)) {
-			Map idsUsedForBase = (Map) idsUsed().get(ctxt.getURI());
+			RDFURIReference uri = ctxt.getURI(arp,taintMe,"#"+str);
+            Map idsUsedForBase = (Map) idsUsed().get(uri);
 			if (idsUsedForBase == null) {
 				idsUsedForBase = new HashMap();
-				idsUsed().put(ctxt.getURI(), idsUsedForBase);
+				idsUsed().put(uri, idsUsedForBase);
 			}
 			Location prev = (Location) idsUsedForBase.get(str);
 			if (prev != null) {
-				arp.warning(
+				arp.warning(taintMe,
 					WARN_REDEFINITION_OF_ID,
 					"Redefinition of ID: " + str);
-				arp.warning(
+				arp.warning(taintMe,
 					WARN_REDEFINITION_OF_ID,
 					prev,
 					"Previous definition of '" + str + "'.");
@@ -94,52 +95,47 @@ public class ParserSupport
 				idsUsedForBase.put(str, arp.location());
 			}
 		}
-		if (!ctxt.isSameAsDocument())
-			arp.warning(
-				IGN_XMLBASE_SIGNIFICANT,
-				"The use of xml:base changes the meaning of ID '"
-					+ str
-					+ "'.");
 
-		checkXMLName(str);
-		checkEncoding(str);
+
+		checkXMLName(taintMe,str);
+		checkEncoding(taintMe,str);
 	}
-	private void checkXMLName( String str) throws SAXParseException {
+	private void checkXMLName( Taint taintMe, String str) throws SAXParseException {
 		if (!XMLChar.isValidNCName(str)) {
 			//   	System.err.println("not name (id): " + str);
-			warning(
+			warning(taintMe,
 				WARN_BAD_NAME,
 				"Not an XML Name: '" + str + "'");
 		}
 
 	}
-	protected String checkNodeID(String str) throws SAXParseException {
+	protected String checkNodeID(Taint taintMe, String str) throws SAXParseException {
 		if (!XMLChar.isValidNCName(str)) {
-			warning(
+			warning(taintMe,
 				WARN_BAD_NAME,
 				"Not an XML Name: '" + str + "'");
 		}
 		return str;
 	}
-	public void checkString(String t) throws SAXParseException {
+	public void checkString(Taint taintMe,String t) throws SAXParseException {
 		if (!CharacterModel.isNormalFormC(t))
-			warning(
+			warning(taintMe,
 				WARN_STRING_NOT_NORMAL_FORM_C,
 				"String not in Unicode Normal Form C: \"" + t +"\"");
-		checkEncoding(t);
-		checkComposingChar(t);
+		checkEncoding(taintMe,t);
+		checkComposingChar(taintMe,t);
 	}
-	void checkComposingChar(String t) throws SAXParseException {
+	void checkComposingChar(Taint taintMe,String t) throws SAXParseException {
 		if (CharacterModel.startsWithComposingCharacter(t))
-			warning(
+			warning(taintMe,
 				WARN_STRING_COMPOSING_CHAR,
 				"String is not legal in XML 1.1; starts with composing char: \""
 					+ t
 					+ "\" (" + ((int)t.charAt(0))+ ")");
 	}
-    public void checkComposingChar(char ch[], int st, int ln) throws SAXParseException {
+    public void checkComposingChar(Taint taintMe,char ch[], int st, int ln) throws SAXParseException {
         if (ln>0 && CharacterModel.isComposingChar(ch[st]))
-            warning(
+            warning(taintMe,
                 WARN_STRING_COMPOSING_CHAR,
                 "String is not legal in XML 1.1; starts with composing char: \""
                     + new String(ch,st,ln)
@@ -147,57 +143,57 @@ public class ParserSupport
     }
 
 	
-	public void checkXMLLang(String lang) throws SAXParseException {
-		if (lang.equals(""))
-			return;
-		try {
-			LanguageTag tag = new LanguageTag(lang);
-			int tagType = tag.tagType();
-			if (tagType == LT_ILLEGAL) {
-				warning(
-					WARN_BAD_XMLLANG,
-					tag.errorMessage());
-			}
-			if ((tagType & LT_UNDETERMINED) == LT_UNDETERMINED) {
-				warning(
-					WARN_BAD_XMLLANG,
-					"Unnecessary use of language tag \"und\" prohibited by RFC3066");
-			}
-			if ((tagType & LT_IANA_DEPRECATED) == LT_IANA_DEPRECATED) {
-				warning(
-					WARN_DEPRECATED_XMLLANG,
-					"Use of deprecated language tag \"" + lang + "\".");
-			}
-			if ((tagType & LT_PRIVATE_USE) == LT_PRIVATE_USE) {
-				warning(
-					IGN_PRIVATE_XMLLANG,
-					"Use of (IANA) private language tag \"" + lang + "\".");
-			} else if ((tagType & LT_LOCAL_USE) == LT_LOCAL_USE) {
-				warning(
-					IGN_PRIVATE_XMLLANG,
-					"Use of (ISO639-2) local use language tag \""
-						+ lang
-						+ "\".");
-			} else if ((tagType & LT_EXTRA) == LT_EXTRA) {
-				warning(
-					IGN_PRIVATE_XMLLANG,
-					"Use of additional private subtags on language \""
-						+ lang
-						+ "\".");
-			}
-		} catch (LanguageTagSyntaxException e) {
-			warning(
-				WARN_MALFORMED_XMLLANG,
-				e.getMessage());
-		}
-	}
+//	public void checkXMLLang(Taint taintMe, String lang) throws SAXParseException {
+//		if (lang.equals(""))
+//			return;
+//		try {
+//			LanguageTag tag = new LanguageTag(lang);
+//			int tagType = tag.tagType();
+//			if (tagType == LT_ILLEGAL) {
+//				warning(taintMe,
+//					WARN_BAD_XMLLANG,
+//					tag.errorMessage());
+//			}
+//			if ((tagType & LT_UNDETERMINED) == LT_UNDETERMINED) {
+//				warning(taintMe,
+//					WARN_BAD_XMLLANG,
+//					"Unnecessary use of language tag \"und\" prohibited by RFC3066");
+//			}
+//			if ((tagType & LT_IANA_DEPRECATED) == LT_IANA_DEPRECATED) {
+//				warning(taintMe,
+//					WARN_DEPRECATED_XMLLANG,
+//					"Use of deprecated language tag \"" + lang + "\".");
+//			}
+//			if ((tagType & LT_PRIVATE_USE) == LT_PRIVATE_USE) {
+//				warning(taintMe,
+//					IGN_PRIVATE_XMLLANG,
+//					"Use of (IANA) private language tag \"" + lang + "\".");
+//			} else if ((tagType & LT_LOCAL_USE) == LT_LOCAL_USE) {
+//				warning(taintMe,
+//					IGN_PRIVATE_XMLLANG,
+//					"Use of (ISO639-2) local use language tag \""
+//						+ lang
+//						+ "\".");
+//			} else if ((tagType & LT_EXTRA) == LT_EXTRA) {
+//				warning(taintMe,
+//					IGN_PRIVATE_XMLLANG,
+//					"Use of additional private subtags on language \""
+//						+ lang
+//						+ "\".");
+//			}
+//		} catch (LanguageTagSyntaxException e) {
+//			warning(taintMe,
+//				WARN_MALFORMED_XMLLANG,
+//				e.getMessage());
+//		}
+//	}
 
 
-	public void checkEncoding(String s) throws SAXParseException {
+	public void checkEncoding(Taint taintMe, String s) throws SAXParseException {
 		if (arp.encodingProblems) {
 			for (int i = s.length() - 1; i >= 0; i--) {
 				if (s.charAt(i) > 127)
-					warning(
+					warning(taintMe,
 						ERR_ENCODING_MISMATCH,
 						"Encoding error with non-ascii characters.");
 			}
@@ -209,8 +205,8 @@ public class ParserSupport
      * @param i
      * @param msg
      */
-    protected void warning(int i, String msg) throws SAXParseException {
-        arp.warning(i,msg);
+    protected void warning(Taint taintMe, int i, String msg) throws SAXParseException {
+        arp.warning(taintMe, i,msg);
     }
     protected boolean isWhite(char ch[], int st, int ln) {
         for (int i=0;i<ln;i++)
@@ -239,7 +235,7 @@ public class ParserSupport
         arp.triple(a,b,c);
     }
 
-    public XMLContext getXMLContext() {
+    public AbsXMLContext getXMLContext() {
         return xml;
     }
 
@@ -247,9 +243,9 @@ public class ParserSupport
         return arp;
     }
 
-    protected String resolve(XMLContext x, String uri) throws SAXParseException {
-        RDFURIReference ref = x.resolveAsURI(uri);
-        checkBadURI(ref);
+    protected String resolve(Taint taintMe,AbsXMLContext x, String uri) throws SAXParseException {
+        RDFURIReference ref = x.resolveAsURI(arp,taintMe,uri);
+//        checkBadURI(taintMe,ref);
         return ref.toString();
     }
 

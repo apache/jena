@@ -14,14 +14,14 @@ import com.hp.hpl.jena.rdf.arp.states.Frame;
  * @author Jeremy J. Carroll
  * 
  */
-public class ARPDatatypeLiteral implements ALiteral {
+public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
 
     final private String datatype;
     final private String lexForm;
     
     public ARPDatatypeLiteral(Frame f, String lexf,URIReference dt) throws SAXParseException{
        
-        f.checkString(lexf);
+        f.checkString(this,lexf);
        datatype = dt.getURI();
        lexForm = lexf;
     }

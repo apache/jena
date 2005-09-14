@@ -8,7 +8,10 @@ package com.hp.hpl.jena.rdf.arp.states.test;
 
 import org.xml.sax.Attributes;
 
+import com.hp.hpl.jena.rdf.arp.impl.TaintImpl;
 import com.hp.hpl.jena.rdf.arp.states.FrameI;
+
+import junit.framework.Assert;
 
 
 class EventList implements Attributes, Cloneable {
@@ -120,7 +123,9 @@ class EventList implements Attributes, Cloneable {
             TestData.xmlHandler.clear(failOnError);
             TestData.testFrame.clear();
             rewind();
-            frame.getXMLContext().getLang();
+            if (frame  == null)
+                Assert.fail("Frame is null");
+            frame.getXMLContext().getLang(new TaintImpl());
             while (hasNext()) {
                 Event ev = next();
                 frame = ev.apply(frame, this);

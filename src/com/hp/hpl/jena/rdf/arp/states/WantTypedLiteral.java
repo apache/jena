@@ -10,12 +10,12 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.ARPDatatypeLiteral;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
 public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implements FrameI {
 
     final URIReference dtURI;
-    public WantTypedLiteral(WantsObjectFrameI p, String datatypeURI, XMLContext ap)
+    public WantTypedLiteral(WantsObjectFrameI p, String datatypeURI, AbsXMLContext ap)
       throws SAXParseException {
         super(p, ap);
         dtURI = URIReference.resolve(this,xml,datatypeURI);

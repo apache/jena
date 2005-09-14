@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.6 2005-08-09 03:30:19 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.7 2005-09-14 15:31:12 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -168,26 +168,26 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         frame.processingInstruction(target, data);
     }
 
-    public void warning(int id, String msg) throws SAXParseException {
+    public void warning(Taint taintMe,int id, String msg) throws SAXParseException {
         if (options.getErrorMode()[id] != EM_IGNORE)
-            warning(id, location(), msg);
+            warning(taintMe,id, location(), msg);
     }
 
-    void warning(int id, Location loc, String msg) throws SAXParseException {
+    void warning(Taint taintMe, int id, Location loc, String msg) throws SAXParseException {
         if (options.getErrorMode()[id] != EM_IGNORE)
-            warning(id, new ParseException(id, loc, msg) {
+            warning(taintMe, id, new ParseException(id, loc, msg) {
                 private static final long serialVersionUID = 1990910846204964756L;
             });
     }
 
-    void generalError(int id, Exception e) throws SAXParseException {
+    void generalError( int id, Exception e) throws SAXParseException {
         Location where = new Location(locator);
         // System.err.println(e.getMessage());
-        warning(id, new ParseException(id, where, e));
+        warning(null, id, new ParseException(id, where, e));
 
     }
 
-    void warning(int id, SAXParseException e) throws SAXParseException {
+    void warning(Taint taintMe, int id, SAXParseException e) throws SAXParseException {
         try {
             switch (options.getErrorMode()[id]) {
             case EM_IGNORE:
@@ -218,15 +218,15 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     public void error(SAXParseException e) throws SAXParseException {
-        warning(ERR_SAX_ERROR, e);
+        warning(null,ERR_SAX_ERROR, e);
     }
 
     public void warning(SAXParseException e) throws SAXParseException {
-        warning(WARN_SAX_WARNING, e);
+        warning(null,WARN_SAX_WARNING, e);
     }
 
     public void fatalError(SAXParseException e) throws SAXException {
-        warning(ERR_SAX_FATAL_ERROR, e);
+        warning(null,ERR_SAX_FATAL_ERROR, e);
         // If we get here, we shouldn't go on
         // throw an error into Jena.
         throw new FatalParsingErrorException();
@@ -266,12 +266,12 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return options.getErrorMode()[eCode] == EM_IGNORE;
     }
 
-    protected XMLContext initialContext(String base, String lang)
+    protected AbsXMLContext initialContext(String base, String lang)
             throws SAXParseException {
-        return initialContextWithBase(base).withLang(lang);
+        return initialContextWithBase(base).withLang(this,lang);
     }
 
-    protected void checkBadURI(RDFURIReference uri) throws SAXParseException {
+    protected void checkBadURI(Taint taintMe,RDFURIReference uri) throws SAXParseException {
         if (uri.isRDFURIReference() || !uri.isVeryBad())
             return;
         // TODO: extract good message
@@ -284,19 +284,20 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 //        }
 //        URI uri2;
 //        uri2.
-        warning(WARN_MALFORMED_URI, "Bad URI: " + msg);
+        warning(taintMe,WARN_MALFORMED_URI, "Bad URI: " + msg);
     }
-    private XMLContext initialContextWithBase(String base) throws SAXParseException {
+    private AbsXMLContext initialContextWithBase(String base) throws SAXParseException {
         
+        // TODO: base tainting
             if (base == null) {
-                warning(IGN_NO_BASE_URI_SPECIFIED,
+                warning(null,IGN_NO_BASE_URI_SPECIFIED,
                         "Base URI not specified for input file; local URI references will be in error.");
 
                 return new XMLNullContext(this,
                         ERR_RESOLVING_URI_AGAINST_NULL_BASE);
 
             } else if (base.equals("")) {
-                warning(IGN_NO_BASE_URI_SPECIFIED,
+                warning(null,IGN_NO_BASE_URI_SPECIFIED,
                         "Base URI specified as \"\"; local URI references will not be resolved.");
                 return new XMLNullContext(this,
                         WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
@@ -304,20 +305,21 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                 return new XMLContext(this,base);
             }
     }
+    /*
     private XMLContext initialContextWithBasex(String base)
             throws SAXParseException {
         XMLContext rslt = new XMLContext(this, base);
         RDFURIReference b = rslt.getURI();
         if (base == null) {
-            warning(IGN_NO_BASE_URI_SPECIFIED,
+            warning(null,IGN_NO_BASE_URI_SPECIFIED,
                     "Base URI not specified for input file; local URI references will be in error.");
 
         } else if (base.equals("")) {
-            warning(IGN_NO_BASE_URI_SPECIFIED,
+            warning(null,IGN_NO_BASE_URI_SPECIFIED,
                     "Base URI specified as \"\"; local URI references will not be resolved.");
 
         } else {
-            checkBadURI(b);
+            checkBadURI(null,b);
             // Warnings on bad base.
 
             // if (b.isVeryBad()||b.isRelative()) {
@@ -326,6 +328,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
         return rslt;
     }
+    */
 
     private ARPOptionsImpl options = new ARPOptionsImpl();
 
@@ -425,29 +428,29 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     private void checkNamespaceURI(String uri) throws SAXParseException {
-        ((Frame) frame).checkEncoding(uri);
+        ((Frame) frame).checkEncoding(null,uri);
         if (uri.length() != 0)
              {
                 RDFURIReference u = iriFactory().create(uri);
                 if (!u.isAbsolute()) {
-                    warning(
+                    warning(null,
                             WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
                             "The namespace URI: <"
                                     + uri
                                     + "> is relative. Such use has been deprecated by the W3C, and may result in RDF interoperability failures. Use an absolute namespace URI.");
                 }
                 if (!u.toASCIIString().equals(u.toString()))
-                    warning(
+                    warning(null,
                             WARN_BAD_NAMESPACE_URI,
                             "Non-ascii characters in a namespace URI may not be completely portable: <"
                                     + u.toString()
                                     + ">. Resulting RDF URI references are legal.");
 
                 if (uri.startsWith(rdfns) && !uri.equals(rdfns))
-                    warning(WARN_BAD_RDF_NAMESPACE_URI, "Namespace URI ref <"
+                    warning(null,WARN_BAD_RDF_NAMESPACE_URI, "Namespace URI ref <"
                             + uri + "> may not be used in RDF/XML.");
                 if (uri.startsWith(xmlns) && !uri.equals(xmlns))
-                    warning(WARN_BAD_XML_NAMESPACE_URI, "Namespace URI ref <"
+                    warning(null,WARN_BAD_XML_NAMESPACE_URI, "Namespace URI ref <"
                             + uri + "> may not be used in RDF/XML.");
              }   
     }

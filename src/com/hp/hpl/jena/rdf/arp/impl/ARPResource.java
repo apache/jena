@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: ARPResource.java,v 1.2 2005-09-14 15:31:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -41,7 +41,7 @@ package com.hp.hpl.jena.rdf.arp.impl;
  *
  * @author  jjc
  */
-public class ARPResource implements  AResourceInternal {
+public class ARPResource extends TaintImpl implements  AResourceInternal {
     // Constants cribbed from com.megginson.sax.rdf.RDFFilter
     static public final boolean DEBUG = false;
     final private XMLHandler arp;

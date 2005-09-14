@@ -23,9 +23,7 @@ import com.hp.hpl.jena.util.CharEncoding;
 
 /**
  * 
- * This parser uses the Xerces pull parser configuration, and runs in a single
- * thread. Hence it is preferred over the SAX2RDF parser, which needs two
- * threads.
+ * The main parser, other variants of XMLHandler are for more specialized purposes.
  * 
  * @author Jeremy J. Carroll
  * 
@@ -150,7 +148,7 @@ public class RDFXMLParser extends XMLHandler {
             xmlEncoding = e;
             if (readerXMLEncoding != null
                     && !readerXMLEncoding.equalsIgnoreCase(e)) {
-                warning(
+                warning(null,
                         WARN_ENCODING_MISMATCH,
                         "Encoding on InputStreamReader or FileReader does not match that of XML document. Use FileInputStream. ["
                                 + readerXMLEncoding + " != " + e + "]");
@@ -161,11 +159,11 @@ public class RDFXMLParser extends XMLHandler {
                 return;
 
             if (!encodingInfo.isIANA()) {
-                warning(encodingInfo.isInNIO() ? WARN_NON_IANA_ENCODING
+                warning(null,encodingInfo.isInNIO() ? WARN_NON_IANA_ENCODING
                         : WARN_UNSUPPORTED_ENCODING, encodingInfo
                         .warningMessage());
             } else if (!original.equalsIgnoreCase(e)) {
-                warning(WARN_NONCANONICAL_IANA_NAME, "The encoding \""
+                warning(null,WARN_NONCANONICAL_IANA_NAME, "The encoding \""
                         + original
                         + "\" is not the canonical name at IANA, suggest \""
                         + e + "\" would give more interoperability.");

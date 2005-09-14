@@ -8,7 +8,7 @@ package com.hp.hpl.jena.rdf.arp.states;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.ARPString;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
 
 
@@ -18,15 +18,18 @@ public class OuterXMLLiteral extends AbsXMLLiteral {
     
    final String parseType;
     
-    public OuterXMLLiteral(WantsObjectFrameI s, XMLContext x, String pt) {
+    public OuterXMLLiteral(WantsObjectFrameI s, AbsXMLContext x, String pt) {
         super(s, x, new StringBuffer());
         parseType = pt;
         
     }
 
     public void endElement() throws SAXParseException {
+        ARPString xmlLiteral = new ARPString(this,rslt.toString(),parseType );
+        if (taint.isTainted())
+            xmlLiteral.taint();
         ((WantsObjectFrameI)getParent()).theObject(
-                new ARPString(this,rslt.toString(),"",parseType )
+                xmlLiteral
                 );
 
         

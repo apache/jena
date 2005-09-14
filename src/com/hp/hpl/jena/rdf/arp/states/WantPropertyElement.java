@@ -11,10 +11,12 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.ARPResource;
 import com.hp.hpl.jena.rdf.arp.impl.AResourceInternal;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
+import com.hp.hpl.jena.rdf.arp.impl.TaintImpl;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
 import java.util.*;
 
@@ -30,7 +32,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
 
     boolean objectIsBlank = false;
 
-    public WantPropertyElement(HasSubjectFrameI s, XMLContext x) {
+    public WantPropertyElement(HasSubjectFrameI s, AbsXMLContext x) {
         super(s, x);
     }
 
@@ -45,13 +47,16 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             Attributes atts) throws SAXParseException {
         clearObject();
         nonWhiteMsgGiven = false;
-        ElementLexer el = new ElementLexer(this, uri, localName, rawName, E_LI,
+        ElementLexer el = new ElementLexer(taint,this, uri, localName, rawName, E_LI,
                 CoreAndOldTerms | E_DESCRIPTION);
         // if (el.badMatch)
         // warning(ERR_SYNTAX_ERROR,"bad use of " + rawName);
         predicate = el.goodMatch ? (AResourceInternal) rdf_n(liCounter++)
                 : URIReference.fromQName(this, uri, localName);
 
+        if (taint.isTainted())
+            predicate.taint();
+        taint = new TaintImpl();
         AttributeLexer ap = new AttributeLexer(this,
         // xml:
                 A_XMLLANG | A_XMLBASE | A_XML_OTHER
@@ -60,7 +65,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
                         | A_RESOURCE | A_TYPE,
                 // bad rdf:
                 A_BADATTRS);
-        int cnt = ap.processSpecials(atts);
+        int cnt = ap.processSpecials(taint,atts);
 
         // These three states are intended as mutually
         // incompatible, but all three can occur
@@ -76,12 +81,13 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
                     nextStateCode, propertyAttributeDescription(atts, ap, cnt)));
         }
 
-        XMLContext x = ap.xml(xml);
+        AbsXMLContext x = ap.xml(xml);
 
         reify = ap.id == null ? null : URIReference.fromID(this, x, ap.id);
         if (mustBeEmpty(ap, atts, cnt)) {
             if (ap.nodeID != null) {
                 object = new ARPResource(arp, ap.nodeID);
+                
                 objectIsBlank = true;
             }
             if (ap.resource != null) {
@@ -98,6 +104,8 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
                 object = new ARPResource(arp);
                 objectIsBlank = true;
             }
+            if (taint.isTainted())
+                object.taint();
             processPropertyAttributes(ap, atts, x);
         }
 
@@ -114,7 +122,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
     }
 
     private FrameI nextFrame(Attributes atts, AttributeLexer ap, int cnt,
-            int nextStateCode, XMLContext x) throws SAXParseException {
+            int nextStateCode, AbsXMLContext x) throws SAXParseException {
         switch (nextStateCode) {
         case 0:
             return new WantLiteralValueOrDescription(this, x);
@@ -125,14 +133,14 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             return withParsetype(ap.parseType, x);
         case TYPEDLITERAL | EMPTYWITHOBJ:
         case TYPEDLITERAL:
-            return new WantTypedLiteral(this, resolve(x, ap.datatype), x);
+            return new WantTypedLiteral(this, resolve(null,x, ap.datatype), x);
         case EMPTYWITHOBJ:
             return new WantEmpty(this, x);
         }
         throw new IllegalStateException("impossible");
     }
 
-    private FrameI withParsetype(String pt, XMLContext x)
+    private FrameI withParsetype(String pt, AbsXMLContext x)
             throws SAXParseException {
         if (pt.equals("Collection")) {
             return new RDFCollection(this, x);

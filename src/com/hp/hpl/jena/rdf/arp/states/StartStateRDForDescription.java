@@ -8,14 +8,14 @@ package com.hp.hpl.jena.rdf.arp.states;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public class StartStateRDForDescription extends WantTopLevelDescription {
 
     boolean sawRdfRDF;
     
-    public StartStateRDForDescription(XMLHandler handler, XMLContext x)
+    public StartStateRDForDescription(XMLHandler handler, AbsXMLContext x)
             throws SAXParseException {
         super(handler, x);
     }

@@ -8,17 +8,16 @@ package com.hp.hpl.jena.rdf.arp.states;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.*;
 
 abstract class AbsWantLiteralValueOrDescription extends
         WantDescription {
 
     private StringBuffer buf;
-
+    
     private boolean checkComposingChar = true;
 
-    public AbsWantLiteralValueOrDescription(FrameI s, XMLContext x) {
+    public AbsWantLiteralValueOrDescription(FrameI s, AbsXMLContext x) {
         super(s, x);
     }
 
@@ -42,7 +41,7 @@ abstract class AbsWantLiteralValueOrDescription extends
     public void characters(char[] ch, int start, int length)
             throws SAXParseException {
         if (checkComposingChar)
-            checkComposingChar(ch, start, length);
+            checkComposingChar(taint,ch, start, length);
         checkComposingChar = false;
         if (buf == null)
             buf = new StringBuffer(length);

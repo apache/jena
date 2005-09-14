@@ -33,38 +33,38 @@ abstract class QNameLexer implements Names, ARPErrorNumbers {
           && getUri().equals(xmlns)
           ? fl : 0;
     }
-    abstract boolean isInRdfns() throws SAXParseException;
-    abstract void error(int rslt) throws SAXParseException;
-    abstract void deprecatedAttribute(int rslt) throws SAXParseException;
+    abstract boolean isInRdfns(Taint taintMe) throws SAXParseException;
+    abstract void error(Taint taintMe,int rslt) throws SAXParseException;
+    abstract void deprecatedAttribute(Taint me,int rslt) throws SAXParseException;
     
 
     abstract String getLocalName();
     abstract String getUri();
     abstract String getQName();
     
-    private int rdf(String wanted, int fl) throws SAXParseException {
+    private int rdf(Taint taintMe,String wanted, int fl) throws SAXParseException {
         if ((fl &select)== fl
           && wanted.equals(getLocalName())) {
-            if (isInRdfns())
+            if (isInRdfns(taintMe))
                 return fl;
-            frame.warning(WARN_NOT_RDF_NAMESPACE,getQName() + " is not special. " +
+            frame.warning(taintMe,WARN_NOT_RDF_NAMESPACE,getQName() + " is not special. " +
                     (getQName().toLowerCase().startsWith("rdf:")?
                         ("The namespace binding of the RDF namespace is incorrect. It should be <"+rdfns+"> not <"+getUri()+">"):
                         ("Maybe it should be rdf:"+getLocalName())));
         }
         return 0;
     }
-    int lookup() throws SAXParseException {
-        int rslt = lookupNoMsg();
+    int lookup(Taint taintMe) throws SAXParseException {
+        int rslt = lookupNoMsg(taintMe);
         if ((rslt&bad)!=0) {
             if (rslt==A_DEPRECATED)
-                deprecatedAttribute(rslt);
+                deprecatedAttribute(taintMe,rslt);
             else
-                error(rslt);
+                error(taintMe,rslt);
         }
         return rslt;
     }
-    private int lookupNoMsg() throws SAXParseException {
+    private int lookupNoMsg(Taint taintMe) throws SAXParseException {
         char firstChar;
         try {
           firstChar = getLocalName().charAt(0);
@@ -85,13 +85,13 @@ abstract class QNameLexer implements Names, ARPErrorNumbers {
             case 4:
                 return xml("base",A_XMLBASE);
             case 5:
-                return rdf("bagID",A_DEPRECATED);
+                return rdf(taintMe,"bagID",A_DEPRECATED);
             }
             break;
         case 'l': /* lang  li */
             switch (getLocalName().length()) {
             case 2:
-                return rdf("li",E_LI);
+                return rdf(taintMe,"li",E_LI);
             case 4:
                 return xml("lang",A_XMLLANG);
             }
@@ -101,31 +101,31 @@ abstract class QNameLexer implements Names, ARPErrorNumbers {
         case 'i': /* space */
             return xml("id",A_XML_OTHER);
         case 'I': /* ID */
-            return rdf("ID",A_ID);
+            return rdf(taintMe,"ID",A_ID);
         case 'n': /* nodeID */
-            return rdf("nodeID",A_NODEID);
+            return rdf(taintMe,"nodeID",A_NODEID);
         case 'a': /* about aboutEach aboutEachPrefix */
             switch (getLocalName().length()) {
             case 5:
-                return rdf("about",A_ABOUT);
+                return rdf(taintMe,"about",A_ABOUT);
             case 9:
-                return rdf("aboutEach",A_DEPRECATED);
+                return rdf(taintMe,"aboutEach",A_DEPRECATED);
             case 15:
-                return rdf("aboutEachPrefix",A_DEPRECATED);
+                return rdf(taintMe,"aboutEachPrefix",A_DEPRECATED);
             }
             break;
         case 'r': /* resource */
-            return rdf("resource",A_RESOURCE);
+            return rdf(taintMe,"resource",A_RESOURCE);
         case 'R': /* resource */
-            return rdf("RDF",E_RDF);
+            return rdf(taintMe,"RDF",E_RDF);
         case 'd': /* datatype */
-            return rdf("datatype",A_DATATYPE);
+            return rdf(taintMe,"datatype",A_DATATYPE);
         case 't': /* type */
-            return rdf("type",A_TYPE);
+            return rdf(taintMe,"type",A_TYPE);
         case 'p': /* parseType */
-            return rdf("parseType",A_PARSETYPE);
+            return rdf(taintMe,"parseType",A_PARSETYPE);
         case 'D': /* Description */
-            return rdf("Description",E_DESCRIPTION);
+            return rdf(taintMe,"Description",E_DESCRIPTION);
         }
         return 0;
     }

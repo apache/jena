@@ -9,7 +9,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public class LookingForRDF extends Frame {
@@ -22,7 +22,7 @@ public class LookingForRDF extends Frame {
         return "";
     }
 
-    public LookingForRDF(XMLHandler s, XMLContext x) {
+    public LookingForRDF(XMLHandler s, AbsXMLContext x) {
         super(s, x);
     }
 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPString.java,v 1.2 2005-08-04 21:41:37 jeremy_carroll Exp $
+ * * $Id: ARPString.java,v 1.3 2005-09-14 15:31:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -46,24 +46,24 @@ import com.hp.hpl.jena.rdf.arp.states.Frame;
  *
  * @author  jjc
  */
-public class ARPString implements ALiteral {
+public class ARPString extends TaintImpl implements ALiteral {
 
     final static String RDFXMLLiteral =
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
     /** Creates new StringToken */
-    public ARPString(Frame f,String value,String lang,String parseType)
+    public ARPString(Frame f,String value,String parseType)
       throws SAXParseException 
       {
-        f.checkString(value);
+        f.checkString(this,value);
         this.value = value;
         this.lang = "";
         this.isWellFormedXML = true;
         this.parseType = parseType;
     }
-    public ARPString(Frame f, String value,String lang) throws SAXParseException {
-        f.checkString(value);
+    public ARPString(Frame f, String value,AbsXMLContext forXMLLang) throws SAXParseException {
+        f.checkString(this,value);
         this.value = value;
-        this.lang = lang;
+        this.lang = forXMLLang.getLang(this);
         this.isWellFormedXML = false;
     }
     

@@ -8,13 +8,13 @@ package com.hp.hpl.jena.rdf.arp.states;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public interface FrameI {
     FrameI getParent();
     XMLHandler getXMLHandler();
-    XMLContext getXMLContext();
+    AbsXMLContext getXMLContext();
     void characters(char ch[], int start, int length)  throws  SAXParseException;
     void comment(char[] ch, int start, int length) throws SAXParseException;
     /**

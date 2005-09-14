@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.2 2005-08-09 03:30:19 jeremy_carroll Exp $
+ * * $Id: XMLContext.java,v 1.3 2005-09-14 15:31:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -37,6 +37,9 @@
 package com.hp.hpl.jena.rdf.arp.impl;
 
 import com.hp.hpl.jena.iri.*;
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
+import com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes;
+import com.hp.hpl.jena.rdf.arp.states.Frame;
 
 import java.net.URISyntaxException;
 
@@ -45,79 +48,63 @@ import org.xml.sax.SAXParseException;
 
 /**
  *
+ * Both the baseURI and the lang may be tainted with errors.
+ * They should not be accessed without providing a taint object to 
+ * propogate such tainting.
+ *  
  * @author  jjc
  
  */
-public class XMLContext  {
+public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,  LanguageTagCodes {
 //    final private String base;
     
-    static private String truncateXMLBase(String rslt) {
-        if (rslt ==null) return null;
-        int hash = rslt.indexOf('#');
-        if (hash != -1) {
-            return rslt.substring(0, hash);
-        }
-        return rslt;
-    }
-    
-    final private String lang;
-    final private RDFURIReference uri;
-    final XMLContext document;
-    /** Creates new XMLContext */
-    public XMLContext(XMLHandler h, String base) {
-        this(h.iriFactory().create(truncateXMLBase(base)));
+    /** Creates new XMLContext 
+     * @throws SAXParseException */
+    public XMLContext(XMLHandler h, String base) throws SAXParseException {
+        
+        this(h,h.iriFactory().create(truncateXMLBase(base)));
     }
 
-    XMLContext(RDFURIReference uri) {
-		this(null,uri,"");
-
+    protected XMLContext(XMLHandler h, RDFURIReference uri,Taint baseT) {
+		super(!h.ignoring(IGN_XMLBASE_SIGNIFICANT),null,uri,baseT,"",new TaintImpl());
 	}
     
-    protected XMLContext(XMLContext document,RDFURIReference uri,String lang)  {
-//        this.base=base;
-        this.lang=lang;
-        this.uri = uri;
-        this.document = document==null?this:document;
-    }
-    XMLContext withBase(String b) throws SAXParseException  {
-        return new XMLContext(document,resolveAsURI(truncateXMLBase(b)),lang);
-    }
-    XMLContext revertToDocument() {
-        return document.withLang(lang);
-    }
-    XMLContext withLang(String l) {
-        return clone(document,uri,l);
-    }
-    public String getLang() {
-        return lang;
-    }
-    RDFURIReference getURI() {
-        return uri;
-    }
-    boolean isSameAsDocument() {
-        return this==document || uri.equals(document.uri);
-    }
-    XMLContext getDocument() {
-        return document;
-    }
-    XMLContext clone(XMLContext document,RDFURIReference uri,String lang) {
-    	return new XMLContext(document,uri,lang);
-    }
-    RDFURIReference resolveAsURI(String relUri) throws SAXParseException{
-        return uri.resolve(relUri);
+
+    
+    private XMLContext(XMLHandler h, RDFURIReference reference) throws SAXParseException {
+        this(h,reference,initTaint(h,reference));
     }
 
-    public String resolve(String uri) throws SAXParseException {
-	 return resolveAsURI(uri).toString();
+    XMLContext(boolean b, AbsXMLContext document, RDFURIReference uri, Taint baseT, String lang, Taint langT) {
+        super(b,document,uri,baseT,lang,langT);
     }
-    /**
-     * Get the base, for constructing a sameDocRef ...
-     * will trigger warning if base malformed.
-     * @return uri
-     * @throws SAXParseException If warning on malformed base was disliked by user.
-     */
-    String getBase() throws SAXParseException {
-        return uri.toString();
+
+    boolean keepDocument(XMLHandler forErrors) {
+        return true;
     }
+boolean isSameAsDocument() {
+        return this==document 
+        || (uri==null?document.uri==null: uri.equals(document.uri));
+    }
+    XMLContext getDocument() {
+        // TODO: change back
+        return (XMLContext)document;
+    }
+    AbsXMLContext clone(RDFURIReference uri,Taint baseT,String lang, Taint langT) {
+    	return new XMLContext(true,document,uri,baseT,lang,langT);
+    }
+    void baseUsed(XMLHandler forErrors, Taint taintMe, String relUri, String resolvedURI) throws SAXParseException {
+        if (document==null)
+            return;
+        if (!isSameAsDocument()) {
+                String other = getDocument().uri.resolve(relUri).toString();
+            if (!other.equals(resolvedURI)) {
+                forErrors.warning(taintMe,IGN_XMLBASE_SIGNIFICANT,
+                        "Use of attribute xml:base changes interpretation of relative URI: \""
+                                + relUri + "\".");
+            }
+        }
+    }
+
 	
 }

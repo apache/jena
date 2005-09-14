@@ -14,6 +14,7 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 
+
 public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
 
     public AttributeLexer(Frame f, int which, int bad) {
@@ -46,20 +47,21 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
 
     Attributes att;
     
-    XMLContext xml;
+    AbsXMLContext xml;
 
-    public int processSpecials(Attributes a) throws SAXParseException {
+    public int processSpecials(Taint taintMe, Attributes a) throws SAXParseException {
         att = a;
         int sz = a.getLength();
         done = new BitSet(sz);
         count = 0;
         for (index = 0; index < sz; index++) {
             boolean matched = true;
-            switch (lookup()) {
+            switch (lookup(taintMe)) {
             case A_XMLBASE:
                 base = value();
+                // TODO: XML Lang and XML Base tainting
                 frame
-                        .warning(IGN_XMLBASE_USED,
+                        .warning(null,IGN_XMLBASE_USED,
                                 "Use of attribute xml:base is not envisaged in RDF Model&Syntax.");
                 break;
             case A_DEPRECATED:
@@ -70,32 +72,32 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
 
             case A_XMLLANG:
                 lang = value();
-                frame.checkXMLLang(lang);
+              
                 break;
             case A_XML_OTHER:
             case A_XMLNS:
                 break;
             case A_ID:
-                id = value(id);
+                id = value(taintMe,id);
 //                frame.checkIdSymbol(id);
                 break;
             case A_NODEID:
-                nodeID = frame.checkNodeID(value(nodeID));
+                nodeID = frame.checkNodeID(taintMe,value(taintMe,nodeID));
                 break;
             case A_ABOUT:
-                about = value(about);
+                about = value(taintMe,about);
                 break;
             case A_RESOURCE:
-                resource = value(resource);
+                resource = value(taintMe,resource);
                 break;
             case A_DATATYPE:
-                datatype = value(datatype);
+                datatype = value(taintMe,datatype);
                 break;
             case A_TYPE:
-                type = value(type);
+                type = value(taintMe,type);
                 break;
             case A_PARSETYPE:
-                parseType = value(parseType);
+                parseType = value(taintMe,parseType);
                 break;
             case 0:
                 if ((select & A_XML_OTHER) == A_XML_OTHER) {
@@ -106,7 +108,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
                   // Some tools, e.g. DOM, won't let us switch off
                   // namespaces. Hence, they fall through to here.
                         if (!xmlnsns.equals(getUri()))
-                           frame.warning(
+                           frame.warning(null,
                                         WARN_UNKNOWN_XML_ATTRIBUTE,
                                         "XML attribute: "
                                                 + getQName()
@@ -126,51 +128,46 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
                 if ( (bad&E_DESCRIPTION)==E_DESCRIPTION
                         &&
                         rdfns.equals(getUri())&& !isKnownRDFProperty(getLocalName())) {
-                    frame.warning(WARN_UNKNOWN_RDF_ATTRIBUTE,
+                    frame.warning(null,WARN_UNKNOWN_RDF_ATTRIBUTE,
                             getQName() + " is not a recognized RDF property or type.");
                 }
             }
         }
         xml = computeXml(frame.getXMLContext());
         if (id!=null)
-            frame.checkIdSymbol(xml,id);
+            frame.checkIdSymbol(taintMe,xml,id);
         return count;
     }
 
-    public XMLContext xml(XMLContext in) throws SAXParseException {
+    public AbsXMLContext xml(AbsXMLContext in) throws SAXParseException {
         if (xml==null)
             xml = computeXml(in);
         return xml;
     }
-    private XMLContext computeXml(XMLContext in) throws SAXParseException {
+    private AbsXMLContext computeXml(AbsXMLContext in) throws SAXParseException {
         if (base != null) {
-            in = in.withBase(base);
-            if (!in.getURI().isRDFURIReference()) {
-                frame.checkBadURI(in.getURI());
-                // TODO: do we want to revert, ever?
-//                in = in.revertToDocument();
-            }
+            in = in.withBase(frame.arp,base);
         }
         if (lang != null)
-            in = in.withLang(lang);
+            in = in.withLang(frame.arp,lang);
         return in;
     }
 
    
 
-    boolean isInRdfns() throws SAXParseException {
+    boolean isInRdfns(Taint taintMe) throws SAXParseException {
         String uri = getUri();
         if (rdfns.equals(uri))
             return true;
-        if (rdfns.equals("")) {
-            frame.warning(WARN_UNQUALIFIED_ATTRIBUTE, "unqualified use of rdf:"
+        if (uri.equals("")) {
+            frame.warning(taintMe,WARN_UNQUALIFIED_ATTRIBUTE, "unqualified use of rdf:"
                     + getQName() + " is deprecated.");
             return true;
         }
         return false;
     }
 
-    void error(int r) throws SAXParseException {
+    void error(Taint taintMe, int r) throws SAXParseException {
 //         TODO: specialize ERR_SYNTAX_ERROR ?
         int e = ERR_SYNTAX_ERROR;
         switch (r) {
@@ -182,14 +179,15 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
             break;
         
         }
-        frame.warning(e, getQName()
+        frame.warning(taintMe, e, getQName()
                 + " not allowed as attribute"
                 + (e == ERR_BAD_RDF_ATTRIBUTE?".":" here."));
         
     }
 
-    void deprecatedAttribute(int r) throws SAXParseException {
-        frame.warning(ERR_BAD_RDF_ATTRIBUTE, getQName()
+    // TODO: check error behaviour for both element and attribute case
+    void deprecatedAttribute(Taint me,int r) throws SAXParseException {
+        frame.warning(null,ERR_BAD_RDF_ATTRIBUTE, getQName()
                 + " has been deprecated and is ignored");
     }
 
@@ -205,9 +203,9 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
         return att.getValue(index);
     }
 
-    private String value(String prev) throws SAXParseException {
+    private String value(Taint taintMe,String prev) throws SAXParseException {
         if (prev != null) {
-            frame.warning(ERR_SYNTAX_ERROR, "Cannot use " + getQName()
+            frame.warning(taintMe, ERR_SYNTAX_ERROR, "Cannot use " + getQName()
                     + " in both qualified and unqualifed form on same element");
         }
         return att.getValue(index);

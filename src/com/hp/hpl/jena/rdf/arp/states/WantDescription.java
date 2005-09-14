@@ -10,26 +10,26 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.ARPResource;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 abstract public class WantDescription extends Frame implements HasSubjectFrameI {
 
-    public WantDescription(FrameI s, XMLContext x) {
+    public WantDescription(FrameI s, AbsXMLContext x) {
         super(s, x);
     }
     public WantDescription(FrameI s, AttributeLexer x) throws SAXParseException {
         super(s, x);
     }
-    public WantDescription(XMLHandler handler, XMLContext x) {
+    public WantDescription(XMLHandler handler, AbsXMLContext x) {
         super(handler,x);
     }
     ANode subject;
     boolean subjectIsBlank = false;
-
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         clearSubject();
@@ -40,9 +40,9 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
                 // bad rdf:
                 A_BADATTRS );
         
-        ap.processSpecials(atts);
+        ap.processSpecials(taint,atts);
         
-        XMLContext x = ap.xml(xml);
+        AbsXMLContext x = ap.xml(xml);
         
         if (ap.id!=null){
             subject = URIReference.fromID(this, x, ap.id);
@@ -56,9 +56,9 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
         if (ap.nodeID!=null) {
             if (subject != null) {
                 if (ap.about!=null)
-                    warning(ERR_SYNTAX_ERROR,"Both nodeID and about");
+                    warning(taint,ERR_SYNTAX_ERROR,"Both nodeID and about");
                 if (ap.id != null)
-                    warning(ERR_SYNTAX_ERROR,"Both ID and nodeID");
+                    warning(taint,ERR_SYNTAX_ERROR,"Both ID and nodeID");
             }
             subject = new ARPResource(arp,ap.nodeID);
             subjectIsBlank = true;
@@ -67,10 +67,12 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
             subject = new ARPResource(arp);
             subjectIsBlank = true;
         } 
-        ElementLexer el = new ElementLexer(this,uri,localName,
+        ElementLexer el = new ElementLexer(taint,this,uri,localName,
                 rawName,
                 E_DESCRIPTION,
                 CoreAndOldTerms|E_LI);
+        if (taint.isTainted())
+            subject.taint();
         if (el.badMatch) {
             // TODO: if error was only warning ....
         } else if (!el.goodMatch) {

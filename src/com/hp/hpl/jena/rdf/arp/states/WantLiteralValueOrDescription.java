@@ -8,31 +8,32 @@ package com.hp.hpl.jena.rdf.arp.states;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.ARPString;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.*;
 
 public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescription {
 
     boolean seenAnElement = false;
 
-    public WantLiteralValueOrDescription(WantsObjectFrameI s, XMLContext x) {
+    public WantLiteralValueOrDescription(WantsObjectFrameI s, AbsXMLContext x) {
         super(s, x);
     }
 
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts)  throws SAXParseException {
+        taint = new TaintImpl();
         if (seenAnElement) {
-            warning(ERR_SYNTAX_ERROR,"Multiple children of property element");
+            warning(taint,ERR_SYNTAX_ERROR,"Multiple children of property element");
         }
         seenAnElement = true;
         if (bufIsSet()) {
-            if (!isWhite(getBuf()))
-                warning(ERR_NOT_WHITESPACE,
+            if (!isWhite(getBuf())) {
+                warning(taint,ERR_NOT_WHITESPACE,
                         "Cannot have both string data \"" +
                         getBuf().toString() +
                         "\" and XML data <"+ rawName +
                         "> inside a property element. Maybe you want rdf:parseType='Literal'.");
             setBuf(null);
+            }
         }
         FrameI rslt = super.startElement(uri, localName, rawName, atts);
         ((WantsObjectFrameI) getParent()).theObject(subject);
@@ -43,7 +44,7 @@ public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescript
         if (seenAnElement) {
             if (!isWhite(ch, start, length))
 
-                warning(ERR_NOT_WHITESPACE,"Cannot have both string data: \"" +
+                warning(taint,ERR_NOT_WHITESPACE,"Cannot have both string data: \"" +
                  new String(ch,start,length)   +     
                 "\"and XML data inside a property element. "+ suggestParsetypeLiteral());
         } else
@@ -51,8 +52,11 @@ public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescript
     }
     public void endElement() throws SAXParseException {
         if (!seenAnElement) {
+            ARPString literal = new ARPString(this,getBuf().toString(),xml);
+            if (taint.isTainted())
+                literal.taint();
             ((WantsObjectFrameI) getParent()).theObject(
-              new ARPString(this,getBuf().toString(),xml.getLang())); 
+              literal); 
         } else {
             super.endElement();
         }

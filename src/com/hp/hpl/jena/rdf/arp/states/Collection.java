@@ -10,13 +10,13 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.ARPResource;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
 abstract class Collection extends WantDescription {
     // TODO: document this carefully.    
    
     WantsObjectI nextSlot;
-    public Collection(WantsObjectFrameI s, XMLContext x) {
+    public Collection(WantsObjectFrameI s, AbsXMLContext x) {
         super(s, x);
         nextSlot = s;
     }

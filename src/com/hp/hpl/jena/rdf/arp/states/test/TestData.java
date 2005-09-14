@@ -63,8 +63,15 @@ public class TestData {
 //        
 //    }
     static String dataFile = "testing/arp/state.txt";
-
-    static XMLContext xmlContext= new XMLContext(xmlHandler,"http://example.org/base/");
+    static AbsXMLContext xmlContext;
+    
+    static { 
+        try {
+            xmlContext= new XMLContext(xmlHandler,"http://example.org/base/");
+        } catch (SAXParseException e) {
+            throw new RuntimeException(e);
+        }
+    };
     static TestFrame testFrame = new TestFrame(xmlHandler, xmlContext);
     
     static char white[] = { 32, 32, 32, 32, 32 };
@@ -275,8 +282,11 @@ public class TestData {
        FrameI frame = null; 
        Object args[] = (Object[]) state2Args.get(cl);
         Class types[] = new Class[args.length];
-        for (int i = 1; i < args.length; i++)
+        for (int i = 1; i < args.length; i++) {
             types[i] = args[i].getClass();
+            if (types[i]==XMLContext.class)
+                types[i] = AbsXMLContext.class;
+        }
         if (cl == InnerXMLLiteral.class)
             types[2] = Map.class;
         for (int j = 0; j < tryClasses.length; j++) {

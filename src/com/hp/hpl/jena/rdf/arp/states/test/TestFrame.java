@@ -9,7 +9,7 @@ package com.hp.hpl.jena.rdf.arp.states.test;
 import junit.framework.Assert;
 
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteral;
 import com.hp.hpl.jena.rdf.arp.states.HasSubjectFrameI;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.arp.states.WantsObjectFrameI;
 class TestFrame extends AbsXMLLiteral implements WantsObjectFrameI,
         HasSubjectFrameI {
 
-    public TestFrame(XMLHandler h, XMLContext x) {
+    public TestFrame(XMLHandler h, AbsXMLContext x) {
         super(h,x);
     }
     

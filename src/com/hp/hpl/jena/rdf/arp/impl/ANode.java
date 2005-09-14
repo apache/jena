@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-public interface ANode {
+public interface ANode extends Taint {
 
 }
 

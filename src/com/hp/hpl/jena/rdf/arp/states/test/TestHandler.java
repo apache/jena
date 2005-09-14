@@ -12,6 +12,7 @@ import junit.framework.Assert;
 
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
+import com.hp.hpl.jena.rdf.arp.impl.Taint;
 
 class TestHandler extends XMLHandler {
     public void wrong(String msg) {
@@ -20,7 +21,7 @@ class TestHandler extends XMLHandler {
             Assert.fail("unexpected warning: "+msg);
     }
 
-    public void warning(int i, String s) {
+    public void warning(Taint taintMe,int i, String s) {
         if (i<100)
             return;
         wrong = true;

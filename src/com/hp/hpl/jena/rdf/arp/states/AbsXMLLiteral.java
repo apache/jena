@@ -12,7 +12,7 @@ import java.util.TreeMap;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public abstract class AbsXMLLiteral extends Frame {
@@ -50,7 +50,7 @@ public abstract class AbsXMLLiteral extends Frame {
         rslt.append(s);
     }
 
-    public AbsXMLLiteral(FrameI p, XMLContext x, StringBuffer r) {
+    public AbsXMLLiteral(FrameI p, AbsXMLContext x, StringBuffer r) {
         super(p, x);
         rslt = r;
         namespaces = xmlNameSpace;
@@ -60,7 +60,7 @@ public abstract class AbsXMLLiteral extends Frame {
         rslt = p.rslt;
         namespaces = ns;
     }
-    public AbsXMLLiteral(XMLHandler h,XMLContext x) {
+    public AbsXMLLiteral(XMLHandler h,AbsXMLContext x) {
         super(h, x);
         rslt = new StringBuffer();
         namespaces = xmlNameSpace;
@@ -124,7 +124,7 @@ public abstract class AbsXMLLiteral extends Frame {
     public void characters(char[] chrs, int start, int length) throws SAXParseException {
 
         if (checkComposingChar)
-            checkComposingChar(chrs, start, length);
+            checkComposingChar(taint,chrs, start, length);
         checkComposingChar = false;
         
         String replace;

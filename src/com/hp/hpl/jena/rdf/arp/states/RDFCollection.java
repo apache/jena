@@ -9,7 +9,7 @@ import com.hp.hpl.jena.rdf.arp.impl.*;
 
 public class RDFCollection extends Collection {
 
-    public RDFCollection(WantsObjectFrameI s, XMLContext x) {
+    public RDFCollection(WantsObjectFrameI s, AbsXMLContext x) {
         super(s, x);
     }
 
