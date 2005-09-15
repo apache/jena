@@ -409,7 +409,7 @@ Test test187 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/
 test176.addTest(test187);
 Test test188 = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/qname-in-ID/bug74","http://jcarroll.hpl.hp.com/arp-tests/qname-in-ID/bug74_0.rdf",true,new int[]{108, });
 test176.addTest(test188);
-Test test189 = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/relative-namespaces/50_0","http://jcarroll.hpl.hp.com/arp-tests/relative-namespaces/bad-bug50_0.rdf",true,new int[]{109, });
+Test test189 = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/relative-namespaces/50_0","http://jcarroll.hpl.hp.com/arp-tests/relative-namespaces/bad-bug50_0.rdf",true,new int[]{109,136, });
 test176.addTest(test189);
 Test test190 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/bug51","http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/bug51_0.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/bug51_0.nt",false);
 test176.addTest(test190);

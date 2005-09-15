@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.31 2005-08-01 15:07:04 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.32 2005-09-15 18:35:45 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -272,7 +272,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		FileInputStream fin = new FileInputStream(
 				"testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
 		rdr.setErrorHandler(this);
-		expected = new int[] { ERR_RESOLVING_URI_AGAINST_NULL_BASE };
+		expected = new int[] { ERR_RESOLVING_URI_AGAINST_NULL_BASE, WARN_RELATIVE_URI};
 		rdr.read(m, fin, null);
 		fin.close();
 		checkExpected();
@@ -304,7 +304,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		FileInputStream fin = new FileInputStream(
 				"testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
 		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_RESOLVING_URI_AGAINST_EMPTY_BASE };
+		expected = new int[] { WARN_RESOLVING_URI_AGAINST_EMPTY_BASE,WARN_RELATIVE_URI };
 		rdr.read(m, fin, "");
 		fin.close();
 		Model m1 = createMemModel();

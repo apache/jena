@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.19 2005-09-15 14:25:46 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.20 2005-09-15 18:35:45 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -404,6 +404,14 @@ public interface ARPErrorNumbers {
        
        // TODO: javadoc here
         int WARN_NOT_RDF_NAMESPACE = 135;
+        
+        /**
+         *A URI reference which is a relative reference
+         *has been used either as the starting base URI
+         *or as the outcome of a URI resolution somehow.
+         *(W136)
+         */
+        public int WARN_RELATIVE_URI = 136;
         
     
     /** Should not happen. 
