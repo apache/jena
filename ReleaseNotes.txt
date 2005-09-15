@@ -3,6 +3,17 @@ Release Notes
 
 ;;; -- Post 2.2final change list ----------------------------------------
 
+ARQ - SPARQL for Jena
+    o ARQ added to Jena
+      See doc/ARQ for documentation
+      New Jarfile: arq.jar
+
+JAR changes
+    o antlr.jar => antlr-2.7.5.jar
+      jakarta-oro-2.0.5.jar => jakarta-oro-2.0.8.jar
+      log4j-1.2.7.jar => log4j-1.2.12.jar 
+      New Jarfile: arq.jar
+
 Constraint rewriter
     o the .graph.query.Rewrite class recognises certain RDQL regex
       idioms and rewrites them. The rewritten expressions contained
