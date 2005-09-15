@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.7 2005-09-14 15:31:12 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.8 2005-09-15 10:39:05 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -76,6 +76,10 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     protected Map idsUsed = new HashMap();
 
     public void triple(ANode s, ANode p, ANode o) {
+        
+        if (s.isTainted() || p.isTainted() || o.isTainted())
+            return;
+        
         // System.out.println(s + " " + p + " " + o + " .");
         StatementHandler stmt = handlers.getStatementHandler();
         AResourceInternal subj = (AResourceInternal) s;
@@ -196,6 +200,8 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                 handlers.getErrorHandler().warning(e);
                 break;
             case EM_ERROR:
+                if (taintMe != null)
+                    taintMe.taint();
                 handlers.getErrorHandler().error(e);
                 break;
             case EM_FATAL:
