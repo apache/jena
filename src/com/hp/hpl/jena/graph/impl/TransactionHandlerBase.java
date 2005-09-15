@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TransactionHandlerBase.java,v 1.3 2005-02-21 11:52:11 andy_seaborne Exp $
+  $Id: TransactionHandlerBase.java,v 1.4 2005-09-15 15:01:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -29,7 +29,7 @@ public abstract class TransactionHandlerBase implements TransactionHandler
         {
         begin();
         try { Object result = c.execute(); commit(); return result; }
-        catch (Exception e) { abort(); throw new JenaException( e ); }
+        catch (Throwable e) { abort(); throw new JenaException( e ); }
         }
     }
 
