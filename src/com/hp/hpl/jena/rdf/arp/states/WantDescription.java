@@ -61,6 +61,7 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
                     warning(taint,ERR_SYNTAX_ERROR,"Both ID and nodeID");
             }
             subject = new ARPResource(arp,ap.nodeID);
+            checkNodeID(subject,ap.nodeID);
             subjectIsBlank = true;
         }
         if (subject==null) {

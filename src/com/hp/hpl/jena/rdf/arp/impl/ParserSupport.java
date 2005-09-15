@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.5 2005-09-14 15:31:12 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.6 2005-09-15 12:47:32 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -109,13 +109,12 @@ public class ParserSupport
 		}
 
 	}
-	protected String checkNodeID(Taint taintMe, String str) throws SAXParseException {
+	protected void checkNodeID(Taint taintMe, String str) throws SAXParseException {
 		if (!XMLChar.isValidNCName(str)) {
 			warning(taintMe,
 				WARN_BAD_NAME,
 				"Not an XML Name: '" + str + "'");
 		}
-		return str;
 	}
 	public void checkString(Taint taintMe,String t) throws SAXParseException {
 		if (!CharacterModel.isNormalFormC(t))

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.15 2005-08-01 15:07:08 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.16 2005-09-15 12:47:32 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -40,12 +40,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.URL;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
 /** A command line interface into ARP.
  * Creates NTriple's or just error messages.
  * <pre>
@@ -165,7 +168,7 @@ public class NTriple implements ARPErrorNumbers {
 	 * @return
 	 */
 	private static StatementHandler getSH(boolean b) {
-		StatementHandler rslt = b?(StatementHandler)new SH():new NoSH();
+		StatementHandler rslt = b?(StatementHandler)new SH(System.out):new NoSH();
 		if (andMeToo!=null)
 		  rslt = new TwoSH(rslt,andMeToo);
 		return rslt;
@@ -305,6 +308,14 @@ int debugC = 0;
 				case 'n' :
 					numbers = true;
 					break;
+                case 'E':
+                    arp.getHandlers().setErrorHandler(new ErrorHandler(){
+                        public void warning(SAXParseException exception) {}
+                        public void error(SAXParseException exception) {}
+                        public void fatalError(SAXParseException exception) {}     
+                    });
+                    ((ARPHandlersImpl)arp.getHandlers()).setBadStatementHandler(new SH(System.err));
+                    break;
 				case 'b' :
 					xmlBase = nextArg;
 					break;
@@ -456,13 +467,17 @@ int debugC = 0;
 		    }
 	}
 	private static class SH implements StatementHandler {
+        PrintStream out;
+        SH(PrintStream out){
+            this.out = out;
+        }
 		public void statement(AResource subj, AResource pred, AResource obj) {
 			lineNumber();
 			resource(subj);
 			resource(pred);
 			resource(obj);
 			line.append('.');
-			System.out.println(line);
+			out.println(line);
 			line.setLength(0);
 		}
 		public void statement(AResource subj, AResource pred, ALiteral lit) {
@@ -481,7 +496,7 @@ int debugC = 0;
 			resource(pred);
 			literal(lit);
 			line.append('.');
-			System.out.println(line);
+			out.println(line);
 			line.setLength(0);
 		}
 	}

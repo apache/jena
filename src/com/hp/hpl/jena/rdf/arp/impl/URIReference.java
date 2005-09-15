@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.4 2005-09-14 15:31:12 jeremy_carroll Exp $
+ * * $Id: URIReference.java,v 1.5 2005-09-15 12:47:32 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -154,7 +154,10 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     public static URIReference fromID(Frame f, AbsXMLContext x, String name)
             throws SAXParseException {
         // Other errors are checked for by the AttributeLexer
-        return resolve(f,x,"#"+name);
+        URIReference rslt = resolve(f,x,"#"+name);
+        f.checkIdSymbol(rslt,x,name);
+        return rslt;
+        
     }
 
     /**

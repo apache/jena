@@ -13,7 +13,7 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 import com.hp.hpl.jena.rdf.arp.*;
 
-abstract class QNameLexer implements Names, ARPErrorNumbers {
+abstract public class QNameLexer implements Names, ARPErrorNumbers {
     final int bad;
     final int select;
     final Frame frame;
@@ -198,7 +198,7 @@ abstract class QNameLexer implements Names, ARPErrorNumbers {
         return false;
     }
 
-    static boolean isKnownRDFProperty(String name) {
+    static public boolean isKnownRDFProperty(String name) {
         return knownRDFProperties.contains(name)
           || isMemberProperty(name);
     }

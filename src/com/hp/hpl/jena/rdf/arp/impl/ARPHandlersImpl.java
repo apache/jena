@@ -30,6 +30,7 @@ public class ARPHandlersImpl extends ARPHandlers implements Cloneable  {
 			public void statement(AResource s, AResource p, ALiteral o) {
 			}
 		};
+  private StatementHandler badStatementHandler = statementHandler;
 	private NamespaceHandler nameHandler = new NamespaceHandler() {
 			
 					public void startPrefixMapping(String prefix, String uri) {
@@ -80,6 +81,12 @@ public class ARPHandlersImpl extends ARPHandlers implements Cloneable  {
 		statementHandler = sh;
 		return old;
 	}
+    
+    public StatementHandler setBadStatementHandler(StatementHandler sh) {
+        StatementHandler old = badStatementHandler;
+        badStatementHandler = sh;
+        return old;
+    }
 
 	final static ExtendedHandler nullScopeHandler = new ExtendedHandler() {
 	
@@ -130,6 +137,12 @@ public class ARPHandlersImpl extends ARPHandlers implements Cloneable  {
 	StatementHandler getStatementHandler() {
 		return statementHandler;
 	}
+    /**
+     * @return Returns the extended handler.
+     */
+    StatementHandler getBadStatementHandler() {
+        return badStatementHandler;
+    }
 	
 
 }

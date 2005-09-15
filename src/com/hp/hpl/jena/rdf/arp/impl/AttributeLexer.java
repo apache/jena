@@ -82,7 +82,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
 //                frame.checkIdSymbol(id);
                 break;
             case A_NODEID:
-                nodeID = frame.checkNodeID(taintMe,value(taintMe,nodeID));
+                nodeID = value(taintMe,nodeID);
                 break;
             case A_ABOUT:
                 about = value(taintMe,about);
@@ -124,18 +124,9 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
             if (matched) {
                 done.set(index);
                 count++;
-            } else {
-                if ( (bad&E_DESCRIPTION)==E_DESCRIPTION
-                        &&
-                        rdfns.equals(getUri())&& !isKnownRDFProperty(getLocalName())) {
-                    frame.warning(null,WARN_UNKNOWN_RDF_ATTRIBUTE,
-                            getQName() + " is not a recognized RDF property or type.");
-                }
-            }
+            } 
         }
         xml = computeXml(frame.getXMLContext());
-        if (id!=null)
-            frame.checkIdSymbol(taintMe,xml,id);
         return count;
     }
 

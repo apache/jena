@@ -53,10 +53,10 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         // warning(ERR_SYNTAX_ERROR,"bad use of " + rawName);
         predicate = el.goodMatch ? (AResourceInternal) rdf_n(liCounter++)
                 : URIReference.fromQName(this, uri, localName);
-
         if (taint.isTainted())
             predicate.taint();
         taint = new TaintImpl();
+        
         AttributeLexer ap = new AttributeLexer(this,
         // xml:
                 A_XMLLANG | A_XMLBASE | A_XML_OTHER
@@ -84,10 +84,14 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         AbsXMLContext x = ap.xml(xml);
 
         reify = ap.id == null ? null : URIReference.fromID(this, x, ap.id);
+        if (taint.isTainted())
+            predicate.taint();
+        
         if (mustBeEmpty(ap, atts, cnt)) {
             if (ap.nodeID != null) {
-                object = new ARPResource(arp, ap.nodeID);
                 
+                object = new ARPResource(arp, ap.nodeID);
+                checkNodeID(object,ap.nodeID);
                 objectIsBlank = true;
             }
             if (ap.resource != null) {
