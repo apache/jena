@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.10 2005-09-15 12:59:30 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.11 2005-09-15 14:25:46 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -273,6 +273,10 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     boolean ignoring(int eCode) {
         return options.getErrorMode()[eCode] == EM_IGNORE;
     }
+    
+    public boolean isError(int eCode) {
+        return options.getErrorMode()[eCode] == EM_ERROR;
+    }
 
     protected AbsXMLContext initialContext(String base, String lang)
             throws SAXParseException {
@@ -296,7 +300,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
     private AbsXMLContext initialContextWithBase(String base) throws SAXParseException {
         
-        // TODO: base tainting
+        // TODO: test tainting in general
             if (base == null) {
                 warning(null,IGN_NO_BASE_URI_SPECIFIED,
                         "Base URI not specified for input file; local URI references will be in error.");

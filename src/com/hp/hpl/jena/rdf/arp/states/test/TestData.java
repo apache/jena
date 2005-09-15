@@ -47,7 +47,7 @@ import com.hp.hpl.jena.rdf.arp.states.OuterXMLLiteral;
  */
 public class TestData {
 
-    // TODO: get rid of short names all together, not good idea.
+    // TODO: not for 2.3. get rid of short names all together, not good idea.
     
     
     private static final URIReference foo = URIReference.createNoChecks("http://foo/");

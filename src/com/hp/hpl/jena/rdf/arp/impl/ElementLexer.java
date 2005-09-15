@@ -8,7 +8,7 @@ package com.hp.hpl.jena.rdf.arp.impl;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.states.Frame;
-// TODO: check tainting in calls to constructor
+
 public class ElementLexer extends QNameLexer  {
     
     final private String uri;

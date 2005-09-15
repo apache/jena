@@ -59,7 +59,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
             switch (lookup(taintMe)) {
             case A_XMLBASE:
                 base = value();
-                // TODO: XML Lang and XML Base tainting
+                // TODO: tests for tainting lang and base.
                 frame
                         .warning(null,IGN_XMLBASE_USED,
                                 "Use of attribute xml:base is not envisaged in RDF Model&Syntax.");
@@ -159,7 +159,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     }
 
     void error(Taint taintMe, int r) throws SAXParseException {
-//         TODO: specialize ERR_SYNTAX_ERROR ?
+//         TODO: not for 2.3. specialize ERR_SYNTAX_ERROR ?
         int e = ERR_SYNTAX_ERROR;
         switch (r) {
         case E_LI:
@@ -176,7 +176,6 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
         
     }
 
-    // TODO: check error behaviour for both element and attribute case
     void deprecatedAttribute(Taint me,int r) throws SAXParseException {
         frame.warning(null,ERR_BAD_RDF_ATTRIBUTE, getQName()
                 + " has been deprecated and is ignored");

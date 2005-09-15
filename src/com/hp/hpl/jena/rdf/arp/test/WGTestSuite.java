@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.29 2005-08-09 03:30:17 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.30 2005-09-15 14:25:46 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -891,7 +891,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             } catch (IOException ioe) {
                 fail(ioe.getMessage());
             }
-            // TODO: tidy up this code a bit, I don't understand it.
+            // TODO: not for 2.3. Tidy up this code a bit, I don't understand it.
             HashSet ex2 = expected==null?null:new HashSet(expected);
             if (expected==null)
             for (int j = 2; j >= 0; j--)

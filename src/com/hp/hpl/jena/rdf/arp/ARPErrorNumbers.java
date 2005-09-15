@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.18 2005-08-01 15:07:09 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.19 2005-09-15 14:25:46 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -416,7 +416,9 @@ public interface ARPErrorNumbers {
      (XML syntax errors are not reported with this mechanism, 
      but as {@link org.xml.sax.SAXParseException SAXParseException}'s).
      The detailed error message indicates the nature of the contravention.
-     (E201)
+     (E201).
+     Future releases may specialize these codes, it is better to
+     use {@link ParseException#isSyntaxError()} to check for syntax errors.
      */
     public int ERR_SYNTAX_ERROR = 201;
     /** Non-white character data has occurred where the RDF grammar 

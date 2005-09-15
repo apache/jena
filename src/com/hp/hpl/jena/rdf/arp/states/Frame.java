@@ -48,7 +48,6 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
         parent = null;
     }
 
-    // TODO: check calls to this.
     protected void warning(int i, String msg) throws SAXParseException {
         warning(taint, i, msg);
     }
@@ -145,7 +144,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
         if ((!nonWhiteMsgGiven) && !isWhite(ch, start, length)) {
             nonWhiteMsgGiven = true;
             warning(ERR_NOT_WHITESPACE,
-                    "Expecting propertyElement(s). String data \""
+                    "Expecting XML start or end element(s). String data \""
                             + new String(ch, start, length)
                             + "\" not allowed. " + suggestParsetypeLiteral());
         }

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.5 2005-09-15 12:47:32 jeremy_carroll Exp $
+ * * $Id: URIReference.java,v 1.6 2005-09-15 14:25:46 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.rdf.arp.states.Frame;
 
 ;
 
-// TODO: IRI spec conformance
+// TODO: not for 2.3 IRI spec conformance
 
 /**
  * 
@@ -188,7 +188,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
             throws SAXParseException {
         URIReference rslt = new URIReference(ns + local);
         f.checkEncoding(rslt,local);
-        // TODO: move some of the check upwards ...
+        // TODO: not for 2.3 move some of the check upwards ...
         RDFURIReference iri = f.arp.iriFactory().create(ns+local);
         AbsXMLContext.checkURI(f.arp,rslt,iri);
         return rslt;

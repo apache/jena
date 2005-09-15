@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: ParseException.java,v 1.11 2005-09-08 09:29:37 jeremy_carroll Exp $
+ *  * $Id: ParseException.java,v 1.12 2005-09-15 14:25:46 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -70,6 +70,28 @@ public class ParseException extends SAXParseException implements
         return id;
     }
 
+    /**
+     * Is this error an RDF syntax error.
+     * A syntax error indicates that well-formed XML,
+     * uses RDF properties and attributes, and whitespace
+     * and XML elements, in a way that does not conform with
+     * the RDF/XML Syntax (Revised) specification.
+     * (Currently most such errors have code
+     * {@link ARPErrorNumbers#ERR_SYNTAX_ERROR},
+     * but this may change in the future).
+     * @return
+     */
+    public boolean isSyntaxError() {
+        switch (id) {
+        case ERR_SYNTAX_ERROR:
+        case ERR_BAD_RDF_ELEMENT:
+        case ERR_BAD_RDF_ATTRIBUTE:
+        case ERR_LI_AS_TYPE:
+        case ERR_NOT_WHITESPACE:
+            return true;
+        }
+        return false;
+    }
 
     SAXParseException rootCause() {
         Exception e = getException();

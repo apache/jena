@@ -17,7 +17,7 @@ public class WantEmpty extends Frame {
     }
 
     public void characters(char[] ch, int start, int length) throws SAXParseException {
-        warning(ERR_SYNTAX_ERROR,"The attributes on this property element, are not permitted with any content.");
+        warning(ERR_SYNTAX_ERROR,"The attributes on this property element, are not permitted with any content; expecting end element tag.");
     }
 
     public FrameI startElement(String uri, String localName, String rawName,

@@ -113,10 +113,16 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             processPropertyAttributes(ap, atts, x);
         }
 
-        if (object != null)
+        
+        FrameI nextFrame = nextFrame(atts, ap, cnt, nextStateCode, x);
+        if (object != null) {
+            if (taint.isTainted())
+                object.taint();
             theObject(object);
-
-        return nextFrame(atts, ap, cnt, nextStateCode, x);
+        }
+        if (taint.isTainted())
+            predicate.taint();
+        return nextFrame;
 
     }
 
@@ -159,7 +165,6 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
                 // in some error cases the object has already been set.
                 object = new ARPResource(arp);
                 objectIsBlank = true;
-                theObject(object);
             }
             return new WantPropertyElement(this, x);
         }
@@ -250,7 +255,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
     // Error classification
 
     private int errorNumber(int nextStateCode) {
-        // TODO: refine this error code.
+        // TODO: not for 2.3. refine this error code.
         return ERR_SYNTAX_ERROR;
     }
 

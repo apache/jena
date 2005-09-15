@@ -179,7 +179,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         model = m;
         if (xmlBase != null && !xmlBase.equals("")) {
 //            try {
-                // TO DO: delete this code, isn't the check done later anyway.
+                // TODO: delete this code, isn't the check done later anyway.
                 // TODO: add test for this code first, well later will do.
 //                XercesURIWrapper.construct(xmlBase);
 //            } catch (URISyntaxException e) {

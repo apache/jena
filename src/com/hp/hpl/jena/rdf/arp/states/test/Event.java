@@ -10,7 +10,7 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.states.FrameI;
 
 abstract class Event {
-    // TODO: get rid of short names all together, not good idea.
+    // TODO: not for 2.3. get rid of short names all together, not good idea.
     final String oneChar;
     final String name;
     public Event(String oneChar, String name) {

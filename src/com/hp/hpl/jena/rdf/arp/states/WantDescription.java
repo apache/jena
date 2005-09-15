@@ -56,9 +56,9 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
         if (ap.nodeID!=null) {
             if (subject != null) {
                 if (ap.about!=null)
-                    warning(taint,ERR_SYNTAX_ERROR,"Both nodeID and about");
+                    warning(ERR_SYNTAX_ERROR,"Both nodeID and about");
                 if (ap.id != null)
-                    warning(taint,ERR_SYNTAX_ERROR,"Both ID and nodeID");
+                    warning(ERR_SYNTAX_ERROR,"Both ID and nodeID");
             }
             subject = new ARPResource(arp,ap.nodeID);
             checkNodeID(subject,ap.nodeID);
@@ -74,11 +74,12 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
                 CoreAndOldTerms|E_LI);
         if (taint.isTainted())
             subject.taint();
-        if (el.badMatch) {
-            // TODO: if error was only warning ....
-        } else if (!el.goodMatch) {
-            triple(subject,RDF_TYPE,
-                    URIReference.fromQName(this,uri,localName));
+        if (!el.goodMatch) {
+            URIReference type = URIReference.fromQName(this,uri,localName);
+            if (el.badMatch && taint.isTainted()) {
+              type.taint();  
+            } 
+            triple(subject,RDF_TYPE,type);
         }
             
         processPropertyAttributes(ap,atts,x);

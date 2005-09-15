@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.3 2005-09-14 15:31:12 jeremy_carroll Exp $
+ * * $Id: XMLContext.java,v 1.4 2005-09-15 14:25:46 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -86,10 +86,6 @@ boolean isSameAsDocument() {
         return this==document 
         || (uri==null?document.uri==null: uri.equals(document.uri));
     }
-    XMLContext getDocument() {
-        // TODO: change back
-        return (XMLContext)document;
-    }
     AbsXMLContext clone(RDFURIReference uri,Taint baseT,String lang, Taint langT) {
     	return new XMLContext(true,document,uri,baseT,lang,langT);
     }
@@ -97,7 +93,7 @@ boolean isSameAsDocument() {
         if (document==null)
             return;
         if (!isSameAsDocument()) {
-                String other = getDocument().uri.resolve(relUri).toString();
+                String other = document.uri.resolve(relUri).toString();
             if (!other.equals(resolvedURI)) {
                 forErrors.warning(taintMe,IGN_XMLBASE_SIGNIFICANT,
                         "Use of attribute xml:base changes interpretation of relative URI: \""

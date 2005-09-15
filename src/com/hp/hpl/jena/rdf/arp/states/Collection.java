@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.arp.impl.ARPResource;
 import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
 abstract class Collection extends WantDescription {
-    // TODO: document this carefully.    
+    // TODO: not for 2.3. document this carefully.    
    
     WantsObjectI nextSlot;
     public Collection(WantsObjectFrameI s, AbsXMLContext x) {

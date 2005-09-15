@@ -28,9 +28,12 @@ public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implement
     }
 
     public void endElement() throws SAXParseException {
-       ((WantsObjectFrameI) getParent()).theObject(
-              new ARPDatatypeLiteral(this,getBuf().toString(),
-                      dtURI)); 
+       ARPDatatypeLiteral datatypeLiteral = new ARPDatatypeLiteral(this,getBuf().toString(),
+                      dtURI);
+       if (taint.isTainted())
+           datatypeLiteral.taint();
+    ((WantsObjectFrameI) getParent()).theObject(
+              datatypeLiteral); 
        super.endElement();
     }
     

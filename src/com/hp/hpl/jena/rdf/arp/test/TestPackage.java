@@ -801,7 +801,7 @@ test379.addTest(test381);
 Test test382 = test211.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/Manifest.rdf#test3","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test3.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test3.nt",false);
 test379.addTest(test382);
 test211.addTest(test379);
-// TODO: stop this being generated.
+// TODO: not for 2.3. stop this being generated.
 //TestSuite test383 = new TestSuite("WITHDRAWN");
 //Test test384 = test211.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#test012","http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test012.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/test012.nt",false);
 //test383.addTest(test384);
