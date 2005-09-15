@@ -56,7 +56,7 @@
 
 /* Modified by Jeremy J. Carroll HP
  *
- * Was originally org/apache/xerces/utils/XercesURI.java in Xerces 1.4.4
+ * Was originally org/apache/xerces/utils/URI.java in Xerces 1.4.4
  *
  *
  * Modifications are:
@@ -127,7 +127,7 @@ import com.hp.hpl.jena.rdf.arp.impl.CharacterModel;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a XercesURI.
 *
-* @version  $Id: XercesURI.java,v 1.2 2005-09-15 14:31:19 jeremy_carroll Exp $
+* @version  $Id: XercesURI.java,v 1.3 2005-09-15 14:49:26 jeremy_carroll Exp $
 *
 **********************************************************************/
 public class XercesURI implements Serializable {
