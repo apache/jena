@@ -11,8 +11,8 @@ ARQ - SPARQL for Jena
 JAR changes
     o antlr.jar => antlr-2.7.5.jar
       jakarta-oro-2.0.5.jar => jakarta-oro-2.0.8.jar
-      log4j-1.2.7.jar => log4j-1.2.12.jar 
-      New Jarfile: arq.jar
+      log4j-1.2.7.jar => log4j-1.2.12.jar
+      New Jarfiles: arq.jar, jenatest.jar
 
 Constraint rewriter
     o the .graph.query.Rewrite class recognises certain RDQL regex
@@ -52,12 +52,12 @@ ARP
 
     o A few public classes that were in the old ARP package, but
       labelled as not part of the API have been removed.
-      
+
     o DOM2Model public constructors have been deprecated and have changed
       with not backwardly compatible throws declarations.
-      
+
     o SAX2Model and SAX2RDF factories methods have been deprecated and replaced.
-    
+
     o SAX2RDF, SAX2Model protected constructors have changed in a not
       backwardly compatible fashion.
 
@@ -202,6 +202,12 @@ Ontology API
       be used to locate ontology files (e.g. from the classloader).
     o Prefix mapping and ontology language selection in the OntDocumentManager
       has been deprecated, and will be removed in a future version of Jena.
+
+Command line utilities
+	o New utility jena.rdfcat, which can merge any number of individual rdf
+	  documents together into one model, and perform syntax translation (e.g.
+	  RDF/XML to N3).
+
 
 ;;; -- end post2.2final change list -------------------------------------
 
