@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.96 2005-09-15 08:38:56 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.97 2005-09-16 20:23:42 ian_dickinson Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -110,7 +110,7 @@
       <format property="BUILD_TIME" pattern="d-MMMM-yyyy HH:mm"/>
     </tstamp>
     <copy todir="${bldsrc.dir}" >
-      <fileset dir="${src.dir}" />
+      <fileset dir="${src.dir}" excludes="**/CVS"/>
       <filterset>
         <filterset refid="filters.shared" />
         <filter token="build-time" value="${BUILD_TIME}" />
@@ -121,10 +121,10 @@
   <target name="copy-aux-files"
     description="Copy auxilliary files (e.g. ./etc) into the classes dir so that they will be included in jena.jar" >
     <copy todir="${classes.dir}/${etc.dir}">
-      <fileset dir="${etc.dir}" includes="**"/>
+      <fileset dir="${etc.dir}" includes="**" excludes="**/CVS"/>
     </copy>
     <copy todir="${classes.dir}/${vocab.dir}">
-      <fileset dir="${vocab.dir}" includes="**"/>
+      <fileset dir="${vocab.dir}" includes="**" excludes="**/CVS"/>
     </copy>
   </target>
 
