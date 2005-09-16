@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000-2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: URITests.java,v 1.8 2005-09-16 07:18:52 jeremy_carroll Exp $
+ *  $Id: URITests.java,v 1.9 2005-09-16 13:59:26 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -17,6 +17,7 @@ import com.hp.hpl.jena.iri.*;
  */
 public class URITests
 	extends TestCase {
+    // TODO: relative/absolute tests
 	static public Test suite() {
 		TestSuite suite = new TestSuite("URIs");
 		suite.addTest(new URITests("testNoDomain"));
@@ -52,8 +53,13 @@ public class URITests
 	public void testLong()  {
 	   testURI("http://46229EFFE16A9BD60B9F1BE88B2DB047ADDED785/demo.mp3",true);
 	}
+    
     public void testBadScheme()  {
-           testURI("ht#tp://www.w3.org/demo.mp3",false);
+           testURI("ht^tp://www.w3.org/demo.mp3",false);
+        }
+
+    public void testFragmentLooksLikeScheme()  {
+           testURI("ht#tp://www.w3.org/demo.mp3",true);
         }
      
     public void testHostNoSlashWithFragment()  {

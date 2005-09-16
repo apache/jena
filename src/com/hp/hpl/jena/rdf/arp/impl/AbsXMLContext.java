@@ -71,7 +71,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
             throws SAXParseException {
 
         Taint taint = new TaintImpl();
-        checkXMLLang(forErrors, taint, lang);
+        checkXMLLang(forErrors, taint, l);
         return clone(uri, baseTaint, l, taint);
     }
 
@@ -153,12 +153,12 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
         return resolveAsURI(forErrors, taintMe, uri, true).toString();
     }
 
-    private void checkXMLLang(XMLHandler arp, Taint taintMe, String lang)
+    private void checkXMLLang(XMLHandler arp, Taint taintMe, String newLang)
             throws SAXParseException {
-        if (lang.equals(""))
+        if (newLang.equals(""))
             return;
         try {
-            LanguageTag tag = new LanguageTag(lang);
+            LanguageTag tag = new LanguageTag(newLang);
             int tagType = tag.tagType();
             if (tagType == LT_ILLEGAL) {
                 arp.warning(taintMe, WARN_BAD_XMLLANG, tag.errorMessage());
@@ -170,19 +170,19 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
             }
             if ((tagType & LT_IANA_DEPRECATED) == LT_IANA_DEPRECATED) {
                 arp.warning(taintMe, WARN_DEPRECATED_XMLLANG,
-                        "Use of deprecated language tag \"" + lang + "\".");
+                        "Use of deprecated language tag \"" + newLang + "\".");
             }
             if ((tagType & LT_PRIVATE_USE) == LT_PRIVATE_USE) {
                 arp.warning(taintMe, IGN_PRIVATE_XMLLANG,
-                        "Use of (IANA) private language tag \"" + lang + "\".");
+                        "Use of (IANA) private language tag \"" + newLang + "\".");
             } else if ((tagType & LT_LOCAL_USE) == LT_LOCAL_USE) {
                 arp.warning(taintMe, IGN_PRIVATE_XMLLANG,
-                        "Use of (ISO639-2) local use language tag \"" + lang
+                        "Use of (ISO639-2) local use language tag \"" + newLang
                                 + "\".");
             } else if ((tagType & LT_EXTRA) == LT_EXTRA) {
                 arp.warning(taintMe, IGN_PRIVATE_XMLLANG,
                         "Use of additional private subtags on language \""
-                                + lang + "\".");
+                                + newLang + "\".");
             }
         } catch (LanguageTagSyntaxException e) {
             arp.warning(taintMe, WARN_MALFORMED_XMLLANG, e.getMessage());
