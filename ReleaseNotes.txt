@@ -52,6 +52,14 @@ ARP
 
     o A few public classes that were in the old ARP package, but
       labelled as not part of the API have been removed.
+      
+    o DOM2Model public constructors have been deprecated and have changed
+      with not backwardly compatible throws declarations.
+      
+    o SAX2Model and SAX2RDF factories methods have been deprecated and replaced.
+    
+    o SAX2RDF, SAX2Model protected constructors have changed in a not
+      backwardly compatible fashion.
 
 Node/Node_Literal/Literal
 

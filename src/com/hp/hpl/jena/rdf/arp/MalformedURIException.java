@@ -111,6 +111,7 @@ import org.xml.sax.SAXParseException;
 /******************************************************************
     * Constructs a <code>MalformedURIException</code> with no specified
     * detail message.
+    * 
     ******************************************************************/
     public MalformedURIException() {
       super();
@@ -125,12 +126,13 @@ import org.xml.sax.SAXParseException;
     public MalformedURIException(String p_msg) {
       super(p_msg);
     }
-    public MalformedURIException(URISyntaxException e) {
-        super();
-        initCause(e);
-    }
-    public MalformedURIException(SAXParseException e) {
-        super();
-        initCause(e);
-    }
+    
+//    public MalformedURIException(URISyntaxException e) {
+//        super();
+//        initCause(e);
+//    }
+//    public MalformedURIException(SAXParseException e) {
+//        super();
+//        initCause(e);
+//    }
   }

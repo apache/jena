@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.12 2005-09-15 18:35:45 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.13 2005-09-16 07:18:47 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -283,9 +283,9 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return initialContextWithBase(base).withLang(this,lang);
     }
 
-    
+    private boolean allowRelativeReferences = false;
     private AbsXMLContext initialContextWithBase(String base) throws SAXParseException {
-        
+        allowRelativeReferences = false;
         // TODO: test tainting in general
             if (base == null) {
                 warning(null,IGN_NO_BASE_URI_SPECIFIED,
@@ -295,6 +295,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                         ERR_RESOLVING_URI_AGAINST_NULL_BASE);
 
             } else if (base.equals("")) {
+                allowRelativeReferences = true;
                 warning(null,IGN_NO_BASE_URI_SPECIFIED,
                         "Base URI specified as \"\"; local URI references will not be resolved.");
                 return new XMLNullContext(this,
@@ -454,8 +455,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     public boolean allowRelativeURIs() {
-        // stub, may change in future.
-        return false;
+        return allowRelativeReferences;
     }
 
 }

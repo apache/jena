@@ -177,21 +177,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     private void read(Model m, InputSource inputS, String xmlBase)
             throws JenaException {
         model = m;
-        if (xmlBase != null && !xmlBase.equals("")) {
-//            try {
-                // TODO: delete this code, isn't the check done later anyway.
-                // TODO: add test for this code first, well later will do.
-//                XercesURIWrapper.construct(xmlBase);
-//            } catch (URISyntaxException e) {
-//                errorHandler.error(e);
-//            }
-        }
-        /*
-         * arpf.getHandlers().setNamespaceHandler(new NamespaceHandler() {
-         * 
-         * 
-         * });
-         */
         read(model.getGraph(), inputS, xmlBase, model);
     }
 

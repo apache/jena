@@ -12,6 +12,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 
 import org.w3c.dom.Node;
+import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.JenaException;
@@ -24,6 +25,13 @@ import com.hp.hpl.jena.shared.JenaException;
  * 
  */
 public class DOM2Model extends SAX2Model {
+    
+    static public DOM2Model createD2M(String base, Model m) throws  SAXParseException {
+        return new DOM2Model(base,  m) ;
+    }
+    static public DOM2Model createD2M(String base, Model m, String lang) throws  SAXParseException {
+        return new DOM2Model(base,  m, lang) ;
+    }
 
     // TODO: javadoc
     /**
@@ -37,9 +45,10 @@ public class DOM2Model extends SAX2Model {
      *            {@link #setHandlersWith}to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
      * @throws MalformedURIException
+     * @throws SAXParseException 
      * @deprecated
      */
-    public DOM2Model(String base, Model m) throws MalformedURIException {
+    public DOM2Model(String base, Model m) throws  SAXParseException {
         this(base, m, "");
     }
 
@@ -62,10 +71,11 @@ public class DOM2Model extends SAX2Model {
      *            The current value of <code>xml:lang</code> when parsing
      *            starts, usually "".
      * @throws MalformedURIException
+     * @throws SAXParseException 
      * @deprecated
      */
     public DOM2Model(String base, Model m, String lang)
-            throws MalformedURIException {
+            throws  SAXParseException {
         super(base, m, lang);
     }
 

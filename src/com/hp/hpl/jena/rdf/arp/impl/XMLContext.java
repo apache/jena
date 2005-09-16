@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.4 2005-09-15 14:25:46 jeremy_carroll Exp $
+ * * $Id: XMLContext.java,v 1.5 2005-09-16 07:18:47 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -62,7 +62,7 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,  Langu
      * @throws SAXParseException */
     public XMLContext(XMLHandler h, String base) throws SAXParseException {
         
-        this(h,h.iriFactory().create(truncateXMLBase(base)));
+        this(h,h.iriFactory().create(base));
     }
 
     protected XMLContext(XMLHandler h, RDFURIReference uri,Taint baseT) {
@@ -71,8 +71,11 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,  Langu
     
 
     
-    private XMLContext(XMLHandler h, RDFURIReference reference) throws SAXParseException {
-        this(h,reference,initTaint(h,reference));
+    private XMLContext(XMLHandler h, RDFURIReference baseMaybeWithFrag) throws SAXParseException {
+        this(h,baseMaybeWithFrag.resolve(""),baseMaybeWithFrag);
+    }
+    private XMLContext(XMLHandler h, RDFURIReference base, RDFURIReference baseMaybeWithFrag) throws SAXParseException {
+        this(h,base,initTaint(h,baseMaybeWithFrag));
     }
 
     XMLContext(boolean b, AbsXMLContext document, RDFURIReference uri, Taint baseT, String lang, Taint langT) {

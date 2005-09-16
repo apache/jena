@@ -45,7 +45,7 @@ public class BadIRI extends AbsIRI {
         return false;
     }
     public boolean isVeryBad() {
-        return false;
+        return true;
     }
     public boolean isXSanyURI() {
         return false;

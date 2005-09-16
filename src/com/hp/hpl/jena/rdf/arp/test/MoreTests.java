@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.32 2005-09-15 18:35:45 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.33 2005-09-16 07:18:52 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -46,6 +46,9 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		suite.addTest(new MoreTests("testNullBaseParamError"));
 		suite.addTest(new MoreTests("testEmptyBaseParamOK"));
 		suite.addTest(new MoreTests("testEmptyBaseParamError"));
+        suite.addTest(new MoreTests("testBadBaseParamOK"));
+        suite.addTest(new MoreTests("testBadBaseParamError"));
+        suite.addTest(new MoreTests("testBaseTruncation"));
 		suite.addTest(new MoreTests("testWineDefaultNS"));
 		suite.addTest(new MoreTests("testInterrupt"));
         suite.addTest(new MoreTests("testDanBriXMLBase"));
@@ -304,7 +307,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		FileInputStream fin = new FileInputStream(
 				"testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
 		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_RESOLVING_URI_AGAINST_EMPTY_BASE,WARN_RELATIVE_URI };
+		expected = new int[] { WARN_RESOLVING_URI_AGAINST_EMPTY_BASE};
 		rdr.read(m, fin, "");
 		fin.close();
 		Model m1 = createMemModel();
@@ -314,6 +317,61 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		checkExpected();
 	}
 
+    public void testBadBaseParamError() throws IOException {
+        Model m = createMemModel();
+        RDFReader rdr = m.getReader();
+        FileInputStream fin = new FileInputStream(
+                "testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
+        rdr.setErrorHandler(this);
+        expected = new int[] { WARN_MALFORMED_URI, WARN_RELATIVE_URI };
+        rdr.read(m, fin, "http://jjc^3.org/demo.mp3");
+        fin.close();
+        Model m1 = createMemModel();
+        m1.createResource("#foo").addProperty(RDF.value, "abc");
+        assertTrue("Bad base URI should produce relative URIs in model.["
+                + m.toString() + "]", m.isIsomorphicWith(m1));
+        checkExpected();
+    }
+    
+    public void testBadBaseParamOK() throws IOException {
+        Model m = createMemModel();
+        Model m1 = createMemModel();
+        RDFReader rdr = m.getReader();
+        FileInputStream fin = new FileInputStream(
+                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
+
+        rdr.setErrorHandler(this);
+        expected = new int[] { WARN_MALFORMED_URI };
+        rdr.read(m, fin, "http://jjc^3.org/demo.mp3");
+        fin.close();
+        fin = new FileInputStream(
+                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
+        rdr.read(m1, fin, "");
+        fin.close();
+        assertTrue("Bad base URI should have no effect on model.[" + m1.toString()
+                + "]", m.isIsomorphicWith(m1));
+        checkExpected();
+    }
+
+    public void testBaseTruncation() throws IOException {
+        Model m = createMemModel();
+        Model m1 = createMemModel();
+        RDFReader rdr = m.getReader();
+        FileInputStream fin = new FileInputStream(
+                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
+
+        rdr.setErrorHandler(this);
+        expected = new int[] { WARN_MALFORMED_URI };
+        rdr.read(m, fin, "ht#tp://jjc3.org/demo.mp3#frag");
+        fin.close();
+        fin = new FileInputStream(
+                "testing/wg/rdfms-identity-anon-resources/test001.rdf");
+        rdr.read(m1, fin, "");
+        fin.close();
+        assertTrue("Bad base URI should have no effect.[" + m1.toString()
+                + "]", m.isIsomorphicWith(m1));
+        checkExpected();
+    }
 	public void testInterrupt() throws SAXException, IOException {
 		ARP a = new ARP();
 		InputStream in;

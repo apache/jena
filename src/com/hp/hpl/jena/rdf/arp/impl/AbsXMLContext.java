@@ -18,15 +18,15 @@ import com.hp.hpl.jena.rdf.arp.lang.LanguageTagSyntaxException;
 public abstract class AbsXMLContext implements ARPErrorNumbers,
         LanguageTagCodes {
 
-    protected static String truncateXMLBase(String rslt) {
-        if (rslt == null)
-            return null;
-        int hash = rslt.indexOf('#');
-        if (hash != -1) {
-            return rslt.substring(0, hash);
-        }
-        return rslt;
-    }
+//    protected static String truncateXMLBase(String rslt) {
+//        if (rslt == null)
+//            return null;
+//        int hash = rslt.indexOf('#');
+//        if (hash != -1) {
+//            return rslt.substring(0, hash);
+//        }
+//        return rslt;
+//    }
 
     protected final String lang;
 
@@ -48,19 +48,18 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
         this.document = useDoc ? (document == null ? this : document) : null;
     }
 
-    protected static Taint initTaint(XMLHandler h, RDFURIReference reference)
+    protected static Taint initTaint(XMLHandler h, RDFURIReference base)
             throws SAXParseException {
         Taint rslt = new TaintImpl();
-        checkURI(h, rslt, reference);
+        checkURI(h, rslt, base);
         return rslt;
     }
 
     protected XMLContext withBase(XMLHandler forErrors, String b)
             throws SAXParseException {
         TaintImpl taintB = new TaintImpl();
-        RDFURIReference newB = resolveAsURI(forErrors, taintB,
-                truncateXMLBase(b));
-        return new XMLContext(keepDocument(forErrors), document, newB, taintB,
+        RDFURIReference newB = resolveAsURI(forErrors, taintB, b);
+        return new XMLContext(keepDocument(forErrors), document, newB.resolve(""), taintB,
                 lang, langTaint);
     }
 
@@ -113,6 +112,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
 
     protected static void checkURI(XMLHandler forErrors, Taint taintMe,
             RDFURIReference rslt) throws SAXParseException {
+        boolean errorReported = false;
         if (!rslt.isRDFURIReference()) {
             if (rslt.isVeryBad()) {
                 // TODO: test relative references.
@@ -123,18 +123,23 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
                     IRIException irie = (IRIException) it.next();
                     String msg = irie.getMessage();
                     String uri = rslt.toString();
+                    if (msg.matches("[a-zA-Z.]*Exception:.*")) {
+                        int colon = msg.indexOf(':');
+                        msg = msg.substring(colon+1);
+                    }
                     if (msg.endsWith(uri)) {
                         msg = msg.substring(0, msg.length() - uri.length())
                                 + "<" + uri + ">";
                     } else {
                         msg = "<" + uri + "> " + msg;
                     }
+                    errorReported = true;
                     forErrors.warning(taintMe, WARN_MALFORMED_URI, "Bad URI: "
                             + msg);
                 }
             }
         }
-        if ((!rslt.isAbsolute()) && (!forErrors.allowRelativeURIs()))
+        if ((!rslt.isAbsolute()) && (!forErrors.allowRelativeURIs()) && !errorReported)
             forErrors.warning(taintMe, WARN_RELATIVE_URI, "Relative URIs are not permitted in RDF  <"+rslt.toString()+">");
     }
 

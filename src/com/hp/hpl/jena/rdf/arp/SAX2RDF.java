@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.12 2005-08-01 15:07:08 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.13 2005-09-16 07:18:52 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -87,7 +87,12 @@ implements ARPConfig {
 	 * @throws MalformedURIException
 	 */
 	static public SAX2RDF newInstance(String base) throws MalformedURIException { 
-		return new SAX2RDF(base,"",true); 
+        try {
+            return  create(base);    
+            }
+            catch (SAXParseException e) {
+                throw new MalformedURIException(e.getMessage());
+            }
 	}
 	/**
 	 * Factory method to create a new SAX2RDF.
@@ -111,7 +116,7 @@ implements ARPConfig {
         return  create(base,lang);    
         }
         catch (SAXParseException e) {
-            throw new MalformedURIException();
+            throw new MalformedURIException(e.getMessage());
         }
         
 	}    
@@ -185,16 +190,16 @@ implements ARPConfig {
      * @deprecated Use the other constructor.
      * @param b ignored completely
      */
-	SAX2RDF(String base, String lang, boolean b) throws MalformedURIException {
-        super(base,lang);
-        try {
-            initParse(base);
-        }
-        catch (SAXParseException e) {
-            throw new MalformedURIException(e);
-        }
-        
-    }
+//	SAX2RDF(String base, String lang, boolean b) throws MalformedURIException {
+//        super(base,lang);
+//        try {
+//            initParse(base);
+//        }
+//        catch (SAXParseException e) {
+//            throw new MalformedURIException(e);
+//        }
+//        
+//    }
     /** This is used when configuring a parser that
 	 * is not loading into a Jena Model, but is processing
 	 * the triples etc. in some other way.

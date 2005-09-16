@@ -21,7 +21,20 @@ public class IRIFactory implements IRIConformanceLevels {
     }
 
     public IRIFactory() {
-        this(null);
+        this(new Locator(){
+
+            public String getPublicId() {
+                return null;
+            }
+            public String getSystemId() {
+                return null;
+            }
+            public int getLineNumber() {
+                return -1;
+            }
+            public int getColumnNumber() {
+                return -1;
+            }});
     }
 
     public IRIFactory(Locator l) {
