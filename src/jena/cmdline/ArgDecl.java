@@ -10,7 +10,7 @@ import java.util.* ;
 /** A command line argument specification.
  *
  * @author  Andy Seaborne
- * @version $Id: ArgDecl.java,v 1.4 2005-02-21 11:48:56 andy_seaborne Exp $
+ * @version $Id: ArgDecl.java,v 1.5 2005-09-16 20:19:36 ian_dickinson Exp $
  */
 public class ArgDecl
 {
@@ -20,19 +20,25 @@ public class ArgDecl
     List argHooks = new ArrayList() ;
     public static final int FLAG = 1 ;         // i.e. no value
     public static final int OPTION = 2 ;       // takes a value as well
-    
-    
+
+
     public ArgDecl(boolean hasValue)
     {
         takesValue = hasValue ;
     }
-    
+
     // Convenience constructors
-    
+
     public ArgDecl(boolean hasValue, String name)
     {
         this(hasValue) ;
         addName(name) ;
+    }
+    public ArgDecl(boolean hasValue, String name, ArgHandler handler)
+    {
+        this(hasValue) ;
+        addName(name) ;
+        addHook( handler );
     }
     public ArgDecl(boolean hasValue, String name1, String name2)
     {
@@ -40,7 +46,7 @@ public class ArgDecl
         addName(name1) ;
         addName(name2) ;
     }
-    
+
     public ArgDecl(boolean hasValue, String name1, String name2, String name3)
     {
         this(hasValue) ;
@@ -48,22 +54,22 @@ public class ArgDecl
         addName(name2) ;
         addName(name3) ;
     }
-    
+
     public void addName(String name)
     {
         name = canonicalForm(name) ;
         names.add(name) ;
     }
-    
+
     public Iterator getNames() { return names.iterator() ; }
-    
+
     // Callback model
-    
+
     public void addHook(ArgHandler argHandler)
-    { 
+    {
         argHooks.add(argHandler) ;
     }
-    
+
     protected void trigger(Arg arg)
     {
         for ( Iterator iter = argHooks.iterator() ; iter.hasNext() ; )
@@ -72,9 +78,9 @@ public class ArgDecl
             handler.action(arg.getName(), arg.getValue()) ;
         }
     }
-    
+
     public boolean takesValue() { return takesValue ; }
-    
+
     public boolean matches(Arg a)
     {
         for ( Iterator iter = names.iterator() ; iter.hasNext() ; )
@@ -85,21 +91,21 @@ public class ArgDecl
         }
         return false ;
     }
-    
+
     public boolean matches(String arg)
     {
         arg = canonicalForm(arg) ;
         return names.contains(arg) ;
     }
-    
+
     static String canonicalForm(String str)
     {
         if ( str.startsWith("--") )
             return str.substring(2) ;
-        
+
         if ( str.startsWith("-") )
             return str.substring(1) ;
-        
+
         return str ;
     }
 }
