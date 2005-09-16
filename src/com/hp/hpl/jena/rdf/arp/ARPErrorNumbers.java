@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.20 2005-09-15 18:35:45 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.21 2005-09-16 10:40:03 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -508,7 +508,22 @@ public interface ARPErrorNumbers {
      * An IOException occurred. (E213).
      */
     public int ERR_GENERIC_IO = 213;
-   /**   The error recovery code failed; this can occur. (E300)
+    
+    /**
+     * The base URI, specified in the API call, or
+     * with an xml:base was malformed (@link #WARN_MALFORMED_URI}.
+     * A relative URI needs to be resolved against it,
+     * and this cannot be done correctly. (E214)
+     */
+    public int ERR_RESOLVING_AGAINST_MALFORMED_BASE = 214;
+    /**
+     * The base URI, specified in the API call, or
+     * with an xml:base was relative (@link #WARN_RELATIVE_URI}.
+     * A relative URI needs to be resolved against it,
+     * and this resulting in a relative URI. (E215)
+     */
+    public int ERR_RESOLVING_AGAINST_RELATIVE_BASE = 215;
+      /**   The error recovery code failed; this can occur. (E300)
     **/
     public int ERR_UNABLE_TO_RECOVER = 300;
 

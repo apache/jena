@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.6 2005-09-15 12:47:32 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.7 2005-09-16 10:40:00 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -76,7 +76,7 @@ public class ParserSupport
 	protected void checkIdSymbol(Taint taintMe, AbsXMLContext ctxt, String str)
 		throws SAXParseException {
 		if (!arp.ignoring(WARN_REDEFINITION_OF_ID)) {
-			RDFURIReference uri = ctxt.getURI(arp,taintMe,"#"+str);
+			RDFURIReference uri = ctxt.uri;
             Map idsUsedForBase = (Map) idsUsed().get(uri);
 			if (idsUsedForBase == null) {
 				idsUsedForBase = new HashMap();

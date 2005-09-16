@@ -49,20 +49,7 @@ public class ARPOptionsImpl extends  ARPOptions implements ARPErrorNumbers {
      */
 	public int setErrorMode(int errno, int mode) {
 		int old = errorMode[errno];
-		switch (mode) {
-			case EM_WARNING :
-			case EM_IGNORE :
-				if (errno >= 100 * EM_ERROR && errno != ERR_NOT_WHITESPACE)
-					break;
-			case EM_ERROR :
-			case EM_FATAL :
-				switch (errno) {
-					//case ERR_UNABLE_TO_RECOVER :
-					//	break;
-					default :
-						errorMode[errno] = mode;
-				}
-		}
+		errorMode[errno] = mode;
 		return old;
 	}
 

@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.21 2005-08-03 10:16:36 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.22 2005-09-16 10:40:03 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -122,12 +122,12 @@ public class ARP implements ARPConfig
     public void load(Reader in,String xmlBase) throws SAXException, IOException {
         InputSource inputS = new InputSource(in);
         inputS.setSystemId(xmlBase);
-        arpf.initParse(xmlBase,"");
+//        arpf.initParse(xmlBase,"");
          arpf.parse(inputS);
     }
     void load(InputSource is)  throws SAXException, IOException {
 
-        arpf.initParse("","");
+//        arpf.initParse("","");
         arpf.parse(is);
     }
 /** Load RDF/XML from an InputStream.
@@ -141,7 +141,7 @@ IOException {
         //load(new InputStreamReader(in),xmlBase);
         InputSource inputS = new InputSource(in);
         inputS.setSystemId(xmlBase);
-        arpf.initParse(xmlBase,"");
+//        arpf.initParse(xmlBase,"");
         arpf.parse(inputS, xmlBase);
     }
 /** Load RDF/XML from an InputStream, using base URL http://unknown.org/.

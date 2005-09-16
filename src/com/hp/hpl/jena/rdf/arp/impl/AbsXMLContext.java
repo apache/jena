@@ -30,7 +30,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
 
     protected final String lang;
 
-    private final Taint langTaint;
+    protected final Taint langTaint;
 
     final Taint baseTaint;
 
@@ -55,10 +55,12 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
         return rslt;
     }
 
-    protected XMLContext withBase(XMLHandler forErrors, String b)
+    protected AbsXMLContext withBase(XMLHandler forErrors, String b)
             throws SAXParseException {
         TaintImpl taintB = new TaintImpl();
-        RDFURIReference newB = resolveAsURI(forErrors, taintB, b);
+        RDFURIReference newB = resolveAsURI(forErrors, taintB, b, false);
+        if (newB.isVeryBad())
+            return new XMLBaselessContext(forErrors,ERR_RESOLVING_AGAINST_MALFORMED_BASE,b);
         return new XMLContext(keepDocument(forErrors), document, newB.resolve(""), taintB,
                 lang, langTaint);
     }
@@ -82,33 +84,36 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
         return lang;
     }
 
-    protected RDFURIReference getURI(XMLHandler forErrors, Taint taintMe,
+//    protected RDFURIReference getURI(XMLHandler forErrors, Taint taintMe,
+//            String relUri) throws SAXParseException {
+//        baseUsed(forErrors, taintMe, relUri, null);
+//        if (baseTaint.isTainted())
+//            taintMe.taint();
+//        return uri;
+//    }
+    final RDFURIReference resolveAsURI(XMLHandler forErrors, Taint taintMe,
             String relUri) throws SAXParseException {
-        baseUsed(forErrors, taintMe, relUri, null);
-        if (baseTaint.isTainted())
-            taintMe.taint();
-        return uri;
+        return resolveAsURI(forErrors, taintMe, relUri, true);
     }
-
-    protected RDFURIReference resolveAsURI(XMLHandler forErrors, Taint taintMe,
-            String relUri) throws SAXParseException {
+    final RDFURIReference resolveAsURI(XMLHandler forErrors, Taint taintMe,
+            String relUri, boolean checkBaseUse) throws SAXParseException {
         RDFURIReference rslt = uri.resolve(relUri);
 
-        checkBaseUse(forErrors, taintMe, relUri, rslt);
+        if (checkBaseUse)
+           checkBaseUse(forErrors, taintMe, relUri, rslt);
 
+   
         checkURI(forErrors, taintMe, rslt);
+        
         return rslt;
     }
 
-    private void checkBaseUse(XMLHandler forErrors, Taint taintMe,
-            String relUri, RDFURIReference rslt) throws SAXParseException {
-        if (!(document == null || rslt.toString().equals(relUri))) {
-            baseUsed(forErrors, taintMe, relUri, rslt.toString());
-        }
-    }
+    abstract void checkBaseUse(XMLHandler forErrors, Taint taintMe,
+            String relUri, RDFURIReference rslt) throws SAXParseException;
+    
 
-    abstract void baseUsed(XMLHandler forErrors, Taint taintMe, String relUri,
-            String string) throws SAXParseException;
+//    abstract void baseUsed(XMLHandler forErrors, Taint taintMe, String relUri,
+//            String string) throws SAXParseException;
 
     protected static void checkURI(XMLHandler forErrors, Taint taintMe,
             RDFURIReference rslt) throws SAXParseException {
@@ -145,7 +150,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
 
     public String resolve(XMLHandler forErrors, Taint taintMe, String uri)
             throws SAXParseException {
-        return resolveAsURI(forErrors, taintMe, uri).toString();
+        return resolveAsURI(forErrors, taintMe, uri, true).toString();
     }
 
     private void checkXMLLang(XMLHandler arp, Taint taintMe, String lang)

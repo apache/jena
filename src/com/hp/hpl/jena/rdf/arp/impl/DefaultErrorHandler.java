@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: DefaultErrorHandler.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: DefaultErrorHandler.java,v 1.2 2005-09-16 10:40:00 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -60,6 +60,7 @@ public class DefaultErrorHandler implements org.xml.sax.ErrorHandler {
     
     public void warning(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
         System.err.println("Warning: " + ParseException.formatMessage(e)); 
+//        e.printStackTrace();
         
     }
     

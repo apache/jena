@@ -20,6 +20,7 @@ import java.util.TreeSet;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.impl.*;
 import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteral;
 import com.hp.hpl.jena.rdf.arp.states.DAMLCollection;
@@ -45,7 +46,7 @@ import com.hp.hpl.jena.rdf.arp.states.OuterXMLLiteral;
  * @author Jeremy J. Carroll
  * 
  */
-public class TestData {
+public class TestData implements ARPErrorNumbers{
 
     // TODO: not for 2.3. get rid of short names all together, not good idea.
     
@@ -67,7 +68,8 @@ public class TestData {
     
     static { 
         try {
-            xmlContext= new XMLContext(xmlHandler,"http://example.org/base/");
+            xmlContext= new XMLBaselessContext(xmlHandler,
+                    ERR_RESOLVING_AGAINST_RELATIVE_BASE).withBase(xmlHandler,"http://example.org/base/");
         } catch (SAXParseException e) {
             throw new RuntimeException(e);
         }
