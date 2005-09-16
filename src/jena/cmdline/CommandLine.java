@@ -37,7 +37,7 @@ import java.util.* ;
  * <li>Options may be ended with - or --</li>
  * </ul>
  * @author Andy Seaborne
- * @version $Id: CommandLine.java,v 1.4 2005-02-21 11:48:56 andy_seaborne Exp $
+ * @version $Id: CommandLine.java,v 1.5 2005-09-16 20:21:11 ian_dickinson Exp $
  */
 
 
@@ -57,32 +57,32 @@ public class CommandLine
     // Rest of the items found on the command line
     protected List items = new ArrayList() ;
 
-    
+
     /** Creates new CommandLine */
     public CommandLine()
     {
     }
-    
+
     /** Set the global argument handler.  Called on every valid argument.
      * @param argHandler Handler
-     */    
+     */
     public void setHook(ArgHandler argHandler) { argHook = argHandler ; }
-    
+
     /** Set the output stream, or null for silent.
      * Default value is System.err
-     */    
+     */
     public void setOutput(PrintStream out) { this.out = out ; }
     public PrintStream getOutput() { return out ; }
     public void setUsage(String usageMessage) { usage = usageMessage ; }
-    
+
     public List args() { return args ; }
     public List items() { return items ; }
-    
-    
+
+
     /** Process a set of command line arguments.
      * @param argv The words of the command line.
      * @throws IllegalArgumentException Throw when something is wrong (no value found, action fails).
-     */    
+     */
     public void process(String[] argv) throws java.lang.IllegalArgumentException
     {
         try {
@@ -90,9 +90,9 @@ public class CommandLine
             for ( ; i < argv.length ; i++ )
             {
                 String argStr = argv[i] ;
-                if ( ! argStr.startsWith("-") || argStr.equals("--") || argStr.equals("-") )
+                if (endProcessing(argStr))
                     break ;
-                
+
                 argStr = ArgDecl.canonicalForm(argStr) ;
                 String val = null ;
 
@@ -100,7 +100,7 @@ public class CommandLine
                 {
                     Arg arg = new Arg(argStr) ;
                     ArgDecl argDecl = (ArgDecl)argMap.get(argStr) ;
-                    
+
                     if ( argDecl.takesValue() )
                     {
                         if ( i == (argv.length-1) )
@@ -108,19 +108,19 @@ public class CommandLine
                         val = argv[++i] ;
                         arg.setValue(val) ;
                     }
-                    
+
                     // Global hook
                     if ( argHook != null )
                         argHook.action(argStr, val) ;
-                    
+
                     argDecl.trigger(arg) ;
                     args.add(arg) ;
                 }
                 else
                     // Not recognized
-                    throw new IllegalArgumentException("Unknown argument: "+argStr) ;
+                    handleUnrecognizedArg( argv[i] );
             }
-            
+
             // Remainder.
             if ( i < argv.length )
             {
@@ -140,23 +140,40 @@ public class CommandLine
         }
     }
 
+    /** Answer true if this argument terminates argument processing for the rest
+     * of the command line. Default is to stop just before the first arg that
+     * does not start with "-", or is "-" or "--".
+     */
+    public boolean endProcessing( String argStr )
+    {
+        return argStr.startsWith("-") || argStr.equals("--") || argStr.equals("-");
+    }
+
+    /**
+     * Handle an unrecognised argument; default is to throw an exception
+     * @param argStr The string image of the unrecognised argument
+     */
+    public void handleUnrecognizedArg( String argStr ) {
+        throw new IllegalArgumentException("Unknown argument: "+argStr) ;
+    }
+
     /** Test whether an argument was seen.
      */
 
     public boolean contains(ArgDecl argDecl) { return getArg(argDecl) != null ; }
-    
+
     /** Test whether an argument was seen.
      */
 
     public boolean contains(String s) { return getArg(s) != null ; }
-    
-    
+
+
     /** Get the argument associated with the argurment declaration.
      *  Actually retruns the LAST one seen
      *  @param argDecl Argument declaration to find
      *  @return Last argument that matched.
      */
-    
+
     public Arg getArg(ArgDecl argDecl)
     {
         Arg arg = null ;
@@ -168,7 +185,7 @@ public class CommandLine
         }
         return arg ;
     }
-    
+
     public Arg getArg(String s)
     {
         s = ArgDecl.canonicalForm(s) ;
@@ -181,13 +198,13 @@ public class CommandLine
         }
         return arg ;
     }
-    
-    
+
+
     /** Add an argument to those to be accepted on the command line
      * @param argName Name
      * @return The CommandLine processor object
      */
-   
+
     public CommandLine add(String argName, boolean hasValue)
     {
         return add(new ArgDecl(hasValue, argName)) ;
@@ -197,15 +214,15 @@ public class CommandLine
      * @param arg Argument to add
      * @return The CommandLine processor object
      */
-   
+
     public CommandLine add(ArgDecl arg)
     {
         for ( Iterator iter = arg.getNames() ; iter.hasNext() ; )
             argMap.put(iter.next(), arg) ;
         return this ;
     }
-    
-    public ArgHandler trace() 
+
+    public ArgHandler trace()
     {
         final PrintStream _out = out ;
         return new ArgHandler()
@@ -217,8 +234,8 @@ public class CommandLine
                 }
             } ;
     }
-    
-    
+
+
     public static void main(String[] argv)
     {
         CommandLine cl = new CommandLine() ;
@@ -227,30 +244,30 @@ public class CommandLine
         cl.add(argA) ;
         cl.add("-b", false) ;
         cl.add("-file", true) ;
-        
+
         ArgDecl argFile = new ArgDecl(false, "-v", "--verbose") ;
         argFile.addHook(cl.trace()) ;
         cl.add(argFile) ;
-        
+
         //cl.setHook(cl.trace()) ;
-        
+
         String[] a = new String[]{"-a", "--b", "--a", "--file", "value1", "--file", "value2", "--v", "rest"} ;
         try {
             cl.process(a) ;
             System.out.println("PROCESSED") ;
-            
+
             // Checks
             if ( cl.getArg("file") == null )
                 System.out.println("No --file seen") ;
             else
                 System.out.println("--file => "+cl.getArg("file").getValue()) ;
-            
+
             // Checks
             if ( cl.getArg(argA) == null )
                 System.out.println("No --a seen") ;
             else
                 System.out.println("--a seen "+cl.getArg(argFile).getValue()) ;
-            
+
             System.out.println("DUMP") ;
             for ( Iterator iter = cl.args().iterator() ; iter.hasNext() ; )
             {
@@ -260,7 +277,7 @@ public class CommandLine
             }
             for ( Iterator iter = cl.items().iterator() ; iter.hasNext() ; )
                 System.out.println("Item: "+(String)iter.next()) ;
-            
+
         } catch (IllegalArgumentException ex)
         {
             System.err.println("Illegal argument: "+ex.getMessage() ) ;
