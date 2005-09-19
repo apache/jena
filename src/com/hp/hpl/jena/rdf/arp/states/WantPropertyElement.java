@@ -91,7 +91,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             if (ap.nodeID != null) {
                 
                 object = new ARPResource(arp, ap.nodeID);
-                checkNodeID(object,ap.nodeID);
+                checkXMLName(object,ap.nodeID);
                 objectIsBlank = true;
             }
             if (ap.resource != null) {
@@ -143,7 +143,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             return withParsetype(ap.parseType, x);
         case TYPEDLITERAL | EMPTYWITHOBJ:
         case TYPEDLITERAL:
-            return new WantTypedLiteral(this, resolve(null,x, ap.datatype), x);
+            return new WantTypedLiteral(this, ap.datatype, x);
         case EMPTYWITHOBJ:
             return new WantEmpty(this, x);
         }

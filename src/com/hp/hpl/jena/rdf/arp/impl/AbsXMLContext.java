@@ -120,8 +120,6 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
         boolean errorReported = false;
         if (!rslt.isRDFURIReference()) {
             if (rslt.isVeryBad()) {
-                // TODO: test relative references.
-                // TODO: bad URI test cases
                 Iterator it = rslt
                         .exceptions(IRIConformanceLevels.RDF_URI_Reference);
                 while (it.hasNext()) {

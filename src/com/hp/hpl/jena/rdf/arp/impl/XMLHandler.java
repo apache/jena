@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.14 2005-09-16 10:40:00 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.15 2005-09-19 10:36:14 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -286,7 +286,6 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     private boolean allowRelativeReferences = false;
     private AbsXMLContext initialContextWithBase(String base) throws SAXParseException {
         allowRelativeReferences = false;
-        // TODO: test tainting in general
             if (base == null) {
                 warning(null,IGN_NO_BASE_URI_SPECIFIED,
                         "Base URI not specified for input file; local URI references will be in error.");

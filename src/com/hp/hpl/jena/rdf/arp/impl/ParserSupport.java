@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.7 2005-09-16 10:40:00 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.8 2005-09-19 10:36:14 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -100,7 +100,7 @@ public class ParserSupport
 		checkXMLName(taintMe,str);
 		checkEncoding(taintMe,str);
 	}
-	private void checkXMLName( Taint taintMe, String str) throws SAXParseException {
+	protected void checkXMLName( Taint taintMe, String str) throws SAXParseException {
 		if (!XMLChar.isValidNCName(str)) {
 			//   	System.err.println("not name (id): " + str);
 			warning(taintMe,
@@ -109,13 +109,13 @@ public class ParserSupport
 		}
 
 	}
-	protected void checkNodeID(Taint taintMe, String str) throws SAXParseException {
-		if (!XMLChar.isValidNCName(str)) {
-			warning(taintMe,
-				WARN_BAD_NAME,
-				"Not an XML Name: '" + str + "'");
-		}
-	}
+//	protected void checkNodeID(Taint taintMe, String str) throws SAXParseException {
+//		if (!XMLChar.isValidNCName(str)) {
+//			warning(taintMe,
+//				WARN_BAD_NAME,
+//				"Not an XML Name: '" + str + "'");
+//		}
+//	}
 	public void checkString(Taint taintMe,String t) throws SAXParseException {
 		if (!CharacterModel.isNormalFormC(t))
 			warning(taintMe,

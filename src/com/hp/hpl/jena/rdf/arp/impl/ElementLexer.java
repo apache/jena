@@ -58,6 +58,10 @@ public class ElementLexer extends QNameLexer  {
     String getQName() {
         return qname;
     }
+    void bagIDAttribute(Taint taintMe, int rslt) throws SAXParseException {
+        error(taintMe,rslt);
+        
+    }
 
 }
 

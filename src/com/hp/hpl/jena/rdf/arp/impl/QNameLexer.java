@@ -57,13 +57,21 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
     int lookup(Taint taintMe) throws SAXParseException {
         int rslt = lookupNoMsg(taintMe);
         if ((rslt&bad)!=0) {
-            if (rslt==A_DEPRECATED)
+            switch (rslt){
+            case A_DEPRECATED:
                 deprecatedAttribute(taintMe,rslt);
-            else
-                error(taintMe,rslt);
+                break;
+            case A_BAGID:
+                bagIDAttribute(taintMe,rslt);
+                break;
+                default:
+                    error(taintMe,rslt);
+            }
         }
         return rslt;
     }
+    abstract void bagIDAttribute(Taint taintMe, int rslt) throws SAXParseException;
+
     private int lookupNoMsg(Taint taintMe) throws SAXParseException {
         char firstChar;
         try {
@@ -85,7 +93,7 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
             case 4:
                 return xml("base",A_XMLBASE);
             case 5:
-                return rdf(taintMe,"bagID",A_DEPRECATED);
+                return rdf(taintMe,"bagID",A_BAGID);
             }
             break;
         case 'l': /* lang  li */

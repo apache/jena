@@ -59,12 +59,12 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
             switch (lookup(taintMe)) {
             case A_XMLBASE:
                 base = value();
-                // TODO: tests for tainting lang and base.
                 frame
                         .warning(null,IGN_XMLBASE_USED,
                                 "Use of attribute xml:base is not envisaged in RDF Model&Syntax.");
                 break;
             case A_DEPRECATED:
+            case A_BAGID:
             case E_LI:
             case E_RDF:
             case E_DESCRIPTION:
@@ -166,6 +166,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
         case E_DESCRIPTION:
         case E_RDF:
         case A_DEPRECATED:
+        case A_BAGID:
             e = ERR_BAD_RDF_ATTRIBUTE;
             break;
         
@@ -177,8 +178,8 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     }
 
     void deprecatedAttribute(Taint me,int r) throws SAXParseException {
-        frame.warning(null,ERR_BAD_RDF_ATTRIBUTE, getQName()
-                + " has been deprecated and is ignored");
+        frame.warning(me,ERR_BAD_RDF_ATTRIBUTE, getQName()
+                + " has been deprecated.");
     }
 
     String getLocalName() {
@@ -207,6 +208,10 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     
     public boolean done(int i) {
         return done.get(i);
+    }
+
+    void bagIDAttribute(Taint taintMe, int rslt) throws SAXParseException  {
+        deprecatedAttribute(null,rslt);
     }
 }
 

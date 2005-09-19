@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.6 2005-09-15 14:25:46 jeremy_carroll Exp $
+ * * $Id: URIReference.java,v 1.7 2005-09-19 10:36:14 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -65,7 +65,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     // // this.uri = new URI(ctxt.getURI(),URIref.encode(uri));
     // this.uri = ctxt.resolve(l, uri);
     // }
-    private URIReference(String uri) {
+    protected URIReference(String uri) {
         // this.uri = new URI(URIref.encode(uri));
         this.uri = uri;
         if (uri==null)
@@ -195,6 +195,6 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
     }
 
     public static URIReference createNoChecks(String uri) {
-        return new URIReference(uri);
+        return new UntaintableURIReference(uri);
     }
 }

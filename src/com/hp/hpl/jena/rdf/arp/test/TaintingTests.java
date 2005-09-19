@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: TaintingTests.java,v 1.1 2005-09-16 17:31:28 jeremy_carroll Exp $
+ *  $Id: TaintingTests.java,v 1.2 2005-09-19 10:36:19 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -41,6 +41,7 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         "WARN_BAD_XMLLANG",
     };
     static String files[] = {
+        
         "testing/arp/syntax-errors/error001.rdf",
         "testing/arp/syntax-errors/error002.rdf",
         "testing/arp/syntax-errors/error003.rdf",
@@ -58,6 +59,7 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         "testing/wg/rdf-ns-prefix-confusion/error0007.rdf",
         "testing/wg/rdf-ns-prefix-confusion/error0008.rdf",
         "testing/wg/rdf-ns-prefix-confusion/error0009.rdf",
+        
         "testing/wg/rdfms-abouteach/error001.rdf",
         "testing/wg/rdfms-abouteach/error002.rdf",
         "testing/wg/rdfms-difference-between-ID-and-about/error1.rdf",
@@ -152,31 +154,32 @@ public class TaintingTests extends TestCase implements ErrorHandler,
 
     public void runTest() throws IOException {
 
+
+        ByteArrayOutputStream goodBytes = new ByteArrayOutputStream();
+        ByteArrayOutputStream badBytes = new ByteArrayOutputStream();
         PrintStream oldOut = System.out;
         PrintStream oldErr = System.err;
 //        Model m = createMemModel();
         try {
-        ByteArrayOutputStream goodBytes = new ByteArrayOutputStream();;
-        ByteArrayOutputStream badBytes = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(goodBytes);
         PrintStream err = new PrintStream(badBytes);
 //        PrintStream out = new PrintStream(new FileOutputStream(goodTriples));
 //        PrintStream err = new PrintStream(new FileOutputStream(badTriples));
         System.setOut(out);
         System.setErr(err);
-        NTriple.mainEh(new String[]{"-e","102,136,105,103,108,107,116,106,004",
+        NTriple.mainEh(new String[]{"-e","102,136,105,103,108,107,116,106,004,131",
         "-E","-b",base,fileName},this,null);
         out.close();
         err.close();
-        InputStream good = new ByteArrayInputStream(goodBytes.toByteArray());
-        InputStream bad = new ByteArrayInputStream(badBytes.toByteArray());
-        compare(good,goodTriples);
-        compare(bad,badTriples);
         }
         finally {
             System.setErr(oldErr);
             System.setOut(oldOut);
         }
+        InputStream good = new ByteArrayInputStream(goodBytes.toByteArray());
+        InputStream bad = new ByteArrayInputStream(badBytes.toByteArray());
+        compare(good,goodTriples);
+        compare(bad,badTriples);
     }
 
     private void compare(InputStream in, String filen) throws IOException {
@@ -184,7 +187,18 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         Model m2 = this.createMemModel();
         m1.read(in,"","N-TRIPLES");
         m2.read(new FileInputStream(filen),"","N-TRIPLES");
-        assertTrue("Triples were not as expected.",m1.isIsomorphicWith(m2));
+        boolean isomorphicWith = m1.isIsomorphicWith(m2);
+        if (!isomorphicWith) {
+            System.err.println("Found Triples:");
+            System.err.println("===");
+            m1.write(System.err,"N-TRIPLES");
+            System.err.println("===");
+            System.err.println("Expected Triples:");
+            System.err.println("===");
+            m2.write(System.err,"N-TRIPLES");
+            System.err.println("===");
+        }
+        assertTrue("Triples were not as expected.",isomorphicWith);
     }
 	
 	

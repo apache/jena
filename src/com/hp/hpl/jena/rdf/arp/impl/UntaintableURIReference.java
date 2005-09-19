@@ -1,68 +1,24 @@
 /*
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP  
- * [see end of file]
+ * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * [See end of file]
  */
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-import org.xml.sax.SAXParseException;
+class UntaintableURIReference extends URIReference {
 
-import com.hp.hpl.jena.rdf.arp.ALiteral;
-import com.hp.hpl.jena.rdf.arp.states.Frame;
-
-/**
- * @author Jeremy J. Carroll
- * 
- */
-public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
-
-    final private String datatype;
-    final private String lexForm;
+    public UntaintableURIReference(String str) {
+        super(str);
+    }
     
-    public ARPDatatypeLiteral(Frame f, String lexf,URIReference dt) throws SAXParseException{
-       
-        f.checkString(this,lexf);
-       datatype = dt.getURI();
-       lexForm = lexf;
-       if (dt.isTainted())
-           taint();
-    }
-    /**
-     * @see com.hp.hpl.jena.rdf.arp.ALiteral#isWellFormedXML()
-     */
-    public boolean isWellFormedXML() {
-        return false; //datatype.equals(ARPString.RDFXMLLiteral);
-    }
-    /**
-     * @see com.hp.hpl.jena.rdf.arp.ALiteral#getParseType()
-     * @deprecated
-     */
-    public String getParseType() {
-        return null;
-    }
-    public String toString() {
-        return lexForm;
-    }
-
-    /**
-     * @see com.hp.hpl.jena.rdf.arp.ALiteral#getDatatypeURI()
-     */
-    public String getDatatypeURI() {
-        return datatype;
-    }
-
-    /**
-     * @see com.hp.hpl.jena.rdf.arp.ALiteral#getLang()
-     */
-    public String getLang() {
-        return ""; //lang;
-    }
+    public void taint() {}
 
 }
 
+
 /*
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ *  (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -86,3 +42,4 @@ public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+ 

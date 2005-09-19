@@ -20,7 +20,7 @@ public interface Names {
 
     int A_XML_OTHER = 4;
     
-    int A_XMLNS = 8192*2;
+    int A_XMLNS = 32768;
 
     int A_ID = 8;
 
@@ -37,6 +37,8 @@ public interface Names {
     int A_TYPE = 512;
 
     int A_DEPRECATED = 1024;
+    
+    int A_BAGID = 16384;
 
     int E_LI = 2048;
 
@@ -46,7 +48,7 @@ public interface Names {
 
     // see sections 7.2.[2-5] of RDF Syntax (Revised)
     int CoreAndOldTerms = E_RDF | A_DEPRECATED | A_ABOUT | A_ID | A_NODEID
-            | A_RESOURCE | A_PARSETYPE | A_DATATYPE;
+            | A_RESOURCE | A_PARSETYPE | A_DATATYPE | A_BAGID;
 
     int A_BADATTRS = CoreAndOldTerms | E_LI | E_DESCRIPTION;
 
