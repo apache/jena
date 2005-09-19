@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -7,7 +7,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: AppUUID.java,v 1.1 2005-09-07 17:26:22 andy_seaborne Exp $
+ * @version  $Id: AppUUID.java,v 1.2 2005-09-19 11:19:34 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.shared.uuid;
@@ -48,7 +48,7 @@ public class AppUUID
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

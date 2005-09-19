@@ -64,18 +64,7 @@ sub setExclude
     $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/n3/N3AntlrParserTokenTypes.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/MalformedURIException.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/MalformedURIException.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/MalformedURIException.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/RDFParser.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/RDFParser.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/RDFParserConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/RDFParserConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/RDFParserConstants.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/Token.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/URI.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/URI.java'} = 1 ;
-    $exclude{'src/com/hp/hpl/jena/rdf/arp/URI.java'} = 1 ;
+
     $exclude{'src/com/hp/hpl/jena/rdql/parser/JavaCharStream.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/rdql/parser/ParseException.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/rdql/parser/RDQLParser.java'} = 1 ;
@@ -86,4 +75,6 @@ sub setExclude
     $exclude{'src/com/hp/hpl/jena/rdql/parser/RDQLParserTreeConstants.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/rdql/parser/Token.java'} = 1 ;
     $exclude{'src/com/hp/hpl/jena/rdql/parser/TokenMgrError.java'} = 1 ;
+
+    $exclude{'src/com/hp/hpl/jena/shared/uuid/MD5.java'} = 1 ;
 }
