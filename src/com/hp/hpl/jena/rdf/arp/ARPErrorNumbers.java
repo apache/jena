@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.21 2005-09-16 10:40:03 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.22 2005-09-19 16:53:41 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -252,11 +252,6 @@ public interface ARPErrorNumbers {
      */
     public int WARN_BAD_XMLLANG = 116;
     /**
-     * The value of an xml:lang attribute has been deprecated by IANA (W117).
-     *In strict and default mode this is a warning.
-     */
-    public int WARN_DEPRECATED_XMLLANG = 117;
-    /**
      * An attribute from the xml namespace has been used that is not
        recognised. (W118).
      * In default mode this is a warning; in strict mode it is ignored.
@@ -314,6 +309,10 @@ public interface ARPErrorNumbers {
       * the namespace editor.  This is a warning in default mode and an error in
       * strict mode (W124). */
     public int WARN_BAD_NAMESPACE_URI = 124;
+    /**
+     * The value of an xml:lang attribute has been deprecated by IANA (W117). In strict and default mode this is a warning.
+     */
+    public int WARN_DEPRECATED_XMLLANG = 117;
     /**
      * This is an internal only field, not intended for public use.
      * In particular, specifically setting the error mode for this
@@ -523,7 +522,9 @@ public interface ARPErrorNumbers {
      * and this resulting in a relative URI. (E215)
      */
     public int ERR_RESOLVING_AGAINST_RELATIVE_BASE = 215;
-      /**   The error recovery code failed; this can occur. (E300)
+
+      /**   The error recovery code failed. (E300)
+       * @deprecated Not used.
     **/
     public int ERR_UNABLE_TO_RECOVER = 300;
 

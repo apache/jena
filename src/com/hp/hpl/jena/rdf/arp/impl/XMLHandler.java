@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.15 2005-09-19 10:36:14 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.16 2005-09-19 16:53:34 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -431,6 +431,15 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         if (uri.length() != 0)
              {
                 RDFURIReference u = iriFactory().create(uri);
+                if (u.isVeryBad()) {
+                    warning(null,
+                            WARN_BAD_NAMESPACE_URI,
+                            "The namespace URI: <"
+                                    + uri
+                                    + "> is not well formed.");
+                    return;
+                 
+                }
                 if (!u.isAbsolute()) {
                     warning(null,
                             WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,

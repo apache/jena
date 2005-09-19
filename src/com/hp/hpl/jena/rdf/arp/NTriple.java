@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.16 2005-09-15 12:47:32 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.17 2005-09-19 16:53:41 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -60,13 +60,15 @@ import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
  * All options, files and URLs can be intemingled in any order.
  * They are processed from left-to-right.
  * <dl>
- * file    </dt><dd>  Converts (embedded) RDF in XML file into N-triples
+ * file    </dt><dd>  Converts RDF/XML file into N-triples
  * </dd><dt>
- * url  </dt><dd>     Converts (embedded) RDF from URL into N-triples
+ * url  </dt><dd>     Converts RDF/XML from URL into N-triples
  * </dd><dt>
  * -b uri </dt><dd>   Sets XML Base to the absolute URI.
  * </dd><dt>
- * -r    </dt><dd>    Content is RDF (no embedding, rdf:RDF tag may be omitted).
+ * -r    </dt><dd>    Content is RDF (default, no embedding, rdf:RDF tag may be omitted).
+ * </dd><dt>
+ * -R    </dt><dd>    RDF embedded in XML document, search for obligatory rdf:RDF start element.
  * </dd><dt>
  * -t  </dt><dd>      No n-triple output, error checking only.
  * </dd><dt>
@@ -124,6 +126,7 @@ public class NTriple implements ARPErrorNumbers {
 		arp = new ARP();
 		ARPHandlers handlers = arp.getHandlers();
 		handlers.setStatementHandler(getSH(true));
+//        arp.getOptions().setEmbedding(true);
 		if (ap != null) {
 			handlers.setNamespaceHandler(ap);
 			handlers.setExtendedHandler(ap);
@@ -212,13 +215,15 @@ public class NTriple implements ARPErrorNumbers {
 			"    All options, files and URLs can be intemingled in any order.");
 		System.err.println("    They are processed from left-to-right.");
 		System.err.println(
-			"    file      Converts (embedded) RDF in XML file into N-triples");
+			"    file      Converts RDF/XML file into N-triples");
 		System.err.println(
-			"    url       Converts (embedded) RDF from URL into N-triples");
+			"    url       Converts RDF/XML from URL into N-triples");
 		System.err.println("    -b uri    Sets XML Base to the absolute URI.");
 		System.err.println(
-			"    -r        Content is RDF (no embedding, rdf:RDF tag may be omitted).");
-		System.err.println(
+			"    -r        Content is RDF (default, no embedding, rdf:RDF tag may be omitted).");
+        System.err.println(
+            "    -R        RDF embedded in XML document, search for obligatory rdf:RDF start element.");
+    System.err.println(
 			"    -t        No n-triple output, error checking only.");
 		System.err.println("    -x        Lax mode - warnings are suppressed.");
 		System.err.println(
@@ -305,6 +310,9 @@ int debugC = 0;
 				case 'r' :
 					options.setEmbedding(false);
 					break;
+                case 'R' :
+                    options.setEmbedding(true);
+                    break;
 				case 'n' :
 					numbers = true;
 					break;

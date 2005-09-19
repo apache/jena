@@ -102,10 +102,9 @@ public class TestErrorMsg extends TestCase {
 	public void testErrMsg04a() throws Exception {
 		check("test04",null,"Unusual");
 	}
-    // TODO: why was this test ever reasonable??
-//	public void testErrMsg04b() throws Exception {
-//		check("test04",null,"parseType");
-//	}
+	public void testErrMsg04b() throws Exception {
+		check("test04",null,"parseType");
+	}
 	public void testErrMsg05() throws Exception {
 		check("test05",null,"Unusual");
 	}
@@ -138,5 +137,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.6 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * $Id: TestErrorMsg.java,v 1.7 2005-09-19 16:53:41 jeremy_carroll Exp $
  */

@@ -417,9 +417,8 @@ Test test191 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/
 test176.addTest(test191);
 Test test192 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/comments/test02","http://jcarroll.hpl.hp.com/arp-tests/comments/test02.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt",false);
 test176.addTest(test192);
-// TODO: fix xmlns/bad01 http:
-//Test test193 = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01","http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01.rdf",true,new int[]{124, });
-//test176.addTest(test193);
+Test test193 = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01","http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01.rdf",true,new int[]{124,107, });
+test176.addTest(test193);
 Test test194 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/comments/test09","http://jcarroll.hpl.hp.com/arp-tests/comments/test09.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt",false);
 test176.addTest(test194);
 Test test195 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/comments/test08","http://jcarroll.hpl.hp.com/arp-tests/comments/test08.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt",false);

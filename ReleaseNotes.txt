@@ -60,6 +60,11 @@ ARP
 
     o SAX2RDF, SAX2Model protected constructors have changed in a not
       backwardly compatible fashion.
+      
+    o NTriple command-line option documentation changed, in manner
+      that is theoretically not backwardly compatible. 
+      -r is now default (in documentation,
+      follows previous implementation). -R option added to cancel -r.
 
 Node/Node_Literal/Literal
 
