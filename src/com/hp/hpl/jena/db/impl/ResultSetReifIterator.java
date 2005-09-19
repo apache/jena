@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 * Version of ResultSetIterator that extracts database rows as Triples from a reified statement table.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.9 $ on $Date: 2005-07-01 21:51:49 $
+* @version $Revision: 1.10 $ on $Date: 2005-09-19 20:57:50 $
 */
 public class ResultSetReifIterator extends ResultSetIterator {
 
@@ -53,6 +53,7 @@ public class ResultSetReifIterator extends ResultSetIterator {
 	
 	/** a triple match over a reified table might return one property.
 	 *  m_propCol identifies the column number of the property to return.
+	 *  it ranges 1-4.
 	 */
 	protected int m_propCol;
 	
@@ -69,7 +70,7 @@ public class ResultSetReifIterator extends ResultSetIterator {
 	/** number of remaining fragments to generate for this row (ranges 1-4) */
 	protected int m_fragRem;
 	
-	/** number of next fragment to generate (0-4 for subj, pred, obj, type, resp). */
+	/** number of next fragment to generate (0-3 for subj, pred, obj, type). */
 	protected int m_nextFrag;
 
 
@@ -173,7 +174,7 @@ public class ResultSetReifIterator extends ResultSetIterator {
 				m_fragRem++;
 		}
 		if ( m_propCol > 0 ) {
-			m_nextFrag = m_propCol;
+			m_nextFrag = m_propCol - 1;
 			m_fragCount = m_fragRem = 1;
 		} else {
 			m_nextFrag = 0;
