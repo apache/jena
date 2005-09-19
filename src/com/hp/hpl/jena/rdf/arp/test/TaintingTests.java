@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: TaintingTests.java,v 1.2 2005-09-19 10:36:19 jeremy_carroll Exp $
+ *  $Id: TaintingTests.java,v 1.3 2005-09-19 17:44:07 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -108,6 +108,9 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         "testing/arp/tainting/lang.rdf",
         "testing/arp/tainting/ptUnknown.rdf",
         "testing/arp/tainting/typedLiteral.rdf",
+        
+//        "testing/arp/tainting/typedNode.rdf",
+//        "testing/arp/tainting/property.rdf",
 
     };
 
