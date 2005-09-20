@@ -37,7 +37,7 @@ import java.util.* ;
  * <li>Options may be ended with - or --</li>
  * </ul>
  * @author Andy Seaborne
- * @version $Id: CommandLine.java,v 1.5 2005-09-16 20:21:11 ian_dickinson Exp $
+ * @version $Id: CommandLine.java,v 1.6 2005-09-20 19:34:12 andy_seaborne Exp $
  */
 
 
@@ -146,7 +146,7 @@ public class CommandLine
      */
     public boolean endProcessing( String argStr )
     {
-        return argStr.startsWith("-") || argStr.equals("--") || argStr.equals("-");
+        return ! argStr.startsWith("-") || argStr.equals("--") || argStr.equals("-");
     }
 
     /**
