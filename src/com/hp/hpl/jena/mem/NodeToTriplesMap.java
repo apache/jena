@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.39 2005-09-02 10:38:19 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.40 2005-09-20 08:19:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -47,7 +47,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             {
             boolean result = s.remove( t );
             if (result) size -= 1;
-            if (s.isEmpty()) map.put( o, null );
+            if (s.isEmpty()) map.remove( o );
             return result;
         	} 
         }

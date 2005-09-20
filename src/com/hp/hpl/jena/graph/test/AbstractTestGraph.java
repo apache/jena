@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.63 2005-09-15 15:00:22 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.64 2005-09-20 08:19:38 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -21,7 +21,7 @@ import java.util.*;
     
  	@author kers
 */
-public /* abstract */ class AbstractTestGraph extends GraphTestBase
+public/* abstract */class AbstractTestGraph extends GraphTestBase
     {
     public AbstractTestGraph( String name )
         { super( name ); }
@@ -425,7 +425,46 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         g.delete( SPO );
         L.assertHas( new Object[] { "delete", g, SPO} );
         }
-        
+    
+    public void testListSubjects()
+        {
+        Graph g = graphWith( "x P y; y Q z" );
+        assertEquals( nodeSet( "x y" ), listSubjects( g ) );
+        g.delete( triple( "x P y" ) );
+        assertEquals( nodeSet( "y" ), listSubjects( g ) );
+        }
+
+    protected Set listSubjects( Graph g )
+        {
+        return iteratorToSet( g.queryHandler().subjectsFor( Node.ANY, Node.ANY ) );
+        }
+    
+    public void testListPredicates()
+        {
+        Graph g = graphWith( "x P y; y Q z" );
+        assertEquals( nodeSet( "P Q" ), listPredicates( g ) );
+        g.delete( triple( "x P y" ) );
+        assertEquals( nodeSet( "Q" ), listPredicates( g ) );
+        }
+
+    protected Set listPredicates( Graph g )
+        {
+        return iteratorToSet( g.queryHandler().predicatesFor( Node.ANY, Node.ANY ) );
+        }    
+    
+    public void testListObjects()
+        {
+        Graph g = graphWith( "x P y; y Q z" );
+        assertEquals( nodeSet( "y z" ), listObjects( g ) );
+        g.delete( triple( "x P y" ) );
+        assertEquals( nodeSet( "z" ), listObjects( g ) );
+        }
+
+    protected Set listObjects( Graph g )
+        {
+        return iteratorToSet( g.queryHandler().objectsFor( Node.ANY, Node.ANY ) );
+        }
+    
     /**
          Ensure that triples removed by calling .remove() on the iterator returned by
          a find() will generate deletion notifications.
