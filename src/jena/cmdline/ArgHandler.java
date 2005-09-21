@@ -1,14 +1,14 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
-package jena.cmdline ;
+package jena.cmdline;
 
 /** Interface for processing flag arguments.
  * 
  * @author Andy Seaborne
- * @version $Id: ArgHandler.java,v 1.4 2005-02-21 11:48:56 andy_seaborne Exp $
+ * @version $Id: ArgHandler.java,v 1.5 2005-09-21 09:48:26 andy_seaborne Exp $
  */
 public interface ArgHandler
 {
@@ -20,7 +20,7 @@ public interface ArgHandler
 
 
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

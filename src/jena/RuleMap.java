@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: RuleMap.java,v 1.9 2005-06-21 07:30:59 der Exp $
+ * $Id: RuleMap.java,v 1.10 2005-09-21 09:48:26 andy_seaborne Exp $
  *****************************************************************/
 package jena;
 
@@ -39,7 +39,7 @@ import java.io.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-06-21 07:30:59 $
+ * @version $Revision: 1.10 $ on $Date: 2005-09-21 09:48:26 $
  */
 public class RuleMap {
     
@@ -132,7 +132,7 @@ public class RuleMap {
             cl.add("ol", true);
             cl.add("d", false);
             cl.process(args);
-            if (cl.items().size() != 2) {
+            if (cl.numItems() != 2) {
                 System.err.println(usage);
                 System.exit(1);
             }
@@ -140,7 +140,7 @@ public class RuleMap {
             // Load the input data
             Arg il = cl.getArg("il");
             String inLang = (il == null) ? null : il.getValue();
-            Model inModel = FileManager.get().loadModel((String)cl.items().get(1), inLang);
+            Model inModel = FileManager.get().loadModel((String)cl.getItem(1), inLang);
             
             // Determine the type of the output
             Arg ol = cl.getArg("ol");
@@ -152,7 +152,7 @@ public class RuleMap {
             // Fetch the rule set and create the reasoner
             BuiltinRegistry.theRegistry.register(new Deduce());
             Map prefixes = new HashMap();
-            List rules = loadRules((String)cl.items().get(0), prefixes);
+            List rules = loadRules((String)cl.getItem(0), prefixes);
             Reasoner reasoner = new GenericRuleReasoner(rules);
             
             // Process

@@ -8,7 +8,6 @@ package jena ;
 import java.io.* ;
 import jena.cmdline.*;
 
-import java.util.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileUtils ;
@@ -17,7 +16,7 @@ import com.hp.hpl.jena.n3.* ;
 /**
     Read N3 files and print in a variery of formats.
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.14 2005-02-21 11:49:12 andy_seaborne Exp $
+ * @version 	$Id: n3.java,v 1.15 2005-09-21 09:48:26 andy_seaborne Exp $
  */
 public class n3
 {
@@ -47,7 +46,7 @@ public class n3
 
     	CommandLine cmd = new CommandLine() ;
     	cmd.setUsage(usageMessage) ;
-    	cmd.setOutput(System.err) ;
+    	//cmd.setOutput(System.err) ;
     	
     	//cmd.setHook(cmd.trace()) ;
     	
@@ -158,7 +157,7 @@ public class n3
 			
 		// stdin
 
-		if ( cmd.items().size() == 0 )
+		if ( cmd.numItems() == 0 )
 		{
 			if ( baseName == null )
 				baseName = "stdin:/" ;
@@ -168,9 +167,11 @@ public class n3
 		
 		// file arguments
 
-		for ( Iterator iter = cmd.items().iterator() ; iter.hasNext() ; )
+		//for ( Iterator iter = cmd.items().iterator() ; iter.hasNext() ; )
+        for ( int i = 0 ; i < cmd.numItems() ; i++ )
 		{
-			String filename = (String)iter.next() ;
+			//String filename = (String)iter.next() ;
+            String filename = cmd.getItem(i) ;
 			InputStream in = null ;
 			try {
 				// DO NOT use a FileReader : it gets default charset

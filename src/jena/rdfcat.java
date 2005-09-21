@@ -7,11 +7,11 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-16 20:23:01 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-09-21 09:48:26 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -90,7 +90,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.1 2005-09-16 20:23:01 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.2 2005-09-21 09:48:26 andy_seaborne Exp $)
  */
 public class rdfcat
 {
@@ -175,7 +175,7 @@ public class rdfcat
     protected String m_outputFormat = "RDF/XML-ABBREV";
 
     /** The input format we're expecting for the next URL to be read - defaults to RDF/XML */
-    protected String m_inputFormat = "RDF/XML";
+    protected String m_inputFormat = null ; //"RDF/XML";
 
     /** Flag to indicate whether we include owl:imports and rdfs:seeAlso */
     protected boolean m_include = false;

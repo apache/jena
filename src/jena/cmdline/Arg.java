@@ -1,39 +1,49 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
-package jena.cmdline ;
+package jena.cmdline;
+
+import java.util.* ;
 
 /** A command line argument that has been foundspecification.
  *
  * @author  Andy Seaborne
- * @version $Id: Arg.java,v 1.5 2005-02-21 11:48:54 andy_seaborne Exp $
+ * @version $Id: Arg.java,v 1.6 2005-09-21 09:48:26 andy_seaborne Exp $
  */
 public class Arg
 {
     String name ;
     String value ;
+    List values = new ArrayList() ; 
     
     Arg() { name = null ; value = null ; }
     
     Arg(String _name) { this() ; setName(_name) ; }
-        
     
     Arg(String _name, String _value) { this() ; setName(_name) ; setValue(_value) ; }
     
     void setName(String n) { name = n ; }
+    
     void setValue(String v) { value = v ; }
+    void addValue(String v) { values.add(v) ; }
     
     public String getName() { return name ; }
     public String getValue() { return value; }
+    public List getValues() { return values; }
     
     public boolean hasValue() { return value != null ; }
+    
+    public boolean matches(ArgDecl decl)
+    {
+        return decl.getNames().contains(name) ;
+    }
     
         
 }
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
