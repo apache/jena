@@ -8,6 +8,8 @@ package jena.cmdline;
 import java.io.* ;
 import java.util.* ;
 
+import com.hp.hpl.jena.util.FileUtils;
+
 /**
  * Command line argument processing based on a trigger model.
  * An action is called whenever an argument is encountered. Example:
@@ -38,9 +40,9 @@ import java.util.* ;
  * </ul>
  * @author Andy Seaborne
 <<<<<<< CommandLine.java
- * @version $Id: CommandLine.java,v 1.7 2005-09-21 09:48:04 andy_seaborne Exp $
+ * @version $Id: CommandLine.java,v 1.8 2005-09-21 11:47:04 ian_dickinson Exp $
 =======
- * @version $Id: CommandLine.java,v 1.7 2005-09-21 09:48:04 andy_seaborne Exp $
+ * @version $Id: CommandLine.java,v 1.8 2005-09-21 11:47:04 ian_dickinson Exp $
 >>>>>>> 1.6
  */
 
@@ -52,76 +54,76 @@ public class CommandLine
      */
     protected ArgHandler argHook = null ;
     protected String usage = null ;
-    protected Map argMap = new HashMap() ;    // Map from string name to ArgDecl 
+    protected Map argMap = new HashMap() ;    // Map from string name to ArgDecl
     protected Map args = new HashMap() ;      // Map from string name to Arg
     //protected boolean ignoreUnknown = false ;
-    
+
     // Rest of the items found on the command line
     String indirectionMarker = "@" ;
-    protected boolean allowItemIndirect = false ;   // Allow @ to mean contents of file 
+    protected boolean allowItemIndirect = false ;   // Allow @ to mean contents of file
     boolean ignoreIndirectionMarker = false ;       // Allow comand line items to have leading @ but strip it.
     protected List items = new ArrayList() ;
 
-    
+
     /** Creates new CommandLine */
     public CommandLine()
     {
     }
-    
+
     /** Set the global argument handler.  Called on every valid argument.
      * @param argHandler Handler
-     */    
+     */
     public void setHook(ArgHandler argHandler) { argHook = argHandler ; }
-    
+
     public void setUsage(String usageMessage) { usage = usageMessage ; }
-    
+
     public boolean hasArgs() { return args.size() > 0 ; }
     public boolean hasItems() { return items.size() > 0 ; }
-    
-    public Iterator args() { return args.values().iterator() ; } 
+
+    public Iterator args() { return args.values().iterator() ; }
 //    public Map args() { return args ; }
 //    public List items() { return items ; }
-    
+
     public int numArgs() { return args.size() ; }
     public int numItems() { return items.size() ; }
     public void pushItem(String s) { items.add(s) ; }
-    
+
     public boolean isIndirectItem(int i)
-    { return allowItemIndirect && ((String)items.get(i)).startsWith(indirectionMarker) ; } 
-    
+    { return allowItemIndirect && ((String)items.get(i)).startsWith(indirectionMarker) ; }
+
     public String getItem(int i)
     {
         return getItem(i, allowItemIndirect) ;
     }
-    
+
     public String getItem(int i, boolean withIndirect)
     {
         if ( i < 0 || i >= items.size() )
             return null ;
-        
-        
+
+
         String item = (String)items.get(i) ;
-        
+
         if ( withIndirect && item.startsWith(indirectionMarker) )
         {
             item = item.substring(1) ;
-            try { item = CmdLineUtils.readWholeFileAsUTF8(item) ; }
+            try { item = FileUtils.readWholeFileAsUTF8(item) ; }
             catch (Exception ex)
             { throw new IllegalArgumentException("Failed to read '"+item+"': "+ex.getMessage()) ; }
         }
         return item ;
     }
-    
-    
+
+
     /** Process a set of command line arguments.
      * @param argv The words of the command line.
      * @throws IllegalArgumentException Throw when something is wrong (no value found, action fails).
-     */    
+     */
     public void process(String[] argv) throws java.lang.IllegalArgumentException
     {
         List argList = new ArrayList() ;
         argList.addAll(Arrays.asList(argv)) ;
-        
+
         int i = 0 ;
         for ( ; i < argList.size() ; i++ )
         {
@@ -134,20 +136,20 @@ public class CommandLine
             int j1 = argStr.indexOf('=') ;
             int j2 = argStr.indexOf(':') ;
             int j = Integer.MAX_VALUE ;
-            
+
             if ( j1 > 0 && j1 < j )
                 j = j1 ;
             if ( j2 > 0 && j2 < j )
                 j = j2 ;
-            
+
             if ( j != Integer.MAX_VALUE )
             {
-                
+
                 String a2 = argStr.substring(j+1) ;
                 argList.add(i+1,a2) ;
                 argStr = argStr.substring(0,j) ;
             }
-            
+
             argStr = ArgDecl.canonicalForm(argStr) ;
             String val = null ;
 
@@ -155,10 +157,10 @@ public class CommandLine
             {
                 if ( ! args.containsKey(argStr))
                     args.put(argStr, new Arg(argStr)) ;
-                
+
                 Arg arg = (Arg)args.get(argStr) ;
                 ArgDecl argDecl = (ArgDecl)argMap.get(argStr) ;
-                
+
                 if ( argDecl.takesValue() )
                 {
                     if ( i == (argList.size()-1) )
@@ -168,11 +170,11 @@ public class CommandLine
                     arg.setValue(val) ;
                     arg.addValue(val) ;
                 }
-                
+
                 // Global hook
                 if ( argHook != null )
                     argHook.action(argStr, val) ;
-                
+
                 argDecl.trigger(arg) ;
             }
             else
@@ -181,7 +183,7 @@ public class CommandLine
 //                    // Not recognized
 //                    throw new IllegalArgumentException("Unknown argument: "+argStr) ;
         }
-        
+
         // Remainder.
         if ( i < argList.size() )
         {
@@ -212,40 +214,40 @@ public class CommandLine
         throw new IllegalArgumentException("Unknown argument: "+argStr) ;
     }
 
-    
+
     /** Test whether an argument was seen.
      */
 
     public boolean contains(ArgDecl argDecl) { return getArg(argDecl) != null ; }
-    
+
     /** Test whether an argument was seen.
      */
 
     public boolean contains(String s) { return getArg(s) != null ; }
-    
+
 
     /** Test whether the command line had a particular argument
-     * 
+     *
      * @param argName
      * @return
      */
     public boolean hasArg(String argName) { return getArg(argName) != null ; }
 
     /** Test whether the command line had a particular argument
-     * 
+     *
      * @param argDecl
      * @return
      */
-    
+
     public boolean hasArg(ArgDecl argDecl) { return getArg(argDecl) != null ; }
 
-    
+
     /** Get the argument associated with the argument declaration.
      *  Actually returns the LAST one seen
      *  @param argDecl Argument declaration to find
      *  @return Last argument that matched.
      */
-    
+
     public Arg getArg(ArgDecl argDecl)
     {
         Arg arg = null ;
@@ -257,22 +259,22 @@ public class CommandLine
         }
         return arg ;
     }
-    
+
     /** Get the argument associated with the arguement name.
      *  Actually returns the LAST one seen
      *  @param argDecl Argument declaration to find
      *  @return Last argument that matched.
      */
-    
+
     public Arg getArg(String s)
     {
         s = ArgDecl.canonicalForm(s) ;
         return (Arg)args.get(s) ;
     }
-    
+
     /**
-     * Returns the value (a string) for an argument with a value - 
-     * returns null for no argument and no value.  
+     * Returns the value (a string) for an argument with a value -
+     * returns null for no argument and no value.
      * @param argDecl
      * @return String
      */
@@ -284,11 +286,11 @@ public class CommandLine
         if ( arg.hasValue())
             return arg.getValue() ;
         return null ;
-    }    
+    }
 
     /**
-     * Returns the value (a string) for an argument with a value - 
-     * returns null for no argument and no value.  
+     * Returns the value (a string) for an argument with a value -
+     * returns null for no argument and no value.
      * @param argDecl
      * @return String
      */
@@ -298,10 +300,10 @@ public class CommandLine
         if ( arg == null )
             return null ;
         return arg.getValue() ;
-    }    
-    
+    }
+
     /**
-     * Returns all the values (0 or more strings) for an argument. 
+     * Returns all the values (0 or more strings) for an argument.
      * @param argDecl
      * @return List
      */
@@ -311,10 +313,10 @@ public class CommandLine
         if ( arg == null )
             return null ;
         return arg.getValues() ;
-    }    
+    }
 
     /**
-     * Returns all the values (0 or more strings) for an argument. 
+     * Returns all the values (0 or more strings) for an argument.
      * @param argDecl
      * @return List
      */
@@ -324,16 +326,16 @@ public class CommandLine
         if ( arg == null )
             return null ;
         return arg.getValues() ;
-    }    
-    
-    
+    }
+
+
 
     /** Add an argument to those to be accepted on the command line.
      * @param argName Name
      * @param hasValue True if the command takes a (string) value
      * @return The CommandLine processor object
      */
-   
+
     public CommandLine add(String argName, boolean hasValue)
     {
         return add(new ArgDecl(hasValue, argName)) ;
@@ -345,7 +347,7 @@ public class CommandLine
      * @param argName Name
      * @return The CommandLine processor object
      */
-   
+
     public CommandLine add(boolean hasValue, String argName)
     {
         return add(new ArgDecl(hasValue, argName)) ;
@@ -355,19 +357,19 @@ public class CommandLine
      * @param arg Argument to add
      * @return The CommandLine processor object
      */
-   
+
     public CommandLine add(ArgDecl arg)
     {
         for ( Iterator iter = arg.names() ; iter.hasNext() ; )
             argMap.put(iter.next(), arg) ;
         return this ;
     }
-    
+
 //    public boolean getIgnoreUnknown() { return ignoreUnknown ; }
 //    public void setIgnoreUnknown(boolean ign) { ignoreUnknown = ign ; }
-    
+
     /**
-     * @return Returns whether items starting "@" have the value of named file.  
+     * @return Returns whether items starting "@" have the value of named file.
      */
     public boolean allowItemIndirect()
     {
@@ -375,7 +377,7 @@ public class CommandLine
     }
 
     /**
-     * @param allowItemIndirect Set whether items starting "@" have the value of named file.  
+     * @param allowItemIndirect Set whether items starting "@" have the value of named file.
 
      */
     public void setAllowItemIndirect(boolean allowItemIndirect)
@@ -415,7 +417,7 @@ public class CommandLine
         this.ignoreIndirectionMarker = ignoreIndirectionMarker ;
     }
 
-    public ArgHandler trace() 
+    public ArgHandler trace()
     {
         final PrintStream _out = System.err ;
         return new ArgHandler()
