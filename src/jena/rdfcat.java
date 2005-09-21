@@ -7,10 +7,10 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-21 11:06:11 $
+ * Last modified on   $Date: 2005-09-21 11:47:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -46,17 +46,17 @@ import jena.cmdline.*;
  * <pre>
  * java jena.rdfcat (options|lang|input)*
  * where options are:
- *   -out N3
- *   -out N-TRIPLE
- *   -out RDF/XML
+ *   -out N3  (aliases n, n3, ttl)
+ *   -out N-TRIPLE  (aliases t, ntriple)
+ *   -out RDF/XML  (aliases x, rdf, xml, rdfxml)
  *   -out RDF/XML-ABBREV (default)
  *   -include
  *   -noinclude (default)
  *
  * lang is one of:
- *   -n for n3 input
- *   -x for rdf/xml input
- *   -t for n-triple input
+ *   -n for n3 input  (aliases -n3, -N3, -ttl)
+ *   -x for rdf/xml input  (aliases -rdf, -xml, -rdfxml)
+ *   -t for n-triple input  (aliases -ntriple)
  *
  * input is a URL, a filename, or - for the standard input
  * </pre>
@@ -91,7 +91,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.3 2005-09-21 11:06:11 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.4 2005-09-21 11:47:57 ian_dickinson Exp $)
  */
 public class rdfcat
 {
@@ -99,21 +99,21 @@ public class rdfcat
     //////////////////////////////////
 
     /** Argument setting expected input language to N3 */
-    public final ArgDecl IN_N3 = new ArgDecl( false, "n",
+    public final ArgDecl IN_N3 = new ArgDecl( false, "n", "n3", "ttl", "N3",
             new ArgHandler() {
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     expectInput("N3");
             }} );
 
     /** Argument setting expected input language to RDF/XML */
-    public final ArgDecl IN_RDF_XML = new ArgDecl( false, "x",
+    public final ArgDecl IN_RDF_XML = new ArgDecl( false, "x", "xml", "rdfxml", "rdf",
             new ArgHandler() {
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     expectInput("RDF/XML");
             }} );
 
     /** Argument setting expected input language to NTRIPLE */
-    public final ArgDecl IN_NTRIPLE = new ArgDecl( false, "t",
+    public final ArgDecl IN_NTRIPLE = new ArgDecl( false, "t", "ntriples",
             new ArgHandler() {
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     expectInput("N-TRIPLE");
@@ -212,11 +212,29 @@ public class rdfcat
     /** Set the language to write the output model in */
     protected void setOutput( String lang ) {
         if ("RDF/XML".equalsIgnoreCase( lang ) ||
-            "RDF/XML-ABBREV".equalsIgnoreCase( lang ) ||
-            "N3".equalsIgnoreCase( lang ) ||
-            "N-TRIPLE".equalsIgnoreCase( lang ))
+            "x".equalsIgnoreCase( lang) ||
+            "xml".equalsIgnoreCase( lang) ||
+            "rdf".equalsIgnoreCase( lang) ||
+        "rdfxml".equalsIgnoreCase( lang ))
         {
-            m_outputFormat = lang.toUpperCase( Locale.getDefault() );
+            m_outputFormat = "RDF/XML";
+        }
+        else if ("RDF/XML-ABBREV".equalsIgnoreCase( lang ) ||
+                 "abbrev".equalsIgnoreCase( lang ))
+        {
+            m_outputFormat = "RDF/XML-ABBREV";
+        }
+        else if ("N3".equalsIgnoreCase( lang ) ||
+                 "n".equalsIgnoreCase( lang ) ||
+                 "ttl".equalsIgnoreCase( lang ))
+        {
+            m_outputFormat = "N3";
+        }
+        else if ("N-TRIPLE".equalsIgnoreCase( lang ) ||
+                 "ntriples".equalsIgnoreCase( lang ) ||
+                 "t".equalsIgnoreCase( lang ))
+        {
+            m_outputFormat = "N-TRIPLE";
         }
         else {
             throw new IllegalArgumentException( lang + " is not recognised as a legal output format" );
@@ -295,7 +313,13 @@ public class rdfcat
         System.err.println( "         -x  expect subsequent inputs in RDF/XML syntax" );
         System.err.println( "         -t  expect subsequent inputs in N-TRIPLE syntax" );
         System.err.println( "         -[no]include  include rdfs:seeAlso and owl;imports" );
-        System.err.println( "input can be filename, URL or - for stdin" );
+        System.err.println( "input can be filename, URL, or - for stdin" );
+        System.err.println( "Recognised aliases for -n are: -n3 -ttl or -N3" );
+        System.err.println( "Recognised aliases for -x are: -xml -rdf or -rdfxml" );
+        System.err.println( "Recognised aliases for -t are: -ntriple" );
+        System.err.println( "Output format aliases: x, xml or rdf for RDF/XML, n, n3 or ttl for N3, t or ntriple for N-TRIPLE" );
+
+
         System.exit(0);
     }
 
