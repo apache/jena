@@ -7,11 +7,11 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-21 09:48:26 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-09-21 11:06:11 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -30,6 +30,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
 
 import jena.cmdline.*;
@@ -90,7 +91,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.2 2005-09-21 09:48:26 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.3 2005-09-21 11:06:11 ian_dickinson Exp $)
  */
 public class rdfcat
 {
@@ -175,7 +176,7 @@ public class rdfcat
     protected String m_outputFormat = "RDF/XML-ABBREV";
 
     /** The input format we're expecting for the next URL to be read - defaults to RDF/XML */
-    protected String m_inputFormat = null ; //"RDF/XML";
+    protected String m_inputFormat = "RDF/XML";
 
     /** Flag to indicate whether we include owl:imports and rdfs:seeAlso */
     protected boolean m_include = false;
@@ -246,7 +247,9 @@ public class rdfcat
                     inModel.read( System.in, null, m_inputFormat );
                 }
                 else {
-                    FileManager.get().readModel( inModel, inputName, m_inputFormat );
+                    // lang from extension overrides default set on command line
+                    String lang = FileUtils.guessLang( inputName, m_inputFormat );
+                    FileManager.get().readModel( inModel, inputName, lang );
                 }
 
                 // check for anything more that we need to read
