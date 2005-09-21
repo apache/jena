@@ -8,8 +8,6 @@ package jena.cmdline;
 import java.io.* ;
 import java.util.* ;
 
-import com.hp.hpl.jena.util.FileUtils;
-
 /**
  * Command line argument processing based on a trigger model.
  * An action is called whenever an argument is encountered. Example:
@@ -40,9 +38,9 @@ import com.hp.hpl.jena.util.FileUtils;
  * </ul>
  * @author Andy Seaborne
 <<<<<<< CommandLine.java
- * @version $Id: CommandLine.java,v 1.8 2005-09-21 11:47:04 ian_dickinson Exp $
+ * @version $Id: CommandLine.java,v 1.9 2005-09-21 15:08:24 andy_seaborne Exp $
 =======
- * @version $Id: CommandLine.java,v 1.8 2005-09-21 11:47:04 ian_dickinson Exp $
+ * @version $Id: CommandLine.java,v 1.9 2005-09-21 15:08:24 andy_seaborne Exp $
 >>>>>>> 1.6
  */
 
@@ -107,7 +105,7 @@ public class CommandLine
         if ( withIndirect && item.startsWith(indirectionMarker) )
         {
             item = item.substring(1) ;
-            try { item = FileUtils.readWholeFileAsUTF8(item) ; }
+            try { item = CmdLineUtils.readWholeFileAsUTF8(item) ; }
             catch (Exception ex)
             { throw new IllegalArgumentException("Failed to read '"+item+"': "+ex.getMessage()) ; }
         }
