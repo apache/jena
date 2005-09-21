@@ -1,9 +1,9 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
-package jena.cmdline ;
+package jena.cmdline;
 
 import java.io.* ;
 import java.util.* ;
@@ -32,12 +32,16 @@ import java.util.* ;
  *
  * <ul>
  * <li>Neutral as to whether options have - or --</li>
- * <li>Does not allow multiple single letter options
- *    to be concatenated.</li>
+ * <li>Does not allow multiple single letter options to be concatenated.</li>
  * <li>Options may be ended with - or --</li>
+ * <li>Arguments with values can use "="</li>
  * </ul>
  * @author Andy Seaborne
- * @version $Id: CommandLine.java,v 1.6 2005-09-20 19:34:12 andy_seaborne Exp $
+<<<<<<< CommandLine.java
+ * @version $Id: CommandLine.java,v 1.7 2005-09-21 09:48:04 andy_seaborne Exp $
+=======
+ * @version $Id: CommandLine.java,v 1.7 2005-09-21 09:48:04 andy_seaborne Exp $
+>>>>>>> 1.6
  */
 
 
@@ -48,95 +52,146 @@ public class CommandLine
      */
     protected ArgHandler argHook = null ;
     protected String usage = null ;
-    protected Map argMap = new HashMap() ;
-    protected Set argValue = new HashSet() ;
-    protected PrintStream out = System.err ;
-
-    // Arguments (flags and options) found
-    protected List args = new ArrayList() ;
+    protected Map argMap = new HashMap() ;    // Map from string name to ArgDecl 
+    protected Map args = new HashMap() ;      // Map from string name to Arg
+    //protected boolean ignoreUnknown = false ;
+    
     // Rest of the items found on the command line
+    String indirectionMarker = "@" ;
+    protected boolean allowItemIndirect = false ;   // Allow @ to mean contents of file 
+    boolean ignoreIndirectionMarker = false ;       // Allow comand line items to have leading @ but strip it.
     protected List items = new ArrayList() ;
 
-
+    
     /** Creates new CommandLine */
     public CommandLine()
     {
     }
-
+    
     /** Set the global argument handler.  Called on every valid argument.
      * @param argHandler Handler
-     */
+     */    
     public void setHook(ArgHandler argHandler) { argHook = argHandler ; }
-
-    /** Set the output stream, or null for silent.
-     * Default value is System.err
-     */
-    public void setOutput(PrintStream out) { this.out = out ; }
-    public PrintStream getOutput() { return out ; }
+    
     public void setUsage(String usageMessage) { usage = usageMessage ; }
-
-    public List args() { return args ; }
-    public List items() { return items ; }
-
-
+    
+    public boolean hasArgs() { return args.size() > 0 ; }
+    public boolean hasItems() { return items.size() > 0 ; }
+    
+    public Iterator args() { return args.values().iterator() ; } 
+//    public Map args() { return args ; }
+//    public List items() { return items ; }
+    
+    public int numArgs() { return args.size() ; }
+    public int numItems() { return items.size() ; }
+    public void pushItem(String s) { items.add(s) ; }
+    
+    public boolean isIndirectItem(int i)
+    { return allowItemIndirect && ((String)items.get(i)).startsWith(indirectionMarker) ; } 
+    
+    public String getItem(int i)
+    {
+        return getItem(i, allowItemIndirect) ;
+    }
+    
+    public String getItem(int i, boolean withIndirect)
+    {
+        if ( i < 0 || i >= items.size() )
+            return null ;
+        
+        
+        String item = (String)items.get(i) ;
+        
+        if ( withIndirect && item.startsWith(indirectionMarker) )
+        {
+            item = item.substring(1) ;
+            try { item = CmdLineUtils.readWholeFileAsUTF8(item) ; }
+            catch (Exception ex)
+            { throw new IllegalArgumentException("Failed to read '"+item+"': "+ex.getMessage()) ; }
+        }
+        return item ;
+    }
+    
+    
     /** Process a set of command line arguments.
      * @param argv The words of the command line.
      * @throws IllegalArgumentException Throw when something is wrong (no value found, action fails).
-     */
+     */    
     public void process(String[] argv) throws java.lang.IllegalArgumentException
     {
-        try {
-            int i = 0 ;
-            for ( ; i < argv.length ; i++ )
-            {
-                String argStr = argv[i] ;
-                if (endProcessing(argStr))
-                    break ;
-
-                argStr = ArgDecl.canonicalForm(argStr) ;
-                String val = null ;
-
-                if ( argMap.containsKey(argStr) )
-                {
-                    Arg arg = new Arg(argStr) ;
-                    ArgDecl argDecl = (ArgDecl)argMap.get(argStr) ;
-
-                    if ( argDecl.takesValue() )
-                    {
-                        if ( i == (argv.length-1) )
-                            throw new IllegalArgumentException("No value for argument: "+arg.getName()) ;
-                        val = argv[++i] ;
-                        arg.setValue(val) ;
-                    }
-
-                    // Global hook
-                    if ( argHook != null )
-                        argHook.action(argStr, val) ;
-
-                    argDecl.trigger(arg) ;
-                    args.add(arg) ;
-                }
-                else
-                    // Not recognized
-                    handleUnrecognizedArg( argv[i] );
-            }
-
-            // Remainder.
-            if ( i < argv.length )
-            {
-                if ( argv[i].equals("-") || argv[i].equals("--") )
-                    i++ ;
-                for ( ; i < argv.length ; i++ )
-                    items.add(argv[i]) ;
-            }
-        } catch (IllegalArgumentException ex)
+        List argList = new ArrayList() ;
+        argList.addAll(Arrays.asList(argv)) ;
+        
+        int i = 0 ;
+        for ( ; i < argList.size() ; i++ )
         {
-            if ( out != null )
+            String argStr = (String)argList.get(i) ;
+            if (endProcessing(argStr))
+                break ;
+
+            // If the flag has a "=" or :, it is long form --arg=value.
+            // Split and insert the arg
+            int j1 = argStr.indexOf('=') ;
+            int j2 = argStr.indexOf(':') ;
+            int j = Integer.MAX_VALUE ;
+            
+            if ( j1 > 0 && j1 < j )
+                j = j1 ;
+            if ( j2 > 0 && j2 < j )
+                j = j2 ;
+            
+            if ( j != Integer.MAX_VALUE )
             {
-                if ( usage != null ) out.println(usage) ;
-                out.println(ex.getMessage()) ;
+                
+                String a2 = argStr.substring(j+1) ;
+                argList.add(i+1,a2) ;
+                argStr = argStr.substring(0,j) ;
             }
-            throw ex ;
+            
+            argStr = ArgDecl.canonicalForm(argStr) ;
+            String val = null ;
+
+            if ( argMap.containsKey(argStr) )
+            {
+                if ( ! args.containsKey(argStr))
+                    args.put(argStr, new Arg(argStr)) ;
+                
+                Arg arg = (Arg)args.get(argStr) ;
+                ArgDecl argDecl = (ArgDecl)argMap.get(argStr) ;
+                
+                if ( argDecl.takesValue() )
+                {
+                    if ( i == (argList.size()-1) )
+                        throw new IllegalArgumentException("No value for argument: "+arg.getName()) ;
+                    i++ ;
+                    val = (String)argList.get(i) ;
+                    arg.setValue(val) ;
+                    arg.addValue(val) ;
+                }
+                
+                // Global hook
+                if ( argHook != null )
+                    argHook.action(argStr, val) ;
+                
+                argDecl.trigger(arg) ;
+            }
+            else
+                handleUnrecognizedArg( argv[i] );
+//                if ( ! getIgnoreUnknown() )
+//                    // Not recognized
+//                    throw new IllegalArgumentException("Unknown argument: "+argStr) ;
+        }
+        
+        // Remainder.
+        if ( i < argList.size() )
+        {
+            if ( argList.get(i).equals("-") || argList.get(i).equals("--") )
+                i++ ;
+            for ( ; i < argList.size() ; i++ )
+            {
+                String item = (String)argList.get(i) ;
+                items.add(item) ;
+            }
         }
     }
 
@@ -157,27 +212,44 @@ public class CommandLine
         throw new IllegalArgumentException("Unknown argument: "+argStr) ;
     }
 
+    
     /** Test whether an argument was seen.
      */
 
     public boolean contains(ArgDecl argDecl) { return getArg(argDecl) != null ; }
-
+    
     /** Test whether an argument was seen.
      */
 
     public boolean contains(String s) { return getArg(s) != null ; }
+    
 
+    /** Test whether the command line had a particular argument
+     * 
+     * @param argName
+     * @return
+     */
+    public boolean hasArg(String argName) { return getArg(argName) != null ; }
 
-    /** Get the argument associated with the argurment declaration.
-     *  Actually retruns the LAST one seen
+    /** Test whether the command line had a particular argument
+     * 
+     * @param argDecl
+     * @return
+     */
+    
+    public boolean hasArg(ArgDecl argDecl) { return getArg(argDecl) != null ; }
+
+    
+    /** Get the argument associated with the argument declaration.
+     *  Actually returns the LAST one seen
      *  @param argDecl Argument declaration to find
      *  @return Last argument that matched.
      */
-
+    
     public Arg getArg(ArgDecl argDecl)
     {
         Arg arg = null ;
-        for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
+        for ( Iterator iter = args.values().iterator() ; iter.hasNext() ; )
         {
             Arg a = (Arg)iter.next() ;
             if ( argDecl.matches(a) )
@@ -185,27 +257,96 @@ public class CommandLine
         }
         return arg ;
     }
-
+    
+    /** Get the argument associated with the arguement name.
+     *  Actually returns the LAST one seen
+     *  @param argDecl Argument declaration to find
+     *  @return Last argument that matched.
+     */
+    
     public Arg getArg(String s)
     {
         s = ArgDecl.canonicalForm(s) ;
-        Arg arg = null ;
-        for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
-        {
-            Arg a = (Arg)iter.next() ;
-            if ( a.getName().equals(s) )
-                arg = a ;
-        }
-        return arg ;
+        return (Arg)args.get(s) ;
+    }
+    
+    /**
+     * Returns the value (a string) for an argument with a value - 
+     * returns null for no argument and no value.  
+     * @param argDecl
+     * @return String
+     */
+    public String getValue(ArgDecl argDecl)
+    {
+        Arg arg = getArg(argDecl) ;
+        if ( arg == null )
+            return null ;
+        if ( arg.hasValue())
+            return arg.getValue() ;
+        return null ;
+    }    
+
+    /**
+     * Returns the value (a string) for an argument with a value - 
+     * returns null for no argument and no value.  
+     * @param argDecl
+     * @return String
+     */
+    public String getValue(String argName)
+    {
+        Arg arg = getArg(argName) ;
+        if ( arg == null )
+            return null ;
+        return arg.getValue() ;
+    }    
+    
+    /**
+     * Returns all the values (0 or more strings) for an argument. 
+     * @param argDecl
+     * @return List
+     */
+    public List getValues(ArgDecl argDecl)
+    {
+        Arg arg = getArg(argDecl) ;
+        if ( arg == null )
+            return null ;
+        return arg.getValues() ;
+    }    
+
+    /**
+     * Returns all the values (0 or more strings) for an argument. 
+     * @param argDecl
+     * @return List
+     */
+    public List getValues(String argName)
+    {
+        Arg arg = getArg(argName) ;
+        if ( arg == null )
+            return null ;
+        return arg.getValues() ;
+    }    
+    
+    
+
+    /** Add an argument to those to be accepted on the command line.
+     * @param argName Name
+     * @param hasValue True if the command takes a (string) value
+     * @return The CommandLine processor object
+     */
+   
+    public CommandLine add(String argName, boolean hasValue)
+    {
+        return add(new ArgDecl(hasValue, argName)) ;
     }
 
-
-    /** Add an argument to those to be accepted on the command line
+    /** Add an argument to those to be accepted on the command line.
+     *  Argument order reflects ArgDecl.
+     * @param hasValue True if the command takes a (string) value
      * @param argName Name
      * @return The CommandLine processor object
      */
-
-    public CommandLine add(String argName, boolean hasValue)
+   
+    public CommandLine add(boolean hasValue, String argName)
     {
         return add(new ArgDecl(hasValue, argName)) ;
     }
@@ -214,17 +355,69 @@ public class CommandLine
      * @param arg Argument to add
      * @return The CommandLine processor object
      */
-
+   
     public CommandLine add(ArgDecl arg)
     {
-        for ( Iterator iter = arg.getNames() ; iter.hasNext() ; )
+        for ( Iterator iter = arg.names() ; iter.hasNext() ; )
             argMap.put(iter.next(), arg) ;
         return this ;
     }
-
-    public ArgHandler trace()
+    
+//    public boolean getIgnoreUnknown() { return ignoreUnknown ; }
+//    public void setIgnoreUnknown(boolean ign) { ignoreUnknown = ign ; }
+    
+    /**
+     * @return Returns whether items starting "@" have the value of named file.  
+     */
+    public boolean allowItemIndirect()
     {
-        final PrintStream _out = out ;
+        return allowItemIndirect ;
+    }
+
+    /**
+     * @param allowItemIndirect Set whether items starting "@" have the value of named file.  
+
+     */
+    public void setAllowItemIndirect(boolean allowItemIndirect)
+    {
+        this.allowItemIndirect = allowItemIndirect ;
+    }
+
+    /**
+     * @return Returns the ignoreIndirectionMarker.
+     */
+    public boolean isIgnoreIndirectionMarker()
+    {
+        return ignoreIndirectionMarker ;
+    }
+
+    /**
+     * @return Returns the indirectionMarker.
+     */
+    public String getIndirectionMarker()
+    {
+        return indirectionMarker ;
+    }
+
+    /**
+     * @param indirectionMarker The indirectionMarker to set.
+     */
+    public void setIndirectionMarker(String indirectionMarker)
+    {
+        this.indirectionMarker = indirectionMarker ;
+    }
+
+    /**
+     * @param ignoreIndirectionMarker The ignoreIndirectionMarker to set.
+     */
+    public void setIgnoreIndirectionMarker(boolean ignoreIndirectionMarker)
+    {
+        this.ignoreIndirectionMarker = ignoreIndirectionMarker ;
+    }
+
+    public ArgHandler trace() 
+    {
+        final PrintStream _out = System.err ;
         return new ArgHandler()
             {
                 public void action (String arg, String val) //throws java.lang.IllegalArgumentException
@@ -234,59 +427,10 @@ public class CommandLine
                 }
             } ;
     }
-
-
-    public static void main(String[] argv)
-    {
-        CommandLine cl = new CommandLine() ;
-        cl.setOutput(System.out) ;
-        ArgDecl argA = new ArgDecl(false, "-a") ;
-        cl.add(argA) ;
-        cl.add("-b", false) ;
-        cl.add("-file", true) ;
-
-        ArgDecl argFile = new ArgDecl(false, "-v", "--verbose") ;
-        argFile.addHook(cl.trace()) ;
-        cl.add(argFile) ;
-
-        //cl.setHook(cl.trace()) ;
-
-        String[] a = new String[]{"-a", "--b", "--a", "--file", "value1", "--file", "value2", "--v", "rest"} ;
-        try {
-            cl.process(a) ;
-            System.out.println("PROCESSED") ;
-
-            // Checks
-            if ( cl.getArg("file") == null )
-                System.out.println("No --file seen") ;
-            else
-                System.out.println("--file => "+cl.getArg("file").getValue()) ;
-
-            // Checks
-            if ( cl.getArg(argA) == null )
-                System.out.println("No --a seen") ;
-            else
-                System.out.println("--a seen "+cl.getArg(argFile).getValue()) ;
-
-            System.out.println("DUMP") ;
-            for ( Iterator iter = cl.args().iterator() ; iter.hasNext() ; )
-            {
-                Arg arg = (Arg)iter.next() ;
-                String v = (arg.hasValue()? (" = "+arg.getValue()) : "") ;
-                System.out.println("Arg: "+arg.getName()+v) ;
-            }
-            for ( Iterator iter = cl.items().iterator() ; iter.hasNext() ; )
-                System.out.println("Item: "+(String)iter.next()) ;
-
-        } catch (IllegalArgumentException ex)
-        {
-            System.err.println("Illegal argument: "+ex.getMessage() ) ;
-        }
-    }
 }
 
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
