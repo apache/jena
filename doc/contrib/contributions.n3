@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.7 2005-09-09 09:49:14 chris-dollin Exp $
+# $Id: contributions.n3,v 1.8 2005-09-22 15:33:24 andy_seaborne Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -41,7 +41,7 @@
     dc:creator "Andy Seaborne"
     ; dc:name "ARQ"
     ; dc:description "implementation of SPARQL for Jena"
-    ; ct:link "http://sourceforge.net/project/showfiles.php?group_id=40417"
+    ; ct:link "http://jena.sourceforge.net/ARQ/"
     ; ct:linkTitle "jena files page"
     ; ct:licence "as per Jena"
     .
