@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.34 2005-06-22 09:17:00 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.html,v 1.35 2005-09-22 15:22:56 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -82,13 +82,15 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#reasoner-2">The domain and range inferences look wrong, is that a bug?</a></li>
   <li><a href="#reasoner-3">Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></a></li>
   <li><a href="#reasoner-4">Why do I get out of memory errors when working with the wine ontology?</a></li>
-  <li><a href="#reasoner-5">What causes the error
-    &quot;<code>java.lang.UnsupportedOperationException: this is not a URI node</code>&quot;
+  <li><a href="#reasoner-5">What causes the error 
+    &quot;<code>java.lang.UnsupportedOperationException: this is not a URI node</code>&quot; 
     in the DIG reasoner?</a></li>
+  <li><a href="#reasoner-6">I want to use my own custom rules to extend an existing RDFS or OWL
+Schema, what do I do?</a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
-  <li><a href="#ontology-0">Why doesn't <code>listClasses()</code> (<code>listProperties()</code>
+  <li><a href="#ontology-0">Why doesn't <code>listClasses()</code> (<code>listProperties()</code> 
       / <code>listIndividuals()</code>, etc) work?</a></li>
   <li><a href="#ontology-1">Why doesn't <code>listProperties()</code> return any results when <code>listObjectProperties()</code> (or
       <code>listDatatypeProperties()</code>) does?</a></li>
@@ -96,10 +98,10 @@ Jena 2 &ndash; Frequently Asked Questions
       properties) missing when I call <code>listObjectProperties()</code>?</a></li>
   <li><a href="#ontology-3">Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
     <code>ConversionException</code> on SymmetricProperty (or other property types)?</a></li>
-  <li><a href="#ontology-4">Why doesn't the ontology API handle <code>sub-class</code>
+  <li><a href="#ontology-4">Why doesn't the ontology API handle <code>sub-class</code> 
          (or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
-         relationships in a DAML model?</a></li>
-  <li><a href="#ontology-5">I don't understand very clearly the difference between
+         relationships in a DAML model?</a></li>  
+  <li><a href="#ontology-5">I don't understand very clearly the difference between 
          the various <code>OntModel</code> model profiles.</a></li>
 </ul>
 <h3>Database and persistence</h3>
@@ -117,7 +119,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <h3>XML serialisation (reading and writing)</h3>
 <ul>
   <li><a href="#xml-0">Why are some of my statement objects serialised as XML elements, and some as XML attributes?</a></li>
-  <li><a href="#xml-1">Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code>
+  <li><a href="#xml-1">Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code> 
     when I want output like <code>&lt;owl:Class&nbsp;...&gt;</code>?</a></li>
 </ul>
 
@@ -135,17 +137,17 @@ Jena 2 &ndash; Frequently Asked Questions
   on your classpath. Typically, all of the libraries (.jar files) in <code>$JENA/lib</code>,
   where <code>$JENA</code> refers to the directory in which you installed Jena, should be on
   your classpath. Consult the documentation for your JDK for details on setting
-  the classpath for your system. There are also a number of on-line tutorials for setting
-  the Java classpath. Consult Google or see
+  the classpath for your system. There are also a number of on-line tutorials for setting 
+  the Java classpath. Consult Google or see 
   	<a href="http://www.dynamic-apps.com/tutorials/classpath.jsp">here</a>.</p>
 
 <p id="general-1"><strong>Q: What does the error '<code>java.lang.NoSuchFieldError: actualValueType</code>' mean?</strong><br>
   <strong>A:</strong> This is almost always due to using the wrong version of the Xerces
-  library. Jena makes use of XML Schema support that changed at Xerces 2.6.0 and is not
+  library. Jena makes use of XML Schema support that changed at Xerces 2.6.0 and is not 
   compatible with earlier versions. At the time of writing Jena ships with Xerces 2.6.1.
   <br />
   In some situations your runtime environment may be picking up an earlier version of Xerces from
-  an "endorsed" directory and you will need to either disable use of that endorsed library or replace
+  an "endorsed" directory and you will need to either disable use of that endorsed library or replace 
   it by a more uptodate version of Xerces. This occurs with tomcat 5.* and certain configurations of jdk 1.4.1.
  </p>
 
@@ -153,8 +155,8 @@ Jena 2 &ndash; Frequently Asked Questions
   <strong>Q: What versions of library jars does Jena require?</strong><br />
   <strong>A:</strong> Jena makes use of several third party Java libraries. Copies of
   each of these is included in the $JENA/lib area of the distribution and we recommend
-  including all of these jars in your classpath. In some circumstances applications
-  already make use of specific versions of these libraries (e.g. Xerces) and need to
+  including all of these jars in your classpath. In some circumstances applications 
+  already make use of specific versions of these libraries (e.g. Xerces) and need to 
   check if the version they are using is compatible with those shipped by Jena. The current
   library versions used by Jena are:
   <ul>
@@ -166,21 +168,21 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><strong>antlr</strong> - 2.7.2</li>
   <li><strong>jakarta-commons-logging</strong> - 1.0.3</li>
   <li><strong>concurrent</strong> - 1.3.2</li>
-  </ul>
+  </ul> 
 </p>
 
 <p id="general-3">
   <strong>Q: How do I get the most up-to-date version of Jena?</strong><br />
-  <strong>A:</strong> Released versions of Jena are available from the
+  <strong>A:</strong> Released versions of Jena are available from the 
   <a href="http://sourceforge.net/project/showfiles.php?group_id=40417">downloads page</a>
-  on SourceForge.
+  on SourceForge.  
   However, there may be changes and bug fixes
   that have been added to the Jena codebase that are not yet available as
   part of a release. To get the most up-to-date version of Jena, download
-  the source code from CVS (instructions for this are
-  <a href="http://sourceforge.net/cvs/?group_id=40417">available here</a>).
-  To compile the source code and generate a new
-  <code>jena.jar</code> file,
+  the source code from CVS (instructions for this are 
+  <a href="http://sourceforge.net/cvs/?group_id=40417">available here</a>).  
+  To compile the source code and generate a new 
+  <code>jena.jar</code> file, 
   <a href="http://ant.apache.org/">Ant</a> must be installed and on the path. The
   command to build Jena is the default Ant target, so it only necessary to
   <code>cd</code> to the Jena root directory, which should contain the file
@@ -191,10 +193,10 @@ Jena 2 &ndash; Frequently Asked Questions
   the script <code>test.bat</code> (Windows) or <code>test.sh</code> (Linux or
   Cygwin) to run the full suite of Jena regression tests.  There should
   be no test failures. <strong>Note:</strong> however that non-release
-  versions of Jena may not be as fully tested and stable as the formal
+  versions of Jena may not be as fully tested and stable as the formal 
   releases.
 </p>
-
+  
     <h3>RDF model API</h3>
     <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br />
       <strong>A:</strong> In Jena it is possible to retrieve the localname part of a Resource or Property
@@ -212,19 +214,19 @@ Jena 2 &ndash; Frequently Asked Questions
       a parser or writer.</p>
 
     <p id="api-1"><strong>Q. How do I change the URI or localName of a Resource?</strong><br />
-      <strong>A:</strong> In Jena, the URI of a resource is invariant.
-      So there is no <code>setLocalName()</code>, or <code>setURI()</code> method,
+      <strong>A:</strong> In Jena, the URI of a resource is invariant.  
+      So there is no <code>setLocalName()</code>, or <code>setURI()</code> method, 
       and there will never be one.<br />
-      The only way to "rename" a resource is to remove all of the statements that
-      mention resource <em>R</em>, add add new statements with <em>R</em> replaced by <em>R'</em>.
+      The only way to "rename" a resource is to remove all of the statements that 
+      mention resource <em>R</em>, add add new statements with <em>R</em> replaced by <em>R'</em>.  
       A utility for doing this is provided: <br />
       &nbsp;&nbsp;<code>com.hp.hpl.jena.util.ResourceUtils.renameResource()</code><br />
-      If you are working with inference or ontology models, you need to be
+      If you are working with inference or ontology models, you need to be 
       careful to do this on the base model, not the entailment (aka inference) model.
     </p>
-
+    
     <p id="api-2"><strong>Why do I see the warning message <i>'Detected a NaN anomaly believed to be due to use of JDK 1.4.1'</i>?</strong><br />
-      <strong>A:</strong>As a side effect of some changes post-Jena 2.1 we started seeing
+      <strong>A:</strong>As a side effect of some changes post-Jena 2.1 we started seeing 
       random error message of the form 'Illegal load factor: NaN' when creating a HashMap.
       This appears to be a JDK bug in that the call is perfectly legal and the error
       message is seen frequently under JDK 1.4.1 but
@@ -233,7 +235,7 @@ Jena 2 &ndash; Frequently Asked Questions
       been triggered. To prevent it occuring switch to JDK 1.4.2. If you see the message
       under a JDK other than 1.4.1 please let us know.
     </p>
-
+    
 <h3>Reasoner and inference models</h3>
   <p id="reasoner-0"><strong>Q. I want to develop my own rules, how do I get started?</strong><br />
     A: The GenericRuleReasoner is the place to start. You can create instances of this reasoner by
@@ -268,45 +270,45 @@ Jena 2 &ndash; Frequently Asked Questions
     Is saying that if both T1 and T2 match in the dataset then add the
     backward rule "[T0 &lt;- T3, T4]" after instantiating any bound variables.
   </p>
-
+  
   <p id="reasoner-2"><strong>Q. The domain and range inferences look wrong, is that a bug?</strong><br />
-      <strong>A:</strong> The way rdfs range and domain declarations work is completely alien to
-      anyone who thinks of RDFS and OWL as being a bit like a type system for
-      a programming language, especially an object oriented language. Whilst there
-      may be bugs in the inference rule sets the most common explanation for surprising
-      results, when listing inferred domains and ranges, is this mismatch in expectations.
-    <p> Suppose we have three classes <code>eg:Man</code> is an <code>rdfs:subClassOf</code>
-      <code>eg:Person</code> is an <code>rdfs:subClassOf</code> <code>eg:Animal</code>.
-      Suppose we a property <code>eg:personalName</code> which is declared to
-      have <code>rdfs:domain</code> <code>eg:Person</code>. Now the question is
+      <strong>A:</strong> The way rdfs range and domain declarations work is completely alien to 
+      anyone who thinks of RDFS and OWL as being a bit like a type system for 
+      a programming language, especially an object oriented language. Whilst there 
+      may be bugs in the inference rule sets the most common explanation for surprising 
+      results, when listing inferred domains and ranges, is this mismatch in expectations. 
+    <p> Suppose we have three classes <code>eg:Man</code> is an <code>rdfs:subClassOf</code> 
+      <code>eg:Person</code> is an <code>rdfs:subClassOf</code> <code>eg:Animal</code>. 
+      Suppose we a property <code>eg:personalName</code> which is declared to 
+      have <code>rdfs:domain</code> <code>eg:Person</code>. Now the question is 
       what other values can be inferred for the <code>rdfs:domain</code> of <code>eg:personalName</code>?</p>
-    <p> In pure RDFS no additional conclusions can be made. The definition of
-      domain and range is <i>intensional</i> not <i>extensional</i>. It only works
-      forward. Declaring <code>&lt;eg:personalName rdfs:domain eg:Person&gt;</code>
-      means that anything to which <code>eg:personalName</code> is applied can
-      be concluded to be of type <code>eg:Person</code>. It does not work backward
-      - if you somehow knew that all things to which <code>eg:personalName</code>
-      applied were also <code>Foo</code>'s you cannot conclude that <code>&lt;eg:personalName
+    <p> In pure RDFS no additional conclusions can be made. The definition of 
+      domain and range is <i>intensional</i> not <i>extensional</i>. It only works 
+      forward. Declaring <code>&lt;eg:personalName rdfs:domain eg:Person&gt;</code> 
+      means that anything to which <code>eg:personalName</code> is applied can 
+      be concluded to be of type <code>eg:Person</code>. It does not work backward 
+      - if you somehow knew that all things to which <code>eg:personalName</code> 
+      applied were also <code>Foo</code>'s you cannot conclude that <code>&lt;eg:personalName 
       rdfs:domain Foo&gt;.</code></p>
-    <p>However, RDFS permits systems to strengthen the meaning of domain and range
-      to be extensional, so that valid domain and range deductions can be made.
-      OWL makes use of this option. So in OWL, then in our example we can also
-      deduce that <code>&lt;eg:personalName rdfs:domain eg:Animal&gt;</code>.
-      If you are used to object oriented programming this may look wrong. It is
-      tempting, but incorrect, to think of rdfs:domain as meaning <i>this is the
-      class of objects to which this property can be applied. </i>With that mindset
-      you might expect to find that <code>&lt;eg:personalName rdfs:domain eg:Man&gt;</code>,
-      after all every <code>eg:Man</code> is an <code>eg:Person</code> so it is
-      always &quot;legal&quot; to apply <code>eg:personalName</code> to an <code>eg:Man</code>.
-      That is true, it is legal, any <code>eg:Man</code> is allowed to have a
-      a <code>eg:personalName</code> but <code>rdfs:domain</code> does not describe
-      what is legal. The statement <code>&lt;P rdfs:domain C&gt;</code> just means
-      <i>all things to which P is applied can be inferred to have class C</i>.
-      You can see that if we tried to infer <code>&lt;eg:personalName rdfs:domain
-      eg:Man&gt;</code> then we would start concluding that anything with a name
-      was a man which is not right - every Man can have a name but non-Man Persons
+    <p>However, RDFS permits systems to strengthen the meaning of domain and range 
+      to be extensional, so that valid domain and range deductions can be made. 
+      OWL makes use of this option. So in OWL, then in our example we can also 
+      deduce that <code>&lt;eg:personalName rdfs:domain eg:Animal&gt;</code>. 
+      If you are used to object oriented programming this may look wrong. It is 
+      tempting, but incorrect, to think of rdfs:domain as meaning <i>this is the 
+      class of objects to which this property can be applied. </i>With that mindset 
+      you might expect to find that <code>&lt;eg:personalName rdfs:domain eg:Man&gt;</code>, 
+      after all every <code>eg:Man</code> is an <code>eg:Person</code> so it is 
+      always &quot;legal&quot; to apply <code>eg:personalName</code> to an <code>eg:Man</code>. 
+      That is true, it is legal, any <code>eg:Man</code> is allowed to have a 
+      a <code>eg:personalName</code> but <code>rdfs:domain</code> does not describe 
+      what is legal. The statement <code>&lt;P rdfs:domain C&gt;</code> just means 
+      <i>all things to which P is applied can be inferred to have class C</i>. 
+      You can see that if we tried to infer <code>&lt;eg:personalName rdfs:domain 
+      eg:Man&gt;</code> then we would start concluding that anything with a name 
+      was a man which is not right - every Man can have a name but non-Man Persons 
       are also allowed to have names in this example.</p>
-
+     
   <p id="reasoner-3"><strong>Q: Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></strong><br />
       <strong>A:</strong> If you create an inference graph explicitly from an OWL reasoner or implicitly
       (by using OntModelSpec.OWL_*_RULE) then it is best if the argument models
@@ -316,29 +318,65 @@ Jena 2 &ndash; Frequently Asked Questions
 	  To help detect this situation we have added a warning message. The best way
 	  to stop the message is to change your model construction code so that only the
 	  final InfModel/OntModel is specified to use OWL inference. If this is not
-	  appropriate for some reason you can disable the check and warning messages
+	  appropriate for some reason you can disable the check and warning messages 
 	  using the global flag <code>com.hp.hpl.jena.shared.impl.JenaParameters.enableOWLRuleOverOWLRuleWarnings.</code></p>
-
-
+      
+      
   <p id="reasoner-4"><strong>Q: Why do I get out of memory errors when working with the wine ontology?</strong><br />
-      <strong>A:</strong>
-      The wine/food ontology is specifically designed to exercise all OWL/DL constructs. The
+      <strong>A:</strong> 
+      The wine/food ontology is specifically designed to exercise all OWL/DL constructs. The 
       Jena rule-based reasoner only supports the OWL/lite subset of OWL/Full and has scaling
       problems with some of the constructs used in the wine ontology. If you need full
       reasoning support for the wine (or similar) ontologies then use the new DIG interface
       onto a reasoner such as Racer. If you only need to do things like traverse the class
       hiearchy and infernce over RDFS plus OWL property relations is enough for you then the
       OWL micro reasoner may be an option.</p>
-
-  <p id="reasoner-5"><strong>Q: What causes the error
+      
+  <p id="reasoner-5"><strong>Q: What causes the error 
     &quot;<code>java.lang.UnsupportedOperationException: this is not a URI node</code>&quot; in the DIG reasoner?</strong>
     <br />
     <strong>A:</strong>
     This is a known problem with the Jena 2.1 release. Please get the latest version of Jena (a later
-    release, if there is one, or get the sources from CVS and
+    release, if there is one, or get the sources from CVS and 
     <a href="#general-3">build a new copy of <code>jena.jar</code></a>.)
   </p>
+  
+  <p id="reasoner-6"><strong>Q: I want to use my own custom rules to extend an existing RDFS or OWL
+Schema, what do I do? </strong>
+    <br />
+    <strong>A:</strong>
+The easiest way to do this is to define your rule set. You can use the
+<code>@include</code> directive at the top of your rules to include the RDFS (or OWL) rules
+first. Then create a <a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/reasoner/rulesys/GenericRuleReasoner.html">GenericRuleReasoner</a> 
+which you can use to build an InfModel such as an
+<a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/ontology/OntModel.html">OntModel</a> (by attaching the 
+reasoner to your <a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html">OntModelSpec</a>).
+See <a href="http://jena.sourceforge.net/inference/index.html#RULEconfiguration">GenericRuleReasoner
+configuration</a> for an example of how to parse custom rules.
+</p>
 
+<p>
+Some important guidelines:
+<ul>
+<li>if you're using OWL rules: <code>setOWLTranslation(true)</code> on the reasoner</li>
+<li>if you're using RDFS or OWLMicro: <code>setTransitiveClosureCaching(true)</code></li>
+<li>make your own rules backwards unless you know what you are doing</li>
+</ul>
+</p>
+
+<p>
+You may only use backward rules in this configuration because the RDFS and OWL rules use a mix of forward and backward chaining and the rule system architecture is a pure dataflow - the forward rules don't call the backward rules. Thus any forward rules will only see those parts of
+the RDFS/OWL inferences which are computed forwards. Rather than
+have to be familar with those details it is easiest to simply write your
+own rules as backward ones.
+</p>
+
+<p>
+An alternative is to use a layered architecture - build your
+generic rule InfModel on top of a separate RDFS/OWL InfModel. That has
+higher overhead but then your own rules are unrestricted.
+</p>
+  
     <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
   etc) work?</strong><br />
@@ -363,7 +401,7 @@ Jena 2 &ndash; Frequently Asked Questions
       <code>rdf:type</code> statement is not visible.  Therefore, with no reasoner, the OntModel
       cannot tell that an ObjectProperty is a Property.  The solution is to construct the OntModel
       with an appropriate reasoner.  If, for some application reason, using a reasoner is not possible
-      then users should be prepared to list the various property types separately.  Note also the
+      then users should be prepared to list the various property types separately.  Note also the 
       next question.
   </p>
   <p id="ontology-2">
@@ -411,46 +449,46 @@ Jena 2 &ndash; Frequently Asked Questions
   	<code>OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF, null );</code>
 	</p>
 
-<p id="ontology-5"><strong>Q: I don't understand very clearly the difference between
+<p id="ontology-5"><strong>Q: I don't understand very clearly the difference between 
 the various <code>OntModel</code> model profiles.</strong><br />
 <strong>A:</strong>
-OK, here's how it works.  The ontology API is designed to provide a single
-set of convenient programming abstractions for a Jena model that contains
-an ontology in either RDFS, DAML or (the various flavours of) OWL.
-Each of these languages is structurally similar, but differ in detail.
-So, a class is declared variously as <code>owl:Class</code>,
-<code>rdfs:Class</code> and <code>daml:Class</code>.
-Hence one role of the ont model profiles (i.e. <code>OntModelSpec</code> objects) is to specify the
+OK, here's how it works.  The ontology API is designed to provide a single 
+set of convenient programming abstractions for a Jena model that contains 
+an ontology in either RDFS, DAML or (the various flavours of) OWL.  
+Each of these languages is structurally similar, but differ in detail. 
+So, a class is declared variously as <code>owl:Class</code>, 
+<code>rdfs:Class</code> and <code>daml:Class</code>.  
+Hence one role of the ont model profiles (i.e. <code>OntModelSpec</code> objects) is to specify the 
 details of which syntax is being used.</p>
 <p>
-Second, ontology models can be composed of many sub-models when an ontology
-<em>imports</em> another ontology. These sub-models have to be stored
-somewhere, perhaps in memory or in a database.  The profile contains a
-<code>ModelMaker</code>, which provides the
-<code>OntModel</code> with new sub-models on demand,
+Second, ontology models can be composed of many sub-models when an ontology 
+<em>imports</em> another ontology. These sub-models have to be stored 
+somewhere, perhaps in memory or in a database.  The profile contains a 
+<code>ModelMaker</code>, which provides the 
+<code>OntModel</code> with new sub-models on demand, 
 to contain the imported ontology documents.
 </p><p>
-Third, ontologies can be made richer by including the entailments of
-the ontology assertions, given the semantics of the language. To do this,
-you need a reasoner. Since Jena provides an open, extensible architecture
-for adding reasoners, and some built-in pre-defined reasoners, the
+Third, ontologies can be made richer by including the entailments of 
+the ontology assertions, given the semantics of the language. To do this, 
+you need a reasoner. Since Jena provides an open, extensible architecture 
+for adding reasoners, and some built-in pre-defined reasoners, the 
 model profile specifies which reasoner, if any, that model will use.
 </p><p>
-These are the main components of an <code>OntModelSpec</code>.  You can construct each
-of these elements independently, programatically or with RDF,
-but we have anticipated some common choices.
-So we provide some
+These are the main components of an <code>OntModelSpec</code>.  You can construct each 
+of these elements independently, programatically or with RDF, 
+but we have anticipated some common choices.  
+So we provide some 
 built-in standard profiles.  These have names like <code>OWL_MEM</code>, or <code>RDFS_MEM_RDFS_INF</code>.
-The first component of the name is the syntax (OWL, RDFS etc). The second
-component is the model-maker strategy (MEM means in-memory models). The
-third component, which may be absent, specifies the reasoner.
-<code>OWL_MEM</code> has no reasoner, <code>RDFS_MEM_TRANS_INF</code> uses a
+The first component of the name is the syntax (OWL, RDFS etc). The second 
+component is the model-maker strategy (MEM means in-memory models). The 
+third component, which may be absent, specifies the reasoner.  
+<code>OWL_MEM</code> has no reasoner, <code>RDFS_MEM_TRANS_INF</code> uses a 
 simple reasoner that computes transitive closure on the class and property hierarchies, but nothing else.
 </p>
 
 <h3>Database and persistence</h3>
 <p id="db-0"><strong>Q: Why do I get an exception when trying to create a new persistent model?</strong><br>
-  A: If the exception has to do with the database lock, see the question on
+  A: If the exception has to do with the database lock, see the question on 
 <a href="#dblock">locking</a>. Otherwise, assuming that your program uses correct methods to create the model (see
 examples in the database <a href="DB/howto.html">howto</a>), it may be that
 your database files are corrupted. Jena2 does <i>not</i> do a good job in
@@ -473,7 +511,7 @@ that this is what you want to do. </p>
   increase the heap size of the Java virtual machine (<code>-vmargs
   -Xmx500M</code> for a 500 MB heap size). If this does not help, there is no
   other work-around and the program should be recoded.</p>
-
+  
 <p id="db-2"><strong>Q: Has Jena2 persistence been ported to other database engines and platforms
   besides those officially supported?</strong><br>
   A: The Jena team  supports Jena2 persistence on the databases and operating
@@ -485,36 +523,36 @@ Jena2 has been ported to IBM's DB2 database. Contact
 HSQLDB, a native-Java SQL database, has been done. Contact
 <a href="mailto:danils@home.se">Jan Danils</a> for details. On the Mac OS X
 platform, Jena2 has been successfully run using MySQL. Contact
-<a href="mailto:jnachlin@nachlin.com">Jim Nachlin</a> for details. A Jena2
-driver for Microsoft SQL Server has been written and tested with MsSQL 2000. The
+<a href="mailto:jnachlin@nachlin.com">Jim Nachlin</a> for details. A Jena2 
+driver for Microsoft SQL Server has been written and tested with MsSQL 2000. The 
 source is available at <a href="http://www.ur.se/jena/Jena2MsSql.zip">
 http://www.ur.se/jena/Jena2MsSql.zip</a>. Contact <a href="mailto:eba@ur.se">
 Erik Barke</a> for more information.</p>
 
-<p id="db-3"><strong>Q: Is there a limit on
+<p id="db-3"><strong>Q: Is there a limit on 
 the number of models in a database?</strong><br>
-  <strong>A:</strong> The limit depends on the Jena database (schema) configuration and the
-database engine (MySQL, PostgreSQL, Oracle, etc). Recall that a Jena model may
-either be stored separately in its own database tables (the default) or,
+  <strong>A:</strong> The limit depends on the Jena database (schema) configuration and the 
+database engine (MySQL, PostgreSQL, Oracle, etc). Recall that a Jena model may 
+either be stored separately in its own database tables (the default) or, 
 alternatively, in tables that are shared with other models (see <i>
-StoreWithModel</i> in the <a href="DB/options.html">options</a> for
-persistent models). Also, a Jena model is identified internally by a 32 bit
-integer. Consequently the maximum number of models is limited either by the
-maximum number of tables allowed in a database (which depends on the database
+StoreWithModel</i> in the <a href="DB/options.html">options</a> for 
+persistent models). Also, a Jena model is identified internally by a 32 bit 
+integer. Consequently the maximum number of models is limited either by the 
+maximum number of tables allowed in a database (which depends on the database 
 engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
 
 <p id="db-4"><strong>Q: Why am I getting an exception on failure to lock or unlock the database?</strong><br>
-  <strong>A:</strong> The Jena2 storage subsystem uses a lock internally to
-  implement a critical section for operations that modify the database structure
-  (create/delete tables). The lock is implemented as a database table, i.e., if
-  the table exists in the database, the lock is held. Normally, this lock
-  should be transparent to applications. But if an application has an exception
-  while in a critical section, the database may remain locked for subsequent
-  applications. In this case, a user must manually unlock the database either by
+  <strong>A:</strong> The Jena2 storage subsystem uses a lock internally to 
+  implement a critical section for operations that modify the database structure 
+  (create/delete tables). The lock is implemented as a database table, i.e., if 
+  the table exists in the database, the lock is held. Normally, this lock 
+  should be transparent to applications. But if an application has an exception 
+  while in a critical section, the database may remain locked for subsequent 
+  applications. In this case, a user must manually unlock the database either by 
   calling DriverRDB.unlockDB() or by deleting the table (Jena_Mutex) from the database.</p>
-
+   
 <p id="db-5"><strong>Q: How do I access the Jena database tables?</strong><br>
-  <strong>A:</strong> The Jena2 database tables are not intended for direct
+  <strong>A:</strong> The Jena2 database tables are not intended for direct 
 access
   by Jena users or applications. The database tables are created, deleted and manipulated
   through the Jena API methods. For example, creating a database model may cause tables
@@ -523,14 +561,14 @@ access
   makes them difficult to view or query using conventional (SQL) database tools. Users who
   are interested in the Jena2 database structure and value encoding can find details
   in the <a href="DB/layout.html">layout</a> documentation. </p>
-
+  
 <h3>XML serialisation (reading and writing)</h3>
 <p id="xml-0"><strong>Q: Why are some of my statement objects serialised as XML elements, and some as XML attributes?</strong><br />
   <strong>A:</strong> This is a feature of the default RDF/XML writer settings in Jena 2.0.
   Semantically, writing the object of a statement as an XML element or XML attribute makes
   no difference to the RDF meaning. However, we have recognised that this is confusing, so
   from Jena-2.1-dev3 onwards, the default is to write out all statements objects as XML elements.<br />
-  The process that is behind the output is the invocation of a rule in the RDF/XML writer, that
+  The process that is behind the output is the invocation of a rule in the RDF/XML writer, that 
   writes values that contain no spaces as attributes.  This rule can be turned on or off
   selectively by using an explicit <code>RDFWriter</code> object, rather than relying on the
   defaults that apply by calling <code>Model.write()</code>. The means of doing this are described
@@ -538,7 +576,7 @@ access
   must be enabled or disabled.
   </p>
 
-<p id="xml-1"><strong>Q: Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code>
+<p id="#xml-1"><strong>Q: Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code> 
     when I want output like <code>&lt;owl:Class&nbsp;...&gt;</code>?</strong><br />
 <strong>A:</strong> This is the raw form of the RDF serialisation into XML. In terms of RDF's
 information model, it expresses the same semantics as the compressed form. So the following
@@ -546,9 +584,9 @@ fragments are equivalent (in RDF terms):</p>
   <pre>  &lt;rdf:Description rdf:about="#foo"&gt;
     &lt;rdf:type rdf:resource=&quot;http://www.w3.org/2002/07/owl#Class&quot;&gt;
   &lt;/rdf:Description&gt;
-
+  
   &lt;owl:Class rdf:about=&quot;#foo&quot; /&gt;</pre>
-<p>However, the second is considerably easier for human readers to read, and tends to
+<p>However, the second is considerably easier for human readers to read, and tends to 
   be the form most people come across when reading OWL or DAML ontologies, for example.  The default
   output format is <code>RDF/XML</code>, the abbreviated format is <code>RDF/XML-ABBREV</code>.
   To change from the default output style, pass the required output format to the
@@ -557,8 +595,8 @@ fragments are equivalent (in RDF terms):</p>
 </p>
 <pre>  yourModel.write( yourOutputStream, "RDF/XML-ABBREV" );</pre>
 <p>Note that the abbreviated form requires the writer to do much more work (multiple passes are
-  needed over the RDF model, to see which abbreviation rules can apply). Hence it may be
-  inappropriate for large models.  In particular, the abbreviated form is
+  needed over the RDF model, to see which abbreviation rules can apply). Hence it may be 
+  inappropriate for large models.  In particular, the abbreviated form is 
     <strong>not</strong> recommended for serialising
   large models from a persistent database to RDF XML. More details on controlling the
   precise behaviour of the writer, including turning on and off abbreviation rules, are
