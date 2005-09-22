@@ -36,6 +36,8 @@ public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implement
               datatypeLiteral); 
        super.endElement();
     }
+    public void afterChild() {
+    }
     
     
 

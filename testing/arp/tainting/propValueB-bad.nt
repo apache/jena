@@ -1,0 +1,4 @@
+_:jA13 <http://example.org/name> <http://www.example.org/a> .
+_:jA13 <http://example.org/name> <http://www.example.org/b> .
+_:jA13 <http://example.org/name> <http://www.example.org/c> .
+_:jA13 <http://example.org/name> "\n \t\ttext\n              \n              \n              \n        " .

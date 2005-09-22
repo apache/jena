@@ -51,6 +51,11 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
     protected void warning(int i, String msg) throws SAXParseException {
         warning(taint, i, msg);
     }
+    
+
+    public void afterChild() {
+        taint = new TaintImpl();
+    }
 
     public void comment(char[] ch, int start, int length)
             throws SAXParseException {

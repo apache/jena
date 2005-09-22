@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.16 2005-09-19 16:53:34 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.17 2005-09-22 10:17:09 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -136,6 +136,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
             throws SAXException {
         frame.endElement();
         frame = frame.getParent();
+        frame.afterChild();
         if (DEBUG)
             System.err.println("</" + rawName + "> :: <--"
                     + getSimpleName(frame.getClass()));

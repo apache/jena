@@ -28,6 +28,7 @@ public interface FrameI {
     FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException;
     void abort();
+    void afterChild();
 
 }
 

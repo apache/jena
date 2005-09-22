@@ -46,7 +46,8 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         clearObject();
-        taint = new TaintImpl();
+        // TODO: next line
+//        taint = new TaintImpl();
         if (nonWhiteMsgGiven)
             taint.isTainted();
         nonWhiteMsgGiven = false;

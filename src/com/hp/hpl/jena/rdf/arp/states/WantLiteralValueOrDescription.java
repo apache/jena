@@ -20,46 +20,58 @@ public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescript
 
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts)  throws SAXParseException {
-        taint = new TaintImpl();
+        // TODO: next line
+//        taint = new TaintImpl();
         if (seenAnElement) {
-            warning(taint,ERR_SYNTAX_ERROR,"Multiple children of property element");
+            warning(ERR_SYNTAX_ERROR,"Multiple children of property element");
         }
         seenAnElement = true;
         if (bufIsSet()) {
             if (!isWhite(getBuf())) {
-                warning(taint,ERR_NOT_WHITESPACE,
+
+                seenNonWhiteText=true;
+                warning(ERR_NOT_WHITESPACE,
                         "Cannot have both string data \"" +
                         getBuf().toString() +
                         "\" and XML data <"+ rawName +
                         "> inside a property element. Maybe you want rdf:parseType='Literal'.");
-            setBuf(null);
+//            setBuf(null);
+            } else {
+                setBuf(null);
             }
         }
         FrameI rslt = super.startElement(uri, localName, rawName, atts);
         ((WantsObjectFrameI) getParent()).theObject(subject);
         return rslt;
+
     }
 
+    /** flag for seen non-white.
+     * Note: buf may have non-white text in, even if this falg is false.
+     * The following holds:
+     *    seenAnElement && non white text as occurred => seenNonWhiteText
+     */
+    private boolean seenNonWhiteText = false;
     public void characters(char[] ch, int start, int length)  throws SAXParseException {
         if (seenAnElement) {
-            if (!isWhite(ch, start, length))
-
-                warning(taint,ERR_NOT_WHITESPACE,"Cannot have both string data: \"" +
+            if (!isWhite(ch, start, length)) {
+                seenNonWhiteText=true;
+                warning(ERR_NOT_WHITESPACE,"Cannot have both string data: \"" +
                  new String(ch,start,length)   +     
                 "\"and XML data inside a property element. "+ suggestParsetypeLiteral());
-        } else
-            super.characters(ch, start, length);
+            }
+        }
+        super.characters(ch, start, length);
     }
     public void endElement() throws SAXParseException {
-        if (!seenAnElement) {
+        if ((!seenAnElement)||seenNonWhiteText) {    
             ARPString literal = new ARPString(this,getBuf().toString(),xml);
-            if (taint.isTainted())
+            if (taint.isTainted()||seenAnElement)
                 literal.taint();
             ((WantsObjectFrameI) getParent()).theObject(
               literal); 
-        } else {
-            super.endElement();
         }
+        super.endElement();
     }
   
 }
