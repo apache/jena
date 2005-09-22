@@ -38,9 +38,9 @@ import java.util.* ;
  * </ul>
  * @author Andy Seaborne
 <<<<<<< CommandLine.java
- * @version $Id: CommandLine.java,v 1.9 2005-09-21 15:08:24 andy_seaborne Exp $
+ * @version $Id: CommandLine.java,v 1.10 2005-09-22 12:27:08 andy_seaborne Exp $
 =======
- * @version $Id: CommandLine.java,v 1.9 2005-09-21 15:08:24 andy_seaborne Exp $
+ * @version $Id: CommandLine.java,v 1.10 2005-09-22 12:27:08 andy_seaborne Exp $
 >>>>>>> 1.6
  */
 
@@ -176,7 +176,7 @@ public class CommandLine
                 argDecl.trigger(arg) ;
             }
             else
-                handleUnrecognizedArg( argv[i] );
+                handleUnrecognizedArg( (String)argList.get(i) );
 //                if ( ! getIgnoreUnknown() )
 //                    // Not recognized
 //                    throw new IllegalArgumentException("Unknown argument: "+argStr) ;
