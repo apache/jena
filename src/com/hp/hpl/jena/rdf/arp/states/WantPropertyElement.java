@@ -47,12 +47,12 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             Attributes atts) throws SAXParseException {
         clearObject();
         // TODO: next line
-//        taint = new TaintImpl();
+        // taint = new TaintImpl();
         if (nonWhiteMsgGiven)
             taint.isTainted();
         nonWhiteMsgGiven = false;
-        ElementLexer el = new ElementLexer(taint,this, uri, localName, rawName, E_LI,
-                CoreAndOldTerms | E_DESCRIPTION);
+        ElementLexer el = new ElementLexer(taint, this, uri, localName,
+                rawName, E_LI, CoreAndOldTerms | E_DESCRIPTION);
         // if (el.badMatch)
         // warning(ERR_SYNTAX_ERROR,"bad use of " + rawName);
         predicate = el.goodMatch ? (AResourceInternal) rdf_n(liCounter++)
@@ -60,7 +60,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         if (taint.isTainted())
             predicate.taint();
         taint = new TaintImpl();
-        
+
         AttributeLexer ap = new AttributeLexer(this,
         // xml:
                 A_XMLLANG | A_XMLBASE | A_XML_OTHER
@@ -69,7 +69,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
                         | A_RESOURCE | A_TYPE,
                 // bad rdf:
                 A_BADATTRS);
-        int cnt = ap.processSpecials(taint,atts);
+        int cnt = ap.processSpecials(taint, atts);
 
         // These three states are intended as mutually
         // incompatible, but all three can occur
@@ -90,23 +90,22 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         reify = ap.id == null ? null : URIReference.fromID(this, x, ap.id);
         if (taint.isTainted())
             predicate.taint();
-        
+
         if (mustBeEmpty(ap, atts, cnt)) {
             if (ap.nodeID != null) {
-                
+
                 object = new ARPResource(arp, ap.nodeID);
-                checkXMLName(object,ap.nodeID);
+                checkXMLName(object, ap.nodeID);
                 objectIsBlank = true;
             }
             if (ap.resource != null) {
                 if (object != null) {
-                    if (!badStateCode(nextStateCode)) // otherwise warning
-                                                        // already given
-                        warning(
-                                ERR_SYNTAX_ERROR,
-                                "It is not permitted to specifiy both rdf:nodeID and rdf:resource attributes on a property element."); 
+                    if (!badStateCode(nextStateCode))
+                        // otherwise warning already given
+                        warning(ERR_SYNTAX_ERROR, 
+                                "On a property element, only one of the attributes rdf:nodeID or rdf:resource is permitted.");
                 } else
-                    object = URIReference.resolve(this, x, ap.resource); 
+                    object = URIReference.resolve(this, x, ap.resource);
             }
             if (object == null) {
                 object = new ARPResource(arp);
@@ -117,7 +116,6 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             processPropertyAttributes(ap, atts, x);
         }
 
-        
         FrameI nextFrame = nextFrame(atts, ap, cnt, nextStateCode, x);
         if (object != null) {
             if (taint.isTainted())
@@ -269,7 +267,6 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
      * 
      **************************************************************************/
     // TODO: add tests for these error messages
-
     private String descriptionOfCases(AttributeLexer ap, int nextStateCode,
             String propAttrs) {
         return ((propAttrs == null && ap.type == null)
@@ -316,7 +313,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             }
         }
         if (propAttrs != null) {
-            rslt += "attributes or " + propAttrs;
+            rslt += " attributes or " + propAttrs;
         }
         rslt += " is permitted.";
         return rslt;
@@ -324,41 +321,66 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
 
     private String complicatedErrorMessage(int nextStateCode,
             AttributeLexer ap, String propAttrs) {
-        String rslt = "";
-        if (ap.nodeID == null && ap.resource == null)
-            throw new IllegalStateException("precondition failed.");
-        if (ap.nodeID != null && ap.resource != null) {
-            rslt += "the mutually incompatible attributes rdf:nodeID and rdf:resource,";
-        } else {
-            rslt += "the attribute "
-                    + (ap.nodeID != null ? "rdf:nodeID" : "rdf:resource");
-            if (ap.type != null && propAttrs != null)
-                rslt += ",";
-        }
-        if (ap.type != null && propAttrs != null) {
-            rslt += " the attribute rdf:type and the " + propAttrs;
-            rslt = "On a property element, each of " + rslt;
-        } else if (ap.type != null) {
-            rslt = "On a property element, both " + rslt
-                    + " and the attribute rdf:type";
-        } else {
-            rslt = "On a property element, both " + rslt + " and the "
-                    + propAttrs;
-        }
-        rslt += " are incompatible with ";
-        if ((nextStateCode & (TYPEDLITERAL | PARSETYPE)) == (TYPEDLITERAL | PARSETYPE))
-            rslt += "the mutually incompatible attributes rdf:datatype and rdf:parseType.";
-        else
-            rslt += "the attribute "
-                    + ((nextStateCode & PARSETYPE) == PARSETYPE ? "rdf:parseType"
-                            : "rdf:datatype") + ".";
+        String subjectIs;
 
-        return rslt;
+        if (ap.nodeID == null && ap.resource == null
+                && (ap.type == null || propAttrs == null))
+            throw new IllegalStateException("precondition failed.");
+
+        switch (nextStateCode & (TYPEDLITERAL | PARSETYPE)) {
+        case TYPEDLITERAL | PARSETYPE:
+            subjectIs = "the mutually incompatible attributes rdf:datatype and rdf:parseType are";
+            break;
+        case TYPEDLITERAL:
+            subjectIs = "the attribute rdf:datatype is";
+            break;
+        case PARSETYPE:
+            subjectIs = "the attribute rdf:parseType is";
+            break;
+        default:
+            throw new IllegalStateException("precondition failed");
+        }
+
+        String nodeIDResource = null;
+        if (ap.nodeID != null && ap.resource != null) {
+            nodeIDResource = "the mutually incompatible attributes rdf:nodeID and rdf:resource";
+        } else if (ap.nodeID != null) {
+            nodeIDResource = "the attribute rdf:nodeID";
+        } else if (ap.resource != null) {
+            nodeIDResource = "the attribute rdf:resource";
+        }
+
+        int otherAttCount = nodeIDResource == null ? 0 : 1;
+        String otherAtts;
+        if (ap.type != null)
+            otherAttCount++;
+        if (propAttrs != null)
+            otherAttCount++;
+        if (otherAttCount < 2)
+            throw new IllegalStateException("logic error");
+        otherAtts = otherAttCount == 2 ? "both " : "each of ";
+
+        if (ap.type != null && propAttrs != null) {
+            if (nodeIDResource == null)
+                otherAtts += "the attribute rdf:type and the " + propAttrs;
+            else 
+                otherAtts += "the attribute rdf:type, the " + propAttrs;
+        } else if (ap.type != null) {
+            otherAtts += "the attribute rdf:type";
+        } else {
+            otherAtts = "the " + propAttrs;
+        }
+        
+        if (nodeIDResource != null)
+            otherAtts += " and "+nodeIDResource;
+
+        return "On a property element, " + subjectIs + " incompatible with "
+                + otherAtts +".";
     }
 
     private String propertyAttributeDescription(Attributes atts,
             AttributeLexer ap, int cnt) {
-        String propAttrs = null;
+        String propAttrs = "";
         int propAttrCount = atts.getLength() - cnt;
         int found = 0;
         if (propAttrCount == 0)

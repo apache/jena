@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.34 2005-09-16 10:40:04 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.35 2005-09-22 12:59:03 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -34,6 +34,8 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 		
 		suite.addTest(TestErrorMsg.suite());
+
+        suite.addTest(TestPropEltErrorMsg.suite());
 		suite.addTest(TestScope.suite());
 		suite.addTest(ExceptionTests.suite());
 	
