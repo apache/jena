@@ -82,7 +82,14 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 
     private Model model;
 
-    // TODO: javadoc
+    /**
+     * Reads from url, using url as base, adding triples to model. 
+     * 
+     * @param model
+     *            A model to add triples to.
+     * @param url
+     *            The URL of the RDF/XML document.
+     */
     public void read(Model m, String url) throws JenaException {
         try {
             URLConnection conn = new URL(url).openConnection();

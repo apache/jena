@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.23 2005-09-23 07:51:43 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.24 2005-09-23 07:58:51 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -401,8 +401,11 @@ public interface ARPErrorNumbers {
 	    */
 	   public int WARN_NONCANONICAL_IANA_NAME =134;
        
-       // TODO: javadoc here
-        int WARN_NOT_RDF_NAMESPACE = 135;
+       /**
+        * It seems likely that the namespace for rdf: has a typo in it.
+        * (W135)
+        */
+        public int WARN_NOT_RDF_NAMESPACE = 135;
         
         /**
          *A URI reference which is a relative reference
@@ -414,9 +417,8 @@ public interface ARPErrorNumbers {
         
     
     /** Should not happen. 
-        Please report occurrence to jjc@hpl.hp.com with test case, if possible. 
      (E200)
-    
+    @deprecated No longer used.
      */
     public int ERR_INTERNAL_ERROR = 200;
     /** The attributes or element tags contravene the RDF grammar. 
