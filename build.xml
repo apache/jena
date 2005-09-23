@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.97 2005-09-16 20:23:42 ian_dickinson Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.98 2005-09-23 12:20:56 chris-dollin Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -82,14 +82,9 @@
   <target name="test" depends="test-jar"
     description="Runs the unit tests against ${jarfile}"/>
 
-  <target name="tools-compile"
-    description="Compile auxilliary tools; delegated to build-internal.xml">
-    <ant antfile="build-internal.xml" target="tools-compile"/>
-  </target>
-
-  <target name="contrib"
-    description="Build the Jena contribs html page; delegated to build-internal.xml">
-    <ant antfile="build-internal.xml" target="contrib"/>
+  <target name="contrib">
+    <echo>building and uploading the contributions.html file is done</echo>
+    <echo>from within Jena's rdf-html module.</echo>
   </target>
 
 
