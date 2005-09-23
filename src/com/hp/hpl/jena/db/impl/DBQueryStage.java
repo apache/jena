@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.11 2005-07-01 21:51:49 wkw Exp $
+  $Id: DBQueryStage.java,v 1.12 2005-09-23 19:46:25 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -75,7 +75,7 @@ public class DBQueryStage extends Stage
 					it = new ResultSetIterator();
 					ps.execute();
 					rs= ps.getResultSet();
-					it.reset(rs, ps, null, null);
+					it.reset(rs, ps);
 					while (it.hasNext()) {
 						useme = current.copy();
 						List row = (List) it.next();

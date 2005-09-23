@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.10 $ on $Date: 2005-02-21 12:03:09 $
+* @version $Revision: 1.11 $ on $Date: 2005-09-23 19:46:25 $
 */
 
 public class ResultSetIterator implements ExtendedIterator {
@@ -46,6 +46,9 @@ public class ResultSetIterator implements ExtendedIterator {
     /** The source Statement to be cleaned up when the iterator finishes - return it to cache or close it if no cache */
     protected PreparedStatement m_statement;
 
+    /** If true, clean/close the prepared statement when iterator is closed */
+    protected boolean m_statementClean = true;
+  
     /** The name of the original operation that lead to this statement, can be null if SQLCache is null */
     protected String m_opname;
 
@@ -112,6 +115,24 @@ public class ResultSetIterator implements ExtendedIterator {
         m_finished = false;
         m_prefetched = false;
         m_row = null;
+        m_statementClean = true;
+    }
+    
+    /**
+     * Reset an existing iterator to scan a new result set.
+     * @param resultSet the result set being iterated over
+     * @param sourceStatement The source Statement to be cleaned up when the iterator finishes - return it to cache or close it if no cache
+     * note: the sourceStatement is not closed or returned when the iterator is closed.
+     */
+    public void reset(ResultSet resultSet, PreparedStatement sourceStatement) {
+        m_resultSet = resultSet;
+        m_sqlCache = null;
+        m_statement = sourceStatement;
+        m_opname = null;
+        m_finished = false;
+        m_prefetched = false;
+        m_row = null;
+        m_statementClean = false;
     }
 
     /**
@@ -204,6 +225,7 @@ public class ResultSetIterator implements ExtendedIterator {
                     logger.warn("Error while finalizing result set iterator", e);
                 }
             }
+            if (m_statementClean) {
             if (m_sqlCache != null && m_opname != null) {
                 m_sqlCache.returnPreparedSQLStatement(m_statement);
             } else {
@@ -212,6 +234,7 @@ public class ResultSetIterator implements ExtendedIterator {
                 } catch (SQLException e) {
                     logger.warn("Error while finalizing result set iterator", e);
                 }
+            }
             }
         }
         m_finished = true;
