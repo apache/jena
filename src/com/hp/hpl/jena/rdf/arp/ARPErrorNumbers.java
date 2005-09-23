@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.24 2005-09-23 07:58:51 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.25 2005-09-23 11:02:10 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -50,7 +50,8 @@ public interface ARPErrorNumbers {
      * @see ARP#setErrorMode
      */
     public int EM_WARNING = 1;
-    /** Used as ErrorMode to abort processing of element, after reporting error.
+    // TODO: add error contract
+    /** Used as ErrorMode to report error, and not generate associated triples.
      * @see ARP#setErrorMode
      */
     public int EM_ERROR = 2;
@@ -87,7 +88,7 @@ public interface ARPErrorNumbers {
      Indicates that somewhere, 
      an xml:base attribute has been used and
      changes the interpretation of some URI (either through a
-     URI-reference or idSymbold production in the grammar). (W003)
+     relative URI-reference or rdf:ID). (W003)
      This is ignored in default and strict mode.
      @see #IGN_XMLBASE_USED
      */
@@ -122,13 +123,14 @@ public interface ARPErrorNumbers {
      *rdf: qualifier and reports a warning. (W101).
     */
     public int WARN_UNQUALIFIED_RDF_ATTRIBUTE = 101;
+   // TODO: test case for this error, plus code
     /**
      *Some attribute that is not an RDF keyword is used in an 
        unqualified fashion. In default mode,  then the namespace of
        the enclosing element
        is used. 
-       Strict mode skips to the end of the enclosing element. (W102).
-    
+       In strict mode this is an error. (W102).
+   
      *
      */
     public int WARN_UNQUALIFIED_ATTRIBUTE = 102;
@@ -139,10 +141,11 @@ public interface ARPErrorNumbers {
      * In default and strict modes this is a warning. (W103).
      **/
     public int WARN_UNKNOWN_RDF_ATTRIBUTE = 103;
+    // TODO: test case and impl of this error code.
     /**
     An element tag is not a qualified name. 
      In default mode, a resource or property is generated with a malformed URI.
-     * Strict mode skips to the end of the enclosing element. (W104).
+     * Strict mode treats this as an error. (W104).
     */
     public int WARN_UNQUALIFIED_ELEMENT = 104;
 
@@ -167,10 +170,10 @@ public interface ARPErrorNumbers {
     */
     public int WARN_UNKNOWN_PARSETYPE = 106;
     /**
-     *A URI reference does not conform to RFC2396. 
+     *A URI reference does not conform to the definition of RDF URI Reference. 
        Use Exception.getMessage() for details. 
        In default mode, the malformed URI is passed to the RDF 
-       processing application; strict mode skips to the end of the enclosing element.
+       processing application; strict mode treats this as an error.
      * (W107)
     
      *
@@ -180,32 +183,25 @@ public interface ARPErrorNumbers {
      *An ID symbol or other grammar production that should be an 
        XML name is malformed. In default mode, 
       the malformed string is passed to the RDF application. (W108)
-     *Strict mode skips to the end of the enclosing element.
+     *Strict mode treats this as an error.
      *
      */
     public int WARN_BAD_NAME = 108;
+    // TODO: check this error condition
     /**
-     *A namespace, which has been declared with a relative URI, 
-       has been used in a qualified name. 
+     *A namespace has been declared with a relative URI.
       Such relative URI namespaces have been 
        <a href="http://www.w3.org/2000/09/xppa">deprecated</a>. 
-       In default mode, the relative string is passed to the RDF application.
-       Strict mode skips to the end of each enclosing element in which 
-       the namespace is used. 
-      (Note: this does not necessarily ignore the whole element in 
-       which the namespace was declared.) (W109)
+       This often results in related {@link #WARN_RELATIVE_URI}
+       warnings.
+       (W109)
      *
      */
     public int WARN_RELATIVE_NAMESPACE_URI_DEPRECATED = 109;
-    /* *
-     *An rdf:aboutEach refers to a collection that either has not been defined in the file, or has been defined but is empty. 
-      In strict mode, this is ignored.(W110)
-     *
-     */
+   
     //   public int WARN_EMPTY_ABOUT_EACH                        =110;
     /**
-     *Just a double check that an error is reported 
-      when XML parsing fails for any reason. In strict mode this is ignored.
+     *No longer used.
      *(W111)
      * @deprecated
     
@@ -214,10 +210,9 @@ public interface ARPErrorNumbers {
     public int WARN_BAD_XML = 111;
     /**
      *
-     *Should not happen. But ARP has probably processed the file 
-      correctly  even if it does. Please 
-      report any occurrences to jjc@hpl.hp.com, preferably with a test case.
+     *Should not happen. 
      *(W112)
+     *@deprecated No longer used.
      */
     public int WARN_MINOR_INTERNAL_ERROR = 112;
     /**
@@ -264,10 +259,8 @@ public interface ARPErrorNumbers {
      */
     public int WARN_PROCESSING_INSTRUCTION_IN_RDF = 119;
     /**
-     * The same name has been used for more than one rdf:ID or rdf:bagID,
-     * in the context of different xml:bases.
-     * In default mode this is a warning; in strict mode it is ignored.
-     @see #WARN_REDEFINITION_OF_ID
+     * No longer used. 
+     * @see #WARN_REDEFINITION_OF_ID
      @deprecated Last supported in Jena 2.1 - too expensive.
      */
     public int WARN_LEGAL_REUSE_OF_ID = 120;
@@ -280,21 +273,13 @@ public interface ARPErrorNumbers {
       **/
     public int WARN_STRING_COMPOSING_CHAR = 121;
     /**
-      * The idSymbol production matched a string with a colon in it.
-      * This is, at best, unwise.
-      *  This  is a warning in default and an errror in strict mode (W122). 
+      * No longer used. (W122). 
       * 
       * @deprecated Superceded by the more general {@link #WARN_BAD_NAME} */
     public int WARN_QNAME_AS_ID = 122;
 
     /**
-      * URI components in RDF should not start with a composing char,
-      * as defined by the CharacterModel working draft.
-      * ARP checks components that are the value of <code>rdf:about</code> 
-      * attributes etc.
-      *  This is particularly important if XML 1.1 compatibility is
-      * required.
-      *  This is a warning in default mode and ignored in strict mode (W123).
+      * No longer used. (W123)
       * 
      * @deprecated WG decision on <a href=
      * 
@@ -411,6 +396,7 @@ public interface ARPErrorNumbers {
          *A URI reference which is a relative reference
          *has been used either as the starting base URI
          *or as the outcome of a URI resolution somehow.
+         *In strict mode this is an error.
          *(W136)
          */
         public int WARN_RELATIVE_URI = 136;
@@ -450,8 +436,8 @@ public interface ARPErrorNumbers {
      */
     public int ERR_LI_AS_TYPE = 204;
     /**
-     *An element is tagged rdf:XXX where XXX is an RDF attribute name,
-     * (E205).
+     *An element is tagged rdf:XXX where XXX is an RDF attribute name.
+     * (E205)
      */
     public int ERR_BAD_RDF_ELEMENT = 205;
     /**
@@ -462,15 +448,15 @@ public interface ARPErrorNumbers {
      **/
     public int ERR_BAD_RDF_ATTRIBUTE = 206;
     /**
-     * String Literals in RDF must be in Unicode Normal Form C
+     * No longer used.
+     * @see #WARN_STRING_NOT_NORMAL_FORM_C
      @deprecated See 2nd Last Call docs
      * 
      * *  (E207).
      **/
     public int ERR_STRING_NOT_NORMAL_FORM_C = 207;
     /**
-     * URI references in RDF must be in Unicode Normal Form C
-     *  (E208).
+     * No longer used.(E208).
      * @deprecated WG decision on <a href=
      * 
 "http://www.w3.org/2001/sw/RDFCore/20030123-issues/#williams-01"
@@ -511,21 +497,24 @@ public interface ARPErrorNumbers {
     public int ERR_GENERIC_IO = 213;
     
     /**
+     * Cannot resolve a relative URI, because base URI is malformed.
      * The base URI, specified in the API call, or
-     * with an xml:base was malformed (@link #WARN_MALFORMED_URI}.
+     * with an xml:base was malformed,
+     * (see {@link #WARN_MALFORMED_URI}).
      * A relative URI needs to be resolved against it,
      * and this cannot be done correctly. (E214)
      */
     public int ERR_RESOLVING_AGAINST_MALFORMED_BASE = 214;
     /**
+     * Cannot resolve a relative URI, because base URI is relative.
      * The base URI, specified in the API call, or
-     * with an xml:base was relative (@link #WARN_RELATIVE_URI}.
+     * with an xml:base was relative {@link #WARN_RELATIVE_URI}.
      * A relative URI needs to be resolved against it,
-     * and this resulting in a relative URI. (E215)
+     * resulting in a relative URI. (E215)
      */
     public int ERR_RESOLVING_AGAINST_RELATIVE_BASE = 215;
 
-      /**   The error recovery code failed. (E300)
+      /**   No longer used. (E300)
        * @deprecated Not used.
     **/
     public int ERR_UNABLE_TO_RECOVER = 300;

@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.36 2005-09-23 07:51:48 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.37 2005-09-23 11:02:20 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -30,7 +30,6 @@ import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.ARP;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.AResource;
-import com.hp.hpl.jena.rdf.arp.JenaReader;
 import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.arp.StatementHandler;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -462,7 +461,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	private void checkExpected() {
 		for (int i = 0; i < expected.length; i++)
 			if (expected[i] != 0) {
-				fail("Expected error: " + JenaReader.errorCodeName(expected[i])
+				fail("Expected error: " + ParseException.errorCodeName(expected[i])
 						+ " but it did not occur.");
 			}
 	}
@@ -503,7 +502,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 			}
 		String msg = "Parser reports unexpected "
 				+ WGTestSuite.errorLevelName[level] + ": "
-				+ JenaReader.errorCodeName(num);
+				+ ParseException.errorCodeName(num);
 		println(msg);
 		fail(msg);
 	}

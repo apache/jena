@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.31 2005-09-23 07:51:48 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.32 2005-09-23 11:02:20 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -516,7 +516,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 "Parser reports unexpected "
                     + errorLevelName[level]
                     + ": "
-                    + JenaReader.errorCodeName(num);
+                    + ParseException.errorCodeName(num);
             println(msg);
             fail(msg);
         }
@@ -612,7 +612,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 while (si.hasNext()) {
                     String uri = si.nextStatement().getResource().getURI();
                     String fieldName = uri.substring(uri.lastIndexOf('#') + 1);
-                    expected.add(new Integer(JenaReader.errorCode(fieldName)));
+                    expected.add(new Integer(ParseException.errorCode(fieldName)));
                 }
             }
         }
@@ -647,7 +647,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                     int eCode = ((Integer) it.next()).intValue();
                     String msg =
                         "Expected error  "
-                            + JenaReader.errorCodeName(eCode)
+                            + ParseException.errorCodeName(eCode)
                             + ", was not detected.";
                     if (errorCnt[2] == 0)
                         fail(msg);
@@ -670,7 +670,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 while (it.hasNext())
                     fail(
                         "Detected error  "
-                            + JenaReader.errorCodeName(
+                            + ParseException.errorCodeName(
                                 ((Integer) it.next()).intValue())
                             + ", was not expected.");
             }
@@ -706,7 +706,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                         + "'>\n"
                         + "<jjc:error rdf:resource='"
                         + jjcNS
-                        + JenaReader.errorCodeName(id)
+                        + ParseException.errorCodeName(id)
                         + "'/>\n</rdf:Description>");
             }
         }
@@ -786,7 +786,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 "Parser reports unexpected "
                     + errorLevelName[level]
                     + ": "
-                    + JenaReader.errorCodeName(num);
+                    + ParseException.errorCodeName(num);
             println(msg);
             fail(msg);
         }
@@ -936,7 +936,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                     int eCode = ((Integer) it.next()).intValue();
                     String msg =
                         "Expected error  "
-                            + JenaReader.errorCodeName(eCode)
+                            + ParseException.errorCodeName(eCode)
                             + ", was not detected.";
                     if (errorCnt[2] == 0) {
                         fail(msg);
@@ -949,7 +949,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 while (it.hasNext())
                     fail(
                         "Detected error  "
-                            + JenaReader.errorCodeName(
+                            + ParseException.errorCodeName(
                                 ((Integer) it.next()).intValue())
                             + ", was not expected.");
             }

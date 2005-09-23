@@ -1,11 +1,13 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
    [See end of file]
-  $Id: NamespaceHandler.java,v 1.4 2005-08-01 15:07:09 jeremy_carroll Exp $
+  $Id: NamespaceHandler.java,v 1.5 2005-09-23 11:02:10 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
 /**
+ * The interface for being notified about namespace use in an RDF/XML
+ * document.
  * This has methods copied form SAX  for
  * notifying the application of namespaces.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>

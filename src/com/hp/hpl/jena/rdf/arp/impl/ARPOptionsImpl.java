@@ -67,7 +67,6 @@ public class ARPOptionsImpl extends  ARPOptions implements ARPErrorNumbers {
 		setDefaultErrorMode();
 		for (int i = 100; i < 200; i++)
 			setErrorMode(i, EM_IGNORE);
-		setErrorMode(WARN_MINOR_INTERNAL_ERROR, EM_WARNING);
 	}
 
 	/* (non-Javadoc)
@@ -98,8 +97,6 @@ public class ARPOptionsImpl extends  ARPOptions implements ARPErrorNumbers {
 			setErrorMode(i, error);
 		// setErrorMode(IGN_XMLBASE_USED,warning);
 		// setErrorMode(IGN_XMLBASE_SIGNIFICANT,error);
-		setErrorMode(WARN_MINOR_INTERNAL_ERROR, warning);
-		setErrorMode(WARN_MINOR_INTERNAL_ERROR, warning);
 		setErrorMode(WARN_DEPRECATED_XMLLANG, warning);
 		setErrorMode(WARN_STRING_NOT_NORMAL_FORM_C, warning);
 		//       setErrorMode(WARN_EMPTY_ABOUT_EACH,nonErrorMode);

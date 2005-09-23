@@ -185,7 +185,7 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
 //    }
 
 
-    static private boolean isMemberProperty(String name) {
+    protected static boolean isMemberProperty(String name) {
         if (name.startsWith("_")) {
             String number = name.substring(1);
             if (number.startsWith("-") || number.startsWith("0"))
@@ -209,6 +209,9 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
     static public boolean isKnownRDFProperty(String name) {
         return knownRDFProperties.contains(name)
           || isMemberProperty(name);
+    }
+    static public boolean isKnownNonMemberRDFProperty(String name) {
+        return knownRDFProperties.contains(name);
     }
 
     

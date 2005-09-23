@@ -1,7 +1,7 @@
 /*
  *  (c) Copyright 2001, 2003,2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AResource.java,v 1.9 2005-08-01 15:07:08 jeremy_carroll Exp $
+  $Id: AResource.java,v 1.10 2005-09-23 11:02:09 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -14,17 +14,15 @@ package com.hp.hpl.jena.rdf.arp;
  *
 */
 public interface AResource {
-	    /* Undefined results (including an exception) if not isAnonymous().
-	     * @return An identifier with file scope for this anonymous resource.
-	     */
+	  
 	/** A string distinguishing this anonymous resource, from other anonymous resources.
-	 * Undefined if <CODE>isAnonymous()</CODE> returns false.
-	 * @return A gensym String starting "A", or "U" concatenated with the value of rdf:nodeID.
+	 * Undefined if {@link #isAnonymous} returns false.
+	 * @return An identifier with file scope for this anonymous resource..
 	 */    
 	    public String getAnonymousID();
 	    
-	/** If the input file specifies a URI reference for this resource, return it.
-	 * Not defined if <CODE>isAnonymous()</CODE> returns true.
+	/** The URI reference for this resource, if any.
+	 * Not defined if {@link #isAnonymous} returns true.
 	 * @return The URI reference of this resource.
 	 */    
 	    public String getURI();
@@ -32,23 +30,15 @@ public interface AResource {
 	 * This may help with garbage collect strategies when parsing huge files.
 	 * No references to the user data are maintained after a blank node goes out of
 	 * scope.
-	 * <p>
-	 * Jena 2.1 note: earlier versions had a bug, which permitted user data
-	 * on some URIref nodes and not on others. The documentation did not indicate that it
-	 * was supported only on blank nodes. The documentation has been fixed
-	 * to match the code which now uniformly no longer supports URIref nodes.
-	 * @return A user data object previously stored with setUserData; or null if none.
+	 * @return A user data object previously stored with {@link #setUserData}; or null if none.
 	 */    
 	    public Object getUserData();
 	 /**
-	  * 
-	  * @return True, if this is an anonymous resource with an explicit rdf:nodeID
+	  * True, if this is an anonymous resource with an explicit rdf:nodeID.
+	  * @return true if this resource has a nodeID
 	  */
 	 public boolean hasNodeID();
-	    /*
-	     *  @return true if this resource is anonymous
-	     */
-	/** Was this resource not given a URI in the file.
+	/** True if this resource does not have an associated URI.
 	 * @return True if this resource is anonymous.
 	 */    
 	    public boolean isAnonymous();
@@ -58,12 +48,7 @@ public interface AResource {
 	 * scope.
 	 * <p>
 	 * See note about large files in class documentation for {@link ARP}.
-	 * <p>
-	 * Jena 2.1 note: earlier versions had a bug, which permitted user data
-	 * on some URIref nodes and not on others. The documentation did not indicate that it
-	 * was supported only on blank nodes. The documentation has been fixed
-	 * to match the code which now uniformly no longer supports URIref nodes.
-	 * @param d A user data object which may be retrieved later with getUserData.
+	 * @param d A user data object which may be retrieved later with {@link #getUserData}.
 	 */    
 	     public void setUserData(Object d);
 

@@ -18,7 +18,7 @@ public class ElementLexer extends QNameLexer  {
     public final boolean badMatch;
     public ElementLexer(Taint t,Frame f, String uri,
                  String localName,
-                 String qname, int good, int bad)  throws SAXParseException {
+                 String qname, int good, int bad, boolean report_1)  throws SAXParseException {
         super(f,good,bad);
         this.uri = uri;
         this.localName = localName;
@@ -29,10 +29,16 @@ public class ElementLexer extends QNameLexer  {
         badMatch = (this.bad&match) != 0;
         
         if ((!(goodMatch||badMatch))&&(this.bad&E_RDF)==E_RDF) {
-            if (rdfns.equals(uri) && !isKnownRDFProperty(localName)) {
+            if (rdfns.equals(uri)) {
+                if (isMemberProperty(localName)){
+                    if (report_1)
+                    frame.warning(t,WARN_RDF_NN_AS_TYPE,
+                            qname + " is being used on a typed node.");
+                } else if (!isKnownNonMemberRDFProperty(localName)) {
                 frame.warning(t,WARN_UNKNOWN_RDF_ELEMENT,
                         qname + " is not a recognized RDF property or type.");
                 
+            }
             }
         }
     }

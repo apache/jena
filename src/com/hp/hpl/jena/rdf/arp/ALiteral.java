@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ALiteral.java,v 1.5 2005-08-06 06:14:52 jeremy_carroll Exp $
+   $Id: ALiteral.java,v 1.6 2005-09-23 11:02:10 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
  /*
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.rdf.arp.impl.ANode;
  * @author  jjc
  */
 public interface ALiteral extends ANode {
-/** Was this formed from a rdf:parseType="Literal" construction.
+/** True if this literal was formed from a rdf:parseType="Literal" construction.
  * @return true for rdf:parseType="Literal" or any other unrecognised parseType.
  */    
     public boolean isWellFormedXML();
@@ -55,7 +55,7 @@ public interface ALiteral extends ANode {
     /**
      * The datatype URI of a typed literal, or null 
      * for an untyped literal.
-     * @return String
+     * @return the URI as a String, or null
      */
     public String getDatatypeURI();
 /** The string value of the literal.

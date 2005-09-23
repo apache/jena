@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.14 2005-09-23 07:51:43 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.15 2005-09-23 11:02:10 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -41,6 +41,7 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
  * Allows connecting an arbitrary source of SAX events with ARP.
  * </p>
  * <p>For use with a DOM tree,
+ * either use {@link DOM2Model} or
  * see <a href="http://javaalmanac.com/egs/javax.xml.transform.sax/Dom2Sax.html">
  * The Java Developer's Almanac</a> for a discussion of how to transform a DOM
  * into a source of SAX events.
@@ -50,14 +51,15 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
  * The use pattern is to create and initialize one of these,
  * then set it as the content, lexical and error handler
  * for some source of SAX events (e.g. from a parser).
- * It must be configured to use namespaces, and namespace
+ * The parser must be configured to use namespaces, and namespace
  * prefixes. This initializing can be done for XMLReaders
  * using {@link #installHandlers}.
  * </p>
+ * 
  * <p>
- * Triples and errors are reported on a different thread.
- * Do not expect synchronous behaviour between the SAX events
- * and the triples or errors being generated.
+ * To build a Jena model it is better to use {@link SAX2Model}.
+ * The documentation here, covers usage both using the subclass
+ * {@link SAX2Model}, and not.
  * </p>
  * <p>
  * This class does not support multithreaded SAX sources, nor IO interruption.
@@ -159,9 +161,9 @@ implements ARPConfig {
      *<p>This is passed to any {@link NamespaceHandler} associated
      *with this parser.
      *It can be called before the initial 
-     *{@link #startElement} event, or other events associated
+     *<code>startElement</code> event, or other events associated
      *with the elements being processed.
-     *When building a Jena Model, it is not required to match this
+     *When building a Jena Model, with {@link SAX2Model} it is not required to match this
      *with corresponding {@link #endPrefixMapping} events.
      *Other {@link NamespaceHandler}s may be fussier.
      *When building a Jena Model, the prefix bindings are
@@ -184,34 +186,19 @@ implements ARPConfig {
         
     	initParse(base);
     }
-    /**
-     * @deprecated Use the other constructor.
-     * @param b ignored completely
-     */
-//	SAX2RDF(String base, String lang, boolean b) throws MalformedURIException {
-//        super(base,lang);
-//        try {
-//            initParse(base);
-//        }
-//        catch (SAXParseException e) {
-//            throw new MalformedURIException(e);
-//        }
-//        
-//    }
-    /** This is used when configuring a parser that
-	 * is not loading into a Jena Model, but is processing
-	 * the triples etc. in some other way.
+
+    /**The handlers used for processing ARP events. 
+     * Do not use with a {@link SAX2Model}.
 
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getHandlers()
 	 */
 	public ARPHandlers getHandlers() {
 		return super.getHandlers();
 	}
-	/** This is used when configuring a parser that
-	 * is not loading into a Jena Model, but is processing
-	 * the triples etc. in some other way.
+    /**Copys handlers used for processing ARP events. 
+     * Do not use with a {@link SAX2Model}.
 	
-	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlersWith(com.hp.hpl.jena.rdf.arp.impl.ARPHandlers)
+	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlersWith(ARPHandlers)
 	 */
 	public void setHandlersWith(ARPHandlers handlers) {
 		super.setHandlersWith(handlers);

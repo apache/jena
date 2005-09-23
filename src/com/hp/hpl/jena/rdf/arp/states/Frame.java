@@ -119,7 +119,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
     protected FrameI rdfStartElement(String uri, String localName,
             String rawName, Attributes atts) throws SAXParseException {
         ElementLexer el = new ElementLexer(taint, this, uri, localName,
-                rawName, E_RDF, 0);
+                rawName, E_RDF, 0, false);
         if (el.goodMatch) {
             AttributeLexer ap = new AttributeLexer(this, A_XMLBASE | A_XMLLANG
                     | A_XML_OTHER, 0);

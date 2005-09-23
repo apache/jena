@@ -24,11 +24,9 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.arp.impl.JenaHandler;
 import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
@@ -50,7 +48,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * Sets the reader for the languages RDF/XML and RDF/XML-ABBREV to be
      * JenaReader.
-     * 
+     * @deprecated This is the default behaviour
      * @param m
      *            The Model on which to set the reader properties.
      */
@@ -85,7 +83,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * Reads from url, using url as base, adding triples to model. 
      * 
-     * @param model
+     * @param m
      *            A model to add triples to.
      * @param url
      *            The URL of the RDF/XML document.
@@ -119,7 +117,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 .isWellFormedXML(), null);
     }
 
-    static Node convert(ALiteral lit) {
+    private static Node convert(ALiteral lit) {
         String dtURI = lit.getDatatypeURI();
         if (dtURI == null)
             return Node.createLiteral(lit.toString(), lit.getLang(), false);
@@ -133,7 +131,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 
     }
 
-    static Node convert(AResource r) {
+    private static Node convert(AResource r) {
         if (!r.isAnonymous())
             return Node.createURI(r.getURI());
 
@@ -147,11 +145,11 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 
     }
 
-    public static Triple convert(AResource s, AResource p, AResource o) {
+    static Triple convert(AResource s, AResource p, AResource o) {
         return Triple.create(convert(s), convert(p), convert(o));
     }
 
-    public static Triple convert(AResource s, AResource p, ALiteral o) {
+    static Triple convert(AResource s, AResource p, ALiteral o) {
         return Triple.create(convert(s), convert(p), convert(o));
     }
 
@@ -173,7 +171,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * Reads from reader, using base URI xmlbase, adding triples to model. If
      * xmlbase is "" then relative URIs may be added to model.
      * 
-     * @param model
+     * @param m
      *            A model to add triples to.
      * @param reader
      *            The RDF/XML document.
@@ -297,8 +295,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     /**
      * 
      * Change a property of the RDF or XML parser.
-     * <p>
-     * This method is untested.
      * <p>
      * I do not believe that many of the XML features or properties are in fact
      * useful for ARP users. The ARP properties allow fine-grained control over
@@ -446,34 +442,27 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         return setArpProperty(str, obj);
     }
 
-    static public int errorCode(String upper) {
-        Class c = ARPErrorNumbers.class;
-        try {
-            java.lang.reflect.Field fld = c.getField(upper);
-            return fld.getInt(null);
-        } catch (Exception e) {
-            return -1;
-        }
-    }
-
-    static public String errorCodeName(int errNo) {
-        Class c = ARPErrorNumbers.class;
-        java.lang.reflect.Field flds[] = c.getDeclaredFields();
-        for (int i = 0; i < flds.length; i++) {
-            try {
-                if (flds[i].getInt(null) == errNo)
-                    return flds[i].getName();
-            } catch (Exception e) {
-                // ignore exceptions
-            }
-        }
-        return null;
-    }
-
     private Object setArpProperty(String str, Object v) {
         return setArpProperty(arpf.getOptions(), str, v, errorHandler);
     }
 
+
+    /**
+     * @deprecated Use {@link ParseException#errorCodeName(int)
+     */
+    static public String errorCodeName(int errNo) {
+        return ParseException.errorCodeName(errNo);
+    }
+
+
+
+
+    /**
+     * @deprecated Use {@link ParseException#errorCode(String)
+     */
+    static public int errorCode(String upper) {
+        return ParseException.errorCode(upper);
+    }
     /**
      * Supported proprties: error-mode (String) default, lax, strict,
      * strict-ignore, strict-warning, strict-error, strict-fatal embedding
@@ -545,7 +534,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         }
         if (str.startsWith("ERR_") || str.startsWith("IGN_")
                 || str.startsWith("WARN_")) {
-            int cond = errorCode(str);
+            int cond = ParseException.errorCode(str);
             if (cond == -1) {
                 // error, see end of function.
             } else {
@@ -553,7 +542,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                     if (!((String) v).startsWith("EM_")) {
                         // error, see below.
                     } else {
-                        int val = errorCode((String) v);
+                        int val = ParseException.errorCode((String) v);
                         if (val == -1) {
                             // error, see below.
                         } else {
@@ -586,18 +575,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         return null;
     }
 
-    /**
-     * Create a instance of ModelMem() and set it to use JenaReader as its
-     * default reader.
-     * 
-     * @deprecated This Reader is now the default.
-     * @return A new in-memory Jena model.
-     */
-    static public Model memModel() {
-        Model rslt = ModelFactory.createDefaultModel();
-        useMe(rslt);
-        return rslt;
-    }
+    
 
 }
 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.18 2005-09-23 07:51:43 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.19 2005-09-23 11:02:10 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -52,7 +52,7 @@ import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
 /** A command line interface into ARP.
  * Creates NTriple's or just error messages.
  * <pre>
- * java &lt;class-path&gt; com.hp.hpl.jena.arp.NTriple ( [ -[xstfu]][ -b xmlBase -[eiw] NNN[,NNN...] ] [ file ] [ url ] )...
+ * java &lt;class-path&gt; com.hp.hpl.jena.arp.NTriple ( [ -[xstfurR]][ -b xmlBase -[eiw] NNN[,NNN...] ] [ file ] [ url ] )...
  * </pre>
  * <p>
  * &lt;class-path&gt; should contain <code>jena.jar</code>, <code>xerces.jar</code>,  and <code>icu4j.jar</code> or equivalents.
@@ -210,7 +210,7 @@ public class NTriple implements ARPErrorNumbers {
 		System.err.println(
 			"java <class-path> "
 				+ NTriple.class.getName()
-				+ " ( [ -[xstfu]][ -b xmlBase -[eiw] NNN[,NNN...] ] [ file ] [ url ] )... ");
+				+ " ( [ -[xstfurR]][ -b xmlBase -[eiw] NNN[,NNN...] ] [ file ] [ url ] )... ");
 		System.err.println(
 			"    All options, files and URLs can be intemingled in any order.");
 		System.err.println("    They are processed from left-to-right.");

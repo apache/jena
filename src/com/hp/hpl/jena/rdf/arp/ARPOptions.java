@@ -40,7 +40,7 @@ abstract public class ARPOptions {
     abstract public int setErrorMode(int errno, int mode);
 
     /** Resets error mode to the default values:
-     * most errors are reported as warnings, but triples are produced.
+     * many errors are reported as warnings, and resulting triples are produced.
      */
     abstract public void setDefaultErrorMode();
 
@@ -49,13 +49,13 @@ abstract public class ARPOptions {
      */
     abstract public void setLaxErrorMode();
 
-    /** This method tries to emulate the latest Working Group recommendations.
+    /** This sets strict conformance to the W3C Recommendations.
      */
     abstract public void setStrictErrorMode();
 
     /**
      * This method detects and prohibits errors according to
-     *the latest Working Group recommendations.
+     *the W3C Recommendations.
      * For other conditions, such as 
      {@link ARPErrorNumbers#WARN_PROCESSING_INSTRUCTION_IN_RDF}, nonErrorMode is used. 
      *@param nonErrorMode The way of treating non-error conditions.

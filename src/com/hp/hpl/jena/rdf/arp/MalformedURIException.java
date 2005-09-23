@@ -97,7 +97,7 @@ import java.io.IOException;
   * any MalformedURIExceptions thrown by ARP wrap either a
   * java.net.URISyntaxException or a ParseException.
   * The underlying exception can be accessed using Exception.getCause().
-  *@deprecated ARP now use java.net.URI and java.net.URISyntaxException
+  *@deprecated The code for RDF URI References and IRIs is in the process of being updated.
   ********************************************************************/
   public class MalformedURIException extends IOException {
 

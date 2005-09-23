@@ -70,7 +70,7 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
         ElementLexer el = new ElementLexer(taint,this,uri,localName,
                 rawName,
                 E_DESCRIPTION,
-                CoreAndOldTerms|E_LI);
+                CoreAndOldTerms|E_LI, true);
         if (taint.isTainted())
             subject.taint();
         if (!el.goodMatch) {

@@ -23,7 +23,7 @@ abstract public class ARPHandlers {
      * for bnodes as they leave scope, and for the start and end of rdf:RDF
      * elements.
      * <p>
-     * See note about large files in class documentation.
+     * See note about large files in {@link ARP} class documentation.
      * @param sh The handler to use.
      * @return The old handler.
      */

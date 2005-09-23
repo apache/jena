@@ -2,25 +2,20 @@
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp.impl;
+package com.hp.hpl.jena.rdf.arp;
 
 import java.util.Arrays;
 
 import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.arp.ALiteral;
-import com.hp.hpl.jena.rdf.arp.ARPHandlers;
-import com.hp.hpl.jena.rdf.arp.AResource;
-import com.hp.hpl.jena.rdf.arp.JenaReader;
-import com.hp.hpl.jena.rdf.arp.NamespaceHandler;
-import com.hp.hpl.jena.rdf.arp.StatementHandler;
+import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
-public final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
+final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
 		NamespaceHandler {
 	static private final int BULK_UPDATE_SIZE = 1000;
 

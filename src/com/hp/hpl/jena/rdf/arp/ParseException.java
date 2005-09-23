@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: ParseException.java,v 1.13 2005-09-23 07:51:43 jeremy_carroll Exp $
+ *  * $Id: ParseException.java,v 1.14 2005-09-23 11:02:10 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -83,7 +83,7 @@ public class ParseException extends SAXParseException implements
      * (Currently most such errors have code
      * {@link ARPErrorNumbers#ERR_SYNTAX_ERROR},
      * but this may change in the future).
-     * @return
+     * @return True if this is a syntax error
      */
     public boolean isSyntaxError() {
         switch (id) {
@@ -167,6 +167,46 @@ public class ParseException extends SAXParseException implements
 
     public boolean isPromoted() {
         return promoteMe;
+    }
+
+
+
+    /**
+     * The  string from
+     * {@link ARPErrorNumbers} associated with an integer error code
+     * @param errNo An error code from {@link ARPErrorNumbers}.
+     * @return The field name from {@link ARPErrorNumbers} with this error number, or null
+     */
+    static public String errorCodeName(int errNo) {
+        Class c = ARPErrorNumbers.class;
+        java.lang.reflect.Field flds[] = c.getDeclaredFields();
+        for (int i = 0; i < flds.length; i++) {
+            try {
+                if (flds[i].getInt(null) == errNo)
+                    return flds[i].getName();
+            } catch (Exception e) {
+                // ignore exceptions
+            }
+        }
+        return null;
+    }
+
+
+
+    /**
+     * The integer code associated with a string from
+     * {@link ARPErrorNumbers}.
+     * @param upper A field name from {@link ARPErrorNumbers}, (in upper case).
+     * @return The integer value or -1, if none.
+     */
+    static public int errorCode(String upper) {
+        Class c = ARPErrorNumbers.class;
+        try {
+            java.lang.reflect.Field fld = c.getField(upper);
+            return fld.getInt(null);
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
 }

@@ -7,7 +7,6 @@ package com.hp.hpl.jena.rdf.arp;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.JenaHandler;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
@@ -199,8 +198,6 @@ public class SAX2Model extends SAX2RDF {
      * 
      * Change a property of the RDF or XML parser.
      * <p>
-     * This method is untested.
-     * <p>
      * I do not believe that many of the XML features or properties are in fact
      * useful for ARP users. The ARP properties allow fine-grained control over
      * error reporting.
@@ -287,6 +284,8 @@ public class SAX2Model extends SAX2RDF {
      * @throws JenaException
      *             For bad values.
      * @return The old value, or null if none, or old value is inaccesible.
+     * @see SAX2RDF#getOptions()
+     * @see ARPOptions
      */
     public Object setProperty(String str, Object value) throws JenaException {
         Object obj = value;

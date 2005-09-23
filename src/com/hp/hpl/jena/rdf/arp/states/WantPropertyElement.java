@@ -49,7 +49,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             taint.isTainted();
         nonWhiteMsgGiven = false;
         ElementLexer el = new ElementLexer(taint, this, uri, localName,
-                rawName, E_LI, CoreAndOldTerms | E_DESCRIPTION);
+                rawName, E_LI, CoreAndOldTerms | E_DESCRIPTION, false);
         // if (el.badMatch)
         // warning(ERR_SYNTAX_ERROR,"bad use of " + rawName);
         predicate = el.goodMatch ? (AResourceInternal) rdf_n(liCounter++)
@@ -154,7 +154,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         if (pt.equals("Collection")) {
             return new RDFCollection(this, x);
         }
-        if (pt.equals("daml:collection")) {
+        if (pt.equals("daml:collection") && !arp.isError(WARN_IN_STRICT_MODE)) {
             warning(IGN_DAML_COLLECTION,
                     "'daml:collection' is not really a legal value for rdf:parseType");
             return new DAMLCollection(this, x);
