@@ -9,7 +9,9 @@ import java.util.Iterator;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.*;
+import com.hp.hpl.jena.iri.IRIConformanceLevels;
+import com.hp.hpl.jena.iri.IRIException;
+import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTag;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes;
@@ -146,9 +148,9 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
             forErrors.warning(taintMe, WARN_RELATIVE_URI, "Relative URIs are not permitted in RDF  <"+rslt.toString()+">");
     }
 
-    public String resolve(XMLHandler forErrors, Taint taintMe, String uri)
+    public String resolve(XMLHandler forErrors, Taint taintMe, String u)
             throws SAXParseException {
-        return resolveAsURI(forErrors, taintMe, uri, true).toString();
+        return resolveAsURI(forErrors, taintMe, u, true).toString();
     }
 
     private void checkXMLLang(XMLHandler arp, Taint taintMe, String newLang)

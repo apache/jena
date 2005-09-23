@@ -2,11 +2,12 @@
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [see end of file]
- * $Id: InFactoryX.java,v 1.4 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * $Id: InFactoryX.java,v 1.5 2005-09-23 07:51:48 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.arp.test;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 /**
  * @author Jeremy J. Carroll
  *

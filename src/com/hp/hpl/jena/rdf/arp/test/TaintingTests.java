@@ -2,24 +2,31 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: TaintingTests.java,v 1.5 2005-09-22 10:17:12 jeremy_carroll Exp $
+ *  $Id: TaintingTests.java,v 1.6 2005-09-23 07:51:48 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import junit.framework.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.ontology.OntDocumentManager;
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.RDF;
-import java.nio.charset.Charset;
-
-import org.xml.sax.*;
-
-import java.io.*;
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
+import com.hp.hpl.jena.rdf.arp.NTriple;
+import com.hp.hpl.jena.rdf.arp.ParseException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 /**
  * @author jjc
@@ -27,8 +34,7 @@ import java.io.*;
  */
 public class TaintingTests extends TestCase implements ErrorHandler,
 		ARPErrorNumbers {
-	static private Log logger = LogFactory.getLog(TaintingTests.class);
-    
+	 
     static String promoteWarnings[] =
     {
         "WARN_UNQUALIFIED_ATTRIBUTE", 

@@ -7,6 +7,16 @@ package com.hp.hpl.jena.rdf.arp;
 
 import org.xml.sax.ErrorHandler;
 
+/**
+ * The interface to set the various handlers on ARP.
+ * User defined implementations of this interface are
+ * not supported.
+ * This is an abstract class rather than an interface
+ * to have better backward compatibilitiy with earlier
+ * versions.
+ * @author Jeremy J. Carroll
+ *
+ */
 abstract public class ARPHandlers {
 
     /** Sets the ExtendedHandler that provides the callback mechanism

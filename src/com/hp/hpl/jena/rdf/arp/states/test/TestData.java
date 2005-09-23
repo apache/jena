@@ -8,7 +8,6 @@ package com.hp.hpl.jena.rdf.arp.states.test;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,21 +20,27 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.impl.*;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
+import com.hp.hpl.jena.rdf.arp.impl.Names;
+import com.hp.hpl.jena.rdf.arp.impl.URIReference;
+import com.hp.hpl.jena.rdf.arp.impl.XMLBaselessContext;
+import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteral;
 import com.hp.hpl.jena.rdf.arp.states.DAMLCollection;
 import com.hp.hpl.jena.rdf.arp.states.FrameI;
 import com.hp.hpl.jena.rdf.arp.states.HasSubjectFrameI;
 import com.hp.hpl.jena.rdf.arp.states.InnerXMLLiteral;
+import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
+import com.hp.hpl.jena.rdf.arp.states.OuterXMLLiteral;
 import com.hp.hpl.jena.rdf.arp.states.RDFCollection;
 import com.hp.hpl.jena.rdf.arp.states.WantEmpty;
 import com.hp.hpl.jena.rdf.arp.states.WantLiteralValueOrDescription;
 import com.hp.hpl.jena.rdf.arp.states.WantPropertyElement;
-import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
 import com.hp.hpl.jena.rdf.arp.states.WantTopLevelDescription;
 import com.hp.hpl.jena.rdf.arp.states.WantTypedLiteral;
 import com.hp.hpl.jena.rdf.arp.states.WantsObjectFrameI;
-import com.hp.hpl.jena.rdf.arp.states.OuterXMLLiteral;
 
 /**
  * For each state s, for each element-attribute event e1, - test s, e1 - if s,
@@ -73,7 +78,7 @@ public class TestData implements ARPErrorNumbers{
         } catch (SAXParseException e) {
             throw new RuntimeException(e);
         }
-    };
+    }
     static TestFrame testFrame = new TestFrame(xmlHandler, xmlContext);
     
     static char white[] = { 32, 32, 32, 32, 32 };

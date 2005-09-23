@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: TestPackage.java,v 1.15 2005-04-15 10:34:38 jeremy_carroll Exp $
+    $Id: TestPackage.java,v 1.16 2005-09-23 07:51:49 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -10,16 +10,18 @@ package com.hp.hpl.jena.xmloutput.test;
 ///////////////
 import java.io.StringWriter;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.BadURIException;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import junit.framework.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.shared.BadURIException;
 
 /**
  * JUnit regression tests for output
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: TestPackage.java,v 1.15 2005-04-15 10:34:38 jeremy_carroll Exp $,
+ * @version CVS info: $Id: TestPackage.java,v 1.16 2005-09-23 07:51:49 jeremy_carroll Exp $,
  */
 public class TestPackage extends TestCase{
 
@@ -112,5 +114,5 @@ public class TestPackage extends TestCase{
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestPackage.java,v 1.15 2005-04-15 10:34:38 jeremy_carroll Exp $
+ * $Id: TestPackage.java,v 1.16 2005-09-23 07:51:49 jeremy_carroll Exp $
  */

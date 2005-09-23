@@ -7,15 +7,19 @@ package com.hp.hpl.jena.xmloutput.test;
 
 
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import junit.framework.*;
-
 import com.hp.hpl.jena.rdf.arp.test.MoreTests;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 
 /**
@@ -37,7 +41,7 @@ public class TestMacEncodings  extends ModelTestBase
         try {
             OutputStream out = new ByteArrayOutputStream();
             
-            Writer wrtr = new OutputStreamWriter(out,"MacRoman");
+            new OutputStreamWriter(out,"MacRoman");
             InUse = true;
         } catch (Exception e){
             InUse = false;

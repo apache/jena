@@ -5,19 +5,30 @@
 
 package com.hp.hpl.jena.rdf.arp.test;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Vector;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import java.io.*;
-import java.util.*;
-
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.regression.testReaderInterface;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+
+import com.hp.hpl.jena.rdf.arp.SAX2Model;
+import com.hp.hpl.jena.rdf.arp.SAX2RDF;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.regression.testReaderInterface;
 
 /**
  * @author Jeremy J. Carroll
@@ -1257,9 +1268,9 @@ public class SAX2RDFTest extends TestCase {
 
 	}
 
-	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws MalformedURIException, SAXException, IOException {
+	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws SAXException, IOException {
 		XMLReader saxParser = new SAXParser();
-		SAX2Model handler = SAX2Model.newInstance(base, m2);
+		SAX2Model handler = SAX2Model.create(base, m2);
 		SAX2RDF.installHandlers(saxParser, handler);
 		handler.setErrorHandler(eh2);
 

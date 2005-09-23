@@ -5,6 +5,16 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
+/**
+ * The interface to set the various options on ARP.
+ * User defined implementations of this interface are
+ * not supported.
+ * This is an abstract class rather than an interface
+ * to have better backward compatibilitiy with earlier
+ * versions.
+ * @author Jeremy J. Carroll
+ *
+ */
 abstract public class ARPOptions {
 
     /** Sets or gets the error handling mode for a specific error condition.

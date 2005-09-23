@@ -7,8 +7,8 @@ package com.hp.hpl.jena.rdf.arp.states;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public class WantTopLevelDescription extends WantDescription {

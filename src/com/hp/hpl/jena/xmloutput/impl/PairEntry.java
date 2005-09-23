@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: PairEntry.java,v 1.5 2005-02-21 12:22:31 andy_seaborne Exp $
+ * $Id: PairEntry.java,v 1.6 2005-09-23 07:51:49 jeremy_carroll Exp $
  *
  */
 
@@ -32,7 +32,7 @@ package com.hp.hpl.jena.xmloutput.impl;
 
 /*
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2005-02-21 12:22:31 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2005-09-23 07:51:49 $'
  */
 class PairEntry implements java.util.Map.Entry {
     Object a;
@@ -41,9 +41,9 @@ class PairEntry implements java.util.Map.Entry {
         if (o != null && (o instanceof PairEntry)) {
             PairEntry e = (PairEntry) o;
             return e.a.equals(a) && e.b.equals(b);
-        } else {
-            return false;
-        }
+        } 
+        return false;
+        
     }
     public Object getKey() {
         return a;

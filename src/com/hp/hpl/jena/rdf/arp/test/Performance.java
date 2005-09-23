@@ -4,11 +4,16 @@
  * See end of file.
  */
 package com.hp.hpl.jena.rdf.arp.test;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import com.hp.hpl.jena.rdf.arp.*;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
+
+import com.hp.hpl.jena.rdf.arp.NTriple;
 
 class Performance  {
 	static String allFiles[][] =

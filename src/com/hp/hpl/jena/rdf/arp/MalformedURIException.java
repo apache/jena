@@ -87,9 +87,6 @@
  */
 package com.hp.hpl.jena.rdf.arp;
 import java.io.IOException;
-import java.net.URISyntaxException;
-
-import org.xml.sax.SAXParseException;
 
   /*******************************************************************
   * MalformedURIExceptions are thrown in the process of building a URI

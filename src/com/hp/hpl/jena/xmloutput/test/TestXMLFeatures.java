@@ -2,33 +2,57 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.42 2005-07-05 11:21:44 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.43 2005-09-23 07:51:49 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
-import com.hp.hpl.jena.xmloutput.impl.*;
-import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.test.*;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.apache.oro.text.awk.AwkCompiler;
 import org.apache.oro.text.awk.AwkMatcher;
 import org.apache.oro.text.regex.MalformedPatternException;
-import java.util.*;
 
-import java.io.*;
+import com.hp.hpl.jena.graph.Factory;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.arp.URI;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.shared.BadURIException;
+import com.hp.hpl.jena.shared.InvalidPropertyURIException;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
+import com.hp.hpl.jena.xmloutput.impl.SimpleLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.42 $ $Date: 2005-07-05 11:21:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.43 $ $Date: 2005-09-23 07:51:49 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
@@ -270,7 +294,7 @@ public class TestXMLFeatures extends ModelTestBase {
 
 	}
 
-	void doBadPropTest(String lang) throws IOException {
+	void doBadPropTest(String lg) throws IOException {
 		Model m = createMemModel();
 		m.add(
 			m.createResource(),
@@ -281,7 +305,7 @@ public class TestXMLFeatures extends ModelTestBase {
 
 		FileOutputStream fwriter = new FileOutputStream(file);
 		try {
-			m.write(fwriter, lang);
+			m.write(fwriter, lg);
 			fwriter.close();
 			fail("Writer did not detect bad property URI");
         } catch (InvalidPropertyURIException je) {
@@ -874,7 +898,6 @@ public class TestXMLFeatures extends ModelTestBase {
 		bos.close();
 
 		String contents = bos.toString("UTF8");
-		boolean errorsFound;
 		try {
 			Model m2 = createMemModel();
 			m2.read(new StringReader(contents), base);
@@ -1181,5 +1204,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.42 2005-07-05 11:21:44 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.43 2005-09-23 07:51:49 jeremy_carroll Exp $
  */

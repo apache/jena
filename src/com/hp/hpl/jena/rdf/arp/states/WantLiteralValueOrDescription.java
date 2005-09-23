@@ -8,7 +8,8 @@ package com.hp.hpl.jena.rdf.arp.states;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.*;
+import com.hp.hpl.jena.rdf.arp.impl.ARPString;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
 public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescription {
 

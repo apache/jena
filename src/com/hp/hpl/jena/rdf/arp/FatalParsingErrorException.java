@@ -14,7 +14,12 @@ package com.hp.hpl.jena.rdf.arp;
  *
  */
 public class FatalParsingErrorException extends RuntimeException {
-    
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1098004693549165728L;
+    // no message
 }
 
 

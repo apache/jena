@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: ParseException.java,v 1.12 2005-09-15 14:25:46 jeremy_carroll Exp $
+ *  * $Id: ParseException.java,v 1.13 2005-09-23 07:51:43 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -42,6 +42,10 @@ import com.hp.hpl.jena.rdf.arp.impl.Location;
 public class ParseException extends SAXParseException implements
         ARPErrorNumbers {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -5986976549492477885L;
     final int id;
 
     protected ParseException(int id, Location where, String msg) {

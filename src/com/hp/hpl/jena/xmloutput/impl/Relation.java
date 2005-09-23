@@ -24,21 +24,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Relation.java,v 1.5 2005-02-21 12:22:31 andy_seaborne Exp $
+ * $Id: Relation.java,v 1.6 2005-09-23 07:51:49 jeremy_carroll Exp $
  *
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-import java.util.*;
-import com.hp.hpl.jena.util.iterator.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import com.hp.hpl.jena.util.iterator.IteratorIterator;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 /**
  * A sparse 2 dimensional array of boolean indexed by Object.
  *
  * Complete with transitive closure algorithm.
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2005-02-21 12:22:31 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2005-09-23 07:51:49 $'
  */
 class Relation {
     final private Map rows;

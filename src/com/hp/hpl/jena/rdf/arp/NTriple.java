@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.17 2005-09-19 16:53:41 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.18 2005-09-23 07:51:43 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -290,6 +290,7 @@ int debugC = 0;
 						    Thread.sleep(200000);
 						  }
 						  catch (Exception e){
+                              // ignore
 						  }
 						  
 						}
@@ -318,9 +319,9 @@ int debugC = 0;
 					break;
                 case 'E':
                     arp.getHandlers().setErrorHandler(new ErrorHandler(){
-                        public void warning(SAXParseException exception) {}
-                        public void error(SAXParseException exception) {}
-                        public void fatalError(SAXParseException exception) {}     
+                        public void warning(SAXParseException exception) { /* ignore */ }
+                        public void error(SAXParseException exception) { /* ignore */ }
+                        public void fatalError(SAXParseException exception) { /* ignore */ }     
                     });
                     ((ARPHandlersImpl)arp.getHandlers()).setBadStatementHandler(new SH(System.err));
                     break;

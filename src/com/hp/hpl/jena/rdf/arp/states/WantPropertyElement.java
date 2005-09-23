@@ -5,6 +5,8 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
+import java.util.ArrayList;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
@@ -16,9 +18,6 @@ import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.TaintImpl;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
-
-import java.util.*;
 
 public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         HasSubjectFrameI {

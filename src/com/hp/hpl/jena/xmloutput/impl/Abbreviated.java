@@ -2,15 +2,22 @@
  *  (c)     Copyright 2000, 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.16 2005-09-23 05:33:11 jeremy_carroll Exp $
+ *  $Id: Abbreviated.java,v 1.17 2005-09-23 07:51:49 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.*;
+import java.io.PrintWriter;
+import java.io.Writer;
 
-import java.io.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
 //Writer;
 //import java.io.PrintWriter;
 
@@ -24,7 +31,7 @@ import java.io.*;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2005-09-23 05:33:11 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2005-09-23 07:51:49 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
@@ -101,7 +108,7 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
     }
 	Resource[] setTypes(Resource[] propValue) {
 		Resource[] rslt = types;
-		types = (Resource[]) propValue;
+		types = propValue;
 		return rslt;
 	}
 

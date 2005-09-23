@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.6 2005-09-16 10:40:00 jeremy_carroll Exp $
+ * * $Id: XMLContext.java,v 1.7 2005-09-23 07:51:49 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -36,14 +36,11 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-import com.hp.hpl.jena.iri.*;
+import org.xml.sax.SAXParseException;
+
+import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes;
-import com.hp.hpl.jena.rdf.arp.states.Frame;
-
-import java.net.URISyntaxException;
-
-import org.xml.sax.SAXParseException;
 
 /**
  * 
@@ -97,9 +94,9 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
                         .equals(document.uri));
     }
 
-    AbsXMLContext clone(RDFURIReference uri, Taint baseT, String lang,
+    AbsXMLContext clone(RDFURIReference u, Taint baseT, String lng,
             Taint langT) {
-        return new XMLContext(true, document, uri, baseT, lang, langT);
+        return new XMLContext(true, document, u, baseT, lng, langT);
     }
 
     void baseUsed(XMLHandler forErrors, Taint taintMe, String relUri,

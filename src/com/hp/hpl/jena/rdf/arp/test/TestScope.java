@@ -1,14 +1,18 @@
 /*
    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestScope.java,v 1.9 2005-08-06 06:14:51 jeremy_carroll Exp $
+  $Id: TestScope.java,v 1.10 2005-09-23 07:51:48 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp.test;
-import junit.framework.*;
-//import com.hp.hpl.jena.rdf.arp.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import com.hp.hpl.jena.rdf.model.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 
 /**
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>

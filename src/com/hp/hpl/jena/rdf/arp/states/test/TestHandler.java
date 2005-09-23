@@ -11,8 +11,8 @@ import java.util.HashMap;
 import junit.framework.Assert;
 
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
-import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 import com.hp.hpl.jena.rdf.arp.impl.Taint;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 class TestHandler extends XMLHandler {
     public void wrong(String msg) {
@@ -38,11 +38,11 @@ class TestHandler extends XMLHandler {
     int triples;
     int scope;
     boolean failOnWarning;
-    public void clear(boolean failOnWarning) {
+    public void clear(boolean failOnWarning_) {
         wrong = false;
         triples = 0;
         scope = 0;
-        this.failOnWarning = failOnWarning;
+        this.failOnWarning = failOnWarning_;
         idsUsed = new HashMap();
     }
 

@@ -6,15 +6,22 @@
 
 package com.hp.hpl.jena.rdf.arp.test;
 
-import com.hp.hpl.jena.rdf.arp.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import junit.framework.*;
-import org.xml.sax.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.apache.oro.text.awk.AwkCompiler;
 import org.apache.oro.text.awk.AwkMatcher;
 import org.apache.oro.text.regex.MalformedPatternException;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
-import java.io.*;
+import com.hp.hpl.jena.rdf.arp.ARP;
 
 public class TestErrorMsg extends TestCase {
 	static AwkCompiler awk = new AwkCompiler();
@@ -137,5 +144,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.7 2005-09-19 16:53:41 jeremy_carroll Exp $
+ * $Id: TestErrorMsg.java,v 1.8 2005-09-23 07:51:48 jeremy_carroll Exp $
  */

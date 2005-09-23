@@ -8,16 +8,16 @@ package com.hp.hpl.jena.rdf.arp.test;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.xml.parsers.*;
-
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 import com.hp.hpl.jena.rdf.arp.DOM2Model;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
  * @author Jeremy J. Carroll
@@ -49,14 +49,14 @@ class DOM2RDFTest extends SAX2RDFTest {
 	}
 	
 
-	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws MalformedURIException, SAXException, IOException {
+	void loadXMLModel(Model m2, InputStream in, RDFEHArray eh2) throws SAXException, IOException {
 		
 		Document document = domParser
 				.parse(in,base);
 			
 		// Make DOM into transformer input
 //		Source input = new DOMSource(document);
-        DOM2Model d2m = new DOM2Model(base,m2);	
+        DOM2Model d2m = DOM2Model.createD2M(base,m2);	
 
 		d2m.setErrorHandler(eh2);
 		

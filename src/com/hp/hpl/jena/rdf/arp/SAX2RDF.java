@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.13 2005-09-16 07:18:52 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.14 2005-09-23 07:51:43 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -33,8 +33,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
-import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
-import com.hp.hpl.jena.rdf.arp.impl.ARPOptionsImpl;
 import com.hp.hpl.jena.rdf.arp.impl.SAX2RDFImpl;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
@@ -213,21 +211,21 @@ implements ARPConfig {
 	 * is not loading into a Jena Model, but is processing
 	 * the triples etc. in some other way.
 	
-	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlersWith(com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl)
+	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlersWith(com.hp.hpl.jena.rdf.arp.impl.ARPHandlers)
 	 */
-	public void setHandlersWith(ARPHandlersImpl handlers) {
+	public void setHandlersWith(ARPHandlers handlers) {
 		super.setHandlersWith(handlers);
 	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getOptions()
 	 */
-	public ARPOptionsImpl getOptions() {
+	public ARPOptions getOptions() {
 		return super.getOptions();
 	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setOptions(com.hp.hpl.jena.rdf.arp.ARPOptions)
 	 */
-	public void setOptionsWith(ARPOptionsImpl opts) {
+	public void setOptionsWith(ARPOptions opts) {
 		super.setOptionsWith(opts);
 		
 	}

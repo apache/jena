@@ -2,13 +2,16 @@
  *  (c)     Copyright 2000-2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: URITests.java,v 1.11 2005-09-19 16:53:41 jeremy_carroll Exp $
+ *  $Id: URITests.java,v 1.12 2005-09-23 07:51:48 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.iri.*;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.RDFURIReference;
 
 //import java.net.*;
 /**

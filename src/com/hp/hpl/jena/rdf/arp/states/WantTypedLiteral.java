@@ -9,8 +9,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.ARPDatatypeLiteral;
-import com.hp.hpl.jena.rdf.arp.impl.URIReference;
 import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.URIReference;
 
 public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implements FrameI {
 

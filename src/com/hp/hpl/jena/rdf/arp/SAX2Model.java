@@ -21,9 +21,8 @@ import com.hp.hpl.jena.shared.JenaException;
  * 
  */
 public class SAX2Model extends SAX2RDF {
-    // TODO: javadoc and new factory
     /**
-     * Factory method to create a new SAX2RDF.
+     * Factory method to create a new SAX2Model.
      * 
      * @param base
      *            The retrieval URL, or the base URI to be used while parsing.
@@ -32,9 +31,9 @@ public class SAX2Model extends SAX2RDF {
      *            it is null, then use {@link #getHandlers} or
      *            {@link #setHandlersWith} to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
-     * @return A new SAX2RDF
+     * @return A new SAX2Model
      * @throws MalformedURIException
-     * @deprecated
+     * @deprecated Use {@link #create(String, Model)}
      */
     static public SAX2Model newInstance(String base, Model m)
             throws MalformedURIException {
@@ -46,19 +45,51 @@ public class SAX2Model extends SAX2RDF {
 
     }
 
+    /**
+     * Factory method to create a new SAX2Model.
+     * 
+     * @param base
+     *            The retrieval URL, or the base URI to be used while parsing.
+     * @param m
+     *            A Jena Model in which to put the triples, this can be null. If
+     *            it is null, then use {@link #getHandlers} or
+     *            {@link #setHandlersWith} to provide a {@link StatementHandler},
+     *            and usually an {@link org.xml.sax.ErrorHandler}
+     * @return A new SAX2Model
+     * @throws SAXParseException On a fatal error during setup, maybe malformed base URI
+    */
     static public SAX2Model create(String base, Model m)
             throws SAXParseException {
         return new SAX2Model(base, m, "");
     }
-
+    /**
+     * Factory method to create a new SAX2Model.
+     * This is particularly intended for
+     * when parsing a non-root element within an XML document. In which case the
+     * application needs to find this value in the outer context. Optionally,
+     * namespace prefixes can be passed from the outer context using
+     * {@link #startPrefixMapping}.
+     * 
+     * @param base
+     *            The retrieval URL, or the base URI to be used while parsing.
+     * @param m
+     *            A Jena Model in which to put the triples, this can be null. If
+     *            it is null, then use {@link #getHandlers} or
+     *            {@link #setHandlersWith} to provide a {@link StatementHandler},
+     *            and usually an {@link org.xml.sax.ErrorHandler}
+     * @param lang 
+     *            The current value of <code>xml:lang</code> when parsing
+     *            starts, usually "".
+     * @return A new SAX2Model
+     * @throws SAXParseException On a fatal error during setup, maybe malformed base URI
+     */
     static public SAX2Model create(String base, Model m, String lang)
             throws SAXParseException {
         return new SAX2Model(base, m, lang);
     }
 
-    // TODO: javadoc and new factory
     /**
-     * Factory method to create a new SAX2RDF. This is particularly intended for
+     * Factory method to create a new SAX2Model. This is particularly intended for
      * when parsing a non-root element within an XML document. In which case the
      * application needs to find this value in the outer context. Optionally,
      * namespace prefixes can be passed from the outer context using
@@ -74,9 +105,9 @@ public class SAX2Model extends SAX2RDF {
      * @param lang
      *            The current value of <code>xml:lang</code> when parsing
      *            starts, usually "".
-     * @return A new SAX2RDF
+     * @return A new SAX2Model
      * @throws MalformedURIException
-     * @deprecated
+     * @deprecated Use {@link #create(String, Model, String)}
      */
     static public SAX2Model newInstance(String base, Model m, String lang)
             throws MalformedURIException {
@@ -118,8 +149,9 @@ public class SAX2Model extends SAX2RDF {
 
     final private JenaHandler handler;
 
-    // TODO: javadoc here
     /**
+     * Constructor, see {@link #create(String, Model, String)}
+     * for top-level javadoc.
      * @param base
      * @param m
      * @param lang
@@ -208,10 +240,10 @@ public class SAX2Model extends SAX2RDF {
      * </tr>
      * <tr BGCOLOR="white" CLASS="TableRowColor">
      * <td><CODE>error-mode</CODE></td>
-     * <td>{@link ARP#setDefaultErrorMode}<br>
-     * {@link ARP#setLaxErrorMode}<br>
-     * {@link ARP#setStrictErrorMode}<br>
-     * {@link ARP#setStrictErrorMode(int)}<br>
+     * <td>{@link ARPOptions#setDefaultErrorMode}<br>
+     * {@link ARPOptions#setLaxErrorMode}<br>
+     * {@link ARPOptions#setStrictErrorMode}<br>
+     * {@link ARPOptions#setStrictErrorMode(int)}<br>
      * </td>
      * <td>String</td>
      * <td><CODE>default</CODE><br>
@@ -235,7 +267,7 @@ public class SAX2Model extends SAX2RDF {
      * <code>IGN_&lt;XXX&gt;</code></td>
      * <td>{@link ARPErrorNumbers}<br>
      * Any of the error condition numbers listed. <br>
-     * {@link ARP#setErrorMode(int, int)}</td>
+     * {@link ARPOptions#setErrorMode(int, int)}</td>
      * <td>String or Integer</td>
      * <td>{@link ARPErrorNumbers#EM_IGNORE EM_IGNORE}<br>
      * {@link ARPErrorNumbers#EM_WARNING EM_WARNING}<br>

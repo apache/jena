@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: PrettyWriterTest.java,v 1.9 2005-02-21 12:22:52 andy_seaborne Exp $
+    $Id: PrettyWriterTest.java,v 1.10 2005-09-23 07:51:49 jeremy_carroll Exp $
 */
 
 // Package
@@ -12,23 +12,27 @@ package com.hp.hpl.jena.xmloutput.test;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.*;
-import com.hp.hpl.jena.ontology.*;
-//import com.hp.hpl.jena.vocabulary.*;
-//import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import org.apache.oro.text.awk.AwkCompiler;
 import org.apache.oro.text.awk.AwkMatcher;
 import org.apache.oro.text.regex.MalformedPatternException;
 
-import java.io.*;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 
 /**
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.9 2005-02-21 12:22:52 andy_seaborne Exp $,
+ * @version CVS info: $Id: PrettyWriterTest.java,v 1.10 2005-09-23 07:51:49 jeremy_carroll Exp $,
  */
 
 public class PrettyWriterTest extends ModelTestBase {
@@ -164,10 +168,10 @@ public class PrettyWriterTest extends ModelTestBase {
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: PrettyWriterTest.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  *
- * Last modified on   $Date: 2005-02-21 12:22:52 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-09-23 07:51:49 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.

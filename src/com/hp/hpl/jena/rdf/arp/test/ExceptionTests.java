@@ -2,16 +2,19 @@
  *  (c)     Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: ExceptionTests.java,v 1.6 2005-08-01 15:07:04 jeremy_carroll Exp $
+ *  $Id: ExceptionTests.java,v 1.7 2005-09-23 07:51:48 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-
-
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.RDFReader;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.shared.JenaException;
 /**

@@ -10,8 +10,8 @@ import java.util.Set;
 
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
-import com.hp.hpl.jena.rdf.arp.*;
 
 abstract public class QNameLexer implements Names, ARPErrorNumbers {
     final int bad;

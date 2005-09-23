@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -25,7 +24,6 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
 import com.hp.hpl.jena.rdf.arp.impl.JenaHandler;
 import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
 import com.hp.hpl.jena.rdf.model.Literal;
@@ -84,14 +82,15 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 
     private Model model;
 
-    public void read(Model model, String url) throws JenaException {
+    // TODO: javadoc
+    public void read(Model m, String url) throws JenaException {
         try {
             URLConnection conn = new URL(url).openConnection();
             String encoding = conn.getContentEncoding();
             if (encoding == null)
-                read(model, conn.getInputStream(), url);
+                read(m, conn.getInputStream(), url);
             else
-                read(model, new InputStreamReader(conn.getInputStream(),
+                read(m, new InputStreamReader(conn.getInputStream(),
                         encoding), url);
         } catch (FileNotFoundException e) {
             throw new DoesNotExistException(url);
@@ -206,16 +205,16 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * Reads from reader, using base URI xmlbase, adding triples to model. If
      * xmlbase is "" then relative URIs may be added to model.
      * 
-     * @param model
+     * @param m
      *            A model to add triples to.
      * @param reader
      *            The RDF/XML document.
      * @param xmlBase
      *            The base URI of the document or "".
      */
-    public void read(final Model model, Reader reader, String xmlBase)
+    public void read(final Model m, Reader reader, String xmlBase)
             throws JenaException {
-        read(model, new InputSource(reader), xmlBase);
+        read(m, new InputSource(reader), xmlBase);
     }
 
     /**
@@ -238,16 +237,16 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * Reads from inputStream, using base URI xmlbase, adding triples to model.
      * If xmlbase is "" then relative URIs may be added to model.
      * 
-     * @param model
+     * @param m
      *            A model to add triples to.
      * @param in
      *            The RDF/XML document stream.
      * @param xmlBase
      *            The base URI of the document or "".
      */
-    public void read(final Model model, InputStream in, String xmlBase)
+    public void read(final Model m, InputStream in, String xmlBase)
             throws JenaException {
-        read(model, new InputSource(in), xmlBase);
+        read(m, new InputSource(in), xmlBase);
     }
 
     /**
@@ -333,10 +332,10 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * </tr>
      * <tr BGCOLOR="white" CLASS="TableRowColor">
      * <td><CODE>error-mode</CODE></td>
-     * <td>{@link ARP#setDefaultErrorMode}<br>
-     * {@link ARP#setLaxErrorMode}<br>
-     * {@link ARP#setStrictErrorMode}<br>
-     * {@link ARP#setStrictErrorMode(int)}<br>
+     * <td>{@link ARPOptions#setDefaultErrorMode}<br>
+     * {@link ARPOptions#setLaxErrorMode}<br>
+     * {@link ARPOptions#setStrictErrorMode}<br>
+     * {@link ARPOptions#setStrictErrorMode(int)}<br>
      * </td>
      * <td>String</td>
      * <td><CODE>default</CODE><br>
@@ -360,7 +359,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * <code>IGN_&lt;XXX&gt;</code></td>
      * <td>{@link ARPErrorNumbers}<br>
      * Any of the error condition numbers listed. <br>
-     * {@link ARP#setErrorMode(int, int)}</td>
+     * {@link ARPOptions#setErrorMode(int, int)}</td>
      * <td>String or Integer</td>
      * <td>{@link ARPErrorNumbers#EM_IGNORE EM_IGNORE}<br>
      * {@link ARPErrorNumbers#EM_WARNING EM_WARNING}<br>
@@ -458,6 +457,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                 if (flds[i].getInt(null) == errNo)
                     return flds[i].getName();
             } catch (Exception e) {
+                // ignore exceptions
             }
         }
         return null;

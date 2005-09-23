@@ -10,6 +10,7 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.impl.ARPString;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.Names;
@@ -18,7 +19,6 @@ import com.hp.hpl.jena.rdf.arp.impl.QNameLexer;
 import com.hp.hpl.jena.rdf.arp.impl.Taint;
 import com.hp.hpl.jena.rdf.arp.impl.TaintImpl;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public abstract class Frame extends ParserSupport implements Names, FrameI,

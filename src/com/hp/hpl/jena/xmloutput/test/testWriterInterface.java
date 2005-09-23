@@ -2,24 +2,27 @@
     (c)      Copyright 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterInterface.java,v 1.12 2005-02-21 12:22:55 andy_seaborne Exp $
+    $Id: testWriterInterface.java,v 1.13 2005-09-23 07:51:49 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
-import com.hp.hpl.jena.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.*;
-import com.hp.hpl.jena.xmloutput.impl.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.shared.*;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
 
-import java.io.*;
+import com.hp.hpl.jena.Jena;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.impl.NTripleWriter;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.shared.NoWriterForLangException;
+import com.hp.hpl.jena.xmloutput.impl.Abbreviated;
+import com.hp.hpl.jena.xmloutput.impl.Basic;
 
 /**
  *
  * @author  bwm, jjc
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class testWriterInterface extends ModelTestBase {
     private String lang;
@@ -132,5 +135,5 @@ public class testWriterInterface extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterInterface.java,v 1.12 2005-02-21 12:22:55 andy_seaborne Exp $
+ * $Id: testWriterInterface.java,v 1.13 2005-09-23 07:51:49 jeremy_carroll Exp $
  */

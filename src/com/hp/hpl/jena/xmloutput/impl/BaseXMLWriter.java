@@ -2,33 +2,59 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.47 2005-08-09 03:30:20 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.48 2005-09-23 07:51:49 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.CharEncoding;
-import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.JenaRuntime ;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.shared.*;
-
-import com.hp.hpl.jena.rdf.arp.URI;
-import com.hp.hpl.jena.rdf.arp.MalformedURIException;
-
-import java.io.*;
-import java.util.*;
-import java.nio.charset.Charset;
-
-import org.apache.xerces.util.*;
-import org.apache.oro.text.regex.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.xerces.util.XMLChar;
+
+import com.hp.hpl.jena.JenaRuntime;
+import com.hp.hpl.jena.rdf.arp.MalformedURIException;
+import com.hp.hpl.jena.rdf.arp.URI;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.NsIterator;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.shared.BadBooleanException;
+import com.hp.hpl.jena.shared.BadURIException;
+import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.InvalidPropertyURIException;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.CharEncoding;
+import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
+import com.hp.hpl.jena.vocabulary.RSS;
+import com.hp.hpl.jena.vocabulary.VCARD;
+import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
 
 /** 
  * This is not part of the public API.
@@ -50,7 +76,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date: 2005-08-09 03:30:20 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date: 2005-09-23 07:51:49 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -85,7 +111,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     abstract void blockRule(Resource r);
 
     abstract void writeBody
-        ( Model mdl, PrintWriter pw, String baseURI, boolean inclXMLBase );
+        ( Model mdl, PrintWriter pw, String baseUri, boolean inclXMLBase );
                 
 	
     private String attributeQuoteChar ="\"";
@@ -225,7 +251,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         while (it.hasNext())
             {
             Map.Entry e = (Map.Entry) it.next();
-            String key = (String) e.getKey();
+//            String key = (String) e.getKey();
             String value = (String) e.getValue();
             String already = this.getPrefixFor( value );
             if (already == null) 
@@ -640,8 +666,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	static private boolean getBoolean( Object o ) {
 		if (o instanceof Boolean)
 			return ((Boolean) o).booleanValue();
-		else
-			return Boolean.valueOf((String) o).booleanValue();
+		return Boolean.valueOf((String) o).booleanValue();
 	}
 
 	Resource[] setTypes( Resource x[] ) {

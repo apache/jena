@@ -7,13 +7,18 @@ package com.hp.hpl.jena.rdf.arp;
 
 import com.hp.hpl.jena.iri.impl.XercesURI;
 
-// TODO: deprecated message.
+// TODO: not for 2.3 revisit deprecated msg
 /**
  * 
  * @author Jeremy J. Carroll
- * @deprecated
+ * @deprecated The code for RDF URI References and IRIs is currently being updated.
  */
 public class URI extends XercesURI {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1201410838462565669L;
 
     public URI() {
         super();

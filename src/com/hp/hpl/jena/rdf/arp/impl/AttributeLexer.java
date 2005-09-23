@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-import java.net.URISyntaxException;
 import java.util.BitSet;
 
 import org.xml.sax.Attributes;

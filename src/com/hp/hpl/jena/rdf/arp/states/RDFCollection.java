@@ -5,7 +5,8 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import com.hp.hpl.jena.rdf.arp.impl.*;
+import com.hp.hpl.jena.rdf.arp.impl.ANode;
+import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
 public class RDFCollection extends Collection {
 

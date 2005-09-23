@@ -2,24 +2,42 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.35 2005-09-22 12:59:03 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.36 2005-09-23 07:51:48 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import junit.framework.*;
-
-import com.hp.hpl.jena.ontology.OntDocumentManager;
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.RDF;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.StringReader;
 import java.nio.charset.Charset;
 
-import org.xml.sax.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import java.io.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.hp.hpl.jena.ontology.OntDocumentManager;
+import com.hp.hpl.jena.rdf.arp.ALiteral;
+import com.hp.hpl.jena.rdf.arp.ARP;
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
+import com.hp.hpl.jena.rdf.arp.AResource;
+import com.hp.hpl.jena.rdf.arp.JenaReader;
+import com.hp.hpl.jena.rdf.arp.ParseException;
+import com.hp.hpl.jena.rdf.arp.StatementHandler;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * @author jjc
@@ -202,7 +220,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 			obj = ob.toString();
 		}
 
-	};
+	}
 
 	public void testToString() throws IOException, SAXException {
 

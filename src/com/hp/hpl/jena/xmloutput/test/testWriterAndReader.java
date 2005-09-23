@@ -2,23 +2,38 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.33 2005-09-23 05:33:11 jeremy_carroll Exp $
+    $Id: testWriterAndReader.java,v 1.34 2005-09-23 07:51:49 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.vocabulary.RDFSyntax;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Random;
+import java.util.Vector;
 
-import java.io.*;
-import java.util.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
-import junit.framework.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.RDFReader;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
 
 /**
  * This will test any Writer and Reader pair.
@@ -27,7 +42,7 @@ import org.apache.commons.logging.LogFactory;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2005-09-23 05:33:11 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.34 $' Date='$Date: 2005-09-23 07:51:49 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -360,7 +375,6 @@ public class testWriterAndReader
 			InputStream rdr = new FileInputStream(filebase + fileName);
 			m1.read(rdr, baseUriRead);
 			rdr.close();
-			boolean problem = false;
 			for (int j = 0; j < repetitionsJ; j++) {
 
                 String baseUriWrite =
@@ -497,10 +511,6 @@ public class testWriterAndReader
 		fail(e.getMessage());
 	}
 
-	/** report a catastrophic error.  Must not return.
-	 * @param e an exception representing the error
-	 * @throws RDFError a generic RDF exception
-	 */
 	public void fatalError(Exception e) {
 		error(e);
 		throw new JenaException(e);
@@ -544,5 +554,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.33 2005-09-23 05:33:11 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.34 2005-09-23 07:51:49 jeremy_carroll Exp $
  */

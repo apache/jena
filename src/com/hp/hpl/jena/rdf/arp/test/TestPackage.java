@@ -26,12 +26,11 @@
  *
  */
 package com.hp.hpl.jena.rdf.arp.test;
-import junit.framework.TestSuite;
 import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
-import com.hp.hpl.jena.shared.wg.*;
+import com.hp.hpl.jena.shared.wg.TestInputStreamFactory;
 public class TestPackage{
 static public Test suite() {
 TestSuite test0 = new TestSuite("ARP");

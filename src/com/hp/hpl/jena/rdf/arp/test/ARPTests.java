@@ -31,13 +31,16 @@
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
-import junit.framework.TestSuite;
-import junit.framework.Test;
-import java.io.*;
-import java.util.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 
-import com.hp.hpl.jena.iri.*;
-import com.hp.hpl.jena.shared.wg.*;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.RDFURIReference;
 /**
  * The JUnit test suite for ARP.
  *

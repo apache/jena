@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: LanguageTagSyntaxException.java,v 1.3 2005-02-21 12:11:00 andy_seaborne Exp $
+ * * $Id: LanguageTagSyntaxException.java,v 1.4 2005-09-23 07:51:49 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -44,6 +44,11 @@ package com.hp.hpl.jena.rdf.arp.lang;
  */
 public class LanguageTagSyntaxException extends java.lang.Exception {
 
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5425207434895448094L;
 
     /**
  * Constructs an <code>LanguageTagSyntaxException</code> with the specified detail message.

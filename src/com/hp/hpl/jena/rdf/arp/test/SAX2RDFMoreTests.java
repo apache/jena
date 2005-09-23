@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import junit.framework.TestCase;
+
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
@@ -20,8 +22,6 @@ import com.hp.hpl.jena.rdf.arp.test.SAX2RDFTest.RDFEHArray;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
-
-import junit.framework.TestCase;
 
 /**
  * @author Jeremy J. Carroll
@@ -47,7 +47,7 @@ public class SAX2RDFMoreTests extends TestCase {
 		RDFEHArray eh2 = new RDFEHArray();
 
 		XMLReader saxParser = new SAXParser();
-		SAX2Model handler = SAX2Model.newInstance("http://example.org/", m2,
+		SAX2Model handler = SAX2Model.create("http://example.org/", m2,
 				"fr");
 		SAX2RDF.installHandlers(saxParser, handler);
 		handler.setErrorHandler(eh2);

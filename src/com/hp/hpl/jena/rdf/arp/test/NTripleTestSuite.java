@@ -4,19 +4,34 @@
  * See end of file.
  */
 package com.hp.hpl.jena.rdf.arp.test;
-import junit.framework.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import junit.framework.Assert;
+import junit.framework.TestSuite;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.rdf.arp.impl.*;
-import com.hp.hpl.jena.shared.wg.*;
+import com.hp.hpl.jena.rdf.arp.ALiteral;
+import com.hp.hpl.jena.rdf.arp.ARPEventHandler;
+import com.hp.hpl.jena.rdf.arp.AResource;
+import com.hp.hpl.jena.rdf.arp.NTriple;
+import com.hp.hpl.jena.rdf.arp.impl.ARPResource;
+import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.shared.wg.TestInputStreamFactory;
 
 /**
  * A version of the test suite which uses the
@@ -46,6 +61,11 @@ class NTripleTestSuite extends WGTestSuite {
 	}
 
 	static class SimulatedException extends RuntimeException {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -4804213791508445759L;
 	}
 	static class TestHandler
 		extends ARPSaxErrorHandler

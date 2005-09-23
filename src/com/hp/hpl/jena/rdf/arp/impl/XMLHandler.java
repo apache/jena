@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.17 2005-09-22 10:17:09 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.18 2005-09-23 07:51:49 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -38,7 +38,6 @@
 package com.hp.hpl.jena.rdf.arp.impl;
 
 import java.io.InterruptedIOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -48,10 +47,12 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.*;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.ARPHandlers;
+import com.hp.hpl.jena.rdf.arp.ARPOptions;
 import com.hp.hpl.jena.rdf.arp.AResource;
 import com.hp.hpl.jena.rdf.arp.FatalParsingErrorException;
 import com.hp.hpl.jena.rdf.arp.ParseException;
@@ -342,16 +343,24 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return handlers;
     }
 
-    public ARPOptionsImpl getOptions() {
+    public ARPOptions getOptions() {
         return options;
     }
 
-    public void setOptionsWith(ARPOptionsImpl newOpts) {
-        options = newOpts.copy();
+    public void setOptionsWith(ARPOptions newOpts) {
+        if (newOpts instanceof ARPOptionsImpl)
+            options = ((ARPOptionsImpl)newOpts).copy();
+        else
+            throw new RuntimeException("User defined implementations of ARPOptions are not supported");
+        
     }
 
-    public void setHandlersWith(ARPHandlersImpl newHh) {
-        handlers = newHh.copy();
+    public void setHandlersWith(ARPHandlers newHh) {
+        if (newHh instanceof ARPHandlersImpl)
+          handlers = ((ARPHandlersImpl)newHh).copy();
+        else
+            throw new RuntimeException("User defined implementations of ARPHandlers are not supported");
+        
     }
 
     private Map nodeIdUserData;
@@ -359,7 +368,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     public void initParse(String base, String lang) throws SAXParseException {
         nodeIdUserData = new HashMap();
         idsUsed = new HashMap();
-        if (getOptions().getEmbedding())
+        if (options.getEmbedding())
             frame = new LookingForRDF(this, initialContext(base, lang));
         else
             frame = new StartStateRDForDescription(this, initialContext(base,

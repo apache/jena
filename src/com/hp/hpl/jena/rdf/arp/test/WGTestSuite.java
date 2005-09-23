@@ -1,30 +1,55 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.30 2005-09-15 14:25:46 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.31 2005-09-23 07:51:48 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
 
-import junit.framework.*;
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.xml.sax.SAXException;
 
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import java.util.*;
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
+import com.hp.hpl.jena.rdf.arp.JenaReader;
+import com.hp.hpl.jena.rdf.arp.ParseException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
+import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
-import com.hp.hpl.jena.shared.wg.*;
-
-import com.hp.hpl.jena.reasoner.test.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-
-import org.xml.sax.*;
+import com.hp.hpl.jena.shared.wg.TestInputStreamFactory;
+import com.hp.hpl.jena.vocabulary.OWLResults;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 /**
  *
  * @author  jjc
@@ -48,23 +73,23 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 		testResults.setNsPrefix("results", OWLResults.NS);
 	}
 	static void logResult(Resource test, int type) {
-		if (!logging) return;
-		Resource rslt;
-		switch (type) {
-			case WGReasonerTester.NOT_APPLICABLE:
-			return;
-			case WGReasonerTester.FAIL:
-			rslt = OWLResults.FailingRun;
-			break;
-			case WGReasonerTester.PASS:
-			rslt = OWLResults.PassingRun;
-			break;
-			case WGReasonerTester.INCOMPLETE:
-			  rslt = OWLResults.IncompleteRun;
-			  break;
-			default:
-			throw new BrokenException("Unknown result type");
-		}
+//		if (!logging) return;
+//		Resource rslt;
+//		switch (type) {
+//			case WGReasonerTester.NOT_APPLICABLE:
+//			return;
+//			case WGReasonerTester.FAIL:
+//			rslt = OWLResults.FailingRun;
+//			break;
+//			case WGReasonerTester.PASS:
+//			rslt = OWLResults.PassingRun;
+//			break;
+//			case WGReasonerTester.INCOMPLETE:
+//			  rslt = OWLResults.IncompleteRun;
+//			  break;
+//			default:
+//			throw new BrokenException("Unknown result type");
+//		}
 //		Resource result =
 //			testResults
 //				.createResource()
@@ -255,7 +280,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         testDir = fact.getBase();
         if (dynamic)
             try {
-            	String wgDir = ARPTests.wgTestDir.toString();
+//            	String wgDir = ARPTests.wgTestDir.toString();
             	System.err.println(testDir+", "+fact.getMapBase());
             	  wgReasoner = new WGReasonerTester("Manifest.rdf",
                           "testing/wg/");

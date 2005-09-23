@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: XMLBaselessContext.java,v 1.1 2005-09-16 10:40:00 jeremy_carroll Exp $
+ $Id: XMLBaselessContext.java,v 1.2 2005-09-23 07:51:49 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.arp.impl;
 
@@ -9,7 +9,6 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.states.Frame;
 
 /**
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
@@ -57,9 +56,9 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
         errmsg = parent.errmsg;
     }
 
-    AbsXMLContext clone(RDFURIReference uri, Taint baseT, String lang,
+    AbsXMLContext clone(RDFURIReference u, Taint baseT, String lng,
             Taint langT) {
-        return new XMLBaselessContext(document, uri, baseT, lang, langT, this);
+        return new XMLBaselessContext(document, u, baseT, lng, langT, this);
     }
 
     public AbsXMLContext withBase(XMLHandler forErrors, String b)

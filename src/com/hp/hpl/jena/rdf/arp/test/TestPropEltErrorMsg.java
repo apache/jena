@@ -6,19 +6,22 @@
 
 package com.hp.hpl.jena.rdf.arp.test;
 
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.rdf.arp.impl.*;
+import java.util.ArrayList;
 
-import com.hp.hpl.jena.vocabulary.RDF;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import junit.framework.*;
-import org.xml.sax.*;
-import java.util.*;
 import org.apache.oro.text.awk.AwkCompiler;
 import org.apache.oro.text.awk.AwkMatcher;
 import org.apache.oro.text.regex.MalformedPatternException;
+import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
-import java.io.*;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class TestPropEltErrorMsg extends TestCase {
     
@@ -494,5 +497,5 @@ public class TestPropEltErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestPropEltErrorMsg.java,v 1.1 2005-09-22 12:59:03 jeremy_carroll Exp $
+ * $Id: TestPropEltErrorMsg.java,v 1.2 2005-09-23 07:51:48 jeremy_carroll Exp $
  */

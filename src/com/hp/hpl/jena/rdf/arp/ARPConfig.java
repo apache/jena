@@ -7,8 +7,6 @@ package com.hp.hpl.jena.rdf.arp;
 
 import org.xml.sax.ErrorHandler;
 
-import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
-import com.hp.hpl.jena.rdf.arp.impl.ARPOptionsImpl;
 
 /**
  * Used to set event handlers and options
@@ -22,13 +20,13 @@ public interface ARPConfig {
 	 * The handlers used during parsing.
 	 * The handlers can be changed by calling this method
 	 * and then using the <code>set..Handler</code> methods
-	 * in {@link ARPHandlersImpl}.
+	 * in {@link ARPHandlers}.
 	 * The handlers can be copied onto another ARP instance
 	 * using the {@link #setHandlersWith} method.
-	 * @see ARPHandlersImpl#setStatementHandler(StatementHandler)
-	 * @see ARPHandlersImpl#setErrorHandler(ErrorHandler)
-	 * @see ARPHandlersImpl#setExtendedHandler(ExtendedHandler)
-	 * @see ARPHandlersImpl#setNamespaceHandler(NamespaceHandler)
+	 * @see ARPHandlers#setStatementHandler(StatementHandler)
+	 * @see ARPHandlers#setErrorHandler(ErrorHandler)
+	 * @see ARPHandlers#setExtendedHandler(ExtendedHandler)
+	 * @see ARPHandlers#setNamespaceHandler(NamespaceHandler)
 	 * @see #setHandlersWith
 	 * @return The handlers used during parsing.
 	 */
@@ -42,26 +40,26 @@ public interface ARPConfig {
 	 * instance's copy of the handler information.
 	 * @param handlers The new values to use.
 	 */
-	public void setHandlersWith(ARPHandlersImpl handlers);
+	public void setHandlersWith(ARPHandlers handlers);
 
 	/**
 	 * The options used during parsing.
 	 * The options can be changed by calling this method
 	 * and then using the <code>set..</code> methods
-	 * in {@link ARPOptionsImpl}.
+	 * in {@link ARPOptions}.
 	 * The options can be copied onto another ARP instance
 	 * using the {@link #setOptionsWith} method.
-	 * @see ARPOptionsImpl#setDefaultErrorMode()
-	 * @see ARPOptionsImpl#setLaxErrorMode()
-	 * @see ARPOptionsImpl#setStrictErrorMode()
-	 * @see ARPOptionsImpl#setStrictErrorMode(int)
-	 * @see ARPOptionsImpl#setEmbedding(boolean)
-	 * @see ARPOptionsImpl#setErrorMode(int, int)
+	 * @see ARPOptions#setDefaultErrorMode()
+	 * @see ARPOptions#setLaxErrorMode()
+	 * @see ARPOptions#setStrictErrorMode()
+	 * @see ARPOptions#setStrictErrorMode(int)
+	 * @see ARPOptions#setEmbedding(boolean)
+	 * @see ARPOptions#setErrorMode(int, int)
 	 * 
 	 * @see #setOptionsWith
 	 * @return The handlers used during parsing.
 	 */
-	public ARPOptionsImpl getOptions();
+	public ARPOptions getOptions();
 
 	/**
 	 * Copies the options from the argument
@@ -71,7 +69,7 @@ public interface ARPConfig {
 	 * instance's copy of the options.
 	 * @param opts The new values to use.
 	 */
-	public void setOptionsWith(ARPOptionsImpl opts);
+	public void setOptionsWith(ARPOptions opts);
 }
 
 /*

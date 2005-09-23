@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.8 2005-09-19 10:36:14 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.9 2005-09-23 07:51:49 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -36,7 +36,6 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,9 +44,7 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.lang.LanguageTag;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes;
-import com.hp.hpl.jena.rdf.arp.lang.LanguageTagSyntaxException;
 
 /**
  *

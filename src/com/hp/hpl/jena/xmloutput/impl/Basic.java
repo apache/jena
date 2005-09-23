@@ -2,26 +2,31 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.13 2005-07-13 13:51:37 chris-dollin Exp $
+  $Id: Basic.java,v 1.14 2005-09-23 07:51:49 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFSyntax;
-
 import java.io.PrintWriter;
+
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
 
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2005-07-13 13:51:37 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2005-09-23 07:51:49 $'
  */
 public class Basic extends BaseXMLWriter {
 
-	static String RDFNS = RDF.getURI();
 
 	public Basic() {
 	}
@@ -50,8 +55,6 @@ public class Basic extends BaseXMLWriter {
 
 	private void writeRDFHeader(Model model, PrintWriter writer) {
 		String xmlns = xmlnsDecl();
-		NsIterator nsIter = model.listNameSpaces();
-		String ns;
 
 		writer.print("<" + rdfEl("RDF") + xmlns);
 

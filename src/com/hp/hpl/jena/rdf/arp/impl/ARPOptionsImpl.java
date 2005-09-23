@@ -127,7 +127,7 @@ public class ARPOptionsImpl extends  ARPOptions implements ARPErrorNumbers {
 		embedding = embed;
 		return old;
 	}
-	public boolean getEmbedding() {
+	boolean getEmbedding() {
 		return embedding;
 	}
 

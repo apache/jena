@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.22 2005-09-16 10:40:03 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.23 2005-09-23 07:51:43 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -54,8 +54,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
-import com.hp.hpl.jena.rdf.arp.impl.ARPOptionsImpl;
 import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
 
 
@@ -79,7 +77,7 @@ import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
  * analysed as RDF by ARP.
  * Errors may occur
  * in either the XML or the RDF part, see 
- * {@link ARPHandlersImpl#setErrorHandler} for details
+ * {@link ARPHandlers#setErrorHandler} for details
  * of how to distinguish between them.</p>
  * <p>
  * For very large files, ARP does not use any additional
@@ -165,13 +163,13 @@ IOException {
      * The handlers used during parsing.
      * The handlers can be changed by calling this method
      * and then using the <code>set..Handler</code> methods
-     * in {@link ARPHandlersImpl}.
+     * in {@link ARPHandlers}.
      * The handlers can be copied onto another ARP instance
      * using the {@link #setHandlersWith} method.
-     * @see ARPHandlersImpl#setStatementHandler(StatementHandler)
-     * @see ARPHandlersImpl#setErrorHandler(ErrorHandler)
-     * @see ARPHandlersImpl#setExtendedHandler(ExtendedHandler)
-     * @see ARPHandlersImpl#setNamespaceHandler(NamespaceHandler)
+     * @see ARPHandlers#setStatementHandler(StatementHandler)
+     * @see ARPHandlers#setErrorHandler(ErrorHandler)
+     * @see ARPHandlers#setExtendedHandler(ExtendedHandler)
+     * @see ARPHandlers#setNamespaceHandler(NamespaceHandler)
      * @see #setHandlersWith
      * @return The handlers used during parsing.
      */
@@ -186,28 +184,28 @@ IOException {
      * instance's copy of the handler information.
      * @param handlers The new values to use.
      */
-    public void setHandlersWith(ARPHandlersImpl handlers){
+    public void setHandlersWith(ARPHandlers handlers){
     	arpf.setHandlersWith(handlers);
     }
     /**
      * The options used during parsing.
      * The options can be changed by calling this method
      * and then using the <code>set..</code> methods
-     * in {@link ARPOptionsImpl}.
+     * in {@link ARPOptions}.
      * The options can be copied onto another ARP instance
      * using the {@link #setOptionsWith} method.
-     * @see ARPOptionsImpl#setDefaultErrorMode()
-     * @see ARPOptionsImpl#setLaxErrorMode()
-     * @see ARPOptionsImpl#setStrictErrorMode()
-     * @see ARPOptionsImpl#setStrictErrorMode(int)
-     * @see ARPOptionsImpl#setEmbedding(boolean)
-     * @see ARPOptionsImpl#setErrorMode(int, int)
+     * @see ARPOptions#setDefaultErrorMode()
+     * @see ARPOptions#setLaxErrorMode()
+     * @see ARPOptions#setStrictErrorMode()
+     * @see ARPOptions#setStrictErrorMode(int)
+     * @see ARPOptions#setEmbedding(boolean)
+     * @see ARPOptions#setErrorMode(int, int)
      * 
      * @see #setOptionsWith
      * @return The handlers used during parsing.
      */
     
-    public ARPOptionsImpl getOptions(){
+    public ARPOptions getOptions(){
     	return arpf.getOptions();
     }
 
@@ -219,18 +217,18 @@ IOException {
      * instance's copy of the options.
      * @param opts The new values to use.
      */
-    public void setOptionsWith(ARPOptionsImpl opts){
+    public void setOptionsWith(ARPOptions opts){
     	arpf.setOptionsWith(opts);
     }
 	/**
-    @deprecated Use {@link #getHandlers}.{@link ARPHandlersImpl#setExtendedHandler setExtendedHandler(eh)}
+    @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setExtendedHandler setExtendedHandler(eh)}
 	 */
 	public ExtendedHandler setExtendedHandler(ExtendedHandler eh) {
 		
 		return getHandlers().setExtendedHandler(eh);
 	}
 	/**
-    @deprecated Use {@link #getHandlers}.{@link ARPHandlersImpl#setNamespaceHandler setNamespaceHandler(nh)}
+    @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setNamespaceHandler setNamespaceHandler(nh)}
 	 */
 	public NamespaceHandler setNamespaceHandler(NamespaceHandler nh) {
 
@@ -249,8 +247,7 @@ IOException {
 	public void setErrorHandler(ErrorHandler eh) {
 		getHandlers().setErrorHandler(eh);
 	}
-    // TODO: get rid of Impl in javadoc.
-	/**
+    /**
      * 
     @deprecated Use {@link #getOptions}.{@link ARPOptions#setErrorMode(int,int) setErrorMode(errno,mode)}
 	 */
@@ -288,7 +285,7 @@ IOException {
 		getOptions().setStrictErrorMode(nonErrorMode);
 	}
 	/**
-     @deprecated Use {@link #getOptions}.{@link ARPOptionsImpl#setEmbedding(boolean) setEmbedding(embed)}
+     @deprecated Use {@link #getOptions}.{@link ARPOptions#setEmbedding(boolean) setEmbedding(embed)}
 	 */
 	public void setEmbedding(boolean embed) {
 		

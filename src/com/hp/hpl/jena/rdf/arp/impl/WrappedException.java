@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: WrappedException.java,v 1.2 2005-08-06 06:14:50 jeremy_carroll Exp $
+ * * $Id: WrappedException.java,v 1.3 2005-09-23 07:51:49 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -46,6 +46,10 @@ import org.xml.sax.SAXException;
  
  */
 class WrappedException extends java.lang.RuntimeException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4058658905253070902L;
     /** Creates new WrappedException */
     WrappedException(SAXException e) {
         Exception in0 = e.getException();
