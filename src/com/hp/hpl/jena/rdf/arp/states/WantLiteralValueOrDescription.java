@@ -20,8 +20,6 @@ public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescript
 
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts)  throws SAXParseException {
-        // TODO: next line
-//        taint = new TaintImpl();
         if (seenAnElement) {
             warning(ERR_SYNTAX_ERROR,"Multiple children of property element");
         }

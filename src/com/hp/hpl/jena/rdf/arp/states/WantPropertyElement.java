@@ -46,8 +46,6 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         clearObject();
-        // TODO: next line
-        // taint = new TaintImpl();
         if (nonWhiteMsgGiven)
             taint.isTainted();
         nonWhiteMsgGiven = false;
@@ -266,8 +264,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
      * ERROR MESSAGES
      * 
      **************************************************************************/
-    // TODO: add tests for these error messages
-    private String descriptionOfCases(AttributeLexer ap, int nextStateCode,
+   private String descriptionOfCases(AttributeLexer ap, int nextStateCode,
             String propAttrs) {
         return ((propAttrs == null && ap.type == null)
                 || (ap.nodeID == null && ap.resource == null && ap.type == null) || (ap.nodeID == null
