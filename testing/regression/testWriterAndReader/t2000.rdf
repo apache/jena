@@ -5,7 +5,7 @@
 >
 
 <daml:Ontology rdf:about="">
-  <daml:versionInfo>$Revision: 1.1.1.1 $</daml:versionInfo>
+  <daml:versionInfo>$Revision: 1.1 $</daml:versionInfo>
   <daml:imports rdf:resource="http://www.daml.org/2000/10/daml-ont"/>
 </daml:Ontology>
 

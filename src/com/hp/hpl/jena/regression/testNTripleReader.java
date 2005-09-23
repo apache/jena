@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testNTripleReader.java,v 1.9 2005-02-21 12:18:40 andy_seaborne Exp $
+ * $Id: testNTripleReader.java,v 1.10 2005-09-23 05:33:11 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class testNTripleReader extends Object {
    
@@ -50,7 +50,7 @@ public class testNTripleReader extends Object {
     void test(Model m1) {
 
         String  test = "testNTripleReader";
-        String  filebase = "modules/rdf/regression/" + test + "/";
+        String  filebase = "testing/regression/" + test + "/";
     //    System.out.println("Beginning " + test);
         int n = 0;
         try {

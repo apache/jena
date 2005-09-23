@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.32 2005-08-01 15:07:26 jeremy_carroll Exp $
+    $Id: testWriterAndReader.java,v 1.33 2005-09-23 05:33:11 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2005-08-01 15:07:26 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2005-09-23 05:33:11 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -331,7 +331,7 @@ public class testWriterAndReader
 		//  Model m3 = createMemModel();
 		//  Model m4 = createMemModel();
 		test = "testWriterAndReader lang=" + rwLang + " seed=" + seed;
-		String filebase = "modules/rdf/regression/testWriterAndReader/";
+		String filebase = "testing/regression/testWriterAndReader/";
 		if (showProgress)
 			System.out.println("Beginning " + test);
 		Random random = new Random(seed);
@@ -544,5 +544,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.32 2005-08-01 15:07:26 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.33 2005-09-23 05:33:11 jeremy_carroll Exp $
  */

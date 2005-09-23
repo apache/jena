@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.51 2005-09-02 11:05:47 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.52 2005-09-23 05:33:10 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.51 $ on $Date: 2005-09-02 11:05:47 $
+ * @version $Revision: 1.52 $ on $Date: 2005-09-23 05:33:10 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -826,7 +826,6 @@ public class TestTypedLiterals extends TestCase {
         Property p = orig.createProperty("http://jena.hpl.hp.com/test#p");
         Literal l  = orig.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
         orig.add(r, p, l);
-//        orig.read("file:modules/rdf/regression/testWriterAndReader/t6000.rdf");
         for (int i = 0; i < 150; i++) {
             l  = orig.createTypedLiteral(new byte[]{(byte)i, (byte)i, (byte)i});
             orig.add(orig.createResource("urn:x-hp:" + i), p, l);

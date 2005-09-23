@@ -24,7 +24,6 @@ evaluator is OK and the rest of the tests focus on the triple matching.
 The external tests are in:
 
     <Jena>/src/com/hp/hpl/jena/rdf/query/test/QueryTesrScripts.java
-    <Jena>/modules/rdf/regression/testRDQL
 
 and there is a control file (a manifest) which lists the 
 

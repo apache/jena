@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: testModelEquals.java,v 1.12 2005-02-21 12:18:40 andy_seaborne Exp $
+    $Id: testModelEquals.java,v 1.13 2005-09-23 05:33:11 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.regression;
 
@@ -21,7 +21,7 @@ public class testModelEquals extends Object {
     void test(GetModel gm) {
         Model m1, m2;
         String  test = "testModelEquals";
-        String  filebase = "modules/rdf/regression/" + test + "/";
+        String  filebase = "testing/regression/" + test + "/";
         boolean results[] = { 
             false, true, true, true, true, false, false, true, false };
         int n = 0;
@@ -103,5 +103,5 @@ public class testModelEquals extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.12 2005-02-21 12:18:40 andy_seaborne Exp $
+ * $Id: testModelEquals.java,v 1.13 2005-09-23 05:33:11 jeremy_carroll Exp $
  */

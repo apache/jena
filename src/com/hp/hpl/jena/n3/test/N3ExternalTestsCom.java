@@ -16,16 +16,14 @@ import com.hp.hpl.jena.util.FileUtils;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.11 2005-02-21 12:04:08 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.12 2005-09-23 05:33:11 jeremy_carroll Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
 	// List of places
 	static protected final String dirbases[] = {".", "testN3",
                                                 // Jena2: correct location
-                                                "testing/N3",
-                                                // Jena1: correct location
-                                                "modules/rdf/regression/testN3"} ;
+                                                "testing/N3", } ;
 	
 	// Record where we find the file in the constructor
 	protected String basedir = null ;
