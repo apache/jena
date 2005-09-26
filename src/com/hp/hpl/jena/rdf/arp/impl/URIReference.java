@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.8 2005-09-23 07:51:49 jeremy_carroll Exp $
+ * * $Id: URIReference.java,v 1.9 2005-09-26 11:28:52 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -40,7 +40,6 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
-import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 
 
@@ -146,7 +145,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
      * @param name
      *            The local name
      * @return The resulting URI
-     * @throws ParseException
+     * @throws SAXParseException
      */
     public static URIReference fromID(Frame f, AbsXMLContext x, String name)
             throws SAXParseException {
@@ -161,12 +160,12 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
      * 
      * @param f
      *            A frame for error reporting. AbsXMLContext of frame is ignored.
-     * @param x
+     * @param ctxt
      *            The XML context for the base URI
      * @param uri
      *            Input string, may be relative etc.
      * @return The resolved URI
-     * @throws ParseException
+     * @throws SAXParseException
      */
     public static URIReference resolve(Frame f, AbsXMLContext ctxt, String uri)
             throws SAXParseException {

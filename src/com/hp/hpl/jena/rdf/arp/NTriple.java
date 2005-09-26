@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.19 2005-09-23 11:02:10 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.20 2005-09-26 11:28:56 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -168,7 +168,6 @@ public class NTriple implements ARPErrorNumbers {
 
 	/**
 	 * @param b false for quiet.
-	 * @return
 	 */
 	private static StatementHandler getSH(boolean b) {
 		StatementHandler rslt = b?(StatementHandler)new SH(System.out):new NoSH();

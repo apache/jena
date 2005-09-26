@@ -32,6 +32,10 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         clearSubject();
+
+        if (uri==null || uri.equals("")) {
+            warning(WARN_UNQUALIFIED_ELEMENT,"Unqualified typed nodes are not allowed. Type treated as a relative URI.");
+        }
         AttributeLexer ap = new AttributeLexer(this,
                 A_XMLLANG| A_XMLBASE | A_XML_OTHER |
                 // legal rdf:

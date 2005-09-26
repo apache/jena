@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.17 2005-09-23 07:51:49 jeremy_carroll Exp $
+ *  $Id: Abbreviated.java,v 1.18 2005-09-26 11:28:57 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -29,9 +29,9 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Use <code>setNsPrefix</code>.
  * For best results it is necessary to set the property 
    <code>"prettyTypes"</code>. See setProperty for information.
-   @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
+   @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter(String)
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2005-09-23 07:51:49 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2005-09-26 11:28:57 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 

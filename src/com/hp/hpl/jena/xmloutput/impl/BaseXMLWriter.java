@@ -2,12 +2,11 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.48 2005-09-23 07:51:49 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.49 2005-09-26 11:28:57 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -76,7 +75,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.48 $' Date='$Date: 2005-09-23 07:51:49 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.49 $' Date='$Date: 2005-09-26 11:28:57 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -447,14 +446,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param model the model to be serialized
 	 * @param out the OutputStream to receive the serialization
 	 * @param base The URL at which the file will be placed.
-	 * @throws IOException if an io error occurs
 	 */
 	final public void write(Model model, OutputStream out, String base)
 		 { write(model, FileUtils.asUTF8(out), base); }
 
 	/** Serialize Model <code>model</code> to Writer <code>out</out>.
 	 * @param out The Writer to which the serialization should be sent.
-	 * @param model The model to be written.
+	 * @param baseModel The model to be written.
 	 * @param base the base URI for relative URI calculations.  <code>
 	 * null</code> means use only absolute URI's.
 	 */

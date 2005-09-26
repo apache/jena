@@ -21,20 +21,40 @@ abstract public class ARPOptions {
      * Changes that cannot be honoured are silently ignored.
      * Illegal error numbers may result in an ArrayIndexOutOfBoundsException but
      * are usually ignored.
-     * @param errno The specific error condition to change.
-     * @param mode The new mode one of:
+     * Most conditions are associated with one or more specific resources or literals
+     * formed during the parse. 
+     * The precise definition of 'associated with' is deliberately 
+     * undefined, and may change in future releases.
+     * Depending on the error mode associated with
+     * the error triples involving those resources or literals may or may not
+     * be produced.
+     * 
+     * When the condition is a violation of the RDF/XML Syntax (Revised) Recommendations, 
+     * and the error mode is {@link ARPErrorNumbers#EM_IGNORE} or  {@link ARPErrorNumbers#EM_WARNING},
+     * the precise rules which ARP uses to generate triples for such ill-formed input are 
+     * not defined by any standard and are subject to change with future releases.
+     * For input involving no errors, ARP creates triples in accordance with 
+     * the RDF/XML Syntax Revised Recommendation. 
+     * 
+     * The mode can have one of the following four values.
+     * 
      * <dl>
-     * <dt>IGNORE</dt>
-     * <dd>Ignore this condition.</dd>
-     * <dt>WARNING</dt>
-     * <dt>Invoke ErrorHandler.warning() for this condition.</dd>
-     * <dt>ERROR</dt>
-     * <dt>Invoke ErrorHandler.error() for this condition.</dd>
-     * <dt>FATAL</dt>
+     * <dt>{@link ARPErrorNumbers#EM_IGNORE}</dt>
+     * <dd>Ignore this condition. Produce triples.</dd>
+     * <dt>{@link ARPErrorNumbers#EM_WARNING}</dt>
+     * <dt>Invoke ErrorHandler.warning() for this condition. Produce triples.</dd>
+     * <dt>{@link ARPErrorNumbers#EM_ERROR}</dt>
+     * <dt>Invoke ErrorHandler.error() for this condition. Do not produce triples.</dd>
+     * <dt>{@link ARPErrorNumbers#EM_FATAL}</dt>
      * <dt>Aborts parse and invokes ErrorHandler.fatalError() for this condition.
+     * Do not produce triples.
      * In unusual situations, a few further warnings and errors may be reported.
      * </dd>
      * </dl>
+     * 
+     * 
+     * @param errno The specific error condition to change.
+     * @param mode The new mode for this condition.
      * @return The old error mode for this condition.
      */
     abstract public int setErrorMode(int errno, int mode);

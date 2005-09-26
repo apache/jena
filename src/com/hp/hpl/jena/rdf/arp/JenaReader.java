@@ -337,7 +337,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * <td><CODE>error-mode</CODE></td>
      * <td>{@link ARPOptions#setDefaultErrorMode}<br>
      * {@link ARPOptions#setLaxErrorMode}<br>
-     * {@link ARPOptions#setStrictErrorMode}<br>
+     * {@link ARPOptions#setStrictErrorMode()}<br>
      * {@link ARPOptions#setStrictErrorMode(int)}<br>
      * </td>
      * <td>String</td>
@@ -448,7 +448,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 
 
     /**
-     * @deprecated Use {@link ParseException#errorCodeName(int)
+     * @deprecated Use {@link ParseException#errorCodeName(int)}
      */
     static public String errorCodeName(int errNo) {
         return ParseException.errorCodeName(errNo);
@@ -458,7 +458,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 
 
     /**
-     * @deprecated Use {@link ParseException#errorCode(String)
+     * @deprecated Use {@link ParseException#errorCode(String)}
      */
     static public int errorCode(String upper) {
         return ParseException.errorCode(upper);

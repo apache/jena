@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.15 2005-09-23 11:02:10 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.16 2005-09-26 11:28:56 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -82,7 +82,7 @@ implements ARPConfig {
 	 *
 	 * @param base The retrieval URL, or the base URI to be 
      * used while parsing.
-     * @deprecated Use {@link #create}.
+     * @deprecated Use {@link #create(String)}.
      *  @return A new SAX2RDF
 	 * @throws MalformedURIException
 	 */
@@ -109,7 +109,7 @@ implements ARPConfig {
 	 * @param lang The current value of xml:lang when parsing starts, usually "".
 	 * @return A new SAX2RDF
 	 * @throws MalformedURIException If base is bad.
-     * @deprecated Use {@link #create}.
+     * @deprecated Use {@link #create(String,String)}.
 	 */
 	static public SAX2RDF newInstance(String base, String lang) throws MalformedURIException { 
 		try {
@@ -164,7 +164,7 @@ implements ARPConfig {
      *<code>startElement</code> event, or other events associated
      *with the elements being processed.
      *When building a Jena Model, with {@link SAX2Model} it is not required to match this
-     *with corresponding {@link #endPrefixMapping} events.
+     *with corresponding <code>endPrefixMapping</code> events.
      *Other {@link NamespaceHandler}s may be fussier.
      *When building a Jena Model, the prefix bindings are
      *remembered with the Model, and may be used in some

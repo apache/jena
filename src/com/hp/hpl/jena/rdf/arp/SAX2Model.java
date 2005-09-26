@@ -27,8 +27,8 @@ public class SAX2Model extends SAX2RDF {
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link #getHandlers} or
-     *            {@link #setHandlersWith} to provide a {@link StatementHandler},
+     *            it is null, then use {@link SAX2RDF#getHandlers} or
+     *            {@link SAX2RDF#setHandlersWith} to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
      * @return A new SAX2Model
      * @throws MalformedURIException
@@ -51,8 +51,8 @@ public class SAX2Model extends SAX2RDF {
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link #getHandlers} or
-     *            {@link #setHandlersWith} to provide a {@link StatementHandler},
+     *            it is null, then use {@link SAX2RDF#getHandlers} or
+     *            {@link SAX2RDF#setHandlersWith} to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
      * @return A new SAX2Model
      * @throws SAXParseException On a fatal error during setup, maybe malformed base URI
@@ -73,8 +73,8 @@ public class SAX2Model extends SAX2RDF {
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link #getHandlers} or
-     *            {@link #setHandlersWith} to provide a {@link StatementHandler},
+     *            it is null, then use {@link SAX2RDF#getHandlers} or
+     *            {@link SAX2RDF#setHandlersWith} to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
      * @param lang 
      *            The current value of <code>xml:lang</code> when parsing
@@ -98,8 +98,8 @@ public class SAX2Model extends SAX2RDF {
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link #getHandlers} or
-     *            {@link #setHandlersWith} to provide a {@link StatementHandler},
+     *            it is null, then use {@link SAX2RDF#getHandlers} or
+     *            {@link SAX2RDF#setHandlersWith} to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
      * @param lang
      *            The current value of <code>xml:lang</code> when parsing
@@ -122,10 +122,10 @@ public class SAX2Model extends SAX2RDF {
      * 
      * <p>
      * This is passed to any {@link NamespaceHandler} associated with this
-     * parser. It can be called before the initial {@link #startElement} event,
+     * parser. It can be called before the initial <code>startElement</code> event,
      * or other events associated with the elements being processed. When
      * building a Jena Model, it is not required to match this with
-     * corresponding {@link #endPrefixMapping} events. Other
+     * corresponding <code>endPrefixMapping</code> events. Other
      * {@link NamespaceHandler}s may be fussier. When building a Jena Model,
      * the prefix bindings are remembered with the Model, and may be used in
      * some output routines. It is permitted to not call this method for
@@ -239,7 +239,7 @@ public class SAX2Model extends SAX2RDF {
      * <td><CODE>error-mode</CODE></td>
      * <td>{@link ARPOptions#setDefaultErrorMode}<br>
      * {@link ARPOptions#setLaxErrorMode}<br>
-     * {@link ARPOptions#setStrictErrorMode}<br>
+     * {@link ARPOptions#setStrictErrorMode()}<br>
      * {@link ARPOptions#setStrictErrorMode(int)}<br>
      * </td>
      * <td>String</td>

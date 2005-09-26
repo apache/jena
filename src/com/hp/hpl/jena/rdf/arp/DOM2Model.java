@@ -32,8 +32,8 @@ public class DOM2Model extends SAX2Model {
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link #getHandlers}or
-     *            {@link #setHandlersWith}to provide a {@link StatementHandler},
+     *            it is null, then use {@link SAX2RDF#getHandlers}or
+     *            {@link SAX2RDF#setHandlersWith}to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
      * @throws SAXParseException 
      */    
@@ -45,14 +45,14 @@ public class DOM2Model extends SAX2Model {
      * non-root element within an XML document. In which case the application
      * needs to find this value in the outer context. Optionally, namespace
      * prefixes can be passed from the outer context using
-     * {@link #startPrefixMapping}.
+     * {@link SAX2RDF#startPrefixMapping}.
      * 
      * @param base
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link #getHandlers}or
-     *            {@link #setHandlersWith}to provide a {@link StatementHandler},
+     *            it is null, then use {@link SAX2RDF#getHandlers}or
+     *            {@link SAX2RDF#setHandlersWith}to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
      * @param lang
      *            The current value of <code>xml:lang</code> when parsing
@@ -70,10 +70,9 @@ public class DOM2Model extends SAX2Model {
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link #getHandlers}or
-     *            {@link #setHandlersWith}to provide a {@link StatementHandler},
+     *            it is null, then use {@link SAX2RDF#getHandlers}or
+     *            {@link SAX2RDF#setHandlersWith}to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
-     * @throws MalformedURIException
      * @throws SAXParseException 
      * @deprecated Use {@link #createD2M(String, Model)}
      */
@@ -86,14 +85,14 @@ public class DOM2Model extends SAX2Model {
      * non-root element within an XML document. In which case the application
      * needs to find this value in the outer context. Optionally, namespace
      * prefixes can be passed from the outer context using
-     * {@link #startPrefixMapping}.
+     * {@link SAX2RDF#startPrefixMapping}.
      * 
      * @param base
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
-     *            it is null, then use {@link #getHandlers}or
-     *            {@link #setHandlersWith}to provide a {@link StatementHandler},
+     *            it is null, then use {@link SAX2RDF#getHandlers}or
+     *            {@link SAX2RDF#setHandlersWith}to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
      * @param lang
      *            The current value of <code>xml:lang</code> when parsing

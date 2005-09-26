@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.25 2005-09-23 11:02:10 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.26 2005-09-26 11:28:56 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -41,22 +41,31 @@ package com.hp.hpl.jena.rdf.arp;
  */
 public interface ARPErrorNumbers {
     /** Used as ErrorMode to not report an error.
-     * @see ARP#setErrorMode
+     * @see ARPOptions#setErrorMode
      * 
      *
      */
     public int EM_IGNORE = 0;
     /** Used as ErrorMode to report warning and continue processing.
-     * @see ARP#setErrorMode
+     * @see ARPOptions#setErrorMode
      */
     public int EM_WARNING = 1;
-    // TODO: add error contract
     /** Used as ErrorMode to report error, and not generate associated triples.
-     * @see ARP#setErrorMode
+     * 
+     * In the event of an error (i.e. a condition with this error mode), 
+     * no further triples involving the resources and literals associated with the error are created. 
+     * The precise definition of 'associated with' is deliberately 
+     * undefined, and may change in future releases.
+     * 
+     * When the file includes fatal error conditions the parsing is aborted immediately after such an error.
+Otherwise, it is possible to see all the triples, including those involving resources and literals associated with any condition, by ensuring that the error mode of every error code is WARNING or IGNORE. (i.e. ARP optionally permits all errors to be downgraded to warnings, or to be ignored).
+In this case, the precise rules which ARP uses to generate triples for ill-formed input are not defined by any standard and are subject to change with future releases.
+For input involving no errors, ARP creates triples in accordance with the RDF/XML Syntax Revised Recommendation. 
+     * @see ARPOptions#setErrorMode
      */
     public int EM_ERROR = 2;
     /** Used as ErrorMode to stop processing after reporting error.
-     * @see ARP#setErrorMode
+     * @see ARPOptions#setErrorMode
      */
     public int EM_FATAL = 3;
 
@@ -103,7 +112,7 @@ public interface ARPErrorNumbers {
     public int IGN_DAML_COLLECTION = 4;
     
 	/**
-	 Indicates that no name is known for the current file being parsed.. 
+	 Indicates that no name is known for the current file being parsed.
 	 * (W005)
 	 */
 
@@ -123,7 +132,6 @@ public interface ARPErrorNumbers {
      *rdf: qualifier and reports a warning. (W101).
     */
     public int WARN_UNQUALIFIED_RDF_ATTRIBUTE = 101;
-   // TODO: test case for this error, plus code
     /**
      *Some attribute that is not an RDF keyword is used in an 
        unqualified fashion. In default mode,  then the namespace of
@@ -141,7 +149,6 @@ public interface ARPErrorNumbers {
      * In default and strict modes this is a warning. (W103).
      **/
     public int WARN_UNKNOWN_RDF_ATTRIBUTE = 103;
-    // TODO: test case and impl of this error code.
     /**
     An element tag is not a qualified name. 
      In default mode, a resource or property is generated with a malformed URI.
@@ -187,7 +194,6 @@ public interface ARPErrorNumbers {
      *
      */
     public int WARN_BAD_NAME = 108;
-    // TODO: check this error condition
     /**
      *A namespace has been declared with a relative URI.
       Such relative URI namespaces have been 

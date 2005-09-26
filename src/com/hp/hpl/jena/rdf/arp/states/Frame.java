@@ -98,6 +98,10 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
                     String lName = atts.getLocalName(i);
                     URIReference pred = URIReference
                             .fromQName(this, uri, lName);
+                    if (uri==null || uri.equals("")) {
+                        warning(pred,WARN_UNQUALIFIED_ATTRIBUTE,
+                                "Unqualified property attributes are not allowed. Property treated as a relative URI.");
+                    }
                     if (rdfns.equals(uri) && !QNameLexer.isKnownRDFProperty(lName)) {
                         warning(
                                         pred,
@@ -138,10 +142,9 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
      * Additional message if mixed content is found in a syntactically
      * disallowed place. Subclasses override to suppress message.
      * 
-     * @return
      */
     String suggestParsetypeLiteral() {
-        return "Maybe there should be an rdf:parseType='Literal' for embedding mixed XML content in RDF.";
+        return " Maybe there should be an rdf:parseType='Literal' for embedding mixed XML content in RDF.";
     }
 
     public void characters(char[] ch, int start, int length)
@@ -151,7 +154,8 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
             warning(ERR_NOT_WHITESPACE,
                     "Expecting XML start or end element(s). String data \""
                             + new String(ch, start, length)
-                            + "\" not allowed. " + suggestParsetypeLiteral());
+                            + "\" not allowed." + suggestParsetypeLiteral()
+                            + " Maybe a striping error.");
         }
     }
 

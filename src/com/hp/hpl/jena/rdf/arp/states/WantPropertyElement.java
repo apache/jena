@@ -48,6 +48,9 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         if (nonWhiteMsgGiven)
             taint.isTainted();
         nonWhiteMsgGiven = false;
+        if (uri==null || uri.equals("")) {
+            warning(WARN_UNQUALIFIED_ELEMENT,"Unqualified property elements are not allowed. Treated as a relative URI.");
+        }
         ElementLexer el = new ElementLexer(taint, this, uri, localName,
                 rawName, E_LI, CoreAndOldTerms | E_DESCRIPTION, false);
         // if (el.badMatch)

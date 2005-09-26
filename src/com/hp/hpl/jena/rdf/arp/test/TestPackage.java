@@ -418,6 +418,20 @@ Test test192 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/
 test176.addTest(test192);
 Test test193 = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01","http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01.rdf",true,new int[]{124,107, });
 test176.addTest(test193);
+
+
+// TODO: not for 2.3. Add these tests to manifest
+Test tProp = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/unqualified/property","http://jcarroll.hpl.hp.com/arp-tests/unqualified/property.rdf",true,new int[]{104,136 });
+test176.addTest(tProp);
+Test tAttr = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/unqualified/attribute","http://jcarroll.hpl.hp.com/arp-tests/unqualified/attribute.rdf",true,new int[]{102,136 });
+test176.addTest(tAttr);
+Test tType = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/unqualified/typedNode","http://jcarroll.hpl.hp.com/arp-tests/unqualified/typedNode.rdf",true,new int[]{104,136 });
+test176.addTest(tType);
+Test tRelative = test175.createNegativeTest("http://jcarroll.hpl.hp.com/arp-tests/unqualified/relative-namespace","http://jcarroll.hpl.hp.com/arp-tests/unqualified/relative-namespace.rdf",true,new int[]{109,136 });
+test176.addTest(tRelative);
+
+
+
 Test test194 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/comments/test09","http://jcarroll.hpl.hp.com/arp-tests/comments/test09.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt",false);
 test176.addTest(test194);
 Test test195 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/comments/test08","http://jcarroll.hpl.hp.com/arp-tests/comments/test08.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt",false);
