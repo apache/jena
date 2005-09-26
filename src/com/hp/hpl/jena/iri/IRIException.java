@@ -11,6 +11,11 @@ import org.xml.sax.Locator;
 
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 
+/**
+ * Unstable code.
+ * @author Jeremy J. Carroll
+ *
+ */
 public class IRIException extends RuntimeException {
 
     final int conformanceLevel;
@@ -61,10 +66,7 @@ public class IRIException extends RuntimeException {
     }
     /**
      * Indicates the specification that has been broken.
-     * The possible return values are:
-     * <dd>
-     * </dd>
-     * @return
+     * 
      */
     public int getConformance() {
         return conformanceLevel;

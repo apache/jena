@@ -12,7 +12,6 @@ import java.util.*;
 import com.hp.hpl.jena.iri.IRIException;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.RDFURIReference;
-import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.*;
@@ -195,7 +194,6 @@ public abstract class AbsIRI implements RDFURIReference {
      * @param r
      * @param def     Default result if can't make this relative.
      * @param flags
-     * @return
      */
    private String relativize(RDFURIReference r, String def, int flags) {
         if (r.isOpaque() || r.isVeryBad())

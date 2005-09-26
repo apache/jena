@@ -8,6 +8,11 @@ package com.hp.hpl.jena.iri;
 import java.net.*;
 import java.util.*;
 
+/**
+ * Unstable code.
+ * @author Jeremy J. Carroll
+ *
+ */
 public interface RDFURIReference extends IRIConformanceLevels {
 
     public boolean isAbsolute();

@@ -5,6 +5,11 @@
 
 package com.hp.hpl.jena.iri;
 
+/**
+ * Unstable code.
+ * @author Jeremy J. Carroll
+ *
+ */
 public interface IRIConformanceLevels {
     // TODO: javadoc hrefs to specs
     /**

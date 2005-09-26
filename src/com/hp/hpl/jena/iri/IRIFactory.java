@@ -12,6 +12,11 @@ import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 
 import org.xml.sax.Locator;
 
+/**
+ * Unstable code.
+ * @author Jeremy J. Carroll
+ *
+ */
 public class IRIFactory implements IRIConformanceLevels {
     final Locator locator;
     static IRIFactory d = new IRIFactory();
@@ -64,8 +69,6 @@ public class IRIFactory implements IRIConformanceLevels {
     // TODO: pull up into impl package
     /**
      * Not part of API.
-     * @param xue
-     * @return
      */
     public IRIException wrapXercesException(MalformedURIException xue) {
         return new IRIException(RDF_URI_Reference|Absolute_URI|
