@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.57 $
+ * Revision           $Revision: 1.58 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-28 15:32:57 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2005-09-26 14:13:32 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.57 2005-06-28 15:32:57 chris-dollin Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.58 2005-09-26 14:13:32 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -126,7 +126,7 @@ public class OntResourceImpl
         Model m = getModel();
         return (m instanceof OntModel) ? (OntModel) m : null;
     }
-    
+
     /**
      * <p>
      * Answer the ontology language profile that governs the ontology model to which
@@ -134,9 +134,16 @@ public class OntResourceImpl
      * </p>
      *
      * @return The language profile for this ontology resource
+     * @throws JenaException if the resource is not bound to an OntModel, since
+     * that's the only way to get the profile for the resource
      */
     public Profile getProfile() {
-        return ((OntModel) getModel()).getProfile();
+        try {
+            return ((OntModel) getModel()).getProfile();
+        }
+        catch (ClassCastException e) {
+            throw new JenaException( "Resource " + toString() + " is not attached to an OntModel, so cannot access its language profile" );
+        }
     }
 
     /**

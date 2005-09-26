@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-05-05 12:32:22 $
+ * Last modified on   $Date: 2005-09-26 14:13:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.ontology;
 // Imports
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
@@ -37,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.34 2005-05-05 12:32:22 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.35 2005-09-26 14:13:33 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -58,7 +59,7 @@ public interface OntResource
      * @return The ont model that this resource is attached to, or null.
      */
     public OntModel getOntModel();
-    
+
     /**
      * <p>
      * Answer the ontology language profile that governs the ontology model to which
@@ -66,6 +67,8 @@ public interface OntResource
      * </p>
      *
      * @return The language profile for this ontology resource
+     * @throws JenaException if the resource is not bound to an {@link OntModel}, since
+     * that's the only way to get the profile for the resource
      */
     public Profile getProfile();
 
