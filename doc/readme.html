@@ -107,6 +107,7 @@ directory</a> of the Jena download.</p>
   <li>set the Java classpath to include all the JAR files in the
 JENAROOT/lib/ directory
     <pre>  JENAROOT/lib/jena.jar
+  JENAROOT/lib/arq.jar
   JENAROOT/lib/xercesImpl.jar
   JENAROOT/lib/xml-apis.jar
   JENAROOT/lib/icu4j.jar
@@ -115,7 +116,13 @@ JENAROOT/lib/ directory
   JENAROOT/lib/antlr-2.7.5.jar
   JENAROOT/lib/junit.jar
   JENAROOT/lib/commons-logging.jar
-  JENAROOT/lib/log4j-1.2.12.jar</pre>
+  JENAROOT/lib/log4j-1.2.12.jar
+  JENAROOT/lib/log4j-1.2.12.jar
+  JENAROOT/lib/stax-1.1.1-dev.jar
+  JENAROOT/lib/stax-api-1.0.jar
+
+
+</pre>
   </li>
   <li>Test the distribution by running the regression tests, either:
     <pre>	ant test          // if you have ant configured to run junit<br>	test.bat          // on windows<br>	sh test.sh         // on unix<br>	</pre>
@@ -178,8 +185,8 @@ from <a href="http://gee.cs.oswego.edu/dl">Doug Lea</a></li>
   <li><a href="http://jakarta.apache.org/commons/logging.html">Jakarta
 Commons Logging</a></li>
   <li><a href="http://logging.apache.org/log4j/docs/">log4j</a></li>
-  <li><a href="http://ant.apache.org/">ant</a><br>
-  </li>
+  <li><a href="http://ant.apache.org/">ant</a></li>
+  <li><a href="http://stax.codehaus.org/">StAX</li>
 </ul>
 Some of the developers use <a href="http://www.eclipse.org/">Eclipse</a>.<br>
 <br>

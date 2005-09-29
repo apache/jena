@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: tools.content.html,v 1.5 2005-04-12 15:03:15 jeremy_carroll Exp $ -->
+<!-- $Id: tools.content.html,v 1.6 2005-09-29 11:16:36 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena Semantic Web Framework - Command Line Utilities</title>
@@ -27,50 +27,89 @@ Jena  Command Line Utilities
 <div id="content">
 <p>
 Jena provides a number of utilities that wrap up access to
-some comonnly used functionality.</p>
-<p>These command utilites print a usage message with
+some commonly used functionality.</p>
+<p>These command utilities print a usage message with
 the <code>-h</code> flag.</p>
+<h2>RDF processing utilities</h2>
 
 <dl>
-<dt>rdfparse</dt>
+<dt>jena.rdfparse</dt>
 <dd>Call ARP</dd>
 
-<dt>rdfcopy</dt>
+<dt>jena.rdfcat</dt>
+<dd>Copy and merge models</dd>
+
+<dt>jena.rdfcopy</dt>
 <dd>Copy a model, changing its syntax</dd>
 
-<dt>rdfquery</dt>
-<dd>Execute an RDQL query on a model.</dd>
+<dt>jena.rdfcompare</dt>
+<dd>Test whether two models are isomorphic</dd>
+<dt>jena.n3</dt>
+<dd>A tool to access the N3 parser directly.</dd>
 
-<dt>rdfcompare</dt>
-<dd>Test whether two models are ismorphic</dd>
 
-<dt>schemagen</dt>
+
+</dl>
+<h2>Ontology utilities</h2>
+<dl>
+
+<dt>jena.schemagen</dt>
 <dd><a href="how-to/schemagen.html">schemagen - a tool to generate Java
 from a vocabulary or ontology</a></dd>
 
-<dt>n3</dt>
-<dd>A tool to access the N3 parser directly.</dd>
 
-<dt>dbcreate</dt>
+
+</dl>
+<h2>Database utilities</h2>
+<dl>
+<dt>jena.dbcreate</dt>
 <dd>Create a Jena model in a database.</dd>
 
-<dt>dblist</dt>
+<dt>jena.dblist</dt>
 <dd>List all models in a databse.</dd>
 
-<dt>dbload</dt>
+<dt>jena.dbload</dt>
 <dd>Load a file of data into a database.</dd>
 
-<dt>dbdump<dt>
+<dt>jena.dbdump<dt>
 <dd>Dump a database</dd>
 
-<dt>dbremove</dt>
+<dt>jena.dbremove</dt>
 <dd>Remove a Jena model and all its data from a database. Use with care.</dd>
 
 
 
 </dl>
 
-</div><!-- end #content -->
+<h2>Query Utilities</h2>
+<p><a href="ARQ/cmds.html">ARQ commands documentation</a></p>
+
+<dl>
+
+<dt>jena.query / <a href="ARQ/cmds.html#arq.query">arq.query</a></dt>
+<dd>Execute a SPARQL or RDQL query.</dd>
+<dt>jena.sparql / <a href="ARQ/cmds.html#arq.sparql">arq.sparql</a></dt>
+<dd>Execute a SPARQL query.</dd>
+<dt>jena.rset / <a href="ARQ/cmds.html#arq.rset">arq.rset</a></dt>
+<dd>Parse <a href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL Query Results 
+XML Format</a> or
+<a href="http://www.w3.org/2001/sw/DataAccess/tests/README.html">SPARQL testing 
+results</a> files.&nbsp; Print in these formats or in plain text.</dd>
+<dt>jena.qtest / <a href="ARQ/cmds.html#arq.qtest">arq.qtest</a></dt>
+<dd>Run SPARQL tests.</dd>
+
+<dl>
+<dt>jena.rdfquery</dt>
+<dd>Execute an RDQL query using the old RDQL engine (deprecated).</dd>
+
+
+
+</dl>
+
+
+
+</dl>
+<p>&nbsp;</div><!-- end #content -->
 </div> <!-- end #main -->
 
 <div id="footer">
