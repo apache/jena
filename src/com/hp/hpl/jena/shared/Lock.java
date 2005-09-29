@@ -1,10 +1,11 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
 /**
- * A model lock.
+ * A lock.
  * Critical section support for multithreaed access to a model
  * within a single JVM. See also transactions support.
  *
@@ -56,25 +57,34 @@
  * that does some checking.
  *
  * @author      Andy Seaborne
- * @version     $Id: ModelLock.java,v 1.5 2005-09-29 14:52:29 andy_seaborne Exp $
+ * @version     $Id: Lock.java,v 1.1 2005-09-29 14:52:29 andy_seaborne Exp $
  */
 
+package com.hp.hpl.jena.shared;
 
-package com.hp.hpl.jena.rdf.model ;
-
-import com.hp.hpl.jena.shared.Lock;
-
-/**
- * @deprecated For naming compatibility - use Lock interface instead
- */
-
-public interface ModelLock extends Lock
+public interface Lock
 {
     /** Descriptive name for lock requests - read lock */
-    public static final boolean READ = Lock.READ ;
-
+    public static final boolean READ = true ;
+    
     /** Descriptive name for lock requests - write lock */
-    public static final boolean WRITE = Lock.WRITE ;
+    public static final boolean WRITE = false ;
+    
+    
+    /** Enter a critical section.
+     *  The application must call leaveCriticialSection.
+     *  @see #leaveCriticalSection
+     *
+     * @param readLockRequested true implies a read lock,false implies write lock.
+     */
+    
+    public void enterCriticalSection(boolean readLockRequested) ;
+    
+    /** Leave a critical section.  Releases the lock form the matching enterCriticalSection
+     *  @see #enterCriticalSection
+     */
+    
+    public void leaveCriticalSection() ;
 }
 
 
@@ -104,4 +114,3 @@ public interface ModelLock extends Lock
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-

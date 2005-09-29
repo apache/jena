@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <!-- $Id: concurrency.html,v 1.5 2004-03-22 14:27:20 andy_seaborne Exp $ -->
+  <!-- $Id: concurrency.html,v 1.6 2005-09-29 14:52:29 andy_seaborne Exp $ -->
   <title>Concurrency in Jena</title>
   <link href="../styles/doc.css" rel="stylesheet" type="text/css">
   
@@ -24,18 +24,18 @@ models.&nbsp; API operations are not thread safe by default. Thread safety would
 simple ensure that the model datastructures remained intact but would not give 
 an application consistent access to the RDF graph.&nbsp; It would also limit the 
 throughput of multithreaded applications on multiprocessor machines where true 
-concurrenecy can lead to a reduction in response time.</p>
+concurrency can lead to a reduction in response time.</p>
 
 <p>For example, supposed an application wishes to read the name and age of a 
 person from model.&nbsp; This takes two API calls.&nbsp; It is more convenient 
 to be able to read that information in a consistent fashion, knowing that the 
 access to the second piece of information is not being done after some model 
-chnage has occurred.</p>
+change has occurred.</p>
 
 <p>Special care is needed with iterators.&nbsp; In general, Jena's iterators do
 <i>not</i> take a copy to enable safe use in the presence of concurrent update.&nbsp; 
 A multithreaded application needs to be aware of these issues and correctly use 
-the mechamisms that Jena provides (or manage its own concurrency itself).&nbsp; 
+the mechanisms that Jena provides (or manage its own concurrency itself).&nbsp; 
 While not zero, the application burden is not high.</p>
 
 <p>There are two main cases:</p>
@@ -53,16 +53,14 @@ transactions</a>.</p>
 
 <p>This note describes the support for same-JVM, multithreaded applications.</p>
 
-<h2>ModelLocks</h2>
-<p>ModelLocks provide critical section support for managing the interactions of 
+<h2>Locks</h2>
+<p>Locks provide critical section support for managing the interactions of 
 multiple threads in the same JVM.&nbsp; Jena provides 
 multiple-reader/single-writer concurrency support (MRSW).</p>
-<p>All Jena models provide a ModelLock to mediate concurrent access. ModelLock 
-is a subinterface of Model.</p>
 <p>The pattern general is:</p>
 
 <pre class="box">Model model = . . . ;
-model.enterCriticalSection(ModelLock.READ) ;  // or ModelLock.WRITE
+model.enterCriticalSection(Lock.READ) ;  // or Lock.WRITE
 try {
     ... perform actions on the model ...
     ... obey contract - no update operations if a read lock
@@ -77,46 +75,47 @@ threads reading the model concurrently.</p>
 
 <p>Care must be taken with iterators: unless otherwise stated, all iterators 
 must be assumed to be iterating over the datastructures in the model or graph 
-implmentation itself.&nbsp; It is not possible to safely pass these out of
+implementation itself.&nbsp; It is not possible to safely pass these out of
 criticial sections.</p>
 
-<h2>RDQL Query</h2>
-<p>RDQL query results are iterators and no different from other iterators in 
-Jena for concurrency purpose.&nbsp; The default query engine does not give 
+<h2>SPARQL Query</h2>
+<p>SPARQL query results are iterators and no different from other iterators in 
+Jena for concurrency purposes.&nbsp; The default query engine does not give 
 thread safety and the normal requirements on an application to ensure MRSW 
 access in the presence of iterators applies.&nbsp; Note that Jena's query 
-mechanism is itself multithreaded with the query itself executing on a separate 
-thread from the calling application. If the application is single threaded, no 
-extra work is necessary.&nbsp; If the application is multithreaed, queries 
+mechanism is itself multithreaded. If the application is single threaded, no 
+extra work is necessary.&nbsp; If the application is multithreaded, queries 
 should be executed with a read lock.</p>
 <p>Outline:</p>
 
-<pre class="box">Model model = . . . ;
-Query query = new Query(queryString) ;
-query.setSource(model);
-QueryExecution qe = new QueryEngine(query) ;
-
-model.enterCriticalSection(ModelLock.READ) ;
-try {
-    // Must do inside the critical section.
-    QueryResults results = qe.exec() ;
-    for ( Iterator iter = results ; iter.hasNext() ; )
-    {
-        ResultBinding res = (ResultBinding)iter.next() ;
-        . . . process results . . .
-    }
-    results.close() ;
-} finally { 
-   model.leaveCriticalSection() ;
-}
-</pre>
+<pre class="box">
+  Model model = ... ;
+  String queryString = " .... " ;
+  Query query = QueryFactory.create(queryString) ;
+  model.<b>enterCriticalSection</b>(<b>Lock.READ</b>) ;
+  try {
+    QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
+    ResultSet results = qexec.execSelect() ;
+   try {
+      for ( ; results.hasNext() ; )
+      {
+          QuerySolution soln = results.nextSolution() ;
+          RDFNode x = soln.get(&quot;..var name..&quot;) ;
+      }
+    } finally { qexec.close() ; }
+  } finally { model.<b>leaveCriticalSection</b>() ; }</pre>
 <p>Updates to the model should not be performed inside the read-only section.&nbsp; 
 For database-backed models, the application can use a transaction.&nbsp; For 
 in-memory models, the application should collect the changes together during the 
 query processing then making all the changes holding a write lock.</p>
-<p>Jena ModelLocks do not provide lock promotion - an application can not start 
+<p>Jena Locks do not provide lock promotion - an application can not start 
 a &quot;write&quot; critical section while holding a &quot;read&quot; lock because this can lead to 
 deadlock.</p>
+<h2>Compatibility</h2>
+<p>The actually interface is called <code>Lock</code> and has implementations 
+including <code>LockMRSW</code>.</p>
+<p>For compatibility with previous versions of Jena, there is a class <code>
+ModelLock</code>.</p>
 <p>&nbsp;</p>
 
 </body>

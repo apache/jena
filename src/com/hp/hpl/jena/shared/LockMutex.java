@@ -1,26 +1,39 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.model.impl ;
-import com.hp.hpl.jena.rdf.model.ModelLock ;
-import com.hp.hpl.jena.shared.LockMRSW;
+package com.hp.hpl.jena.shared;
+
+import com.hp.hpl.jena.shared.JenaException;
+
+import EDU.oswego.cs.dl.util.concurrent.Mutex; 
 
 
-/** Compatibility class - adds ModelLock interface to LockMRSW
- * @see com.hp.hpl.jena.shared.LockMRSW;
- *   
- * @author		Andy Seaborne
- * @version 	$Id: ModelLockImpl.java,v 1.9 2005-09-29 14:52:29 andy_seaborne Exp $
- */
+public class LockMutex implements Lock 
+{
+    Mutex mutex = new Mutex() ;
+    
+    public void enterCriticalSection(boolean readLockRequested)
+    {
+        try {
+            mutex.acquire() ;
+        } catch (InterruptedException intEx)
+        {
+            throw new JenaException("InterruptedException in LockMutex") ;
+        }
+    }
 
-public class ModelLockImpl extends LockMRSW implements ModelLock
-{ }   
+    public void leaveCriticalSection()
+    {
+        mutex.release() ;
+    }
+}
 
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -44,4 +57,3 @@ public class ModelLockImpl extends LockMRSW implements ModelLock
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
