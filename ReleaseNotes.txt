@@ -213,7 +213,11 @@ Command line utilities
 	o New utility jena.rdfcat, which can merge any number of individual rdf
 	  documents together into one model, and perform syntax translation (e.g.
 	  RDF/XML to N3).
+    o New query utilities for SPARQL
 
+ModelLock
+    o Deprected in favour of Lock (in shared).
+    o Two implementations: LockMRSW and LockMutex
 
 ;;; -- end post2.2final change list -------------------------------------
 
