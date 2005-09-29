@@ -6,6 +6,7 @@ if [ "$OSTYPE" == "cygwin" ]; then S=";"; fi
 
 LIBS="$(cat<<EOF
 antlr-2.7.5.jar
+arq.jar
 commons-logging.jar
 concurrent.jar
 icu4j.jar
@@ -16,6 +17,8 @@ junit.jar
 log4j-1.2.12.jar
 xercesImpl.jar
 xml-apis.jar
+stax-api-1.0.jar
+stax-1.1.1-dev.jar
 EOF
 )"
 
