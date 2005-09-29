@@ -1,0 +1,55 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "SPARQL examples from query WD" ;
+    mf:entries
+    ([  mf:name    "sparql-query-example-2.1a" ;
+        rdfs:comment
+            "Example from section 2.1" ;
+        mf:action
+            [ qt:query  <ex2-1a.rq> ;
+              qt:data   <ex2-1a.n3> ] ;
+        mf:result  <ex2-1a-result.n3>
+      ]
+
+     [  mf:name    "sparql-query-example-2.2a" ;
+        rdfs:comment
+            "Example from section 2.2" ;
+        mf:action
+            [ qt:query  <ex2-2a.rq> ;
+              qt:data   <ex2-2a.n3> ] ;
+        mf:result  <ex2-2a-result.n3>
+      ]
+
+     [  mf:name    "sparql-query-example-2.3a" ;
+        rdfs:comment
+            "Example from section 2.3" ;
+        mf:action
+            [ qt:query  <ex2-3a.rq> ;
+              qt:data   <ex2-3a.n3> ] ;
+        mf:result  <ex2-3a-result.n3>
+      ]
+
+     [  mf:name    "sparql-query-example-2.4a" ;
+        rdfs:comment
+            "Example from section 2.4" ;
+        mf:action
+            [ qt:query  <ex2-4a.rq> ;
+              qt:data   <ex2-4a.n3> ] ;
+        mf:result  <ex2-4a-result.n3>
+      ]
+
+     [  mf:name    "sparql-query-example-3" ;
+        rdfs:comment
+            "Example from section 3" ;
+        mf:action
+            [ qt:query  <ex3.rq> ;
+              qt:data   <ex3.n3> ] ;
+        mf:result  <ex3-result.n3>
+      ]
+
+    # End of tests
+   ).

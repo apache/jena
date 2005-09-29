@@ -1,0 +1,15 @@
+for n in 06 07 08 09 10
+do
+	Q=test-B-$n
+	echo "==== B-$n ============"
+	cat test-B-$n
+	echo
+	echo "----------------------------"
+	echo
+	rdql -query "$Q"
+	echo
+	echo "----------------------------"
+	echo
+	rdql -query "$Q" --format dump
+	echo
+	done

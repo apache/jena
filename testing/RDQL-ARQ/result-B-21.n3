@@ -1,0 +1,36 @@
+@prefix rs:     <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+
+[]
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                rs:ResultSet ;
+    rs:resultVariable
+                "z" , "y" , "x" ;
+    rs:size     "2" ;
+    rs:solution
+                [ rs:binding  [ rs:value    <http://rdf.hp.com/p2> ;
+                                rs:variable
+                                            "y"
+                              ] ;
+                  rs:binding  [ rs:value    <http://rdf.hp.com/r> ;
+                                rs:variable
+                                            "x"
+                              ] ;
+                  rs:binding  [ rs:value    "value"@en-gb ;
+                                rs:variable
+                                            "z"
+                              ]
+                ] ;
+    rs:solution
+                [ rs:binding  [ rs:value    <http://rdf.hp.com/p2> ;
+                                rs:variable
+                                            "y"
+                              ] ;
+                  rs:binding  [ rs:value    <http://rdf.hp.com/r> ;
+                                rs:variable
+                                            "x"
+                              ] ;
+                  rs:binding  [ rs:value    "value"@en ;
+                                rs:variable
+                                            "z"
+                              ]
+                ] .

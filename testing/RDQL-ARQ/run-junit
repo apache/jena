@@ -1,0 +1,16 @@
+#!/bin/bash
+
+CP="$(jena_path)"
+
+TEST1=com.hp.hpl.jena.rdf.query.test.TestExpressions
+TEST2=com.hp.hpl.jena.rdf.query.test.QueryTestScripts
+TEST3=com.hp.hpl.jena.rdf.query.test.QueryTestProgrammatic
+
+(
+  cd ../../../..
+  for CLASS in $TEST1 $TEST2 $TEST3
+  do
+    echo "$CLASS"
+    java -cp "$CP" junit.textui.TestRunner "$CLASS"
+    done
+)
