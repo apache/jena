@@ -35,4 +35,6 @@ do
 
 ##echo $CP
 
-java -classpath "$CP"  junit.textui.TestRunner ${1:-com.hp.hpl.jena.test.TestPackage}
+java -version
+
+java -classpath "$CP" junit.textui.TestRunner ${1:-com.hp.hpl.jena.test.TestPackage}
