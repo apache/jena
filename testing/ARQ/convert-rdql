@@ -1,0 +1,42 @@
+#!/bin/bash
+
+
+echo "Many tests fixed up - do not run this script"
+exit 9
+
+
+RDQL="../RDQL"
+
+# Temp name while getting to work
+ARQ="RDQL2"
+
+# Be careful of tsts-S-02,03,04,05 which have UTF-8 in them (and others)
+
+#for t in $RDQL/query-dump $RDQL/test-*
+
+# Not test-S
+for t in $RDQL/query-dump $RDQL/test-{[1-9],A,B}-*
+
+do
+  b=$(basename $t)
+  echo $b
+  qparse --plain --in RDQL --out SPARQL --file $t |     \
+    perl -p con-query.pl                                \
+    > $ARQ/$b.rq
+  done
+
+# Fix syntax decl
+# Fix abs URLs
+echo "Manifest"
+
+perl -p con-manifest.pl  < $RDQL/manifest-rdql.n3 > $ARQ/manifest.n3
+
+echo "Data"
+cp $RDQL/model* $ARQ
+
+echo "Results"
+cp $RDQL/result* $ARQ
+
+
+# De-cygwin-ization
+chmod -x $RDQL/*.*

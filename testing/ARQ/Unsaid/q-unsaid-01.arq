@@ -1,0 +1,4 @@
+PREFIX : <http://example.org/x#>
+
+SELECT ?x 
+{ UNSAID{ :a :b :v1 } }

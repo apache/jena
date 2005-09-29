@@ -1,0 +1,8 @@
+SELECT  *
+FROM       <dft.n3>
+FROM NAMED <a.n3> 
+FROM NAMED <b.n3>
+WHERE
+    { ?x ?y ?z .
+      ?z ?r ?s .
+    }

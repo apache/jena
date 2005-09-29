@@ -1,0 +1,4 @@
+PREFIX  α: <http://rdf.hp.com/>
+SELECT  ?p ?v
+WHERE
+    { α:r ?p ?v }

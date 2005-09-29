@@ -1,0 +1,6 @@
+PREFIX books:   <http://example.org/book/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+
+DESCRIBE ?book
+ { ?book dc:title [] }
+

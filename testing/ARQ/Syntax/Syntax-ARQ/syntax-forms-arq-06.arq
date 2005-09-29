@@ -1,0 +1,10 @@
+PREFIX : <http://example.org/ns#>
+SELECT *
+WHERE
+{
+  [] << (?s) [ :pp :qq ] << :s :p :o >> >> .
+  ( [ :p () ] ) . 
+  ( [ :p << ?s ?p ?o >> ] ) .  # reification-as-object
+  { ( [ << ?s ?p ?o >> ] ) } .
+  { ( [ << [:p :q ] << 1 2 3 >> [a [] ] >> ] ) } .
+}

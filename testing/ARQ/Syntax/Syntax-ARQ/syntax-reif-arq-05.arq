@@ -1,0 +1,3 @@
+PREFIX : <http://example.org/ns#>
+SELECT * WHERE
+{  << ?s ?p ?o >> :p << ?s ?p ?o >> } # reification as subject and object

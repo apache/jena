@@ -1,0 +1,5 @@
+SELECT  *
+WHERE
+    { ?x ?y ?z . 
+      FILTER  !regex(?x, "//rdf.hp.COM/r", "i") && ! regex(?y,"1$" ) .
+    }

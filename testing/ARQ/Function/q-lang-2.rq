@@ -1,0 +1,6 @@
+PREFIX  jfn:  <java:com.hp.hpl.jena.query.function.library.>
+
+SELECT ?v
+{ ?x ?p ?v .
+  FILTER ( ! jfn:langeq(?v, "en" ) )
+}

@@ -1,0 +1,7 @@
+# A query to "de-reifiy" a graph
+
+# Prefix only to assist in formatting the output
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+CONSTRUCT { ?s ?p ?o }
+WHERE { << ?s ?p ?o >> } 

@@ -1,0 +1,6 @@
+ PREFIX : <http://example.org/x#>
+
+SELECT ?x 
+{ ?a :b ?x .
+  UNSAID{ ?a :b ?x . FILTER (?x = :v2)  }
+}

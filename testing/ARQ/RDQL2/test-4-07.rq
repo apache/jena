@@ -1,0 +1,5 @@
+SELECT  ?x ?y
+WHERE
+    { ?x ?p1 "v-a-1" .
+      ?y ?p2 "v-a-2" .
+    }

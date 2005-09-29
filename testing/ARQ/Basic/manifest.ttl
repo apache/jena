@@ -1,0 +1,40 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Basic test cases" ;
+    mf:entries
+    ( 
+      [  mf:name    "Prefix/Base 1" ;
+         mf:action
+            [ qt:query  <q-base-prefix-1.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <r-base-prefix-1.ttl>
+      ]
+      [  mf:name    "Prefix/Base 2" ;
+         mf:action
+            [ qt:query  <q-base-prefix-2.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <r-base-prefix-2.ttl>
+      ]
+      [  mf:name    "Prefix/Base 3" ;
+         mf:action
+            [ qt:query  <q-base-prefix-3.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <r-base-prefix-3.ttl>
+      ]
+      [  mf:name    "Prefix/Base 4" ;
+         mf:action
+            [ qt:query  <q-base-prefix-4.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <r-base-prefix-4.ttl>
+      ]
+      [  mf:name    "Prefix/Base 5" ;
+         mf:action
+            [ qt:query  <q-base-prefix-5.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <r-base-prefix-5.ttl>
+      ]
+    ).

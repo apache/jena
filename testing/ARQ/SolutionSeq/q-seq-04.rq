@@ -1,0 +1,5 @@
+PREFIX : <http://example.org/ns#>
+
+SELECT DISTINCT ?v
+WHERE { [] :num ?v }
+ORDER BY ?v

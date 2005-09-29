@@ -1,0 +1,6 @@
+@prefix ns: <http://example.org/ns#> .
+@prefix :   <http://example.org/> .
+
+:bill ns:loves _:who .
+:joe  ns:loves _:who .
+

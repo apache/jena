@@ -1,0 +1,6 @@
+# SPARQL query to tist the URIs in a dataset
+PREFIX : <.>
+
+SELECT ?g 
+WHERE
+  { GRAPH ?g { } }
