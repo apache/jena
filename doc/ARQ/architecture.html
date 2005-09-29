@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>ARQ</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>ARQ - Internal Design</h1>
+
+
+
+<p class="todo">@@ Incomplete</p>
+<p>ARQ consists of the following parts:</p>
+<ul>
+  <li>The core : the datastructures that describe a query.&nbsp; All the other 
+  subsystems operate on this structure.</li>
+  <li>Query engines to execute queries</li>
+  <li>Parsers that built query structures</li>
+  <li>Serializers that print out queries</li>
+</ul>
+<p>In addition there are class to assist the application writer:</p>
+<ul>
+  <li>Result set tools: </li>
+  <li>Reading</li>
+</ul>
+<p>Main packages:</p>
+
+<div style="margin-left: 5%; margin-right: 5%;">
+<table border="1" cellpadding="0" cellspacing="1" style="border-style:solid; border-collapse: collapse">
+  <tr>
+    <th>Package</th>
+    <th>Use</th>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.query</code></td>
+    <td>The application API</td>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.query.core</code>
+    <td>Parse tree</td>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.query.parser</code></td>
+    <td>The parsers: SPARQL, ARQ, RDQL</td>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.query.serializer</code></td>
+    <td>Output in SPARQL, ARQ forms, in SPARQL 
+  syntax, in an abstract form (useful in debugging) and in XML.</td>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.query.engine</code></td>
+    <td>The abstraction of a query engine.</td>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.query.engine1</code></td>
+    <td>A query engine that is as faithful to the 
+  SPARQL specification as possible.</td>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.query.resultset</code></td>
+    <td>Utilities for handling result sets, 
+  including output as text and XML.</td>
+  </tr>
+</table>
+  </div>
+
+
+<h2>Core</h2>
+<p>Parse tree.</p>
+<p>Query Engine: </p>
+<h2>Execution Strategy</h2>
+<h2>Parsers</h2>
+<h2>Serializers</h2>
+<p>&nbsp;</p>
+
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+
+</body>
+</html>

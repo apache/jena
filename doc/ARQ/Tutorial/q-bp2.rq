@@ -1,0 +1,6 @@
+SELECT ?givenName
+WHERE
+ { ?y <http://www.w3.org/2001/vcard-rdf/3.0#Family> "Smith" .
+   ?y <http://www.w3.org/2001/vcard-rdf/3.0#Given>  ?givenName .
+ }
+

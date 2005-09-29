@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>ARQ - A SPARQL Processor for Jena</title>
+  <link rel="stylesheet" type="text/css" href="styles/doc.css" />
+<style type="text/css">
+
+/* CA DF F4 is 202, 223, 244 */
+/* 65 A2 DF is 101 162 223 */
+
+.blue  { background: #CADFF4; }
+
+.nav1 { 
+        background: #CADFF4; 
+        padding: 1ex;
+        padding-top: 0 ;
+        border: -1ex ;
+      }
+
+
+.nav2 { border: 1px solid black ; 
+        padding: 1ex ; 
+        background: white ; 
+        font-size:10pt ;
+        line-height: 150% ; }
+        
+.nav3 { font-size: 100% ; font-weight: bold ; line-height: 175% ;
+        color: white ; background: #65A2DF ;
+        text-align: center ; }
+
+.nav2 ul    { margin-left: 0 ; }
+.nav2 li    { list-style: none; margin-left: 0 ; text-indent: -5ex ; }
+.nav2 li a  { padding: 3px ; }
+
+.main {
+  background: white ;
+  }
+
+table { width:100% ; border: 0 ; margin: 0 ; padding:0 ;}
+tr { border: 0 ; margin: 0 ; padding:0 ; }
+td { border: 0 ; margin: 0 ; padding:0 ; }
+
+</style>
+</head>
+
+<body>
+  <h1 style="margin-bottom: 0">ARQ - A SPARQL Processor for Jena</h1>
+  <!-- CSS is cool : but tables work in all browsers -->
+  <table >
+    <tr>
+      <td> <!-- class="blue"> -->
+	  <div class="nav1">
+	    <div class="nav2">
+	      <div class="nav3">Site</div>
+              <ul>
+              <li><a href="download.html">Download</a></li>
+	      <li><a href="documentation.html">Documentation</a></li>
+	      <li><a href="license.html">License</a></li>
+	      <li><a href="support.html">Support</a></li>
+	      </ul>
+	    </div>
+	  </div>
+      </td>
+      <td>
+	<div class="main"> 
+      <div style="height: 0.25ex;"></div>
+      <p>ARQ is a query engine for 
+      <a href="http://jena.sourceforge.net/">Jena</a> that 
+      supports the <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL</a>
+      RDF Query language. SPARQL is the query language developed by the W3C
+      <a href="http://www.w3.org/2001/sw/DataAccess/">RDF Data Access Working Group</a>.
+      </p>
+
+      <p>ARQ Features:</p>
+      <ul>
+        <li>Multiple query languages:
+        <ul>
+          <li>SPARQL</li>
+          <li>RDQL</li>
+          <li>ARQ, the engine's own language (access to experimental features)</li>
+        </ul>
+        </li>
+        <li>Multiple query engines:
+        <ul>
+          <li>General purpose engine</li>
+          <li>Remote access engines</li>
+          <li>Rewriter to SQL</li>
+        </ul>
+        </li>
+      </ul>
+
+      <h2>Online Demo</h2>
+      <p>Online <a href="http://www.sparql.org/query.html">Query Form</a> 
+      for experimenting 
+      with SPARQL queries.</p>
+
+      <h2>See Also</h2>
+      <p><a href="http://www.joseki.org/">Joseki</a> - a SPARQL query server, using 
+      ARQ and the SPARQL protocol.</p>
+    </div> <!-- End main -->
+    <div style="height: 1.5ex"></div>
+      </td>
+    </tr>
+  </table>
+  <!--
+  <div class="blue" style="height: 1.5ex"></div>
+  -->
+</body>
+
+</html>

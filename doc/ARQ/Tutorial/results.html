@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>ARQ - SPARQL Tutorial - Result Sets</title>
+    <link rel="stylesheet" type="text/css" href="../styles/doc.css" />
+  </head>
+
+<body>
+
+  <h1>Producing Result Sets</h1>
+
+  <p>SPARQL has 4 result forms:</p>
+  <ul>
+    <li>SELECT &ndash; Return a table of results.</li>
+    <li>CONSTRUCT &ndash; Return an RDF graph, based on a template in the query.</li>
+    <li>DESCRIBE &ndash; Return an RDF graph, based on what the query processor 
+    is configured to return.</li>
+    <li>ASK &ndash; Ask a boolean query.</li>
+  </ul>
+
+  <p>The SELECT form directly returns a table of solutions as a result set, 
+  while DESCRIBE and CONSTRUCT use the outcome of matching to build RDF graphs.</p>
+
+  <h2>Solution Modifiers</h2>
+  <p>Pattern matching produces a set of solutions. This set can be modified in 
+  various ways:</p>
+  <ul>
+    <li>Projection - keep only selected variables</li>
+    <li>OFFSET/LIMIT - chop the number solutions (best used with ORDER BY)</li>
+    <li>ORDER BY - sorted results</li>
+    <li>DISTINCT - yield only one row for one combination of variables and 
+    values.</li>
+  </ul>
+  <p>The solution modifiers OFFSET/LIMIT and ORDER BY always apply to all result 
+  forms.&nbsp; </p>
+  <h3>OFFSET and LIMIT</h3>
+  <p>A set of solutions can be abbreviated by specifying the offset (the start 
+  index) and the limit (the number of solutions) to be returned. Using LIMIT 
+  alone can be useful to ensure not too many solutions are returned, to restrict 
+  the effect of some unexpected situation.&nbsp; LIMIT and OFFSET can be used in 
+  conjunction with sorting to take a defined slice through the solutions found.</p>
+  <h3>ORDER BY</h3>
+  <p>SPARQL solutions are sorted by expression, including custom functions.</p>
+  <pre class="box">ORDER BY ?x ?y</pre>
+  <pre class="box">ORDER BY DESC(?x)</pre>
+  <pre class="box">ORDER BY x:func(?x)	# Custom sorting condition</pre>
+  <h3>DISTINCT</h3>
+  <p>The SELECT result form can take the DISTINCT modifier which ensures that no 
+  two solutions returned are the same - this takes place after projection to the 
+  requested variables.</p>
+  <p>&nbsp;</p>
+  <h2>SELECT</h2>
+  <p>The <code>SELECT</code> result form is a projection, with DISTINCT applied, 
+  of the solution set. <code>SELECT</code> identifies which named variables are 
+  in the result set.&nbsp; This may be &quot;<code>*</code>&quot; meaning &quot;all named 
+  variables&quot; (blank nodes in the query act like variables for matching but are 
+  never returned).</p>
+  <h2>CONSTRUCT</h2>
+  <p>CONSTRUCT builds an RDF based on a graph template.&nbsp; The graph template 
+  can have variables which are bound by a WHERE clause.&nbsp; The effect is to 
+  calculate the graph fragment, given the template, for each solution from the 
+  WHERE clause, after taking into account any solution modifiers. The graph 
+  fragments, one per solution, are merged into a single RDF graph which is the 
+  result.</p>
+  <p>Any blank nodes explicitly mentioned in the graph template are created 
+  afresh for each time the template is used for a solution.</p>
+  <h2>DESCRIBE</h2>
+  <p>The CONSTRUCT form, takes an application template for the graph results. 
+  The DESCRIBE form also creates a graph but the form of that graph is provided 
+  the query processor, not the application. For each URI found, or explicitly 
+  mentioned in the DESCRIBE clause, the query processor should provide a useful 
+  fragment of RDF, such as all the known details of a book. ARQ allows 
+  domain-specific description handlers to be written.</p>
+  <h2>ASK</h2>
+  <p>The ASK result form returns a boolean, true of the pattern matched 
+  otherwise false.</p>
+
+  <p class="footnote"><a href="index.html">Return to Index</a></p>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>ARQ - SPARQL Tutorial - RDF Datasets</title>
+    <link rel="stylesheet" type="text/css" href="../styles/doc.css" />
+  </head>
+
+<body>
+
+  <h1>SPARQL Tutorial - Datasets</h1>
+
+  <p>This section covers RDF Datasets - an RDF Dataset is the unit that
+  is queried by a SPARQL query.  It consists of a default graph, and a
+  number of named graphs.
+  </p>
+
+  <h2>Querying datasets</h2>
+
+  <p>The graph matching operation
+  (<a href="basic_patterns.html">basic patterns</a>, <a href="optionals.html">
+  <code>OPTIONAL</code>s</a>, and <a href="union.html"><code>UNION</code>s</a>) 
+  work on one RDF graph.&nbsp; This starts out being the default graph of the 
+  dataset but it can be changed by the <code>GRAPH</code> keyword.
+
+  <pre class="box">GRAPH <i>uri</i> { ... pattern ... }</pre>
+  <pre class="box">GRAPH <i>var</i> { ... pattern ... }</pre>
+  <p>If a URI is given, the pattern will be matched against the graph in the 
+  dataset with that name - if there isn't one, the <code>GRAPH</code> clause 
+  fails to match at all.</p>
+  <p>If a variable is given, all the named graphs (not the default graph) are 
+  tried.&nbsp; The variable may be used elsewhere so that if, during execution, 
+  it's value is already known for a solution, only the specific named graph 
+  is tried. The variable may be a blank node which is useful when the 
+  application does not care as to which named graph is matched, only that all of 
+  them are tried.</p>
+  <pre class="box">GRAPH <span style="background-position: 0 0">[]</span> { ... pattern ... }</pre>
+  <h3>Example Data</h3>
+  <p>An RDF dataset can take a variety of forms.&nbsp; Two common setups are to 
+  have the default graph being the union (the RDF merge) of all the named graphs 
+  and to have the default graph be an inventory of the named graphs (where they came 
+  from, when they were read etc).&nbsp; There are no limitations - one graph can be 
+  included twice under different names, or some graphs may share triples with 
+  others.</p>
+  <p>In the examples below we will use the following dataset that might occur 
+  for an RDF aggregator of book details:</p>
+  <p>Default graph (<a href="ds-dft.ttl">ds-dft.ttl</a>):</p>
+  <pre class="box">@prefix dc: &lt;http://purl.org/dc/elements/1.1/&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;ds-ng-1.ttl&gt; dc:date &quot;2005-07-14T03:18:56+0100&quot;^^xsd:dateTime .
+&lt;ds-ng-2.ttl&gt; dc:date &quot;2005-09-22T05:53:05+0100&quot;^^xsd:dateTime .
+</pre>
+  <p>Named graph (<a href="ds-ng-1.ttl">ds-ng-1.ttl</a>):</p>
+  <pre class="box">@prefix dc: &lt;http://purl.org/dc/elements/1.1/&gt; .
+
+[] dc:title &quot;Harry Potter and the Philospher's Stone&quot; .
+[] dc:title &quot;Harry Potter and the Chamber of Secrets&quot; .</pre>
+  <p>Named graph (<a href="ds-ng-2.ttl">ds-ng-2.ttl</a>):</p>
+  <pre class="box">@prefix dc: &lt;http://purl.org/dc/elements/1.1/&gt; .
+
+[] dc:title &quot;Harry Potter and the Sorcerer's Stone&quot; . 
+[] dc:title &quot;Harry Potter and the Chamber of Secrets&quot; .
+</pre>
+  <p>That is, we have two small graphs describing some books, and we have a 
+  default graph which records when these graphs were last read </p>
+  <p>Queries can be run with the command line application (this would be all one 
+  line):</p>
+  <pre class="box">java -cp ... arq.sparql
+    --graph ds-dft.ttl --namedgraph ds-ng-1.ttl --namedgraph ds-ng-2.ttl
+    --query <i>query file</i></pre>
+  <p>Datasets don't have to created just for the lifetime of the query.&nbsp; 
+  They can be created and stored in a database, as would be more usual for an 
+  aggregator application.</p>
+  <h3>Accessing the Dataset</h3>
+  <p>The first example just accesses the default graph (<a href="q-ds-1.rq">q-ds-1.rq</a>):</p>
+  <pre class="box">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+PREFIX dc: &lt;http://purl.org/dc/elements/1.1/&gt;
+PREFIX : &lt;.&gt;
+
+SELECT *
+{ ?s ?p ?o }</pre>
+  <p>(The &quot;<code>PREFIX : &lt;.&gt;</code>&quot;&nbsp; just helps format the output)</p>
+  <pre class="box">----------------------------------------------------------------------
+| s            | p       | o                                         |
+======================================================================
+| :ds-ng-2.ttl | dc:date | "2005-09-22T05:53:05+01:00"^^xsd:dateTime |
+| :ds-ng-1.ttl | dc:date | "2005-07-14T03:18:56+01:00"^^xsd:dateTime |
+----------------------------------------------------------------------</pre>
+  <p>This is the default graph only - nothing from the named graphs because they 
+  aren't queried unless explicitly indicated via <code>GRAPH</code>.</p>
+  <p>We can query for all triples by querying the default graph and the named 
+  graphs (<a href="q-ds-2.rq">q-ds-2.rq</a>):</p>
+  <pre class="box">PREFIX  xsd:    &lt;http://www.w3.org/2001/XMLSchema#&gt;
+PREFIX  dc:     &lt;http://purl.org/dc/elements/1.1/&gt;
+PREFIX  :       &lt;.&gt;
+
+SELECT *
+{ 
+    { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } 
+}</pre>
+  <p>giving:</p>
+  <pre class="box">---------------------------------------------------------------------------------------
+| s            | p        | o                                          | g            |
+=======================================================================================
+| :ds-ng-2.ttl | dc:date  | "2005-09-22T05:53:05+01:00"^^xsd:dateTime  |              |
+| :ds-ng-1.ttl | dc:date  | "2005-07-14T03:18:56+01:00"^^xsd:dateTime  |              |
+| _:b0         | dc:title | "Harry Potter and the Sorcerer's Stone"    | :ds-ng-2.ttl |
+| _:b1         | dc:title | "Harry Potter and the Chamber of Secrets"  | :ds-ng-2.ttl |
+| _:b2         | dc:title | "Harry Potter and the Chamber of Secrets"  | :ds-ng-1.ttl |
+| _:b3         | dc:title | "Harry Potter and the Philospher's Stone"  | :ds-ng-1.ttl |
+---------------------------------------------------------------------------------------</pre>
+  <h3>Querying a specific graph</h3>
+
+  <p>If the application knows the name graph, it can directly ask a query such 
+  as finding all the titles in a given graph (<a href="q-ds-3.rq">q-ds-3.rq</a>):</p>
+  <pre class="box">PREFIX dc: &lt;http://purl.org/dc/elements/1.1/&gt;
+PREFIX : &lt;.&gt;
+
+SELECT ?title
+{ 
+  GRAPH :ds-ng-2.ttl
+    { ?b dc:title ?title }
+}
+</pre>
+  <p>Results:</p>
+  <pre class="box">---------------------------------------------
+| title                                     |
+=============================================
+| &quot;Harry Potter and the Sorcerer's Stone&quot;   |
+| &quot;Harry Potter and the Chamber of Secrets&quot; |
+---------------------------------------------</pre>
+  <h3>Querying to find data from graphs that match a pattern</h3>
+
+  <p>The name of the graphs to be queried can be determined with the query 
+  itself. The same process for variables applies whether they are part of a 
+  graph pattern or the <code>GRAPH</code> form. The query below (<a href="q-ds-4.rq">q-ds-4.rq</a>) 
+  sets a condition on the variable used to select named graphs, based on 
+  information in the default graph.</p>
+  <pre class="box">PREFIX  xsd:    &lt;http://www.w3.org/2001/XMLSchema#&gt;
+PREFIX  dc:     &lt;http://purl.org/dc/elements/1.1/&gt;
+PREFIX  :       &lt;.&gt;
+
+SELECT ?date ?title
+{ 
+  ?g dc:date ?date . FILTER (?date &gt; "2005-08-01T00:00:00Z"^^xsd:dateTime )
+  GRAPH ?g 
+      { ?b dc:title ?title }
+}</pre>
+  <p>The results of executing this query on the example dataset are the titles 
+  in one of the graphs, the one with the date later than 1 August 2005.</p>
+  <pre class="box">-----------------------------------------------------------------------------------------
+| date                                      | title                                     |
+=========================================================================================
+| &quot;2005-09-22T05:53:05+01:00&quot;^^xsd:dateTime | &quot;Harry Potter and the Sorcerer's Stone&quot;   |
+| &quot;2005-09-22T05:53:05+01:00&quot;^^xsd:dateTime | &quot;Harry Potter and the Chamber of Secrets&quot; |
+-----------------------------------------------------------------------------------------</pre>
+  <h2>Describing RDF Datasets - <code>FROM</code> and <code>FROM NAMED</code></h2>
+  <p>A query execution can be given the dataset when the execution
+  object is built or it can be described in the query itself.
+
+  When the details are on the command line, a temporary dataset is created but 
+  an application can create datasets and then use them in many queries.</p>
+  <p>When described in the query, <code>FROM <i>url</i></code> is used to identify the contents
+  to be in the default graph.  There can be more than one
+  <code>FROM</code> clause
+  and the default graph is result of reading each file into the default
+  graph.  It is the RDF merge of the individual graphs.</p>
+  <p>Don't be confused by the fact the default graph is described by one
+  or more URLs in <code>FROM</code> clauses.  This is where the data is
+  read from, not the name of the graph.  As several FROM clauses can be
+  given, the data can be read in from several places but none of them
+  become the graph name.</p>
+
+  <p><code>FROM NAMED <i>url</i></code> is used to identify a named
+  graph.  The graph is given the name <i>url</i> and the data is read
+  from that location. Multiple <code>FROM NAMED</code> clauses cause multiple graphs 
+  to be added to the dataset.</p>
+
+  <p>Note that graphs are loaded with the Jena FileManager which includes
+  the ability to provide alternative locations for files. For example,
+  the query may have <code>FROM NAMED &lt;http://example/data&gt;</code>,
+  and the data actually be read from <code>file:local.rdf</code>.  The
+  name of the graph will be &lt;http://example/data&gt; as in the query.
+  </p>
+
+  <p>For example, the query to find all the triples in both default graph and 
+  named graphs could be written as (<a href="q-ds-5.rq">q-ds-5.rq</a>):</p>
+  <pre class="box">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+PREFIX dc:  &lt;http://purl.org/dc/elements/1.1/&gt;
+PREFIX :    &lt;.&gt;
+
+SELECT *
+FROM       &lt;ds-dft.ttl&gt;
+FROM NAMED &lt;ds-ng-1.ttl&gt;
+FROM NAMED &lt;ds-ng-2.ttl&gt;
+{ 
+   { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } 
+}</pre>
+  <p class="footnote"><a href="results.html">Next: Result Sets</a></p>
+</body>
+</html>

@@ -1,0 +1,99 @@
+/* Need to understand CSS2 inheritance */
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif ;
+	font-size: 10pt ;
+	/*line-height: 12pt ;*/
+	color: black;
+	background: white ;
+	/* text-align: justify; */
+	margin-left: 5%;
+	margin-right: 5%;  
+}
+
+/* Broswer CSS2 table support is rather "individual" */
+
+table {
+  font-family: Verdana, Arial, sans-serif ;
+  font-size: 10pt ;
+  border-color : black ;
+  border-collapse: collapse;
+  border-width: 1px;
+  border: 1;
+  cellspacing: 0 ;
+  cellpadding: 0 ;
+}
+
+td {
+  border-width: 1px ;
+  border-collapse: collapse;
+  border-color : #808080 ;
+  empty-cells: show;
+  padding: 5 ;
+  spacing: 0 ;
+  vertical-align:top;
+  text-align:center;
+} 
+
+
+th {
+  border-collapse: collapse;
+  border-width: 1px ;
+  border-color: #808080 ;
+  empty-cells: show;
+  padding: 5 ;
+  vertical-align:top;
+  text-align:center;
+} 
+
+
+.noindent     { margin-left: -5% ; margin-right: -5%; }
+.moreindent   { margin-left:  5% ; margin-right:  5%; }
+
+.box { /*margin-left : 5% ;
+       margin-right : 7% ;*/
+       border: solid ;
+       border-width: 1; 
+       background-color: #F0F0F0; 
+       padding: 10;
+       page-break-inside: avoid ;
+       }
+
+
+/* Use this for the document title as displayed on the page at the top. */
+
+h1.title { font-size: 160% ; font-weight: bold ; }
+h1 { font-size: 130% ; font-weight: bold ; }
+h2 { font-size: 105% ; font-weight: bold ; }
+h3 { font-size: 100% ; font-weight: normal; font-style: italic ; }
+h4 { font-size: 100% ; font-style: italic ; }
+h5 { font-size: small-caps 100% ; }
+
+/* Same (if base font is 10pt) - but in points */
+/*
+h1 { font-size: 16pt ; font-weight: bold ; }
+h2 { font-size: 13pt ; font-weight: bold ; }
+h3 { font-size: 11pt ; font-weight: bold ; }
+h4 { font-size: 10pt ; font-weight: normal ; font-style: italic ; }
+h5 { font-size: 10pt ; font-weight: normal; font-style: italic ; }
+h6 { font-size: small-caps 100% ; }
+*/
+
+h1 { margin-left: -4%;}
+h2,h3,h4,h5,h6 { margin-left: -4%; }
+
+ul { list-style-type: disc }
+dt { font-weight: bold }
+
+/* Change background/foreground colour on hover */
+
+A:link { color: rgb(0, 0, 255) }        /* for unvisited links */
+A:hover { color: rgb(255, 0, 0) }       /* when mouse is over link */
+
+/* No extra space between paragraphs : inherits from body */
+pre {
+    font-family: monospace;
+    font-size: 10pt ;
+    margin-top: 1 ;
+    margin-bottom: 1 ;
+    }

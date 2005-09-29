@@ -1,0 +1,8 @@
+PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX  vCard:  <http://www.w3.org/2001/vcard-rdf/3.0#>
+
+SELECT ?name1 ?name2
+WHERE
+{
+    { [] foaf:name ?name1 } UNION { [] vCard:FN ?name2 }
+}

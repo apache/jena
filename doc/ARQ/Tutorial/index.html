@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>ARQ - SPARQL Tutorial</title>
+    <link rel="stylesheet" type="text/css" href="../styles/doc.css" />
+  </head>
+
+<body>
+
+<h1>SPARQL Tutorial</h1>
+
+<p>The objective of this SPARQL tutorial is to give a fast course in SPARQL.
+The tutorial covers the major features of the query language through examples
+but does not aim to be complete.</p>
+
+<p>If you are looking for a short introduction to SPARQL and Jena try
+<a href="http://www.ibm.com/developerworks/xml/library/j-sparql/">Search 
+    RDF data with SPARQL</a>
+</p>
+
+
+<p>SPARQL is a <a href="http://www.w3.org/TR/rdf-sparql-query/">query language</a> 
+and a <a href="http://www.w3.org/TR/rdf-sparql-protocol/">protocol</a> for 
+accessing RDF designed by the <a href="http://www.w3.org/2001/sw/DataAccess/">
+W3C RDF Data Access Working Group</a>.&nbsp;</p>
+<p>As a query language, SPARQL is &quot;data-oriented&quot; in that it only queries the 
+information held in the models; there is no inference in the query language 
+itself.&nbsp; Of course, the Jena model may be &#39;smart&#39; in that it provides the 
+impression that certain triples exist by creating them on-demand, including OWL 
+reasoning.&nbsp; SPARQL does not do anything other than take the description of 
+what the application wants, in the form of a query, and returns that 
+information, in the form of a set of bindings or an RDF graph.</p>
+<h3>Other Material</h3>
+  <ul>
+    <li>The <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query 
+    language definition document</a> itself contains many examples.</li>
+    <li><a href="http://www.ibm.com/developerworks/xml/library/j-sparql/">Search 
+    RDF data with SPARQL</a> (by Phil McCarthy) - article published on IBM developer 
+    works about SPARQL and Jena.</li>
+    <li><a href="http://www.ilrt.bris.ac.uk/people/cmdjb/2005/04-sparql/">SPARQL 
+    reference card</a> (by <a href="http://www.ilrt.bristol.ac.uk/people/cmdjb/">
+    Dave Beckett</a>)</li>
+  </ul>
+<h2>SPARQL tutorial</h2>
+<ol>
+  <li><a href="data.html">Preliminaries: data!</a></li>
+  <li><a href="query1.html">Executing a simple query</a></li>
+  <li><a href="basic_patterns.html">Basic patterns</a></li>
+  <li><a href="filters.html">Value constraints</a></li>
+  <li><a href="optionals.html">Optional information</a></li>
+  <li><a href="union.html">Alternatives</a></li>
+  <li><a href="datasets.html">Named Graphs</a></li>
+  <li><a href="results.html">Results</a></li>
+</ol>
+<p class="footnote"><a href="../documentation.html">ARQ Documentation Page</a></p>
+</body>
+</html>

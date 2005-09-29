@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>Extensions in ARQ</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>Extensions in ARQ</h1>
+<p>There are several ways to extend ARQ:</p>
+
+<ul>
+<li>Value Functions - additional operations in FILTERS</li>
+<li>Graph matching extensions - addition graph matching operations</li>
+<li>DESCRIBE handlers</li>
+<li>New query engines for performance in special circumstances</li>
+<li>Support for finding blank nodes</li>
+</ul>
+
+
+
+<p>Any system that implements the Jena Graph API or Jena Model API can be 
+queried.</p>
+
+
+<h2 id="functions" name="functions">Functions</h2>
+<p>SPARQL allows custom functions in filter expressions so that queries can be 
+used on domain-specific data. SPARQL defines a function by URI (or qname) in 
+FILTER expressions.&nbsp; ARQ provides a function library and supports 
+application-provided functions.&nbsp; There is a mechanism for dynamically 
+loading. </p>
+<h3>Function Library</h3>
+
+<div style="margin-left: 5%; margin-right: 5%;">
+<table border="1" cellpadding="0" cellspacing="1" style="border-style:solid; border-collapse: collapse">
+  <tr>
+    <th width="40%" style="text-align: left" bgcolor="#C0C0C0">Function name</th>
+    <th width="60%" bgcolor="#C0C0C0">Description</th>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:langeq(<i>literal</i>, <i>lang</i>)</code></td>
+    <td style="text-align: left">Compare the language tag of the literal with a 
+    language tag. Comparison reflects language tag rules so &quot;foo&quot;@en matches 
+    &quot;EN-gb&quot;.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:now()</code></td>
+    <td style="text-align: left">Current time.&nbsp; Actually, the fixed time 
+    the query started.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:bnode(?x)</code></td>
+    <td style="text-align: left">Return the blank node label if ?x is a blank 
+    node.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:min(num1, num2)</code></td>
+    <td style="text-align: left">Return the minimum of two expressions evaluating to numbers.</td>
+  </tr>
+  
+    <tr>
+    <td style="text-align: left"><code>jfn:max(v1, v2)</code></td>
+    <td style="text-align: left">Return the maximum of two expressions evaluating to numbers.</td>
+  </tr>
+  <tr>
+
+    <td style="text-align: left"><code>jfn:round(v)</code></td>
+    <td style="text-align: left">Return the nearest integer value to the argument.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:abs(v)</code></td>
+    <td style="text-align: left">Return the absolute value.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:floor(v)</code></td>
+    <td style="text-align: left">Return the greatest integer value less than the argument (as a double).</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:ceiling(v)</code></td>
+    <td style="text-align: left">Return the smallest integer value than the argument (as a double).</td>
+  </tr>
+</table>
+  
+</div>
+
+<p>More functions will be added. Contributions welcome.</p>
+<p>Writing a SPARQL custom function is implementation dependent and requires 
+some understanding of the ARQ query engine being used. ARQ has a basic, general 
+purpose query engine but it is possible to add new engines, or override 
+functionality in the basic query engine. See <a href="architecture.html">ARQ 
+Query Engine Design</a>. </p>
+<h3>Function Registry</h3>
+<p class="todo">@@add details - see javadoc for now.</p>
+<h3>Dynamic Functions</h3>
+<p>URIs for functions in the (fake) URI scheme <code>java:</code> are 
+dynamically loaded. The class name forms the scheme specific part of the URI.</p>
+<p>The ARQ function library uses this mechanism.&nbsp; The namespace of the ARQ function library 
+is &lt;<code>java:com.hp.hpl.jena.query.function.library.&gt;</code> 
+(note the trailing dot).</p>
+<pre class="box">PREFIX jfn: &lt;java:com.hp.hpl.jena.query.function.library.&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+
+SELECT ?v
+{  ?x rdfs:label ?v .
+    FILTER jfn:langeq(?v, &quot;en&quot; )
+}</pre>
+<h2>Extensions</h2>
+<p>ARQ also provides the ability to write custom extensions.&nbsp; 
+This not part of SPARQL; the application will need to use the ARQ query language 
+(a superset of SPARQL). Unlike a value function, an extension can set 
+variables and generate multiple solutions. An extensions can also query the 
+dataset.</p>
+<pre class="box">EXT q:name(?a, ?b, ?c)</pre>
+<p>Writing a an extension requires understanding of the ARQ query engine. See
+<a href="architecture.html">ARQ Query Engine Design</a>. </p>
+<p class="todo">@@ to be written. Extension is loaded like functions.&nbsp; 
+Likely to change.</p>
+
+<h2 id="describeHandlers" name="describeHandlers">DESCRIBE handlers</h2>
+<p>The <code>DESCRIBE</code> result form in SPARQL does not define an exact form 
+of RDF to return.&nbsp; Instead, it allows the server or query processor to 
+return what it considers to be an appropriate description of the resources 
+located. This description will be specific to the domain, data modelling or 
+application.</p>
+<p>ARQ comes with one built-in handler which calculates the blank node closure 
+of resources found. While suitable for many situations, it is not general (for 
+example, a <a href="http://www.foaf-project.org/">FOAF</a> file usually consists 
+of all blank nodes). ARQ allows the application to replace or add handlers for 
+producing <code>DESCRIBE</code> result forms.</p>
+<p>Application-specific handlers can be added to the <code>
+DescribeHandlerRegistry</code>. The handler will be called for each resource 
+(not literals) identified by the <code>DESCRIBE</code> query.</p>
+<h2>Blank Node Labels</h2>
+<p>URIs from with scheme name &quot;_&quot; (which is illegal) are created as blank node 
+labels for directly accessing a blank node in the queried graph or dataset.&nbsp; 
+This are constant terms in the query - not unnamed variables. Do not confuse 
+these with the standard qname notation for blank nodes in queries. This is not 
+portable - use with case.</p>
+<pre class="box">&lt;_:1234-5678-90&gt;    # A blank node in the data</pre>
+<pre class="box">_:b0                # A blank node in the query - a variable</pre>
+<h2>&nbsp;</h2>
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+
+</body>
+</html>

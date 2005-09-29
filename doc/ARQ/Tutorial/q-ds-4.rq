@@ -1,0 +1,10 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
+PREFIX  :       <.>
+
+SELECT ?date ?title
+{ 
+  ?g dc:date ?date . FILTER (?date > "2005-08-01T00:00:00Z"^^xsd:dateTime )
+  GRAPH ?g 
+      { ?b dc:title ?title }
+}

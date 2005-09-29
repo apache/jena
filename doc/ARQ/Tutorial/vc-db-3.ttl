@@ -1,0 +1,15 @@
+@prefix foaf:       <http://xmlns.com/foaf/0.1/> .
+@prefix vcard:      <http://www.w3.org/2001/vcard-rdf/3.0#> .
+
+_:a a foaf:Person ;
+    foaf:name   "Matt Jones" .
+
+_:b a foaf:Person ;
+    foaf:name   "Sarah Jones" .
+
+_:c a foaf:Person ;
+    vcard:FN    "Becky Smith" .
+
+_:d a foaf:Person ;
+    vcard:FN    "John Smith" .
+
