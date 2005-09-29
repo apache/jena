@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.98 2005-09-23 12:20:56 chris-dollin Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.99 2005-09-29 12:44:35 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -145,10 +145,10 @@
   <target name="make-jar" depends="compile-jena,copy-aux-files"
     description="Create jena.jar and jenatest.jar files from the contents of the classes dir">
     <property name="pattern.tests" value="**/test/*"/>
-    <jar jarfile="${lib.dir}/${jarfile}">
+    <jar jarfile="${lib.dir}/${jarfile}" index="yes">
       <fileset dir="${classes.dir}" excludes="${pattern.tests}"/>
     </jar>
-    <jar jarfile="${lib.dir}/${testjarfile}">
+    <jar jarfile="${lib.dir}/${testjarfile}" index="yes">
       <fileset dir="${classes.dir}" includes="${pattern.tests}"/>
     </jar>
   </target>
@@ -335,10 +335,6 @@
     <!-- Vocabularies and schemas -->
     <copy todir="${dist.dir}/${vocab.dir}">
       <fileset dir="${vocab.dir}" includes="**"/>
-    </copy>
-    <!-- Debug data - testing and modules -->
-    <copy todir="${dist.dir}/modules">
-      <fileset dir="modules" includes="**"/>
     </copy>
     <copy todir="${dist.dir}/${test.dir}">
       <!-- Exclude any zips of the RDQL test scripts -->
