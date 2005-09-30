@@ -38,6 +38,8 @@ do
 
 ##echo $CP
 
+#SOCKS=-DsocksProxyHost="<your socks server>"
+
 java -version
 
-java -classpath "$CP" junit.textui.TestRunner ${1:-com.hp.hpl.jena.test.TestPackage}
+java -classpath "$CP" $SOCKS junit.textui.TestRunner ${1:-com.hp.hpl.jena.test.TestPackage}
