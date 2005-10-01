@@ -16,11 +16,11 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.29 2005-05-22 16:33:36 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.30 2005-10-01 20:08:34 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
-    protected static Log logger = LogFactory.getLog( N3toRDF.class );
+    protected static Log log = LogFactory.getLog( N3toRDF.class );
 	
 	Model model ;
 
@@ -60,8 +60,23 @@ public class N3toRDF implements N3ParserEventHandler
             basedir = null ;
             return ;
         }
+        
+        base = RelURI.resolve(str) ;
+        return ;
+    }
+    
+    public void setBaseOLD(String str)
+    {
+        if ( str == null )
+        {
+            base = null ;
+            basedir = null ;
+            return ;
+        }
+        
         base = str ;
-        if ( base.startsWith("file:"))
+        
+        if ( base.startsWith("file:") || base.startsWith("http:") )
         {
             int i = base.lastIndexOf('/') ;
             if ( i >= 0 )
@@ -95,8 +110,8 @@ public class N3toRDF implements N3ParserEventHandler
 	public void error(Exception ex, String message) 		{ throw new N3Exception(message) ; }
 	public void error(String message) 						{ error(null, message) ; }
     
-	public void warning(Exception ex, String message)       { logger.warn(message, ex) ; }
-	public void warning(String message)						{ logger.warn(message) ; }
+	public void warning(Exception ex, String message)       { log.warn(message, ex) ; }
+	public void warning(String message)						{ log.warn(message) ; }
     
 	public void deprecated(Exception ex, String message)	{ throw new N3Exception(message) ; }
 	public void deprecated(String message)					{ deprecated(null, message) ; }
@@ -388,8 +403,18 @@ public class N3toRDF implements N3ParserEventHandler
 		return null ;
 	}
 
-    // Expand shorthand forms (not QNames) for URIrefs.
     private String expandURIRef(String text, int line)
+    {
+        try {
+            return RelURI.resolve(text, base) ;
+        } catch (Exception ex)
+        { 
+            error("Line "+line+": N3toRDF: Bad URI: "+text+ " ("+ex.getMessage()+")") ;
+        }
+        return null ;
+    }
+    // Expand shorthand forms (not QNames) for URIrefs.
+    private String expandURIRefOLD(String text, int line)
     {
         // Not a "named" bNode (start with _:)
         if ( text.equals("") && base == null )

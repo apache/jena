@@ -25,7 +25,7 @@ import java.net.URI ;
 /** com.hp.hpl.jena.query.util.RelURI
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.1 2005-09-30 17:10:38 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.2 2005-10-01 20:08:34 andy_seaborne Exp $
  */
 
 public class RelURI
@@ -51,30 +51,6 @@ public class RelURI
      * @throws RelativeURIException   Base is relative or opaque
      */
     
-//    static public String resolve(String relURI, String baseStr)
-//    {
-//        // The Apache URI code.
-//        if ( relURI.equals("") )
-//        {
-//            // "Bug" in Java.net.URI and Apache URI (at least as far a RDF is concerned)?
-//            if ( baseStr.endsWith("#") )
-//                return baseStr.substring(0,baseStr.length()-1) ;
-//            return baseStr ;
-//        }
-//        try {
-//            URI baseURI = new URI(baseStr) ;
-//            URI rel = new URI(baseURI, relURI) ;
-//            return rel.getURIString() ;
-//        } catch (MalformedURIException ex)
-//        {
-//            System.err.println("("+relURI+","+baseStr+")") ;
-//            System.err.println(ex.getMessage()) ;
-//            return null ;
-//            
-//        }
-//        
-//    }
-        
     static public String resolve(String relStr, String baseStr)
     {
         // Special case is for non-path URIs: (file: and ftp: and http:)
@@ -85,36 +61,68 @@ public class RelURI
         if ( baseStr.length() == 0 )
             throw new JenaURIException("Empty base for relative URI resolution") ;
         
-        if ( baseStr.endsWith("#") )
+//      if ( baseStr.endsWith("#") )
+//      throw new JenaURIException("Base URI ends in #") ;
+        
+        // RFC 3986 says any URI to be used as a base URI is stripped of its fragment.
+        
+        if ( baseStr.indexOf('#') >= 0 )
         {
-            LogFactory.getLog(RelURI.class).warn("Base URI ends in # -- " +baseStr) ;
-            //throw new JenaURIException("Base URI ends in #") ;
+            int i = baseStr.indexOf('#') ;
+            baseStr = baseStr.substring(0,i) ;
+        }
+        
+        // Check for just "scheme:"
+        if ( baseStr.endsWith(":") )
+        {
+            // Slightly confusingly, this leads to a slightly different exception
+            // for ("base:" "#") and ("base:x" "#") 
+            return resolve(baseStr+relStr) ;
         }
         
         if ( relStr.equals("") )
-        {
-            // Can't happen.
-            // "Bug" in Java.net.URI
-            if ( baseStr.endsWith("#") )
-                return baseStr.substring(0,baseStr.length()-1) ;
             return baseStr ;
-        }
         
+        // Cache this?  One slot cache.
         URI base = null ;
         try {
             base = new URI(baseStr) ;
         } catch (java.net.URISyntaxException ex)
-        {
-            throw new JenaURIException("Illegal URI (base): "+baseStr) ;
-        }
+        { throw new JenaURIException("Illegal URI (base): "+baseStr) ; }
 
         if ( ! base.isAbsolute() )
             throw new RelativeURIException("Relative URI for base: "+baseStr) ; 
         
         if ( base.isOpaque() )
-            // tag: and urn: but also file:plainname
+            // tag: and urn: but also anOther:...
             //return baseStr+relURI ;
-            throw new RelativeURIException("Can't resolve a relative URI against an opaquer URI: rel="+relStr+" : base="+baseStr) ;
+            throw new RelativeURIException("Can't resolve a relative URI against an opaque URI: rel="+relStr+" : base="+baseStr) ;
+        
+        if ( base.getPath().length() == 0 && !relStr.startsWith("/") )
+        {
+            // No path in base. Unrooted relative string.
+            // Fudge - make base have a p
+            try {
+                base = new URI(baseStr+"/") ;
+            } catch (java.net.URISyntaxException ex)
+            { 
+                LogFactory.getLog(RelURI.class).fatal("Base now illegal fixing up path-less base URI ("+baseStr+")") ;
+                throw new JenaURIException("Illegal URI (base) ptII: "+baseStr) ;
+            }
+        }
+            
+        String baseScheme = base.getScheme() ;
+        
+        String scheme = FileUtils.getScheme(relStr) ;
+        if ( scheme != null )
+        {
+            // Is relStr "scheme:"?
+            if ( relStr.length() == scheme.length()+1 )
+                // Empty hierarchical part.  Best we can do.
+                return relStr ;
+            // Case of "base:#"
+            
+        }
         
         URI rel = null ;
         try {
@@ -209,6 +217,7 @@ public class RelURI
             baseURI = "file:"+baseURI ;
         }
         
+        // Not quite resolveFileURL (e.g. directory canonicalization).
         if ( scheme.equals("file") )
         {
 //            if ( baseURI.startsWith("/") )
@@ -217,28 +226,28 @@ public class RelURI
             if ( ! baseURI.startsWith("file:///") )
             {
                 try {
-                String tmp = baseURI.substring("file:".length()) ;
-                File f = new File(tmp) ;
-                String s = f.getCanonicalPath() ;
-                s = s.replace('\\', '/') ;
-                if ( s.indexOf(' ') >= 0 )
-                    s = s.replaceAll(" ", "%20") ;
-                
-                if ( s.startsWith("/"))
-                    // Already got one / - UNIX-like
-                    baseURI = "file://"+s ;
-                else
-                    // Absolute name does not start with / - Windows like
-                    baseURI = "file:///"+s ;
-                
-                if ( f.isDirectory() && ! baseURI.endsWith("/") )
-                    baseURI = baseURI+"/" ;
+                    String tmp = baseURI.substring("file:".length()) ;
+                    File f = new File(tmp) ;
+                    String s = f.getCanonicalPath() ;
+                    s = s.replace('\\', '/') ;
+                    if ( s.indexOf(' ') >= 0 )
+                        s = s.replaceAll(" ", "%20") ;
+                    
+                    if ( s.startsWith("/"))
+                        // Already got one / - UNIX-like
+                        baseURI = "file://"+s ;
+                    else
+                        // Absolute name does not start with / - Windows like
+                        baseURI = "file:///"+s ;
+                    
+                    if ( f.isDirectory() && ! baseURI.endsWith("/") )
+                        baseURI = baseURI+"/" ;
 
                 } catch (IOException ex)
-              {
-                  LogFactory.getLog(RelURI.class).warn("IOException in chooseBase - ignored") ;
-                  return null ;
-              }
+                {
+                    LogFactory.getLog(RelURI.class).warn("IOException in chooseBase - ignored") ;
+                    return null ;
+                }
             }
         }
         return baseURI ;
@@ -259,11 +268,12 @@ public class RelURI
             if ( s.indexOf('\\') > -1 )
                 s = s.replace('\\', '/') ;
             
+            // Absolute path names
             if ( s.startsWith("file:///"))
                 return s ;
             
             if ( s.startsWith("file://"))
-                // Strickly legal but the next thing is the host
+                // Strictly legal but the next thing is the host
                 // file://C:/ means host C, default port!
                 return s ;
             
@@ -274,7 +284,8 @@ public class RelURI
                 s = filename.substring("file:/".length()) ;
                 return "file:///"+s ;
             }
-                
+
+            // Relative path name.
             if ( s.startsWith("file:") )
                 s = filename.substring("file:".length()) ;
             
@@ -285,8 +296,10 @@ public class RelURI
                 s = f.getAbsolutePath()+"/" ;
             else
                 s = f.getCanonicalPath() ;
-            // java.net.URI messes up file:/// 
+            // Windows file name to URI hierarchical paths
             s = s.replace('\\', '/') ;
+
+            // java.net.URI messes up file:/// 
             if ( s.startsWith("/"))
                 // Already got one / - UNIX-like
                 s = "file://"+s ;
@@ -299,25 +312,6 @@ public class RelURI
             return null ;
         }
 
-    }
-    
-    static public void main(String[] argv)
-    {
-        System.out.println(resolveFileURL("file:a")) ;
-        System.out.println(resolveFileURL(".")) ;
-        System.out.println(resolveFileURL("/home/afs")) ;
-        System.out.println() ;
-        t(null) ;
-        t(".") ;
-        t("file:.") ;
-        t("/foo") ;
-        t("/foo/") ;
-        t("foo") ;
-    }
-    
-    static void t(String s)
-    {
-        System.out.println("Choose base: "+s+" => "+chooseBaseURI(s)) ;
     }
 }
 

@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.12 2005-09-08 13:58:14 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.13 2005-10-01 20:08:26 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -131,7 +131,7 @@ public class LocationMapper
             }
             String syntax = FileUtils.guessLang(uriConfig) ;
             Model model = ModelFactory.createDefaultModel() ;
-            model.read(in, null, syntax) ;
+            model.read(in, uriConfig, syntax) ;
             processConfig(model) ;
         } catch (JenaException ex)
         {

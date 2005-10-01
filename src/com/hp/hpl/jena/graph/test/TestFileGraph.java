@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraph.java,v 1.14 2005-03-10 14:35:34 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.15 2005-10-01 20:08:34 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -74,7 +74,9 @@ public class TestFileGraph extends GraphTestBase
         {
         Graph initial = graphWith( "initial hasValue 42; also hasURI hello" );
         Graph extra = graphWith( "extra hasValue 17; also hasURI world" );
-        File foo = FileUtils.tempFileName( "fileGraph", ".n3" );
+        //File foo = FileUtils.tempFileName( "fileGraph", ".n3" );
+        File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
+        
         Graph g = new FileGraph( foo, true, true );
         g.getBulkUpdateHandler().add( initial );
         g.getTransactionHandler().begin();
@@ -85,7 +87,9 @@ public class TestFileGraph extends GraphTestBase
         union.getBulkUpdateHandler().add( extra );
         assertIsomorphic( union, g );
         Model inFile = ModelFactory.createDefaultModel();
-        inFile.read( "file:///" + foo, "N3" );
+        // TODO afs -> kers - check change 
+        //inFile.read( "file:///" + foo, "N3" );
+        inFile.read( "file:///" + foo, "N-TRIPLES" );
         assertIsomorphic( union, inFile.getGraph() );
         }    
     
@@ -106,7 +110,8 @@ public class TestFileGraph extends GraphTestBase
         {
         Graph initial = graphWith( "A pings B; B pings C" );
         Graph extra = graphWith( "C pingedBy B; fileGraph rdf:type Graph" );
-        File foo = FileUtils.tempFileName( "fileGraph", ".n3" );
+        //File foo = FileUtils.tempFileName( "fileGraph", ".n3" );
+        File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
         Graph g = new FileGraph( foo, true, true );
         g.getTransactionHandler().begin();
         g.getBulkUpdateHandler().add( initial );
@@ -116,7 +121,9 @@ public class TestFileGraph extends GraphTestBase
         g.getTransactionHandler().abort();
         assertIsomorphic( initial, g );
         Model inFile = ModelFactory.createDefaultModel();
-        inFile.read( "file:///" + foo, "N3" );
+        // TODO afs -> kers - check change 
+        // inFile.read( "file:///" + foo, "N3" );
+        inFile.read( "file:///" + foo, "N-TRIPLES" );
         assertIsomorphic( initial, inFile.getGraph() );
         }
         

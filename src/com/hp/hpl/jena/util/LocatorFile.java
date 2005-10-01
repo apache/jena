@@ -18,7 +18,7 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.6 2005-07-29 16:11:10 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.7 2005-10-01 20:08:26 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
@@ -29,25 +29,25 @@ public class LocatorFile implements Locator
     
     public LocatorFile(String dir)
     {
-        if ( false )
-        {
-            if ( dir == null )
-            {
-                try {
-                    //String wd = System.getProperty("user.dir") ;
-                    String wd = new File(".").getCanonicalPath() ;
-                    log.debug("Base file directory: "+wd) ;
-                } catch (IOException ex)
-                {
-                    log.error("Failed to discover the working directory", ex) ;
-                }
-                return ;
-            }
-            else
-            {
-                log.debug("Base file directory: "+dir) ;
-            }
-        }
+//        if ( false )
+//        {
+//            if ( dir == null )
+//            {
+//                try {
+//                    //String wd = System.getProperty("user.dir") ;
+//                    String wd = new File(".").getCanonicalPath() ;
+//                    log.debug("Base file directory: "+wd) ;
+//                } catch (IOException ex)
+//                {
+//                    log.error("Failed to discover the working directory", ex) ;
+//                }
+//                return ;
+//            }
+//            else
+//            {
+//                log.debug("Base file directory: "+dir) ;
+//            }
+//        }
         if ( dir != null )
         {
             if ( dir.endsWith("/") || dir.endsWith(java.io.File.separator) )
