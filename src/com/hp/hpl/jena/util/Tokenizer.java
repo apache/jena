@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Tokenizer.java,v 1.6 2005-07-21 12:17:57 der Exp $
+ * $Id: Tokenizer.java,v 1.7 2005-10-02 11:43:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
  * character strings which can include other separators.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-07-21 12:17:57 $
+ * @version $Revision: 1.7 $ on $Date: 2005-10-02 11:43:05 $
  */
 public class Tokenizer {
     
@@ -123,10 +123,22 @@ public class Tokenizer {
                 return source.substring(start, p);
             }
         case LITERAL_START:
-            int start = p;
-            while (isLiteral() && p < source.length()) p++;
+            char delim = source.charAt(p-1);
+            StringBuffer literal = new StringBuffer();
+            while (p < source.length()) {
+                char c = source.charAt(p);
+                if (c == '\\') {
+                    p++;
+                    if (p >= source.length()) break;
+                    c = source.charAt(p);
+                } else {
+                    if (c == delim) break;
+                }
+                literal.append(c);
+                p++;
+            }
             state = LITERAL_END;
-            return source.substring(start, p);
+            return literal.toString();
         case LITERAL_END:
             state = NORMAL;
             p++;
@@ -142,23 +154,10 @@ public class Tokenizer {
     private boolean is(String classification) {
         return classification.indexOf(source.charAt(p)) != -1;
     }
-
-    /**
-     * Returns true if the current character a legal literal innard
-     */
-    private boolean isLiteral() {
-        if (is(literalDelim)) {
-            // check for previous escape
-            if (source.charAt(p-1) == '\\') return true;
-            return false;
-        } else {
-            return true;
-        }
-    }
     
     public static void main(String[] args) {
         System.out.println("Starting");
-        Tokenizer tokenizer = new Tokenizer("foo     ''  'a literal' \"a double literal\"", "()[], \t\n\r", "'\"", true);
+        Tokenizer tokenizer = new Tokenizer("foo     ''  'a literal' \"a double literal\" 'literal with \\\" in it' 'literal with unquoted\"in it'", "()[], \t\n\r", "'\"", true);
         while (tokenizer.hasMoreTokens()) {
             String t = tokenizer.nextToken();
             System.out.println("Token: [" +  t + "]");

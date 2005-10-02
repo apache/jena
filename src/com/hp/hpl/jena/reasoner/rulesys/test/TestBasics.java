@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.32 2005-07-29 10:27:33 der Exp $
+ * $Id: TestBasics.java,v 1.33 2005-10-02 11:43:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2005-07-29 10:27:33 $
+ * @version $Revision: 1.33 $ on $Date: 2005-10-02 11:43:11 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -87,7 +87,7 @@ public class TestBasics extends TestCase  {
             "[ (?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)') ]",
             "[ rule1: (?a rdf:type ?_) -> (?a rdf:type a) ]",
             "[ -> print(' ') ]",
-            "[ -> print(' literal with embedded \\' characters ') ]",
+            "[ -> print(' literal with embedded ' characters ') ]",
             "[ -> print(' literal characters ') ]"
         };
         
