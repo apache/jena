@@ -1,0 +1,10 @@
+# Does not find a list.
+
+PREFIX  :        <http://example/>
+PREFIX  jext:    <java:com.hp.hpl.jena.query.extension.library.>
+PREFIX  jfn:     <java:com.hp.hpl.jena.query.function.library.>
+
+SELECT *
+{ :x :bag ?list .
+  EXT jext:list(?list, ?item)
+}

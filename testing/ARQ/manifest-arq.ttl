@@ -43,5 +43,6 @@
         <Planning/manifest.ttl>
 
         <General/manifest.ttl>
+        <Extensions/manifest.ttl>
     ) .
 

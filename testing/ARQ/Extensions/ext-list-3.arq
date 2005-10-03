@@ -1,0 +1,8 @@
+PREFIX  :        <http://example/>
+PREFIX  jext:    <java:com.hp.hpl.jena.query.extension.library.>
+PREFIX  jfn:     <java:com.hp.hpl.jena.query.function.library.>
+
+SELECT *
+{ :x :list ?list .
+  EXT jext:list(?list, 2)
+}
