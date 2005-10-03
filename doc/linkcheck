@@ -1,5 +1,8 @@
 #!/bin/perl
 # Link checker for relative links.
+#  find . -name javadoc -prune -or \
+#         -name \_\* -prune -or \
+#         -name \*html -print  | xargs linkcheck
 
 # Slurp whole files
 undef $/ ;
