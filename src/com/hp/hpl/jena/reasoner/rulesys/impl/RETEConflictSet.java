@@ -1,96 +1,128 @@
 /******************************************************************
- * File:        RETETerminal.java
+ * File:        RETEConflictSet.java
  * Created by:  Dave Reynolds
- * Created on:  09-Jun-2003
+ * Created on:  04-Oct-2005
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETETerminal.java,v 1.14 2005-10-04 17:33:52 der Exp $
+ * $Id: RETEConflictSet.java,v 1.1 2005-10-04 17:33:52 der Exp $
  *****************************************************************/
+
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.reasoner.ReasonerException;
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
+import com.hp.hpl.jena.reasoner.rulesys.Builtin;
+import com.hp.hpl.jena.reasoner.rulesys.ForwardRuleInfGraphI;
+import com.hp.hpl.jena.reasoner.rulesys.Functor;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
+import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
+
 /**
- * The final node in a RETE graph. It runs the builtin guard clauses
- * and then, if the token passes, executes the head operations.
+ * Manages a set of ready-to-fire rules. For monotonic rule sets
+ * we simply fire the rules as soon as they are triggered. For non-monotonic
+ * rule sets we stack them up in a conflict set and fire them one-at-a-time,
+ * propagating all changes between times.
+ * <p>
+ * Note, implementation is not thread-safe. Would be easy to make it so but 
+ * concurrent adds to InfModel are not supported anyway.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2005-10-04 17:33:52 $
+ * @version $Revision: 1.1 $
  */
-public class RETETerminal implements RETESinkNode {
 
-    /** Context containing the specific rule and parent graph */
-    protected RETERuleContext context;
-    
+public class RETEConflictSet {
     protected static Log logger = LogFactory.getLog(FRuleEngine.class);
+
+    /** the execution context for this conflict set */
+    protected RETERuleContext context;
+
+    /** false if the overall rule system contains some non-montotonic rules */
+    protected boolean isMonotonic;
     
-    /**
-     * Constructor.
-     * @param rule the rule which this terminal should fire.
-     * @param engine the parent rule engine through which the deductions and recursive network can be reached.
-     * @param graph the wider encompasing infGraph needed to for the RuleContext
-     */
-    public RETETerminal(Rule rule, RETEEngine engine, ForwardRuleInfGraphI graph) {
-        context = new RETERuleContext(graph, engine);
-        context.rule = rule;
-    }
+    /** the list of rule activations left to fire */
+    protected ArrayList conflictSet = new ArrayList();
+
+    /** count the number of positive entries - optimization hack */
+    protected int nPos = 0;
     
-    /**
-     * Constructor. Used internally for cloning.
-     * @param rule the rule which this terminal should fire.
-     * @param engine the parent rule engine through which the deductions and recursive network can be reached.
-     * @param graph the wider encompasing infGraph needed to for the RuleContext
-     */
-    protected RETETerminal(RETERuleContext context) {
+    /** count the number of negative entries - optimization hack */
+    protected int nNeg = 0;
+    
+    /** Construct an empty conflict set, noting whether the overall rule system is monotonic or not */
+    public RETEConflictSet(RETERuleContext context, boolean isMonotonic) {
         this.context = context;
+        this.isMonotonic = isMonotonic;
     }
     
     /**
-     * Change the engine/graph to which this terminal should deliver its results.
+     * Record a request for a rule firing. For monotonic rulesets it may be
+     * actioned immediately, otherwise it will be stacked up.
      */
-    public void setContext(RETEEngine engine, ForwardRuleInfGraphI graph) {
-        Rule rule = context.getRule();
-        context = new RETERuleContext(graph, engine);
-        context.setRule(rule);
-    }
-    
-    /** 
-     * Propagate a token to this node.
-     * @param env a set of variable bindings for the rule being processed. 
-     * @param isAdd distinguishes between add and remove operations.
-     */
-    public void fire(BindingVector env, boolean isAdd) {
-        Rule rule = context.getRule();
-        context.setEnv(env);
-        
-        // Check any non-pattern clauses 
-        for (int i = 0; i < rule.bodyLength(); i++) {
-            Object clause = rule.getBodyElement(i);
-            if (clause instanceof Functor) {
-                // Fire a built in
-                if (isAdd) {
-                    if (!((Functor)clause).evalAsBodyClause(context)) {
-                        // Failed guard so just discard and return
-                        return;
-                    }
-                } else {
-                    // Don't re-run side-effectful clause on a re-run
-                    if (!((Functor)clause).safeEvalAsBodyClause(context)) {
-                        // Failed guard so just discard and return
-                        return;
+    public void add(Rule rule, BindingEnvironment env, boolean isAdd) {
+        if (isMonotonic) {
+            execute(rule, env, isAdd);
+        } else {
+            // Add to the conflict set, compressing +/- pairs
+            boolean done = false;
+            if ( (isAdd && nNeg > 0) || (!isAdd && nPos > 0) ) {
+                for (Iterator i = conflictSet.iterator(); i.hasNext(); ) {
+                    CSEntry cse = (CSEntry)i.next();
+                    if (cse.rule != rule) continue;
+                    if (cse.env.equals(env)) {
+                        if (isAdd != cse.isAdd) {
+                            i.remove();
+                            if (cse.isAdd) nPos--; else nNeg --;
+                            done = true;
+                        } else {
+                            // Redundant insert? Probably leave in for side-effect cases like print
+                        }
                     }
                 }
             }
+            if (!done) {
+                conflictSet.add(new CSEntry(rule, env, isAdd));
+                if (isAdd) nPos++; else nNeg++;
+            }
         }
+    }
+
+    /**
+     * Return true if there are no more rules awaiting firing.
+     */
+    public boolean isEmpty() {
+        return conflictSet.isEmpty();
+    }
+    
+    /**
+     * Pick on pending rule from the conflict set and fire it.
+     * Return true if there was a rule to fire.
+     */
+    public boolean fireOne() {
+        if (isEmpty()) return false;
+        int index = conflictSet.size() - 1;
+        CSEntry cse = (CSEntry)conflictSet.remove(index);
+        if (cse.isAdd) nPos--; else nNeg --;
+        execute(cse.rule, cse.env, cse.isAdd);
+        return true;
         
-        // Now fire the rule
-        context.getEngine().requestRuleFiring(rule, env, isAdd);
-        /**
-         * TODO Delete once the loose ends have been tied up
+    }
+    
+    /**
+     * Execute a single rule firing. Possibly should not be public. Not thread safe.
+     */
+    public void execute(Rule rule, BindingEnvironment env, boolean isAdd) {
+        context.setEnv(env);
+        context.setRule(rule);
         ForwardRuleInfGraphI infGraph = (ForwardRuleInfGraphI)context.getGraph();
         if (infGraph.shouldTrace()) {
             logger.info("Fired rule: " + rule.toShortString());
@@ -150,31 +182,26 @@ public class RETETerminal implements RETESinkNode {
                     throw new ReasonerException("Found non-backward subrule : " + r); 
                 }
             }
-        }
-        */
+        }        
     }
-    
-    /**
-     * Clone this node in the network.
-     * @param netCopy a map from RETENode to cloned instance
-     * @param context the new context to which the network is being ported
-     */
-    public RETENode clone(Map netCopy, RETERuleContext contextIn) {
-        RETETerminal clone = (RETETerminal)netCopy.get(this);
-        if (clone == null) {
-            RETERuleContext newContext = new RETERuleContext((ForwardRuleInfGraphI)contextIn.getGraph(), contextIn.getEngine());
-            newContext.setRule(context.getRule());
-            clone = new RETETerminal(newContext);
-            netCopy.put(this, clone);
+        
+    // Inner class representing a conflict set entry 
+    private static class CSEntry {
+        protected Rule rule;
+        protected BindingEnvironment env;
+        protected boolean isAdd;
+        
+        CSEntry(Rule rule, BindingEnvironment env, boolean isAdd) {
+            this.rule = rule;
+            this.env = env;
+            this.isAdd = isAdd;
         }
-        return clone;
     }
-    
 }
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

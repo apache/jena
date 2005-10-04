@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEEngine.java,v 1.23 2005-06-12 14:59:46 der Exp $
+ * $Id: RETEEngine.java,v 1.24 2005-10-04 17:33:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2005-06-12 14:59:46 $
+ * @version $Revision: 1.24 $ on $Date: 2005-10-04 17:33:52 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -45,6 +45,9 @@ public class RETEEngine implements FRuleEngineI {
     /** Queue of newly deleted triples waiting to be processed */
     protected List deletesPending = new ArrayList();
     
+    /** The conflict set of rules waiting to fire */
+    protected RETEConflictSet conflictSet;
+    
     /** List of predicates used in rules to assist in fast data loading */
     protected HashSet predicatesUsed;
     
@@ -60,6 +63,9 @@ public class RETEEngine implements FRuleEngineI {
     /** True if we have processed the axioms in the rule set */
     boolean processedAxioms = false;
     
+    /** True if all the rules are monotonic, so we short circuit the conflict set processing */
+    boolean isMonotonic = true;
+    
     protected static Log logger = LogFactory.getLog(FRuleEngine.class);
     
 //  =======================================================================
@@ -74,6 +80,15 @@ public class RETEEngine implements FRuleEngineI {
     public RETEEngine(ForwardRuleInfGraphI parent, List rules) {
         infGraph = parent;
         this.rules = rules;
+        // Check if this is a monotonic rule set
+        isMonotonic = true;
+        for (Iterator i = rules.iterator(); i.hasNext(); ) {
+            Rule r = (Rule)i.next();
+            if ( ! r.isMonotonic() ) {
+                isMonotonic = false;
+                break;
+            }
+        }
     }
 
     /**
@@ -110,6 +125,7 @@ public class RETEEngine implements FRuleEngineI {
      * raw data graph but may include additional deductions made by preprocessing hooks
      */
     public void fastInit(Finder inserts) {
+        conflictSet = new RETEConflictSet(new RETERuleContext(infGraph, this), isMonotonic);
         findAndProcessActions();
         if (infGraph.getRawGraph() != null) {
             // Insert the data
@@ -179,7 +195,7 @@ public class RETEEngine implements FRuleEngineI {
      * internal axiom closures.
      */
     public Object getRuleStore() {
-        return new RuleStore(clauseIndex, predicatesUsed, wildcardRule);
+        return new RuleStore(clauseIndex, predicatesUsed, wildcardRule, isMonotonic);
     }
     
     /**
@@ -189,6 +205,7 @@ public class RETEEngine implements FRuleEngineI {
         RuleStore rs = (RuleStore)ruleStore;
         predicatesUsed = rs.predicatesUsed;
         wildcardRule = rs.wildcardRule;
+        isMonotonic = rs.isMonotonic;
         
         // Clone the RETE network to this engine
         RETERuleContext context = new RETERuleContext(infGraph, this);
@@ -198,6 +215,15 @@ public class RETEEngine implements FRuleEngineI {
             Map.Entry entry = (Map.Entry)i.next();
             clauseIndex.put(entry.getKey(), ((RETENode)entry.getValue()).clone(netCopy, context));
         }
+    }
+    
+    /**
+     * Add a rule firing request to the conflict set.
+     */
+    public void requestRuleFiring(Rule rule, BindingEnvironment env, boolean isAdd) {
+        // TODO: this is patched to enable safe checkin remove once rest of migration completed
+//        conflictSet.add(rule, env, isAdd);
+        conflictSet.execute(rule, env, isAdd);
     }
     
 //  =======================================================================
@@ -489,11 +515,15 @@ public class RETEEngine implements FRuleEngineI {
         /** Flag, if true then there is a wildcard predicate in the rule set so that selective insert is not useful */
         protected boolean wildcardRule;
         
+        /** True if all the rules are monotonic, so we short circuit the conflict set processing */
+        protected boolean isMonotonic = true;
+        
         /** Constructor */
-        RuleStore(OneToManyMap clauseIndex, HashSet predicatesUsed, boolean wildcardRule) {
+        RuleStore(OneToManyMap clauseIndex, HashSet predicatesUsed, boolean wildcardRule, boolean isMonotonic) {
             this.clauseIndex = clauseIndex;
             this.predicatesUsed = predicatesUsed;
             this.wildcardRule = wildcardRule;
+            this.isMonotonic = isMonotonic;
         }
     }
 

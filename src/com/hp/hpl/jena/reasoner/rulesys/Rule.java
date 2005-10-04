@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.35 2005-07-21 08:20:28 der Exp $
+ * $Id: Rule.java,v 1.36 2005-10-04 17:33:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** * Representation of a generic inference rule. 
+/**Representation of a generic inference rule. 
  * <p>
  * This represents the rule specification but most engines will 
  * compile this specification into an abstract machine or processing
@@ -60,7 +60,8 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.35 $ on $Date: 2005-07-21 08:20:28 $ */
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.36 $ on $Date: 2005-10-04 17:33:52 $ 
+ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -81,6 +82,9 @@ public class Rule implements ClauseEntry {
     /** Flags whether the rule was written as a forward or backward rule */
     protected boolean isBackward = false;
     
+    /** Flags whether the rule is monotonic */
+    protected boolean isMonotonic = true;
+    
     static Log logger = LogFactory.getLog(Rule.class);
     
     /**
@@ -99,9 +103,9 @@ public class Rule implements ClauseEntry {
      * @param head a list of TriplePatterns, Functors or rules
      */
     public Rule(String name, List head, List body) {
-        this.name = name;
-        this.head = (ClauseEntry[]) head.toArray(new ClauseEntry[head.size()]);
-        this.body = (ClauseEntry[]) body.toArray(new ClauseEntry[body.size()]);
+        this(name, 
+                (ClauseEntry[]) head.toArray(new ClauseEntry[head.size()]),
+                (ClauseEntry[]) body.toArray(new ClauseEntry[body.size()]) );
     }
     
     /**
@@ -114,6 +118,19 @@ public class Rule implements ClauseEntry {
         this.name = name;
         this.head = head;
         this.body = body;
+        this.isMonotonic = allMonotonic(head) & allMonotonic(body);
+    }
+    
+    // Compute the monotonicity flag
+    // Future support for negation would affect this
+    private boolean allMonotonic(ClauseEntry[] elts) {
+        for (int i = 0; i < elts.length; i++) {
+            ClauseEntry elt = elts[i];
+            if (elt instanceof Functor) {
+                if ( ! ((Functor)elt).getImplementor().isMonotonic() ) return false;
+            }
+        }
+        return true;
     }
     
 //=======================================================================
@@ -344,6 +361,14 @@ public class Rule implements ClauseEntry {
         } else {
             return n;
         }
+    }
+    
+    /**
+     * Returns false for rules which can affect other rules non-monotonically (remove builtin
+     * or similar) or are affected non-monotonically (involve negation-as-failure).
+     */
+    public boolean isMonotonic() {
+        return isMonotonic;
     }
     
     /**

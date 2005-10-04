@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Builtin.java,v 1.8 2005-02-21 12:16:56 andy_seaborne Exp $
+ * $Id: Builtin.java,v 1.9 2005-10-04 17:33:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * be user extended.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:16:56 $
+ * @version $Revision: 1.9 $ on $Date: 2005-10-04 17:33:52 $
  */
 public interface Builtin {
 
@@ -75,6 +75,12 @@ public interface Builtin {
      * other than the binding of environment variables.
      */
     public boolean isSafe();
+    
+    /**
+     * Returns false if this builtin can invalidate other rules by retracting triples.
+     * Most JenaRules are monotonic deductive closure rules in which this should be false.
+     */
+    public boolean isMonotonic();
 }
 
 /*

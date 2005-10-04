@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.35 2005-06-28 15:38:42 chris-dollin Exp $
+ * $Id: TestBugs.java,v 1.36 2005-10-04 17:33:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.35 $ on $Date: 2005-06-28 15:38:42 $
+ * @version $Revision: 1.36 $ on $Date: 2005-10-04 17:33:52 $
  */
 public class TestBugs extends TestCase {
 
@@ -662,6 +662,25 @@ public class TestBugs extends TestCase {
         // add union class as domain of a property
         p1.addDomain(uc);
     }    
+    
+    /**
+     * Bug report on bad conflict resolution between two non-monotonic rules.
+     */
+    public void testNonmonotonicCR() {
+        String ruleSrc = "(eg:IndA eg:scoreA ?score), sum(?score 40 ?total), noValue(eg:IndA eg:flag_1 'true') -> drop(0), (eg:IndA eg:scoreA ?total), (eg:IndA eg:flag_1 'true')." +
+        "(eg:IndA eg:scoreA ?score), sum(?score 33 ?total), noValue(eg:IndA eg:flag_2 'true') -> drop(0), (eg:IndA eg:scoreA ?total), (eg:IndA eg:flag_2 'true').";
+        List rules = Rule.parseRules(ruleSrc);
+        Model data = ModelFactory.createDefaultModel();
+        String NS = PrintUtil.egNS;
+        Resource i = data.createResource(NS + "IndA");
+        Property scoreA = data.createProperty(NS, "scoreA");
+        i.addProperty(scoreA, data.createTypedLiteral(100));
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+        InfModel inf = ModelFactory.createInfModel(reasoner, data);
+        Iterator values = inf.listObjectsOfProperty(i, scoreA);
+        // TODO unsupress test once 
+//        TestUtil.assertIteratorValues(this, values, new Object[] { data.createTypedLiteral(173)});
+    }
     
     // debug assistant
     private void tempList(Model m, Resource s, Property p, RDFNode o) {
