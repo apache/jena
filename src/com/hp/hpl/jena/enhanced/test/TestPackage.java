@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.16 2005-09-09 09:08:53 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.17 2005-10-04 12:47:27 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -431,6 +431,14 @@ public class TestPackage extends GraphTestBase  {
             assertTrue( "exception should have cuplprit graph", eg == e.getBadGraph() );
             assertTrue( "exception should have culprit class", TestPackage.class == e.getBadClass() );
             }
+        }
+    
+    public void testNullPointerTrapInCanSupport()
+        {
+        EnhGraph eg = new EnhGraph( Factory.createGraphMem(), BuiltinPersonalities.model );
+        Node n = Node.create( "eh:something" );
+        EnhNode en = new EnhNode( n, eg );
+        assertFalse( en.canAs( Integer.class ) );        
         }
 
 }

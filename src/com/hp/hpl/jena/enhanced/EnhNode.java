@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.14 2005-07-04 13:16:07 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.15 2005-10-04 12:47:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -150,7 +150,8 @@ public class EnhNode extends Polymorphic implements FrontsNode
     */
     protected boolean canSupport( Class t )
         {
-        return getPersonality().getImplementation( t ).canWrap( asNode(), getGraph() );
+        Implementation imp = getPersonality().getImplementation( t );
+        return imp == null ? false : imp.canWrap( asNode(), getGraph() );
         }
 
     /**
