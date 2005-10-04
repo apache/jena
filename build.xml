@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.100 2005-10-03 17:20:26 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.101 2005-10-04 12:48:30 chris-dollin Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -71,8 +71,19 @@
   <target name="jar-optimised"  depends="optimise-javac-flags,main"
     description="Builds ${jarfile} with javac optimisation turned on and no debug info"/>
 
-  <target name="release" depends="package"
+  <target name="release" depends="check-contributions,package"
       description="Create a complete Jena release"/>
+
+  <target name="check-contributions" if="contributions.need.updating">
+      <echo>Warning: contributions.html needs updating</echo>
+      <echo>[do `ant contrib` in the rdf-html module]</echo>
+  </target>
+
+  <uptodate 
+      targetfile="${doc.dir}/contrib/contributions.n3" 
+      srcfile="${doc.dir}/contrib/contributions.html" 
+      property="contributions.need.updating"
+  />
 
   <target name="jar-etc"
     description="Constructs a .jar file containing only the files from Jena's etc directory">
