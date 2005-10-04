@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
     <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
     <!--
-      CVS: $Id: index.html,v 1.16 2005-04-04 16:59:53 ian_dickinson Exp $
+      CVS: $Id: index.html,v 1.17 2005-10-04 09:38:31 ian_dickinson Exp $
      (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company LP
     -->
   </head>
@@ -22,12 +22,11 @@
       Jena 2 Ontology API
     </h1>
 
-<p> This section describes the Jena2 ontology API in detail, and covers a range
+<p> This section describes the Jena2 ontology API in depth, and covers a range
   of common user tasks. Not all of the fine details of the API are covered here:
   the reader should expect to refer to the <a href="../javadoc/index.html">Jena2
-  Javadoc</a> to get the full details of the capabilities of the API. </p>
-    <p>
-      Note that this is a preliminary version of this document. Readers should expect that some errors or inconsistencies are possible, and that feedback to the author (via the <a href="http://groups.yahoo.com/group/jena-dev">jena-dev</a> support list) is welcomed.
+  Javadoc</a> to get the full details of the capabilities of the API.
+      Feedback to the author (via the <a href="http://groups.yahoo.com/group/jena-dev">jena-dev</a> support list) is welcomed.
     </p>
     <h2>
       Prerequisites
@@ -229,7 +228,7 @@ Restriction rest = (Restriction) cls.as( Restriction.class );
   This ontology arose from a discussion, started by Roger Costello on the RDF
   mailing lists, about a clear comprehensible example of what was possible with
   OWL. A copy of the ontology serialized in RDF/XML is included with the Jena
-  download [<a href="data/camera.owl">here</a>]. </p>
+  download [<a href="../examples/data/camera.owl">here</a>]. </p>
     <p>
       The camera ontology contains a set of classes describing some aspects of the domain of still-picture cameras, as shown in Figure 3:
     </p>
@@ -553,7 +552,7 @@ OntModel m = ModelFactory.createOntologyModel( s, null );
 OntModel m = ModelFactory.createOntologyModel();
 OntDocumentManager dm = m.getDocumentManager();
 dm.addAltEntry( "http://www.xfront.com/owl/ontologies/camera/",
-                "file:" + JENA + "doc/user-manual/ontology/data/camera.owl"    );
+                "file:" + JENA + "examples/data/camera.owl"    );
 m.read( "http://www.xfront.com/owl/ontologies/camera/" );
     </pre>
     <h2 id="ontResource">
@@ -1716,7 +1715,7 @@ plain.write( System.err, &quot;RDF/XML-ABBREV&quot; );</pre>
   The second is re-using or creating persistent models for the imports of an ontology.
   These two requirements are handled slightly differently. A simple, but complete,
   example of using persistent database models for storing ontologies can be found
-  <a href="examples/persistent-ont-model/index.html">here</a>.</p>
+  <a href="../examples/persistent-ont-model/index.html">here</a>.</p>
 <p>To retrieve a model from the database, it has to be named.
   Fortunately, common practice for ontologies on the Semantic Web is that each
   is named with a URI. We use this URI to name the model that is stored in the
@@ -1757,7 +1756,7 @@ spec.setModelMaker( getMaker() );</pre>
   has been loaded once into the database, it can be re-used by other ontologies
   that import it. Thus a given database will only contain at most one copy of
   each imported ontology.</p>
-<p>A <a href="examples/persistent-ont-model/index.html">sample program</a> shows
+<p>A <a href="../examples/persistent-ont-model/index.html">sample program</a> shows
   both of the above steps combined, to create an ontology in which both base model
   and imports are stored in a persistent database.</p>
 </body>
