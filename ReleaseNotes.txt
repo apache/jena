@@ -11,6 +11,8 @@ JAR changes
     o antlr.jar => antlr-2.7.5.jar
       jakarta-oro-2.0.5.jar => jakarta-oro-2.0.8.jar
       log4j-1.2.7.jar => log4j-1.2.12.jar
+      
+      Xerces jars updated to Xerces 2.7.1
       New Jarfiles:
       arq.jar, jenatest.jar 
       stax-1.1.1-dev.jar, stax-api-1.0.jar
@@ -40,13 +42,9 @@ ARP
       parsing (as opposed to reading the data from the network
       or disk, and adding the triples to a Model).
 
-    o oldarp package contains the final version of the previous
-      design of ARP. This has some changes since the previous
-      release (in Jena 2.2), most significantly corrected a bug
-      in the implementation of the XML Base Rec.
-
     o The contract concerning behaviour after syntax errors has
-      changed. (TBD: describe new contract).
+      changed. (See Javadoc for ARPOptions#setErrorMode, for details
+      of the new contract)
 
     o Some changes in the error codes produced for ill-formed
       input.
