@@ -34,25 +34,32 @@
 <p>
   The built-in Jena rule-based reasoners are able to provide semantic entailments for ontologies using
   OWL-lite, and some constructs from OWL-DL and OWL-full.  However, for large or complex ontologies 
-  the rule-based approach is computationally very expensive.  Moreover, there are useful modelling primitives
-  in OWL-DL that many semantic-web applications will wish to make use of.  Jena's architecture provides
+  the rule-based approach can computationally very expensive.  Moreover, there are useful modelling primitives
+  in OWL-DL that many semantic-web applications will wish to make use of, but which the rule-based 
+  reasoners don't handle.  Jena's architecture provides
   a mechanism for attaching external reasoners to Jena models, by re-implementing the Graph interface.
   Jena version 2.1 onwards provides an illustration of this technique by providing a transparent 
-  gateway between Jena ontology models and external reasoners implementing the DIG description
-  logic reasoner interface (henceforth abbreviated simply to the <em>DIG interface</em>).
+  gateway between Jena ontology models and external reasoners implementing the 
+  <a href="http://dl-web.man.ac.uk/dig/">DIG description
+  logic reasoner interface</a> (henceforth abbreviated simply to the <em>DIG interface</em>).
 </p>
 <p>
   The DIG interface is an emerging standard for providing access to description-logic reasoning
   via an HTTP-based interface to a separate reasoning process. Available DIG reasoners 
   at the time of writing include:
-  <a href="http://www.cs.concordia.ca/~haarslev/racer/">Racer</a>,
+  <a href="http://www.racer-systems.com/">Racer</a>,
   <a href="http://www.cs.man.ac.uk/~horrocks/FaCT/">FaCT</a> and
   <a href="http://www.mindswap.org/2003/pellet/index.shtml">Pellet</a>.
   In principle, Jena should work with any conformant DIG reasoner (but see note below).  The current
-  release has only been tested with Racer, version 1.7.19.  Note that earlier versions of Racer
-  <strong>will not work</strong> with the Jena DIG adapter, as a number of bugs in Racer's DIG
-  implementation were fixed during the development process.
+  release is known to work with Pellet, version 1.3-beta.  Jena's DIG interface <strong>does
+  not work correctly</strong> with RacerPro (i.e. versions greater than 1.7.23, which was the last
+  free release). Now that RacerPro is a commercial product, we are unfortunately not in a position
+  to test the Jena code against it.  </p>
+<p>Our current recommendation is to use the Pellet reasoner, 
+  since it is robust and scalable, and is available under under an open-source license. Pellet
+  is available from <a href="http://www.mindswap.org/2003/pellet/download.shtml">this download site</a>.
 </p>
+
 <h2 id="overview">Overview</h2>
 <p>
   Figure 1 shows an overview of the connection between a Jena ontology model and an existing DIG reasoner
@@ -64,12 +71,12 @@
   <span class="centered"><strong>Figure 1: Schematic of dataflows between Jena model and DIG reasoner</strong></span>
 </p>
 <p>
-  Two things should be clear from Figure 1. The first is that accessing a DIG reasoner in Jena is
-  identical to accessing a normal model.  That is, the normal model API is used to, for example, 
+  As figure 1 shows, accessing a DIG reasoner in Jena uses the
+  identical API to accessing a normal in-memory model.  That is, the usual model API is used to, for example, 
   list the classes in the model or determine the properties of an individual. Moreover, the information
   inferred by the reasoner is available as RDF triples.  So, if the reasoner determines that a class
   <code>A</code> is unsatisfiable, the triple <code>:A&nbsp;rdfs:subClassOf&nbsp;owl:Nothing</code>
-  will appear in the model.  The second thing that Figure 1 shows is that the DIG adapter must
+  will appear in the model.  Figure 1 also illustrates that the DIG adapter must
   be told the host name and port number for accessing the HTTP interface of the reasoner.
 </p>
 <h2 id="setup">Setting up a Jena DIG reasoner</h2>
@@ -189,7 +196,7 @@
 <p>
   The following program shows a complete example of using the DIG reasoner, with a non-default
   URL to connect to.  We assume that the DIG reasoner has been started on port 2004 (e.g.
-  with <code>racer&nbsp;-http&nbsp;2004</code>).
+  with <code>sh pellet-dig.sh&nbsp;-port&nbsp;2004</code>).
 </p>
 <pre>
 import com.hp.hpl.jena.ontology.*;
@@ -243,8 +250,7 @@ Class http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Quokka is un
 
 <h2 id="cautions">Caveats and cautions</h2>
 <p>
-  The DIG interface should be regarded as experimental for the time being. The most extensive 
-  testing has been performed with OWL as the input language and Racer as the reasoning engine.
+  The DIG interface has been tested with OWL as the input language and Pellet as the reasoning engine.
   Other reasoners, or the use of DAML+OIL as the input language, are provided for in the
   code but not well tested yet.  Users are encouraged to report problems and suggestions to 
   the <a href="http://groups.yahoo.com/group/jena-dev/">Jena support list</a>.
@@ -257,7 +263,7 @@ Class http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Quokka is un
 </p>
 
 <hr />
-<p><small>CVS $Id: dig-reasoner.html,v 1.1 2004-05-20 19:24:53 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: dig-reasoner.html,v 1.2 2005-10-05 15:23:01 ian_dickinson Exp $</small></p>
 
 </body>
 </html>
