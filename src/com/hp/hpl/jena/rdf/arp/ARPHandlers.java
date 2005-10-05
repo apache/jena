@@ -7,6 +7,11 @@ package com.hp.hpl.jena.rdf.arp;
 
 import org.xml.sax.ErrorHandler;
 
+import com.hp.hpl.jena.rdf.arp.impl.DefaultErrorHandler;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
+
+// TODO: check javadoc, deprecation, e-mail Protege
+
 /**
  * The interface to set the various handlers on ARP.
  * User defined implementations of this interface are
@@ -17,31 +22,57 @@ import org.xml.sax.ErrorHandler;
  * @author Jeremy J. Carroll
  *
  */
-abstract public class ARPHandlers {
+public class ARPHandlers {
 
-    /** Sets the ExtendedHandler that provides the callback mechanism
-     * for bnodes as they leave scope, and for the start and end of rdf:RDF
-     * elements.
-     * <p>
-     * See note about large files in {@link ARP} class documentation.
-     * @param sh The handler to use.
-     * @return The old handler.
-     */
-    abstract public ExtendedHandler setExtendedHandler(ExtendedHandler sh);
+    private ErrorHandler errorHandler = new DefaultErrorHandler();
+    private ExtendedHandler scopeHandler = XMLHandler.nullScopeHandler;
+    private StatementHandler statementHandler = XMLHandler.nullStatementHandler;
+    private NamespaceHandler nameHandler = new NamespaceHandler() {
+    			
+    					public void startPrefixMapping(String prefix, String uri) {
+    						
+    					}
+    			
+    					public void endPrefixMapping(String prefix) {
+    						
+    					}
+    				};
+
+                    /** Sets the ExtendedHandler that provides the callback mechanism
+                     * for bnodes as they leave scope, and for the start and end of rdf:RDF
+                     * elements.
+                     * <p>
+                     * See note about large files in {@link ARP} class documentation.
+                     * @param sh The handler to use.
+                     * @return The old handler.
+                     */
+    public ExtendedHandler setExtendedHandler(ExtendedHandler sh) {
+    	ExtendedHandler old = scopeHandler;
+    	scopeHandler = sh;
+    	return old;
+    }
 
     /** Sets the NamespaceHandler that provides the callback mechanism
      * for XML namespace declarations.
      * @param sh The handler to use.
      * @return The old handler.
      */
-    abstract public NamespaceHandler setNamespaceHandler(NamespaceHandler sh);
-
+    public NamespaceHandler setNamespaceHandler(NamespaceHandler sh) {
+    	NamespaceHandler old = nameHandler;
+    	nameHandler = sh;
+    	return old;
+    }
+    
     /** Sets the StatementHandler that provides the callback mechanism
      * for each triple in the file.
      * @param sh The statement handler to use.
      * @return The old statement handler.
      */
-    abstract public StatementHandler setStatementHandler(StatementHandler sh);
+    public StatementHandler setStatementHandler(StatementHandler sh) {
+    	StatementHandler old = statementHandler;
+    	statementHandler = sh;
+    	return old;
+    }
 
     /** Sets the error handler, for both XML and RDF parse errors.
      * XML errors are reported by Xerces, as instances of
@@ -71,7 +102,39 @@ abstract public class ARPHandlers {
      * @param eh The error handler to use.
      * @return The previous error handler.
      */
-    abstract public ErrorHandler setErrorHandler(ErrorHandler eh);
+    public ErrorHandler setErrorHandler(ErrorHandler eh) {
+        ErrorHandler old = errorHandler;
+    	errorHandler = eh;
+        return old;
+    }
+
+    /**
+     * @return Returns the error handler.
+     */
+    public ErrorHandler getErrorHandler() {
+    	return errorHandler;
+    }
+
+    /**
+     * @return Returns the namespace handler.
+     */
+    public  NamespaceHandler getNamespaceHandler() {
+    	return nameHandler;
+    }
+
+    /**
+     * @return Returns the extended handler.
+     */
+    public  ExtendedHandler getExtendedHandler() {
+    	return scopeHandler;
+    }
+
+    /**
+     * @return Returns the statement handler.
+     */
+    public  StatementHandler getStatementHandler() {
+    		return statementHandler;
+    	}
 
 }
 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.20 2005-09-26 11:28:56 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.21 2005-10-05 13:58:34 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -48,7 +48,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
 /** A command line interface into ARP.
  * Creates NTriple's or just error messages.
  * <pre>
@@ -322,7 +321,8 @@ int debugC = 0;
                         public void error(SAXParseException exception) { /* ignore */ }
                         public void fatalError(SAXParseException exception) { /* ignore */ }     
                     });
-                    ((ARPHandlersImpl)arp.getHandlers()).setBadStatementHandler(new SH(System.err));
+                    
+                    arp.setBadStatementHandler(new SH(System.err));
                     break;
 				case 'b' :
 					xmlBase = nextArg;

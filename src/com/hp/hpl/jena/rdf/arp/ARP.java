@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.24 2005-09-23 11:02:09 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.25 2005-10-05 13:58:34 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -291,4 +291,8 @@ IOException {
 		
 		getOptions().setEmbedding(embed);
 	}
+    void setBadStatementHandler(StatementHandler sh) {
+        arpf.setBadStatementHandler(sh);
+        
+    }
 }

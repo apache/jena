@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.18 2005-09-23 07:51:49 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.19 2005-10-05 13:58:34 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -54,6 +54,7 @@ import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.ARPHandlers;
 import com.hp.hpl.jena.rdf.arp.ARPOptions;
 import com.hp.hpl.jena.rdf.arp.AResource;
+import com.hp.hpl.jena.rdf.arp.ExtendedHandler;
 import com.hp.hpl.jena.rdf.arp.FatalParsingErrorException;
 import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.arp.StatementHandler;
@@ -80,7 +81,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         StatementHandler stmt;
         boolean bad=s.isTainted() || p.isTainted() || o.isTainted();
         if (bad) {
-            stmt = handlers.getBadStatementHandler();
+            stmt = badStatementHandler;
         } else {
             stmt = handlers.getStatementHandler();
         }
@@ -247,7 +248,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
      * @param v
      */
     public void endLocalScope(ANode v) {
-        if (handlers.getExtendedHandler() != ARPHandlersImpl.nullScopeHandler) {
+        if (handlers.getExtendedHandler() != nullScopeHandler) {
             ARPResource bn = (ARPResource) v;
             if (!bn.getHasBeenUsed())
                 return;
@@ -333,7 +334,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     private ARPOptionsImpl options = new ARPOptionsImpl();
 
-    private ARPHandlersImpl handlers = new ARPHandlersImpl();
+    private ARPHandlers handlers = new ARPHandlers();
 
     StatementHandler getStatementHandler() {
         return handlers.getStatementHandler();
@@ -356,11 +357,11 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     public void setHandlersWith(ARPHandlers newHh) {
-        if (newHh instanceof ARPHandlersImpl)
-          handlers = ((ARPHandlersImpl)newHh).copy();
-        else
-            throw new RuntimeException("User defined implementations of ARPHandlers are not supported");
-        
+        handlers.setErrorHandler(newHh.getErrorHandler());
+        handlers.setExtendedHandler(newHh.getExtendedHandler());
+        handlers.setNamespaceHandler(newHh.getNamespaceHandler());
+        handlers.setStatementHandler(newHh.getStatementHandler());
+       
     }
 
     private Map nodeIdUserData;
@@ -391,7 +392,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     void endBnodeScope() {
-        if (handlers.getExtendedHandler() != ARPHandlersImpl.nullScopeHandler) {
+        if (handlers.getExtendedHandler() != nullScopeHandler) {
             Iterator it = nodeIdUserData.keySet().iterator();
             while (it.hasNext()) {
                 String nodeId = (String) it.next();
@@ -484,4 +485,32 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return sameDocRef;
     }
 
+    private StatementHandler badStatementHandler = nullStatementHandler;
+    
+    public void setBadStatementHandler(StatementHandler sh) {
+        badStatementHandler = sh;
+    }
+
+    final public static StatementHandler nullStatementHandler =
+    new StatementHandler() {
+        public void statement(AResource s, AResource p, AResource o) {
+        }
+        public void statement(AResource s, AResource p, ALiteral o) {
+        }
+    };
+    final public static ExtendedHandler nullScopeHandler = new ExtendedHandler() {
+        
+        public void endBNodeScope(AResource bnode) {
+        }
+
+        public void startRDF() {
+        }
+
+        public void endRDF() {
+        }
+
+        public boolean discardNodesWithNodeID() {
+            return true;
+        }
+    };
 }
