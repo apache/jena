@@ -25,7 +25,7 @@ import java.net.URI ;
 /** com.hp.hpl.jena.query.util.RelURI
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.2 2005-10-01 20:08:34 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.3 2005-10-05 21:12:13 andy_seaborne Exp $
  */
 
 public class RelURI
@@ -56,7 +56,17 @@ public class RelURI
         // Special case is for non-path URIs: (file: and ftp: and http:)
         
         if ( baseStr == null )
-            throw new JenaURIException("Null base for relative URI resolution") ;
+        {
+            //return relStr ;
+            // Check absolute?
+            try {
+                URI u = new URI(relStr) ;
+                if ( ! u.isAbsolute() )
+                    throw new JenaURIException("Null base for relative URI resolution") ;
+                return relStr ;
+            } catch (java.net.URISyntaxException ex)
+            { throw new JenaURIException("Illegal URI (base was null and URI is not absolute) "+relStr) ; }
+        }
         
         if ( baseStr.length() == 0 )
             throw new JenaURIException("Empty base for relative URI resolution") ;
