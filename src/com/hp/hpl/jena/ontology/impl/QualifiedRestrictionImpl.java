@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-Sep-2003
  * Filename           $RCSfile: QualifiedRestrictionImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:06:52 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-10-06 15:15:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -27,6 +27,7 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 
 /**
@@ -36,9 +37,9 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: QualifiedRestrictionImpl.java,v 1.4 2005-02-21 12:06:52 andy_seaborne Exp $
+ * @version CVS $Id: QualifiedRestrictionImpl.java,v 1.5 2005-10-06 15:15:18 ian_dickinson Exp $
  */
-public class QualifiedRestrictionImpl 
+public class QualifiedRestrictionImpl
     extends RestrictionImpl
     implements QualifiedRestriction
 {
@@ -50,26 +51,26 @@ public class QualifiedRestrictionImpl
 
     /**
      * A factory for generating QualifiedRestriction facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new QualifiedRestrictionImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n + " to QualifiedRestriction");
-            } 
+            }
         }
-            
+
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
             return (profile != null)  &&  profile.isSupported( node, eg, QualifiedRestriction.class );
         }
     };
-    
+
 
     // Instance variables
     //////////////////////////////////
@@ -81,7 +82,7 @@ public class QualifiedRestrictionImpl
      * <p>
      * Construct a qualified restriction node represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -95,44 +96,75 @@ public class QualifiedRestrictionImpl
 
     /**
      * <p>Assert that this qualified restriction restricts the property to have a given
-     * cardinality and to have values belonging to the class denoted by <code>hasClassQ</code>. 
+     * cardinality and to have values belonging to the class denoted by <code>hasClassQ</code>.
      * Any existing statements for <code>hasClassQ</code>
      * will be removed.</p>
      * @param cls The class to which all of the value of the restricted property must belong
-     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.   
-     */ 
+     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
+     */
     public void setHasClassQ( OntClass cls ) {
         setPropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", cls );
     }
 
     /**
-     * <p>Answer the class to which all values of the restricted property belong.</p>
-     * @return The ontology class of the restricted property values 
-     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.   
-     */ 
-    public OntClass getHasClassQ() {
-        return (OntClass) objectAs( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", OntClass.class );
+     * <p>Answer the class or datarnage to which all values of the restricted property belong.</p>
+     * @return The ontology class of the restricted property values
+     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
+     */
+    public OntResource getHasClassQ() {
+        checkProfile( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q" );
+        Resource r = getProperty( getProfile().HAS_CLASS_Q() ).getResource();
+        if (r.canAs( OntClass.class )) {
+            return (OntClass) r.as( OntClass.class );
+        }
+        else if (r.canAs( DataRange.class )) {
+            return (DataRange) r.as( DataRange.class );
+        }
+        else {
+            return (OntResource) r.as( OntResource.class );
+        }
     }
 
     /**
      * <p>Answer true if this qualified property restriction has the given class as
      * the class to which all of the property values must belong.</p>
-     * @param cls The class to test against 
+     * @param cls The class to test against
      * @return True if the given class is the class to which all members of this restriction must belong
-     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.   
+     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
     public boolean hasHasClassQ( OntClass cls ) {
         return hasPropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", cls );
     }
-    
+
     /**
-     * <p>Remove the statement that this restriction has the given class 
+     * <p>Answer true if this qualified property restriction has the given datarange as
+     * the class to which all of the property values must belong.</p>
+     * @param dr The datarange to test against
+     * @return True if the given class is the class to which all members of this restriction must belong
+     * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
+     */
+    public boolean hasHasClassQ( DataRange dr ) {
+        return hasPropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", dr );
+    }
+
+    /**
+     * <p>Remove the statement that this restriction has the given class
      * as the class to which all values must belong.  If this statement
      * is not true of the current model, nothing happens.</p>
-     * @param cls The ont class that is the object of the <code>hasClassQ</code> property. 
+     * @param cls The ont class that is the object of the <code>hasClassQ</code> property.
      */
     public void removeHasClassQ( OntClass cls ) {
         removePropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", cls );
+    }
+
+    /**
+     * <p>Remove the statement that this restriction has the given datarange
+     * as the class to which all values must belong.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param dr The datarange that is the object of the <code>hasClassQ</code> property.
+     */
+    public void removeHasClassQ( DataRange dr ) {
+        removePropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", dr );
     }
 
 
