@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.34 2005-07-07 15:18:14 der Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.35 2005-10-06 17:26:15 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -32,6 +32,7 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#general-1">What does the error '<code>java.lang.NoSuchFieldError: actualValueType</code>' mean?</a></li>
   <li><a href="#general-2">What versions of library jars does Jena require?</a></li>
   <li><a href="#general-3">How do I get the most up-to-date version of Jena?</a></li>
+  <li><a href="#general-4">How do I reduce the space needed to deploy Jena?</a></li>
 </ul>
 <h3>RDF model API</h3>
 <ul>
@@ -122,7 +123,7 @@ Schema, what do I do?</a></li>
   including all of these jars in your classpath. In some circumstances applications 
   already make use of specific versions of these libraries (e.g. Xerces) and need to 
   check if the version they are using is compatible with those shipped by Jena. The current
-  library versions used by Jena are:
+  library versions used by Jena are:</p>
   <ul>
   <li><strong>Xerces</strong> - 2.6.1 (not compatible with Xerces prior to 2.6.0)</li>
   <li><strong>log4j</strong> - 1.2.7</li>
@@ -133,7 +134,6 @@ Schema, what do I do?</a></li>
   <li><strong>jakarta-commons-logging</strong> - 1.0.3</li>
   <li><strong>concurrent</strong> - 1.3.2</li>
   </ul> 
-</p>
 
 <p id="general-3">
   <strong>Q: How do I get the most up-to-date version of Jena?</strong><br />
@@ -160,7 +160,38 @@ Schema, what do I do?</a></li>
   versions of Jena may not be as fully tested and stable as the formal 
   releases.
 </p>
-  
+
+<p id="general-4">
+  <strong>Q: How do I reduce the space needed to deploy Jena (give 
+  Jena a smaller footprint)?</strong><br />
+  <strong>A:</strong> Jena attempts to follow the various relevant specifications
+  very closely, which means that both Jena itself, and the libraries 
+  (.jar files) it depends on, are quite large.  For example, the <code>icu4j</code>
+  library assists with the correct interpretation of URI's encoded in international
+  character sets. For many applications the size of the Jena deployment 
+  is not a problem. There are some 
+  circumstances, however, where reducing the size of the installed libraries is
+  important - for example, when installing a semantic web application on a mobile 
+  device. To reduce the storage space required for Jena itself you can build a 
+  different version of <code>jena.jar</code>, using the command:
+</p>
+<pre>    ant jar-optimised</pre>
+  <p>This builds a version of Jena with no symbols or other debugging information
+  (see above for instructions on using ant).
+  Note that this will make error stacktraces less informative.  
+  </p><p>The library <code>jenatest.jar</code>
+  contains Jena's unit test suite. This does not have to be included when deploying
+  a Jena application. Other libraries from the Jena lib directory may be left out,
+  with caution, if the functionality of that library is not required. For example,
+  if the application is <em>only</em> going to handle ascii text, it should not be
+  necessary to install the <code>icu4j</code> library. However, users should be 
+  aware that the only <em>supported</em> configuration of Jena is to deploy with
+  all of the .jar files from the <code>lib/</code> directory, except for 
+  <code>jenatest.jar</code> or an alternative optimised <code>jena.jar</code>. 
+  Other configurations may well work, but are at the user's
+  own risk.
+  </p>
+
     <h3>RDF model API</h3>
     <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br />
       <strong>A:</strong> In Jena it is possible to retrieve the localname part of a Resource or Property
@@ -320,13 +351,12 @@ configuration</a> for an example of how to parse custom rules.
 </p>
 
 <p>
-Some important guidelines:
+Some important guidelines:</p>
 <ul>
 <li>if you're using OWL rules: <code>setOWLTranslation(true)</code> on the reasoner</li>
 <li>if you're using RDFS or OWLMicro: <code>setTransitiveClosureCaching(true)</code></li>
 <li>make your own rules backwards unless you know what you are doing</li>
 </ul>
-</p>
 
 <p>
 You may only use backward rules in this configuration because the RDFS and OWL rules use a mix of forward and backward chaining and the rule system architecture is a pure dataflow - the forward rules don't call the backward rules. Thus any forward rules will only see those parts of
@@ -577,12 +607,12 @@ is provided by <a href="http://jakarta.apache.org/oro/">Jakarta ORO</a>.  Exampl
 <pre>  SELECT ?name
   WHERE (?x  vCard:FN  ?name)
   AND ?name =~ /Smith$/i
-  USING vCard FOR <http://www.w3.org/2001/vcard-rdf/3.0#>
+  USING vCard FOR &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
 
   SELECT ?x
   WHERE (?x dc:title ?v)
   AND ?v =~ /RDF/i
-  USING dc for <http://purl.org/dc/elements/1.1/title>
+  USING dc for &lt;http://purl.org/dc/elements/1.1/title&gt;
 </pre>
 <p>This can be used to do a case-insensitive substring match as in the last example,
 giving functionality similar to SQL LIKE.</p>
