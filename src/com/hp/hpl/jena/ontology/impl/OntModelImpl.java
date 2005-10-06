@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.88 $
+ * Revision           $Revision: 1.89 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-08 15:33:45 $
+ * Last modified on   $Date: 2005-10-06 16:02:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.88 2005-09-08 15:33:45 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.89 2005-10-06 16:02:33 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -426,6 +426,21 @@ public class OntModelImpl
             return UniqueExtendedIterator.create(
                     findByTypeAs( getProfile().THING(), Individual.class ) );
         }
+    }
+
+
+    /**
+     * <p>
+     * Answer an iterator that ranges over the resources in this model that are
+     * instances of the given class.
+     * </p>
+     *
+     * @return An iterator over individual resources whose <code>rdf:type</code>
+     * is <code>cls</code>.
+     */
+    public ExtendedIterator listIndividuals( Resource cls ) {
+        return UniqueExtendedIterator.create(
+                findByTypeAs( cls, Individual.class ) );
     }
 
 

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.48 $
+ * Revision           $Revision: 1.49 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-13 09:45:32 $
- *               by   $Author: jeremy_carroll $
+ * Last modified on   $Date: 2005-10-06 16:02:33 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.48 2005-04-13 09:45:32 jeremy_carroll Exp $
+ * @version CVS $Id: OntModel.java,v 1.49 2005-10-06 16:02:33 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -229,6 +229,18 @@ public interface OntModel
      * @return An iterator over individual resources.
      */
     public ExtendedIterator listIndividuals();
+
+
+    /**
+     * <p>
+     * Answer an iterator that ranges over the resources in this model that are
+     * instances of the given class.
+     * </p>
+     *
+     * @return An iterator over individual resources whose <code>rdf:type</code>
+     * is <code>cls</code>.
+     */
+    public ExtendedIterator listIndividuals( Resource cls );
 
 
     /**
@@ -1449,9 +1461,9 @@ public interface OntModel
     /**
      * <p>If this OntModel is presenting an OWL model, answer the minimum OWL language
      * level that the constructs
-     * used in this model lie entirely within.  
+     * used in this model lie entirely within.
      * This method requires that the separately downloadable
-     * owlsyntax.jar is on the classpath. 
+     * owlsyntax.jar is on the classpath.
      * The three possible return values are
      * {@link com.hp.hpl.jena.vocabulary.OWL#FULL_LANG FULL_LANG} for OWL-full,
      * {@link com.hp.hpl.jena.vocabulary.OWL#DL_LANG DL_LANG} for OWL-DL or

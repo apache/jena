@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-06 23:04:51 $
+ * Last modified on   $Date: 2005-10-06 16:02:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.24 2005-04-06 23:04:51 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.25 2005-10-06 16:02:33 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories
     extends TestCase
@@ -237,6 +237,18 @@ public class TestListSyntaxCategories
         {
             public Iterator doList( OntModel m ) {
                 return m.listIndividuals();
+            }
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "OWL list typed individuals",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM,  2,
+                new String[] {NS+"A0", NS+"A1"} )
+        {
+            public Iterator doList( OntModel m ) {
+                Model mVocab = ModelFactory.createDefaultModel();
+                Resource cA = mVocab.createResource( "http://jena.hpl.hp.com/testing/ontology#A");
+                return m.listIndividuals( cA );
             }
             public boolean test( Resource r ) {
                 return r instanceof Individual;
