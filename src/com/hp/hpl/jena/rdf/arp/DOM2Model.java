@@ -38,7 +38,7 @@ public class DOM2Model extends SAX2Model {
      * @throws SAXParseException 
      */    
     static public DOM2Model createD2M(String base, Model m) throws  SAXParseException {
-        return new DOM2Model(base,  m) ;
+        return new DOM2Model(base,  m, "", true) ;
     }
     /**
      * Create a new DOM2Model. This is particularly intended for when parsing a
@@ -60,8 +60,9 @@ public class DOM2Model extends SAX2Model {
      * @throws SAXParseException 
      */
     static public DOM2Model createD2M(String base, Model m, String lang) throws  SAXParseException {
-        return new DOM2Model(base,  m, lang) ;
+        return new DOM2Model(base,  m, lang, true) ;
     }
+
 
     /**
      * Create a new DOM2Model.
@@ -73,12 +74,13 @@ public class DOM2Model extends SAX2Model {
      *            it is null, then use {@link SAX2RDF#getHandlers}or
      *            {@link SAX2RDF#setHandlersWith}to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
-     * @throws SAXParseException 
+     * @throws MalformedURIException 
      * @deprecated Use {@link #createD2M(String, Model)}
      */
-    public DOM2Model(String base, Model m) throws  SAXParseException {
+    public DOM2Model(String base, Model m) throws  MalformedURIException {
         this(base, m, "");
     }
+
 
     /**
      * Create a new DOM2Model. This is particularly intended for when parsing a
@@ -97,12 +99,18 @@ public class DOM2Model extends SAX2Model {
      * @param lang
      *            The current value of <code>xml:lang</code> when parsing
      *            starts, usually "".
-     * @throws SAXParseException 
+     * @throws MalformedURIException 
      * @deprecated Use {@link #createD2M(String, Model, String)}
      */
     public DOM2Model(String base, Model m, String lang)
-            throws  SAXParseException {
+            throws  MalformedURIException {
         super(base, m, lang);
+    }
+    
+
+    public DOM2Model(String base, Model m, String lang, boolean dummy)
+            throws  SAXParseException {
+        super(base, m, lang, 0);
     }
 
     /**

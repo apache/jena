@@ -88,15 +88,14 @@
 package com.hp.hpl.jena.rdf.arp;
 import java.io.IOException;
 
+import org.xml.sax.SAXParseException;
+
   /*******************************************************************
   * MalformedURIExceptions are thrown in the process of building a URI
   * or setting fields on a URI when an operation would result in an
   * invalid URI specification.
   * 
-  * Since summer 2005,
-  * any MalformedURIExceptions thrown by ARP wrap either a
-  * java.net.URISyntaxException or a ParseException.
-  * The underlying exception can be accessed using Exception.getCause().
+  * 
   *@deprecated The code for RDF URI References and IRIs is in the process of being updated.
   ********************************************************************/
   public class MalformedURIException extends IOException {
@@ -128,8 +127,8 @@ import java.io.IOException;
 //        super();
 //        initCause(e);
 //    }
-//    public MalformedURIException(SAXParseException e) {
-//        super();
-//        initCause(e);
-//    }
+    public MalformedURIException(SAXParseException e) {
+        super();
+        initCause(e);
+    }
   }

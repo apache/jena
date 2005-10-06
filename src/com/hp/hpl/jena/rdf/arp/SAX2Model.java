@@ -28,19 +28,16 @@ public class SAX2Model extends SAX2RDF {
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
      *            it is null, then use {@link SAX2RDF#getHandlers} or
-     *            {@link SAX2RDF#setHandlersWith} to provide a {@link StatementHandler},
-     *            and usually an {@link org.xml.sax.ErrorHandler}
+     *            {@link SAX2RDF#setHandlersWith} to provide a
+     *            {@link StatementHandler}, and usually an
+     *            {@link org.xml.sax.ErrorHandler}
      * @return A new SAX2Model
      * @throws MalformedURIException
      * @deprecated Use {@link #create(String, Model)}
      */
     static public SAX2Model newInstance(String base, Model m)
             throws MalformedURIException {
-        try {
-            return create(base, m);
-        } catch (SAXParseException e) {
-            throw new MalformedURIException(e.getMessage());
-        }
+        return new SAX2Model(base, m, "");
 
     }
 
@@ -52,21 +49,23 @@ public class SAX2Model extends SAX2RDF {
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
      *            it is null, then use {@link SAX2RDF#getHandlers} or
-     *            {@link SAX2RDF#setHandlersWith} to provide a {@link StatementHandler},
-     *            and usually an {@link org.xml.sax.ErrorHandler}
+     *            {@link SAX2RDF#setHandlersWith} to provide a
+     *            {@link StatementHandler}, and usually an
+     *            {@link org.xml.sax.ErrorHandler}
      * @return A new SAX2Model
-     * @throws SAXParseException On a fatal error during setup, maybe malformed base URI
-    */
+     * @throws SAXParseException
+     *             On a fatal error during setup, maybe malformed base URI
+     */
     static public SAX2Model create(String base, Model m)
             throws SAXParseException {
-        return new SAX2Model(base, m, "");
+        return new SAX2Model(base, m, "", 0);
     }
+
     /**
-     * Factory method to create a new SAX2Model.
-     * This is particularly intended for
-     * when parsing a non-root element within an XML document. In which case the
-     * application needs to find this value in the outer context. Optionally,
-     * namespace prefixes can be passed from the outer context using
+     * Factory method to create a new SAX2Model. This is particularly intended
+     * for when parsing a non-root element within an XML document. In which case
+     * the application needs to find this value in the outer context.
+     * Optionally, namespace prefixes can be passed from the outer context using
      * {@link #startPrefixMapping}.
      * 
      * @param base
@@ -74,24 +73,26 @@ public class SAX2Model extends SAX2RDF {
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
      *            it is null, then use {@link SAX2RDF#getHandlers} or
-     *            {@link SAX2RDF#setHandlersWith} to provide a {@link StatementHandler},
-     *            and usually an {@link org.xml.sax.ErrorHandler}
-     * @param lang 
+     *            {@link SAX2RDF#setHandlersWith} to provide a
+     *            {@link StatementHandler}, and usually an
+     *            {@link org.xml.sax.ErrorHandler}
+     * @param lang
      *            The current value of <code>xml:lang</code> when parsing
      *            starts, usually "".
      * @return A new SAX2Model
-     * @throws SAXParseException On a fatal error during setup, maybe malformed base URI
+     * @throws SAXParseException
+     *             On a fatal error during setup, maybe malformed base URI
      */
     static public SAX2Model create(String base, Model m, String lang)
             throws SAXParseException {
-        return new SAX2Model(base, m, lang);
+        return new SAX2Model(base, m, lang, 0);
     }
 
     /**
-     * Factory method to create a new SAX2Model. This is particularly intended for
-     * when parsing a non-root element within an XML document. In which case the
-     * application needs to find this value in the outer context. Optionally,
-     * namespace prefixes can be passed from the outer context using
+     * Factory method to create a new SAX2Model. This is particularly intended
+     * for when parsing a non-root element within an XML document. In which case
+     * the application needs to find this value in the outer context.
+     * Optionally, namespace prefixes can be passed from the outer context using
      * {@link #startPrefixMapping}.
      * 
      * @param base
@@ -99,8 +100,9 @@ public class SAX2Model extends SAX2RDF {
      * @param m
      *            A Jena Model in which to put the triples, this can be null. If
      *            it is null, then use {@link SAX2RDF#getHandlers} or
-     *            {@link SAX2RDF#setHandlersWith} to provide a {@link StatementHandler},
-     *            and usually an {@link org.xml.sax.ErrorHandler}
+     *            {@link SAX2RDF#setHandlersWith} to provide a
+     *            {@link StatementHandler}, and usually an
+     *            {@link org.xml.sax.ErrorHandler}
      * @param lang
      *            The current value of <code>xml:lang</code> when parsing
      *            starts, usually "".
@@ -110,11 +112,8 @@ public class SAX2Model extends SAX2RDF {
      */
     static public SAX2Model newInstance(String base, Model m, String lang)
             throws MalformedURIException {
-        try {
-            return create(base, m, lang);
-        } catch (SAXParseException e) {
-            throw new MalformedURIException(e.getMessage());
-        }
+
+        return new SAX2Model(base, m, lang);
     }
 
     /**
@@ -122,8 +121,8 @@ public class SAX2Model extends SAX2RDF {
      * 
      * <p>
      * This is passed to any {@link NamespaceHandler} associated with this
-     * parser. It can be called before the initial <code>startElement</code> event,
-     * or other events associated with the elements being processed. When
+     * parser. It can be called before the initial <code>startElement</code>
+     * event, or other events associated with the elements being processed. When
      * building a Jena Model, it is not required to match this with
      * corresponding <code>endPrefixMapping</code> events. Other
      * {@link NamespaceHandler}s may be fussier. When building a Jena Model,
@@ -148,17 +147,42 @@ public class SAX2Model extends SAX2RDF {
 
     final private JenaHandler handler;
 
+    // TODO: deprecate, and make throw MalformedURIException
     /**
-     * Constructor, see {@link #create(String, Model, String)}
-     * for top-level javadoc.
+     * Constructor, see {@link #create(String, Model, String)} for top-level
+     * javadoc.
+     * 
      * @param base
      * @param m
      * @param lang
-     * @throws SAXParseException
+     * @throws MalformedURIException
+     *             (If base is malformed, and treated as error rather than
+     *             warning)
      */
     protected SAX2Model(String base, Model m, String lang)
+            throws MalformedURIException {
+        super(base, lang, true);
+        handler = new JenaHandler(m, errorHandler);
+        handler.useWith(getHandlers());
+        initParseX(base, lang);
+    }
+
+    protected SAX2Model(String base, Model m, String lang, int dummy)
             throws SAXParseException {
-        super(base, lang);
+        super(base, lang, true);
+        handler = new JenaHandler(m, errorHandler);
+        handler.useWith(getHandlers());
+        initParse(base, lang);
+    }
+
+    // TODO: not for 2.3: revisit constructors here. Error handlers need to be
+    // set before first error.
+
+    /**
+     * @deprecated
+     */
+    SAX2Model(String base, Model m, String lang, boolean dummy) {
+        super(base, lang, dummy);
         handler = new JenaHandler(m, errorHandler);
         handler.useWith(getHandlers());
     }
