@@ -89,6 +89,13 @@
         mf:result  <list-5.srx>
       ]
 
+      [  mf:name    "list membership 6" ;
+         mf:action
+            [ qt:query  <list-6.rq> ;
+              qt:graphData   <data-4.ttl> ] ;
+        mf:result  <list-6.srx>
+      ]
+
       [  mf:name    "list index 1" ;
          mf:action
             [ qt:query  <list-index-1.rq> ;
@@ -136,6 +143,30 @@
             [ qt:query  <container-3.rq> ;
               qt:data   <data-5.ttl> ] ;
         mf:result  <container-3.srx>
+      ]
+      [  mf:name    "container membership 4" ;
+         mf:action
+            [ qt:query  <container-4.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <container-4.srx>
+      ]
+      [  mf:name    "container membership 5" ;
+         mf:action
+            [ qt:query  <container-5.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <container-5.srx>
+      ]
+      [  mf:name    "container membership 5" ;
+         mf:action
+            [ qt:query  <container-5.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <container-5.srx>
+      ]
+      [  mf:name    "container membership 6" ;
+         mf:action
+            [ qt:query  <container-6.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <container-6.srx>
       ]
 
 

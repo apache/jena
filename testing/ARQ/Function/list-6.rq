@@ -1,0 +1,11 @@
+PREFIX  jfn:  <java:com.hp.hpl.jena.query.function.library.>
+PREFIX     :  <http://example.org/>
+
+SELECT ?x ?list
+{ 
+  GRAPH <data-4.ttl>
+  {
+    ?x :p ?list .
+    FILTER jfn:listMember(?list, 1)
+  }
+}
