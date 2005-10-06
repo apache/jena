@@ -1268,6 +1268,7 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple p
           or   prefix:localname		       // e.g. rdf:type
           or   ?<i>varname                    </i>// variable
           or   'a literal'                 // a plain string literal
+          or   'lex'^^typeURI              // a typed literal, xsd:* type names supported
           or   number                      // e.g. 42 or 25.5</pre>
 <p>The &quot;,&quot; separators are optional.</p>
 <p>The difference between the forward and backward rule syntax is only relevant 
@@ -1920,7 +1921,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.26 2005-07-29 08:08:23 der Exp $</i>
+  Last modification: $Id: index.html,v 1.27 2005-10-06 14:43:25 der Exp $</i>
 </p>
 </body>
 </html>
