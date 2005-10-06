@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-08 15:31:48 $
+ * Last modified on   $Date: 2005-10-06 14:58:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.23 2005-09-08 15:31:48 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.24 2005-10-06 14:58:11 ian_dickinson Exp $)
  */
 public class TestDigReasoner
     extends TestCase
@@ -797,6 +797,25 @@ public class TestDigReasoner
         assertTrue( !(ex0 || ex1) );
     }
 
+    public void test_bug_mo_3() {
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel model = ModelFactory.createOntologyModel( spec );
+        OntClass c0 = model.createClass( "ns:A" );
+        c0.addLabel( "this is just a test", "en" );
+        Model base = model.getBaseModel();
+
+        OntClass cls = model.getOntClass("ns:A");
+        System.out.println(cls.getLocalName());
+        for ( Iterator instances = cls.listInstances(); instances.hasNext(); ) {
+        Resource inst = (Resource) instances.next();
+//        System.out.println(" "+inst.getLabel("it"));
+        Property p = base.getProperty("http://www.w3.org/2000/01/rdf-schema#","label");
+        Statement s = inst.getProperty(p);
+        System.out.println(" "+s.getString());
+        }
+    }
 
     // for debuging the basic query tests one at a time
     public void xxtestBasicQueryN()
