@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.37 2005-10-06 13:14:39 der Exp $
+ * $Id: Rule.java,v 1.38 2005-10-06 14:51:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,6 +19,8 @@ import com.hp.hpl.jena.util.Tokenizer;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.*;
 
 import org.apache.commons.logging.Log;
@@ -60,7 +62,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.37 $ on $Date: 2005-10-06 13:14:39 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.38 $ on $Date: 2005-10-06 14:51:26 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -826,7 +828,17 @@ public class Rule implements ClauseEntry {
                 String lit = nextToken();
                 // Skip the trailing quote
                 nextToken();
-                return Node.createLiteral(lit, "", false);
+                // Check for an explicit datatype
+                if (peekToken().startsWith("^^")) {
+                    String dtURI = nextToken().substring(2);
+                    if (dtURI.startsWith("xsd:")) {
+                        dtURI = XSDDatatype.XSD + "#" + dtURI.substring(4);
+                    }
+                    RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
+                    return Node.createLiteral(lit, "", dt);
+                } else {
+                    return Node.createLiteral(lit, "", false);
+                }
             } else  if ( Character.isDigit(token.charAt(0)) || 
                          (token.charAt(0) == '-' && token.length() > 1 && Character.isDigit(token.charAt(1))) ) {
                 // A number literal
