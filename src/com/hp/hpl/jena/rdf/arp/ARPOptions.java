@@ -8,20 +8,37 @@ package com.hp.hpl.jena.rdf.arp;
 
 /**
  * The interface to set the various options on ARP.
- * User defined implementations of this interface are
- * not supported.
- * This is an abstract class rather than an interface
- * to have better backward compatibilitiy with earlier
- * versions.
+ *  User defined
+ * implementations of this interface are not supported. This is a class rather
+ * than an interface to have better backward compatibilitiy with earlier
+ * versions, however constructing instances of this class is deprecated.
+ * In addition, accessing the fields of {@link ARPErrorNumbers} through this
+ * class is not supported. The inheritance of this interface will be removed.
+ * 
  * @author Jeremy J. Carroll
  *
  */
 public class ARPOptions implements ARPErrorNumbers {
     
-/**
- * 
- *@deprecated
- */
+    /**
+     * Do not use this constructor.
+     * An example of not using this constructor is as follows.
+     * <br/>
+     * Deprecated usage:
+     * <br/>
+     * <pre>
+        ARP arp = new ARP();
+        ARPOptions options = new ARPOptions();
+     </pre>
+     <br/>
+     * Preferred code:
+     * <br/>
+     * <pre>
+        ARP arp = new ARP();
+        ARPOptions options = arp.getOptions();
+     </pre>
+     *@deprecated Use {@link ARPConfig#getOptions()}
+     */
     public ARPOptions() {
         
     }
@@ -179,10 +196,24 @@ public class ARPOptions implements ARPErrorNumbers {
         return old;
     }
 
+    /**
+     * Returns the error mode for the given error code.
+     * @param eCode
+     * @return One of {@link ARPErrorNumbers#EM_IGNORE},
+     * {@link ARPErrorNumbers#EM_WARNING},
+     * {@link ARPErrorNumbers#EM_ERROR},
+     * {@link ARPErrorNumbers#EM_FATAL}
+     */
     public int getErrorMode(int eCode) {
     		return errorMode[eCode];
     }
 
+    /**
+     * True if the embedding flag is set.
+     * Indicates that the parser should look for rdf:RDF
+     * element, rather than treat the whole file as an RDF/XML
+     * document (possibly without rdf:RDF element).
+     */
     public boolean getEmbedding() {
     	return embedding;
     }

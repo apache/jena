@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
  * The interface to set the various handlers on ARP. User defined
  * implementations of this interface are not supported. This is a class rather
  * than an interface to have better backward compatibilitiy with earlier
- * versions, however constucting instances of this class is deprecated.
+ * versions, however constructing instances of this class is deprecated.
  * 
  * @author Jeremy J. Carroll
  * 
