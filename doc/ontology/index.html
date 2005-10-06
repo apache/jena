@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
     <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
     <!--
-      CVS: $Id: index.html,v 1.18 2005-10-05 16:26:08 ian_dickinson Exp $
+      CVS: $Id: index.html,v 1.19 2005-10-06 14:12:44 ian_dickinson Exp $
      (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company LP
     -->
   </head>
@@ -206,16 +206,14 @@
     </p>
     <pre>
 &lt;rdfs:Class rdf:ID="DigitalCamera"&gt;
-&lt;/rdfs:Class&gt;
-    </pre>
+&lt;/rdfs:Class&gt;</pre>
     <p>
       This declares that the resource with the (relative) URI #DigitalCamera is an ontology class. It might be appropriate to model declaration in Java with an instance of an <code>OntClass</code>. Now suppose we augment the class declaration with some more information:
     </p>
     <pre>
 &lt;rdfs:Class rdf:ID="DigitalCamera"&gt;
   &lt;rdf:type owl:Restriction /&gt;
-&lt;/rdfs:Class&gt;
-    </pre>
+&lt;/rdfs:Class&gt;</pre>
     <p>
       Now we are saying that <code>#DigitalCamera</code> is an OWL Restriction (which is a subclass of rdfs:Class, so this is a perfectly consistent operation). The problem we have is that Java does not allow us to dynamically change the Java class of the object modeling this resource. The resource has not changed: it still has URI <code>#DigitalCamera</code>. But the appropriate Java class we might choose to model it has changed from <code>OntClass</code> to <code>Restriction</code>. Conversely, if we remove the <code>rdf:type Restriction</code> from the model, the use of a <code>Restriction</code> Java class is no longer appropriate.
     </p>
@@ -225,8 +223,7 @@
     <pre>
 &lt;rdfs:Class rdf:ID="DigitalCamera"&gt;
   &lt;rdf:type owl:ObjectProperty /&gt;
-&lt;/rdfs:Class&gt;
-    </pre>
+&lt;/rdfs:Class&gt;</pre>
     <p>
       That is, <code>#DigitalCamera</code> is now a class <em>and</em> a property. While this may not be a very useful operation, it illustrates a basic point that we cannot rely on a consistent or unique mapping between an RDF resource and the appropriate Java abstraction.
     </p>
@@ -236,8 +233,7 @@
     <pre>
 Resource r = myModel.getResource( myNS + "DigitalCamera" );
 OntClass cls = (OntClass) r.as( OntClass.class );
-Restriction rest = (Restriction) cls.as( Restriction.class );
-    </pre>
+Restriction rest = (Restriction) cls.as( Restriction.class );</pre>
     <p>
       This pattern allows us to defer until run-time decisions about the correct Java abstraction to use, and make this choice depend on the properties of the resource itself. If a given RDFNode will not support the conversion to a given facet, it will raise an exception. The rather clumsily named <code>canAs()</code> allows a programmer to test whether the <code>as()</code> conversion would work for a given resource.
     </p>
@@ -275,8 +271,15 @@ Restriction rest = (Restriction) cls.as( Restriction.class );
   through the Jena <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelFactory.html"><code>ModelFactory</code></a>.
   The simplest way to create an ontology model is as follows: </p>
     <pre>
-OntModel m = ModelFactory.createOntologyModel();
-    </pre>
+OntModel m = ModelFactory.createOntologyModel();</pre>
+<p>This will create an ontology model with the <em>default</em> settings. At the 
+present time, these defaults are: OWL language, in-memory storage, and RDFS
+inference (which principally means entailments from the sub-class and sub-property
+hierarchy). To create a model that performs no reasoning at all, developers 
+should specify a particular model spec, which is explained in more detail below.
+Put simply, an OWL model that performs no reasoning at all can be created with:</p>
+    <pre>
+OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );</pre>
     <p>
       Since the ontology model is customisable in a number of different ways, this version uses defaults for all of the various parameters. In particular, it uses OWL Full as the ontology language, selects a default reasoner, and assumes that all of the ontology data will be stored in-memory.
     </p>
@@ -351,11 +354,11 @@ OntModel m = ModelFactory.createOntologyModel();
   and OWL DL are not officially sanctioned by the WebOnt working group, so may
   change in future. </p>
     <p>
-      To create an ontology model for handling DAML ontologies, use:
+      To create an ontology model for handling DAML ontologies, use either of:
     </p>
     <pre>
-OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.DAML_LANG );
-    </pre>
+OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM );
+OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.DAML_LANG );</pre>
 
 <p> Beyond these simple choices, the complexity of configuring an ontology model
   is wrapped up in a recipe object called <code><a href="../javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html">OntModelSpec</a></code>.
@@ -365,20 +368,18 @@ OntModel m = ModelFactory.createOntologyModel( ProfileRegistry.DAML_LANG );
   pre-declared as constants in OntModelSpec. For example: </p>
     <pre>
 OntModelSpec.OWL_MEM
-OntModelSpec.OWL_MEM_RDFS_INF
-    </pre>
+OntModelSpec.OWL_MEM_MICRO_RULE_INF</pre>
 
 <p> The first of these is describes a model using the OWL Full profile, an in-memory
   storage model, and no reasoner. The second adds a rule-based reasoner that will
-  add the entailments from the source data using the semantic rules of RDFS only.
+  add the entailments from the source data using a subset of the semantic rules of OWL.
   This will include entailments from subclass and sub-property hierarchies, and
-  domain and range constraints, but not, for example, entailments from the disjoint-ness
-  of classes. For details of reasoner capabilities, see the <a href="../inference/index.html">inference
+  domain and range constraints. 
+  For details of reasoner capabilities, see the <a href="../inference/index.html">inference
   documentation</a> and the Javadoc for <a href="../javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html">OntModelSpec</a>,
   which contains a complete listing of pre-defined model specs and their reasoners.
-  Note that future versions of Jena2 are likely to have a more flexible means
-  of specifying the reasoner to use with a given ontology model, so this is one
-  area in which the current API is expected to change. </p>
+  See also further discussion <a href="#inferenceIntro">below</a>.
+  </p>
 
 <p> <b>Note:</b> it is the choice of reasoner, <b>not</b> the choice of language
   profile that determines which entailments are seen by the ontology model. Obviously,
@@ -388,19 +389,14 @@ OntModelSpec.OWL_MEM_RDFS_INF
 <p> To create a model with a given specification, invoke the <code>ModelFactory</code>
   as follows: </p>
     <pre>
-OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
-    </pre>
-    <p>
-      The significance of the second (null) parameter will be explained below.
-    </p>
+OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );</pre>
     <p>
       To create a custom model specification, we can create a new one from scratch and call the various methods to set the appropriate values. More often, we want only a variation on an existing recipe. In this case, we copy an existing specification and then update the copy as necessary:
     </p>
     <pre>
 OntModelSpec s = new OntModelSpec( OntModelSpec.OWL_MEM );
 s.setDocumentManager( myDocMgr );
-OntModel m = ModelFactory.createOntologyModel( s, null );
-    </pre>
+OntModel m = ModelFactory.createOntologyModel( s );</pre>
     <h2 id="documentHandling">
       Handling ontology documents and imports
     </h2>
@@ -419,8 +415,7 @@ read( Reader reader, String base )
 read( InputStream reader, String base )
 read( String url, String lang )
 read( Reader reader, String base, String Lang )
-read( InputStream reader, String base, String Lang )
-    </pre>
+read( InputStream reader, String base, String Lang )</pre>
     <p>
       Any of these methods can be used to load an ontology document. Note that it is suggested that the read variants that use <code>java.io.Reader</code> are avoided when loading XML documents containing internationalised character sets, since the handling of character encoding by the Reader, and the handling of character encoding by XML parsers is not compatible.
     </p>
@@ -431,8 +426,7 @@ read( InputStream reader, String base, String Lang )
 &lt;owl:Ontology rdf:about=""&gt;
   &lt;dc:creator rdf:value="Ian Dickinson" /&gt;
   &lt;owl:imports rdf:resource="http://jena.hpl.hp.com/example-ont" /&gt;
-&lt;/owl:Ontology&gt;
-    </pre>
+&lt;/owl:Ontology&gt;</pre>
     <p>
       The construct <code>rdf:about=""</code> is a relative URI that will resolve to the document's base URI: in other words it's a shorthand way of referring to self. The <code>owl:imports</code> line (an equivalent term exists for DAML) states that this ontology is constructed using terms (i.e. classes and properties) from the given ontology. In order to properly evaluate the terms in this ontology, we should have available the terms from the imported source.
     </p>
@@ -463,14 +457,26 @@ read( InputStream reader, String base, String Lang )
       The ontology document manager
     </h3>
     <p>
-      Each ontology model has an associated document manager that assists with the processing and handling of ontology documents. For convenience, there is one global document manager that is used by default by ontology models. This shared instance is accessible via <code>OntDocumentManager.getInstance()</code>. In many cases, it will be sufficient to simply change the settings on the global document manager to suit a given application's needs. However, for more fine-grain control, separate document managers may be constructed and passed to the ontology model when it is created through the model factory. This is achieved by creating (or adapting) an ontology specification object, and setting the document manager attribute, for example:
+      Each ontology model has an associated document manager that assists with 
+      the processing and handling of ontology documents. For convenience, 
+      there is one global document manager that is used by default by ontology 
+      models. This shared instance is accessible via 
+      <code>OntDocumentManager.getInstance()</code>. In many cases, 
+      it will be sufficient to simply change the settings on the global 
+      document manager to suit a given application's needs. However, for 
+      more fine-grain control, separate document managers may be constructed 
+      and passed to the ontology model when it is created through the model factory. 
+      This is achieved by creating (or adapting) an ontology specification object, 
+      and setting the document manager attribute, for example:
     </p>
     <pre>
-OntDocumentManager mgr = new OntDocumentManager();<br />// set the mgr's properties now ...
+OntDocumentManager mgr = new OntDocumentManager();
+// set the mgr's properties now
+ ... some code ...
+// now use it
 OntModelSpec s = new OntModelSpec( OntModelSpec.RDFS_MEM );
 s.setDocumentManager( mgr );
-OntModel m = ModelFactory.createOntologyModel( s, null );
-    </pre>
+OntModel m = ModelFactory.createOntologyModel( s );</pre>
     <p>
       Note that the model retains a reference to the document manager it was created with. Thus changing a document manager's properties will affect models that have previously been constructed with that document manager.
     </p>
@@ -487,9 +493,8 @@ OntModel m = ModelFactory.createOntologyModel( s, null );
 &lt;DocumentManagerPolicy&gt;
   &lt;!-- policy for controlling the document manager's behaviour --&gt;
   &lt;processImports rdf:datatype="&amp;xsd;boolean"&gt;true&lt;/processImports&gt;
-  &lt;cacheModels rdf:datatype="&amp;xsd;Boolean"&gt;true&lt;/cacheModels&gt;
-&lt;/DocumentManagerPolicy&gt;
-    </pre>
+  &lt;cacheModels rdf:datatype="&amp;xsd;boolean"&gt;true&lt;/cacheModels&gt;
+&lt;/DocumentManagerPolicy&gt;</pre>
     <p>
       The (simple) ontology that declares the various properties that can be used in such a policy is available in the vocabularies directory in the Jena download, see <code>ont-manager.rdf</code>.
     </p>
@@ -537,8 +542,7 @@ OntModel m = ModelFactory.createOntologyModel( s, null );
   &lt;altURL rdf:resource="file:vocabularies/rdf-schema.rdf" /&gt;
   &lt;language rdf:resource="http://www.w3.org/2000/01/rdf-schema" /&gt;
   &lt;prefix rdf:datatype="&amp;xsd;string"&gt;rdfs&lt;/prefix&gt;
-&lt;/OntologySpec&gt;
-    </pre>
+&lt;/OntologySpec&gt;</pre>
     <p>
       This specifies that an attempt to load the RDFS vocabulary from <code>http://www.w3.org/2000/01/rdf-schema</code> will transparently cause <code>file:vocabularies/rdf-schema.rdf</code> to be fetched instead. Any number of such re-directions may be specified in the policy file, or they can be added to the document manager object directly by calling the various 'add' methods (see the Javadoc for details). As a side-effect, this mechanism also means that ontologies can be named with any legal URI (not necessarily resolvable) - so long as the altURL is itself resolvable.
     </p>
@@ -563,7 +567,7 @@ OntModel m = ModelFactory.createOntologyModel( s, null );
       The final behaviour that the document manager provides to assist with loading ontology documents is a model cache. Suppose two ontologies, A and B both import ontology C. It would be nice not to have to read C twice when loading A and B. The document manager supports this use case by optionally caching C's model, indexed by C's URI. Then an attempt to import C from B, it previously having been loaded by A, would result in a significant time saving, and a reuse of the same model for C in both A and B.
     </p>
     <p>
-      To turn model caching on or off, use the policy property <code>cacheModels</code>, or call the method <code>setCacheModels(&nbsp;Boolean&nbsp;caching&nbsp;)</code>. The default is caching on. The document manager's current model cache can be cleared at any time by calling <code>clearCache()</code>.
+      To turn model caching on or off, use the policy property <code>cacheModels</code>, or call the method <code>setCacheModels(&nbsp;boolean&nbsp;caching&nbsp;)</code>. The default is caching on. The document manager's current model cache can be cleared at any time by calling <code>clearCache()</code>.
     </p>
     <h3>
       Example
@@ -577,8 +581,7 @@ OntModel m = ModelFactory.createOntologyModel();
 OntDocumentManager dm = m.getDocumentManager();
 dm.addAltEntry( "http://www.xfront.com/owl/ontologies/camera/",
                 "file:" + JENA + "examples/data/camera.owl"    );
-m.read( "http://www.xfront.com/owl/ontologies/camera/" );
-    </pre>
+m.read( "http://www.xfront.com/owl/ontologies/camera/" );</pre>
     <h2 id="ontResource">
       The generic ontology type: OntResource
     </h2>
@@ -803,8 +806,7 @@ m.read( "http://www.xfront.com/owl/ontologies/camera/" );
     </p>
     <pre>
 listRDFTypes()                 // assumes not-direct
-listRDFTypes( Boolean direct ) // if true, show only direct relationships
-    </pre>
+listRDFTypes( boolean direct ) // if true, show only direct relationships</pre>
     <p>
       Related methods allow the <code>rdf:type</code> to be tested, set and returned.
     </p>
@@ -822,26 +824,22 @@ listRDFTypes( Boolean direct ) // if true, show only direct relationships
     <pre>
 String camNS = "http://www.xfront.com/owl/ontologies/camera/#";
 Resource r = m.getResource( camNS + "Camera" );
-OntClass camera = (OntClass) r.as( OntClass.class );
-    </pre>
+OntClass camera = (OntClass) r.as( OntClass.class );</pre>
 
 <p> This can be shortened by calling <code>getOntClass()</code> on the ontology
   model: </p>
     <pre>
-OntClass camera = m.getOntClass( camNS + "Camera" );
-    </pre>
+OntClass camera = m.getOntClass( camNS + "Camera" );</pre>
     <p>
       The <code>getOntClass</code> method will lookup the resource with the given URI, and attempt to obtain the OntClass facet. If either of these operations fail, it will return null. Alternatively, the <code>createClass</code> method will reuse an existing resource, or create a new class resource if one does not exist:
     </p>
     <pre>
-OntClass pinCamera = m.createClass( camNS + "PinholeCamera" );
-    </pre>
+OntClass pinCamera = m.createClass( camNS + "PinholeCamera" );</pre>
     <p>
       The create class method can also be used to create an anonymous class - a class description with no associated URI. Anonymous classes are often used when building complex ontologies in OWL or DAML. They are less useful in RDFS.
     </p>
     <pre>
-OntClass anonClass = m.createClass();
-    </pre>
+OntClass anonClass = m.createClass();</pre>
     <p>
       Once we have the ontology class object, we can begin processing it through the methods defined on <code>OntClass</code>. The attributes of a class are handled in a similar way to the attributes of OntResource, above, with a collection of methods to set, add, get, test, list and remove values. Class properties that are handled in this way are:
     </p>
@@ -911,8 +909,7 @@ OntClass camera = m.getOntClass( camNS + "Camera" );
 for (Iterator i = camera.listSubClasses(); i.hasNext(); ) {
   OntClass c = (OntClass) i.next();
   System.out.print( c.getLocalName() + " " );
-}
-    </pre>
+}</pre>
     <p>
       The result from this code, incidentally, is <code>Large-Format Digital Camera</code> (the order may vary on different systems). Some readers may be surprised to see Camera appearing as its own subclass This is an entailment of RDFS, which states that all classes are subclasses of themselves. While this is a correct entailment, it is not useful information in many contexts. Future versions of Jena will contain means of selectively ignoring such correct but unhelpful entailments.
     </p>
@@ -1226,8 +1223,7 @@ AllValuesFromRestriction rst = m.createAllValuesFromRestriction( null, p, c );</
 &lt;owl:Restriction&gt;
   &lt;owl:onProperty rdf:resource="#p"/&gt;
   &lt;owl:allValuesFrom rdf:resource="#C"/&gt;
-&lt;/owl:Restriction&gt;
-    </pre>
+&lt;/owl:Restriction&gt;</pre>
     <p>
       Once we have a particular restriction object, there are methods following the standard add, get, set and test pattern to access the components of the declaration. For example, in the camera ontology, we find this definition of a class describing Large-Format cameras:
     </p>
@@ -1240,8 +1236,7 @@ AllValuesFromRestriction rst = m.createAllValuesFromRestriction( null, p, c );</
       &lt;owl:allValuesFrom rdf:resource="#BodyWithNonAdjustableShutterSpeed"/&gt;
    &lt;/owl:Restriction&gt;
   &lt;/rdfs:subClassOf&gt;
-&lt;/owl:Class&gt;
-    </pre>
+&lt;/owl:Class&gt;</pre>
     <p>
       The following code shows one way to access the components of the all values from restriction. Assume m contains the camera ontology, read in as above.
     </p>
@@ -1277,8 +1272,7 @@ for (Iterator i = LargeFormat.listSuperClasses( true ); i.hasNext(); ) {
 &lt;p rdf:parseType="collection"&gt;
   &lt;A /&gt;
   &lt;B /&gt;
-&lt;/p&gt;
-    </pre>
+&lt;/p&gt;</pre>
     <p>
       According to the RDF syntax specification, this list of two elements has the following expansion in the underlying RDF graph:
     </p>
@@ -1289,8 +1283,7 @@ for (Iterator i = LargeFormat.listSuperClasses( true ); i.hasNext(); ) {
     &lt;rdf:first&gt;&lt;B /&gt;&lt;/rdf:first&gt;
     &lt;rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/&gt;
   &lt;/rdf:rest&gt;
-&lt;/p&gt;
-    </pre>
+&lt;/p&gt;</pre>
     <p>
       This structure will be familiar to anyone who has used list-valued languages, include Lisp, Prolog and SML. Following the original terminology from Lisp, it is often referred-to as a <em>cons-cell</em> list construction. Given this construction, a well formed list (one with exactly one <code>rdf:first</code> and <code>rdf:rest</code> per cons cell) has a precisely determined set of members.
     </p>
@@ -1318,8 +1311,7 @@ OntModel m = ModelFactory.createOntModel();
 RDFList Cs = m.createList(); // Cs is empty
 Cs = cs.cons( m.createClass( Ns + "c0" ) );
 Cs = cs.cons( m.createClass( Ns + "c1" ) );
-Cs = cs.cons( m.createClass( Ns + "c2" ) );
-    </pre>
+Cs = cs.cons( m.createClass( Ns + "c2" ) );</pre>
     <p>
       Note that these two approaches end with the classes in the lists in opposite orders, since the <code>cons</code> operation adds a new list cell to the front of the list. Thus the second list will run c2 to c0. In the ontology operations we are discussing here, the order of values in the list is not considered significant.
     </p>
@@ -1330,8 +1322,7 @@ Cs = cs.cons( m.createClass( Ns + "c2" ) );
 System.out.println( "List has " + myRDFList.size() + " members:"    );
 for (Iterator i = myRDFList.iterator(); i.hasNext(); ) {
   System.out.println( i.next() );
-}
-    </pre>
+}</pre>
     <h3>
       Intersection, union and complement class expressions
     </h3>
@@ -1347,8 +1338,7 @@ for (Iterator i = myRDFList.iterator(); i.hasNext(); ) {
       &lt;owl:hasValue rdf:resource="#ThroughTheLens"/&gt;
     &lt;/owl:Restriction&gt;
   &lt;/owl:intersectionOf&gt;
-&lt;/owl:Class&gt;
-    </pre>
+&lt;/owl:Class&gt;</pre>
     <p>
       and here is code to reproduce this example from scratch:
     </p>
@@ -1369,8 +1359,7 @@ OntClass Camera = m.createClass( camNS + "Camera" );
 
 // finally create the intersection class to define SLR
 IntersectionClass SLR = m.createIntersectionClass( camNS + "SLR",
-                      m.createList( new RDFNode[] {viewThroughLens, Camera} ) );
-    </pre>
+                      m.createList( new RDFNode[] {viewThroughLens, Camera} ) );</pre>
 
 <p> Given the commonality between union and intersection class expressions, rather
   than separate methods to set the components of the expression, we have defined
@@ -1408,8 +1397,7 @@ IntersectionClass SLR = m.createIntersectionClass( camNS + "SLR",
     &lt;camera:Window rdf:about="#ThroughTheLens"/&gt;
     &lt;camera:Window rdf:about="#WindowOnTopOfCamera"/&gt;
   &lt;/owl:oneOf&gt;
-&lt;/owl:Class&gt;
-    </pre>
+&lt;/owl:Class&gt;</pre>
     <p>
       To list the contents of this enumeration, we could do the following:
     </p>
@@ -1418,8 +1406,7 @@ EnumeratedClass Viewer = m.getEnumeratedClass( camNS + "Viewer" );
 for (Iterator i = Viewer.getOneOf().iterator(); i.hasNext(); ) {
   Resource r = (Resource) i.next();
   System.out.println( "- " + r.getLocalName() );
-}
-    </pre>
+}</pre>
     <h3>
       Listing classes
     </h3>
@@ -1434,8 +1421,7 @@ public ExtendedIterator listUnionClasses();
 public ExtendedIterator listComplementClasses();
 public ExtendedIterator listIntersectionClasses();
 public ExtendedIterator listNamedClasses();
-public ExtendedIterator listRestrictions();
-    </pre>
+public ExtendedIterator listRestrictions();</pre>
     <p>
       Note that, particularly when the underlying store is a database, it is important to close the iterator, so that any state (e.g. the database connection resources) can be released. Closing happens automatically when the <code>hasNext()</code> method on the iterator returns false. If the client code does not iterate all the way to the end of the iterator, the <code>close()</code> method should be called explicitly. Note also that the values returned by these iterators will depend on the asserted data and the reasoner being used. For example, if the model contains a Restriction, that restriction will only be returned by the listClasses() iterator if the model is bound to a reasoner that can infer that, since <code>Restriction</code> is a subClassOf <code>Class</code>, any restriction must also be a class. This difference can be exploited by the programmer: to list classes and restrictions separately, perform the <code>listClasses()</code> and <code>listRestictions()</code> methods on the base model only, or on a model with no reasoner attached.
     </p>
@@ -1456,8 +1442,7 @@ public ExtendedIterator listRestrictions();
     </p>
     <pre>
 OntClass c = m.createClass( Ns + "C" );
-Individual inst = m.createIndividual( Ns + "foo", c );
-    </pre>
+Individual inst = m.createIndividual( Ns + "foo", c );</pre>
     <p>
       In the above example, the individual is named, but this is not necessary. The method <code>createIndividual(&nbsp;Resource cls&nbsp;)</code> creates an anonymous individual belonging to the given class. Note that the type of the class parameter is only <code>Resource</code>. It is not required to use <code>As()</code> to morph a <code>Resource</code> to an <code>OntClass</code> before calling this method, though of course an <code>OntClass</code> is a <code>Resource</code> so using an <code>OntClass</code> will work perfectly well. This design choice was taken to allow programmers flexibility in not having to pre-convert a class resource to an appropriate type. However, the cost of this flexibility is that it is the responsibility of the programmer to make sure that the resource passed as a class is a sensible value.
     </p>
@@ -1668,7 +1653,10 @@ for <code>daml:imports</code> in DAML ont models.</p>
         rules for the language specified in the xxx part of the name. This is
         most complete for OWL (though restricted to a subset of OWL close to OWL-lite).
         A small DAML ruleset is also defined that has a capability similar to
-        that of the Jena 1 DAML API, but with improved performance and robustness.</div>
+        that of the Jena 1 DAML API, but with improved performance and robustness.
+        A recommended reasoner for OWL is the MICRO_RULE_INF setting, which
+        is a reasoner that attempts to make a useful trade-off between semantic
+        completeness and computational efficiency.</div>
     </td>
   </tr>
   <tr>
@@ -1783,8 +1771,7 @@ plain.write( System.err, &quot;RDF/XML-ABBREV&quot; );</pre>
   ontology URI as the database name. We then take the resulting persistent model,
   and use it as the base model when constructing an ontology model:</p>
 <pre>Model base = getMaker().createModel( "http://example.org/Customers" );
-OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF, base );
-</pre>
+OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF, base );</pre>
 <p></p>
 <p>Here we assume that the <code>getMaker()</code> method returns a suitably initialized<code>ModelMaker</code>
   that will open the connection to the database. This step only creates a persistent
