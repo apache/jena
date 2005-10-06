@@ -5,13 +5,13 @@
  * Author email       ian.dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            25-Jul-2003
- * Filename           $RCSfile: PersistentOntology.java,v $
+ * Created            22-Aug-2003
+ * Filename           $RCSfile: Main.java,v $
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-23 22:53:35 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-10-06 17:49:06 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -19,32 +19,29 @@
 
 // Package
 ///////////////
-package jena.examples.ontology.persistentOntology;
+package jena.examples.ontology.describeClass;
 
 
 // Imports
 ///////////////
-import java.util.*;
+import java.util.Iterator;
 
-import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 
 /**
  * <p>
- * Simple example of using the persistent db layer with ontology models.  Assumes
- * that a PostgreSQL database called 'jenatest' has been set up, for a user named ijd.
+ * Execution wrapper for describe-class example
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PersistentOntology.java,v 1.1 2005-06-23 22:53:35 ian_dickinson Exp $
+ * @version CVS $Id: Main.java,v 1.1 2005-10-06 17:49:06 andy_seaborne Exp $
  */
-public class PersistentOntology {
+public class Main {
     // Constants
     //////////////////////////////////
-
 
     // Static variables
     //////////////////////////////////
@@ -58,64 +55,39 @@ public class PersistentOntology {
     // External signature methods
     //////////////////////////////////
 
-    public void loadDB( ModelMaker maker, String source ) {
-        // use the model maker to get the base model as a persistent model
-        // strict=false, so we get an existing model by that name if it exists
-        // or create a new one
-        Model base = maker.createModel( source, false );
+    public static void main( String[] args ) {
+        // read the argument file, or the default
+        String source = (args.length == 0) ? "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine" : args[0];
 
-        // now we plug that base model into an ontology model that also uses
-        // the given model maker to create storage for imported models
-        OntModel m = ModelFactory.createOntologyModel( getModelSpec( maker ), base );
+        // guess if we're using a daml source
+        boolean isDAML = source.endsWith( ".daml" );
 
-        // now load the source document, which will also load any imports
+        OntModel m = ModelFactory.createOntologyModel(
+                        isDAML ? OntModelSpec.DAML_MEM : OntModelSpec.OWL_MEM, null
+                     );
+
+        // we have a local copy of the wine ontology
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine",
+                                            "file:./testing/reasoners/bugs/wine.owl" );
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food",
+                                            "file:./testing/reasoners/bugs/food.owl" );
+
+        // read the source document
         m.read( source );
-    }
 
-    public void listClasses( ModelMaker maker, String modelID ) {
-        // use the model maker to get the base model as a persistent model
-        // strict=false, so we get an existing model by that name if it exists
-        // or create a new one
-        Model base = maker.createModel( modelID, false );
+        DescribeClass dc = new DescribeClass();
 
-        // create an ontology model using the persistent model as base
-        OntModel m = ModelFactory.createOntologyModel( getModelSpec( maker ), base );
-
-        for (Iterator i = m.listClasses(); i.hasNext(); ) {
-            OntClass c = (OntClass) i.next();
-            System.out.println( "Class " + c.getURI() );
+        if (args.length >= 2) {
+            // we have a named class to describe
+            OntClass c = m.getOntClass( args[1] );
+            dc.describeClass( System.out, c );
         }
-    }
-
-
-    public ModelMaker getRDBMaker( String dbURL, String dbUser, String dbPw, String dbType, boolean cleanDB ) {
-        try {
-            // Create database connection
-            IDBConnection conn  = new DBConnection( dbURL, dbUser, dbPw, dbType );
-
-            // do we need to clean the database?
-            if (cleanDB) {
-                conn.cleanDB();
+        else {
+            for (Iterator i = m.listClasses();  i.hasNext(); ) {
+                // now list the classes
+                dc.describeClass( System.out, (OntClass) i.next() );
             }
-
-            // Create a model maker object
-            return ModelFactory.createModelRDBMaker( conn );
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.exit( 1 );
-        }
-
-        return null;
-    }
-
-    public OntModelSpec getModelSpec( ModelMaker maker ) {
-        // create a spec for the new ont model that will use no inference over models
-        // made by the given maker (which is where we get the persistent models from)
-        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM );
-        spec.setImportModelMaker( maker );
-
-        return spec;
     }
 
 

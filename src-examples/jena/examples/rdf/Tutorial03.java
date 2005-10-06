@@ -2,57 +2,60 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial08.java,v 1.1 2005-03-12 13:52:28 andy_seaborne Exp $
+ * $Id: Tutorial03.java,v 1.3 2005-10-06 17:49:05 andy_seaborne Exp $
  */
 package jena.examples.rdf ;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
-import java.io.*;
 
-
-/** Tutorial 8 - demonstrate Selector methods
+/** Tutorial 3 Statement attribute accessor methods
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2005-03-12 13:52:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
  */
-public class Tutorial08 extends Object {
-    
-    static final String inputFileName = "vc-db-1.rdf";
-    
+public class Tutorial03 extends Object {
     public static void main (String args[]) {
+    
+        // some definitions
+        String personURI    = "http://somewhere/JohnSmith";
+        String givenName    = "John";
+        String familyName   = "Smith";
+        String fullName     = givenName + " " + familyName;
         // create an empty model
         Model model = ModelFactory.createDefaultModel();
-       
-        // use the FileManager to find the input file
-        InputStream in = FileManager.get().open(inputFileName);
-        if (in == null) {
-            throw new IllegalArgumentException( "File: " + inputFileName + " not found");
-        }
+
+        // create the resource
+        //   and add the properties cascading style
+        Resource johnSmith 
+          = model.createResource(personURI)
+                 .addProperty(VCARD.FN, fullName)
+                 .addProperty(VCARD.N, 
+                              model.createResource()
+                                   .addProperty(VCARD.Given, givenName)
+                                   .addProperty(VCARD.Family, familyName));
         
-        // read the RDF/XML file
-        model.read( in, "" );
+        // list the statements in the graph
+        StmtIterator iter = model.listStatements();
         
-        // select all the resources with a VCARD.FN property
-        // whose value ends with "Smith"
-        StmtIterator iter = model.listStatements(
-            new 
-                SimpleSelector(null, VCARD.FN, (RDFNode) null) {
-                    public boolean selects(Statement s) {
-                            return s.getString().endsWith("Smith");
-                    }
-                });
-        if (iter.hasNext()) {
-            System.out.println("The database contains vcards for:");
-            while (iter.hasNext()) {
-                System.out.println("  " + iter.nextStatement()
-                                              .getString());
+        // print out the predicate, subject and object of each statement
+        while (iter.hasNext()) {
+            Statement stmt      = iter.nextStatement();         // get next statement
+            Resource  subject   = stmt.getSubject();   // get the subject
+            Property  predicate = stmt.getPredicate(); // get the predicate
+            RDFNode   object    = stmt.getObject();    // get the object
+            
+            System.out.print(subject.toString());
+            System.out.print(" " + predicate.toString() + " ");
+            if (object instanceof Resource) {
+                System.out.print(object.toString());
+            } else {
+                // object is a literal
+                System.out.print(" \"" + object.toString() + "\"");
             }
-        } else {
-            System.out.println("No Smith's were found in the database");
-        }            
+            System.out.println(" .");
+        }
     }
 }
 

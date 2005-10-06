@@ -10,8 +10,8 @@
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-23 22:53:36 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-10-06 17:49:06 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DescribeClass.java,v 1.1 2005-06-23 22:53:36 ian_dickinson Exp $
+ * @version CVS $Id: DescribeClass.java,v 1.1 2005-10-06 17:49:06 andy_seaborne Exp $
  */
 public class DescribeClass {
     // Constants

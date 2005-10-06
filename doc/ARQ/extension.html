@@ -29,21 +29,41 @@ FILTER expressions.&nbsp; ARQ provides a function library and supports
 application-provided functions.&nbsp; There is a mechanism for dynamically 
 loading. </p>
 <h3>Function Library</h3>
+<p><b>RDF Graph Functions</b></p>
+
+<!-- FF interprets table width after the <div>, IE before -->
 
 <div style="margin-left: 5%; margin-right: 5%;">
-<table border="1" cellpadding="0" cellspacing="1" style="border-style:solid; border-collapse: collapse">
+<table width="90%" border="1" cellpadding="0" cellspacing="1" style="border-style:solid; border-collapse: collapse">
   <tr>
     <th width="40%" style="text-align: left" bgcolor="#C0C0C0">Function name</th>
     <th width="60%" bgcolor="#C0C0C0">Description</th>
   </tr>
   <tr>
-    <td style="text-align: left"><code>jfn:now()</code></td>
-    <td style="text-align: left">Current time.&nbsp; Actually, the fixed time 
-    the query started.</td>
+    <td style="text-align: left"><code>jfn:listMember(<i>list</i>, <i>resource</i>)</code></td>
+    <td style="text-align: left">Test whether a resource is a member of an RDF 
+    collection (AKA list)</td>
   </tr>
   <tr>
-    <td style="text-align: left"><code>jfn:sha1sum(<i>resource</i>)</code></td>
-    <td style="text-align: left">Calculate the SHA1 checksum of a literals or URI.</td>
+    <td style="text-align: left"><code>jfn:listIndex(<i>list</i>, <i>resource</i>)</code></td>
+    <td style="text-align: left">Return the index of the resource in the RDF 
+    collection. Cause an evaluation exception if not a member (and so the 
+    expression will not pass the filter unless inside a value disjunction).</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:bagMember(<i>bag</i>, <i>resource</i>)</code></td>
+    <td style="text-align: left">Test whether a resource is a member of an RDF 
+    bag</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:seqMember(<i>bag</i>, <i>resource</i>)</code></td>
+    <td style="text-align: left">Test whether a resource is a member of an RDF 
+    seq</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:altMember(<i>bag</i>, <i>resource</i>)</code></td>
+    <td style="text-align: left">Test whether a resource is a member of an RDF 
+    alt</td>
   </tr>
   <tr>
     <td style="text-align: left"><code>jfn:langeq(<i>literal</i>, <i>lang</i>)</code></td>
@@ -55,6 +75,16 @@ loading. </p>
     <td style="text-align: left"><code>jfn:bnode(?x)</code></td>
     <td style="text-align: left">Return the blank node label if ?x is a blank 
     node.</td>
+  </tr>
+  </table>
+</div>
+
+<p><b>Mathematical Functions</b></p>
+<div style="margin-left: 5%; margin-right: 5%;">
+<table width="90%" border="1" cellpadding="0" cellspacing="1" style="border-style:solid; border-collapse: collapse">
+  <tr>
+    <th width="40%" style="text-align: left" bgcolor="#C0C0C0">Function name</th>
+    <th width="60%" bgcolor="#C0C0C0">Description</th>
   </tr>
   <tr>
     <td style="text-align: left"><code>jfn:min(num1, num2)</code></td>
@@ -83,6 +113,27 @@ loading. </p>
     <td style="text-align: left">Return the smallest integer value than the argument (as a double).</td>
   </tr>
 </table>
+  
+</div>
+
+<p><b>Miscellaneous Functions</b></p>
+
+<div style="margin-left: 5%; margin-right: 5%;">
+<table width="90%" border="1" cellpadding="0" cellspacing="1" style="border-style:solid; border-collapse: collapse">
+  <tr>
+    <th width="40%" style="text-align: left" bgcolor="#C0C0C0">Function name</th>
+    <th width="60%" bgcolor="#C0C0C0">Description</th>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:now()</code></td>
+    <td style="text-align: left">Current time.&nbsp; Actually, the time 
+    the query started.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left"><code>jfn:sha1sum(<i>resource</i>)</code></td>
+    <td style="text-align: left">Calculate the SHA1 checksum of a literals or URI.</td>
+  </tr>
+  </table>
   
 </div>
 

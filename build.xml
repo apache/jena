@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.101 2005-10-04 12:48:30 chris-dollin Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.102 2005-10-06 17:49:06 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -25,6 +25,7 @@
 
   <!-- Source code locations -->
   <property name="src.dir"         value="src"/>
+  <property name="src.examples.dir"  value="src-examples"/>   
   <property name="bldsrc.dir"      value="bldsrc"/>
   <property name="classes.dir"     value="bldbin"/>
   <property name="dist.root"       value="dist"/>
@@ -313,6 +314,9 @@
     </copy>
     <!-- Source - we could zip this up -->
     <copy todir="${dist.dir}/${src.dir}">
+      <fileset dir="${bldsrc.dir}" includes="**"/>
+    </copy>
+    <copy todir="${dist.dir}/${src.examples.dir}">
       <fileset dir="${bldsrc.dir}" includes="**"/>
     </copy>
     <!-- Misc files -->

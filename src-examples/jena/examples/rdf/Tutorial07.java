@@ -2,44 +2,50 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial05.java,v 1.1 2005-03-12 13:52:28 andy_seaborne Exp $
+ * $Id: Tutorial07.java,v 1.3 2005-10-06 17:49:05 andy_seaborne Exp $
  */
 package jena.examples.rdf ;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.vocabulary.*;
 
 import java.io.*;
 
-/** Tutorial 5 - read RDF XML from a file and write it to standard out
+/** Tutorial 7 - selecting the VCARD resources
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2005-03-12 13:52:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
  */
-public class Tutorial05 extends Object {
-
-    /**
-        NOTE that the file is loaded from the class-path and so requires that
-        the data-directory, as well as the directory containing the compiled
-        class, must be added to the class-path when running this and
-        subsequent examples.
-    */    
-    static final String inputFileName  = "vc-db-1.rdf";
-                              
+public class Tutorial07 extends Object {
+    
+    static final String inputFileName = "vc-db-1.rdf";
+    
     public static void main (String args[]) {
         // create an empty model
         Model model = ModelFactory.createDefaultModel();
-
-        InputStream in = FileManager.get().open( inputFileName );
+       
+        // use the FileManager to find the input file
+        InputStream in = FileManager.get().open(inputFileName);
         if (in == null) {
             throw new IllegalArgumentException( "File: " + inputFileName + " not found");
         }
         
         // read the RDF/XML file
-        model.read(new InputStreamReader(in), "");
-                    
-        // write it to standard out
-        model.write(System.out);            
+        model.read( in, "");
+        
+        // select all the resources with a VCARD.FN property
+        ResIterator iter = model.listSubjectsWithProperty(VCARD.FN);
+        if (iter.hasNext()) {
+            System.out.println("The database contains vcards for:");
+            while (iter.hasNext()) {
+                System.out.println("  " + iter.nextResource()
+                                              .getRequiredProperty(VCARD.FN)
+                                              .getString() );
+            }
+        } else {
+            System.out.println("No vcards were found in the database");
+        }            
     }
 }
 

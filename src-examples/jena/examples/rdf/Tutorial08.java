@@ -2,51 +2,58 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial11.java,v 1.1 2005-03-12 13:52:28 andy_seaborne Exp $
+ * $Id: Tutorial08.java,v 1.3 2005-10-06 17:49:05 andy_seaborne Exp $
  */
 package jena.examples.rdf ;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
-import java.io.PrintWriter;
+import java.io.*;
 
-/** Tutorial 11 - more on literals
+
+/** Tutorial 8 - demonstrate Selector methods
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2005-03-12 13:52:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
  */
-public class Tutorial11 extends Object {
+public class Tutorial08 extends Object {
     
-      public static void main (String args[]) {
-        // create an empty graph
+    static final String inputFileName = "vc-db-1.rdf";
+    
+    public static void main (String args[]) {
+        // create an empty model
         Model model = ModelFactory.createDefaultModel();
-
-       // create the resource
-       Resource r = model.createResource();                                     
-
-      // add the property
-      r.addProperty(RDFS.label, model.createLiteral("chat", "en"))
-       .addProperty(RDFS.label, model.createLiteral("chat", "fr"))
-       .addProperty(RDFS.label, model.createLiteral("<em>chat</em>", true));
-      
-      // write out the graph
-      model.write(new PrintWriter(System.out));
-      System.out.println();
-      
-      // create an empty graph
-      model = ModelFactory.createDefaultModel();
-
-       // create the resource
-       r = model.createResource();                                     
-
-      // add the property
-      r.addProperty(RDFS.label, "11")
-       .addProperty(RDFS.label, 11);
-      
-      // write out the graph
-      model.write( System.out, "N-TRIPLE");
-      }
+       
+        // use the FileManager to find the input file
+        InputStream in = FileManager.get().open(inputFileName);
+        if (in == null) {
+            throw new IllegalArgumentException( "File: " + inputFileName + " not found");
+        }
+        
+        // read the RDF/XML file
+        model.read( in, "" );
+        
+        // select all the resources with a VCARD.FN property
+        // whose value ends with "Smith"
+        StmtIterator iter = model.listStatements(
+            new 
+                SimpleSelector(null, VCARD.FN, (RDFNode) null) {
+                    public boolean selects(Statement s) {
+                            return s.getString().endsWith("Smith");
+                    }
+                });
+        if (iter.hasNext()) {
+            System.out.println("The database contains vcards for:");
+            while (iter.hasNext()) {
+                System.out.println("  " + iter.nextStatement()
+                                              .getString());
+            }
+        } else {
+            System.out.println("No Smith's were found in the database");
+        }            
+    }
 }
 
 /*

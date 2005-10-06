@@ -2,31 +2,51 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial01.java,v 1.1 2005-03-12 13:52:28 andy_seaborne Exp $
+ * $Id: Tutorial09.java,v 1.3 2005-10-06 17:49:05 andy_seaborne Exp $
  */
 package jena.examples.rdf ;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.util.FileManager;
 
-/** Tutorial 1 creating a simple model
+import java.io.*;
+
+/** Tutorial 9 - demonstrate graph operations
+ *
+ * @author  bwm - updated by kers/Daniel
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
  */
-
-public class Tutorial01 extends Object {
-    // some definitions
-    static String personURI    = "http://somewhere/JohnSmith";
-    static String fullName     = "John Smith";
+public class Tutorial09 extends Object {
     
-      public static void main (String args[]) {
+    static final String inputFileName1 = "vc-db-3.rdf";    
+    static final String inputFileName2 = "vc-db-4.rdf";
+    
+    public static void main (String args[]) {
         // create an empty model
-        Model model = ModelFactory.createDefaultModel();
-
-       // create the resource
-       Resource johnSmith = model.createResource(personURI);
-
-      // add the property
-      johnSmith.addProperty(VCARD.FN, fullName);
-      }
+        Model model1 = ModelFactory.createDefaultModel();
+        Model model2 = ModelFactory.createDefaultModel();
+       
+        // use the class loader to find the input file
+        InputStream in1 = FileManager.get().open(inputFileName1);
+        if (in1 == null) {
+            throw new IllegalArgumentException( "File: " + inputFileName1 + " not found");
+        }
+        InputStream in2 = FileManager.get().open(inputFileName2);
+        if (in2 == null) {
+            throw new IllegalArgumentException( "File: " + inputFileName2 + " not found");
+        }
+        
+        // read the RDF/XML files
+        model1.read( in1, "" );
+        model2.read( in2, "" );
+        
+        // merge the graphs
+        Model model = model1.union(model2);
+        
+        // print the graph as RDF/XML
+        model.write(System.out, "RDF/XML-ABBREV");
+        System.out.println();
+    }
 }
 
 /*

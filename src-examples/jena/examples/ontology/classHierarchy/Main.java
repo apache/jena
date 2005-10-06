@@ -10,8 +10,8 @@
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-23 22:53:36 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-10-06 17:49:07 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -19,25 +19,23 @@
 
 // Package
 ///////////////
-package jena.examples.ontology.describeClass;
+package jena.examples.ontology.classHierarchy;
 
 
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 
 /**
  * <p>
- * Execution wrapper for describe-class example
+ * Execution wrapper for class hierarchy example
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Main.java,v 1.1 2005-06-23 22:53:36 ian_dickinson Exp $
+ * @version CVS $Id: Main.java,v 1.1 2005-10-06 17:49:07 andy_seaborne Exp $
  */
 public class Main {
     // Constants
@@ -56,38 +54,17 @@ public class Main {
     //////////////////////////////////
 
     public static void main( String[] args ) {
-        // read the argument file, or the default
-        String source = (args.length == 0) ? "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine" : args[0];
-
-        // guess if we're using a daml source
-        boolean isDAML = source.endsWith( ".daml" );
-
-        OntModel m = ModelFactory.createOntologyModel(
-                        isDAML ? OntModelSpec.DAML_MEM : OntModelSpec.OWL_MEM, null
-                     );
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
 
         // we have a local copy of the wine ontology
-        m.getDocumentManager().addAltEntry( "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine",
-                                            "file:./testing/reasoners/bugs/wine.owl" );
-        m.getDocumentManager().addAltEntry( "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food",
-                                            "file:./testing/reasoners/bugs/food.owl" );
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine",
+                                            "file:testing/reasoners/bugs/wine.owl" );
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/food",
+                                            "file:testing/reasoners/bugs/food.owl" );
 
-        // read the source document
-        m.read( source );
+        m.read( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine" );
 
-        DescribeClass dc = new DescribeClass();
-
-        if (args.length >= 2) {
-            // we have a named class to describe
-            OntClass c = m.getOntClass( args[1] );
-            dc.describeClass( System.out, c );
-        }
-        else {
-            for (Iterator i = m.listClasses();  i.hasNext(); ) {
-                // now list the classes
-                dc.describeClass( System.out, (OntClass) i.next() );
-            }
-        }
+        new ClassHierarchy().showHierarchy( System.out, m );
     }
 
 
