@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
+
 /**
  * The interface to set the various options on ARP.
  * User defined implementations of this interface are
@@ -15,7 +16,23 @@ package com.hp.hpl.jena.rdf.arp;
  * @author Jeremy J. Carroll
  *
  */
-abstract public class ARPOptions {
+public class ARPOptions implements ARPErrorNumbers {
+    
+/**
+ * 
+ *@deprecated
+ */
+    public ARPOptions() {
+        
+    }
+    private static int defaultErrorMode[] = new int[400];
+    static {
+        for (int i = 0; i < defaultErrorMode.length; i++)
+            defaultErrorMode[i] = i / 100;
+        
+    }
+    private boolean embedding = false;
+    private int errorMode[] = (int[]) defaultErrorMode.clone();
 
     /** Sets or gets the error handling mode for a specific error condition.
      * Changes that cannot be honoured are silently ignored.
@@ -61,21 +78,33 @@ abstract public class ARPOptions {
      * @param mode The new mode for this condition.
      * @return The old error mode for this condition.
      */
-    abstract public int setErrorMode(int errno, int mode);
+    public int setErrorMode(int errno, int mode) {
+        int old = errorMode[errno];
+        errorMode[errno] = mode;
+        return old;
+    }
 
     /** Resets error mode to the default values:
      * many errors are reported as warnings, and resulting triples are produced.
      */
-    abstract public void setDefaultErrorMode();
+    public void setDefaultErrorMode() {
+        errorMode = (int[]) defaultErrorMode.clone();
+    }
 
     /** As many errors as possible are ignored.
      * As many triples as possible are produced.
      */
-    abstract public void setLaxErrorMode();
+    public void setLaxErrorMode() {
+        setDefaultErrorMode();
+        for (int i = 100; i < 200; i++)
+            setErrorMode(i, EM_IGNORE);
+    }
 
     /** This sets strict conformance to the W3C Recommendations.
      */
-    abstract public void setStrictErrorMode();
+    public void setStrictErrorMode() {
+        setStrictErrorMode(EM_IGNORE);
+    }
 
     /**
      * This method detects and prohibits errors according to
@@ -84,7 +113,54 @@ abstract public class ARPOptions {
      {@link ARPErrorNumbers#WARN_PROCESSING_INSTRUCTION_IN_RDF}, nonErrorMode is used. 
      *@param nonErrorMode The way of treating non-error conditions.
      */
-    abstract public void setStrictErrorMode(int nonErrorMode);
+    public void setStrictErrorMode(int nonErrorMode) {
+        setDefaultErrorMode();
+        for (int i = 1; i < 100; i++)
+            setErrorMode(i, nonErrorMode);
+        int warning = EM_WARNING;
+        int error = EM_ERROR;
+        switch (nonErrorMode) {
+            case EM_ERROR :
+                warning = EM_ERROR;
+                break;
+            case EM_FATAL :
+                warning = error = EM_FATAL;
+                break;
+        }
+        for (int i = 100; i < 200; i++)
+            setErrorMode(i, error);
+        // setErrorMode(IGN_XMLBASE_USED,warning);
+        // setErrorMode(IGN_XMLBASE_SIGNIFICANT,error);
+        setErrorMode(WARN_DEPRECATED_XMLLANG, warning);
+        setErrorMode(WARN_STRING_NOT_NORMAL_FORM_C, warning);
+        //       setErrorMode(WARN_EMPTY_ABOUT_EACH,nonErrorMode);
+        setErrorMode(WARN_UNKNOWN_PARSETYPE, warning);
+        //     setErrorMode(WARN_BAD_XML, nonErrorMode);
+        setErrorMode(WARN_PROCESSING_INSTRUCTION_IN_RDF, nonErrorMode);
+//      setErrorMode(WARN_LEGAL_REUSE_OF_ID, nonErrorMode);
+        setErrorMode(WARN_RDF_NN_AS_TYPE, nonErrorMode);
+        setErrorMode(WARN_UNKNOWN_RDF_ELEMENT, warning);
+        setErrorMode(WARN_UNKNOWN_RDF_ATTRIBUTE, warning);
+        setErrorMode(WARN_UNQUALIFIED_RDF_ATTRIBUTE, warning);
+        setErrorMode(WARN_UNKNOWN_XML_ATTRIBUTE, nonErrorMode);
+        setErrorMode(WARN_NOT_RDF_NAMESPACE,nonErrorMode);
+        // setErrorMode(WARN_QNAME_AS_ID, error);
+        //      setErrorMode(WARN_BAD_XML, error);
+        setErrorMode(WARN_SAX_WARNING, warning);
+        setErrorMode(IGN_DAML_COLLECTION, error);
+    }
+
+    /**
+     * Copies this object.
+     * @return A copy.
+     * @deprecated Not intended for public use, will be removed from API
+     */
+    public ARPOptions copy() {
+    	ARPOptions rslt = new ARPOptions();
+    	rslt.errorMode = (int[])errorMode.clone() ;
+    	rslt.embedding = embedding;
+    	return rslt;
+    }
 
     /** Sets whether the XML document is only RDF, or contains RDF embedded in other XML.
      * The default is non-embedded mode.
@@ -96,7 +172,20 @@ abstract public class ARPOptions {
      * @param embed true: Look for embedded RDF; or false: match a typed node or rdf:Description against the whole document (the default).
      * @return Previous setting.
      */
-    abstract public boolean setEmbedding(boolean embed);
+
+    public boolean setEmbedding(boolean embed) {
+        boolean old = embedding;
+        embedding = embed;
+        return old;
+    }
+
+    public int getErrorMode(int eCode) {
+    		return errorMode[eCode];
+    }
+
+    public boolean getEmbedding() {
+    	return embedding;
+    }
 
 }
 

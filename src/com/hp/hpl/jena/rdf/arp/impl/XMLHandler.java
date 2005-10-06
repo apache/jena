@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.19 2005-10-05 13:58:34 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.20 2005-10-06 17:27:06 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -178,12 +178,12 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     public void warning(Taint taintMe,int id, String msg) throws SAXParseException {
-        if (options.getErrorMode()[id] != EM_IGNORE)
+        if (options.getErrorMode(id) != EM_IGNORE)
             warning(taintMe,id, location(), msg);
     }
 
     void warning(Taint taintMe, int id, Location loc, String msg) throws SAXParseException {
-        if (options.getErrorMode()[id] != EM_IGNORE)
+        if (options.getErrorMode(id) != EM_IGNORE)
             warning(taintMe, id, new ParseException(id, loc, msg) {
                 private static final long serialVersionUID = 1990910846204964756L;
             });
@@ -198,7 +198,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     void warning(Taint taintMe, int id, SAXParseException e) throws SAXParseException {
         try {
-            switch (options.getErrorMode()[id]) {
+            switch (options.getErrorMode(id)) {
             case EM_IGNORE:
                 break;
             case EM_WARNING:
@@ -220,7 +220,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         }
         if (e instanceof ParseException && ((ParseException) e).isPromoted())
             throw e;
-        if (options.getErrorMode()[id] == EM_FATAL) {
+        if (options.getErrorMode(id) == EM_FATAL) {
             // If we get here, we shouldn't go on
             // throw an error into Jena.
             throw new FatalParsingErrorException();
@@ -274,11 +274,11 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     boolean ignoring(int eCode) {
-        return options.getErrorMode()[eCode] == EM_IGNORE;
+        return options.getErrorMode(eCode) == EM_IGNORE;
     }
     
     public boolean isError(int eCode) {
-        return options.getErrorMode()[eCode] == EM_ERROR;
+        return options.getErrorMode(eCode) == EM_ERROR;
     }
 
     protected AbsXMLContext initialContext(String base, String lang)
@@ -332,7 +332,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
     */
 
-    private ARPOptionsImpl options = new ARPOptionsImpl();
+    private ARPOptions options = new ARPOptions();
 
     private ARPHandlers handlers = new ARPHandlers();
 
@@ -349,14 +349,12 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     public void setOptionsWith(ARPOptions newOpts) {
-        if (newOpts instanceof ARPOptionsImpl)
-            options = ((ARPOptionsImpl)newOpts).copy();
-        else
-            throw new RuntimeException("User defined implementations of ARPOptions are not supported");
+           options = newOpts.copy();
         
     }
 
     public void setHandlersWith(ARPHandlers newHh) {
+        handlers = new ARPHandlers();
         handlers.setErrorHandler(newHh.getErrorHandler());
         handlers.setExtendedHandler(newHh.getExtendedHandler());
         handlers.setNamespaceHandler(newHh.getNamespaceHandler());
