@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>ModelSpec 2.2 howto</title>
+<title>ModelSpec 2.3 howto</title>
 <link href="../styles/doc.css" rel="stylesheet" type="text/css">
 <style>
 p.note {
@@ -16,48 +16,41 @@ pre {
 </style>
 </head>
 <body>
-<h1>ModelSpec howto - describing Jena 2.2 models in RDF</h1>
+<h1>ModelSpec howto - describing Jena 2.3 models in RDF</h1>
+
+<font color="red"><i>WARNING.</i></font> The current ModelSpec
+API (including ModelMakers) and code suffers from some problems 
+which we hope to resolve in post-2.3 Jenas. Users of ModelSpec
+should be prepared to cope with changes in the CVS version of
+Jena, especially in the areas of default models, creating vs
+opening models, and re-opening models.
 
 <h1>introduction</h1>
 
-This document describes the ModelSpec features for Jena 2.2. They build
-on the experimental features available in Jena 2.0 and 2.1, but have
-been extended to increase flexibility and uniformity.
+This document describes the ModelSpec features for Jena 2.3. It builds
+on the features from earlier ModelSpecs but adds new description
+properties for rulesets and reasoners.
 
 <p>The intention is to be able to specify how a model is constructed 
 using a configuration file, input stream, URL, or other way of getting 
 RDF into a Jena process, and for this configuration to be capable of
 specifying anything that the ModelFactory class can construct.
 
-<p>A more formal document will be available: the 
-<a href="modelspec-details.html">ModelSpec design document</a>. 
-Here we concentrate on how to use ModelSpecs in general.
+<p>A more formal document will be available in future releases.
+(The previous document has been withdrawn, as it no longer reflects
+the actual or intended state of the code. The philosophy, that of
+allowing extensible specifications for descibing models, has been
+retained.) Here we concentrate on how to use ModelSpecs in general.
 
 <p>The ModelSpec descriptions use the Jena Model Specification
 vocabulary, which is available in the vocabulary class 
-<code>JenaModelSpec</code>
+<code>JenaModelSpec</code> [previous known as JMS]
 and which will be referred to using the prefix <code>jms</code>.
 Jena defines this vocabulary namespace as 
 
 <blockquote>
 http://jena.hpl.hp.com/2003/08/jms#
 </blockquote>
-
-<h1>differences from the original ModelSpecs</h1>
-
-The revised ModelSpec differs from the original in several minor ways
-and a few major ones, those being:
-
-<ul>
-<li>the additional of specifications for rulesets and schemas.
-
-<li>the separation out of database connection specifications.
-
-<li>the special type <code>Shared</code> to allow values to be
-    shared by specifications. [Shared is not implemented.]
-
-</ul>
-
 
 <h1>creating a ModelSpec</h1>
 
@@ -72,8 +65,8 @@ an RDF description. There are three variants of <code>createSpec</code>:
 	the model specification. 
 
 <li>createSpec( Model m ). The ModelSpec is created from the sub-graph
-    of <code>m</code> rooted at the unique resource with type
-	<code>jms:ModelSpec</code>.
+    of <code>m</code> rooted at the single resource with type
+	<code>jms:ModelSpec</code> in <code>m</code>.
 
 <li>createSpec( Resource r ). This abbreviates 
     <code>createSpec( r, r.getModel() )</code>.
@@ -88,8 +81,9 @@ class <b>com.hp.hpl.jena.vocabulary.JenaModelSpec</b>.
 
 <p>By "partial" inference, we mean that the vocabulary is RDFS-complete,
 and that the specification has types inferred from 
-<code>RDFS.domain</code> and <code>RDF.type</code>statements.
-This abbreviated inference avoids some reasoner overheads. 
+<code>RDFS.domain</code> and <code>RDFS.subClassOf</code> 
+statements. This abbreviated inference avoids some reasoner overheads
+but allows useful abbreviation in ModelSpecs. 
 
 <h1>using a ModelSpec</h1>
 
@@ -146,8 +140,8 @@ required, then a <i>model maker</i> must be specified.
 _:this jms:maker _:maker .
 </pre>
 
-It happens that this specificiation, where a model maker is
-identified but not further described, also produces a ModelSpec
+It happens that this specification, where a model maker is
+mentioned but not further described, also produces a ModelSpec
 that makes default models. Pick whichever you find most pleasing.
 
 <p>If you wish to create models with different <i>reification styles</i>,
@@ -159,7 +153,8 @@ _:maker jms:reificationStyle jms:rsMinimal .
 </pre>
 
 This will produce models which have the <i>minimal</i> reification
-style. (For an explanation of the different styles, see <b>THAT DOCUMENT</b>.
+style. (For an explanation of the different styles, see 
+<a href="reification.html">the reification howto</a>.
 
 <h2>PlainModelSpec, file-based</h2>
 
@@ -254,8 +249,6 @@ If several schemas are supplied, they are merged into a single schema
 to feed to the reasoner. 
 
 <p>Similarly, a schema can be specified using a ModelSpec.
-[Discussed later, when we've sorted out the unresolved issue of
- model specs that identify <i>particular</i> models.]
 
 <pre>
 _:reasoner jms:schema _:modelSpec .
@@ -283,7 +276,7 @@ _:reasoner jms:ruleSet _:set .
 
 specifies a set of rules located elsewhere in this specification,
 as properties of <code>_:set</code>. Multiple such <code>ruleSet</code>s
-can be given, and they my be freely mixed with <code>ruleSetURL</code>s.
+can be given, and they may be freely mixed with <code>ruleSetURL</code>s.
 
 <h3>ruleSet specifications</h3>
 
@@ -328,41 +321,6 @@ specifies OntModels for the OWL Lite language, using the RDFS rule-based
 reasoner. The OntModels will take their base models from the database.
 The document manager has been given no specific properties, so the
 default document manager will be used.
-
-<h1>shared specifications</h1>
-
-[Not implemented in this release.]
-
-<p>By default, each time a model is constructed using a ModelSpec, new
-instances of all the subcomponents of that description are created.
-This is not always a wise choice, especially if those subcomponents
-consume lots of space or take a long time to prepare - eg, a large
-schema for a reasoner.
-
-<p>Any sub-specification can be made <i>shared</i> by giving it the
-<code>Shared</code> type:
-
-<pre>
-_:conn rdf:type jms:Shared .
-</pre>
-
-When a component of type <code>Shared</code> is requested, if there
-is already a <code>Shared</code> component created from equivalent RDF,
-then that component is returned rather than a new component being
-created. 
-
-<p>The method <code>ModelFactory.share( Resource r, Object o )</code>
-declares that the resource <code>r</code>, which must have RDF type
-<code>Shared</code>, has shared value <code>o</code>. Any modelspec
-component whose description matches <code>r</code> will resolve to
-the value <code>o</code>.
-
-<p>By "equivalent RDF" we mean that the submodels reachable from 
-<code>r</code> are isomorphic.
-
-<p>So, for the database connection example, the resource 
-<code>_:conn</code> can be declared shared in the user's application,
-without the user's database name and password appearing in the ModelSpec.
 
 </body>
 </html>

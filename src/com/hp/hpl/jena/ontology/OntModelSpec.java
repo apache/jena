@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.40 $
+ * Revision           $Revision: 1.41 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-08-23 19:41:56 $
+ * Last modified on   $Date: 2005-10-06 14:41:27 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.40 2005-08-23 19:41:56 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.41 2005-10-06 14:41:27 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -239,7 +239,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
 
     /**
      * <p>Initialise an OntModelSpec from an RDF description using the JenaModelSpec vocabulary. See
-     * <a href="../../../../../doc/howto/modelspec-2-2.html">the modelspec howto</a>
+     * <a href="../../../../../doc/howto/modelspec.html">the modelspec howto</a>
      * for the description of the OntModel used. The root of the
      * description is the unique resource with type <code>jms:OntMakerClass</code>.</p>
      *
@@ -251,7 +251,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
 
     /**
      * <p>Initialise an OntModelSpec from an RDF description using the JenaModelSpec vocabulary. See
-     * <a href="../../../../../doc/howto/modelspec-2-2.html">the modelspec howto</a>
+     * <a href="../../../../../doc/howto/modelspec.html">the modelspec howto</a>
      * for the description of the OntModel used.  The root of the
      *  description is supplied as a parameter (so the description may describe several
      *  different OntModels).</p>
