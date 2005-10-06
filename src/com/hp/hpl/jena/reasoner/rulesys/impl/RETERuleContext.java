@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETERuleContext.java,v 1.7 2005-02-21 12:17:58 andy_seaborne Exp $
+ * $Id: RETERuleContext.java,v 1.8 2005-10-06 13:14:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * The RuleContext is used to supply context information to the builtin operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:17:58 $
+ * @version $Revision: 1.8 $ on $Date: 2005-10-06 13:14:39 $
  */
 public class RETERuleContext implements RuleContext {
     
@@ -132,7 +132,7 @@ public class RETERuleContext implements RuleContext {
      * Remove a triple from the deduction graph (and the original graph if relevant).
      */
     public void remove(Triple t) {
-        graph.delete(t);
+        graph.getRawGraph().delete(t);
         engine.deleteTriple(t, true);
     }
 
@@ -143,6 +143,52 @@ public class RETERuleContext implements RuleContext {
         engine.addTriple(t, true);
     }
 
+    /**
+     * Check whether the rule should fire in this context.
+     */
+    public boolean shouldFire(boolean allowUnsafe) {
+        // Check any non-pattern clauses 
+        for (int i = 0; i < rule.bodyLength(); i++) {
+            Object clause = rule.getBodyElement(i);
+            if (clause instanceof Functor) {
+                // Fire a built in
+                if (allowUnsafe) {
+                    if (!((Functor)clause).evalAsBodyClause(this)) {
+                        // Failed guard so just discard and return
+                        return false;
+                    }
+                } else {
+                    // Don't re-run side-effectful clause on a re-run
+                    if (!((Functor)clause).safeEvalAsBodyClause(this)) {
+                        // Failed guard so just discard and return
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Check if a rule from the conflict set is still OK to fire.
+     * Just checks the non-monotonic guards such as noValue.
+     */
+    public boolean shouldStillFire() {
+        // Check any non-pattern clauses 
+        for (int i = 0; i < rule.bodyLength(); i++) {
+            Object clause = rule.getBodyElement(i);
+            if (clause instanceof Functor) {
+                Builtin builtin = ((Functor)clause).getImplementor();
+                if (builtin != null && !builtin.isMonotonic()) {
+                    if (!((Functor)clause).evalAsBodyClause(this)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
 }
 
 

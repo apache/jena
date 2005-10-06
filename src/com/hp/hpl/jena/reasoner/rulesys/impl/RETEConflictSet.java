@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEConflictSet.java,v 1.1 2005-10-04 17:33:52 der Exp $
+ * $Id: RETEConflictSet.java,v 1.2 2005-10-06 13:14:39 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
@@ -37,14 +37,14 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
  * concurrent adds to InfModel are not supported anyway.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class RETEConflictSet {
     protected static Log logger = LogFactory.getLog(FRuleEngine.class);
 
     /** the execution context for this conflict set */
-    protected RETERuleContext context;
+    protected RETERuleContext gcontext;
 
     /** false if the overall rule system contains some non-montotonic rules */
     protected boolean isMonotonic;
@@ -60,7 +60,7 @@ public class RETEConflictSet {
     
     /** Construct an empty conflict set, noting whether the overall rule system is monotonic or not */
     public RETEConflictSet(RETERuleContext context, boolean isMonotonic) {
-        this.context = context;
+        this.gcontext = context;
         this.isMonotonic = isMonotonic;
     }
     
@@ -70,7 +70,10 @@ public class RETEConflictSet {
      */
     public void add(Rule rule, BindingEnvironment env, boolean isAdd) {
         if (isMonotonic) {
-            execute(rule, env, isAdd);
+            RETERuleContext context = new RETERuleContext((ForwardRuleInfGraphI)gcontext.getGraph(), gcontext.getEngine());
+            context.setEnv(env);
+            context.setRule(rule);
+            execute(context, isAdd);
         } else {
             // Add to the conflict set, compressing +/- pairs
             boolean done = false;
@@ -112,17 +115,22 @@ public class RETEConflictSet {
         int index = conflictSet.size() - 1;
         CSEntry cse = (CSEntry)conflictSet.remove(index);
         if (cse.isAdd) nPos--; else nNeg --;
-        execute(cse.rule, cse.env, cse.isAdd);
+        RETERuleContext context = new RETERuleContext((ForwardRuleInfGraphI)gcontext.getGraph(), gcontext.getEngine());
+        context.setEnv(cse.env);
+        context.setRule(cse.rule);
+        if (context.shouldStillFire()) {
+            execute(context, cse.isAdd);
+        }
         return true;
         
     }
     
     /**
-     * Execute a single rule firing. Possibly should not be public. Not thread safe.
+     * Execute a single rule firing. 
      */
-    public void execute(Rule rule, BindingEnvironment env, boolean isAdd) {
-        context.setEnv(env);
-        context.setRule(rule);
+    protected void execute(RETERuleContext context, boolean isAdd) {
+        Rule rule = context.getRule();
+        BindingEnvironment env = context.getEnv();
         ForwardRuleInfGraphI infGraph = (ForwardRuleInfGraphI)context.getGraph();
         if (infGraph.shouldTrace()) {
             logger.info("Fired rule: " + rule.toShortString());

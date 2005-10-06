@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Drop.java,v 1.2 2005-10-04 17:33:51 der Exp $
+ * $Id: Drop.java,v 1.3 2005-10-06 13:14:38 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  * useful for rewrite rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 
 public class Drop  extends BaseBuiltin  {
@@ -71,7 +71,9 @@ public class Drop  extends BaseBuiltin  {
     }    
     
     /**
-     * Returns false if this builtin can invalidate other rules by retracting triples.
+     * Returns false if this builtin is non-monotonic. This includes non-monotonic checks like noValue
+     * and non-monotonic actions like remove/drop. A non-monotonic call in a head is assumed to 
+     * be an action and makes the overall rule and ruleset non-monotonic. 
      * Most JenaRules are monotonic deductive closure rules in which this should be false.
      */
     public boolean isMonotonic() {

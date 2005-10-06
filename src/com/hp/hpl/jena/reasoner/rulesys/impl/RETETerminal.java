@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETETerminal.java,v 1.14 2005-10-04 17:33:52 der Exp $
+ * $Id: RETETerminal.java,v 1.15 2005-10-06 13:14:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2005-10-04 17:33:52 $
+ * @version $Revision: 1.15 $ on $Date: 2005-10-06 13:14:39 $
  */
 public class RETETerminal implements RETESinkNode {
 
@@ -67,91 +67,10 @@ public class RETETerminal implements RETESinkNode {
         Rule rule = context.getRule();
         context.setEnv(env);
         
-        // Check any non-pattern clauses 
-        for (int i = 0; i < rule.bodyLength(); i++) {
-            Object clause = rule.getBodyElement(i);
-            if (clause instanceof Functor) {
-                // Fire a built in
-                if (isAdd) {
-                    if (!((Functor)clause).evalAsBodyClause(context)) {
-                        // Failed guard so just discard and return
-                        return;
-                    }
-                } else {
-                    // Don't re-run side-effectful clause on a re-run
-                    if (!((Functor)clause).safeEvalAsBodyClause(context)) {
-                        // Failed guard so just discard and return
-                        return;
-                    }
-                }
-            }
-        }
-        
+        if (! context.shouldFire(isAdd)) return;
+
         // Now fire the rule
         context.getEngine().requestRuleFiring(rule, env, isAdd);
-        /**
-         * TODO Delete once the loose ends have been tied up
-        ForwardRuleInfGraphI infGraph = (ForwardRuleInfGraphI)context.getGraph();
-        if (infGraph.shouldTrace()) {
-            logger.info("Fired rule: " + rule.toShortString());
-        }
-        RETEEngine engine = context.getEngine();
-        engine.incRuleCount();
-        List matchList = null;
-        if (infGraph.shouldLogDerivations() && isAdd) {
-            // Create derivation record
-            matchList = new ArrayList(rule.bodyLength());
-            for (int i = 0; i < rule.bodyLength(); i++) {
-                Object clause = rule.getBodyElement(i);
-                if (clause instanceof TriplePattern) {
-                    matchList.add(env.instantiate((TriplePattern)clause));
-                } 
-            }
-        }
-        for (int i = 0; i < rule.headLength(); i++) {
-            Object hClause = rule.getHeadElement(i);
-            if (hClause instanceof TriplePattern) {
-                Triple t = env.instantiate((TriplePattern) hClause);
-                if (!t.getSubject().isLiteral()) {
-                    // Only add the result if it is legal at the RDF level.
-                    // E.g. RDFS rules can create assertions about literals
-                    // that we can't record in RDF
-                    if (isAdd) {
-                        if ( ! context.contains(t) ) {
-                            engine.addTriple(t, true);
-                            if (infGraph.shouldLogDerivations()) {
-                                infGraph.logDerivation(t, new RuleDerivation(rule, t, matchList, infGraph));
-                            }
-                        }
-                    } else {
-                        if ( context.contains(t)) {
-                            // Remove the generated triple
-                            engine.deleteTriple(t, true);
-                        }
-                    }
-                }
-            } else if (hClause instanceof Functor && isAdd) {
-                Functor f = (Functor)hClause;
-                Builtin imp = f.getImplementor();
-                if (imp != null) {
-                    imp.headAction(f.getBoundArgs(env), f.getArgLength(), context);
-                } else {
-                    throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + rule.toShortString());
-                }
-            } else if (hClause instanceof Rule) {
-                Rule r = (Rule)hClause;
-                if (r.isBackward()) {
-                    if (isAdd) {
-                        infGraph.addBRule(r.instantiate(env));
-                    } else {
-                        infGraph.deleteBRule(r.instantiate(env));
-                    }
-                } else {
-                    throw new ReasonerException("Found non-backward subrule : " + r); 
-                }
-            }
-        }
-        */
     }
     
     /**

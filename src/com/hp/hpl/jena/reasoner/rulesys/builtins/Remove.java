@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Remove.java,v 1.10 2005-10-04 17:33:51 der Exp $
+ * $Id: Remove.java,v 1.11 2005-10-06 13:14:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-10-04 17:33:51 $
+ * @version $Revision: 1.11 $ on $Date: 2005-10-06 13:14:38 $
  */
 public class Remove extends BaseBuiltin {
 
@@ -58,7 +58,9 @@ public class Remove extends BaseBuiltin {
     }
     
     /**
-     * Returns false if this builtin can invalidate other rules by retracting triples.
+     * Returns false if this builtin is non-monotonic. This includes non-monotonic checks like noValue
+     * and non-monotonic actions like remove/drop. A non-monotonic call in a head is assumed to 
+     * be an action and makes the overall rule and ruleset non-monotonic. 
      * Most JenaRules are monotonic deductive closure rules in which this should be false.
      */
     public boolean isMonotonic() {

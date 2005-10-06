@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NoValue.java,v 1.9 2005-02-21 12:17:30 andy_seaborne Exp $
+ * $Id: NoValue.java,v 1.10 2005-10-06 13:14:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * for (X, P, *).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:17:30 $
+ * @version $Revision: 1.10 $ on $Date: 2005-10-06 13:14:38 $
  */
 public class NoValue extends BaseBuiltin {
 
@@ -59,6 +59,14 @@ public class NoValue extends BaseBuiltin {
             pred = null;
         }
         return !context.contains(subj, pred, obj);
+    }
+    
+    /**
+     * Flag as non-monotonic so the guard clause will get rerun after deferal
+     * as part of a non-trivial conflict set.
+     */
+    public boolean isMonotonic() {
+        return false;
     }
     
 }

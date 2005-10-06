@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.36 2005-10-04 17:33:52 der Exp $
+ * $Id: TestBugs.java,v 1.37 2005-10-06 13:14:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.36 $ on $Date: 2005-10-04 17:33:52 $
+ * @version $Revision: 1.37 $ on $Date: 2005-10-06 13:14:38 $
  */
 public class TestBugs extends TestCase {
 
@@ -51,7 +51,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "xxtest_oh_01" ));
+//        suite.addTest(new TestBugs( "testNonmonotonicCR" ));
 //        return suite;
     }  
 
@@ -678,8 +678,7 @@ public class TestBugs extends TestCase {
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
         InfModel inf = ModelFactory.createInfModel(reasoner, data);
         Iterator values = inf.listObjectsOfProperty(i, scoreA);
-        // TODO unsupress test once 
-//        TestUtil.assertIteratorValues(this, values, new Object[] { data.createTypedLiteral(173)});
+        TestUtil.assertIteratorValues(this, values, new Object[] { data.createTypedLiteral(173)});
     }
     
     // debug assistant
