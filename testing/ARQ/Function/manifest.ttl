@@ -40,18 +40,102 @@
         mf:result  <lang-2-results.ttl>
       ]
 
-      [  mf:name    "sha1sum - 1" ;
+      [  mf:name    "sha1sum 1" ;
          mf:action
             [ qt:query  <func-sha1sum-1.rq> ;
               qt:data   <data-3.ttl> ] ;
         mf:result  <sha1sum-1-results.srx>
       ]
 
-      [  mf:name    "sha1sum - 2" ;
+      [  mf:name    "sha1sum 2" ;
          mf:action
             [ qt:query  <func-sha1sum-2.rq> ;
               qt:data   <data-3.ttl> ] ;
         mf:result  <sha1sum-2-results.srx>
+      ]
+
+      [  mf:name    "list membership 1" ;
+         mf:action
+            [ qt:query  <list-1.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-1.srx>
+      ]
+
+      [  mf:name    "list membership 2" ;
+         mf:action
+            [ qt:query  <list-2.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-2.srx>
+      ]
+
+      [  mf:name    "list membership 3" ;
+         mf:action
+            [ qt:query  <list-3.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-3.srx>
+      ]
+
+      [  mf:name    "list membership 4" ;
+         mf:action
+            [ qt:query  <list-4.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-4.srx>
+      ]
+
+      [  mf:name    "list membership 5" ;
+         mf:action
+            [ qt:query  <list-5.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-5.srx>
+      ]
+
+      [  mf:name    "list index 1" ;
+         mf:action
+            [ qt:query  <list-index-1.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-index-1.srx>
+      ]
+
+      [  mf:name    "list index 2" ;
+         mf:action
+            [ qt:query  <list-index-2.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-index-2.srx>
+      ]
+
+      [  mf:name    "list index 3" ;
+         mf:action
+            [ qt:query  <list-index-3.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-index-3.srx>
+      ]
+
+      [  mf:name    "list index 4" ;
+         mf:action
+            [ qt:query  <list-index-4.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <list-index-4.srx>
+      ]
+
+      [  mf:name    "container membership 1" ;
+         mf:action
+            [ qt:query  <container-1.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <container-1.srx>
+      ]
+
+      [  mf:name    "container membership 2" ;
+         mf:action
+            [ qt:query  <container-2.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <container-2.srx>
+      ]
+
+      [  mf:name    "container membership 3" ;
+         mf:action
+            [ qt:query  <container-3.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <container-3.srx>
       ]
 
 

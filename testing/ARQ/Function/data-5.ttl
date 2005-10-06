@@ -1,0 +1,28 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix   :         <http://example/> .
+
+:x :list (1 2 3) .
+
+:x :list (1 2 3) .
+
+:x :bag [ a rdf:Bag ;
+          rdf:_1   1 ;
+          rdf:_2   2 ;
+          rdf:_5   2 ;
+        ] .
+       
+
+:x :alt [ a rdf:Alt ;
+          rdf:_1   1 ;
+          rdf:_2   2 ;
+          rdf:_3   3 ;
+        ] .
+       
+:x :seq [ a rdf:Seq ;
+          rdf:_1   1 ;
+          rdf:_2   2 ;
+          rdf:_3   3 ;
+          rdf:_9   9 ;
+        ] .
+       
+

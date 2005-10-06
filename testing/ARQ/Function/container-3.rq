@@ -1,0 +1,7 @@
+PREFIX  jfn:  <java:com.hp.hpl.jena.query.function.library.>
+PREFIX     :  <http://example/> 
+
+SELECT ?x ?p
+{ ?x ?p ?seq
+  FILTER jfn:seqMember(?seq, 1)
+}

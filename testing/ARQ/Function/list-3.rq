@@ -1,0 +1,9 @@
+PREFIX  jfn:  <java:com.hp.hpl.jena.query.function.library.>
+PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX     :  <http://example.org/> 
+
+# NB Find many things (list tails) 
+SELECT ?s ?p ?o
+{ ?s ?p ?o .
+  FILTER jfn:listMember(?s, 3)
+}
