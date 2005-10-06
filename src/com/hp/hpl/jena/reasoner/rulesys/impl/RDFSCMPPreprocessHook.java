@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSCMPPreprocessHook.java,v 1.6 2005-06-28 15:38:25 chris-dollin Exp $
+ * $Id: RDFSCMPPreprocessHook.java,v 1.7 2005-10-06 22:01:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,9 +23,10 @@ import java.util.*;
  * of container membership properties and adds those to the deductions set.  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-06-28 15:38:25 $
+ * @version $Revision: 1.7 $ on $Date: 2005-10-06 22:01:55 $
  */
 public class RDFSCMPPreprocessHook implements RulePreprocessHook {
+    protected static String memberPrefix = RDF.getURI() + "_";
 
     /**
      * Invoke the preprocessing hook. This will be called during the
@@ -41,11 +42,10 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
     public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts) {
         ExtendedIterator it = dataFind.find(new TriplePattern(null, null, null));
         HashSet properties = new HashSet();
-        String memberPrefix = RDF.getURI() + "_";
         while (it.hasNext()) {
             Triple triple = (Triple)it.next();
             Node prop = triple.getPredicate();
-            if (prop.equals(RDF.Nodes.type) && prop.equals(RDF.Nodes.Property) ) {
+            if (prop.equals(RDF.Nodes.type) && triple.getObject().equals(RDF.Nodes.Property) ) {
                 prop = triple.getSubject();
             }
             if (properties.add(prop)) {
@@ -55,6 +55,15 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
                 }
             }
         }
+    }
+    
+    /**
+     * Validate a triple add to see if it should reinvoke the hook. If so
+     * then the inference will be restarted at next prepare time. Incremental
+     * re-processing is not yet supported but in this case would be useful.
+     */
+    public boolean needsRerun(FBRuleInfGraph infGraph, Triple t) {
+        return (t.getPredicate().getURI().startsWith(memberPrefix));
     }
 
 }

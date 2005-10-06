@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLRuleTranslationHook.java,v 1.7 2005-02-21 12:17:57 andy_seaborne Exp $
+ * $Id: OWLRuleTranslationHook.java,v 1.8 2005-10-06 22:01:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * intersection statement.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:17:57 $
+ * @version $Revision: 1.8 $ on $Date: 2005-10-06 22:01:55 $
  */
 public class OWLRuleTranslationHook implements RulePreprocessHook {
 
@@ -119,6 +119,15 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
         // Process the list tail
         Node next = Util.getPropValue(node, RDF.rest.asNode(), dataFind);
         translateIntersectionList(next, dataFind, elements);
+    }
+    
+    /**
+     * Validate a triple add to see if it should reinvoke the hook. If so
+     * then the inference will be restarted at next prepare time. Incremental
+     * re-processing is not yet supported.
+     */
+    public boolean needsRerun(FBRuleInfGraph infGraph, Triple t) {
+        return (t.getPredicate().equals(OWL.intersectionOf.asNode()));
     }
 
 }

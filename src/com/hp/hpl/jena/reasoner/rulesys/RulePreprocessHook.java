@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RulePreprocessHook.java,v 1.5 2005-02-21 12:17:06 andy_seaborne Exp $
+ * $Id: RulePreprocessHook.java,v 1.6 2005-10-06 22:02:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.reasoner.Finder;
 
 /**
@@ -20,7 +21,7 @@ import com.hp.hpl.jena.reasoner.Finder;
  * this way than using the generic rule engines.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-02-21 12:17:06 $
+ * @version $Revision: 1.6 $ on $Date: 2005-10-06 22:02:07 $
  */
 public interface RulePreprocessHook {
 
@@ -36,6 +37,13 @@ public interface RulePreprocessHook {
      * all new deductions that should be seen by the rules.
      */
     public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts);
+    
+    /**
+     * Validate a triple add to see if it should reinvoke the hook. If so
+     * then the inference will be restarted at next prepare time. Incremental
+     * re-processing is not yet supported.
+     */
+    public boolean needsRerun(FBRuleInfGraph infGraph, Triple t);
     
 }
 

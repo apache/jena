@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLExptRuleTranslationHook.java,v 1.4 2005-02-21 12:17:57 andy_seaborne Exp $
+ * $Id: OWLExptRuleTranslationHook.java,v 1.5 2005-10-06 22:01:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of restrictions to functors.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:17:57 $
+ * @version $Revision: 1.5 $ on $Date: 2005-10-06 22:01:55 $
  */
 public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
 
@@ -81,6 +81,15 @@ public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
         // Process the list tail
         Node next = Util.getPropValue(node, RDF.rest.asNode(), dataFind);
         translateIntersectionList(next, dataFind, elements);
+    }
+    
+    /**
+     * Validate a triple add to see if it should reinvoke the hook. If so
+     * then the inference will be restarted at next prepare time. Incremental
+     * re-processing is not yet supported.
+     */
+    public boolean needsRerun(FBRuleInfGraph infGraph, Triple t) {
+        return (t.getPredicate().equals(OWL.intersectionOf.asNode()));
     }
 
 }
