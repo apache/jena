@@ -186,12 +186,19 @@ Typed literals:
     o Fixed bug in sameValueAs when comparing an integer to a float/double.
 
 Reasoners:
+    o Modified processing of non-monotonic rulesets (involving drop/remove) so
+      that each entry in the conflict set is fired separately and all the 
+      consquences propagated before attempting to fire the next rule.
+      To avoid performance hits, rulesets not involving such operators
+      execute as before.
+      User defined Builtins which remove data should be marked as such 
+      using the isMonotonic method.
     o Fixed bug in TransitiveGraphCache which had resulted in some
       transitive reductions being incompletely reduced (i.e. some
       indirect property instances were being incorrectly reported as
       being direct).
     o Added "drop" operator as an alternative to "remove" when performing
-      non-mononitic rewrites.
+      non-monotonic rewrites.
     o Fixed bug in rebind/reset of infgraphs which use TGC and failed to
       reset the transitive engine.
     o Optimized Resource.remove operations for the case where the parent model
