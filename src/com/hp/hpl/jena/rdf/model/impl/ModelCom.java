@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.108 2005-08-16 11:12:31 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.109 2005-10-07 08:30:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -769,8 +769,8 @@ public class ModelCom
     private PrefixMapping getPrefixMapping()
         { return getGraph().getPrefixMapping(); }
     
-    public boolean equalTo( PrefixMapping other )
-        { return getPrefixMapping().equalTo( other ); }
+    public boolean samePrefixMappingAs( PrefixMapping other )
+        { return getPrefixMapping().samePrefixMappingAs( other ); }
         
     public PrefixMapping lock()
         {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.31 2005-08-15 15:44:09 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.32 2005-10-07 08:30:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -215,7 +215,7 @@ public interface PrefixMapping
         </blockquote>
         except that it may avoid unnecessary Map creations.
     */
-    boolean equalTo( PrefixMapping other );   
+    boolean samePrefixMappingAs( PrefixMapping other );   
     }
 
 /*

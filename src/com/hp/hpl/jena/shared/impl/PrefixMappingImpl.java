@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.23 2005-08-15 15:44:09 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.24 2005-10-07 08:30:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -214,7 +214,7 @@ public class PrefixMappingImpl implements PrefixMapping
         return e == null ? uri : e.getKey() + ":" + uri.substring( ((String) e.getValue()).length() );
         }
         
-    public boolean equalTo( PrefixMapping other )
+    public boolean samePrefixMappingAs( PrefixMapping other )
         {
         return other instanceof PrefixMappingImpl 
             ? equals( (PrefixMappingImpl) other )
