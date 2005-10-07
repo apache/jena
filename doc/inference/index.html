@@ -92,8 +92,7 @@
   <dd>A set of useful but incomplete implementation of the OWL/Lite subset of the OWL/Full 
     language. </dd>
   <dt>DAML micro reasoner</dt>
-  <dd>Used internally to enable the legacy DAML API to provide RDFS scale inferencing 
-    similar to that available in Jena1.</dd>
+  <dd>Used internally to enable the legacy DAML API to provide minimal (RDFS scale) inferencing.</dd>
   <dt>Generic rule reasoner</dt>
   <dd>A rule based reasoner that supports user defined rules. Forward chaining, 
     tabled backward chaining and hybrid execution strategies are supported.</dd>
@@ -1175,10 +1174,7 @@ class B = cardinality(P,1)</pre>
 <p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h1 class="sectionHeading"><a name="daml"></a>DAML support</h1>
-<p>In Jena1 the DAML API included some hardwired support for useful DAML inferences 
-  such as subClassOf and equivalence. </p>
-<p>A similar level of functionality is provided in Jena2, through the DAML profile 
-  of the Ontology API, by using a tailored reasoner. The DAMLMicroReasoner is 
+<p>This is minimal legacy support. The DAMLMicroReasoner is 
   essentially the RDFS reasoner augmented by axioms declaring the equivalence 
   between the DAML constructs and their RDFS aliases. It is invoked using the 
   prebuilt <a href="../javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html"><code>OntModelSpec</code></a> 
@@ -1921,7 +1917,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.27 2005-10-06 14:43:25 der Exp $</i>
+  Last modification: $Id: index.html,v 1.28 2005-10-07 13:08:08 der Exp $</i>
 </p>
 </body>
 </html>
