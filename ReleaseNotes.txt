@@ -52,7 +52,8 @@ ARP
     o The treatment of interrupts has changed. Instead of
       throwing an InterruptedIOException, an error
       is produced: ERR_INTERRUPTED, and reported through
-      the error handler as a fatal error.
+      the error handler as a fatal error. This normally
+      throws a ParseException.
 
     o A few public classes that were in the old ARP package, but
       labelled as not part of the API have been removed.
