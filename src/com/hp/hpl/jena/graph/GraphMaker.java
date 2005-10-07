@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMaker.java,v 1.15 2005-08-02 10:07:40 chris-dollin Exp $
+  $Id: GraphMaker.java,v 1.16 2005-10-07 15:04:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -26,7 +26,7 @@ public interface GraphMaker
     public ReificationStyle getReificationStyle();
     
     /**
-        Answer the default graph of this ModelMaker. The same graph is returned on
+        Answer the default graph of this GraphMaker. The same graph is returned on
         each call. It may only be constructed on the first call of getGraph(), or at any
         previous time.
         
@@ -35,7 +35,7 @@ public interface GraphMaker
     public Graph getGraph();
     
     /**
-        Answer the default graph of this ModelMaker, if it has one. If not,
+        Answer the default graph of this GraphMaker, if it has one. If not,
         throw an exception.
     */
     public Graph openGraph();
@@ -143,7 +143,7 @@ public interface GraphMaker
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  *
- * Last modified on   $Date: 2005-08-02 10:07:40 $
+ * Last modified on   $Date: 2005-10-07 15:04:49 $
  *               by   $Author: chris-dollin $
 
  *****************************************************************************/

@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerImpl.java,v 1.18 2005-08-02 10:07:44 chris-dollin Exp $
+  $Id: ModelMakerImpl.java,v 1.19 2005-10-07 15:04:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**

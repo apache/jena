@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.15 2005-08-02 10:07:43 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.16 2005-10-07 15:04:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -40,15 +40,15 @@ public abstract class BaseGraphMaker implements GraphMaker
      */
     public Graph getGraph()
         { 
-        if (defaultGraph == null) defaultGraph = createGraph();
+        if (defaultGraph == null) { defaultGraph = createGraph(); }
         return defaultGraph;
         }
         
     private Graph defaultGraph;
     
     public Graph openGraph()
-        { if (defaultGraph == null) 
-            throw new DoesNotExistException( "no default graph in this GraphMaker" ); 
+        { if (defaultGraph == null) throw new DoesNotExistException
+            ( "no default graph in this GraphMaker [" + this.getClass() + "]" ); 
         return defaultGraph; }
     
     /**

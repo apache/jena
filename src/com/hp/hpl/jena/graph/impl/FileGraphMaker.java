@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.22 2005-04-10 12:45:47 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.23 2005-10-07 15:04:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -124,27 +124,11 @@ public class FileGraphMaker extends BaseGraphMaker
      */
     public static String toFilename( String name )
         {
-        return replaceBy( name, "_/:", "USC" );
-// Jave 1.4 please!
-//        return name
-//            .replaceAll( "_", "_U" )
-//            .replaceAll( "/", "_S" )
-//            .replaceAll( ":", "_C" )
-//            ;    
-        }
-        
-    private static String replaceBy( String x, String from, String to )
-        {
-        int len = x.length();
-        StringBuffer result = new StringBuffer( len + 10 );
-        for (int i = 0; i < len; i += 1)
-            {
-            char ch = x.charAt( i );
-            int where = from.indexOf( ch );
-            if (where < 0) result.append( ch );
-            else result.append( '_' ).append( to.charAt( where ) );
-            }
-        return result.toString();
+        return name
+            .replaceAll( "_", "_U" )
+            .replaceAll( "/", "_S" )
+            .replaceAll( ":", "_C" )
+            ;    
         }
 
     /**
@@ -156,27 +140,11 @@ public class FileGraphMaker extends BaseGraphMaker
      */
     public static String toGraphname( String fileName )
         { 
-        StringBuffer result = new StringBuffer( fileName.length() );
-        int here = 0;
-        while (true)
-            {
-            int ubar = fileName.indexOf( '_', here );    
-            if (ubar < 0) break;
-            result.append( fileName.substring( here, ubar ) );
-            char ch = fileName.charAt( ubar + 1 );
-            if (ch == 'S') result.append( '/' );
-            else if (ch == 'U') result.append( '_' );
-            else if (ch == 'C') result.append( ':' );
-            here = ubar + 2;
-            }
-        result.append( fileName.substring( here ) );
-        return result.toString();
-// Java 1.4 please!
-//            return fileName
-//            .replaceAll( "_C", ":" )
-//            .replaceAll( "_S", "/" )
-//            .replaceAll( "_U", "_" ); 
-            }
+        return fileName
+            .replaceAll( "_C", ":" )
+            .replaceAll( "_S", "/" )
+            .replaceAll( "_U", "_" ); 
+        }
                 
     public void removeGraph( String name )
         { forget( withRoot( name ) ).delete(); }

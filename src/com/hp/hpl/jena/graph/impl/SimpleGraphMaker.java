@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.14 2005-07-05 11:21:35 chris-dollin Exp $
+  $Id: SimpleGraphMaker.java,v 1.15 2005-10-07 15:04:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -88,6 +88,9 @@ public class SimpleGraphMaker extends BaseGraphMaker
             return already.openAgain();
         }
         
+    public Graph openGraph()
+        { return getGraph(); }
+    
     /**
         Remove the mapping from name to any graph from the local map.
      */

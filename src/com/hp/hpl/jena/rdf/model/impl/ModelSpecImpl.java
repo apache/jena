@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.55 2005-08-23 19:42:00 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.56 2005-10-07 15:04:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -84,8 +84,9 @@ public abstract class ModelSpecImpl implements ModelSpec
     protected Model makeDefaultModel()
         {
         Statement s = root.getProperty( JenaModelSpec.modelName );
-        return loadFiles( s == null ? maker.createFreshModel() : maker.createModel( s.getString() ) );
+        return loadFiles( s == null ? maker.createDefaultModel() : maker.createModel( s.getString() ) );
         }
+    
     /**
         Answer a Model created according to this ModelSpec and based on an underlying
         Model with the given name.
