@@ -6,12 +6,59 @@
 
 package jena;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class query
 {
     // Call-through to arq command line application
     public static void main(String[] args)
     {
-        arq.query.main(args) ;
+        // Do this by reflection so it is not assumed that ARQ is available
+        // at compile time.
+        
+        invokeCmd("arq.query", args) ;
+    }
+    
+    public static void invokeCmd(String className, String[] args)
+    {
+        
+        Class cmd = null ;
+        try { cmd = Class.forName(className) ; }
+        catch (ClassNotFoundException ex)
+        {
+            System.err.println("Class '"+className+"' not found") ;
+            System.exit(1) ;
+        }
+        
+        Method method = null ;
+        try { method = cmd.getMethod("main", new Class[]{String[].class}) ; }
+        catch (NoSuchMethodException ex)
+        {
+            System.err.println("'main' not found but the class '"+className+"' was") ;
+            System.exit(1) ;
+        }
+        
+        try 
+        {
+            method.invoke(null, new Object[]{args}) ;
+            return ;
+        } catch (IllegalArgumentException ex)
+        {
+            System.err.println("IllegalArgumentException exception: "+ex.getMessage());
+            System.exit(7) ;
+        } catch (IllegalAccessException ex)
+        {
+            System.err.println("IllegalAccessException exception: "+ex.getMessage());
+            System.exit(8) ;
+        } catch (InvocationTargetException ex)
+        {
+            System.err.println("InvocationTargetException exception: "+ex.getMessage());
+            System.exit(9) ;
+        }
+
+        
+        //arq.query.main(args) ;
     }
 }
 

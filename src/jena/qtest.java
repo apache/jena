@@ -11,7 +11,7 @@ public class qtest
     // Call-through to arq command line application
     public static void main(String[] args)
     {
-        arq.qtest.main(args) ;
+        query.invokeCmd("arq.qtest",args) ;
     }
 }
 

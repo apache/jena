@@ -11,7 +11,7 @@ public class sparql
     // Call-through to arq command line application
     public static void main(String[] args)
     {
-        arq.sparql.main(args) ;
+        query.invokeCmd("arq.sparql",args) ;
     }
 }
 

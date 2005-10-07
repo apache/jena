@@ -11,7 +11,7 @@ public class rset
     // Call-through to arq command line application
     public static void main(String[] args)
     {
-        arq.rset.main(args) ;
+        query.invokeCmd("arq.rset", args) ;
     }
 }
 
