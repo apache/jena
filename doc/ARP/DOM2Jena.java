@@ -30,7 +30,7 @@ public class DOM2Jena {
 		
 		// Make SAX2Model SAX event handler
 		Model m = ModelFactory.createDefaultModel();
-		SAX2Model handler = SAX2Model.newInstance(
+		SAX2Model handler = SAX2Model.create(
 				"http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf", m);
 
 		
