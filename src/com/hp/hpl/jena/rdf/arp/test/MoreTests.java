@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.37 2005-09-23 11:02:20 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.38 2005-10-07 10:23:20 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -22,6 +22,7 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -446,6 +447,16 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 			}
 		});
+        a.getHandlers().setErrorHandler(new ErrorHandler(){
+            public void error(SAXParseException exception) throws SAXException {
+                throw new RuntimeException("Unexpected error");
+            }
+            public void fatalError(SAXParseException exception) throws SAXException {
+              throw exception;  
+            }
+            public void warning(SAXParseException exception) throws SAXException {
+                throw new RuntimeException("Unexpected warning");
+            }});
 		try {
 			a.load(in);
 			fail("Thread was not interrupted.");

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: WrappedException.java,v 1.3 2005-09-23 07:51:49 jeremy_carroll Exp $
+ * * $Id: WrappedException.java,v 1.4 2005-10-07 10:23:15 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -66,9 +66,9 @@ class WrappedException extends java.lang.RuntimeException {
         }
         initCause(e);
     }
-    WrappedException(IOException e) {
-        initCause(e);
-    }
+//    WrappedException(IOException e) {
+//        initCause(e);
+//    }
     /** Throw the exception,  falling back to be a wrapped SAXParseException.
      */
     void throwMe() throws IOException, SAXException {

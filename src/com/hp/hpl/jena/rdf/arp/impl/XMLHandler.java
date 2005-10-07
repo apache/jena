@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.20 2005-10-06 17:27:06 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.21 2005-10-07 10:23:15 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -37,7 +37,6 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-import java.io.InterruptedIOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -125,7 +124,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     public void startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXException {
         if (Thread.interrupted())
-            throw new WrappedException(new InterruptedIOException());
+            warning(null, ERR_IO_INTERRUPTED, "Interrupt detected.");
         FrameI oldFrame = frame;
         frame = frame.startElement(uri, localName, rawName, atts);
         if (DEBUG)

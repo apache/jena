@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.26 2005-09-26 11:28:56 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.27 2005-10-07 10:23:20 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -530,5 +530,9 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * Treated as a fatal error in both
      * default and strict modes. (E301) */
     public int ERR_SAX_FATAL_ERROR = 301;
+    
+
+    /**   The Thread was interrupted. (E302) */
+    public int ERR_IO_INTERRUPTED = 302;
 
 }
