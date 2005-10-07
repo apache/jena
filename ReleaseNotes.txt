@@ -28,7 +28,7 @@ Constraint rewriter
       on typed or languaged literals. These Have Been Fixed.
 
 PrefixMappings
-    o new boolean method equalTo(PrefixMapping) compares mappings
+    o new boolean method samePrefixMappingAs(PrefixMapping) compares mappings
       for equality but has opportunity to avoid creating intermediate
       maps.
 
