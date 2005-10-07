@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-;;; -- Post 2.2final change list ----------------------------------------
+==== Jena 2.3
 
 ARQ - SPARQL for Jena
     o ARQ added to Jena
@@ -9,15 +9,17 @@ ARQ - SPARQL for Jena
 
 JAR changes
 
-    o Re0placed and upgraded with name changes:
+    jena.jar has been split into jena.jar and jenatest.jar (the test packages).
+
+    Replaced and upgraded with name changes:
       antlr.jar  =>  antlr-2.7.5.jar
       jakarta-oro-2.0.5.jar  =>  jakarta-oro-2.0.8.jar
       log4j-1.2.7.jar  =>  log4j-1.2.12.jar
       icu4j.jar  =>  icu4j_3_4.jar
       
-      Xerces jars updated to Xerces 2.7.1
+    Xerces jars updated to Xerces 2.7.1
 
-      New Jarfiles:
+    New Jarfiles:
       arq.jar
       jenatest.jar 
       stax-1.1.1-dev.jar
@@ -249,7 +251,7 @@ ModelLock
     o Deprected in favour of Lock (in shared).
     o Two implementations: LockMRSW and LockMutex
 
-;;; -- end post2.2final change list -------------------------------------
+==== End Jena 2.3
 
 
 MySQL
