@@ -162,16 +162,14 @@ public class SAX2Model extends SAX2RDF {
     protected SAX2Model(String base, Model m, String lang)
             throws MalformedURIException {
         super(base, lang, true);
-        handler = new JenaHandler(m, errorHandler);
-        handler.useWith(getHandlers());
+        handler = initHandler(m);
         initParseX(base, lang);
     }
 
     protected SAX2Model(String base, Model m, String lang, int dummy)
             throws SAXParseException {
         super(base, lang, true);
-        handler = new JenaHandler(m, errorHandler);
-        handler.useWith(getHandlers());
+        handler = initHandler(m);
         initParse(base, lang);
     }
 
@@ -183,17 +181,24 @@ public class SAX2Model extends SAX2RDF {
      */
     SAX2Model(String base, Model m, String lang, boolean dummy) {
         super(base, lang, dummy);
-        handler = new JenaHandler(m, errorHandler);
-        handler.useWith(getHandlers());
+        handler = initHandler(m);
     }
 
+    private JenaHandler initHandler(Model m) {
+        if (m==null) return null;
+        JenaHandler rslt = new JenaHandler(m, errorHandler);
+        rslt.useWith(getHandlers());
+        return rslt;
+        
+    }
     private boolean closed = false;
 
     public void close() {
         // System.err.println("closing;");
         if (!closed) {
             super.close();
-            handler.bulkUpdate();
+            if (handler != null)
+              handler.bulkUpdate();
             closed = true;
         }
     }

@@ -108,7 +108,7 @@ public class DOM2Model extends SAX2Model {
     }
     
 
-    public DOM2Model(String base, Model m, String lang, boolean dummy)
+    DOM2Model(String base, Model m, String lang, boolean dummy)
             throws  SAXParseException {
         super(base, m, lang, 0);
     }
