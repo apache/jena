@@ -110,17 +110,15 @@
 <pre>Literal l = model.createTypedLiteral(new Integer(25));</pre>
 <p>will create a typed literal with the lexical value &quot;25&quot;, of type 
   xsd:int.</p>
-<p>Note that in Jena1 there were convenience functions which created literals 
-  from primitive values and extracted primitive values from literals:</p>
+<p>Note that there are also functions which look similar but do not use typed literals. 
+For example::</p>
 <pre>Literal l = model.createLiteral(25);
 int age = l.getInt();</pre>
 <p>These worked by converting the primitive to a string and storing the resulting 
   string as a plain literal. The inverse operation then attempts to parse the 
-  string of the plain literal (as an int in this example). These operations work 
-  unchanged in Jena2 just as they did before; and they still create plain, not 
-  typed, literals. This has the advantage of backward compatibility. Of course, 
-  just like in Jena1, the values written out for plain literals do not contain 
-  any datatyping information.</p>
+  string of the plain literal (as an int in this example). These are for backward
+  compability with earlier versions of Jena and older datasets. In normal
+  circumstances <code>createTypedLiteral</code> is preferable.</p>
 <h3>Equality issues</h3>
 <p>There is a well defined notion of when two typed literals should be equal, 
   based on the equality defined for the datatype in question. Jena2 implements 
@@ -371,7 +369,7 @@ Literal l1 = m.createTypedLiteral("3/5", rtype);</pre>
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: typedLiterals.html,v 1.3 2003-08-28 11:29:05 andy_seaborne Exp $</i>
+  Last modification: $Id: typedLiterals.html,v 1.4 2005-10-07 12:58:07 der Exp $</i>
 </p>
 </body>
 </html>
