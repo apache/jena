@@ -21,7 +21,7 @@ subject, predicate, and object positions of statements,
 to allow all the statements with a given value in one
 of those positions to be found rapidly.
 Previous versions of Jena did not index literal objects,
-because of data-typing complications - eg, the two values
+because of data-typing complications - e.g., the two values
 <code>"1"^^xsd:integer</code> and <code>"01"^^xsd:integer</code>
 are the same, but both are different from <code>"1"^^xsd:string</code>.
 This meant that query patterns containing a literal 
@@ -59,7 +59,7 @@ updating a model during a query may not be detected.
 should not need to be changed to exploit the performance
 improvements. 
 
-<p>Our local tests have had improvments of the order of
+<p>Our local tests have had improvements of the order of
 four times faster, but it will be heavily dependant on the
 shape of the query.
 

@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.38 2005-10-06 17:26:21 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.html,v 1.39 2005-10-07 17:34:23 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -119,7 +119,6 @@ Schema, what do I do?</a></li>
 </ul>
 <h3>XML serialisation (reading and writing)</h3>
 <ul>
-  <li><a href="#xml-0">Why are some of my statement objects serialised as XML elements, and some as XML attributes?</a></li>
   <li><a href="#xml-1">Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code> 
     when I want output like <code>&lt;owl:Class&nbsp;...&gt;</code>?</a></li>
 </ul>
@@ -161,12 +160,12 @@ Schema, what do I do?</a></li>
   check if the version they are using is compatible with those shipped by Jena. The current
   library versions used by Jena are:</p>
   <ul>
-  <li><strong>Xerces</strong> - 2.6.1 (not compatible with Xerces prior to 2.6.0)</li>
-  <li><strong>log4j</strong> - 1.2.7</li>
+  <li><strong>Xerces</strong> - 2.7.1 (not compatible with Xerces prior to 2.6.0)</li>
+  <li><strong>log4j</strong> - 1.2.12</li>
   <li><strong>junit</strong> - ?</li>
-  <li><strong>icu4j</strong> - 3.2 (note: the jar shipped by the icu team is called icu4j_3_2, and is the same as this jar)</li>
-  <li><strong>jakarta-oro</strong> - 2.0.5</li>
-  <li><strong>antlr</strong> - 2.7.2</li>
+  <li><strong>icu4j</strong> - 3.4</li>
+  <li><strong>jakarta-oro</strong> - 2.0.8</li>
+  <li><strong>antlr</strong> - 2.7.5</li>
   <li><strong>jakarta-commons-logging</strong> - 1.0.3</li>
   <li><strong>concurrent</strong> - 1.3.2</li>
   </ul> 
@@ -593,20 +592,8 @@ access
   in the <a href="DB/layout.html">layout</a> documentation. </p>
   
 <h3>XML serialisation (reading and writing)</h3>
-<p id="xml-0"><strong>Q: Why are some of my statement objects serialised as XML elements, and some as XML attributes?</strong><br />
-  <strong>A:</strong> This is a feature of the default RDF/XML writer settings in Jena 2.0.
-  Semantically, writing the object of a statement as an XML element or XML attribute makes
-  no difference to the RDF meaning. However, we have recognised that this is confusing, so
-  from Jena-2.1-dev3 onwards, the default is to write out all statements objects as XML elements.<br />
-  The process that is behind the output is the invocation of a rule in the RDF/XML writer, that 
-  writes values that contain no spaces as attributes.  This rule can be turned on or off
-  selectively by using an explicit <code>RDFWriter</code> object, rather than relying on the
-  defaults that apply by calling <code>Model.write()</code>. The means of doing this are described
-  in the <a href="IO/iohowto.html#output">I/O howto</a>. In particular, the rule <code>propertyAttr</code>
-  must be enabled or disabled.
-  </p>
 
-<p id="#xml-1"><strong>Q: Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code> 
+<p id="xml-1"><strong>Q: Why does my output use <code>&lt;rdf:Description&nbsp;...&gt;</code> 
     when I want output like <code>&lt;owl:Class&nbsp;...&gt;</code>?</strong><br />
 <strong>A:</strong> This is the raw form of the RDF serialisation into XML. In terms of RDF's
 information model, it expresses the same semantics as the compressed form. So the following
