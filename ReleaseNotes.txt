@@ -48,12 +48,16 @@ ARP
 
     o Some changes in the error codes produced for ill-formed
       input.
+      
+    o The treatment of interrupts has changed. Instead of
+      throwing an InterruptedIOException, a fatal error
+      is produced ERR_IO_INTERRUPTED.
 
     o A few public classes that were in the old ARP package, but
       labelled as not part of the API have been removed.
 
-    o DOM2Model public constructors have been deprecated and have changed
-      with not backwardly compatible throws declarations.
+    o DOM2Model public constructors have been deprecated, and
+      replaced with factories.
 
     o SAX2Model and SAX2RDF factories methods have been deprecated and replaced.
 
