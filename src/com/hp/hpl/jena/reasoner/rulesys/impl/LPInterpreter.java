@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.10 2005-07-12 15:57:43 chris-dollin Exp $
+ * $Id: LPInterpreter.java,v 1.11 2005-10-07 12:46:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-07-12 15:57:43 $
+ * @version $Revision: 1.11 $ on $Date: 2005-10-07 12:46:04 $
  */
 public class LPInterpreter {
 
@@ -590,6 +590,12 @@ public class LPInterpreter {
                                     BackwardRuleInfGraphI infGraph = engine.getInfGraph();
                                     RuleDerivation d = new RuleDerivation(envFrame.getRule(), result, matches, infGraph);
                                     infGraph.logDerivation(result, d);
+                                    
+                                    // Also want to record this result in the calling frame
+                                    if (envFrame.link instanceof EnvironmentFrameWithDerivation) {
+                                        EnvironmentFrameWithDerivation pefd = (EnvironmentFrameWithDerivation)envFrame.link;
+                                        pefd.noteMatch(new TriplePattern(result), pc);
+                                    }
                                 }
                             }
                             envFrame = (EnvironmentFrame) envFrame.link;
@@ -741,6 +747,14 @@ public class LPInterpreter {
         } else {
             return node;
         }
+    }
+    
+    /**
+     * Return a dereferenced copy of a triple.
+     */
+    public static Triple deref(TriplePattern t) {
+        if (t == null) return null;
+        return new Triple(deref(t.getSubject()), deref(t.getPredicate()), deref(t.getObject()));
     }
     
     /**

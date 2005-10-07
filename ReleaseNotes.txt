@@ -196,6 +196,8 @@ Reasoners:
     o Fixed bug with rule sets which include a proprocessing hook to ensure,
       the hooks are rerun after new triple adds which should invoke the hook.
       
+    o Fixed two bugs with derivation logging of backward rules.
+      
     o Modified processing of non-monotonic rulesets (involving drop/remove) so
       that each entry in the conflict set is fired separately and all the 
       consquences propagated before attempting to fire the next rule.

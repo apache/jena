@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: EnvironmentFrameWithDerivation.java,v 1.5 2005-02-21 12:17:40 andy_seaborne Exp $
+ * $Id: EnvironmentFrameWithDerivation.java,v 1.6 2005-10-07 12:46:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * incremental derivation logging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-02-21 12:17:40 $
+ * @version $Revision: 1.6 $ on $Date: 2005-10-07 12:46:04 $
  */
 public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
 
@@ -27,7 +27,9 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
     Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
         
     /** The set of instantiated subgoals processed so far */
-    Triple[] matches;
+    // TODO TEMP DEBUG
+//    Triple[] matches;
+    TriplePattern[] matches;
         
     /** 
      * Constructor 
@@ -36,15 +38,19 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
     public EnvironmentFrameWithDerivation(RuleClauseCode clause) {
         super(clause);
         if (clause.getRule() != null) {
-            matches = new Triple[clause.getRule().bodyLength()];
+            // TODO TEMP DEBUG
+//            matches = new Triple[clause.getRule().bodyLength()];
+            matches = new TriplePattern[clause.getRule().bodyLength()];
         }
     }
     
     /** Instantiate and record a matched subgoal */
     public void noteMatch(TriplePattern pattern, int pc) {
-        Triple match = new Triple(LPInterpreter.deref(pattern.getSubject()), 
-                                    LPInterpreter.deref(pattern.getPredicate()),
-                                    LPInterpreter.deref(pattern.getObject()));
+        // TODO TEMP DEBUG
+//        Triple match = new Triple(LPInterpreter.deref(pattern.getSubject()), 
+//                                    LPInterpreter.deref(pattern.getPredicate()),
+//                                    LPInterpreter.deref(pattern.getObject()));
+        TriplePattern match = pattern;
         int term = clause.termIndex(pc);   
         if (term >= 0) {                                 
             matches[term] = match;
@@ -67,10 +73,13 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
     public List getMatchList() {
         ArrayList matchList = new ArrayList();
         for (int i = 0; i < matches.length; i++) {
-            matchList.add(matches[i]);
+            // TODO TEMP DEBUG
+//            matchList.add(matches[i]);
+            matchList.add( LPInterpreter.deref(matches[i]));
         }
         return matchList;
     }
+    
     /**
      * Create an initial derivation record for this frame, based on the given
      * argument registers.
