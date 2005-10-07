@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.27 2005-10-07 10:23:20 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.28 2005-10-07 13:02:38 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -104,10 +104,11 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     public int IGN_XMLBASE_SIGNIFICANT = 3;
     /**
      The use of rdf:parseType="daml:collection" does
-     not conform with RDF2003. (W004)
-     This is ignored in default mode and an error in strict mode.
-     Note: strictly speaking the conformant behaviour is to silently
-     treat this as rdf:parseType="Literal".
+     not conform with RDF2004.
+     This is ignored in default mode.
+     In strict mode the parser follows the conformant behaviour 
+     which is to silently
+     treat this as rdf:parseType="Literal" (W004).
    */
     public int IGN_DAML_COLLECTION = 4;
     
@@ -533,6 +534,6 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
     
 
     /**   The Thread was interrupted. (E302) */
-    public int ERR_IO_INTERRUPTED = 302;
+    public int ERR_INTERRUPTED = 302;
 
 }

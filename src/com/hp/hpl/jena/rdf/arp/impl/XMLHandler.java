@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.21 2005-10-07 10:23:15 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.22 2005-10-07 13:02:37 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -124,7 +124,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     public void startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXException {
         if (Thread.interrupted())
-            warning(null, ERR_IO_INTERRUPTED, "Interrupt detected.");
+            warning(null, ERR_INTERRUPTED, "Interrupt detected.");
         FrameI oldFrame = frame;
         frame = frame.startElement(uri, localName, rawName, atts);
         if (DEBUG)
