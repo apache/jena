@@ -9,7 +9,7 @@ antlr-2.7.5.jar
 arq.jar
 commons-logging.jar
 concurrent.jar
-icu4j.jar
+icu4j_3_4.jar
 jakarta-oro-2.0.8.jar
 jena.jar
 jenatest.jar

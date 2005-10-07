@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.21 2005-10-05 13:58:34 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.22 2005-10-07 14:51:32 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -54,8 +54,6 @@ import org.xml.sax.SAXParseException;
  * java &lt;class-path&gt; com.hp.hpl.jena.arp.NTriple ( [ -[xstfurR]][ -b xmlBase -[eiw] NNN[,NNN...] ] [ file ] [ url ] )...
  * </pre>
  * <p>
- * &lt;class-path&gt; should contain <code>jena.jar</code>, <code>xerces.jar</code>,  and <code>icu4j.jar</code> or equivalents.
- * </p>
  * All options, files and URLs can be intemingled in any order.
  * They are processed from left-to-right.
  * <dl>
