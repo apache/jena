@@ -50,9 +50,9 @@ ARP
       input.
       
     o The treatment of interrupts has changed. Instead of
-      throwing an InterruptedIOException, a fatal error
+      throwing an InterruptedIOException, an error
       is produced: ERR_INTERRUPTED, and reported through
-      the error handler.
+      the error handler as a fatal error.
 
     o A few public classes that were in the old ARP package, but
       labelled as not part of the API have been removed.
