@@ -7,11 +7,11 @@
  * Web                http://jena.sourceforge.net
  * Created            22-Aug-2003
  * Filename           $RCSfile: Main.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-06 17:49:07 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-10-08 08:38:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.rdf.model.ModelMaker;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Main.java,v 1.1 2005-10-06 17:49:07 andy_seaborne Exp $
+ * @version CVS $Id: Main.java,v 1.2 2005-10-08 08:38:07 ian_dickinson Exp $
  */
 public class Main {
     // Constants
@@ -161,8 +161,8 @@ public class Main {
      */
     private static String getDefaultSource() {
         // use the ont doc mgr to map from a generic URN to a local source file
-        OntDocumentManager.getInstance().addAltEntry( ONT1, "file:doc/ontology/data/test1.owl" );
-        OntDocumentManager.getInstance().addAltEntry( ONT2, "file:doc/ontology/data/test2.owl" );
+        OntDocumentManager.getInstance().addAltEntry( ONT1, "file:src-examples/data/test1.owl" );
+        OntDocumentManager.getInstance().addAltEntry( ONT2, "file:src-examples/data/test2.owl" );
 
         return ONT1;
     }
