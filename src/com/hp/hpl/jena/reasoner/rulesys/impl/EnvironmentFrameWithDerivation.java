@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: EnvironmentFrameWithDerivation.java,v 1.6 2005-10-07 12:46:04 der Exp $
+ * $Id: EnvironmentFrameWithDerivation.java,v 1.7 2005-10-10 13:00:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * incremental derivation logging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-10-07 12:46:04 $
+ * @version $Revision: 1.7 $ on $Date: 2005-10-10 13:00:50 $
  */
 public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
 
@@ -27,8 +27,6 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
     Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
         
     /** The set of instantiated subgoals processed so far */
-    // TODO TEMP DEBUG
-//    Triple[] matches;
     TriplePattern[] matches;
         
     /** 
@@ -38,18 +36,12 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
     public EnvironmentFrameWithDerivation(RuleClauseCode clause) {
         super(clause);
         if (clause.getRule() != null) {
-            // TODO TEMP DEBUG
-//            matches = new Triple[clause.getRule().bodyLength()];
             matches = new TriplePattern[clause.getRule().bodyLength()];
         }
     }
     
     /** Instantiate and record a matched subgoal */
     public void noteMatch(TriplePattern pattern, int pc) {
-        // TODO TEMP DEBUG
-//        Triple match = new Triple(LPInterpreter.deref(pattern.getSubject()), 
-//                                    LPInterpreter.deref(pattern.getPredicate()),
-//                                    LPInterpreter.deref(pattern.getObject()));
         TriplePattern match = pattern;
         int term = clause.termIndex(pc);   
         if (term >= 0) {                                 
@@ -73,8 +65,6 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
     public List getMatchList() {
         ArrayList matchList = new ArrayList();
         for (int i = 0; i < matches.length; i++) {
-            // TODO TEMP DEBUG
-//            matchList.add(matches[i]);
             matchList.add( LPInterpreter.deref(matches[i]));
         }
         return matchList;
