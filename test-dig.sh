@@ -1,7 +1,7 @@
 #!/bin/bash
 # Test script for running the DIG test suite using the Pellet
 # reasoner as a default
-# CVS $Id: test-dig.sh,v 1.1 2005-10-10 11:08:25 ian_dickinson Exp $
+# CVS $Id: test-dig.sh,v 1.2 2005-10-10 11:36:59 ian_dickinson Exp $
 
 if [ "$1" != "-nostart" ]; then
     # use default location for pellet unless env PELLET_HOME is set
@@ -28,15 +28,12 @@ do
       CP="${jar}"
   else
       CP="$CP${S}${jar}"
-      fi
-  done
+  fi
+done
 
-#echo $CP
-
-java -version
 java -classpath "$CP" junit.textui.TestRunner ${1:-com.hp.hpl.jena.reasoner.dig.test.TestPackage}
 
 if [ "$1" != "-nostart" ]; then
-	echo Terminating pellet job $pJob ...
+	echo Terminating pellet process $pJob ...
 	kill $pJob
 fi
