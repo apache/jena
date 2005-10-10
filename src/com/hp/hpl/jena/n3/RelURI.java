@@ -25,7 +25,7 @@ import java.net.URI ;
 /** com.hp.hpl.jena.query.util.RelURI
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.3 2005-10-05 21:12:13 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.4 2005-10-10 20:14:07 andy_seaborne Exp $
  */
 
 public class RelURI
@@ -35,14 +35,42 @@ public class RelURI
         public JenaURIException(String msg) { super(msg) ; }
     }
 
-    public static class RelativeURIException extends JenaException
+    public static class RelativeURIException extends JenaURIException
     {
         public RelativeURIException(String msg) { super(msg) ; }
     }
-
     
     static private String globalBase = null ;
-    /** Create resolve a URI agaisnt a base.
+    
+    static class Fixup
+    {
+        String originalPrefix = null ;
+        String safePrefix = null ;
+        String safeForm = null ;
+        Fixup(String str)
+        {
+            safeForm = str ;
+            if ( str != null && str.indexOf(' ') >= 0 )
+            {
+                int i = str.lastIndexOf(' ') ;
+                originalPrefix = str.substring(0, i+1) ;  // Include matched space
+                safeForm =       str.replace(' ','_') ;
+                safePrefix =     safeForm.substring(0, i+1) ;
+            }
+        }
+        String getSafe() { return safeForm; }
+        String reverse(String s)
+        {
+            if ( originalPrefix != null )
+            {
+                if ( s.startsWith(safePrefix) )
+                    s = originalPrefix+s.substring(safePrefix.length()) ;
+            }
+            return s ;
+        }
+    }
+    
+    /** Create resolve a URI against a base.
      *  Returns null if the result is not absolute. 
      * @param relStr
      * @param baseStr
@@ -50,10 +78,37 @@ public class RelURI
      * @throws JenaURIException       Unacceptable base URI string
      * @throws RelativeURIException   Base is relative or opaque
      */
-    
     static public String resolve(String relStr, String baseStr)
     {
-        // Special case is for non-path URIs: (file: and ftp: and http:)
+        Fixup b = new Fixup(baseStr) ;
+        Fixup r = new Fixup(relStr) ;
+        // "Adapt" URIs with spaces
+        String s = _resolve(r.getSafe(), b.getSafe()) ;
+        s = b.reverse(s) ;
+        s = r.reverse(s) ;  // relStr may be absolute
+        return s ;
+        
+    }
+    
+    static private String _resolve(String relStr, String baseStr)
+    {
+        URI rel = null ;
+        try { rel = new URI(relStr) ; }
+        catch (java.net.URISyntaxException ex)
+        { throw new JenaURIException("Illegal URI: "+relStr) ; }
+        
+        if ( rel.isAbsolute() )
+        {
+            String s = rel.getScheme() ;
+            if ( rel.getScheme().equals("file") )
+                return resolveFileURL(relStr) ;
+            // Corner case : relStr is the strictly absolute URI with an imcomplete 
+            // scheme spcific part -- example: "file:x"
+            if ( rel.getPath() != null && rel.getPath().startsWith("/") )
+                return relStr ;
+            // Drop through in this corner case.
+        }
+
         
         if ( baseStr == null )
         {
@@ -104,14 +159,20 @@ public class RelURI
             throw new RelativeURIException("Relative URI for base: "+baseStr) ; 
         
         if ( base.isOpaque() )
+        {
+            // The case of file:A and #x
+            if ( base.getScheme().equals("file") && relStr.startsWith("#") )
+                return baseStr+relStr ;
+            
             // tag: and urn: but also anOther:...
             //return baseStr+relURI ;
             throw new RelativeURIException("Can't resolve a relative URI against an opaque URI: rel="+relStr+" : base="+baseStr) ;
+        }
         
         if ( base.getPath().length() == 0 && !relStr.startsWith("/") )
         {
             // No path in base. Unrooted relative string.
-            // Fudge - make base have a p
+            // Fudge - make base have a slash
             try {
                 base = new URI(baseStr+"/") ;
             } catch (java.net.URISyntaxException ex)
@@ -119,27 +180,6 @@ public class RelURI
                 LogFactory.getLog(RelURI.class).fatal("Base now illegal fixing up path-less base URI ("+baseStr+")") ;
                 throw new JenaURIException("Illegal URI (base) ptII: "+baseStr) ;
             }
-        }
-            
-        String baseScheme = base.getScheme() ;
-        
-        String scheme = FileUtils.getScheme(relStr) ;
-        if ( scheme != null )
-        {
-            // Is relStr "scheme:"?
-            if ( relStr.length() == scheme.length()+1 )
-                // Empty hierarchical part.  Best we can do.
-                return relStr ;
-            // Case of "base:#"
-            
-        }
-        
-        URI rel = null ;
-        try {
-            rel = new URI(relStr) ;
-        } catch (java.net.URISyntaxException ex)
-        {
-            throw new JenaURIException("Illegal URI: "+relStr) ;
         }
             
         URI abs = resolve(rel, base) ;
@@ -157,17 +197,6 @@ public class RelURI
         if ( s.startsWith("file:") )
             s = resolveFileURL(s) ;
         return s ;
-        
-//        if ( s.startsWith("file:/") && ! s.startsWith("file:///") )
-//        {
-//            s = s.substring("file:".length()) ;
-//            if ( s.startsWith("//") )
-//                s = "file:/"+s ;
-//            else
-//                s = "file://"+s ;
-//        }
-//        
-//        return s ;
     }
 
     private static URI resolve(URI rel, URI base)
