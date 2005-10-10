@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraph.java,v 1.15 2005-10-01 20:08:34 andy_seaborne Exp $
+  $Id: TestFileGraph.java,v 1.16 2005-10-10 12:58:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -9,9 +9,11 @@ package com.hp.hpl.jena.graph.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.FileUtils;
 
 import java.io.*;
+import java.util.*;
 
 import junit.framework.*;
 
@@ -126,7 +128,29 @@ public class TestFileGraph extends GraphTestBase
         inFile.read( "file:///" + foo, "N-TRIPLES" );
         assertIsomorphic( initial, inFile.getGraph() );
         }
-        
+
+    public void testClosingNotifys()
+        {
+        final List history = new ArrayList();
+        FileGraph.NotifyOnClose n = new FileGraph.NotifyOnClose() 
+            {
+            public void notifyClosed( File f )
+                { history.add( f ); }
+            };
+        File file = FileUtils.tempFileName( "fileGraph", ".nt" );
+        Graph g = new FileGraph( n, file, true, true, ReificationStyle.Minimal );
+        assertEquals( new ArrayList(), history );
+        g.close();
+        assertEquals( oneElementList( file ), history );
+        }
+    
+    protected List oneElementList( Object x )
+        {
+        List result = new ArrayList();
+        result.add( x );
+        return result;
+        }
+    
     /**
         Test that the graph encoded as the test-string content can be
         written out to a temporary file generated from the prefix and suffix,

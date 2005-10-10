@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.26 2005-03-10 14:54:30 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.27 2005-10-10 12:58:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -24,28 +24,38 @@ import java.io.*;
 */
 public class FileGraph extends GraphMem
     {
+    public interface NotifyOnClose
+        {
+        void notifyClosed( File f );
+        
+        static final NotifyOnClose ignore = new NotifyOnClose()
+            { public void notifyClosed( File f ) {} };
+        }
+
     /**
         See FileGraph( f, create, strict, Reifier.ReificationStyle ).
     */
     public FileGraph( File f, boolean create, boolean strict )
-        { this( f, create, strict, ReificationStyle.Minimal ); }
+        { this( NotifyOnClose.ignore, f, create, strict, ReificationStyle.Minimal ); }
     
     /**
         The File-name of this graph, used to name it in the filing system 
     */
-    protected File name;
+    protected final File name;
     
     /**
         A model used to wrap the graph for the IO operations (since these are not
         yet available at the graph level).
     */
-    protected Model model;
+    protected final Model model;
     
     /**
         The language used to read and write the graph, guessed from the filename's
         suffix.
     */
-    protected String lang;
+    protected final String lang;
+    
+    protected final NotifyOnClose notify;
     
     /**
         Construct a new FileGraph who's name is given by the specified File,
@@ -58,10 +68,11 @@ public class FileGraph extends GraphMem
         @param strict true to throw exceptions for create: existing, open: not found
         @param style the reification style for the graph
     */
-    public FileGraph( File f, boolean create, boolean strict, ReificationStyle style )
+    public FileGraph( NotifyOnClose notify, File f, boolean create, boolean strict, ReificationStyle style )
         {
         super( style );
         this.name = f;
+        this.notify = notify;
         this.model = new ModelCom( this );
         this.lang = FileUtils.guessLang( this.name.toString() );
         if (create)
@@ -118,6 +129,7 @@ public class FileGraph extends GraphMem
         {
         saveContents( name );
         super.close();
+        if (count == 0) notify.notifyClosed( name );
         }
     
     /**

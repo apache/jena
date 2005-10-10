@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.12 2005-03-10 14:57:29 chris-dollin Exp $
+  $Id: TestFileGraphMaker.java,v 1.13 2005-10-10 12:58:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import java.io.File;
+import java.util.HashSet;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
@@ -63,6 +64,25 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         gB.close();
         gB.delete();
         gA.delete();
+        }
+    
+    public void testForgetsClosedGraphs()
+        {
+        File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-forgets" );
+        FileGraphMaker m = new FileGraphMaker( scratch.getPath() );
+        m.createGraph( "example" ).close();
+        assertEquals( new HashSet(), iteratorToSet( m.listGraphs() ) );
+        }
+    
+    public void testDoesntReusedClosedGraphs()
+        {
+        File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-noReuse" );
+        FileGraphMaker m = new FileGraphMaker( scratch.getPath() );
+        Graph m1 = m.createGraph( "hello" );
+        m1.close();
+        Graph m2 = m.createGraph( "hello" );
+        assertNotSame( m1, m2 );
+        m2.add( triple( "this graph isOpen" ) );
         }
     }
 

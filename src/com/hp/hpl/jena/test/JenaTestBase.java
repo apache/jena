@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.17 2005-08-11 14:14:32 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.18 2005-10-10 12:58:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -58,6 +58,18 @@ public class JenaTestBase extends TestCase
     protected List listOfStrings( String s )
         {
         List result = new ArrayList();
+        StringTokenizer st = new StringTokenizer( s );
+        while (st.hasMoreTokens()) result.add( st.nextToken() );
+        return result;
+        }
+    
+    /**
+        Answer a Set of the substrings of <code>s</code> that are separated 
+        by spaces.
+    */
+    protected Set setOfStrings( String s )
+        {
+        Set result = new HashSet();
         StringTokenizer st = new StringTokenizer( s );
         while (st.hasMoreTokens()) result.add( st.nextToken() );
         return result;

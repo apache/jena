@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.23 2005-10-07 15:04:50 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.24 2005-10-10 12:58:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -24,7 +24,9 @@ import com.hp.hpl.jena.vocabulary.*;
     
  	@author hedgehog
 */
-public class FileGraphMaker extends BaseGraphMaker
+public class FileGraphMaker 
+    extends BaseGraphMaker 
+    implements FileGraph.NotifyOnClose
     {
     private String fileBase;
     private boolean deleteOnClose;
@@ -94,7 +96,7 @@ public class FileGraphMaker extends BaseGraphMaker
         File f = withRoot( name );
         FileGraph already = (FileGraph) created.get( f );
         if (already == null)
-            return remember( f, new FileGraph( f, true, strict, style ) ); 
+            return remember( f, new FileGraph( this, f, true, strict, style ) ); 
         else
             {
             if (strict) throw new AlreadyExistsException( name );
@@ -107,10 +109,13 @@ public class FileGraphMaker extends BaseGraphMaker
         File f = withRoot( name );
         return created.containsKey( f )  
             ? ((FileGraph) created.get( f )).openAgain()
-            : remember( f, new FileGraph( f, false, strict, style ) )
+            : remember( f, new FileGraph( this, f, false, strict, style ) )
             ;
         }
 
+    public void notifyClosed( File f )
+        { created.remove( f ); }
+    
     private File withRoot( String name )
         { return new File( fileBase, toFilename( name ) ); }
         
