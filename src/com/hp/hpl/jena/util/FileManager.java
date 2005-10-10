@@ -11,7 +11,6 @@ import java.util.* ;
 import org.apache.commons.logging.*; 
 //import javax.servlet.* ;
 
-import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.*;
 
@@ -41,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.27 2005-10-01 20:08:26 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.28 2005-10-10 20:13:36 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -329,11 +328,8 @@ public class FileManager
     // replace with RelURI.resolve()
     private static String chooseBaseURI(String baseURI)
     {
-        return RelURI.chooseBaseURI(baseURI) ;
-    }
-    
-    private static String chooseBaseURI_X(String baseURI)
-    {
+//        return RelURI.chooseBaseURI(baseURI) ;
+
         String scheme = FileUtils.getScheme(baseURI) ;
         
         if ( scheme != null )
