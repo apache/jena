@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.5 2005-10-01 20:08:35 andy_seaborne Exp $
+  $Id: TestModelRead.java,v 1.6 2005-10-10 14:01:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -43,32 +43,29 @@ public class TestModelRead extends ModelTestBase
          don't retry failing URLs as filenames. But the code text remains, so that
          when-and-if, we have a basis.
      */
-    public void testLoadsSimpleModelWithoutProtocol()
-        {
+//    public void testLoadsSimpleModelWithoutProtocol()
+//        {
 //        Model expected = ModelFactory.createDefaultModel();
 //        Model m = ModelFactory.createDefaultModel();
 //        expected.read( "testing/modelReading/simple.n3", "RDF/XML" );
 //        assertSame( m, m.read( "testing/modelReading/simple.n3", "base", "N3" ) );
 //        assertIsoModels( expected, m );
-        }    
+//        }    
     
     public void testSimpleLoadImplictBase()
         {
         Model mBasedImplicit = ModelFactory.createDefaultModel();
-        // TODO Kers to check these changes.
-//        mBasedImplicit.read( "file:testing/modelReading/based.n3", "N3" );
-//        assertIsoModels( modelWithStatements( "file:testing/modelReading/based.n3 jms:predicate jms:object" ), mBasedImplicit );
-        String fn = RelURI.resolveFileURL("file:testing/modelReading/based.n3") ;
+        String fn = RelURI.resolveFileURL( "file:testing/modelReading/based.n3" );
+        Model wanted = 
+            ModelFactory.createDefaultModel()
+            .add( resource( fn ), property( "jms:predicate" ), resource( "jms:object" ) );
         mBasedImplicit.read( fn, "N3" );
-        assertIsoModels( modelWithStatements( fn+" jms:predicate jms:object" ), mBasedImplicit );
+        assertIsoModels( wanted, mBasedImplicit );
         }
     
     public void testSimpleLoadExplicitBase()
         {
         Model mBasedExplicit = ModelFactory.createDefaultModel();
-        // TODO Kers to check these changes.
-//        mBasedExplicit.read( "file:testing/modelReading/based.n3", "base:", "N3" );
-//        assertIsoModels( modelWithStatements( "base: jms:predicate jms:object" ), mBasedExplicit );
         mBasedExplicit.read( "file:testing/modelReading/based.n3", "http://example/", "N3" );
         assertIsoModels( modelWithStatements( "http://example/ jms:predicate jms:object" ), mBasedExplicit );
         }
