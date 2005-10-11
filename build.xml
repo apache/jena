@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.104 2005-10-10 20:11:05 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.105 2005-10-11 10:33:44 ian_dickinson Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -26,7 +26,7 @@
 
   <!-- Source code locations -->
   <property name="src.dir"         value="src"/>
-  <property name="src.examples.dir"  value="src-examples"/>   
+  <property name="src.examples.dir"  value="src-examples"/>
   <property name="bldsrc.dir"      value="bldsrc"/>
   <property name="classes.dir"     value="bldbin"/>
   <property name="dist.root"       value="dist"/>
@@ -81,9 +81,9 @@
       <echo>[do `ant contrib` in the rdf-html module]</echo>
   </target>
 
-  <uptodate 
-      targetfile="${doc.dir}/contrib/contributions.n3" 
-      srcfile="${doc.dir}/contrib/contributions.html" 
+  <uptodate
+      targetfile="${doc.dir}/contrib/contributions.n3"
+      srcfile="${doc.dir}/contrib/contributions.html"
       property="contributions.need.updating"
   />
 
@@ -329,6 +329,7 @@
     <copy todir="${dist.dir}" file="test.bat"/>
     <copy todir="${dist.dir}" file="test.sh"/>
     <copy todir="${dist.dir}" file="test-db.sh"/>
+    <copy todir="${dist.dir}" file="test-dig.sh"/>
     <copy todir="${dist.dir}" file="readme.html"/>
     <copy todir="${dist.dir}/${etc.dir}">
       <fileset dir="${etc.dir}" includes="**"/>
