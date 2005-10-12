@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.40 2005-10-12 09:10:49 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.html,v 1.41 2005-10-12 09:43:29 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -123,7 +123,11 @@ Schema, what do I do?</a></li>
     when I want output like <code>&lt;owl:Class&nbsp;...&gt;</code>?</a></li>
 </ul>
 
-<h3>RDQL and query processing</h3>
+<h3>SPARQL, RDQL and query processing</h3>
+<p>See the <a href="ARQ/documentation.html">ARQ documentation</a> and
+<a href="ARQ/FAQ.html">ARQ FAQ</a>. See also the
+<a href="http://jena.sourceforge.net/ARQ/">ARQ web site</a> for new versions of 
+ARQ.</p>
 <ul>
   <li><a href="#rdql-0">How do I do test for substrings of literals?</a></li>
 </ul>
@@ -156,19 +160,10 @@ Schema, what do I do?</a></li>
   <strong>A:</strong> Jena makes use of several third party Java libraries. Copies of
   each of these is included in the $JENA/lib area of the distribution and we recommend
   including all of these jars in your classpath. In some circumstances applications 
-  already make use of specific versions of these libraries (e.g. Xerces) and need to 
-  check if the version they are using is compatible with those shipped by Jena. The current
-  library versions used by Jena are:</p>
-  <ul>
-  <li><strong>Xerces</strong> - 2.7.1 (not compatible with Xerces prior to 2.6.0)</li>
-  <li><strong>log4j</strong> - 1.2.12</li>
-  <li><strong>junit</strong> - ?</li>
-  <li><strong>icu4j</strong> - 3.4</li>
-  <li><strong>jakarta-oro</strong> - 2.0.8</li>
-  <li><strong>antlr</strong> - 2.7.5</li>
-  <li><strong>jakarta-commons-logging</strong> - 1.0.3</li>
-  <li><strong>concurrent</strong> - 1.3.2</li>
-  </ul> 
+  already make use of specific versions of these libraries (e.g. Xerces) and 
+  need to check if the version they are using is compatible with those shipped 
+  by Jena. The <a href="Licenses/index.html">current library versions used by Jena</a> are given 
+  <a href="Licenses/index.html">here</a>.</p>
 
 <p id="general-3">
   <strong>Q: How do I get the most up-to-date version of Jena?</strong><br />
@@ -619,28 +614,12 @@ fragments are equivalent (in RDF terms):</p>
   precise behaviour of the writer, including turning on and off abbreviation rules, are
   in the <a href="IO/iohowto.html#output">I/O howto</a>.</p>
 
-<h3>RDQL and query processing</h3>
-<p>See the <a href="tutorial/RDQL/index.html">RDQL tutorial</a></p>
+<h3>SPARQL, RDQL and query processing</h3>
+<p>See the <a href="ARQ/Tutorial/index.html">SPARQL Tutorial</a></p>
 
 <p id="rdql-0"><strong>Q: How do I do test substrings of literals?</strong><br>
-<strong>A:</strong> RDQL provides the regular expression match operator
-<code>=~</code> which is styled after Perl5, taking a variable on the left-hand side
-and a regular expression on the right.  The regular expression matching
-is provided by <a href="http://jakarta.apache.org/oro/">Jakarta ORO</a>.  Examples:
-<pre>  SELECT ?name
-  WHERE (?x  vCard:FN  ?name)
-  AND ?name =~ /Smith$/i
-  USING vCard FOR &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
-
-  SELECT ?x
-  WHERE (?x dc:title ?v)
-  AND ?v =~ /RDF/i
-  USING dc for &lt;http://purl.org/dc/elements/1.1/title&gt;
-</pre>
-<p>This can be used to do a case-insensitive substring match as in the last example,
-giving functionality similar to SQL LIKE.</p>
-
-  <p>&nbsp;</p>
+<strong>A:</strong> SPARQL provides REGEX and RDQL provides the &quot;=~&quot; operator. 
+See the <a href="ARQ/FAQ.html">ARQ FAQ</a> for details.<p>&nbsp;</p>
 
 </div><!-- end #content -->
 
