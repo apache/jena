@@ -10,7 +10,7 @@ import java.util.* ;
 /** A command line argument specification.
  *
  * @author  Andy Seaborne
- * @version $Id: ArgDecl.java,v 1.6 2005-09-21 09:48:26 andy_seaborne Exp $
+ * @version $Id: ArgDecl.java,v 1.7 2005-10-12 10:27:29 ian_dickinson Exp $
  */
 public class ArgDecl
 {
@@ -20,23 +20,23 @@ public class ArgDecl
     List argHooks = new ArrayList() ;
     public static final boolean HasValue = true ;
     public static final boolean NoValue = false ;
-    
+
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      */
-    
+
     public ArgDecl(boolean hasValue)
     {
         takesValue = hasValue ;
     }
-    
+
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      * @param name      Name of argument
      */
-    
+
     public ArgDecl(boolean hasValue, String name)
     {
         this(hasValue) ;
@@ -44,12 +44,12 @@ public class ArgDecl
     }
 
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      * @param name      Name of argument
      * @param handler   ArgHandler
      */
-    
+
     public ArgDecl(boolean hasValue, String name, ArgHandler handler)
     {
         this(hasValue) ;
@@ -58,7 +58,7 @@ public class ArgDecl
     }
 
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      * @param name1      Name of argument
      * @param name2      Name of argument
@@ -70,9 +70,9 @@ public class ArgDecl
         addName(name1) ;
         addName(name2) ;
     }
-    
+
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      * @param name1      Name of argument
      * @param name2      Name of argument
@@ -86,9 +86,9 @@ public class ArgDecl
         addName(name2) ;
         addHook( handler );
     }
-    
+
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      * @param name1      Name of argument
      * @param name2      Name of argument
@@ -102,9 +102,9 @@ public class ArgDecl
         addName(name2) ;
         addName(name3) ;
     }
-    
+
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      * @param name1      Name of argument
      * @param name2      Name of argument
@@ -120,9 +120,9 @@ public class ArgDecl
         addName(name3) ;
         addHook( handler );
     }
-    
+
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      * @param name1      Name of argument
      * @param name2      Name of argument
@@ -138,9 +138,9 @@ public class ArgDecl
         addName(name3) ;
         addName(name4) ;
     }
-    
+
     /** Create a declaration for a command argument.
-     * 
+     *
      * @param hasValue  Does it take a value or not?
      * @param name1      Name of argument
      * @param name2      Name of argument
@@ -158,23 +158,45 @@ public class ArgDecl
         addName(name4) ;
         addHook( handler );
     }
-    
+
+    /** Create a declaration for a command argument.
+     *
+     * @param hasValue  Does it take a value or not?
+     * @param name1      Name of argument
+     * @param name2      Name of argument
+     * @param name3      Name of argument
+     * @param name4      Name of argument
+     * @param name5      Name of argument
+     * @param handler    ArgHandler
+     */
+
+    public ArgDecl(boolean hasValue, String name1, String name2, String name3, String name4, String name5, ArgHandler handler)
+    {
+        this(hasValue) ;
+        addName(name1) ;
+        addName(name2) ;
+        addName(name3) ;
+        addName(name4) ;
+        addName(name5) ;
+        addHook( handler );
+    }
+
     public void addName(String name)
     {
         name = canonicalForm(name) ;
         names.add(name) ;
     }
-    
+
     public Set getNames() { return names ; }
     public Iterator names() { return names.iterator() ; }
-    
+
     // Callback model
-    
+
     public void addHook(ArgHandler argHandler)
-    { 
+    {
         argHooks.add(argHandler) ;
     }
-    
+
     protected void trigger(Arg arg)
     {
         for ( Iterator iter = argHooks.iterator() ; iter.hasNext() ; )
@@ -183,9 +205,9 @@ public class ArgDecl
             handler.action(arg.getName(), arg.getValue()) ;
         }
     }
-    
+
     public boolean takesValue() { return takesValue ; }
-    
+
     public boolean matches(Arg a)
     {
         for ( Iterator iter = names.iterator() ; iter.hasNext() ; )
@@ -196,21 +218,21 @@ public class ArgDecl
         }
         return false ;
     }
-    
+
     public boolean matches(String arg)
     {
         arg = canonicalForm(arg) ;
         return names.contains(arg) ;
     }
-    
+
     static String canonicalForm(String str)
     {
         if ( str.startsWith("--") )
             return str.substring(2) ;
-        
+
         if ( str.startsWith("-") )
             return str.substring(1) ;
-        
+
         return str ;
     }
 }
