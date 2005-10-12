@@ -7,10 +7,10 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-21 11:47:57 $
+ * Last modified on   $Date: 2005-10-12 09:02:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -91,7 +91,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.4 2005-09-21 11:47:57 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.5 2005-10-12 09:02:23 ian_dickinson Exp $)
  */
 public class rdfcat
 {
@@ -113,7 +113,7 @@ public class rdfcat
             }} );
 
     /** Argument setting expected input language to NTRIPLE */
-    public final ArgDecl IN_NTRIPLE = new ArgDecl( false, "t", "ntriples",
+    public final ArgDecl IN_NTRIPLE = new ArgDecl( false, "t", "ntriples", "ntriple", "n-triple",
             new ArgHandler() {
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     expectInput("N-TRIPLE");
@@ -231,7 +231,8 @@ public class rdfcat
             m_outputFormat = "N3";
         }
         else if ("N-TRIPLE".equalsIgnoreCase( lang ) ||
-                 "ntriples".equalsIgnoreCase( lang ) ||
+                "ntriples".equalsIgnoreCase( lang ) ||
+                "ntriple".equalsIgnoreCase( lang ) ||
                  "t".equalsIgnoreCase( lang ))
         {
             m_outputFormat = "N-TRIPLE";
