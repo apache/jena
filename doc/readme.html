@@ -38,21 +38,15 @@ N-TRIPLES</li>
   <dd>&nbsp;</dd>
   <dt>ARP - Jena's RDF/XML Parser</dt>
   <dd>ARP aims to be fully compliant with the latest decisions of the
-RDF Core WG. The Jena 2.0 version is compliant with the Editor's
-Working Drafts at time of release. ARP is typically invoked using
+RDF Core WG. The Jena2 version is compliant with the RDF Core recommendations. ARP is typically invoked using
 Jena's read operations, but can also be used standalone.</dd>
   <dd>&nbsp;</dd>
   <dt>Persistence</dt>
-  <dd>The Jena2 persistence subsystem implements an extension to the
-Jena Model class that provides persistence for models through use of a
-back-end database engine. Jena2 is largely backwards-compatible for
-Jena1 applications with the exception of some database configuration
-options. However, the persistence subsystem has been largely
-reimplemented for Jena2. In particular, Jena2 uses a different database
-layout than Jena1 that enables trade-offs between retrieval time and
-disk space usage. Jena2 also supports a Fastpath capability for RDQL
+  <dd>The Jena2 persistence subsystem implements an extension to the Jena Model 
+  class that provides persistence for models through use of a back-end database 
+  engine. Jena2 also supports a Fastpath capability for SPARQL and RDQL
 queries that dynamically generates SQL queries to perform as much of
-the RDQL query as possible within an SQL database engine. See the <a
+the SPARQL or RDQL query as possible within an SQL database engine. See the <a
  href="DB/index.html"> persistence documentation</a> for more
 details. </dd>
   <dd>&nbsp;</dd>
@@ -80,21 +74,21 @@ relationships between these classes and properties, and the individuals
 created from them. The ontology API works closely with the reasoning
 subsystem to derive additional information that can be inferred from a
 particular ontology source. Given that ontologists typically modularise
-ontologies into individual, re-usable components, and pulish these on
+ontologies into individual, re-usable components, and publish these on
 the web, the Jena2 ontology subsystem also includes a document manager
 that assists with process of managing imported ontology documents. See
 the <a href="ontology/index.html">ontology documentation</a> for
 more details.</dd>
   <dd>&nbsp;</dd>
-  <dt><b>RDQL query language</b></dt>
-  <dd>RDQL is a query language for RDF data. The implementation in Jena
+  <dt>SPARQL<b> query language</b></dt>
+  <dd>SPARQL is an RDF query language and protocol developed within W3C.&nbsp; 
+  Jena provides the ARQ query engine which implements both the
+  <a href="http://www.w3.org/TR/rdf-sparql-query/">SPARQL query language</a> and 
+  RDQL. The implementation in Jena
 is coupled to relational database storage so that optimized query is
-performed over data held in a Jena relational persistene store. </dd>
-  <dd>See <a href="tutorial/RDQL/index.html">RDQL Tutorial</a>.&nbsp;
-Also see <a href="RDQL/RDQL_Usage.html">RDQL_Usage.html</a>, <a
- href="RDQL/RDQL_Examples.html">RDQL_Examples.html</a> and <a
- href="RDQL/rdql_grammar.html">rdql_grammar.html</a> for condensed
-documentation.</dd>
+performed over data held in a Jena relational persistence store. </dd>
+  <dd>See <a href="ARQ/Tutorial/index.html">SPARQL Tutorial</a> and the
+  <a href="ARQ/documentation.html">ARQ documentation</a>.</dd>
 </dl>
 <h2>Documentation</h2>
 <p>Documentation is to be found in the <a href="index.html">doc/
@@ -131,32 +125,8 @@ to configure a proxy for some of the tests - see below for the
 appropriate properties. </li>
 </ul>
 <h2>Applications</h2>
-<p>The Jena distribution includes some convenience applications.</p>
-<p><code>jena.rdfcopy </code>will read an RDF file in either RDF/XML,
-N3 or
-n-triple format and write it to standard out in either RDF/XML, N3 or
-n-triple
-format. It can be used to translate between different RDF serialization
-formats.</p>
-<p><code>jena.rdfcompare</code> will read two RDF files, in either
-RDF/XML, N3
-or n-triple format and test whether they are equal.</p>
-<p><code>jena.rdfquery </code>will execute an RDQL query on an RDF
-data file,
-in either RDF/XML or n-triple format and print the table of results in
-text or
-HTML. It can also be used to query a Jena model held in a BerkeleyDB
-persistent store.</p>
-<p><code>jena.rdfparse</code> is command line interface to the ARP
-RDF/XML
-parser.</p>
-<p><code>jena.n3</code> is a command line interfacec to Jena's N3
-parser.</p>
-<p><code>jena.schemagen</code> takes and RDF Schema or OWL ontologies
-and generates Java
-source code for a constant class containing constants for all the
-classes and
-properties defined in that schema.</p>
+<p>The Jena distribution includes some convenience applications. These are 
+described in the <a href="tools.html">tools documentation</a>.</p>
 <p>These programs can be set use use a proxy to traverse a firewall by
 setting
 system properties. To use a socks proxy include the following in the
@@ -165,9 +135,12 @@ line:</p>
 <pre>   -DsocksProxyHost=&lt;your-proxy-domain-name-or-ip-address&gt;</pre>
 <p>To use an http proxy include the following on the command line:</p>
 <pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
+<pre>&nbsp;</pre>
 <h2>License</h2>
 <p>Jena is distributed under a BSD-style open source <a
  href="../copyright.txt">license</a>.</p>
+<p>Details of other licenses, together with version number information, are
+<a href="Licenses/index.html">available</a>.</p>
 <p>It includes software developed by the Apache Software Foundation
 (<a href="http://www.apache.org/">http://www.apache.org/</a>), both in
 the form of jar files and source code.</p>
@@ -188,7 +161,9 @@ Commons Logging</a></li>
   <li><a href="http://ant.apache.org/">ant</a></li>
   <li><a href="http://stax.codehaus.org/">StAX</li>
 </ul>
-Some of the developers use <a href="http://www.eclipse.org/">Eclipse</a>.<br>
+Some of the developers use <a href="http://www.eclipse.org/">Eclipse</a>.<p>
+<a href="Licenses/index.html">Details of sub-system versions</a>.<br>
 <br>
+</p>
 </body>
 </html>

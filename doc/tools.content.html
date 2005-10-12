@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: tools.content.html,v 1.7 2005-10-07 17:34:23 andy_seaborne Exp $ -->
+<!-- $Id: tools.content.html,v 1.8 2005-10-12 09:10:49 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena Semantic Web Framework - Command Line Utilities</title>
@@ -104,8 +104,20 @@ results</a> files.&nbsp; Print in these formats or in plain text.</dd>
 
 
 
-</dl>
-<p>&nbsp;</div><!-- end #content -->
+<h2>Remote Access</h2>
+<p>These programs can be set use use a proxy to traverse a firewall by
+setting
+system properties. To use a socks proxy include the following in the
+command
+line:</p>
+<pre>   -DsocksProxyHost=&lt;your-proxy-domain-name-or-ip-address&gt;</pre>
+<p>To use an http proxy include the following on the command line:</p>
+<pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
+<p>   &nbsp;</p>
+
+
+
+</dl></div>
 </div> <!-- end #main -->
 
 <div id="footer">
