@@ -9,7 +9,6 @@ package com.hp.hpl.jena.rdql.parser;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdql.*;
 import com.hp.hpl.jena.graph.query.IndexValues ;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 import java.io.PrintWriter;
 

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdql.*;
  *   Workign with associated triples
  *  
  * @author Andy Seaborne
- * @version $Id: QueryTestsMisc.java,v 1.5 2005-02-21 12:16:08 andy_seaborne Exp $
+ * @version $Id: QueryTestsMisc.java,v 1.6 2005-10-17 08:22:20 andy_seaborne Exp $
  */
 
 public class QueryTestsMisc extends TestSuite
@@ -68,6 +68,7 @@ public class QueryTestsMisc extends TestSuite
         
         TestQueryTriplesMerge() { super("TestQueryTriplesMerge" ) ; }
         
+        /** @deprecated */
         protected void runTest() throws Throwable
         {
             Model model2 = ModelFactory.createDefaultModel() ;
@@ -95,7 +96,7 @@ public class QueryTestsMisc extends TestSuite
     {
         
         TestQueryGetTriples() { super("TestQueryGetTriples" ) ; }
-        
+        /** @deprecated */
         protected void runTest() throws Throwable
         {
             Model model2 = ModelFactory.createDefaultModel() ;
@@ -122,7 +123,7 @@ public class QueryTestsMisc extends TestSuite
     {
         
         TestQueryGetTriples2() { super("TestQueryGetTriples2" ) ; }
-        
+        /** @deprecated */
         protected void runTest() throws Throwable
         {
             Model model2 = ModelFactory.createDefaultModel() ;

@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2001, 2002, 2003, 2004 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: QueryTestScripts.java,v 1.26 2005-10-01 20:08:34 andy_seaborne Exp $
+ * $Id: QueryTestScripts.java,v 1.27 2005-10-17 08:22:20 andy_seaborne Exp $
  */
 
 
@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.26 2005-10-01 20:08:34 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.27 2005-10-17 08:22:20 andy_seaborne Exp $
  */
 
 
@@ -146,6 +146,7 @@ public class QueryTestScripts extends TestSuite
             fileManager = null ;
         }
         
+        /** @deprecated */
         protected void runTest() throws Throwable
         {
             Query query = null ;

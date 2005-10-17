@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdql.*;
 
 /** Bunch of programmatic uses of query to complrment the script tests.
  * @author Andy Seaborne
- * @version $Id: QueryTestProgrammatic.java,v 1.9 2005-02-21 12:16:06 andy_seaborne Exp $
+ * @version $Id: QueryTestProgrammatic.java,v 1.10 2005-10-17 08:22:20 andy_seaborne Exp $
  */
 
 public class QueryTestProgrammatic extends TestSuite
@@ -82,6 +82,9 @@ public class QueryTestProgrammatic extends TestSuite
             queryString = q ;
         }
         
+        
+        /** @deprecated */
+        // Removes the warnings
         protected void runTest() throws Throwable
         {
             if ( verbose )
@@ -126,6 +129,7 @@ public class QueryTestProgrammatic extends TestSuite
             numResults = num ;
         }
         
+        /** @deprecated */
         protected void runTest() throws Throwable
         {
             if ( verbose )

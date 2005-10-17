@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngine.java,v 1.15 2005-02-21 12:15:23 andy_seaborne Exp $
+ * @version    $Id: QueryEngine.java,v 1.16 2005-10-17 08:22:28 andy_seaborne Exp $
  */
  
 public class QueryEngine implements QueryExecution
@@ -29,6 +29,9 @@ public class QueryEngine implements QueryExecution
     ResultsIterator resultsIter ;
     // Statistics
     long queryStartTime = -1 ;
+
+    /** @deprecated Migrate to com.hp.hpl.jena.query - the ARQ query engine
+     */ 
 
     public QueryEngine(Query q)
     {
@@ -65,6 +68,7 @@ public class QueryEngine implements QueryExecution
     
     /** Execute a query and get back the results.
      * @return QueryResults
+     * @deprecated Migrate to com.hp.hpl.jena.query - the ARQ query engine
      */
     
     public QueryResults exec() { return exec(null) ; }
