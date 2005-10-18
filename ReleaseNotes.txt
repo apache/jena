@@ -1,6 +1,21 @@
 Release Notes
 =============
 
+Post-Jena 2.3
+
+FileGraph[Maker]
+    o The recent change to FileGraph which meant that closed FileGraph's
+      were removed from their owning Maker also meant that they were
+      not deleted when the Maker was closed. Amongst other things, this
+      left crud in the tmp directory when running the tests. Fixed: the
+      Maker remembers /all/ the FileGraphs, even the closed ones.
+
+LiteralLabel
+    o reported bug whereby a LiteralLabel can be constructed with the
+      value part null has been fixed [by putting in the missing 'this.']
+
+
+
 ==== Jena 2.3
 
 ARQ - SPARQL for Jena
