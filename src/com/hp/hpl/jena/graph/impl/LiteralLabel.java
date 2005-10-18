@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.22 2005-08-22 15:08:02 der Exp $
+  $Id: LiteralLabel.java,v 1.23 2005-10-18 09:50:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -113,13 +113,14 @@ final public class LiteralLabel {
             String lex = (String)value;
             lexicalForm = lex;
             if (dtype == null) {
-                value = lex;
+                this.value = lex;
             } else {
                 setValue(lex);
             }
         } else {
 		    this.value = (dtype == null) ? value : dtype.cannonicalise( value );
         }
+        
         normalize();
 	}
 
