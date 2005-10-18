@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegression.java,v 1.7 2005-08-19 15:07:32 chris-dollin Exp $
+ 	$Id: NewRegression.java,v 1.8 2005-10-18 15:42:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -36,6 +36,7 @@ public class NewRegression extends ModelTestBase
         result.addTest( NewRegressionListSubjects.suite() );
         result.addTest( NewRegressionSelector.suite() );
         result.addTest( NewRegressionSeq.suite() );
+        result.addTest( NewRegressionSet.suite() );
         return result;
         }
     
@@ -44,134 +45,7 @@ public class NewRegression extends ModelTestBase
 
     }
 
-//
-//    /** test model set operations
-//     * @param m the model implementation under test
-//     */
-//    public void test11(Model m1, Model m2) {
-//        String  test = "Test11";
-//        int     n = 0;
-//        Statement stmt;
-//
-//        Model um = null;
-//        Model im = null;
-//        Model dm = null;
-//
-//        if (! (   m1.supportsSetOperations()          // jjc
-//               && m2.supportsSetOperations() ) )      // jjc
-//            return;                                   // jjc
-//
-//
-//        try {
-//            StmtIterator iter;
-////            System.out.println("Beginning " + test);
-//
-//            try {
-//                n=100;
-//                m2.add(m2.createResource(new ResTestObjF()), RDF.value, 1);
-//                if (m1.containsAll(m2)) error(test,n);
-//                n++; um = m1.union(m2);
-//                n++; iter = um.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (! (m1.contains(stmt) || m2.contains(stmt))) {
-//                        System.out.println(stmt.toString());
-//                        error(test,n);
-//                    }
-//                }
-//                n++; iter.close();
-//                n++; iter = m1.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (! um.contains(stmt)) error(test,n);
-//                }
-//                n++; iter.close();
-//                n++; iter = m2.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (! um.contains(stmt)) error(test,n);
-//                }
-//                n++; iter.close();
-//
-//                n++; if (!um.containsAll(m1)) error(test,n);
-//                n++; if (!um.containsAll(m2)) error(test,n);
-//                n++; iter = m1.listStatements();
-//                n++; if (!um.containsAll(iter)) error(test,n);
-//                     iter.close();
-//            } catch (Exception e) {
-//                error(test, n, e);
-//            }
-//
-//            try {
-//                n=200;
-//                im= um.intersection(m1);
-//                n++; iter = im.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (! (um.contains(stmt) && m1.contains(stmt)))
-//                        error(test,n);
-//                }
-//                n++; iter.close();
-//                n++; iter = um.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (m1.contains(stmt)) {
-//                        if (! im.contains(stmt)) error(test,n);
-//                    }
-//                }
-//                n++; iter.close();
-//                n++; iter = m1.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (m1.contains(stmt)) {
-//                        if (! im.contains(stmt)) error(test,n);
-//                    }
-//                }
-//                n++; iter.close();
-//            } catch (Exception e) {
-//                error(test, n, e);
-//            }
-//
-//            try {
-//                n=300;
-//                dm = um.difference(m2);
-//                n++; iter = dm.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (! (um.contains(stmt) && !(m2.contains(stmt))))
-//                        error(test,n);
-//                }
-//                n++; iter.close();
-//                n++; iter = um.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (m2.contains(stmt)) {
-//                        if (  dm.contains(stmt)) error(test,n);
-//                    } else {
-//                        if (! dm.contains(stmt)) error(test, 1000+n);
-//                    }
-//                }
-//                n++; iter.close();
-//                n++; iter = m2.listStatements();
-//                while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (  dm.contains(stmt)) error(test,n);
-//                }
-//                n++; iter.close();
-//                n++; if (dm.containsAny(m2)) error(test,n);
-//                n++; iter = m2.listStatements();
-//                n++; if (dm.containsAny(iter)) error(test,n);
-//                n++; iter.close();
-//            } catch (Exception e) {
-//                error(test, n, e);
-//            }
-//        } catch (Exception e) {
-//            logger.error( "test " + test + "[" + n + "]", e );
-//            errors = true;
-//        }
-////        System.out.println("End of " + test);
-//    }
-//
+
 //    /** test Resource methods
 //     * @param m the model implementation under test
 //     */
