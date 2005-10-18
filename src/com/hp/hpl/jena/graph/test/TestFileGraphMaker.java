@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.13 2005-10-10 12:58:16 chris-dollin Exp $
+  $Id: TestFileGraphMaker.java,v 1.14 2005-10-18 14:39:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -54,8 +54,8 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         {
         File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-already" );
         Graph content = graphWith( "something hasProperty someValue" );
-        FileGraphMaker A = new FileGraphMaker( scratch.getPath() );
-        FileGraphMaker B = new FileGraphMaker( scratch.getPath() );
+        FileGraphMaker A = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
+        FileGraphMaker B = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
         FileGraph gA = (FileGraph) A.createGraph( "already", true );
         gA.getBulkUpdateHandler().add( content );
         gA.close();
@@ -66,23 +66,35 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         gA.delete();
         }
     
+    public void testDeletesFilesOfClosedMaker()
+        {
+        File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-forgets" );
+        FileGraphMaker A = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
+        A.createGraph( "empty" ).close();
+        assertTrue( "file 'empty' should exist in '" + scratch + "'", new File( scratch, "empty" ) .exists() );
+        A.close();
+        assertFalse( "file 'empty' should no longer exist in '" + scratch + "'", new File( scratch, "empty" ) .exists() );
+        }
+    
     public void testForgetsClosedGraphs()
         {
         File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-forgets" );
-        FileGraphMaker m = new FileGraphMaker( scratch.getPath() );
+        FileGraphMaker m = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
         m.createGraph( "example" ).close();
         assertEquals( new HashSet(), iteratorToSet( m.listGraphs() ) );
+        m.close();
         }
     
     public void testDoesntReusedClosedGraphs()
         {
         File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-noReuse" );
-        FileGraphMaker m = new FileGraphMaker( scratch.getPath() );
+        FileGraphMaker m = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
         Graph m1 = m.createGraph( "hello" );
         m1.close();
         Graph m2 = m.createGraph( "hello" );
         assertNotSame( m1, m2 );
         m2.add( triple( "this graph isOpen" ) );
+        m.close();
         }
     }
 

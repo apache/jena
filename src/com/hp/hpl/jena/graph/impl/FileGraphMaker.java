@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.24 2005-10-10 12:58:10 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.25 2005-10-18 14:39:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -28,9 +28,10 @@ public class FileGraphMaker
     extends BaseGraphMaker 
     implements FileGraph.NotifyOnClose
     {
-    private String fileBase;
-    private boolean deleteOnClose;
-    private Map created = CollectionFactory.createHashedMap();
+    protected String fileBase;
+    protected boolean deleteOnClose;
+    protected Map created = CollectionFactory.createHashedMap();
+    protected Set toDelete = CollectionFactory.createHashedSet();
     
     /**
         Construct a file graph factory whose files will appear in root. The reifier
@@ -114,7 +115,10 @@ public class FileGraphMaker
         }
 
     public void notifyClosed( File f )
-        { created.remove( f ); }
+        {
+        toDelete.add( f );
+        created.remove( f ); 
+        }
     
     private File withRoot( String name )
         { return new File( fileBase, toFilename( name ) ); }
@@ -176,10 +180,13 @@ public class FileGraphMaker
         {
         if (deleteOnClose)
             {
-            Iterator it = created.keySet().iterator();
-            while (it.hasNext()) ((File) it.next()).delete();
+            deleteFiles( created.keySet().iterator() );
+            deleteFiles( toDelete.iterator() );
             }
         }
+
+    protected void deleteFiles( Iterator it )
+        { while (it.hasNext()) ((File) it.next()).delete(); }
         
     /**
         A Map1 that will convert filename strings to the corresponding graphname strings.
