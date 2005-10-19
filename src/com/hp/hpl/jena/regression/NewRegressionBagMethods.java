@@ -1,13 +1,14 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionBagMethods.java,v 1.1 2005-10-19 13:31:39 chris-dollin Exp $
+ 	$Id: NewRegressionBagMethods.java,v 1.2 2005-10-19 14:33:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.regression.Regression.*;
 
 import junit.framework.*;
 
@@ -31,188 +32,94 @@ public class NewRegressionBagMethods extends NewRegressionBase
         r = m.createResource();
         }
     
-    public void testX() 
+    public void testEmptyBag() 
         { 
         Bag bag = m.createBag();
         assertTrue( m.contains( bag, RDF.type, RDF.Bag ) );
+        assertEquals( 0, bag.size() );
+        assertFalse( bag.contains( tvBoolean ) );
+        assertFalse( bag.contains( tvByte ) );
+        assertFalse( bag.contains( tvShort ) );
+        assertFalse( bag.contains( tvInt ) );
+        assertFalse( bag.contains( tvLong ) );
+        assertFalse( bag.contains( tvChar ) );
+        assertFalse( bag.contains( tvFloat ) );
+        assertFalse( bag.contains( tvString ) );
         }
     
-//  /** test bag
-//  * @param m the model implementation under test
-//  */
-// public void test14(Model m) {
-//     String  test = "Test14";
-//     int     n = 0;
-//
-//     try {
-//         NodeIterator nIter;
-//         StmtIterator sIter;
-////         System.out.println("Beginning " + test);
-//         boolean    tvBoolean = true;
-//         byte       tvByte = 1;
-//         short      tvShort = 2;
-//         int        tvInt = -1;
-//         long       tvLong = -2;
-//         char       tvChar = '!';
-//         float      tvFloat = (float) 123.456;
-//         double     tvDouble = -123.456;
-//         String     tvString = "test 12 string";
-//         LitTestObj tvObject = new LitTestObj(12345);
-//         Literal tvLiteral = m.createLiteral("test 12 string 2");
-//         Resource   tvResObj = m.createResource(new ResTestObjF());
-//         Object     tvLitObj = new LitTestObj(1234);
-//         Bag        tvBag    = m.createBag();
-//         Alt        tvAlt    = m.createAlt();
-//         Seq        tvSeq    = m.createSeq();
-//         int        num=10;
-//         Statement stmt;
-//
-//         n=100;
-//         n++; Bag bag = m.createBag();
-//         n++; if (! m.contains(bag, RDF.type, RDF.Bag)) error(test,n);
-//         n++; if (! (bag.size() == 0)) error(test,n);
-//
-//         n=200;
-//         n++; bag.add(tvBoolean);
-//         n++; if (! bag.contains(tvBoolean)) error(test, n);
-//         n++; bag.add(tvByte);
-//         n++; if (! bag.contains(tvByte)) error(test, n);
-//         n++; bag.add(tvShort);
-//         n++; if (! bag.contains(tvShort)) error(test, n);
-//         n++; bag.add(tvInt);
-//         n++; if (! bag.contains(tvInt)) error(test, n);
-//         n++; bag.add(tvLong);
-//         n++; if (! bag.contains(tvLong)) error(test, n);
-//         n++; bag.add(tvChar);
-//         n++; if (! bag.contains(tvChar)) error(test, n);
-//         n++; bag.add(tvFloat);
-//         n++; if (! bag.contains(tvFloat)) error(test, n);
-//         n++; bag.add(tvDouble);
-//         n++; if (! bag.contains(tvDouble)) error(test, n);
-//         n++; bag.add(tvString);
-//         n++; if (! bag.contains(tvString)) error(test, n);
-//         n++; bag.add(tvLiteral);
-//         n++; if (! bag.contains(tvLiteral)) error(test, n);
-//         n++; bag.add(tvResObj);
-//         n++; if (! bag.contains(tvResObj)) error(test, n);
-//         n++; bag.add(tvLitObj);
-//         n++; if (! bag.contains(tvLitObj)) error(test, n);
-//         n++; if (! (bag.size()==12)) error(test,n);
-//
-//         {
-//             n=300;
-//             n++; bag = m.createBag();
-//                  for (int i=0; i<num; i++) {
-//                     bag.add(i);
-//                 }
-//             n++; if (! (bag.size()==num)) error(test,n);
-//             n++; nIter = bag.iterator();
-//                 for (int i=0; i<num; i++) {
-//                     if ( ! (((Literal) nIter.nextNode()).getInt() == i))
-//                         error(test, 320+i);
-//                 }
-//                 nIter.close();
-//         }
-//
-//         {
-//             boolean[] found = new boolean[num];
-//             boolean[] pattern =
-//               {true,  true,  true,  false, false,
-//                false, false, false, true,  true };
-//
-//             n=400;
-//             n++; nIter=bag.iterator();
-//                  for (int i=0; i<num; i++) {
-//             n++;    nIter.nextNode();
-//             n++;    if (! pattern[i]) nIter.remove();
-//                     found[i] = false;
-//                  }
-//             n++; nIter.close();
-//             n=450;
-//             n++; nIter = bag.iterator();
-//                  while (nIter.hasNext()) {
-//                     int v = ((Literal) nIter.nextNode()).getInt();
-//             n++;    if (  found[v]) error(test,n);
-//                     found[v] = true;
-//                  }
-//             n++; nIter.close();
-//             n=480;
-//                  for (int i=0; i<num; i++) {
-//             n++;    if (! (found[i]==pattern[i])) error(test,n);
-//                 }
-//         }
-//
-//         {
-//             boolean[] found = new boolean[num];
-//             boolean[] pattern =
-//               {false,  true,  true,  false, false,
-//                false, false, false, true,  false };
-//
-//             n=500;
-//             n++; bag = m.createBag();
-//                  for (int i=0; i<num; i++) {
-//                     bag.add(i);
-//                 }
-//             n++; nIter=bag.iterator();
-//                  for (int i=0; i<num; i++) {
-//             n++;    nIter.nextNode();
-//             n++;    if (! pattern[i]) nIter.remove();
-//                     found[i] = false;
-//                  }
-//             n++; nIter.close();
-//             n=550;
-//             n++; nIter = bag.iterator();
-//                  while (nIter.hasNext()) {
-//                     int v = ((Literal) nIter.nextNode()).getInt();
-//             n++;    if (  found[v]) error(test,n);
-//                     found[v] = true;
-//                  }
-//             n++; nIter.close();
-//             n=580;
-//                  for (int i=0; i<num; i++) {
-//             n++;    if (! (found[i]==pattern[i])) error(test,n);
-//                 }
-//         }
-//
-//         {
-//             boolean[] found = new boolean[num];
-//             boolean[] pattern =
-//               {false, false, false, false, false,
-//                false, false, false, false, false};
-//
-//             n=600;
-//             n++; bag = m.createBag();
-//                  for (int i=0; i<num; i++) {
-//                     bag.add(i);
-//                 }
-//             n++; nIter=bag.iterator();
-//                  for (int i=0; i<num; i++) {
-//             n++;    nIter.nextNode();
-//             n++;    if (! pattern[i]) nIter.remove();
-//                     found[i] = false;
-//                  }
-//             n++; nIter.close();
-//             n=650;
-//             n++; nIter = bag.iterator();
-//                  while (nIter.hasNext()) {
-//                     int v = ((Literal) nIter.nextNode()).getInt();
-//             n++;    if (  found[v]) error(test,n);
-//                     found[v] = true;
-//                  }
-//             n++; nIter.close();
-//             n=680;
-//                  for (int i=0; i<num; i++) {
-//             n++;    if (! (found[i]==pattern[i])) error(test,n);
-//                 }
-//         }
-//
-//     } catch (Exception e) {
-//         logger.error( "test " + test + "[" + n + "]", e );
-//         errors = true;
-//     }
-////     System.out.println("End of " + test);
-// }
-//
+    public void testFillingBag()
+        {
+        Bag bag = m.createBag();
+        String lang = "fr";
+        Literal tvLiteral = m.createLiteral( "test 12 string 2" );
+        Resource tvResObj = m.createResource( new ResTestObjF() );
+        bag.add( tvBoolean ); assertTrue( bag.contains( tvBoolean ) );
+        bag.add( tvByte ); assertTrue( bag.contains( tvByte ) );
+        bag.add( tvShort ); assertTrue( bag.contains( tvShort ) );
+        bag.add( tvInt ); assertTrue( bag.contains( tvInt ) );
+        bag.add( tvLong ); assertTrue( bag.contains( tvLong ) );
+        bag.add( tvChar ); assertTrue( bag.contains( tvChar ) );
+        bag.add( tvFloat ); assertTrue( bag.contains( tvFloat ) );
+        bag.add( tvString ); assertTrue( bag.contains( tvString ) );
+        bag.add( tvString, lang ); assertTrue( bag.contains( tvString, lang ) );
+        bag.add( tvLiteral ); assertTrue( bag.contains( tvLiteral ) );
+        bag.add( tvResObj ); assertTrue( bag.contains( tvResObj ) );
+        bag.add( tvLitObj ); assertTrue( bag.contains( tvLitObj ) );
+        assertEquals( 12, bag.size() );
+        }
+    
+    public void testBagOfIntegers()
+        {
+        int num = 10;
+        Bag bag = m.createBag();
+        for (int i = 0; i < num; i += 1) bag.add( i );
+        assertEquals( num, bag.size() );
+        NodeIterator it = bag.iterator();
+        for (int i = 0; i < num; i += 1)
+            assertEquals( i, ((Literal) it.nextNode()).getInt() );
+        assertFalse( it.hasNext() );
+        }
+    
+    public void testBagOfIntegersRemovingA()
+        {
+        boolean[] retain = { true,  true,  true,  false, false, false, false, false, true,  true };
+        testBagOfIntegersWithRemoving( retain );
+        }    
+    
+    public void testBagOfIntegersRemovingB()
+        {
+        boolean[] retain = { false, true, true, false, false, false, false, false, true, false };
+        testBagOfIntegersWithRemoving( retain );
+        }    
+    
+    public void testBagOfIntegersRemovingC()
+        {
+        boolean[] retain = { false, false, false, false, false, false, false, false, false, false };
+        testBagOfIntegersWithRemoving( retain );
+        }
+
+    protected void testBagOfIntegersWithRemoving( boolean[] retain )
+        {
+        final int num = retain.length;
+        boolean [] found = new boolean[num];
+        Bag bag = m.createBag();
+        for (int i = 0; i < num; i += 1) bag.add( i );
+        NodeIterator it = bag.iterator();
+        for (int i = 0; i < num; i += 1)
+            {
+            it.nextNode();
+            if (retain[i] == false) it.remove();
+            }
+        NodeIterator s = bag.iterator();
+        while (s.hasNext())
+            {
+            int v = ((Literal) s.nextNode()).getInt();
+            assertFalse( found[v] );
+            found[v] = true;
+            }
+        for (int i = 0; i < num; i += 1)
+            assertEquals( "element " + i, retain[i], found[i] );
+        }
     }
 
 
