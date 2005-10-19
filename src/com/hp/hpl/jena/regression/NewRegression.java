@@ -1,20 +1,14 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegression.java,v 1.8 2005-10-18 15:42:44 chris-dollin Exp $
+ 	$Id: NewRegression.java,v 1.9 2005-10-19 09:58:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
 
-import java.util.*;
-
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.regression.Regression.*;
-import com.hp.hpl.jena.shared.*;
 
 public class NewRegression extends ModelTestBase
     {
@@ -37,6 +31,7 @@ public class NewRegression extends ModelTestBase
         result.addTest( NewRegressionSelector.suite() );
         result.addTest( NewRegressionSeq.suite() );
         result.addTest( NewRegressionSet.suite() );
+        result.addTest( NewRegressionResourceMethods.suite() );
         return result;
         }
     
@@ -46,100 +41,6 @@ public class NewRegression extends ModelTestBase
     }
 
 
-//    /** test Resource methods
-//     * @param m the model implementation under test
-//     */
-//    public void test12(Model m) {
-//        String  test = "Test12";
-//        int     n = 0;
-//
-//        try {
-//            StmtIterator iter;
-////            System.out.println("Beginning " + test);
-//            Resource r = m.createResource();
-//            boolean    tvBoolean = true;
-//            byte       tvByte = 1;
-//            short      tvShort = 2;
-//            int        tvInt = -1;
-//            long       tvLong = -2;
-//            char       tvChar = '!';
-//            float      tvFloat = (float) 123.456;
-//            double     tvDouble = -123.456;
-//            String     tvString = "test 12 string";
-//            LitTestObj tvObject = new LitTestObj(12345);
-//            Literal tvLiteral = m.createLiteral("test 12 string 2");
-//            Resource tvResource = m.createResource();
-//            String     lang     = "en";
-//            Statement stmt;
-//
-//            n = 100;
-//            n++; if (! r.addProperty(RDF.value, tvByte)
-//                        .hasProperty(RDF.value, tvByte)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvShort)
-//                        .hasProperty(RDF.value, tvShort)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvInt)
-//                        .hasProperty(RDF.value, tvInt)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvLong)
-//                        .hasProperty(RDF.value, tvLong)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvChar)
-//                        .hasProperty(RDF.value, tvChar)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvFloat)
-//                        .hasProperty(RDF.value, tvFloat)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvDouble)
-//                        .hasProperty(RDF.value, tvDouble)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvString)
-//                        .hasProperty(RDF.value, tvString)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvString, lang)
-//                        .hasProperty(RDF.value, tvString, lang)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvObject)
-//                        .hasProperty(RDF.value, tvObject)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvLiteral)
-//                        .hasProperty(RDF.value, tvLiteral)) error(test, n);
-//            n++; if (! r.addProperty(RDF.value, tvResource)
-//                        .hasProperty(RDF.value, tvResource)) error(test, n);
-//            n++; if (! r.getRequiredProperty(RDF.value).getSubject().equals(r))
-//                       error(test,n);
-//            n++; try {
-//                     r.getRequiredProperty(RDF.type); error(test, n);
-//                } catch (PropertyNotFoundException e) { // as expected
-//                }
-//            n++; iter = r.listProperties(RDF.value);
-//                 int count = 0;
-//                 while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (! stmt.getSubject().equals(r)) error(test, n);
-//                    count++;
-//                }
-//           n++; if (count != 12) error(test,n);
-//           n++; iter = r.listProperties(RDF.type);
-//                 count = 0;
-//                 while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (! stmt.getSubject().equals(r)) error(test, n);
-//                    count++;
-//                }
-//           n++; if (count != 0) error(test,n);
-//           n++; iter = r.listProperties();
-//                 count = 0;
-//                 while (iter.hasNext()) {
-//                    stmt = iter.nextStatement();
-//                    if (! stmt.getSubject().equals(r)) error(test, n);
-//                    count++;
-//                }
-//           n++; if (count != 12) error(test,n);
-//
-//           n++; r.removeProperties();
-//           n++; Model mm = m.query(new SimpleSelector(r, null, (RDFNode) null));
-//                if (! (mm.size()==0)) error(test,n);
-//
-//        } catch (Exception e) {
-//            logger.error( "test " + test + "[" + n + "]", e );
-//            errors = true;
-//        }
-////        System.out.println("End of " + test);
-//    }
-//
-//
 //    /** Test Statement methods
 //     * @param m the model implementation under test
 //     */

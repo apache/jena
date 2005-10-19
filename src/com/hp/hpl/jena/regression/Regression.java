@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.22 2005-08-12 15:24:46 chris-dollin Exp $
+    $Id: Regression.java,v 1.23 2005-10-19 09:58:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2005-08-12 15:24:46 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2005-10-19 09:58:08 $'
  */
 public class Regression extends Object {
 
@@ -2152,15 +2152,6 @@ public class Regression extends Object {
                 System.err.println(count);
             }
 
-
-
-            class foo extends SimpleSelector
-            {
-                public foo(Resource s, Property p, RDFNode o) {
-                    super(s,p,o);
-                }
-                public boolean selects(Statement s) {return false;}
-            }
 
             n=110;
             count = 0;
@@ -4880,5 +4871,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.22 2005-08-12 15:24:46 chris-dollin Exp $
+ * $Id: Regression.java,v 1.23 2005-10-19 09:58:08 chris-dollin Exp $
  */
