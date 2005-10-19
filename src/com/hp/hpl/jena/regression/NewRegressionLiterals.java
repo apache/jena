@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionLiterals.java,v 1.1 2005-08-12 15:24:46 chris-dollin Exp $
+ 	$Id: NewRegressionLiterals.java,v 1.2 2005-10-19 13:13:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -9,16 +9,16 @@ package com.hp.hpl.jena.regression;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.regression.Regression.*;
 
-public class NewRegressionLiterals extends ModelTestBase
+public class NewRegressionLiterals extends NewRegressionBase
     {
     public NewRegressionLiterals( String name )
         { super( name ); }
     
     public static TestSuite suite()
         { return new TestSuite( NewRegressionLiterals.class ); }
+    
     protected Model getModel() 
         { return ModelFactory.createDefaultModel(); }
     
@@ -193,14 +193,13 @@ public class NewRegressionLiterals extends ModelTestBase
     
     protected void testFloat( Model m, float tv )
         {
-        final float delta = 0.000005f;
-        assertEquals( tv, m.createLiteral( tv ).getFloat(), delta );
+        assertEquals( tv, m.createLiteral( tv ).getFloat(), fDelta );
         }
     
     protected void testDouble( Model m, double tv )
         {
         final double delta = 0.000000005;
-        assertEquals( tv, m.createLiteral( tv ).getDouble(), delta );
+        assertEquals( tv, m.createLiteral( tv ).getDouble(), dDelta );
         }
     
     protected void testCharacter( Model m, char tv )

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegression.java,v 1.9 2005-10-19 09:58:07 chris-dollin Exp $
+ 	$Id: NewRegression.java,v 1.10 2005-10-19 13:13:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -32,6 +32,7 @@ public class NewRegression extends ModelTestBase
         result.addTest( NewRegressionSeq.suite() );
         result.addTest( NewRegressionSet.suite() );
         result.addTest( NewRegressionResourceMethods.suite() );
+        result.addTest( NewRegressionStatementMethods.suite() );
         return result;
         }
     
