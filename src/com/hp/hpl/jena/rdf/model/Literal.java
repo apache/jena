@@ -58,7 +58,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.12 $ $Date: 2005-07-13 13:51:36 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.13 $ $Date: 2005-10-19 15:07:11 $
  */
 public interface Literal extends RDFNode {
     
@@ -202,9 +202,10 @@ public interface Literal extends RDFNode {
     //       using the factory even for typed literals
     public Object getObject(ObjectF f) ;
     
-    /** If a language is defined for this literal return it
-     * @return the language for this literal if it exists, or null
-     */    
+    /** 
+         If a language is defined for this literal return it
+         @return the language for this literal if it exists, or empty string if none
+    */    
     public String getLanguage();
     
     /** Return whether Literal is well formed XML
