@@ -1,18 +1,17 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionBagMethods.java,v 1.2 2005-10-19 14:33:04 chris-dollin Exp $
+ 	$Id: NewRegressionBagMethods.java,v 1.3 2005-10-19 15:27:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.regression.Regression.*;
 
 import junit.framework.*;
 
-public class NewRegressionBagMethods extends NewRegressionBase
+public class NewRegressionBagMethods extends NewRegressionContainerMethods
     {
     public NewRegressionBagMethods( String name )
         { super( name ); }
@@ -20,97 +19,55 @@ public class NewRegressionBagMethods extends NewRegressionBase
     public static TestSuite suite()
         { return new TestSuite( NewRegressionBagMethods.class );  }
 
-    protected Model getModel()
-        { return ModelFactory.createDefaultModel(); }
-
-    protected Model m;
-    protected Resource r;
-
-    public void setUp()
-        { 
-        m = getModel(); 
-        r = m.createResource();
-        }
-    
-    public void testEmptyBag() 
-        { 
-        Bag bag = m.createBag();
-        assertTrue( m.contains( bag, RDF.type, RDF.Bag ) );
-        assertEquals( 0, bag.size() );
-        assertFalse( bag.contains( tvBoolean ) );
-        assertFalse( bag.contains( tvByte ) );
-        assertFalse( bag.contains( tvShort ) );
-        assertFalse( bag.contains( tvInt ) );
-        assertFalse( bag.contains( tvLong ) );
-        assertFalse( bag.contains( tvChar ) );
-        assertFalse( bag.contains( tvFloat ) );
-        assertFalse( bag.contains( tvString ) );
-        }
-    
-    public void testFillingBag()
-        {
-        Bag bag = m.createBag();
-        String lang = "fr";
-        Literal tvLiteral = m.createLiteral( "test 12 string 2" );
-        Resource tvResObj = m.createResource( new ResTestObjF() );
-        bag.add( tvBoolean ); assertTrue( bag.contains( tvBoolean ) );
-        bag.add( tvByte ); assertTrue( bag.contains( tvByte ) );
-        bag.add( tvShort ); assertTrue( bag.contains( tvShort ) );
-        bag.add( tvInt ); assertTrue( bag.contains( tvInt ) );
-        bag.add( tvLong ); assertTrue( bag.contains( tvLong ) );
-        bag.add( tvChar ); assertTrue( bag.contains( tvChar ) );
-        bag.add( tvFloat ); assertTrue( bag.contains( tvFloat ) );
-        bag.add( tvString ); assertTrue( bag.contains( tvString ) );
-        bag.add( tvString, lang ); assertTrue( bag.contains( tvString, lang ) );
-        bag.add( tvLiteral ); assertTrue( bag.contains( tvLiteral ) );
-        bag.add( tvResObj ); assertTrue( bag.contains( tvResObj ) );
-        bag.add( tvLitObj ); assertTrue( bag.contains( tvLitObj ) );
-        assertEquals( 12, bag.size() );
-        }
-    
-    public void testBagOfIntegers()
+    protected Container createContainer()
+        { return m.createBag(); }
+       
+    protected Resource getContainerType()
+        { return RDF.Bag; }
+  
+    public void testContainerOfIntegers()
         {
         int num = 10;
-        Bag bag = m.createBag();
-        for (int i = 0; i < num; i += 1) bag.add( i );
-        assertEquals( num, bag.size() );
-        NodeIterator it = bag.iterator();
+        Container c = createContainer();
+        for (int i = 0; i < num; i += 1) c.add( i );
+        assertEquals( num, c.size() );
+        NodeIterator it = c.iterator();
         for (int i = 0; i < num; i += 1)
             assertEquals( i, ((Literal) it.nextNode()).getInt() );
         assertFalse( it.hasNext() );
         }
     
-    public void testBagOfIntegersRemovingA()
+    public void testContainerOfIntegersRemovingA()
         {
         boolean[] retain = { true,  true,  true,  false, false, false, false, false, true,  true };
-        testBagOfIntegersWithRemoving( retain );
+        testContainerOfIntegersWithRemoving( retain );
         }    
     
-    public void testBagOfIntegersRemovingB()
+    public void testContainerOfIntegersRemovingB()
         {
         boolean[] retain = { false, true, true, false, false, false, false, false, true, false };
-        testBagOfIntegersWithRemoving( retain );
+        testContainerOfIntegersWithRemoving( retain );
         }    
     
-    public void testBagOfIntegersRemovingC()
+    public void testContainerOfIntegersRemovingC()
         {
         boolean[] retain = { false, false, false, false, false, false, false, false, false, false };
-        testBagOfIntegersWithRemoving( retain );
+        testContainerOfIntegersWithRemoving( retain );
         }
 
-    protected void testBagOfIntegersWithRemoving( boolean[] retain )
+    protected void testContainerOfIntegersWithRemoving( boolean[] retain )
         {
         final int num = retain.length;
         boolean [] found = new boolean[num];
-        Bag bag = m.createBag();
-        for (int i = 0; i < num; i += 1) bag.add( i );
-        NodeIterator it = bag.iterator();
+        Container c = createContainer();
+        for (int i = 0; i < num; i += 1) c.add( i );
+        NodeIterator it = c.iterator();
         for (int i = 0; i < num; i += 1)
             {
             it.nextNode();
             if (retain[i] == false) it.remove();
             }
-        NodeIterator s = bag.iterator();
+        NodeIterator s = c.iterator();
         while (s.hasNext())
             {
             int v = ((Literal) s.nextNode()).getInt();
