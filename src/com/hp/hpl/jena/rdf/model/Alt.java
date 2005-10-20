@@ -60,7 +60,7 @@ package com.hp.hpl.jena.rdf.model;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2005-02-21 12:13:35 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2005-10-20 08:21:16 $'
  */
 
 
@@ -71,41 +71,49 @@ public interface Alt extends Container {
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(RDFNode o);
+    
     /** Set the default value of this container.
      * @param o The value to be set.
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(boolean o);
+    
     /** Set the default value of this container.
      * @param o The value to be set.
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(long o);
+    
     /** Set the default value of this container.
      * @param o The value to be set.
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(char o);
+    
     /** Set the default value of this container.
      * @param o The value to be set.
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(float o);
+    
     /** Set the default value of this container.
      * @param o The value to be set.
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(double o);
+    
     /** Set the default value of this container.
      * @param o The value to be set.
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(String o); 
+    
     /** Set the default value of this container.
      * @param o The value to be set.
      * @return This object to permit cascading calls.
      */
     public Alt setDefault(String o, String l);
+    
     /** Set the default value of this container.
      * @param o The value to be set.
      * @return This object to permit cascading calls.
@@ -116,65 +124,78 @@ public interface Alt extends Container {
      * @return the default value for this resource.
      */
     public RDFNode getDefault();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public Resource getDefaultResource();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public Literal getDefaultLiteral();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public boolean getDefaultBoolean();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public byte getDefaultByte();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public short getDefaultShort();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public int getDefaultInt();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public long getDefaultLong();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public char getDefaultChar();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public float getDefaultFloat();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public double getDefaultDouble();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public String getDefaultString();
+    
     /** Return the language of the default value for this resource.
      * @return the language of the default value for this resource
      */
     public String getDefaultLanguage();
+    
     /** Return the default value for this resource.
      *
      * <p>The factory class f is used to create the object which is returned.
@@ -186,6 +207,7 @@ public interface Alt extends Container {
      
      */
     public Resource getDefaultResource(ResourceF f);
+    
     /** Return the default value for this resource.
      *
      * <p>The object returned is created by calling the
@@ -197,16 +219,19 @@ public interface Alt extends Container {
      
      */
     public Object getDefaultObject(ObjectF f);
+    
     /** Return the default value for this resource. 
      * @return the default value for this resource interpreted as the return
      *         type.
      */
     public Alt getDefaultAlt();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
      */
     public Bag getDefaultBag();
+    
     /** Return the default value for this resource.
      * @return the default value for this resource interpreted as the return
      *  type.
