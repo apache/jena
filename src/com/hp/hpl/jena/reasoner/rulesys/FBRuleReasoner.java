@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.19 2005-04-08 16:37:51 der Exp $
+ * $Id: FBRuleReasoner.java,v 1.20 2005-10-20 13:16:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2005-04-08 16:37:51 $
+ * @version $Revision: 1.20 $ on $Date: 2005-10-20 13:16:10 $
  */
 public class FBRuleReasoner implements RuleReasoner {
     
@@ -223,6 +223,12 @@ public class FBRuleReasoner implements RuleReasoner {
     public void setRules(List rules) {
         this.rules = rules;
         preload = null;
+        if (schemaGraph != null) {
+            // The change of rules invalidates the existing precomputed schema graph
+            // This might be recoverable but for now simply flag the error and let the
+            // user reorder their code to set the rules before doing a bind!
+            throw new ReasonerException("Cannot change the rule set for a bound rule reasoner.\nSet the rules before calling bindSchema");
+        }
     }
     
     /**
