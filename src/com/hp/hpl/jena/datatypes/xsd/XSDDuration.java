@@ -5,9 +5,11 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDuration.java,v 1.7 2005-02-21 12:02:16 andy_seaborne Exp $
+ * $Id: XSDDuration.java,v 1.8 2005-10-23 16:28:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
+
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
 
 /**
  * Represent an XSD duration value. We use a seven dimensional space
@@ -16,7 +18,7 @@ package com.hp.hpl.jena.datatypes.xsd;
  * decimals for seconds.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:02:16 $
+ * @version $Revision: 1.8 $ on $Date: 2005-10-23 16:28:23 $
  */
 public class XSDDuration extends AbstractDateTime {
 
@@ -111,7 +113,7 @@ public class XSDDuration extends AbstractDateTime {
          message.append('M');
          message.append(negate * data[s]);
          message.append('.');
-         message.append(negate * data[ms]);
+         XSDAbstractDateTimeType.appendFractionalTime(message, negate * data[ms], data[msscale]);
          message.append('S');
 
          return message.toString();

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.9 2005-02-21 12:02:03 andy_seaborne Exp $
+ * $Id: AbstractDateTime.java,v 1.10 2005-10-23 16:28:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -21,7 +21,7 @@ package com.hp.hpl.jena.datatypes.xsd;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:02:03 $
+ * @version $Revision: 1.10 $ on $Date: 2005-10-23 16:28:24 $
  */
 public class AbstractDateTime {
 
@@ -33,11 +33,11 @@ public class AbstractDateTime {
     
     //define constants
     protected final static int CY = 0,  M = 1, D = 2, h = 3,
-    m = 4, s = 5, ms = 6, utc=7, hh=0, mm=1;
+    m = 4, s = 5, ms = 6, utc=7, msscale=8, hh=0, mm=1;
         
     //size for all objects must have the same fields:
     //CCYY, MM, DD, h, m, s, ms + timeZone
-    protected final static int TOTAL_SIZE = 8;
+    protected final static int TOTAL_SIZE = 9;
 
     /** constant to indicate a less than relationship from compare() */
     public static final short LESS_THAN     = -1;
@@ -70,14 +70,12 @@ public class AbstractDateTime {
     }
     
     /**
-     * Convert the strange fractional second part from Xerces into a true fraction.
+     * Convert fractional second representation to a simple float.
      */
     protected void extractFractionalSeconds() {
         if (data[ms] != 0) {
             int fs = data[ms];
-            double log10 = Math.log((double)fs)/2.302585093;
-            int exp = 1 + (int)(log10 / 10);
-            fractionalSeconds = ((double)fs) / Math.pow(10.0, (double)exp);
+            fractionalSeconds = ((double)fs) / Math.pow(10.0, (double)data[msscale]);
         }
     }
     

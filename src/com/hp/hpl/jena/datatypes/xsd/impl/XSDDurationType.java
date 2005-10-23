@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDurationType.java,v 1.8 2005-02-21 12:02:22 andy_seaborne Exp $
+ * $Id: XSDDurationType.java,v 1.9 2005-10-23 16:29:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * </p>
  *            
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:02:22 $
+ * @version $Revision: 1.9 $ on $Date: 2005-10-23 16:29:01 $
  */
 public class XSDDurationType extends XSDAbstractDateTimeType {
     
@@ -114,7 +114,10 @@ public class XSDDurationType extends XSDAbstractDateTimeType {
                int mlsec = indexOf (str, start, end, '.');
                if ( mlsec >0 ) {
                    date[s]  = negate * parseInt (str, start, mlsec);
-                   date[ms] = negate * parseInt (str, mlsec+1, end);
+                   int msEnd = end;
+                   while (str.charAt(msEnd-1) == '0') msEnd--;
+                   date[ms] = negate * parseInt(str, mlsec+1, msEnd);
+                   date[msscale] = msEnd - mlsec - 1;
                }
                else {
                    date[s]=negate * parseInt(str, start,end);

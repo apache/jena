@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.52 2005-09-23 05:33:10 jeremy_carroll Exp $
+ * $Id: TestTypedLiterals.java,v 1.53 2005-10-23 16:29:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.52 $ on $Date: 2005-09-23 05:33:10 $
+ * @version $Revision: 1.53 $ on $Date: 2005-10-23 16:29:01 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -455,7 +455,7 @@ public class TestTypedLiterals extends TestCase {
      */
     public void testDateTime() {
         // Duration
-        Literal l1 = m.createTypedLiteral("P1Y2M3DT5H6M7.5S", XSDDatatype.XSDduration);
+        Literal l1 = m.createTypedLiteral("P1Y2M3DT5H6M7.50S", XSDDatatype.XSDduration);
         assertEquals("duration data type", XSDDatatype.XSDduration, l1.getDatatype());
         assertEquals("duration java type", XSDDuration.class, l1.getValue().getClass());
         assertEquals("duration value", 1, ((XSDDuration)l1.getValue()).getYears());
@@ -466,8 +466,9 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("duration value", 7, ((XSDDuration)l1.getValue()).getFullSeconds());
         assertFloatEquals("duration value", 18367.5, ((XSDDuration)l1.getValue()).getTimePart());
         assertEquals("serialization", "P1Y2M3DT5H6M7.5S", l1.getValue().toString());
-        assertEquals("equality test", l1, m.createTypedLiteral("P1Y2M3DT5H6M7.5S", XSDDatatype.XSDduration));
+        assertTrue("equality test", l1.sameValueAs( m.createTypedLiteral("P1Y2M3DT5H6M7.5S", XSDDatatype.XSDduration) ) );
         assertTrue("inequality test", l1 != m.createTypedLiteral("P1Y2M2DT5H6M7.5S", XSDDatatype.XSDduration));
+
         
         // dateTime
         l1 = m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime);
@@ -527,11 +528,11 @@ public class TestTypedLiterals extends TestCase {
         Calendar testCal4 = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         testCal4.set(1999, 4, 30, 15, 9, 32);
         testCal4.set(Calendar.MILLISECOND, 25);
-        Literal lc4 = m.createTypedLiteral(testCal4);
-        assertEquals("serialization", "1999-05-30T15:09:32.25Z", lc4.getValue().toString());
-        assertEquals("calendar ms test", m.createTypedLiteral("1999-05-30T15:09:32.25Z", XSDDatatype.XSDdateTime), lc4 );
-        XSDDateTime dt4 = (XSDDateTime)lc4.getValue();
-        assertEquals(dt4.asCalendar(), testCal4);
+        doDateTimeTest(testCal4, "1999-05-30T15:09:32.025Z", 32.025);
+        testCal4.set(Calendar.MILLISECOND, 250);
+        doDateTimeTest(testCal4, "1999-05-30T15:09:32.25Z", 32.25);
+        testCal4.set(Calendar.MILLISECOND, 2);
+        doDateTimeTest(testCal4, "1999-05-30T15:09:32.002Z", 32.002);
         
         // date
         l1 = m.createTypedLiteral("1999-05-31", XSDDatatype.XSDdate);
@@ -655,6 +656,16 @@ public class TestTypedLiterals extends TestCase {
         //System.err.println("date is: "+ncal.getTime());
 
     } 
+    
+    // Internal helper
+    private void doDateTimeTest(Calendar cal, String lex, double time) {
+        Literal lc4 = m.createTypedLiteral(cal);
+        assertEquals("serialization", lex, lc4.getValue().toString());
+        assertEquals("calendar ms test", m.createTypedLiteral(lex, XSDDatatype.XSDdateTime), lc4 );
+        XSDDateTime dt4 = (XSDDateTime)lc4.getValue();
+        assertTrue("Fraction time check", Math.abs(dt4.getSeconds() - time) < 0.0001);
+        assertEquals(dt4.asCalendar(), cal);
+    }
     
     /**
      * Test query applied to graphs containing typed values

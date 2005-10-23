@@ -5,11 +5,13 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.19 2005-06-27 20:21:07 der Exp $
+ * $Id: XSDDateTime.java,v 1.20 2005-10-23 16:28:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
 import java.util.*;
+
+import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
 
 
 /**
@@ -18,7 +20,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2005-06-27 20:21:07 $
+ * @version $Revision: 1.20 $ on $Date: 2005-10-23 16:28:24 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -110,6 +112,7 @@ public class XSDDateTime extends AbstractDateTime {
         data[AbstractDateTime.m] = cal.get(Calendar.MINUTE);
         data[AbstractDateTime.s] = cal.get(Calendar.SECOND);
         data[AbstractDateTime.ms] = cal.get(Calendar.MILLISECOND);
+        data[AbstractDateTime.msscale] = 3;
         data[AbstractDateTime.utc] = 'Z';
         return data;
     }
@@ -118,12 +121,6 @@ public class XSDDateTime extends AbstractDateTime {
      * Return the date time as a java Calendar object. 
      * If the timezone has been specified then the object is normalized to GMT.
      * If the zone has not been specified then we use the default timezone.
-     * <p>
-     * N.B. The millisecond field will be discarded and the resulting Calendar
-     * object will have 0 in the millisecond field. This is a workaround for an
-     * apparent problem with some Linux JDK's Calendar implementations. If it
-     * causes a problem contact us to ask us to revisit this.
-     * </p>
      * 
      * @throws IllegalDateTimeFieldException if this is not a full date + time
      */
@@ -131,7 +128,7 @@ public class XSDDateTime extends AbstractDateTime {
         TimeZone tz = data[utc] == 'Z' ? TimeZone.getTimeZone("GMT") : TimeZone.getDefault();
         Calendar calendar = new GregorianCalendar(tz);
         calendar.set(data[CY], data[M] - 1, data[D], data[h], data[m], data[s]);
-        calendar.set(Calendar.MILLISECOND, data[ms]);
+        calendar.set(Calendar.MILLISECOND, (int)Math.round(1000.0 * fractionalSeconds));
         // was this to work around problems with some Linux JDKs
         // calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
@@ -259,7 +256,7 @@ public class XSDDateTime extends AbstractDateTime {
              
             if (data[ms] != 0) {
                 buff.append(".");
-                buff.append(data[ms]);
+                XSDAbstractDateTimeType.appendFractionalTime(buff, data[ms], data[msscale]);
             }
             buff.append("Z");
         return buff.toString();

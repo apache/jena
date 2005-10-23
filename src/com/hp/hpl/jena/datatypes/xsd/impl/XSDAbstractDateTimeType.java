@@ -6,7 +6,7 @@
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: XSDAbstractDateTimeType.java,v 1.4 2005-06-27 20:25:37 der Exp $
+ * $Id: XSDAbstractDateTimeType.java,v 1.5 2005-10-23 16:29:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * Includes support functions for parsing and comparing dates.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-06-27 20:25:37 $
+ * @version $Revision: 1.5 $ on $Date: 2005-10-23 16:29:01 $
  */
 public class XSDAbstractDateTimeType extends XSDDatatype {
 
@@ -64,11 +64,11 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
 
      //define constants
      protected final static int CY = 0,  M = 1, D = 2, h = 3,
-     m = 4, s = 5, ms = 6, utc=7, hh=0, mm=1;
+     m = 4, s = 5, ms = 6, msscale=8, utc=7, hh=0, mm=1;
         
      //size for all objects must have the same fields:
      //CCYY, MM, DD, h, m, s, ms + timeZone
-     protected final static int TOTAL_SIZE = 8;
+     protected final static int TOTAL_SIZE = 9;
 
      //define constants to be used in assigning default values for
      //all date/time excluding duration
@@ -124,7 +124,10 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
              // The end of millisecond part is between . and
              // either the end of the UTC sign
              start = sign < 0 ? end : sign;
-             data[ms]=parseInt(buffer, milisec+1, start);
+             int msEnd = start;
+             while (buffer.charAt(msEnd-1) == '0') msEnd--;
+             data[ms]=parseInt(buffer, milisec+1, msEnd);
+             data[msscale] = msEnd - milisec - 1;
          }
 
          //parse UTC time zone (hh:mm)
@@ -384,11 +387,26 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
          message.append(':');
          append(message, date[s], 2);
          message.append('.');
-         message.append(date[ms]);
+         appendFractionalTime(message, date[ms], date[msscale]);
          append(message, (char)date[utc], 0);
          return message.toString();
      }
     
+     /** Append the fraction time part of a date/time vector to
+      * a string buffer.
+      */
+     public static void appendFractionalTime(StringBuffer buff, int fsec, int scale) {
+         String msString = Integer.toString(fsec);
+         int pad = scale - msString.length();
+         while (pad > 0) {
+             buff.append('0');
+             pad--;
+         }
+         int trunc = msString.length();
+         while (msString.charAt(trunc-1) == '0') trunc --;
+         buff.append(msString.substring(0, trunc));
+     }
+     
      protected void append(StringBuffer message, int value, int nch) {
          if (value < 0) {
              message.append('-');
