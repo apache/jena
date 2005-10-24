@@ -1,3 +1,8 @@
+/*
+    (c) Copyright 2005 Hewlett-Packard Development Company, LP
+    All rights reserved - see end of file.
+    $Id: TestTripleBunch.java,v 1.2 2005-10-24 09:13:41 chris-dollin Exp $
+*/
 package com.hp.hpl.jena.mem.test;
 
 import java.util.ArrayList;
@@ -22,7 +27,9 @@ public class TestTripleBunch extends GraphTestBase
     public class HashedTripleBunch extends TripleBunch
         {
         protected Triple [] contents = new Triple[3];
+        
         protected int size = 0;
+        protected int threshold = 2;
         
         protected final Triple REMOVED = triple( "-s- --P-- -o-" );
         
@@ -36,31 +43,19 @@ public class TestTripleBunch extends GraphTestBase
                 {
                 if (t.equals( contents[index] )) return ~index;
                 if (contents[index] == null) return index;
-                index += 1;
+                index = (index == 0 ? contents.length - 1 : index - 1);
                 }
             }         
         
         protected int findSlotBySameValueAs( Triple t )
-            {
-            int index = t.hashCode() % contents.length;
-            while (true)
-                {
-                if (contents[index] == null) return index;
-                if (t.matches( contents[index] )) return ~index;
-                index += 1;
-                }
+            { fail( "not implemented" ); return 0;
             }
-
-
+        
         public boolean containsBySameValueAs( Triple t )
-            {
-            return findSlotBySameValueAs( t ) < 0;
-            }
+            { return findSlotBySameValueAs( t ) < 0; }
 
         public int size()
-            {
-            return size;
-            }
+            { return size; }
 
         public void add( Triple t )
             {
@@ -69,6 +64,25 @@ public class TestTripleBunch extends GraphTestBase
             assertFalse( where < 0 );
             contents[where] = t;
             size += 1;
+            if (size > threshold) grow();
+            }
+
+        protected void grow()
+            {
+            int newCapacity = computeNewCapacity();
+            Triple [] oldContents = contents;
+            contents = new Triple[newCapacity];
+            for (int i = 0; i < oldContents.length; i += 1)
+                {
+                Triple t = oldContents[i];
+                if (t != null && t != REMOVED) contents[findSlot( t )] = t;
+                }
+            }
+
+        protected int computeNewCapacity()
+            {
+            threshold = (int) (contents.length * 2 * 1.75);
+            return contents.length * 2;
             }
 
         public void remove( Triple t )
@@ -85,6 +99,8 @@ public class TestTripleBunch extends GraphTestBase
             return new NiceIterator()
                 {
                 int index = 0;
+                int lastIndex = -1;
+                
                 public boolean hasNext()
                     {
                     while (index < contents.length && (contents[index] == null || contents[index] == REMOVED))
@@ -96,13 +112,14 @@ public class TestTripleBunch extends GraphTestBase
                     {
                     assertTrue( hasNext() );
                     Object answer = contents[index];
+                    lastIndex = index;
                     index += 1;
                     return answer;
                     }
                 
                 public void remove()
                     {
-                    
+                    contents[lastIndex] = REMOVED;
                     }
                 };
             }
@@ -171,6 +188,15 @@ public class TestTripleBunch extends GraphTestBase
         assertEquals( listOf( tripleXQY ), iteratorToList( b.iterator() ) );
         }
 
+    public void testTableGrows()
+        {
+        TripleBunch b = getBunch();
+        b.add( tripleSPO );
+        b.add( tripleXQY );
+        b.add( triple( "a I b" ) );
+        b.add( triple( "c J d" ) );
+        }
+        
     protected List listOf( Triple x )
         {
         List result = new ArrayList();
@@ -191,6 +217,31 @@ public class TestTripleBunch extends GraphTestBase
         result.add( x );
         return result;
         }
-    
-
     }
+
+/*
+ * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
