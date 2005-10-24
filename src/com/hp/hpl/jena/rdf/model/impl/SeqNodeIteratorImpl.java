@@ -41,20 +41,19 @@ import java.util.Iterator;
  *  A sequence node iterator.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2005-02-21 12:14:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2005-10-24 15:35:47 $'
  */
 public class SeqNodeIteratorImpl extends WrappedIterator implements NodeIterator {
     
-    Statement stmt = null;
     Seq       seq;
     int       size;
-    int       index=0;
-    int       numDeleted=0;
+    int       index = 0;
+    Statement stmt = null;
+    private int       numDeleted=0;
+    
     /** Creates new SeqNodeIteratorImpl 
     */
-    public SeqNodeIteratorImpl (Iterator  iterator, 
-                                
-                                Seq       seq)  {
+    public SeqNodeIteratorImpl ( Iterator  iterator, Seq seq )  {
         super( iterator ); 
         this.seq      = seq;
         this.size     = seq.size();

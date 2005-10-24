@@ -1,140 +1,32 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestTripleBunch.java,v 1.2 2005-10-24 09:13:41 chris-dollin Exp $
+    $Id: TestTripleBunch.java,v 1.3 2005-10-24 15:35:47 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.StageElement;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
-import com.hp.hpl.jena.mem.MatchOrBind;
-import com.hp.hpl.jena.mem.TripleBunch;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.mem.*;
 
 public class TestTripleBunch extends GraphTestBase
     {
     protected static final Triple tripleSPO = triple( "s P o" );
     protected static final Triple tripleXQY = triple( "x Q y" );
 
-    public class HashedTripleBunch extends TripleBunch
-        {
-        protected Triple [] contents = new Triple[3];
-        
-        protected int size = 0;
-        protected int threshold = 2;
-        
-        protected final Triple REMOVED = triple( "-s- --P-- -o-" );
-        
-        public boolean contains( Triple t )
-            { return findSlot( t ) < 0; }
-            
-        protected int findSlot( Triple t )
-            {
-            int index = t.hashCode() % contents.length;
-            while (true)
-                {
-                if (t.equals( contents[index] )) return ~index;
-                if (contents[index] == null) return index;
-                index = (index == 0 ? contents.length - 1 : index - 1);
-                }
-            }         
-        
-        protected int findSlotBySameValueAs( Triple t )
-            { fail( "not implemented" ); return 0;
-            }
-        
-        public boolean containsBySameValueAs( Triple t )
-            { return findSlotBySameValueAs( t ) < 0; }
-
-        public int size()
-            { return size; }
-
-        public void add( Triple t )
-            {
-            assertFalse( "precondition", contains( t ) );
-            int where = findSlot( t );
-            assertFalse( where < 0 );
-            contents[where] = t;
-            size += 1;
-            if (size > threshold) grow();
-            }
-
-        protected void grow()
-            {
-            int newCapacity = computeNewCapacity();
-            Triple [] oldContents = contents;
-            contents = new Triple[newCapacity];
-            for (int i = 0; i < oldContents.length; i += 1)
-                {
-                Triple t = oldContents[i];
-                if (t != null && t != REMOVED) contents[findSlot( t )] = t;
-                }
-            }
-
-        protected int computeNewCapacity()
-            {
-            threshold = (int) (contents.length * 2 * 1.75);
-            return contents.length * 2;
-            }
-
-        public void remove( Triple t )
-            {
-            assertTrue( "precondition", contains( t ) );
-            int where = findSlot( t );
-            assertTrue( where < 0 );
-            contents[~where] = REMOVED;
-            size -= 1;
-            }
-
-        public ExtendedIterator iterator()
-            {
-            return new NiceIterator()
-                {
-                int index = 0;
-                int lastIndex = -1;
-                
-                public boolean hasNext()
-                    {
-                    while (index < contents.length && (contents[index] == null || contents[index] == REMOVED))
-                        index += 1;
-                    return index < contents.length;
-                    }
-                
-                public Object next()
-                    {
-                    assertTrue( hasNext() );
-                    Object answer = contents[index];
-                    lastIndex = index;
-                    index += 1;
-                    return answer;
-                    }
-                
-                public void remove()
-                    {
-                    contents[lastIndex] = REMOVED;
-                    }
-                };
-            }
-
-        public void app( Domain d, StageElement next, MatchOrBind s )
-            {
-            }
-        }
-    
     public TestTripleBunch(String name)
         { super( name ); }
 
+    TripleBunch emptyBunch = new ArrayBunch();
+    
     private TripleBunch getBunch()
         {
-        return new HashedTripleBunch();
+        return new HashedTripleBunch( emptyBunch );
         }
     
     public void testEmptyBunch()

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.18 2005-09-20 08:19:43 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.19 2005-10-24 15:35:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -11,11 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.ArrayBunch;
-import com.hp.hpl.jena.mem.SetBunch;
-import com.hp.hpl.jena.mem.TripleBunch;
-import com.hp.hpl.jena.mem.MatchOrBind;
-import com.hp.hpl.jena.mem.NodeToTriplesMapBase;
+import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
@@ -37,7 +33,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
            return false;
        else
            {
-           if (s.size() == 9)
+           if (s.size() == 9 && s instanceof ArrayBunch)
                map.put( o, s = new SetBunch( s ) );
            s.add( t );
            size += 1; 
