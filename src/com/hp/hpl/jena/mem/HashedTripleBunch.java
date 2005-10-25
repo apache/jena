@@ -1,13 +1,14 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.1 2005-10-24 15:35:42 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.2 2005-10-25 12:23:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import java.util.*;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -19,7 +20,7 @@ public class HashedTripleBunch extends TripleBunch
     protected int size = 0;
     protected int threshold = 14;
     
-    protected final Triple REMOVED = Triple.create( "-s- --P-- -o-" );
+    protected final Triple REMOVED = Triple.create( Node.createAnon(), Node.createAnon(), Node.createAnon() );
     
     public HashedTripleBunch( TripleBunch b )
         {
@@ -33,13 +34,14 @@ public class HashedTripleBunch extends TripleBunch
     protected int findSlot( Triple t )
         {
         int index = Math.abs( t.hashCode() ) % contents.length;
-        System.err.println( "]] probe index = " + index );
+        // System.err.println( "]] probe index for " + t + " = " + index );
         while (true)
             {
             Triple current = contents[index];
-            if (current == null || current == REMOVED) return index;
+            if (current == null) return index;
             if (t.equals( current )) return ~index;
             index = (index == 0 ? contents.length - 1 : index - 1);
+            // System.err.println( "]]  nope; moving to " + index );
             }
         }         
     
@@ -63,22 +65,23 @@ public class HashedTripleBunch extends TripleBunch
     
     public void add( Triple t )
         {
-        System.err.println( ">> adding " + t + " [current size " + size + "]" );
+        dumpState( "pre-add" );
+        // System.err.println( ">> adding " + t + " [current size " + size + "]" );
         if (contains( t )) throw new RuntimeException( "precondition violation" );
         int where = findSlot( t );
         if (where < 0) throw new RuntimeException( "internal error" );
-        System.err.println( ">> " + where + " := " + t );
+        // System.err.println( ">> " + where + " := " + t );
         contents[where] = t;
         size += 1;
-        System.err.println( ">> size := " + size );
+        // System.err.println( ">> size := " + size );
         if (size > threshold) grow();
-        dumpState( "add" );
+        dumpState( "post-add" );
         // System.err.println( ">> added" );
         }
     
     protected void grow()
         {
-        System.err.println( ">> GROW" );
+        // System.err.println( ">> GROW" );
         int newCapacity = computeNewCapacity();
         Triple [] oldContents = contents;
         contents = new Triple[newCapacity];
@@ -90,13 +93,13 @@ public class HashedTripleBunch extends TripleBunch
                 int slot = findSlot( t );
                 if (slot < 0) 
                     {
-                    System.err.println( "broken in grow" );
+                    // System.err.println( "broken in grow" );
                     throw new RuntimeException( "broken in grow" );
                     }
                 contents[slot] = t;
                 }
             }
-        System.err.println( ">> capacity := " + contents.length );
+        // System.err.println( ">> capacity := " + contents.length );
         }
     
     protected int computeNewCapacity()
@@ -107,35 +110,62 @@ public class HashedTripleBunch extends TripleBunch
     
     public void remove( Triple t )
         {
-        System.err.println( ">> removing " + t + " [current size " + size + "]" );
+        dumpState( "pre-remove" );
+        // System.err.println( ">> removing " + t + " [current size " + size + "]" );
         if (!contains( t )) throw new RuntimeException( "precondition violation" );
         int where = findSlot( t );
         if (where >= 0 ) throw new RuntimeException( "internal error" );
-        contents[~where] = REMOVED;
-        System.err.println( ">> " + ~where + " REMOVED" );
+        remove( ~where );
+        // System.err.println( ">> " + ~where + " REMOVED" );
         size -= 1;
-        System.err.println( ">> size := " + size );
-        dumpState( "remove" ); 
+        // System.err.println( ">> size := " + size );
+        dumpState( "post-remove" ); 
+        }
+    
+    protected void remove( int i )
+        {
+        // contents[i] = REMOVED;
+        while (true)
+            {
+            contents[i] = null;
+            int j = i;
+            while (true)
+                {
+                i = (i == 0 ? contents.length - 1 : i - 1);
+                if (contents[i] == null) return;
+                int r = Math.abs( contents[i].hashCode() ) % contents.length;
+                if
+                    (!(
+                    (i <= r && r < j)
+                    || (r < j && j < i)
+                    || (j < i && i <= r)
+                    )) break;
+                }
+            contents[j] = contents[i];
+            }
         }
     
     protected void dumpState( String title )
         {
-        ArrayList list = new ArrayList();
-        System.err.println( "** post-" + title );
-        for (int i = 0; i < contents.length; i += 1)
+        if (false)
             {
-            Triple t = contents[i];
-            System.err.print( "  contents[" + i + "]" );
-            if (t == null) System.err.println( " FREE" );
-            else if (t == REMOVED) System.err.println( " REMOVED" );
-            else
+            ArrayList list = new ArrayList();
+            System.err.println( "** " + title );
+            for (int i = 0; i < contents.length; i += 1)
                 {
-                list.add( t.getPredicate() );
-                System.err.println( " " + t )
-            ;   }
+                Triple t = contents[i];
+                System.err.print( "  contents[" + i + "]" );
+                if (t == null) System.err.println( " FREE" );
+                else if (t == REMOVED) System.err.println( " REMOVED" );
+                else
+                    {
+                    list.add( t.getPredicate() );
+                    System.err.println( " " + t )
+                ;   }
+                }
+            Set set = new HashSet( list );
+            if (set.size() != list.size()) throw new RuntimeException( "broken" );
             }
-        Set set = new HashSet( list );
-        if (set.size() != list.size()) throw new RuntimeException( "broken" );
         }
     
     public ExtendedIterator iterator()
@@ -144,6 +174,7 @@ public class HashedTripleBunch extends TripleBunch
             {
             int index = 0;
             int lastIndex = -1;
+            Triple toRemove = null;
             
             public boolean hasNext()
                 {
@@ -157,13 +188,16 @@ public class HashedTripleBunch extends TripleBunch
                 if (hasNext() == false) noElements( "" );
                 Object answer = contents[index];
                 lastIndex = index;
+                toRemove = contents[index];
                 index += 1;
                 return answer;
                 }
             
             public void remove()
                 {
-                contents[lastIndex] = REMOVED;
+                if (contents[lastIndex] != toRemove) throw new RuntimeException( "CME" );
+                HashedTripleBunch.this.remove( lastIndex );
+                dumpState( "iterator-remove" );
                 }
             };
         }

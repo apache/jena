@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SeqImpl.java,v 1.18 2005-02-21 12:14:54 andy_seaborne Exp $
+  $Id: SeqImpl.java,v 1.19 2005-10-25 12:23:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2005-02-21 12:14:54 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2005-10-25 12:23:25 $' 
 */
 
 public class SeqImpl extends ContainerImpl implements Seq {
@@ -230,8 +230,11 @@ public class SeqImpl extends ContainerImpl implements Seq {
         { return listContainerMembers( seqIteratorFactory ); }
     
     public Container remove(Statement s) {
+        // System.err.println( "]] SeqImpl.remove " + s );
         getModel().remove(s);
+        // System.err.println( "]] SeqImpl.remove - about to shift down " + (s.getPredicate().getOrdinal()+1) + " to " + (size()+1) );
         shiftDown(s.getPredicate().getOrdinal()+1, size()+1);
+        // System.err.println( "]] SeqImpl.remov completed" );
         return this;
     } 
     
@@ -242,6 +245,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }
     
     public Container remove(int index, RDFNode o)  {
+        // System.err.println( "]] SeqImpl::remove( " + index + ", " + o + ")" );
         return remove(getModel().createStatement(this, RDF.li(index), o).remove());
     }
     
@@ -293,11 +297,12 @@ public class SeqImpl extends ContainerImpl implements Seq {
         }
     }   
     protected void shiftDown(int start, int finish)  {
-        Statement stmt = null;
         for (int i=start; i<=finish; i++) {
-            stmt = getRequiredProperty(RDF.li(i));
-            addProperty(RDF.li(i-1), stmt.getObject());
+            Statement stmt = getRequiredProperty( RDF.li(i) );
+            // System.err.println( "]]* remove " + stmt );
             stmt.remove();
+            // System.err.println( "]]* addProperty( " + RDF.li(i-1) + " " + stmt.getObject() );
+            addProperty(RDF.li(i-1), stmt.getObject());
         }
     }
     

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.18 2005-06-14 17:52:33 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.19 2005-10-25 12:23:17 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -108,7 +108,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         return x;
         }
 
-    protected void putAugmentedTriple( SimpleReifierFragmentHandler s, Node tag, Node object, Triple reified )
+    public void putAugmentedTriple( SimpleReifierFragmentHandler s, Node tag, Node object, Triple reified )
         {
         Fragments partial = new Fragments( tag, reified );
         partial.add( s, object );
