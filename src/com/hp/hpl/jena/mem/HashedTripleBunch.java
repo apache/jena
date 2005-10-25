@@ -1,14 +1,13 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.2 2005-10-25 12:23:25 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.3 2005-10-25 14:34:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import java.util.*;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -17,10 +16,9 @@ public class HashedTripleBunch extends TripleBunch
     {
     protected Triple [] contents = new Triple[18];
     
+    protected int capacity = contents.length;
     protected int size = 0;
     protected int threshold = 14;
-    
-    protected final Triple REMOVED = Triple.create( Node.createAnon(), Node.createAnon(), Node.createAnon() );
     
     public HashedTripleBunch( TripleBunch b )
         {
@@ -30,30 +28,33 @@ public class HashedTripleBunch extends TripleBunch
     
     public boolean contains( Triple t )
         { return findSlot( t ) < 0; }
-        
+
+    protected final int initialIndexFor( Triple t )
+        { return Math.abs( t.hashCode() ) % capacity; }
+    
     protected int findSlot( Triple t )
         {
-        int index = Math.abs( t.hashCode() ) % contents.length;
+        int index = initialIndexFor( t );
         // System.err.println( "]] probe index for " + t + " = " + index );
         while (true)
             {
             Triple current = contents[index];
             if (current == null) return index;
             if (t.equals( current )) return ~index;
-            index = (index == 0 ? contents.length - 1 : index - 1);
+            index = (index == 0 ? capacity - 1 : index - 1);
             // System.err.println( "]]  nope; moving to " + index );
             }
         }         
     
     protected int findSlotBySameValueAs( Triple t )
         {
-        int index = Math.abs( t.hashCode() ) % contents.length;
+        int index = initialIndexFor( t );
         while (true)
             {
             Triple current = contents[index];
-            if (current == null || current == REMOVED) return index;
+            if (current == null) return index;
             if (t.matches( current )) return ~index;
-            index = (index == 0 ? contents.length - 1 : index - 1);
+            index = (index == 0 ? capacity - 1 : index - 1);
             }
         }
     
@@ -82,30 +83,21 @@ public class HashedTripleBunch extends TripleBunch
     protected void grow()
         {
         // System.err.println( ">> GROW" );
-        int newCapacity = computeNewCapacity();
         Triple [] oldContents = contents;
-        contents = new Triple[newCapacity];
-        for (int i = 0; i < oldContents.length; i += 1)
+        final int oldCapacity = capacity;
+        contents = new Triple[capacity = computeNewCapacity()];
+        for (int i = 0; i < oldCapacity; i += 1)
             {
             Triple t = oldContents[i];
-            if (t != null && t != REMOVED) 
-                {
-                int slot = findSlot( t );
-                if (slot < 0) 
-                    {
-                    // System.err.println( "broken in grow" );
-                    throw new RuntimeException( "broken in grow" );
-                    }
-                contents[slot] = t;
-                }
+            if (t != null) contents[findSlot( t )] = t;
             }
         // System.err.println( ">> capacity := " + contents.length );
         }
     
     protected int computeNewCapacity()
         {
-        threshold = (int) (contents.length * 2 * 0.75);
-        return contents.length * 2;
+        threshold = (int) (capacity * 2 * 0.75);
+        return capacity * 2;
         }
     
     public void remove( Triple t )
@@ -122,24 +114,26 @@ public class HashedTripleBunch extends TripleBunch
         dumpState( "post-remove" ); 
         }
     
+    /**
+        Remove the triple at element <code>i</code> of <code>contents</code>.
+        This is an implementation of Knuth's Algorithm R from tAoCP vol3, p 527.
+        It relies on linear probing but doesn't require a distinguished REMOVED
+        value. Since we resize the table when it gets fullish, we don't worry [much]
+        about the overhead of the linear probing.
+    */
     protected void remove( int i )
         {
-        // contents[i] = REMOVED;
         while (true)
             {
             contents[i] = null;
             int j = i;
             while (true)
                 {
-                i = (i == 0 ? contents.length - 1 : i - 1);
-                if (contents[i] == null) return;
-                int r = Math.abs( contents[i].hashCode() ) % contents.length;
-                if
-                    (!(
-                    (i <= r && r < j)
-                    || (r < j && j < i)
-                    || (j < i && i <= r)
-                    )) break;
+                i = (i == 0 ? capacity - 1 : i - 1);
+                Triple t = contents[i];
+                if (t == null) return;
+                int r = initialIndexFor( t );
+                if (!((i <= r && r < j) || (r < j && j < i) || (j < i && i <= r) )) break;
                 }
             contents[j] = contents[i];
             }
@@ -151,12 +145,12 @@ public class HashedTripleBunch extends TripleBunch
             {
             ArrayList list = new ArrayList();
             System.err.println( "** " + title );
-            for (int i = 0; i < contents.length; i += 1)
+            for (int i = 0; i < capacity; i += 1)
                 {
                 Triple t = contents[i];
                 System.err.print( "  contents[" + i + "]" );
-                if (t == null) System.err.println( " FREE" );
-                else if (t == REMOVED) System.err.println( " REMOVED" );
+                if (t == null) 
+                    System.err.println( " FREE" );
                 else
                     {
                     list.add( t.getPredicate() );
@@ -178,9 +172,9 @@ public class HashedTripleBunch extends TripleBunch
             
             public boolean hasNext()
                 {
-                while (index < contents.length && (contents[index] == null || contents[index] == REMOVED))
+                while (index < capacity && (contents[index] == null))
                     index += 1;
-                return index < contents.length;
+                return index < capacity;
                 }
             
             public Object next()
@@ -204,10 +198,10 @@ public class HashedTripleBunch extends TripleBunch
     
     public void app( Domain d, StageElement next, MatchOrBind s )
         {
-        for (int i = 0; i < contents.length; i += 1)
+        for (int i = 0; i < capacity; i += 1)
             {
             Triple t = contents[i];
-            if (t != null && t != REMOVED && s.matches( t )) next.run( d );
+            if (t != null  && s.matches( t )) next.run( d );
             }
         }
     }
