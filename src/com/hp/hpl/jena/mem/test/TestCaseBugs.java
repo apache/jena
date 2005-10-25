@@ -24,20 +24,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBugs.java,v 1.5 2005-07-05 11:21:39 chris-dollin Exp $
+ * $Id: TestCaseBugs.java,v 1.6 2005-10-25 14:56:06 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.mem.test;
 
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2005-07-05 11:21:39 $
- */
+    @author  bwm
+    @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2005-10-25 14:56:06 $
+*/
 public class TestCaseBugs 
             extends TestCaseBasic {
                 
@@ -52,7 +50,6 @@ public class TestCaseBugs
     }
     
     public void bug36() {
-        try {
             Resource r    = model.createResource();
             Object   oc   = RDFS.Class;
             Object   op   = RDF.Property;
@@ -72,9 +69,5 @@ public class TestCaseBugs
             assertTrue(model.listSubjectsWithProperty(RDF.type, oc).hasNext());
             
             assertTrue(model.contains(r, RDF.type, oc));  
-        } catch (Exception e) {
-            System.out.println(e);
-            assertTrue(false);
-        }
-    }
+         }
 }

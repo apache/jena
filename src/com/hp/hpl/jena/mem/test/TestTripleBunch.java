@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestTripleBunch.java,v 1.3 2005-10-24 15:35:47 chris-dollin Exp $
+    $Id: TestTripleBunch.java,v 1.4 2005-10-25 14:56:06 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem.test;
 
@@ -14,7 +14,11 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.mem.*;
 
-public class TestTripleBunch extends GraphTestBase
+/**
+    Test triple bunch implementations - NOT YET FINISHED
+    @author kers
+*/
+public abstract class TestTripleBunch extends GraphTestBase
     {
     protected static final Triple tripleSPO = triple( "s P o" );
     protected static final Triple tripleXQY = triple( "x Q y" );
@@ -22,12 +26,9 @@ public class TestTripleBunch extends GraphTestBase
     public TestTripleBunch(String name)
         { super( name ); }
 
-    TripleBunch emptyBunch = new ArrayBunch();
+    protected static final TripleBunch emptyBunch = new ArrayBunch();
     
-    private TripleBunch getBunch()
-        {
-        return new HashedTripleBunch( emptyBunch );
-        }
+    protected abstract TripleBunch getBunch();
     
     public void testEmptyBunch()
         {
@@ -46,7 +47,7 @@ public class TestTripleBunch extends GraphTestBase
         assertTrue( b.contains( tripleSPO ) );
         assertEquals( listOf( tripleSPO ), iteratorToList( b.iterator() ) );
         }
-
+    
     public void testAddElements()
         {
         TripleBunch b = getBunch();

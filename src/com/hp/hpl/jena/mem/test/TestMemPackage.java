@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestMemPackage.java,v 1.2 2005-02-21 12:03:59 andy_seaborne Exp $
+  $Id: TestMemPackage.java,v 1.3 2005-10-25 14:56:06 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem.test;
 
@@ -24,10 +24,12 @@ public class TestMemPackage extends TestCase
         result.addTest( TestGraphMem.suite() );
         result.addTest( TestMixedGraphMem.suite() );
         result.addTest( TestSmallGraphMem.suite() );
+        result.addTest( new TestSuite( TestArrayTripleBunch.class ) );
+        result.addTest( new TestSuite( TestWrappedSetTripleBunch.class ) );
+        result.addTest( new TestSuite( TestHashedTripleBunch.class ) );
         return result;
         }
     }
-
 
 /*
     (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
