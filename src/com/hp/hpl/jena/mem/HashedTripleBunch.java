@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.4 2005-10-26 14:15:50 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.5 2005-10-26 15:28:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -40,7 +40,7 @@ public class HashedTripleBunch extends TripleBunch
         // System.err.println( "]] probe index for " + t + " = " + index );
         while (true)
             {
-            Triple current = contents[index];
+            Object current = contents[index];
             if (current == null) return index;
             if (t.equals( current )) return ~index;
             index = (index == 0 ? capacity - 1 : index - 1);
@@ -53,9 +53,9 @@ public class HashedTripleBunch extends TripleBunch
         int index = initialIndexFor( t );
         while (true)
             {
-            Triple current = contents[index];
+            Object current = contents[index];
             if (current == null) return index;
-            if (t.matches( current )) return ~index;
+            if (t.matches( (Triple) current )) return ~index;
             index = (index == 0 ? capacity - 1 : index - 1);
             }
         }
@@ -68,17 +68,17 @@ public class HashedTripleBunch extends TripleBunch
     
     public void add( Triple t )
         {
-        dumpState( "pre-add" );
+        // dumpState( "pre-add" );
         // System.err.println( ">> adding " + t + " [current size " + size + "]" );
-        if (contains( t )) throw new RuntimeException( "precondition violation" );
+        // if (contains( t )) throw new RuntimeException( "precondition violation" );
         int where = findSlot( t );
-        if (where < 0) throw new RuntimeException( "internal error" );
+        // if (where < 0) throw new RuntimeException( "internal error" );
         // System.err.println( ">> " + where + " := " + t );
         contents[where] = t;
         size += 1;
         // System.err.println( ">> size := " + size );
         if (size > threshold) grow();
-        dumpState( "post-add" );
+        // dumpState( "post-add" );
         // System.err.println( ">> added" );
         }
     
@@ -104,7 +104,7 @@ public class HashedTripleBunch extends TripleBunch
     
     public void remove( Triple t )
         {
-        dumpState( "pre-remove" );
+        // dumpState( "pre-remove" );
         // System.err.println( ">> removing " + t + " [current size " + size + "]" );
         if (!contains( t )) throw new RuntimeException( "precondition violation" );
         int where = findSlot( t );
@@ -113,7 +113,7 @@ public class HashedTripleBunch extends TripleBunch
         // System.err.println( ">> " + ~where + " REMOVED" );
         size -= 1;
         // System.err.println( ">> size := " + size );
-        dumpState( "post-remove" ); 
+        // dumpState( "post-remove" ); 
         }
     
     /**
@@ -200,9 +200,10 @@ public class HashedTripleBunch extends TripleBunch
     
     public void app( Domain d, StageElement next, MatchOrBind s )
         {
-        for (int i = 0; i < capacity; i += 1)
+        int i = capacity;
+        while (i > 0)
             {
-            Triple t = contents[i];
+            Triple t = contents[--i];
             if (t != null  && s.matches( t )) next.run( d );
             }
         }

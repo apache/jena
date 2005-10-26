@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.2 2005-10-26 14:15:50 chris-dollin Exp $
+    $Id: HashedBunchMap.java,v 1.3 2005-10-26 15:28:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -85,8 +85,9 @@ public class HashedBunchMap extends BunchMap
     
     protected int computeNewCapacity()
         {
-        threshold = (int) (capacity * 2 * loadFactor);
-        return capacity * 2;
+        int newCapacity = capacity * 2;
+        threshold = (int) (newCapacity * loadFactor);
+        return newCapacity;
         }
     
     public void remove( Object key )
@@ -103,7 +104,7 @@ public class HashedBunchMap extends BunchMap
             int j = i;
             while (true)
                 {
-                i = (i == 0 ? capacity - 1 : i - 1);
+                i = (i == 0 ? capacity - 1 : i -1);
                 Object key = keys[i];
                 if (key == null) return;
                 int r = initialIndexFor( key );
