@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.50 2005-07-13 15:33:49 chris-dollin Exp $
+  $Id: Node.java,v 1.51 2005-10-26 14:15:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -387,13 +387,11 @@ public abstract class Node {
      * <p>Default implementation is to use equals, subclasses should
      * override this.</p>
      */
-    public boolean sameValueAs(Object o) {
-        return equals(o);
-    }
+    public boolean sameValueAs(Object o) 
+        { return equals( o ); }
 
-    public int hashCode() {
-    	return label.hashCode();
-    }
+    public int hashCode() 
+        { return label.hashCode() * 31; }
     
     /**
         Answer true iff this node accepts the other one as a match.

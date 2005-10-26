@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.35 2005-10-07 16:56:10 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.36 2005-10-26 14:15:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -36,7 +36,7 @@ public class TestPackage extends TestSuite {
         
         // Avoid a compile time dependency on ARQ. 
         {
-            TestSuite arqSuite = suiteByReflection("com.hp.hpl.jena.query.test.ARQTestSuite") ;
+            TestSuite arqSuite = getARQsuite() ;
             if ( arqSuite != null )
                 addTest("ARQ", arqSuite) ;
             else
@@ -62,6 +62,11 @@ public class TestPackage extends TestSuite {
         addTest( "DAML", com.hp.hpl.jena.ontology.daml.impl.test.TestPackage.suite() );
 
     }
+
+    public static TestSuite getARQsuite()
+        {
+        return suiteByReflection("com.hp.hpl.jena.query.test.ARQTestSuite");
+        }
 
     private void addTest(String name, TestSuite tc) {
         tc.setName(name);
