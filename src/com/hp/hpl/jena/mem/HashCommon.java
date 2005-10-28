@@ -1,35 +1,80 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.1 2005-10-28 10:14:31 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.2 2005-10-28 13:34:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 /**
-    Shared stuff for our hashing implementations.
+    Shared stuff for our hashing implementations: does the base work for
+    hashing and growth sizes.
     @author kers
 */
 public abstract class HashCommon
     {
+    /**
+        Jeremy suggests, from his experiments, that load factors more than
+        0.6 leave the table too dense, and little advantage is gained below 0.4.
+        Although that was with a quadratic probe, I'm borrowing the same 
+        plausible range, and use 0.5 by default. 
+    */
     protected static final double loadFactor = 0.5;
     
+    /**
+        The keys of whatever table it is we're implementing. Since we share code
+        for triple sets and for node->bunch maps, it has to be an Object array; we
+        take the casting hit.
+     */
     protected Object [] keys;
+    
+    /**
+        The capacity (length) of the key array.
+    */
     protected int capacity;
+    
+    /**
+        The threshold number of elements above which we resize the table;
+        equal to the capacity times the load factor.
+    */
     protected int threshold;
     
+    /**
+        The number of active elements in the table, maintained incrementally.
+    */
     protected int size = 0;
     
+    /**
+        Initialise this hashed thingy to have <code>initialCapacity</code> as its
+        capacity and the corresponding threshold. All the key elements start out
+        null.
+    */
     protected HashCommon( int initialCapacity )
         {
         keys = new Object[capacity = initialCapacity];
         threshold = (int) (capacity * loadFactor);
         }
 
+    /**
+        Answer the initial index for the object <code>key</code> in the table.
+        With luck, this will be the final position for that object. The initial index
+        will always be non-negative and less than <code>capacity</code>.
+    <p>
+        Implementation note: do <i>not</i> use <code>Math.abs</code> to turn a
+        hashcode into a positive value; there is a single specific integer on which
+        it does not work. (Hence, here, the use of bitmasks.)
+    */
     protected final int initialIndexFor( Object key )
         { return (key.hashCode() & 0x7fffffff) % capacity; }    
     
-    protected int findSlot( Object key )
+    /**
+        Search for the slot in which <code>key</code> is found. If it is absent,
+        return the index of the free slot in which it could be placed. If it is present,
+        return the bitwise complement of the index of the slot it appears in. Hence
+        negative values imply present, positive absent, and there's no confusion
+        around 0.
+    */
+    protected final int findSlot( Object key )
         {
         int index = initialIndexFor( key );
         while (true)
@@ -41,6 +86,10 @@ public abstract class HashCommon
             }
         }   
     
+    /**
+        Work out the capacity and threshold sizes for a new improved bigger
+        table (bigger by a factor of two, at present).
+    */
     protected void growCapacityAndThreshold()
         {
         capacity = capacity * 2;
@@ -78,9 +127,20 @@ public abstract class HashCommon
             }
         }
 
+    /**
+        When removeFrom removes a key, it calls this method to remove any
+        associated values, passing in the index of the key's slot. Subclasses 
+        override if they have any associated values.
+    */
     protected void removeAssociatedValues( int here )
         {}
 
+    /**
+        When removeFrom moves a key, it calls this method to move any
+        associated values, passing in the index of the slot <code>here</code>
+        to move to and the index of the slot <code>scan</code> to move from.
+        Subclasses override if they have any associated values.
+    */
     protected void moveAssociatedValues( int here, int scan )
         {}
     }
