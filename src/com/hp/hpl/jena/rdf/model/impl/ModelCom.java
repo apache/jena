@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.109 2005-10-07 08:30:38 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.110 2005-10-28 07:55:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -990,11 +990,9 @@ public class ModelCom
     
     public boolean containsResource( RDFNode r )
         { return graph.queryHandler().containsNode( r.asNode() ); }
-  
-    public boolean contains( Resource s, Property p )  {
-        ClosableIterator it = graph.find( asNode( s ), asNode( p ), null );
-        try { return it.hasNext(); } finally { it.close(); }
-    }
+
+    public boolean contains( Resource s, Property p ) 
+        { return contains( s, p, (RDFNode) null );  }
     
     public boolean contains( Resource s, Property p, RDFNode o )
         { return graph.contains( asNode( s ), asNode( p ), asNode( o ) ); }
