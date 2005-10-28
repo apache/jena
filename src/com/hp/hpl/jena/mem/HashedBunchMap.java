@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.3 2005-10-26 15:28:10 chris-dollin Exp $
+    $Id: HashedBunchMap.java,v 1.4 2005-10-28 10:14:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -13,35 +13,18 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
     An implementation of BunchMap that does open-addressed hashing.
     @author kers
 */
-public class HashedBunchMap extends BunchMap
+public class HashedBunchMap extends HashCommon implements BunchMap
     {
-    protected static final double loadFactor = 0.5;
+    protected Object [] values;
     
-    public Object [] keys = new Object[23];
-    public int capacity = keys.length;
-    protected Object [] values = new Object[capacity];
-    public int size = 0;
-    public int threshold = (int) (capacity * loadFactor);
+    public HashedBunchMap()
+        {
+        super( 10 );
+        values = new Object[capacity];
+        }
     
     public void clear()
-        { for (int i = 0; i < capacity; i += 1) keys[i] = null; }
-
-    protected final int initialIndexFor( Object key )
-        { return (key.hashCode() & 0x7fffffff) % capacity; }
-    
-    protected int findSlot( Object key )
-        {
-        int index = initialIndexFor( key );
-        int count = 0;
-        while (true)
-            {
-            Object current = keys[index];
-            if (current == null) return index; 
-            if (key.equals( current )) return ~index;
-            index = (index == 0 ? capacity - 1 : index - 1);
-            count += 1;
-            }
-        }       
+        { for (int i = 0; i < capacity; i += 1) keys[i] = null; }  
     
     public Object get( Object key )
         {
@@ -53,13 +36,11 @@ public class HashedBunchMap extends BunchMap
         {
         int slot = findSlot( key );
         if (slot < 0)
-            {
             values[~slot] = value;
-            }
         else
             {
             keys[slot] = key;
-            values[slot] = value;
+            values[slot] = value; 
             size += 1;
             if (size == threshold) grow();
             }
@@ -69,7 +50,8 @@ public class HashedBunchMap extends BunchMap
         {
         Object [] oldContents = keys, oldValues = values;
         final int oldCapacity = capacity;
-        keys = new Object[capacity = computeNewCapacity()];
+        growCapacityAndThreshold();
+        keys = new Object[capacity];
         values = new Object[capacity];
         for (int i = 0; i < oldCapacity; i += 1)
             {
@@ -82,38 +64,18 @@ public class HashedBunchMap extends BunchMap
                 }
             }
         }
-    
-    protected int computeNewCapacity()
-        {
-        int newCapacity = capacity * 2;
-        threshold = (int) (newCapacity * loadFactor);
-        return newCapacity;
-        }
-    
+
     public void remove( Object key )
         {
         int slot = findSlot( key );
-        if (slot < 0) remove( ~slot );
+        if (slot < 0) removeFrom( ~slot );
         }
+
+    protected void removeAssociatedValues( int here )
+        { values[here] = null; }
     
-    protected void remove( int i )
-        {
-        while (true)
-            {
-            keys[i] = null;
-            int j = i;
-            while (true)
-                {
-                i = (i == 0 ? capacity - 1 : i -1);
-                Object key = keys[i];
-                if (key == null) return;
-                int r = initialIndexFor( key );
-                if (!((i <= r && r < j) || (r < j && j < i) || (j < i && i <= r) )) break;
-                }
-            keys[j] = keys[i];
-            values[j] = values[i];
-            }
-        }
+    protected void moveAssociatedValues( int here, int scan )
+        { values[here] = values[scan]; }
 
     public Iterator keyIterator()
         {

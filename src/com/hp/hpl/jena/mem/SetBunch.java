@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: SetBunch.java,v 1.2 2005-09-02 10:38:19 chris-dollin Exp $
+    $Id: SetBunch.java,v 1.3 2005-10-28 10:14:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.query.StageElement;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
-public class SetBunch extends TripleBunch
+public class SetBunch implements TripleBunch
     {
     protected Set elements = new HashSet(20);
     

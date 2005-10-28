@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.9 2005-10-26 14:15:50 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.10 2005-10-28 10:14:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -22,8 +22,8 @@ public abstract class NodeToTriplesMapBase
     /**
          The map from nodes to Bunch(Triple).
     */
-//     public BunchMap map = new HashedBunchMap();
-    public BunchMap map = new WrappedHashMap();
+     public BunchMap map = 
+         Factory.newHashing ? (BunchMap) new HashedBunchMap() : new WrappedHashMap();
 
     /**
          The number of triples held in this NTM, maintained incrementally 

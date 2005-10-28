@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.19 2005-10-24 15:35:47 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.20 2005-10-28 10:14:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -34,12 +34,17 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
        else
            {
            if (s.size() == 9 && s instanceof ArrayBunch)
-               map.put( o, s = new SetBunch( s ) );
+               map.put( o, s = getHashedBunch( s ) );
            s.add( t );
            size += 1; 
            return true; 
            } 
        }
+
+    protected TripleBunch getHashedBunch( TripleBunch s )
+        {
+        return Factory.newHashing ? (TripleBunch) new HashedTripleBunch( s ) : new SetBunch( s );
+        }
     
     /**
         Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 

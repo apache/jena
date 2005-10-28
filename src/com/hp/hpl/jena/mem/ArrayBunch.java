@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: ArrayBunch.java,v 1.2 2005-09-02 10:38:19 chris-dollin Exp $
+    $Id: ArrayBunch.java,v 1.3 2005-10-28 10:14:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-public class ArrayBunch extends TripleBunch
+public class ArrayBunch implements TripleBunch
     {
     public ArrayBunch()
         {}

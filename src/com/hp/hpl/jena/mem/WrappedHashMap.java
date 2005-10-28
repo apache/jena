@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: WrappedHashMap.java,v 1.1 2005-10-26 07:48:27 chris-dollin Exp $
+    $Id: WrappedHashMap.java,v 1.2 2005-10-28 10:14:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 /**
     An implementation of BunchMap that delegates to a [Hashed]Map.
 */
-public class WrappedHashMap extends BunchMap
+public class WrappedHashMap implements BunchMap
     {
     protected final Map map = CollectionFactory.createHashedMap();
     
