@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.89 $
+ * Revision           $Revision: 1.90 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-06 16:02:33 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-10-31 09:59:17 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.89 2005-10-06 16:02:33 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.90 2005-10-31 09:59:17 der Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2578,7 +2578,7 @@ public class OntModelImpl
      */
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
         if (getGraph() instanceof InfGraph) {
-            Iterator iter = ((InfGraph) getGraph()).find(subject.asNode(), predicate.asNode(), object.asNode(), posit.getGraph());
+            Iterator iter = getInfGraph().find(asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
             return IteratorFactory.asStmtIterator(iter,this);
         }
         else {

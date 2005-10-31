@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfModelImpl.java,v 1.8 2005-05-01 14:39:27 der Exp $
+ * $Id: InfModelImpl.java,v 1.9 2005-10-31 09:59:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * an InfGraph.
 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-05-01 14:39:27 $
+ * @version $Revision: 1.9 $ on $Date: 2005-10-31 09:59:17 $
  */
 public class InfModelImpl extends ModelCom implements InfModel {
 
@@ -114,7 +114,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * @param object    The value sought
      */ 
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
-        Iterator iter = getInfGraph().find(subject.asNode(), predicate.asNode(), object.asNode(), posit.getGraph());
+        Iterator iter = getInfGraph().find(asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
         return IteratorFactory.asStmtIterator(iter,this);
     }
     
