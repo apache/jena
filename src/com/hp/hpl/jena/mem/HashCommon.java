@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.2 2005-10-28 13:34:40 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.3 2005-10-31 16:26:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -82,7 +82,7 @@ public abstract class HashCommon
             Object current = keys[index];
             if (current == null) return index; 
             if (key.equals( current )) return ~index;
-            index = (index == 0 ? capacity - 1 : index - 1);
+            if (--index < 0) index += capacity;
             }
         }   
     
@@ -115,7 +115,7 @@ public abstract class HashCommon
             int scan = here;
             while (true)
                 {
-                scan = (scan == 0 ? capacity - 1 : scan -1);
+                if (--scan < 0) scan += capacity;
                 Object key = keys[scan];
                 if (key == null) return;
                 int r = initialIndexFor( key );

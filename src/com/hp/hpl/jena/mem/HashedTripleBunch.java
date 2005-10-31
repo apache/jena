@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.7 2005-10-31 15:13:02 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.8 2005-10-31 16:26:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -69,18 +69,17 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
         Object [] oldContents = keys;
         final int oldCapacity = capacity;
         growCapacityAndThreshold();
-        keys = new Triple[capacity];
+        Object [] newKeys = keys = new Triple[capacity];
         for (int i = 0; i < oldCapacity; i += 1)
             {
             Object t = oldContents[i];
-            if (t != null) keys[findSlot( t )] = t;
+            if (t != null) newKeys[findSlot( t )] = t;
             }
         }
     
     public void remove( Triple t )
         {
-        int where = findSlot( t );
-        removeFrom( ~where );
+        removeFrom( ~findSlot( t ) );
         size -= 1;
         }
     

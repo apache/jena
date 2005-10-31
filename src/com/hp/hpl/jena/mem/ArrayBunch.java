@@ -1,16 +1,13 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: ArrayBunch.java,v 1.5 2005-10-31 15:13:02 chris-dollin Exp $
+    $Id: ArrayBunch.java,v 1.6 2005-10-31 16:26:18 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.StageElement;
-import com.hp.hpl.jena.shared.BrokenException;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     An ArrayBunch implements TripleBunch with a linear search of a short-ish
@@ -31,15 +28,15 @@ public class ArrayBunch implements TripleBunch
     
     public boolean containsBySameValueAs( Triple t )
         {
-        for (int i = 0; i < size; i += 1)
-            if (t.matches( elements[i])) return true;
+        int i = size;
+        while (i > 0) if (t.matches( elements[--i])) return true;
         return false;
         }
     
     public boolean contains( Triple t )
         {
-        for (int i = 0; i < size; i += 1)
-            if (t.equals( elements[i])) return true;
+        int i = size;
+        while (i > 0) if (t.equals( elements[--i] )) return true;
         return false;
         }
     
@@ -77,31 +74,31 @@ public class ArrayBunch implements TripleBunch
     
     public void app( Domain d, StageElement next, MatchOrBind s )
         {
-        for (int i = 0; i < size; i += 1)
-            if (s.matches( elements[i] )) next.run( d );
+        int i = size;
+        while (i > 0) if (s.matches( elements[--i] )) next.run( d );
         }
     
     public ExtendedIterator iterator()
         {
         return new NiceIterator()
             {
-            protected int i = 0;
+            protected int i = size;
+            protected final Triple [] e = elements;
             
             public boolean hasNext()
-                { return i < size; }
+                { return i > 0; }
         
             public Object next()
                 {
-                if (!hasNext()) throw new BrokenException( "ARGH" );
-                return elements[i++]; 
+                if (i == 0) noElements( "no elements left in ArrayBunch iteration" );
+                return e[--i]; 
                 }
             
             public void remove()
                 {
-                if (i == size)
-                    size -= 1;
-                else
-                    elements[--i] = elements[--size];
+                int last = --size;
+                e[i] = e[last];
+                e[last] = null;
                 }
             };
         }

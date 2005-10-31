@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.21 2005-10-28 10:14:26 chris-dollin Exp $
+  $Id: Factory.java,v 1.22 2005-10-31 16:26:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -26,7 +26,7 @@ public class Factory
         System.getProperty( "jena.faster", "yes" ).equals( "yes" );
 
     public static final boolean newHashing = 
-        System.getProperty( "jena.hashing", "no" ).equals( "yes" );
+        System.getProperty( "jena.hashing", "yes" ).equals( "yes" );
     /**
         Answer a memory-based Graph with the Standard reification style.
     */
