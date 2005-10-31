@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.6 2005-10-28 10:14:31 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.7 2005-10-31 15:13:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -16,22 +16,39 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
     {
     public HashedTripleBunch( TripleBunch b )
         {
-        super( (int) (b.size() / loadFactor) + 10 );
+        super( (int) (b.size() / loadFactor) + 11 );
         for (Iterator it = b.iterator(); it.hasNext();) add( (Triple) it.next() );        
         }
     
     public boolean contains( Triple t )
         { return findSlot( t ) < 0; }    
     
-    protected int findSlotBySameValueAs( Triple t )
+    protected int findSlotBySameValueAs( Triple key )
         {
-        int index = initialIndexFor( t );
+        int index = initialIndexFor( key );
+        // int k = 1;
         while (true)
             {
             Object current = keys[index];
             if (current == null) return index;
-            if (t.matches( (Triple) current )) return ~index;
-            index = (index == 0 ? capacity - 1 : index - 1);
+            if (key.matches( (Triple) current )) return ~index;
+            // System.err.println( ">> collision " + ++k );
+//            if (++k == 6) 
+//                {
+//                RuntimeException e = new RuntimeException( "that's too many collisions for " + key + " in set of size " + size + "/" + capacity );
+//                  System.err.println( ";;; -- iterator -------------------------------------------" );
+//                  for (int i = 0; i < capacity; i += 1)
+//                      {
+//                      Object x = keys[i];
+//                      System.err.print( i + ": " );
+//                      if (x == null) System.err.println( "FREE" );
+//                      else System.err.println( "[" + initialIndexFor( x ) + "] " + x );
+//                      }
+//                  System.err.println( ";;; ++ done ++++++++++++++++++++++++++++++" );
+//                e.printStackTrace( System.err );
+//                throw e;
+//                }
+            if (--index < 0) index += capacity;
             }
         }
     
@@ -43,10 +60,8 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
     
     public void add( Triple t )
         {
-        int where = findSlot( t );
-        keys[where] = t;
-        size += 1;
-        if (size > threshold) grow();
+        keys[findSlot( t )] = t;
+        if (++size > threshold) grow();
         }
     
     protected void grow()
@@ -76,20 +91,23 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
             int index = 0;
             int lastIndex = -1;
             Object toRemove = null;
+            Object current = null;
             
             public boolean hasNext()
                 {
-                while (index < capacity && (keys[index] == null))
-                    index += 1;
-                return index < capacity;
+                if (current == null)
+                    {
+                    while (index < capacity && ((current = keys[index]) == null)) index += 1;
+                    }
+                return current != null;
                 }
             
             public Object next()
                 {
-                if (hasNext() == false) noElements( "" );
-                Object answer = keys[index];
+                if (current == null && hasNext() == false) noElements( "HashedTripleBunch iterator empty" );
+                Object answer = toRemove = current;
                 lastIndex = index;
-                toRemove = keys[index];
+                current = null;
                 index += 1;
                 return answer;
                 }

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: ArrayBunch.java,v 1.4 2005-10-28 13:34:40 chris-dollin Exp $
+    $Id: ArrayBunch.java,v 1.5 2005-10-31 15:13:02 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -12,6 +12,14 @@ import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
+/**
+    An ArrayBunch implements TripleBunch with a linear search of a short-ish
+    array of Triples. The array can grow, but it only grows by 4 elements each time
+    (because, if it gets big enough for this linear growth to be bad, it should anyways
+    have been replaced by a more efficient set-of-triples implementation).
+    
+    @author kers
+*/
 public class ArrayBunch implements TripleBunch
     {
     
