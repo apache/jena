@@ -22,17 +22,14 @@ import org.apache.commons.logging.*;
  *  <ul>
  *   
  * @author      Andy Seaborne
- * @version     $Id: LockMRSW.java,v 1.1 2005-09-29 14:52:29 andy_seaborne Exp $
+ * @version     $Id: LockMRSW.java,v 1.2 2005-11-01 09:41:27 andy_seaborne Exp $
  */
 
 public class LockMRSW implements Lock 
 {
-    // The Jena ModelLock code, extracted and renamed.
-    // Merge back later, making "ModelLock extend Lock" for compatibility
-    
     static Log log = LogFactory.getLog(LockMRSW.class) ;
     
-    // Map of threads to lock state for this model lock
+    // Map of threads to lock state for this lock
     Map threadStates = new HashMap() ;
     // We keep this is a variable because it is tested outside of a lock.
     int threadStatesSize = threadStates.size() ;

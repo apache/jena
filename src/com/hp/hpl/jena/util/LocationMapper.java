@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.13 2005-10-01 20:08:26 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.14 2005-11-01 09:41:22 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -37,8 +37,9 @@ public class LocationMapper
     static Log log = LogFactory.getLog(LocationMapper.class)  ;
     /** The default path for searching for the location mapper */
     public static final String DEFAULT_PATH =
-        "file:location-mapping.rdf;file:location-mapping.n3;" +
-        "file:etc/location-mapping.rdf;file:etc/location-mapping.n3;" ;
+        "file:location-mapping.rdf;file:location-mapping.n3;file:location-mapping.ttl;"+
+        "file:etc/location-mapping.rdf;file:etc/location-mapping.n3;"+
+        "file:etc/location-mapping.ttl" ;
     public static final String GlobalMapperSystemProperty1 = "http://jena.hpl.hp.com/2004/08/LocationMap" ;
     public static final String GlobalMapperSystemProperty2 = "LocationMap" ;
     
