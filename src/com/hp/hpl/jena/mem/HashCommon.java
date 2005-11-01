@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.3 2005-10-31 16:26:18 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.4 2005-11-01 15:30:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -92,8 +92,22 @@ public abstract class HashCommon
     */
     protected void growCapacityAndThreshold()
         {
-        capacity = capacity * 2;
+        capacity = nextSize( capacity * 2 );
         threshold = (int) (capacity * loadFactor);
+        }
+     
+    static final int [] primes =
+        {
+        7, 19, 37, 79, 149, 307, 617, 1237, 2477, 4957, 9923,
+        19853, 39709, 79423, 158849, 317701, 635413,
+        1270849, 2541701, 5083423
+        };
+    
+    protected static int nextSize( int atLeast )
+        {
+        for (int i = 0; i < primes.length; i += 1)
+            if (primes[i] > atLeast) return primes[i];
+        return atLeast;
         }
     
     /**

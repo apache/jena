@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.8 2005-10-31 16:26:18 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.9 2005-11-01 15:30:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -16,10 +16,10 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
     {
     public HashedTripleBunch( TripleBunch b )
         {
-        super( (int) (b.size() / loadFactor) + 11 );
+        super( nextSize( (int) (b.size() / loadFactor) ) );
         for (Iterator it = b.iterator(); it.hasNext();) add( (Triple) it.next() );        
         }
-    
+
     public boolean contains( Triple t )
         { return findSlot( t ) < 0; }    
     
@@ -87,7 +87,7 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
         {
         return new NiceIterator()
             {
-            int index = 0;
+            int index = capacity;
             int lastIndex = -1;
             Object toRemove = null;
             Object current = null;
@@ -95,9 +95,7 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
             public boolean hasNext()
                 {
                 if (current == null)
-                    {
-                    while (index < capacity && ((current = keys[index]) == null)) index += 1;
-                    }
+                    while (index > 0 && ((current = keys[--index]) == null)) {};
                 return current != null;
                 }
             
@@ -107,7 +105,6 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
                 Object answer = toRemove = current;
                 lastIndex = index;
                 current = null;
-                index += 1;
                 return answer;
                 }
             
