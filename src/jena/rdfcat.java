@@ -7,10 +7,10 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-12 10:28:10 $
+ * Last modified on   $Date: 2005-11-02 22:31:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -91,7 +91,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.6 2005-10-12 10:28:10 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.7 2005-11-02 22:31:25 ian_dickinson Exp $)
  */
 public class rdfcat
 {
@@ -231,8 +231,8 @@ public class rdfcat
             m_outputFormat = "N3";
         }
         else if ("N-TRIPLE".equalsIgnoreCase( lang ) ||
-                "ntriples".equalsIgnoreCase( lang ) ||
-                "ntriple".equalsIgnoreCase( lang ) ||
+                 "ntriples".equalsIgnoreCase( lang ) ||
+                 "ntriple".equalsIgnoreCase( lang ) ||
                  "t".equalsIgnoreCase( lang ))
         {
             m_outputFormat = "N-TRIPLE";
@@ -267,8 +267,8 @@ public class rdfcat
                 }
                 else {
                     // lang from extension overrides default set on command line
-                    String lang = FileUtils.guessLang( inputName, m_inputFormat );
-                    FileManager.get().readModel( inModel, inputName, lang );
+                    String lang = FileUtils.guessLang( in, m_inputFormat );
+                    FileManager.get().readModel( inModel, in, lang );
                 }
 
                 // check for anything more that we need to read
@@ -295,14 +295,13 @@ public class rdfcat
         // first collect any rdfs:seeAlso statements
         StmtIterator i = inModel.listStatements( null, RDFS.seeAlso, (RDFNode) null );
         while (i.hasNext()) {
-            RDFNode n = i.nextStatement().getObject();
-            queue.add( (n.isLiteral()) ? ((Literal) n).getLexicalForm() : ((Resource) n).getURI());
+            queue.add( getURL( i.nextStatement().getObject() ));
         }
 
         // then any owl:imports
         i = inModel.listStatements( null, OWL.imports, (RDFNode) null );
         while (i.hasNext()) {
-            queue.add( i.nextStatement().getResource() );
+            queue.add( getURL( i.nextStatement().getResource() ) );
         }
     }
 
@@ -322,6 +321,11 @@ public class rdfcat
 
 
         System.exit(0);
+    }
+
+    /** Answer a URL string from a resource or literal */
+    protected String getURL( RDFNode n ) {
+        return n.isLiteral() ? ((Literal) n).getLexicalForm() : ((Resource) n).getURI();
     }
 
 
