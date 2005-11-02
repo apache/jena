@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.108 2005-11-02 09:56:34 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.109 2005-11-02 17:57:33 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -318,7 +318,7 @@
       <fileset dir="${bldsrc.dir}" includes="**"/>
     </copy>
     <copy todir="${dist.dir}/${src.examples.dir}">
-      <fileset dir="${bldsrc.dir}" includes="**"/>
+      <fileset dir="${src.examples.dir}" includes="**"/>
     </copy>
     <!-- Misc files -->
     <copy todir="${dist.dir}" file="build.xml"/>
