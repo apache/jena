@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.107 2005-10-12 14:57:03 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.108 2005-11-02 09:56:34 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -349,6 +349,7 @@
         <exclude name="readme-site.txt"/>
 	<!-- FrontPage control files -->
 	<exclude name="**/_*"/>             
+	<exclude name="**/_*/*"/>             
         <exclude name="**/desktop.ini"/>
       </fileset>
     </copy>
