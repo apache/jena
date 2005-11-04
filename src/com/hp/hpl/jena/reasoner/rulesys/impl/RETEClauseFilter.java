@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEClauseFilter.java,v 1.10 2005-07-13 10:06:29 chris-dollin Exp $
+ * $Id: RETEClauseFilter.java,v 1.11 2005-11-04 16:37:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.*;
 
@@ -23,7 +22,7 @@ import java.util.*;
  * and bindings are implemented using a simple byte-coded interpreter.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-07-13 10:06:29 $
+ * @version $Revision: 1.11 $ on $Date: 2005-11-04 16:37:27 $
  */
 public class RETEClauseFilter implements RETESourceNode {
     
