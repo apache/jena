@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaModelSpec.java,v 1.3 2005-08-01 08:25:39 chris-dollin Exp $
+  $Id: JenaModelSpec.java,v 1.4 2005-11-10 15:58:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -192,7 +192,7 @@ public class JenaModelSpec
     /**
         The class of FileModel specifications.
     */
-    public static Resource FileModelSpec = resource( "FileModelSpec" );
+    public static final Resource FileModelSpec = resource( "FileModelSpec" );
     
     /**
         The class of InfModelSpec resources [subclass of ModelSpec].
