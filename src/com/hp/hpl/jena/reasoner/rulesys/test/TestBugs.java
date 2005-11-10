@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.38 2005-10-06 22:02:07 der Exp $
+ * $Id: TestBugs.java,v 1.39 2005-11-10 17:06:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.38 $ on $Date: 2005-10-06 22:02:07 $
+ * @version $Revision: 1.39 $ on $Date: 2005-11-10 17:06:06 $
  */
 public class TestBugs extends TestCase {
 
@@ -51,7 +51,8 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testIncrementalIU" ));
+//        suite.addTest(new TestBugs( "testFactRules" ));
+//        suite.addTest(new TestBugs( "testFactChainRules" ));
 //        return suite;
     }  
 
@@ -710,6 +711,47 @@ public class TestBugs extends TestCase {
 
        TestUtil.assertIteratorValues(this, classI.listInstances(), subind);
        TestUtil.assertIteratorValues(this, classU.listInstances(), ind);  
+    }
+    
+    /**
+     * Fact rules with non-empty bodyies failed to fire.
+     */
+    public void testFactRules() {
+        Model facts = ModelFactory.createDefaultModel();
+        String NS = PrintUtil.egNS;
+        Property p = facts.createProperty(NS + "p");
+        List rules = Rule.parseRules("makeTemp(?x) -> (?x, eg:p, eg:z). " +
+                "makeTemp(?x) makeTemp(?y) -> (?x, eg:p, ?y) . " +
+                "(?x, eg:p, eg:z) -> (?a, eg:p, eg:b).");
+
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+        InfModel inf = ModelFactory.createInfModel(reasoner, facts);
+        inf.prepare();
+        TestUtil.assertIteratorLength(inf.listStatements(null, p, (RDFNode)null), 3);
+    }
+
+    /**
+     * Test chainging rules from axioms which broke while trying to
+     * fix about test case.
+     */
+    public void testFactChainRules() {
+        Model facts = ModelFactory.createDefaultModel();
+        String NS = PrintUtil.egNS;
+        Property mother = facts.createProperty(NS + "mother");
+        Resource female = facts.createProperty(NS + "Female");
+        mother.addProperty(RDFS.range, female);
+        List rules = Rule.parseRules(
+                "-> tableAll(). \n" +
+                "[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] \n" +
+                 "-> (eg:range rdfs:subPropertyOf rdfs:range). \n" + 
+                 "-> (rdfs:range rdfs:subPropertyOf eg:range). \n" );
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+        reasoner.setTransitiveClosureCaching(true);
+        InfModel inf = ModelFactory.createInfModel(reasoner, facts);
+        Property egRange = inf.createProperty(NS + "range");
+        TestUtil.assertIteratorValues(this,
+                    inf.listStatements(null, egRange, (RDFNode)null),
+                    new Object[] {inf.createStatement(mother, egRange, female)} );
     }
     
     // debug assistant

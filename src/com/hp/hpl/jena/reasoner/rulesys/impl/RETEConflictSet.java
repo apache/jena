@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEConflictSet.java,v 1.2 2005-10-06 13:14:39 der Exp $
+ * $Id: RETEConflictSet.java,v 1.3 2005-11-10 17:06:06 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
  * concurrent adds to InfModel are not supported anyway.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 
 public class RETEConflictSet {
@@ -128,7 +128,7 @@ public class RETEConflictSet {
     /**
      * Execute a single rule firing. 
      */
-    protected void execute(RETERuleContext context, boolean isAdd) {
+    public static void execute(RETERuleContext context, boolean isAdd) {
         Rule rule = context.getRule();
         BindingEnvironment env = context.getEnv();
         ForwardRuleInfGraphI infGraph = (ForwardRuleInfGraphI)context.getGraph();
