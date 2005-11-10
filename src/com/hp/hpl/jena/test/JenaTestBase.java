@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.18 2005-10-10 12:58:16 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.19 2005-11-10 17:39:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -148,6 +148,13 @@ public class JenaTestBase extends TestCase
         { List result = new ArrayList( L );
         result.addAll( R );
         return result; }
+
+    protected List listOfOne( Object s )
+        {
+        List result = new ArrayList();
+        result.add( s );
+        return result;
+        }
     }
 
 
