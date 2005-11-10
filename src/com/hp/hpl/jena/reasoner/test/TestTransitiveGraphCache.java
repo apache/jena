@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTransitiveGraphCache.java,v 1.14 2005-06-27 07:56:36 der Exp $
+ * $Id: TestTransitiveGraphCache.java,v 1.15 2005-11-10 17:03:58 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
  * off the main unit test paths.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 
 public class TestTransitiveGraphCache extends TestCase {
@@ -58,7 +58,7 @@ public class TestTransitiveGraphCache extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestTransitiveGraphCache.class ); 
 //        TestSuite suite = new TestSuite();
-//        suite.addTest( new TestTransitiveGraphCache("testBug2"));
+//        suite.addTest( new TestTransitiveGraphCache("testEquivalencesSimple"));
 //        return suite;
     }  
 
@@ -507,6 +507,24 @@ public class TestTransitiveGraphCache extends TestCase {
                 new Triple(e, closedP, a),
                 new Triple(f, closedP, a),
                 });
+    }
+    
+    /**
+     * Test simple equivalences case
+     */
+    public void testEquivalencesSimple() {
+        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
+        cache.addRelation(new Triple(a, closedP, b));
+        cache.addRelation(new Triple(b, closedP, a));
+        TestUtil.assertIteratorValues(this, 
+                cache.find(new TriplePattern(null, closedP, null)),
+                new Object[] {
+                new Triple(a, closedP, b),
+                new Triple(b, closedP, a),
+                new Triple(b, closedP, b),
+                new Triple(a, closedP, a),
+        });
+        TestUtil.assertIteratorLength( cache.find(new TriplePattern(null, closedP, null)), 4);
     }
     
     /**

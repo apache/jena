@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.19 2005-06-26 20:08:27 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.20 2005-11-10 17:04:09 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,7 +42,7 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 
 // Note to maintainers. The GraphNode object is treated as a record structure
@@ -215,7 +215,7 @@ public class TransitiveGraphCache implements Finder {
 		 * node to the target node.
 		 */
 		public void propagateAdd(GraphNode target) {
-			Set sc = target.succClosed;
+            Set sc = new HashSet(target.succClosed);
             sc.add(target); 
 			visitPredecessors(new Visitor() {
 				public void visit(GraphNode node, Object arg1, Object target) {
@@ -574,6 +574,9 @@ public class TransitiveGraphCache implements Finder {
         /** Iterator over the successor nodes for the baseNode */
         Iterator succIt = null;
         
+        /** The current successor being processed */
+        GraphNode succ;
+        
         /** Iterator over the aliases for the current successor */
         Iterator aliasesIt = null;
         
@@ -605,31 +608,37 @@ public class TransitiveGraphCache implements Finder {
          */
         protected void walkOne() {
             if (aliasesIt != null) {
-                if (aliasesIt.hasNext()) {
-                    next = new Triple(nodeN, predicate, ((GraphNode)aliasesIt.next()).rdfNode);
-                    return;
-                } else {
-                    aliasesIt = null;      // End of aliases
+                while (aliasesIt.hasNext()) {
+                    GraphNode al = (GraphNode)aliasesIt.next();
+                    if (al != succ && al != node) {
+                        next = new Triple(nodeN, predicate, al.rdfNode);
+                        return;
+                    }
                 }
+                aliasesIt = null;      // End of aliases
             }
             
             if (succIt != null) {
-                if (succIt.hasNext()) {
-                    GraphNode succ = (GraphNode)succIt.next();
+                while (succIt.hasNext()) {
+                    succ = (GraphNode)succIt.next();
+                    if (succ == node) continue; // Skip accidental reflexive cases, already done
                     if (succ.aliases instanceof Set) {
                         aliasesIt = ((Set)succ.aliases).iterator();
                     }
                     next = new Triple(nodeN, predicate, succ.rdfNode);
                     return;
-                } else {
-                    succIt = null;      // End of the successors
                 }
+                succIt = null;      // End of the successors
             }
             
             if (baseNodeIt.hasNext()) {
                 node = (GraphNode)baseNodeIt.next();
                 nodeN = node.rdfNode;
-                succIt = (closed ? node.succClosed : node.succ).iterator();
+                GraphNode lead = node.leadNode();
+                succIt = (closed ? lead.succClosed : lead.succ).iterator();
+                if (lead.aliases instanceof Set) {
+                    succIt = new ConcatenatedIterator(succIt, ((Set)lead.aliases).iterator());
+                }
                 next = new Triple(nodeN, predicate, nodeN); // Implicit reflexive case
             } else {
                 next = null; // End of walk
