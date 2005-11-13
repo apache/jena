@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLConsistency.java,v 1.5 2005-04-11 11:27:04 der Exp $
+ * $Id: TestOWLConsistency.java,v 1.6 2005-11-13 17:14:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -22,7 +22,7 @@ import junit.framework.TestSuite;
  * Test the preliminary OWL validation rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-04-11 11:27:04 $
+ * @version $Revision: 1.6 $ on $Date: 2005-11-13 17:14:46 $
  */
 public class TestOWLConsistency extends TestCase {
      
@@ -102,6 +102,14 @@ public class TestOWLConsistency extends TestCase {
      */
     public void testInconsistent5() {
         assertTrue( ! doTestOn("file:testing/reasoners/owl/inconsistent5.rdf"));
+    }
+    
+    /**
+     * Should find distinct literal values for a functional property
+     * via an indirect sameAs
+     */
+    public void testInconsistent7() {
+        assertTrue( ! doTestOn("file:testing/reasoners/owl/inconsistent7.rdf"));
     }
     
     /**

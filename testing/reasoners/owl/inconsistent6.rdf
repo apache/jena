@@ -18,8 +18,8 @@
 >
 
     <A rdf:ID="ia">
-    	<fp rdf:datatype="&xsd;int">3</fp>
-    	<fp rdf:datatype="&xsd;int">-1</fp>
+    	<dfp rdf:datatype="&xsd;int">3</dfp>
+    	<dfp rdf:datatype="&xsd;int">-1</dfp>
     </A>
 	
 </rdf:RDF>

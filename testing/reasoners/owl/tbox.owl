@@ -47,5 +47,9 @@
     
     <owl:FunctionalProperty rdf:ID="fp" />
     
+    <owl:FunctionalProperty rdf:ID="dfp">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty" />
+    </owl:FunctionalProperty>
+    
 
 </rdf:RDF>

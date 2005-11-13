@@ -18,11 +18,11 @@
 >
 
     <A rdf:ID="ia">
-    	<fp rdf:datatype="&xsd;int">3</fp>
+    	<dfp rdf:datatype="&xsd;int">3</dfp>
     </A>
 	
     <A rdf:ID="ib">
-    	<fp rdf:datatype="&xsd;int">-1</fp>
+    	<dfp rdf:datatype="&xsd;int">-1</dfp>
     	<owl:sameAs rdf:resource="#ia" />
     </A>
 	

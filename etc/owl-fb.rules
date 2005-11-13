@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.54 2005-05-24 08:09:06 der Exp $
+# $Id: owl-fb.rules,v 1.55 2005-11-13 17:14:05 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -692,13 +692,17 @@
     [max2b: (?X rb:violation error('too many values', 'Value for max-0 property (prop, class)', ?P, ?C))
     			<- (?X rdf:type ?C), (?X ?P ?Y) ] ]
 
-[validationMaxN: (?v rb:validation on()), (?C rdfs:subClassOf max(?P, ?N)) ->
+[validationMaxN: (?v rb:validation on()), (?C rdfs:subClassOf max(?P, ?N)) greaterThan(?N, 1) (?P rdf:type owl:DatatypeProperty) ->
     [max2b: (?X rb:violation error('too many values', 'Too many values on max-N property (prop, class)', ?P, ?C))
     			<- (?X rdf:type ?C), countLiteralValues(?X, ?P, ?M), lessThan(?N, ?M)  ] ]
+    			
+[validationMax1: (?v rb:validation on()), (?C rdfs:subClassOf max(?P, 1)) (?P rdf:type owl:DatatypeProperty) ->
+    [fpb: (?X rb:violation error('too many values', 'Clashing literal values for card1 property', ?P, ?V, ?U))
+    			<- (?X rdf:type ?C) (?X ?P ?V), (?X ?P ?U), isLiteral(?V), isLiteral(?U), notEqual(?V, ?U) ] ]
 
-[validationFP: (?v rb:validation on()), (?P rdf:type owl:FunctionalProperty) ->
+[validationFP: (?v rb:validation on()), (?P rdf:type owl:FunctionalProperty) (?P rdf:type owl:DatatypeProperty) ->
     [fpb: (?X rb:violation error('too many values', 'Clashing literal values for functional property', ?P, ?V, ?U))
-    			<- (?X ?P ?V), countLiteralValues(?X, ?P, ?M), greaterThan(?M, 1) ] ]
+    			<- (?X ?P ?V), (?X ?P ?U), isLiteral(?V), isLiteral(?U), notEqual(?V, ?U) ] ]
 
 [validationIndiv: (?v rb:validation on())  ->
 	[validationIndiv: (?X rb:violation error('conflict', 'Two individuals both same and different, may be due to disjoint classes or functional properties', ?Y)) 
