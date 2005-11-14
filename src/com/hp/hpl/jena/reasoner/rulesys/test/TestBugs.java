@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.39 2005-11-10 17:06:06 der Exp $
+ * $Id: TestBugs.java,v 1.40 2005-11-14 18:11:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.39 $ on $Date: 2005-11-10 17:06:06 $
+ * @version $Revision: 1.40 $ on $Date: 2005-11-14 18:11:13 $
  */
 public class TestBugs extends TestCase {
 
@@ -722,12 +722,14 @@ public class TestBugs extends TestCase {
         Property p = facts.createProperty(NS + "p");
         List rules = Rule.parseRules("makeTemp(?x) -> (?x, eg:p, eg:z). " +
                 "makeTemp(?x) makeTemp(?y) -> (?x, eg:p, ?y) . " +
-                "(?x, eg:p, eg:z) -> (?a, eg:p, eg:b).");
+                "(?x, eg:p, eg:z) -> (?a, eg:p, eg:b). " +
+                "-> [ (eg:a eg:p eg:y) <- ]."
+                );
 
         GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
         InfModel inf = ModelFactory.createInfModel(reasoner, facts);
         inf.prepare();
-        TestUtil.assertIteratorLength(inf.listStatements(null, p, (RDFNode)null), 3);
+        TestUtil.assertIteratorLength(inf.listStatements(null, p, (RDFNode)null), 4);
     }
 
     /**
