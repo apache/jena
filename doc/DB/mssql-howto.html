@@ -1,0 +1,147 @@
+<html>
+<!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP -->
+<head>
+<title>Jena2 Microsoft SQL Server HowTo</title>
+<link href="../styles/doc.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+This version: 0.1<br/> Date: 14 November 2005
+
+<h1>HowTo Use Microsoft SQL Server Database System with Jena2</h1>
+
+<h2>What is Microsoft SQL Server</h2>
+
+<p><i>Microsoft SQL Server</i> refers to a range of Database servers available from Microsoft Corporation
+for use under the Windows operating system. Jena has been tested with SQL Server 2000 (Enterprise Edition) 
+and with the Microsoft SQL Server 2000 Desktop Edition (MSDE) Release A.
+MSDE 2000 is a free, redistributable version of SQL Server 
+intended for client applications that require an embedded database, new developers 
+learning how to build data-driven applications, and Web sites serving up to 25 concurrent users.
+</p>
+<p>
+
+<h2>Installation of MS SQL Server</h2>
+
+<p>Microsoft SQL Server is commercial software and we cannot provide
+generic installation instructions. We assume that Jena users wishing to use SQL Server
+as a store have a correctly configured instance running. The Desktop Edition (MSDE 2000 Rel A) is
+free and redistributable software. See <a href="http://www.microsoft.com/sql/msde/default.mspx">http://www.microsoft.com/sql/msde/default.mspx</a>
+for download, installation and license information.</p>
+<p>At the time of writing Microsoft are in the process or releasing SQL Server 2005 and the associated
+Express edition. The Jena driver may work with these products but has not been tested in that
+environment.</p>
+<p>
+Microsoft's JDBC drivers for SQL Server may be downloaded from <a href="http://www.microsoft.com">http://www.microsoft.com</a>.
+At the time of writing the newest available driver is SQL Server 2005 JDBC Driver Beta 2
+available from <a href="http://www.microsoft.com/technet/prodtechnol/sql/2005/downloads/jdbc.mspx">http://www.microsoft.com/technet/prodtechnol/sql/2005/downloads/jdbc.mspx</a>.
+</p>
+
+<p>
+In addition there is an open source driver compabible with SQL Server available from 
+<a href="http://jtds.sourceforge.net/">http://jtds.sourceforge.net/</a>.
+</p>
+
+<p>
+<table style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
+  <tr><td><b>Server</b></td>
+  </tr>
+  <tr>
+    <td>Microsoft SQL Server 2000</td>
+  </tr><tr>
+    <td>Microsoft SQL Server 2000 Desktop Edition (Release A sp3a)</td>
+  </tr>
+</table>
+</p>
+<p>
+<table style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
+  <tr><td><b>Driver</b></td>
+  </tr>
+  <tr>
+    <td>Microsoft SQL Server 2005 JDBC Driver Beta 2</td>
+  </tr><tr>
+    <td>jTDS version 1.2</td>
+  </tr>
+</table>
+</p>
+
+<h2>Connecting Your Jena Program to SQL Server</h2>
+
+<p>Jena supports both memory models and database models. In general, a Jena program 
+may use both types of models identically. However, there are some differences 
+in how the models are created. Creating a memory model can be done with a single 
+Jena call. Creating a database model, or opening a previously created one, 
+requires several steps as as follows.</p>
+
+<blockquote>
+  <ol>
+    <li>Load the JDBC driver. This enables the Jena program to communicate with 
+    the database instance.</li>
+    <li>Create a database connection. This creates a Java object for a database 
+    connection.</li>
+    <li>Create or open a model on the connection. This connects to the database 
+    and creates an empty model or opens a previously created model.</li>
+  </ol>
+</blockquote>
+
+<p>These steps are illustrated in the following Java code.</p>
+
+<pre>
+    // Load the Driver (assumes jTDS driver is in the classpath)
+    String className = "net.sourceforge.jtds.jdbc.Driver";  // path of driver class
+    Class.forName (className);                      // load driver
+         
+    String DB_URL = "jdbc:jtds:sqlserver://localhost/Test";  // URL of database server
+    String DB_USER = "test";                        // database user id
+    String DB_PASSWD = "";                          // database password
+    String DB = "MsSQL";                            // database type
+     
+    // Create database connection
+    IDBConnection conn = new DBConnection ( URL, DB_USER, DB_PASSWD, DB );
+    // Create a model in the database 
+    ModelRDB m = ModelRDB.createModel ( conn ); 
+         
+    &lt; your Jena code to work with the model goes here >
+        
+    // Remove the model. NOTE: this deletes the model from the database.
+    // Subsequent attempts to open this model will fail.
+    m.remove();   // NOTE: remove deletes the model from the database
+         
+    // Close the database connection                                                                                conn.close();                                                                                                
+        
+    // Alternative to creating an unnamed model ...
+    // Create a named model
+    ModelRDB m = ModelRDB.createModel(conn, "myName");
+    
+    ...  later, or in another Jena application ...
+     
+    // Open a named model.
+    ModelRDB m = ModelRDB.open(conn, "myName");
+</pre>
+
+<p>
+Ff using the Microsoft JDBC driver the class name and URL format would be: </p>
+
+<pre>
+    String className = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    String DB_URL = "jdbc:sqlserver://localhost;databaseName=Test";  // URL of database server
+</pre>
+
+<p>
+Consult the documentation for the JDBC driver you chose for information on other options
+such as accessing other named SQL Server instances on the same host.
+</p>
+
+<h2>Performance and Usage Notes</h2>
+
+<p>Jena stores all models in a single database using whatever database (name) specified on the database connection. See the <a href="index.html">Jena Database Release Notes</a> for 
+details on the physical layout.</p>
+
+<p>The single biggest limitation with the current SQL Server driver implementation 
+is that while a transaction is in progress inserting triples into a Model
+then other processes will be blocked from reading from that Model. In other databases
+concurrent reads during a transaction are allowed. Whilst SQL Server does support ROW level 
+locking there seem to be situations in which it may still chose TABLE level locking
+at the expese of reduced concurrency. We have no solution to this problem are present.
+</body>
+</html>

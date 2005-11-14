@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactoryBase.java,v 1.4 2005-02-21 12:14:09 andy_seaborne Exp $
+  $Id: ModelFactoryBase.java,v 1.5 2005-11-14 18:09:38 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -35,6 +35,11 @@ public class ModelFactoryBase
         
     public static String guessDBDriver()
         { return gp( "db.driver", null ); }
+    
+    /** Return true if the databas should support concurrent read during transactions */
+    public static boolean guessDBConcurrent() {
+        return gp("db.concurrent", "true").equalsIgnoreCase("true");
+    }
     
     /**
         Guess the database type as the string between the first and second colons of the

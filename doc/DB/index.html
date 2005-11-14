@@ -23,7 +23,7 @@
 
 <p>The jena/db module provides an implementation of the Jena <code>model</code> 
 interface but with the ability to store and retrieve RDF statements using a 
-database. It currently supports MySQL, Oracle and PostgreSQL for persistent 
+database. It currently supports MySQL, Oracle, PostgreSQL and MS SQLServer for persistent 
 storage and runs under Linux and WindowsXP. Jena1 databases cannot be accessed 
 by Jena2 and must be reloaded. Little performance tuning has been done.</p>
 
@@ -105,7 +105,9 @@ currently supported for Jena2 persistence. Older and newer versions may work but
 have not been tested. See the database-specific <i>how-to</i> documents for more 
 details on using these databases for Jena applications (<a href="mysql-howto.html">MySQL</a>,
   <a href="oracle-howto.html">Oracle</a>,
-  <a href="postgresql-howto.html">PostgreSQL</a>).</p>
+  <a href="postgresql-howto.html">PostgreSQL</a>,
+  <a href="mssql-howto.html">MS SQL Server</a>).
+  </p>
 
 
 
@@ -158,6 +160,18 @@ details on using these databases for Jena applications (<a href="mysql-howto.htm
     <td style="text-align: left">&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
     <td style="text-align: left">&nbsp;&nbsp; Oracle oci JDBC driver (thick 
     client)&nbsp;</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; Microsoft SQL Server 2000</td>
+    <td style="text-align: left">&nbsp;&nbsp; jTDS version 1.2</br>
+     &nbsp;&nbsp;  Microsoft SQL Server 2005 JDBC Driver Beta 2</td>
+  </tr>
+  <tr>
+    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; Microsoft SQL Server <br>&nbsp;&nbsp;&nbsp;&nbsp; Desktop Edition Rel A</td>
+    <td style="text-align: left">&nbsp;&nbsp; jTDS version 1.2</br>
+     &nbsp;&nbsp;  Microsoft SQL Server 2005 JDBC Driver Beta 2</td>
   </tr>
 </table>
 
