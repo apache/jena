@@ -14,7 +14,12 @@ LiteralLabel
     o reported bug whereby a LiteralLabel can be constructed with the
       value part null has been fixed [by putting in the missing 'this.']
 
-
+Database:
+    o Added a based MS SQL Server 2000/MSDE 2000 driver.
+    
+Reasoners:
+    o Fixed bug in the forward rule engine which prevented firing of axiomatic 
+      rules with non-empty bodies (i.e. no pattern match but calls to builtins).
 
 ==== Jena 2.3
 
