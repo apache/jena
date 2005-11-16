@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.40 2005-11-14 18:11:13 der Exp $
+ * $Id: TestBugs.java,v 1.41 2005-11-16 10:43:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.40 $ on $Date: 2005-11-14 18:11:13 $
+ * @version $Revision: 1.41 $ on $Date: 2005-11-16 10:43:12 $
  */
 public class TestBugs extends TestCase {
 
@@ -754,6 +754,22 @@ public class TestBugs extends TestCase {
         TestUtil.assertIteratorValues(this,
                     inf.listStatements(null, egRange, (RDFNode)null),
                     new Object[] {inf.createStatement(mother, egRange, female)} );
+    }
+    
+    /**
+     * test remove operator in case with empty data.
+     */
+    public void testEmptyRemove() {
+        List rules = Rule.parseRules(
+                "-> (eg:i eg:prop eg:foo) ." +
+                "(?X eg:prop ?V) -> (?X eg:prop2 ?V) ." +
+                "(?X eg:prop eg:foo) noValue(?X eg:guard 'done') -> remove(0) (?X eg:guard 'done') ." );
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+        InfModel im = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
+        Resource i = im.createResource(PrintUtil.egNS + "i");
+        Property guard = im.createProperty(PrintUtil.egNS + "guard");
+        TestUtil.assertIteratorValues(this, 
+                im.listStatements(), new Object[] {im.createStatement(i, guard, "done")});
     }
     
     // debug assistant
