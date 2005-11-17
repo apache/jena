@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.13 2005-02-21 11:52:30 andy_seaborne Exp $
+  $Id: TestPerlyParser.java,v 1.14 2005-11-17 11:01:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -260,8 +260,8 @@ public class TestPerlyParser extends GraphTestBase
     
     public void testPerlParse()
         {
-        assertTrue( PerlPatternParser.parse( "this is|a pattern" ) instanceof Alternatives );
-        assertTrue( PerlPatternParser.parse( "this is|a pattern", new SimpleGenerator() ) instanceof Alternatives );
+        assertInstanceOf( Alternatives.class, PerlPatternParser.parse( "this is|a pattern" ) );
+        assertInstanceOf( Alternatives.class, PerlPatternParser.parse( "this is|a pattern", new SimpleGenerator() ) );
         }
     
     public void testOldSeq()

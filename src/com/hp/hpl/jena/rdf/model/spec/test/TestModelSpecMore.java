@@ -79,7 +79,7 @@ public class TestModelSpecMore extends ModelTestBase
     public void testOpenModel()
         {
         Model s = modelWithStatements( "_root jms:maker jms:MemMaker" );
-        assertTrue( ModelFactory.createSpec( s ).openModel( "nosuch" ) instanceof Model );
+        assertInstanceOf( Model.class, ModelFactory.createSpec( s ).openModel( "nosuch" ) );
         }
     
     public void testModelSpecImpl() 

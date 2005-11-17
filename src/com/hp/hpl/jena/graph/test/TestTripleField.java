@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestTripleField.java,v 1.2 2005-06-27 14:21:14 chris-dollin Exp $
+ 	$Id: TestTripleField.java,v 1.3 2005-11-17 11:01:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -25,9 +25,9 @@ public class TestTripleField extends GraphTestBase
     
     public void testFieldsExistAndAreTyped()
         {
-        assertTrue( Triple.Field.getSubject instanceof Triple.Field );
-        assertTrue( Triple.Field.getObject instanceof Triple.Field );
-        assertTrue( Triple.Field.getPredicate instanceof Triple.Field );        
+        assertInstanceOf( Triple.Field.class, Triple.Field.getSubject );
+        assertInstanceOf( Triple.Field.class, Triple.Field.getObject );
+        assertInstanceOf( Triple.Field.class, Triple.Field.getPredicate );        
         }
     
     public void testGetSubject()

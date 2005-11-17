@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.11 2005-02-21 12:14:58 andy_seaborne Exp $
+  $Id: AbstractTestModel.java,v 1.12 2005-11-17 11:01:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -39,21 +39,21 @@ public abstract class AbstractTestModel extends ModelTestBase
     public void testCreateResourceFromNode()
         {
         RDFNode S = model.getRDFNode( Node.create( "spoo:S" ) ); 
-        assertTrue( S instanceof Resource );
+        assertInstanceOf( Resource.class, S );
         assertEquals( "spoo:S", ((Resource) S).getURI() );
         }
         
     public void testCreateLiteralFromNode()
         {
         RDFNode S = model.getRDFNode( Node.create( "42" ) ); 
-        assertTrue( S instanceof Literal );
+        assertInstanceOf( Literal.class, S );
         assertEquals( "42", ((Literal) S).getLexicalForm() );
         }    
             
    public void testCreateBlankFromNode()
         {
         RDFNode S = model.getRDFNode( Node.create( "_Blank" ) ); 
-        assertTrue( S instanceof Resource );
+        assertInstanceOf( Resource.class, S );
         assertEquals( new AnonId( "_Blank" ), ((Resource) S).getId() );
         }
         

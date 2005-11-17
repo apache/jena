@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.1 2005-08-01 12:43:51 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.2 2005-11-17 11:01:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.spec.test;
@@ -70,7 +70,7 @@ public class TestModelSpec extends ModelTestBase
         Model spec = modelWithStatements( "_x jms:maker _y; _y jms:reificationMode jms:rsMinimal" );
         ModelSpec ms = ModelFactory.createSpec( spec );
         Model m = ModelFactory.createModel( ms ) ;
-        assertTrue( m.getGraph() instanceof GraphMemBase );
+        assertInstanceOf( GraphMemBase.class, m.getGraph() );
         }
     
     public void testAbsentDefaultMaker()
@@ -78,7 +78,7 @@ public class TestModelSpec extends ModelTestBase
         Model spec = modelWithStatements( "_x rdf:type jms:DefaultModelSpec" );
         ModelSpec ms = ModelFactory.createSpec( spec );
         Model m = ModelFactory.createModel( ms ) ;
-        assertTrue( m.getGraph() instanceof GraphMemBase );
+        assertInstanceOf( GraphMemBase.class, m.getGraph() );
         }
         
 //    /** a spec with no maker should throw an exception 
@@ -132,7 +132,7 @@ public class TestModelSpec extends ModelTestBase
         {
         ModelSpec ms = ModelSpecFactory.createSpec( createPlainModelDesc() );    
         Model m = ms.createModelOver( "aName" );
-        assertTrue( m.getGraph() instanceof GraphMemBase );
+        assertInstanceOf( GraphMemBase.class, m.getGraph() );
         }   
 
     public void testNamedCreateInf()
@@ -140,7 +140,7 @@ public class TestModelSpec extends ModelTestBase
         String URI = DAMLMicroReasonerFactory.URI;
         ModelSpec ms = ModelSpecFactory.createSpec( createInfModelDesc( URI ) );    
         Model m = ms.createModelOver( "iName" );
-        assertTrue( m.getGraph() instanceof InfGraph );
+        assertInstanceOf( InfGraph.class, m.getGraph() );
         }   
         
     public void testDetectRootAmbiguity()
@@ -155,7 +155,7 @@ public class TestModelSpec extends ModelTestBase
         Resource plain = resource();
         Model desc = createPlainModelDesc( plain );
         ModelSpec ms = ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), plain );  
-        assertTrue( ms.createFreshModel().getGraph() instanceof GraphMemBase );  
+        assertInstanceOf( GraphMemBase.class, ms.createFreshModel().getGraph() );  
         }
         
     public void testCreateByNameChoice()
@@ -165,18 +165,18 @@ public class TestModelSpec extends ModelTestBase
         String URI = DAMLMicroReasonerFactory.URI;
         Model desc = createPlainModelDesc( plain ).add( createInfModelDesc( inf, URI ) );
         ModelSpec ms = ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), plain );  
-        assertTrue( ms.createFreshModel().getGraph() instanceof GraphMemBase );  
+        assertInstanceOf( GraphMemBase.class, ms.createFreshModel().getGraph() );  
         }
                           
     public void testOntModeSpecIsaModelSpec()
         {
-        assertTrue( OntModelSpec.DAML_MEM_RULE_INF instanceof ModelSpec );
+        assertInstanceOf( ModelSpec.class, OntModelSpec.DAML_MEM_RULE_INF );
         }
         
     public void testOntModelSpecCreatesOntModels()
         {
         Model m = OntModelSpec.DAML_MEM_RULE_INF.createFreshModel();
-        assertTrue( m instanceof OntModel );    
+        assertInstanceOf( OntModel.class, m );    
         }
         
     public void testOntModelSpecDescription()
@@ -410,7 +410,7 @@ public class TestModelSpec extends ModelTestBase
         Model desc = mm.getDescription( me );
         assertTrue( desc.contains( me, RDF.type, JenaModelSpec.MemMakerSpec ) );
         assertTrue( desc.listStatements( null, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal ).hasNext() );
-        assertTrue( mm.getGraphMaker() instanceof SimpleGraphMaker );
+        assertInstanceOf( SimpleGraphMaker.class, mm.getGraphMaker() );
         assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
         }
         
@@ -424,7 +424,7 @@ public class TestModelSpec extends ModelTestBase
         Model desc = mm.getDescription( me );
         assertTrue( desc.listStatements( null, RDF.type, JenaModelSpec.FileMakerSpec ).hasNext() );
         assertTrue( desc.listStatements( null, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal ).hasNext() );
-        assertTrue( mm.getGraphMaker() instanceof FileGraphMaker );
+        assertInstanceOf( FileGraphMaker.class, mm.getGraphMaker() );
         assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
         }
 

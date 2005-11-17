@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestCollectionFactory.java,v 1.2 2005-02-21 12:19:21 andy_seaborne Exp $
+  $Id: TestCollectionFactory.java,v 1.3 2005-11-17 11:01:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.util.test;
 
@@ -27,13 +27,13 @@ public class TestCollectionFactory extends ModelTestBase
     public void testHashMapExists()
         {
         Map map = CollectionFactory.createHashedMap();
-        assertTrue( map instanceof Map );
+        assertInstanceOf( Map.class, map );
         }
     
     public void testHashMapSized()
         {
         Map map = CollectionFactory.createHashedMap( 42 );
-        assertTrue( map instanceof Map );
+        assertInstanceOf( Map.class, map );
         }
     
     public void testHashMapCopy()
@@ -48,7 +48,7 @@ public class TestCollectionFactory extends ModelTestBase
     public void testHashSetExists()
         {
         Set set = CollectionFactory.createHashedSet();
-        assertTrue( set instanceof Set );
+        assertInstanceOf( Set.class, set );
         }
     
     public void testHashSetCopy()

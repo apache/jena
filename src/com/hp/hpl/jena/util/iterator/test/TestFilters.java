@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFilters.java,v 1.4 2005-07-04 13:18:19 chris-dollin Exp $
+ 	$Id: TestFilters.java,v 1.5 2005-11-17 11:01:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -23,7 +23,7 @@ public class TestFilters extends ModelTestBase
         { return new TestSuite( TestFilters.class ); }
     
     public void testFilterAnyExists()
-        { assertTrue( Filter.any instanceof Filter ); }
+        { assertInstanceOf( Filter.class, Filter.any ); }
     
     public void testFilterAnyAcceptsThings()
         {

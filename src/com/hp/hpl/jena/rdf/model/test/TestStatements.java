@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: TestStatements.java,v 1.13 2005-02-21 12:15:18 andy_seaborne Exp $
+	$Id: TestStatements.java,v 1.14 2005-11-17 11:01:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -95,7 +95,7 @@ public class TestStatements extends ModelTestBase
     public void testTripleWrapper()
     	{
     	Model A = ModelFactory.createDefaultModel();
-    	assertTrue( statement( A, "s p o" ) instanceof FrontsTriple );
+    	assertInstanceOf( FrontsTriple.class, statement( A, "s p o" ) );
     	}
     
     /**

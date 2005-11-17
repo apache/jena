@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAndThen.java,v 1.1 2005-06-29 16:33:23 chris-dollin Exp $
+ 	$Id: TestAndThen.java,v 1.2 2005-11-17 11:01:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -25,8 +25,8 @@ public class TestAndThen extends ModelTestBase
         { 
         ExtendedIterator L = iteratorOfStrings( "a b c" );
         ExtendedIterator R = iteratorOfStrings( "d e f" );
-        assertTrue( L instanceof NiceIterator );
-        assertTrue( R instanceof NiceIterator );
+        assertInstanceOf( NiceIterator.class, L );
+        assertInstanceOf( NiceIterator.class, R );
         assertEquals( listOfStrings( "a b c d e f" ), iteratorToList( L.andThen( R ) ) );
         }
     

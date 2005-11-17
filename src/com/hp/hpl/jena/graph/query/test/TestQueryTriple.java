@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryTriple.java,v 1.4 2005-07-25 11:16:08 chris-dollin Exp $
+    $Id: TestQueryTriple.java,v 1.5 2005-11-17 11:01:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
@@ -120,9 +120,9 @@ public class TestQueryTriple extends QueryTestBase
         {
         Mapping m = new Mapping( new Node[0] );
         QueryTriple [] q = QueryTriple.classify( F, m, tripleArray( "?x P ?x; ?x Q ?x" ) );
-        assertTrue( q[0].S instanceof QueryNode.Bind );
-        assertTrue( q[0].O instanceof QueryNode.JustBound );
-        assertTrue( q[1].S instanceof QueryNode.Bound );
+        assertInstanceOf( QueryNode.Bind.class, q[0].S );
+        assertInstanceOf( QueryNode.JustBound.class, q[0].O );
+        assertInstanceOf( QueryNode.Bound.class, q[1].S );
         }
     
     protected static final String [][] matchings =

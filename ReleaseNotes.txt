@@ -3,6 +3,10 @@ Release Notes
 
 Post-Jena 2.3
 
+JenaTestBase
+    o Added new test method assertInstanceOf to do instanceof testing
+      with a nice failure message; updated (some) test code to use it.
+
 FileGraph[Maker]
     o The recent change to FileGraph which meant that closed FileGraph's
       were removed from their owning Maker also meant that they were

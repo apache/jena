@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 16:38:44 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-11-17 11:01:27 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.20 2005-04-11 16:38:44 ian_dickinson Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.21 2005-11-17 11:01:27 chris-dollin Exp $
  */
 public class TestOntModel
     extends ModelTestBase
@@ -323,15 +323,15 @@ public class TestOntModel
         OntResource r0 = m.getOntResource( NS + "a" );
         assertNull( r0 );
         OntResource r1 = m.createOntResource( NS + "aaa" );
-        assertTrue( r1 instanceof OntResource );
+        assertInstanceOf( OntResource.class, r1 );
         Resource r2a = m.getResource( NS + "a" );
         Resource r2b = m.getResource( NS + "b" );
         Property p = m.getProperty( NS + "p" );
         m.add( r2a, p, r2b );
         r0 = m.getOntResource( NS + "a" );
-        assertTrue( r0 instanceof OntResource );
+        assertInstanceOf( OntResource.class, r0 );
         OntResource r3 = m.getOntResource( r2b );
-        assertTrue( r3 instanceof OntResource );
+        assertInstanceOf( OntResource.class, r3 );
     }
 
     public void testGetOntClass() {
@@ -653,7 +653,7 @@ public class TestOntModel
         Iterator i = m.listDataRanges();
         assertTrue( "Should be at least one DataRange", i.hasNext() );
         Object dr = i.next();
-        assertTrue( dr instanceof DataRange );
+        assertInstanceOf( DataRange.class, dr );
         assertFalse( "Should no more DataRange", i.hasNext() );
     }
 

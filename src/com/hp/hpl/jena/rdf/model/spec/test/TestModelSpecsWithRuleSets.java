@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecsWithRuleSets.java,v 1.1 2005-08-01 12:43:51 chris-dollin Exp $
+  $Id: TestModelSpecsWithRuleSets.java,v 1.2 2005-11-17 11:01:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.spec.test;
 
@@ -282,9 +282,9 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
         ModelSpec spec = createInfModelSpec( ruleString );
         Model m = spec.createFreshModel();
         Graph g = m.getGraph();
-        assertTrue( g instanceof InfGraph );
+        assertInstanceOf( InfGraph.class, g );
         Reasoner r = ((InfGraph) g).getReasoner();
-        assertTrue( r instanceof RuleReasoner );
+        assertInstanceOf( RuleReasoner.class, r );
         RuleReasoner rr = (RuleReasoner) r;
         List rules = rr.getRules();
         assertSameRules( wanted, rules );

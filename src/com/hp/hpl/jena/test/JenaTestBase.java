@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.19 2005-11-10 17:39:30 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.20 2005-11-17 11:01:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -44,6 +44,18 @@ public class JenaTestBase extends TestCase
     */
     public static void assertDiffer( Object x, Object y )
         { assertDiffer( null, x, y ); }
+    
+    /**
+        assert that the object <code>x</code> must be of the class 
+        <code>expected</code>.
+    */
+    public static void assertInstanceOf( Class expected, Object x )
+        {
+        if (x == null)
+            fail( "expected instance of " + expected + ", but had null" );
+        if (!expected.isInstance( x )) 
+            fail( "expected instance of " + expected + ", but had instance of " + x.getClass() );
+        }
         
     /**
     	Answer a Set formed from the elements of the List <code>L</code>.
@@ -74,6 +86,25 @@ public class JenaTestBase extends TestCase
         while (st.hasMoreTokens()) result.add( st.nextToken() );
         return result;
         }
+
+    /**
+        Answer a list containing the single object <code>x</code>.
+    */
+    protected List listOfOne( Object x )
+        {
+        List result = new ArrayList();
+        result.add( x );
+        return result;
+        }
+    
+    /**
+        Answer a fresh list which is the concatenation of <code>L</code> then
+        <code>R</code>. Neither <code>L</code> nor <code>R</code> is updated.
+    */
+    public List append( List L, List R )
+        { List result = new ArrayList( L );
+        result.addAll( R );
+        return result; }
     
     /**
         Answer an iterator over the space-separated substrings of <code>s</code>.
@@ -116,7 +147,7 @@ public class JenaTestBase extends TestCase
             m.getName().startsWith( "test" ) 
             && m.getParameterTypes().length == 0 
             && m.getReturnType().equals( Void.TYPE ); }              
-    
+
     /**
          Answer true iff <code>subClass</code> is the same class as 
          <code>superClass</code>, if its superclass <i>is</i> <code>superClass</code>,
@@ -138,22 +169,6 @@ public class JenaTestBase extends TestCase
         {
         if (hasAsParent( subClass, superClass ) == false)
             fail( "" + subClass + " should have " + superClass + " as a parent" );
-        }
-
-    /**
-        Answer a fresh list which is the concatenation of <code>L</code> then
-        <code>R</code>. Neither <code>L</code> nor <code>R</code> is updated.
-    */
-    public List append( List L, List R )
-        { List result = new ArrayList( L );
-        result.addAll( R );
-        return result; }
-
-    protected List listOfOne( Object s )
-        {
-        List result = new ArrayList();
-        result.add( s );
-        return result;
         }
     }
 

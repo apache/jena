@@ -23,12 +23,13 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestCaseBasic.java,v 1.7 2005-02-21 12:18:40 andy_seaborne Exp $
+ * $Id: TestCaseBasic.java,v 1.8 2005-11-17 11:01:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.test.JenaTestBase;
 
 
 import junit.framework.TestCase;
@@ -52,9 +53,9 @@ import junit.framework.TestCase;
  * </p>
  * 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2005-02-21 12:18:40 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2005-11-17 11:01:28 $
  */
-public class TestCaseBasic extends TestCase {
+public class TestCaseBasic extends JenaTestBase {
 
 	protected Model m1 = null;
 	protected Model m2 = null;

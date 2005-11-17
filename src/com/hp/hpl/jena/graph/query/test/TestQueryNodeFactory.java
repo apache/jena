@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestQueryNodeFactory.java,v 1.2 2005-07-25 14:43:39 chris-dollin Exp $
+ 	$Id: TestQueryNodeFactory.java,v 1.3 2005-11-17 11:01:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -25,14 +25,14 @@ public class TestQueryNodeFactory extends QueryTestBase
         { 
         Node f = Node.create( "constant" );
         QueryNode F = qnf.createFixed( f );
-        assertTrue( F instanceof QueryNode.Fixed );
+        assertInstanceOf( QueryNode.Fixed.class, F );
         assertSame( f, F.node );
         }
     
     public void testAny()
         {
         QueryNode A = qnf.createAny();
-        assertTrue( A instanceof QueryNode.Any );
+        assertInstanceOf( QueryNode.Any.class, A );
         assertSame( Node.ANY, A.node );
         }
     
@@ -40,7 +40,7 @@ public class TestQueryNodeFactory extends QueryTestBase
         {
         Node b = Node.create( "?x" );
         QueryNode B = qnf.createBind( b, 1 );
-        assertTrue( B instanceof QueryNode.Bind );
+        assertInstanceOf( QueryNode.Bind.class, B );
         assertSame( b, B.node );
         }
     
@@ -48,7 +48,7 @@ public class TestQueryNodeFactory extends QueryTestBase
         {
         Node j = Node.create( "?y" );
         QueryNode J = qnf.createJustBound( j, 1 );
-        assertTrue( J instanceof QueryNode.JustBound );
+        assertInstanceOf( QueryNode.JustBound.class, J );
         assertSame( j, J.node );
         }
     
@@ -56,7 +56,7 @@ public class TestQueryNodeFactory extends QueryTestBase
         {
         Node u = Node.create( "?z" );
         QueryNode U = qnf.createBound( u, 2 );
-        assertTrue( U instanceof QueryNode.Bound );
+        assertInstanceOf( QueryNode.Bound.class, U );
         assertSame( u, U.node );
         }
     

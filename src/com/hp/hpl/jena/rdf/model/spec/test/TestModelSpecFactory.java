@@ -132,7 +132,7 @@ public class TestModelSpecFactory extends ModelTestBase
         {
         Model m = modelWithStatements( "eh:Root rdf:type eh:MockSpec; eh:MockSpec rdfs:subClassOf jms:ModelSpec" );
         ModelSpec s = ModelSpecFactory.createSpec( ModelSpecCreatorRegistry.registryWith( resource( "eh:MockSpec" ), createMock ), m );
-        assertTrue( s instanceof MockModelSpec );        
+        assertInstanceOf( MockModelSpec.class, s );        
         }    
     
     public void testCreateCreator()
@@ -177,7 +177,7 @@ public class TestModelSpecFactory extends ModelTestBase
         ModelSpec s = new ModelSpecCreatorRegistry( "testing/modelspecs/modelspec-config.n3" )
             .getCreator( resource( "eh:pseudo-modelspec-type" ) )
             .create( root, model );
-        assertTrue( s instanceof MockModelSpec );
+        assertInstanceOf( MockModelSpec.class, s );
         }
     
     protected ModelSpecCreator createMock = new ModelSpecCreator()

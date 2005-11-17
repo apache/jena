@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.14 2005-09-09 09:08:53 chris-dollin Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.15 2005-11-17 11:01:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -292,7 +292,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
     public void testGetAny()
         {
         Resource r = model.getAnyReifiedStatement( SPO );
-        assertTrue( "should get reified statement back", r instanceof ReifiedStatement );
+        assertInstanceOf( ReifiedStatement.class, r );
         assertEquals( "should get me the statement", SPO, ((ReifiedStatement) r).getStatement() );
         }
     

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBugs.java,v 1.6 2005-10-25 14:56:06 chris-dollin Exp $
+ * $Id: TestCaseBugs.java,v 1.7 2005-11-17 11:01:27 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.mem.test;
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     @author  bwm
-    @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2005-10-25 14:56:06 $
+    @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2005-11-17 11:01:27 $
 */
 public class TestCaseBugs 
             extends TestCaseBasic {
@@ -55,16 +55,16 @@ public class TestCaseBugs
             Object   op   = RDF.Property;
             
             Statement s = model.createStatement(r, RDF.type, oc);
-            assertTrue(s.getObject() instanceof Resource);
+            assertInstanceOf(Resource.class, s.getObject() );
             
             s.changeObject(op);
-            assertTrue(s.getObject() instanceof Resource);
+            assertInstanceOf(Resource.class, s.getObject() );
             
             model.add(r, RDF.type, oc);
             RDFNode n = model.listStatements()
                              .nextStatement()
                              .getObject();
-            assertTrue(n instanceof Resource);
+            assertInstanceOf(Resource.class, n );
             
             assertTrue(model.listSubjectsWithProperty(RDF.type, oc).hasNext());
             

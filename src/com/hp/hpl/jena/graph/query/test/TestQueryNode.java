@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryNode.java,v 1.5 2005-07-25 11:16:08 chris-dollin Exp $
+    $Id: TestQueryNode.java,v 1.6 2005-11-17 11:01:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
@@ -91,7 +91,7 @@ public class TestQueryNode extends QueryTestBase
         {
         Node fixed = Node.create( "someURI" );
         QueryNode n = QueryNode.classify( F, null, null, fixed );
-        assertTrue( n instanceof QueryNode.Fixed );
+        assertInstanceOf( QueryNode.Fixed.class, n );
         assertEquals( QueryNode.NO_INDEX, n.index );
         assertSame( fixed, n.node );
         }
@@ -99,7 +99,7 @@ public class TestQueryNode extends QueryTestBase
     public void testClassifyAny()
         {
         QueryNode n = QueryNode.classify( F, null, null, Node.ANY );
-        assertTrue( n instanceof QueryNode.Any );
+        assertInstanceOf( QueryNode.Any.class, n );
         assertEquals( QueryNode.NO_INDEX, n.index );
         assertSame( Node.ANY, n.node );
         }
@@ -120,7 +120,7 @@ public class TestQueryNode extends QueryTestBase
     protected void testClassifyBind( Node bind, Mapping m, int index )
         {
         QueryNode n = QueryNode.classify( F, m, new HashSet(), bind );
-        assertTrue( n instanceof QueryNode.Bind );
+        assertInstanceOf( QueryNode.Bind.class, n );
         assertSame( n.node, bind );
         assertEquals( index, n.index );
         }
@@ -139,7 +139,7 @@ public class TestQueryNode extends QueryTestBase
         Mapping m = getPreloadedMapping( index );
         m.newIndex( bound );
         QueryNode n = QueryNode.classify( F, m, new HashSet(), bound );
-        assertTrue( n instanceof QueryNode.Bound );
+        assertInstanceOf( QueryNode.Bound.class, n );
         assertSame( n.node, bound );
         assertEquals( index, n.index );
         }
@@ -160,7 +160,7 @@ public class TestQueryNode extends QueryTestBase
         Set withRecent = new HashSet();
         withRecent.add( recent );
         QueryNode n = QueryNode.classify( F, m, withRecent, recent );
-        assertTrue( n instanceof QueryNode.JustBound );
+        assertInstanceOf( QueryNode.JustBound.class, n );
         assertSame( recent, n.node );
         assertEquals( index, n.index );
         }
