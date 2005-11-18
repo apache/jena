@@ -103,8 +103,15 @@ public class ModelSpecFactory
 
     public static Model withSpecSchema( Model m )
         {
+        return withSchema( m, JenaModelSpec.getSchema() );
+        }
+
+    /**
+        answer a limited RDFS closure of <code>m union schema</code>.
+    */
+    public static Model withSchema( Model m, Model schema )
+        {
         Model result = ModelFactory.createDefaultModel();
-        Model schema = JenaModelSpec.getSchema();
         result.add( m );
         addJMSSubclassesFrom( result, schema );        
         addDomainTypes( result, m, schema );
@@ -134,9 +141,15 @@ public class ModelSpecFactory
         for (StmtIterator it = schema.listStatements( null, RDFS.subClassOf, nullObject ); it.hasNext();)
             { 
             Statement s = it.nextStatement();
-            if (s.getSubject().getNameSpace().equals( JenaModelSpec.baseURI ) && s.getResource().getNameSpace().equals( JenaModelSpec.baseURI ))
-                result.add( s ); 
+            if (notRDF( s.getSubject() ) && notRDF( s.getResource() )) result.add( s ); 
             }
+        }
+
+    protected static boolean notRDF( Resource resource )
+        {
+        if (resource.getNameSpace().equals( RDF.getURI() )) return false;
+        if (resource.getNameSpace().equals( RDFS.getURI() )) return false;
+        return true;
         }
 
     protected static void addSupertypesFrom( Model result, Model source )
