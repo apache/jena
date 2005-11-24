@@ -37,11 +37,7 @@ import java.util.* ;
  * <li>Arguments with values can use "="</li>
  * </ul>
  * @author Andy Seaborne
-<<<<<<< CommandLine.java
- * @version $Id: CommandLine.java,v 1.10 2005-09-22 12:27:08 andy_seaborne Exp $
-=======
- * @version $Id: CommandLine.java,v 1.10 2005-09-22 12:27:08 andy_seaborne Exp $
->>>>>>> 1.6
+ * @version $Id: CommandLine.java,v 1.11 2005-11-24 09:23:29 andy_seaborne Exp $
  */
 
 
@@ -128,6 +124,9 @@ public class CommandLine
             String argStr = (String)argList.get(i) ;
             if (endProcessing(argStr))
                 break ;
+            
+            if ( ignoreArgument(argStr) )
+                continue ;
 
             // If the flag has a "=" or :, it is long form --arg=value.
             // Split and insert the arg
@@ -142,7 +141,6 @@ public class CommandLine
 
             if ( j != Integer.MAX_VALUE )
             {
-
                 String a2 = argStr.substring(j+1) ;
                 argList.add(i+1,a2) ;
                 argStr = argStr.substring(0,j) ;
@@ -195,6 +193,11 @@ public class CommandLine
         }
     }
 
+    /** Hook to test whether this argument should be processed further
+     */
+    public boolean ignoreArgument( String argStr )
+    { return false ; }
+    
     /** Answer true if this argument terminates argument processing for the rest
      * of the command line. Default is to stop just before the first arg that
      * does not start with "-", or is "-" or "--".

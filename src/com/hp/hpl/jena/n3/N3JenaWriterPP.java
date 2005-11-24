@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.17 2005-02-21 12:04:05 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.18 2005-11-24 09:23:22 andy_seaborne Exp $
  */
 
 
@@ -68,7 +68,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 		StmtIterator listTailsIter = model.listStatements(null, RDF.rest, RDF.nil);
 
 		// For every tail of a list
-		tailLoop:
+		//tailLoop:
 		for ( ; listTailsIter.hasNext() ; )
 		{
 			// The resource for the current element being considered.
