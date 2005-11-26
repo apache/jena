@@ -8,12 +8,13 @@ package com.hp.hpl.jena;
 
 import java.util.* ;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /** Methods and constants that define features of the curren the environment.
  *  Primarily for other parts of the Jena framework. 
  * 
  * @author Andy Seaborne
- * @version $Id: JenaRuntime.java,v 1.5 2005-05-02 18:31:03 andy_seaborne Exp $
+ * @version $Id: JenaRuntime.java,v 1.6 2005-11-26 16:14:46 andy_seaborne Exp $
  */
 
 public class JenaRuntime
@@ -51,7 +52,7 @@ public class JenaRuntime
         return getSystemProperty(propName, null) ;
     }
 
-    public static String getSystemProperty(String propName, String defaultValue)
+    public static String getSystemProperty(final String propName, String defaultValue)
     {
         try {
             return System.getProperty(propName, defaultValue) ;
@@ -60,9 +61,12 @@ public class JenaRuntime
             if ( runUnder(featureNoSecurity))
                 return defaultValue ;
             try {
-                Object x = AccessController.doPrivileged(
-                    new sun.security.action.GetPropertyAction(propName));
-                return (String)x ;
+                PrivilegedAction a = new PrivilegedAction() {
+                    public Object run() {
+                        return System.getProperty(propName);
+                    }
+                } ;
+                return (String) AccessController.doPrivileged(a) ;
             } catch (Exception ex2)
             {
                 // Give up
