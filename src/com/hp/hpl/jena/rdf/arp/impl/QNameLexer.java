@@ -42,6 +42,7 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
     abstract String getUri();
     abstract String getQName();
     
+    // TODO reconsider this message
     private int rdf(Taint taintMe,String wanted, int fl) throws SAXParseException {
         if ((fl &select)== fl
           && wanted.equals(getLocalName())) {
