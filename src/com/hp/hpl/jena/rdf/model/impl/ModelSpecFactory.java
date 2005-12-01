@@ -147,6 +147,7 @@ public class ModelSpecFactory
 
     protected static boolean notRDF( Resource resource )
         {
+        if (resource.isAnon()) return true;
         if (resource.getNameSpace().equals( RDF.getURI() )) return false;
         if (resource.getNameSpace().equals( RDFS.getURI() )) return false;
         return true;
