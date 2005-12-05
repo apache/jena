@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.34 2005-06-10 15:16:51 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.35 2005-12-05 09:06:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -194,7 +194,7 @@ public class ModelTestBase extends GraphTestBase
         @param got the model value to check
         @exception if the models are not isomorphic
      */    
-    public void assertIsoModels( String title, Model wanted, Model got )
+    public static void assertIsoModels( String title, Model wanted, Model got )
         {
         if (wanted.isIsomorphicWith( got ) == false)
             {
@@ -206,7 +206,7 @@ public class ModelTestBase extends GraphTestBase
     /**
         Fail if the two models are not isomorphic. See assertIsoModels(String,Model,Model).
     */
-    public void assertIsoModels( Model wanted, Model got )
+    public static  void assertIsoModels( Model wanted, Model got )
         { assertIsoModels( "models must be isomorphic", wanted, got ); }
         
     }
