@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.20 2005-11-17 11:01:28 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.21 2005-12-12 12:15:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -67,7 +67,7 @@ public class JenaTestBase extends TestCase
         Answer a List of the substrings of <code>s</code> that are separated 
         by spaces.
     */
-    protected List listOfStrings( String s )
+    protected static List listOfStrings( String s )
         {
         List result = new ArrayList();
         StringTokenizer st = new StringTokenizer( s );
@@ -79,7 +79,7 @@ public class JenaTestBase extends TestCase
         Answer a Set of the substrings of <code>s</code> that are separated 
         by spaces.
     */
-    protected Set setOfStrings( String s )
+    protected static Set setOfStrings( String s )
         {
         Set result = new HashSet();
         StringTokenizer st = new StringTokenizer( s );
@@ -90,7 +90,7 @@ public class JenaTestBase extends TestCase
     /**
         Answer a list containing the single object <code>x</code>.
     */
-    protected List listOfOne( Object x )
+    protected static List listOfOne( Object x )
         {
         List result = new ArrayList();
         result.add( x );
@@ -101,7 +101,7 @@ public class JenaTestBase extends TestCase
         Answer a fresh list which is the concatenation of <code>L</code> then
         <code>R</code>. Neither <code>L</code> nor <code>R</code> is updated.
     */
-    public List append( List L, List R )
+    public static List append( List L, List R )
         { List result = new ArrayList( L );
         result.addAll( R );
         return result; }
@@ -109,7 +109,7 @@ public class JenaTestBase extends TestCase
     /**
         Answer an iterator over the space-separated substrings of <code>s</code>.
     */
-    protected ExtendedIterator iteratorOfStrings( String s )
+    protected static ExtendedIterator iteratorOfStrings( String s )
         { return WrappedIterator.create( listOfStrings( s ).iterator() ); }
     
     /**
@@ -153,7 +153,7 @@ public class JenaTestBase extends TestCase
          <code>superClass</code>, if its superclass <i>is</i> <code>superClass</code>,
          or if one of its interfaces hasAsInterface that class.
     */
-    public boolean hasAsParent( Class subClass, Class superClass )
+    public static boolean hasAsParent( Class subClass, Class superClass )
         {
         if (subClass == superClass || subClass.getSuperclass() == superClass) return true;
         Class [] is = subClass.getInterfaces();
@@ -165,7 +165,7 @@ public class JenaTestBase extends TestCase
          Fail unless <code>subClass</code> has <code>superClass</code> as a
          parent, either a superclass or an implemented (directly or not) interface.
     */
-    public void assertHasParent( Class subClass, Class superClass )
+    public static void assertHasParent( Class subClass, Class superClass )
         {
         if (hasAsParent( subClass, superClass ) == false)
             fail( "" + subClass + " should have " + superClass + " as a parent" );
