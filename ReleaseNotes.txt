@@ -25,6 +25,9 @@ Reasoners:
     o Fixed bug in the forward rule engine which prevented firing of axiomatic 
       rules with non-empty bodies (i.e. no pattern match but calls to builtins).
 
+Jar changes:
+    o stax-1.1.1-dev.jar ==> stax-1.1.2-dev.jar
+
 ==== Jena 2.3
 
 ARQ - SPARQL for Jena
