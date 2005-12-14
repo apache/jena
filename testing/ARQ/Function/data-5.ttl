@@ -24,5 +24,8 @@
           rdf:_3   3 ;
           rdf:_9   9 ;
         ] .
-       
 
+ # Not a conatiner of any kind - no type.
+:x :bag [ rdf:_1   1 ; 
+          rdf:_2   9 ;
+        ] .

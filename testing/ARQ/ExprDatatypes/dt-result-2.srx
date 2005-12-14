@@ -10,14 +10,6 @@
   <results ordered="false" distinct="false">
     <result>
       <binding name="p">
-        <uri>http://example.org/p3</uri>
-      </binding>
-      <binding name="v">
-        <literal>Other</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="p">
         <uri>http://example.org/p2</uri>
       </binding>
       <binding name="v">

@@ -5,9 +5,13 @@
 :xi2 :p  "1"^^xsd:integer .
 :xi3 :p  "01"^^xsd:integer .
 
-:xd1 :p  1.0 .
+:xd1 :p  "1.0e0"^^xsd:double .
 :xd2 :p  "1.0"^^xsd:double .
 :xd3 :p  "1"^^xsd:double .
+
+## :xdec1 :p  "1.0"^^xsd:decimal .
+## :xdec2 :p  "1"^^xsd:decimal .
+## :xdec3 :p  "01"^^xsd:decimal .
 
 :xt1 :p  "zzz"^^:myType .
 

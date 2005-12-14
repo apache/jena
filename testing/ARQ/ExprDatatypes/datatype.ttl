@@ -6,7 +6,9 @@
 :x :p2 "false"^^xsd:boolean .
 
 :x :p3 "Other" .
+:x :p4 "" .
 
-:x :p4 "1"^^xsd:integer .
+:x :p5 "1"^^xsd:integer .
+:x :p6 "0"^^xsd:integer .
 
-:x :p5 "unknown"^^:type .
+:x :q "unknown"^^:type .

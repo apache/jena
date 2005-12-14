@@ -31,13 +31,13 @@
          mf:action
             [ qt:query  <q-lang-1.rq> ;
               qt:data   <data-2.ttl> ] ;
-        mf:result  <lang-1-results.ttl>
+        mf:result  <lang-1-results.srx>
       ]
       [  mf:name    "Lang 2" ;
          mf:action
             [ qt:query  <q-lang-2.rq> ;
               qt:data   <data-2.ttl> ] ;
-        mf:result  <lang-2-results.ttl>
+        mf:result  <lang-2-results.srx>
       ]
 
       [  mf:name    "sha1sum 1" ;

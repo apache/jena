@@ -10,14 +10,6 @@
   <results ordered="false" distinct="false">
     <result>
       <binding name="p">
-        <uri>http://example.org/p3</uri>
-      </binding>
-      <binding name="v">
-        <literal>Other</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="p">
         <uri>http://example.org/p2</uri>
       </binding>
       <binding name="v">
@@ -26,7 +18,39 @@
     </result>
     <result>
       <binding name="p">
+        <uri>http://example.org/p3</uri>
+      </binding>
+      <binding name="v">
+        <literal>Other</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="p">
+        <uri>http://example.org/p4</uri>
+      </binding>
+      <binding name="v">
+        <literal></literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="p">
         <uri>http://example.org/p5</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="p">
+        <uri>http://example.org/p6</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="p">
+        <uri>http://example.org/q</uri>
       </binding>
       <binding name="v">
         <literal datatype="http://example.org/type">unknown</literal>

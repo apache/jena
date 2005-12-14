@@ -3,15 +3,13 @@
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix :        <http://example.org/things#> .
 
-[]    rdf:type    rs:ResultSet ;
+[]    rdf:type      rs:ResultSet ;
       rs:resultVariable  "x" ;
       rs:resultVariable  "v" ;
-      rs:solution
-                  [ rs:binding  [ rs:value    [ 
-                                              ] ;
-                                  rs:variable  "v"
-                                ] ;
-                    rs:binding  [ rs:value    :xb ;
-                                  rs:variable  "x"
-                                ]
-                  ] .
+      rs:solution   [ rs:binding    [ rs:value      "" ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      :xp2 ;
+                                      rs:variable   "x"
+                                    ]
+                    ] .

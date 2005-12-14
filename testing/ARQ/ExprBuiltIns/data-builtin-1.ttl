@@ -13,6 +13,8 @@
 
 :xp1 :p  "zzz" .
 :xp2 :p  "1" .
+:xp2 :p  "" .
 
 :xu :p  :z .
+
 :xb :p  _:a .

@@ -46,12 +46,12 @@
          mf:result  <result-eq2-1.ttl>
       ]
 
-      [  mf:name    "Equality - 2 var - test not equals " ;
-         mf:action
-            [ qt:query  <query-eq2-1.rq> ;
-              qt:data   <data-eq.ttl> ] ;
-         mf:result  <result-eq2-1.ttl>
-      ]
+##       [  mf:name    "Equality - 2 var - test not equals " ;
+##          mf:action
+##             [ qt:query  <query-eq2-1.rq> ;
+##               qt:data   <data-eq.ttl> ] ;
+##          mf:result  <result-eq2-1.ttl>
+##       ]
 
     # Graph versions of the equality tests
 
@@ -89,9 +89,9 @@
 
       [  mf:name    "Equality - 2 var - test equals -- graph" ;
          mf:action
-            [ qt:query  <query-eq2-1.rq> ;
+            [ qt:query  <query-eq2-graph-1.rq> ;
               qt:data   <data-eq.ttl> ] ;
-         mf:result  <result-eq2-1.ttl>
+         mf:result  <result-eq2-graph-1.ttl>
       ]
 
     ## Can't write != in a graph match.
