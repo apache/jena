@@ -62,6 +62,9 @@ public class TestModelSource extends ModelTestBase
 
         public Model createModel()
             { return null; }
+
+        public Model getModel( String URL )
+            { return null;  }
         }
     }
 

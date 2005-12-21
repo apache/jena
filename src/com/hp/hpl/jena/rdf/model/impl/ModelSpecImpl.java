@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.56 2005-10-07 15:04:50 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.57 2005-12-21 08:46:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -253,6 +253,9 @@ public abstract class ModelSpecImpl implements ModelSpec
      */
     public Model createModel()
         { return createFreshModel(); }
+    
+    public Model getModel( String URL )
+        { return null; }
                 
     }
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.41 $
+ * Revision           $Revision: 1.42 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-06 14:41:27 $
+ * Last modified on   $Date: 2005-12-21 08:45:51 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.41 2005-10-06 14:41:27 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.42 2005-12-21 08:45:51 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -138,6 +138,9 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
 
     /** the name of the base model in the baseModelMaker, if specified */
     protected String m_baseModelName;
+    
+    /** the ModelGetter which will be used - eventually - for imports */
+    protected ModelGetter importModelGetter;
 
     // Constructors
     //////////////////////////////////
@@ -236,7 +239,15 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     public ModelMaker getBaseModelMaker() {
         return super.getModelMaker();
     }
+    
+    public ModelGetter getImportModelGetter() {
+        return importModelGetter;
+    }
 
+    public void setImportModelGetter( ModelGetter mg ) {
+        importModelGetter = mg;
+    }
+    
     /**
      * <p>Initialise an OntModelSpec from an RDF description using the JenaModelSpec vocabulary. See
      * <a href="../../../../../doc/howto/modelspec.html">the modelspec howto</a>

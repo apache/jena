@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSource.java,v 1.8 2005-08-01 08:22:58 chris-dollin Exp $
+  $Id: ModelSource.java,v 1.9 2005-12-21 08:46:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -24,7 +24,7 @@ package com.hp.hpl.jena.rdf.model;
  	
  	@author hedgehog
 */
-public interface ModelSource
+public interface ModelSource extends ModelGetter
     {
     /**
         Answer this ModelSource's default model. Every ModelSource

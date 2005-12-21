@@ -1,83 +1,33 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
- 	All rights reserved.
- 	[See end of file]
+ 	All rights reserved - see end of file.
+ 	$Id: ModelGetter.java,v 1.1 2005-12-21 08:46:04 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model.spec.test;
-
-import com.hp.hpl.jena.rdf.model.*;
+package com.hp.hpl.jena.rdf.model;
 
 /**
-    A fake model-spec (has methods but broken behaviour) for testing
-    purposes (as a ModelSpec produced by referring to its class-name).
+    A ModelGetter object can retrieve a Model given a URL for it. If it doesn't
+    have such a Model, it returns null.
+<p>
+    ModelGetters are very weakly constrained. They need not contain any
+    models at all; they may forget models they have just delivered; they may
+    deliver different models given the same URL. They <i>are</i> constrained to
+    deliver an "appropriate" model for the URL, however - whatever they return
+    should be strongly related to the RDF which might, at some time or another,
+    be retrieved from that URL.
     
     @author kers
 */
-public class MockModelSpec implements ModelSpec
+public interface ModelGetter
     {
-    public MockModelSpec( Resource root, Model spec )
-        {}
-    
-    public Model createModelOver( String name )
-        {
-        return null;
-        }
-    
-    public Model getDescription()
-        {        
-        return null;
-        }
-    
-    public Model getDescription( Resource root )
-        {        
-        return null;
-        }
-    
-    public Model addDescription( Model m, Resource self )
-        {        
-        return null;
-        }
-    
-    public Model createDefaultModel()
-        { return null;
-        }
-    
-    public Model createFreshModel()
-        {        
-        return null;
-        }
-    
-    public Model openModel( String name )
-        {        
-        return null;
-        }
-    
-    public Model openModelIfPresent( String string )
-        {        
-        return null;
-        }
-
-    public Model getModel()
-        {
-        return null;
-        }
-
-    public Model createModel()
-        {
-        return null;
-        }
-
-    public Model openModel()
-        {
-        return null;
-        }
-
-    public Model getModel( String URL )
-        {
-        return null;
-        }
+    /**
+        Answer a Model whose content is that associated with the URL, if possible,
+        and otherwise answer null.
+    */
+    public Model getModel( String URL );
     }
+
 
 /*
  * (c) Copyright 2005 Hewlett-Packard Development Company, LP
