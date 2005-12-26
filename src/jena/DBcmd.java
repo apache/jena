@@ -13,7 +13,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.8 2005-09-21 09:48:26 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.9 2005-12-26 18:43:11 andy_seaborne Exp $
  */ 
  
 abstract class DBcmd
@@ -37,19 +37,30 @@ abstract class DBcmd
 
     // The values of these arguments
     protected String argDbURL = null;
-    protected String argDbType = null;
+    protected String argDbType = null;          // Lower-cased name - key into tables
+    protected String argDriverName = null;      // JDBC class name
+    protected String argDriverTypeName = null;  // Jena driver name
     protected String argDbUser = null;
     protected String argDbPassword = null;
     protected String argModelName = null;
 
-    // DB types to driver
-    static Map drivers = new HashMap();
+    // DB types to JDBC driver name (some common choices)
+    static Map jdbcDrivers = new HashMap();
     static {
-        drivers.put("mysql",       "com.mysql.jdbc.Driver");
-        drivers.put("postgresql",  "org.postgresql.Driver");
-        drivers.put("postgres",    "org.postgresql.Driver");
-        drivers.put("postgresql",  "org.postgresql.Driver");
-        drivers.put("PostgreSQL",  "org.postgresql.Driver") ;  // Thanks to Joshua Moore [j.moore@dkfz-heidelberg.de]
+        jdbcDrivers.put("mysql",       "com.mysql.jdbc.Driver");
+        jdbcDrivers.put("mssql",       "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;      // What's the best coice here?
+        jdbcDrivers.put("postgres",    "org.postgresql.Driver");
+        jdbcDrivers.put("postgresql",  "org.postgresql.Driver");
+    }
+    
+    // DB types to name Jena uses internally
+    static Map jenaDriverName = new HashMap();
+    static {
+        jenaDriverName.put("mssql",       "MsSQL");
+        jenaDriverName.put("mysql",       "MySQL");
+        jenaDriverName.put("postgresql",  "PostgreSQL");
+        jenaDriverName.put("postgres",    "PostgreSQL");
+        jenaDriverName.put("oracle",      "Oracle");
     }
 
     boolean takesPositionalArgs = false ;
@@ -140,12 +151,15 @@ abstract class DBcmd
             System.exit(9) ;
         }
 
+        // Canonical form (for DBcmd)
         argDbType = argDbType.toLowerCase() ;
-        String driverClass = (String)drivers.get(argDbType);
+        argDriverName = (String)jdbcDrivers.get(argDbType);
+        argDriverTypeName = (String)jenaDriverName.get(argDbType) ;
+        
         if (cmdLine.contains(argDeclDbDriver))
-            driverClass = cmdLine.getArg(argDeclDbDriver).getValue();
+            argDriverName = cmdLine.getArg(argDeclDbDriver).getValue();
 
-        if (driverClass == null)
+        if (argDriverName == null)
         {
             System.err.println("No driver: please say which JDBC driver to use");
             System.exit(9);
@@ -153,18 +167,18 @@ abstract class DBcmd
 
         try
         {
-            Class.forName(driverClass); //.newInstance();
+            Class.forName(argDriverName);
         }
         catch (Exception ex)
         {
-            System.err.println("Couldn't load the driver class: " + driverClass);
+            System.err.println("Couldn't load the driver class: " + argDriverName);
             System.err.println("" + ex);
             System.exit(9);
         }
 
     }
     
-protected ModelRDB getRDBModel() 
+    protected ModelRDB getRDBModel() 
     {
         if ( dbModel == null )
         {
@@ -201,7 +215,7 @@ protected ModelRDB getRDBModel()
         if ( jdbcConnection == null )
         {
             try {
-                jdbcConnection = new DBConnection(argDbURL, argDbUser, argDbPassword, argDbType);
+                jdbcConnection = new DBConnection(argDbURL, argDbUser, argDbPassword, argDriverTypeName);
             } catch (Exception ex)
             {
                 System.out.println("Exception making connection: "+ex.getMessage()) ;
