@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.28 2005-12-12 12:14:59 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.29 2006-01-04 14:07:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -69,16 +69,29 @@ public class FileGraph extends GraphMem
         @param style the reification style for the graph
     */
     public FileGraph( NotifyOnClose notify, File f, boolean create, boolean strict, ReificationStyle style )
+        { this( notify, f, FileUtils.guessLang( f.toString() ), create, strict, style ); }
+
+    /**
+        Construct a new FileGraph who's name is given by the specified File,
+        If create is true, this is a new file, and any existing file will be destroyed;
+        if create is false, this is an existing file, and its current contents will
+        be loaded. The language code for the file is supplied.
+        
+        @param f the File naming the associated file-system file
+        @param lang the language string for the file
+        @param create true to create a new one, false to read an existing one
+        @param strict true to throw exceptions for create: existing, open: not found
+        @param style the reification style for the graph
+    */
+    public FileGraph( NotifyOnClose notify, File f, String lang, boolean create, boolean strict, ReificationStyle style )
         {
         super( style );
         this.name = f;
         this.notify = notify;
         this.model = new ModelCom( this );
-        this.lang = FileUtils.guessLang( this.name.toString() );
+        this.lang = lang;
         if (create)
-            { 
-            if (f.exists() && strict) throw new AlreadyExistsException( f.toString() );
-            }
+            { if (f.exists() && strict) throw new AlreadyExistsException( f.toString() ); }
         else
             readModel( this.model, strict );
         }
