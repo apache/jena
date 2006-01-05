@@ -1,27 +1,24 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: PropertyRequiredException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: PropertyRequiredException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception used to report that a required property is missing.
     @author kers
 */
-public class PropertyRequiredException extends JenaException
+public class PropertyRequiredException extends AssemblerException
     {
-    protected final Resource root;
     protected final Property property;
     
     public PropertyRequiredException( Resource root, Property property )
         {
-        super( makeMessage( root, property ) );
-        this.root = root;
+        super( root, makeMessage( root, property ) );
         this.property = property;
         }
     
@@ -32,13 +29,7 @@ public class PropertyRequiredException extends JenaException
             + " could not be constructed because it is missing the required property " + property
             ;
         }
-
-    /**
-        Answer the root object that lacked the required property.
-    */
-    public Resource getRoot()
-        { return root; }
-
+    
     /**
         Answer the required property.
     */

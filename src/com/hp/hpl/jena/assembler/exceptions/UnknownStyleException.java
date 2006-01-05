@@ -1,27 +1,24 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnknownStyleException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: UnknownStyleException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception used to report an unknown reification mode.
     @author kers
 */
-public class UnknownStyleException extends JenaException
+public class UnknownStyleException extends AssemblerException
     {
     protected final Resource style;
-    protected final Resource root;
     
     public UnknownStyleException( Resource root, Resource style )
         {
-        super( makeMessage( root, style ) );
-        this.root = root;
+        super( root, makeMessage( root, style ) );
         this.style = style;
         }
 
@@ -38,13 +35,6 @@ public class UnknownStyleException extends JenaException
     */
     public Resource getStyle()
         { return style; }
-
-    /**
-        Answer the resource that is the root object that has the unknown style.
-    */
-    public Resource getRoot()
-        { return root; }
-
     }
 
 

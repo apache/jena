@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotConstructException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: CannotConstructException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -16,16 +16,14 @@ import com.hp.hpl.jena.shared.*;
     object's most specific type.
     @author kers
 */
-public class CannotConstructException extends JenaException
+public class CannotConstructException extends AssemblerException
     {
-    protected final Resource root;
     protected final Resource type;
     protected final Class assemblerClass;
     
     public CannotConstructException( Class assemblerClass, Resource root, Resource type )
         {
-        super( constructMessage( assemblerClass, root, type ) );
-        this.root = root; 
+        super( root, constructMessage( assemblerClass, root, type ) );
         this.type = type; 
         this.assemblerClass = assemblerClass;
         }
@@ -66,12 +64,6 @@ public class CannotConstructException extends JenaException
     */
     public Resource getType()
         { return type; }
-
-    /**
-        Answer the root object that could not be constructed.
-    */
-    public Resource getRoot()
-        { return root; }
     }
 
 

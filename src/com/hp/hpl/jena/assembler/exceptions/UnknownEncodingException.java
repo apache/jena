@@ -1,27 +1,24 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnknownEncodingException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: UnknownEncodingException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception used to report an unknown language encoding.
     @author kers
 */
-public class UnknownEncodingException extends JenaException
+public class UnknownEncodingException extends AssemblerException
     {
     protected final String encoding;
-    protected final Resource root;
     
     public UnknownEncodingException( Resource root, String encoding )
         {
-        super( makeMessage( root, encoding ) );
-        this.root = root;
+        super( root, makeMessage( root, encoding ) );
         this.encoding = encoding;
         }
     
@@ -38,13 +35,6 @@ public class UnknownEncodingException extends JenaException
     */
     public String getEncoding()
         { return encoding; }
-
-    /**
-        Answer the root object that has the unknown encoding.
-    */
-    public Resource getRoot()
-        { return root; }
-
     }
 
 

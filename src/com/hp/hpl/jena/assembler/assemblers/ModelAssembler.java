@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: ModelAssembler.java,v 1.2 2006-01-05 15:38:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -25,7 +25,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
             {
             m.begin();
             try { c.fill( m ); m.commit(); }
-            catch (Throwable t) { m.abort(); throw new TransactionAbortedException( t ); }
+            catch (Throwable t) { m.abort(); throw new TransactionAbortedException( root, t ); }
             }
         else
             c.fill( m );

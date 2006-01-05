@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelContent.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestModelContent.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -85,6 +85,7 @@ public class TestModelContent extends AssemblerTestBase
             }
         catch (TransactionAbortedException  e)
             {
+            assertEquals( resource( "x" ), e.getRoot() );
             assertEquals( listOfStrings( "supports[true] begin add abort" ), history );
             assertIsoModels( expected, toDeliver );
             }        

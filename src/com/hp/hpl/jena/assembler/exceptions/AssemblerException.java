@@ -1,31 +1,46 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotHaveRulesException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: AssemblerException.java,v 1.1 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.shared.JenaException;
 
-public class CannotHaveRulesException extends AssemblerException
-    {    
-    public CannotHaveRulesException( Resource root )
-        { super( root, makeMessage( root ) ); }
-
-    private static String makeMessage( Resource root )
-        {
-        return 
-            "the object " + root 
-            + " cannot be given rules, since it is not a GenericRulesReasoner"
-            ;
+/**
+    Assembler Exception class: contains code shared by all the Assembler
+    exceptions.
+    
+    @author kers
+*/
+public class AssemblerException extends JenaException
+    {
+    protected final Resource root;
+    
+    public AssemblerException( Resource root, String string, Throwable t )
+        { 
+        super( string, t ); 
+        this.root = root;
         }
 
+    public AssemblerException( Resource root, String message )
+        {
+        super( message );
+        this.root = root;
+        }
+
+    /**
+        Answer the root object whose model-filling was aborted
+    */
+    public Resource getRoot()
+        { return root; }
     }
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

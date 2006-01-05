@@ -1,17 +1,35 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TransactionAbortedException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TransactionAbortedException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.rdf.model.Resource;
 
-public class TransactionAbortedException extends JenaException
+/**
+    Exception used to report that a transaction was aborted when loading
+    content into a model.
+    @author kers
+*/
+public class TransactionAbortedException extends AssemblerException
     {
-    public TransactionAbortedException( Throwable t )
-        { super( t ); }
+    protected final Resource root;
+    
+    public TransactionAbortedException( Resource root, Throwable t )
+        { 
+        super( root, makeMessage( root, t ), t ); 
+        this.root = root;
+        }
+
+    private static String makeMessage( Resource root, Throwable t )
+        {
+        return 
+            "the loading of content into " + root 
+            + " was aborted because of " + t.getMessage()
+            ;
+        }
     }
 
 

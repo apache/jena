@@ -1,28 +1,29 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnknownReasonerException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: UnknownReasonerException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception used to report an unknown reasoner factory name.
     @author kers
 */
-public class UnknownReasonerException extends JenaException
+public class UnknownReasonerException extends AssemblerException
     {
-    protected final Resource root;
     protected final Resource url;
     
     public UnknownReasonerException( Resource root, Resource url )
         {
-        super( "no reasoner called " + url + " for " + root );
-        this.root = root; this.url = url;
+        super( root, makeMessage( root, url ) );
+        this.url = url;
         }
+    
+    private static String makeMessage( Resource root, Resource url )
+        { return "no reasoner called " + url + " for " + root; }
     
     public Resource getURL()
         { return url; }

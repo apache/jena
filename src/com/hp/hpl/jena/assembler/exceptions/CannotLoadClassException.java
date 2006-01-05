@@ -1,27 +1,24 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotLoadClassException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: CannotLoadClassException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception used to report a faulire to load a class.
     @author kers
 */
-public class CannotLoadClassException extends JenaException
+public class CannotLoadClassException extends AssemblerException
     {
-    protected final Resource root;
     protected final String className;
     
     public CannotLoadClassException( Resource root, String className, ClassNotFoundException e )
         {
-        super( makeMessage( root, className ), e );
-        this.root = root;
+        super( root, makeMessage( root, className ), e );
         this.className = className;
         }
 
@@ -33,12 +30,6 @@ public class CannotLoadClassException extends JenaException
             + " could not be loaded"
             ; 
         }
-
-    /**
-        Answer the root object that had the class names attached.
-    */
-    public Resource getRoot()
-        { return root; }
 
     /**
          Answer the name of the class that was not loaded.

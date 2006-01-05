@@ -1,30 +1,33 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NotUniqueException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: NotUniqueException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
 
-public class NotUniqueException extends JenaException
+public class NotUniqueException extends AssemblerException
     {
     protected final Property property;
-    protected final Resource root;
     
     public NotUniqueException( Resource root, Property property )
         {
-        super( "multiple values for " + root + " property " + property );
-        this.root = root; this.property = property; 
+        super( root, makeMessage( root, property ) );
+        this.property = property; 
+        }
+    
+    private static String makeMessage( Resource root, Property property )
+        {
+        return 
+            "the object " + root
+            + " has multiple values for the unique property " + property
+            ;
         }
     
     public Property getProperty()
         { return property; }
-
-    public Object getRoot()
-        { return root; }
     }
 
 

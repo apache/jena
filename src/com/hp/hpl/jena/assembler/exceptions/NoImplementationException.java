@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NoImplementationException.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: NoImplementationException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -10,16 +10,14 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.*;
 
-public class NoImplementationException extends JenaException
+public class NoImplementationException extends AssemblerException
     {
-    final Resource root;
     final Resource type;
     final Assembler assembler;
     
     public NoImplementationException( Assembler assembler, Resource root, Resource type )
         {
-        super( messageFor( assembler, root, type ) );
-        this.root = root;
+        super( root, messageFor( assembler, root, type ) );
         this.type = type;
         this.assembler = assembler;
         }
@@ -33,14 +31,11 @@ public class NoImplementationException extends JenaException
             + " because it does not have an implementation for the objects's most specific type " + type.asNode().toString( pm )
             ;
         }
-
-    public Object getRoot()
-        { return root; }
-
-    public Object getType()
+    
+    public Resource getType()
         { return type; }
 
-    public Object getAssembler()
+    public Assembler getAssembler()
         { return assembler; }
     }
 
