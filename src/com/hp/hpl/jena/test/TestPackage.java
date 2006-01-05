@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.36 2005-10-26 14:15:50 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.37 2006-01-05 14:35:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
 
 import java.lang.reflect.Method;
+
+import com.hp.hpl.jena.assembler.test.*;
 
 import junit.framework.TestSuite;
 import junit.framework.Test;
@@ -48,7 +50,7 @@ public class TestPackage extends TestSuite {
         addTest( com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
         addTest("Mega", com.hp.hpl.jena.regression.MegaTestSuite.suite());
         addTest( com.hp.hpl.jena.rdf.arp.test.TestPackage.suite());
-
+        addTest( TestAssemblerPackage.suite() );
         addTest( com.hp.hpl.jena.rdf.arp.test.SAX2RDFTest.suite());
         addTest( com.hp.hpl.jena.rdf.arp.test.MoreTests.suite());
         addTest( com.hp.hpl.jena.rdf.arp.states.test.TestARPStates.suite());
@@ -65,7 +67,7 @@ public class TestPackage extends TestSuite {
 
     public static TestSuite getARQsuite()
         {
-        return suiteByReflection("com.hp.hpl.jena.query.test.ARQTestSuite");
+        return suiteByReflection( "com.hp.hpl.jena.query.test.ARQTestSuite" );
         }
 
     private void addTest(String name, TestSuite tc) {

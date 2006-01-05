@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestContentAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestContentAssembler.java,v 1.2 2006-01-05 14:35:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -14,6 +14,8 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class TestContentAssembler extends AssemblerTestBase
     {
+    protected static String Testing = "testing/assemblers";
+    
     public TestContentAssembler( String name )
         { super( name ); }
 
@@ -77,7 +79,7 @@ public class TestContentAssembler extends AssemblerTestBase
     public void testSingleExternalContent()
         {
         Assembler a = new ContentAssembler();
-        String source = "kers/testing/assemblers/schema.n3";
+        String source = Testing + "/schema.n3";
         Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:ExternalContent; x ja:externalContent file:" + source );
         Content c = (Content) a.create( root );
         assertIsoModels( FileManager.get().loadModel( "file:" + source ), c.fill( model( "" ) ) );
@@ -86,8 +88,8 @@ public class TestContentAssembler extends AssemblerTestBase
     public void testMultipleExternalContent()
         {
         Assembler a = new ContentAssembler();
-        String sourceA = "kers/testing/assemblers/schema.n3";
-        String sourceB = "kers/testing/assemblers/schema2.n3";
+        String sourceA = Testing + "/schema.n3";
+        String sourceB = Testing + "/schema2.n3";
         Resource root = resourceInModel
             ( "x rdf:type ja:Content; x rdf:type ja:ExternalContent"
             + "; x ja:externalContent file:" + sourceA + "; x ja:externalContent file:" + sourceB );
@@ -124,7 +126,7 @@ public class TestContentAssembler extends AssemblerTestBase
     public void testMixedContent()
         {
         Assembler a = new ContentAssembler();
-        String source = "kers/testing/assemblers/schema.n3";
+        String source = Testing + "/schema.n3";
         Resource root = resourceInModel
             ( "x rdf:type ja:Content; x rdf:type ja:LiteralContent; x rdf:type ja:ExternalContent" 
             + "; x ja:literalContent '<eh:/eggs>\\srdf:type\\srdf:Property.'"

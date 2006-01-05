@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: JA.java,v 1.2 2006-01-05 14:35:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -160,11 +160,7 @@ public class JA
         }
 
     private static String getSchemaPath()
-        {
-        String pathIfNotSpecified = "kers/doc/vocab.n3";
-        String p = System.getProperty( "jena.assembler.vocab", pathIfNotSpecified );
-        return p;
-        }
+        { return "vocabularies/assembler.n3"; }
     }
 
 

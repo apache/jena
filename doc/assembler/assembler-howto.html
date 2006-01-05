@@ -2,7 +2,8 @@
 <head>
 <title>the Assembler howto</title>
 
-<link rel="stylesheet" class="text/css" href="style.css" />
+<link rel="stylesheet" type="text/css" href="../styles/doc.css" />
+<link rel="stylesheet" class="text/css" href="assembler-style.css" />
 
 <script type="text/javascript" src="library.js">
 </script>
@@ -66,7 +67,7 @@ memory model with data loaded from a file:
 
 <pre>
 <pre>eg:opening-example a ja:MemoryModel 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/Scratch/kers/Data/example.n3&gt;] 
+    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/example.n3&gt;] 
     . </pre></pre>
 
 
@@ -176,8 +177,8 @@ specifications. For example:</p>
 <pre>
 <pre>eg:common-example a ja:MemoryModel 
     ; ja:content eg:sharedContent 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/Scratch/kers/Data/A.rdf&gt;] 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/Scratch/kers/Data/B.rdf&gt;] 
+    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/B.rdf&gt;] 
+    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/A.rdf&gt;] 
     . 
 eg:sharedContent
     ja:externalContent &lt;http://somewhere/RDF/ont.owl&gt; 
@@ -242,7 +243,7 @@ all such resources. For example:
 <pre>
 <pre>eg:external-content-example
     ja:externalContent &lt;http://jena.hpl.hp.com/some-jena-data.rdf&gt;,
-        &lt;file:///home/kers/projects/Scratch/kers/Data/C.owl&gt; 
+        &lt;file:///home/kers/projects/jena2/Data/C.owl&gt; 
     . </pre></pre>
 
 
@@ -382,21 +383,21 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class='show-class'>ja:Connection a rdfs:Class
 <div class='show-subclass'> ; rdfs:subClassOf ja:Object
 </div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]
-</div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]
-</div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]
-</div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]
-</div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]
-</div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]
 </div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]
 </div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]
+</div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]
+</div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]
+</div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]
+</div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]
+</div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]
 </div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]
 </div>
@@ -483,7 +484,7 @@ necessary.
 
 <pre>
 <pre>eg:fileModel-example-2
-    ja:directory &lt;file:///home/kers/projects/Scratch/kers/FileModels&gt; 
+    ja:directory &lt;file:///home/kers/projects/jena2/FileModels&gt; 
     ; ja:mapName ja:true 
     ; ja:modelName "http://somewhere.org/stuff.n3" 
     . </pre></pre>
