@@ -1,0 +1,102 @@
+<html>
+<head>
+<title>Assembler quickstart</title>
+
+<link rel="stylesheet" class="text/css" href="../styles/doc.css" />
+<link rel="stylesheet" class="text/css" href="assembler-style.css" />
+<script type="text/javascript" src="library.js"></script>
+
+</head>
+<h1>Assembler quickstart</h1>
+
+<p>This is the Assembler quickstart page. For more detailed
+information, see the <a href="assembler-howto.html">Assembler howto</a>
+document.
+</p>
+
+<h2>what is an Assembler specification?</h2>
+<p>
+An Assembler <i>specification</i> is an RDF description of how to
+construct a model and its associated resources, such as reasoners,
+prefix mappings, and initial content. The Assembler vocabulary is
+given in the <a href="vocab.n3">Assembler schema</a>, and we'll
+use the prefix <code>ja</code> for its identifiers.
+</p>
+
+<h2>what is an Assembler?</h2>
+
+<p>
+An <i>Assembler</i> is an object that implements the <code>Assembler</code>
+interface and can construct objects (typically models) from Assembler
+specifications. The constant <code>Assembler.general</code> is an
+Assembler that knows how to construct the usual suspects.
+</p>
+
+<h2>how can I make a model according to a specification?</h2>
+
+<p>Suppose the Model <code>M</code> contains an Assembler
+specification whose <i>root</i> 
+-- the Resource describing the whole Model to construct
+is <code>R</code> (so <code>R.getModel() == M)</code>. Invoke:
+</p>
+
+<blockquote>
+<code>Assembler.general.createModel(R)</code>
+</blockquote>
+
+<p>
+The result is the desired Model. Further details about the 
+<code>Assembler</code> interface, the special Assembler
+<code>general</code>, and the details of specific Assemblers,
+are deferred to the <a href="assembler-howto.html">Assembler howto</a>.
+</p>
+
+<h2>how can I specify ...</h2>
+
+<p>In the remaining sections, the object we want to describe is
+given the root resource <code>my:root</code>, and our examples
+are written in N3.
+</p>
+
+<h3>... a memory model?</h3>
+
+<pre>
+my:root a ja:MemoryModel.
+</pre>
+
+<h3>... an inference model?</h3>
+
+<pre>
+my:root 
+    ja:reasoner [ja:reasonerURL <i>theReasonerURL</i>]
+    ; ja:baseModel <i>theBaseModelResource</i>
+    .
+</pre>
+
+<h3>... a database model?</h3>
+
+<pre>
+my:root
+    ja:connection <i>aConnectionresource</i>
+    .
+    
+<i>aConnectionResource</i>
+    ja:dbURL <i>theDatabaseURL</i>
+    ; ja:dbUser "<i>the user name</i>"
+    ; ja:dbPassword "<i>the user's password</i>"
+    ; ja:dbType "<i>the database type, eg MySQL</i>"
+    .
+</pre>
+
+<h3>... some model content?</h3>
+
+<pre>
+my:root
+    ...
+    ja:content [ja:externalContent &lt;someContentURL&gt;]
+    .
+</pre>
+
+<body>
+</html>
+</body>
