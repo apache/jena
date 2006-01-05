@@ -3,6 +3,10 @@ Release Notes
 
 Post-Jena 2.3
 
+NEW: Assembler specifications
+    o Assembler specifications replace the old ModelSpecs. They are
+      documented in doc/assembler/index.html and linked pages.
+
 JenaTestBase
     o Added new test method assertInstanceOf to do instanceof testing
       with a nice failure message; updated (some) test code to use it.
@@ -13,6 +17,9 @@ FileGraph[Maker]
       not deleted when the Maker was closed. Amongst other things, this
       left crud in the tmp directory when running the tests. Fixed: the
       Maker remembers /all/ the FileGraphs, even the closed ones.
+
+    o Added a constructor that allows the file language to be explicitly
+      specified.
 
 LiteralLabel
     o reported bug whereby a LiteralLabel can be constructed with the
