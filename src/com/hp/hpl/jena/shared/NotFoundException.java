@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NotFoundException.java,v 1.1 2005-02-13 18:04:32 andy_seaborne Exp $
+  $Id: NotFoundException.java,v 1.2 2006-01-05 13:34:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -19,7 +19,7 @@ public class NotFoundException extends JenaException
          The entity <code>name</code> does not exist.
     */
     public NotFoundException( String name )
-        { super( name); }
+        { super( name ); }
     }
 
 /*
