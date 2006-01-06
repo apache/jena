@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.1 2006-01-05 13:50:46 chris-dollin Exp $
+# $Id: assembler.n3,v 1.2 2006-01-06 11:08:12 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -236,14 +236,6 @@ ja:RDBModel a rdfs:Class
         Connection and with a given name."""
     .
 
-ja:dbClass a rdf:Property
-    ; rdfs:domain ja:RDBModel
-    ; rdfs:label "Assembler.dbClass"
-    ; rdfs:comment 
-        """property of an RDBModel which names any Java classes that
-        must be loaded before this model can be opened"""
-    .
-    
 ja:Connectable a rdfs:Class
     ; rdfs:subClassOf ja:Object
     ; rdfs:label "Assembler.Connectable"
