@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.90 $
+ * Revision           $Revision: 1.91 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-31 09:59:17 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2006-01-06 10:43:58 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.90 2005-10-31 09:59:17 der Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.91 2006-01-06 10:43:58 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1962,7 +1962,7 @@ public class OntModelImpl
     }
 
     /**
-     	@deprecated use getImportModelMaker instead.
+         @deprecated use getImportModelMaker instead.
     */
     public ModelMaker getModelMaker() {
         return getImportModelMaker();
@@ -2206,9 +2206,7 @@ public class OntModelImpl
      * @return The base model for this ontology model
      */
     public Model getBaseModel() {
-        Model result = ModelFactory.createModelForGraph( getBaseGraph() );
-        result.setNsPrefixes( this );
-        return result;
+        return ModelFactory.createModelForGraph( getBaseGraph() );
     }
 
 
@@ -2891,8 +2889,8 @@ public class OntModelImpl
     }
 
     /**
-     	Answer the supplied model, unless it's null, in which case answer a new model
-     	constructed as per spec.
+         Answer the supplied model, unless it's null, in which case answer a new model
+         constructed as per spec.
     */
     private static Model makeBaseModel( OntModelSpec spec, Model model ) {
         return model == null ? spec.createBaseModel() : model;
