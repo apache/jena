@@ -98,7 +98,7 @@ environment):
 <pre>
 Model spec = FileManager.get().loadModel( "examples.n3" );
 Resource root = spec.createResource( spec.expandPrefix( "eg:opening-example" ) );
-Model m = Assembler.general.createModel( root );
+Model m = Assembler.general.openModel( root );
 </pre>
 
 <p>The model is constructed from the "root resource", 
@@ -383,25 +383,25 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class='hide' id='1007B'>
 <a href='javascript:exchange("1007")'>&nabla; show condensed</a>
 <div class='show-class'>ja:Connection a rdfs:Class
-<div class='show-subclass'> ; rdfs:subClassOf ja:Object
-</div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]
 </div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]
-</div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]
+<div class='show-subclass'> ; rdfs:subClassOf ja:Object
 </div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]
 </div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]
+</div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]
-</div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]
-</div>
-<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]
 </div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]
 </div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]
+</div>
 <div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]
+</div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]
+</div>
+<div class='show-subclass'> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]
 </div>
 <div class='show-subclass'>.</div>
 <div class='show-class'> ja:dbPasswordProperty a rdf:Property
@@ -1209,7 +1209,7 @@ how to build the objects -- not just models -- described by an Assembler
 specification. The normal route into an Assembler is through the method:
 
 <ul>
-<li>create( Resource root ) &rarr; Object</li>
+<li>open( Resource root ) &rarr; Object</li>
 </ul>
 
 The Assembler inspects the <code>root</code> resource properties and
@@ -1222,7 +1222,7 @@ object.
 Assemblers, there is a convenience wrapper method:
 
 <ul>
-<li>createModel( Resource root ) &rarr; Model</li>
+<li>openModel( Resource root ) &rarr; Model</li>
 </ul>
 
 which constructs the object and checks that it's a Model before
@@ -1234,18 +1234,18 @@ when an InfModel Assembler requires a Reasoner object), it uses the
 method:
 
 <ul>
-<li>create( Assembler sub, Resource root ) &rarr; Model</li>
+<li>open( Assembler sub, Resource root ) &rarr; Model</li>
 </ul>
 
 passing in a suitable Assembler object. In fact the standard implementation
-of <code>create(root)</code> is just 
+of <code>open(root)</code> is just 
 
 <ul>
-<li>create( this, root )</li>
+<li>open( this, root )</li>
 </ul>
 
 passing in itself as the sub-assembler and having 
-<code>create(Assembler,Resource)</code> be the place where
+<code>open(Assembler,Resource)</code> be the place where
 all the work is done. (Amongst other things, this makes testing
 easier.)
 </p>
@@ -1413,7 +1413,7 @@ Assembler and adds the methods:</p>
 <li>assemblerFor( Resource type ) &rarr; Assembler</li>
 </ul> 
 
-<p>AssemblerGroup's implementation of <code>create(sub,root)</code>
+<p>AssemblerGroup's implementation of <code>open(sub,root)</code>
 finds the <i>most specific type</i> of <code>root</code> that is a subclass
 of <code>ja:Object</code> and looks for the Assembler that has been
 associated with that type by a call of <code>implementWith</code>. 
