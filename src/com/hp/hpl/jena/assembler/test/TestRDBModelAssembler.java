@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRDBModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestRDBModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -21,11 +21,10 @@ public class TestRDBModelAssembler extends AssemblerTestBase
 
     public void testRDBModelAssemblerType()
         { testDemandsMinimalType( new RDBModelAssembler(), JA.RDBModel );  }
-    
-    public void testAssemblerConstant()
+
+    public void testRDBModelVocabulary()
         {
-        assertInstanceOf( RDBModelAssembler.class, Assembler.rdbModel );
-        assertDomain( JA.RDBModel, JA.dbClass );
+        // TODO
         }
     
     public void testInvokesCreateModel()
@@ -35,14 +34,14 @@ public class TestRDBModelAssembler extends AssemblerTestBase
         final Model fake = ModelFactory.createDefaultModel();
         Assembler a = new RDBModelAssembler()
             {
-            public Model createModel( ConnectionDescription c, String name, ReificationStyle style )
+            public Model openModel( ConnectionDescription c, String name, ReificationStyle style )
                 {
                 assertSame( C, c );
                 return fake;
                 }
             };
         Assembler foo = new NamedObjectAssembler( resource( "C" ), C );
-        assertSame( fake, a.create( foo, root ) );
+        assertSame( fake, a.open( foo, root ) );
         }
     
     }

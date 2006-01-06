@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestDefaultModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestDefaultModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -22,7 +22,7 @@ public class TestDefaultModelAssembler extends AssemblerTestBase
     public void testDefaultModelAssembler()
         {
         Assembler a = Assembler.defaultModel;
-        Model m = a.createModel( resourceInModel( "x rdf:type ja:DefaultModel" ) );
+        Model m = a.openModel( resourceInModel( "x rdf:type ja:DefaultModel" ) );
         assertInstanceOf( Model.class, m );
         assertInstanceOf( GraphMemFaster.class, m.getGraph() );
         }

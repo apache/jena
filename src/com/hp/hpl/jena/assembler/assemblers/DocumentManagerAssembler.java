@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: DocumentManagerAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: DocumentManagerAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.util.*;
 
 public class DocumentManagerAssembler extends AssemblerBase 
     {    
-    public Object create( Assembler a, Resource root )
+    public Object open( Assembler a, Resource root )
         { 
         checkType( root, JA.DocumentManager );
         OntDocumentManager result = createDocumentManager();
@@ -32,7 +32,7 @@ public class DocumentManagerAssembler extends AssemblerBase
     private FileManager getFileManager( Assembler a, Resource root )
         {
         Resource fm = getUniqueResource( root, JA.fileManager );
-        return fm == null ? FileManager.get() : (FileManager) a.create( fm );
+        return fm == null ? FileManager.get() : (FileManager) a.open( fm );
         }
     
     /**

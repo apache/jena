@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestContentAssembler.java,v 1.2 2006-01-05 14:35:30 chris-dollin Exp $
+ 	$Id: TestContentAssembler.java,v 1.3 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -35,7 +35,7 @@ public class TestContentAssembler extends AssemblerTestBase
     public void testContent()
         {
         Assembler a = new ContentAssembler();
-        Content c = (Content) a.create( resourceInModel( "x rdf:type ja:Content" ) );
+        Content c = (Content) a.open( resourceInModel( "x rdf:type ja:Content" ) );
         assertNotNull( c );
         Model m = ModelFactory.createDefaultModel();
         c.fill( m );
@@ -48,7 +48,7 @@ public class TestContentAssembler extends AssemblerTestBase
         String A = "<eh:/A> a <eh:/Type>.".replaceAll( " ", "\\\\s" );
         String B = "<eh:/Type> a rdfs:Class.".replaceAll( " ", "\\\\s" );
         Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:LiteralContent; x ja:literalContent '" + A + "'; x ja:literalContent '" + B + "'" );
-        Content C = (Content) a.create( root ); 
+        Content C = (Content) a.open( root ); 
         assertIsoModels( model( "Type rdf:type rdfs:Class; A rdf:type Type" ), C.fill( model( "" ) ) );
         }
     
@@ -72,7 +72,7 @@ public class TestContentAssembler extends AssemblerTestBase
         Assembler a = new ContentAssembler();
         String Stuff = "<owl:Class></owl:Class>".replaceAll( " ", "\\\\s" );
         Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:LiteralContent; x ja:literalContent '" + Stuff + "'; x ja:contentEncoding 'RDF/XML'" );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         assertIsoModels( model( "_x rdf:type owl:Class" ), c.fill( model( "" ) ) );
         }
     
@@ -81,7 +81,7 @@ public class TestContentAssembler extends AssemblerTestBase
         Assembler a = new ContentAssembler();
         String source = Testing + "/schema.n3";
         Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:ExternalContent; x ja:externalContent file:" + source );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         assertIsoModels( FileManager.get().loadModel( "file:" + source ), c.fill( model( "" ) ) );
         }    
     
@@ -93,7 +93,7 @@ public class TestContentAssembler extends AssemblerTestBase
         Resource root = resourceInModel
             ( "x rdf:type ja:Content; x rdf:type ja:ExternalContent"
             + "; x ja:externalContent file:" + sourceA + "; x ja:externalContent file:" + sourceB );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         Model wanted = FileManager.get().loadModel( "file:" + sourceA ).add( FileManager.get().loadModel( "file:" + sourceB ) );
         assertIsoModels( wanted, c.fill( model( "" ) ) );
         }
@@ -105,7 +105,7 @@ public class TestContentAssembler extends AssemblerTestBase
             ( "x rdf:type ja:Content; x ja:content y"
             + "; y rdf:type ja:Content; y ja:content z"
             + "; z rdf:type ja:Content; z ja:quotedContent A; A P B"  );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         Model wanted = model( "A P B" );
         assertIsoModels( wanted, c.fill( model( "" ) ) );    
         }
@@ -115,7 +115,7 @@ public class TestContentAssembler extends AssemblerTestBase
         Assembler a = new ContentAssembler();
         Resource root = resourceInModel( "x rdf:type ja:Content; x ja:contentEncoding 'bogus'; x ja:literalContent 'sham'" );
         try 
-            { a.create( root ); fail( "should trap bad encoding" ); }
+            { a.open( root ); fail( "should trap bad encoding" ); }
         catch (UnknownEncodingException e)
             {
             assertEquals( "bogus", e.getEncoding() );
@@ -131,7 +131,7 @@ public class TestContentAssembler extends AssemblerTestBase
             ( "x rdf:type ja:Content; x rdf:type ja:LiteralContent; x rdf:type ja:ExternalContent" 
             + "; x ja:literalContent '<eh:/eggs>\\srdf:type\\srdf:Property.'"
             + "; x ja:externalContent file:" + source );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         Model wanted = FileManager.get().loadModel( "file:" + source ).add( model( "eggs rdf:type rdf:Property" ) );
         assertIsoModels( wanted, c.fill( model( "" ) ) );
         }
@@ -140,7 +140,7 @@ public class TestContentAssembler extends AssemblerTestBase
         {
         Assembler a = new ContentAssembler();
         Resource root = resourceInModel( "c rdf:type ja:Content; c rdf:type ja:QuotedContent; c ja:quotedContent x; x P A; x Q B" );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         assertIsoModels( model( "x P A; x Q B" ), c.fill( model( "" ) ) );
         }
     
@@ -150,7 +150,7 @@ public class TestContentAssembler extends AssemblerTestBase
         Resource root = resourceInModel
             ( "c rdf:type ja:Content; c rdf:type ja:QuotedContent; c ja:quotedContent x"
             + "; c ja:quotedContent y; x P A; x Q B; y R C" );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         assertIsoModels( model( "x P A; x Q B; y R C" ), c.fill( model( "" ) ) );
         }
     
@@ -161,7 +161,7 @@ public class TestContentAssembler extends AssemblerTestBase
             "@prefix foo: <eh:/foo#>. <eh:/eggs> rdf:type rdf:Property."
             .replaceAll( " ", "\\\\s" );
         Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:LiteralContent; x ja:literalContent '" + content + "'" );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         Model m = ModelFactory.createDefaultModel();
         c.fill( m );
         assertEquals( "eh:/foo#", m.getNsPrefixURI( "foo" ) );
@@ -171,7 +171,7 @@ public class TestContentAssembler extends AssemblerTestBase
         {
         Assembler a = new ContentAssembler();
         Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:LiteralContent; x ja:literalContent '" + n3.replaceAll( " ", "\\\\s" ) + "'" );
-        Content c = (Content) a.create( root );
+        Content c = (Content) a.open( root );
         Model m = ModelFactory.createDefaultModel();
         c.fill( m );
         assertIsoModels( model( expected ), m );

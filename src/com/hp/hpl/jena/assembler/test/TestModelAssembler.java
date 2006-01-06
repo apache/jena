@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -35,7 +35,7 @@ public class TestModelAssembler extends AssemblerTestBase
         { 
         Assembler a = new ModelAssembler() 
             {
-            protected Model createModel( Assembler a, Resource root )
+            protected Model openModel( Assembler a, Resource root )
                 { return ModelFactory.createDefaultModel(); }
             };
         PrefixMapping wanted = PrefixMapping.Factory.create()
@@ -45,7 +45,7 @@ public class TestModelAssembler extends AssemblerTestBase
             ( "x rdf:type ja:DefaultModel; x ja:includes p1; x ja:includes p2"
             + "; p1 rdf:type ja:PrefixMapping; p1 ja:prefix 'my'; p1 ja:namespace 'urn:secret:42/'"
             + "; p2 rdf:type ja:PrefixMapping; p2 ja:prefix 'your'; p2 ja:namespace 'urn:public:17#'" );
-        Model m = (Model) a.create( Assembler.prefixMapping, root );
+        Model m = (Model) a.open( Assembler.prefixMapping, root );
         assertSamePrefixMapping( wanted, m );
         }
     
@@ -54,13 +54,13 @@ public class TestModelAssembler extends AssemblerTestBase
         final List style = new ArrayList();
         Assembler a = new ModelAssembler() 
             {
-            protected Model createModel( Assembler a, Resource root )
+            protected Model openModel( Assembler a, Resource root )
                 {
                 style.add( getReificationStyle( root ) );
                 return ModelFactory.createDefaultModel(); 
                 }
             };
-        Model m = a.createModel( resourceInModel( "a rdf:type ja:Model" ) );
+        Model m = a.openModel( resourceInModel( "a rdf:type ja:Model" ) );
         assertEquals( listOfOne( ReificationStyle.Standard ), style );
         }
     
@@ -90,13 +90,13 @@ public class TestModelAssembler extends AssemblerTestBase
         final List styles = new ArrayList();
         Assembler a = new ModelAssembler() 
             {
-            protected Model createModel( Assembler a, Resource root )
+            protected Model openModel( Assembler a, Resource root )
                 {
                 styles.add( getReificationStyle( root ) );
                 return ModelFactory.createDefaultModel(); 
                 }
             };
-        Model m = a.createModel( resourceInModel( "a rdf:type ja:Model; a ja:reificationMode " + styleString ) );
+        Model m = a.openModel( resourceInModel( "a rdf:type ja:Model; a ja:reificationMode " + styleString ) );
         assertEquals( listOfOne( style ), styles );
         }
     }

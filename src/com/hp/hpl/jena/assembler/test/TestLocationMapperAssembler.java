@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLocationMapperAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestLocationMapperAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -35,7 +35,7 @@ public class TestLocationMapperAssembler extends AssemblerTestBase
         {
         Resource root = resourceInModel( "r rdf:type ja:LocationMapper" );
         Assembler a = new LocationMapperAssembler();
-        Object x = a.create( root );
+        Object x = a.open( root );
         assertInstanceOf( LocationMapper.class, x );
         }
     
@@ -43,7 +43,7 @@ public class TestLocationMapperAssembler extends AssemblerTestBase
         { // TODO should really have some mroe of these
         Resource root = resourceInModel( "r rdf:type ja:LocationMapper; r lm:mapping _m; _m lm:name 'alpha'; _m lm:altName 'beta'" );
         Assembler a = new LocationMapperAssembler();
-        Object x = a.create( root );
+        Object x = a.open( root );
         assertInstanceOf( LocationMapper.class, x );
         assertEqualMaps( new LocationMapper( root.getModel() ), (LocationMapper) x );
         }

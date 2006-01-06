@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRuleSetAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestRuleSetAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -37,7 +37,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase
         { 
         Assembler a = new RuleSetAssembler();
         Resource root = resourceInModel( "x rdf:type ja:RuleSet" );
-        assertEquals( RuleSet.empty, a.create( root ) );
+        assertEquals( RuleSet.empty, a.open( root ) );
         }
     
     public void testSingleRuleString()
@@ -45,7 +45,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase
         Assembler a = new RuleSetAssembler();
         String ruleString = "[(?a P ?b) -> (?a Q ?b)]";
         Resource root = resourceInModel( "x rdf:type ja:RuleSet; x ja:rule '" + ruleString.replaceAll( " ", "\\\\s" ) + "'" );
-        RuleSet rules = (RuleSet) a.create( root );
+        RuleSet rules = (RuleSet) a.open( root );
         Set expected = new HashSet( Rule.parseRules( ruleString ) );
         assertEquals( expected, new HashSet( rules.getRules() ) );
         }
@@ -60,7 +60,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase
             + "; x ja:rule '" + ruleStringA.replaceAll( " ", "\\\\s" ) + "'" 
             + "; x ja:rule '" + ruleStringB.replaceAll( " ", "\\\\s" ) + "'" 
             );
-        RuleSet rules = (RuleSet) a.create( root );
+        RuleSet rules = (RuleSet) a.open( root );
         Set expected = new HashSet( Rule.parseRules( ruleStringA ) );
         expected.addAll( Rule.parseRules( ruleStringB ) );
         assertEquals( expected, new HashSet( rules.getRules() ) );
@@ -72,7 +72,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase
         String rulesA = file( "example.rules" );
         Resource root = resourceInModel( "x rdf:type ja:RuleSet; x ja:rulesFrom " + rulesA );
         Set expected = new HashSet( Rule.rulesFromURL( rulesA ) );
-        RuleSet rules = (RuleSet) a.create( root );
+        RuleSet rules = (RuleSet) a.open( root );
         assertEquals( expected, new HashSet( rules.getRules() ) );
         }
     
@@ -84,7 +84,7 @@ public class TestRuleSetAssembler extends AssemblerTestBase
             ( "x rdf:type ja:RuleSet; x ja:rules y"
             + "; y rdf:type ja:RuleSet; y ja:rule '" + ruleStringA.replaceAll( " ", "\\\\s" ) + "'" );
         Set expected = new HashSet( Rule.parseRules( ruleStringA ) );
-        RuleSet rules = (RuleSet) a.create( root );
+        RuleSet rules = (RuleSet) a.open( root );
         assertEquals( expected, new HashSet( rules.getRules() ) );
         }
 

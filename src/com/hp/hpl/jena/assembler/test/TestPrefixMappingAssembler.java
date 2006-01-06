@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestPrefixMappingAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestPrefixMappingAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -26,7 +26,7 @@ public class TestPrefixMappingAssembler extends AssemblerTestBase
         {
         Assembler a = new PrefixMappingAssembler();
         Resource root = resourceInModel( "pm rdf:type ja:PrefixMapping" );
-        Object pm = a.create( root );
+        Object pm = a.open( root );
         assertInstanceOf( PrefixMapping.class, pm );
         }
     
@@ -36,7 +36,7 @@ public class TestPrefixMappingAssembler extends AssemblerTestBase
             .setNsPrefix( "pre", "some:prefix/" );
         Assembler a = new PrefixMappingAssembler();
         Resource root = resourceInModel( "pm rdf:type ja:PrefixMapping; pm ja:prefix 'pre'; pm ja:namespace 'some:prefix/'" );
-        PrefixMapping pm = (PrefixMapping) a.create( root );
+        PrefixMapping pm = (PrefixMapping) a.open( root );
         assertSamePrefixMapping( wanted, pm );
         }
     
@@ -48,7 +48,7 @@ public class TestPrefixMappingAssembler extends AssemblerTestBase
         Resource root = resourceInModel
             ( "root rdf:type ja:PrefixMapping; root ja:includes pm"
             + "; pm rdf:type ja:PrefixMapping; pm ja:prefix 'pre'; pm ja:namespace 'some:prefix/'" );
-        PrefixMapping pm = (PrefixMapping) a.create( root );
+        PrefixMapping pm = (PrefixMapping) a.open( root );
         assertSamePrefixMapping( wanted, pm );
         }
     
@@ -64,7 +64,7 @@ public class TestPrefixMappingAssembler extends AssemblerTestBase
             + "; root ja:includes pm1; pm1 rdf:type ja:PrefixMapping; pm1 ja:prefix 'p1'; pm1 ja:namespace 'some:prefix/'"
             + "; root ja:includes pm2; pm2 rdf:type ja:PrefixMapping; pm2 ja:prefix 'p2'; pm2 ja:namespace 'other:prefix/'"
             + "; root ja:prefix 'p3'; root ja:namespace 'simple:prefix#'" );
-        PrefixMapping pm = (PrefixMapping) a.create( root );
+        PrefixMapping pm = (PrefixMapping) a.open( root );
         assertSamePrefixMapping( wanted, pm );
         }
     }

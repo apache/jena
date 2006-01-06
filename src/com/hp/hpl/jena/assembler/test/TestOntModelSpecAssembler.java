@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelSpecAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestOntModelSpecAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -54,7 +54,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
     protected void testSpecificSpec( OntModelSpec ontModelSpec, String specName )
         {
         Assembler a = new OntModelSpecAssembler();
-        Object  oms = a.create( resource(  JA.getURI() + specName ) );
+        Object  oms = a.open( resource(  JA.getURI() + specName ) );
         // Object  oms = a.create( resourceInModel( (  JA.getURI() + specName ) );
         assertInstanceOf( OntModelSpec.class, oms );
         assertSame( ontModelSpec, oms );
@@ -75,7 +75,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:documentManager y" );
         OntDocumentManager dm = new OntDocumentManager();
         NamedObjectAssembler mock = new NamedObjectAssembler( resource( "y" ), dm );
-        OntModelSpec om = (OntModelSpec) a.create( mock, root );
+        OntModelSpec om = (OntModelSpec) a.open( mock, root );
         assertSame( dm, om.getDocumentManager() );
         }
     
@@ -95,7 +95,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
                 { return null; }
             };
         NamedObjectAssembler mock = new NamedObjectAssembler( resource( "R" ), rf );
-        OntModelSpec om = (OntModelSpec) a.create( mock, root );
+        OntModelSpec om = (OntModelSpec) a.open( mock, root );
         assertSame( rf, om.getReasonerFactory() );
         }
     
@@ -112,7 +112,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         {
         Assembler a = new OntModelSpecAssembler();
         Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:ontLanguage " + lang );
-        OntModelSpec om = (OntModelSpec) a.create( root );
+        OntModelSpec om = (OntModelSpec) a.open( root );
         assertEquals( lang, om.getLanguage() );
         }
     
@@ -123,7 +123,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
             { public Model getModel( String URL ) { return null; }};
         NamedObjectAssembler mock = new NamedObjectAssembler( resource( "source" ), getter );
         Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:importSource source" );
-        OntModelSpec om = (OntModelSpec) a.create( mock, root );
+        OntModelSpec om = (OntModelSpec) a.open( mock, root );
         assertSame( getter, om.getImportModelGetter() );
         }
     }

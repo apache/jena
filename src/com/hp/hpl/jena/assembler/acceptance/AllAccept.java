@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AllAccept.java,v 1.1 2006-01-05 13:40:01 chris-dollin Exp $
+ 	$Id: AllAccept.java,v 1.2 2006-01-06 11:04:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.acceptance;
@@ -25,7 +25,7 @@ public class AllAccept extends AssemblerTestBase
     public void testUnadornedInferenceModel()
         {
         Resource root = resourceInModel( "x ja:reasoner R; R rdf:type ja:ReasonerFactory" );
-        Model m = Assembler.general.createModel( root );
+        Model m = Assembler.general.openModel( root );
         assertInstanceOf( InfModel.class, m );
         InfModel inf = (InfModel) m;
         assertIsoModels( empty, inf.getRawModel() );
@@ -40,7 +40,7 @@ public class AllAccept extends AssemblerTestBase
         data.write( fs, "N3" );
         fs.close();
         Resource root = resourceInModel( "x rdf:type ja:MemoryModel; x ja:content y; y ja:externalContent file:" + f.getAbsolutePath() );
-        Model m = Assembler.general.createModel( root );
+        Model m = Assembler.general.openModel( root );
         assertIsoModels( data, m );
         }
 

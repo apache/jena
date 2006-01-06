@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestFileModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -60,7 +60,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
                 { return model; }
             };
         Resource root = resourceInModel( "x rdf:type ja:FileModel; x ja:modelName 'junk'; x ja:directory file:" );
-        Model m = a.createModel( root  );
+        Model m = a.openModel( root  );
         assertSame( model, m );
         }
     
@@ -76,7 +76,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
                 return model; 
                 }
             };
-        Model m = a.createModel( root  );
+        Model m = a.openModel( root  );
         assertSame( model, m );
         }
     
@@ -99,7 +99,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
                 }
             };
         Resource root = resourceInModel( "x rdf:type ja:FileModel; x ja:modelName 'junk'; x ja:directory file:" + "; x ja:reificationMode " + styleString );
-        Model m = a.createModel( root  );
+        Model m = a.openModel( root  );
         assertSame( model, m );
         }
     
@@ -140,7 +140,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
                 return model; 
                 }
             };
-        Model m = a.createModel( root  );
+        Model m = a.openModel( root  );
         assertSame( model, m );
         }
     }

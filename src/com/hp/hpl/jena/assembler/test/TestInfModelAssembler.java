@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestInfModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestInfModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -33,7 +33,7 @@ public class TestInfModelAssembler extends AssemblerTestBase
     public void testInfModel()
         {
         Assembler a = Assembler.infModel;
-        Model m = a.createModel( resourceInModel( "x rdf:type ja:InfModel" ) );
+        Model m = a.openModel( resourceInModel( "x rdf:type ja:InfModel" ) );
         assertInstanceOf( InfModel.class, m );
         }
     
@@ -46,7 +46,7 @@ public class TestInfModelAssembler extends AssemblerTestBase
         final ReasonerFactory RF = mockReasonerFactory( R );
         Assembler mock = new FixedObjectAssembler( RF );
         Resource root = resourceInModel( "x rdf:type ja:InfModel; x ja:reasoner R" );
-        InfModel m = (InfModel) Assembler.infModel.create( mock, root );
+        InfModel m = (InfModel) Assembler.infModel.open( mock, root );
         assertSame( R, m.getReasoner() );        
         }
 
@@ -70,7 +70,7 @@ public class TestInfModelAssembler extends AssemblerTestBase
         Model base = ModelFactory.createDefaultModel();
         Resource root = resourceInModel( "x rdf:type ja:InfModel; x ja:baseModel M" );
         Assembler mock = new NamedObjectAssembler( resource( "M" ), base );
-        InfModel inf = (InfModel) Assembler.infModel.create( mock, root );
+        InfModel inf = (InfModel) Assembler.infModel.open( mock, root );
         assertSame( base.getGraph(), inf.getRawModel().getGraph() );
         }
     
@@ -80,7 +80,7 @@ public class TestInfModelAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:InfModel; x ja:baseModel M; x ja:baseModel M2" );
         Assembler mock = new FixedObjectAssembler( base );
         try 
-            { Assembler.infModel.create( mock, root ); 
+            { Assembler.infModel.open( mock, root ); 
             fail( "should detect multiple baseModels" ); }
         catch (NotUniqueException e) 
             { assertEquals( JA.baseModel, e.getProperty() ); 
@@ -92,7 +92,7 @@ public class TestInfModelAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:InfModel; x ja:reasoner R; x ja:reasoner R2" );
         Assembler mock = new FixedObjectAssembler( null );
         try 
-            { Assembler.infModel.create( mock, root ); 
+            { Assembler.infModel.open( mock, root ); 
             fail( "should detect multiple reasoners" ); }
         catch (NotUniqueException e) 
             { assertEquals( JA.reasoner, e.getProperty() ); 

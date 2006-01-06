@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelContent.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: TestModelContent.java,v 1.3 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -52,7 +52,7 @@ public class TestModelContent extends AssemblerTestBase
         Assembler a = new MockTransactionModel( history, expected, false, false );
         Resource root = resourceInModel
             ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
-        Model m = (Model) a.create( Assembler.content, root  );
+        Model m = (Model) a.open( Assembler.content, root  );
         assertEquals( listOfStrings( "supports[false] add" ), history );
         assertIsoModels( expected, m );
         }
@@ -64,7 +64,7 @@ public class TestModelContent extends AssemblerTestBase
         Assembler a = new MockTransactionModel( history, expected, true, false );
         Resource root = resourceInModel
             ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
-        Model m = (Model) a.create( Assembler.content, root  );
+        Model m = (Model) a.open( Assembler.content, root  );
         assertEquals( listOfStrings( "supports[true] begin add commit" ), history );
         assertIsoModels( expected, m );
         }
@@ -80,7 +80,7 @@ public class TestModelContent extends AssemblerTestBase
             Resource root = resourceInModel
                 ( "x rdf:type ja:Model; x ja:content y; y rdf:type ja:Content"
                 + "; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
-            a.create( Assembler.content, root  );
+            a.open( Assembler.content, root  );
             fail( "should throw (wrapped) failing exception" );
             }
         catch (TransactionAbortedException  e)
@@ -96,13 +96,13 @@ public class TestModelContent extends AssemblerTestBase
         Resource root = resourceInModel
             ( "x rdf:type " + type + "; x ja:content y; y rdf:type ja:Content"
             + "; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'" );
-        Model m = (Model) a.create( Assembler.content, root );
+        Model m = (Model) a.open( Assembler.content, root );
         assertIsoModels( model( "_x rdf:value '17'xsd:integer" ), m );
         }
 
     protected void testModelLoadsMultipleContent( Assembler a, Resource type )
         {
-        Model m = (Model) a.create( Assembler.content, resourceInModel
+        Model m = (Model) a.open( Assembler.content, resourceInModel
                 ( "x rdf:type " + type + "; x ja:content y; x ja:content z"
                 + "; y rdf:type ja:Content; y rdf:type ja:LiteralContent; y ja:literalContent '_:x\\srdf:value\\s17.'"
                 + "; z rdf:type ja:Content; z rdf:type ja:LiteralContent; z ja:literalContent '_:x\\srdf:value\\s42.'" ) );

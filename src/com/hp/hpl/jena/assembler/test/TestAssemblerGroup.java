@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerGroup.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestAssemblerGroup.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -33,7 +33,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         {
         try 
             { 
-            a.create( resourceInModel( "x rdf:type " + type ) ); 
+            a.open( resourceInModel( "x rdf:type " + type ) ); 
             fail( "should trap missing implementation" ); 
             }
         catch (NoImplementationException e) 
@@ -48,7 +48,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         {
         AssemblerGroup a = AssemblerGroup.create();
         assertSame( a, a.implementWith( JA.InfModel, Assembler.infModel ) );
-        a.createModel( resourceInModel( "x rdf:type ja:InfModel" ) );
+        a.openModel( resourceInModel( "x rdf:type ja:InfModel" ) );
         checkFailsType( a, "js:DefaultModel" );
         }
     
@@ -57,8 +57,8 @@ public class TestAssemblerGroup extends AssemblerTestBase
         AssemblerGroup a = AssemblerGroup.create();
         assertSame( a, a.implementWith( JA.InfModel, Assembler.infModel ) );
         assertSame( a, a.implementWith( JA.MemoryModel, Assembler.memoryModel ) );
-        assertInstanceOf( InfModel.class, a.createModel( resourceInModel( "x rdf:type ja:InfModel" ) ) );
-        assertFalse( a.createModel( resourceInModel( "y rdf:type ja:MemoryModel" ) ) instanceof InfModel );
+        assertInstanceOf( InfModel.class, a.openModel( resourceInModel( "x rdf:type ja:InfModel" ) ) );
+        assertFalse( a.openModel( resourceInModel( "y rdf:type ja:MemoryModel" ) ) instanceof InfModel );
         checkFailsType( a, "js:DefaultModel" );
         }
     
@@ -68,15 +68,15 @@ public class TestAssemblerGroup extends AssemblerTestBase
         Resource root = resourceInModel( "x ja:reasoner y" );
         Object expected = new Object();
         a.implementWith( JA.InfModel, new NamedObjectAssembler( resource( "x" ), expected ) );
-        assertSame( expected, a.create( root ) );
+        assertSame( expected, a.open( root ) );
         }
     
     public void testBuiltinGroup()
         {
         AssemblerGroup g = Assembler.general;
-        assertInstanceOf( Model.class, g.create( resourceInModel( "x rdf:type ja:DefaultModel" ) ) );
-        assertInstanceOf( InfModel.class, g.create( resourceInModel( "x rdf:type ja:InfModel" ) ) );
-        assertMemoryModel( g.create( resourceInModel( "x rdf:type ja:MemoryModel" ) ) );
+        assertInstanceOf( Model.class, g.open( resourceInModel( "x rdf:type ja:DefaultModel" ) ) );
+        assertInstanceOf( InfModel.class, g.open( resourceInModel( "x rdf:type ja:InfModel" ) ) );
+        assertMemoryModel( g.open( resourceInModel( "x rdf:type ja:MemoryModel" ) ) );
         }
     
     protected void assertMemoryModel( Object object )
@@ -96,14 +96,14 @@ public class TestAssemblerGroup extends AssemblerTestBase
         final Object result = new Object();
         Assembler fake = new AssemblerBase() 
             {
-            public Object create( Assembler a, Resource root )
+            public Object open( Assembler a, Resource root )
                 {
                 assertSame( "nested call should pass in assembler group:", group, a );
                 return result;
                 }
             };
         group.implementWith( JA.Object, fake );
-        assertSame( result, group.create( resourceInModel( "x rdf:type ja:Object" ) ) );
+        assertSame( result, group.open( resourceInModel( "x rdf:type ja:Object" ) ) );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerBase.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: AssemblerBase.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -26,7 +26,7 @@ public abstract class AssemblerBase implements Assembler
             { this.a = a; }
         
         public Object map1( Object o )
-            { return a.create( ((Statement) o).getResource() ); }
+            { return a.open( ((Statement) o).getResource() ); }
         }
 
     static final Map1 getObject = new Map1() 
@@ -34,10 +34,10 @@ public abstract class AssemblerBase implements Assembler
         public Object map1( Object o ) { return ((Statement) o).getObject(); }
         };
 
-    public Object create( Resource root )
-        { return create( this, root ); }
+    public Object open( Resource root )
+        { return open( this, root ); }
 
-    public abstract Object create( Assembler a, Resource root );
+    public abstract Object open( Assembler a, Resource root );
 
     protected static Resource getUniqueResource( Resource root, Property property )
         { return (Resource) getUnique( root, property ); }
@@ -59,7 +59,7 @@ public abstract class AssemblerBase implements Assembler
             throw new CannotConstructException( this.getClass(), root, type );
         }
 
-    public Model createModel( Resource root )
+    public Model openModel( Resource root )
         { throw new JenaException( "this Assembler cannot create a Model" ); }
 
     protected Resource getRequiredResource( Resource root, Property p )

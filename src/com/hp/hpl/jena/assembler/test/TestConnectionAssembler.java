@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestConnectionAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestConnectionAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -24,6 +24,20 @@ public class TestConnectionAssembler extends AssemblerTestBase
     public void testConnectionAssemblerType()
         { testDemandsMinimalType( new ConnectionAssembler(), JA.Connection );  }
     
+    public void testConnectionVocabulary()
+        {
+        assertRange( JA.Connection, JA.connection );
+        assertDomain( JA.Connection, JA.dbClass );
+        assertDomain( JA.Connection, JA.dbUser );
+        assertDomain( JA.Connection, JA.dbPassword );
+        assertDomain( JA.Connection, JA.dbType );
+        assertDomain( JA.Connection, JA.dbURL );
+        assertDomain( JA.Connection, JA.dbUserProperty );
+        assertDomain( JA.Connection, JA.dbPasswordProperty );
+        assertDomain( JA.Connection, JA.dbTypeProperty );
+        assertDomain( JA.Connection, JA.dbURLProperty );
+        }
+    
     public void testConnectionInitDefaults()
         {
         Resource init = resourceInModel( "x ja:dbUser 'USER'; x ja:dbPassword 'PASS'; x ja:dbURL URL:url; x ja:dbType 'TYPE'" );
@@ -39,7 +53,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
         Assembler a = new ConnectionAssembler();
         Resource root = resourceInModel( "x rdf:type ja:Connection; x ja:dbClass 'no.such.class'" );
         try 
-            { a.create( root ); fail( "should catch class load failure" ); }
+            { a.open( root ); fail( "should catch class load failure" ); }
         catch (CannotLoadClassException e)
             {
             assertEquals( resource( "x" ), e.getRoot() );
@@ -90,7 +104,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:Connection; x ja:dbUser 'X'; x ja:dbPassword 'P'; x ja:dbURL U:RL; x ja:dbType 'T'" );
         final ConnectionDescription fake = ConnectionDescription.create( "DD", "TT", "UU", "PP" );
         CheckingConnectionAssembler x = new CheckingConnectionAssembler( fake, "U:RL X P T" );
-        assertSame( fake, x.create( root ) );
+        assertSame( fake, x.open( root ) );
         assertTrue( "mock createConnection should have been called", x.called );
         }
     
@@ -98,7 +112,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
         {
         Assembler a = new ConnectionAssembler();
         Resource root = resourceInModel( "x rdf:type ja:Connection; x ja:dbUser 'test'; x ja:dbPassword ''; x ja:dbURL jdbc:mysql://localhost/test; x ja:dbType 'MySQL'" );
-        Object x = a.create( root );
+        Object x = a.open( root );
         assertInstanceOf( ConnectionDescription.class, x );
         ConnectionDescription d = (ConnectionDescription) x;
         assertEquals( "test", d.dbUser );
@@ -112,7 +126,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
         System.setProperty( "test.url", "bbb" );
         Resource root = resourceInModel( "x rdf:type ja:Connection; x ja:dbURLProperty 'test.url'" );
         Assembler a = new ConnectionAssembler();
-        ConnectionDescription d = (ConnectionDescription) a.create( root );
+        ConnectionDescription d = (ConnectionDescription) a.open( root );
         assertEquals( "bbb", d.dbURL );
         }
     
@@ -121,7 +135,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
         System.setProperty( "test.user", "blenkinsop" );
         Resource root = resourceInModel( "x rdf:type ja:Connection; x ja:dbUserProperty 'test.user'" );
         Assembler a = new ConnectionAssembler();
-        ConnectionDescription d = (ConnectionDescription) a.create( root );
+        ConnectionDescription d = (ConnectionDescription) a.open( root );
         assertEquals( "blenkinsop", d.dbUser );
         }
     
@@ -130,7 +144,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
         System.setProperty( "test.password", "Top/Secret" );
         Resource root = resourceInModel( "x rdf:type ja:Connection; x ja:dbPasswordProperty 'test.password'" );
         Assembler a = new ConnectionAssembler();
-        ConnectionDescription d = (ConnectionDescription) a.create( root );
+        ConnectionDescription d = (ConnectionDescription) a.open( root );
         assertEquals( "Top/Secret", d.dbPassword );
         }
     
@@ -139,7 +153,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
         System.setProperty( "test.type", "HisSQL" );
         Resource root = resourceInModel( "x rdf:type ja:Connection; x ja:dbTypeProperty 'test.type'" );
         Assembler a = new ConnectionAssembler();
-        ConnectionDescription d = (ConnectionDescription) a.create( root );
+        ConnectionDescription d = (ConnectionDescription) a.open( root );
         assertEquals( "HisSQL", d.dbType );
         }
     

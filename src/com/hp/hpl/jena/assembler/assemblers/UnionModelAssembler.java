@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnionModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: UnionModelAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -21,7 +21,7 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
             { return NullIterator.instance; }
         };
     
-    protected Model createModel( Assembler a, Resource root )
+    protected Model openModel( Assembler a, Resource root )
         {
         checkType( root, JA.UnionModel );
         MultiUnion union = new MultiUnion();
@@ -33,7 +33,7 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
     private Graph getRootModel( Assembler a, Resource root )
         {
         Resource r = getUniqueResource( root, JA.rootModel );
-        return r == null ? immutable : a.createModel( r ).getGraph();
+        return r == null ? immutable : a.openModel( r ).getGraph();
         }
 
     private void addSubModels( Assembler a, Resource root, MultiUnion union )
@@ -41,7 +41,7 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
         for (StmtIterator it = root.listProperties( JA.subModel ); it.hasNext();)
             {
             Resource resource = it.nextStatement().getResource();
-            union.addGraph( a.createModel( resource ).getGraph() );        
+            union.addGraph( a.openModel( resource ).getGraph() );        
             }
         }
 

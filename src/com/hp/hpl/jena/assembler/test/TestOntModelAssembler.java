@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestOntModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -57,7 +57,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
             public void runBare()
                 { 
                 Assembler a = new OntModelAssembler();
-                Model m = (Model) a.create( new FixedObjectAssembler( spec ), resourceInModel( "x rdf:type ja:OntModel; x ja:ontModelSpec ja:" + name ) );
+                Model m = (Model) a.open( new FixedObjectAssembler( spec ), resourceInModel( "x rdf:type ja:OntModel; x ja:ontModelSpec ja:" + name ) );
                 assertInstanceOf( OntModel.class, m );
                 OntModel om = (OntModel) m;
                 assertSame( spec, om.getSpecification() ); 
@@ -68,7 +68,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
     public void testAllDefaults()
         {
         Assembler a = new OntModelAssembler();
-        Model m = a.createModel( resourceInModel( "x rdf:type ja:OntModel" ) );
+        Model m = a.openModel( resourceInModel( "x rdf:type ja:OntModel" ) );
         assertInstanceOf( OntModel.class, m );
         OntModel om = (OntModel) m;
         assertSame( OntModelSpec.OWL_MEM_RDFS_INF, om.getSpecification() );
@@ -80,13 +80,13 @@ public class TestOntModelAssembler extends AssemblerTestBase
         Assembler a = new OntModelAssembler();
         Assembler aa = new ModelAssembler()
             {
-            protected Model createModel( Assembler a, Resource root )
+            protected Model openModel( Assembler a, Resource root )
                 { 
                 assertEquals( resource( "y" ), root );
                 return baseModel;  
                 }
             };
-        Object m = a.create( aa, resourceInModel( "x rdf:type ja:OntModel; x ja:baseModel y" ) );
+        Object m = a.open( aa, resourceInModel( "x rdf:type ja:OntModel; x ja:baseModel y" ) );
         assertInstanceOf( OntModel.class, m );
         OntModel om = (OntModel) m;
         assertSame( baseModel.getGraph(), om.getBaseModel().getGraph() );
@@ -96,7 +96,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         {
         Assembler a = new OntModelAssembler();
         Resource root = resourceInModel( "x rdf:type ja:OntModel" );
-        OntModel om = (OntModel) a.createModel( root );
+        OntModel om = (OntModel) a.openModel( root );
         assertSame( OntDocumentManager.getInstance(), om.getDocumentManager() );
         }
     
@@ -106,7 +106,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:OntModel; x ja:ontModelSpec y" );
         OntModelSpec spec = new OntModelSpec( OntModelSpec.DAML_MEM );
         Assembler mock = new NamedObjectAssembler( resource( "y" ), spec );
-        OntModel om = (OntModel) a.create( mock, root );
+        OntModel om = (OntModel) a.open( mock, root );
         assertSame( spec, om.getSpecification() );
         }
     }

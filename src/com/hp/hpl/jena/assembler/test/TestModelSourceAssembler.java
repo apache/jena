@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelSourceAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestModelSourceAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -39,7 +39,7 @@ public class TestModelSourceAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:ModelSource; x rdf:type ja:RDBModelSource" );
         Assembler a = new ModelSourceAssembler();
         try 
-            { a.create( root ); fail( "should catch missing connection" ); }
+            { a.open( root ); fail( "should catch missing connection" ); }
         catch (PropertyRequiredException e) 
             {
             assertEquals( resource( "x" ), e.getRoot() );
@@ -50,7 +50,7 @@ public class TestModelSourceAssembler extends AssemblerTestBase
     public void testMemModelMakerSource()
         {
         Assembler a = new ModelSourceAssembler();
-        ModelGetter g = (ModelGetter) a.create( resourceInModel( "mg rdf:type ja:ModelSource" ) );
+        ModelGetter g = (ModelGetter) a.open( resourceInModel( "mg rdf:type ja:ModelSource" ) );
         assertInstanceOf( ModelMaker.class, g );
         assertInstanceOf( SimpleGraphMaker.class, ((ModelMaker) g).getGraphMaker() );
         }
@@ -70,7 +70,7 @@ public class TestModelSourceAssembler extends AssemblerTestBase
             };
         Assembler mock = new NamedObjectAssembler( resource( "C" ), c );
         Resource root = resourceInModel( "mg rdf:type ja:RDBModelSource; mg rdf:type ja:ModelSource; mg ja:connection C" );
-        assertInstanceOf( ModelGetter.class, a.create( mock, root ) );
+        assertInstanceOf( ModelGetter.class, a.open( mock, root ) );
         assertEquals( listOfOne( "created" ), history );
         }
     }

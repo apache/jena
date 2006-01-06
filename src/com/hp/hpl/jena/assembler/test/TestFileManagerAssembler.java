@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileManagerAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestFileManagerAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -33,7 +33,7 @@ public class TestFileManagerAssembler extends AssemblerTestBase
         {
         Resource root = resourceInModel( "r rdf:type ja:FileManager" );
         Assembler a = new FileManagerAssembler();
-        Object x = a.create( root );
+        Object x = a.open( root );
         assertInstanceOf( FileManager.class, x );
         }
     
@@ -43,7 +43,7 @@ public class TestFileManagerAssembler extends AssemblerTestBase
         LocationMapper mapper = new LocationMapper();
         Assembler mock = new NamedObjectAssembler( resource( "r" ), mapper );
         Assembler a = new FileManagerAssembler();
-        Object x = a.create( mock, root );
+        Object x = a.open( mock, root );
         assertInstanceOf( FileManager.class, x );
         assertSame( mapper, ((FileManager) x).getLocationMapper() );
         }

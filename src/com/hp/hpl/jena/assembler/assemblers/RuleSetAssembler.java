@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RuleSetAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: RuleSetAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule;
 
 public class RuleSetAssembler extends AssemblerBase implements Assembler
     {
-    public Object create( Assembler a, Resource root )
+    public Object open( Assembler a, Resource root )
         { 
         checkType( root, JA.RuleSet );
         return createRuleSet( a, root ); 
@@ -37,7 +37,7 @@ public class RuleSetAssembler extends AssemblerBase implements Assembler
         while (it.hasNext()) 
             {
             Resource r = it.nextStatement().getResource();
-            RuleSet sub = (RuleSet) a.create( r );
+            RuleSet sub = (RuleSet) a.open( r );
             result.addAll( sub.getRules() );
             }
         }

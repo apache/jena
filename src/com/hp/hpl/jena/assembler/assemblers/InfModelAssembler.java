@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: InfModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: InfModelAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasonerFactory;
 
 public class InfModelAssembler extends ModelAssembler
     {
-    protected Model createModel( Assembler a, Resource root )
+    protected Model openModel( Assembler a, Resource root )
         {
         checkType( root, JA.InfModel );
         Model base = getBase( a, root );
@@ -26,7 +26,7 @@ public class InfModelAssembler extends ModelAssembler
     protected Model getBase( Assembler a, Resource root )
         {
         Resource base = getUniqueResource( root, JA.baseModel );
-        return base == null ? ModelFactory.createDefaultModel() : a.createModel( base );
+        return base == null ? ModelFactory.createDefaultModel() : a.openModel( base );
         }
 
     protected Reasoner getReasoner( Assembler a, Resource root )
@@ -37,7 +37,7 @@ public class InfModelAssembler extends ModelAssembler
         Resource factory = getUniqueResource( root, JA.reasoner );
         return factory == null
             ? GenericRuleReasonerFactory.theInstance()
-            : (ReasonerFactory) a.create( factory )
+            : (ReasonerFactory) a.open( factory )
             ;        
         }
     }

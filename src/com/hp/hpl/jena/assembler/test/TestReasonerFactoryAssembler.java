@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestReasonerFactoryAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestReasonerFactoryAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -33,7 +33,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
     public void testCreateReasonerFactory()
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory" );
-        assertInstanceOf( GenericRuleReasonerFactory.class, ASSEMBLER.create( root ) );
+        assertInstanceOf( GenericRuleReasonerFactory.class, ASSEMBLER.open( root ) );
         }
     
     public void testStandardReasonerURLs()
@@ -52,7 +52,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:reasonerURL bad:URL" );
         try 
-            { ASSEMBLER.create( root ); 
+            { ASSEMBLER.open( root ); 
             fail( "should detected unknown reasoner" ); }
         catch (UnknownReasonerException e) 
             { assertEquals( resource( "bad:URL" ), e.getURL() ); }
@@ -62,7 +62,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:reasonerURL bad:URL; x ja:reasonerURL another:bad/URL" );
         try 
-            { ASSEMBLER.create( root ); 
+            { ASSEMBLER.open( root ); 
             fail( "should detected multiple reasoner URLs" ); }
         catch (NotUniqueException e) 
             { assertEquals( JA.reasonerURL, e.getProperty() ); 
@@ -76,7 +76,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         String ruleStringA = "[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)]";
         final RuleSet rules = RuleSet.create( ruleStringA );
         try 
-            { ASSEMBLER.create( new FixedObjectAssembler( rules ), root );
+            { ASSEMBLER.open( new FixedObjectAssembler( rules ), root );
             fail( "only GenericRuleReasoners can have attached rules" ); }
         catch (CannotHaveRulesException e )
             {
@@ -94,13 +94,13 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         final RuleSet rules = RuleSet.create( ruleStringA );
         Assembler mock = new AssemblerBase() 
             {
-            public Object create( Assembler a, Resource root )
+            public Object open( Assembler a, Resource root )
                 {
                 assertEquals( root, resource( "S" ) );
                 return rules; 
                 }
             };
-        ReasonerFactory r = (ReasonerFactory) ASSEMBLER.create( mock, root );
+        ReasonerFactory r = (ReasonerFactory) ASSEMBLER.open( mock, root );
         GenericRuleReasoner grr = (GenericRuleReasoner) r.create( null );
         assertEquals( new HashSet( rules.getRules() ), new HashSet( grr.getRules() ) );
         }
@@ -114,14 +114,14 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         final RuleSet rulesB = RuleSet.create( ruleStringB );
         Assembler mock = new AssemblerBase() 
             {
-            public Object create( Assembler a, Resource root )
+            public Object open( Assembler a, Resource root )
                 {
                 if (root.equals( resource( "S" ) )) return rulesA;
                 if (root.equals( resource( "T" ) )) return rulesB;
                 throw new RuntimeException( "unknown resource in mock: " + root );
                 }
             };
-        ReasonerFactory r = (ReasonerFactory) ASSEMBLER.create( mock, root );
+        ReasonerFactory r = (ReasonerFactory) ASSEMBLER.open( mock, root );
         GenericRuleReasoner grr = (GenericRuleReasoner) r.create( null );
         HashSet wanted = new HashSet();
         wanted.addAll( rulesA.getRules() );
@@ -132,7 +132,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
     protected void testReasonerURL( Class wanted, String string )
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:reasonerURL " + string );
-        ReasonerFactory rf = (ReasonerFactory) ASSEMBLER.create( root );
+        ReasonerFactory rf = (ReasonerFactory) ASSEMBLER.open( root );
         assertInstanceOf( wanted, rf );
         }
     }

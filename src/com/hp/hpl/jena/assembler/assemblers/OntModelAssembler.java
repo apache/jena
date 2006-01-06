@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: OntModelAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 public class OntModelAssembler extends InfModelAssembler implements Assembler
     {
-    public Model createModel( Assembler a, Resource root )
+    public Model openModel( Assembler a, Resource root )
         {
         checkType( root, JA.OntModel );
         Model baseModel = getBase( a, root );
@@ -25,7 +25,7 @@ public class OntModelAssembler extends InfModelAssembler implements Assembler
     protected OntModelSpec getOntModelSpec( Assembler a, Resource root )
         {
         Resource r = getUniqueResource( root, JA.ontModelSpec );
-        return r == null ?defaultSpec : (OntModelSpec) a.create( r );
+        return r == null ?defaultSpec : (OntModelSpec) a.open( r );
         }
     }
 

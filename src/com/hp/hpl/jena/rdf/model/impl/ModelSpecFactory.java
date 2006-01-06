@@ -131,6 +131,7 @@ public class ModelSpecFactory
             for (StmtIterator x = m.listStatements( null, property, nullObject ); x.hasNext();)
                 {
                 Statement t = x.nextStatement();
+                // System.err.println( ">> adding domain type: subject " + t.getSubject() + ", type " + s.getObject() + " because of property " + property );
                 result.add( t.getSubject(), RDF.type, s.getObject() );
                 }
             }
@@ -160,11 +161,14 @@ public class ModelSpecFactory
             {
             Statement s = it.nextStatement();
             for (StmtIterator subclasses = source.listStatements( s.getResource(), RDFS.subClassOf, nullObject ); subclasses.hasNext();)
-                temp.add( s.getSubject(), RDF.type, subclasses.nextStatement().getObject() );
+                {
+                RDFNode type = subclasses.nextStatement().getObject();
+                // System.err.println( ">> adding super type: subject " + s.getSubject() + ", type " + type );
+                temp.add( s.getSubject(), RDF.type, type );
+                }
             }
         result.add( temp );
         }
-
     }
 
 

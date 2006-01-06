@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.NoImplementationException;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.util.ResourceUtils;
 
 public abstract class AssemblerGroup extends AssemblerBase implements Assembler
     {    
@@ -19,8 +20,8 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
 
     public abstract Assembler assemblerFor( Resource type );
 
-    public Model createModel( Resource resource )
-        { return (Model) create( resource ); }
+    public Model openModel( Resource resource )
+        { return (Model) open( resource ); }
     
     public static AssemblerGroup create()
         { return new ExpandingAssemblerGroup(); }
@@ -29,11 +30,11 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         {
         PlainAssemblerGroup internal = new PlainAssemblerGroup();
         
-        public Object create( Assembler a, Resource suppliedRoot )
+        public Object open( Assembler a, Resource suppliedRoot )
             {
             Resource root = AssemblerHelp.withFullModel( suppliedRoot );
             AssemblerHelp.loadClasses( this, root.getModel() );
-            return internal.create( a, root );
+            return internal.open( a, root );
             }
 
         public AssemblerGroup implementWith( Resource type, Assembler a )
@@ -50,14 +51,14 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         {
         Map mappings = new HashMap();
         
-        public Object create( Assembler a, Resource root )
+        public Object open( Assembler a, Resource root )
             {
             Resource type = ModelSpecFactory.findSpecificType( root, JA.Object );
             Assembler toUse = assemblerFor( type );
             if (toUse == null)
                 throw new NoImplementationException( this, root, type );
             else
-                return toUse.create( a, root );
+                return toUse.open( a, root );
             }
 
         public AssemblerGroup implementWith( Resource type, Assembler a )

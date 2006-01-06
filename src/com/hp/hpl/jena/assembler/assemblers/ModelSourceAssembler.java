@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelSourceAssembler.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: ModelSourceAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ModelSourceAssembler extends AssemblerBase
     {
-    public Object create( Assembler a, Resource root )
+    public Object open( Assembler a, Resource root )
         {
         checkType( root, JA.ModelSource );
         return root.hasProperty( RDF.type, JA.RDBModelSource )
@@ -25,7 +25,7 @@ public class ModelSourceAssembler extends AssemblerBase
         { return ModelFactory.createModelRDBMaker( c.getConnection() ); }
 
     private ConnectionDescription getConnection( Assembler a, Resource root )
-        { return (ConnectionDescription) a.create( getRequiredResource( root, JA.connection ) ); }
+        { return (ConnectionDescription) a.open( getRequiredResource( root, JA.connection ) ); }
     }
 
 
