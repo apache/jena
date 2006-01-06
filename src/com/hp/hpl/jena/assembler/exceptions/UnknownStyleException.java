@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnknownStyleException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: UnknownStyleException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -25,8 +25,8 @@ public class UnknownStyleException extends AssemblerException
     private static String makeMessage( Resource root, Resource style )
         {
         return
-            "the object " + root
-            + " has an unknown reification mode " + style
+            "the object " + nice( root )
+            + " has an unknown reification mode " + nice( style )
             ;
         }
 

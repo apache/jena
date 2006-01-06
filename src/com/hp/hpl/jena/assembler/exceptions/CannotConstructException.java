@@ -1,14 +1,13 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotConstructException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: CannotConstructException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.*;
 
 /**
     Exception used to report a fauluire of a group assembler to construct an
@@ -30,11 +29,10 @@ public class CannotConstructException extends AssemblerException
 
     private static String constructMessage( Class assemblerClass, Resource root, Resource type )
         {
-        PrefixMapping pm = root.getModel();
         return 
             "the assembler " + getClassName( assemblerClass )
-            + " cannot construct the object named " + root.asNode().toString( pm )
-            + " because it is not of rdf:type " + type.asNode().toString( pm ) 
+            + " cannot construct the object named " + nice( root )
+            + " because it is not of rdf:type " + nice( root ) 
             ;
         }
     

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerException.java,v 1.1 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: AssemblerException.java,v 1.2 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -36,6 +36,13 @@ public class AssemblerException extends JenaException
     */
     public Resource getRoot()
         { return root; }
+    
+    /**
+         Answer a "nice" representation of <code>r</code>, suitable for appearance
+         within an exception message.
+    */
+    protected static String nice( Resource r )
+        { return r.asNode().toString( r.getModel() ); }
     }
 
 

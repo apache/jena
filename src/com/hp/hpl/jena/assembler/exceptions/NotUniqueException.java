@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NotUniqueException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: NotUniqueException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -21,8 +21,8 @@ public class NotUniqueException extends AssemblerException
     private static String makeMessage( Resource root, Property property )
         {
         return 
-            "the object " + root
-            + " has multiple values for the unique property " + property
+            "the object " + nice( root )
+            + " has multiple values for the unique property " + nice( property )
             ;
         }
     

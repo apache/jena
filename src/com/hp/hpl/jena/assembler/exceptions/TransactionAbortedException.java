@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TransactionAbortedException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: TransactionAbortedException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -26,7 +26,7 @@ public class TransactionAbortedException extends AssemblerException
     private static String makeMessage( Resource root, Throwable t )
         {
         return 
-            "the loading of content into " + root 
+            "the loading of content into " + nice( root ) 
             + " was aborted because of " + t.getMessage()
             ;
         }

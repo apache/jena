@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -12,7 +12,6 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.NoImplementationException;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.util.ResourceUtils;
 
 public abstract class AssemblerGroup extends AssemblerBase implements Assembler
     {    

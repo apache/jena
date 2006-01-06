@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnknownReasonerException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: UnknownReasonerException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -23,7 +23,7 @@ public class UnknownReasonerException extends AssemblerException
         }
     
     private static String makeMessage( Resource root, Resource url )
-        { return "no reasoner called " + url + " for " + root; }
+        { return "no reasoner called " + url + " for " + nice( root ); }
     
     public Resource getURL()
         { return url; }

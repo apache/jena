@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotHaveRulesException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: CannotHaveRulesException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -16,7 +16,7 @@ public class CannotHaveRulesException extends AssemblerException
     private static String makeMessage( Resource root )
         {
         return 
-            "the object " + root 
+            "the object " + nice( root ) 
             + " cannot be given rules, since it is not a GenericRulesReasoner"
             ;
         }

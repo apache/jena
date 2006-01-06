@@ -1,14 +1,13 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NoImplementationException.java,v 1.2 2006-01-05 15:38:35 chris-dollin Exp $
+ 	$Id: NoImplementationException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.shared.*;
 
 public class NoImplementationException extends AssemblerException
     {
@@ -24,11 +23,10 @@ public class NoImplementationException extends AssemblerException
 
     private static String messageFor( Assembler a, Resource root, Resource type )
         {
-        PrefixMapping pm = root.getModel();
         return
             "the (group) Assembler " + a 
-            + " cannot construct the object " + root.asNode().toString( pm )
-            + " because it does not have an implementation for the objects's most specific type " + type.asNode().toString( pm )
+            + " cannot construct the object " + nice( root )
+            + " because it does not have an implementation for the objects's most specific type " + nice( type )
             ;
         }
     
