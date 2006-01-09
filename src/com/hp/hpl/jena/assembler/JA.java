@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.4 2006-01-09 09:17:52 chris-dollin Exp $
+ 	$Id: JA.java,v 1.5 2006-01-09 13:53:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -171,10 +171,17 @@ public class JA
 
     public static Model getSchema()
         { // inline packagename to avoid clash with /our/ FileManager.
-        if (schema == null) schema = com.hp.hpl.jena.util.FileManager.get().loadModel( getSchemaPath() );
+        if (schema == null) schema = complete( com.hp.hpl.jena.util.FileManager.get().loadModel( getSchemaPath() ) );
         return schema;
         }
 
+    private static Model complete( Model m )
+        {
+        Model result = ModelFactory.createDefaultModel();
+        result.add( ModelFactory.createRDFSModel( m ) );
+        return result;
+        }
+    
     private static String getSchemaPath()
         { return "vocabularies/assembler.n3"; }
     }

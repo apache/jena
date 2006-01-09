@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.3 2006-01-09 09:17:52 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.4 2006-01-09 13:53:30 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -113,9 +113,47 @@ public class AssemblerHelp
         }
 
     public static Resource findSpecificType( Resource root )
-    {
-    return ModelSpecFactory.findSpecificType( root, JA.Object );
-    }
+        {
+        Model desc = root.getModel();
+        StmtIterator types = root.listProperties( RDF.type );
+        List results = new ArrayList();
+        // System.err.println( ">> considering " + root + " ---------------------------" );
+        while (types.hasNext())
+            {
+            Resource type = types.nextStatement().getResource();
+            // System.err.println( "]]  possible type " + type );
+            if (desc.contains( type, RDFS.subClassOf, JA.Object ))
+                {
+                // System.err.println( "]]    and it's a subClass of Object" );
+                boolean allowed = true;
+                for (StmtIterator subs = desc.listStatements( null, RDFS.subClassOf, type ); subs.hasNext(); )
+                    {
+                    Resource sub = subs.nextStatement().getSubject();
+                    if (!sub.equals( type ) && root.hasProperty( RDF.type, sub )) 
+                        { 
+                        // System.err.println( "]]    rejected: it has a more specific subtype " + sub ); 
+                        allowed = false; 
+                        }
+                    }
+                if (allowed) 
+                    { 
+                    // System.err.println( "]]    we can add it" ); 
+                    results.add( type );
+                    }
+                }
+            }
+        if (results.size() == 1)
+            return (Resource) results.get(0);
+        if (results.size() == 0)
+            return JA.Object;
+        throw new JenaException( "could not find specific type" );
+//        Resource type = JA.Object;
+//        StmtIterator it = root.listProperties( RDF.type );
+//        while (it.hasNext())
+//            { Resource candidate = it.nextStatement().getResource();
+//            if (desc.contains( candidate, RDFS.subClassOf, type )) type = candidate; }
+//        return type;
+        }
     }
 
 /*

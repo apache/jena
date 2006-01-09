@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.3 2006-01-09 09:18:08 chris-dollin Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.4 2006-01-09 13:53:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.*;
 import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -60,12 +60,41 @@ public class TestAssemblerHelp extends AssemblerTestBase
             }
         }
     
+    public void xtestShowSchema()
+        {
+        Model m = JA.getSchema();
+        PrefixMapping pm = m;
+        for (StmtIterator it = m.listStatements(); it.hasNext();)
+            {
+            Statement s = it.nextStatement();
+            System.err.print( s.getSubject().asNode().toString( pm ) );
+            System.err.print( " " );
+            System.err.print( s.getPredicate().asNode().toString( pm ) );
+            System.err.print( " " );
+            System.err.print( s.getObject().asNode().toString( pm ) );
+            System.err.println( "" );
+            }
+        }
+      
     public void testSpecificType()
         {
         testSpecificType( "ja:Connectable", "x ja:connection _C" );
         testSpecificType( "ja:NamedModel", "x ja:modelName 'name'" );
         testSpecificType( "ja:NamedModel", "x ja:modelName 'name'; x rdf:type irrelevant" );
         testSpecificType( "ja:RDBModel", "x rdf:type ja:RDBModel; x rdf:type ja:Model" );
+        }
+    
+    public void testSpecificTypeFails()
+        {
+        try
+            {
+            testSpecificType( "xxx", "x rdf:type ja:Model; x rdf:type ja:PrefixMapping" );
+            fail( "should trap multiple types" );
+            }
+        catch (JenaException e)
+            {
+            pass();
+            }
         }
 
     private void testSpecificType( String expected, String specification )
