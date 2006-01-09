@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: DefaultModelAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
+ 	$Id: DefaultModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -11,11 +11,14 @@ import com.hp.hpl.jena.rdf.model.*;
 
 public class DefaultModelAssembler extends ModelAssembler implements Assembler
     {
-    public Model openModel( Assembler a, Resource root )
+    public Object open( Assembler a, Resource root, Mode mode )
         {
         checkType( root, JA.DefaultModel );
-        return ModelFactory.createDefaultModel();
+        return super.open( a, root, mode );
         }
+    
+    protected Model openModel( Assembler a, Resource root, Mode irrelevant )
+        { return ModelFactory.createDefaultModel(); }
     }
 
 /*

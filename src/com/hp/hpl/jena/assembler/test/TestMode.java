@@ -1,17 +1,29 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestMode.java,v 1.1 2006-01-09 14:42:39 chris-dollin Exp $
+ 	$Id: TestMode.java,v 1.2 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
+
+import com.hp.hpl.jena.assembler.Mode;
 
 public class TestMode extends AssemblerTestBase
     {
     public TestMode( String name )
         { super( name ); }
 
-    
+    public void testConstantsExist()
+        {
+        Mode a = Mode.CREATE, b = Mode.DEFAULT;
+        Mode c = Mode.REUSE, d = Mode.ANY;
+        assertDiffer( Mode.CREATE, Mode.DEFAULT );
+        assertDiffer( Mode.CREATE, Mode.REUSE );
+        assertDiffer( Mode.CREATE, Mode.ANY );
+        assertDiffer( Mode.DEFAULT, Mode.REUSE );
+        assertDiffer( Mode.DEFAULT, Mode.ANY );
+        assertDiffer( Mode.REUSE, Mode.ANY );
+        }
     }
 
 

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnionModelAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
+ 	$Id: UnionModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -21,27 +21,27 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
             { return NullIterator.instance; }
         };
     
-    protected Model openModel( Assembler a, Resource root )
+    protected Model openModel( Assembler a, Resource root, Mode mode )
         {
         checkType( root, JA.UnionModel );
         MultiUnion union = new MultiUnion();
-        union.addGraph( getRootModel( a, root ) );
-        addSubModels( a, root, union );
+        union.addGraph( getRootModel( a, root, mode ) );
+        addSubModels( a, root, union, mode );
         return ModelFactory.createModelForGraph( union );
         }
 
-    private Graph getRootModel( Assembler a, Resource root )
+    private Graph getRootModel( Assembler a, Resource root, Mode mode )
         {
         Resource r = getUniqueResource( root, JA.rootModel );
-        return r == null ? immutable : a.openModel( r ).getGraph();
+        return r == null ? immutable : a.openModel( r, mode ).getGraph();
         }
 
-    private void addSubModels( Assembler a, Resource root, MultiUnion union )
+    private void addSubModels( Assembler a, Resource root, MultiUnion union, Mode mode )
         {
         for (StmtIterator it = root.listProperties( JA.subModel ); it.hasNext();)
             {
             Resource resource = it.nextStatement().getResource();
-            union.addGraph( a.openModel( resource ).getGraph() );        
+            union.addGraph( a.openModel( resource, mode ).getGraph() );        
             }
         }
 

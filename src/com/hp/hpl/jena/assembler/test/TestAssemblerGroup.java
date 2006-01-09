@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerGroup.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestAssemblerGroup.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -96,7 +96,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         final Object result = new Object();
         Assembler fake = new AssemblerBase() 
             {
-            public Object open( Assembler a, Resource root )
+            public Object open( Assembler a, Resource root, Mode irrelevant )
                 {
                 assertSame( "nested call should pass in assembler group:", group, a );
                 return result;

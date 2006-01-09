@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.3 2006-01-06 11:04:16 chris-dollin Exp $
+ 	$Id: ModelAssembler.java,v 1.4 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -15,11 +15,11 @@ import com.hp.hpl.jena.shared.*;
 
 public abstract class ModelAssembler extends AssemblerBase implements Assembler
     {    
-    protected abstract Model openModel( Assembler a, Resource root );
+    protected abstract Model openModel( Assembler a, Resource root, Mode mode );
     
-    public Object open( Assembler a, Resource root )
+    public Object open( Assembler a, Resource root, Mode mode )
         { 
-        Model m = openModel( a, root );
+        Model m = openModel( a, root, mode );
         Content c = getContent( a, root );
         if (m.supportsTransactions())
             {
@@ -53,8 +53,8 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
             ( a, root, PrefixMapping.Factory.create() );
         }
 
-    public Model openModel( Resource resource )
-        { return (Model) open( resource ); }
+    public Model openModel( Resource root, Mode mode )
+        { return (Model) open( this, root, mode ); }
 
     protected Content getContent( Assembler a, Resource root )
         { 

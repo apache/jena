@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -35,7 +35,7 @@ public class TestModelAssembler extends AssemblerTestBase
         { 
         Assembler a = new ModelAssembler() 
             {
-            protected Model openModel( Assembler a, Resource root )
+            protected Model openModel( Assembler a, Resource root, Mode irrelevant )
                 { return ModelFactory.createDefaultModel(); }
             };
         PrefixMapping wanted = PrefixMapping.Factory.create()
@@ -54,7 +54,7 @@ public class TestModelAssembler extends AssemblerTestBase
         final List style = new ArrayList();
         Assembler a = new ModelAssembler() 
             {
-            protected Model openModel( Assembler a, Resource root )
+            protected Model openModel( Assembler a, Resource root, Mode irrelevant )
                 {
                 style.add( getReificationStyle( root ) );
                 return ModelFactory.createDefaultModel(); 
@@ -90,7 +90,7 @@ public class TestModelAssembler extends AssemblerTestBase
         final List styles = new ArrayList();
         Assembler a = new ModelAssembler() 
             {
-            protected Model openModel( Assembler a, Resource root )
+            protected Model openModel( Assembler a, Resource root, Mode irrelevant )
                 {
                 styles.add( getReificationStyle( root ) );
                 return ModelFactory.createDefaultModel(); 

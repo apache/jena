@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestUnionModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestUnionModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -59,10 +59,10 @@ public class TestUnionModelAssembler extends AssemblerTestBase
             return this;
             }
 
-        public Model openModel( Resource root )
-            { return (Model) open( this, root ); }
+        public Model openModel( Resource root, Mode mode )
+            { return (Model) open( this, root, mode ); }
         
-        public Object open( Assembler a, Resource root )
+        public Object open( Assembler a, Resource root, Mode irrelevant )
             { return (Model) map.get( root ); }
         }
     

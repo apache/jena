@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.4 2006-01-09 09:18:08 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.5 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -11,7 +11,6 @@ import java.util.*;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.NoImplementationException;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
 
 public abstract class AssemblerGroup extends AssemblerBase implements Assembler
     {    
@@ -29,11 +28,11 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         {
         PlainAssemblerGroup internal = new PlainAssemblerGroup();
         
-        public Object open( Assembler a, Resource suppliedRoot )
+        public Object open( Assembler a, Resource suppliedRoot, Mode mode )
             {
             Resource root = AssemblerHelp.withFullModel( suppliedRoot );
             AssemblerHelp.loadClasses( this, root.getModel() );
-            return internal.open( a, root );
+            return internal.open( a, root, mode );
             }
 
         public AssemblerGroup implementWith( Resource type, Assembler a )
@@ -50,14 +49,14 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         {
         Map mappings = new HashMap();
         
-        public Object open( Assembler a, Resource root )
+        public Object open( Assembler a, Resource root, Mode mode )
             {
             Resource type = AssemblerHelp.findSpecificType( root );
             Assembler toUse = assemblerFor( type );
             if (toUse == null)
                 throw new NoImplementationException( this, root, type );
             else
-                return toUse.open( a, root );
+                return toUse.open( a, root, mode );
             }
         
         public AssemblerGroup implementWith( Resource type, Assembler a )

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RDBModelAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
+ 	$Id: RDBModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -14,13 +14,13 @@ import com.hp.hpl.jena.shared.*;
 
 public class RDBModelAssembler extends NamedModelAssembler implements Assembler
     {
-    protected Model openModel( Assembler a, Resource root )
+    protected Model openModel( Assembler a, Resource root, Mode mode )
         {
         checkType( root, JA.RDBModel );
         String name = getModelName( root );
         ReificationStyle style = getReificationStyle( root );
         ConnectionDescription c = getConnection( a, root );
-        return openModel( c, name, style );
+        return openModel( c, name, style, mode );
         }
 
     protected ConnectionDescription getConnection( Assembler a, Resource root )
@@ -29,7 +29,7 @@ public class RDBModelAssembler extends NamedModelAssembler implements Assembler
         return (ConnectionDescription) a.open( C );        
         }
     
-    protected Model openModel( ConnectionDescription c, String name, ReificationStyle style )
+    protected Model openModel( ConnectionDescription c, String name, ReificationStyle style, Mode mode )
         {
         IDBConnection ic = c.getConnection();
         return isDefaultName( name )

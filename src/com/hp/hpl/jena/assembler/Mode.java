@@ -1,14 +1,25 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Mode.java,v 1.1 2006-01-09 14:43:54 chris-dollin Exp $
+ 	$Id: Mode.java,v 1.2 2006-01-09 16:01:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
 
+import com.hp.hpl.jena.rdf.model.Resource;
+
 public class Mode
     {
-
+    public static final Mode CREATE = new Mode();
+    public static final Mode DEFAULT = new Mode();
+    public static final Mode REUSE = new Mode();
+    public static final Mode ANY = new Mode();
+    
+    public boolean mayCreate( Resource name )
+        { return true; }
+    
+    public boolean mayReuse( Resource name )
+        { return true; }
     }
 
 

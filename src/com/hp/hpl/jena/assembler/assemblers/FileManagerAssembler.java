@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FileManagerAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
+ 	$Id: FileManagerAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.*;
 */
 public class FileManagerAssembler extends AssemblerBase
     {
-    public Object open( Assembler a, Resource root )
+    public Object open( Assembler a, Resource root, Mode irrelevant )
         { 
         checkType( root, JA.FileManager );
         return new FileManager( getLocationMapper( a, root ) ); 

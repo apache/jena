@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FileModelAssembler.java,v 1.2 2006-01-06 11:04:16 chris-dollin Exp $
+ 	$Id: FileModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -18,11 +18,11 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class FileModelAssembler extends NamedModelAssembler implements Assembler
     {
-    protected Model openModel( Assembler a, Resource root )
+    protected Model openModel( Assembler a, Resource root, Mode mode )
         {
         checkType( root, JA.FileModel );
         File fullName = getFileName( root );
-        boolean create = true, strict = false;
+        boolean create = true, strict = false; // TODO set from `mode`.
         String lang = getLanguage( root, fullName );
         ReificationStyle style = getReificationStyle( root );
         return createFileModel( fullName, lang, create, strict, style );

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestReasonerFactoryAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestReasonerFactoryAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -94,7 +94,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         final RuleSet rules = RuleSet.create( ruleStringA );
         Assembler mock = new AssemblerBase() 
             {
-            public Object open( Assembler a, Resource root )
+            public Object open( Assembler a, Resource root, Mode irrelevant )
                 {
                 assertEquals( root, resource( "S" ) );
                 return rules; 
@@ -114,7 +114,7 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         final RuleSet rulesB = RuleSet.create( ruleStringB );
         Assembler mock = new AssemblerBase() 
             {
-            public Object open( Assembler a, Resource root )
+            public Object open( Assembler a, Resource root, Mode irrelevant )
                 {
                 if (root.equals( resource( "S" ) )) return rulesA;
                 if (root.equals( resource( "T" ) )) return rulesB;

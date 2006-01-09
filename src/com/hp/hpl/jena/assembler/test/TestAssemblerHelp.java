@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.5 2006-01-09 14:20:56 chris-dollin Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.6 2006-01-09 16:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -160,7 +160,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
         public Imp()
             { impIsConstructed = true; }
         
-        public Object open( Assembler a, Resource root )
+        public Object open( Assembler a, Resource root, Mode irrelevant )
             { return null; }
         }
     
@@ -180,7 +180,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
             gremlinInvoked = true;
             }
         
-        public Object open( Assembler a, Resource root )
+        public Object open( Assembler a, Resource root, Mode irrelevant )
             { return null; }
         }
     
