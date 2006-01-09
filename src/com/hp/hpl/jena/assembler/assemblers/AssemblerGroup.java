@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.4 2006-01-09 09:18:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -52,14 +52,14 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         
         public Object open( Assembler a, Resource root )
             {
-            Resource type = ModelSpecFactory.findSpecificType( root, JA.Object );
+            Resource type = AssemblerHelp.findSpecificType( root );
             Assembler toUse = assemblerFor( type );
             if (toUse == null)
                 throw new NoImplementationException( this, root, type );
             else
                 return toUse.open( a, root );
             }
-
+        
         public AssemblerGroup implementWith( Resource type, Assembler a )
             {
             mappings.put( type, a );

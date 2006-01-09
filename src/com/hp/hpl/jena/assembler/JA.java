@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.3 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: JA.java,v 1.4 2006-01-09 09:17:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -178,7 +178,6 @@ public class JA
     private static String getSchemaPath()
         { return "vocabularies/assembler.n3"; }
     }
-
 
 /*
  * (c) Copyright 2005 Hewlett-Packard Development Company, LP

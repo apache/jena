@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.3 2006-01-09 09:18:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -58,6 +58,22 @@ public class TestAssemblerHelp extends AssemblerTestBase
             map.put( URL, m );
             return this;
             }
+        }
+    
+    public void testSpecificType()
+        {
+        testSpecificType( "ja:Connectable", "x ja:connection _C" );
+        testSpecificType( "ja:NamedModel", "x ja:modelName 'name'" );
+        testSpecificType( "ja:NamedModel", "x ja:modelName 'name'; x rdf:type irrelevant" );
+        testSpecificType( "ja:RDBModel", "x rdf:type ja:RDBModel; x rdf:type ja:Model" );
+        }
+
+    private void testSpecificType( String expected, String specification )
+        { // TODO relies on fullModel, would be nice to remove this dependency
+        Resource root = resourceInModel( specification );
+        Resource rooted = (Resource) root.inModel( AssemblerHelp.fullModel( root.getModel() ) );
+        Resource mst = AssemblerHelp.findSpecificType( rooted );
+        assertEquals( resource( root.getModel(), expected ), mst );
         }
     
     public void testFollowOwlImports()
