@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.4 2006-01-09 13:53:30 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.5 2006-01-09 14:20:56 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -10,6 +10,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
+import com.hp.hpl.jena.assembler.exceptions.NoSpecificTypeException;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.rdf.model.*;
@@ -146,7 +147,7 @@ public class AssemblerHelp
             return (Resource) results.get(0);
         if (results.size() == 0)
             return JA.Object;
-        throw new JenaException( "could not find specific type" );
+        throw new NoSpecificTypeException( root, results );
 //        Resource type = JA.Object;
 //        StmtIterator it = root.listProperties( RDF.type );
 //        while (it.hasNext())

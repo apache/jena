@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.4 2006-01-09 13:53:45 chris-dollin Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.5 2006-01-09 14:20:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.*;
+import com.hp.hpl.jena.assembler.exceptions.NoSpecificTypeException;
 import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
@@ -60,21 +61,21 @@ public class TestAssemblerHelp extends AssemblerTestBase
             }
         }
     
-    public void xtestShowSchema()
-        {
-        Model m = JA.getSchema();
-        PrefixMapping pm = m;
-        for (StmtIterator it = m.listStatements(); it.hasNext();)
-            {
-            Statement s = it.nextStatement();
-            System.err.print( s.getSubject().asNode().toString( pm ) );
-            System.err.print( " " );
-            System.err.print( s.getPredicate().asNode().toString( pm ) );
-            System.err.print( " " );
-            System.err.print( s.getObject().asNode().toString( pm ) );
-            System.err.println( "" );
-            }
-        }
+//    public void xtestShowSchema()
+//        {
+//        Model m = JA.getSchema();
+//        PrefixMapping pm = m;
+//        for (StmtIterator it = m.listStatements(); it.hasNext();)
+//            {
+//            Statement s = it.nextStatement();
+//            System.err.print( s.getSubject().asNode().toString( pm ) );
+//            System.err.print( " " );
+//            System.err.print( s.getPredicate().asNode().toString( pm ) );
+//            System.err.print( " " );
+//            System.err.print( s.getObject().asNode().toString( pm ) );
+//            System.err.println( "" );
+//            }
+//        }
       
     public void testSpecificType()
         {
@@ -91,10 +92,20 @@ public class TestAssemblerHelp extends AssemblerTestBase
             testSpecificType( "xxx", "x rdf:type ja:Model; x rdf:type ja:PrefixMapping" );
             fail( "should trap multiple types" );
             }
-        catch (JenaException e)
+        catch (NoSpecificTypeException e)
             {
-            pass();
+            assertEquals( resource( "x" ), e.getRoot() );
+            assertEquals( resources( e.getRoot(), "ja:Model ja:PrefixMapping" ), new HashSet( e.getTypes() ) );
             }
+        }
+
+    private Set resources( Resource root, String items )
+        {
+        List L = listOfStrings( items );
+        Set result = new HashSet();
+        for (int i = 0; i < L.size(); i += 1)
+            result.add( resource( root.getModel(), (String) L.get(i) ) );
+        return result;
         }
 
     private void testSpecificType( String expected, String specification )
