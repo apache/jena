@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.6 2006-01-10 15:30:41 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.7 2006-01-10 15:48:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.assembler.exceptions.NoSpecificTypeException;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.ModelSpecFactory;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
@@ -48,7 +47,7 @@ public class AssemblerHelp
             return m;
         else
             {
-            Model result = ModelSpecFactory.withSchema( withImports( m ), JA.getSchema() )
+            Model result = ModelExpansion.withSchema( withImports( m ), JA.getSchema() )
                 .add( JA.This, RDF.type, JA.Expanded )
                 ;
             result
