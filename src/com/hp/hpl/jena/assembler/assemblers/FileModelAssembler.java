@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FileModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: FileModelAssembler.java,v 1.4 2006-01-10 15:30:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -22,7 +22,10 @@ public class FileModelAssembler extends NamedModelAssembler implements Assembler
         {
         checkType( root, JA.FileModel );
         File fullName = getFileName( root );
-        boolean create = true, strict = false; // TODO set from `mode`.
+        boolean mayCreate = mode.permitCreateNew( root, fullName.toString() );
+        boolean mayReuse = mode.permitUseExisting( root, fullName.toString() );
+        boolean create = mayCreate;
+        boolean strict = mayCreate != mayReuse;
         String lang = getLanguage( root, fullName );
         ReificationStyle style = getReificationStyle( root );
         return createFileModel( fullName, lang, create, strict, style );

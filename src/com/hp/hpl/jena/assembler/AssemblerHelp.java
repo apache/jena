@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.5 2006-01-09 14:20:56 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.6 2006-01-10 15:30:41 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -19,11 +19,29 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
+/**
+    AssemblerHelp provides utility methods used by, and useful for working with,
+    the Assembler code, including the methods that expand a model to include the
+    required inferences and to find the most specific type of a root in an
+    assembler specification.
+    
+    @author kers
+*/
 public class AssemblerHelp
     {
+    /**
+        Answer a Resource .equals() to <code>root</code>, but in the expanded
+        model.
+    */
     public static Resource withFullModel( Resource root )
         { return (Resource) root.inModel( fullModel( root.getModel() ) ); }
     
+    /**
+        Answer the full model of <code>m</code>, with all its imports included and
+        with the necessary properties added from the JA schema. However, if
+        the magic footprint triple (ja:this, rdf:type, ja:Expanded) is present in the
+        model, it is returned unchanged.
+    */
     public static Model fullModel( Model m )
         {
         if (m.contains( JA.This, RDF.type, JA.Expanded )) 
@@ -42,9 +60,20 @@ public class AssemblerHelp
             }
         }
 
+    /**
+        Answer <code>model</code> if it has no imports, or a union model with
+        <code>model</code> as its base and its imported models as the other
+        components.
+    */
     public static Model withImports( Model model )
         { return withImports( FileManager.get(), model ); }
-    
+
+    /**
+        Answer <code>model</code> if it has no imports, or a union model with
+        <code>model</code> as its base and its imported models as the other
+        components. The file manager <code>fm</code> is used to load the
+        imported models.
+    */
     public static Model withImports( FileManager fm, Model model )
         {
         StmtIterator it = model.listStatements( null, OWL.imports, (RDFNode) null );
@@ -75,6 +104,13 @@ public class AssemblerHelp
             return already;
         }
 
+    /**
+         Load all the classes which are objects of any (t, ja:assembler, S) statements 
+         in <code>m</code>. <code>group.implementWIth(t,c)</code> is called
+         for each statement, where <code>c</code> is an instance of the class named
+         by <code>S</code>. The order in which the classes are loaded is not
+         specified, and loading stops immediately if any class cannot be loaded.
+    */
     public static void loadClasses( AssemblerGroup group, Model m )
         {
         Property ANY = null;
@@ -113,6 +149,12 @@ public class AssemblerHelp
         catch (NoSuchMethodException e) { return null; }
         }
 
+    /**
+         Answer the most specific type of <code>root</code> that is a subclass of
+         ja:Object. If there are no candidate types, answer <code>null</code> (for
+         historical reasons that may evaporate). If there is more than one type,
+         throw a NoSpecificTypeException.
+    */
     public static Resource findSpecificType( Resource root )
         {
         Model desc = root.getModel();
@@ -148,12 +190,6 @@ public class AssemblerHelp
         if (results.size() == 0)
             return JA.Object;
         throw new NoSpecificTypeException( root, results );
-//        Resource type = JA.Object;
-//        StmtIterator it = root.listProperties( RDF.type );
-//        while (it.hasNext())
-//            { Resource candidate = it.nextStatement().getResource();
-//            if (desc.contains( candidate, RDFS.subClassOf, type )) type = candidate; }
-//        return type;
         }
     }
 

@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: ConnectionAssembler.java,v 1.4 2006-01-10 15:30:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -10,6 +10,15 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.CannotLoadClassException;
 import com.hp.hpl.jena.rdf.model.*;
 
+/**
+    A ConnectionAssembler assembles a ConnectionDescription object which
+    contains a database URL, user name, user password, and database type.
+    Some of the components may have been specified in advance when the 
+    Assembler was constructed. The ConnectionAssembler will also load any
+    classes specified by dbClass[Property] statements of the root.
+    
+    @author kers
+*/
 public class ConnectionAssembler extends AssemblerBase implements Assembler
     {
     public final String defaultURL;
@@ -39,8 +48,22 @@ public class ConnectionAssembler extends AssemblerBase implements Assembler
         return createConnection( dbURL, dbType, dbUser, dbPassword );
         }    
     
+    /**
+        Load all the classes that are named by the object of dbClass statements
+        of <code>root</code>. Load all the classes named by the contents of
+        system properties which are the objects of dbClassProperty statements
+        of <code>root</code>.
+    */
     private void loadClasses( Resource root )
         {
+        for (StmtIterator it = root.listProperties( JA.dbClassProperty ); it.hasNext();)
+            {
+            String propertyName = it.nextStatement().getString();
+            String className = System.getProperty( propertyName );
+            try { Class.forName( className ); }
+            catch (ClassNotFoundException e)
+                { throw new CannotLoadClassException( root, className, e ); }
+            }
         for (StmtIterator it = root.listProperties( JA.dbClass ); it.hasNext();)
             {
             String className = it.nextStatement().getString();
@@ -87,7 +110,7 @@ public class ConnectionAssembler extends AssemblerBase implements Assembler
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.2 2006-01-06 11:08:12 chris-dollin Exp $
+# $Id: assembler.n3,v 1.3 2006-01-10 15:30:42 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -532,6 +532,7 @@ ja:Connection a rdfs:Class
     ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]
+    ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]
     ; rdfs:subClassOf ja:Object
     ; rdfs:label "Assembler.Connection"
     ; rdfs:comment
@@ -611,6 +612,15 @@ ja:dbClass a rdf:Property
     ; rdfs:domain ja:Connection
     .
 
+ja:dbClassProperty a rdf:Property
+    ; rdfs:label "Assembler.dbClass"
+    ; rdfs:comment
+        """property of a database connection that specifies as a string the
+        name a Java system property containing the name of a Java class to be 
+        loaded before connection is attemped."""
+    ; rdfs:domain ja:Connection
+    .
+                                
 #
 # reification modes
 #

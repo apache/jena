@@ -636,6 +636,59 @@ all the work is done. (Amongst other things, this makes testing
 easier.)
 </p>
 
+<p>When working with named persistent objects (typically database models),
+sometimes you need to control whether new objects should be constructed
+or old models can be reused. There is an additional method
+
+<ul>
+<li>open( Assembler sub, Resource root, Mode mode )</li>
+</ul>
+
+where the <code>Mode</code> argument controls the creation (or not)
+of persistent models. The mode is passed down to all sub-object
+creation. The standard implementation of <code>open(sub,root)</code>
+is just:
+
+<ul>
+<li>open( sub, root, Mode.DEFAULT )</li>
+</ul>
+
+A <code>Mode</code> object has two methods:
+
+<ul>
+<li>permitCreateNew( Resource root, String name )</li>
+<li>permitUseExisting( Resource root, String name )</li>
+</ul>
+
+<code>root</code> is the root resource describing the object to be
+created or reused, and <code>name</code> is the name given to it.
+The result is <code>true</code> iff the permission is granted.
+<code>Mode.DEFAULT</code> permits the reuse of existing objects
+and denies the creation of new ones.
+</p>
+
+<p>
+There are four <code>Mode constants:</code>
+
+<ul>
+<li>Mode.DEFAULT - reuse existing objects</li> 
+<li>Mode.CREATE - create missing objects</li>
+<li>Mode.REUSE - reuse existing objects</li>
+<li>Mode.ANY - reuse existing objects, create missing ones</li>
+</ul>
+
+Since the <code>Mode</code> methods are passed the resource root and
+name, the user can write specialised <code>Mode</code>s that look at
+the name or the other root properties to make their decision.
+</p>
+
+<p>
+Note that the Modes only apply to persistent objects, so <i>eg</i>
+MemoryModels or PrefixMappings ignore their Mode arguments.
+</p>
+
+<h1>basic assemblers</h1>
+
 <p>
 There is a family of <i>basic assemblers</i>, each of which knows how to
 assemble a specific kind of object so long as they're given an

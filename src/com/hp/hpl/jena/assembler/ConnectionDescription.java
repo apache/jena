@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionDescription.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: ConnectionDescription.java,v 1.2 2006-01-10 15:30:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -9,6 +9,12 @@ package com.hp.hpl.jena.assembler;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+/**
+    A ConnectionDescription holds the information required to construct an
+    IDBConnection, and can construct that connection on demand.
+
+    @author kers
+*/
 public class ConnectionDescription
     {
     public final String dbURL;
@@ -18,6 +24,14 @@ public class ConnectionDescription
     
     protected IDBConnection connection;
     
+    /**
+        Initialise a description from the given arguments.
+        
+        @param dbURL the URL of the database to connect to
+        @param dbUser the name of the user authorising the connection
+        @param dbPassword the password of that user
+        @param dbType the type of the database
+    */
     public ConnectionDescription( String dbURL, String dbUser, String dbPassword, String dbType )
         {
         this.dbURL = dbURL;
@@ -26,6 +40,10 @@ public class ConnectionDescription
         this.dbType = dbType;
         }
 
+    /**
+        Answer the connection specified by the description. Once created, that same
+        connection is returned for each call to getConnection.
+    */
     public IDBConnection getConnection()
         {
         if (connection == null) 
@@ -34,9 +52,17 @@ public class ConnectionDescription
         return connection;
         }
     
+    /**
+        Answer a description containing the specified components.
+    */
     public static ConnectionDescription create( String dbURL, String dbUser, String dbPassword, String dbType )
         { return new ConnectionDescription( dbURL, dbUser, dbPassword, dbType ); }
     
+    /**
+        Answer a descriptive string for this connection object, including whether or
+        not it has already had its connection opened. 
+        @see java.lang.Object#toString()
+    */
     public String toString()
         { 
         return
@@ -53,7 +79,7 @@ public class ConnectionDescription
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

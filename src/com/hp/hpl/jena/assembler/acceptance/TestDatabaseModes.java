@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestDatabaseModes.java,v 1.1 2006-01-10 15:15:46 chris-dollin Exp $
+ 	$Id: TestDatabaseModes.java,v 1.2 2006-01-10 15:30:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.acceptance;
@@ -62,7 +62,7 @@ private String getDescription( String modelName )
         + "; C ja:dbUserProperty 'jena.db.user'"
         + "; C ja:dbPasswordProperty 'jena.db.password'"
         + "; C ja:dbTypeProperty 'jena.db.type'"
-        // + "; C ja:dbClass 'driver'" 
+        + "; C ja:dbClassProperty 'jena.db.driver'" 
         ).replaceAll( "spoo", modelName )
         ;
     }

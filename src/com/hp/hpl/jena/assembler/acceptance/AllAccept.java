@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AllAccept.java,v 1.4 2006-01-10 10:55:56 chris-dollin Exp $
+ 	$Id: AllAccept.java,v 1.5 2006-01-10 15:30:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.acceptance;
@@ -17,7 +17,6 @@ import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.test.TestConnection;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
-import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileUtils;
 
 public class AllAccept extends AssemblerTestBase
@@ -29,7 +28,7 @@ public class AllAccept extends AssemblerTestBase
         {
         TestSuite result = new TestSuite();
         result.addTestSuite( AllAccept.class );
-        result.addTest( new SetupDatabase( new TestSuite( Spoo.class ) ) );
+        result.addTest( new SetupDatabase( new TestSuite( TestDatabaseModes.class ) ) );
         return result;
         }
     
@@ -41,7 +40,6 @@ public class AllAccept extends AssemblerTestBase
         public void setUp() throws Exception
             {
             super.setUp();
-            Class.forName( "com.mysql.jdbc.Driver" );
             IDBConnection conn = TestConnection.makeAndCleanTestConnection();
             ModelRDB.createModel( conn, "square" );
             ModelRDB.createModel( conn, "circle" );
@@ -75,63 +73,6 @@ public class AllAccept extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:MemoryModel; x ja:content y; y ja:externalContent file:" + f.getAbsolutePath() );
         Model m = Assembler.general.openModel( root );
         assertIsoModels( data, m );
-        }
-    
-    public static class Spoo extends AssemblerTestBase
-        {
-        public Spoo( String name )
-            { super( name ); }
-        
-        public void testRDBModelOpenedWhenExists()
-            { 
-            openWith( "square", false, true );
-            openWith( "circle", true, true );
-            }        
-        
-        public void testRDBModelCreatedWhenMissing()
-            { 
-            openWith( "line", true, true );
-            openWith( "edge", true, false );
-            }
-        
-        public void testRDBModelFailsIfExists()
-            {
-            try { openWith( "triangle", true, false ); fail( "should trap existing model" ); } 
-            catch (AlreadyExistsException e) { assertEquals( "triangle", e.getMessage() ); }
-            try { openWith( "hex", false, false ); fail( "should trap existing model" ); } 
-            catch (AlreadyExistsException e) { assertEquals( "hex", e.getMessage() );}
-            }
-        
-        public void testRDBModelFailsIfMissing()
-            {
-            try { openWith( "parabola", false, true ); fail( "should trap missing model" ); } 
-            catch (NotFoundException e) { assertEquals( "parabola", e.getMessage() ); }
-            try { openWith( "curve", false, false ); fail( "should trap missing model" ); } 
-            catch (NotFoundException e) { assertEquals( "curve", e.getMessage() ); }
-            }
-        
-        private void openWith( String name, boolean mayCreate, boolean mayReuse )
-            {
-            Assembler.general.openModel
-                ( getRoot( name ), new Mode( mayCreate, mayReuse ) )
-                .close();
-            }
-        
-        private Resource getRoot( String name )
-            {return resourceInModel( getDescription( name ) ); }
-
-        private String getDescription( String modelName )
-            {
-            return 
-                ("x rdf:type ja:RDBModel; x ja:modelName 'spoo'; x ja:connection C"
-                + "; C ja:dbURLProperty 'jena.db.url'"
-                + "; C ja:dbUserProperty 'jena.db.user'"
-                + "; C ja:dbPasswordProperty 'jena.db.password'"
-                + "; C ja:dbTypeProperty 'jena.db.type'"
-                // + "; C ja:dbClass 'driver'" 
-                ).replaceAll( "spoo", modelName )
-                ;
-            }
         }
     }
 

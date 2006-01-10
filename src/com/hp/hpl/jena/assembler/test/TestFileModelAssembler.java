@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestFileModelAssembler.java,v 1.3 2006-01-10 15:30:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.FileModelAssembler;
 import com.hp.hpl.jena.graph.impl.FileGraph;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileUtils;
 
 public class TestFileModelAssembler extends ModelAssemblerTestBase
@@ -103,6 +103,47 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         assertSame( model, m );
         }
     
+    public void testFileModelAssemblerUsesMode()
+        {
+        testMode( true, true );
+        testMode( false, true );
+        testMode( true, false );
+        try { testMode( false, false ); fail( "should trap, can nver create" ); }
+        catch (JenaException e ) { pass(); }
+        }
+
+    private void testMode( final boolean mayCreate, final boolean mayReuse )
+        {
+        final Model model = ModelFactory.createDefaultModel();
+        Mode mode = new Mode( mayCreate, mayReuse );
+        FileModelAssembler a = new FileModelAssembler()
+            {
+            public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle s )
+                { 
+                if (mayCreate && mayReuse) 
+                    {
+                    assertEquals( "mayCreate && mayReuse implies non-strict", false, strict );
+                    }
+                if (mayCreate && !mayReuse) 
+                    {
+                    assertEquals( true, create );
+                    assertEquals( true, strict );
+                    }
+                if (!mayCreate && mayReuse) 
+                    {
+                    assertEquals( false, create );
+                    assertEquals( true, strict );
+                    }
+                if (!mayCreate && !mayReuse) 
+                    throw new JenaException( "cannot create" );
+                return model; 
+                }
+            };
+        Resource root = resourceInModel( "x rdf:type ja:FileModel; x ja:modelName 'junk'; x ja:directory file:" );
+        Model m = a.openModel( root, mode  );
+        assertSame( model, m );
+        }
+    
     public void testCorrectSimpleModelName()
         {
         testCorrectModelName( "root/spoo", "root", "spoo", empty );
@@ -125,8 +166,8 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         final Model model = ModelFactory.createDefaultModel();
         final File wantedFullName = new File( expectedName );
         final ReificationStyle wantedStyle = ReificationStyle.Standard;
-        final boolean wantedCreate = true;
-        final boolean wantedStrict = false;
+        final boolean wantedCreate = Mode.DEFAULT.permitCreateNew( null, null );
+        final boolean wantedStrict = Mode.DEFAULT.permitUseExisting( null, null );
         Resource root = resourceInModel( "x rdf:type ja:FileModel; x ja:modelName '" + modelName + "'; x ja:directory file:" + directoryName );
         root.getModel().add( extras );
         FileModelAssembler a = new FileModelAssembler()
