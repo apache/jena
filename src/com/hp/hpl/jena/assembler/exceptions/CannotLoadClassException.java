@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotLoadClassException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
+ 	$Id: CannotLoadClassException.java,v 1.4 2006-01-10 10:36:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -25,8 +25,8 @@ public class CannotLoadClassException extends AssemblerException
     private static String makeMessage( Resource root, String className )
         {
         return 
-            "the class " + className
-            + " required by the object " + nice( root )
+            "the class '" + className
+            + "' required by the object " + nice( root )
             + " could not be loaded"
             ; 
         }

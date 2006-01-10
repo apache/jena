@@ -1,26 +1,59 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AllAccept.java,v 1.2 2006-01-06 11:04:28 chris-dollin Exp $
+ 	$Id: AllAccept.java,v 1.3 2006-01-10 10:36:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.acceptance;
 
 import java.io.*;
 
+import junit.extensions.TestSetup;
+import junit.framework.*;
+
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.test.AssemblerTestBase;
+import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.test.TestConnection;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 
 public class AllAccept extends AssemblerTestBase
     {
     public AllAccept( String name )
         { super( name ); }
-
-    protected Class getAssemblerClass()
-        { return null; }
+    
+    public static TestSuite suite()
+        {
+        TestSuite result = new TestSuite();
+        result.addTestSuite( AllAccept.class );
+        result.addTest( new SetupDatabase( new TestSuite( Spoo.class ) ) );
+        return result;
+        }
+    
+    public static class SetupDatabase extends TestSetup
+        {
+        public SetupDatabase( Test tests )
+            { super( tests ); }
+    
+        public void setUp() throws Exception
+            {
+            super.setUp();
+            Class.forName( "com.mysql.jdbc.Driver" );
+            IDBConnection conn = TestConnection.makeAndCleanTestConnection();
+            ModelRDB.createModel( conn, "square" );
+            ModelRDB.createModel( conn, "circle" );
+            ModelRDB.createModel( conn, "triangle" );
+            ModelRDB.createModel( conn, "hex" );
+            conn.close();
+            IDBConnection x = ModelFactory.createSimpleRDBConnection();
+            assertEquals( true, x.containsModel( "square" ) );
+            assertEquals( false, x.containsModel( "line" ) );
+            x.close();
+            }
+        }
     
     public void testUnadornedInferenceModel()
         {
@@ -43,7 +76,59 @@ public class AllAccept extends AssemblerTestBase
         Model m = Assembler.general.openModel( root );
         assertIsoModels( data, m );
         }
+    
+    public static class Spoo extends AssemblerTestBase
+        {
+        public Spoo( String name )
+            { super( name ); }
+        
+        public void testRDBModelOpenedWhenExists()
+            { 
+            openWith( "square", false, true );
+            openWith( "circle", true, true );
+            }        
+        
+        public void testRDBModelCreatedWhenMissing()
+            { 
+            openWith( "line", true, true );
+            openWith( "edge", true, false );
+            }
+        
+        public void testRDBModelFailsIfExists()
+            {
+            try { openWith( "triangle", true, false ); fail( "" ); } catch (JenaException e) {}
+            try { openWith( "hex", false, false ); fail( "" ); } catch (JenaException e) {}
+            }
+        
+        public void testRDBModelFailsIfMissing()
+            {
+            try { openWith( "parabola", false, true ); fail( "" ); } catch (JenaException e) {}
+            try { openWith( "curve", false, false ); fail( "" ); } catch (JenaException e) {}
+            }
+        
+        private void openWith( String name, boolean mayCreate, boolean mayReuse )
+            {
+            Assembler.general.openModel
+                ( getRoot( name ), new Mode( mayCreate, mayReuse ) )
+                .close();
+            }
+        
+        private Resource getRoot( String name )
+            {return resourceInModel( getDescription( name ) ); }
 
+        private String getDescription( String modelName )
+            {
+            return 
+                ("x rdf:type ja:RDBModel; x ja:modelName 'spoo'; x ja:connection C"
+                + "; C ja:dbURLProperty 'jena.db.url'"
+                + "; C ja:dbUserProperty 'jena.db.user'"
+                + "; C ja:dbPasswordProperty 'jena.db.password'"
+                + "; C ja:dbTypeProperty 'jena.db.type'"
+                // + "; C ja:dbClass 'driver'" 
+                ).replaceAll( "spoo", modelName )
+                ;
+            }
+        }
     }
 
 

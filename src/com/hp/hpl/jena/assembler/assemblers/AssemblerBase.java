@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerBase.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: AssemblerBase.java,v 1.4 2006-01-10 10:36:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -11,7 +11,6 @@ import java.util.List;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -63,7 +62,7 @@ public abstract class AssemblerBase implements Assembler
         }
 
     public Model openModel( Resource root, Mode mode )
-        { throw new JenaException( "this Assembler cannot create a Model" ); }
+        { return (Model) open( this, root, mode ); }
     
     public Model openModel( Resource root )
         { return openModel( root, Mode.DEFAULT ); }

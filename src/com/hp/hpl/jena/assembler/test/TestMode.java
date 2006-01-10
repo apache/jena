@@ -1,12 +1,13 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestMode.java,v 1.2 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: TestMode.java,v 1.3 2006-01-10 10:36:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
 
 import com.hp.hpl.jena.assembler.Mode;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 public class TestMode extends AssemblerTestBase
     {
@@ -23,6 +24,33 @@ public class TestMode extends AssemblerTestBase
         assertDiffer( Mode.DEFAULT, Mode.REUSE );
         assertDiffer( Mode.DEFAULT, Mode.ANY );
         assertDiffer( Mode.REUSE, Mode.ANY );
+        }
+    
+    static final String someName = "aName";
+    static final Resource someRoot = resource( "aRoot" );
+    
+    public void testCreate()
+        {
+        assertEquals( true, Mode.CREATE.permitCreateNew( someRoot, someName ) );
+        assertEquals( false, Mode.CREATE.permitUseExisting( someRoot, someName ) );
+        }    
+    
+    public void testReuse()
+        {
+        assertEquals( false, Mode.REUSE.permitCreateNew( someRoot, someName ) );
+        assertEquals( true, Mode.REUSE.permitUseExisting( someRoot, someName ) );
+        }    
+    
+    public void testAny()
+        {
+        assertEquals( true, Mode.ANY.permitCreateNew( someRoot, someName ) );
+        assertEquals( true, Mode.ANY.permitUseExisting( someRoot, someName ) );
+        }    
+    
+    public void testDefault()
+        {
+        assertEquals( false, Mode.DEFAULT.permitCreateNew( someRoot, someName ) );
+        assertEquals( true, Mode.DEFAULT.permitUseExisting( someRoot, someName ) );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Assembler.java,v 1.3 2006-01-09 16:01:41 chris-dollin Exp $
+ 	$Id: Assembler.java,v 1.4 2006-01-10 10:36:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -17,15 +17,36 @@ import com.hp.hpl.jena.rdf.model.*;
     @author kers
 */
 public interface Assembler
-    {    
-    public Object open( Assembler a, Resource root );
-    
+    {
+    /**
+        The core operation: answer a new object constructed according to the
+        object description hanging from <code>root</code>, using the assembler
+        <code>a</code> for any sub-objects. Use <code>mode</code> to decide
+        if persistent objects are to be re-used or created; this mode is passed down
+        to all sub-object construction.
+    */
     public Object open( Assembler a, Resource root, Mode mode );
     
+    /**
+        Answer <code>open( a, root, Mode.DEFAULT )</code>.
+    */
+    public Object open( Assembler a, Resource root );
+    
+    /**
+        Answer <code>open( this, root, Mode.DEFAULT )</code>.
+    */
     public Object open( Resource root );
 
+    /**
+        Answer <code>(Model) open( this, root, Mode.DEFAULT )</code>, unless
+        the result cannot be or is not a Model, in which case throw an exception.
+    */
     public Model openModel( Resource root );
-    
+
+    /**
+        Answer <code>(Model) open( this, root, mode )</code>, unless
+        the result cannot be or is not a Model, in which case throw an exception.
+    */
     public Model openModel( Resource root, Mode mode );
     
     public static final Assembler defaultModel = new DefaultModelAssembler();
@@ -76,10 +97,6 @@ public interface Assembler
         .implementWith( JA.FileManager, fileManager )
         .implementWith( JA.DocumentManager, documentManager )
         ;
-
-    /** @deprecated - use general */
-    public static final AssemblerGroup builtin = general;
-
     }
 
 /*

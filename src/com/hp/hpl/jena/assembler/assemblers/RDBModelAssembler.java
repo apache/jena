@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RDBModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: RDBModelAssembler.java,v 1.4 2006-01-10 10:36:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -20,7 +20,7 @@ public class RDBModelAssembler extends NamedModelAssembler implements Assembler
         String name = getModelName( root );
         ReificationStyle style = getReificationStyle( root );
         ConnectionDescription c = getConnection( a, root );
-        return openModel( c, name, style, mode );
+        return openModel( root, c, name, style, mode );
         }
 
     protected ConnectionDescription getConnection( Assembler a, Resource root )
@@ -29,12 +29,29 @@ public class RDBModelAssembler extends NamedModelAssembler implements Assembler
         return (ConnectionDescription) a.open( C );        
         }
     
-    protected Model openModel( ConnectionDescription c, String name, ReificationStyle style, Mode mode )
+    protected Model openModel( Resource root, ConnectionDescription c, String name, ReificationStyle style, Mode mode )
         {
         IDBConnection ic = c.getConnection();
         return isDefaultName( name )
             ? ic.containsDefaultModel() ? ModelRDB.open( ic ) : ModelRDB.createModel( ic )
-            : consModel( ic, name, style, !ic.containsModel( name ) );
+            : openByMode( root, name, mode, style, ic );
+        }
+
+    private Model openByMode( Resource root, String name, Mode mode, ReificationStyle style, IDBConnection ic )
+        {
+        if (ic.containsModel( name ))
+            {
+            System.err.println( ">> database contains " + name );
+            if (mode.permitUseExisting( root, name )) return consModel( ic, name, style, false );
+            throw new JenaException( "OOPS" );
+            }
+        else
+            {
+            System.err.println( ">> database does not contain " + name );
+            if (mode.permitCreateNew( root, name )) return consModel( ic, name, style, true );
+            throw new JenaException( "OOPS" );
+            }
+        // return consModel( ic, name, style, !ic.containsModel( name ) );
         }
     
     private static final String nameForDefault = "DEFAULT";

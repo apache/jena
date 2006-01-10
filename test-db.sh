@@ -13,7 +13,7 @@
 
     case $1 in
         postgres) DEFS="-Djena.db.url=jdbc:postgresql://localhost/test -Djena.db.user=test -Djena.db.password= -Djena.db.type=PostgreSQL -Djena.db.driver=org.postgresql.Driver" ;; 
-        mysql) export DEFS="-Djena.db.url=jdbc:mysql://localhost/test -Djena.db.user=test -Djena.db.password= -Djena.db.type=MySQL -Djena.db.driver=com.mysql.jdbc.Driver" ;;
+        mysql) export DEFS="-Djena.db.url=jdbc:mysql://localhost/test -Djena.db.user=test@localhost -Djena.db.password=test -Djena.db.type=MySQL -Djena.db.driver=com.mysql.jdbc.Driver" ;;
         # SQL Server, jTDS driver, local MSDE installation
         mssqlTdsLocal) export DEFS="-Djena.db.url=jdbc:jtds:sqlserver://localhost/Test -Djena.db.user=test -Djena.db.password=foo -Djena.db.type=MsSQL -Djena.db.driver=net.sourceforge.jtds.jdbc.Driver -Djena.db.concurrent=false" ;;
         # SQL Server, Microsoft driver, full SQL Server (in Palo Alto, beware speed!)
