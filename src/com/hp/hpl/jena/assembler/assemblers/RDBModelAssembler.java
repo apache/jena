@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RDBModelAssembler.java,v 1.4 2006-01-10 10:36:45 chris-dollin Exp $
+ 	$Id: RDBModelAssembler.java,v 1.5 2006-01-10 10:55:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -41,17 +41,14 @@ public class RDBModelAssembler extends NamedModelAssembler implements Assembler
         {
         if (ic.containsModel( name ))
             {
-            System.err.println( ">> database contains " + name );
             if (mode.permitUseExisting( root, name )) return consModel( ic, name, style, false );
-            throw new JenaException( "OOPS" );
+            throw new AlreadyExistsException( name );
             }
         else
             {
-            System.err.println( ">> database does not contain " + name );
             if (mode.permitCreateNew( root, name )) return consModel( ic, name, style, true );
-            throw new JenaException( "OOPS" );
+            throw new NotFoundException( name );
             }
-        // return consModel( ic, name, style, !ic.containsModel( name ) );
         }
     
     private static final String nameForDefault = "DEFAULT";

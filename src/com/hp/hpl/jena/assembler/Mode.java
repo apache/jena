@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Mode.java,v 1.3 2006-01-10 10:36:44 chris-dollin Exp $
+ 	$Id: Mode.java,v 1.4 2006-01-10 10:55:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -10,9 +10,27 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 public class Mode
     {
+    /**
+        Mode that demands a new object be created and no existing object
+        should exist.
+    */
     public static final Mode CREATE = new Mode( true, false );
+    
+    /**
+        Default mode; existing objects are reused, new objects are not created
+    */
     public static final Mode DEFAULT = new Mode( false, true );
+    
+    /**
+        Mode that requires that objects should already exist; new objects cannot
+        be created.
+     */
     public static final Mode REUSE = new Mode( false, true );
+    
+    /**
+        Mode that permits existing objects to be reused and new objects to
+        be created.
+    */
     public static final Mode ANY = new Mode( true, true );
     
     protected final boolean mayCreate;
@@ -21,9 +39,17 @@ public class Mode
     public Mode( boolean mayCreate, boolean mayReuse )
         { this.mayCreate = mayCreate; this.mayReuse = mayReuse; }
     
+    /**
+        Answer true if the object <code>root</code> with the given <code>name</code>
+        can be created if it does not already exist.
+    */
     public boolean permitCreateNew( Resource root, String name )
         { return mayCreate; }
 
+    /**
+        Answer true if the existing object <code>root</code> with the given
+        <code>name</code> can be reused.
+    */
     public boolean permitUseExisting( Resource root, String name )
         { return mayReuse; }
     }
