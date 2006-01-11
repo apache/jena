@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.32 2005-10-07 08:30:38 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.33 2006-01-11 10:40:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
 
 import java.util.*;
+
+import com.hp.hpl.jena.assembler.JA;
 import com.hp.hpl.jena.shared.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -203,6 +205,7 @@ public interface PrefixMapping
         .setNsPrefix( "rss", RSS.getURI() )
         .setNsPrefix( "vcard", VCARD.getURI() )
         .setNsPrefix( "jms", JenaModelSpec.getURI() )
+        .setNsPrefix( "ja", JA.getURI() )
         .setNsPrefix( "eg", "http://www.example.org/" )
         .lock()
         ;

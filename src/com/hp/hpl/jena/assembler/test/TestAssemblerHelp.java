@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.6 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.7 2006-01-11 10:40:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -11,10 +11,8 @@ import java.util.*;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.*;
 import com.hp.hpl.jena.assembler.exceptions.NoSpecificTypeException;
-import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class TestAssemblerHelp extends AssemblerTestBase
@@ -42,40 +40,6 @@ public class TestAssemblerHelp extends AssemblerTestBase
         assertSame( root, expanded );
         assertIsoModels( original, expanded.getModel() );
         }
-    
-    static class FixedFileManager extends FileManager
-        {
-        Map map = new HashMap();
-        
-        public Model loadModel( String URL )
-            {
-            Model result = (Model) map.get( URL );
-            if (result == null) fail( "no model for " + URL );
-            return result;
-            }
-        
-        public FixedFileManager add( String URL, Model m )
-            {
-            map.put( URL, m );
-            return this;
-            }
-        }
-    
-//    public void xtestShowSchema()
-//        {
-//        Model m = JA.getSchema();
-//        PrefixMapping pm = m;
-//        for (StmtIterator it = m.listStatements(); it.hasNext();)
-//            {
-//            Statement s = it.nextStatement();
-//            System.err.print( s.getSubject().asNode().toString( pm ) );
-//            System.err.print( " " );
-//            System.err.print( s.getPredicate().asNode().toString( pm ) );
-//            System.err.print( " " );
-//            System.err.print( s.getObject().asNode().toString( pm ) );
-//            System.err.println( "" );
-//            }
-//        }
       
     public void testSpecificType()
         {
@@ -115,40 +79,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
         Resource mst = AssemblerHelp.findSpecificType( rooted );
         assertEquals( resource( root.getModel(), expected ), mst );
         }
-    
-    public void testFollowOwlImports()
-        {
-        final Model modelToLoad = model( "this hasMarker B5" );
-        Model  m = model( "x ja:reasoner y; _x owl:imports eh:/loadMe" );
-        FileManager fm = new FixedFileManager().add( "eh:/loadMe", modelToLoad ); 
-        Model m2 = AssemblerHelp.withImports( fm, m );
-        assertInstanceOf( MultiUnion.class, m2.getGraph() );
-        assertIsoModels( modelToLoad.union( m ), m2 );
-        }
-    
-    public void testFollowOwlImportsDeeply()
-        {
-        final Model 
-            m1 = model( "this hasMarker M1; _x owl:imports M2" ),
-            m2 = model( "this hasMarker M2" );
-        Model  m = model( "x ja:reasoner y; _x owl:imports M1" );
-        FileManager fm = new FixedFileManager() 
-            .add( "eh:/M1", m1 ).add( "eh:/M2", m2 );
-        Model result = AssemblerHelp.withImports( fm, m );
-        assertInstanceOf( MultiUnion.class, result.getGraph() );
-        assertIsoModels( m1.union(m2).union(m), result );
-        }
-    
-    public void testCacheModels()
-        {
-        Model spec = model( "_x owl:imports M1" );
-        Model m1 = model( "this isModel M1" );
-        FileManager withM1 = new FixedFileManager().add( "eh:/M1", m1 );
-        Model A = AssemblerHelp.withImports( withM1, spec );
-        FileManager none = new FixedFileManager();
-        Model B = AssemblerHelp.withImports( none, spec );
-        assertIsoModels( A, B );
-        }
+
     
     public static boolean impIsLoaded = false;
     public static boolean impIsConstructed = false;

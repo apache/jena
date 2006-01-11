@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.7 2006-01-10 15:48:08 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.8 2006-01-11 10:40:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -11,11 +11,8 @@ import java.util.*;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.assembler.exceptions.NoSpecificTypeException;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -43,66 +40,15 @@ public class AssemblerHelp
     */
     public static Model fullModel( Model m )
         {
-        if (m.contains( JA.This, RDF.type, JA.Expanded )) 
-            return m;
-        else
-            {
-            Model result = ModelExpansion.withSchema( withImports( m ), JA.getSchema() )
+        return m.contains( JA.This, RDF.type, JA.Expanded )
+            ? m
+            : (Model) ModelExpansion.withSchema( ImportManager.withImports( m ), JA.getSchema() )
                 .add( JA.This, RDF.type, JA.Expanded )
-                ;
-            result
                 .setNsPrefixes( PrefixMapping.Extended )
                 .setNsPrefixes( m )
-                .setNsPrefix( "ja", JA.getURI() )
-                ;
-            return result;
-            }
+            ;
         }
-
-    /**
-        Answer <code>model</code> if it has no imports, or a union model with
-        <code>model</code> as its base and its imported models as the other
-        components.
-    */
-    public static Model withImports( Model model )
-        { return withImports( FileManager.get(), model ); }
-
-    /**
-        Answer <code>model</code> if it has no imports, or a union model with
-        <code>model</code> as its base and its imported models as the other
-        components. The file manager <code>fm</code> is used to load the
-        imported models.
-    */
-    public static Model withImports( FileManager fm, Model model )
-        {
-        StmtIterator it = model.listStatements( null, OWL.imports, (RDFNode) null );
-        if (it.hasNext())
-            {
-            MultiUnion g = new MultiUnion( new Graph[] { model.getGraph() } );
-            Model result = ModelFactory.createModelForGraph( g );
-            while (it.hasNext()) g.addGraph( graphFor( fm, it.nextStatement() ) );
-            return result;
-            }
-        else
-            return model;
-        }
-
-    private static Map cache = new HashMap();
     
-    private static Graph graphFor( FileManager fm, Statement s )
-        {
-        Resource url = s.getResource();
-        Graph already = (Graph) cache.get( url );
-        if (already == null)
-            {
-            Graph result = withImports( fm, fm.loadModel( url.getURI() ) ).getGraph();
-            cache.put( url, result );
-            return result;
-            }
-        else
-            return already;
-        }
-
     /**
          Load all the classes which are objects of any (t, ja:assembler, S) statements 
          in <code>m</code>. <code>group.implementWIth(t,c)</code> is called

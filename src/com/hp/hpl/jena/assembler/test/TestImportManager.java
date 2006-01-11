@@ -1,17 +1,74 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestImportManager.java,v 1.1 2006-01-11 10:18:59 chris-dollin Exp $
+ 	$Id: TestImportManager.java,v 1.2 2006-01-11 10:40:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
 
+import java.util.*;
+
+import com.hp.hpl.jena.assembler.*;
+import com.hp.hpl.jena.graph.compose.MultiUnion;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileManager;
+
 public class TestImportManager extends AssemblerTestBase
     {
     public TestImportManager( String name )
-        { super( name ); }
+        { super( name ); }    
+    
+    static class FixedFileManager extends FileManager
+        {
+        Map map = new HashMap();
+        
+        public Model loadModel( String URL )
+            {
+            Model result = (Model) map.get( URL );
+            if (result == null) fail( "no model for " + URL );
+            return result;
+            }
+        
+        public FixedFileManager add( String URL, Model m )
+            {
+            map.put( URL, m );
+            return this;
+            }
+        }
 
-    public void testFail() { fail( "spoo" ); }
+    public void testFollowOwlImports()
+        {
+        final Model modelToLoad = model( "this hasMarker B5" );
+        Model  m = model( "x ja:reasoner y; _x owl:imports eh:/loadMe" );
+        FileManager fm = new FixedFileManager().add( "eh:/loadMe", modelToLoad ); 
+        Model m2 = ImportManager.withImports( fm, m );
+        assertInstanceOf( MultiUnion.class, m2.getGraph() );
+        assertIsoModels( modelToLoad.union( m ), m2 );
+        }
+    
+    public void testFollowOwlImportsDeeply()
+        {
+        final Model 
+            m1 = model( "this hasMarker M1; _x owl:imports M2" ),
+            m2 = model( "this hasMarker M2" );
+        Model  m = model( "x ja:reasoner y; _x owl:imports M1" );
+        FileManager fm = new FixedFileManager() 
+            .add( "eh:/M1", m1 ).add( "eh:/M2", m2 );
+        Model result = ImportManager.withImports( fm, m );
+        assertInstanceOf( MultiUnion.class, result.getGraph() );
+        assertIsoModels( m1.union(m2).union(m), result );
+        }
+    
+    public void testCacheModels()
+        {
+        Model spec = model( "_x owl:imports M1" );
+        Model m1 = model( "this isModel M1" );
+        FileManager withM1 = new FixedFileManager().add( "eh:/M1", m1 );
+        Model A = ImportManager.withImports( withM1, spec );
+        FileManager none = new FixedFileManager();
+        Model B = ImportManager.withImports( none, spec );
+        assertIsoModels( A, B );
+        }
     }
 
 

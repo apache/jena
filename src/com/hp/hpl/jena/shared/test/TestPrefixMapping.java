@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.13 2005-04-10 12:45:52 chris-dollin Exp $
+  $Id: TestPrefixMapping.java,v 1.14 2006-01-11 10:40:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
 
+import com.hp.hpl.jena.assembler.JA;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -48,6 +49,8 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping
         assertEquals( RSS.getURI(), st.getNsPrefixURI( "rss" ) );
         assertEquals( VCARD.getURI(), st.getNsPrefixURI( "vcard" ) );
         assertEquals( JenaModelSpec.getURI(), st.getNsPrefixURI( "jms" ) );
+        assertEquals( JA.getURI(), st.getNsPrefixURI( "ja" ) );
+        assertEquals( "http://www.example.org/", st.getNsPrefixURI( "eg" ) );
         }
         
     }

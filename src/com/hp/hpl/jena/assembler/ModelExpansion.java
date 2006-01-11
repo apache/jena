@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.2 2006-01-11 09:54:26 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.3 2006-01-11 10:40:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -9,6 +9,27 @@ package com.hp.hpl.jena.assembler;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
+/**
+     The ModelExpansion code expands a model <code>M</code> against a 
+     schema <code>S</code>, returning a new model which contains
+     
+     <ul>
+     <li>the statements of M
+     <li>any statements (A rdfs:subClassOf B) from S where neither A nor B
+           is a bnode.
+    <li>statements (A rdf:type T) if M contains (A P any) and 
+        S contains (P rdfs:domain T).
+    <li>statements (A rdf:type T) if M contains (any P A) and 
+        S contains (P rdfs:range T).
+    <li>statements (A rdf:type T) if (A rdf:type U) and (U rdfs:subClassOf T).
+     </ul>
+     
+    This is sufficient to allow the subjects in <code>M</code> which have
+    properties from <code>S</code> to have enough type information for
+    AssemblerGroup dispatch.
+    
+    @author kers
+ */
 public class ModelExpansion
     {
     public static Model withSchema( Model model, Model schema )
@@ -77,7 +98,6 @@ public class ModelExpansion
             }
         result.add( temp );
         }
-
     }
 
 
