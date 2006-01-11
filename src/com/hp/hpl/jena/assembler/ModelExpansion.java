@@ -1,20 +1,83 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.1 2006-01-10 15:45:45 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.2 2006-01-11 09:54:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.ModelSpecFactory;
+import com.hp.hpl.jena.vocabulary.*;
 
 public class ModelExpansion
     {
     public static Model withSchema( Model model, Model schema )
         {
-        return ModelSpecFactory.withSchema( model, schema );
+        Model result = ModelFactory.createDefaultModel().add( model );
+        addSubclassesFrom( result, schema );        
+        addDomainTypes( result, schema );   
+        addRangeTypes( result, schema );
+        addSupertypes( result );
+        return result;
         }
+    
+    private static final Property ANY = null;
+    
+    protected static void addSubclassesFrom( Model result, Model schema )
+        {
+        for (StmtIterator it = schema.listStatements( ANY, RDFS.subClassOf, ANY ); it.hasNext();)
+            { 
+            Statement s = it.nextStatement();
+            if (!s.getSubject().isAnon() && !s.getResource().isAnon()) result.add( s ); 
+            }
+        }
+    
+    protected static void addDomainTypes( Model result, Model schema )
+        {
+        for (StmtIterator it = schema.listStatements( ANY, RDFS.domain, ANY ); it.hasNext();)
+            {
+            Statement s = it.nextStatement();
+            Property property = (Property) s.getSubject().as( Property.class );
+            RDFNode type = s.getObject();
+            for (StmtIterator x = result.listStatements( ANY, property, ANY ); x.hasNext();)
+                {
+                Statement t = x.nextStatement();
+                result.add( t.getSubject(), RDF.type, type );
+                }
+            }
+        }
+    
+    protected static void addRangeTypes( Model result, Model schema )
+        {
+        for (StmtIterator it = schema.listStatements( ANY, RDFS.range, ANY ); it.hasNext();)
+            {
+            Statement s = it.nextStatement();
+            RDFNode type = s.getObject();
+            Property property = (Property) s.getSubject().as( Property.class );
+            for (StmtIterator x = result.listStatements( ANY, property, ANY ); x.hasNext();)
+                {
+                Statement t = x.nextStatement();
+                result.add( t.getResource(), RDF.type, type );
+                }
+            }
+        }
+    
+    protected static void addSupertypes( Model result )
+        {
+        Model temp = ModelFactory.createDefaultModel();
+        for (StmtIterator it = result.listStatements( ANY, RDF.type, ANY ); it.hasNext();)
+            {
+            Statement s = it.nextStatement();
+            for (StmtIterator subclasses = result.listStatements( s.getResource(), RDFS.subClassOf, ANY ); subclasses.hasNext();)
+                {
+                RDFNode type = subclasses.nextStatement().getObject();
+                // System.err.println( ">> adding super type: subject " + s.getSubject() + ", type " + type );
+                temp.add( s.getSubject(), RDF.type, type );
+                }
+            }
+        result.add( temp );
+        }
+
     }
 
 
