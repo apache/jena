@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.24 2006-01-11 13:41:38 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.25 2006-01-11 14:16:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -361,10 +361,18 @@ final public class LiteralLabel {
         well-formed and otherwise its lexical form.
     */
 	public int hashCode() {
-		return (wellformed ? value : getLexicalForm()).hashCode();
+		return dtype == null ? getDefaultHashcode() : dtype.getHashCode( this );
 	}
 
-}
+    /**
+        Answer the default hash value, suitable for datatypes which have values
+        which support hashCode() naturally: it is derived from its value if it is 
+        well-formed and otherwise from its lexical form.
+    */
+    public int getDefaultHashcode()
+        { return (wellformed ? value : getLexicalForm()).hashCode(); }
+
+    }
 
 /*
     (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP

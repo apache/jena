@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLiteralLabels.java,v 1.2 2006-01-11 13:41:39 chris-dollin Exp $
+ 	$Id: TestLiteralLabels.java,v 1.3 2006-01-11 14:16:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -34,12 +34,19 @@ public class TestLiteralLabels extends GraphTestBase
         {
         LiteralLabel ll = new LiteralLabel( (Object) "test",  "", null );
         ll.hashCode();
+        }    
+    
+    public void testHashCodesForBase64Binary()
+        {
+        LiteralLabel A = node( "'0123'http://www.w3.org/2001/XMLSchema#base64Binary" ).getLiteral();
+        LiteralLabel B = node( "'0123'http://www.w3.org/2001/XMLSchema#base64Binary" ).getLiteral();
+        assertEquals( A.hashCode(), B.hashCode() );
         }
     
-    public void xxtestHashCodesForByteArrays()
+    public void testHashCodesForHexBinary()
         {
-        LiteralLabel A = new LiteralLabel( new byte[] { 1, 2, 3 }, "", null );
-        LiteralLabel B = new LiteralLabel( new byte[] { 1, 2, 3 }, "", null );
+        LiteralLabel A = node( "'0123'http://www.w3.org/2001/XMLSchema#hexBinary" ).getLiteral();
+        LiteralLabel B = node( "'0123'http://www.w3.org/2001/XMLSchema#hexBinary" ).getLiteral();
         assertEquals( A.hashCode(), B.hashCode() );
         }
     }
