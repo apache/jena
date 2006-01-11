@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.24 2005-10-07 08:30:39 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.25 2006-01-11 13:41:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -48,6 +48,7 @@ public class PrefixMappingImpl implements PrefixMapping
         checkUnlocked();
         checkLegal( prefix );
         if (!prefix.equals( "" )) checkProper( uri );
+        if (uri == null) throw new NullPointerException( "null URIs are prohibited as arguments to setNsPrefix" );
         set( prefix, uri );
         return this;
         }

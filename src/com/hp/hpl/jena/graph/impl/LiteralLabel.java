@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.23 2005-10-18 09:50:50 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.24 2006-01-11 13:41:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -321,13 +321,6 @@ final public class LiteralLabel {
             return typeEqual
                 && langEqual
                 && getLexicalForm().equals(otherLiteral.getLexicalForm());
-//            if (wellformed) {
-//            	return typeEqual && langEqual && value.equals(otherLiteral.value);
-//            } else {
-//            	return typeEqual
-//            		&& langEqual
-//            		&& lexicalForm.equals(otherLiteral.lexicalForm);
-//            }
 	}
 
 	/** 

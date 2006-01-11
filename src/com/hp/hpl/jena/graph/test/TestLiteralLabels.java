@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLiteralLabels.java,v 1.1 2005-10-18 09:50:56 chris-dollin Exp $
+ 	$Id: TestLiteralLabels.java,v 1.2 2006-01-11 13:41:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -34,6 +34,13 @@ public class TestLiteralLabels extends GraphTestBase
         {
         LiteralLabel ll = new LiteralLabel( (Object) "test",  "", null );
         ll.hashCode();
+        }
+    
+    public void xxtestHashCodesForByteArrays()
+        {
+        LiteralLabel A = new LiteralLabel( new byte[] { 1, 2, 3 }, "", null );
+        LiteralLabel B = new LiteralLabel( new byte[] { 1, 2, 3 }, "", null );
+        assertEquals( A.hashCode(), B.hashCode() );
         }
     }
 

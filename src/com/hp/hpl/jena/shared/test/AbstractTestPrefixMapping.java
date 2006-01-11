@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.23 2005-10-07 08:30:39 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.24 2006-01-11 13:41:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -68,6 +68,17 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
                 }
             catch (PrefixMapping.IllegalPrefixException e) { pass(); }
             }
+        }
+    
+    public void testNullURITrapped()
+        {
+        try
+            {
+            getMapping().setNsPrefix( "xy", null );
+            fail( "shouild trap null URI in setNsPrefix" );
+            }
+        catch (NullPointerException e)
+            { pass(); }
         }
                  
     /**

@@ -26,7 +26,7 @@ import com.hp.hpl.jena.shared.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2005-06-13 10:52:47 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2006-01-11 13:41:38 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -284,11 +284,25 @@ public class GraphMatcher extends java.lang.Object {
                 Triple s = (Triple)ss.next();
                 AnonStatement ass = new AnonStatement(s);
                 if ( ass.pattern == NOVARS ) {
-                	ClosableIterator ci = otherm.find(s.getSubject(),s.getPredicate(),
-                            s.getObject());
-                    boolean fnd = ci.hasNext();
-                    ci.close();
-                    if ( !fnd ) return -1;
+                ClosableIterator ci = otherm.find(s.getSubject(),s.getPredicate(),
+                        s.getObject());
+                boolean fnd = ci.hasNext();
+                
+//                if (fnd !=  otherm.contains( s.getSubject(),s.getPredicate(),
+//                        s.getObject() ))
+//                    { 
+//                    Triple sx = (Triple)ci.next();
+//                    System.err.println("Surprise!!"+ s + "; " + sx + "(" + sx.equals(s)+ ")" ); 
+//
+//                    System.err.println(" SH: "+s.hashCode());
+//                    System.err.println("SXH: "+sx.hashCode());
+//                    System.err.println(" SOH: "+s.getObject().hashCode()+ " " + s.getObject());
+//                    System.err.println("SXOH: "+sx.getObject().hashCode()+ " " + sx.getObject());
+//                    
+//                    return -1; }
+                ci.close();
+                if ( !fnd ) return -1;
+//                    if ( !otherm.contains( s ) ) return -1;
                 } else {
                     hash += ass.myHashCode(ass.vars[0]);
                     for (int i=0;i<ass.vars.length;i++) {
@@ -947,5 +961,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.10 2005-06-13 10:52:47 jeremy_carroll Exp $
+ * $Id: GraphMatcher.java,v 1.11 2006-01-11 13:41:38 chris-dollin Exp $
  */

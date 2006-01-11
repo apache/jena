@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestImportManager.java,v 1.2 2006-01-11 10:40:38 chris-dollin Exp $
+ 	$Id: TestImportManager.java,v 1.3 2006-01-11 13:41:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -40,6 +40,16 @@ public class TestImportManager extends AssemblerTestBase
         {
         final Model modelToLoad = model( "this hasMarker B5" );
         Model  m = model( "x ja:reasoner y; _x owl:imports eh:/loadMe" );
+        FileManager fm = new FixedFileManager().add( "eh:/loadMe", modelToLoad ); 
+        Model m2 = ImportManager.withImports( fm, m );
+        assertInstanceOf( MultiUnion.class, m2.getGraph() );
+        assertIsoModels( modelToLoad.union( m ), m2 );
+        }
+    
+    public void xxtestFollowJAImports()
+        {
+        final Model modelToLoad = model( "this hasMarker B5" );
+        Model  m = model( "x ja:reasoner y; _x ja:imports eh:/loadMe" );
         FileManager fm = new FixedFileManager().add( "eh:/loadMe", modelToLoad ); 
         Model m2 = ImportManager.withImports( fm, m );
         assertInstanceOf( MultiUnion.class, m2.getGraph() );
