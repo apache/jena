@@ -580,9 +580,15 @@ for more details.
 <code>anyResource owl:imports someURL</code>
 </blockquote>
 
+or, equivalently, 
+
+<blockquote>
+<code>anyResource ja:imports someURL</code>
+</blockquote>
+
 then the specification is regarded as also containing the contents of the
 RDF at <code>someURL</code>. That RDF may in turn contain 
-<code>owl:imports</code> referring to other RDF. 
+<code>imports</code> referring to other RDF. 
 <span class='note'>Cycle detection is not yet implemented. The loaded
 models are cached; cache control is not implemented yet.</span>
 </p>

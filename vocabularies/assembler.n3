@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.3 2006-01-10 15:30:42 chris-dollin Exp $
+# $Id: assembler.n3,v 1.4 2006-01-11 16:11:18 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -25,6 +25,17 @@
     dc:identifier    :
     .
 
+#
+# Alias for owl:imports
+#
+
+ja:imports a rdf:Property
+    ; rdfs:label "Assembler.imports"
+    ; rdfs:comment 
+        """property whose object is another JA description to
+        be loaded into this one; equivalent to owl:imports."""
+    .
+    
 #
 # Assembler object: those things that can be specified and created
 #

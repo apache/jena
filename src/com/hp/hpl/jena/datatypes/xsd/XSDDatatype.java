@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.11 2006-01-11 14:15:59 chris-dollin Exp $
+ * $Id: XSDDatatype.java,v 1.12 2006-01-11 16:11:18 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes.xsd;
@@ -40,7 +40,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2006-01-11 14:15:59 $
+ * @version $Revision: 1.12 $ on $Date: 2006-01-11 16:11:18 $
  */
 public class XSDDatatype extends BaseDatatype {
 
@@ -589,7 +589,13 @@ public class XSDDatatype extends BaseDatatype {
     }    
     
     public int getHashCode( byte [] bytes )
-        { return bytes.length; }
+        {
+        int length = bytes.length;
+        return length == 0 
+            ? 0 
+            : (bytes[0] << 12) ^ (bytes[length / 2] << 6) ^ (bytes[length - 1]) ^ length
+            ;
+        }
         
 }
 

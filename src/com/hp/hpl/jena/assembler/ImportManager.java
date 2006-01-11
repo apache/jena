@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ImportManager.java,v 1.1 2006-01-11 10:26:02 chris-dollin Exp $
+ 	$Id: ImportManager.java,v 1.2 2006-01-11 16:11:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -11,6 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.OWL;
 
@@ -32,28 +33,41 @@ public class ImportManager
         imported models.
     */
     public static Model withImports( FileManager fm, Model model )
+        { return withImports( fm, model, new HashSet() ); }
+
+    private static Model withImports( FileManager fm, Model model, Set loading )
         {
-        StmtIterator it = model.listStatements( null, OWL.imports, (RDFNode) null );
-        if (it.hasNext())
+        StmtIterator oit = model.listStatements( null, OWL.imports, (RDFNode) null );
+        StmtIterator jit = model.listStatements( null, JA.imports, (RDFNode) null );
+        if (oit.hasNext() || jit.hasNext())
             {
             MultiUnion g = new MultiUnion( new Graph[] { model.getGraph() } );
-            Model result = ModelFactory.createModelForGraph( g );
-            while (it.hasNext()) g.addGraph( ImportManager.graphFor( fm, it.nextStatement() ) );
-            return result;
+            addImportedGraphs( fm, loading, oit, g );
+            addImportedGraphs( fm, loading, jit, g );
+            return ModelFactory.createModelForGraph( g );
             }
         else
             return model;
         }
 
+    private static void addImportedGraphs( FileManager fm, Set loading, StmtIterator oit, MultiUnion g )
+        {
+        while (oit.hasNext()) 
+            {
+            Resource url = oit.nextStatement().getResource();
+            if (loading.add( url ))
+                g.addGraph( ImportManager.graphFor( fm, loading, url ) );
+            }
+        }
+
     private static Map cache = new HashMap();
     
-    static Graph graphFor( FileManager fm, Statement s )
+    static Graph graphFor( FileManager fm, Set loading, Resource url )
         {
-        Resource url = s.getResource();
         Graph already = (Graph) cache.get( url );
         if (already == null)
             {
-            Graph result = withImports( fm, fm.loadModel( url.getURI() ) ).getGraph();
+            Graph result = withImports( fm, fm.loadModel( url.getURI() ), loading ).getGraph();
             cache.put( url, result );
             return result;
             }
