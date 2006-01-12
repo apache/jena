@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestImportManager.java,v 1.5 2006-01-12 10:16:01 chris-dollin Exp $
+ 	$Id: TestImportManager.java,v 1.6 2006-01-12 16:36:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -54,6 +54,38 @@ public class TestImportManager extends AssemblerTestBase
         Model m2 = new ImportManager().withImports( fm, m );
         assertInstanceOf( MultiUnion.class, m2.getGraph() );
         assertIsoModels( modelToLoad.union( m ), m2 );
+        }
+    
+    public void testImportMayBeLiteral()
+        {
+        final Model modelToLoad = model( "this hasMarker B5" );
+        Model  m = model( "x ja:reasoner y; _x ja:imports 'eh:/loadMe'" );
+        FileManager fm = new FixedFileManager().add( "eh:/loadMe", modelToLoad ); 
+        Model m2 = new ImportManager().withImports( fm, m );
+        assertInstanceOf( MultiUnion.class, m2.getGraph() );
+        assertIsoModels( modelToLoad.union( m ), m2 );
+        }
+    
+    public void testBadImportObjectFails()
+        {
+        testBadImportObjectFails( "_bnode" );
+        testBadImportObjectFails( "17" );
+        }
+
+    private void testBadImportObjectFails( String object )
+        {
+        String string = "x ja:imports " + object;
+        Model m = model( string );
+        try 
+            { 
+            new ImportManager().withImports( m );
+            fail( "should trap bad import specification " + string );
+            }
+        catch (BadObjectException e)
+            {
+            assertEquals( resource( "x" ), e.getRoot() );
+            assertEquals( rdfNode( m, object ), e.getObject() );
+            }
         }
     
     public void testFollowOwlImportsDeeply()

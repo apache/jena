@@ -1,13 +1,13 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelExpansion.java,v 1.2 2006-01-11 09:54:38 chris-dollin Exp $
+ 	$Id: TestModelExpansion.java,v 1.3 2006-01-12 16:36:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
 
 import com.hp.hpl.jena.assembler.ModelExpansion;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.*;
 
 public class TestModelExpansion extends AssemblerTestBase
     {
@@ -44,6 +44,13 @@ public class TestModelExpansion extends AssemblerTestBase
         Model schema = model( "R rdfs:range T" );
         Model answer = ModelExpansion.withSchema( base, schema );
         assertIsoModels( model( "a R b; b rdf:type T" ), answer );
+        }
+    
+    public void testX()
+        {
+        Model base = ModelFactory.createRDFSModel( model( "a R b; a rdfs:label 'hello'" ) );
+        Model schema = ModelFactory.createRDFSModel( model( "R rdfs:range T" ) );
+        Model answer = ModelExpansion.withSchema( base, schema );
         }
     
     public void testAddsSupertypes()

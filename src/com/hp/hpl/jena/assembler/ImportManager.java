@@ -1,18 +1,19 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ImportManager.java,v 1.3 2006-01-12 10:15:59 chris-dollin Exp $
+ 	$Id: ImportManager.java,v 1.4 2006-01-12 16:36:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
 
 import java.util.*;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.*;
 
 public class ImportManager
     {
@@ -72,18 +73,33 @@ public class ImportManager
         {
         while (oit.hasNext()) 
             {
-            Resource url = oit.nextStatement().getResource();
-            if (loading.add( url )) g.addGraph( graphFor( fm, loading, url ) );
+            String path = getObjectURI( oit.nextStatement() );
+            if (loading.add( path )) g.addGraph( graphFor( fm, loading, path ) );
             }
         }
     
-    protected Graph graphFor( FileManager fm, Set loading, Resource url )
+    private String getObjectURI( Statement s )
         {
-        Graph already = (Graph) cache.get( url );
+        RDFNode ob = s.getObject();
+        if (ob.isLiteral()) return literalString( s, (Literal) ob );
+        if (ob.isAnon()) throw new BadObjectException( s );
+        return ((Resource) ob).getURI();
+        }
+
+    private String literalString( Statement s, Literal L )
+        {
+        if (L.getDatatype() == null && L.getLanguage().equals( "" )) return L.getLexicalForm();
+        if (L.getDatatype() == XSDDatatype.XSDstring) return L.getLexicalForm();
+        throw new BadObjectException( s );
+        }
+
+    protected Graph graphFor( FileManager fm, Set loading, String path )
+        {
+        Graph already = (Graph) cache.get( path );
         if (already == null)
             {
-            Graph result = withImports( fm, fm.loadModel( url.getURI() ), loading ).getGraph();
-            cache.put( url, result );
+            Graph result = withImports( fm, fm.loadModel( path ), loading ).getGraph();
+            cache.put( path, result );
             return result;
             }
         else

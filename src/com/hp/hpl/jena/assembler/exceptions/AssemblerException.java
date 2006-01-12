@@ -1,12 +1,12 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerException.java,v 1.2 2006-01-06 11:48:51 chris-dollin Exp $
+ 	$Id: AssemblerException.java,v 1.3 2006-01-12 16:36:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
 
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
 
 /**
@@ -43,6 +43,9 @@ public class AssemblerException extends JenaException
     */
     protected static String nice( Resource r )
         { return r.asNode().toString( r.getModel() ); }
+    
+    protected static String nice( RDFNode r )
+        { return r.isLiteral() ? r.asNode().toString(): nice( (Resource) r ); }
     }
 
 
