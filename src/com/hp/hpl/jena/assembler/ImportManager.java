@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ImportManager.java,v 1.2 2006-01-11 16:11:18 chris-dollin Exp $
+ 	$Id: ImportManager.java,v 1.3 2006-01-12 10:15:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -11,20 +11,38 @@ import java.util.*;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.OWL;
 
 public class ImportManager
     {
+    public ImportManager()
+        {}
 
+    /**
+        A shared instance of ImportManage, used as a default by several other
+        assembler methods.
+    */
+    public final static ImportManager instance = new ImportManager();
+    
+    /**
+        The cache of models already read by this manager.
+    */
+    protected Map cache = new HashMap();
+    
+    /**
+        Clear this ImportManager's cache.
+    */
+    public void clear()
+        { cache.clear(); }
+    
     /**
         Answer <code>model</code> if it has no imports, or a union model with
         <code>model</code> as its base and its imported models as the other
-        components.
+        components. The default file manager is used to load the models.
     */
-    public static Model withImports( Model model )
-        { return ImportManager.withImports( FileManager.get(), model ); }
+    public Model withImports( Model model )
+        { return withImports( FileManager.get(), model ); }
 
     /**
         Answer <code>model</code> if it has no imports, or a union model with
@@ -32,10 +50,10 @@ public class ImportManager
         components. The file manager <code>fm</code> is used to load the
         imported models.
     */
-    public static Model withImports( FileManager fm, Model model )
+    public Model withImports( FileManager fm, Model model )
         { return withImports( fm, model, new HashSet() ); }
 
-    private static Model withImports( FileManager fm, Model model, Set loading )
+    private Model withImports( FileManager fm, Model model, Set loading )
         {
         StmtIterator oit = model.listStatements( null, OWL.imports, (RDFNode) null );
         StmtIterator jit = model.listStatements( null, JA.imports, (RDFNode) null );
@@ -50,19 +68,16 @@ public class ImportManager
             return model;
         }
 
-    private static void addImportedGraphs( FileManager fm, Set loading, StmtIterator oit, MultiUnion g )
+    private void addImportedGraphs( FileManager fm, Set loading, StmtIterator oit, MultiUnion g )
         {
         while (oit.hasNext()) 
             {
             Resource url = oit.nextStatement().getResource();
-            if (loading.add( url ))
-                g.addGraph( ImportManager.graphFor( fm, loading, url ) );
+            if (loading.add( url )) g.addGraph( graphFor( fm, loading, url ) );
             }
         }
-
-    private static Map cache = new HashMap();
     
-    static Graph graphFor( FileManager fm, Set loading, Resource url )
+    protected Graph graphFor( FileManager fm, Set loading, Resource url )
         {
         Graph already = (Graph) cache.get( url );
         if (already == null)
@@ -74,7 +89,6 @@ public class ImportManager
         else
             return already;
         }
-
     }
 
 

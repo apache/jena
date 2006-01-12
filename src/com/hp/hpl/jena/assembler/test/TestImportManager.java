@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestImportManager.java,v 1.4 2006-01-11 16:11:18 chris-dollin Exp $
+ 	$Id: TestImportManager.java,v 1.5 2006-01-12 10:16:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -41,7 +41,7 @@ public class TestImportManager extends AssemblerTestBase
         final Model modelToLoad = model( "this hasMarker B5" );
         Model  m = model( "x ja:reasoner y; _x owl:imports eh:/loadMe" );
         FileManager fm = new FixedFileManager().add( "eh:/loadMe", modelToLoad ); 
-        Model m2 = ImportManager.withImports( fm, m );
+        Model m2 = new ImportManager().withImports( fm, m );
         assertInstanceOf( MultiUnion.class, m2.getGraph() );
         assertIsoModels( modelToLoad.union( m ), m2 );
         }
@@ -51,7 +51,7 @@ public class TestImportManager extends AssemblerTestBase
         final Model modelToLoad = model( "this hasMarker B5" );
         Model  m = model( "x ja:reasoner y; _x ja:imports eh:/loadMe" );
         FileManager fm = new FixedFileManager().add( "eh:/loadMe", modelToLoad ); 
-        Model m2 = ImportManager.withImports( fm, m );
+        Model m2 = new ImportManager().withImports( fm, m );
         assertInstanceOf( MultiUnion.class, m2.getGraph() );
         assertIsoModels( modelToLoad.union( m ), m2 );
         }
@@ -64,7 +64,7 @@ public class TestImportManager extends AssemblerTestBase
         Model  m = model( "x ja:reasoner y; _x owl:imports M1" );
         FileManager fm = new FixedFileManager() 
             .add( "eh:/M1", m1 ).add( "eh:/M2", m2 );
-        Model result = ImportManager.withImports( fm, m );
+        Model result = new ImportManager().withImports( fm, m );
         assertInstanceOf( MultiUnion.class, result.getGraph() );
         assertIsoModels( m1.union(m2).union(m), result );
         }
@@ -76,18 +76,19 @@ public class TestImportManager extends AssemblerTestBase
             m2 = model( "this hasMarker My; _x owl:imports Mx" );
         FileManager fm = new FixedFileManager()
             .add( "eh:/Mx", m1 ).add( "eh:/My", m2 );
-        Model result = ImportManager.withImports( fm, m1 );
+        Model result = new ImportManager().withImports( fm, m1 );
         assertIsoModels( m1.union( m2 ), result );
         }
     
     public void testCacheModels()
         {
+        ImportManager im = new ImportManager();
         Model spec = model( "_x owl:imports M1" );
         Model m1 = model( "this isModel M1" );
         FileManager withM1 = new FixedFileManager().add( "eh:/M1", m1 );
-        Model A = ImportManager.withImports( withM1, spec );
+        Model A = im.withImports( withM1, spec );
         FileManager none = new FixedFileManager();
-        Model B = ImportManager.withImports( none, spec );
+        Model B = im.withImports( none, spec );
         assertIsoModels( A, B );
         }
     }

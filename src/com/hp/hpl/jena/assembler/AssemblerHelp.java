@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.8 2006-01-11 10:40:28 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.9 2006-01-12 10:15:59 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -36,13 +36,23 @@ public class AssemblerHelp
         Answer the full model of <code>m</code>, with all its imports included and
         with the necessary properties added from the JA schema. However, if
         the magic footprint triple (ja:this, rdf:type, ja:Expanded) is present in the
-        model, it is returned unchanged.
+        model, it is returned unchanged. Imports are managed by the shared
+        <code>ImportManager.instance</code>.
     */
     public static Model fullModel( Model m )
+        { return fullModel( ImportManager.instance, m ); }    
+    
+    /**
+        Answer the full model of <code>m</code>, with all its imports included and
+        with the necessary properties added from the JA schema. However, if
+        the magic footprint triple (ja:this, rdf:type, ja:Expanded) is present in the
+        model, it is returned unchanged. Imports are managed by <code>im</code>.
+    */
+    public static Model fullModel( ImportManager im, Model m )
         {
         return m.contains( JA.This, RDF.type, JA.Expanded )
             ? m
-            : (Model) ModelExpansion.withSchema( ImportManager.withImports( m ), JA.getSchema() )
+            : (Model) ModelExpansion.withSchema( im.withImports( m ), JA.getSchema() )
                 .add( JA.This, RDF.type, JA.Expanded )
                 .setNsPrefixes( PrefixMapping.Extended )
                 .setNsPrefixes( m )
