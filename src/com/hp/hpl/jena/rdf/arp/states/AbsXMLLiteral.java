@@ -183,8 +183,9 @@ public abstract class AbsXMLLiteral extends Frame {
         for (int i = atts.getLength()-1;i>=0;i--) {
             String ns = atts.getURI(i);
             String qname = atts.getQName(i);
-            if (!uri.equals(""))
-                useNameSpace(prefix(qname),ns, childNameSpaces);
+            String prefix = prefix(qname);
+            if (!prefix.equals(""))
+                useNameSpace(prefix,ns, childNameSpaces);
             attrMap.put(qname,atts.getValue(i));
         }
         // At this stage, childNameSpaces contains the new visibly used

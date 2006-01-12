@@ -386,6 +386,8 @@ WGTestSuite test175 = new com.hp.hpl.jena.rdf.arp.test.WGTestSuite(new TestInput
 TestSuite test176 = new TestSuite("ARP");
 Test test177 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported3","http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported3.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported3.nt",false);
 test176.addTest(test177);
+Test test177x = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html","http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html.nt",false);
+test176.addTest(test177x);
 Test test178 = test175.createWarningTest("http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_6","http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_6.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_6.nt",false,new int[]{103, });
 test176.addTest(test178);
 Test test179 = test175.createWarningTest("http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_5","http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_5.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_5.nt",false,new int[]{103, });

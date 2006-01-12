@@ -67,6 +67,16 @@
 >
 
 
+<test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html">
+   <test:status>ARP</test:status>
+   <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html.rdf" />
+   </test:inputDocument>
+   <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html.nt" />
+   </test:outputDocument>
+</test:PositiveParserTest>
+
 
 <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1">
 
