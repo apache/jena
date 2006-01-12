@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.3 2006-01-11 10:40:28 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.4 2006-01-12 15:11:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -77,8 +77,8 @@ public class ModelExpansion
             Property property = (Property) s.getSubject().as( Property.class );
             for (StmtIterator x = result.listStatements( ANY, property, ANY ); x.hasNext();)
                 {
-                Statement t = x.nextStatement();
-                result.add( t.getResource(), RDF.type, type );
+                RDFNode ob = x.nextStatement().getObject();
+                if (ob.isResource()) result.add( (Resource) ob, RDF.type, type );
                 }
             }
         }
