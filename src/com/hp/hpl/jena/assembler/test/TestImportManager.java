@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestImportManager.java,v 1.6 2006-01-12 16:36:43 chris-dollin Exp $
+ 	$Id: TestImportManager.java,v 1.7 2006-01-12 16:50:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -70,6 +70,8 @@ public class TestImportManager extends AssemblerTestBase
         {
         testBadImportObjectFails( "_bnode" );
         testBadImportObjectFails( "17" );
+        testBadImportObjectFails( "'chat'fr" );
+        testBadImportObjectFails( "'chat'xsd:wrong" );
         }
 
     private void testBadImportObjectFails( String object )
