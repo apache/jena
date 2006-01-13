@@ -1,12 +1,17 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.6 2006-01-13 08:37:28 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.7 2006-01-13 14:31:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
 
+import java.util.*;
+
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.util.IteratorCollection;
+import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -38,6 +43,7 @@ public class ModelExpansion
         addSubclassesFrom( result, schema );        
         addDomainTypes( result, schema );   
         addRangeTypes( result, schema );
+        addIntersections( result, schema );
         addSupertypes( result );
         return result;
         }
@@ -99,6 +105,67 @@ public class ModelExpansion
             }
         result.add( temp );
         }
+    
+    private static void addIntersections( Model result, Model schema )
+        {
+        StmtIterator it = schema.listStatements( ANY, OWL.intersectionOf, ANY );
+        while (it.hasNext()) addIntersections( result, schema, it.nextStatement() );
+        }
+
+    private static void addIntersections( Model result, Model schema, Statement s )
+        {
+        Resource type = s.getSubject();
+        List types = asJavaList( AssemblerHelp.getResource( s ) );
+        Set candidates = subjectSet( result, ANY, RDF.type, (Resource) types.get(0) );
+        for (int i = 1; i < types.size(); i += 1)
+            removeElementsWithoutType( candidates, (Resource) types.get(i) );
+        addTypeToAll( type, candidates );
+        }
+
+    private static void addTypeToAll( Resource type, Set candidates )
+        {
+        List types = equivalentTypes( type );
+        for (Iterator it = candidates.iterator(); it.hasNext();)
+            {
+            Resource resource = ((Resource) it.next());
+            for (int i = 0; i < types.size(); i += 1)
+                resource.addProperty( RDF.type, (Resource) types.get(i) );
+            }
+        }
+
+    private static List equivalentTypes( Resource type )
+        {
+        List types = new ArrayList();
+        types.add( type );
+        for (StmtIterator it = type.getModel().listStatements( ANY, OWL.equivalentClass, type ); it.hasNext();)
+            types.add( it.nextStatement().getSubject() );
+        return types;
+        }
+
+    private static void removeElementsWithoutType( Set candidates, Resource type )
+        {
+        for (Iterator it = candidates.iterator(); it.hasNext();)
+            {
+            Resource candidate = (Resource) it.next();
+            if (!candidate.hasProperty( RDF.type, type )) it.remove();
+            }
+        }
+
+    private static Set subjectSet( Model result, Resource S, Property P, RDFNode O )
+        {
+        return IteratorCollection.iteratorToSet
+            ( result.listStatements( S, P, O ) .mapWith( getSubject ) );
+        }
+
+    private static List asJavaList( Resource resource )
+        {
+        return ((RDFList) resource.as( RDFList.class )).asJavaList();
+        }
+
+    public static final Map1 getSubject = new Map1() 
+        {
+        public Object map1( Object o ) { return ((Statement) o).getSubject(); }
+        };
     }
 
 

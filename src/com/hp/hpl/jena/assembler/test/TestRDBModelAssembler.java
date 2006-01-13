@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRDBModelAssembler.java,v 1.4 2006-01-10 10:36:45 chris-dollin Exp $
+ 	$Id: TestRDBModelAssembler.java,v 1.5 2006-01-13 14:31:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -24,7 +24,9 @@ public class TestRDBModelAssembler extends AssemblerTestBase
 
     public void testRDBModelVocabulary()
         {
-        // TODO
+        Model m = model( "x rdf:type ja:Connectable; x rdf:type ja:NamedModel" );
+        Model answer = ModelExpansion.withSchema( m, JA.getSchema() );
+        assertTrue( "should infer x rdf:type ja:RDBModel", answer.contains( statement( "x rdf:type ja:RDBModel" ) ) );
         }
     
     public void testInvokesCreateModel()

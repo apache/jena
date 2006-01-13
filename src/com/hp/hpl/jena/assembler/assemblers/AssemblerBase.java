@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerBase.java,v 1.6 2006-01-13 10:56:19 chris-dollin Exp $
+ 	$Id: AssemblerBase.java,v 1.7 2006-01-13 14:31:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -32,7 +32,7 @@ public abstract class AssemblerBase implements Assembler
         {
         public Object map1( Object o ) { return ((Statement) o).getObject(); }
         };
-
+        
     public final Object open( Resource root )
         { return open( this, root ); }
 
@@ -75,7 +75,7 @@ public abstract class AssemblerBase implements Assembler
     public Model openModel( Resource root )
         { return openModel( root, Mode.DEFAULT ); }
 
-    protected Resource getRequiredResource( Resource root, Property p )
+    public static Resource getRequiredResource( Resource root, Property p )
         {
         Resource R = getUniqueResource( root, p );
         if (R == null) throw new PropertyRequiredException( root, p );

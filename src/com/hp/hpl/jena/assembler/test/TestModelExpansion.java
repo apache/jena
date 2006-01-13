@@ -1,10 +1,12 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelExpansion.java,v 1.3 2006-01-12 16:36:43 chris-dollin Exp $
+ 	$Id: TestModelExpansion.java,v 1.4 2006-01-13 14:31:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
+
+import java.util.*;
 
 import com.hp.hpl.jena.assembler.ModelExpansion;
 import com.hp.hpl.jena.rdf.model.*;
@@ -46,13 +48,49 @@ public class TestModelExpansion extends AssemblerTestBase
         assertIsoModels( model( "a R b; b rdf:type T" ), answer );
         }
     
-    public void testX()
+    public void testLabelsDontCrashExpansion()
         {
         Model base = ModelFactory.createRDFSModel( model( "a R b; a rdfs:label 'hello'" ) );
         Model schema = ModelFactory.createRDFSModel( model( "R rdfs:range T" ) );
         Model answer = ModelExpansion.withSchema( base, schema );
         }
     
+    public void testIntersection()
+        {
+        testIntersection( "x rdf:type T; x rdf:type U", true, "T U" );
+        testIntersection( "x rdf:type T; x rdf:type U", true, "T" );
+        testIntersection( "x rdf:type T; x rdf:type U", false, "T U V" );
+        testIntersection( "x rdf:type T; x rdf:type U; x rdf:type V", true, "T U V" );
+        }
+
+    private void testIntersection( String xTyped, boolean infers, String intersectionTypes )
+        {
+        Model base = model( xTyped );
+        Model schema = intersectionModel( "I", intersectionTypes );
+        Model answer = ModelExpansion.withSchema( base, schema );
+        assertEquals( "should [not] infer (x rdf:type I)", infers, answer.contains( statement( "x rdf:type I" ) ) );
+        }
+
+    private Model intersectionModel( String inter, String types )
+        {
+        return model( "I owl:equivalentClass _L; _L owl:intersectionOf _L1" + rdfList( "_L", types ) );
+        }
+    
+    private String rdfList( String base, String types )
+        {
+        StringBuffer result = new StringBuffer();
+        List L = listOfStrings( types );
+        String rest = "rdf:nil";
+        for (int i = L.size(); i > 0; i -= 1)
+            {
+            String current = base + i;
+            result.append( "; " ).append( current ).append( " rdf:rest " ).append( rest );
+            result.append( "; " ).append( current ).append( " rdf:first " ).append( L.get(i-1) );
+            rest = current;
+            }
+        return result.toString();
+        }
+
     public void testAddsSupertypes()
         {
         Model base = model( "a rdf:type T; T rdfs:subClassOf U" );

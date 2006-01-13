@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.4 2006-01-11 16:11:18 chris-dollin Exp $
+# $Id: assembler.n3,v 1.5 2006-01-13 14:31:42 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -241,6 +241,7 @@ ja:RDBModel a rdfs:Class
     ; rdfs:subClassOf ja:NamedModel
     ; rdfs:subClassOf [owl:onProperty ja:connection; owl:cardinality 1]
     ; rdfs:subClassOf ja:Connectable
+    ; owl:equivalentClass [owl:intersectionOf (ja:Connectable ja:NamedModel)]
     ; rdfs:label "Assembler.RDBModel"
     ; rdfs:comment
         """a Model from a Jena relational database, specified by a
