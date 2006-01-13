@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestContentAssembler.java,v 1.3 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestContentAssembler.java,v 1.4 2006-01-13 08:38:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -120,6 +120,25 @@ public class TestContentAssembler extends AssemblerTestBase
             {
             assertEquals( "bogus", e.getEncoding() );
             assertEquals( resource( "x" ), e.getRoot() );
+            }
+        }
+    
+    public void testContentTrapsBadObjects()
+        {
+        testContentTrapsBadObjects( "ja:content" );
+        testContentTrapsBadObjects( "ja:externalContent" );
+        testContentTrapsBadObjects( "ja:quotedContent" );
+        }
+
+    private void testContentTrapsBadObjects( String property )
+        {
+        Assembler a = new ContentAssembler();
+        Resource root = resourceInModel( "x rdf:type ja:Content; x <here> 17".replaceAll( "<here>", property ) );
+        try { a.open( root ); fail( "should trap bad content resource" ); }
+        catch (BadObjectException e) 
+            {
+            assertEquals( resource( "x" ), e.getRoot() );
+            assertEquals( rdfNode( empty, "17" ), e.getObject() );
             }
         }
     

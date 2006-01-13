@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerBase.java,v 1.4 2006-01-10 10:36:45 chris-dollin Exp $
+ 	$Id: AssemblerBase.java,v 1.5 2006-01-13 08:37:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -25,7 +25,7 @@ public abstract class AssemblerBase implements Assembler
             { this.a = a; }
         
         public Object map1( Object o )
-            { return a.open( ((Statement) o).getResource() ); }
+            { return a.open( getResource( (Statement) o ) ); }
         }
 
     static final Map1 getObject = new Map1() 
@@ -80,6 +80,9 @@ public abstract class AssemblerBase implements Assembler
         if (L == null) throw new PropertyRequiredException( root, p );
         return L;
         }
+    
+    protected static Resource getResource( Statement s )
+        { return AssemblerHelp.getResource( s ); }
 
     }
 

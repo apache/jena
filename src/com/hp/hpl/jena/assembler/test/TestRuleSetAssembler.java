@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRuleSetAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestRuleSetAssembler.java,v 1.3 2006-01-13 08:38:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -86,6 +86,28 @@ public class TestRuleSetAssembler extends AssemblerTestBase
         Set expected = new HashSet( Rule.parseRules( ruleStringA ) );
         RuleSet rules = (RuleSet) a.open( root );
         assertEquals( expected, new HashSet( rules.getRules() ) );
+        }
+    
+    public void testTrapsBadRulesObject()
+        {
+        testTrapsBadRuleObject( "ja:rules" );
+        testTrapsBadRuleObject( "ja:rulesFrom" );
+        }
+
+    private void testTrapsBadRuleObject( String property )
+        {
+        Assembler a = new RuleSetAssembler();
+        Resource root = resourceInModel( "x rdf:type ja:RuleSet; x <here> 'y'".replaceAll( "<here>", property ) );
+        try 
+            {
+            a.open( root );
+            fail( "should trap bad rules object" );
+            }
+        catch (BadObjectException e) 
+            { 
+            assertEquals( resource( "x" ), e.getRoot() );
+            assertEquals( rdfNode( empty, "'y'" ), e.getObject() );
+            }
         }
 
     protected static String file( String name )

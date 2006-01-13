@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: PrefixMappingAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: PrefixMappingAssembler.java,v 1.4 2006-01-13 08:37:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -30,7 +30,7 @@ public class PrefixMappingAssembler extends AssemblerBase implements Assembler
         for (StmtIterator it = root.listProperties( JA.includes ); it.hasNext();)
             {
             Statement s = it.nextStatement();
-            PrefixMapping sub = (PrefixMapping) a.open( s.getResource() );
+            PrefixMapping sub = (PrefixMapping) a.open( getResource( s ) );
             result.setNsPrefixes( sub );
             }
         }

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: BadObjectException.java,v 1.1 2006-01-12 16:31:29 chris-dollin Exp $
+ 	$Id: BadObjectException.java,v 1.2 2006-01-13 08:37:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -9,6 +9,13 @@ package com.hp.hpl.jena.assembler;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.rdf.model.*;
 
+/**
+    Exception used to report that the object of a statement is not a Resource.
+    The subject of the exception is treated as the root object. The nature of the
+    unsuitability is (currently) not described.
+    
+    @author kers
+*/
 public class BadObjectException extends AssemblerException
     {
     protected final RDFNode object;
@@ -21,11 +28,15 @@ public class BadObjectException extends AssemblerException
 
     private static String makeMessage( Statement s )
         { 
+        RDFNode subject = s.getObject();
         return 
-            nice( s.getObject() ) 
+            "the " + typeOf( subject ) + " " + nice( subject ) 
             + " is unsuitable as the object of a " + nice( s.getPredicate() ) 
             + " statement";
         }
+
+    private static String typeOf( RDFNode x )
+        { return x.isAnon() ? "bnode" : x.isLiteral() ? "literal" : "resource"; }
 
     public RDFNode getObject()
         { return object; }

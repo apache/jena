@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.9 2006-01-12 10:15:59 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.10 2006-01-13 08:37:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -118,7 +118,7 @@ public class AssemblerHelp
         // System.err.println( ">> considering " + root + " ---------------------------" );
         while (types.hasNext())
             {
-            Resource type = types.nextStatement().getResource();
+            Resource type = getResource( types.nextStatement() );
             // System.err.println( "]]  possible type " + type );
             if (desc.contains( type, RDFS.subClassOf, JA.Object ))
                 {
@@ -145,6 +145,17 @@ public class AssemblerHelp
         if (results.size() == 0)
             return JA.Object;
         throw new NoSpecificTypeException( root, results );
+        }
+
+    /**
+        Answer the resource that is the object of the statement <code>s</code>. If
+        the object is not a resource, throw a BadObjectException with that statement.
+    */
+    public static Resource getResource( Statement s )
+        {
+        RDFNode ob = s.getObject();
+        if (ob.isLiteral()) throw new BadObjectException( s );
+        return (Resource) ob;
         }
     }
 

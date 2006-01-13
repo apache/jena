@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnionModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: UnionModelAssembler.java,v 1.4 2006-01-13 08:37:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -40,7 +40,7 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
         {
         for (StmtIterator it = root.listProperties( JA.subModel ); it.hasNext();)
             {
-            Resource resource = it.nextStatement().getResource();
+            Resource resource = getResource( it.nextStatement() );
             union.addGraph( a.openModel( resource, mode ).getGraph() );        
             }
         }

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestUnionModelAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: TestUnionModelAssembler.java,v 1.4 2006-01-13 08:38:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -79,6 +79,22 @@ public class TestUnionModelAssembler extends AssemblerTestBase
         List L = mu.getSubGraphs();
         assertEquals( expected, new HashSet( L ) );
         checkImmutable( m );
+        }
+    
+    public void testSubModelsCheckObject()
+        {
+        Resource root = resourceInModel( "x rdf:type ja:UnionModel; x ja:subModel 'A'" );
+        Assembler a = new UnionModelAssembler();
+        try 
+            { 
+            a.open( root ); 
+            fail( "should trap unsuitable object" );
+            }
+        catch (BadObjectException e) 
+            { 
+            assertEquals( resource( "x" ), e.getRoot() ); 
+            assertEquals( rdfNode( empty, "'A'" ), e.getObject() );
+            }
         }
     
     public void testCreatesUnionWithBaseModel()
