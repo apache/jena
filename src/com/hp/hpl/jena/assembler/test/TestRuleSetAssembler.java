@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRuleSetAssembler.java,v 1.3 2006-01-13 08:38:00 chris-dollin Exp $
+ 	$Id: TestRuleSetAssembler.java,v 1.4 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -10,7 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.RuleSetAssembler;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
 
 public class TestRuleSetAssembler extends AssemblerTestBase
@@ -90,23 +90,30 @@ public class TestRuleSetAssembler extends AssemblerTestBase
     
     public void testTrapsBadRulesObject()
         {
-        testTrapsBadRuleObject( "ja:rules" );
-        testTrapsBadRuleObject( "ja:rulesFrom" );
+        testTrapsBadRuleObject( "ja:rules", "'y'" );
+        testTrapsBadRuleObject( "ja:rulesFrom", "17" );
+        testTrapsBadRuleObject( "ja:rule", "aResource" );
+        testTrapsBadRuleObject( "ja:rule", "17" );
+        testTrapsBadRuleObject( "ja:rule", "'something'xsd:else" );
         }
 
-    private void testTrapsBadRuleObject( String property )
+    private void testTrapsBadRuleObject( String property, String value )
         {
         Assembler a = new RuleSetAssembler();
-        Resource root = resourceInModel( "x rdf:type ja:RuleSet; x <here> 'y'".replaceAll( "<here>", property ) );
+        Resource root = resourceInModel
+            ( "x rdf:type ja:RuleSet; x <property> <value>"
+              .replaceAll( "<property>", property ).replaceAll( "<value>", value ) 
+            );
         try 
             {
             a.open( root );
-            fail( "should trap bad rules object" );
+            fail( "should trap bad rules object " + value + " for property " + property );
             }
         catch (BadObjectException e) 
             { 
+            Model m = e.getRoot().getModel();
             assertEquals( resource( "x" ), e.getRoot() );
-            assertEquals( rdfNode( empty, "'y'" ), e.getObject() );
+            assertEquals( rdfNode( m, value ), e.getObject() );
             }
         }
 

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestConnectionAssembler.java,v 1.3 2006-01-10 15:30:42 chris-dollin Exp $
+ 	$Id: TestConnectionAssembler.java,v 1.4 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -98,6 +98,27 @@ public class TestConnectionAssembler extends AssemblerTestBase
         assertEquals( "", new ConnectionAssembler().getPassword( root ) );
         assertEquals( "jdbc:mysql://localhost/test", new ConnectionAssembler().getURL( root ) );
         assertEquals( "MySQL", new ConnectionAssembler().getType( root ) );
+        }
+    
+    public void testTrapsNonStringObjects()
+        {
+        testTrapsNonStringObjects( "ja:dbClass", "aResource" );
+        testTrapsNonStringObjects( "ja:dbClass", "17" );
+        testTrapsNonStringObjects( "ja:dbClass", "'tag'de" );
+        testTrapsNonStringObjects( "ja:dbClassProperty", "aResource" );
+        testTrapsNonStringObjects( "ja:dbClassProperty", "17" );
+        testTrapsNonStringObjects( "ja:dbClassProperty", "'tag'de" );
+        }
+    
+    private void testTrapsNonStringObjects( String property, String value )
+        {
+        Resource root = resourceInModel( "x rdf:type ja:Connection; x <property> <value>".replaceAll( "<property>", property ).replaceAll( "<value>", value ) );
+        try 
+            { new ConnectionAssembler().open( root );
+            fail( "should trap bad object " + value + " for property " + property ); }
+        catch (BadObjectException e)
+            { assertEquals( resource( "x" ), e.getRoot() );
+            assertEquals( rdfNode( empty, value ), e.getObject() ); }
         }
     
     public void testOpenConnectionWIthLabels()

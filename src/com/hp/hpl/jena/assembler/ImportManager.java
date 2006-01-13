@@ -1,14 +1,13 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ImportManager.java,v 1.4 2006-01-12 16:36:42 chris-dollin Exp $
+ 	$Id: ImportManager.java,v 1.5 2006-01-13 10:55:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
 
 import java.util.*;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.rdf.model.*;
@@ -81,16 +80,9 @@ public class ImportManager
     private String getObjectURI( Statement s )
         {
         RDFNode ob = s.getObject();
-        if (ob.isLiteral()) return literalString( s, (Literal) ob );
+        if (ob.isLiteral()) return AssemblerHelp.getString( s );
         if (ob.isAnon()) throw new BadObjectException( s );
         return ((Resource) ob).getURI();
-        }
-
-    private String literalString( Statement s, Literal L )
-        {
-        if (L.getDatatype() == null && L.getLanguage().equals( "" )) return L.getLexicalForm();
-        if (L.getDatatype() == XSDDatatype.XSDstring) return L.getLexicalForm();
-        throw new BadObjectException( s );
         }
 
     protected Graph graphFor( FileManager fm, Set loading, String path )

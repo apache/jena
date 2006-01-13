@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestContentAssembler.java,v 1.4 2006-01-13 08:38:00 chris-dollin Exp $
+ 	$Id: TestContentAssembler.java,v 1.5 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -125,20 +125,25 @@ public class TestContentAssembler extends AssemblerTestBase
     
     public void testContentTrapsBadObjects()
         {
-        testContentTrapsBadObjects( "ja:content" );
-        testContentTrapsBadObjects( "ja:externalContent" );
-        testContentTrapsBadObjects( "ja:quotedContent" );
+        testContentTrapsBadObjects( "ja:content", "17" );
+        testContentTrapsBadObjects( "ja:externalContent", "17" );
+        testContentTrapsBadObjects( "ja:quotedContent", "17" );
+        testContentTrapsBadObjects( "ja:literalContent", "aResource" );
+        testContentTrapsBadObjects( "ja:literalContent", "17" );
+        testContentTrapsBadObjects( "ja:literalContent", "'plume'fr" );
         }
 
-    private void testContentTrapsBadObjects( String property )
+    private void testContentTrapsBadObjects( String property, String value )
         {
         Assembler a = new ContentAssembler();
-        Resource root = resourceInModel( "x rdf:type ja:Content; x <here> 17".replaceAll( "<here>", property ) );
+        Resource root = resourceInModel
+            ( "x rdf:type ja:Content; x <property> <value>"
+            .replaceAll( "<property>", property ).replaceAll( "<value>", value ) );
         try { a.open( root ); fail( "should trap bad content resource" ); }
         catch (BadObjectException e) 
             {
             assertEquals( resource( "x" ), e.getRoot() );
-            assertEquals( rdfNode( empty, "17" ), e.getObject() );
+            assertEquals( rdfNode( empty, value ), e.getObject() );
             }
         }
     

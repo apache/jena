@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FileModelAssembler.java,v 1.4 2006-01-10 15:30:42 chris-dollin Exp $
+ 	$Id: FileModelAssembler.java,v 1.5 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -40,8 +40,8 @@ public class FileModelAssembler extends NamedModelAssembler implements Assembler
 
     protected String getLanguage( Resource root, File fullName )
         {
-        Literal L = getUniqueLiteral( root, JA.fileEncoding );
-        return L == null ? FileUtils.guessLang( fullName.toString() ) : L.getString();
+        Statement s = getUniqueStatement( root, JA.fileEncoding );
+        return s == null ? FileUtils.guessLang( fullName.toString() ) : getString( s );
         }    
 
     protected File getFileName( Resource root )

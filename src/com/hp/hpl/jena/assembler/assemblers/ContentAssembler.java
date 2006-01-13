@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ContentAssembler.java,v 1.4 2006-01-13 08:37:59 chris-dollin Exp $
+ 	$Id: ContentAssembler.java,v 1.5 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -61,8 +61,8 @@ public class ContentAssembler extends AssemblerBase implements Assembler
         StmtIterator it = root.listProperties( JA.literalContent );
         while (it.hasNext())
             {
-            Literal literal = it.nextStatement().getLiteral();
-            Model model = parseAs( root, encoding, literal.getLexicalForm() );
+            String s = getString( it.nextStatement() );
+            Model model = parseAs( root, encoding, s );
             contents.add( newModelContent( model ) );
             }
         }

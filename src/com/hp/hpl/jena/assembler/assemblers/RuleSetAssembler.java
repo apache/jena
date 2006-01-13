@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RuleSetAssembler.java,v 1.4 2006-01-13 08:37:59 chris-dollin Exp $
+ 	$Id: RuleSetAssembler.java,v 1.5 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -56,7 +56,7 @@ public class RuleSetAssembler extends AssemblerBase implements Assembler
         StmtIterator it = root.listProperties( JA.rule );
         while (it.hasNext())
             {
-            String s = it.nextStatement().getString();
+            String s = getString( it.nextStatement() );
             result.addAll( Rule.parseRules( s ) );
             }
         }

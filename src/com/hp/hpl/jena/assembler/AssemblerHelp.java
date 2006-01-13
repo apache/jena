@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.10 2006-01-13 08:37:28 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.11 2006-01-13 10:55:34 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -11,6 +11,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup;
 import com.hp.hpl.jena.assembler.exceptions.NoSpecificTypeException;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -78,7 +79,7 @@ public class AssemblerHelp
         try
             {
             Resource type = statement.getSubject();
-            Class c = Class.forName( statement.getString() );
+            Class c = Class.forName( getString( statement ) );
             Constructor con = getResourcedConstructor( c );
             if (con == null)
                 establish( group, type, c.newInstance() );
@@ -156,6 +157,29 @@ public class AssemblerHelp
         RDFNode ob = s.getObject();
         if (ob.isLiteral()) throw new BadObjectException( s );
         return (Resource) ob;
+        }
+
+    /**
+        Answer the plain string object of the statement <code>s</code>. If the
+        object is not a string literal, throw a BadObjectException with that statement.
+    */
+    public static String getString( Statement s )
+        {
+        RDFNode ob = s.getObject();
+        if (ob.isResource()) throw new BadObjectException( s );
+        Literal L = (Literal) ob;
+        if (!L.getLanguage().equals( "" )) throw new BadObjectException( s );
+        if (L.getDatatype() == null) return L.getLexicalForm();
+        if (L.getDatatype() == XSDDatatype.XSDstring) return L.getLexicalForm();
+        throw new BadObjectException( s );
+        }
+
+    public static String getString( Statement s, Literal L )
+        {
+        if (!L.getLanguage().equals( "" )) throw new BadObjectException( s );
+        if (L.getDatatype() == null) return L.getLexicalForm();
+        if (L.getDatatype() == XSDDatatype.XSDstring) return L.getLexicalForm();
+        throw new BadObjectException( s );
         }
     }
 

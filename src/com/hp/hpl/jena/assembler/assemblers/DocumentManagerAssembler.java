@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: DocumentManagerAssembler.java,v 1.3 2006-01-09 16:02:17 chris-dollin Exp $
+ 	$Id: DocumentManagerAssembler.java,v 1.4 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -25,8 +25,8 @@ public class DocumentManagerAssembler extends AssemblerBase
 
     private String getPath( Assembler a, Resource root )
         {
-        Literal L = getUniqueLiteral( root, JA.policyPath );
-        return L == null ? OntDocumentManager.DEFAULT_METADATA_PATH : L.getString();
+        String s = getUniqueString( root, JA.policyPath );
+        return s == null ? OntDocumentManager.DEFAULT_METADATA_PATH : s;
         }
 
     private FileManager getFileManager( Assembler a, Resource root )

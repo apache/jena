@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionAssembler.java,v 1.4 2006-01-10 15:30:42 chris-dollin Exp $
+ 	$Id: ConnectionAssembler.java,v 1.5 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -58,7 +58,7 @@ public class ConnectionAssembler extends AssemblerBase implements Assembler
         {
         for (StmtIterator it = root.listProperties( JA.dbClassProperty ); it.hasNext();)
             {
-            String propertyName = it.nextStatement().getString();
+            String propertyName = getString( it.nextStatement() );
             String className = System.getProperty( propertyName );
             try { Class.forName( className ); }
             catch (ClassNotFoundException e)
@@ -66,7 +66,7 @@ public class ConnectionAssembler extends AssemblerBase implements Assembler
             }
         for (StmtIterator it = root.listProperties( JA.dbClass ); it.hasNext();)
             {
-            String className = it.nextStatement().getString();
+            String className = getString( it.nextStatement() );
             try { Class.forName( className ); }
             catch (ClassNotFoundException e)
                 { throw new CannotLoadClassException( root, className, e ); }

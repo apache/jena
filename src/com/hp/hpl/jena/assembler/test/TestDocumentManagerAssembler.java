@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestDocumentManagerAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestDocumentManagerAssembler.java,v 1.3 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -72,6 +72,27 @@ public class TestDocumentManagerAssembler extends AssemblerTestBase
             };
         OntDocumentManager d = (OntDocumentManager) a.open( root );
         assertEquals( listOfOne( "somePath" ), history );
+        }    
+    
+    public void testTrapsPolicyPathNotString()
+        {
+        testTrapsBadPolicyPath( "aResource" );
+        testTrapsBadPolicyPath( "17" );
+        testTrapsBadPolicyPath( "'char'en" );
+        testTrapsBadPolicyPath( "'cafe'xsd:integer" );
+        }
+
+    private void testTrapsBadPolicyPath( String path )
+        {
+        Resource root = resourceInModel( "x rdf:type ja:DocumentManager; x ja:policyPath <policy>".replaceAll( "<policy>", path ) );
+        final List history = new ArrayList();
+        Assembler a = new DocumentManagerAssembler();
+        try
+            { a.open( root );
+            fail( "should trap illegal policy path object " + path ); }
+        catch (BadObjectException e)
+            { assertEquals( resource( "x" ), e.getRoot() );
+            assertEquals( rdfNode( root.getModel(), path ), e.getObject() ); }
         }
     
     public void testSetsMetadata()

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFileModelAssembler.java,v 1.3 2006-01-10 15:30:42 chris-dollin Exp $
+ 	$Id: TestFileModelAssembler.java,v 1.4 2006-01-13 10:56:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -63,7 +63,7 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
         Model m = a.openModel( root  );
         assertSame( model, m );
         }
-    
+
     public void testFileModelAssemblerUsesLanguage()
         {
         final Model model = ModelFactory.createDefaultModel();
@@ -78,6 +78,31 @@ public class TestFileModelAssembler extends ModelAssemblerTestBase
             };
         Model m = a.openModel( root  );
         assertSame( model, m );
+        }
+    
+    public void testFileModelAssemblerTrapsBadLanguage()
+        {
+        testTrapsBadLanguage( "badLanguage" );
+        testTrapsBadLanguage( "17" );
+        testTrapsBadLanguage( "'invalid'xsd:rhubarb" );
+        }
+
+    private void testTrapsBadLanguage( String lang )
+        {
+        final Model model = ModelFactory.createDefaultModel();
+        Resource root = resourceInModel( "x rdf:type ja:FileModel; x ja:modelName 'junk'; x ja:directory file:; x ja:fileEncoding <lang>".replaceAll( "<lang>", lang ) );
+        FileModelAssembler a = new FileModelAssembler()
+            {
+            public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle style )
+                { return model; }
+            };
+        try 
+            { a.openModel( root  ); 
+            fail( "should trap bad fileEncoding object" ); }
+        catch (BadObjectException e)
+            { Model m = e.getRoot().getModel();
+            assertEquals( resource( "x" ), e.getRoot() ); 
+            assertEquals( rdfNode( m, lang ), e.getObject() ); }
         }
     
     public void testFileModelAssemblerUsesStyle()
