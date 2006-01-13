@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.7 2006-01-13 14:31:41 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.8 2006-01-13 15:00:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.assembler;
 import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.*;
