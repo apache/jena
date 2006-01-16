@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.40 2005-08-03 13:06:34 chris-dollin Exp $
+  $Id: TestNode.java,v 1.41 2006-01-16 11:34:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -226,6 +226,13 @@ public class TestNode extends GraphTestBase
     public void testGetLiteralFails( Node n )
         { try { n.getLiteral(); fail( n.getClass() + " should fail getLiteral()" ); } catch (UnsupportedOperationException e) {} }
         
+    
+    public void testGetBlankNodeLabelString()
+        {
+        Node n = Node.createAnon();
+        assertEquals( n.getBlankNodeId().getLabelString(), n.getBlankNodeLabel() );
+        }
+    
     public void testVariableSupport()
         {
         assertEquals( Node_Variable.variable( "xxx" ), Node_Variable.variable( "xxx" ) );

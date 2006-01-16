@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.7 2005-06-29 14:38:40 chris-dollin Exp $
+ * $Id: AnonId.java,v 1.8 2006-01-16 11:34:44 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2005-06-29 14:38:40 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2006-01-16 11:34:44 $
  */
 
 // This version contains experimental modifications by der to 
@@ -98,6 +98,14 @@ public class AnonId extends java.lang.Object {
      * @return a string representation of the id
      */    
     public String toString() {
+        return id;
+    }
+    
+    /**
+        Answer the label string of this AnonId. To be used in preference to
+        toString().
+    */
+    public String getLabelString() {
         return id;
     }
     

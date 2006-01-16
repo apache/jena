@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.51 2005-10-26 14:15:40 chris-dollin Exp $
+  $Id: Node.java,v 1.52 2006-01-16 11:34:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -205,27 +205,45 @@ public abstract class Node {
     */                     
     public abstract boolean isConcrete();
         
-    /** is this a literal node - overridden in Node_Literal */
+    /** 
+         Answer true iff this node is a literal node [subclasses override]
+    */
     public boolean isLiteral() 
         { return false; }
     
-    /** is this a blank node - overridden in Node_Blank */
+    /** 
+        Answer true iff this node is a blank node [subclasses override]
+    */
     public boolean isBlank()
         { return false; }
     
-    /** is this a URI node - overridden in Node_URI */
+    /** 
+         Answer true iff this node is a URI node [subclasses override]
+    */
     public boolean isURI()
         { return false; }
         
-    /** is this a variable node - overridden in Node_Variable */
+    /** 
+        Answer true iff this node is a variable node - subclasses override
+    */
     public boolean isVariable()
         { return false; }
 
     /** get the blank node id if the node is blank, otherwise die horribly */    
     public AnonId getBlankNodeId() 
         { throw new UnsupportedOperationException( this + " is not a blank node" ); }
+
+    /**
+        Answer the label of this blank node or throw an UnsupportedOperationException
+        if it's not blank.
+    */
+    public Object getBlankNodeLabel()
+        { return getBlankNodeId().toString(); }    
     
-    /** get the literal value of a literal node, otherwise die horribly */
+    /** 
+         Answer the literal value of a literal node, or throw an UnsupportedOperationException
+         if it's not a literal node 
+     */
     public LiteralLabel getLiteral()
         { throw new UnsupportedOperationException( this + " is not a literal node" ); }
 
@@ -431,9 +449,8 @@ public abstract class Node {
         and compressing URIs using the prefix mapping supplied.
     */
     public String toString( PrefixMapping pm, boolean quoting )
-        { return label.toString(); }    
-        
-}
+        { return label.toString(); }
+    }
 
 /*
     (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
