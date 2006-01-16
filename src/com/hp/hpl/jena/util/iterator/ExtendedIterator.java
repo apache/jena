@@ -1,10 +1,12 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ExtendedIterator.java,v 1.6 2005-02-21 12:19:15 andy_seaborne Exp $
+  $Id: ExtendedIterator.java,v 1.7 2006-01-16 15:19:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
+
+import java.util.*;
 
 /**
     an ExtendedIterator is a ClosableIterator on which other operations are
@@ -55,10 +57,22 @@ public interface ExtendedIterator extends ClosableIterator
          copied; it is consumed as the result is consumed.
      */
      public ExtendedIterator mapWith( Map1 map1 );
+
+    /**
+         Answer a list of the [remaining] elements of this iterator, in order,
+         consuming this iterator.
+    */
+    public List toList();
+
+    /**
+        Answer a set of the [remaining] elements of this iterator, in order,
+        consuming this iterator.
+    */
+    public Set toSet();
     }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

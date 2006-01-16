@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.8 2005-06-29 16:33:23 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.9 2006-01-16 15:19:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -20,6 +20,7 @@ public class TestPackage extends TestSuite
         addTest( TestNullIterator.suite() );
         addTest( TestFilters.suite() );
         addTest( TestAndThen.suite() );
+        addTestSuite( TestAsCollection.class );
         addTest( new TestSuite( TestResourceUtils.class ) );
         }
     }

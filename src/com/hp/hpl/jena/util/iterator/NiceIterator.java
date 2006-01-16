@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.14 2005-06-29 16:33:23 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.15 2006-01-16 15:19:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -145,11 +145,44 @@ public class NiceIterator implements ExtendedIterator
      */
     static public ExtendedIterator emptyIterator() 
         { return emptyInstance; }
-  
+
+    /**
+        Answer a list of the elements in order, consuming this iterator.
+    */
+    public List toList()
+        { return asList( this ); }
+
+    /**
+        Answer a list of the elements in order, consuming this iterator.
+    */
+    public Set toSet()
+        { return asSet( this ); }
+
+    /**
+        Answer a list of the elements of <code>it</code> in order, consuming this iterator.
+        Canonical implementation of toSet().
+    */
+    public static Set asSet( ExtendedIterator it )
+        {
+        Set result = new HashSet();
+        while (it.hasNext()) result.add( it.next() );
+        return result;
+        }
+
+    /**
+        Answer a list of the elements from <code>it</code>, in order, consuming
+        that iterator. Canonical implementation of toList().
+    */
+    public static List asList( ExtendedIterator it )
+        {
+        List result = new ArrayList();
+        while (it.hasNext()) result.add( it.next() );
+        return result;
+        }
     }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

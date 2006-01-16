@@ -3,6 +3,31 @@ Release Notes
 
 Post-Jena 2.3
 
+ExtendedIterator [hence NiceIterator and ResultSetIterator]
+    o added toSet() and toList(), which bundle the [remaining]
+      elements of the iterator up as a Set or List. Testing
+      these is a bit tricky; for the moment I've cheated by
+      testing specific instacnes of WrappedIterator, which is
+      built on NiceIterator, and NiceIterator is the base class
+      for /almost/ all the ExtendedIterators in the system,
+      except ResultSetIterator for which I added special code.
+
+Node
+    o added getBlankNodeLabel() as shortcut to the label string
+      of a blank node.
+
+AnonId
+    o added getLabelString(), which delivers the label of this
+      AnonId and (unlike toString()) is guaranteed to do
+      /only/ that.
+      
+GraphMatcher
+    o following up on a performance issue, replaced the idiom
+      find().hasNext() for containment in GraphMatch with proper
+      use of contains(). After fixing a hashing problem in
+      LiteralLabel [see below], this worked and sped up the
+      checker /lots/ in some circumstances.
+      
 NEW: Assembler specifications
     o Assembler specifications replace the old ModelSpecs. They are
       documented in doc/assembler/index.html and linked pages.
@@ -24,7 +49,11 @@ FileGraph[Maker]
 LiteralLabel
     o reported bug whereby a LiteralLabel can be constructed with the
       value part null has been fixed [by putting in the missing 'this.']
-
+    o discovered a problem with literal labels whose values are arrays:
+      hashing doesn't work. Added delegation so that an RDFDataType
+      can provide a specialised hash function and arranged that the
+      relevant XSD datatypes used it.
+      
 Database:
     o Added a based MS SQL Server 2000/MSDE 2000 driver.
     
