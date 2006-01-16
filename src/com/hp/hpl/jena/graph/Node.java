@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.52 2006-01-16 11:34:35 chris-dollin Exp $
+  $Id: Node.java,v 1.53 2006-01-16 11:42:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -238,7 +238,7 @@ public abstract class Node {
         if it's not blank.
     */
     public Object getBlankNodeLabel()
-        { return getBlankNodeId().toString(); }    
+        { return getBlankNodeId().getLabelString(); }    
     
     /** 
          Answer the literal value of a literal node, or throw an UnsupportedOperationException
