@@ -7,11 +7,11 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-11-02 22:31:25 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-01-17 09:19:58 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -29,6 +29,8 @@ import java.io.OutputStream;
 import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl;
+import com.hp.hpl.jena.shared.NoWriterForLangException;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
@@ -91,7 +93,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.7 2005-11-02 22:31:25 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.8 2006-01-17 09:19:58 chris-dollin Exp $)
  */
 public class rdfcat
 {
@@ -211,36 +213,51 @@ public class rdfcat
 
     /** Set the language to write the output model in */
     protected void setOutput( String lang ) {
-        if ("RDF/XML".equalsIgnoreCase( lang ) ||
-            "x".equalsIgnoreCase( lang) ||
-            "xml".equalsIgnoreCase( lang) ||
-            "rdf".equalsIgnoreCase( lang) ||
-        "rdfxml".equalsIgnoreCase( lang ))
-        {
-            m_outputFormat = "RDF/XML";
-        }
-        else if ("RDF/XML-ABBREV".equalsIgnoreCase( lang ) ||
-                 "abbrev".equalsIgnoreCase( lang ))
-        {
-            m_outputFormat = "RDF/XML-ABBREV";
-        }
-        else if ("N3".equalsIgnoreCase( lang ) ||
-                 "n".equalsIgnoreCase( lang ) ||
-                 "ttl".equalsIgnoreCase( lang ))
-        {
-            m_outputFormat = "N3";
-        }
-        else if ("N-TRIPLE".equalsIgnoreCase( lang ) ||
-                 "ntriples".equalsIgnoreCase( lang ) ||
-                 "ntriple".equalsIgnoreCase( lang ) ||
-                 "t".equalsIgnoreCase( lang ))
-        {
-            m_outputFormat = "N-TRIPLE";
-        }
-        else {
-            throw new IllegalArgumentException( lang + " is not recognised as a legal output format" );
-        }
+        m_outputFormat = getCheckedLanguage( lang );
     }
+
+    /**
+     	Answer the full, checked, language name expanded from <code>shortName</code>.
+        The shortName is expanded according to the table of abbreviations [below].
+        It is then checked against RDFWriterFImpl's writer table [this is hacky but
+        at the moment it's the most available interface] and the NoWriter exception
+        trapped and replaced by the original IllegalArgument exception.
+    */
+    public static String getCheckedLanguage( String shortLang )
+        {
+        String fullLang = (String) unabbreviate.get( shortLang );
+        String tryLang = (fullLang == null ? shortLang : fullLang);
+        try { new RDFWriterFImpl().getWriter( tryLang ); }
+        catch (NoWriterForLangException e) 
+            { throw new IllegalArgumentException( "'" + shortLang + "' is not recognised as a legal output format" ); }
+        return tryLang;
+        }
+
+    /**
+        Map from abbreviated names to full names.
+    */
+    public static Map unabbreviate = makeUnabbreviateMap();
+
+    /**
+        Construct the canonical abbreviation map.
+    */
+    protected static Map makeUnabbreviateMap()
+        {
+        Map result = new HashMap();
+        result.put( "x", "RDF/XML" );
+        result.put( "rdf", "RDF/XML" );
+        result.put( "rdfxml", "RDF/XML" );
+        result.put( "xml", "RDF/XML" );
+        result.put( "n3", "N3" );
+        result.put( "n", "N3" );
+        result.put( "ttl", "N3" );
+        result.put( "ntriples", "N-TRIPLE" );
+        result.put( "ntriple", "N-TRIPLE" );
+        result.put( "t", "N-TRIPLE" );
+        result.put( "owl", "RDF/XML-ABBREV" );
+        result.put( "abbrev", "RDF/XML-ABBREV" );
+        return result;
+        }
 
     /** Set the flag to include owl:imports and rdf:seeAlso files in the output, default off */
     protected void setInclude( boolean incl ) {
