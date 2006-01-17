@@ -7,10 +7,10 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-01-17 09:19:58 $
+ * Last modified on   $Date: 2006-01-17 10:15:36 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -52,6 +52,7 @@ import jena.cmdline.*;
  *   -out N-TRIPLE  (aliases t, ntriple)
  *   -out RDF/XML  (aliases x, rdf, xml, rdfxml)
  *   -out RDF/XML-ABBREV (default)
+ *   -out <any Jena-supported writer name>
  *   -include
  *   -noinclude (default)
  *
@@ -93,7 +94,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.8 2006-01-17 09:19:58 chris-dollin Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.9 2006-01-17 10:15:36 chris-dollin Exp $)
  */
 public class rdfcat
 {
