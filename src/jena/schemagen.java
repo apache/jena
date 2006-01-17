@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.41 $
+ * Revision           $Revision: 1.42 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-22 09:05:52 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-01-17 09:57:15 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -36,6 +36,7 @@ import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -50,7 +51,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.41 2005-06-22 09:05:52 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.42 2006-01-17 09:57:15 chris-dollin Exp $
  */
 public class schemagen {
     // Constants
@@ -306,7 +307,7 @@ public class schemagen {
 
         // try to read the config URI
         try {
-            m_config.read( configURL );
+            FileManager.get().readModel( m_config, configURL );
         }
         catch (Exception e) {
             // if the user left the default config uri in place, it's not an error to fail to read it
@@ -406,12 +407,7 @@ public class schemagen {
         String syntax = getValue( OPT_ENCODING );
 
         try {
-            if (syntax == null) {
-                m_source.read( input );
-            }
-            else {
-                m_source.read( input, syntax );
-            }
+            FileManager.get().readModel( m_source, input, syntax );
         }
         catch (JenaException e) {
             abort( "Failed to read input source " + input, e );
