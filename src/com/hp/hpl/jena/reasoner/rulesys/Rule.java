@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.39 2005-11-10 17:06:06 der Exp $
+ * $Id: Rule.java,v 1.40 2006-01-18 08:53:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -62,7 +62,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.39 $ on $Date: 2005-11-10 17:06:06 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.40 $ on $Date: 2006-01-18 08:53:18 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -129,7 +129,12 @@ public class Rule implements ClauseEntry {
         for (int i = 0; i < elts.length; i++) {
             ClauseEntry elt = elts[i];
             if (elt instanceof Functor) {
-                if ( ! ((Functor)elt).getImplementor().isMonotonic() ) return false;
+                Builtin b = ((Functor)elt).getImplementor();
+                if (b != null) {
+                    if (! b.isMonotonic() ) return false;
+                } else {
+                    throw new ReasonerException("Undefined Functor " + ((Functor)elt).getName() +" in " + toShortString());
+                }
             }
         }
         return true;

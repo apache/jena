@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.59 2005-10-06 22:02:07 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.60 2006-01-18 08:53:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.59 $ on $Date: 2005-10-06 22:02:07 $
+ * @version $Revision: 1.60 $ on $Date: 2006-01-18 08:53:18 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -217,7 +217,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @return true if the predicate succeeds
      */
     public boolean processBuiltin(ClauseEntry clause, Rule rule, BindingEnvironment env) {
-        throw new ReasonerException("Internal error in FBLP rule engine, incorrect invocation of building in rule " + rule);
+        throw new ReasonerException("Internal error in FBLP rule engine, incorrect invocation of builtin in rule " + rule);
         // TODO: Remove 
 //        if (clause instanceof Functor) {
 //            context.setEnv(env);
