@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestVocabRDFS.java,v 1.6 2005-06-28 15:38:46 chris-dollin Exp $
+  $Id: TestVocabRDFS.java,v 1.7 2006-01-19 13:41:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
@@ -27,10 +27,8 @@ public class TestVocabRDFS extends ModelTestBase
         assertEquals( ns, RDFS.getURI() );
         assertEquals( ns + "Class", RDFS.Class.getURI() );
         assertEquals( ns + "Datatype", RDFS.Datatype.getURI() );
-        assertEquals( ns + "ConstraintProperty", RDFS.ConstraintProperty.getURI() );
         assertEquals( ns + "Container", RDFS.Container.getURI() );
         assertEquals( ns + "ContainerMembershipProperty", RDFS.ContainerMembershipProperty.getURI() );
-        assertEquals( ns + "ConstraintResource", RDFS.ConstraintResource.getURI() );
         assertEquals( ns + "Literal", RDFS.Literal.getURI() );
         assertEquals( ns + "Resource", RDFS.Resource.getURI() );
         assertEquals( ns + "comment", RDFS.comment.getURI() );
@@ -48,10 +46,8 @@ public class TestVocabRDFS extends ModelTestBase
 		{
         assertEquals( RDFS.Class.asNode(), RDFS.Nodes.Class );
         assertEquals( RDFS.Datatype.asNode(), RDFS.Nodes.Datatype );
-        assertEquals( RDFS.ConstraintProperty.asNode(), RDFS.Nodes.ConstraintProperty );
         assertEquals( RDFS.Container.asNode(), RDFS.Nodes.Container );
         assertEquals( RDFS.ContainerMembershipProperty.asNode(), RDFS.Nodes.ContainerMembershipProperty );
-        assertEquals( RDFS.ConstraintProperty.asNode(), RDFS.Nodes.ConstraintProperty );
         assertEquals( RDFS.Literal.asNode(), RDFS.Nodes.Literal );
         assertEquals( RDFS.Resource.asNode(), RDFS.Nodes.Resource );
         assertEquals( RDFS.comment.asNode(), RDFS.Nodes.comment );

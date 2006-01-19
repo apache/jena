@@ -20,8 +20,9 @@ document.
 An Assembler <i>specification</i> is an RDF description of how to
 construct a model and its associated resources, such as reasoners,
 prefix mappings, and initial content. The Assembler vocabulary is
-given in the <a href="vocab.n3">Assembler schema</a>, and we'll
-use the prefix <code>ja</code> for its identifiers.
+given in the 
+<a href="../../vocabularies/assembler.n3">Assembler schema</a>, 
+and we'll use the prefix <code>ja</code> for its identifiers.
 </p>
 
 <h2>what is an Assembler?</h2>
@@ -74,11 +75,16 @@ my:root
     .
 </pre>
 
+<i>theReasonerURL</i> is one of the reasoner (factory) URLs given in
+the inference documentation and code; <i>theBaseModelResource</i> is
+another resource in the same document describing the base model.
+
 <h3>... a database model?</h3>
 
 <pre>
 my:root
     ja:connection <i>aConnectionresource</i>
+    ; ja:modelName "<i>myModelName</i>"
     .
     
 <i>aConnectionResource</i>
@@ -86,17 +92,42 @@ my:root
     ; ja:dbUser "<i>the user name</i>"
     ; ja:dbPassword "<i>the user's password</i>"
     ; ja:dbType "<i>the database type, eg MySQL</i>"
+    ; ja:dbClass "some.jena.driver.class"
     .
 </pre>
 
-<h3>... some model content?</h3>
+<i>aConnectionResource</i> describes the connection to the desired database.
+If a particular Java driver class has to be loaded, it is specified by
+the <code>dbClass</code> property value. See the 
+<a href="assembler-howto.html">Assembler howto</a> for ways in which
+sensitive details such as passwords can be left out of the description.
+
+<h3>... some initialising content?</h3>
 
 <pre>
 my:root
-    ...
     ja:content [ja:externalContent &lt;someContentURL&gt;]
+    <i>... rest of model specification ...</i>
     .
 </pre>
+
+The model will be preloaded with the contents of <i>someContentURL</i>.
+
+<h3>... an ontology model?</h3>
+
+<pre>
+my:root
+    ja:ontModelSpec ja:<i>OntModelSpecName</i>
+    ; ja:baseModel <i>somebaseModel</i>
+    .
+</pre>
+
+The <i>OntModelSpecName</i> can be any of the predefined Jena OntModelSpec
+names, eg <code>OWL_DL_MEM_RULE_INF</code>. The baseModel is another model 
+description - it can be left out,
+in which case you get an empty memory model. See 
+<a href="assembler-howto.html">Assembler howto</a> for construction
+of non-predefined OntModelSpecs.
 
 </html>
 </body>
