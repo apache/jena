@@ -13,10 +13,10 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.9 2005-12-26 18:43:11 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.10 2006-01-20 23:21:19 andy_seaborne Exp $
  */ 
  
-abstract class DBcmd
+public abstract class DBcmd
 {
     // Standardised names.
     protected final ArgDecl argDeclDbURL       = new ArgDecl(true, "db");
