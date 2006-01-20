@@ -20,7 +20,7 @@ import jena.cmdline.* ;
 
   * 
   * @author Andy Seaborne
-  * @version $Id: dbdump.java,v 1.5 2005-02-21 11:49:11 andy_seaborne Exp $
+  * @version $Id: dbdump.java,v 1.6 2006-01-20 23:34:02 andy_seaborne Exp $
   */ 
  
 public class dbdump extends DBcmd
@@ -56,7 +56,7 @@ public class dbdump extends DBcmd
         super("dbdump", false);
     }
 
-    void exec0()
+    protected void exec0()
     {
         // This is a streaming syntax.
         String syntax = "N-TRIPLES" ;
@@ -75,7 +75,7 @@ public class dbdump extends DBcmd
         
     }
 
-    boolean exec1(String arg) { return false ; }
+    protected boolean exec1(String arg) { return false ; }
 }
  
 

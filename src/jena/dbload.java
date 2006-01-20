@@ -20,7 +20,7 @@ import com.hp.hpl.jena.util.FileUtils;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbload.java,v 1.6 2005-02-21 11:49:12 andy_seaborne Exp $
+  * @version $Id: dbload.java,v 1.7 2006-01-20 23:34:02 andy_seaborne Exp $
   */ 
  
 public class dbload extends DBcmd
@@ -53,9 +53,9 @@ public class dbload extends DBcmd
         super("dbload", true);
     }
 
-    void exec0() { return ; }
+    protected void exec0() { return ; }
 
-    boolean exec1(String arg)
+    protected boolean exec1(String arg)
     {
         if ( verbose )
             System.out.println("Start load: "+arg) ;

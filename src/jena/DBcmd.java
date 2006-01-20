@@ -13,7 +13,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.10 2006-01-20 23:21:19 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.11 2006-01-20 23:34:02 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd
@@ -65,13 +65,13 @@ public abstract class DBcmd
 
     boolean takesPositionalArgs = false ;
     String cmdName = "DB" ;
-    CommandLine cmdLine = new CommandLine();
+    protected CommandLine cmdLine = new CommandLine();
     private IDBConnection jdbcConnection = null;
     private ModelRDB dbModel = null ;
     
     private String [] usage = new String[]{ "Complain to jena-dev: someone forgot the usage string" } ;
 
-    DBcmd(String n, boolean posArgs)
+    protected DBcmd(String n, boolean posArgs)
     {
         cmdName = n ;
         takesPositionalArgs = posArgs ;
@@ -284,13 +284,13 @@ public abstract class DBcmd
 
     /** Called if there are no psoitional arguments
      */     
-    abstract void exec0() ;
+    abstract protected void exec0() ;
     
     /** Called for each postional argument, inside a transaction.
      *  Return true to continue this transaction, false to end it and start a new
      *  one if there are any more args 
      */     
-    abstract boolean exec1(String arg) ;
+    abstract protected boolean exec1(String arg) ;
     
     
     
