@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.70 $
+ * Revision           $Revision: 1.71 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-08 15:34:58 $
+ * Last modified on   $Date: 2006-01-22 12:27:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -34,20 +34,17 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
-import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.impl.OntClassImpl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.dig.*;
-import com.hp.hpl.jena.reasoner.dig.DIGReasoner;
-import com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.vocabulary.OWL;
 
 import junit.framework.*;
 
@@ -1543,6 +1540,24 @@ public class TestBugReports
         m0.removeSubModel( m1 );
         assertFalse( m0.containsResource( c ) );
     }
+
+    /**
+     * <p>Bug report by Tina (shilei_back06@yahoo.com.cn) - NPE in listHierarchyRootClasses
+     * with generic rule reasoner.</p>
+     */
+    public void test_tina_01() {
+        String rule = "(?x rdf:type rdfs:Class) -> (?x rdf:type owl:Class).";
+        Reasoner reasoner = new GenericRuleReasoner( Rule.parseRules(rule ) );
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM);
+        spec.setReasoner(reasoner);
+        OntModel ml = ModelFactory.createOntologyModel( spec,null );
+
+        Iterator it3= ml.listHierarchyRootClasses();
+         while(it3.hasNext()){
+            it3.next();
+        }
+     }
+
 
 
     // Internal implementation methods

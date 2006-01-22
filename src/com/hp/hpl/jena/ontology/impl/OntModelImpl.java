@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.91 $
+ * Revision           $Revision: 1.92 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-01-06 10:43:58 $
+ * Last modified on   $Date: 2006-01-22 12:27:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.91 2006-01-06 10:43:58 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.92 2006-01-22 12:27:58 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -478,7 +478,7 @@ public class OntModelImpl
         // look for the shortcut of using direct subClass on :Thing
         if (getReasoner() != null) {
             Model conf = getReasoner().getReasonerCapabilities();
-            if (conf.contains( null, ReasonerVocabulary.supportsP, ReasonerVocabulary.directSubClassOf ) &&
+            if (conf != null && conf.contains( null, ReasonerVocabulary.supportsP, ReasonerVocabulary.directSubClassOf ) &&
                 getProfile().THING() != null)
             {
                 // we have have both direct sub-class of and a :Thing class to test against
