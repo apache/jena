@@ -20,7 +20,7 @@ import jena.cmdline.* ;
 
   * 
   * @author Andy Seaborne
-  * @version $Id: dbdump.java,v 1.6 2006-01-20 23:34:02 andy_seaborne Exp $
+  * @version $Id: dbdump.java,v 1.7 2006-01-23 12:53:17 andy_seaborne Exp $
   */ 
  
 public class dbdump extends DBcmd

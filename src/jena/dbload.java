@@ -20,7 +20,7 @@ import com.hp.hpl.jena.util.FileUtils;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbload.java,v 1.7 2006-01-20 23:34:02 andy_seaborne Exp $
+  * @version $Id: dbload.java,v 1.8 2006-01-23 12:53:17 andy_seaborne Exp $
   */ 
  
 public class dbload extends DBcmd

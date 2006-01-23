@@ -13,7 +13,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.11 2006-01-20 23:34:02 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.12 2006-01-23 12:53:17 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd
@@ -45,7 +45,7 @@ public abstract class DBcmd
     protected String argModelName = null;
 
     // DB types to JDBC driver name (some common choices)
-    static Map jdbcDrivers = new HashMap();
+    private static Map jdbcDrivers = new HashMap();
     static {
         jdbcDrivers.put("mysql",       "com.mysql.jdbc.Driver");
         jdbcDrivers.put("mssql",       "com.microsoft.jdbc.sqlserver.SQLServerDriver") ;      // What's the best coice here?
@@ -54,7 +54,7 @@ public abstract class DBcmd
     }
     
     // DB types to name Jena uses internally
-    static Map jenaDriverName = new HashMap();
+    private static Map jenaDriverName = new HashMap();
     static {
         jenaDriverName.put("mssql",       "MsSQL");
         jenaDriverName.put("mysql",       "MySQL");
@@ -65,7 +65,7 @@ public abstract class DBcmd
 
     boolean takesPositionalArgs = false ;
     String cmdName = "DB" ;
-    protected CommandLine cmdLine = new CommandLine();
+    CommandLine cmdLine = new CommandLine();
     private IDBConnection jdbcConnection = null;
     private ModelRDB dbModel = null ;
     
@@ -85,6 +85,8 @@ public abstract class DBcmd
         cmdLine.add(argDeclHelp) ;
     }
 
+    protected CommandLine getCommandLine() { return cmdLine ; } 
+    
     protected void init(String[] args)
     {
         try {
@@ -284,13 +286,13 @@ public abstract class DBcmd
 
     /** Called if there are no psoitional arguments
      */     
-    abstract protected void exec0() ;
+    protected abstract void exec0() ;
     
     /** Called for each postional argument, inside a transaction.
      *  Return true to continue this transaction, false to end it and start a new
      *  one if there are any more args 
      */     
-    abstract protected boolean exec1(String arg) ;
+    protected abstract boolean exec1(String arg) ;
     
     
     
