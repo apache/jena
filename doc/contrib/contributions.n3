@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.9 2006-01-24 15:45:26 chris-dollin Exp $
+# $Id: contributions.n3,v 1.10 2006-01-24 15:49:46 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -23,8 +23,8 @@
     dc:creator "Chris Dollin"
     ; dc:name "Eyeball"
     ; dc:description "RDF lint - look for common problems in RDF data"
-    ; ct:link "http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=148927"
-    ; ct:linkTitle "Eyeball package page"
+    ; ct:link "http://jena.sourceforge.net/Eyeball/"
+    ; ct:linkTitle "Eyeball index"
     ; ct:licence "as per Jena"
     .
 
