@@ -5,6 +5,8 @@
 
 package jena;
 
+import jena.util.DBcmd;
+
 import com.hp.hpl.jena.db.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.util.iterator.*; 
@@ -22,7 +24,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *  </p>
  * 
  * @author Andy Seaborne
- * @version $Id: dblist.java,v 1.6 2005-09-01 11:13:58 andy_seaborne Exp $
+ * @version $Id: dblist.java,v 1.7 2006-01-24 09:34:51 andy_seaborne Exp $
  */ 
  
 public class dblist extends DBcmd

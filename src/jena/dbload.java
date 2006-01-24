@@ -5,6 +5,8 @@
 
 package jena;
 
+import jena.util.DBcmd;
+
 import com.hp.hpl.jena.util.FileUtils; 
  
  /** Load data files into a Jena model in a database.
@@ -20,7 +22,7 @@ import com.hp.hpl.jena.util.FileUtils;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbload.java,v 1.8 2006-01-23 12:53:17 andy_seaborne Exp $
+  * @version $Id: dbload.java,v 1.9 2006-01-24 09:34:51 andy_seaborne Exp $
   */ 
  
 public class dbload extends DBcmd

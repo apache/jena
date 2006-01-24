@@ -4,7 +4,7 @@
  */
 
  
-package jena;
+package jena.util;
 import jena.cmdline.* ;
 import com.hp.hpl.jena.db.* ;
 //import com.hp.hpl.jena.rdf.model.* ;
@@ -13,7 +13,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.12 2006-01-23 12:53:17 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.1 2006-01-24 09:34:51 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd

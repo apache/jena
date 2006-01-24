@@ -5,6 +5,7 @@
 
 package jena;
 import jena.cmdline.* ;
+import jena.util.DBcmd;
 
  /** Write out the data from a database.
   *  Currently broken <code>:-(</code>
@@ -20,7 +21,7 @@ import jena.cmdline.* ;
 
   * 
   * @author Andy Seaborne
-  * @version $Id: dbdump.java,v 1.7 2006-01-23 12:53:17 andy_seaborne Exp $
+  * @version $Id: dbdump.java,v 1.8 2006-01-24 09:34:51 andy_seaborne Exp $
   */ 
  
 public class dbdump extends DBcmd
@@ -39,7 +40,7 @@ public class dbdump extends DBcmd
     {
         dbdump db = new dbdump();
         db.setUsage(usage) ;
-        db.cmdLine.add(argDeclFormat) ;
+        db.getCommandLine().add(argDeclFormat) ;
         
         // add any new args
         db.init(args);
@@ -60,8 +61,8 @@ public class dbdump extends DBcmd
     {
         // This is a streaming syntax.
         String syntax = "N-TRIPLES" ;
-        if ( cmdLine.contains(argDeclFormat) )
-            syntax = cmdLine.getArg(argDeclFormat).getValue() ;
+        if ( getCommandLine().contains(argDeclFormat) )
+            syntax = getCommandLine().getArg(argDeclFormat).getValue() ;
         if ( debug )
             System.out.println("Debug: syntax is "+syntax) ;
         

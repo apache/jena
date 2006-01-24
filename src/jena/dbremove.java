@@ -5,6 +5,8 @@
 
 package jena;
 
+import jena.util.DBcmd;
+
 //import com.hp.hpl.jena.rdf.model.* ;
 //import com.hp.hpl.jena.db.* ;
  
@@ -19,7 +21,7 @@ package jena;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbremove.java,v 1.5 2005-02-21 11:49:12 andy_seaborne Exp $
+  * @version $Id: dbremove.java,v 1.6 2006-01-24 09:34:51 andy_seaborne Exp $
   */ 
  
 public class dbremove extends DBcmd

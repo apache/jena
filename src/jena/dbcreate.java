@@ -5,6 +5,8 @@
 
 package jena;
 
+import jena.util.DBcmd;
+
 import com.hp.hpl.jena.rdf.model.* ;
 //import com.hp.hpl.jena.db.* ;
 //import com.hp.hpl.jena.util.iterator.* ;
@@ -21,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.* ;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbcreate.java,v 1.6 2005-07-29 16:08:08 chris-dollin Exp $
+  * @version $Id: dbcreate.java,v 1.7 2006-01-24 09:34:51 andy_seaborne Exp $
   */ 
  
 public class dbcreate extends DBcmd
