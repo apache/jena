@@ -7,7 +7,8 @@ package com.hp.hpl.jena.rdql.parser;
 
 
 import java.io.PrintWriter;
-import org.apache.oro.text.regex.Perl5Compiler ;
+import java.util.regex.Pattern;
+
 import com.hp.hpl.jena.graph.query.IndexValues ;
 import com.hp.hpl.jena.graph.query.PatternLiteral;
 import com.hp.hpl.jena.rdql.*;
@@ -42,10 +43,13 @@ public class Q_PatternLiteral extends ExprNode implements Expr, PatternLiteral
         {
             switch(modifiers.charAt(i))
             {
-                case 'i' : mask |= Perl5Compiler.CASE_INSENSITIVE_MASK; break;
-                case 'm' : mask |= Perl5Compiler.MULTILINE_MASK; break;
-                case 's' : mask |= Perl5Compiler.SINGLELINE_MASK; break;
-                case 'x' : mask |= Perl5Compiler.EXTENDED_MASK; break;
+                case 'i' :
+                    mask |= Pattern.CASE_INSENSITIVE;
+                    mask |= Pattern.UNICODE_CASE ;
+                    break ;
+                case 'm' : mask |= Pattern.MULTILINE ;           break ;
+                case 's' : mask |= Pattern.DOTALL ;              break ;
+                //case 'x' : mask |= Pattern.;  break ;
                 // Parser should catch this.
                 //default  :
             }

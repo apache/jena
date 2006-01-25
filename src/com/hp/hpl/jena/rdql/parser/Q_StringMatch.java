@@ -10,11 +10,8 @@ import com.hp.hpl.jena.graph.query.IndexValues ;
 import com.hp.hpl.jena.rdql.*;
 
 import java.io.PrintWriter;
-
-//import org.apache.oro.text.* ;
-import org.apache.oro.text.regex.* ;
-//import org.apache.oro.text.perl.Perl5Util ;
-//import org.apache.oro.text.perl.MalformedPerl5PatternException ;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 
 public class Q_StringMatch extends ExprNode implements Expr, ExprBoolean
@@ -22,9 +19,6 @@ public class Q_StringMatch extends ExprNode implements Expr, ExprBoolean
     Expr left ;
     Expr right ;
     Q_PatternLiteral regex = null ;
-    //Perl5Util matcher = new Perl5Util() ;
-    PatternCompiler compiler = new Perl5Compiler();
-    PatternMatcher matcher = new Perl5Matcher();
     
     // Cache the compiled regular expression.
     
@@ -60,7 +54,7 @@ public class Q_StringMatch extends ExprNode implements Expr, ExprBoolean
         NodeValueSettable result = new WorkingVar() ;
         
         // Actually do it!
-        boolean b = matcher.contains(xx, pattern) ;
+        boolean b = pattern.matcher(xx).find() ;
         result.setBoolean(b) ;
         return result ;
     }
@@ -80,8 +74,8 @@ public class Q_StringMatch extends ExprNode implements Expr, ExprBoolean
         
         try
         {
-            pattern = compiler.compile(regex.patternString, regex.mask) ;
-        } catch (MalformedPatternException pEx)
+            pattern = Pattern.compile(regex.patternString, regex.mask) ;
+        } catch (PatternSyntaxException pEx)
         {
             throw new EvalFailureException("Q_StringMatch: Pattern exception: "+pEx) ;
         }
