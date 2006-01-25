@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.42 $
+ * Revision           $Revision: 1.43 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-01-17 09:57:15 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2006-01-25 20:49:23 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -25,13 +25,13 @@ package jena;
 // Imports
 ///////////////
 import java.util.*;
+import java.util.regex.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
 import org.apache.commons.logging.LogFactory;
-import org.apache.oro.text.regex.*;
 import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.ontology.*;
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.42 2006-01-17 09:57:15 chris-dollin Exp $
+ * @version CVS $Id: schemagen.java,v 1.43 2006-01-25 20:49:23 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -250,12 +250,6 @@ public class schemagen {
 
     /** Stack of replacements to apply */
     protected List m_replacements = new ArrayList();
-
-    /** Perl5 pattern compiler */
-    protected Perl5Compiler m_perlCompiler = new Perl5Compiler();
-
-    /** Perl5 pattern matcher */
-    protected PatternMatcher m_matcher = new Perl5Matcher();
 
     /** Output file newline char - default is Unix, override with --dos */
     protected String m_nl = "\n";
@@ -487,10 +481,10 @@ public class schemagen {
             marker = (marker == null) ? DEFAULT_MARKER : marker;
 
             try {
-                m_replacements.add( new Replacement( m_perlCompiler.compile( marker + key + marker ),
-                                                     new StringSubstitution( replacement ) ) );
+                m_replacements.add( new Replacement( Pattern.compile( marker + key + marker ),
+                                                     replacement ) );
             }
-            catch (MalformedPatternException e) {
+            catch (PatternSyntaxException e) {
                 abort( "Malformed regexp pattern " + marker + key + marker, e );
             }
         }
@@ -613,7 +607,7 @@ public class schemagen {
         for (Iterator i = m_replacements.iterator(); i.hasNext(); ) {
             Replacement r = (Replacement) i.next();
 
-            s = Util.substitute( m_matcher, r.pattern, r.sub, s, Util.SUBSTITUTE_ALL );
+            s = r.pattern.matcher( s ).replaceAll( r.sub );
         }
 
         return s;
@@ -1425,10 +1419,10 @@ public class schemagen {
     /** A pairing of pattern and substitution we want to apply to output */
     protected class Replacement
     {
-        protected Substitution sub;
+        protected String sub;
         protected Pattern pattern;
 
-        protected Replacement( Pattern pattern, Substitution sub) {
+        protected Replacement( Pattern pattern, String sub) {
             this.sub = sub;
             this.pattern = pattern;
         }
