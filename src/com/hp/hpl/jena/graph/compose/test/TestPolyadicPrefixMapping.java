@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPolyadicPrefixMapping.java,v 1.4 2005-02-21 11:52:08 andy_seaborne Exp $
+  $Id: TestPolyadicPrefixMapping.java,v 1.5 2006-01-25 15:17:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -13,7 +13,6 @@ import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
 
-
 public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
     {
     public TestPolyadicPrefixMapping( String name )
@@ -24,6 +23,10 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
     
     Graph gBase;
     Graph g1, g2;
+    
+    /**
+        Will be a polyadic graph with base gBase and subs g1, g2.
+    */
     Polyadic poly;
     
     protected static final String alpha = "something:alpha#";
@@ -83,6 +86,18 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
         g2.getPrefixMapping().setNsPrefix( "y", beta );
         assertEquals( "x:hoop", poly.getPrefixMapping().qnameFor( alpha + "hoop" ) );
         assertEquals( "y:lens", poly.getPrefixMapping().qnameFor( beta + "lens" ) );
+        }
+    
+    /**
+        Test that the default namespace of a sub-graph doesn't appear as a
+        default namespace of the polyadic graph.
+     */
+    public void testSubgraphsDontPolluteDefaultPrefix() 
+        {
+        String imported = "http://imported#", local = "http://local#";
+        g1.getPrefixMapping().setNsPrefix( "", imported );
+        poly.getPrefixMapping().setNsPrefix( "", local );
+        assertEquals( null, poly.getPrefixMapping().getNsURIPrefix( imported ) );
         }
     
     }

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.71 $
+ * Revision           $Revision: 1.72 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-01-22 12:27:17 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-01-25 15:17:49 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1540,6 +1540,22 @@ public class TestBugReports
         m0.removeSubModel( m1 );
         assertFalse( m0.containsResource( c ) );
     }
+    
+    /**
+        The default namespace pefix of a non-base-model should not manifest as the
+         default namespace prefix of the base model or the Ont model.
+    */
+    public void testHolgersPolyadicPrefixMappingBug() 
+        {
+        final String IMPORTED_NAMESPACE = "http://imported#";
+        final String LOCAL_NAMESPACE = "http://local#";
+        Model importedModel = ModelFactory.createDefaultModel();
+         importedModel.setNsPrefix("", IMPORTED_NAMESPACE);
+        OntModel ontModel = ModelFactory.createOntologyModel();
+        ontModel.setNsPrefix("", LOCAL_NAMESPACE);
+        ontModel.addSubModel(importedModel);
+        assertNull( ontModel.getNsURIPrefix(IMPORTED_NAMESPACE) );
+        }
 
     /**
      * <p>Bug report by Tina (shilei_back06@yahoo.com.cn) - NPE in listHierarchyRootClasses

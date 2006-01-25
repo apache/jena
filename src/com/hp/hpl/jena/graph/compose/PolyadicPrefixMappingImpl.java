@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PolyadicPrefixMappingImpl.java,v 1.7 2005-08-15 15:44:08 chris-dollin Exp $
+  $Id: PolyadicPrefixMappingImpl.java,v 1.8 2006-01-25 15:17:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -107,7 +107,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
             for (int i = 0; i < graphs.size(); i += 1)
                 {
                 String ss = ((Graph) graphs.get(i)).getPrefixMapping().getNsURIPrefix( uri );
-                if (ss != null) return ss;
+                if (ss != null && ss.length() > 0) return ss;
                 }
             }
         return s;

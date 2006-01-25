@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.66 2006-01-25 14:00:56 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.67 2006-01-25 15:17:49 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -115,13 +115,13 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         if (getGraph().getCapabilities().handlesLiteralTyping())
             { // TODO fix the adhocness of this
             Graph g1 = getGraphWith( "x P '1'xsd:integer" );
-            assertTrue( g1.contains( triple( "x P '1'xsd:int" ) ) );
+            assertTrue( g1.contains( triple( "x P '01'xsd:int" ) ) );
         //
             Graph g2 = getGraphWith( "x P '1'xsd:int" );
             assertTrue( g2.contains( triple( "x P '1'xsd:integer" ) ) );
         //
-            Graph g3 = getGraphWith( "x P '1'xsd:string" );
-            assertTrue( g3.contains( triple( "x P '1'" ) ) );
+            Graph g3 = getGraphWith( "x P '123'xsd:string" );
+            assertTrue( g3.contains( triple( "x P '123'" ) ) );
             }
         }
     
