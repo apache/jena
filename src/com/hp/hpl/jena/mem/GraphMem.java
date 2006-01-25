@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.54 2005-08-26 11:20:24 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.55 2006-01-25 14:00:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -71,7 +71,7 @@ public class GraphMem extends GraphMemBase implements Graph
          Otherwise we use the default implementation.
     */
     public boolean graphBaseContains( Triple t )
-        { return t.isConcrete() ? store.contains( t ) : super.graphBaseContains( t ); }
+        { return isSafeForEquality( t ) ? store.contains( t ) : super.graphBaseContains( t ); }
     
     /**
         Clear this GraphMem, ie remove all its triples (delegated to the store).

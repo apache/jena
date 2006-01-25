@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.13 2005-08-26 11:20:25 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.14 2006-01-25 14:00:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -45,7 +45,7 @@ public class MixedGraphMem extends GraphMemBase implements Graph
         method using find.
     */
     public boolean graphBaseContains( Triple t ) 
-        { return t.isConcrete() ? store.contains( t ) : containsByFind( t ); }
+        { return isSafeForEquality( t ) ? store.contains( t ) : containsByFind( t ); }
     
     protected void destroy()
         { store = null; }

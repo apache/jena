@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.10 2005-08-26 11:20:25 chris-dollin Exp $
+  $Id: SmallGraphMem.java,v 1.11 2006-01-25 14:00:57 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -52,8 +52,8 @@ public class SmallGraphMem extends GraphMemBase
         method using find.
     */
     public boolean graphBaseContains( Triple t ) 
-        { return t.isConcrete() ? triples.contains( t ) : containsByFind( t ); }
-    
+        { return isSafeForEquality( t ) ? triples.contains( t ) : containsByFind( t ); }
+
     protected void destroy()
         { triples = null; }
     

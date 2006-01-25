@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: TestSmallGraphMem.java,v 1.6 2006-01-25 12:01:46 chris-dollin Exp $
+	$Id: TestSmallGraphMem.java,v 1.7 2006-01-25 14:00:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -10,7 +10,6 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 
 
 /**
@@ -29,13 +28,6 @@ public class TestSmallGraphMem extends TestGraphMem
 
     public void testUnnecessaryMatches() { 
         /* test not appropriate for subclass */ 
-        }
-    
-    public void testContainsByValue()
-        {
-        Graph g = graphWith( "x P '1'xsd:integer; x P  '1'xsd:int" );
-//        System.err.println( ">> " + g );
-//        System.err.println( ">> " + g.find( Node.ANY, node( "P" ), node( "1" ) ).toList() );
         }
     }
 

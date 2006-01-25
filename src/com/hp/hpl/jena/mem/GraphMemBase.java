@@ -1,11 +1,11 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphMemBase.java,v 1.8 2005-08-26 11:20:25 chris-dollin Exp $
+  $Id: GraphMemBase.java,v 1.9 2006-01-25 14:00:57 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 
@@ -83,6 +83,13 @@ public abstract class GraphMemBase extends GraphBase
         if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
         return bulkHandler;
         }
+
+    /**
+        Answer true iff this triple can be compared for sameValueAs by .equals(),
+        ie, it is a concrete triple with a non-literal object.
+    */
+    protected final boolean isSafeForEquality( Triple t )
+        { return t.isConcrete() && !t.getObject().isLiteral(); }
     }
 
 
