@@ -9,14 +9,12 @@ package com.hp.hpl.jena.rdf.arp.test;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.oro.text.awk.AwkCompiler;
-import org.apache.oro.text.awk.AwkMatcher;
-import org.apache.oro.text.regex.MalformedPatternException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -24,8 +22,6 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.ARP;
 
 public class TestErrorMsg extends TestCase {
-	static AwkCompiler awk = new AwkCompiler();
-	static AwkMatcher matcher = new AwkMatcher();
 
 	public TestErrorMsg(String name) {
 		super(name);
@@ -55,7 +51,7 @@ public class TestErrorMsg extends TestCase {
 		String filename,
 		String regexPresent,
 		String regexAbsent)
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		final StringBuffer buf = new StringBuffer();
 		ARP arp = new ARP();
 		arp.getHandlers().setErrorHandler(new ErrorHandler() {
@@ -88,11 +84,11 @@ public class TestErrorMsg extends TestCase {
 		if (regexPresent != null)
 			assertTrue(
 				"Should find /" + regexPresent + "/",
-				matcher.contains(contents, awk.compile(regexPresent)));
+                Pattern.compile(regexPresent).matcher(contents).find());
 		if (regexAbsent != null)
 			assertTrue(
 				"Should not find /" + regexAbsent + "/",
-				!matcher.contains(contents, awk.compile(regexAbsent)));
+				!Pattern.compile(regexAbsent).matcher(contents).find());
 		contents = null;
 	}
 	
@@ -144,5 +140,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.8 2005-09-23 07:51:48 jeremy_carroll Exp $
+ * $Id: TestErrorMsg.java,v 1.9 2006-01-25 13:49:17 jeremy_carroll Exp $
  */

@@ -12,9 +12,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.oro.text.awk.AwkCompiler;
-import org.apache.oro.text.awk.AwkMatcher;
-import org.apache.oro.text.regex.MalformedPatternException;
 import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -362,8 +359,6 @@ public class TestPropEltErrorMsg extends TestCase {
         }
         
     }
-	static AwkCompiler awk = new AwkCompiler();
-	static AwkMatcher matcher = new AwkMatcher();
     
     final Atts testAtts;
     final int n;
@@ -424,8 +419,7 @@ public class TestPropEltErrorMsg extends TestCase {
         }
         return s;
 	}
-	protected void runTest()
-		throws MalformedPatternException {
+	protected void runTest() {
         Attributes noAtts = new Atts();
 		final StringBuffer buf = new StringBuffer();
 		XMLHandler arp = new XMLHandler();
@@ -497,5 +491,5 @@ public class TestPropEltErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestPropEltErrorMsg.java,v 1.2 2005-09-23 07:51:48 jeremy_carroll Exp $
+ * $Id: TestPropEltErrorMsg.java,v 1.3 2006-01-25 13:49:17 jeremy_carroll Exp $
  */
