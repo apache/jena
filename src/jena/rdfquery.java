@@ -47,7 +47,7 @@ import org.apache.commons.logging.LogFactory;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.25 2005-07-04 12:31:02 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.26 2006-01-25 18:26:16 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -266,7 +266,7 @@ public class rdfquery
                 argi++ ;
                 if ( argi == argv.length )
                 {
-                    System.err.println("Error: no databse name  specified");
+                    System.err.println("Error: no driver specified");
                     System.exit(1) ;
                 }
                 dbDriver = argv[argi] ;
