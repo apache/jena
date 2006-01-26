@@ -10,8 +10,8 @@ arq.jar
 commons-logging.jar
 concurrent.jar
 icu4j_3_4.jar
-jakarta-oro-2.0.8.jar
 jena.jar
+iri.jar
 jenatest.jar
 junit.jar
 log4j-1.2.12.jar
