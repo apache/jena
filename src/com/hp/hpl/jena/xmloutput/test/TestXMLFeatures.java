@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.43 2005-09-23 07:51:49 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.44 2006-01-26 13:39:55 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -24,13 +24,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.oro.text.awk.AwkCompiler;
-import org.apache.oro.text.awk.AwkMatcher;
-import org.apache.oro.text.regex.MalformedPatternException;
 
 import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
@@ -52,12 +50,12 @@ import com.hp.hpl.jena.xmloutput.impl.SimpleLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.43 $ $Date: 2005-09-23 07:51:49 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.44 $ $Date: 2006-01-26 13:39:55 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
-	static AwkCompiler awk = PrettyWriterTest.awk;
-	static AwkMatcher matcher = PrettyWriterTest.matcher;
+//	static AwkCompiler awk = PrettyWriterTest.awk;
+//	static AwkMatcher matcher = PrettyWriterTest.matcher;
     
    // static protected Log logger = LogFactory.getLog( TestXMLFeatures.class );
 
@@ -155,7 +153,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		f.delete();
 	}
     
-	public void testXMLBase() throws IOException, MalformedPatternException {
+	public void testXMLBase() throws IOException {
 		check(file1, //any will do
 		"xml:base=['\"]" + base2 + "['\"]", new Change() {
 			public void code(RDFWriter writer) {
@@ -187,7 +185,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	 * @param regex    Written file must match this.
 	 */
 	private void check(String filename, String regex, Change code)
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(filename, regex, null, code);
 	}
 	private void check(
@@ -195,7 +193,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		String regexPresent,
 		String regexAbsent,
 		Change code)
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(filename, null, regexPresent, regexAbsent, false, code);
 	}
 
@@ -205,7 +203,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		String regexPresent,
 		String regexAbsent,
 		Change code)
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(filename, encoding, regexPresent, regexAbsent, false, code);
 	}
     private void check(
@@ -213,7 +211,7 @@ public class TestXMLFeatures extends ModelTestBase {
         String regexAbsent,
         Change code,
         String base)
-        throws IOException, MalformedPatternException {
+        throws IOException {
             check(filename,null,regexAbsent,null,false,new Change(){
                 public void code(RDFWriter w){}
             },base);
@@ -226,7 +224,7 @@ public class TestXMLFeatures extends ModelTestBase {
         String regexAbsent,
         boolean errs,
         Change code)
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(filename, encoding, regexPresent, regexAbsent, errs, code, "file:"+filename);
     }
 	private void check(
@@ -237,7 +235,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		boolean errorExpected,
 		Change code,
         String base)
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		//TestLogger tl = new TestLogger(BaseXMLWriter.class);
 		blockLogger();
 		boolean errorsFound;
@@ -273,11 +271,15 @@ public class TestXMLFeatures extends ModelTestBase {
 			if (regexPresent != null)
 				assertTrue(
 					"Should find /" + regexPresent + "/",
-					matcher.contains(contents, awk.compile(regexPresent)));
+                    Pattern.compile(regexPresent,Pattern.DOTALL).matcher(contents).find()
+//					matcher.contains(contents, awk.compile(regexPresent))
+                    );
 			if (regexAbsent != null)
 				assertTrue(
 					"Should not find /" + regexAbsent + "/",
-					!matcher.contains(contents, awk.compile(regexAbsent)));
+                    !Pattern.compile(regexAbsent,Pattern.DOTALL).matcher(contents).find()
+//					!matcher.contains(contents, awk.compile(regexAbsent))
+                    );
 			contents = null;
 		} finally {
 			errorsFound = unblockLogger();
@@ -315,7 +317,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testUseNamespace()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
 			public void code(Model m) {
 				m.setNsPrefix("eg", "http://example.org/#");
@@ -324,7 +326,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
     
     public void testSingleQuote()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(file1, "'","\"", new Change() {
             public void code(RDFWriter writer) {
                 writer.setProperty("attributeQuoteChar", "'");
@@ -332,7 +334,7 @@ public class TestXMLFeatures extends ModelTestBase {
         });
     }
     public void testDoubleQuote()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(file1, "\"","'", new Change() {
             public void code(RDFWriter writer) {
                 writer.setProperty("attributeQuoteChar", "\"");
@@ -341,7 +343,7 @@ public class TestXMLFeatures extends ModelTestBase {
     }
 
 	public void testUseDefaultNamespace()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
 			public void code( Model m ) {
 				m.setNsPrefix("", "http://example.org/#");
@@ -350,7 +352,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
     
     public void testUseUnusedNamespace()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(file1, "xmlns:unused=['\"]http://unused.org/#['\"]", new Change() {
             public void code( Model m ) {
                 m.setNsPrefix( "unused", "http://unused.org/#");
@@ -359,7 +361,7 @@ public class TestXMLFeatures extends ModelTestBase {
     }
 
 	public void testRDFNamespace()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			file1,
 			"xmlns:r=['\"]" + RDF.getURI() + "['\"]",
@@ -372,7 +374,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
     public void testTab()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             file1,
             "          ",
@@ -384,7 +386,7 @@ public class TestXMLFeatures extends ModelTestBase {
         });
     }
     public void testNoTab()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             file1,
             "  ",
@@ -396,7 +398,7 @@ public class TestXMLFeatures extends ModelTestBase {
         });
     }
     public void testNoLiteral()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             "testing/wg/rdfms-xml-literal-namespaces/test001.rdf",
             "#XMLLiteral",
@@ -408,7 +410,7 @@ public class TestXMLFeatures extends ModelTestBase {
         });
     }
     public void testNoPropAttr()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             file1,
             null,
@@ -420,7 +422,7 @@ public class TestXMLFeatures extends ModelTestBase {
         });
     }
     public void testNoDamlCollection()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             "testing/abbreviated/daml.rdf",
             null,
@@ -432,7 +434,7 @@ public class TestXMLFeatures extends ModelTestBase {
         });
     }
     public void testNoRdfCollection()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             "testing/abbreviated/collection.rdf",
             null,
@@ -444,7 +446,7 @@ public class TestXMLFeatures extends ModelTestBase {
         });
     }
     public void testNoLi()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             "testing/abbreviated/container.rdf",
             null,
@@ -456,7 +458,7 @@ public class TestXMLFeatures extends ModelTestBase {
         });
     }
 	public void testNoCookUp()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			"testing/abbreviated/cookup.rdf",
 			null,
@@ -468,7 +470,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		});
 	}
 	public void testNoPropAttrs()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			"testing/abbreviated/namespaces.rdf",
 			null,
@@ -479,7 +481,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		});
 	}
 	public void testPropAttrs()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			"testing/abbreviated/namespaces.rdf",
 			":prop0 *=",
@@ -491,7 +493,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		});
 	}
     public void testNoID()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             "testing/abbreviated/container.rdf",
             "rdf:ID",
@@ -504,7 +506,7 @@ public class TestXMLFeatures extends ModelTestBase {
         );
     }
     public void testNoID2()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             "testing/abbreviated/container.rdf",
             "rdf:ID",
@@ -517,7 +519,7 @@ public class TestXMLFeatures extends ModelTestBase {
         );
     }
     public void testNoResource()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             "testing/abbreviated/container.rdf",
             "['\"]Resource[\"']",
@@ -530,7 +532,7 @@ public class TestXMLFeatures extends ModelTestBase {
         );
     }
     public void testNoReification()
-        throws IOException, MalformedPatternException {
+        throws IOException {
            // System.err.println("WARNING: reification output tests suppressed.");
          String filename = "testing/abbreviated/reification.rdf";
          String base = "http://example.org/foo";
@@ -548,7 +550,7 @@ public class TestXMLFeatures extends ModelTestBase {
 
     }
     public void testNoStripes()
-        throws IOException, MalformedPatternException {
+        throws IOException {
         check(
             "testing/abbreviated/collection.rdf",
             "                              <[a-zA-Z][-a-zA-Z0-9._]*:Class",
@@ -562,7 +564,7 @@ public class TestXMLFeatures extends ModelTestBase {
     }
     
 	public void testRDFDefaultNamespace()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			file1,
 			"xmlns=['\"]"
@@ -579,7 +581,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
     
 	public void testBadPrefixNamespace()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		// Trying to set the prefix should generate a warning.
 //		check(file1, null, null, "xmlns:3", true, new Change() {
 //			public void code( RDFWriter w ) {
@@ -589,7 +591,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testDuplicateNamespace()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			file1,
 			"xmlns:eg[12]=['\"]http://example.org/#['\"]",
@@ -603,7 +605,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testDuplicatePrefix()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			file1,
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
@@ -621,7 +623,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testUseNamespaceSysProp()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
 			public void code(RDFWriter writer) {
 				setNsPrefixSysProp("eg", "http://example.org/#");
@@ -630,7 +632,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testDefaultNamespaceSysProp()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
 			public void code(RDFWriter writer) {
 				setNsPrefixSysProp("", "http://example.org/#");
@@ -639,7 +641,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testDuplicateNamespaceSysProp()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			file1,
 			"xmlns:eg[12]=['\"]http://example.org/#['\"]",
@@ -654,7 +656,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testDuplicatePrefixSysProp()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			file1,
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
@@ -668,7 +670,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testDuplicatePrefixSysPropAndExplicit()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			file1,
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
@@ -681,7 +683,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		});
 	}
 	public void testUTF8DeclAbsent()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "utf-8", null, "<\\?xml", new Change() {
 			public void code(RDFWriter writer) {
 			}
@@ -690,7 +692,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testUTF16DeclAbsent()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "utf-16", null, "<\\?xml", false, new Change() {
 			public void code(RDFWriter writer) {
 			}
@@ -698,7 +700,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testUTF8DeclPresent()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "utf-8", "<\\?xml", null, new Change() {
 			public void code(RDFWriter writer) {
 				writer.setProperty("showXmlDeclaration", Boolean.TRUE);
@@ -707,7 +709,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testUTF16DeclPresent()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "utf-16", "<\\?xml", null, new Change() {
 			public void code(RDFWriter writer) {
 				writer.setProperty("showXmlDeclaration", Boolean.TRUE);
@@ -716,7 +718,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testISO8859_1_DeclAbsent()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, "iso-8859-1", null, "<\\?xml", new Change() {
 			public void code(RDFWriter writer) {
 				writer.setProperty("showXmlDeclaration", Boolean.FALSE);
@@ -725,7 +727,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testISO8859_1_DeclPresent()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			file1,
 			"iso-8859-1",
@@ -738,7 +740,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testStringDeclAbsent()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(file1, null, "<\\?xml", new Change() {
 			public void code(RDFWriter writer) {
 			}
@@ -746,7 +748,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	}
 
 	public void testStringDeclPresent()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 
 		check(file1, "<\\?xml", "encoding", new Change() {
 			public void code(RDFWriter writer) {
@@ -886,7 +888,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		String base,
 		Collection regexesPresent,
 		Collection regexesAbsent)
-		throws IOException, MalformedPatternException {
+		throws IOException {
 
 		Model m = createMemModel();
 		m.read("file:testing/abbreviated/relative-uris.rdf");
@@ -907,22 +909,32 @@ public class TestXMLFeatures extends ModelTestBase {
 				String regexPresent = (String) it.next();
 				assertTrue(
 					"Looking for /" + regexPresent + "/",
-					matcher.contains(
-						contents,
-						awk.compile(
-							Util.substituteStandardEntities(regexPresent))));
+                    Pattern.compile(Util.substituteStandardEntities(regexPresent),Pattern.DOTALL).matcher(contents).find()
+//
+//					matcher.contains(
+//						contents,
+//						awk.compile(
+//							Util.substituteStandardEntities(regexPresent)))
+                            );
 			}
 			it = regexesAbsent.iterator();
 			while (it.hasNext()) {
 				String regexAbsent = (String) it.next();
 				assertTrue(
 					"Looking for (not) /" + regexAbsent + "/",
-					!matcher.contains(
-						contents,
-						awk.compile(
-							"[\"']"
-								+ Util.substituteStandardEntities(regexAbsent)
-								+ "[\"']")));
+					!
+                    Pattern.compile(
+                            "[\"']"
+                          + Util.substituteStandardEntities(regexAbsent)+ "[\"']",
+                            Pattern.DOTALL).matcher(contents).find()
+
+//                    matcher.contains(
+//						contents,
+//						awk.compile(
+//							"[\"']"
+//								+ Util.substituteStandardEntities(regexAbsent)
+//								+ "[\"']"))
+                    );
 			}
 			contents = null;
 		} finally {
@@ -1111,7 +1123,7 @@ public class TestXMLFeatures extends ModelTestBase {
 				{
 			"grandparent", null, null, null, null, null, null, null, }, };
 	private void relative(int i, String base, String d[][])
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		Set in = new HashSet();
 		Set out = new HashSet();
 		for (int j = 1; j < d[i].length; j++) {
@@ -1204,5 +1216,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.43 2005-09-23 07:51:49 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.44 2006-01-26 13:39:55 jeremy_carroll Exp $
  */

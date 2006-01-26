@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: PrettyWriterTest.java,v 1.10 2005-09-23 07:51:49 jeremy_carroll Exp $
+    $Id: PrettyWriterTest.java,v 1.11 2006-01-26 13:39:55 jeremy_carroll Exp $
 */
 
 // Package
@@ -17,10 +17,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.regex.Pattern;
 
-import org.apache.oro.text.awk.AwkCompiler;
-import org.apache.oro.text.awk.AwkMatcher;
-import org.apache.oro.text.regex.MalformedPatternException;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -32,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.10 2005-09-23 07:51:49 jeremy_carroll Exp $,
+ * @version CVS info: $Id: PrettyWriterTest.java,v 1.11 2006-01-26 13:39:55 jeremy_carroll Exp $,
  */
 
 public class PrettyWriterTest extends ModelTestBase {
@@ -48,8 +46,8 @@ public class PrettyWriterTest extends ModelTestBase {
 
 	// Test cases
 	/////////////
-	static AwkCompiler awk = new AwkCompiler();
-	static AwkMatcher matcher = new AwkMatcher();
+//	static AwkCompiler awk = new AwkCompiler();
+//	static AwkMatcher matcher = new AwkMatcher();
 
 	/**
 	 * 
@@ -57,7 +55,7 @@ public class PrettyWriterTest extends ModelTestBase {
 	 * @param regex    Written file must match this.
 	 */
 	private void check(String filename, String regex)
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		String contents = null;
 		try {
 			Model m = createMemModel();
@@ -69,9 +67,13 @@ public class PrettyWriterTest extends ModelTestBase {
 			Model m2 = createMemModel();
 			m2.read(new StringReader(contents), filename);
 			assertTrue(m.isIsomorphicWith(m2));
+            
 			assertTrue(
-				"Looking for /" + regex + "/",
-				matcher.contains(contents, awk.compile(regex)));
+				"Looking for /" + regex + "/ ",
+//                +contents,
+                Pattern.compile(regex,Pattern.DOTALL).matcher(contents).find()
+//				matcher.contains(contents, awk.compile(regex))
+                );
 			contents = null;
 		} finally {
 			if (contents != null) {
@@ -82,26 +84,26 @@ public class PrettyWriterTest extends ModelTestBase {
 	}
 
 	public void testAnonDamlClass()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			"file:testing/abbreviated/daml.rdf",
 			"rdf:parseType=[\"']daml:collection[\"']");
 	}
 
 	public void testRDFCollection()
-		throws IOException, MalformedPatternException {
+		throws IOException {
 		check(
 			"file:testing/abbreviated/collection.rdf",
 			"rdf:parseType=[\"']Collection[\"']");
 	}
 
-	public void testOWLPrefix() throws IOException, MalformedPatternException {
+	public void testOWLPrefix() throws IOException{
 		//		check(
 		//			"file:testing/abbreviated/collection.rdf",
 		//			"xmlns:owl=[\"']http://www.w3.org/2002/07/owl#[\"']");
 	}
 
-	public void testLi() throws IOException, MalformedPatternException {
+	public void testLi() throws IOException {
 		check(
 			"file:testing/abbreviated/container.rdf",
 			"<rdf:li.*<rdf:li.*<rdf:li.*<rdf:li");
@@ -168,9 +170,9 @@ public class PrettyWriterTest extends ModelTestBase {
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: PrettyWriterTest.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  *
- * Last modified on   $Date: 2005-09-23 07:51:49 $
+ * Last modified on   $Date: 2006-01-26 13:39:55 $
  *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP

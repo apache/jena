@@ -84,11 +84,11 @@ public class TestErrorMsg extends TestCase {
 		if (regexPresent != null)
 			assertTrue(
 				"Should find /" + regexPresent + "/",
-                Pattern.compile(regexPresent).matcher(contents).find());
+                Pattern.compile(regexPresent,Pattern.DOTALL).matcher(contents).find());
 		if (regexAbsent != null)
 			assertTrue(
 				"Should not find /" + regexAbsent + "/",
-				!Pattern.compile(regexAbsent).matcher(contents).find());
+				!Pattern.compile(regexAbsent,Pattern.DOTALL).matcher(contents).find());
 		contents = null;
 	}
 	
@@ -140,5 +140,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.9 2006-01-25 13:49:17 jeremy_carroll Exp $
+ * $Id: TestErrorMsg.java,v 1.10 2006-01-26 13:39:59 jeremy_carroll Exp $
  */
