@@ -1,0 +1,1179 @@
+<UriTests>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='d/z?x=a'>
+<getHost nullValue='true'/>
+<getPath value='d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='d/z?x=a'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/z?x=a'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize same='true'/>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='http://example.com/A'>
+<getHost value='example.com'/>
+<getPath value='/A'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.com/A'/>
+<exceptions>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='example.com'/>
+<getPath value='/A'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.com/A'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize>
+<getHost value='example.com'/>
+<getPath value='/A'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='//example.com/A'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri=''>
+<getHost nullValue='true'/>
+<getPath value=''/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value=''/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize same='true'/>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='.'>
+<getHost nullValue='true'/>
+<getPath value='.'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='.'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize>
+<getHost nullValue='true'/>
+<getPath value=''/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value=''/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='../../C/D'>
+<getHost nullValue='true'/>
+<getPath value='../../C/D'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='../../C/D'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/C/D'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/C/D'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize same='true'/>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='../../c/d/'>
+<getHost nullValue='true'/>
+<getPath value='../../c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='../../c/d/'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize>
+<getHost nullValue='true'/>
+<getPath value=''/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value=''/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='../../c/d/X#bar'>
+<getHost nullValue='true'/>
+<getPath value='../../c/d/X'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='bar'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='../../c/d/X#bar'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/X'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='bar'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/X#bar'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize>
+<getHost nullValue='true'/>
+<getPath value='X'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='bar'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='X#bar'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='../../c/d/e/f/g/'>
+<getHost nullValue='true'/>
+<getPath value='../../c/d/e/f/g/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='../../c/d/e/f/g/'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/e/f/g/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/e/f/g/'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize>
+<getHost nullValue='true'/>
+<getPath value='e/f/g/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='e/f/g/'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='../../c/d/z?x=a'>
+<getHost nullValue='true'/>
+<getPath value='../../c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='../../c/d/z?x=a'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/z?x=a'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize>
+<getHost nullValue='true'/>
+<getPath value='z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='z?x=a'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='http://ex.org/../../c/d/z?x=a'>
+<getHost value='ex.org'/>
+<getPath value='/../../c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://ex.org/../../c/d/z?x=a'/>
+<exceptions>
+<exception>NON_INITIAL_DOT_SEGMENT</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='ex.org'/>
+<getPath value='/c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://ex.org/c/d/z?x=a'/>
+<exceptions>
+<exception>NON_INITIAL_DOT_SEGMENT</exception>
+</exceptions>
+</Result>
+<Relativize>
+<getHost value='ex.org'/>
+<getPath value='/c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='//ex.org/c/d/z?x=a'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<IRI iri='http://ex.org/../../c/d/z?x=a'>
+<getHost value='ex.org'/>
+<getPath value='/../../c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://ex.org/../../c/d/z?x=a'/>
+<exceptions>
+<exception>NON_INITIAL_DOT_SEGMENT</exception>
+</exceptions>
+</IRI>
+<Resolve>
+<IRI iri='http://www.example.org/a/b/c/d/'>
+<getHost value='www.example.org'/>
+<getPath value='/a/b/c/d/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='http://ex.org/c/./d/z?x=a'>
+<getHost value='ex.org'/>
+<getPath value='/c/./d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://ex.org/c/./d/z?x=a'/>
+<exceptions>
+<exception>NON_INITIAL_DOT_SEGMENT</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='ex.org'/>
+<getPath value='/c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://ex.org/c/d/z?x=a'/>
+<exceptions>
+<exception>NON_INITIAL_DOT_SEGMENT</exception>
+</exceptions>
+</Result>
+<Relativize>
+<getHost value='ex.org'/>
+<getPath value='/c/d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='//ex.org/c/d/z?x=a'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<IRI iri='http://ex.org/c/./d/z?x=a'>
+<getHost value='ex.org'/>
+<getPath value='/c/./d/z'/>
+<getPort value='-1'/>
+<getQuery value='x=a'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://ex.org/c/./d/z?x=a'/>
+<exceptions>
+<exception>NON_INITIAL_DOT_SEGMENT</exception>
+</exceptions>
+</IRI>
+<IRI iri='file:C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf'>
+<getHost nullValue='true'/>
+<getPath value='C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='file'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='file:C:%5CDOCUME~1%5Cjjchplb%5CLOCALS~1%5CTemp%5Chedgehog6739.rdf'/>
+<exceptions>
+<exception>ILLEGAL_CHAR</exception>
+</exceptions>
+</IRI>
+<Resolve>
+<IRI iri='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf'>
+<getHost value='www.w3.org'/>
+<getPath value='/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/#André'>
+<getHost value='example.org'/>
+<getPath value='/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='André'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/#Andr%C3%A9'/>
+<exceptions>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='example.org'/>
+<getPath value='/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='André'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/#Andr%C3%A9'/>
+<exceptions>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</Result>
+<Relativize>
+<getHost value='example.org'/>
+<getPath value='/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='André'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='//example.org/#Andr%C3%A9'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf'>
+<getHost value='www.w3.org'/>
+<getPath value='/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/#Andr%C3%A9'>
+<getHost value='example.org'/>
+<getPath value='/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='Andr%C3%A9'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/#Andr%C3%A9'/>
+<exceptions>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='example.org'/>
+<getPath value='/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='Andr%C3%A9'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/#Andr%C3%A9'/>
+<exceptions>
+</exceptions>
+</Result>
+<Relativize>
+<getHost value='example.org'/>
+<getPath value='/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='Andr%C3%A9'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='//example.org/#Andr%C3%A9'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+</exceptions>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test2.rdf'>
+<getHost value='www.w3.org'/>
+<getPath value='/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test2.rdf'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test2.rdf'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='#Dürst'>
+<getHost nullValue='true'/>
+<getPath value=''/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='Dürst'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='#D%C3%BCrst'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</IRI>
+<Result>
+<getHost value='www.w3.org'/>
+<getPath value='/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test2.rdf'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='Dürst'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test2.rdf#D%C3%BCrst'/>
+<exceptions>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</Result>
+<Relativize same='true'/>
+</Resolve>
+<IRI iri='h^ttp:prop'>
+<getHost nullValue='true'/>
+<getPath value='prop'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='h^ttp'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='h%5Ettp:prop'/>
+<exceptions>
+<exception>ILLEGAL_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='h^ttp:title'>
+<getHost nullValue='true'/>
+<getPath value='title'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='h^ttp'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='h%5Ettp:title'/>
+<exceptions>
+<exception>ILLEGAL_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='ht#tp://jjc3.org/demo.mp3#frag'>
+<getHost nullValue='true'/>
+<getPath value='ht'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='tp://jjc3.org/demo.mp3#frag'/>
+<isAbsolute value='false'/>
+<isOpaque value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='ht#tp://jjc3.org/demo.mp3#frag'/>
+<exceptions>
+<exception>RELATIVE_URI</exception>
+<exception>ILLEGAL_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='ht^tp:'>
+<getHost nullValue='true'/>
+<getPath value=''/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='ht^tp'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='ht%5Etp:'/>
+<exceptions>
+<exception>ILLEGAL_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='ht^tp://www.w3.org/demo.mp3'>
+<getHost value='www.w3.org'/>
+<getPath value='/demo.mp3'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='ht^tp'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='ht%5Etp://www.w3.org/demo.mp3'/>
+<exceptions>
+<exception>ILLEGAL_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='ht^tp:Foo'>
+<getHost nullValue='true'/>
+<getPath value='Foo'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='ht^tp'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='ht%5Etp:Foo'/>
+<exceptions>
+<exception>ILLEGAL_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='http:'>
+<getHost nullValue='true'/>
+<getPath value=''/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http:'/>
+<exceptions>
+</exceptions>
+</IRI>
+<IRI iri='http://46229EFFE16A9BD60B9F1BE88B2DB047ADDED785/demo.mp3'>
+<getHost value='46229EFFE16A9BD60B9F1BE88B2DB047ADDED785'/>
+<getPath value='/demo.mp3'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://46229EFFE16A9BD60B9F1BE88B2DB047ADDED785/demo.mp3'/>
+<exceptions>
+<exception>LOWER_CASE_PREFERRED</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/#Andreĭ'>
+<getHost value='example.org'/>
+<getPath value='/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='Andreĭ'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/#Andre%C4%AD'/>
+<exceptions>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/#André'>
+<getHost value='example.org'/>
+<getPath value='/'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment value='André'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/#Andr%C3%A9'/>
+<exceptions>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/&#9;'>
+<getHost value='example.org'/>
+<getPath value='/&#9;'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/%09'/>
+<exceptions>
+<exception>NOT_XML_SCHEMA_WHITESPACE</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/&#xA;&#xA;'>
+<getHost value='example.org'/>
+<getPath value='/&#xA;&#xA;'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/%0A%0A'/>
+<exceptions>
+<exception>NOT_XML_SCHEMA_WHITESPACE</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/&#xD;'>
+<getHost value='example.org'/>
+<getPath value='/&#xD;'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/%0D'/>
+<exceptions>
+<exception>NOT_XML_SCHEMA_WHITESPACE</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/&lt;b&gt;boo'>
+<getHost value='example.org'/>
+<getPath value='/&lt;b&gt;boo'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/%3Cb%3Eboo'/>
+<exceptions>
+<exception>UNWISE_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://example.org/&quot;'>
+<getHost value='example.org'/>
+<getPath value='/&quot;'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://example.org/%22'/>
+<exceptions>
+<exception>UNWISE_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://André.example.org/foo'>
+<getHost value='André.example.org'/>
+<getPath value='/foo'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://xn--andr-epa.example.org/foo'/>
+<exceptions>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://andré.example.org/foo'>
+<getHost value='andré.example.org'/>
+<getPath value='/foo'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString value='http://xn--andr-epa.example.org/foo'/>
+<exceptions>
+<exception>IRI_CHAR</exception>
+</exceptions>
+</IRI>
+<IRI iri='http://xn--andr--ep-.example.org/foo'>
+<getHost value='xn--andr--ep-.example.org'/>
+<getPath value='/foo'/>
+<getPort value='-1'/>
+<getQuery nullValue='true'/>
+<getScheme value='http'/>
+<getUserinfo nullValue='true'/>
+<getFragment nullValue='true'/>
+<isAbsolute value='true'/>
+<isOpaque value='false'/>
+<isRelative value='false'/>
+<toASCIIString exception='Bad Internationalized Domain Name: Input does not meet STD3 rules for domain name format.'/>
+<exceptions>
+<exception>DOUBLE_DASH_IN_REG_NAME</exception>
+<exception>BAD_IDN</exception>
+</exceptions>
+</IRI>
+</UriTests>
