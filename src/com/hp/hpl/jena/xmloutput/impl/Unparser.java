@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.37 2005-09-23 07:51:49 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.38 2006-01-26 14:33:36 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -80,8 +80,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
-import com.hp.hpl.jena.rdf.arp.MalformedURIException;
-import com.hp.hpl.jena.rdf.arp.URI;
+import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
@@ -116,7 +115,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.38 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -209,13 +208,15 @@ class Unparser {
         if (uri == null || uri.equals(""))
             localName = "";
         else
-            try {
-                URI u = new URI(uri);
-                u.setFragment(null);
-                localName = u.getURIString();
-            } catch (MalformedURIException e) {
-                throw new BadURIException(uri, e);
-            }
+//            try 
+        {
+                IRI u = BaseXMLWriter.factory.create(uri);
+                u = u.create("");
+                localName = u.toString();
+            } 
+//        catch (MalformedURIException e) {
+//                throw new BadURIException(uri, e);
+//            }
     }
 
     /**

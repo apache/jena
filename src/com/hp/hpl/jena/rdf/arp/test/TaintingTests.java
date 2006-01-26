@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: TaintingTests.java,v 1.6 2005-09-23 07:51:48 jeremy_carroll Exp $
+ *  $Id: TaintingTests.java,v 1.7 2006-01-26 14:33:15 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -109,7 +109,9 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         "testing/wg/rdfms-syntax-incomplete/error005.rdf",
         "testing/wg/rdfms-syntax-incomplete/error006.rdf",
         "testing/wg/xmlbase/error001.rdf",
+        
         "testing/arp/tainting/base.rdf",
+        
         "testing/arp/tainting/damlcollection.rdf",
         "testing/arp/tainting/lang.rdf",
         "testing/arp/tainting/ptUnknown.rdf",

@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.22 2005-10-07 13:02:37 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.23 2006-01-26 14:33:35 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -37,6 +37,7 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,8 +47,8 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.ARPHandlers;
@@ -403,10 +404,15 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         return new Location(locator);
     }
 
-    private IRIFactory factory;
+    private IRIFactory factory = IRIFactory.jenaImplementation();
 
     IRIFactory iriFactory() {
         if (factory == null) {
+            
+            // TODO locator stuff
+//            factory = new IRIFactory();
+//            factory.useSpecificationRDF(false);
+            /*
             if (locator != null)
                 factory = new IRIFactory(locator);
             else
@@ -429,7 +435,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                     }
 
                 });
-
+              */
         }
         return factory;
     }
@@ -438,16 +444,16 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         ((Frame) frame).checkEncoding(null,uri);
         if (uri.length() != 0)
              {
-                RDFURIReference u = iriFactory().create(uri);
-                if (u.isVeryBad()) {
-                    warning(null,
-                            WARN_BAD_NAMESPACE_URI,
-                            "The namespace URI: <"
-                                    + uri
-                                    + "> is not well formed.");
-                    return;
-                 
-                }
+                IRI u = iriFactory().create(uri);
+//                if (u.isVeryBad()) {
+//                    warning(null,
+//                            WARN_BAD_NAMESPACE_URI,
+//                            "The namespace URI: <"
+//                                    + uri
+//                                    + "> is not well formed.");
+//                    return;
+//                 
+//                }
                 if (!u.isAbsolute()) {
                     warning(null,
                             WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
@@ -455,12 +461,20 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                                     + uri
                                     + "> is relative. Such use has been deprecated by the W3C, and may result in RDF interoperability failures. Use an absolute namespace URI.");
                 }
-                if (!u.toASCIIString().equals(u.toString()))
+                try {
+                    if (!u.toASCIIString().equals(u.toString()))
+                        warning(null,
+                                WARN_BAD_NAMESPACE_URI,
+                                "Non-ascii characters in a namespace URI may not be completely portable: <"
+                                        + u.toString()
+                                        + ">. Resulting RDF URI references are legal.");
+                } catch (MalformedURLException e) {
                     warning(null,
                             WARN_BAD_NAMESPACE_URI,
-                            "Non-ascii characters in a namespace URI may not be completely portable: <"
+                            "toAscii failed for namespace URI: <"
                                     + u.toString()
-                                    + ">. Resulting RDF URI references are legal.");
+                                    + ">. " + e.getMessage());
+              } 
 
                 if (uri.startsWith(rdfns) && !uri.equals(rdfns))
                     warning(null,WARN_BAD_RDF_NAMESPACE_URI, "Namespace URI ref <"
@@ -474,8 +488,8 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     public boolean allowRelativeURIs() {
         return allowRelativeReferences;
     }
-    private RDFURIReference sameDocRef;
-    public RDFURIReference sameDocRef() {
+    private IRI sameDocRef;
+    public IRI sameDocRef() {
         if (sameDocRef==null){
             sameDocRef = iriFactory().create("");
         }

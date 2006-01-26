@@ -2,16 +2,15 @@
  *  (c)     Copyright 2000-2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: URITests.java,v 1.12 2005-09-23 07:51:48 jeremy_carroll Exp $
+ *  $Id: URITests.java,v 1.13 2006-01-26 14:33:15 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
+import com.hp.hpl.jena.iri.*;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.RDFURIReference;
 
 //import java.net.*;
 /**
@@ -45,10 +44,18 @@ public class URITests
 		super(s);
 	}
 
+    static IRIFactory factory = IRIFactory.jenaImplementation();
+//    static {
+//        factory.useSpecificationRDF(false);
+//    }
 	public void testURI(String uri, boolean ok) {
-		    RDFURIReference ref =
-            new IRIFactory().create(uri);
-			assertEquals("<" + uri + "> is"+(ok?" ":" not ")+"a URI", ok, ref.isRDFURIReference());
+		    IRI ref =
+            factory.create(uri);
+            if (ok && ref.hasViolation(false)) {
+                Violation v = (Violation)ref.violations(false).next();
+                fail("<" + uri + "> is expected to be a URI, but: "+v.getLongMessage());
+            }
+			assertEquals("<" + uri + "> is"+(ok?" ":" not ")+"a URI", ok, !ref.hasViolation(false));
             
 	}
 	public void testNoDomain()  {

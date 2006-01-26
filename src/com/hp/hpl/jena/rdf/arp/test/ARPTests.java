@@ -36,11 +36,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.iri.RDFURIReference;
 /**
  * The JUnit test suite for ARP.
  *
@@ -55,10 +56,10 @@ public class ARPTests extends java.lang.Object {
 	 * copy of the tests.
 	 */
 	static public boolean internet = false;
-	static RDFURIReference wgTestDir =
-		IRIFactory.defaultFactory().create("http://www.w3.org/2000/10/rdf-tests/rdfcore/");
-	static RDFURIReference arpTestDir =
-        IRIFactory.defaultFactory().create("http://jcarroll.hpl.hp.com/arp-tests/");
+	static IRI wgTestDir =
+		IRIFactory.iriImplementation().create("http://www.w3.org/2000/10/rdf-tests/rdfcore/");
+	static IRI arpTestDir =
+        IRIFactory.iriImplementation().create("http://jcarroll.hpl.hp.com/arp-tests/");
 	/** Creates new ARPTests */
 	static public Test suite() {
 		TestSuite s = new TestSuite("ARP");

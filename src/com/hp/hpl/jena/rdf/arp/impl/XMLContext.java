@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.7 2005-09-23 07:51:49 jeremy_carroll Exp $
+ * * $Id: XMLContext.java,v 1.8 2006-01-26 14:33:35 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -38,7 +38,7 @@ package com.hp.hpl.jena.rdf.arp.impl;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.RDFURIReference;
+import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes;
 
@@ -64,22 +64,22 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
         this(h, h.iriFactory().create(base));
     }
 
-    protected XMLContext(XMLHandler h, RDFURIReference uri, Taint baseT) {
+    protected XMLContext(XMLHandler h, IRI uri, Taint baseT) {
         super(!h.ignoring(IGN_XMLBASE_SIGNIFICANT), null, uri, baseT, "",
                 new TaintImpl());
     }
 
-    private XMLContext(XMLHandler h, RDFURIReference baseMaybeWithFrag)
+    private XMLContext(XMLHandler h, IRI baseMaybeWithFrag)
             throws SAXParseException {
-        this(h, baseMaybeWithFrag.resolve(""), baseMaybeWithFrag);
+        this(h, baseMaybeWithFrag.create(""), baseMaybeWithFrag);
     }
 
-    private XMLContext(XMLHandler h, RDFURIReference base,
-            RDFURIReference baseMaybeWithFrag) throws SAXParseException {
+    private XMLContext(XMLHandler h, IRI base,
+            IRI baseMaybeWithFrag) throws SAXParseException {
         this(h, base, initTaint(h, baseMaybeWithFrag));
     }
 
-    XMLContext(boolean b, AbsXMLContext document, RDFURIReference uri,
+    XMLContext(boolean b, AbsXMLContext document, IRI uri,
             Taint baseT, String lang, Taint langT) {
         super(b, document, uri, baseT, lang, langT);
     }
@@ -94,7 +94,7 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
                         .equals(document.uri));
     }
 
-    AbsXMLContext clone(RDFURIReference u, Taint baseT, String lng,
+    AbsXMLContext clone(IRI u, Taint baseT, String lng,
             Taint langT) {
         return new XMLContext(true, document, u, baseT, lng, langT);
     }
@@ -105,7 +105,7 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
         if (document == null || relUri.equals(resolvedURI))
             return;
         if (!isSameAsDocument()) {
-            String other = document.uri.resolve(relUri).toString();
+            String other = document.uri.create(relUri).toString();
             if (!other.equals(resolvedURI)) {
                 forErrors.warning(taintMe, IGN_XMLBASE_SIGNIFICANT,
                         "Use of attribute xml:base changes interpretation of relative URI: \""
@@ -115,7 +115,7 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
     }
 
     void checkBaseUse(XMLHandler forErrors, Taint taintMe, String relUri,
-            RDFURIReference rslt) throws SAXParseException {
+            IRI rslt) throws SAXParseException {
         if (document == null)
             return;
 
@@ -123,7 +123,7 @@ public class XMLContext extends AbsXMLContext implements ARPErrorNumbers,
         if (relUri.equals(resolvedURI))
             return;
         if (!isSameAsDocument()) {
-            String other = document.uri.resolve(relUri).toString();
+            String other = document.uri.create(relUri).toString();
             if (!other.equals(resolvedURI)) {
                 forErrors.warning(taintMe, IGN_XMLBASE_SIGNIFICANT,
                         "Use of attribute xml:base changes interpretation of relative URI: \""

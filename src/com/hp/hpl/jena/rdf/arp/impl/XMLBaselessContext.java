@@ -1,13 +1,13 @@
 /*
  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: XMLBaselessContext.java,v 1.2 2005-09-23 07:51:49 jeremy_carroll Exp $
+ $Id: XMLBaselessContext.java,v 1.3 2006-01-26 14:33:35 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.arp.impl;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.RDFURIReference;
+import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 
 /**
@@ -23,10 +23,10 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
     public XMLBaselessContext(XMLHandler f, int eno) {
       this(f,eno,f.sameDocRef());
     }
-    XMLBaselessContext(XMLHandler f, int eno, String baseURI) {
-        this(f,eno,f.iriFactory().create(baseURI).resolve(""));
-    }
-    XMLBaselessContext(XMLHandler f, int eno, RDFURIReference baseURI) {
+//    XMLBaselessContext(XMLHandler f, int eno, String baseURI) {
+//        this(f,eno,f.iriFactory().create(baseURI).create(""));
+//    }
+    XMLBaselessContext(XMLHandler f, int eno, IRI baseURI) {
         super(true, null, baseURI, 
                 new TaintImpl(), "",
                 new TaintImpl());
@@ -49,14 +49,14 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
         }
     }
 
-    private XMLBaselessContext(AbsXMLContext document, RDFURIReference uri,
+    private XMLBaselessContext(AbsXMLContext document, IRI uri,
             Taint baseT, String lang, Taint langT, XMLBaselessContext parent) {
         super(true, document, uri, baseT, lang, langT);
         errno = parent.errno;
         errmsg = parent.errmsg;
     }
 
-    AbsXMLContext clone(RDFURIReference u, Taint baseT, String lng,
+    AbsXMLContext clone(IRI u, Taint baseT, String lng,
             Taint langT) {
         return new XMLBaselessContext(document, u, baseT, lng, langT, this);
     }
@@ -64,13 +64,14 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
     public AbsXMLContext withBase(XMLHandler forErrors, String b)
             throws SAXParseException {
         TaintImpl taintB = new TaintImpl();
-        RDFURIReference newB = resolveAsURI(forErrors, taintB, b, false);
-        if (newB.isVeryBad())
-            return new XMLBaselessContext(forErrors,ERR_RESOLVING_AGAINST_MALFORMED_BASE,b);
+        IRI newB = resolveAsURI(forErrors, taintB, b, false);
         if (newB.isRelative() )
-            return new XMLBaselessContext(forErrors,errno,newB.resolve(""));
+            return new XMLBaselessContext(forErrors,errno,newB.create(""));
+        
+        if (newB.hasViolation(false))
+            return new XMLBaselessContext(forErrors,ERR_RESOLVING_AGAINST_MALFORMED_BASE,newB);
         return new XMLContext(keepDocument(forErrors), document, newB
-                .resolve(""), taintB, lang, langTaint);
+                .create(""), taintB, lang, langTaint);
     }
 
     boolean keepDocument(XMLHandler forErrors) {
@@ -86,8 +87,12 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
         forErrors.warning(taintMe, errno, errmsg + ": <" + relUri + ">");
 
     }
-    void checkBaseUse(XMLHandler forErrors, Taint taintMe, String relUri, RDFURIReference rslt) throws SAXParseException {
-       if (!rslt.isAbsolute())
+    void checkBaseUse(XMLHandler forErrors, Taint taintMe, String relUri, IRI rslt) throws SAXParseException {
+
+        String resolvedURI = rslt.toString();
+        if (relUri.equals(resolvedURI) && rslt.isAbsolute())
+            return;
+        
         forErrors.warning(taintMe, errno, errmsg + ": <" + relUri + ">");
        
     }

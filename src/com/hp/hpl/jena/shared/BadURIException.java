@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BadURIException.java,v 1.5 2005-02-21 12:18:42 andy_seaborne Exp $
+  $Id: BadURIException.java,v 1.6 2006-01-26 14:33:36 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -25,8 +25,8 @@ package com.hp.hpl.jena.shared;
 */
 public class BadURIException extends JenaException
     {
-    public BadURIException( String message, Throwable e )
-        { super( message, e ); }
+    public BadURIException( String message )
+        { super( message ); }
     }
 
 

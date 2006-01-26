@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.50 2006-01-26 13:39:59 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.51 2006-01-26 14:33:36 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -26,8 +26,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.JenaRuntime;
-import com.hp.hpl.jena.rdf.arp.MalformedURIException;
-import com.hp.hpl.jena.rdf.arp.URI;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.NsIterator;
@@ -73,7 +74,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.50 $' Date='$Date: 2006-01-26 13:39:59 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.51 $' Date='$Date: 2006-01-26 14:33:36 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -153,7 +154,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
 	String xmlBase = null;
 
-    private URI baseURI;
+    private IRI baseURI;
         
 	boolean longId = false;
     
@@ -465,19 +466,22 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		writeXMLBody( model, pw, base );
 		pw.flush();
 	}
-    
+    static IRIFactory factory = IRIFactory.jenaImplementation();
+
+   
 	private void writeXMLBody( Model model, PrintWriter pw, String base ) {
-		try {
+//		try {
+        // TODO errors?
 			if (xmlBase == null) {
-				baseURI = (base == null || base.length() == 0) ? null : new URI(base);
+				baseURI = (base == null || base.length() == 0) ? null : factory.create(base);
 				writeBody(model, pw, base, false);
 			} else {
-				baseURI = xmlBase.length() == 0 ? null : new URI(xmlBase);
+				baseURI = xmlBase.length() == 0 ? null : factory.create(xmlBase);
 				writeBody(model, pw, xmlBase, true);
 			}
-		} catch (MalformedURIException e) {
-			throw new BadURIException( e.getMessage(), e);
-		}
+//		} catch (MalformedURIException e) {
+//			throw new BadURIException( e.getMessage(), e);
+//		}
 	}
 
 	private void writeXMLDeclaration(Writer out, PrintWriter pw) {
@@ -702,7 +706,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	private boolean grandparent = false;
 	*/
 	private int relativeFlags =
-		URI.SAMEDOCUMENT | URI.ABSOLUTE | URI.RELATIVE | URI.PARENT;
+		IRI.SAMEDOCUMENT | IRI.ABSOLUTE | IRI.CHILD | IRI.PARENT;
 
     /**
         Answer the form of the URI after relativisation according to the relativeFlags set
@@ -717,12 +721,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
     /**
         Answer the relative form of the URI against the base, according to the relativeFlags.
-        This method exists only to encapsulate the checked MalformedURIException.
     */
-    private String relativize( URI base, String uri )  {
-        try { return base.relativize( uri, relativeFlags); }
-        catch (MalformedURIException e) { throw new JenaException( e ); }     
-        }
+    private String relativize( IRI base, String uri )  {
+        // TODO errors?
+        return base.relativize( uri, relativeFlags).toString();
+    }
 
     /**
         Answer the argument URI, but if we demandGoodURIs and it isn't good, throw
@@ -730,11 +733,15 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         appear to be a convenient URI.checkGood() kind of method, alas.
      */
     private String checkURI( String uri ) {
-        if (demandGoodURIs)
-            try { new URI( uri ); } 
-            catch (MalformedURIException e) { 
-            	throw new BadURIException( "Only well-formed absolute URIrefs can be included in RDF/XML output: " + uri, e ); 
-            }
+        if (demandGoodURIs) {
+            IRI iri = factory.create( uri );
+            
+            if (iri.hasViolation(false) ) 
+            throw new BadURIException( "Only well-formed absolute URIrefs can be included in RDF/XML output: <" + uri +
+                    "> " + ((Violation)iri.violations(false).next()).getLongMessage()); 
+        }
+             
+            
         return uri;
     }
     
@@ -759,17 +766,17 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
 	static private String flags2str(int f) {
 	StringBuffer oldValue = new StringBuffer(64);
-	if ( (f&URI.SAMEDOCUMENT)!=0 )
+	if ( (f&IRI.SAMEDOCUMENT)!=0 )
 	   oldValue.append( "same-document, " );
-	if ( (f&URI.NETWORK)!=0 )
+	if ( (f&IRI.NETWORK)!=0 )
 	   oldValue.append( "network, ");
-	if ( (f&URI.ABSOLUTE)!=0 )
+	if ( (f&IRI.ABSOLUTE)!=0 )
 	   oldValue.append("absolute, ");
-	if ( (f&URI.RELATIVE)!=0 )
+	if ( (f&IRI.CHILD)!=0 )
 	   oldValue.append("relative, ");
-	if ((f&URI.PARENT)!=0)
+	if ((f&IRI.PARENT)!=0)
 	   oldValue.append("parent, ");
-	if ((f&URI.GRANDPARENT)!=0)
+	if ((f&IRI.GRANDPARENT)!=0)
 	   oldValue.append("grandparent, ");
 	if (oldValue.length() > 0)
 	   oldValue.setLength(oldValue.length()-2);
@@ -782,17 +789,17 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	while ( tkn.hasMoreElements() ) {
 	    String flag = tkn.nextToken();
 	    if ( flag.equals("same-document") )
-	       rslt |= URI.SAMEDOCUMENT;
+	       rslt |= IRI.SAMEDOCUMENT;
 	    else if ( flag.equals("network") )
-	       rslt |= URI.NETWORK;
+	       rslt |= IRI.NETWORK;
 	    else if ( flag.equals("absolute") )
-	       rslt |= URI.ABSOLUTE;
+	       rslt |= IRI.ABSOLUTE;
 	    else if ( flag.equals("relative") )
-	       rslt |= URI.RELATIVE;
+	       rslt |= IRI.CHILD;
 	    else if ( flag.equals("parent") )
-	       rslt |= URI.PARENT;
+	       rslt |= IRI.PARENT;
 	    else if ( flag.equals("grandparent") )
-	       rslt |= URI.GRANDPARENT;
+	       rslt |= IRI.GRANDPARENT;
 	    else
 	
 	    logger.warn(

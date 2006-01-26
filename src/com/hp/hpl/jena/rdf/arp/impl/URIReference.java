@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.9 2005-09-26 11:28:52 jeremy_carroll Exp $
+ * * $Id: URIReference.java,v 1.10 2006-01-26 14:33:35 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -38,7 +38,7 @@ package com.hp.hpl.jena.rdf.arp.impl;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.RDFURIReference;
+import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 
@@ -171,7 +171,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
             throws SAXParseException {
 
         Taint taintMe = new TaintImpl();
-        RDFURIReference iri = ctxt.resolveAsURI(f.arp,taintMe,uri);
+        IRI iri = ctxt.resolveAsURI(f.arp,taintMe,uri);
         f.checkEncoding(taintMe,uri);
 
         URIReference rslt = new URIReference(iri.toString());
@@ -185,7 +185,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
         URIReference rslt = new URIReference(ns + local);
         f.checkEncoding(rslt,local);
         // TODO: not for 2.3 move some of the check upwards ...
-        RDFURIReference iri = f.arp.iriFactory().create(ns+local);
+        IRI iri = f.arp.iriFactory().create(ns+local);
         AbsXMLContext.checkURI(f.arp,rslt,iri);
         return rslt;
     }

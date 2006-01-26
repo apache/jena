@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.44 2006-01-26 13:39:55 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.45 2006-01-26 14:33:36 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -34,7 +34,8 @@ import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.arp.URI;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
@@ -50,7 +51,7 @@ import com.hp.hpl.jena.xmloutput.impl.SimpleLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.44 $ $Date: 2006-01-26 13:39:55 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.45 $ $Date: 2006-01-26 14:33:36 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
@@ -860,7 +861,7 @@ public class TestXMLFeatures extends ModelTestBase {
     }
 
     public void testBadProperty1() throws IOException {
-        checkPropURI("http:/a.b/", null, null, BadPropURI);
+        checkPropURI("http://x/a.b/", null, null, BadPropURI);
     }
     /*
     public void testBadProperty2() throws IOException {
@@ -1155,6 +1156,8 @@ public class TestXMLFeatures extends ModelTestBase {
 			"http://www.example.org/a/b/c/d/z?x=a",
 			};
 
+
+    static IRIFactory factory = IRIFactory.jenaImplementation();
 	static public void main(String args[]) throws Exception {
 		String b[] =
 			{
@@ -1173,13 +1176,13 @@ public class TestXMLFeatures extends ModelTestBase {
 				"grandparent" };
 		for (int k = 0; k < b.length; k++) {
 			System.out.println("// " + b[k]);
-			URI bb = new URI(b[k]);
+			IRI bb = factory.create(b[k]);
 
 			for (int i = 0; i < n.length; i++) {
 				System.out.print(" { \"" + n[i] + "\", ");
 				int f = BaseXMLWriter.str2flags(n[i]);
 				for (int j = 0; j < uris.length; j++) {
-					String r = bb.relativize(uris[j], f);
+					String r = bb.relativize(uris[j], f).toString();
 					System.out.print(
 						(i != 0 && r.equals(uris[j]))
 							? "null, "
@@ -1216,5 +1219,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.44 2006-01-26 13:39:55 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.45 2006-01-26 14:33:36 jeremy_carroll Exp $
  */

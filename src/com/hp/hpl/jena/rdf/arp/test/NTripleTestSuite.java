@@ -21,8 +21,7 @@ import junit.framework.TestSuite;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.RDFURIReference;
-import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
+import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.ARPEventHandler;
 import com.hp.hpl.jena.rdf.arp.AResource;
@@ -46,14 +45,14 @@ class NTripleTestSuite extends WGTestSuite {
 		super(fact, name, b);
 	}
 
-	static TestSuite suite(RDFURIReference testDir, String d, String nm) {
+	static TestSuite suite(IRI testDir, String d, String nm) {
 		return new NTripleTestSuite(
 			new TestInputStreamFactory(testDir, d),
 			nm,
 			true);
 	}
 
-	static TestSuite suite(RDFURIReference testDir, XercesURIWrapper d, String nm) {
+	static TestSuite suite(IRI testDir, IRI d, String nm) {
 		return new NTripleTestSuite(
 			new TestInputStreamFactory(testDir, d),
 			nm,

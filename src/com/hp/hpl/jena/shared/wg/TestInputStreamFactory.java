@@ -6,15 +6,17 @@
 package com.hp.hpl.jena.shared.wg;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.io.*;
-import java.util.zip.*;
+import java.net.URL;
+import java.util.zip.ZipFile;
 
-import com.hp.hpl.jena.iri.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
  * This class provides input streams that:
@@ -26,10 +28,10 @@ import com.hp.hpl.jena.shared.*;
  */
 public class TestInputStreamFactory {
     
-    final IRIFactory iriFactory = new IRIFactory();
+    final IRIFactory iriFactory = IRIFactory.jenaImplementation();
 
-	final private RDFURIReference base;
-	final private RDFURIReference mapBase;
+	final private IRI base;
+	final private IRI mapBase;
 	final private ZipFile zip;
 	final private String property;
     private String createMe = "error";
@@ -37,7 +39,7 @@ public class TestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param getBaseDir Replace the baseDir into getBaseDir before opening any URL.
 	 */
-	public TestInputStreamFactory(RDFURIReference baseDir, RDFURIReference getBaseDir) {
+	public TestInputStreamFactory(IRI baseDir, IRI getBaseDir) {
 		base = baseDir;
 		mapBase = getBaseDir;
 		zip = null;
@@ -46,7 +48,7 @@ public class TestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
 	 */
-	public TestInputStreamFactory(RDFURIReference baseDir, ZipFile zip) {
+	public TestInputStreamFactory(IRI baseDir, ZipFile zip) {
 		base = baseDir;
 		mapBase = null;
 		this.zip = zip;
@@ -56,7 +58,7 @@ public class TestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
 	 */
-	public TestInputStreamFactory(RDFURIReference baseDir, String propDir) {
+	public TestInputStreamFactory(IRI baseDir, String propDir) {
         createMe = "new TestInputStreamFactory(URI.create(\""
         +baseDir.toString()
         +"\"),\""+propDir+"\")";
@@ -66,7 +68,7 @@ public class TestInputStreamFactory {
 		property = propDir.endsWith("/") ? propDir : propDir + "/";
 	}
 
-	public RDFURIReference getBase() {
+	public IRI getBase() {
 		return base;
 	}
 	/**
@@ -97,7 +99,7 @@ public class TestInputStreamFactory {
 	 * @param uri to be opened.
 	 * @return the opened stream
 	 */
-	public InputStream open(RDFURIReference uri) {
+	public InputStream open(IRI uri) {
 		return (InputStream) open(uri, true);
 
 	}
@@ -114,10 +116,10 @@ public class TestInputStreamFactory {
     public String getCreationJava() {
     	return createMe;
     }
-	private Object open(RDFURIReference uri, boolean in) {
+	private Object open(IRI uri, boolean in) {
         
-		RDFURIReference relative = uri.isAbsolute() ? base.relativize(uri,
-                RDFURIReference.RELATIVE) : uri;
+		IRI relative = uri.isAbsolute() ? base.relativize(uri,
+                IRI.CHILD) : uri;
 		
 		if (relative.isAbsolute())
 			throw new IllegalArgumentException(
@@ -132,7 +134,7 @@ public class TestInputStreamFactory {
 		if (mapBase != null) {
 			//System.out.println("LazyURL: " + relative + " " + mapBase);
 			try {
-				URL url = mapBase.resolve(relative).toURL();
+				URL url = mapBase.create(relative).toURL();
 				if (!in) {
 					if (url.getProtocol().equalsIgnoreCase("file"))
 						return new FileOutputStream(url.getFile());
@@ -178,7 +180,7 @@ public class TestInputStreamFactory {
 	
 	    return in;
 	}
-    public RDFURIReference getMapBase() {
+    public IRI getMapBase() {
         return mapBase;
     }
 
