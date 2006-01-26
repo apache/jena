@@ -4,57 +4,56 @@
 
 <link href="../styles/doc.css" rel="stylesheet" type="text/css"></link>
 <link class="text/css" href="assembler-style.css" rel="stylesheet"></link>
-<style>
-.toc-h1 { text-indent: 1em }
-.toc-h2 { text-indent: 2em }
-.toc-h3 { text-indent: 3em }
-</style>
 <script src="library.js" type="text/javascript">
 </script>
 
 </head>
 <body>
 
+
+<div class="top-header">
 <a href="javascript:allAsCondensed()">
-? Switch Schema Display To Condensed
+&nabla; Switch Schema Display To Condensed
 </a>
 
 <a href="javascript:allAsN3()">
-? Switch Schema Display To N3
+&nabla; Switch Schema Display To N3
 </a>
 
 <a href="javascript:printCurrentDisplay()">
-? Print Current Display
+&nabla; Print Current Display
 </a>
+</div>
+<br></br>
 
-<h1 id="TOC">table of contents</h1>
+<h1 id="TOC"><a name="TOC-ID-0"></a>table of contents</h1>
 <div>
-<div class="toc-H1">table of contents</div>
-<div class="toc-H1">introduction</div>
-<div class="toc-H2">overview</div>
-<div class="toc-H1">specifications common to all models</div>
-<div class="toc-H2">content</div>
-<div class="toc-H2">RDB models and Connections</div>
-<div class="toc-H2">file models</div>
-<div class="toc-H2">inference models and reasoners</div>
-<div class="toc-H3">rulesets</div>
-<div class="toc-H2">ontology models</div>
-<div class="toc-H2">document managers</div>
-<div class="toc-H2">union models</div>
-<div class="toc-H2">prefix mappings</div>
-<div class="toc-H2">other Assembler directives</div>
-<div class="toc-H3">assembler</div>
-<div class="toc-H3">imports</div>
-<div class="toc-H1">inside Assemblers</div>
-<div class="toc-H1">basic assemblers</div>
-<div class="toc-H2">basic assembler ContentAssembler</div>
-<div class="toc-H2">basic assembler ConnectionAssembler</div>
-<div class="toc-H2">basic assembler RulesetAssembler</div>
-<div class="toc-H2">basic assembler DefaultModelAssembler</div>
-<div class="toc-H2">AssemblerGroup</div>
-<div class="toc-H3">loading assembler classes</div></div>
+<div class="toc-H1"><a href="#TOC-ID-0">table of contents</a></div>
+<div class="toc-H1"><a href="#TOC-ID-1">introduction</a></div>
+<div class="toc-H2"><a href="#TOC-ID-2">overview</a></div>
+<div class="toc-H1"><a href="#TOC-ID-3">specifications common to all models</a></div>
+<div class="toc-H2"><a href="#TOC-ID-4">content</a></div>
+<div class="toc-H2"><a href="#TOC-ID-5">RDB models and Connections</a></div>
+<div class="toc-H2"><a href="#TOC-ID-6">file models</a></div>
+<div class="toc-H2"><a href="#TOC-ID-7">inference models and reasoners</a></div>
+<div class="toc-H3"><a href="#TOC-ID-8">rulesets</a></div>
+<div class="toc-H2"><a href="#TOC-ID-9">ontology models</a></div>
+<div class="toc-H2"><a href="#TOC-ID-10">document managers</a></div>
+<div class="toc-H2"><a href="#TOC-ID-11">union models</a></div>
+<div class="toc-H2"><a href="#TOC-ID-12">prefix mappings</a></div>
+<div class="toc-H2"><a href="#TOC-ID-13">other Assembler directives</a></div>
+<div class="toc-H3"><a href="#TOC-ID-14">assembler</a></div>
+<div class="toc-H3"><a href="#TOC-ID-15">imports</a></div>
+<div class="toc-H1"><a href="#TOC-ID-16">inside Assemblers</a></div>
+<div class="toc-H1"><a href="#TOC-ID-17">basic assemblers</a></div>
+<div class="toc-H2"><a href="#TOC-ID-18">basic assembler ContentAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-19">basic assembler ConnectionAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-20">basic assembler RulesetAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-21">basic assembler DefaultModelAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-22">AssemblerGroup</a></div>
+<div class="toc-H3"><a href="#TOC-ID-23">loading assembler classes</a></div></div>
 
-<h1>introduction</h1>
+<h1><a name="TOC-ID-1"></a>introduction</h1>
 
 <p>
 This document describes how to use the Assembler classes to construct models 
@@ -85,7 +84,7 @@ rangeclasses are shown, so (for example) <code>rdf:Resource</code>
 typically won't appear.
 </p>
 
-<h2>overview</h2>
+<h2><a name="TOC-ID-2"></a>overview</h2>
 
 <p>An Assembler specification is a Resource in some RDF Model. The
 properties of that Resource describe what kind of object is to be
@@ -97,7 +96,7 @@ memory model with data loaded from a file:
 </p>
 
 <pre>eg:opening-example a ja:MemoryModel 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/example.n3&gt;] 
+    ; ja:content [ja:externalContent &amp;lt;file:///home/kers/projects/jena2/Data/example.n3&amp;gt;] 
     . </pre>
 
 <p>
@@ -135,7 +134,7 @@ knows how to create all the kinds of objects -- not just Models --
 that we describe in the next sections. 
 </p>
 
-<h1>specifications common to all models</h1>
+<h1><a name="TOC-ID-3"></a>specifications common to all models</h1>
 
 <p>Assembler specifications can describe many kinds of models:
 memory, inference, database, ontology, and file-backed.
@@ -149,7 +148,7 @@ for attaching content, prefix mappings, and reification modes.
 <div class="show-class"><span class="keyword">class</span> ja:Loadable <span class="keyword">subClassOf</span> ja:Object
 <div class="show-property"><span class="keyword">domainOf</span> ja:initialContent <span class="keyword">withRange</span> ja:Content</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:content <span class="keyword">withRange</span> ja:Content</div></div></div>
-<div class="hide" id="1001B"><a href="javascript:exchange('1001')">&nabla; show as N3</a>
+<div class="hide" id="1001B"><a href="javascript:exchange('1001')">&nabla; show as condensed</a>
 <div class="show-class">ja:Loadable a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
@@ -167,7 +166,7 @@ for attaching content, prefix mappings, and reification modes.
 <div class="show-class"><span class="keyword">class</span> ja:Model <span class="keyword">subClassOf</span> ja:Loadable
 <div class="show-property"><span class="keyword">domainOf</span> ja:reificationMode <span class="keyword">withRange</span> ja:ReificationMode</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:prefixMapping <span class="keyword">withRange</span> ja:PrefixMapping</div></div></div>
-<div class="hide" id="1002B"><a href="javascript:exchange('1002')">&nabla; show as N3</a>
+<div class="hide" id="1002B"><a href="javascript:exchange('1002')">&nabla; show as condensed</a>
 <div class="show-class">ja:Model a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Loadable</div>
 <div class="show-subclass">.</div>
@@ -189,11 +188,11 @@ specifications. For example:</p>
 
 <pre>eg:common-example a ja:MemoryModel 
     ; ja:content eg:sharedContent 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/A.rdf&gt;] 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/B.rdf&gt;] 
+    ; ja:content [ja:externalContent &amp;lt;file:///home/kers/projects/jena2/Data/A.rdf&amp;gt;] 
+    ; ja:content [ja:externalContent &amp;lt;file:///home/kers/projects/jena2/Data/B.rdf&amp;gt;] 
     . 
 eg:sharedContent
-    ja:externalContent &lt;http://somewhere/RDF/ont.owl&gt; 
+    ja:externalContent &amp;lt;http://somewhere/RDF/ont.owl&amp;gt; 
     . </pre>
 
 <p>
@@ -221,7 +220,7 @@ property whose value must be one of the constants <code>ja:standard</code>,
 model's reification mode is set accordingly, if possible. 
 <span class="note">Not implemented yet.</span></p>
 
-<h2><a name="spec-content">content</a></h2>
+<h2><a name="TOC-ID-4"></a><a name="spec-content">content</a></h2>
 
 A Content specification describes content that can be used to fill
 models. Content can be external (files and URLs) or literal 
@@ -232,7 +231,7 @@ is part of the specification).
 <div class="surrounding">
 <div class="show" id="1003A"><a href="javascript:exchange('1003')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:Content <span class="keyword">subClassOf</span> ja:Object</div></div>
-<div class="hide" id="1003B"><a href="javascript:exchange('1003')">&nabla; show as N3</a>
+<div class="hide" id="1003B"><a href="javascript:exchange('1003')">&nabla; show as condensed</a>
 <div class="show-class">ja:Content a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div></div></div></div>
@@ -246,8 +245,8 @@ all such resources. For example:
 </p>
 
 <pre>eg:external-content-example
-    ja:externalContent &lt;http://jena.hpl.hp.com/some-jena-data.rdf&gt;,
-        &lt;file:///home/kers/projects/jena2/Data/C.owl&gt; 
+    ja:externalContent &amp;lt;http://jena.hpl.hp.com/some-jena-data.rdf&amp;gt;,
+        &amp;lt;file:///home/kers/projects/jena2/Data/C.owl&amp;gt; 
     . </pre>
 
 <p>The string literal value of the any <code>ja:literalContent</code>
@@ -272,7 +271,7 @@ algorithm from <code>ResourceUtils.reachableClosure()</code>) are added
 to the content.
 </p>
 
-<h2>RDB models and Connections</h2>
+<h2><a name="TOC-ID-5"></a>RDB models and Connections</h2>
 
 <p>
 The description of an RDB model requires its name and a description of
@@ -281,7 +280,7 @@ the JDBC connection for the database the model is in. For example:
 
 <pre>eg:connection
     ja:dbType "MySQL" 
-    ; ja:dbURL &lt;jdbc:mysql://localhost/test&gt; 
+    ; ja:dbURL &amp;lt;jdbc:mysql://localhost/test&amp;gt; 
     ; ja:dbUser "cjd" 
     . 
 eg:database-example
@@ -293,7 +292,7 @@ eg:database-example
 <div class="surrounding">
 <div class="show" id="1004A"><a href="javascript:exchange('1004')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:RDBModel <span class="keyword">subClassOf</span> ja:Connectable ja:NamedModel</div></div>
-<div class="hide" id="1004B"><a href="javascript:exchange('1004')">&nabla; show as N3</a>
+<div class="hide" id="1004B"><a href="javascript:exchange('1004')">&nabla; show as condensed</a>
 <div class="show-class">ja:RDBModel a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Connectable</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:connection; owl:cardinality 1]</div>
@@ -304,7 +303,7 @@ eg:database-example
 <div class="show" id="1005A"><a href="javascript:exchange('1005')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:Connectable <span class="keyword">subClassOf</span> ja:Object
 <div class="show-property"><span class="keyword">domainOf</span> ja:connection <span class="keyword">withRange</span> ja:Connection</div></div></div>
-<div class="hide" id="1005B"><a href="javascript:exchange('1005')">&nabla; show as N3</a>
+<div class="hide" id="1005B"><a href="javascript:exchange('1005')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connectable a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
@@ -317,7 +316,7 @@ eg:database-example
 <div class="show" id="1006A"><a href="javascript:exchange('1006')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:NamedModel <span class="keyword">subClassOf</span> ja:Model
 <div class="show-property"><span class="keyword">domainOf</span> ja:modelName <span class="keyword">cardinality</span> 1</div></div></div>
-<div class="hide" id="1006B"><a href="javascript:exchange('1006')">&nabla; show as N3</a>
+<div class="hide" id="1006B"><a href="javascript:exchange('1006')">&nabla; show as condensed</a>
 <div class="show-class">ja:NamedModel a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:modelName; owl:cardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Model</div>
@@ -356,19 +355,19 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbUser <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbURL <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbType <span class="keyword">maxCardinality</span> 1</div></div></div>
-<div class="hide" id="1007B"><a href="javascript:exchange('1007')">&nabla; show as N3</a>
+<div class="hide" id="1007B"><a href="javascript:exchange('1007')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connection a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
 <div class="show-subclass">.</div>
 <div class="show-class">ja:dbPasswordProperty a rdf:Property
 <div class="show-subclass">; rdfs:domain ja:Connection</div>
@@ -431,7 +430,7 @@ password of the user connecting to the database. If it is omitted,
 the value of the <code>ja:dbPasswordProperty</code> is the name
 of a Java system property whose value is the password.</p>
 
-<h2>file models</h2>
+<h2><a name="TOC-ID-6"></a>file models</h2>
 
 <p>A FileModel specification builds a memory model that is backed by a file.
 By "backed", we mean that the model is loaded from that file and written
@@ -440,7 +439,7 @@ supports transactions.
 </p>
 
 <pre>eg:fileModel-example-1
-    ja:directory &lt;file:///tmp&gt; 
+    ja:directory &amp;lt;file:///tmp&amp;gt; 
     ; ja:modelName "simple" 
     . </pre>
 
@@ -454,7 +453,7 @@ necessary.
 </p>
 
 <pre>eg:fileModel-example-2
-    ja:directory &lt;file:///home/kers/projects/jena2/FileModels&gt; 
+    ja:directory &amp;lt;file:///home/kers/projects/jena2/FileModels&amp;gt; 
     ; ja:mapName ja:true 
     ; ja:modelName "http://somewhere.org/stuff.n3" 
     . </pre>
@@ -473,7 +472,7 @@ encoding is not pretty, but is sufficient for simple URIs.
 <div class="show-property"><span class="keyword">domainOf</span> ja:directory <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:fileEncoding <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:mapName <span class="keyword">maxCardinality</span> 1</div></div></div>
-<div class="hide" id="1008B"><a href="javascript:exchange('1008')">&nabla; show as N3</a>
+<div class="hide" id="1008B"><a href="javascript:exchange('1008')">&nabla; show as condensed</a>
 <div class="show-class">ja:FileModel a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:mapName; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:directory; owl:maxCardinality 1]</div>
@@ -512,7 +511,7 @@ translation (which is the same one done by <code>FileGraphMaker</code> for
 conflicting with the filesystems use of / characters.
 </p>
 
-<h2>inference models and reasoners</h2>
+<h2><a name="TOC-ID-7"></a>inference models and reasoners</h2>
 
 <p>Inference models are specified by supplying a description of the
 reasoner that is used by the model and (optionally) a base model to
@@ -520,7 +519,7 @@ reason over. For example:</p>
 
 <pre>eg:inference-example
     ja:baseModel [a ja:MemoryModel] 
-    ; ja:reasoner [ja:reasonerURL &lt;http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner&gt;] 
+    ; ja:reasoner [ja:reasonerURL &amp;lt;http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner&amp;gt;] 
     . </pre>
 
 <p>describes an inference model that uses RDFS reasoning. The 
@@ -534,7 +533,7 @@ model:
 
 <pre>eg:connection
     ja:dbType "MySQL" 
-    ; ja:dbURL &lt;jdbc:mysql://localhost/test&gt; 
+    ; ja:dbURL &amp;lt;jdbc:mysql://localhost/test&amp;gt; 
     ; ja:dbUser "cjd" 
     . 
 eg:database-example
@@ -543,7 +542,7 @@ eg:database-example
     . 
 eg:db-inference-example
     ja:baseModel eg:database-example 
-    ; ja:reasoner [ja:reasonerURL &lt;http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner&gt;] 
+    ; ja:reasoner [ja:reasonerURL &amp;lt;http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner&amp;gt;] 
     . </pre>
 
 <p>The same reasoner as used as in the previous example, but now the
@@ -555,9 +554,9 @@ for its internal reasoners, you can access a DIG reasoner (such as Pellet
 running as a server) using an Assembler specification:
 
 <pre>eg:external-inference-example
-    ja:reasoner [&lt;http://jena.hpl.hp.com/2003/JenaReasoner#extReasonerURL&gt;
-    &lt;http://localhost:2004/&gt; 
-    ; ja:reasonerURL &lt;http://jena.hpl.hp.com/2003/DIGReasoner&gt;] 
+    ja:reasoner [&amp;lt;http://jena.hpl.hp.com/2003/JenaReasoner#extReasonerURL&amp;gt;
+    &amp;lt;http://localhost:2004/&amp;gt; 
+    ; ja:reasonerURL &amp;lt;http://jena.hpl.hp.com/2003/DIGReasoner&amp;gt;] 
     . </pre>
 
 If there's a DIG server running locally on port 2004, this specification
@@ -568,7 +567,7 @@ will create a DIG inference model that uses it.
 the specification, or outside from some resource (file or http: URL):
 
 <pre>eg:rule-inference-example
-    ja:reasoner [ja:rule "[r1: (?x my:P ?y) -&gt; (?x rdf:type my:T)]"] 
+    ja:reasoner [ja:rule "[r1: (?x my:P ?y) -&amp;gt; (?x rdf:type my:T)]"] 
     . </pre>
 
 This reasoner will infer a type declaration from a use of a property.
@@ -582,7 +581,7 @@ This reasoner will infer a type declaration from a use of a property.
 <div class="show-class"><span class="keyword">class</span> ja:InfModel <span class="keyword">subClassOf</span> ja:Model
 <div class="show-property"><span class="keyword">domainOf</span> ja:baseModel <span class="keyword">withRange</span> ja:Model <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:reasoner <span class="keyword">withRange</span> ja:ReasonerFactory <span class="keyword">maxCardinality</span> 1</div></div></div>
-<div class="hide" id="1009B"><a href="javascript:exchange('1009')">&nabla; show as N3</a>
+<div class="hide" id="1009B"><a href="javascript:exchange('1009')">&nabla; show as condensed</a>
 <div class="show-class">ja:InfModel a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:reasoner; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:baseModel; owl:maxCardinality 1]</div>
@@ -602,7 +601,7 @@ This reasoner will infer a type declaration from a use of a property.
 <div class="show-class"><span class="keyword">class</span> ja:ReasonerFactory <span class="keyword">subClassOf</span> ja:HasRules
 <div class="show-property"><span class="keyword">domainOf</span> ja:reasonerURL</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:schema <span class="keyword">withRange</span> ja:Model</div></div></div>
-<div class="hide" id="1010B"><a href="javascript:exchange('1010')">&nabla; show as N3</a>
+<div class="hide" id="1010B"><a href="javascript:exchange('1010')">&nabla; show as condensed</a>
 <div class="show-class">ja:ReasonerFactory a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:ReasonerURL; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:HasRules</div>
@@ -622,7 +621,7 @@ This reasoner will infer a type declaration from a use of a property.
 <div class="show-property"><span class="keyword">domainOf</span> ja:rule</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:rules <span class="keyword">withRange</span> ja:RuleSet</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:rulesFrom</div></div></div>
-<div class="hide" id="1011B"><a href="javascript:exchange('1011')">&nabla; show as N3</a>
+<div class="hide" id="1011B"><a href="javascript:exchange('1011')">&nabla; show as condensed</a>
 <div class="show-class">ja:HasRules a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
@@ -659,7 +658,7 @@ or <code>ja:rule</code>. The rules of the implied <code>RuleSet</code>
 are added to the <code>Reasoner</code>.
 </p>
 
-<h3>rulesets</h3>
+<h3><a name="TOC-ID-8"></a>rulesets</h3>
 
 <span class="note">RuleSet examples go here.</span>
 
@@ -673,7 +672,7 @@ resource.
 <div class="surrounding">
 <div class="show" id="1012A"><a href="javascript:exchange('1012')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:RuleSet <span class="keyword">subClassOf</span> ja:HasRules</div></div>
-<div class="hide" id="1012B"><a href="javascript:exchange('1012')">&nabla; show as N3</a>
+<div class="hide" id="1012B"><a href="javascript:exchange('1012')">&nabla; show as condensed</a>
 <div class="show-class">ja:RuleSet a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:HasRules</div>
 <div class="show-subclass">.</div></div></div></div>
@@ -690,7 +689,7 @@ loaded as Jena rules. All those rules are added to the <code>RuleSet</code>.</p>
 a resource which identifies another <code>RuleSet</code> in the specification model.
 All those rules from that <code>RuleSet</code> are added to this <code>RuleSet</code>.</p>
 
-<h2>ontology models</h2>
+<h2><a name="TOC-ID-9"></a>ontology models</h2>
 
 <p>
 Ontology models can be specified in several ways. The simplest is to use
@@ -709,7 +708,7 @@ A base model can be specified:
 
 <pre>eg:base-ont-example
     ja:baseModel [a ja:MemoryModel 
-    ; ja:content [ja:externalContent &lt;http://jena.hpl.hp.com/some-jena-data.rdf&gt;]] 
+    ; ja:content [ja:externalContent &amp;lt;http://jena.hpl.hp.com/some-jena-data.rdf&amp;gt;]] 
     . </pre>
 
 <p>The OntModel has a base which is a memory model loaded with the contents
@@ -723,7 +722,7 @@ as <code>ModelFactory.createOntologyModel()</code>.
 <div class="show" id="1013A"><a href="javascript:exchange('1013')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:OntModel <span class="keyword">subClassOf</span> ja:InfModel
 <div class="show-property"><span class="keyword">domainOf</span> ja:ontModelSpec <span class="keyword">withRange</span> ja:OntModelSpec</div></div></div>
-<div class="hide" id="1013B"><a href="javascript:exchange('1013')">&nabla; show as N3</a>
+<div class="hide" id="1013B"><a href="javascript:exchange('1013')">&nabla; show as condensed</a>
 <div class="show-class">ja:OntModel a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:InfModel</div>
 <div class="show-subclass">.</div>
@@ -738,7 +737,7 @@ as <code>ModelFactory.createOntologyModel()</code>.
 <div class="show-property"><span class="keyword">domainOf</span> ja:ontLanguage <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:documentManager <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:importSource <span class="keyword">maxCardinality</span> 1</div></div></div>
-<div class="hide" id="1014B"><a href="javascript:exchange('1014')">&nabla; show as N3</a>
+<div class="hide" id="1014B"><a href="javascript:exchange('1014')">&nabla; show as condensed</a>
 <div class="show-class">ja:OntModelSpec a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:reasonerURL]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:importSource; owl:maxCardinality 1]</div>
@@ -803,7 +802,7 @@ of this <code>OntModelSpec</code>:
 </ul>
 </p>
 
-<h2>document managers</h2>
+<h2><a name="TOC-ID-10"></a>document managers</h2>
 
 <p>An <code>OntDocumentManager</code> can be specified by a
 <code>ja:DocumentManager</code> specification which describes the
@@ -816,7 +815,7 @@ of this <code>OntModelSpec</code>:
     . 
 eg:document-manager-example
     ja:fileManager [ja:locationMapper eg:mapper] 
-    ; ja:meta [ dm:altURL &lt;http://localhost/RDF/my-alt.rdf&gt;] 
+    ; ja:meta [ dm:altURL &amp;lt;http://localhost/RDF/my-alt.rdf&amp;gt;] 
     . </pre>
 
 <p>In this example, <code>eg:document-manager-example</code> is a 
@@ -841,7 +840,7 @@ the ontology.rdf ontology.
 <div class="show-class"><span class="keyword">class</span> ja:DocumentManager <span class="keyword">subClassOf</span> ja:Object
 <div class="show-property"><span class="keyword">domainOf</span> ja:policyPath <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:fileManager <span class="keyword">withRange</span> ja:FileManager <span class="keyword">maxCardinality</span> 1</div></div></div>
-<div class="hide" id="1015B"><a href="javascript:exchange('1015')">&nabla; show as N3</a>
+<div class="hide" id="1015B"><a href="javascript:exchange('1015')">&nabla; show as condensed</a>
 <div class="show-class">ja:DocumentManager a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:policyPath; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:fileManager; owl:maxCardinality 1]</div>
@@ -880,7 +879,7 @@ document manager object.
 <div class="show" id="1016A"><a href="javascript:exchange('1016')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:FileManager <span class="keyword">subClassOf</span> ja:Object
 <div class="show-property"><span class="keyword">domainOf</span> ja:locationMapper <span class="keyword">withRange</span> ja:LocationMapper <span class="keyword">maxCardinality</span> 1</div></div></div>
-<div class="hide" id="1016B"><a href="javascript:exchange('1016')">&nabla; show as N3</a>
+<div class="hide" id="1016B"><a href="javascript:exchange('1016')">&nabla; show as condensed</a>
 <div class="show-class">ja:FileManager a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:locationMapper; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
@@ -900,7 +899,7 @@ object initialising that file manager.
 <div class="show" id="1017A"><a href="javascript:exchange('1017')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:LocationMapper <span class="keyword">subClassOf</span> ja:Object
 <div class="show-property"><span class="keyword">domainOf</span> lm:mapping <span class="keyword">maxCardinality</span> 1</div></div></div>
-<div class="hide" id="1017B"><a href="javascript:exchange('1017')">&nabla; show as N3</a>
+<div class="hide" id="1017B"><a href="javascript:exchange('1017')">&nabla; show as condensed</a>
 <div class="show-class">ja:LocationMapper a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty lm:mapping; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
@@ -916,7 +915,7 @@ property values, describing the location mapping, as described in the
 FileManager documentation. (Note that the vocabulary for those items is
 in a different namespace than the JA properties and classes.)</p>
 
-<h2>union models</h2>
+<h2><a name="TOC-ID-11"></a>union models</h2>
 
 <p>
 Union models can be constructed from any number of submodels and a
@@ -932,7 +931,7 @@ the union model is updated; the submodels are untouched.
 <div class="show-class"><span class="keyword">class</span> ja:UnionModel <span class="keyword">subClassOf</span> ja:Model
 <div class="show-property"><span class="keyword">domainOf</span> ja:rootModel <span class="keyword">withRange</span> ja:Model <span class="keyword">maxCardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:subModel <span class="keyword">withRange</span> ja:Model</div></div></div>
-<div class="hide" id="1018B"><a href="javascript:exchange('1018')">&nabla; show as N3</a>
+<div class="hide" id="1018B"><a href="javascript:exchange('1018')">&nabla; show as condensed</a>
 <div class="show-class">ja:UnionModel a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:rootModel; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Model</div>
@@ -960,7 +959,7 @@ union is <i>undefined</i> (which is why there's a special rootModel
 property).
 </p>
 
-<h2>prefix mappings</h2>
+<h2><a name="TOC-ID-12"></a>prefix mappings</h2>
 
 <p>The PrefixMappings of a model may be set from PrefixMapping specifications.
 <span class="note">examples please.</span></p>
@@ -970,7 +969,7 @@ property).
 <div class="show" id="1019A"><a href="javascript:exchange('1019')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:PrefixMapping <span class="keyword">subClassOf</span> ja:Object
 <div class="show-property"><span class="keyword">domainOf</span> ja:includes <span class="keyword">withRange</span> ja:PrefixMapping</div></div></div>
-<div class="hide" id="1019B"><a href="javascript:exchange('1019')">&nabla; show as N3</a>
+<div class="hide" id="1019B"><a href="javascript:exchange('1019')">&nabla; show as condensed</a>
 <div class="show-class">ja:PrefixMapping a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
@@ -984,7 +983,7 @@ property).
 <div class="show-class"><span class="keyword">class</span> ja:SinglePrefixMapping <span class="keyword">subClassOf</span> ja:PrefixMapping
 <div class="show-property"><span class="keyword">domainOf</span> ja:prefix <span class="keyword">cardinality</span> 1</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:namespace <span class="keyword">cardinality</span> 1</div></div></div>
-<div class="hide" id="1020B"><a href="javascript:exchange('1020')">&nabla; show as N3</a>
+<div class="hide" id="1020B"><a href="javascript:exchange('1020')">&nabla; show as condensed</a>
 <div class="show-class">ja:SinglePrefixMapping a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:namespace; owl:cardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:prefix; owl:cardinality 1]</div>
@@ -1007,13 +1006,13 @@ content of other specified PrefixMappings.
 allow the construction of a single element of a prefix mapping by specifying
 the prefix and namespace of the mapping.</p>
 
-<h2>other Assembler directives</h2>
+<h2><a name="TOC-ID-13"></a>other Assembler directives</h2>
 
 <p>There are two more <code>Assembler</code> directives that can be 
 used in an Assembler specification: the <i>assembler</i> and <i>imports</i>
 directives.</p>
 
-<h3>assembler</h3>
+<h3><a name="TOC-ID-14"></a>assembler</h3>
 
 <p>A specification may contain statements of the form:
 
@@ -1030,7 +1029,7 @@ must implement the <code>Assembler</code> interface. See
 for more details.
 </p>
 
-<h3>imports</h3>
+<h3><a name="TOC-ID-15"></a>imports</h3>
 
 <p>If a specification contains statements of the form:
 
@@ -1051,7 +1050,7 @@ RDF at <code>someURL</code>. That RDF may in turn contain
 models are cached; cache control is not implemented yet.</span>
 </p>
 
-<h1>inside Assemblers</h1>
+<h1><a name="TOC-ID-16"></a>inside Assemblers</h1>
 
 <p><code>Assembler.general</code> is a particular implementation of
 the <code>Assembler</code> interface. An <code>Assembler</code> knows
@@ -1151,7 +1150,7 @@ Note that the Modes only apply to persistent objects, so <i>eg</i>
 MemoryModels or PrefixMappings ignore their Mode arguments.
 </p>
 
-<h1>basic assemblers</h1>
+<h1><a name="TOC-ID-17"></a>basic assemblers</h1>
 
 <p>
 There is a family of <i>basic assemblers</i>, each of which knows how to
@@ -1255,7 +1254,7 @@ classes that return non-Model objects and conclude with a description
 of <code>AssemblerGroup</code>.
 </p>
 
-<h2>basic assembler ContentAssembler</h2>
+<h2><a name="TOC-ID-18"></a>basic assembler ContentAssembler</h2>
 
 <p>The ContentAssembler constructs Content objects (using the 
 <code>ja:Content</code> vocabulary) used to supply
@@ -1271,7 +1270,7 @@ the <code>Content</code> objects corresponding to
 <code>ja:content</code> property values.
 </p>
 
-<h2>basic assembler ConnectionAssembler</h2>
+<h2><a name="TOC-ID-19"></a>basic assembler ConnectionAssembler</h2>
 
 <p>A ConnectionAssembler constructs ConnectionDescriptions 
 according to the specification. An ConnectionDescription 
@@ -1292,12 +1291,12 @@ and <code>jena.dbType</code> (<span class="note">not implemented yet</span>.
 
 <p class="note">Driver issues? Defaulting the database type?</p>
 
-<h2>basic assembler RulesetAssembler</h2>
+<h2><a name="TOC-ID-20"></a>basic assembler RulesetAssembler</h2>
 
 <p>A RulesetAssembler generates lists of Jena rules.
 </p>
 
-<h2>basic assembler DefaultModelAssembler</h2>
+<h2><a name="TOC-ID-21"></a>basic assembler DefaultModelAssembler</h2>
 
 <p>A "default model" is a model of unspecified type which is implemented as
 whatever kind the assembler for <code>ja:DefaultModel</code> generates.
@@ -1305,7 +1304,7 @@ The default for a DefaultModel is to create a MemoryModel with no special
 properties.
 </p>
 
-<h2>AssemblerGroup</h2>
+<h2><a name="TOC-ID-22"></a>AssemblerGroup</h2>
 
 <p>The AssemblerGroup class allows a bunch of other Assemblers to be
 bundled together and selected by RDF type. AssemblerGroup implements
@@ -1330,7 +1329,7 @@ particular objects.
 with the argument type by a previous call of <code>implementWith</code>,
 or <code>null</code> if there is no associated assembler.</p>
 
-<h3><a id="loading-assembler-classes">loading assembler classes</a></h3>
+<h3><a name="TOC-ID-23"></a><a id="loading-assembler-classes">loading assembler classes</a></h3>
 
 <p>
 AssemblerGroups implement the <code>ja:assembler</code> functionality.

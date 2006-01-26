@@ -1,3 +1,20 @@
+.toc-h1 { text-indent: 1em }
+.toc-h2 { text-indent: 2em; font-size: 95% }
+.toc-h3 { text-indent: 3em; font-size: 90% }
+
+.top-header
+    {
+    position: fixed
+    ; width: 100%
+    ; ignore-height: 3%
+    ; top: 0
+    ; right: 0
+    ; left: 0
+    ; bottom: auto
+    ; ignore-font-size: 80%
+    ; background-color: lightGray
+    }
+                                            
 table.framed
     {
     border-width: 1px;
