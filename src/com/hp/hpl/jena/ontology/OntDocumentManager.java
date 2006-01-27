@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.49 $
+ * Revision           $Revision: 1.50 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-04 09:38:31 $
+ * Last modified on   $Date: 2006-01-27 02:04:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -64,14 +64,14 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.49 2005-10-04 09:38:31 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.50 2006-01-27 02:04:59 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
     // Constants
     ////////////////////////////////////
 
-	/** The default path for searching for the metadata on locally cached ontologies */
+    /** The default path for searching for the metadata on locally cached ontologies */
     public static final String DEFAULT_METADATA_PATH = "file:ont-policy.rdf;file:etc/ont-policy.rdf";
 
     /** Namespace for ontology metadata resources and properties */
@@ -935,6 +935,7 @@ public class OntDocumentManager
         // Make a temporary file manager to look for the metadata file
         FileManager fm = new FileManager();
         fm.addLocatorFile();
+        fm.addLocatorURL();
         fm.addLocatorClassLoader( fm.getClass().getClassLoader() );
 
         try {
