@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!-- build file for Jena iri package -->
+
+<project name="iri" default="build" basedir=".">
+
+    <!-- default value useful in Jeremy's development environment -->
+    <property name="jena.home" value="../jena2"/>
+
+    <property name="dist.name" value="iri-0.1"/>
+
+    <property name="lib.dir" value="lib/"/>
+    <property name="src.dir" value="src/"/>
+    <property name="doc.dir" value="doc/"/>
+    <property name="javadoc.dir" value="${doc.dir}/javadoc"/>
+    <property name="dist.root" value="dist/"/>
+    <property name="zipfile" value="${dist.name}.zip"/>
+    <property name="dist.dir" value="${dist.root}/${dist.name}"/>
+    <property name="mirror.dir" value="mirror/"/>
+    <property name="build.dir" value="bin-build"/>
+
+    <path id="classpath">
+      <fileset dir="${lib.dir}" 
+      	includes="*.jar"/>
+      <fileset dir="${jena.home}/lib" includes="*jar"/>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${javadoc.dir}"/>
+    </target>
+
+    <target name="clean.javadoc" depends="init">
+        <delete><fileset dir="${javadoc.dir}" includes="**"/></delete>
+    </target>
+
+    <target name="clean" depends="clean.javadoc">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="build" depends="init, compile, jar"/>
+
+    <target name="compile">
+        <javac srcdir="${src.dir}" destdir="${build.dir}" debug="true" classpathref="classpath"/>
+    </target>
+
+    <target name="jar">
+        <jar jarfile="${lib.dir}/iri.jar" basedir="${build.dir}">
+	</jar>
+    </target>
+
+    <target name="javadoc" depends="init, clean.javadoc">
+        <javadoc
+            sourcepath="${src.dir}"
+            destdir="${javadoc.dir}"
+            packagenames="com.hp.hpl.jena.iri"
+            classpathref="classpath"
+        />
+    </target>
+
+    <target name="dist" depends="init, build, jar, javadoc">
+        <mkdir dir="${dist.root}"/>
+        <mkdir dir="${dist.dir}"/>
+        <copy todir="${dist.dir}" file="dependencies.txt"/>
+        <copy todir="${dist.dir}" file="Jena-IRI-changes.txt"/>
+        <copy todir="${dist.dir}" file="build.xml"/>
+        <copy todir="${dist.dir}/src">
+            <fileset dir="${src.dir}" includes="**"/>
+        </copy>
+        <copy todir="${dist.dir}/lib">
+            <fileset dir="${lib.dir}" includes="**"/>
+        </copy>
+        <copy todir="${dist.dir}/doc">
+            <fileset dir="${doc.dir}" includes="**"/>
+        </copy>
+        <zip zipfile="${zipfile}">
+            <fileset dir="${dist.root}" includes="${dist.name}/**"/>
+        </zip>
+    </target>
+
+    <target name="upload" depends="upload-A, upload-B"/>
+
+    <target name="upload-A">
+        <scp todir="jeremy_carroll@shell.sourceforge.net:/home/groups/j/je/jena/htdocs/iri/" >
+            <fileset dir="${doc.dir}" includes="*.*"/>
+        </scp>
+    	<!--
+        <scp todir="${shell.user}@shell.sourceforge.net:/home/groups/j/je/jena/htdocs/Eyeball/styles" password="${password}">
+            <fileset dir="${doc.dir}/styles" includes="*.*"/>
+        </scp>
+        -->
+    </target>
+
+    <target name="upload-B">
+        <scp todir="jeremy_carroll@shell.sourceforge.net:/home/groups/j/je/jena/OtherPages/iri/" >
+            <fileset dir="${doc.dir}" includes="*.*"/>
+        </scp>
+    	<!--
+        <scp todir="${shell.user}@shell.sourceforge.net:/home/groups/j/je/jena/OtherPages/Eyeball/styles" password="${password}">
+            <fileset dir="${doc.dir}/styles" includes="*.*"/>
+        </scp>
+    	-->
+    </target>
+
+	<!--
+    <target name="test" depends="build">
+        <junit haltonfailure="true" fork="yes" printsummary="no">
+            <classpath>
+                <fileset dir="${lib.dir}" includes="*jar"/>
+                <!- - <fileset dir="${jena.home}/lib" includes="*jar"/> - ->
+            </classpath>
+            <formatter type="brief" usefile="false"/>
+            <test name="com.hp.hpl.jena.eyeball.test.EyeballTestAll"/>
+        </junit>
+    </target>
+	-->
+
+</project>
