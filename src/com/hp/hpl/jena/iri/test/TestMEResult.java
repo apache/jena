@@ -12,9 +12,10 @@ import org.xml.sax.Attributes;
 import com.hp.hpl.jena.iri.IRI;
 
 public class TestMEResult extends TestMoreExamples {
-
+    static int count;
+    
     public TestMEResult(Attributes att, TestSuite suite) {
-        super("result",att, suite);
+        super("result"+ (++count),att, suite);
     }
 
     IRI computeIRI() {

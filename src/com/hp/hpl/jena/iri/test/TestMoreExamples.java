@@ -124,7 +124,7 @@ public class TestMoreExamples extends TestCase implements
     }
 
     public void runTest() {
-        System.err.println("runTest"+cnt);
+        System.err.println("runTest"+cnt + " " + getName());
 //       iri = getIRI();
 //       Iterator it = methods.entrySet().iterator();
 //       while (it.hasNext()) {

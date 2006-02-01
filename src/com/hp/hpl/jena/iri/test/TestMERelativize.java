@@ -12,9 +12,9 @@ import org.xml.sax.Attributes;
 import com.hp.hpl.jena.iri.IRI;
 
 public class TestMERelativize extends TestMoreExamples {
-
+    static int count;
     public TestMERelativize(Attributes att, TestSuite suite) {
-        super("relativize",att,suite);
+        super("relativize"+ (++count),att,suite);
     }
 
     IRI computeIRI() {
