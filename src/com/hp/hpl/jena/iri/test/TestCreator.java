@@ -29,6 +29,7 @@ import com.hp.hpl.jena.iri.impl.AbsIRIImpl;
 
 final class TestCreator extends DefaultHandler implements IRIRelativize {
     
+    static final int RelativizeFlags = ABSOLUTE|GRANDPARENT|NETWORK|PARENT|CHILD|SAMEDOCUMENT;
     public static String substituteStandardEntities(String s) {
         s = replace(s, "&", "&amp;");
         s = replace(s, "<", "&lt;");
@@ -138,7 +139,7 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
             out.println("</Result>");
             IRI rAgain =  b.relativize(
                     result,
-                  ABSOLUTE|GRANDPARENT|NETWORK|PARENT|CHILD|SAMEDOCUMENT  
+                  RelativizeFlags  
                     );
             if (r.equals(rAgain)) {
                 out.println("<Relativize same='true'/>");
@@ -154,17 +155,17 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
 
 
     static String methods[] =  {
-        "getHost",
-        "getPath",
+        "getRawHost",
+        "getRawPath",
         "getPort",
-        "getQuery",
+        "getRawQuery",
         "getScheme",
-        "getUserinfo",
-        "getFragment",
+        "getRawUserinfo",
+        "getRawFragment",
 //        "hasException",
         "isAbsolute",
 //        "isIRI",
-        "isOpaque",
+//        "isOpaque",
 //        "isRDFURIReference",
         "isRelative",
 //        "isURIinASCII",
@@ -216,14 +217,14 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
         }
 
         Iterator it = ((AbsIRIImpl)iri).allViolations();
-        out.println("<exceptions>");
+        out.println("<violations>");
         while (it.hasNext()) {
-            out.print("<exception>");
+            out.print("<violation>");
             out.print(((Violation)it.next()).codeName());
-            out.println("</exception>");
+            out.println("</violation>");
                     
         }
-        out.println("</exceptions>");
+        out.println("</violations>");
     }
 
     private IRI doIt(String iri) {
@@ -238,7 +239,7 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
         return rslt;
     }
     // TODO set conformance level for this factory
-    static private IRIFactory factory = new IRIFactory();
+    static IRIFactory factory = new IRIFactory();
 }
 
 /*

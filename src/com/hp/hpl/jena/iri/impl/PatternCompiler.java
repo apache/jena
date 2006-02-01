@@ -18,7 +18,7 @@ import java.lang.reflect.Field;
 
 import com.hp.hpl.jena.iri.ViolationCodes;
 
-class PatternCompiler implements ViolationCodes {
+public class PatternCompiler implements ViolationCodes {
 
     // static VarPattern notMatching[] = {
     // new VarPattern("[[a]&&[b]]")
@@ -437,7 +437,27 @@ static VarPattern unreservedDNSLabel[] = {
                 }
         }
         return eCodeNames[j];
-
+    }
+    
+    public static int errorCode(String s) {
+        Field f;
+        try {
+            f = ViolationCodes.class.getDeclaredField(s);
+            return f.getInt(null);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        
     }
 
     static int count;

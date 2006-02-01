@@ -1,5 +1,7 @@
 <uris>
 
+<uri base="http://host/" relative="../foo" />
+<uri base="http://host/xyz" relative="../foo" />
 
 <uri base='http://www.example.org/a/b/c/d' relative='d/z?x=a'/>
 <uri base='http://www.example.org/a/b/c/d' relative='http://example.com/A'/>
