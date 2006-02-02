@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.28 2005-10-10 20:13:36 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.29 2006-02-02 13:31:47 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -314,7 +314,7 @@ public class FileManager
                 log.debug("Syntax guess: "+syntax);
         }
 
-        InputStream in = openNoMap(mappedURI) ;
+        InputStream in = openNoMapOrNull(mappedURI) ;
         if ( in == null )
         {
             if ( log.isTraceEnabled() )
@@ -368,7 +368,7 @@ public class FileManager
         if ( log.isDebugEnabled())
             log.debug("open("+filenameOrURI+")") ;
         
-        String uri = remap(filenameOrURI) ;
+        String uri = mapURI(filenameOrURI) ;
         
         return openNoMap(uri) ;
     }
@@ -432,8 +432,21 @@ public class FileManager
     }
         
     /** Open a file using the locators of this FileManager 
-     *  but without location mapping */
+     *  but without location mapping */ 
     public InputStream openNoMap(String filenameOrURI)
+    {
+        InputStream in = openNoMapOrNull(filenameOrURI) ;
+//        if ( in == null )
+//            throw new NotFoundException(filenameOrURI) ;
+        return in ;
+    }
+    
+    /** Open a file using the locators of this FileManager 
+     *  but without location mapping.
+     *  Return null if not found
+     */ 
+    
+    public InputStream openNoMapOrNull(String filenameOrURI)
     {
         for ( Iterator iter = handlers.iterator() ; iter.hasNext() ; )
         {

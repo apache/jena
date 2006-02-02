@@ -10,6 +10,7 @@ import junit.framework.*;
 import java.io.* ;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.LocationMapper;
 
@@ -18,7 +19,7 @@ import org.apache.commons.logging.*;
 /** com.hp.hpl.jena.brql.util.test.TestFileManager
  * 
  * @author Andy Seaborne
- * @version $Id: TestFileManager.java,v 1.6 2005-09-07 13:57:08 andy_seaborne Exp $
+ * @version $Id: TestFileManager.java,v 1.7 2006-02-02 13:31:53 andy_seaborne Exp $
  */
 
 public class TestFileManager extends TestCase
@@ -63,9 +64,12 @@ public class TestFileManager extends TestCase
     {
         FileManager fileManager = new FileManager() ;
         fileManager.addLocatorFile() ;
-        InputStream in = fileManager.open(filenameNonExistent) ;
-        assertNull(in) ;
-        closeInputStream(in) ;
+        try {
+            // Tests either way round - exception or a null return.
+            InputStream in = fileManager.open(filenameNonExistent) ;
+            closeInputStream(in) ;
+            assertNull("Found non-existant file: "+filenameNonExistent, in) ;
+        } catch (NotFoundException ex) {}
     }
     
     public void testFileManagerLocatorClassLoader()
@@ -81,9 +85,11 @@ public class TestFileManager extends TestCase
     {
         FileManager fileManager = new FileManager() ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
-        InputStream in = fileManager.open("not/java/lang/String.class") ;
-        assertNull(in) ;
-        closeInputStream(in) ;
+        try {
+            InputStream in = fileManager.open("not/java/lang/String.class") ;
+            closeInputStream(in) ;
+            assertNull("Found non-existant class", in) ;
+        } catch (NotFoundException ex) {}
     }
 
     public void testFileManagerLocatorZip()
@@ -106,12 +112,12 @@ public class TestFileManager extends TestCase
         try {
             fileManager.addLocatorZip(zipname) ;
         } catch (Exception ex)
-        {
-           fail("Failed to create a filemanager and add a zip locator") ;
-        }
-        InputStream in = fileManager.open(filenameNonExistent) ;
-        assertNull(in) ;
-        closeInputStream(in) ;
+        { fail("Failed to create a filemanager and add a zip locator") ; }
+        try {
+            InputStream in = fileManager.open(filenameNonExistent) ;
+            closeInputStream(in) ;
+            assertNull("Found non-existant zip file member", in) ;
+        } catch (NotFoundException ex) {}
     }
     
     public void testFileManagerClone()
@@ -127,11 +133,11 @@ public class TestFileManager extends TestCase
             closeInputStream(in) ;
         }
         // Should not work.
-        {
+        try {
             InputStream in = fileManager2.open(testingDir+"/"+filename) ;
-            assertNull(in) ;
             closeInputStream(in) ;
-        }
+            assertNull("Found file via wrong FileManager", in) ;
+        } catch (NotFoundException ex) {}
     }
     
     
@@ -150,9 +156,11 @@ public class TestFileManager extends TestCase
         LocationMapper locMap = new LocationMapper(TestLocationMapper.mapping) ;
         FileManager fileManager = new FileManager(locMap) ;
         fileManager.addLocatorClassLoader(fileManager.getClass().getClassLoader()) ;
-        InputStream in = fileManager.open("http://example.org/file") ;
-        assertNull(in) ;
-        closeInputStream(in) ;
+        try {
+            InputStream in = fileManager.open("http://example.org/file") ;
+            closeInputStream(in) ;
+            assertNull("Found nont-existant URL", null) ;
+        } catch (NotFoundException ex) {}
     }
 
     public void testCache1()
