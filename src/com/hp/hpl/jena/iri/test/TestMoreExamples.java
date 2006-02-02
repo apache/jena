@@ -80,7 +80,13 @@ public class TestMoreExamples extends TestCase implements
 
     }
 
-    Attributes att;
+    static Map attr2map(Attributes a) {
+        Map rslt = new HashMap();
+        for (int i = a.getLength()-1;i>=0;i--)
+            rslt.put(a.getQName(i),a.getValue(i));
+        return rslt;
+    }
+    Map att;
     TestSuite parent;
     private Map methods = new HashMap();
     private long violations = 0l;
@@ -96,7 +102,7 @@ public class TestMoreExamples extends TestCase implements
 
     public TestMoreExamples(String nm, Attributes att, TestSuite suite) {
         super(escape(nm));
-        this.att = att;
+        this.att = attr2map(att);
         this.parent = suite;
     }
 
@@ -144,29 +150,53 @@ public class TestMoreExamples extends TestCase implements
 //        System.err.println("tearDown"+cnt++);
         super.tearDown();
     }
-    private void add(String name, Attributes att) {
+    private void add(String name, Attributes attrs) {
         if (name.equals("violation"))
             return;
         if (name.equals("violations"))
             return;
-//        methods.put(name,att);
+        methods.put(name,attr2map(attrs));
     }
 
     public void runTest() {
 //        System.err.println("runTest"+cnt + " " + getName());
-//       iri = getIRI();
-//       Iterator it = methods.entrySet().iterator();
-//       while (it.hasNext()) {
-//           Map.Entry e = (Map.Entry)it.next();
-//           String method = (String)e.getKey();
-//           Attributes att = (Attributes)e.getValue();
-//       }
+       iri = getIRI();
+       Iterator it = methods.entrySet().iterator();
+       while (it.hasNext()) {
+           Map.Entry ent = (Map.Entry)it.next();
+           String m = (String)ent.getKey();
+           Map attrs = (Map)ent.getValue();
+           try {
+               Object r = IRI.class.getDeclaredMethod(m,TestCreator.nullSign)
+                .invoke(iri,new Object[]{});
+               if (r==null)
+                   assertEquals(attrs.get("nullValue"),"true");
+               else
+                   assertEquals(attrs.get("value"),r.toString());
+               
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                Throwable t = e;
+                if (t.getCause()!=null)
+                    t= t.getCause();
+                String s = t.getMessage()!=null?t.getMessage():t.toString();
+                
+                assertEquals(attrs.get("exception"),s);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+       }
     }
 
-    final IRI getIRI() { if (iri!=null) iri = computeIRI(); return null; }
+    final IRI getIRI() { if (iri==null) iri = computeIRI(); return iri; }
 
-    private IRI computeIRI() {
-        return null;
+    IRI computeIRI() {
+        throw new UnsupportedOperationException();
     }
 
     static TestSuite suitex() throws SAXException, IOException, ParserConfigurationException {

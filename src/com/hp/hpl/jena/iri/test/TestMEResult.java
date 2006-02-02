@@ -23,6 +23,10 @@ public class TestMEResult extends TestMoreExamples {
         IRI rel = ((TestMoreExamples)parent.testAt(1)).getIRI();
         return base.create(rel);
     }
+    
+    public void runTest() {
+        super.runTest();
+    }
 
 }
 

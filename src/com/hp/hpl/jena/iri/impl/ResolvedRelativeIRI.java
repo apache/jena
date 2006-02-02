@@ -153,8 +153,9 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
 
     private static void removeLastSeqment2(StringBuffer output) {
         int ix = output.length()-1;
-        if (ix==-1)
+        if (ix<=0)
             return;
+       
         while (ix>0) {
             ix--;
             if (output.charAt(ix)=='/') {

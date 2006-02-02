@@ -30,7 +30,7 @@
 </IRI>
 <Result>
 <getRawHost value='host'/>
-<getRawPath value='foo'/>
+<getRawPath value='/foo'/>
 <getPort value='-1'/>
 <getRawQuery nullValue='true'/>
 <getScheme value='http'/>
@@ -38,7 +38,7 @@
 <getRawFragment nullValue='true'/>
 <isAbsolute value='true'/>
 <isRelative value='false'/>
-<toASCIIString value='http://hostfoo'/>
+<toASCIIString value='http://host/foo'/>
 <violations>
 </violations>
 </Result>
@@ -88,7 +88,7 @@
 </IRI>
 <Result>
 <getRawHost value='host'/>
-<getRawPath value='foo'/>
+<getRawPath value='/foo'/>
 <getPort value='-1'/>
 <getRawQuery nullValue='true'/>
 <getScheme value='http'/>
@@ -96,7 +96,7 @@
 <getRawFragment nullValue='true'/>
 <isAbsolute value='true'/>
 <isRelative value='false'/>
-<toASCIIString value='http://hostfoo'/>
+<toASCIIString value='http://host/foo'/>
 <violations>
 </violations>
 </Result>

@@ -19,7 +19,7 @@ public class TestMEIri extends TestMoreExamples {
     }
 
     IRI computeIRI() {
-        return TestCreator.factory.create(att.getValue("iri"));
+        return TestCreator.factory.create((String)att.get("iri"));
     }
 
 }
