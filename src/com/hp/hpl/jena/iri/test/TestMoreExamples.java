@@ -95,24 +95,53 @@ public class TestMoreExamples extends TestCase implements
     }
 
     public TestMoreExamples(String nm, Attributes att, TestSuite suite) {
-        super(nm);
+        super(escape(nm));
         this.att = att;
         this.parent = suite;
     }
 
+    private static String escape(String nm) {
+        StringBuffer rslt = new StringBuffer();
+        for (int i=0; i<nm.length();i++) {
+            char ch = nm.charAt(i);
+            if (ch>=32 && ch<=126)
+                rslt.append(ch);
+            else
+                rslt.append("\\u"+pad4(Integer.toHexString(ch)));
+                
+        }
+        return rslt.toString();
+    }
+
+    private static String pad4(String string) {
+        switch (string.length()) {
+        case 0:
+            return "0000";
+        case 1:
+            return "000"+string;
+        case 2:
+            return "00"+string;
+        case 3:
+            return "0"+string;
+            default:
+                return string;
+       
+        }
+    }
+
     public TestMoreExamples(String string) {
-        super(string);
+        super(escape(string));
     }
     
-    static int cnt = 0;
+//    static int cnt = 0;
     
     public void setUp() throws Exception {
-        System.err.println("setUp"+cnt);
+//        System.err.println("setUp"+cnt);
         super.setUp();
     }
 
     public void tearDown() throws Exception {
-        System.err.println("tearDown"+cnt++);
+//        System.err.println("tearDown"+cnt++);
         super.tearDown();
     }
     private void add(String name, Attributes att) {
@@ -124,7 +153,7 @@ public class TestMoreExamples extends TestCase implements
     }
 
     public void runTest() {
-        System.err.println("runTest"+cnt + " " + getName());
+//        System.err.println("runTest"+cnt + " " + getName());
 //       iri = getIRI();
 //       Iterator it = methods.entrySet().iterator();
 //       while (it.hasNext()) {
