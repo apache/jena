@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNsPrefix.java,v 1.8 2005-02-21 12:03:18 andy_seaborne Exp $
+  $Id: TestNsPrefix.java,v 1.9 2006-02-02 15:35:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -21,13 +21,14 @@ package com.hp.hpl.jena.db.test;
 */
 
 import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
 
 import junit.framework.*;
 
-public class TestNsPrefix extends AbstractTestPrefixMapping {    
+public class TestNsPrefix extends ModelTestBase {    
         
     public TestNsPrefix( String name )
         { super( name ); }
@@ -52,10 +53,10 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		String testURI = "http://someTestURI#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
-		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
+		assertEquals( 0, m.getNsPrefixMap().size() ); // brand new model should have no prefixes
 		m.setNsPrefix(testPrefix,testURI);
-		assertTrue( m.getNsPrefixMap().size() == 1);
-		assertTrue( m.getNsPrefixURI(testPrefix).compareTo(testURI) ==0 );		
+		assertEquals( 1, m.getNsPrefixMap().size() );
+		assertEquals( testURI, m.getNsPrefixURI( testPrefix ) );		
 		m.close();
 		conn.close();		
 	}
@@ -65,11 +66,11 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		String testURI = "http://someTestURI#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
-		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
-		m.setNsPrefix(testPrefix,testURI);
-		m.setNsPrefix(testPrefix,testURI);
-		assertTrue( m.getNsPrefixMap().size() == 1);
-		assertTrue( m.getNsPrefixURI(testPrefix).compareTo(testURI) ==0 );		
+		assertEquals( 0, m.getNsPrefixMap().size() ); // brand new model should have no prefixes
+		m.setNsPrefix( testPrefix,testURI );
+		m.setNsPrefix( testPrefix,testURI );
+		assertEquals( 1, m.getNsPrefixMap().size() );
+		assertEquals( testURI, m.getNsPrefixURI( testPrefix ) );		
 		m.close();
 		conn.close();		
 	}
@@ -80,12 +81,12 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		String someOtherTestURI = "http://someOtherTestURI#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
-		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
+		assertEquals( 0, m.getNsPrefixMap().size() ); // brand new model should have no prefixes
 		m.setNsPrefix(testPrefix,testURI);
 		m.setNsPrefix(testPrefix,someOtherTestURI);
-		assertTrue( m.getNsPrefixMap().size() == 1);
-		assertTrue( m.getNsPrefixURI(testPrefix).compareTo(testURI) !=0 );		
-		assertTrue( m.getNsPrefixURI(testPrefix).compareTo(someOtherTestURI) ==0 );		
+		assertEquals( 1, m.getNsPrefixMap().size() );
+		assertDiffer( testURI, m.getNsPrefixURI( testPrefix ) );		
+		assertEquals( someOtherTestURI, m.getNsPrefixURI( testPrefix ) );		
 		m.close();
 		conn.close();		
 	}
@@ -95,23 +96,23 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		String testURI = "http://someTestURI#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
-		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
-		m.setNsPrefix(testPrefix,testURI);
-		assertTrue( m.getNsPrefixMap().size() == 1);
-		assertTrue( m.getNsPrefixURI(testPrefix).compareTo(testURI) ==0 );		
+		assertEquals( 0, m.getNsPrefixMap().size() ); // brand new model should have no prefixes
+        m.setNsPrefix(testPrefix,testURI);
+		assertEquals( 1, m.getNsPrefixMap().size() );
+		assertEquals( testURI, m.getNsPrefixURI( testPrefix ) );		
 		m.close();
 		
 		// Now create a different model and check there is no prefix
 		// and that removing it has no effect on the first model.
 		ModelRDB m2 = ModelRDB.createModel(conn,"myName");
-		assertTrue( m2.getNsPrefixMap().size() == 0);
+		assertEquals( 0, m2.getNsPrefixMap().size() );
 		m2.remove();
 		m2.close();
 		
 		// Now reopen the first Model and check the prefix was persisted
 		ModelRDB m3 = ModelRDB.open(conn);
-		assertTrue( m3.getNsPrefixMap().size() == 1);
-		assertTrue( m3.getNsPrefixURI(testPrefix).compareTo(testURI) ==0 );		
+		assertEquals( 1, m3.getNsPrefixMap().size() );
+		assertEquals( testURI, m3.getNsPrefixURI( testPrefix ) );		
 		m3.close();
 		
 		conn.close();		
@@ -128,28 +129,28 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		
 		// Create a first model with a set of prefixes
 		ModelRDB m = ModelRDB.createModel(conn);
-		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
+		assertEquals( 0, m.getNsPrefixMap().size() ); // brand new model should have no prefixes
 		m.setNsPrefix(testPrefix1,testURI1);
 		m.setNsPrefix(testPrefix2,testURI2);
-		assertTrue( m.getNsPrefixMap().size() == 2);
-		assertTrue( m.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
+		assertEquals( 2, m.getNsPrefixMap().size() );
+		assertEquals( testURI1, m.getNsPrefixURI( testPrefix1 ) );		
+		assertEquals( testURI2, m.getNsPrefixURI( testPrefix2 ) );		
 		
 		// Create a second model with an overlapping set of prefixes
 		ModelRDB m2 = ModelRDB.createModel(conn,"secondGraph");
-		assertTrue( m2.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
+		assertEquals( 0, m2.getNsPrefixMap().size() ); // brand new model should have no prefixes
 		m2.setNsPrefix(testPrefix2,testURI2);
 		m2.setNsPrefix(testPrefix3,testURI3);
 		
 		// Verify second model has the correct contents
-		assertTrue( m2.getNsPrefixMap().size() == 2);
-		assertTrue( m2.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
-		assertTrue( m2.getNsPrefixURI(testPrefix3).compareTo(testURI3) ==0 );		
+		assertEquals( 2, m2.getNsPrefixMap().size() );
+		assertEquals( testURI2, m2.getNsPrefixURI( testPrefix2 ) );		
+		assertEquals( testURI3, m2.getNsPrefixURI( testPrefix3 ) );		
 		
 		// Verify that first model was unchanged.
-		assertTrue( m.getNsPrefixMap().size() == 2);
-		assertTrue( m.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
+		assertEquals( 2, m.getNsPrefixMap().size() );
+		assertEquals( testURI1, m.getNsPrefixURI( testPrefix1 ) );		
+		assertEquals( testURI2, m.getNsPrefixURI( testPrefix2 ) );		
 		
 		// Now remove the second model
 		m2.remove();
@@ -157,18 +158,18 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		m2 = null;
 		
 		// Verify that first model was still unchanged.
-		assertTrue( m.getNsPrefixMap().size() == 2);
-		assertTrue( m.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
+		assertEquals( 2, m.getNsPrefixMap().size() );
+		assertEquals( testURI1, m.getNsPrefixURI( testPrefix1 ) );		
+		assertEquals( testURI2, m.getNsPrefixURI( testPrefix2 ) );		
 		
 		// Now close and reopen the first Model and check the prefix was persisted
 		m.close();
 		m = null;
 		
 		ModelRDB m3 = ModelRDB.open(conn);
-		assertTrue( m3.getNsPrefixMap().size() == 2);
-		assertTrue( m3.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m3.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
+		assertEquals( 2, m3.getNsPrefixMap().size() );
+		assertEquals( testURI1, m3.getNsPrefixURI( testPrefix1 ) );		
+		assertEquals( testURI2, m3.getNsPrefixURI( testPrefix2 ) );		
 		m3.close();
 		
 		conn.close();		
@@ -185,39 +186,39 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		
 		ModelRDB m = ModelRDB.createModel(conn);
-		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
+		assertEquals( 0, m.getNsPrefixMap().size() ); // brand new model should have no prefixes
 		m.setNsPrefix(testPrefix1,testURI1);
 		m.setNsPrefix(testPrefix2,testURI2);
-		assertTrue( m.getNsPrefixMap().size() == 2);
-		assertTrue( m.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
+		assertEquals( 2, m.getNsPrefixMap().size() );
+		assertEquals( testURI1, m.getNsPrefixURI( testPrefix1 ) );		
+		assertEquals( testURI2, m.getNsPrefixURI( testPrefix2 ) );		
 		m.close();
 		m=null;
 		
 		// Now reopen the first Model and check the prefixes were persisted
 		ModelRDB m2 = ModelRDB.open(conn);
-		assertTrue( m2.getNsPrefixMap().size() == 2);
-		assertTrue( m2.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m2.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
+		assertEquals( 2, m2.getNsPrefixMap().size() );
+		assertEquals( testURI1, m2.getNsPrefixURI(testPrefix1) );		
+		assertEquals( testURI2, m2.getNsPrefixURI(testPrefix2) );		
 		
 		// Now change one prefix and add a third
 		m2.setNsPrefix(testPrefix1,testURI1b);
 		m2.setNsPrefix(testPrefix3, testURI3);				
 
-		assertTrue( m2.getNsPrefixMap().size() == 3);
-		assertTrue( m2.getNsPrefixURI(testPrefix1).compareTo(testURI1b) ==0 );		
-		assertTrue( m2.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
-		assertTrue( m2.getNsPrefixURI(testPrefix3).compareTo(testURI3) ==0 );		
+		assertEquals( 3, m2.getNsPrefixMap().size() );
+		assertEquals( testURI1b, m2.getNsPrefixURI(testPrefix1) );		
+		assertEquals( testURI2, m2.getNsPrefixURI(testPrefix2) );		
+		assertEquals( testURI3, m2.getNsPrefixURI(testPrefix3) );		
 
 		m2.close();
 		m2 = null;
 		
 		// Now reopen again and check it's all still as expected.
 		ModelRDB m3 = ModelRDB.open(conn);
-		assertTrue( m3.getNsPrefixMap().size() == 3);
-		assertTrue( m3.getNsPrefixURI(testPrefix1).compareTo(testURI1b) ==0 );		
-		assertTrue( m3.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
-		assertTrue( m3.getNsPrefixURI(testPrefix3).compareTo(testURI3) ==0 );		
+		assertEquals( 3, m3.getNsPrefixMap().size() );
+		assertEquals( testURI1b, m3.getNsPrefixURI(testPrefix1) );		
+		assertEquals( testURI2, m3.getNsPrefixURI(testPrefix2) );		
+		assertEquals( testURI3, m3.getNsPrefixURI(testPrefix3) );		
 		
 		m3.close();
 		conn.close();		
@@ -230,20 +231,20 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		String testURI2 = "http://someTestURI/2#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
-		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
+		assertEquals( 0, m.getNsPrefixMap().size()  ); // brand new model should have no prefixes
 		m.setNsPrefix(testPrefix1,testURI1);
 		m.setNsPrefix(testPrefix2,testURI2);
-		assertTrue( m.getNsPrefixMap().size() == 2);
-		assertTrue( m.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
+		assertEquals( 2, m.getNsPrefixMap().size() );
+		assertEquals( testURI1, m.getNsPrefixURI(testPrefix1) );		
+		assertEquals( testURI2, m.getNsPrefixURI(testPrefix2) );		
 		
 		// Now create a second model, copy the prefix mapping and make sure it matches
 		ModelRDB m2 = ModelRDB.createModel(conn, "secondModel");
-		assertTrue( m2.getNsPrefixMap().size() == 0);
+		assertEquals( 0, m2.getNsPrefixMap().size() );
 		m2.setNsPrefixes(m.getNsPrefixMap());
-		assertTrue( m2.getNsPrefixMap().size() == 2);
-		assertTrue( m2.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m2.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );			
+		assertEquals( 2, m2.getNsPrefixMap().size() );
+		assertEquals( testURI1, m2.getNsPrefixURI(testPrefix1) );		
+		assertEquals( testURI2, m2.getNsPrefixURI(testPrefix2) );			
 
 		m.close();
 		m2.close();
@@ -262,21 +263,38 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 		myMap.setNsPrefix(testPrefix1, testURI1);
 		myMap.setNsPrefix(testPrefix2, testURI2);
 
-		assertTrue( myMap.getNsPrefixMap().size() == 2);
-		assertTrue( myMap.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( myMap.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );		
+		assertEquals( 2, myMap.getNsPrefixMap().size() );
+		assertEquals( testURI1, myMap.getNsPrefixURI(testPrefix1) );		
+		assertEquals( testURI2, myMap.getNsPrefixURI(testPrefix2) );		
 		
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
-		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
+		assertEquals( 0, m.getNsPrefixMap().size()  ); // brand new model should have no prefixes
 		m.setNsPrefixes(myMap);
-		assertTrue( m.getNsPrefixMap().size() == 2);
-		assertTrue( m.getNsPrefixURI(testPrefix1).compareTo(testURI1) ==0 );		
-		assertTrue( m.getNsPrefixURI(testPrefix2).compareTo(testURI2) ==0 );
+		assertEquals( 2, m.getNsPrefixMap().size() );
+		assertEquals( testURI1, m.getNsPrefixURI(testPrefix1) );		
+		assertEquals( testURI2, m.getNsPrefixURI(testPrefix2) );
 		
 		m.close();
 		conn.close();		
 	}
+    
+    public void testSecondPrefixDoesNotRemoveSharedURI() throws Exception
+        {
+        IDBConnection conn = TestConnection.makeAndCleanTestConnection();
+        ModelRDB m = ModelRDB.createModel( conn );
+        String someURI = "urn:x-hp:db-unit-testing:xxx";
+        m.setNsPrefix( "p1", someURI );
+        m.setNsPrefix( "p2", someURI );
+        m.close();
+        conn.close();
+        IDBConnection conn2 = TestConnection.makeTestConnection();
+        ModelRDB m2 = ModelRDB.open( conn2 );
+        assertEquals( someURI, m2.getNsPrefixURI( "p1" ) );
+        assertEquals( someURI, m2.getNsPrefixURI( "p2" ) );
+        m2.close();
+        conn2.close();
+        }
 
 }
     	

@@ -26,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -74,14 +74,85 @@ public class DBPropGraph extends DBProp {
 		putPropNode( graphLSet, lset.getNode() );
 	}
 
+    public void addPrefix( String prefix, String uri ) {
+        Node prefixNode = Node.createLiteral( prefix ), uriNode = Node.createLiteral( uri );
+        Node B = bnodeForPrefix( prefixNode );
+        if (B == null) 
+            addPrefixMaplet( prefixNode, uriNode );
+        else 
+            updatePrefixMaplet( B, uriNode ); 
+    }
+
+    /**
+     	Update the existing prefix maplet off bnode <code>B</code> so that its
+        prefixURI is now <code>uriNode</code>.
+    */
+    private void updatePrefixMaplet( Node B, Node uriNode )
+        {
+        Node current = uriOf( B );
+        if (!uriNode.equals( current ))
+            {
+            delete( B, DBPropPrefix.prefixURI, current );
+            add( B, DBPropPrefix.prefixURI, uriNode );
+            }
+        }
+
+    /**
+     	Add a new prefix maplet <code>[prefixValue prefixNode; prefixURI uriNode]</code>
+        to the graph.
+    */
+    private void addPrefixMaplet( Node prefixNode, Node uriNode )
+        {
+        Node BB = Node.createAnon();
+        add( self, graphPrefix, BB );
+        add( BB, DBPropPrefix.prefixURI, uriNode );
+        add( BB, DBPropPrefix.prefixValue, prefixNode );
+        }  
+    
+    /**
+        Add the triple <code>(S, P, O)</code> to the graph.
+    */
+    private void add( Node S, Node P, Node O )
+        { graph.add( Triple.create( S, P, O ), newComplete() ); }
+    
+    /**
+        Remove the triple <code>(S, P, O)</code> from the graph.
+    */    
+    private void delete( Node S, Node P, Node O )
+        { graph.delete( Triple.create( S, P, O ), newComplete() ); }
+    
+    private Node uriOf( Node b )
+        {
+        ExtendedIterator A = graph.find( b, DBPropPrefix.prefixURI, Node.ANY, newComplete() );
+        return A.hasNext() ? ((Triple) A.next()).getObject() : null;
+        }
+
+    public Node bnodeForPrefix( Node prefixNode )
+        {
+        ExtendedIterator A = graph.find( self, graphPrefix, Node.ANY, newComplete() );
+        try
+            {
+            while (A.hasNext())
+                {
+                Node B = ((Triple) A.next()).getObject();
+                if (graph.contains( Triple.create( B, DBPropPrefix.prefixValue, prefixNode ), newComplete() ) ) return B;
+                }
+            return null;
+            }
+        finally
+            { A.close(); }
+        }
+    /**
+         @deprecated this method should never have been publically visible
+        @param prefix
+     */
 	public void addPrefix( DBPropPrefix prefix ) {
 		// First drop existing uses of prefix or URI
-		DBPropPrefix existing = getPrefix( prefix.getValue());
+		DBPropPrefix existing = getPrefix( prefix.getValue() );
 		if( existing != null)
+            {
 			removePrefix( existing);
-		existing = getURI( prefix.getURI());
-		if( existing != null && !prefix.getValue().equals("")) 
-			removePrefix( existing);
+            }
 		putPropNode( graphPrefix, prefix.getNode() );
 	}
 	
@@ -93,10 +164,6 @@ public class DBPropGraph extends DBProp {
 			prefix.remove();
 		}
 	}
-	
-	public void addPrefix( String prefix, String uri ) {
-		addPrefix( new DBPropPrefix( graph, prefix, uri) );
-	}  
     
     public void removePrefix( String prefix ) {
         DBPropPrefix existing = getPrefix( prefix );
@@ -138,12 +205,14 @@ public class DBPropGraph extends DBProp {
             .mapWith ( new MapToPrefix() );
 	}
 	
-	public DBPropPrefix getPrefix( String value ) {
-		ExtendedIterator prefixes = getAllPrefixes();
+	public DBPropPrefix getPrefix( String prefix ) {
+		ExtendedIterator prefixes = 
+            graph.find( self, graphPrefix, null, newComplete() )
+            .mapWith ( new MapToPrefix() );
 		while( prefixes.hasNext() ) {
-			DBPropPrefix prefix = (DBPropPrefix)prefixes.next();
-			if( prefix.getValue().compareTo(value)==0) 
-				return prefix;
+			DBPropPrefix dbp = (DBPropPrefix)prefixes.next();
+			if( dbp.getValue().compareTo(prefix)==0) 
+				return dbp;
 		}
 		return null;
 	}
