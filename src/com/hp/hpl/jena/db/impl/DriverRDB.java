@@ -46,7 +46,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.55 $ on $Date: 2005-09-01 11:15:00 $
+* @version $Revision: 1.56 $ on $Date: 2006-02-03 12:01:19 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1215,6 +1215,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	protected static final int xactIsActive = 3;
 	protected static final int xactAutoOff = 4;
 	protected static final int xactAutoOn = 5;
+    protected static final int xactBeginIfNone = 6;
 
 	
 	/**
@@ -1222,58 +1223,69 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * return true if success, false if fail. for xactIsActive,
 	 * return true if this driver has an active transaction,
 	 * else return false.
+     * for beginIfNone, if there is a transaction running, return false, otherwise
+     * 
 	 */
 	protected synchronized boolean xactOp(int op) throws RDFRDBException {
-		boolean ret = true;
-		try {
-			if (op == xactBegin) {
-				// start a transaction
-				// always return true
-				if (!inTransaction) {
-					xactBegin();
-					inTransaction = true;
-				}
-			} else if (op == xactCommit) {
-				// commit a transaction
-				// always return true
-				if (inTransaction) {
-					xactCommit();
-					inTransaction = false;
-				}
-			} else if (op == xactAbort) {
-				// rollback a transaction
-				// always return true
-				if (inTransaction) {
-					xactAbort();
-					inTransaction = false;
-				}
-			} else if (op == xactIsActive) {
-				// return true if xact is active, else false
-				ret = inTransaction;
-			} else if (op == xactAutoOff) {
-				// disable autocommit
-				// return true if autocommit is on, else false
-				// begins a new transaction
-				Connection c = m_sql.getConnection();
-				ret = c.getAutoCommit();
-				if ( ret )
-					xactBegin();
-				inTransaction = true;			
-			} else if (op == xactAutoOn) {
-				// enable autocommit
-				// always return true
-				if ( inTransaction )
-					throw new JenaException("Can't enable AutoCommit in middle of existing transaction");
-				Connection c = m_sql.getConnection();
-				c.setAutoCommit(true);
-				ret = true;
-			} else
-				throw new JenaException("Unknown transaction operation: " + op);
-		} catch (SQLException e) {
-			throw new JenaException("Transaction support failed: ", e);
+		try { return xaxtOpRaw( op ); }
+		catch (SQLException e) { throw new JenaException( "Transaction support failed: ", e );
 		}
-		return ret;
 	}
+
+    private boolean xaxtOpRaw( int op ) throws SQLException
+        {
+        boolean ret = true;
+        if (op == xactBegin) {
+        	// start a transaction
+        	// always return true
+        	if (!inTransaction) {
+        		xactBegin();
+        		inTransaction = true;
+        	}
+        } else if (op == xactBeginIfNone) {
+            if (inTransaction)
+                ret = false;
+            else {
+                xactBegin();
+                inTransaction = true; }
+        } else if (op == xactCommit) {
+        	// commit a transaction
+        	// always return true
+        	if (inTransaction) {
+        		xactCommit();
+        		inTransaction = false;
+        	}
+        } else if (op == xactAbort) {
+        	// rollback a transaction
+        	// always return true
+        	if (inTransaction) {
+        		xactAbort();
+        		inTransaction = false;
+        	}
+        } else if (op == xactIsActive) {
+        	// return true if xact is active, else false
+        	ret = inTransaction;
+        } else if (op == xactAutoOff) {
+        	// disable autocommit
+        	// return true if autocommit is on, else false
+        	// begins a new transaction
+        	Connection c = m_sql.getConnection();
+        	ret = c.getAutoCommit();
+        	if ( ret )
+        		xactBegin();
+        	inTransaction = true;			
+        } else if (op == xactAutoOn) {
+        	// enable autocommit
+        	// always return true
+        	if ( inTransaction )
+        		throw new JenaException("Can't enable AutoCommit in middle of existing transaction");
+        	Connection c = m_sql.getConnection();
+        	c.setAutoCommit(true);
+        	ret = true;
+        } else
+        	throw new JenaException("Unknown transaction operation: " + op);
+        return ret;
+        }
 
 	private void xactBegin() throws RDFRDBException {
 		try {

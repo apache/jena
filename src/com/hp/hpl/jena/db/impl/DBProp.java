@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public abstract class DBProp {
 
@@ -53,24 +53,47 @@ public abstract class DBProp {
     protected static SpecializedGraph.CompletionFlag newComplete()
         { return new SpecializedGraph.CompletionFlag(); }
 	
-	protected void putPropString( Node_URI predicate, String value) {
+    /**
+        Add (self, predicate, literal(value)) to the graph.
+    */
+	protected void putPropString( Node_URI predicate, String value ) {
 		putPropNode( predicate, Node.createLiteral( value ) );
 	}		
 	
-	protected void putPropNode( Node_URI predicate, Node node) {
+    /**
+        Add (self, predicate, node) to the graph.
+    */
+	protected void putPropNode( Node_URI predicate, Node node ) {
 		graph.add( Triple.create( self, predicate, node ), newComplete() );
 	}			
 	
-	protected String getPropString( Node_URI predicate) {
-		ClosableIterator it = graph.find(self, predicate, null, newComplete() );
-		if( !it.hasNext() ) {
-			it.close();
-			return null;
-		}
-		Node result = ((Triple)it.next()).getObject();
-		it.close();
-		return result.getLiteralLexicalForm();
-	}			
+    /**
+        Answer the single string s such that (self, predicate, literal(s)) is in the
+        graph, or null if there's no such s.
+    */
+	protected String getPropString( Node predicate ) {
+        Node n = getPropNode( predicate );
+        return n == null ? null : n.getLiteralLexicalForm();
+	}			   
+    
+    /**
+        Answer the single node n such that (subject, predicate, n) is in the
+        graph, or null if there's no such n.
+    */
+    protected Node getPropNode( Node subject, Node predicate ) {
+        ClosableIterator it = graph.find( subject, predicate, Node.ANY, newComplete() );
+        Node result = it.hasNext() ? ((Triple) it.next()).getObject() : null;
+        it.close();
+        return result;
+    }               
+
+    /**
+        Answer the single node n such that (self, predicate, n) is in the
+        graph, or null if there's no such n.
+    */
+    protected Node getPropNode( Node predicate ) {
+        return getPropNode( self, predicate );
+    }           
 	
 	protected void remove() {
 		SpecializedGraph.CompletionFlag complete = newComplete();
@@ -92,8 +115,11 @@ public abstract class DBProp {
 		// Get all the triples about the requested node.
 		return g.find( self, null, null, newComplete() );
 	}
-		
-	protected static Node findProperty( Graph graph, Node_URI predicate ) {
+    
+    /**
+        @deprecated no uses remaining in Jena codebase
+    */
+    protected static Node findProperty( Graph graph, Node_URI predicate ) {
 		ClosableIterator it = graph.find( null, predicate, null );
 		Node result = null;
 		if( it.hasNext() ) result = ((Triple) it.next()).getObject();

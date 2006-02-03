@@ -26,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -69,18 +69,36 @@ public class DBPropGraph extends DBProp {
 		}
 	}
 
-	
+    /**
+        Answer false if already within a transaction, otherwise start a transaction
+        and answer true; use in conjunction with <code>conditionalCommit</code>.
+     */
+	public boolean begin()
+        { return getDriver().xactOp( DriverRDB.xactBeginIfNone ); }
+
+    /**
+        If <code>commit</code> is true, commit the current transaction; to be used
+        in conjunction with <code>begin</code>. 
+    */
+    public void conditionalCommit( boolean commit )
+        { if (commit) getDriver().xactOp( DriverRDB.xactCommit ); }
+    
+    private DriverRDB getDriver()
+        { return (DriverRDB) graph.getPSet().driver(); }
+    
 	public void addLSet( DBPropLSet lset ) {
 		putPropNode( graphLSet, lset.getNode() );
 	}
 
     public void addPrefix( String prefix, String uri ) {
         Node prefixNode = Node.createLiteral( prefix ), uriNode = Node.createLiteral( uri );
+        boolean commit = begin();
         Node B = bnodeForPrefix( prefixNode );
         if (B == null) 
             addPrefixMaplet( prefixNode, uriNode );
         else 
-            updatePrefixMaplet( B, uriNode ); 
+            updatePrefixMaplet( B, uriNode );
+        conditionalCommit( commit );
     }
 
     /**
@@ -89,7 +107,7 @@ public class DBPropGraph extends DBProp {
     */
     private void updatePrefixMaplet( Node B, Node uriNode )
         {
-        Node current = uriOf( B );
+        Node current = getPropNode( B, DBPropPrefix.prefixURI );
         if (!uriNode.equals( current ))
             {
             delete( B, DBPropPrefix.prefixURI, current );
@@ -121,12 +139,10 @@ public class DBPropGraph extends DBProp {
     private void delete( Node S, Node P, Node O )
         { graph.delete( Triple.create( S, P, O ), newComplete() ); }
     
-    private Node uriOf( Node b )
-        {
-        ExtendedIterator A = graph.find( b, DBPropPrefix.prefixURI, Node.ANY, newComplete() );
-        return A.hasNext() ? ((Triple) A.next()).getObject() : null;
-        }
-
+    /**
+         Answer the bnode which gives the prefix and uri in this graph for the given 
+         literal<code>prefixNode</code>, or null if there isn't one.
+    */
     public Node bnodeForPrefix( Node prefixNode )
         {
         ExtendedIterator A = graph.find( self, graphPrefix, Node.ANY, newComplete() );
@@ -142,6 +158,7 @@ public class DBPropGraph extends DBProp {
         finally
             { A.close(); }
         }
+    
     /**
          @deprecated this method should never have been publically visible
         @param prefix
@@ -155,7 +172,10 @@ public class DBPropGraph extends DBProp {
             }
 		putPropNode( graphPrefix, prefix.getNode() );
 	}
-	
+    
+	/**
+        @deprecated this method should never habve been publically visible 
+	*/
 	public void removePrefix( DBPropPrefix prefix ) {
 		SpecializedGraph.CompletionFlag complete = newComplete();
 		Iterator matches = graph.find( self, graphPrefix, prefix.getNode(), complete);
@@ -166,8 +186,17 @@ public class DBPropGraph extends DBProp {
 	}
     
     public void removePrefix( String prefix ) {
-        DBPropPrefix existing = getPrefix( prefix );
-        if (existing != null) removePrefix( existing );
+        Node prefixNode = Node.createLiteral( prefix );
+        boolean commit = begin();
+        Node B = bnodeForPrefix( prefixNode );
+        if (B != null)
+            {
+            Node uriNode = getPropNode( B, DBPropPrefix.prefixURI );
+            delete( self, graphPrefix, B );
+            delete( B, DBPropPrefix.prefixURI, prefixNode );
+            delete( B, DBPropPrefix.prefixValue, uriNode );
+            }
+        conditionalCommit( commit );
     }
 	
 	public void addGraphId( int id ) {
@@ -182,13 +211,15 @@ public class DBPropGraph extends DBProp {
 		putPropString(reifTable, table);
 	}
 
-
-	
 	public String getName() { return getPropString( graphName); }
-	public String getType() { return getPropString( graphType); }
-	public String getStmtTable() { return getPropString(stmtTable); }
-	public String getReifTable() { return getPropString(reifTable); }
-	public int getGraphId() {
+
+    public String getType() { return getPropString( graphType); }
+	
+    public String getStmtTable() { return getPropString(stmtTable); }
+	
+    public String getReifTable() { return getPropString(reifTable); }
+	
+    public int getGraphId() {
 		String i = getPropString(graphId);
 		return i == null ? -1 : Integer.parseInt(i);
 	}	
@@ -205,6 +236,11 @@ public class DBPropGraph extends DBProp {
             .mapWith ( new MapToPrefix() );
 	}
 	
+    /**
+        @deprecated this method should not have been visible
+        @param prefix
+        @return
+     */
 	public DBPropPrefix getPrefix( String prefix ) {
 		ExtendedIterator prefixes = 
             graph.find( self, graphPrefix, null, newComplete() )
@@ -217,6 +253,11 @@ public class DBPropGraph extends DBProp {
 		return null;
 	}
 	
+    /**
+        @deprecated this method should not have been visible
+        @param uri
+        @return
+     */
 	public DBPropPrefix getURI( String uri ) {
 		ExtendedIterator prefixes = getAllPrefixes();
 		while( prefixes.hasNext() ) {
@@ -253,6 +294,10 @@ public class DBPropGraph extends DBProp {
 		}
 	}
 	
+    /**
+        @deprecated only required in deprecated code
+        @author kers
+     */
 	private class MapToPrefix implements Map1 {
 		public Object map1( Object o) {
 			Triple t = (Triple) o;

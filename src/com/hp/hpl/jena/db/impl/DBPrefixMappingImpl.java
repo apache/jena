@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.10 2005-02-21 12:02:45 andy_seaborne Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.11 2006-02-03 12:01:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,7 +19,7 @@ import java.util.*;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.10 $
+ 	@version $Revision: 1.11 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -53,9 +53,8 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
     public PrefixMapping removeNsPrefix( String prefix )
         {
-        String uri = getNsPrefixURI( prefix );
         super.removeNsPrefix( prefix );
-        if (uri != null) m_graphProperties.removePrefix( prefix );
+        m_graphProperties.removePrefix( prefix );
         return this;
         }
     
