@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.23 2006-01-26 14:33:35 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.24 2006-02-03 08:12:41 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -37,6 +37,7 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -303,6 +304,22 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                 return new XMLBaselessContext(this,
                         WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
             } else {
+//                if (base.toLowerCase().startsWith("file:")
+//                    && base.length()>5
+//                    && base.charAt(5) != '/'
+//                ) {
+//                    System.err.print(base);
+//                    try {
+//                        base = new File(base.substring(5)).toURL().toString();
+//                        if (base.length()<=6
+//                                || base.charAt(6)!= '/')
+//                            base = "file://"+base.substring(5);
+//                    } catch (MalformedURLException e) {
+//                        // ignore, just leave it alone.
+//                    }
+//                    System.err.println(" ==> "+base);
+//                    
+//                }
                 return new XMLBaselessContext(this,
                         ERR_RESOLVING_AGAINST_RELATIVE_BASE).withBase(this,base);
             }
