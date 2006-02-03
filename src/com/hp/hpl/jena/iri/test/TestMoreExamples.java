@@ -96,8 +96,19 @@ public class TestMoreExamples extends TestCase implements
         this(nm,att,null);
     }
 
+    private String savedText = null;
     public void add(String text) {
+        if (savedText!=null) {
+            text = savedText + text;
+            savedText = null;
+//            System.err.println(text);
+        }
+        try {
         violations |= (1l << PatternCompiler.errorCode(text));
+        }
+        catch (NoSuchFieldException e){
+                savedText = text;
+        }
     }
 
     public TestMoreExamples(String nm, Attributes att, TestSuite suite) {
@@ -224,10 +235,10 @@ public class TestMoreExamples extends TestCase implements
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-        System.err.println("Yes chris we know");
+//        System.err.println("Yes chris we know");
 //        return 
         TestSuite r2 = new TestSuite("exception-while-building-testsuite");
-        r2.addTest(new TestMoreExamples("testDummy"));
+//        r2.addTest(new TestMoreExamples("testDummy"));
         return r2;
     }
     

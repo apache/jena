@@ -281,7 +281,9 @@ abstract public class AbsIRIImpl extends  IRI implements
                 toAscii(asciiString, getRawUserinfo(), errors(USER));
                 asciiString.append('@');
             }
-            regNameToAscii(asciiString);
+
+            String host = getRawHost();
+            regNameToAscii(asciiString,host);
             if (has(PORT)) {
                 asciiString.append(':');
                 toAscii(asciiString, get(PORT), errors(USER));
@@ -299,13 +301,13 @@ abstract public class AbsIRIImpl extends  IRI implements
         return asciiString.toString();
     }
 
-    private void regNameToAscii(StringBuffer asciiString)
+    private void regNameToAscii(StringBuffer asciiString, String host)
             throws MalformedURLException {
         if ((errors(HOST) & ToAsciiMask) == 0) {
-            asciiString.append(getRawHost());
+            asciiString.append(host);
             return;
         }
-        String host = getRawHost();
+       
         asciiString.append(domainToAscii(host));
 
     }
@@ -641,7 +643,11 @@ abstract public class AbsIRIImpl extends  IRI implements
 
     public String getASCIIHost() throws MalformedURLException {
         StringBuffer asciiString = new StringBuffer();
-        regNameToAscii(asciiString);
+
+        String host = getRawHost();
+        if (host==null)
+            return null;
+        regNameToAscii(asciiString,host);
         return asciiString.toString();
     }
 

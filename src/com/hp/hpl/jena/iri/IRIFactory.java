@@ -291,8 +291,8 @@ public class IRIFactory extends IRIFactoryImpl
 //    }
     
     /**
-     * Allows http:relative-path as a relative
-     * reference against a base URI from the http scheme, etc.
+     * Allows scheme:relative-path as a relative
+     * reference against a base URI from the same scheme.
      * 
      * <p>
      * Sets the behaviour of the relative
@@ -311,9 +311,10 @@ public class IRIFactory extends IRIFactoryImpl
 </pre>
      * 
      * </blockquote>
+     * @param scheme The scheme to enable this behaviour for, or "*" for all schemes
      */
-    public void setSameSchemeRelativeReferences() {
-        super.setSameSchemeRelativeReferences();
+    public void setSameSchemeRelativeReferences(String scheme) {
+        super.setSameSchemeRelativeReferences(scheme);
     }
     /**
      * Allows the unwise characters as optionally 
@@ -842,7 +843,7 @@ characters ("[", "]") are not part of the above list
 
         jenaFactory = new IRIFactory();
 //        jenaFactory.dnsViolation(false,false);
-//        jenaFactory.setSameSchemeRelativeReferences();
+//        jenaFactory.setSameSchemeRelativeReferences("file");
         jenaFactory.shouldViolation(false,false);
         jenaFactory.securityViolation(false,false);
         jenaFactory.useSpecificationRDF(false);

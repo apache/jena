@@ -439,15 +439,12 @@ static VarPattern unreservedDNSLabel[] = {
         return eCodeNames[j];
     }
     
-    public static int errorCode(String s) {
+    public static int errorCode(String s) throws NoSuchFieldException {
         Field f;
         try {
             f = ViolationCodes.class.getDeclaredField(s);
             return f.getInt(null);
         } catch (SecurityException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {

@@ -6,9 +6,13 @@
 package com.hp.hpl.jena.iri.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.util.AbstractSet;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.hp.hpl.jena.iri.IRI;
 import com.hp.hpl.jena.iri.IRIComponents;
@@ -170,8 +174,8 @@ public static final int UNKNOWN_SYNTAX = -4;
             create(i.toString());
     }
 
-    boolean getSameSchemaRelativeReferences() {
-        return backwardCompatibleRelativeRefs;
+    boolean getSameSchemaRelativeReferences(String scheme) {
+        return backwardCompatibleRelativeRefs.contains(scheme.toLowerCase());
     }
     
     private String encoding = "utf-8";
@@ -224,7 +228,7 @@ public static final int UNKNOWN_SYNTAX = -4;
 //    }
 
     private boolean initializing = true;
-private boolean backwardCompatibleRelativeRefs = false;
+private Set backwardCompatibleRelativeRefs = new HashSet();
     protected void initializing() {
         if (!initializing)
             throw new IllegalStateException("Cannot reinitialize IRIFactory after first use.");
@@ -236,8 +240,27 @@ private boolean backwardCompatibleRelativeRefs = false;
         return super.create(s);
     }
 
-    public void setSameSchemeRelativeReferences() {
-        backwardCompatibleRelativeRefs  = true;
+    public void setSameSchemeRelativeReferences(String scheme) {
+        if (scheme.equals("*"))
+          backwardCompatibleRelativeRefs  = new AbstractSet(){
+
+            public int size() {
+                return Integer.MAX_VALUE;
+            }
+
+            public Iterator iterator() {
+                throw new UnsupportedOperationException();
+            }
+            public boolean add(Object o) {
+                return false;
+            }
+
+            public boolean contains(Object o) {
+                return true;
+            }
+        };
+        else 
+            backwardCompatibleRelativeRefs.add(scheme.toLowerCase());
     }
 
     protected void useSpec(String name, boolean asErr) {

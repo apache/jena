@@ -211,7 +211,7 @@ public class TestExample extends TestCase
     public static TestSuite suite() {
         TestSuite rslt = new TestSuite();
 
-        rslt.setName("Bad IRI Examples");
+        rslt.setName("Examples from documentation");
         for (int sp = 0; sp < specs.length; sp++) {
             TestSuite spec = new TestSuite();
             

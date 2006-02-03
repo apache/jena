@@ -43,7 +43,6 @@
 <uri absolute='http://xn--andr--ep-.example.org/foo'/>
 
 
-<!--
 <uri absolute='Http://example.org/'/>
 <uri absolute='Http://example.org/prop'/>
 <uri absolute='NC:ispinfo'/>
@@ -81,6 +80,7 @@
 <uri absolute='ftp://net.fred.org/P'/>
 <uri absolute='ftp:ftp/'/>
 <uri absolute='ftp:ftp/P'/>
+
 <uri absolute='h^ttp:'/>
 <uri absolute='h^ttp:prop'/>
 <uri absolute='h^ttp:title'/>
@@ -103,6 +103,7 @@
 <uri absolute='http://domain/S'/>
 <uri absolute='http://eg.com/'/>
 <uri absolute='http://ex/dt'/>
+
 <uri absolute='http://example.com/A'/>
 <uri absolute='http://example.com/test0'/>
 <uri absolute='http://example.org/    '/>
@@ -205,6 +206,7 @@
 <uri base='file:///C:/Documents and Settings/jjchplb/Local Settings/Temp/test-load-with-41.rdf' relative='eh:/a'/>
 <uri base='file:///C:/eclipse/workspace/jena2/' relative='#'/>
 <uri base='file:///C:/eclipse/workspace/jena2/' relative=''/>
+
 <uri base='file:///C:/eclipse/workspace/jena2/' relative='base'/>
 <uri base='file:///C:/eclipse/workspace/jena2/' relative='eh://R'/>
 <uri base='file:///C:/eclipse/workspace/jena2/' relative='eh:/O'/>
@@ -269,6 +271,8 @@
 <uri base='http://bar.com/irrelevant' relative='http://foo.com/&lt;b&gt;boo'/>
 <uri base='http://bar.com/irrelevant' relative='http://foo.com/&quot;'/>
 <uri base='http://bar.com/irrelevant' relative='http://foo.com/'/>
+
+<!--
 <uri base='http://bar.com/irrelevant' relative='http://foo.com/\\'/>
 <uri base='http://bar.com/irrelevant' relative='http://foo.com/`'/>
 <uri base='http://bar.com/irrelevant' relative='http://foo.com/{'/>

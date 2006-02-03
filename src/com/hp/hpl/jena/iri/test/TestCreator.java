@@ -162,6 +162,10 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
         "getScheme",
         "getRawUserinfo",
         "getRawFragment",
+        "getASCIIHost",
+        "isRootless",
+        "toString",
+        "toDisplayString",
 //        "hasException",
         "isAbsolute",
 //        "isIRI",
@@ -240,6 +244,10 @@ final class TestCreator extends DefaultHandler implements IRIRelativize {
     }
     // TODO set conformance level for this factory
     static IRIFactory factory = new IRIFactory();
+    static {
+        factory.setSameSchemeRelativeReferences("file");
+        factory.useSchemeSpecificRules("*",true);
+    }
 }
 
 /*

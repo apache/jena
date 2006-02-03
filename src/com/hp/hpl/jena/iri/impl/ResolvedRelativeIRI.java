@@ -49,7 +49,7 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
         path = null;
      // TODO e-mail concerning equals/equalsIgnoreCase
         if ( rel.has(SCHEME)
-          && (!getFactory().getSameSchemaRelativeReferences() ||
+          && (!getFactory().getSameSchemaRelativeReferences(rel.getScheme()) ||
                !base.has(SCHEME) ||
               !rel.getScheme().equalsIgnoreCase(base.getScheme())
                
@@ -89,7 +89,15 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
             
         }
 //        useBaseUntilThisIndex = Parser.invFields[useBaseUntilThisComponent];
-
+//        if ( rel.has(SCHEME)
+//                && getFactory().getSameSchemaRelativeReferences(rel.getScheme()) 
+//                &&
+//                  base.has(SCHEME) &&
+//                    rel.getScheme().equalsIgnoreCase(base.getScheme()) )
+//                     
+//                    {
+//            System.err.println(base.toString()+" "+rel.toString()+" "+createIRIString());
+//                    }
     }
 
     private String createIRIString() {
