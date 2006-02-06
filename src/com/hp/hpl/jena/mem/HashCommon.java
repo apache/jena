@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.4 2005-11-01 15:30:19 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.5 2006-02-06 16:04:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -55,6 +55,13 @@ public abstract class HashCommon
         threshold = (int) (capacity * loadFactor);
         }
 
+    /**
+        Answer the item at index <code>i</code> of <code>keys</code>. This
+        method is for testing purposes <i>only</i>.
+    */
+    public Object getItemForTestingAt( int i )
+        { return keys[i]; }
+    
     /**
         Answer the initial index for the object <code>key</code> in the table.
         With luck, this will be the final position for that object. The initial index
