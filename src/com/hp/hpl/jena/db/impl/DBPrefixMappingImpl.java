@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.11 2006-02-03 12:01:19 chris-dollin Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.12 2006-02-10 13:20:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -11,6 +11,8 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import java.util.*;
 
+import javax.sql.XAConnection;
+
 /**
  *  Implementation of prefix mapping specific to databases.
  *  This extends the base implementation, effectively turning it into
@@ -19,7 +21,7 @@ import java.util.*;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.11 $
+ 	@version $Revision: 1.12 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -44,11 +46,13 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 		
 		// Populate the prefix map using data from the 
 		// persistent graph properties
+        boolean commit = m_graphProperties.begin();
 		Iterator it = m_graphProperties.getAllPrefixes();
 		while( it.hasNext()) {
 			DBPropPrefix prefix = (DBPropPrefix)it.next();
 			super.setNsPrefix( prefix.getValue(), prefix.getURI() );
 		}
+        m_graphProperties.conditionalCommit( commit );
 	}
 
     public PrefixMapping removeNsPrefix( String prefix )
