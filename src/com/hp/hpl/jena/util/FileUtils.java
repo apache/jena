@@ -11,6 +11,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset ;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.WrappedIOException;
 import com.hp.hpl.jena.JenaRuntime ;
@@ -30,7 +32,10 @@ public class FileUtils
     static {
         try {
             utf8 = Charset.forName("utf-8") ;
-        } catch (Throwable ex) {}
+        } catch (Throwable ex)
+        {
+            LogFactory.getLog(FileUtils.class).warn("Failed to get charset for UTF-8") ;
+        }
     }
     
     
@@ -39,7 +44,9 @@ public class FileUtils
     static public Reader asUTF8(InputStream in) {
         if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
             return new InputStreamReader(in) ;
-        return new InputStreamReader(in, utf8);
+        // Not ,utf8 -- GNUClassPath (0.20) apparently fails on passing in a charset
+        // but if passed not the decoder or the name of the charset.  Weird.
+        return new InputStreamReader(in, utf8.newDecoder());
     }
 
     /** Create a buffered reader that uses UTF-8 encoding */ 
@@ -53,7 +60,7 @@ public class FileUtils
     static public Writer asUTF8(OutputStream out) {
         if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
             return new OutputStreamWriter(out) ;
-        return new OutputStreamWriter(out, utf8);
+        return new OutputStreamWriter(out, utf8.newEncoder());
     }
 
     /** Create a print writer that uses UTF-8 encoding */ 
@@ -117,10 +124,15 @@ public class FileUtils
             return null ;
 
         String fn = filenameOrURI ;
+
+        // Looks like an absoute file name ....
+        if ( fn.startsWith("file:///") )
+            return fn.substring("file:///".length()) ;
+        
         if ( fn.startsWith("file://localhost/") )
             // NB Leaves the leading slash on. 
             return fn.substring("file://localhost".length()) ;
-            
+        
         if ( fn.startsWith("file:") )
             fn = fn.substring("file:".length()) ;
 
