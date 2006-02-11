@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.30 2005-10-01 20:08:34 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.31 2006-02-11 11:46:23 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -50,7 +50,7 @@ public class N3toRDF implements N3ParserEventHandler
     private String basedir = null ;
 	final String anonPrefix = "_" ;
 	
-    N3toRDF() {}
+    public N3toRDF() {}
     
     public void setBase(String str)
     {
