@@ -45,7 +45,8 @@ public class FileUtils
         if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
             return new InputStreamReader(in) ;
         // Not ,utf8 -- GNUClassPath (0.20) apparently fails on passing in a charset
-        // but if passed not the decoder or the name of the charset.  Weird.
+        // but if passed not the decoder or the name of the charset.
+        // Reported and fixed.
         return new InputStreamReader(in, utf8.newDecoder());
     }
 
