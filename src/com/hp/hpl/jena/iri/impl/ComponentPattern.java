@@ -32,44 +32,7 @@ public class ComponentPattern implements ViolationCodes {
 
     }
 
-    static public void main(String args[]) throws IOException {
-        IRIFactory.iriImplementation();
-        LineNumberReader in = new LineNumberReader(new InputStreamReader(
-                System.in));
-        String xx = "[(](?![?])|[(][?]|[)]|\\[|\\]|[@][{]|[)][}]";
-        Pattern p = Pattern.compile("(?=" + xx + ")|(?<=" + xx + ")");
-
-        while (true) {
-            String s = in.readLine().trim();
-            if (s.equals("quit"))
-                return;
-            try {
-                int i = Integer.parseInt(s);
-                p = (Pattern) allPatterns.get(i);
-                continue;
-            } catch (Exception e) {
-
-            }
-            if (s.startsWith("$")) {
-                try {
-                p = Pattern.compile(s.substring(1));
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                continue;
-            }
-
-            Matcher m = p.matcher(s);
-            m.find();
-            System.out.println("Match from: " + m.start() + " to " + m.end()
-                    + "/" + s.length());
-            for (int g = 1; g <= m.groupCount(); g++)
-                System.out.println("Group " + g + " from: " + m.start(g)
-                        + " to " + m.end(g) + "/" + s.length());
-        }
-
-    }
+    
 
     public void analyse(Parser parser, int range) {
         Matcher m = pattern.matcher(parser.get(range));

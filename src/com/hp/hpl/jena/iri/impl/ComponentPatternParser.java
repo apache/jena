@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.iri.impl;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,9 +34,24 @@ public class ComponentPatternParser implements ViolationCodes {
 
     static final Pattern keyword = Pattern.compile(separators);
 
+    /* .NET port does not like this. Reworked.
+     *
     static final Pattern splitter = Pattern.compile("(?=" + separators
             + ")|(?<=" + separators + ")");
-
+            
+    
+    public ComponentPatternParser(String p) {
+        split = splitter.split(p);
+        field = 0;
+        classify = new int[split.length];
+        for (int i = 0; i < split.length; i++)
+            classify[i] = classify(split[i]);
+        while (field < split.length)
+            next();
+//        System.err.println(p + " ==> "+ rslt.toString());
+        pattern = Pattern.compile(rslt.toString());
+    }
+*/
     // working data
     final String split[];
 
@@ -55,10 +71,50 @@ public class ComponentPatternParser implements ViolationCodes {
     int hostNames;
     
     final Pattern pattern;
+    
+    static final String emptyStringArray[] = new String[0];
 
+    static private String[] mySplit(String p) {
+        //return splitter.split(p); 
+        
+        Matcher m = keyword.matcher(p);
+        ArrayList rslt = new ArrayList();
+        int pos = 0;
+//        rslt.add("");
+        while (m.find()) {
+            if (m.start()>pos || pos==0) {
+                rslt.add(p.substring(pos,m.start()));
+            }
+            rslt.add(p.substring(m.start(),m.end()));
+            pos = m.end();
+        }
+        if (pos < p.length())
+            rslt.add(p.substring(pos));
+        
+//        m.
+//        String preSplit[] = keyword.split(p);
+//        String rslt[] = new String[preSplit.length*2];
+        
+        return (String[])rslt.toArray(emptyStringArray);
+        
+    }
+    
+//    static private String[] mySplitx(String p) {
+//        String r[] = mySplit(p);
+//        String s[] = splitter.split(p);
+//        if (r.length!=s.length) {
+//            System.err.println("Bad lengths: "+p+","+r.length+","+s.length);
+//        }
+//        for (int i=0;i<r.length && i <s.length;i++)
+//            if (!r[i].equals(s[i]))
+//                System.err.println("Bad component: "+p+","+r[i]+","+s[i]);
+//        return r;
+//        
+//        
+//    }
     // end result data
     public ComponentPatternParser(String p) {
-        split = splitter.split(p);
+        split = mySplit(p);
         field = 0;
         classify = new int[split.length];
         for (int i = 0; i < split.length; i++)
