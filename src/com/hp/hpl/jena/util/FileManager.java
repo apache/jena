@@ -17,7 +17,7 @@ import com.hp.hpl.jena.shared.*;
 /** FileManager
  * 
  * A FileManager provides access to named file-like resources by opening
- * InputStreams to things in the filing system, by URL (http: and file:) amd
+ * InputStreams to things in the filing system, by URL (http: and file:) and
  * found by the classloader.  It can also load RDF data from such a system
  * resource into an existing model or create a new (Memory-based) model.
  * There is a global FileManager which provide uniform access to system
@@ -27,20 +27,34 @@ import com.hp.hpl.jena.shared.*;
  * FileManger has one {@link LocatorFile}, one {@link LocatorClassLoader} and
  * one {@link LocatorURL}
  * 
+ * Main operations:
+ *  * <ul>
+ * <li>loadModel, readModel : URI to model</li>
+ * <li>open, openNoMap : URI to input stream</li>
+ * <li>mapURI : map URI to another by {@link LocationMapper}</li> 
+ * </ul>
+ * 
+ * Utilities:
+ * <ul>
+ * <li>readWholeFileAsUTF8</li>
+ * <li>optional caching of models<li>
+ * </ul>
+ * 
  * A FileManager works in conjunction with a LocationMapper.
  * A {@link LocationMapper} is a set of alternative locations for system
  * resources and a set of alternative prefix locations.  For example, a local
  * copy of a common RDF dataset may be used whenever the usual URL is used by
  * the application.
  *
- * The FileManager also supports the idea of "current directory".  This only
- * applies to the LocatorFile and not, for example, items found by a classloader.
- *
+ * The {@link LocatorFile} also supports the idea of "current directory".
  * 
  * @see LocationMapper
+ * @see FileUtils
+ * @see FileUtils.asUTF8(InputStream)
+ * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.29 2006-02-02 13:31:47 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.30 2006-02-15 09:42:54 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -48,7 +62,7 @@ public class FileManager
     /** Delimiter between path entries : because URI scheme names use : we only allow ; */
     public static final String PATH_DELIMITER = ";";
     public static final String filePathSeparator = java.io.File.separator ;
-    static Log log = LogFactory.getLog(FileManager.class) ;
+    private static Log log = LogFactory.getLog(FileManager.class) ;
 
     static FileManager instance = null ;
 
@@ -57,7 +71,6 @@ public class FileManager
     LocationMapper mapper = null ;
     boolean cacheModelLoads = false ;
     ModelCache modelCache = null ;
-    
     
     /** Get the global file manager.
      * @return the global file manager
@@ -222,10 +235,16 @@ public class FileManager
      */
 
     public Model loadModel(String filenameOrURI)
-    { return loadModel(filenameOrURI, null) ; }
+    { 
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+")") ;
+        
+        return loadModelWorker(filenameOrURI, null, null) ;
+    }
+
 
     /** Load a model from a file (local or remote).
-     *  URI is teh base for reading the model.
+     *  URI is the base for reading the model.
      * 
      *  @param filenameOrURI The filename or a URI (file:, http:)
      *  @param rdfSyntax  RDF Serialization syntax. 
@@ -235,7 +254,9 @@ public class FileManager
 
     public Model loadModel(String filenameOrURI, String rdfSyntax)
     {
-        return loadModel(filenameOrURI, null, rdfSyntax) ;
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+", "+rdfSyntax+")") ;
+        return loadModelWorker(filenameOrURI, null, rdfSyntax) ;
     }
     
     /** Load a model from a file (local or remote).
@@ -247,16 +268,26 @@ public class FileManager
      *  @exception JenaException if there is syntax error in file.
     */
 
+
     public Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax)
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("loadModel("+filenameOrURI+", "+baseURI+", "+rdfSyntax+")") ;
+
+        return loadModelWorker(filenameOrURI, baseURI, rdfSyntax) ;
+    }
+
+    private Model loadModelWorker(String filenameOrURI, String baseURI, String rdfSyntax)
     {
         if ( modelCache != null && modelCache.contains(filenameOrURI) )
         {
-            log.debug("Model cache hit: "+filenameOrURI) ;
+            if ( log.isDebugEnabled() )
+                log.debug("Model cache hit: "+filenameOrURI) ;
             return modelCache.get(filenameOrURI) ;
         }
         
         Model m = ModelFactory.createDefaultModel() ;
-        readModel(m, filenameOrURI, baseURI, rdfSyntax) ;
+        readModelWorker(m, filenameOrURI, baseURI, rdfSyntax) ;
         
         if ( this.cacheModelLoads )
             modelCache.put(filenameOrURI, m) ;
@@ -272,7 +303,11 @@ public class FileManager
      */    
 
     public Model readModel(Model model, String filenameOrURI)
-    { return readModel(model, filenameOrURI, null); }
+    {
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+")") ;
+        return readModel(model, filenameOrURI, null);
+    }
     
     /**
      * Read a file of RDF into a model.
@@ -285,7 +320,9 @@ public class FileManager
 
     public Model readModel(Model model, String filenameOrURI, String rdfSyntax)
     {
-        return readModel(model, filenameOrURI, null, rdfSyntax);
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+", "+rdfSyntax+")") ;
+        return readModelWorker(model, filenameOrURI, null, rdfSyntax);
     }
 
     /**
@@ -300,11 +337,23 @@ public class FileManager
 
     public Model readModel(Model model, String filenameOrURI, String baseURI, String syntax)
     {
+        
+        if ( log.isDebugEnabled() )
+            log.debug("readModel(model,"+filenameOrURI+", "+baseURI+", "+syntax+")") ;
+        return readModelWorker(model, filenameOrURI, baseURI, syntax) ;
+    }
+    
+    private Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax)
+    {
         if ( baseURI == null )
             baseURI = chooseBaseURI(filenameOrURI) ;
 
+        // Doen't call open() - we want to make the synatx guess based on the mapped URI.
         String mappedURI = mapURI(filenameOrURI) ;
 
+        if ( log.isDebugEnabled() && ! mappedURI.equals(filenameOrURI) )
+            log.debug("Map: "+filenameOrURI+" => "+mappedURI) ;
+        
         if ( syntax == null )
         {
             syntax = FileUtils.guessLang(mappedURI) ;
@@ -317,8 +366,8 @@ public class FileManager
         InputStream in = openNoMapOrNull(mappedURI) ;
         if ( in == null )
         {
-            if ( log.isTraceEnabled() )
-                log.trace("Failed to locate '"+mappedURI+"'") ;
+            if ( log.isDebugEnabled() )
+                log.debug("Failed to locate '"+mappedURI+"'") ;
             throw new NotFoundException("Not found: "+filenameOrURI) ;
         }
         model.read(in, baseURI, syntax) ;
@@ -369,6 +418,9 @@ public class FileManager
             log.debug("open("+filenameOrURI+")") ;
         
         String uri = mapURI(filenameOrURI) ;
+        
+        if ( log.isDebugEnabled() && ! uri.equals(filenameOrURI) )
+            log.debug("open: mapped to "+uri) ;
         
         return openNoMap(uri) ;
     }
