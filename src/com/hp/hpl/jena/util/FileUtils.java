@@ -121,14 +121,24 @@ public class FileUtils
     
     public static String toFilename(String filenameOrURI)
     {
+        // Requirements of windows and Linux differ slightly here
+        // Windows wants "file:///c:/foo" => "c:/foo"
+        // but Linux only wants "file:///foo" => "/foo"
+        // Pragmatically, a path of "/c:/foo", or "/foo" works everywhere.
+        // but not "//c:/foo" or "///c:/foo" 
+        // else IKVM thinks its a network path on Windows.
+
         if ( !isFile(filenameOrURI) )
             return null ;
 
         String fn = filenameOrURI ;
 
-        // Looks like an absoute file name ....
+        // Looks like an absolute file name ....
         if ( fn.startsWith("file:///") )
-            return fn.substring("file:///".length()) ;
+        {
+            fn = fn.substring("file://".length()) ;
+            return fn ;
+        }
         
         if ( fn.startsWith("file://localhost/") )
             // NB Leaves the leading slash on. 
