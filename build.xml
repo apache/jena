@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.111 2006-01-20 15:55:02 chris-dollin Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.112 2006-02-24 18:42:03 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -210,7 +210,7 @@
      doctitle="${Name} Framework"
      Public="true"
      Use="true"
-     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP"
+     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP"
      additionalparam="-breakiterator"
     >
       <classpath refid="classpath"/>
@@ -287,7 +287,7 @@
      windowtitle="${Name} Framework"
      doctitle="${Name} Framework"
      overview="${bldsrc.dir}/link2readme.html"
-     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard. All Rights Reserved."
+     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard. All Rights Reserved."
      packagenames="com.hp.hpl.*"
      additionalparam="-breakiterator"
      Use="true"
