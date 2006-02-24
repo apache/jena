@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -504,6 +504,19 @@ public class GraphRDB extends GraphBase implements Graph {
     	m_driver.removeSpecializedGraphs( m_properties, m_specializedGraphs );
     	m_properties = null;
     	m_specializedGraphs = null;
+    }
+
+    /**
+     * Remove all statements from this graph. 
+     */
+    public synchronized void clear() {
+        if( m_specializedGraphs != null) {
+            Iterator it = m_specializedGraphs.iterator();
+            while( it.hasNext() ) {
+                SpecializedGraph sg = (SpecializedGraph) it.next();
+                sg.clear();
+            }
+        }
     }
 
 	/**
