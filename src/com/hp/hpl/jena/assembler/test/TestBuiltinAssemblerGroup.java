@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestBuiltinAssemblerGroup.java,v 1.1 2006-01-05 13:40:00 chris-dollin Exp $
+ 	$Id: TestBuiltinAssemblerGroup.java,v 1.2 2006-03-03 13:46:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -36,6 +36,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertAssemblerClass( JA.LocationMapper, LocationMapperAssembler.class );
         assertAssemblerClass( JA.FileManager, FileManagerAssembler.class );
         assertAssemblerClass( JA.DocumentManager, DocumentManagerAssembler.class );
+        assertAssemblerClass( JA.UnionModel, UnionModelAssembler.class );
         }
     
     public void testVariables()
@@ -55,6 +56,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertInstanceOf( LocationMapperAssembler.class, Assembler.locationMapper );
         assertInstanceOf( FileManagerAssembler.class, Assembler.fileManager );
         assertInstanceOf( DocumentManagerAssembler.class, Assembler.documentManager );
+        assertInstanceOf( UnionModelAssembler.class, Assembler.unionModel );
         }
 
     private void assertAssemblerClass( Resource type, Class C )

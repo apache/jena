@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Assembler.java,v 1.4 2006-01-10 10:36:44 chris-dollin Exp $
+ 	$Id: Assembler.java,v 1.5 2006-03-03 13:45:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -69,6 +69,8 @@ public interface Assembler
 
     public static final Assembler fileModel = new FileModelAssembler();
 
+    public static final Assembler unionModel = new UnionModelAssembler();
+
     public static final Assembler ontModelSpec = new OntModelSpecAssembler();
     
     public static final Assembler ruleSet = new RuleSetAssembler();
@@ -88,6 +90,7 @@ public interface Assembler
         .implementWith( JA.ContentItem, content )
         .implementWith( JA.Connection, connection )
         .implementWith( JA.RDBModel, rdbModel )
+        .implementWith( JA.UnionModel, unionModel )
         .implementWith( JA.PrefixMapping, prefixMapping )
         .implementWith( JA.FileModel, fileModel )
         .implementWith( JA.OntModel, ontModel )
