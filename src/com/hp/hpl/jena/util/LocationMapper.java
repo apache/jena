@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.15 2006-03-11 20:46:24 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.16 2006-03-11 20:56:47 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -107,7 +107,7 @@ public class LocationMapper
     
     private void initFromPath(String configPath, boolean configMustExist)
     {
-        if ( configPath == null )
+        if ( configPath == null || configPath.length() == 0 )
         {
             log.warn("Null configuration") ;
             return ;
@@ -125,6 +125,9 @@ public class LocationMapper
             StringTokenizer pathElems = new StringTokenizer( configPath, FileManager.PATH_DELIMITER );
             while (pathElems.hasMoreTokens()) {
                 String uri = pathElems.nextToken();
+                if ( uri == null || uri.length() == 0 )
+                    break ;
+                
                 in = fm.openNoMap(uri) ;
                 if ( in != null )
                 {
