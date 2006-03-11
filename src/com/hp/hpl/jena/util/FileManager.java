@@ -54,7 +54,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.30 2006-02-15 09:42:54 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.31 2006-03-11 20:46:24 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -81,6 +81,15 @@ public class FileManager
         if ( instance == null )
             instance = makeGlobal() ;
         return instance ;
+    }
+    
+    /** Set the global file manager (as returned by get())
+     * If called before any call to get(), then the usual default filemanager is not created 
+     * @param globalFileManager
+     */
+    public static void setGlobalFileManager(FileManager globalFileManager)
+    {
+        instance = globalFileManager ;
     }
     
     /** Create an uninitialized FileManager */
@@ -117,12 +126,10 @@ public class FileManager
         fMgr.addLocatorURL() ;
         fMgr.addLocatorClassLoader(fMgr.getClass().getClassLoader()) ;
     }
-    
-    
     /** Create with the given location mapper */
     public FileManager(LocationMapper _mapper)    { setLocationMapper(_mapper) ; }
 
-    /** @deprecated USe setLocationMapper */
+    /** @deprecated Use setLocationMapper */
     public void setMapper(LocationMapper _mapper) { setLocationMapper(_mapper) ; }
     
     

@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.14 2005-11-01 09:41:22 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.15 2006-03-11 20:46:24 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -60,6 +60,15 @@ public class LocationMapper
                 theMapper.initFromPath(getGlobalConfigPath(), false) ;
         }
         return theMapper ;
+    }
+    
+    /** Set the global lcoation mapper. (as returned by get())
+     * If called before any call to get(), then the usual default global location mapper is not created 
+     * @param globalLocationMapper
+     */
+    public static void setGlobalLocationMapper(LocationMapper globalLocationMapper)
+    {
+        theMapper = globalLocationMapper ;
     }
 
     /** Make a location mapper from the path settings */ 
