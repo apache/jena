@@ -41,7 +41,7 @@ sub checkOne
  	print "$file: No date or wrong order\n" ;
     }
 
-    if ( ! m!Copyright.*2005 Hewlett-Packard! && ! m!Copyright.*2006 Hewlett-Packard! )
+    if ( ! m!Copyright.*2006 Hewlett-Packard! )
     {
  	print "$file: Not 2005/2006\n" ;
     }
