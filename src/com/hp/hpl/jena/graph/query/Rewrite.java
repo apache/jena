@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.11 2005-09-02 13:15:28 chris-dollin Exp $
+  $Id: Rewrite.java,v 1.12 2006-03-22 13:52:50 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -161,7 +161,7 @@ public class Rewrite
 
 
 /*
-(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+(c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

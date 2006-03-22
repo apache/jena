@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.3 2005-10-20 10:47:43 chris-dollin Exp $
+ 	$Id: NewRegressionResources.java,v 1.4 2006-03-22 13:52:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -277,7 +277,7 @@ public class NewRegressionResources extends NewRegressionBase
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

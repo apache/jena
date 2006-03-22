@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.12 2005-09-23 19:46:25 wkw Exp $
+  $Id: DBQueryStage.java,v 1.13 2006-03-22 13:52:47 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -140,7 +140,7 @@ public class DBQueryStage extends Stage
     }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

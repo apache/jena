@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RDBModelSpec.java,v 1.2 2005-08-23 19:42:00 chris-dollin Exp $
+ 	$Id: RDBModelSpec.java,v 1.3 2006-03-22 13:52:29 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,7 +29,7 @@ public class RDBModelSpec extends ModelSpecImpl
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

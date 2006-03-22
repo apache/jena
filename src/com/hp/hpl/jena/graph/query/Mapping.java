@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Mapping.java,v 1.15 2005-07-24 15:58:18 chris-dollin Exp $
+  $Id: Mapping.java,v 1.16 2006-03-22 13:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -108,7 +108,7 @@ public class Mapping implements VariableIndexes
 	}
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

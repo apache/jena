@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -36,7 +36,7 @@ Version 1:
 /** Timebased UUIDs.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: UUID_V1.java,v 1.2 2005-09-19 11:19:34 andy_seaborne Exp $
+ * @version 	$Id: UUID_V1.java,v 1.3 2006-03-22 13:53:39 andy_seaborne Exp $
  */
 
 
@@ -343,7 +343,7 @@ class UUID_V1 extends UUID
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -10,7 +10,7 @@ import java.util.* ;
 /** A command line argument specification.
  *
  * @author  Andy Seaborne
- * @version $Id: ArgDecl.java,v 1.7 2005-10-12 10:27:29 ian_dickinson Exp $
+ * @version $Id: ArgDecl.java,v 1.8 2006-03-22 13:53:37 andy_seaborne Exp $
  */
 public class ArgDecl
 {
@@ -238,7 +238,7 @@ public class ArgDecl
 }
 
 /*
- *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

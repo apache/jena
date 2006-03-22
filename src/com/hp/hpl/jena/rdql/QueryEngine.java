@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngine.java,v 1.16 2005-10-17 08:22:28 andy_seaborne Exp $
+ * @version    $Id: QueryEngine.java,v 1.17 2006-03-22 13:53:13 andy_seaborne Exp $
  */
  
 public class QueryEngine implements QueryExecution
@@ -343,7 +343,7 @@ public class QueryEngine implements QueryExecution
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

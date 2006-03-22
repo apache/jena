@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.17 2005-10-06 13:12:50 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.18 2006-03-22 13:53:20 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */

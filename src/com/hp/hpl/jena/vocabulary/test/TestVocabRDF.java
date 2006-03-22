@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestVocabRDF.java,v 1.7 2005-06-28 15:38:45 chris-dollin Exp $
+  $Id: TestVocabRDF.java,v 1.8 2006-03-22 13:53:09 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
@@ -89,7 +89,7 @@ public class TestVocabRDF extends ModelTestBase
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

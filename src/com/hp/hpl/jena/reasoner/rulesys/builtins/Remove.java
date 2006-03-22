@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Remove.java,v 1.11 2005-10-06 13:14:38 der Exp $
+ * $Id: Remove.java,v 1.12 2006-03-22 13:52:34 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2005-10-06 13:14:38 $
+ * @version $Revision: 1.12 $ on $Date: 2006-03-22 13:52:34 $
  */
 public class Remove extends BaseBuiltin {
 
@@ -69,7 +69,7 @@ public class Remove extends BaseBuiltin {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -100,7 +100,7 @@ public class TestMacEncodings  extends ModelTestBase
 
 
 /*
- *  (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

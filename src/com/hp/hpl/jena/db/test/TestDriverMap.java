@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestDriverMap.java,v 1.1 2005-07-29 09:11:28 chris-dollin Exp $
+ 	$Id: TestDriverMap.java,v 1.2 2006-03-22 13:53:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -92,7 +92,7 @@ public class TestDriverMap extends JenaTestBase
     }
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

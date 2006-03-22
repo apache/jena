@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.12 2006-02-10 13:20:13 chris-dollin Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.13 2006-03-22 13:52:47 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -21,7 +21,7 @@ import javax.sql.XAConnection;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.12 $
+ 	@version $Revision: 1.13 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -106,7 +106,7 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

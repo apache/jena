@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.23 2005-10-19 09:58:08 chris-dollin Exp $
+    $Id: Regression.java,v 1.24 2006-03-22 13:52:54 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2005-10-19 09:58:08 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2006-03-22 13:52:54 $'
  */
 public class Regression extends Object {
 
@@ -4846,7 +4846,7 @@ public class Regression extends Object {
     }
 }
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -4871,5 +4871,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.23 2005-10-19 09:58:08 chris-dollin Exp $
+ * $Id: Regression.java,v 1.24 2006-03-22 13:52:54 andy_seaborne Exp $
  */

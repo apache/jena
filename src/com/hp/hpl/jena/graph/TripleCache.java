@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TripleCache.java,v 1.3 2005-09-09 09:08:53 chris-dollin Exp $
+  $Id: TripleCache.java,v 1.4 2006-03-22 13:52:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -73,7 +73,7 @@ public class TripleCache
         }
     }
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

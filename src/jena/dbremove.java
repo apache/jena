@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -21,7 +21,7 @@ import jena.util.DBcmd;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbremove.java,v 1.6 2006-01-24 09:34:51 andy_seaborne Exp $
+  * @version $Id: dbremove.java,v 1.7 2006-03-22 13:52:34 andy_seaborne Exp $
   */ 
  
 public class dbremove extends DBcmd
@@ -58,7 +58,7 @@ public class dbremove extends DBcmd
 
 
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

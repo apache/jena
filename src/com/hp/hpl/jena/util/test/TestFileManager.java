@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -19,7 +19,7 @@ import org.apache.commons.logging.*;
 /** com.hp.hpl.jena.brql.util.test.TestFileManager
  * 
  * @author Andy Seaborne
- * @version $Id: TestFileManager.java,v 1.7 2006-02-02 13:31:53 andy_seaborne Exp $
+ * @version $Id: TestFileManager.java,v 1.8 2006-03-22 13:53:13 andy_seaborne Exp $
  */
 
 public class TestFileManager extends TestCase
@@ -232,7 +232,7 @@ public class TestFileManager extends TestCase
 }
 
 /*
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

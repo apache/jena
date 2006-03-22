@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: MetaTestGraph.java,v 1.6 2005-02-21 11:52:37 andy_seaborne Exp $
+  $Id: MetaTestGraph.java,v 1.7 2006-03-22 13:52:22 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -79,7 +79,7 @@ public class MetaTestGraph extends AbstractTestGraph
     }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

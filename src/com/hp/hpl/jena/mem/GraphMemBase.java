@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphMemBase.java,v 1.9 2006-01-25 14:00:57 chris-dollin Exp $
+  $Id: GraphMemBase.java,v 1.10 2006-03-22 13:52:19 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -94,7 +94,7 @@ public abstract class GraphMemBase extends GraphBase
 
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

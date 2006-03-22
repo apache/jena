@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  26-Jul-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBLPRuleReasoner.java,v 1.8 2005-02-21 12:18:03 andy_seaborne Exp $
+ * $Id: FBLPRuleReasoner.java,v 1.9 2006-03-22 13:53:06 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * replaced by the upgraded FBRuleReasoner when the LP section is released.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:18:03 $
+ * @version $Revision: 1.9 $ on $Date: 2006-03-22 13:53:06 $
  */
 public class FBLPRuleReasoner implements Reasoner {
     
@@ -277,7 +277,7 @@ public class FBLPRuleReasoner implements Reasoner {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

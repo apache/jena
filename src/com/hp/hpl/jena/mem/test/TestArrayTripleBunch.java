@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestArrayTripleBunch.java,v 1.1 2005-10-25 14:56:06 chris-dollin Exp $
+ 	$Id: TestArrayTripleBunch.java,v 1.2 2006-03-22 13:53:26 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -19,7 +19,7 @@ public class TestArrayTripleBunch extends TestTripleBunch
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

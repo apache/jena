@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestInfModelAssembler.java,v 1.2 2006-01-06 11:04:27 chris-dollin Exp $
+ 	$Id: TestInfModelAssembler.java,v 1.3 2006-03-22 13:52:21 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -102,7 +102,7 @@ public class TestInfModelAssembler extends AssemblerTestBase
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

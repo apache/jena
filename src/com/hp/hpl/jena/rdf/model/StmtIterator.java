@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ package com.hp.hpl.jena.rdf.model;
 /**
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2005-02-21 12:14:29 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2006-03-22 13:53:12 $'
  */
 
 import com.hp.hpl.jena.util.iterator.*;
@@ -51,7 +51,7 @@ import java.util.NoSuchElementException;
  *   that should be called to free resources if the application does 
  *   not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2005-02-21 12:14:29 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2006-03-22 13:53:12 $'
  */
 public interface StmtIterator extends ExtendedIterator {
     

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: DefaultErrorHandler.java,v 1.3 2005-09-23 07:51:49 jeremy_carroll Exp $
+ * * $Id: DefaultErrorHandler.java,v 1.4 2006-03-22 13:52:31 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */

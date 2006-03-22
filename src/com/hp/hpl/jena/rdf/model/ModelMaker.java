@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMaker.java,v 1.14 2005-02-21 12:14:10 andy_seaborne Exp $
+  $Id: ModelMaker.java,v 1.15 2006-03-22 13:53:12 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -101,7 +101,7 @@ public interface ModelMaker extends ModelSpec
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

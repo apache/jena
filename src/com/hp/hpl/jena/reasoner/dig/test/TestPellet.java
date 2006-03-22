@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestPellet.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-06 15:22:23 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-03-22 13:53:31 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -40,7 +40,7 @@ import junit.framework.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestPellet.java,v 1.1 2005-09-06 15:22:23 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestPellet.java,v 1.2 2006-03-22 13:53:31 andy_seaborne Exp $)
  */
 public class TestPellet
     extends TestCase
@@ -118,7 +118,7 @@ public class TestPellet
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

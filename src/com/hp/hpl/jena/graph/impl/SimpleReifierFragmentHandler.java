@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentHandler.java,v 1.4 2005-09-09 07:11:29 chris-dollin Exp $
+  $Id: SimpleReifierFragmentHandler.java,v 1.5 2006-03-22 13:53:15 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -47,7 +47,7 @@ public abstract class SimpleReifierFragmentHandler implements ReifierFragmentHan
     }
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

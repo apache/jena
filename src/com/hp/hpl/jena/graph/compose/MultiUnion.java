@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-08-15 15:38:09 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-03-22 13:53:38 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.23 2005-08-15 15:38:09 ian_dickinson Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.24 2006-03-22 13:53:38 andy_seaborne Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -195,7 +195,7 @@ public class MultiUnion
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestQueryReification.java,v 1.1 2005-08-10 12:27:31 chris-dollin Exp $
+ 	$Id: TestQueryReification.java,v 1.2 2006-03-22 13:53:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -60,7 +60,7 @@ public class TestQueryReification extends QueryTestBase
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

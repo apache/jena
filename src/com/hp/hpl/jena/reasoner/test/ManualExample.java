@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  26-Jun-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ManualExample.java,v 1.9 2005-04-11 11:29:10 der Exp $
+ * $Id: ManualExample.java,v 1.10 2006-03-22 13:53:14 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * Some code samples from the user manual.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-04-11 11:29:10 $
+ * @version $Revision: 1.10 $ on $Date: 2006-03-22 13:53:14 $
  */
 public class ManualExample {
 
@@ -154,7 +154,7 @@ public class ManualExample {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

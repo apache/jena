@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.26 2005-09-19 20:59:10 wkw Exp $
+  $Id: AbstractTestReifier.java,v 1.27 2006-03-22 13:52:22 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -530,7 +530,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

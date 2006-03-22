@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.8 2006-01-16 11:34:44 chris-dollin Exp $
+ * $Id: AnonId.java,v 1.9 2006-03-22 13:53:12 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2006-01-16 11:34:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2006-03-22 13:53:12 $
  */
 
 // This version contains experimental modifications by der to 

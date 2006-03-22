@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NotFoundException.java,v 1.2 2006-01-05 13:34:30 chris-dollin Exp $
+  $Id: NotFoundException.java,v 1.3 2006-03-22 13:52:44 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -23,7 +23,7 @@ public class NotFoundException extends JenaException
     }
 
 /*
-    (c) Copyright 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

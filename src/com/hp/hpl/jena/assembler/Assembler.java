@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Assembler.java,v 1.5 2006-03-03 13:45:55 chris-dollin Exp $
+ 	$Id: Assembler.java,v 1.6 2006-03-22 13:53:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -103,7 +103,7 @@ public interface Assembler
     }
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

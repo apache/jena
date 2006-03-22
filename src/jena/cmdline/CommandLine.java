@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -37,7 +37,7 @@ import java.util.* ;
  * <li>Arguments with values can use "="</li>
  * </ul>
  * @author Andy Seaborne
- * @version $Id: CommandLine.java,v 1.11 2005-11-24 09:23:29 andy_seaborne Exp $
+ * @version $Id: CommandLine.java,v 1.12 2006-03-22 13:53:37 andy_seaborne Exp $
  */
 
 

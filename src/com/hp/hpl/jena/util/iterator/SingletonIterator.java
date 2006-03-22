@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  20-Jan-03
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: SingletonIterator.java,v 1.7 2005-02-21 12:19:17 andy_seaborne Exp $
+ * $Id: SingletonIterator.java,v 1.8 2006-03-22 13:52:48 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.iterator;
 
@@ -13,7 +13,7 @@ package com.hp.hpl.jena.util.iterator;
  * A ClosableIterator that contains only one element
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:19:17 $
+ * @version $Revision: 1.8 $ on $Date: 2006-03-22 13:52:48 $
  */
 public class SingletonIterator extends NiceIterator implements ExtendedIterator {
     
@@ -53,7 +53,7 @@ public class SingletonIterator extends NiceIterator implements ExtendedIterator 
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

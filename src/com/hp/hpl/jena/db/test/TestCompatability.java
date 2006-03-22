@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCompatability.java,v 1.7 2005-02-21 12:03:16 andy_seaborne Exp $
+  $Id: TestCompatability.java,v 1.8 2006-03-22 13:53:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,7 +24,7 @@ package com.hp.hpl.jena.db.test;
  * in the cleanup code (it was calling getStore()).
  *
  * @author csayers
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -256,7 +256,7 @@ public class TestCompatability extends TestCase {
 }
 
 	/*
-	    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+	    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	    All rights reserved.
 	
 	    Redistribution and use in source and binary forms, with or without

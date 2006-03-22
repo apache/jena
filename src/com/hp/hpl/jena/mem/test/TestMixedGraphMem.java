@@ -1,7 +1,7 @@
 /*
-  (c) (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMixedGraphMem.java,v 1.5 2005-06-15 13:34:04 jeremy_carroll Exp $
+  $Id: TestMixedGraphMem.java,v 1.6 2006-03-22 13:53:26 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -66,7 +66,7 @@ public class TestMixedGraphMem extends TestGraphMem
     }
 
 /*
-	 *  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+	 *  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	 *  All rights reserved.
 	 *
 	 * Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  21-Jul-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.8 2005-07-05 11:21:41 chris-dollin Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.9 2006-03-22 13:52:20 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-07-05 11:21:41 $
+ * @version $Revision: 1.9 $ on $Date: 2006-03-22 13:52:20 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -340,7 +340,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

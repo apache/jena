@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  24-Aug-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: IsDType.java,v 1.7 2005-02-21 12:17:25 andy_seaborne Exp $
+ * $Id: IsDType.java,v 1.8 2006-03-22 13:52:34 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * by the resource in the second argument.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:17:25 $
+ * @version $Revision: 1.8 $ on $Date: 2006-03-22 13:52:34 $
  */
 public class IsDType extends BaseBuiltin {
 
@@ -82,7 +82,7 @@ public class IsDType extends BaseBuiltin {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

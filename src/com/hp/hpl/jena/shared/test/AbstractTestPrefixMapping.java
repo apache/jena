@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.24 2006-01-11 13:41:39 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.25 2006-03-22 13:52:21 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -474,7 +474,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

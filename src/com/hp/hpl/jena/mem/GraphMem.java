@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.55 2006-01-25 14:00:57 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.56 2006-03-22 13:52:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -81,7 +81,7 @@ public class GraphMem extends GraphMemBase implements Graph
     }
 
 /*
-	 *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+	 *  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	 *  All rights reserved.
 	 *
 	 * Redistribution and use in source and binary forms, with or without

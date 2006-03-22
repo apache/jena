@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-Jan-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: UniqueExtendedIterator.java,v 1.13 2005-08-03 13:06:35 chris-dollin Exp $
+ * $Id: UniqueExtendedIterator.java,v 1.14 2006-03-22 13:52:48 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.iterator;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * to be returned by the iterator. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2005-08-03 13:06:35 $
+ * @version $Revision: 1.14 $ on $Date: 2006-03-22 13:52:48 $
  */
 public class UniqueExtendedIterator extends WrappedIterator {
 
@@ -82,7 +82,7 @@ public class UniqueExtendedIterator extends WrappedIterator {
 }
 
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

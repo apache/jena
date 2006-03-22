@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2006, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRemoveBug.java,v 1.2 2006-02-06 16:04:18 chris-dollin Exp $
+ * $Id: TestRemoveBug.java,v 1.3 2006-03-22 13:53:24 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 
 public class TestRemoveBug extends TestCase {
@@ -99,7 +99,7 @@ public class TestRemoveBug extends TestCase {
 
 
 /*
-    (c) Copyright 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

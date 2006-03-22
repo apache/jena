@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  (c) Copyright 2003, Plugged In Software 
  *
  *  All rights reserved.
@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.25 2005-10-05 13:58:34 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.26 2006-03-22 13:53:20 andy_seaborne Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */

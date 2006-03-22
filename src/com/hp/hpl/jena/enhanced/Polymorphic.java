@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Polymorphic.java,v 1.8 2005-05-16 11:29:39 chris-dollin Exp $
+  $Id: Polymorphic.java,v 1.9 2006-03-22 13:52:22 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -135,7 +135,7 @@ public abstract class Polymorphic {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

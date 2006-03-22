@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -7,7 +7,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: Test.java,v 1.2 2005-09-19 11:19:34 andy_seaborne Exp $
+ * @version  $Id: Test.java,v 1.3 2006-03-22 13:53:39 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.shared.uuid;
@@ -100,7 +100,7 @@ public class Test extends TestCase
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

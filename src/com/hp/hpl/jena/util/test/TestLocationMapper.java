@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 /** TestLocationMapper
  * 
  * @author Andy Seaborne
- * @version $Id: TestLocationMapper.java,v 1.5 2005-09-06 10:39:49 andy_seaborne Exp $
+ * @version $Id: TestLocationMapper.java,v 1.6 2006-03-22 13:53:13 andy_seaborne Exp $
  */
 
 public class TestLocationMapper extends TestCase
@@ -139,7 +139,7 @@ public class TestLocationMapper extends TestCase
 }
 
 /*
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleSelector.java,v 1.13 2005-02-21 12:14:26 andy_seaborne Exp $
+  $Id: SimpleSelector.java,v 1.14 2006-03-22 13:53:12 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.graph.*;
     default <CODE>selects</CODE> method simply returns true.
     
     @author bwm
-    @version Release='$Name: not supported by cvs2svn $ $Revision: 1.13 $ $Date: 2005-02-21 12:14:26 $
+    @version Release='$Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2006-03-22 13:53:12 $
 */
 
 public class SimpleSelector extends Object implements Selector {
@@ -272,7 +272,7 @@ public class SimpleSelector extends Object implements Selector {
     
 }
 /*
- *  (c) Copyright 2000 - 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000 - 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

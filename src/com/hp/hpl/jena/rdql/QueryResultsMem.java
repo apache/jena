@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 /**
  * @author      Andy Seaborne
- * @version     $Id: QueryResultsMem.java,v 1.15 2005-02-21 12:15:25 andy_seaborne Exp $
+ * @version     $Id: QueryResultsMem.java,v 1.16 2006-03-22 13:53:13 andy_seaborne Exp $
  */
 
 
@@ -300,7 +300,7 @@ public class QueryResultsMem implements QueryResultsRewindable
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

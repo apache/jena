@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Jan-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PatternRouter.java,v 1.5 2005-02-21 12:16:36 andy_seaborne Exp $
+ * $Id: PatternRouter.java,v 1.6 2006-03-22 13:52:22 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * pattern predicates and does a linear search down the rest.<br />
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-02-21 12:16:36 $
+ * @version $Revision: 1.6 $ on $Date: 2006-03-22 13:52:22 $
  */
 public class PatternRouter {
     
@@ -260,7 +260,7 @@ public class PatternRouter {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

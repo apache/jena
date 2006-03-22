@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  19-Jun-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSCMPPreprocessHook.java,v 1.7 2005-10-06 22:01:55 der Exp $
+ * $Id: RDFSCMPPreprocessHook.java,v 1.8 2006-03-22 13:52:24 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of container membership properties and adds those to the deductions set.  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-10-06 22:01:55 $
+ * @version $Revision: 1.8 $ on $Date: 2006-03-22 13:52:24 $
  */
 public class RDFSCMPPreprocessHook implements RulePreprocessHook {
     protected static String memberPrefix = RDF.getURI() + "_";
@@ -71,7 +71,7 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

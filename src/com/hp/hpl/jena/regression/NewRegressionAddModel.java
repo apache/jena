@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionAddModel.java,v 1.1 2005-08-18 09:45:49 chris-dollin Exp $
+ 	$Id: NewRegressionAddModel.java,v 1.2 2006-03-22 13:52:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -80,7 +80,7 @@ public class NewRegressionAddModel extends ModelTestBase
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

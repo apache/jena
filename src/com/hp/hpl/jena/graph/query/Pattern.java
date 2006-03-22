@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Pattern.java,v 1.12 2005-07-04 15:00:42 chris-dollin Exp $
+  $Id: Pattern.java,v 1.13 2006-03-22 13:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -57,7 +57,7 @@ public class Pattern
 	}
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

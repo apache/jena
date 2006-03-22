@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: MonitorGraph.java,v 1.1 2005-05-16 07:49:33 der Exp $
+ * $Id: MonitorGraph.java,v 1.2 2006-03-22 13:52:49 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.impl.*;
  * fire change notification.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class MonitorGraph extends WrappedGraph {
@@ -91,7 +91,7 @@ public class MonitorGraph extends WrappedGraph {
 
 
 /*
-    (c) Copyright 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

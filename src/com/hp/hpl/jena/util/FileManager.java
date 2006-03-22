@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -54,7 +54,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.31 2006-03-11 20:46:24 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.32 2006-03-22 13:52:49 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -559,7 +559,7 @@ class ModelCache
 
 
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

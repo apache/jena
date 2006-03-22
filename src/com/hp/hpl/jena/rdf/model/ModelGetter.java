@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelGetter.java,v 1.1 2005-12-21 08:46:04 chris-dollin Exp $
+ 	$Id: ModelGetter.java,v 1.2 2006-03-22 13:53:12 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -30,7 +30,7 @@ public interface ModelGetter
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

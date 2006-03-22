@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.20 2005-10-28 10:14:31 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.21 2006-03-22 13:53:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -180,7 +180,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

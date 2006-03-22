@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.61 2005-10-29 08:30:51 ian_dickinson Exp $
+  $Id: Model.java,v 1.62 2006-03-22 13:53:12 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.61 $Date: 2005/06/24 08:11:44 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.62 $Date: 2005/10/29 08:30:51 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -964,7 +964,7 @@ public interface Model
 }
 
 /*
- *  (c)   Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c)   Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -988,5 +988,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.61 2005-10-29 08:30:51 ian_dickinson Exp $
+ * $Id: Model.java,v 1.62 2006-03-22 13:53:12 andy_seaborne Exp $
  */

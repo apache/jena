@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  21-Jan-03
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.22 2005-07-05 11:21:40 chris-dollin Exp $
+ * $Id: RDFSInfGraph.java,v 1.23 2006-03-22 13:52:22 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2005-07-05 11:21:40 $
+ * @version $Revision: 1.23 $ on $Date: 2006-03-22 13:52:22 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -523,7 +523,7 @@ public class RDFSInfGraph extends BaseInfGraph {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

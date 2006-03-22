@@ -1,8 +1,8 @@
 /*
-    (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.34 2005-09-23 07:51:49 jeremy_carroll Exp $
+    $Id: testWriterAndReader.java,v 1.35 2006-03-22 13:53:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.34 $' Date='$Date: 2005-09-23 07:51:49 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.35 $' Date='$Date: 2006-03-22 13:53:14 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -529,7 +529,7 @@ public class testWriterAndReader
 }
 
 /*
- *  (c)   Copyright 2001,2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c)   Copyright 2001,2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *    All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -554,5 +554,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.34 2005-09-23 07:51:49 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.35 2006-03-22 13:53:14 andy_seaborne Exp $
  */

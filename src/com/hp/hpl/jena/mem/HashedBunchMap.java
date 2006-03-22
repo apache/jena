@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.5 2005-10-28 13:34:40 chris-dollin Exp $
+    $Id: HashedBunchMap.java,v 1.6 2006-03-22 13:52:19 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -104,7 +104,7 @@ public class HashedBunchMap extends HashCommon implements BunchMap
     }
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

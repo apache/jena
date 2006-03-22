@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.33 2006-01-11 10:40:39 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.34 2006-03-22 13:52:44 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -222,7 +222,7 @@ public interface PrefixMapping
     }
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

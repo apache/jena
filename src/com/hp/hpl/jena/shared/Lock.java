@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -57,7 +57,7 @@
  * that does some checking.
  *
  * @author      Andy Seaborne
- * @version     $Id: Lock.java,v 1.1 2005-09-29 14:52:29 andy_seaborne Exp $
+ * @version     $Id: Lock.java,v 1.2 2006-03-22 13:52:44 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.shared;
@@ -89,7 +89,7 @@ public interface Lock
 
 
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

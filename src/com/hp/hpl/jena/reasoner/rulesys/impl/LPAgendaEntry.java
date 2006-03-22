@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Aug-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPAgendaEntry.java,v 1.4 2005-02-21 12:17:40 andy_seaborne Exp $
+ * $Id: LPAgendaEntry.java,v 1.5 2006-03-22 13:52:24 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * agenda. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:17:40 $
+ * @version $Revision: 1.5 $ on $Date: 2006-03-22 13:52:24 $
  */
 public interface LPAgendaEntry {
 
@@ -38,7 +38,7 @@ public interface LPAgendaEntry {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

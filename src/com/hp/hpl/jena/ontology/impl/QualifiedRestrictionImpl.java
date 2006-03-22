@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-Sep-2003
  * Filename           $RCSfile: QualifiedRestrictionImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-10-06 15:15:18 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-03-22 13:52:39 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: QualifiedRestrictionImpl.java,v 1.5 2005-10-06 15:15:18 ian_dickinson Exp $
+ * @version CVS $Id: QualifiedRestrictionImpl.java,v 1.6 2006-03-22 13:52:39 andy_seaborne Exp $
  */
 public class QualifiedRestrictionImpl
     extends RestrictionImpl
@@ -178,7 +178,7 @@ public class QualifiedRestrictionImpl
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

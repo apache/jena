@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -22,7 +22,7 @@ import org.apache.commons.logging.*;
  *  <ul>
  *   
  * @author      Andy Seaborne
- * @version     $Id: LockMRSW.java,v 1.2 2005-11-01 09:41:27 andy_seaborne Exp $
+ * @version     $Id: LockMRSW.java,v 1.3 2006-03-22 13:52:44 andy_seaborne Exp $
  */
 
 public class LockMRSW implements Lock 
@@ -238,7 +238,7 @@ public class LockMRSW implements Lock
 }   
 
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

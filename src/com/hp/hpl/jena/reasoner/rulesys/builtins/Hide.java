@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  31-Jan-2004
  * 
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: Hide.java,v 1.4 2005-04-08 14:20:49 der Exp $
+ * $Id: Hide.java,v 1.5 2006-03-22 13:52:34 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * result iterators.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-04-08 14:20:49 $
+ * @version $Revision: 1.5 $ on $Date: 2006-03-22 13:52:34 $
  */
 public class Hide extends BaseBuiltin {
 
@@ -77,7 +77,7 @@ public class Hide extends BaseBuiltin {
 
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

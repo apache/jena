@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestProperty.java,v 1.5 2005-02-21 12:03:42 andy_seaborne Exp $
+  $Id: TestProperty.java,v 1.6 2006-03-22 13:53:20 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.enhanced.test;
 /**
@@ -15,7 +15,7 @@ public interface TestProperty extends TestNode {
 }
 
 /*
-	(c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

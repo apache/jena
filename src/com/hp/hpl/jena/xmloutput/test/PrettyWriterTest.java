@@ -1,8 +1,8 @@
 /*
-    (c) Copyright 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: PrettyWriterTest.java,v 1.11 2006-01-26 13:39:55 jeremy_carroll Exp $
+    $Id: PrettyWriterTest.java,v 1.12 2006-03-22 13:53:14 andy_seaborne Exp $
 */
 
 // Package
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.11 2006-01-26 13:39:55 jeremy_carroll Exp $,
+ * @version CVS info: $Id: PrettyWriterTest.java,v 1.12 2006-03-22 13:53:14 andy_seaborne Exp $,
  */
 
 public class PrettyWriterTest extends ModelTestBase {
@@ -170,12 +170,12 @@ public class PrettyWriterTest extends ModelTestBase {
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: PrettyWriterTest.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  *
- * Last modified on   $Date: 2006-01-26 13:39:55 $
- *               by   $Author: jeremy_carroll $
+ * Last modified on   $Date: 2006-03-22 13:53:14 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

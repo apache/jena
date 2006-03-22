@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMultiModel.java,v 1.5 2005-04-27 21:28:59 wkw Exp $
+  $Id: TestMultiModel.java,v 1.6 2006-03-22 13:53:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -291,7 +291,7 @@ public class TestMultiModel extends TestCase
     	
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-Jan-03
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ResourceBRWRule.java,v 1.10 2005-06-28 15:38:25 chris-dollin Exp $
+ * $Id: ResourceBRWRule.java,v 1.11 2006-03-22 13:52:22 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of "anything mentioned in any triple is a Resource".
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-06-28 15:38:25 $
+ * @version $Revision: 1.11 $ on $Date: 2006-03-22 13:52:22 $
  */
 public class ResourceBRWRule extends BRWRule {
     
@@ -152,7 +152,7 @@ public class ResourceBRWRule extends BRWRule {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

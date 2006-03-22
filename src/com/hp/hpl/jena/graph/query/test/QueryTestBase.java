@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTestBase.java,v 1.6 2005-08-10 12:27:31 chris-dollin Exp $
+  $Id: QueryTestBase.java,v 1.7 2006-03-22 13:53:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -150,7 +150,7 @@ public abstract class QueryTestBase extends GraphTestBase
 
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	All rights reserved.
 	
 	Redistribution and use in source and binary forms, with or without

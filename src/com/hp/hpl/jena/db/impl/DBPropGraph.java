@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -26,7 +26,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -345,7 +345,7 @@ public class DBPropGraph extends DBProp {
 }
 
 /*
- *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDifference.java,v 1.5 2005-02-21 11:52:06 andy_seaborne Exp $
+  $Id: TestDifference.java,v 1.6 2006-03-22 13:53:36 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -40,7 +40,7 @@ public class TestDifference extends GraphTestBase
 	}
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

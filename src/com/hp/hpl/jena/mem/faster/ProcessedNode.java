@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedNode.java,v 1.7 2005-07-28 14:03:27 chris-dollin Exp $
+ 	$Id: ProcessedNode.java,v 1.8 2006-03-22 13:53:31 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -116,7 +116,7 @@ public class ProcessedNode extends QueryNode
     }
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

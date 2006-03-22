@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDQLOptions.java,v 1.1 2005-07-01 21:56:07 wkw Exp $
+  $Id: TestRDQLOptions.java,v 1.2 2006-03-22 13:53:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -187,7 +187,7 @@ public class TestRDQLOptions extends TestCase {
     	
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

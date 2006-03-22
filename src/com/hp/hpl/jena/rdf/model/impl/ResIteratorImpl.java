@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResIteratorImpl.java,v 1.8 2005-02-21 12:14:52 andy_seaborne Exp $
+  $Id: ResIteratorImpl.java,v 1.9 2006-03-22 13:52:29 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import java.util.*;
 /** An implementation of ResIterator.
  *
  * @author  bwm, kers
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2005-02-21 12:14:52 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2006-03-22 13:52:29 $'
  */
 public class ResIteratorImpl extends WrappedIterator implements ResIterator {
     
@@ -34,7 +34,7 @@ public class ResIteratorImpl extends WrappedIterator implements ResIterator {
 }
 
 /*
- *  (c) Copyright 2000, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

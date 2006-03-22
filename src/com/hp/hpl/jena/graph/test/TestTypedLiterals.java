@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Dec-02
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.53 2005-10-23 16:29:01 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.54 2006-03-22 13:52:22 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.53 $ on $Date: 2005-10-23 16:29:01 $
+ * @version $Revision: 1.54 $ on $Date: 2006-03-22 13:52:22 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -1179,7 +1179,7 @@ class Rational {
     
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

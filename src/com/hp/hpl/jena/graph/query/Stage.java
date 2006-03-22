@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Stage.java,v 1.10 2005-07-25 23:05:24 chris-dollin Exp $
+  $Id: Stage.java,v 1.11 2006-03-22 13:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -51,7 +51,7 @@ public abstract class Stage
 	}
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

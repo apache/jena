@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.40 2006-01-26 14:33:15 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.41 2006-03-22 13:52:17 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -549,7 +549,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 }
 
 /*
- * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

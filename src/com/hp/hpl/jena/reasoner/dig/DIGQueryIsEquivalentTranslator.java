@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryIsEquivalentTranslator.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-29 07:29:10 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2006-03-22 13:52:53 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.13 2005-06-29 07:29:10 chris-dollin Exp $
+ * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.14 2006-03-22 13:52:53 andy_seaborne Exp $
  */
 public class DIGQueryIsEquivalentTranslator 
     extends DIGQueryTranslator
@@ -192,7 +192,7 @@ public class DIGQueryIsEquivalentTranslator
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

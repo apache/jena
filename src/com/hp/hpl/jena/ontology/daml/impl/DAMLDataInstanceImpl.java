@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:05:18 $
+ * Last modified on   $Date: 2006-03-22 13:52:23 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  * of a DAML datatype. The instance is a resource whose <code>rdf:value</code> is a typed literal.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.14 2005-02-21 12:05:18 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.15 2006-03-22 13:52:23 andy_seaborne Exp $
  */
 public class DAMLDataInstanceImpl
     extends DAMLInstanceImpl
@@ -179,7 +179,7 @@ public class DAMLDataInstanceImpl
 
 
 /*
-    (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

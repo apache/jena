@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.9 2006-01-16 15:19:45 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.10 2006-03-22 13:53:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -26,7 +26,7 @@ public class TestPackage extends TestSuite
     }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

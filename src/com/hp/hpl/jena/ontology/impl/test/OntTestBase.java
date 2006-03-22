@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: OntTestBase.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:07:12 $
+ * Last modified on   $Date: 2006-03-22 13:53:13 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntTestBase.java,v 1.12 2005-02-21 12:07:12 andy_seaborne Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.13 2006-03-22 13:53:13 andy_seaborne Exp $
  */
 public abstract class OntTestBase 
     extends TestSuite
@@ -171,7 +171,7 @@ public abstract class OntTestBase
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

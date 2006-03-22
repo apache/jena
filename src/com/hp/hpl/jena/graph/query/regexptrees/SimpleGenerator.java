@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
     [See end of file]
-    $Id: SimpleGenerator.java,v 1.9 2005-02-21 11:52:30 andy_seaborne Exp $
+    $Id: SimpleGenerator.java,v 1.10 2006-03-22 13:53:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -38,7 +38,7 @@ public class SimpleGenerator implements RegexpTreeGenerator
     }
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

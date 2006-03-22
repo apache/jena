@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecsWithRuleSets.java,v 1.2 2005-11-17 11:01:27 chris-dollin Exp $
+  $Id: TestModelSpecsWithRuleSets.java,v 1.3 2006-03-22 13:53:29 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.spec.test;
 
@@ -353,7 +353,7 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
 
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

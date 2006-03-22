@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-May-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.16 2005-02-21 12:17:00 andy_seaborne Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.17 2006-03-22 13:52:20 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2005-02-21 12:17:00 $
+ * @version $Revision: 1.17 $ on $Date: 2006-03-22 13:52:20 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -138,7 +138,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

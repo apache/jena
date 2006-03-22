@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestQuery.java,v 1.12 2005-08-11 14:14:32 chris-dollin Exp $
+  $Id: TestQuery.java,v 1.13 2006-03-22 13:53:24 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -86,7 +86,7 @@ public class TestQuery extends ModelTestBase
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

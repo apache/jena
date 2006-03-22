@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2005-02-21 12:14:48 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2006-03-22 13:52:29 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property {

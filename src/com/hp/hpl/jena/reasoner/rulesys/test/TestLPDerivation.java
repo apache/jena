@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestLPDerivation.java,v 1.1 2005-10-07 12:46:04 der Exp $
+ * $Id: TestLPDerivation.java,v 1.2 2006-03-22 13:53:01 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -33,7 +33,7 @@ import junit.framework.TestSuite;
  * Test the derivation tracing of the LP system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class TestLPDerivation extends TestCase {
@@ -214,7 +214,7 @@ public class TestLPDerivation extends TestCase {
 
 
 /*
-    (c) Copyright 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

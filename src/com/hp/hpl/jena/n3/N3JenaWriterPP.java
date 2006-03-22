@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.18 2005-11-24 09:23:22 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.19 2006-03-22 13:53:26 andy_seaborne Exp $
  */
 
 
@@ -565,7 +565,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

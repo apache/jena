@@ -1,7 +1,7 @@
 /*
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PolyadicPrefixMappingImpl.java,v 1.8 2006-01-25 15:17:33 chris-dollin Exp $
+  $Id: PolyadicPrefixMappingImpl.java,v 1.9 2006-03-22 13:53:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -178,7 +178,7 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
     }
 
 /*
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 /** A class to create and recreate UUIDs.
  * @author   Andy Seaborne
- * @version  $Id: UUID.java,v 1.2 2005-09-19 11:19:34 andy_seaborne Exp $
+ * @version  $Id: UUID.java,v 1.3 2006-03-22 13:53:39 andy_seaborne Exp $
  * http://www.opengroup.org/onlinepubs/009629399/apdxa.htm
  */
 
@@ -256,7 +256,7 @@ public class UUID
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
- (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.11 2006-01-13 10:55:34 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.12 2006-03-22 13:53:31 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -184,7 +184,7 @@ public class AssemblerHelp
     }
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-May-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: IllegalParameterException.java,v 1.4 2005-02-21 12:16:14 andy_seaborne Exp $
+ * $Id: IllegalParameterException.java,v 1.5 2006-03-22 13:52:53 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -15,7 +15,7 @@ package com.hp.hpl.jena.reasoner;
  * because it was not a recognized parameter URI or its value range was incorrect.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:16:14 $
+ * @version $Revision: 1.5 $ on $Date: 2006-03-22 13:52:53 $
  */
 public class IllegalParameterException extends ReasonerException {
 
@@ -30,7 +30,7 @@ public class IllegalParameterException extends ReasonerException {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

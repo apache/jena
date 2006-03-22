@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Domain.java,v 1.12 2005-08-25 10:14:13 chris-dollin Exp $
+  $Id: Domain.java,v 1.13 2006-03-22 13:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -72,7 +72,7 @@ public final class Domain extends AbstractList implements IndexValues
 	}
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

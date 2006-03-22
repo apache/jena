@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLListImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:05:23 $
+ * Last modified on   $Date: 2006-03-22 13:52:23 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * in the current list interpretation.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLListImpl.java,v 1.13 2005-02-21 12:05:23 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLListImpl.java,v 1.14 2006-03-22 13:52:23 andy_seaborne Exp $
  */
 public class DAMLListImpl
     extends RDFListImpl
@@ -282,7 +282,7 @@ public class DAMLListImpl
 
 
 /*
-    (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

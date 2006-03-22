@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.35 2005-12-05 09:06:12 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.36 2006-03-22 13:53:24 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -213,7 +213,7 @@ public class ModelTestBase extends GraphTestBase
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

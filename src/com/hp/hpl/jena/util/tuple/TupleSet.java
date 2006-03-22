@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
  
@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author  Andy Seaborne
- * @version $Id: TupleSet.java,v 1.6 2005-02-21 12:19:27 andy_seaborne Exp $
+ * @version $Id: TupleSet.java,v 1.7 2006-03-22 13:53:09 andy_seaborne Exp $
  */
 
 public class TupleSet implements Iterator

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryAncestorsTranslator.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-16 18:52:27 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-03-22 13:52:53 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  * ****************************************************************************/
 
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryAncestorsTranslator.java,v 1.9 2005-03-16 18:52:27 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryAncestorsTranslator.java,v 1.10 2006-03-22 13:52:53 andy_seaborne Exp $
  */
 public class DIGQueryAncestorsTranslator
     extends DIGQueryTranslator
@@ -147,7 +147,7 @@ public class DIGQueryAncestorsTranslator
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

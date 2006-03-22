@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderFImpl.java,v 1.12 2005-02-21 12:14:50 andy_seaborne Exp $
+ * $Id: RDFReaderFImpl.java,v 1.13 2006-03-22 13:52:30 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.JenaRuntime ;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.12 $ $Date: 2005-02-21 12:14:50 $
+ * @version $Revision: 1.13 $ $Date: 2006-03-22 13:52:30 $
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
 

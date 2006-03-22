@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.23 2005-08-02 10:05:38 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.24 2006-03-22 13:52:47 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -163,7 +163,7 @@ public class GraphRDBMaker extends BaseGraphMaker
     }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

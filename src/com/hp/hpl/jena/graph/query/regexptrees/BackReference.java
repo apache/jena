@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BackReference.java,v 1.2 2005-02-21 11:52:28 andy_seaborne Exp $
+  $Id: BackReference.java,v 1.3 2006-03-22 13:53:25 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -31,7 +31,7 @@ public class BackReference extends RegexpTree
 
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

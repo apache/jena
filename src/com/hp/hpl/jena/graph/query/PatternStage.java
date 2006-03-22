@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.32 2005-07-25 23:05:24 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.33 2006-03-22 13:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -22,7 +22,7 @@ public class PatternStage extends PatternStageBase
     }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

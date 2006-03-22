@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFilters.java,v 1.5 2005-11-17 11:01:28 chris-dollin Exp $
+ 	$Id: TestFilters.java,v 1.6 2006-03-22 13:53:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -111,7 +111,7 @@ public class TestFilters extends ModelTestBase
 
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

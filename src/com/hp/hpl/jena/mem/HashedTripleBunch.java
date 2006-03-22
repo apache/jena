@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.10 2006-02-06 16:04:05 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.11 2006-03-22 13:52:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -146,7 +146,7 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
     }
 
 /*
- * (c) Copyright 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  18-Aug-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: EnvironmentFrameWithDerivation.java,v 1.7 2005-10-10 13:00:50 der Exp $
+ * $Id: EnvironmentFrameWithDerivation.java,v 1.8 2006-03-22 13:52:24 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * incremental derivation logging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-10-10 13:00:50 $
+ * @version $Revision: 1.8 $ on $Date: 2006-03-22 13:52:24 $
  */
 public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
 
@@ -82,7 +82,7 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-    (c)  Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c)  Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: RDF.java,v 1.11 2005-06-28 15:38:44 chris-dollin Exp $
+    $Id: RDF.java,v 1.12 2006-03-22 13:53:30 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
     The standard RDF vocabulary.
     @author  bwm; updated by kers/daniel/christopher
-    @version $Id: RDF.java,v 1.11 2005-06-28 15:38:44 chris-dollin Exp $
+    @version $Id: RDF.java,v 1.12 2006-03-22 13:53:30 andy_seaborne Exp $
 */
 
 public class RDF{
@@ -75,7 +75,7 @@ public class RDF{
 }
 
 /*
- *  (c)   Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c)   Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

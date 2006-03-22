@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: LexicalHandlerImpl.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: LexicalHandlerImpl.java,v 1.2 2006-03-22 13:52:31 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */

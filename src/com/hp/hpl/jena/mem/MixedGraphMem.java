@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.14 2006-01-25 14:00:57 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.15 2006-03-22 13:52:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -75,7 +75,7 @@ public class MixedGraphMem extends GraphMemBase implements Graph
 
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

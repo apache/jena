@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: FilterIterator.java,v 1.8 2005-06-27 13:58:19 chris-dollin Exp $
+    $Id: FilterIterator.java,v 1.9 2006-03-22 13:52:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -83,7 +83,7 @@ public class FilterIterator extends WrappedIterator
     }
 
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -108,6 +108,6 @@ public class FilterIterator extends WrappedIterator
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterIterator.java,v 1.8 2005-06-27 13:58:19 chris-dollin Exp $
+ * $Id: FilterIterator.java,v 1.9 2006-03-22 13:52:48 andy_seaborne Exp $
  *
 */

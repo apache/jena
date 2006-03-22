@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.1 $ on $Date: 2005-07-04 18:37:14 $
+* @version $Revision: 1.2 $ on $Date: 2006-03-22 13:52:47 $
 */
 
 public class ResultSetNodeIterator extends ResultSetIterator {
@@ -55,7 +55,7 @@ public class ResultSetNodeIterator extends ResultSetIterator {
  } // End class
 
 /*
- *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

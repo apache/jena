@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEConflictSet.java,v 1.3 2005-11-10 17:06:06 der Exp $
+ * $Id: RETEConflictSet.java,v 1.4 2006-03-22 13:52:24 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.impl;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
  * concurrent adds to InfModel are not supported anyway.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 
 public class RETEConflictSet {
@@ -209,7 +209,7 @@ public class RETEConflictSet {
 
 
 /*
-    (c) Copyright 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

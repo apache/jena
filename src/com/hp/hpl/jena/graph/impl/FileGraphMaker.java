@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.25 2005-10-18 14:39:42 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.26 2006-03-22 13:53:15 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -226,7 +226,7 @@ public class FileGraphMaker
     }
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

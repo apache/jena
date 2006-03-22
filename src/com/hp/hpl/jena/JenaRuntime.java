@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -14,7 +14,7 @@ import java.security.PrivilegedAction;
  *  Primarily for other parts of the Jena framework. 
  * 
  * @author Andy Seaborne
- * @version $Id: JenaRuntime.java,v 1.6 2005-11-26 16:14:46 andy_seaborne Exp $
+ * @version $Id: JenaRuntime.java,v 1.7 2006-03-22 13:53:40 andy_seaborne Exp $
  */
 
 public class JenaRuntime
@@ -77,7 +77,7 @@ public class JenaRuntime
 }
 
 /*
- * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: EnhancedNodeCache.java,v 1.3 2005-05-16 11:32:08 chris-dollin Exp $
+  $Id: EnhancedNodeCache.java,v 1.4 2006-03-22 13:53:14 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.util.cache;
 
@@ -102,7 +102,7 @@ public class EnhancedNodeCache implements Cache
 
 
 /*
-	(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+	(c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

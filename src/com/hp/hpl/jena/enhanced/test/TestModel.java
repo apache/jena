@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModel.java,v 1.3 2005-02-21 12:03:41 andy_seaborne Exp $
+  $Id: TestModel.java,v 1.4 2006-03-22 13:53:20 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -20,7 +20,7 @@ public interface TestModel {
 }
 
 /*
-	(c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  [See end of file]
-  $Id: ARPEventHandler.java,v 1.3 2005-08-01 15:07:08 jeremy_carroll Exp $
+  $Id: ARPEventHandler.java,v 1.4 2006-03-22 13:53:20 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -25,7 +25,7 @@ public interface ARPEventHandler extends StatementHandler, ExtendedHandler, Name
 }
 
 /*
-   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

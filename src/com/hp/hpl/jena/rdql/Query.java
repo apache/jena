@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdql.parser.RDQLParser;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.22 2006-03-12 12:16:48 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.23 2006-03-22 13:53:13 andy_seaborne Exp $
  */
 
 public class Query
@@ -410,7 +410,7 @@ public class Query
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

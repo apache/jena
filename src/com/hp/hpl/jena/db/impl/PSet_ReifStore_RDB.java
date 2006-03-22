@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.25 $ on $Date: 2005-07-14 00:07:57 $
+* @version $Revision: 1.26 $ on $Date: 2006-03-22 13:52:47 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -558,7 +558,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	}
 }
 	/*
-	 *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+	 *  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	 *  All rights reserved.
 	 *
 	 * Redistribution and use in source and binary forms, with or without

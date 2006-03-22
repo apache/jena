@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  02-Feb-03
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.21 2005-02-21 12:18:37 andy_seaborne Exp $
+ * $Id: TransitiveInfGraph.java,v 1.22 2006-03-22 13:53:31 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2005-02-21 12:18:37 $
+ * @version $Revision: 1.22 $ on $Date: 2006-03-22 13:53:31 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -150,7 +150,7 @@ public Capabilities getCapabilities()
 }
 
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

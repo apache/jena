@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-01-04 14:46:49 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-03-22 13:52:39 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.16 2006-01-04 14:46:49 ian_dickinson Exp $
+ * @version CVS $Id: OWLLiteProfile.java,v 1.17 2006-03-22 13:52:39 andy_seaborne Exp $
  */
 public class OWLLiteProfile
     extends OWLProfile
@@ -291,7 +291,7 @@ public class OWLLiteProfile
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

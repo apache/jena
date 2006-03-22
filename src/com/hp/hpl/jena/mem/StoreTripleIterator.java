@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: StoreTripleIterator.java,v 1.5 2005-08-26 14:09:09 chris-dollin Exp $
+  $Id: StoreTripleIterator.java,v 1.6 2006-03-22 13:52:18 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -50,7 +50,7 @@ public class StoreTripleIterator extends TrackingTripleIterator
 	}
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

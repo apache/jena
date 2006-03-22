@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BadURIException.java,v 1.6 2006-01-26 14:33:36 jeremy_carroll Exp $
+  $Id: BadURIException.java,v 1.7 2006-03-22 13:52:45 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -31,7 +31,7 @@ public class BadURIException extends JenaException
 
 
 /*
-    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

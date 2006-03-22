@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.72 $
+ * Revision           $Revision: 1.73 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-01-25 15:17:49 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2006-03-22 13:53:13 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -1611,7 +1611,7 @@ public class TestBugReports
 }
 
 /*
- * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without

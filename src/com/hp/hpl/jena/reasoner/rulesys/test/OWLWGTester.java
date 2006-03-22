@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
  * 
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.23 2005-02-21 12:18:08 andy_seaborne Exp $
+ * $Id: OWLWGTester.java,v 1.24 2006-03-22 13:53:01 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -38,7 +38,7 @@ import java.util.*;
  * some code rationalization might be once once that stabilizes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2005-02-21 12:18:08 $
+ * @version $Revision: 1.24 $ on $Date: 2006-03-22 13:53:01 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -265,7 +265,7 @@ public class OWLWGTester {
 }
 
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.11 2006-01-25 14:00:57 chris-dollin Exp $
+  $Id: SmallGraphMem.java,v 1.12 2006-03-22 13:52:19 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -75,7 +75,7 @@ public class SmallGraphMem extends GraphMemBase
     }
 
 /*
-    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
