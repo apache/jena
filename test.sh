@@ -11,6 +11,7 @@ commons-logging.jar
 concurrent.jar
 icu4j_3_4.jar
 jena.jar
+json.jar
 iri.jar
 jenatest.jar
 junit.jar
