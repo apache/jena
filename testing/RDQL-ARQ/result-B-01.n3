@@ -4,7 +4,7 @@
 [] rdf:type rs:ResultSet ;
     rs:resultVariable "x" ;
     rs:resultVariable "y" ;
-    rs:size "1" ;
+    ## For RDQL, sameValueAs should be enabled (the default)
     rs:solution
         [ rdf:type rs:ResultSolution ; 
           rs:binding [ rdf:type rs:ResultBinding ;

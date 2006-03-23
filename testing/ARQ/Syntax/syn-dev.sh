@@ -64,6 +64,13 @@ SELECT *
 EOF
 
 N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# Missing DOT, 2 triples
+PREFIX :   <http://example/ns#>
+SELECT *
+{ :s1 :p1 :o1 :s2 :p2 :o2 . }
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
 # Missing DOT between triples
 PREFIX :   <http://example/ns#>
 SELECT *
@@ -71,9 +78,23 @@ SELECT *
 EOF
 
 N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# Missing DOT after ; between triples
+PREFIX :   <http://example/ns#>
+SELECT *
+{ :s1 :p1 :o1 ; :s2 :p2 :o2 . }
+EOF
+
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
 # DOT, no triples
 SELECT * WHERE
 { . }
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# DOT, then triples
+SELECT * WHERE
+{ . ?s ?p ?o }
 EOF
 
 N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
@@ -115,6 +136,43 @@ PREFIX :   <http://example/ns#>
 SELECT * WHERE
 { :s :p :o . ;  }
 EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# Broken ,
+PREFIX :   <http://example/ns#>
+SELECT * WHERE
+{ :s , :p :o  }
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# Broken ,
+PREFIX :   <http://example/ns#>
+SELECT * WHERE
+{ :s  :p , :o  }
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# Broken ,
+PREFIX :   <http://example/ns#>
+SELECT * WHERE
+{ :s  :p , }
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# Broken , can't trail
+PREFIX :   <http://example/ns#>
+SELECT * WHERE
+{ :s  :p :o , }
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# Broken , (should be ;)
+PREFIX :   <http://example/ns#>
+SELECT * WHERE
+{ :s :p1 :o1 , :p2 :o2}
+EOF
+
+
 
 N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
 CONSTRUCT 

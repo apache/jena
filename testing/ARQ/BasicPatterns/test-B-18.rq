@@ -1,0 +1,7 @@
+SELECT  *
+WHERE
+{
+  ?x ?y ?v .
+  FILTER ( ?v = true )
+}
+

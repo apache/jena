@@ -1,4 +1,4 @@
-# $Id: manifest.ttl,v 1.1 2005-12-14 20:48:09 andy_seaborne Exp $
+# $Id: manifest.ttl,v 1.2 2006-03-23 15:22:43 andy_seaborne Exp $
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .

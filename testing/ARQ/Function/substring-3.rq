@@ -1,0 +1,7 @@
+PREFIX  jfn:  <java:com.hp.hpl.jena.query.function.library.>
+PREFIX  : <http://example/> 
+
+SELECT ?p ?v
+{ :x ?p ?v . 
+  FILTER ( jfn:substr(?v,9) )
+}

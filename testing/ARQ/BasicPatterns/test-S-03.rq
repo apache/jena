@@ -1,0 +1,4 @@
+PREFIX  x: <http://rdf.hp.com/>
+SELECT  ?p ?v
+WHERE
+    { x:r-é ?p ?v }

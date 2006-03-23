@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- $Id: FAQ.html,v 1.4 2005-10-07 15:22:41 andy_seaborne Exp $ -->
+<!-- $Id: FAQ.html,v 1.5 2006-03-23 15:22:35 andy_seaborne Exp $ -->
 <title>ARQ - Frequently Asked Questions</title>
 <link rel="stylesheet" type="text/css" href="styles/doc.css" />
 </head>
@@ -80,6 +80,18 @@ WHERE {
   <p>The same is true for data.  XML files can be written in any XML-supported character set if the right <code>?xml</code> processing instruction is used.
   The default is UTF-8 or UTF-16</code>.
   </dd>
+  <dt>XSD DateTime</dt>
+  <dd><p>Examples of correctly formatted XSD DateTime literals are: these two 
+  are actually the same point in time and will test equal in a filter:</p>
+  <pre class="box">
+  "2005-04-04T04:04:04Z"^^xsd:dateTime
+  "2004-12-31T18:01:00-05:00"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt;</pre>
+  <ul>
+  <li>The timezone is required.</li>
+  <li>The datatype must be given.</li>
+  </ul>
+  </dd>
+  <dt>&nbsp;</dt>
 </dl>
 
 

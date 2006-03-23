@@ -10,7 +10,7 @@
     ( 
 ##       [  mf:name    "NAME" ;
 ##          # TestSyntax, TestSerialization, TestBadSyntax, TestQuery
-##          rdf:type   mfx:TestSyntax ; 
+##          rdf:type   mfx:TestQuery ; 
 ##          mf:action
 ##             [ qt:query  <QUERY> ;
 ##               qt:data   <DATA> ] ;

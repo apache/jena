@@ -130,26 +130,26 @@ EOF
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p "x\"y'z" }
+SELECT * WHERE { :x :p "x\\"y'z" }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p 'x"y\'z' }
+SELECT * WHERE { :x :p 'x"y\\'z' }
 EOF
 
 
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p "x\"" }
+SELECT * WHERE { :x :p "x\\"" }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p 'x\'' }
+SELECT * WHERE { :x :p 'x\\'' }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
@@ -184,25 +184,64 @@ EOF
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p """Long""\"Literal""" }
+SELECT * WHERE { :x :p """Long""\\"Literal""" }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p '''Long''\'Literal''' }
+SELECT * WHERE { :x :p '''Long''\\'Literal''' }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p """Long\"""Literal""" }
+SELECT * WHERE { :x :p """Long\\"""Literal""" }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p '''Long\'''Literal''' }
+SELECT * WHERE { :x :p '''Long\\'''Literal''' }
+EOF
+
+
+N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
+BASE   <http://example.org/>
+PREFIX :  <#> 
+SELECT * WHERE { :x :p '''Long '' Literal''' }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
+BASE   <http://example.org/>
+PREFIX :  <#> 
+SELECT * WHERE { :x :p '''Long ' Literal''' }
+EOF
+
+# Escapes after quotes
+
+N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
+BASE   <http://example.org/>
+PREFIX :  <#> 
+SELECT * WHERE { :x :p '''Long''\\\\Literal with '\\\\ single quotes ''' }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
+BASE   <http://example.org/>
+PREFIX :  <#> 
+SELECT * WHERE { :x :p """Long "" Literal""" }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
+BASE   <http://example.org/>
+PREFIX :  <#> 
+SELECT * WHERE { :x :p """Long " Literal""" }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-lit-" $N) <<EOF
+BASE   <http://example.org/>
+PREFIX :  <#> 
+SELECT * WHERE { :x :p """Long""\\\\Literal with "\\\\ single quotes""" }
 EOF
 
 ## Structure

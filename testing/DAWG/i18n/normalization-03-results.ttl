@@ -1,6 +1,6 @@
 # Example 1 from
 # http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096
-# $Id: normalization-03-results.ttl,v 1.1 2005-12-14 20:48:09 andy_seaborne Exp $
+# $Id: normalization-03-results.ttl,v 1.2 2006-03-23 15:22:43 andy_seaborne Exp $
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
 

@@ -120,6 +120,30 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-lit-14.rq> ; 
       ]
+      [  mf:name    "syntax-lit-15.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-lit-15.rq> ; 
+      ]
+      [  mf:name    "syntax-lit-16.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-lit-16.rq> ; 
+      ]
+      [  mf:name    "syntax-lit-17.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-lit-17.rq> ; 
+      ]
+      [  mf:name    "syntax-lit-18.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-lit-18.rq> ; 
+      ]
+      [  mf:name    "syntax-lit-19.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-lit-19.rq> ; 
+      ]
+      [  mf:name    "syntax-lit-20.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-lit-20.rq> ; 
+      ]
       [  mf:name    "syntax-struct-01.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-struct-01.rq> ; 
@@ -192,14 +216,15 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-bnodes-02.rq> ; 
       ]
-      [  mf:name    "syntax-bnodes-03.rq" ;
-         rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-bnodes-03.rq> ; 
-      ]
-      [  mf:name    "syntax-bnodes-04.rq" ;
-         rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-bnodes-04.rq> ; 
-      ]
+    ## BNodes in prediate position
+##       [  mf:name    "syntax-bnodes-03.rq" ;
+##          rdf:type   mfx:TestSyntax ;
+##          mf:action  <syntax-bnodes-03.rq> ; 
+##       ]
+##       [  mf:name    "syntax-bnodes-04.rq" ;
+##          rdf:type   mfx:TestSyntax ;
+##          mf:action  <syntax-bnodes-04.rq> ; 
+##       ]
       [  mf:name    "syntax-bnodes-05.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-bnodes-05.rq> ; 

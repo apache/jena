@@ -25,7 +25,8 @@ names with an &quot;r&quot; or &quot;R&quot; in them.</p>
 
 SELECT ?g
 WHERE
-{ ?y vcard:Given ?g . FILTER regex(?g, &quot;r&quot;, &quot;i&quot;) }</pre>
+{ ?y vcard:Given ?g .
+  FILTER regex(?g, &quot;r&quot;, &quot;i&quot;) }</pre>
 <p>with the results:</p>
 <pre class="box">-------------
 | g         |

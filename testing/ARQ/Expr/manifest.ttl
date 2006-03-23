@@ -10,25 +10,29 @@
       [  mf:name    "Expr 1 - FILTER true" ;
          mf:action
             [ qt:query  <q-expr-1.rq> ;
-              qt:data   <data.ttl> ] ;
+              qt:data   <data-1.ttl> ] ;
         mf:result  <result-expr-1.ttl>
       ]
       [  mf:name    "Expr 2 - FILTER false" ;
          mf:action
             [ qt:query  <q-expr-2.rq> ;
-              qt:data   <data.ttl> ] ;
+              qt:data   <data-1.ttl> ] ;
         mf:result  <result-expr-2.ttl>
       ]
       [  mf:name    "Expr 3 - isBlank of an anon variable" ;
          mf:action
             [ qt:query  <q-expr-3.rq> ;
-              qt:data   <data.ttl> ] ;
+              qt:data   <data-1.ttl> ] ;
         mf:result  <result-expr-3.ttl>
       ]
+
       [  mf:name    "Expr 4 - ! isBlank of an anon variable" ;
          mf:action
             [ qt:query  <q-expr-4.rq> ;
-              qt:data   <data.ttl> ] ;
+              qt:data   <data-1.ttl> ] ;
         mf:result  <result-expr-4.ttl>
       ]
+
+	  # Strings and non-strings.
+ 
     ).

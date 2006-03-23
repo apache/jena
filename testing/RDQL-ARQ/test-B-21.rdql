@@ -1,0 +1,7 @@
+// (c) Copyright 2004 Hewlett-Packard Development Company, LP
+
+SELECT *
+FROM   <model9.n3>
+WHERE  (?x ?y ?z)
+AND    ?z langeq 'en'
+

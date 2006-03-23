@@ -20,6 +20,42 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-general-03.rq> ; 
       ]
+      [  mf:name    "syntax-general-04.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-04.rq> ; 
+      ]
+      [  mf:name    "syntax-general-05.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-05.rq> ; 
+      ]
+      [  mf:name    "syntax-general-06.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-06.rq> ; 
+      ]
+      [  mf:name    "syntax-general-07.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-07.rq> ; 
+      ]
+      [  mf:name    "syntax-general-08.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-08.rq> ; 
+      ]
+      [  mf:name    "syntax-general-09.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-09.rq> ; 
+      ]
+      [  mf:name    "syntax-general-10.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-10.rq> ; 
+      ]
+      [  mf:name    "syntax-general-11.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-11.rq> ; 
+      ]
+      [  mf:name    "syntax-general-12.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-12.rq> ; 
+      ]
       [  mf:name    "syntax-keywords-01.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-keywords-01.rq> ; 

@@ -27,7 +27,11 @@ checking these scripts are suitable.</p>
   <li><p><code><a href="#arq.qparse" name="arq.qparse">arq</a><a id="arq.qparse" name="arq.qparse" href="#arq.qparse">.qparse</a></code> : parse and print a query.</p></li>
   <li><p><code><a href="#arq.qtest" name="arq.qtest">arq</a><a id="arq.qtest" name="arq.qtest" href="#arq.qtest">.qtest</a></code> : run a test set.</p></li>
   <li>
-  <p><code><a href="#arq.rset">arq.rset</a></code> : transform result sets</p></li>
+  <p><code><a href="#arq.rset">arq.rset</a></code> : transform result sets</p>
+  </li>
+  <li>
+  <p><code><a href="#arq.qexpr">arq.qexpr</a></code> : Evaluate and print an expression</p>
+  </li>
 </ul>
 
 <p>All commands have a <code>--help</code> command for a summary of the arguments.</p>
@@ -92,6 +96,15 @@ See the working group page
 <pre>java -cp ... arq.rset --in xml --out text</pre>
 <p>will translate a SPARQL XML Result Set into a tabular text form.</p>
 </p>
+
+<h3><a id="arq.qexpr" name="arq.qexpr"><code>arq.qexpr</code></a></h3>
+
+<p>Read and print an expression (something that can go in a <code>FILTER</code>
+clause).  Indicates whether an evaluation exception occured.
+</p>
+
+<p>The <code>-v</code> argument prints the parsed expression.</p>
+
 
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>

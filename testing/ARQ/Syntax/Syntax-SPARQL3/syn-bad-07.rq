@@ -1,4 +1,3 @@
-# Broken ;
-PREFIX :   <http://example/ns#>
+# DOT, no triples
 SELECT * WHERE
-{ :s :p ; }
+{ . FILTER(?x) }

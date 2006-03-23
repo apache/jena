@@ -12,7 +12,10 @@ function fname
     echo $(printf "$R%02d.$E" $N)
 }
 
+
+
 # Not in original set of tests
+
 N=0
 N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
 SELECT * WHERE { <a><b><c> }
@@ -24,6 +27,44 @@ EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
 SELECT * WHERE { <a><b>_:x FILTER(_:x < 3) }
+EOF
+
+# Signed numbers
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>1 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>+11 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>-1 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>1.0 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>+1.0 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>-1.0 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>1.0e0 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>+1.0e+1 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+SELECT * WHERE { <a><b>-1.0e-1 }
 EOF
 
 # Keywords and qnames.

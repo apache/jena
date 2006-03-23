@@ -7,7 +7,7 @@
     rdfs:label "Function" ;
     mf:entries
     ( 
-      [  mf:name    "Function - unknown" ;
+     [  mf:name    "Function - unknown" ;
          mf:action
             [ qt:query  <func-01.rq> ;
               qt:data   <data-1.ttl> ] ;
@@ -92,7 +92,7 @@
       [  mf:name    "list membership 6" ;
          mf:action
             [ qt:query  <list-6.rq> ;
-              qt:graphData   <data-4.ttl> ] ;
+              qt:graphData   <data-4.ttl> ] ;   ## NB named graph
         mf:result  <list-6.srx>
       ]
 
@@ -167,6 +167,41 @@
             [ qt:query  <container-6.rq> ;
               qt:data   <data-5.ttl> ] ;
         mf:result  <container-6.srx>
+      ]
+
+      [  mf:name    "substring - 1" ;
+         mf:action
+            [ qt:query  <substring-1.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-1.srx>
+      ]
+
+      [  mf:name    "substring - 2" ;
+         mf:action
+            [ qt:query  <substring-2.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-2.srx>
+      ]
+
+      [  mf:name    "substring - 3" ;
+         mf:action
+            [ qt:query  <substring-3.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-3.srx>
+      ]
+
+      [  mf:name    "strlen - 1" ;
+         mf:action
+            [ qt:query  <strlen-1.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <strlen-1.srj>
+      ]
+
+      [  mf:name    "strlen - 2" ;
+         mf:action
+            [ qt:query  <strlen-2.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <strlen-2.srj>
       ]
 
 

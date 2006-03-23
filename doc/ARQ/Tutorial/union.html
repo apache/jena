@@ -52,7 +52,7 @@ WHERE
 | &quot;John Smith&quot;  |
 -----------------</pre>
   <p>It didn't matter which form of expression was used for the name, the ?name 
-  variable is set. This can be achived using a FILTER as this query (<a href="q-union1alt.rq">q-union-1alt.rq</a>) 
+  variable is set. This can be achieved using a <code>FILTER</code> as this query (<a href="q-union1alt.rq">q-union-1alt.rq</a>) 
   shows:</p>
   <pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
 PREFIX vCard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
@@ -63,11 +63,15 @@ WHERE
   [] ?p ?name 
   FILTER ( ?p = foaf:name || ?p = vCard:FN ) 
 }</pre>
-  <p>testing whether the property is one URI or another.&nbsp; The solutions may 
-  not come out in the same order.&nbsp; The first form is more likely to be 
-  faster, depending on the data and the storage used, because it may have to get 
-  all the triples from the graph unless the storage subsystem is smart enough to 
-  pass the constraint down as will as the storage </p>
+  <p>testing whether the property is one URI or another.&nbsp;The solutions may 
+	not come out in the same order.&nbsp; The first form is more likely to be 
+	faster, depending on the data and the storage used, because the second form may have to get 
+  all the triples from the graph to match the triple pattern with unbound 
+	variables (or blank nodes) in each slot, then test each <code>?p</code> to 
+	see it it matches one of the values. It will depend on the sophistication of 
+	the query optimizer as to whether it spots that it can perform the query 
+	more efficiently and is able to pass the constraint down as will as to the storage 
+	layer. </p>
   <h2>Union - remembering where the data was found.</h2>
   <p>The example above used the same variable in each branch. If different 
   variables are used, the application can discover which sub-pattern caused the 

@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Syntax tests 4" ;
+    rdfs:comment "Syntax tests 3" ;
     mf:entries
     ( 
       [  mf:name    "syn-01.rq" ;
@@ -79,6 +79,38 @@
       [  mf:name    "syn-bad-10.rq" ;
          rdf:type   mfx:TestBadSyntax ;
          mf:action  <syn-bad-10.rq> ; 
+      ]
+      [  mf:name    "syn-bad-11.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-11.rq> ; 
+      ]
+      [  mf:name    "syn-bad-12.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-12.rq> ; 
+      ]
+      [  mf:name    "syn-bad-13.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-13.rq> ; 
+      ]
+      [  mf:name    "syn-bad-14.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-14.rq> ; 
+      ]
+      [  mf:name    "syn-bad-15.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-15.rq> ; 
+      ]
+      [  mf:name    "syn-bad-16.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-16.rq> ; 
+      ]
+      [  mf:name    "syn-bad-17.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-17.rq> ; 
+      ]
+      [  mf:name    "syn-bad-18.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-18.rq> ; 
       ]
       [  mf:name    "bnode-dot.rq" ;
          rdf:type   mfx:TestBadSyntax ;

@@ -1,4 +1,3 @@
 # Broken ;
-PREFIX :   <http://example/ns#>
 SELECT * WHERE
-{ :s :p ; FILTER(?x) }
+{ ; FILTER(?x) }

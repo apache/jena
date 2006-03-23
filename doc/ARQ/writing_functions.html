@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ Firefox gets it wrong (puts a marging at the top) if the declarations as included 
+-->
+
+<head>
+<title>ARQ</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>Writing Extensions for ARQ</h1>
+<p>Applications can add SPARQL functions to the query engine. This is done by 
+writing a class implementing the right interface, then either registering it or 
+using the fake <code>java:</code> URI scheme to dynamically call the function.</p>
+<h2>Writing SPARQL Value Functions</h2>
+<p>A SPARQL value function is an extension point of the SPARQL query language 
+that allows URI to name a function in the query processor.</p>
+<p>In the ARQ engine, code to implement function must implement the interface
+<code>com.hp.hpl.jena.query.function.Function</code> although it is easier to 
+work with one the abstract classes for specific numbers of arguments like <code>
+com.hp.hpl.jena.query.function.FunctionBase1</code> for one argument functions. 
+Function do not have to have a fixed number of arguments.</p>
+<h2>Registering the Function</h2>
+<p>Function registry : global and per-query execution.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+</body>
+</html>

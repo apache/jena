@@ -40,4 +40,13 @@
               qt:data   <data.ttl> ] ;
         mf:result  <result-opt-2.ttl>
       ]
+
+      [  mf:name     "Union is not optional" ;
+        rdfs:comment "Union is not optional" ;
+        mf:action
+            [ qt:query  <q-opt-3.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <result-opt-3.ttl>
+      ]
+
    ).

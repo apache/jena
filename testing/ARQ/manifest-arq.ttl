@@ -7,12 +7,12 @@
 <>  rdf:type mf:Manifest ;
     rdfs:label "ARQ - Scripts" ;
     mfx:include (
-         ## Includes in syntax tests
-##         <RDQL2/manifest.n3>
-##         <Syntax-ARQ/manifest.ttl>
-##         <Syntax-SPARQL/manifest.ttl>
+    	## Syntax tests are in <Syntax/manifest-syntax.ttl>
+    	## but called by a differebnt test suite for separate
+    	## testing runs
 
         <Basic/manifest.ttl>
+        <BasicPatterns/manifest.n3>
 
         <Graph/manifest.n3>
         <Optional/manifest.ttl>
@@ -29,20 +29,28 @@
         <Bound/manifest.n3>
         <Expr/manifest.ttl>
 
+
+        <Expr/manifest.ttl>
         <Expr1/manifest.n3>
         <Expr2/manifest.n3>
-        <ExprEquals/manifest.n3>
         <ExprBuiltIns/manifest.ttl>
         <ExprDatatypes/manifest.ttl>
+        <ExprEquals/manifest.n3>
         <ExprRegex/manifest.ttl>
-        <Function/manifest.ttl>
 
-        <OrderBy/manifest.ttl> # DAWG 
+        <Function/manifest.ttl>
+        <FunctionProperties/manifest.ttl>
+        <TypePromotion/manifest.ttl>
+
+        <OrderBy/manifest.ttl> # DAWG tests/data/sort
+        <ValueTesting/manifest.n3>
         <SolutionSeq/manifest.ttl>
 
         <Planning/manifest.ttl>
 
         <General/manifest.ttl>
         <Extensions/manifest.ttl>
+
+        <Sort/manifest.ttl>
     ) .
 

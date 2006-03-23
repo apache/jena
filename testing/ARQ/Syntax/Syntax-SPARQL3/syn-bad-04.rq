@@ -1,3 +1,4 @@
-# DOT, no triples
-SELECT * WHERE
-{ . FILTER(?x) }
+# Missing DOT after ; between triples
+PREFIX :   <http://example/ns#>
+SELECT *
+{ :s1 :p1 :o1 ; :s2 :p2 :o2 . }

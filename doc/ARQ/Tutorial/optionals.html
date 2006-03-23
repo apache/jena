@@ -119,9 +119,11 @@ WHERE
   OPTIONAL { ?x foaf:name ?name } 
   OPTIONAL { ?x vCard:FN  ?name }
 }</pre>
-<p>If the first <code>?name</code> is bound to some value, the second <code>
-OPTIONAL</code> either has a ground triple (<code>?x</code> and <code><kbd>?name</kbd></code> 
-are have values) if the first <code>OPTIONAL</code> any value for <code>?name</code>.</p>
+<p>If the first optional binds <code>?name</code> and <code>?x</code> to some values, the second <code>
+OPTIONAL</code> is an attempt to match the ground triples (<code>?x</code> and <code><kbd>?name</kbd></code> 
+have values). If the first optional did not match the optional part, then the 
+second one is an attempt to match it's triple with two variables.</p>
+<p>&nbsp;</p>
 <p class="footnote"><a href="union.html">Next: Union queries</a></p>
 </body>
 </html>

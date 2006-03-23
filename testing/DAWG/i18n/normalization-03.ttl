@@ -1,6 +1,6 @@
 # Example 1 from
 # http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096
-# $Id: normalization-03.ttl,v 1.1 2005-12-14 20:48:09 andy_seaborne Exp $
+# $Id: normalization-03.ttl,v 1.2 2006-03-23 15:22:43 andy_seaborne Exp $
 @prefix : <http://example/vocab#>.
 
 :s3 :p <http://example.com:80/#abc>.

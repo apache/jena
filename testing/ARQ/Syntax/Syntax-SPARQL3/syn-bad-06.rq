@@ -1,4 +1,3 @@
-# Broken ;
-PREFIX :   <http://example/ns#>
+# DOT, then triples
 SELECT * WHERE
-{ :s ; :p :o }
+{ . ?s ?p ?o }

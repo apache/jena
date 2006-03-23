@@ -1,0 +1,20 @@
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> . 
+
+[]    a       rs:ResultSet ;
+      rs:resultVariable "y" , "x" , "v" ;
+      rs:size "1" ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value "true"^^xsd:boolean ;
+                          rs:variable "v"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p6> ;
+                          rs:variable "y"
+                        ]
+              ] .

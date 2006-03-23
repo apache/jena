@@ -1,4 +1,4 @@
-# $Id: kanji-02.rq,v 1.1 2005-12-14 20:48:09 andy_seaborne Exp $
+# $Id: kanji-02.rq,v 1.2 2006-03-23 15:22:43 andy_seaborne Exp $
 # test wide spaces
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX 食: <http://www.w3.org/2001/sw/DataAccess/tests/data/i18n/kangi.ttl#>

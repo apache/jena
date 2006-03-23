@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# $Id: run-tests,v 1.1 2005-09-29 11:03:07 andy_seaborne Exp $
+# $Id: run-tests,v 1.2 2006-03-23 15:22:43 andy_seaborne Exp $
 
 # You will probably need to change this script if you use it.
 

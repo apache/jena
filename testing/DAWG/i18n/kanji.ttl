@@ -1,4 +1,4 @@
-# $Id: kanji.ttl,v 1.1 2005-12-14 20:48:09 andy_seaborne Exp $
+# $Id: kanji.ttl,v 1.2 2006-03-23 15:22:43 andy_seaborne Exp $
 # See DOCUMENT INFO below.
 
 # NAMESPACES
@@ -9,7 +9,7 @@
 
 # DOCUMENT INFO
 <> rdfs:comment "test kanji with and without wide spaces" ;
-   owl:versionInfo "$Id: kanji.ttl,v 1.1 2005-12-14 20:48:09 andy_seaborne Exp $".
+   owl:versionInfo "$Id: kanji.ttl,v 1.2 2006-03-23 15:22:43 andy_seaborne Exp $".
 
 # DOCUMENT
 [ foaf:name "Alice" ;

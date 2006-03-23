@@ -1,0 +1,5 @@
+PREFIX  jfn:     <java:com.hp.hpl.jena.query.function.library.>
+
+SELECT ?o
+WHERE { ?s ?p ?o }
+ORDER BY jfn:strlen(?o)

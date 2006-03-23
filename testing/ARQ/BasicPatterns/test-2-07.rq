@@ -1,0 +1,6 @@
+SELECT  *
+WHERE
+    { ?x ?y ?z1 .
+      ?x ?y ?z2 . 
+      FILTER ( ?z1 = ?z2 ) .
+    }

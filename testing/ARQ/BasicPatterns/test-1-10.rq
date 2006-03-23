@@ -1,0 +1,3 @@
+SELECT  ?x ?v
+WHERE
+    { <http://rdf.hp.com/r-1> <http://rdf.hp.com/p-1> ?v }

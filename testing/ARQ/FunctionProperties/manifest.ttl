@@ -1,0 +1,73 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Function Properties" ;
+    mf:entries
+    ( 
+      [  mf:name    "Function Property - list 1" ;
+         mf:action
+            [ qt:query  <list-1.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-results-1.srx>
+      ]
+      [  mf:name    "Function Property - list 2" ;
+         mf:action
+            [ qt:query  <list-2.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-results-2.srx>
+      ]
+
+      [  mf:name    "Function Property - list 3" ;
+         mf:action
+            [ qt:query  <list-3.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-results-3.srx>
+      ]
+      [  mf:name    "Function Property - list 4" ;
+         mf:action
+            [ qt:query  <list-4.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-results-4.srx>
+      ]
+
+      [  mf:name    "Function Property - list 5" ;
+         mf:action
+            [ qt:query  <list-5.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <list-results-5.srx>
+      ]
+
+      [  mf:name    "Function Property - container 1" ;
+         mf:action
+            [ qt:query  <container-1.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <container-results-1.srx>
+      ]
+      [  mf:name    "Function Property - container 2" ;
+         mf:action
+            [ qt:query  <container-2.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <container-results-2.srx>
+      ]
+      [  mf:name    "Function Property - container 3" ;
+         mf:action
+            [ qt:query  <container-3.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <container-results-3.srx>
+      ]
+      [  mf:name    "Function Property - container 4" ;
+         mf:action
+            [ qt:query  <container-4.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <container-results-4.srx>
+      ]
+      [  mf:name    "Function Property - sequence 1" ;
+         mf:action
+            [ qt:query  <seq-1.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <seq-results-1.srx>
+      ]
+    ) .
