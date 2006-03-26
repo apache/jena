@@ -1651,10 +1651,12 @@ floating point or XSDDateTime).</div>
       <p>sum(?a, ?b, ?c)<br>
         addOne(?a, ?c)<br>
         difference(?a, ?b, ?c)<br>
+        min(?a, ?b, ?c)<br>
+        max(?a, ?b, ?c)<br>
         product(?a, ?b, ?c)</p>
       </td>
     <td width="59%"> 
-      <div align="left">Sets c to be (a+b), (a+1) (a-b) or (a*b). Note that these 
+      <div align="left">Sets c to be (a+b), (a+1) (a-b), min(a,b), max(a,b) or (a*b). Note that these 
         do not run backwards, if in <code>sum</code> a and c are bound and b is 
         unbound then the test will fail rather than bind b to (c-a). This could 
         be fixed.</div>
@@ -1917,7 +1919,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.28 2005-10-07 13:08:08 der Exp $</i>
+  Last modification: $Id: index.html,v 1.29 2006-03-26 12:06:49 der Exp $</i>
 </p>
 </body>
 </html>
