@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelSpecAssembler.java,v 1.4 2006-03-22 13:53:20 andy_seaborne Exp $
+ 	$Id: OntModelSpecAssembler.java,v 1.5 2006-03-28 14:32:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -73,7 +73,11 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
         return dm == null ? OntDocumentManager.getInstance() : (OntDocumentManager) a.open( dm );
         }
     
-    protected OntModelSpec getOntModelSpecField( String name )
+    /**
+        Answer the OntModelSpec in the OntModelSpec class with the given
+        member name, or null if there isn't one.
+    */
+    public static OntModelSpec getOntModelSpecField( String name )
         {
         try 
             { 

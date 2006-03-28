@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.27 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: AbstractTestReifier.java,v 1.28 2006-03-28 14:32:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
+
+import java.util.Collections;
 
 import com.hp.hpl.jena.db.impl.DBReifier;
 import com.hp.hpl.jena.graph.*;
@@ -488,6 +490,20 @@ public abstract class AbstractTestReifier extends GraphTestBase
         if (r instanceof DBReifier) { System.err.println( "! Db reifier must fix over-specification problem" ); }
         else throw e;
         }
+        }
+    
+    public void testBulkClearReificationTriples()
+        {
+        Graph g = getGraphWith( "x rdf:subject S" );
+        g.getBulkUpdateHandler().removeAll();
+        assertEquals( Collections.EMPTY_SET, g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );        
+        }
+    
+    public void testBulkClearReificationTriples2()
+        {
+        Graph g = getGraphWith( "x rdf:subject S; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement" );
+        g.getBulkUpdateHandler().removeAll();
+        assertEquals( Collections.EMPTY_SET, g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );        
         }
     
 //    public void testKevinCaseC()
