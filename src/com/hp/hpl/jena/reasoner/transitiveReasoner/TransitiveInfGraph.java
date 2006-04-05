@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.22 2006-03-22 13:53:31 andy_seaborne Exp $
+ * $Id: TransitiveInfGraph.java,v 1.23 2006-04-05 08:45:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2006-03-22 13:53:31 $
+ * @version $Revision: 1.23 $ on $Date: 2006-04-05 08:45:11 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -62,9 +62,12 @@ public class TransitiveInfGraph extends BaseInfGraph {
     public void prepare() {
         tbox = ((TransitiveReasoner)reasoner).getTbox();
         // Initially just point to the reasoner's precached information
-        transitiveEngine = new TransitiveEngine(((TransitiveReasoner)reasoner).getSubClassCache(),
-                                                 ((TransitiveReasoner)reasoner).getSubPropertyCache());
-
+        transitiveEngine = new TransitiveEngine(((TransitiveReasoner)reasoner).getSubClassCache().deepCopy(),
+                                                 ((TransitiveReasoner)reasoner).getSubPropertyCache().deepCopy());
+                    // The deepCopies reduce the value of precomputing the closure in the reasoner object
+                    // but enables people to bind the same reasoner to multiple datasets.
+                    // Perhaps need a faster deepcopy
+                                                 
         // But need to check if the data graph defines schema data as well
         dataFind = transitiveEngine.insert(tbox, fdata);
         transitiveEngine.setCaching(true, true);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReasoners.java,v 1.32 2006-03-22 13:53:14 andy_seaborne Exp $
+ * $Id: TestReasoners.java,v 1.33 2006-04-05 08:45:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -32,7 +32,7 @@ import java.util.Set;
  * Outline unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2006-03-22 13:53:14 $
+ * @version $Revision: 1.33 $ on $Date: 2006-04-05 08:45:35 $
  */
 public class TestReasoners extends TestCase {
     
@@ -278,6 +278,53 @@ public class TestReasoners extends TestCase {
                 }
             }
         }
+    }
+    
+    /**
+     * The reasoner contract for bind(data) is not quite precise. It allows for
+     * reasoners which have state so that reusing the same reasoner on a second data
+     * model might lead to interference. This in fact used to happen with the transitive
+     * reasoner. This is a test to check the top level symptoms of this which can be
+     * solved just be not reusing reasoners.
+     * @todo this test might be better moved to OntModel tests somewhere
+     */
+    public void testTransitiveSpecReuse() {
+        OntModel om1 = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF);
+        Resource c1 = om1.createResource(PrintUtil.egNS + "Class1");
+        Resource c2 = om1.createResource(PrintUtil.egNS + "Class2");
+        Resource c3 = om1.createResource(PrintUtil.egNS + "Class3");
+        om1.add(c1, RDFS.subClassOf, c2);
+        om1.add(c2, RDFS.subClassOf, c3);
+        om1.prepare();
+        assertFalse(om1.isEmpty());
+        OntModel om2 = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF);
+        StmtIterator si = om2.listStatements();
+        boolean ok = ! si.hasNext();
+        si.close();
+        assertTrue("Transitive reasoner state leak", ok);
+    }
+    
+    /**
+     * The reasoner contract for bind(data) is not quite precise. It allows for
+     * reasoners which have state so that reusing the same reasoner on a second data
+     * model might lead to interference. This in fact used to happen with the transitive
+     * reasoner. This is a test to check that the transitive reasoner state reuse has been fixed at source.
+     */
+    public void testTransitiveBindReuse() {
+        Reasoner  r = ReasonerRegistry.getTransitiveReasoner();
+        InfModel om1 = ModelFactory.createInfModel(r, ModelFactory.createDefaultModel());
+        Resource c1 = om1.createResource(PrintUtil.egNS + "Class1");
+        Resource c2 = om1.createResource(PrintUtil.egNS + "Class2");
+        Resource c3 = om1.createResource(PrintUtil.egNS + "Class3");
+        om1.add(c1, RDFS.subClassOf, c2);
+        om1.add(c2, RDFS.subClassOf, c3);
+        om1.prepare();
+        assertFalse(om1.isEmpty());
+        InfModel om2 = ModelFactory.createInfModel(r, ModelFactory.createDefaultModel());
+        StmtIterator si = om2.listStatements();
+        boolean ok = ! si.hasNext();
+        si.close();
+        assertTrue("Transitive reasoner state leak", ok);
     }
     
     /**
