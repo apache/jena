@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.111 2006-03-22 13:52:30 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.112 2006-04-05 10:00:50 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -368,11 +368,15 @@ public class ModelCom
     public StmtIterator listStatements( Resource S, Property P, RDFNode O )
         { return listStatements( S, P, asNode( O ) ); }
     
-    public StmtIterator listStatements( Resource S, Property P, String O )
-        { return listStatements( S, P, Node.createLiteral( O ) ); }
+    public StmtIterator listStatements( Resource S, Property P, String O ) {
+        return O == null ? listStatements(S, P, Node.ANY) 
+                :  listStatements( S, P, Node.createLiteral( O ) ); 
+    }
     
-    public StmtIterator listStatements( Resource S, Property P, String O, String L )
-        { return listStatements( S, P, Node.createLiteral( O, L, false ) ); }
+    public StmtIterator listStatements( Resource S, Property P, String O, String L ) {
+        return O == null ? listStatements(S, P, Node.ANY) 
+                :  listStatements( S, P, Node.createLiteral( O, L, false ) ); 
+    }
     
     public StmtIterator listStatements( Resource S, Property P, boolean O )
         { return listStatements( S, P, String.valueOf( O ) ); }

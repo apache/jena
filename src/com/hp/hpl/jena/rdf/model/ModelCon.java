@@ -56,8 +56,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.16 $'
-            Date='$Date: 2006-03-22 13:53:12 $'
+            Revision='$Revision: 1.17 $'
+            Date='$Date: 2006-04-05 10:00:50 $'
  */
 public interface ModelCon {
 
@@ -731,8 +731,7 @@ public interface ModelCon {
  *  that match a pattern.  The statements selected are those
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.
- *  If an argument is <code>null</code> it matches anything.</p>
+ *  and whose object matchesthe <code>object</code> argument.</p>
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -749,8 +748,7 @@ public interface ModelCon {
  *  that match a pattern.  The statements selected are those
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.
- *  If an argument is <code>null</code> it matches anything.</p>
+ *  and whose object matchesthe <code>object</code> argument.</p>
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -767,8 +765,7 @@ public interface ModelCon {
  *  that match a pattern.  The statements selected are those
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.
- *  If an argument is <code>null</code> it matches anything.</p>
+ *  and whose object matchesthe <code>object</code> argument.</p>
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -785,8 +782,7 @@ public interface ModelCon {
  *  that match a pattern.  The statements selected are those
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.
- *  If an argument is <code>null</code> it matches anything.</p>
+ *  and whose object matchesthe <code>object</code> argument.</p>
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -803,8 +799,7 @@ public interface ModelCon {
  *  that match a pattern.  The statements selected are those
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.
- *  If an argument is <code>null</code> it matches anything.</p>
+ *  and whose object matchesthe <code>object</code> argument.</p>
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -821,8 +816,7 @@ public interface ModelCon {
  *  that match a pattern.  The statements selected are those
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
- *  and whose object matchesthe <code>object</code> argument.
- *  If an argument is <code>null</code> it matches anything.</p>
+ *  and whose object matchesthe <code>object</code> argument.</p>
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought

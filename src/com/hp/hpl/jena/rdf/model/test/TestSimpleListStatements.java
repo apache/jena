@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleListStatements.java,v 1.13 2006-03-22 13:53:24 andy_seaborne Exp $
+  $Id: TestSimpleListStatements.java,v 1.14 2006-04-05 10:01:06 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -140,15 +140,24 @@ public class TestSimpleListStatements extends ModelTestBase
         
     
     public void testAll() {
-    	StmtIterator iter = model.listStatements(null, null, (RDFNode) null);
-    	int i =0;
-    	while (iter.hasNext()) {
-    		i++;
-    		iter.next();
-    	}
-    	assertEquals(7, i);
+        StmtIterator iter = model.listStatements(null, null, (RDFNode) null);
+        int i =0;
+        while (iter.hasNext()) {
+            i++;
+            iter.next();
+        }
+        assertEquals(7, i);
     }
-
+    
+    public void testAllString() {
+        StmtIterator iter = model.listStatements(null, null, (String) null);
+        int i =0;
+        while (iter.hasNext()) {
+            i++;
+            iter.next();
+        }
+        assertEquals(7, i);
+    }
 
     public Model modelWithStatements( StmtIterator it )
         {
