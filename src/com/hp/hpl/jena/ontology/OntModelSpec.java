@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.43 $
+ * Revision           $Revision: 1.44 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:37 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-05 09:59:46 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.43 2006-03-22 13:52:37 andy_seaborne Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.44 2006-04-05 09:59:46 der Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -376,8 +376,9 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      */
     public Reasoner getReasoner() {
         if (m_reasoner == null && m_rFactory != null) {
-            // we need to create the reasoner for the first time
-            m_reasoner = m_rFactory.create( null );
+            // we need to create the reasoner
+            // create a new one on each call since reasoners aren't guaranteed to be reusable
+            return m_rFactory.create( null );
         }
 
         return m_reasoner;
