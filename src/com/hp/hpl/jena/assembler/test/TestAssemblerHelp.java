@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerHelp.java,v 1.8 2006-03-22 13:52:20 andy_seaborne Exp $
+ 	$Id: TestAssemblerHelp.java,v 1.9 2006-04-06 15:28:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -95,7 +95,7 @@ public class TestAssemblerHelp extends AssemblerTestBase
             { return null; }
         }
     
-    static Model gremlinModel = model( "eh:Wossname ja:assembler 'com.hp.hpl.jena.assembler.test.TestAssemblerHelp$Gremlin'" );
+    static Model gremlinModel = modelWithStatements( "eh:Wossname ja:assembler 'com.hp.hpl.jena.assembler.test.TestAssemblerHelp$Gremlin'" );
     
     static boolean gremlinInvoked = false;
     

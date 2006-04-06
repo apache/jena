@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelAssembler.java,v 1.4 2006-03-22 13:53:20 andy_seaborne Exp $
+ 	$Id: OntModelAssembler.java,v 1.5 2006-04-06 15:28:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -25,7 +25,7 @@ public class OntModelAssembler extends InfModelAssembler implements Assembler
     protected OntModelSpec getOntModelSpec( Assembler a, Resource root )
         {
         Resource r = getUniqueResource( root, JA.ontModelSpec );
-        return r == null ?defaultSpec : (OntModelSpec) a.open( r );
+        return r == null ? defaultSpec : (OntModelSpec) a.open( r );
         }
     }
 
