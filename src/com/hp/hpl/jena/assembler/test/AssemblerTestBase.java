@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerTestBase.java,v 1.5 2006-04-06 15:28:14 chris-dollin Exp $
+ 	$Id: AssemblerTestBase.java,v 1.6 2006-04-06 15:30:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -67,9 +67,14 @@ public abstract class AssemblerTestBase extends ModelTestBase
     protected Model model( String string )
         { 
         Model result = createModel( ReificationStyle.Standard );
+        setExtraPrefixes( result );
+        return modelAdd( result, string );
+        }
+
+    protected void setExtraPrefixes( Model result )
+        {
         result.setNsPrefix( "ja", JA.getURI() );
         result.setNsPrefix( "lm", LocationMappingVocab.getURI() );
-        return modelAdd( result, string );
         }
 
     protected Resource resourceInModel( String string )
