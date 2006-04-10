@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerTestBase.java,v 1.6 2006-04-06 15:30:42 chris-dollin Exp $
+ 	$Id: AssemblerTestBase.java,v 1.7 2006-04-10 11:07:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -15,6 +15,15 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.*;
 
+/**
+    A convenient base class for Assembler tests. The instance methods
+    <code>modelAddFacts</code> and <code>setRequiredPrefixes</code>
+    may be over-ridden in subclasses to control the parser that is used to
+    construct models and the prefixes added to the model (these features
+    added for Eyeball).
+    
+    @author kers
+*/
 public abstract class AssemblerTestBase extends ModelTestBase
     {
     protected Class getAssemblerClass()
@@ -67,14 +76,28 @@ public abstract class AssemblerTestBase extends ModelTestBase
     protected Model model( String string )
         { 
         Model result = createModel( ReificationStyle.Standard );
-        setExtraPrefixes( result );
-        return modelAdd( result, string );
+        setRequiredPrefixes( result );
+        return modelAddFacts( result, string );
         }
+    
+    protected Model model()
+        { return model( "" ); }
 
-    protected void setExtraPrefixes( Model result )
+    /**
+     	Subclasses may override to use their choice of string-to-model
+        parsers.
+    */
+    protected Model modelAddFacts( Model result, String string )
+        { return modelAdd( result, string ); }
+
+    /**
+        Subclasses may extend to get their choice of defined prefixes.
+    */
+    protected Model setRequiredPrefixes( Model m )
         {
-        result.setNsPrefix( "ja", JA.getURI() );
-        result.setNsPrefix( "lm", LocationMappingVocab.getURI() );
+        m.setNsPrefix( "ja", JA.getURI() );
+        m.setNsPrefix( "lm", LocationMappingVocab.getURI() );
+        return m;
         }
 
     protected Resource resourceInModel( String string )
