@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.41 2006-03-22 13:52:17 andy_seaborne Exp $
+ *  $Id: MoreTests.java,v 1.42 2006-04-11 19:32:26 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -454,13 +454,13 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		});
         a.getHandlers().setErrorHandler(new ErrorHandler(){
             public void error(SAXParseException exception) throws SAXException {
-                throw new RuntimeException("Unexpected error");
+                throw new RuntimeException("Unexpected error", exception);
             }
             public void fatalError(SAXParseException exception) throws SAXException {
               throw exception;  
             }
             public void warning(SAXParseException exception) throws SAXException {
-                throw new RuntimeException("Unexpected warning");
+                throw new RuntimeException("Unexpected warning", exception);
             }});
 		try {
 			a.load(in);
