@@ -50,11 +50,10 @@ import com.hp.hpl.jena.shared.*;
  * 
  * @see LocationMapper
  * @see FileUtils
- * @see FileUtils.asUTF8(InputStream)
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.32 2006-03-22 13:52:49 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.33 2006-04-11 11:00:41 andy_seaborne Exp $
  */
  
 public class FileManager
