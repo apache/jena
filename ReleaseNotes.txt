@@ -3,6 +3,12 @@ Release Notes
 
 Post-Jena 2.3
 
+Model
+    o Model[Con] has acquired a new method, remove(S, P, O),
+	  which removes the triple (S, P, O) from the model. None
+	  of S, P, O can be null. O is of type RDFNode (no overloading
+	  for primitive types etc).
+
 ExtendedIterator [hence NiceIterator and ResultSetIterator]
     o added toSet() and toList(), which bundle the [remaining]
       elements of the iterator up as a Set or List. Testing
@@ -20,14 +26,14 @@ AnonId
     o added getLabelString(), which delivers the label of this
       AnonId and (unlike toString()) is guaranteed to do
       /only/ that.
-      
+
 GraphMatcher
     o following up on a performance issue, replaced the idiom
       find().hasNext() for containment in GraphMatch with proper
       use of contains(). After fixing a hashing problem in
       LiteralLabel [see below], this worked and sped up the
       checker /lots/ in some circumstances.
-      
+
 NEW: Assembler specifications
     o Assembler specifications replace the old ModelSpecs. They are
       documented in doc/assembler/index.html and linked pages.
@@ -53,12 +59,12 @@ LiteralLabel
       hashing doesn't work. Added delegation so that an RDFDataType
       can provide a specialised hash function and arranged that the
       relevant XSD datatypes used it.
-      
+
 Database:
     o Added a based MS SQL Server 2000/MSDE 2000 driver.
-    
+
 Reasoners:
-    o Fixed bug in the forward rule engine which prevented firing of axiomatic 
+    o Fixed bug in the forward rule engine which prevented firing of axiomatic
       rules with non-empty bodies (i.e. no pattern match but calls to builtins).
 
 Jar changes:
@@ -79,12 +85,12 @@ JAR changes
       jakarta-oro-2.0.5.jar  =>  jakarta-oro-2.0.8.jar
       log4j-1.2.7.jar  =>  log4j-1.2.12.jar
       icu4j.jar  =>  icu4j_3_4.jar
-      
+
     Xerces jars updated to Xerces 2.7.1
 
     New Jarfiles:
       arq.jar
-      jenatest.jar 
+      jenatest.jar
       stax-1.1.1-dev.jar
       stax-api-1.0.jar
 
@@ -119,7 +125,7 @@ ARP
 
     o Some changes in the error codes produced for ill-formed
       input.
-      
+
     o The treatment of interrupts has changed. Instead of
       throwing an InterruptedIOException, an error
       is produced: ERR_INTERRUPTED, and reported through
@@ -136,9 +142,9 @@ ARP
 
     o SAX2RDF, SAX2Model protected constructors have changed in a not
       backwardly compatible fashion.
-      
+
     o NTriple command-line option documentation changed, in manner
-      that is theoretically not backwardly compatible. 
+      that is theoretically not backwardly compatible.
       -r is now default (in documentation,
       follows previous implementation). -R option added to cancel -r.
 
@@ -263,36 +269,36 @@ Typed literals:
     o Fixed bug in sameValueAs when comparing an integer to a float/double.
 
 Reasoners:
-    o Extended rule parser to support typed literals using N3 type syntax 
+    o Extended rule parser to support typed literals using N3 type syntax
       such as 'true'^^xsd:byte.
-      
+
     o Fixed bug with rule sets which include a proprocessing hook to ensure,
       the hooks are rerun after new triple adds which should invoke the hook.
-      
+
     o Fixed two bugs with derivation logging of backward rules.
-      
+
     o Modified processing of non-monotonic rulesets (involving drop/remove) so
-      that each entry in the conflict set is fired separately and all the 
+      that each entry in the conflict set is fired separately and all the
       consquences propagated before attempting to fire the next rule.
       To avoid performance hits, rulesets not involving such operators
       execute as before.
-      User defined Builtins which remove data should be marked as such 
+      User defined Builtins which remove data should be marked as such
       using the isMonotonic method.
-      
+
     o Fixed bug in TransitiveGraphCache which had resulted in some
       transitive reductions being incompletely reduced (i.e. some
       indirect property instances were being incorrectly reported as
       being direct).
-      
+
     o Added "drop" operator as an alternative to "remove" when performing
       non-monotonic rewrites.
-      
+
     o Fixed bug in rebind/reset of infgraphs which use TGC and failed to
       reset the transitive engine.
-      
+
     o Optimized Resource.remove operations for the case where the parent model
       is an InfModel.
-      
+
     o The default DIG reasoner used in the documentation examples has been
       changed from Racer to Pellet. Pellet is free and open-source, while Racer
       has switched to a commercial license model.

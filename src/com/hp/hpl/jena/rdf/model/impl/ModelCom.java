@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.112 2006-04-05 10:00:50 der Exp $
+    $Id: ModelCom.java,v 1.113 2006-04-21 11:34:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -283,6 +283,12 @@ public class ModelCom
         graph.delete(s.asTriple());
         return this;
     }
+    
+    public Model remove( Resource s, Property p, RDFNode o ) {
+        graph.delete( Triple.create( s.asNode(), p.asNode(), o.asNode() ) );
+        return this;
+    }
+        
     
     public Model remove( StmtIterator iter ) 
         {

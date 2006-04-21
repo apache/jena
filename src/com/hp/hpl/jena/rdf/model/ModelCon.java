@@ -56,8 +56,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.17 $'
-            Date='$Date: 2006-04-05 10:00:50 $'
+            Revision='$Revision: 1.18 $'
+            Date='$Date: 2006-04-21 11:34:20 $'
  */
 public interface ModelCon {
 
@@ -703,6 +703,13 @@ public interface ModelCon {
  */ 
     Model add(Resource s, Property p, Object o) ;
 
+/**
+ * remove the statement <code>(s, p, o)</code> from this model and
+ * answer this model. None of <code>s, p, o</code> are permitted to
+ * be <code>null</code>: for wildcard removal, see <code>removeAll</code>.
+ */
+    Model remove( Resource s, Property p, RDFNode o );
+    
 /** Remove all the Statements returned by an iterator.
  * @return this model
  * @param iter the iterator which returns the statements to be removed.
