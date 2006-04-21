@@ -1,29 +1,42 @@
 /*
- 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFasterMemPackage.java,v 1.4 2006-04-21 14:39:45 chris-dollin Exp $
+ 	$Id: TestConcurrentModificationException.java,v 1.1 2006-04-21 14:39:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
 
-
 import junit.framework.*;
 
-public class TestFasterMemPackage extends TestCase
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+
+public class TestConcurrentModificationException extends ModelTestBase
     {
+    public TestConcurrentModificationException( String name )
+        { super( name ); }
+
     public static TestSuite suite()
+        { return new TestSuite( TestConcurrentModificationException.class ); }
+
+    public void testArrayBunchCME() 
         { 
-        TestSuite result = new TestSuite();
-        result.addTest( TestFasterGraphMem.suite() );
-        result.addTest( TestFasterQuery.suite() );
-        result.addTest( TestConcurrentModificationException.suite() );
-        return result;
+        
+        }
+    
+    public void testSetBunchCME()
+        {
+        
+        }
+    
+    public void testHashedBunchCME()
+        {
+        
         }
     }
 
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
