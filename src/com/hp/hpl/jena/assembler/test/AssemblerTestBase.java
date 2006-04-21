@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerTestBase.java,v 1.7 2006-04-10 11:07:25 chris-dollin Exp $
+ 	$Id: AssemblerTestBase.java,v 1.8 2006-04-21 10:40:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -55,7 +55,7 @@ public abstract class AssemblerTestBase extends ModelTestBase
             final Resource name;
             final Object result;
             
-            NamedObjectAssembler( Resource name, Object result )
+            public NamedObjectAssembler( Resource name, Object result )
                 { this.name = name; this.result = result; }
             
             public Model openModel( Resource root, Mode mode )
