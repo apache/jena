@@ -62,6 +62,7 @@ LiteralLabel
 
 Database:
     o Added a based MS SQL Server 2000/MSDE 2000 driver.
+    o Suppressed the "reifier must fix over-specification" messages from tests.
 
 Reasoners:
     o Fixed bug in the forward rule engine which prevented firing of axiomatic

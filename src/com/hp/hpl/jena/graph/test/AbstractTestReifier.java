@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.28 2006-03-28 14:32:38 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.29 2006-04-21 13:33:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -180,7 +180,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
             assertEquals( null, r.getTriple( node( "x" ) ) ); }
         catch (AlreadyReifiedException e) 
             {
-            if (r instanceof DBReifier) { System.err.println( "! Db reifier must fix over-specification problem" ); }
+            if (r instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
             else throw e;
             }
         }
@@ -217,7 +217,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
             }
         catch (AlreadyReifiedException e)
             {
-            if (g.getReifier() instanceof DBReifier) { System.err.println( "! Db reifier must fix over-specification problem" ); }
+            if (g.getReifier() instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
             else throw e;
             }
         }
@@ -487,7 +487,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         }
         catch (AlreadyReifiedException e) 
         {
-        if (r instanceof DBReifier) { System.err.println( "! Db reifier must fix over-specification problem" ); }
+        if (r instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
         else throw e;
         }
         }
