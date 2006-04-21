@@ -1,9 +1,11 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: ArrayBunch.java,v 1.7 2006-03-22 13:52:19 andy_seaborne Exp $
+    $Id: ArrayBunch.java,v 1.8 2006-04-21 15:04:12 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
+
+import java.util.ConcurrentModificationException;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
@@ -22,6 +24,7 @@ public class ArrayBunch implements TripleBunch
     
     protected int size = 0;
     protected Triple [] elements;
+    protected volatile int changes = 0; 
 
     public ArrayBunch()
         { elements = new Triple[5]; }
@@ -47,6 +50,7 @@ public class ArrayBunch implements TripleBunch
         { 
         if (size == elements.length) grow();
         elements[size++] = t; 
+        changes += 1;
         }
     
     /**
@@ -63,7 +67,8 @@ public class ArrayBunch implements TripleBunch
         }
 
     public void remove( Triple t )
-        { 
+        {
+        changes += 1;
         for (int i = 0; i < size; i += 1)
             {
             if (t.equals( elements[i] ))
@@ -82,20 +87,27 @@ public class ArrayBunch implements TripleBunch
         {
         return new NiceIterator()
             {
+            protected final int initialChanges = changes;
+            
             protected int i = size;
             protected final Triple [] e = elements;
             
             public boolean hasNext()
-                { return i > 0; }
+                { 
+                if (changes > initialChanges) throw new ConcurrentModificationException();
+                return i > 0; 
+                }
         
             public Object next()
                 {
+                if (changes > initialChanges) throw new ConcurrentModificationException();
                 if (i == 0) noElements( "no elements left in ArrayBunch iteration" );
                 return e[--i]; 
                 }
             
             public void remove()
                 {
+                if (changes > initialChanges) throw new ConcurrentModificationException();
                 int last = --size;
                 e[i] = e[last];
                 e[last] = null;
