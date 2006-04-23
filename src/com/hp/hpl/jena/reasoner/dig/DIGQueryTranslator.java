@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-23 20:25:26 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPathElement;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.17 2006-03-22 13:52:53 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.18 2006-04-23 20:25:26 ian_dickinson Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -367,6 +367,38 @@ public abstract class DIGQueryTranslator {
     protected ExtendedIterator translateIndividualSetResponse( Document response, TriplePattern query, boolean object ) {
         return translateNameSetResponse( response, query, object,
                                          new String[] {DIGProfile.INDIVIDUAL_SET, DIGProfile.INDIVIDUAL} );
+    }
+
+
+    /**
+     * <p>Translate an individualPairSet response, which lists pairs of related
+     * individuals for some queried relation p.</p>
+     * @param response
+     * @param query
+     * @return An iterator over triples formed from the result pairs and the known query predicate
+     */
+    protected ExtendedIterator translateIndividualPairSetResponse( Document response, TriplePattern query ) {
+        // evaluate a path through the return value to give us an iterator over individual names
+        SimpleXMLPath p = new SimpleXMLPath( true );
+        p.appendElementPath( DIGProfile.INDIVIDUAL_PAIR_SET );
+        p.appendElementPath( DIGProfile.INDIVIDUAL_PAIR );
+        p.appendElementPath( DIGProfile.INDIVIDUAL );
+        p.appendAttrPath( DIGProfile.NAME );
+
+        // collect the triples corresponding to pairs of results
+        List results = new ArrayList();
+        Node pred = query.getPredicate();
+        DIGValueToNodeMapper dvm = new DIGValueToNodeMapper();
+
+        // build triples from pairs of results from the XML path iterator
+        Iterator i = p.getAll( response );
+        while (i.hasNext()) {
+            results.add( new Triple( dvm.mapToNode( i.next() ),
+                                     pred,
+                                     dvm.mapToNode( i.next() ) ));
+        }
+
+        return WrappedIterator.create( results.iterator() );
     }
 
 

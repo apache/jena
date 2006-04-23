@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Dec-2003
  * Filename           $RCSfile: DIGValueToNodeMapper.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-23 20:25:26 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -39,9 +39,9 @@ import com.hp.hpl.jena.util.iterator.Map1;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGValueToNodeMapper.java,v 1.4 2006-03-22 13:52:53 andy_seaborne Exp $
+ * @version CVS $Id: DIGValueToNodeMapper.java,v 1.5 2006-04-23 20:25:26 ian_dickinson Exp $
  */
-public class DIGValueToNodeMapper 
+public class DIGValueToNodeMapper
     implements Map1
 {
     // Constants
@@ -64,12 +64,24 @@ public class DIGValueToNodeMapper
      * <p>Return the node corresponding to the given element; either a literal
      * node for ival and sval values, or a URI node for named elements.</p>
      * @param o An object, expected to be an XML element
+     * @return A node corresponding to the given value
      */
     public Object map1( Object o ) {
+        return mapToNode( o );
+    }
+
+
+    /**
+     * <p>Return the node corresponding to the given element; either a literal
+     * node for ival and sval values, or a URI node for named elements.</p>
+     * @param o An object, expected to be an XML element
+     * @return A node corresponding to the given value
+     */
+    public Node mapToNode( Object o ) {
         if (o instanceof Element) {
             // we know that this mapper is applied to lists of Elements
             Element elem = (Element) o;
-            
+
             if (elem.getNodeName().equals( DIGProfile.IVAL )) {
                 // this is an integer element
                 return Node.createLiteral( elem.getNodeValue(), null, XSDDatatype.XSDint );
@@ -94,7 +106,7 @@ public class DIGValueToNodeMapper
     //////////////////////////////////
 
     /** Answer the node with the given name. It may be the node ID of a bNode */
-    private Object convertNameToNode( String name ) {
+    private Node convertNameToNode( String name ) {
         if (name.startsWith( DIGAdapter.ANON_MARKER )) {
             String anonID = name.substring( DIGAdapter.ANON_MARKER.length() );
             return Node.createAnon( new AnonId( anonID ) );

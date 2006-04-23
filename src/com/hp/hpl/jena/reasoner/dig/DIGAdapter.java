@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:53 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-23 20:25:26 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -48,7 +48,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.23 2006-03-22 13:52:53 andy_seaborne Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.24 2006-04-23 20:25:26 ian_dickinson Exp $
  */
 public class DIGAdapter
 {
@@ -172,6 +172,7 @@ public class DIGAdapter
         new DIGQueryDifferentFromTranslator( DAML_OIL.differentIndividualFrom.getURI() ),
         new DIGQueryRoleFillersTranslator(),
         new DIGQueryRoleFillerTranslator(),
+        new DIGQueryRelatedIndividualsTranslator(),
 
         // specific type tests
         new DIGQueryIsConceptTranslator(),
