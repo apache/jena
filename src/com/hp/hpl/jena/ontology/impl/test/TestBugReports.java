@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.74 $
+ * Revision           $Revision: 1.75 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-04-24 23:09:27 $
+ * Last modified on   $Date: 2006-04-24 23:22:36 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
@@ -297,6 +297,35 @@ public class TestBugReports
         assertFalse(
             "B rdf:type owl:Class should not be in the base model",
             ontModel.isInBaseModel(ontModel.createStatement(B, RDF.type, OWL.Class)));
+    }
+
+    /** Bug report 1408253 from Holger - rdfs:Datatype should be recognised as a RDFS class
+     * even without the reasoner
+     */
+    public void test_hk_07() {
+        // owl full
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        Resource c = m.createResource();
+        c.addProperty( RDF.type, RDFS.Datatype );
+        assertTrue( c.canAs( OntClass.class ));
+
+        // owl dl
+        m = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM );
+        c = m.createResource();
+        c.addProperty( RDF.type, RDFS.Datatype );
+        assertTrue( c.canAs( OntClass.class ));
+
+        // owl lite
+        m = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM );
+        c = m.createResource();
+        c.addProperty( RDF.type, RDFS.Datatype );
+        assertTrue( c.canAs( OntClass.class ));
+
+        // rdfs
+        m = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM );
+        c = m.createResource();
+        c.addProperty( RDF.type, RDFS.Datatype );
+        assertTrue( c.canAs( OntClass.class ));
     }
 
     public void test_hk_importCache() {

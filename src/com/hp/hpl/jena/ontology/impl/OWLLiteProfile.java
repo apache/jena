@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLLiteProfile.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-24 23:22:35 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLLiteProfile.java,v 1.17 2006-03-22 13:52:39 andy_seaborne Exp $
+ * @version CVS $Id: OWLLiteProfile.java,v 1.18 2006-04-24 23:22:35 ian_dickinson Exp $
  */
 public class OWLLiteProfile
     extends OWLProfile
@@ -124,6 +124,7 @@ public class OWLLiteProfile
                            g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
                            g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) ||
                            g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
+                           g.asGraph().contains( n, RDF.type.asNode(), RDFS.Datatype.asNode() ) ||
                            // These are common cases that we should support
                            g.asGraph().contains( Node.ANY, RDFS.domain.asNode(), n ) ||
                            g.asGraph().contains( Node.ANY, RDFS.range.asNode(), n )

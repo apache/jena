@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Jun-2003
  * Filename           $RCSfile: RDFSProfile.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-24 23:22:35 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFSProfile.java,v 1.11 2006-03-22 13:52:39 andy_seaborne Exp $
+ * @version CVS $Id: RDFSProfile.java,v 1.12 2006-04-24 23:22:35 ian_dickinson Exp $
  */
 public class RDFSProfile
     extends AbstractProfile
@@ -233,6 +233,7 @@ public class RDFSProfile
         {  OntClass.class,              new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), RDFS.Datatype.asNode() ) ||
                                                        // These are common cases that we should support
                                                        n.equals( RDFS.Resource.asNode() ) ||
                                                        g.asGraph().contains( Node.ANY, RDFS.domain.asNode(), n ) ||

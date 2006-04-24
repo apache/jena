@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-24 23:22:35 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.31 2006-03-22 13:52:39 andy_seaborne Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.32 2006-04-24 23:22:35 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -255,6 +255,7 @@ public class OWLProfile
                                                 return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
+                                                       g.asGraph().contains( n, RDF.type.asNode(), RDFS.Datatype.asNode() ) ||
                                                        // These are common cases that we should support
                                                        n.equals( OWL.Thing.asNode() ) ||
                                                        n.equals( OWL.Nothing.asNode() ) ||
