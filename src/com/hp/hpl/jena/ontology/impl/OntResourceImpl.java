@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.59 $
+ * Revision           $Revision: 1.60 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-24 23:09:24 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.59 2006-03-22 13:52:39 andy_seaborne Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.60 2006-04-24 23:09:24 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1158,11 +1158,16 @@ public class OntResourceImpl
     public boolean isIndividual() {
         OntModel m = (getModel() instanceof OntModel) ? (OntModel) getModel() : null;
 
+        // can we use the reasoner's native abilities to do the isntance test?
+        boolean useInf = false;
+        useInf = m.getProfile().THING() != null &&
+                 m.getReasoner() != null &&
+                 m.getReasoner().supportsProperty( ReasonerVocabulary.individualAsThingP );
+
         StmtIterator i = null, j = null;
         try {
             if (m != null) {
-                if (!(m.getGraph() instanceof BasicForwardRuleInfGraph) ||
-                    m.getProfile().THING() == null) {
+                if (!useInf) {
                     // either not using the OWL reasoner, or not using OWL
                     // look for an rdf:type of this resource that is a class
                     for (i = listProperties( RDF.type ); i.hasNext(); ) {

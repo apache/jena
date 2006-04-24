@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.73 $
+ * Revision           $Revision: 1.74 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:53:13 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-24 23:09:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,6 +42,7 @@ import com.hp.hpl.jena.reasoner.dig.*;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
+import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
@@ -1540,12 +1541,12 @@ public class TestBugReports
         m0.removeSubModel( m1 );
         assertFalse( m0.containsResource( c ) );
     }
-    
+
     /**
         The default namespace pefix of a non-base-model should not manifest as the
          default namespace prefix of the base model or the Ont model.
     */
-    public void testHolgersPolyadicPrefixMappingBug() 
+    public void testHolgersPolyadicPrefixMappingBug()
         {
         final String IMPORTED_NAMESPACE = "http://imported#";
         final String LOCAL_NAMESPACE = "http://local#";
@@ -1574,6 +1575,63 @@ public class TestBugReports
         }
      }
 
+    /**
+     * Bug report by mongolito_404 - closed models used in imports raise an exception
+     */
+    public void xxtest_mongolito_01() {
+        String SOURCEA=
+            "<rdf:RDF" +
+            "    xmlns:rdf          ='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+            "    xmlns:owl          ='http://www.w3.org/2002/07/owl#'" +
+            "    xml:base           ='http://example.com/a#'" +
+            ">" +
+            "  <owl:Ontology>" +
+            "          <owl:imports rdf:resource='http://example.com/b' />" +
+            "  </owl:Ontology>" +
+            "</rdf:RDF>";
+
+        OntDocumentManager.getInstance().addAltEntry( "http://example.com/b", "file:testing/ontology/bugs/test_dk_01.xml" );
+
+        OntModel a = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        a.read( new StringReader( SOURCEA ), null );
+
+        OntDocumentManager.getInstance().getModel( "http://example.com/b" ).close();
+        a = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+
+        // this line threw an exception before the bug was fixed
+        a.read( new StringReader( SOURCEA ), null );
+
+    }
+
+
+    /** IsIndividual reported not to work with default rdfs reasoner
+     *  TODO test disabled until a fix strategy is agreed
+     */
+    public void test_isindividual() {
+        OntModel defModel = ModelFactory.createOntologyModel();
+        OntClass c = defModel.createClass( "http://example.com/test#A" );
+        Individual i = c.createIndividual();
+        assertTrue( "i should be an individual", i.isIndividual() );
+    }
+
+    /** This underpins a problem I'm having with imports processing */
+    public void xxtestModelMakerOpen() {
+        ModelMaker mm = ModelFactory.createMemModelMaker();
+        Model m = mm.openModel( "http://example.com/foo" );
+        assertTrue( m.isEmpty() );
+
+        m.close();
+
+        boolean closed = false;
+        Model m0 = mm.openModel( "http://example.com/foo" );
+        try {
+            assertTrue( m0.isEmpty() );
+        }
+        catch (ClosedException unexpected) {
+            closed = true;
+        }
+        assertFalse( "ModelMaker.openModel returned a closed model", closed );
+    }
 
 
     // Internal implementation methods
