@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.21 2006-03-22 13:53:01 andy_seaborne Exp $
+ * $Id: TestGenericRules.java,v 1.22 2006-04-24 11:28:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2006-03-22 13:53:01 $
+ * @version $Revision: 1.22 $ on $Date: 2006-04-24 11:28:14 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -161,6 +161,27 @@ public class TestGenericRules extends TestCase {
         assertTrue(d.getRule().getName().equals("r1b"));
         TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
         assertTrue(! di.hasNext());
+    }
+    
+    /**
+     * Test early detection of illegal backward rules.
+     */
+    public void testBRuleErrorHandling() {
+        Graph data = Factory.createGraphMem();
+        List rules = Rule.parseRules(
+                    "[a1: -> [(?x eg:p ?y) (?x eg:q ?y) <- (?x eg:r ?y)]]"
+                );
+        boolean foundException = false;
+        try {
+            GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
+            reasoner.setRules(rules);
+            reasoner.setMode(GenericRuleReasoner.HYBRID);
+            InfGraph infgraph = reasoner.bind(data);
+            infgraph.prepare();
+        } catch (ReasonerException e) {
+            foundException = true;
+        }
+        assertTrue("Catching use of multi-headed brules", foundException);
     }
     
     /**

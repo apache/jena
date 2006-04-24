@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.10 2006-03-22 13:52:24 andy_seaborne Exp $
+ * $Id: LPBRuleEngine.java,v 1.11 2006-04-24 11:28:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2006-03-22 13:52:24 $
+ * @version $Revision: 1.11 $ on $Date: 2006-04-24 11:28:02 $
  */
 public class LPBRuleEngine {
     
@@ -118,6 +118,9 @@ public class LPBRuleEngine {
      */
     public synchronized void addRule(Rule rule) {
         checkSafeToUpdate();
+        if (rule.headLength() > 1) {
+            throw new ReasonerException("Backward rules only allowed one head clause");
+        }
         ruleStore.addRule(rule);
     }
     
