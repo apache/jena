@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.68 2006-03-22 13:52:22 andy_seaborne Exp $i
+  $Id: AbstractTestGraph.java,v 1.69 2006-04-24 11:11:15 der Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -340,8 +340,10 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
             assertEquals( "remove with " + findRemove + ":", 0, g.size() );
             assertFalse( g.contains( Triple.create( findCheck ) ) );
             }
-        catch (UnsupportedOperationException e)
-            { assertFalse( g.getCapabilities().iteratorRemoveAllowed() ); }
+        catch (UnsupportedOperationException e) {
+            it.close();
+            assertFalse( g.getCapabilities().iteratorRemoveAllowed() ); 
+        }
         it.close();
         }
     
