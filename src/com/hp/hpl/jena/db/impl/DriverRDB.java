@@ -5,11 +5,7 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.zip.CRC32;
 import java.lang.Thread;
@@ -46,7 +42,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.57 $ on $Date: 2006-03-22 13:52:47 $
+* @version $Revision: 1.58 $ on $Date: 2006-04-25 16:40:54 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -2152,7 +2148,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		return res;
 	}
 
-	
+	// Long term - look at moving to getBlob() (assuming drivers are better behaved these days) 
 	protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
 		RDBLongObject	res = null;
 		ResultSet rs=null;
@@ -2165,7 +2161,19 @@ public abstract class DriverRDB implements IRDBDriver {
 			if (rs.next()) {
                 res = new RDBLongObject();
 				res.head = rs.getString(1);
-				res.tail = rs.getString(2);			
+                Object obj = rs.getObject(2) ;
+                if ( obj == null )
+                {
+                    res.tail = null ;
+                    return res ;
+                }
+                if ( obj instanceof String )
+                    res.tail = (String)obj ;
+                else if ( obj instanceof byte[] )
+                    res.tail = new String((byte[])obj) ;
+                else
+                    throw new RDFRDBException("Long object is of unexpected class: "+obj.getClass());
+                // OLD code (remove after 2.4) res.tail = rs.getString(2);			
 			}
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));

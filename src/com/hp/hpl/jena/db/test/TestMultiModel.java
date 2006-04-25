@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMultiModel.java,v 1.6 2006-03-22 13:53:11 andy_seaborne Exp $
+  $Id: TestMultiModel.java,v 1.7 2006-04-25 16:41:07 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -202,12 +202,13 @@ public class TestMultiModel extends TestCase
 
 	public void testSetLongObjectLen() {
 		int len = dbDriver.getLongObjectLength();
+        int len2 = len - 2 ;
 		try {
 			tearDown();
 			conn = TestConnection.makeTestConnection();
 			dbDriver = conn.getDriver();
 			len = dbDriver.getLongObjectLength();
-			dbDriver.setLongObjectLength(len / 2);
+			dbDriver.setLongObjectLength(len2);
 			model = ModelRDB.createModel(conn);
 		} catch (Exception e) {
 			assertTrue(false);
@@ -222,7 +223,7 @@ public class TestMultiModel extends TestCase
 			dbDriver = conn.getDriver();
 			assertTrue(len == dbDriver.getLongObjectLength());
 			model = ModelRDB.open(conn);
-			assertTrue(len / 2 == dbDriver.getLongObjectLength());
+			assertTrue(len2 == dbDriver.getLongObjectLength());
 		} catch (Exception e) {
 			assertTrue(false);
 		}
