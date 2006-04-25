@@ -53,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.33 2006-04-11 11:00:41 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.34 2006-04-25 14:12:37 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -285,6 +285,7 @@ public class FileManager
 
     private Model loadModelWorker(String filenameOrURI, String baseURI, String rdfSyntax)
     {
+        // Better: if ( hasCachedModel(filenameOrURI) ) return getFromCache(filenameOrURI) ;  
         if ( modelCache != null && modelCache.contains(filenameOrURI) )
         {
             if ( log.isDebugEnabled() )
