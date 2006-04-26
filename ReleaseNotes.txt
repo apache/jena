@@ -67,7 +67,15 @@ Database:
 Reasoners:
     o Fixed bug in the forward rule engine which prevented firing of axiomatic
       rules with non-empty bodies (i.e. no pattern match but calls to builtins).
+    o Changed contract for TransitiveReasoner so the same reasoner can be bound
+      to multiple datasets without interference between them
+    o Added error check for backward rules with multiple head clauses
 
+OntModelSpec:
+    o Changed contract for reasoners so that if a ReasonerFactory is supplied then
+      the generated reasoner instances won't be cached. This allows the same spec
+      to be reused multiple times with reasoners which can only be bound once.
+      
 Jar changes:
     o stax-1.1.1-dev.jar ==> stax-1.1.2-dev.jar
 
