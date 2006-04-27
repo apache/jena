@@ -10,17 +10,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.AccessControlException;
 
 import org.apache.commons.logging.*;
-
-import com.hp.hpl.jena.JenaRuntime;
 
 /** Location files in the filing system.
  *  A FileLocator can have a "current directory" - this is separate from any
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.9 2006-04-27 10:49:03 der Exp $
+ * @version $Id: LocatorFile.java,v 1.10 2006-04-27 13:02:45 der Exp $
  */
 
 public class LocatorFile implements Locator
@@ -91,11 +90,16 @@ public class LocatorFile implements Locator
     {
         File f = toFile(filenameOrURI) ;
 
-        if ( f == null || !f.exists() )
-        {
-            if ( FileManager.logAllLookups && log.isTraceEnabled())
-                log.trace("Not found: "+filenameOrURI+altDirLogStr) ;
-            return null ;
+        try {
+            if ( f == null || !f.exists() )
+            {
+                if ( FileManager.logAllLookups && log.isTraceEnabled())
+                    log.trace("Not found: "+filenameOrURI+altDirLogStr) ;
+                return null ;
+            }
+        } catch (AccessControlException e) {
+            log.warn("Security problem testing for file", e);
+            return null;
         }
         
         try {
