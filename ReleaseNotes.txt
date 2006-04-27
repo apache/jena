@@ -3,6 +3,9 @@ Release Notes
 
 Post-Jena 2.3
 
+General
+    o Fixed various security violations which prevent use within Applets
+    
 Model
     o Model[Con] has acquired a new method, remove(S, P, O),
 	  which removes the triple (S, P, O) from the model. None
@@ -78,6 +81,7 @@ OntModelSpec:
       
 Jar changes:
     o stax-1.1.1-dev.jar ==> stax-1.1.2-dev.jar
+    o new iri.jar required
 
 ==== Jena 2.3
 
