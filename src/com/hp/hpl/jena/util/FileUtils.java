@@ -329,8 +329,13 @@ public class FileUtils
             // Try local loader with absolute path
             is = FileUtils.class.getResourceAsStream("/" + filename);
             if (is == null) {
-                // Can't find it on classpath, so try relative to current directory
-                is = new FileInputStream(filename);
+                // Try local loader, relative, just in case
+                is = FileUtils.class.getResourceAsStream(filename);
+                if (is == null) {
+                    // Can't find it on classpath, so try relative to current directory
+                    // Will throw security exception under and applet but there's not other choice left
+                    is = new FileInputStream(filename);
+                }
             }
         }
         return is;
