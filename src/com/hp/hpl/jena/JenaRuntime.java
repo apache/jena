@@ -14,7 +14,7 @@ import java.security.PrivilegedAction;
  *  Primarily for other parts of the Jena framework. 
  * 
  * @author Andy Seaborne
- * @version $Id: JenaRuntime.java,v 1.8 2006-04-27 08:02:38 der Exp $
+ * @version $Id: JenaRuntime.java,v 1.9 2006-04-27 10:24:01 der Exp $
  */
 
 public class JenaRuntime
@@ -27,7 +27,6 @@ public class JenaRuntime
         
     static Map features = new HashMap() ;
     static {
-        try {
             // Note getSystemProperty uses featureNoSecurity but works if it
             // has not been initialized
             if ( getSystemProperty(featureNoSecurity) != null )
@@ -35,9 +34,6 @@ public class JenaRuntime
             
             if ( getSystemProperty(featureNoCharset) != null )
                 setFeature(featureNoCharset) ;
-        } catch (SecurityException e) {
-               // leave as default, e.g. if running as applet
-        }
     }
     
     public static void setFeature(String featureName) { features.put(featureName, "true") ; }
