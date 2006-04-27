@@ -2,7 +2,7 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial05.java,v 1.3 2005-10-06 17:49:05 andy_seaborne Exp $
+ * $Id: Tutorial05.java,v 1.4 2006-04-27 09:30:07 der Exp $
  */
 package jena.examples.rdf ;
 
@@ -14,7 +14,7 @@ import java.io.*;
 /** Tutorial 5 - read RDF XML from a file and write it to standard out
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2006-04-27 09:30:07 $'
  */
 public class Tutorial05 extends Object {
 
@@ -36,7 +36,7 @@ public class Tutorial05 extends Object {
         }
         
         // read the RDF/XML file
-        model.read(new InputStreamReader(in), "");
+        model.read(in, "");
                     
         // write it to standard out
         model.write(System.out);            
