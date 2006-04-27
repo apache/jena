@@ -42,7 +42,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.58 $ on $Date: 2006-04-25 16:40:54 $
+* @version $Revision: 1.59 $ on $Date: 2006-04-27 14:59:17 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -923,7 +923,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		if ( cnt >= lockTryMax ) {
 			err = "Failed to lock database after "+ lockTryMax + " attempts.\n"
-			+ err + "\n."
+			+ err + "\n"
 			+ "Try later or else call DriverRDB.unlockDB() after ensuring\n" +
 			"that no other Jena applications are using the database.";
 			throw new RDFRDBException(err);
