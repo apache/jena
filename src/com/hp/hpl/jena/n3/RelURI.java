@@ -21,11 +21,12 @@ import org.apache.commons.logging.LogFactory;
 
 //java.net.URI code
 import java.net.URI ;
+import java.security.AccessControlException;
 
 /** com.hp.hpl.jena.query.util.RelURI
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.5 2006-03-22 13:53:26 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.6 2006-04-27 15:00:27 der Exp $
  */
 
 public class RelURI
@@ -282,9 +283,11 @@ public class RelURI
                     if ( f.isDirectory() && ! baseURI.endsWith("/") )
                         baseURI = baseURI+"/" ;
 
-                } catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     LogFactory.getLog(RelURI.class).warn("IOException in chooseBase - ignored") ;
+                    return null ;
+                } catch (AccessControlException ex)  {
+                    LogFactory.getLog(RelURI.class).warn("Security exception in chooseBase - ignored") ;
                     return null ;
                 }
             }
