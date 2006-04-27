@@ -12,6 +12,7 @@ package com.hp.hpl.jena.n3;
 import java.io.OutputStream;
 import java.io.Writer;
 
+import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.rdf.model.*;
 
 /** Entry point for N3 writers.  This writer will choose the actual writer
@@ -28,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *  </p>
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.28 2006-03-22 13:53:26 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.29 2006-04-27 10:33:47 andy_seaborne Exp $
  */
 
 
@@ -98,11 +99,11 @@ public class N3JenaWriter implements RDFWriter
     N3JenaWriterCommon chooseWriter()
     {
         // Compatibility with Jena1
-        if ( System.getProperty(propWriteSimple, "false").equals("true"))
+        if ( JenaRuntime.getSystemProperty(propWriteSimple, "false").equals("true"))
             return new N3JenaWriterCommon() ;
         
         // Choose the writer
-        String writerName = System.getProperty(propWriterName) ;
+        String writerName = JenaRuntime.getSystemProperty(propWriterName) ;
         if ( writerName == null ||
              writerName.equals("N3") || writerName.equals(n3WriterPrettyPrinter) )
             return new N3JenaWriterPP() ;

@@ -12,7 +12,7 @@ package com.hp.hpl.jena.n3;
 /** Turtle writer.  It is actually an appropriately configured   
  *
  * @author		Andy Seaborne
- * @version 	$Id: TurtleJenaWriter.java,v 1.5 2006-03-22 13:53:26 andy_seaborne Exp $
+ * @version 	$Id: TurtleJenaWriter.java,v 1.6 2006-04-27 10:33:47 andy_seaborne Exp $
  */
 
 
@@ -22,7 +22,9 @@ public class TurtleJenaWriter extends N3JenaWriter
     public TurtleJenaWriter()
     {
         super() ;
-        writer.useWellKnownPropertySymbols = false ;
+        
+        if ( writer.getPropValue("usePropertySymbols") == null )
+            writer.useWellKnownPropertySymbols = false ;
         writer.allowTripleQuotedStrings = false ;
         writer.allowDoubles = false ;
     }
