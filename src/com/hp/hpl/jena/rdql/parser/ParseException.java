@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
+import com.hp.hpl.jena.JenaRuntime;
+
 /**
  * This exception is thrown when parse errors are encountered.
  * You can explicitly create objects of this exception type by
@@ -142,7 +144,7 @@ public class ParseException extends Exception {
   /**
    * The end of line string for this machine.
    */
-  protected String eol = System.getProperty("line.separator", "\n");
+  protected String eol = JenaRuntime.getSystemProperty("line.separator", "\n");
  
   /**
    * Used to convert raw characters to their escaped version

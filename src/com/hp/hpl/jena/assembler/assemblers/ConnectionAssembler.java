@@ -1,11 +1,12 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionAssembler.java,v 1.5 2006-01-13 10:56:19 chris-dollin Exp $
+ 	$Id: ConnectionAssembler.java,v 1.6 2006-04-27 10:49:07 der Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
 
+import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.CannotLoadClassException;
 import com.hp.hpl.jena.rdf.model.*;
@@ -59,7 +60,7 @@ public class ConnectionAssembler extends AssemblerBase implements Assembler
         for (StmtIterator it = root.listProperties( JA.dbClassProperty ); it.hasNext();)
             {
             String propertyName = getString( it.nextStatement() );
-            String className = System.getProperty( propertyName );
+            String className = JenaRuntime.getSystemProperty( propertyName );
             try { Class.forName( className ); }
             catch (ClassNotFoundException e)
                 { throw new CannotLoadClassException( root, className, e ); }
@@ -104,7 +105,7 @@ public class ConnectionAssembler extends AssemblerBase implements Assembler
         {
         Property property = JA.property( label + "Property" );
         Literal name = getUniqueLiteral( root, property );
-        return name == null ? ifAbsent : System.getProperty( name.getLexicalForm() ); 
+        return name == null ? ifAbsent : JenaRuntime.getSystemProperty( name.getLexicalForm() ); 
         }
     }
 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: JenaConfig.java,v 1.8 2006-03-22 13:53:12 andy_seaborne Exp $
+ * $Id: JenaConfig.java,v 1.9 2006-04-27 10:49:07 der Exp $
  *
  * Created on 27 June 2002, 08:49
  */
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.*;
        See <code>setOldLiteralCompare</code> below.</li>
  * </ul>
  * @author bwm
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  *
  */
 public class JenaConfig {
@@ -95,7 +95,7 @@ public class JenaConfig {
     static {
         try {
             String str = 
-                  System.getProperty(Jena.PATH + ".oldLiteralCompare", "false");
+                  JenaRuntime.getSystemProperty(Jena.PATH + ".oldLiteralCompare", "false");
             oldLiteralCompare = 
                         (str.equalsIgnoreCase("true") || str.equals("1"));
         } catch (SecurityException se) {

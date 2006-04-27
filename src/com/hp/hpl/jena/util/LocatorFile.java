@@ -13,12 +13,14 @@ import java.io.InputStream;
 
 import org.apache.commons.logging.*;
 
+import com.hp.hpl.jena.JenaRuntime;
+
 /** Location files in the filing system.
  *  A FileLocator can have a "current directory" - this is separate from any
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.8 2006-03-22 13:52:50 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.9 2006-04-27 10:49:03 der Exp $
  */
 
 public class LocatorFile implements Locator
@@ -34,7 +36,7 @@ public class LocatorFile implements Locator
 //            if ( dir == null )
 //            {
 //                try {
-//                    //String wd = System.getProperty("user.dir") ;
+//                    //String wd = JenaRuntime.getSystemProperty("user.dir") ;
 //                    String wd = new File(".").getCanonicalPath() ;
 //                    log.debug("Base file directory: "+wd) ;
 //                } catch (IOException ex)

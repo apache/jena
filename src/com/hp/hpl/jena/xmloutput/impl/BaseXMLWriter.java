@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.52 2006-03-22 13:53:37 andy_seaborne Exp $
+ *  $Id: BaseXMLWriter.java,v 1.53 2006-04-27 10:49:08 der Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -74,7 +74,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.52 $' Date='$Date: 2006-03-22 13:53:37 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.53 $' Date='$Date: 2006-04-27 10:49:08 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -82,7 +82,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
          Introduced to cope with bug 832682: double spacing on windows platforms
     */
     private static final String newline_XMLNS = 
-        System.getProperty( "line.separator" ) + "    xmlns";
+        JenaRuntime.getSystemProperty( "line.separator" ) + "    xmlns";
     
     public BaseXMLWriter() {
         setupMaps();

@@ -5,7 +5,7 @@
 
 /** A class to create and recreate UUIDs.
  * @author   Andy Seaborne
- * @version  $Id: UUID.java,v 1.3 2006-03-22 13:53:39 andy_seaborne Exp $
+ * @version  $Id: UUID.java,v 1.4 2006-04-27 10:49:08 der Exp $
  * http://www.opengroup.org/onlinepubs/009629399/apdxa.htm
  */
 
@@ -15,6 +15,8 @@ import java.security.* ;
 import java.net.InetAddress ;
 import java.net.UnknownHostException ;
 import java.io.ByteArrayInputStream;
+
+import com.hp.hpl.jena.JenaRuntime;
 
 public class UUID
 {
@@ -227,9 +229,9 @@ public class UUID
 		try { nid.append(InetAddress.getLocalHost().getHostAddress()) ; }
 		catch (UnknownHostException ex) { }       
 		
-        nid.append(System.getProperty("os.version")) ;
-        nid.append(System.getProperty("user.name")) ;
-        nid.append(System.getProperty("java.version")) ;
+        nid.append(JenaRuntime.getSystemProperty("os.version")) ;
+        nid.append(JenaRuntime.getSystemProperty("user.name")) ;
+        nid.append(JenaRuntime.getSystemProperty("java.version")) ;
 		nid.append(Integer.toString(Thread.activeCount())) ;
 		nid.append(Long.toString(Runtime.getRuntime().freeMemory())) ;
 		nid.append(Long.toString(Runtime.getRuntime().totalMemory())) ;

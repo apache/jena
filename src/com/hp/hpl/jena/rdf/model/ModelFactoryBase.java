@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactoryBase.java,v 1.6 2006-03-22 13:53:12 andy_seaborne Exp $
+  $Id: ModelFactoryBase.java,v 1.7 2006-04-27 10:49:07 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.shared.*;
 
 /**
@@ -64,7 +65,7 @@ public class ModelFactoryBase
     
     protected static String gp( String name, String ifAbsent )
         { 
-        String answer = System.getProperty( "jena." + name ); 
+        String answer = JenaRuntime.getSystemProperty( "jena." + name ); 
         return answer == null ? ifAbsent : answer;
         }
 

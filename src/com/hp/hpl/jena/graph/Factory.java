@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.23 2006-03-22 13:52:54 andy_seaborne Exp $
+  $Id: Factory.java,v 1.24 2006-04-27 10:49:07 der Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.shared.*;
@@ -23,10 +24,10 @@ public class Factory
         { super(); }
 
     public static final boolean faster =
-        System.getProperty( "jena.faster", "yes" ).equals( "yes" );
+        JenaRuntime.getSystemProperty( "jena.faster", "yes" ).equals( "yes" );
 
     public static final boolean newHashing = 
-        System.getProperty( "jena.hashing", "yes" ).equals( "yes" );
+        JenaRuntime.getSystemProperty( "jena.hashing", "yes" ).equals( "yes" );
     /**
         Answer a memory-based Graph with the Standard reification style.
     */

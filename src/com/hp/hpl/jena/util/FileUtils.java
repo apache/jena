@@ -294,7 +294,7 @@ public class FileUtils
     } 
     
     public static String getTempDirectory()
-    { return System.getProperty( "java.io.tmpdir" ); }
+    { return JenaRuntime.getSystemProperty( "java.io.tmpdir" ); }
 
     private static int counter = 0;
     
