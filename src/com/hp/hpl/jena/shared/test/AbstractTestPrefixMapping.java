@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.25 2006-03-22 13:52:21 andy_seaborne Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.26 2006-04-28 18:03:43 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
 
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.shared.PrefixMapping.Factory;
 import com.hp.hpl.jena.graph.test.*;
 
 import java.util.*;
@@ -320,7 +320,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     public void testAddDefaultMap()
         {
         PrefixMapping pm = getMapping();
-        PrefixMapping root = new PrefixMappingImpl();
+        PrefixMapping root = PrefixMapping.Factory.create();
         pm.setNsPrefix( "a", "aPrefix:" );
         pm.setNsPrefix( "b", "bPrefix:" );
         root.setNsPrefix( "a", "pootle:" );
