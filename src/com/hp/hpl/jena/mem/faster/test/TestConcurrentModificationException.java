@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestConcurrentModificationException.java,v 1.2 2006-04-21 15:02:48 chris-dollin Exp $
+ 	$Id: TestConcurrentModificationException.java,v 1.3 2006-04-28 08:23:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -24,19 +24,21 @@ public class TestConcurrentModificationException extends ModelTestBase
 
     public void testArrayBunchCME() 
         { 
-        ArrayBunch b = new ArrayBunch();
-        b.add( Triple.create( "a P b" ) );
-        b.add( Triple.create( "c Q d" ) );
-        Iterator it = b.iterator();
-        it.next();
-        b.add( Triple.create( "change its state" ) );
-        try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
-        catch (ConcurrentModificationException e) { pass(); }
+        testBunchCME( new ArrayBunch() );
         }
     
     public void testSetBunchCME()
         {
-        SetBunch b = new SetBunch( new ArrayBunch() );
+        testBunchCME( new SetBunch( new ArrayBunch() ) );
+        }
+    
+    public void testHashedBunchCME()
+        {
+        testBunchCME( new HashedTripleBunch( new ArrayBunch() ) );
+        }
+
+    private void testBunchCME( TripleBunch b )
+        {
         b.add( Triple.create( "a P b" ) );
         b.add( Triple.create( "c Q d" ) );
         Iterator it = b.iterator();
@@ -44,11 +46,6 @@ public class TestConcurrentModificationException extends ModelTestBase
         b.add( Triple.create( "change its state" ) );
         try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
         catch (ConcurrentModificationException e) { pass(); }
-        }
-    
-    public void testHashedBunchCME()
-        {
-        
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.11 2006-03-22 13:52:19 andy_seaborne Exp $
+ 	$Id: HashedTripleBunch.java,v 1.12 2006-04-28 08:23:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -14,10 +14,13 @@ import com.hp.hpl.jena.util.iterator.*;
 
 public class HashedTripleBunch extends HashCommon implements TripleBunch
     {
+    protected int changes;
+    
     public HashedTripleBunch( TripleBunch b )
         {
         super( nextSize( (int) (b.size() / loadFactor) ) );
         for (Iterator it = b.iterator(); it.hasNext();) add( (Triple) it.next() );        
+        changes = 0;
         }
 
     public boolean contains( Triple t )
@@ -32,22 +35,6 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
             Object current = keys[index];
             if (current == null) return index;
             if (key.matches( (Triple) current )) return ~index;
-            // System.err.println( ">> collision " + ++k );
-//            if (++k == 6) 
-//                {
-//                RuntimeException e = new RuntimeException( "that's too many collisions for " + key + " in set of size " + size + "/" + capacity );
-//                  System.err.println( ";;; -- iterator -------------------------------------------" );
-//                  for (int i = 0; i < capacity; i += 1)
-//                      {
-//                      Object x = keys[i];
-//                      System.err.print( i + ": " );
-//                      if (x == null) System.err.println( "FREE" );
-//                      else System.err.println( "[" + initialIndexFor( x ) + "] " + x );
-//                      }
-//                  System.err.println( ";;; ++ done ++++++++++++++++++++++++++++++" );
-//                e.printStackTrace( System.err );
-//                throw e;
-//                }
             if (--index < 0) index += capacity;
             }
         }
@@ -72,6 +59,7 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
     public void add( Triple t )
         {
         keys[findSlot( t )] = t;
+        changes += 1;
         if (++size > threshold) grow();
         }
     
@@ -92,6 +80,7 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
         {
         removeFrom( ~findSlot( t ) );
         size -= 1;
+        changes += 1;
         }
     
     public ExtendedIterator iterator()
@@ -100,11 +89,13 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
             {
             int index = capacity;
             int lastIndex = -1;
+            final int initialChanges = changes;
             Object toRemove = null;
             Object current = null;
-            
+                        
             public boolean hasNext()
                 {
+                if (changes > initialChanges) throw new ConcurrentModificationException();
                 if (current == null)
                     while (index > 0 && ((current = keys[--index]) == null)) {};
                 return current != null;
@@ -112,6 +103,7 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
             
             public Object next()
                 {
+                if (changes > initialChanges) throw new ConcurrentModificationException();
                 if (current == null && hasNext() == false) noElements( "HashedTripleBunch iterator empty" );
                 Object answer = toRemove = current;
                 lastIndex = index;
@@ -126,7 +118,7 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
             */
             public void remove()
                 {
-                if (keys[lastIndex] != toRemove) throw new RuntimeException( "CME" );
+                if (keys[lastIndex] != toRemove) throw new ConcurrentModificationException();
                 HashedTripleBunch.this.removeFrom( lastIndex );
                 current = keys[index = lastIndex];
                 lastIndex = -1;

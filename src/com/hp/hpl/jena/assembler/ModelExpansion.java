@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.8 2006-01-13 15:00:34 chris-dollin Exp $
+ 	$Id: ModelExpansion.java,v 1.9 2006-04-28 08:23:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -75,6 +75,7 @@ public class ModelExpansion
     
     protected static void addRangeTypes( Model result, Model schema )
         {
+        Model toAdd = ModelFactory.createDefaultModel();
         for (StmtIterator it = schema.listStatements( ANY, RDFS.range, ANY ); it.hasNext();)
             {
             Statement s = it.nextStatement();
@@ -83,9 +84,10 @@ public class ModelExpansion
             for (StmtIterator x = result.listStatements( ANY, property, ANY ); x.hasNext();)
                 {
                 RDFNode ob = x.nextStatement().getObject();
-                if (ob.isResource()) result.add( (Resource) ob, RDF.type, type );
+                if (ob.isResource()) toAdd.add( (Resource) ob, RDF.type, type );
                 }
             }
+        result.add( toAdd );
         }
     
     protected static void addSupertypes( Model result )
