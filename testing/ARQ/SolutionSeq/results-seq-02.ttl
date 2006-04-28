@@ -20,7 +20,7 @@
                                       rs:variable   "v"
                                     ]
                     ] ;
-      rs:solution   [ rs:binding    [ rs:value      "1.5"^^<http://www.w3.org/2001/XMLSchema#double> ;
+      rs:solution   [ rs:binding    [ rs:value      1.5e0 ;
                                       rs:variable   "v"
                                     ]
                     ] .

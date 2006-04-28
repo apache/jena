@@ -2,10 +2,10 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-:x :f1 -1.0 .
-:x :f2 +1.0 .
-:x :f3 1.0 .
-:x :f4 0.1 .
+:x :d1 -1.0 .
+:x :d2 +1.0 .
+:x :d3 1.0 .
+:x :d4 0.1 .
 
 
 :x :e1 1.0e5 .

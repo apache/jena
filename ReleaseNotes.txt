@@ -1,7 +1,17 @@
 Release Notes
 =============
 
-Post-Jena 2.3
+==== Jena 2.4
+
+JAR file changes:
+    Added:    wstx-asl-2.8.jar
+              json.jar
+    Removed:  stax-1.1.1-dev.jar
+
+N3/Turtle:
+    o The syntax form 2.3 is now treated as an XSD decimal, not an XSD double
+      This is inline with chnages to N3 and Turtle specifications and 
+      compatible with SPARQL.
 
 General
     o Fixed various security violations which prevent use within Applets

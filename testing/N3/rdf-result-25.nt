@@ -1,5 +1,6 @@
 # cwm: rdf-test-25.n3 => rdf-result-25.nt
 # Except cmw gets exponential 'E' (not 'e') 
+# Converted to XSD decimals
     
     <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#e1> "1.0e5"^^<http://www.w3.org/2001/XMLSchema#double> .
     
@@ -25,13 +26,14 @@
     
     
 
-    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#f1> "-1.0"^^<http://www.w3.org/2001/XMLSchema#double> .
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#d1> "-1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
 
-    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#f2> "+1.0"^^<http://www.w3.org/2001/XMLSchema#double> .
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#d2> "+1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
     
-    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#f3> "1.0"^^<http://www.w3.org/2001/XMLSchema#double> .
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#d3> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
     
-    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#f4> "0.1"^^<http://www.w3.org/2001/XMLSchema#double> .
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#d4> "0.1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
     
     <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#i1> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
     

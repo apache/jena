@@ -4,7 +4,7 @@
 :x :num  2 .
 :x :num  3 .
 :x :num  4 .
-:x :num  1.5 .
+:x :num  1.5e0 .
 
 :y :num  1 .
 :y :num  2 .

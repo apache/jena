@@ -7,7 +7,7 @@
       rs:resultVariable  "x" ;
       rs:resultVariable  "v" ;
       rs:solution
-                  [ rs:binding  [ rs:value    "1.0"^^xsd:double ;
+                  [ rs:binding  [ rs:value    "1.0e0"^^xsd:double ;
                                   rs:variable  "v"
                                 ] ;
                     rs:binding  [ rs:value    :xd1 ;

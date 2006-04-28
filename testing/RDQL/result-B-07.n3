@@ -35,7 +35,7 @@
                               ]
                 ] ;
     rs:solution
-                [ rs:binding  [ rs:value    5.7 ;
+                [ rs:binding  [ rs:value    5.7e0 ;
                                 rs:variable
                                             "z"
                               ] ;

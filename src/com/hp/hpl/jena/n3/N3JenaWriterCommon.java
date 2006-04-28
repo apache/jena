@@ -18,12 +18,13 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 
 import java.util.* ;
 import java.io.* ;
+import java.math.BigDecimal;
 import java.text.* ;
 
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.32 2006-04-27 10:33:47 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.33 2006-04-28 17:07:10 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -90,7 +91,8 @@ public class N3JenaWriterCommon implements RDFWriter
     boolean useWellKnownPropertySymbols = getBooleanValue("usePropertySymbols", true) ;
     
     boolean allowTripleQuotedStrings = getBooleanValue("useTripleQuotedStrings", true) ;
-    boolean allowDoubles = getBooleanValue("useDoubles", true) ;
+    boolean allowDoubles   = getBooleanValue("useDoubles", true) ;
+    boolean allowDecimals  = getBooleanValue("useDecimals", true) ;
     
     // ----------------------------------------------------
     // Jena RDFWriter interface
@@ -501,14 +503,28 @@ public class N3JenaWriterCommon implements RDFWriter
                 // Continuing is always safe.
             }
                 
+            if ( datatype.equals(XSD.decimal.getURI()) )
+            {
+                // Must have ., can't have e or E
+                if ( s.indexOf('.') >= 0 &&
+                     s.indexOf('e') == -1 && s.indexOf('E') == -1 )
+                {
+                    // See if parsable.
+                    try {
+                        BigDecimal d = new BigDecimal(s) ;
+                        return s ;
+                    } catch (NumberFormatException nfe) {}
+                }
+            }
+            
             if ( this.allowDoubles && datatype.equals(XSD.xdouble.getURI()) )
             {
-                // Must have an '.' or 'e' or 'E'
-                if ( s.indexOf('.') >= 0 || 
-                     s.indexOf('e') >= 0 ||
+                // Must have 'e' or 'E' (N3 and Turtle now read 2.3 as a decimal).
+                if ( s.indexOf('e') >= 0 ||
                      s.indexOf('E') >= 0 )
                 {
                     try {
+                        // Validate it.
                         Double.parseDouble(s) ;
                         return s ;
                     } catch (NumberFormatException nfe) {}
