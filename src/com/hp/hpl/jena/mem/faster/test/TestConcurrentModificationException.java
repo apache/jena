@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestConcurrentModificationException.java,v 1.5 2006-04-28 09:25:57 chris-dollin Exp $
+ 	$Id: TestConcurrentModificationException.java,v 1.6 2006-04-28 09:48:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -11,6 +11,8 @@ import java.util.*;
 import junit.framework.*;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.query.Domain;
+import com.hp.hpl.jena.graph.query.StageElement;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 
@@ -79,6 +81,33 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
         b.remove( Triple.create( "a P b" ) );
         try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
         catch (ConcurrentModificationException e) { pass(); } 
+        }
+
+    private static final MatchOrBind mob = new MatchOrBind() 
+        {
+        public boolean matches( Triple t )
+            {
+            return true;
+            }
+        
+        public MatchOrBind reset( Domain d )
+            {
+            return null;
+            }
+        };
+
+    public void testAddDuringAppThrowsCME()
+        {
+        final TripleBunch b = getBunch();
+        b.add( Triple.create( "a P b" ) );
+        b.add( Triple.create( "c Q d" ) );
+        StageElement se = new StageElement() 
+            {
+            public void run( Domain current )
+                { b.add( Triple.create(  "S P O"  ) ); }
+            };
+        try { b.app(  new Domain( 0 ), se, mob ); fail(" should throw CME" ); }
+        catch (ConcurrentModificationException e) { pass(); }
         }
     }
 

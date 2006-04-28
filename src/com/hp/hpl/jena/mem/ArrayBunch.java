@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: ArrayBunch.java,v 1.8 2006-04-21 15:04:12 chris-dollin Exp $
+    $Id: ArrayBunch.java,v 1.9 2006-04-28 09:47:41 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -79,8 +79,12 @@ public class ArrayBunch implements TripleBunch
     
     public void app( Domain d, StageElement next, MatchOrBind s )
         {
-        int i = size;
-        while (i > 0) if (s.matches( elements[--i] )) next.run( d );
+        int i = size, initialChanges = changes;
+        while (i > 0) 
+            {
+            if (changes > initialChanges) throw new ConcurrentModificationException();
+            if (s.matches( elements[--i] )) next.run( d );
+            }
         }
     
     public ExtendedIterator iterator()
