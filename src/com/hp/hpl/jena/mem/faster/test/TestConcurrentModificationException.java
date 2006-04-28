@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestConcurrentModificationException.java,v 1.3 2006-04-28 08:23:57 chris-dollin Exp $
+ 	$Id: TestConcurrentModificationException.java,v 1.4 2006-04-28 08:46:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -14,28 +14,51 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 
-public class TestConcurrentModificationException extends ModelTestBase
+public abstract class TestConcurrentModificationException extends ModelTestBase
     {
     public TestConcurrentModificationException( String name )
         { super( name ); }
 
+    public abstract TripleBunch getBunch();
+    
     public static TestSuite suite()
-        { return new TestSuite( TestConcurrentModificationException.class ); }
-
-    public void testArrayBunchCME() 
         { 
-        testBunchCME( new ArrayBunch() );
+        TestSuite result = new TestSuite();
+        result.addTestSuite( TestArrayBunchCME.class ); 
+        result.addTestSuite( TestSetBunchCME.class ); 
+        result.addTestSuite( TestHashedBunchCME.class ); 
+        return result;
+        }
+
+    public static class TestArrayBunchCME extends TestConcurrentModificationException
+        {
+        public TestArrayBunchCME(String name)
+            { super( name ); }
+
+        public TripleBunch getBunch()
+            { return new ArrayBunch(); }
         }
     
-    public void testSetBunchCME()
+    public static class TestSetBunchCME extends TestConcurrentModificationException
         {
-        testBunchCME( new SetBunch( new ArrayBunch() ) );
+        public TestSetBunchCME(String name)
+            { super( name ); }
+
+        public TripleBunch getBunch()
+            { return new SetBunch( new ArrayBunch() ); }
         }
     
-    public void testHashedBunchCME()
+    public static class TestHashedBunchCME extends TestConcurrentModificationException
         {
-        testBunchCME( new HashedTripleBunch( new ArrayBunch() ) );
+        public TestHashedBunchCME(String name)
+            { super( name ); }
+
+        public TripleBunch getBunch()
+            { return new HashedTripleBunch( new ArrayBunch() ); }
         }
+
+    public void testCME()
+        { testBunchCME( getBunch() ); }
 
     private void testBunchCME( TripleBunch b )
         {
