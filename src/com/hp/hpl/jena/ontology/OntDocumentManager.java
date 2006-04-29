@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.52 $
+ * Revision           $Revision: 1.53 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-04-29 11:25:46 $
+ * Last modified on   $Date: 2006-04-29 11:35:23 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.52 2006-04-29 11:25:46 chris-dollin Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.53 2006-04-29 11:35:23 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -1092,19 +1092,28 @@ public class OntDocumentManager
      */
     private Model fetchLoadedImportModel( OntModelSpec spec, String importURI )
         {
-        Model in;
-        // create a sub ontology model and load it from the source
-        // note that we do this to ensure we recursively load imports
-        ModelMaker maker = spec.getImportModelMaker();
-        boolean loaded = maker.hasModel( importURI );
-
-        in = maker.openModel( importURI );
-
-        // if the graph was already in existence, we don't need to read the contents (we assume)!
-        if (!loaded) {
-            read( in, importURI, true );
-        }
-        return in;
+        ModelReader loader = new ModelReader() 
+                {
+                public Model readModel( Model toRead, String URL )
+                    {
+                    read( toRead, URL, true );
+                    return toRead;
+                    }
+                };
+        return spec.getImportModelGetter().getModel( importURI, loader );
+//        Model in;
+//        // create a sub ontology model and load it from the source
+//        // note that we do this to ensure we recursively load imports
+//        ModelMaker maker = spec.getImportModelMaker();
+//        boolean loaded = maker.hasModel( importURI );
+//
+//        in = maker.openModel( importURI );
+//
+//        // if the graph was already in existence, we don't need to read the contents (we assume)!
+//        if (!loaded) {
+//            read( in, importURI, true );
+//        }
+//        return in;
         }
 
 
