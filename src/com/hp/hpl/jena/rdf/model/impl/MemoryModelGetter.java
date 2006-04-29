@@ -1,33 +1,32 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelSourceAssembler.java,v 1.5 2006-04-29 20:26:29 chris-dollin Exp $
+ 	$Id: MemoryModelGetter.java,v 1.1 2006-04-29 20:26:44 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.assembler.assemblers;
+package com.hp.hpl.jena.rdf.model.impl;
 
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.MemoryModelGetter;
-import com.hp.hpl.jena.vocabulary.RDF;
+import java.util.HashMap;
 
-public class ModelSourceAssembler extends AssemblerBase
-    {
-    public Object open( Assembler a, Resource root, Mode irrelevant )
-        {
-        checkType( root, JA.ModelSource );
-        return root.hasProperty( RDF.type, JA.RDBModelSource )
-             ? createRDBMaker( getConnection( a, root ) )
-            : new MemoryModelGetter()
-            ; 
-        }
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.ModelGetter;
+import com.hp.hpl.jena.rdf.model.ModelReader;
 
-    protected  ModelMaker createRDBMaker( ConnectionDescription c )
-        { return ModelFactory.createModelRDBMaker( c.getConnection() ); }
-
-    private ConnectionDescription getConnection( Assembler a, Resource root )
-        { return (ConnectionDescription) a.open( getRequiredResource( root, JA.connection ) ); }
-    }
+public class MemoryModelGetter implements ModelGetter
+	{
+	protected HashMap models = new HashMap();
+	
+	public Model getModel(String URL) 
+		{ return (Model) models.get( URL ); }
+	
+	public Model getModel(String URL, ModelReader loadIfAbsent) 
+		{
+		Model m = (Model) models.get( URL );
+		if (m == null) models.put( URL, m = ModelFactory.createDefaultModel() );
+		return m;
+		}
+	}
 
 
 /*

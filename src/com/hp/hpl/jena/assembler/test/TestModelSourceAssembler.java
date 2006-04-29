@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelSourceAssembler.java,v 1.3 2006-03-22 13:52:21 andy_seaborne Exp $
+ 	$Id: TestModelSourceAssembler.java,v 1.4 2006-04-29 20:26:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -11,8 +11,8 @@ import java.util.*;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.ModelSourceAssembler;
 import com.hp.hpl.jena.assembler.exceptions.PropertyRequiredException;
-import com.hp.hpl.jena.graph.impl.SimpleGraphMaker;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.MemoryModelGetter;
 
 public class TestModelSourceAssembler extends AssemblerTestBase
     {
@@ -51,8 +51,9 @@ public class TestModelSourceAssembler extends AssemblerTestBase
         {
         Assembler a = new ModelSourceAssembler();
         ModelGetter g = (ModelGetter) a.open( resourceInModel( "mg rdf:type ja:ModelSource" ) );
-        assertInstanceOf( ModelMaker.class, g );
-        assertInstanceOf( SimpleGraphMaker.class, ((ModelMaker) g).getGraphMaker() );
+        assertInstanceOf( MemoryModelGetter.class, g );
+//        assertInstanceOf( ModelMaker.class, g );
+//        assertInstanceOf( SimpleGraphMaker.class, ((ModelMaker) g).getGraphMaker() );
         }
     
     public void testRDBModelMakerSource()
