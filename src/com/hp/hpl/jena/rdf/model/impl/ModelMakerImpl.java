@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerImpl.java,v 1.21 2006-03-22 13:52:30 andy_seaborne Exp $
+  $Id: ModelMakerImpl.java,v 1.22 2006-04-29 10:58:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.CannotCreateException;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -94,6 +95,9 @@ public class ModelMakerImpl implements ModelMaker
     
     public Model getModel( String URL )
         { return null; }         
+    
+    public Model getModel( String URL, ModelReader loadIfAbsent )
+        { throw new CannotCreateException( URL ); }
     }
 
 /*

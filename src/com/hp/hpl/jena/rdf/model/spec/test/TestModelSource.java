@@ -8,6 +8,7 @@ package com.hp.hpl.jena.rdf.model.spec.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.shared.CannotCreateException;
 
 import junit.framework.TestSuite;
 
@@ -65,6 +66,9 @@ public class TestModelSource extends ModelTestBase
 
         public Model getModel( String URL )
             { return null;  }
+        
+        public Model getModel( String URL, ModelReader loadIfAbsent )
+            { throw new CannotCreateException( URL ); }
         }
     }
 

@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.rdf.model.spec.test;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.CannotCreateException;
 
 /**
     A fake model-spec (has methods but broken behaviour) for testing
@@ -77,6 +78,9 @@ public class MockModelSpec implements ModelSpec
         {
         return null;
         }
+    
+    public Model getModel( String URL, ModelReader loadIfAbsent )
+        { throw new CannotCreateException( URL ); }
     }
 
 /*

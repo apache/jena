@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelGetter.java,v 1.2 2006-03-22 13:53:12 andy_seaborne Exp $
+ 	$Id: ModelGetter.java,v 1.3 2006-04-29 10:59:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -26,6 +26,13 @@ public interface ModelGetter
         and otherwise answer null.
     */
     public Model getModel( String URL );
+    
+    /**
+        Answer a model appropriate for <code>URL</code>, If none is to hand,
+        and it's possible to create one, create it and load it using <code>loadIfAbsent</code>.
+        Otherwise throw CannotCreateException. This method never returns null.
+    */
+    public Model getModel( String URL, ModelReader loadIfAbsent );
     }
 
 

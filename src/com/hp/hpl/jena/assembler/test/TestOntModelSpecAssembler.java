@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelSpecAssembler.java,v 1.3 2006-03-22 13:52:20 andy_seaborne Exp $
+ 	$Id: TestOntModelSpecAssembler.java,v 1.4 2006-04-29 10:59:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.assembler.assemblers.OntModelSpecAssembler;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.shared.CannotCreateException;
 
 import junit.framework.*;
 
@@ -120,7 +121,12 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         {
         Assembler a = new OntModelSpecAssembler();
         ModelGetter getter = new ModelGetter() 
-            { public Model getModel( String URL ) { return null; }};
+            { 
+            public Model getModel( String URL ) { return null; }
+
+            public Model getModel( String URL, ModelReader loadIfAbsent )
+                { throw new CannotCreateException( URL ); }
+            };
         NamedObjectAssembler mock = new NamedObjectAssembler( resource( "source" ), getter );
         Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:importSource source" );
         OntModelSpec om = (OntModelSpec) a.open( mock, root );
