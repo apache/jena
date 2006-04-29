@@ -7,6 +7,8 @@ JAR file changes:
     Added:    wstx-asl-2.8.jar
               json.jar
     Removed:  stax-1.1.1-dev.jar
+              jakarta-oro-2.0.8.jar
+              
 
 N3/Turtle:
     o The syntax form 2.3 is now treated as an XSD decimal, not an XSD double
