@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.44 $
+ * Revision           $Revision: 1.45 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-04-05 09:59:46 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2006-04-29 11:25:46 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.44 2006-04-05 09:59:46 der Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.45 2006-04-29 11:25:46 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -241,8 +241,31 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     }
     
     public ModelGetter getImportModelGetter() {
+        if (importModelGetter == null) importModelGetter = fabricateModelGetter();
         return importModelGetter;
     }
+
+    private ModelGetter fabricateModelGetter()
+        {
+        return new ModelGetter()
+            {
+            public Model getModel( String URL )
+                {
+                return m_importsMaker.hasModel( URL ) ? m_importsMaker.openModel( URL ) : null;
+                }
+
+            public Model getModel( String URL, ModelReader loadIfAbsent )
+                {
+                return m_importsMaker.hasModel( URL ) ? m_importsMaker.openModel( URL ) : createAndLoad( URL, loadIfAbsent );
+                }
+
+            private Model createAndLoad( String URL, ModelReader loadIfAbsent )
+                {
+                Model result = m_importsMaker.createModel( URL );
+                return loadIfAbsent.readModel( result, URL );
+                }
+            };
+        }
 
     public void setImportModelGetter( ModelGetter mg ) {
         importModelGetter = mg;

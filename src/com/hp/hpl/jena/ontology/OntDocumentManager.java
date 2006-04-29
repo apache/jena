@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.51 $
+ * Revision           $Revision: 1.52 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:37 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-04-29 11:25:46 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.51 2006-03-22 13:52:37 andy_seaborne Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.52 2006-04-29 11:25:46 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -1052,23 +1052,7 @@ public class OntDocumentManager
             // add this model to occurs check list
             model.addLoadedImport( importURI );
 
-            // if we have a cached version get that, otherwise load from the URI but don't do the imports closure
-            Model in = getModel( importURI );
-
-            // if not cached, we must load it from source
-            if (in == null) {
-                // create a sub ontology model and load it from the source
-                // note that we do this to ensure we recursively load imports
-                ModelMaker maker = model.getSpecification().getImportModelMaker();
-                boolean loaded = maker.hasModel( importURI );
-
-                in = maker.openModel( importURI );
-
-                // if the graph was already in existence, we don't need to read the contents (we assume)!
-                if (!loaded) {
-                    read( in, importURI, true );
-                }
-            }
+            Model in = fetchPossiblyCachedImportModel( model, importURI );
 
             // we trap the case of importing ourself (which may happen via an indirect imports chain)
             if (in != model) {
@@ -1083,6 +1067,45 @@ public class OntDocumentManager
             }
         }
     }
+
+    /**
+      if we have a cached version get that, otherwise load from the URI but don't do the imports closure
+     * @param model
+     * @param importURI
+     * @return
+     */
+    private Model fetchPossiblyCachedImportModel( OntModel model, String importURI ) {
+        Model in = getModel( importURI );
+
+        // if not cached, we must load it from source
+        if (in == null) {
+            in = fetchLoadedImportModel( model.getSpecification(), importURI );
+        }
+        return in;
+        }
+
+
+    /**
+     * @param spec
+     * @param importURI
+     * @return
+     */
+    private Model fetchLoadedImportModel( OntModelSpec spec, String importURI )
+        {
+        Model in;
+        // create a sub ontology model and load it from the source
+        // note that we do this to ensure we recursively load imports
+        ModelMaker maker = spec.getImportModelMaker();
+        boolean loaded = maker.hasModel( importURI );
+
+        in = maker.openModel( importURI );
+
+        // if the graph was already in existence, we don't need to read the contents (we assume)!
+        if (!loaded) {
+            read( in, importURI, true );
+        }
+        return in;
+        }
 
 
     /**
