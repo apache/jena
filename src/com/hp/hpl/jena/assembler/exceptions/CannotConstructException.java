@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: CannotConstructException.java,v 1.4 2006-03-22 13:53:26 andy_seaborne Exp $
+ 	$Id: CannotConstructException.java,v 1.5 2006-04-29 10:45:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
-    Exception used to report a fauluire of a group assembler to construct an
+    Exception used to report a failure of a group assembler to construct an
     object because there is no component assembler associated with the
     object's most specific type.
     @author kers
