@@ -15,7 +15,7 @@ N3/Turtle:
 
 General
     o Fixed various security violations which prevent use within Applets
-    
+
 Model
     o Model[Con] has acquired a new method, remove(S, P, O),
 	  which removes the triple (S, P, O) from the model. None
@@ -88,6 +88,15 @@ OntModelSpec:
     o Changed contract for reasoners so that if a ReasonerFactory is supplied then
       the generated reasoner instances won't be cached. This allows the same spec
       to be reused multiple times with reasoners which can only be bound once.
+
+   o OntModelSpecs now export access to their to-be-deprecated ModelMakers via
+     the importModelGetters. This is part of the move to using Assemblers.
+
+OntDocumentManager
+    o When the OntDocumentManager asks for a model for an import, it goes via
+      the OntModelSpec's ModelGetter. Since the default ModelGetter just wraps
+      the spec's ModelMaker, this doesn't change the usual behaviour, but it
+      allows the OntModelSpec to use weak Getters.
       
 Jar changes:
     o stax-1.1.1-dev.jar ==> stax-1.1.2-dev.jar
