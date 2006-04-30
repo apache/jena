@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.24 2006-03-22 13:53:11 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.25 2006-04-30 18:37:29 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -597,7 +597,7 @@ public class TestConnection extends TestCase {
 				Property p = foo.createProperty("test#predicate");
 				Resource o = foo.createResource("test#object");
 				Statement stmt = foo.createStatement(u, p, o);
-				assertFalse(foo.contains(stmt));
+				//assertFalse(foo.contains(stmt)); // Invalid test - thread2 may get in first
 				s.incCount();
 				s.waitOnCount(4);
 				assertTrue(foo.contains(stmt));
