@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelSourceAssembler.java,v 1.5 2006-04-29 20:26:29 chris-dollin Exp $
+ 	$Id: ModelSourceAssembler.java,v 1.6 2006-04-30 18:34:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -17,8 +17,8 @@ public class ModelSourceAssembler extends AssemblerBase
         {
         checkType( root, JA.ModelSource );
         return root.hasProperty( RDF.type, JA.RDBModelSource )
-             ? createRDBMaker( getConnection( a, root ) )
-            : new MemoryModelGetter()
+             ? (Object)createRDBMaker( getConnection( a, root ) )
+            : (Object)new MemoryModelGetter()
             ; 
         }
 
