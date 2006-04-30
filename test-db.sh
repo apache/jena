@@ -14,7 +14,7 @@ fi
 case $1 in
 
 hsqldb|hsql)
-echo HSQL
+echo HSQLDB
 #DEFS="-Djena.db.url=jdbc:hsqldb:mem:jenatest"
 DEFS="-Djena.db.url=jdbc:hsqldb:file:jenatest"
 ## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://localhost/jenatest"
