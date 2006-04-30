@@ -50,15 +50,15 @@ public class Driver_HSQL extends DriverRDB
         m_lsetReifierClassName = myPackageName + ".SpecializedGraphReifier_RDB";
     }
 
-//    public void close()
-//    {
-//        try {
-//            //super.close() ;
-//            PreparedStatement ps = m_sql.getPreparedSQLStatement("shutdown") ;
-//            ps.execute() ;
-//            m_sql.returnPreparedSQLStatement(ps);
-//        } catch (SQLException ex) {}
-//    }
+    public void shutdown()
+    {
+        try {
+            //super.close() ;
+            PreparedStatement ps = m_sql.getPreparedSQLStatement("shutdown") ;
+            ps.execute() ;
+            m_sql.returnPreparedSQLStatement(ps);
+        } catch (SQLException ex) {}
+    }
     
     String[] getDbInitTablesParams()
     {
