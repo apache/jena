@@ -53,7 +53,6 @@ public class Driver_HSQL extends DriverRDB
     public void shutdown()
     {
         try {
-            //super.close() ;
             PreparedStatement ps = m_sql.getPreparedSQLStatement("shutdown") ;
             ps.execute() ;
             m_sql.returnPreparedSQLStatement(ps);
