@@ -1,33 +1,124 @@
 #!/bin/bash
 
+# You wil need to edit this script to fix:
+# - User/password for the databases you wish to test
+# - Location of JDBC driver files (via environment variable JDBC)
 
-# run the DB tests. This is a HACK to get started. The test for "a server is available"
-# is too weak and in any case we want a version that will work for any supported
-# server. Still, have to begin somehow ...
+if [ "$OSTYPE" == "cygwin" ]
+then 
+    export S=";"
+else 
+    export S=":"
+fi
+
+case $1 in
+
+hsqldb|hsql)
+echo HSQL
+#DEFS="-Djena.db.url=jdbc:hsqldb:mem:jenatest"
+DEFS="-Djena.db.url=jdbc:hsqldb:file:jenatest"
+## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://localhost/jenatest"
+
+## Web server - does not fully work
+## DEFS="-Djena.db.url=jdbc:hsqldb:http://localhost:8888/jenatest
+
+DEFS=" $DEFS  -Djena.db.user=sa"
+DEFS=" $DEFS  -Djena.db.password="
+DEFS=" $DEFS  -Djena.db.type=HSQL"
+DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
+JDBC=${JDBC:-$HOME/jlib/hsqldb.jar}
+;;
 
 
-# Wrapper suppressed because (a) only relevant for MySql and (b) fails on cygwin - der
-#if mysql --user=test < /dev/null ; then
+postgres|postgresql) 
+echo PostgreSQL
+DEFS="-Djena.db.url=jdbc:postgresql://localhost/jenatest"
+DEFS=" $DEFS  -Djena.db.user=test"
+DEFS=" $DEFS  -Djena.db.password=password"
+DEFS=" $DEFS  -Djena.db.type=PostgreSQL"
+DEFS=" $DEFS  -Djena.db.driver=org.postgresql.Driver"
+JDBC="${JDBC:-$HOME/jlib/hsqldb.jar}"
+;;
 
-    if [ "$OSTYPE" == "cygwin" ]; then export S=";"; else export S=":"; fi
+mysql) 
+echo MySQL
+DEFS="-Djena.db.url=jdbc:mysql://localhost/jenatest"
+DEFS=" $DEFS  -Djena.db.user=user"
+DEFS=" $DEFS  -Djena.db.password=password"
+DEFS=" $DEFS  -Djena.db.type=MySQL"
+DEFS=" $DEFS  -Djena.db.driver=com.mysql.jdbc.Driver" 
+JDBC="${JDBC:-$HOME/jlib/mysql-connector-java-5.0.0-beta-bin.jar}"
+;;
 
-    case $1 in
-        postgres) DEFS="-Djena.db.url=jdbc:postgresql://localhost/test -Djena.db.user=test -Djena.db.password= -Djena.db.type=PostgreSQL -Djena.db.driver=org.postgresql.Driver" ;; 
-        mysql) export DEFS="-Djena.db.url=jdbc:mysql://localhost/test -Djena.db.user=test@localhost -Djena.db.password=test -Djena.db.type=MySQL -Djena.db.driver=com.mysql.jdbc.Driver" ;;
-        # SQL Server, jTDS driver, local MSDE installation
-        mssqlTdsLocal) export DEFS="-Djena.db.url=jdbc:jtds:sqlserver://localhost/Test -Djena.db.user=test -Djena.db.password=foo -Djena.db.type=MsSQL -Djena.db.driver=net.sourceforge.jtds.jdbc.Driver -Djena.db.concurrent=false" ;;
-        # SQL Server, Microsoft driver, full SQL Server (in Palo Alto, beware speed!)
-        mssqlMsFull)  export DEFS="-Djena.db.url=jdbc:sqlserver://dbase-pa2.labs.hpl.hp.com;databaseName=JenaTest -Djena.db.user=jenatest -Djena.db.password=6aXjen%4 -Djena.db.type=MsSQL -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Djena.db.concurrent=false" ;;
-        # SQL Server, Microsoft driver, local MSDE installation
-        mssqlMsLocal) export DEFS="-Djena.db.url=jdbc:sqlserver://localhost;databaseName=Test -Djena.db.user=test -Djena.db.password=foo -Djena.db.type=MsSQL -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Djena.db.concurrent=false" ;;
-	*) echo "you must specify a database type [postgres or mysql]"; return ;;
-    esac
+# MS SQL Server, jTDS driver, local
+mssqlTdsLocal)
+echo "MS SQL Server with TDS driver"
+DEFS="-Djena.db.url=jdbc:jtds:sqlserver://localhost/Test"
+DEFS=" $DEFS  -Djena.db.user=test"
+DEFS=" $DEFS  -Djena.db.password=foo"
+DEFS=" $DEFS  -Djena.db.type=MsSQL"
+DEFS=" $DEFS  -Djena.db.driver=net.sourceforge.jtds.jdbc.Driver"
+DEFS=" $DEFS  -Djena.db.concurrent=false"
+JDBC="${JDBC:-}"
+;;
 
-    export CP=""
-    for jar in lib/*jar; do export CP=$CP$S$jar; done
+# MS SQL Server, Microsoft driver, full SQL Server (in Palo Alto, beware speed!)
+mssqlMsFull)
+echo "MS SQL Server / Microsoft driver"
+DEFS="-Djena.db.url=jdbc:sqlserver://dbase-pa2.labs.hpl.hp.com;databaseName=JenaTest"
+DEFS=" $DEFS  -Djena.db.user=jenatest"
+DEFS=" $DEFS  -Djena.db.password=6aXjen%4"
+DEFS=" $DEFS  -Djena.db.type=MsSQL"
+DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
+DEFS=" $DEFS  -Djena.db.concurrent=false"
+JDBC="${JDBC:-$HOME/jlib/sqljdbc.jar}"
+;;
 
-    java $DEFS -classpath $CP junit.textui.TestRunner com.hp.hpl.jena.db.test.TestPackage
+# MS SQL Server, Microsoft driver, local
+mssqlMsLocal)
+echo "MS SQL Server / Microsoft driver / Local"
+DEFS="-Djena.db.url=jdbc:sqlserver://localhost;databaseName=Test"
+DEFS=" $DEFS  -Djena.db.user=user"
+DEFS=" $DEFS  -Djena.db.password=password"
+DEFS=" $DEFS  -Djena.db.type=MsSQL"
+DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
+DEFS=" $DEFS  -Djena.db.concurrent=false"
+JDBC="${JDBC:-$HOME/jlib/sqljdbc.jar}"
+;;
 
-#else
-#    echo mysql does not seem to be installed.
-#fi
+mssqle)
+echo "MS SQL Server express"
+DEFS="-Djena.db.url=jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=jenatest"
+DEFS=" $DEFS  -Djena.db.user=user"
+DEFS=" $DEFS  -Djena.db.password=password"
+DEFS=" $DEFS  -Djena.db.type=MsSQL"
+DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
+DEFS=" $DEFS  -Djena.db.concurrent=false"
+JDBC="${JDBC:-$HOME/jlib/sqljdbc.jar}"
+;;
+
+mssqlTdsLocal)
+echo "MS SQL Server with TDS driver"
+DEFS="-Djena.db.url=jdbc:jtds:sqlserver://localhost/jenatest"
+DEFS=" $DEFS -Djena.db.user=test"
+DEFS=" $DEFS -Djena.db.password=password"
+DEFS=" $DEFS -Djena.db.type=MsSQL"
+DEFS=" $DEFS -Djena.db.driver=net.sourceforge.jtds.jdbc.Driver"
+DEFS=" $DEFS -Djena.db.concurrent=false"
+;;
+
+*) echo "you must specify a database type [postgres, mysql, mssql, hsqldb]"; exit ;;
+esac
+
+if [ "$JDBC" = "" ]
+then
+    echo "No JDBC driver " 1>&2 
+    exit 1
+    fi
+
+# Assumes jena.jar is built
+export CP="$JDBC"
+for jar in lib/*jar; do export CP="$CP$S$jar" ; done
+
+java $DEFS -classpath $CP junit.textui.TestRunner \
+    com.hp.hpl.jena.db.test.TestPackage
