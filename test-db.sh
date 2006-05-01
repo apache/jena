@@ -15,13 +15,19 @@ case $1 in
 
 hsqldb|hsql)
 echo HSQLDB
-#DEFS="-Djena.db.url=jdbc:hsqldb:mem:jenatest"
 DEFS="-Djena.db.url=jdbc:hsqldb:file:jenatest"
 ## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://localhost/jenatest"
+## DEFS="-Djena.db.url=jdbc:hsqldb:http://localhost:88/jenatest
+DEFS=" $DEFS  -Djena.db.user=sa"
+DEFS=" $DEFS  -Djena.db.password="
+DEFS=" $DEFS  -Djena.db.type=HSQL"
+DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
+JDBC=${JDBC:-$HOME/jlib/hsqldb.jar}
+;;
 
-## Web server - does not fully work
-## DEFS="-Djena.db.url=jdbc:hsqldb:http://localhost:8888/jenatest
-
+hsqldb-mem|hsql-mem)
+echo "HSQLDB (in-memory)"
+DEFS="-Djena.db.url=jdbc:hsqldb:mem:jenatest"
 DEFS=" $DEFS  -Djena.db.user=sa"
 DEFS=" $DEFS  -Djena.db.password="
 DEFS=" $DEFS  -Djena.db.type=HSQL"
@@ -93,21 +99,11 @@ DEFS=" $DEFS  -Djena.db.user=user"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MsSQL"
 DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
-DEFS=" $DEFS  -Djena.db.concurrent=false"
+## DEFS=" $DEFS  -Djena.db.concurrent=false"
 JDBC="${JDBC:-$HOME/jlib/sqljdbc.jar}"
 ;;
 
-mssqlTdsLocal)
-echo "MS SQL Server with TDS driver"
-DEFS="-Djena.db.url=jdbc:jtds:sqlserver://localhost/jenatest"
-DEFS=" $DEFS -Djena.db.user=test"
-DEFS=" $DEFS -Djena.db.password=password"
-DEFS=" $DEFS -Djena.db.type=MsSQL"
-DEFS=" $DEFS -Djena.db.driver=net.sourceforge.jtds.jdbc.Driver"
-DEFS=" $DEFS -Djena.db.concurrent=false"
-;;
-
-*) echo "you must specify a database type [postgres, mysql, mssql, hsqldb]"; exit ;;
+*) echo "you must specify a database type [postgres, mysql, mssql, mssqle, hsqldb]"; exit ;;
 esac
 
 if [ "$JDBC" = "" ]
