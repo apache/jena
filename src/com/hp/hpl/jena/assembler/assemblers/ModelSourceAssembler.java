@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelSourceAssembler.java,v 1.6 2006-04-30 18:34:35 andy_seaborne Exp $
+ 	$Id: ModelSourceAssembler.java,v 1.7 2006-05-01 10:54:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -17,12 +17,12 @@ public class ModelSourceAssembler extends AssemblerBase
         {
         checkType( root, JA.ModelSource );
         return root.hasProperty( RDF.type, JA.RDBModelSource )
-             ? (Object)createRDBMaker( getConnection( a, root ) )
-            : (Object)new MemoryModelGetter()
+             ? (ModelGetter) createRDBGetter( getConnection( a, root ) )
+            : new MemoryModelGetter()
             ; 
         }
 
-    protected  ModelMaker createRDBMaker( ConnectionDescription c )
+    protected  ModelGetter createRDBGetter( ConnectionDescription c )
         { return ModelFactory.createModelRDBMaker( c.getConnection() ); }
 
     private ConnectionDescription getConnection( Assembler a, Resource root )

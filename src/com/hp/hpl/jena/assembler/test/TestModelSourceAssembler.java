@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelSourceAssembler.java,v 1.4 2006-04-29 20:26:44 chris-dollin Exp $
+ 	$Id: TestModelSourceAssembler.java,v 1.5 2006-05-01 10:54:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -52,8 +52,6 @@ public class TestModelSourceAssembler extends AssemblerTestBase
         Assembler a = new ModelSourceAssembler();
         ModelGetter g = (ModelGetter) a.open( resourceInModel( "mg rdf:type ja:ModelSource" ) );
         assertInstanceOf( MemoryModelGetter.class, g );
-//        assertInstanceOf( ModelMaker.class, g );
-//        assertInstanceOf( SimpleGraphMaker.class, ((ModelMaker) g).getGraphMaker() );
         }
     
     public void testRDBModelMakerSource()
@@ -62,7 +60,7 @@ public class TestModelSourceAssembler extends AssemblerTestBase
         final List history = new ArrayList();
         Assembler a = new ModelSourceAssembler() 
             {
-            protected  ModelMaker createRDBMaker( ConnectionDescription cGiven )
+            protected ModelGetter createRDBGetter( ConnectionDescription cGiven )
                 {
                 assertSame( c, cGiven );
                 history.add( "created" );

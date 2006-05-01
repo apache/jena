@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerImpl.java,v 1.22 2006-04-29 10:58:48 chris-dollin Exp $
+  $Id: ModelMakerImpl.java,v 1.23 2006-05-01 10:54:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -93,11 +93,17 @@ public class ModelMakerImpl implements ModelMaker
     public Model createModel()
         { return createFreshModel(); }
     
+    /**
+        ModelGetter implementation component.     
+    */
     public Model getModel( String URL )
-        { return null; }         
+        { return hasModel( URL ) ? openModel( URL ) : null; }         
     
     public Model getModel( String URL, ModelReader loadIfAbsent )
-        { throw new CannotCreateException( URL ); }
+        { 
+        Model already = getModel( URL );
+        return already == null ? loadIfAbsent.readModel( createModel( URL ), URL ) : already;
+        }
     }
 
 /*
