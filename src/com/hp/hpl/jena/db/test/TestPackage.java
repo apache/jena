@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.39 $
+ * @version 	$Revision: 1.40 $
  */
 public class TestPackage extends TestSuite
 {
@@ -66,12 +66,12 @@ public class TestPackage extends TestSuite
         be set from inside Eclipse, and presumably other IDEs as well.      
     */
 	//*/
-	static String M_DB_URL = ModelFactoryBase.guessDBURL();
-    static String M_DB_USER = ModelFactoryBase.guessDBUser();
-    static String M_DB_PASSWD = ModelFactoryBase.guessDBPassword();
-    static String M_DB = ModelFactoryBase.guessDBType();
-    static String M_DBDRIVER_CLASS = ModelFactoryBase.guessDBDriver();
-    static boolean  M_DBCONCURRENT = ModelFactoryBase.guessDBConcurrent();
+	public static String M_DB_URL = ModelFactoryBase.guessDBURL();
+    public static String M_DB_USER = ModelFactoryBase.guessDBUser();
+    public static String M_DB_PASSWD = ModelFactoryBase.guessDBPassword();
+    public static String M_DB = ModelFactoryBase.guessDBType();
+    public static String M_DBDRIVER_CLASS = ModelFactoryBase.guessDBDriver();
+    public static boolean  M_DBCONCURRENT = ModelFactoryBase.guessDBConcurrent();
     // */      
 
     static public TestSuite suite() {

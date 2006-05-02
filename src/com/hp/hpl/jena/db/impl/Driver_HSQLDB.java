@@ -8,7 +8,11 @@ package com.hp.hpl.jena.db.impl;
 
 public class Driver_HSQLDB extends Driver_HSQL 
 {
-    // Alternative name.
+    public Driver_HSQLDB()
+    {
+        super() ;
+        DATABASE_TYPE = "HSQLDB";
+    }
 }
 
 /*

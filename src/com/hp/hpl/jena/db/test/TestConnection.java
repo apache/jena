@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.25 2006-04-30 18:37:29 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.26 2006-05-02 15:12:16 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -597,7 +597,7 @@ public class TestConnection extends TestCase {
 				Property p = foo.createProperty("test#predicate");
 				Resource o = foo.createResource("test#object");
 				Statement stmt = foo.createStatement(u, p, o);
-				//assertFalse(foo.contains(stmt)); // Invalid test - thread2 may get in first
+				assertFalse(foo.contains(stmt)); // Invalid test - thread2 may get in first
 				s.incCount();
 				s.waitOnCount(4);
 				assertTrue(foo.contains(stmt));
@@ -649,7 +649,7 @@ public class TestConnection extends TestCase {
 		}
 
         if ( ! TestPackage.M_DBCONCURRENT ) {
-            logger.warn("testConcurrentThread suppressed");
+            logger.warn("Transaction isolation test surpressed");
             return;
         }
 		syncOnCount s = new syncOnCount();

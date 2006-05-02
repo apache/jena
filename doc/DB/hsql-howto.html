@@ -8,7 +8,7 @@
 
 <h1>HowTo Use HSQLDB with Jena2</h1>
 
-<h2>What is HSQLDB</h2>
+<h2>What is HSQLDB?</h2>
 
 <p><a href="http://www.hsqldb.org/">HSQLDB</a> (also known as Hypersonic or HSQL), 
 is a lightweight, 100% Java SQL Database Engine. Used with Jena, it provides a 
@@ -18,11 +18,12 @@ run as a database server, handling connections from different JVMs, and also as
 a purely in-memory engine.</p>
 <p>Using it within the application JVM, and using file-based persistence, is the 
 most useful mode with Jena.</p>
+<p>HSQLDB does not support full transaction isolation.</p>
 
 <h2>Download and Installation of HSQL</h2>
 
 <p><a href="http://sourceforge.net/project/showfiles.php?group_id=23316">
-Download HSQLDB</a> from SourceForge, unpack the zip file and put the hsqldb.jar 
+Download HSQLDB</a> from SourceForge, unpack the zip file and put the <code>hsqldb.jar</code> 
 file on the application classpath. This includes the JDBC driver and the 
 database engine.</p>
 

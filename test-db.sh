@@ -22,6 +22,8 @@ DEFS=" $DEFS  -Djena.db.user=sa"
 DEFS=" $DEFS  -Djena.db.password="
 DEFS=" $DEFS  -Djena.db.type=HSQL"
 DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
+## HSQL does not support full transaction isolation.
+DEFS=" $DEFS  -Djena.db.concurrent=false"
 JDBC=${JDBC:-$HOME/jlib/hsqldb.jar}
 ;;
 
@@ -30,8 +32,9 @@ echo "HSQLDB (in-memory)"
 DEFS="-Djena.db.url=jdbc:hsqldb:mem:jenatest"
 DEFS=" $DEFS  -Djena.db.user=sa"
 DEFS=" $DEFS  -Djena.db.password="
-DEFS=" $DEFS  -Djena.db.type=HSQLDB"
+DEFS=" $DEFS  -Djena.db.type=HSQL"
 DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
+DEFS=" $DEFS  -Djena.db.concurrent=false"
 JDBC=${JDBC:-$HOME/jlib/hsqldb.jar}
 ;;
 
