@@ -4,7 +4,7 @@
 
 <HEAD>
 <TITLE>Jena Relational Database backend</TITLE>
-<link href="../styles/doc.css" rel="stylesheet" type="text/css" />
+<link href="../../styles/doc.css" rel="stylesheet" type="text/css" />
 </HEAD>
 
 
@@ -41,12 +41,12 @@
   Separate tables for resources and literals exist but are only used for <i>long</i>
 objects
   whose length exceeds some threshold. The threshold has a database-dependent 
-  default but may be redefined by users (see <a href="options.html">LongObjectLength</a>). Consequently, Jena2 requires fewer join operations than 
+  default but may be redefined by users (see <a href="../options.html">LongObjectLength</a>). Consequently, Jena2 requires fewer join operations than 
   Jena1 at the expense of greater memory consumption. Reducing the value of
   LongObjectLength can reduce disk space consumption. Jena2 offers another
   mechanism to reduce disk space consumption. Often, resource URIs have common
   prefixes. By default, URIs are stored fully expanded in statement tables.
-  However, the <a href="options.html">DoCompressURI</a>&nbsp;option can be used
+  However, the <a href="../options.html">DoCompressURI</a>&nbsp;option can be used
   to compress URIs by storing common prefixes in a separate table and encoding
   the URI in a statement table with a reference to the prefix table.</p>
 
@@ -55,7 +55,7 @@ objects
   <p> For loading large databases, two techniques can be used to reduce load
   time. First, if the dataset to be loaded 
   contains no duplicate statements, the option 
-  <a href="options.html">DoDuplicateCheck</a> &nbsp;may be used to disable checking for duplicate statements on 
+  <a href="../options.html">DoDuplicateCheck</a> &nbsp;may be used to disable checking for duplicate statements on 
   insertion. Another option is to manually delete the database indexes and then 
   recreate them after the loading has completed. Unfortunately, Jena2 does not 
   currently support a utility to do this on behalf of users. We cannot provide 
@@ -166,7 +166,7 @@ patterns are not yet known. However, based on preliminary testing, we can make
 some recommendations for improved application performance. <br>
 <br>
 Recall that Jena supports two mechanisms for adding a reified statement (see the
-<a href="../how-to/reification.html">Reification HowTo</a>). The RDF 
+<a href="../../how-to/reification.html">Reification HowTo</a>). The RDF 
 standard represents a reified statement as four individual statements and these 
 statements may be added individually to a model. Jena will internally convert 
 these back to the original reified statement. Alternatively, Jena supports a 
@@ -180,7 +180,7 @@ same amount of time as adding a single non-reified statement - it is four times
 faster than individually adding the four reification statements.<br>
 <br>
 When creating a new Model, Jena2 now provides several different reification 
-styles. For persistent models, we recommend using the <a href="../how-to/reification.html">
+styles. For persistent models, we recommend using the <a href="../../how-to/reification.html">
 Standard</a> reification style if you have a choice. There is very little 
 performance difference between the styles. However, Standard is more powerful (supports 
 queries over the reified statements), is consistent with the RDF standard (has 
@@ -192,7 +192,7 @@ simply create two models, using one for just the reified statements. This allows
 you to query while ignoring the reified statements and may give a small 
 performance gain in future implementations. We are looking at optimizing the 
 special cases of models with only reified statements, or only non-reified 
-statements. In fact, <a href="fastpath.html">Fastpath</a> already 
+statements. In fact, <a href="../fastpath.html">Fastpath</a> already 
 supports this optimization for RDQL query processing as an option.<br>
 &nbsp;</p>
 

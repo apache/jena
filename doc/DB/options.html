@@ -17,11 +17,7 @@
 
 
 
-<h3>6 July, 2005</h3>
-
-
-
-  <p>The following options are available for use with the persistence subsystem. 
+<p>The following options are available for use with the persistence subsystem. 
   For each option Xyz, there are getXyz and setXyz methods in the associated 
   interface. Some options must be set when initializing (formatting) the database and others may 
   be set while accessing models.</p>
@@ -114,9 +110,11 @@
 
 
   <p><span style="font-weight: 400"><font size="3">*  </font><font size="2">These options are 
-  database-dependent. See the database-specific howto (<a href="mysql-howto.html">MySQL</a>,
+  database-dependent. See the database-specific howto (</font></span><a href="hsql-howto.html">HSQLDB,
+  </a><span style="font-weight: 400"><font size="2"><a href="mysql-howto.html">MySQL</a>,
   <a href="oracle-howto.html">Oracle</a>,
-  <a href="postgresql-howto.html">PostgreSQL</a>) for the default values.</font></span></p>
+  <a href="postgresql-howto.html">PostgreSQL</a>, <a href="mssql-howto.html">
+  Microsoft SQL Server</a>) for the default values.</font></span></p>
 
 
 
@@ -346,18 +344,13 @@
     reified tables are ignored. For applications that use only asserted 
     statements this may provide a performance improvement for certain types of 
     queries (specifically, those with unknown predicates), especially if the 
-    database is remote from the application. Note that this option only applies 
-    to Fastpath queries for Jena2.2 and prior versions. In the current (CVS) 
-    version of Jena, this option applies to all queries, e.g., ListStatements.</dd>
+    database is remote from the application.</dd>
     <dt>QueryOnlyReified</dt>
     <dd>When true, querying will only be done on reified statement tables; the 
     asserted statement tables are ignored. For applications that use only 
     reified statements this may provide a performance improvement for certain 
     types of queries (specifically, those with unknown predicates), especially 
-    if the database is remote from the application. Note that this option only 
-    applies to Fastpath queries for Jena2.2 and prior versions. In the current 
-    (CVS) version of Jena, this option applies to all queries, e.g., 
-    ListStatements.</dd>
+    if the database is remote from the application.</dd>
     <dt>QueryFullReified</dt>
     <dd>See the <a href="fastpath.html">Fastpath</a> 
     notes.</dd>

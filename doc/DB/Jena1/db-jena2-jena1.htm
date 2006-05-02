@@ -1,0 +1,110 @@
+<HTML>
+<!-- (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP -->
+
+
+<HEAD>
+<TITLE>Jena Relational Database backend</TITLE>
+<link href="../../styles/doc.css" rel="stylesheet" type="text/css" />
+</HEAD>
+
+
+
+<BODY bgcolor="#FFFFFF">
+
+
+
+  <h1><span style="background-position: 0 0">Comparing Jena2 and Jena1 database 
+  systems</span></h1>
+<h2><a name="compatibility"></a>Compatibility with Jena1 ModelRDB and 
+  Databases</h2>
+
+
+
+  <p>In general, Jena2 supports backwards compatibility for the Jena1 
+  applications using the <font face="Courier New" size="2">ModelRDB</font> 
+  class. However, the Jena1 databases themselves are not compatible and cannot 
+  be directly read by Jena2. Instructions on migrating Jena1 databases to Jena2 
+  are given <a href="#migrating">below</a>.</p>
+
+
+
+  <p>There are some changes to the API. <font face="Courier New" size="2">The 
+  ModelRDB</font> constructors are deprecated and applications should consider 
+  migrating to new factory methods for creating and opening persistent models 
+  (see the <a href="../creating-db-models.html">HowTo</a>). The <font face="Courier New" size="2">
+  ModelRDB</font> package name has changed. Jena1 applications that directly 
+  reference the package name jena.rdb must be modified to reference the package 
+  name
+  <font face="Courier New" size="2">jena.db</font>. Jena2 does not support the <font face="Courier New" size="2">
+  StoreRDB</font> class nor any of the Jena1 customization parameters (setProperty, 
+  getProperty). Jena2 uses a different technique for database configuration.</p>
+
+
+
+  <p>Jena2 does not support the <i>hash</i> layouts and <i>proc</i> layouts of 
+  Jena1. Applications that request these layouts under Jena2 will be given a 
+  generic layout. Jena2 supports MySQL, Oracle, PostgreSQL. Applications that 
+  require Interbase&nbsp; will not work. A Jena driver for Berkeley DB is 
+  available; see ModelJEB on the Jena <a href="../../contrib/contributions.html">
+  contributions</a> Web page. The driver configuration files (e.g., Mysql.config) 
+  are no longer used. Instead, get/set methods on the driver and modelRDB 
+  classes are used for configuration parameters (see <a href="../options.html">
+  Options</a>).</p>
+
+
+
+  <p>In Jena2, all databases are multi-model. By default, models are stored 
+  separately and each model uses one table for asserted statements and another 
+  table for reified statements. To share tables among models, see
+  <a href="#migrating">migrating</a>, below.</p>
+
+
+
+  <p>Performance of Jena2 persistent models is no worse than Jena1 and often 
+  better. However, Jena2 persistent models may consume more database space. See 
+  the performance notes (<a href="perfNotes.html">PerfNotes</a>).</p>
+
+
+
+  <h2><a name="migrating"></a>Migrating Jena1 Applications and Databases to 
+  Jena2</h2>
+
+
+
+  <p>As mentioned above, most Jena1 persistent applications should run with 
+  little or no modification under Jena2. However, the <font face="Courier New" size="2">
+  ModelRDB</font> class constructors are deprecated. In Jena2, persistent models 
+  should be created using a factory method. In some situations, the ModelRDB 
+  class constructors are still required because the factory methods do not yet 
+  support all the ModelRDB functionality (see
+  <a href="../creating-db-models.html">HowTo</a>).</p>
+
+
+
+  <p>The Jena2 persistence architecture and layout are different from Jena1. 
+  However, these differences are largely transparent to applications and only 
+  affect code that creates new persistent models. In particular, the way in 
+  which database configuration options are specified is changed. In Jena2, 
+  configuration options are specified using get and set methods on models or 
+  drivers. See <a href="../options.html">
+  Options</a> for details on using them.</p>
+
+
+
+  <p>There is no utility provided to migrate databases. However, users can 
+  easily create their own. A small Jena1 application program is used to write 
+  Jena1 <font face="Courier New" size="2">ModelRDB</font> contents to a text 
+  file using an RDF writer. Then, a small Jena2 application program is used to 
+  read this file and store it in a <font face="Courier New">persistent</font> 
+  model. For small databases, the PrettyWriter (RDF/XML-ABBREV) should be 
+  adequate. For medium or large databases, use the N-Triple writer for better 
+  performance and consider using a pipe to connect the two small applications 
+  rather than using an intermediate file.</p>
+
+
+
+<body>
+
+</body>
+
+</html>

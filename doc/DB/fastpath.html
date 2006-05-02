@@ -1,46 +1,35 @@
 <html>
 <!-- (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP -->
 <head>
-<title>RDQL Fastpath Query Processing</title>
+<title>Fastpath Query Processing</title>
 <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
-This version: 0.3<br/> Date: 1 July 2005<h1>RDQL Fastpath Query Processing</h1>
+<h1>Fastpath Query Processing</h1>
+<p>This page describes Jena <i>Fastpath</i> query processing.</p>
 
 <h2>Fastpath Overview</h2>
 
-<p>The goal of RDQL Fastpath query processing is to perform as much of the RDQL 
-query processing as possible within the database engine. The standard RDQL query 
-processing algorithm is to process each RDQL pattern as a separate <i>Find</i> 
-operation. For database-backed models, this algorithm has high overhead for 
-queries with variables. For example, consider the RDQL query:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<font face="Courier New" size="2">&lt;Var1, ex:Name, &quot;Alice&quot;&gt; AND &lt;Var1, ex:City, 
-&quot;Wonderland&quot;&gt;<br>
-</font>The standard algorithm processes this query by generating one <i>Find</i> 
-operation to get all Alices and then, for each Alice, generating an additional
-<i>Find</i> operation to check if that Alice lives in Wonderland. However, a 
-database engine could process both RDQL query patterns with a single join 
-operation. The Fastpath algorithm generates SQL queries that match multiple 
-patterns.</p>
+<p>Each Jena Graph (the low level class behind Jana Models) provides a query 
+handler.&nbsp; The purpose of the query handler is to provide a route for 
+execution of filtered basic graph patterns (a conjunction of triple patterns and 
+also value constraints). </p>
+<p>The goal of Jena Fastpath query processing is to perform such filtered basic 
+graph pattern matching for SPARQL (or RDQL) within the database engine. The standard
+<a href="http://jena.sourceforge.net/ARQ">ARQ</a> query 
+processing algorithm is to process each SPARQL query pattern and identify those 
+part that can be dispatched to the graph storage as a single unit. For 
+databases, the Fastpath algorithm generates SQL queries that match multiple 
+patterns yet are portable across a wide range of SQL database engines.</p>
 
-<p>The Fastpath algorithm works by partitioning the patterns and constraints for 
+<p>The database-backed model stores RDF triples in a statements table but also 
+in property tables (e.g. for reification statements). The database Fastpath algorithm works by partitioning the patterns and constraints for 
 a query into one or more groups, referred to as <i>stages</i>, where each stage consists of patterns that can 
 be processed together. Stages that consist of more than one pattern are processed by a single, 
 dynamically-generated SQL query. Stages that consist of just one pattern are processed by a <i>
-Find</i> operation. This is considered more efficient than generating an SQL 
-query (although this has not been measured). The Fastpath algorithm also determines a 
+Find</i> operation. The Fastpath algorithm also determines a 
 partial execution order for the stages in an attempt to minimize execution time.</p>
-
-<p>The Fastpath code is new and not thoroughly tested. If problems with Fastpath 
-are suspected or found, it is possible to disable Fastpath and revert to the 
-default nested-loops algorithm by invoking <font face="Courier New" size="2">
-setDoFastpath(false)</font> on the ModelRDB instance (see <a href="options.html">
-Options)</a>. The remainder of this document describes the Fastpath algorithm in more 
-detail, including limitations, optimizations and future work. Jena2's support 
-for different reification styles and use of a separate table for reification 
-somewhat complicates the algorithm. These issues are discussed below.</p>
 
 <h2>Fastpath Support for Standard Models</h2>
 
@@ -49,15 +38,13 @@ case, a model that uses the Standard reification style (i.e., standard RDF
 treatment of reification, see the <a href="../how-to/reification.html">
 Reification-HowTo</a> for a description of the styles). Models that use this 
 style may may contain both asserted statements and 
-reification triples. As mentioned above, a Jena2 query consists of a set of 
-triple patterns and a set of constraints that apply to the variable bindings 
-(e.g., Var5 != 1000). The Fastpath algorithm is summarized in the pseudo-code 
+reification triples. The Fastpath algorithm is summarized in the pseudo-code 
 below.</p>
 
   <dl>
     <font SIZE="2">
     <dd><font face="Courier New">patternsToDo = all patterns in query</font></dd>
-    <dd><font face="Courier New">// patternsToDo has the RDQL query patterns 
+    <dd><font face="Courier New">// patternsToDo has the triple patterns 
     that are not yet staged.</font></dd>
     <dd><font face="Courier New">while ( patternsToDo is not empty ) {</font></dd>
     <dd><font face="Courier New">&nbsp;&nbsp;&nbsp; staged = the lowest cost pattern 
@@ -122,7 +109,7 @@ code for joins across graphs. This is also deferred to a future release.</p>
 <h2>Fastpath Optimizations</h2>
 
 <p>If it is known that a Jena model contains only asserted statements or if a 
-user does not wish to query over reified statments, then  variables over 
+user does not wish to query over reified statements, then  variables over 
 predicates can 
 be supported. This affects the algorithm that looks for joins (mentioned above) and 
 should provide a performance benefit for queries that include predicate 
@@ -137,11 +124,10 @@ QueryOnlyReified is true then QueryFullReified must also be true.</p>
 <p>If a model contains only fully reified statements or the user is only 
 interested in querying fully reified statements (i.e., partially reified 
 statements are to be ignored), then another optimization is possible that eliminates unnecessary joins for reified statements. For 
-example, consider the following query over reified statements.<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<font face="Courier New" size="2">&lt;Var1, rdf:subject, &quot;Alice&quot;&gt; AND &lt;Var1, 
-rdf:object, V2&gt;<br>
-</font>This retrieves all reified statements about Alice. The normal Fastpath 
+example, consider the following query over reified statements.</p>
+<p><font face="Courier New" size="2">&lt;Var1, rdf:subject, &lt;Alice&gt;&gt; AND &lt;Var1, rdf:predicate, V2&gt; 
+AND &lt;Var1, rdf:object, V3&gt;</font></p>
+<p>This retrieves all reified statements about Alice. The normal Fastpath 
 algorithm will generate a join for these two patterns. However, we note that 
 fully reified statements are stored in a single database row. So, if the user is 
 only interested in query results for fully reified statements, then the join can be replaced by a 
@@ -169,19 +155,18 @@ effect as specifying <font face="Courier New" size="2">setQueryOnlyAsserted(true
 
 <h2>Limitations</h2>
 
-<h4>Known Bugs</h4>
+<h4>Known Issues</h4>
 
 <dl>
-  <dd><b>Concurrent updates</b>: if the RDQL query is not run within a 
+  <dd><b>Concurrent updates</b>: if the query is not run within a 
   transaction, anomalies may occur if the underlying persistent model is updated 
-  by some other application between the the time an RDQL query is compiled and 
+  by some other application between the time a query is compiled and 
   subsequently executed. Generally, this should not be a problem but there are 
   situations where a query may return no results. In particular, if a query 
   references a long literal or URI, the database identifier for that object is 
   obtained at compilation time. If the literal does not exist at compilation 
   time but is subsequently added prior to running the query, then no results are 
-  returned when, in fact, results should be returned. There may be other 
-  examples of anomalies.</dd>
+  returned when, in fact, results should be returned.</dd>
 </dl>
 
 <h4>Limitations/Future Enhancements</h4>
@@ -191,11 +176,12 @@ effect as specifying <font face="Courier New" size="2">setQueryOnlyAsserted(true
   queries across graphs. A separate SQL statement is generated for each graph. 
   Some support for querying across graphs will be enabled in the future.</dd>
   <dd><b>Querying across tables.</b> Within a model, Fastpath only optimizes 
-  patterns over the same table. Limited support for queryng across tables will 
+  patterns over the same table. Support for queryng across tables will 
   be enabled in the future.</dd>
   <dd><b>Predicate variables.</b> Fastpath only supports predicate variables in 
-  the case that queryOnlyAsserted is true. In the future, it should also be 
-  possible to enable predicate variables for some types of RDQL queries when queryOnlyReified 
+  the case that <code>queryOnlyAsserted</code> is true. In the future, it should also be 
+  possible to enable predicate variables for some types of filtered basic graph 
+  pattern queries when <code>queryOnlyReified</code> 
   is true.</dd>
   <dd><b>Query Log.</b> There is currently no easy-to-use facility to log the 
   SQL statements generated by Fastpath. However, to print a&nbsp; trace of the 
@@ -203,8 +189,8 @@ effect as specifying <font face="Courier New" size="2">setQueryOnlyAsserted(true
   uncomment line 60 of <font face="Courier New" size="2">
   jena.db.impl.DBStage.java</font>. In the future, we hope to add an API for 
   accessing information about the generated SQL, including the statement string.</dd>
-  <dd><b>Query Constraints.</b> Currently only RDQL string matching constraints are  processed 
-  within the database engine. In the future, more constraints may be processed in 
+  <dd><b>Query Constraints.</b> Currently only string matching constraints are  processed 
+  within the database engine. In the future, more constraints will be processed in 
   the database engine.</dd>
   <dt>&nbsp;</dt>
   <dt>&nbsp;</dt>

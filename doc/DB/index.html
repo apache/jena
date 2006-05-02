@@ -17,288 +17,137 @@
 
 
 
-<h3>18 April, 2005</h3>
-
-
-
-<p>The jena/db module provides an implementation of the Jena <code>model</code>
-interface but with the ability to store and retrieve RDF statements using a
-database. It currently supports MySQL, Oracle, PostgreSQL and MS SQLServer for persistent
-storage and runs under Linux and WindowsXP. Jena1 databases cannot be accessed
-by Jena2 and must be reloaded. Little performance tuning has been done.</p>
-
-
-
-<h2>Contents</h2>
-
-
-
-<blockquote>
-
-
+<p>Jena provides persistent storage of RDF data in relational databases. The 
+same interfaces such as <code>Model</code>, <code>Resource</code> and <code>
+Query</code>, are used to access and manipulate persistently stored RDF. The 
+application does not directly access the database nor does it need to be aware 
+of the database schema.</p>
+<p>Implementations for MySQL, HSQLDB, PostgreSQL, Oracle and Microsoft SQL Server are 
+provided and other databases have been added by 3rd parties.</p>
+<h2>Documents : Quick Links</h2>
 <ul>
-<li><a href="#features">Features</a>
-<li><a href="#reification">Reification</a>
-<li><a href="#remaining">Remaining Work</a>
-<li><a href="#dbengines">Database Engines Supported</a>
-<li><a href="#compatibility">Compatibility with Jena1 ModelRDB</a>
-<li><a href="#migrating">Migrating Jena1 Applications and Databases</a>
-</ul>
-
-
-</blockquote>
-
-<h2><a name="features"></a>Features</h2>
-
-
-
-<p>The Jena2 persistence subsystem implements an extension to the Jena Model
-class that provides persistence for models through use of a back-end database
-engine. Jena2 is largely backwards-compatible for Jena1 applications with the
-exception of some database configuration options. The default Jena2 database
-layout uses a denormalized schema in which literals and resource URIs are stored
-directly in statement tables. This differs from Jena1 in which all literals and
-resources were stored in two separate tables that were referenced by the
-statements table. The Jena2 layout enables faster insertion and retrieval but
-uses more storage than Jena1. However, configuration options are available that
-give Jena2 users some control over the degree of denormalization in order to
-reduce storage consumption. The persistence subsystem supports a <a href="fastpath.html">
-Fastpath</a> capability for RDQL queries that dynamically generates SQL queries
-to perform as much of the RDQL query as possible within the database engine. For
-an overview of creating and accessing persistent Jena models, see the <a href="howto.html">
-HowTo</a>. A summary of the various configuration options available is given in
-<a href="options.html">Options</a>. Known issues and open problems are
-summarized in&nbsp;<a href="issues.html">Issues</a>. Some performance notes and
-observations are given in <a href="perfNotes.html">PerfNotes</a>.</p>
-
-
-<h2><a name="reification"</a>Reification</h2>
-
-<p>
-The database supports reification "efficiently": complete reified statements
-are represented by the statements themselves.
-
-<p>
-However, there is a known defect with respect to the intended behaviour
-of Jena reified statements. "Over-specified" reified statements (eg a
-reified statement with two different subjects/predicates/objects) raise
-an <i>AlreadyReified</i> exception, rather than acting as if no
-reified statement is present. (Contrast this with the behaviour of the
-memory models.)
-
-<p>
-Users who do not use reification, or who only reify complete statements,
-will not hit this defect, and no user has reported it, so for the present
-it remains unfixed.
-
-
-<h2><a name="remaining"></a>Remaining Work</h2>
-
-
-
-<p>In the future, we would like to address the following issues.</p>
-
-
-
-<ul>
-  <li> <font face="Verdana"><i>Native Java persistence</i> - a native Java
-  persistent store would be convenient for some users.</font></li>
-  <li> <font face="Verdana"><i>Performance tuning and characterization</i> - a
-  better understanding of the trade-offs of the various configuration options
-  would be useful.</font></li>
-  <li><font face="Verdana"><i>Application-specific database layouts</i> -
-  Jena2 supports reification with a property-class table but this capability
-  should be generalized to support user-defined property and property class
-  tables.</font></li>
+  <li><a href="creating-db-models.html">How To Create Persistent Models</a></li>
+  <li>Database specific notes<ul>
+    <li><a href="hsql-howto.html">HSQLDB</a></li>
+    <li><a href="mysql-howto.html">MySQL</a></li>
+    <li><a href="postgresql-howto.html">PostgreSQL</a></li>
+    <li><a href="oracle-howto.html">Oracle</a></li>
+    <li><a href="mssql-howto.html">Microsoft SQL Server</a></li>
+  </ul>
+  </li>
 </ul>
 
 
 
-  <h2><a name="dbengines"></a>Database Engine Support</h2>
+  <h2><a name="features"></a>Features</h2>
 
 
 
-<p>The following table lists the platforms, database engines and JDBC drivers
-currently supported for Jena2 persistence. Older and newer versions may work but
-have not been tested. See the database-specific <i>how-to</i> documents for more
-details on using these databases for Jena applications (<a href="mysql-howto.html">MySQL</a>,
+<p>The Jena2 persistence subsystem implements the Jena Model 
+interface providing persistence for models through use of a back-end relational database 
+engine.&nbsp; The default Jena2 database 
+<a href="layout.html">layout</a> uses a denormalized schema in which literals and resource URIs are stored 
+directly in statement tables. The Jena2 layout enables faster insertion and retrieval 
+for fine-grained API operations at the cost of storage over a normalized triples 
+and nodes schema. Configuration options are available that 
+give Jena2 users some control over the degree of denormalization in order to 
+reduce storage consumption.</p>
+<p>The persistence subsystem supports a <a href="fastpath.html">
+Fastpath</a> capability for SPARQL queries that dynamically generates SQL queries 
+for SPARQL Basic Graph Patterns to perform significant parts of the SPARQL query within the database engine. </p>
+<p>For an overview of creating and accessing persistent Jena models, see &quot;<a href="creating-db-models.html">How 
+To Create Persistent Models</a>&quot;. A summary of the various configuration options available is given in
+<a href="options.html">Options</a>. Some performance notes and 
+observations are given in <a href="Jena1/perfNotes.html">PerfNotes</a> comparing 
+the Jena2 and Jena1 designs.</p>
+<h2><a name="dbengines"></a>Database Engine Support</h2>
+
+
+
+<p>The following table lists the database engines and JDBC drivers 
+that are known to work with Jena. Older newer versions may work but 
+have not been tested; new versions generally work. Please report further 
+configurations to <a href="mailto:jena-dev@groups.yahoo.com">
+jena-dev@groups.yahoo.com</a>.</p>
+<p>See the database-specific <i>how-to</i> documents for more 
+details on using these databases for Jena applications (<a href="hsql-howto.html">HSQLDB,</a> <a href="mysql-howto.html">MySQL</a>,
   <a href="oracle-howto.html">Oracle</a>,
   <a href="postgresql-howto.html">PostgreSQL</a>,
   <a href="mssql-howto.html">MS SQL Server</a>).
   </p>
+<p>The Jena Version column records the last known test. It is expected that all 
+later versions of Jena will work but this may not have been tested, or this 
+document may not have been updated.
+  </p>
+<p></p>
 
 
 
-<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1">
-  <tr>
-    <td style="text-align: left"><b>&nbsp;&nbsp; Platform&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
-    <td style="text-align: left"><b>&nbsp;&nbsp; Database Engine&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
-    <td style="text-align: left"><b>&nbsp;&nbsp; JDBC Driver</b></td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; MySQL 4.1.11</td>
-    <td style="text-align: left">&nbsp;&nbsp;
-    mysql-connector-java-3.0.16-bin.jar and<br>
-&nbsp;&nbsp; mysql-connector-java-3.2.0-alpha-bin.jar<br>
-&nbsp;&nbsp; (note that versions 3.1.x do not work with Jena)</td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Linux (RedHat 7.2, 9.0)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; MySQL 4.0.12</td>
-    <td style="text-align: left">&nbsp;&nbsp;
-    mysql-connector-java-3.0.8-stable.jar</td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Linux (RedHat 9.0)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; MySQL 4.0.24</td>
-    <td style="text-align: left">&nbsp;&nbsp;
-    mysql-connector-java-3.1.7-bin.jar</td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; PostgreSQL 7.3.3</td>
-    <td style="text-align: left">&nbsp;&nbsp; pg73jdbc2.jar (JDBC2 for jdk1.3,
-    1.2, 1.4&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Linux (RedHat 7.2, 9.0)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; PostgreSQL 7.3.3</td>
-    <td style="text-align: left">&nbsp;&nbsp; pg73jdbc2.jar (JDBC2 for jdk1.3,
-    1.2, 1.4&nbsp;)</td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
-    <td style="text-align: left">&nbsp;&nbsp; Oracle oci8 JDBC driver (thick
-    client)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Linux (RedHat 7.2, 9.0)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
-    <td style="text-align: left">&nbsp;&nbsp; Oracle oci JDBC driver (thick
-    client)&nbsp;</td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; Microsoft SQL Server 2000</td>
-    <td style="text-align: left">&nbsp;&nbsp; jTDS version 1.2</br>
-     &nbsp;&nbsp;  Microsoft SQL Server 2005 JDBC Driver Beta 2</td>
-  </tr>
-  <tr>
-    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
-    <td style="text-align: left">&nbsp;&nbsp; Microsoft SQL Server <br>&nbsp;&nbsp;&nbsp;&nbsp; Desktop Edition Rel A</td>
-    <td style="text-align: left">&nbsp;&nbsp; jTDS version 1.2</br>
-     &nbsp;&nbsp;  Microsoft SQL Server 2005 JDBC Driver Beta 2</td>
-  </tr>
-</table>
+<blockquote>
+  <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="table1">
+    <tr>
+      <th>Database Engine</th>
+      <th>JDBC Driver</th>
+    </tr>
+    <tr>
+      <td style="text-align: left">HSQLDB 1.8.0</td>
+      <td style="text-align: left">&nbsp;</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MySQL 4.1.11<br>MySQL 5.0.18</td>
+      <td style="text-align: left">JDBC driver versions: 3.0, 3.1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">PostgreSQL 7.3<br>PostgreSQL 8.0</td>
+      <td style="text-align: left">JDBC driver 7.3<br>JDBC driver 8.0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Oracle 10 XE</td>
+      <td style="text-align: left">Oracle ojdbc14 driver (thin driver)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Oracle 9.2</td>
+      <td style="text-align: left">Oracle thick and thin drivers</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Microsoft SQL Server Express SP1</td>
+      <td style="text-align: left">Microsoft SQL Server 2005 JDBC Driver</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Microsoft SQL Server 2000<br>
+      Microsoft SQL Server Desktop Edition</td>
+      <td style="text-align: left">Microsoft SQL Server 2005 JDBC Driver<br>jTDS version 1.2</td>
+    </tr>
+  </table>
+</blockquote>
 
 
 
-  <p>Individuals in the Jena user community have developed Jena drivers for
-  other database engines. See the <a href="../jena-faq.html#db-2">Jena FAQ</a>
-  for a list of such drivers. For details on developing your own Jena database
+  <h3>MySQL Notes</h3>
+<ul>
+  <li>The 5.0.0-beta driver does not work reliably (bug to do with concurrency 
+  in the JDBC driver)</li>
+  <li>Drivers from the 3.1 series work with Jena 2.4 and later.</li>
+</ul>
+
+
+
+  <p>Individuals in the Jena user community have developed Jena drivers for 
+  other database engines. See the <a href="../jena-faq.html#db-2">Jena FAQ</a> 
+  for a list of such drivers. For details on developing your own Jena database 
   driver, see the <a href="portNotes.html">porting notes</a>.</p>
 
 
 
-  <p>Note that the database layout used by Jena is not intended for direct
-  access by users and applications. The database should only be accessed
-  indirectly, through the Jena API. This is because there is not a simple
-  mapping from Jena models and statements into database tables. For example,
-  resource URIs and literal values are encoded such that the plain text values
-  may not be discernable. Consequently, users should not attempt to access the
-  Jena database tables using SQL or other relational database tools unless they
-  really know what they are doing. For those interested, a details on the Jena
+  <p>Note that the database layout used by Jena is not intended for direct 
+  access by users and applications. The database should only be accessed 
+  indirectly, through the Jena API. This is because there is not a simple 
+  mapping from Jena models and statements into database tables. For example, 
+  resource URIs and literal values are encoded such that the plain text values 
+  may not be easily discernable. Users should not attempt to access the 
+  Jena database tables using SQL or other relational database tools unless they 
+  really know what they are doing. For those interested, a details on the Jena 
   database schema are provided in the <a href="layout.html">layout notes</a>.</p>
-
-
-
-  <h2><a name="compatibility"></a>Compatibility with Jena1 ModelRDB and
-  Databases</h2>
-
-
-
-  <p>In general, Jena2 supports backwards compatibility for the Jena1
-  applications using the <font face="Courier New" size="2">ModelRDB</font>
-  class. However, the Jena1 databases themselves are not compatible and cannot
-  be directly read by Jena2. Instructions on migrating Jena1 databases to Jena2
-  are given <a href="#migrating">below</a>.</p>
-
-
-
-  <p>There are some changes to the API. <font face="Courier New" size="2">The
-  ModelRDB</font> constructors are deprecated and applications should consider
-  migrating to new factory methods for creating and opening persistent models
-  (see the <a href="howto.html">HowTo</a>). The <font face="Courier New" size="2">
-  ModelRDB</font> package name has changed. Jena1 applications that directly
-  reference the package name jena.rdb must be modified to reference the package
-  name
-  <font face="Courier New" size="2">jena.db</font>. Jena2 does not support the <font face="Courier New" size="2">
-  StoreRDB</font> class nor any of the Jena1 customization parameters (setProperty,
-  getProperty). Jena2 uses a different technique for database configuration.</p>
-
-
-
-  <p>Jena2 does not support the <i>hash</i> layouts and <i>proc</i> layouts of
-  Jena1. Applications that request these layouts under Jena2 will be given a
-  generic layout. Jena2 supports MySQL, Oracle, PostgreSQL. Applications that
-  require Interbase&nbsp; will not work. A Jena driver for Berkeley DB is
-  available; see ModelJEB on the Jena <a href="../contrib/contributions.html">
-  contributions</a> Web page. The driver configuration files (e.g., Mysql.config)
-  are no longer used. Instead, get/set methods on the driver and modelRDB
-  classes are used for configuration parameters (see <a href="options.html">
-  Options</a>).</p>
-
-
-
-  <p>In Jena2, all databases are multi-model. By default, models are stored
-  separately and each model uses one table for asserted statements and another
-  table for reified statements. To share tables among models, see
-  <a href="#migrating">migrating</a>, below.</p>
-
-
-
-  <p>Performance of Jena2 persistent models is no worse than Jena1 and often
-  better. However, Jena2 persistent models may consume more database space. See
-  the performance notes (<a href="perfNotes.html">PerfNotes</a>).</p>
-
-
-
-  <h2><a name="migrating"></a>Migrating Jena1 Applications and Databases to
-  Jena2</h2>
-
-
-
-  <p>As mentioned above, most Jena1 persistent applications should run with
-  little or no modification under Jena2. However, the <font face="Courier New" size="2">
-  ModelRDB</font> class constructors are deprecated. In Jena2, persistent models
-  should be created using a factory method. In some situations, the ModelRDB
-  class constructors are still required because the factory methods do not yet
-  support all the ModelRDB functionality (see
-  <a href="howto.html">HowTo</a>).</p>
-
-
-
-  <p>The Jena2 persistence architecture and layout are different from Jena1.
-  However, these differences are largely transparent to applications and only
-  affect code that creates new persistent models. In particular, the way in
-  which database configuration options are specified is changed. In Jena2,
-  configuration options are specified using get and set methods on models or
-  drivers. See <a href="options.html">
-  Options</a> for details on using them.</p>
-
-
-
-  <p>There is no utility provided to migrate databases. However, users can
-  easily create their own. A small Jena1 application program is used to write
-  Jena1 <font face="Courier New" size="2">ModelRDB</font> contents to a text
-  file using an RDF writer. Then, a small Jena2 application program is used to
-  read this file and store it in a <font face="Courier New">persistent</font>
-  model. For small databases, the PrettyWriter (RDF/XML-ABBREV) should be
-  adequate. For medium or large databases, use the N-Triple writer for better
-  performance and consider using a pipe to connect the two small applications
-  rather than using an intermediate file.</p>
 
 
 

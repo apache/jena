@@ -17,10 +17,6 @@
 
 
 
-<h3>28 August, 2003</h3>
-
-
-
 <p>Jena2 was designed to be portable to other SQL database engines. The Jena2 
 database dependencies are isolated in two places: the driver and the SQL 
 scripts. These notes provide a brief overview of what is required to port Jena2 
@@ -165,10 +161,8 @@ code is in DriverRDB.java and has method names of the form genSQLxxx.</p>
 <h2>Testing</h2>
 <p>Once the driver and SQL file have been created, the next step is to check 
 that the ModelRDB tests pass. There are a number of JUnit tests in jena/db/test. 
-These may be run individually to test specific functionality or may all be run 
-at once by running TestPackage. In order to run these tests you will need to 
-define the database connection parameters. This can be done either within 
-TestPackage.java or by using a properties file (see comment in TestPackage).</p>
+These may be run from the script <code>test-db.sh</code>, after modification for 
+driver details and database name.</p>
 <p>&nbsp;</p>
 
 

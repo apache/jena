@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,11 +14,9 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.db.impl.DBIDInt;
 import com.hp.hpl.jena.db.impl.SQLCache;
-import com.hp.hpl.jena.db.impl.VarDesc;
 
 public class Driver_HSQL extends DriverRDB 
 {
-    // Derided from the PostgreSQL driver
     public Driver_HSQL( ){
         super();
 

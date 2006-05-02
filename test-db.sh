@@ -30,7 +30,7 @@ echo "HSQLDB (in-memory)"
 DEFS="-Djena.db.url=jdbc:hsqldb:mem:jenatest"
 DEFS=" $DEFS  -Djena.db.user=sa"
 DEFS=" $DEFS  -Djena.db.password="
-DEFS=" $DEFS  -Djena.db.type=HSQL"
+DEFS=" $DEFS  -Djena.db.type=HSQLDB"
 DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
 JDBC=${JDBC:-$HOME/jlib/hsqldb.jar}
 ;;
@@ -59,16 +59,17 @@ JDBC="${JDBC:-$HOME/jlib/mysql-connector-java-5.0.0-beta-bin.jar}"
 # MS SQL Server, jTDS driver, local
 mssqlTdsLocal)
 echo "MS SQL Server with TDS driver"
-DEFS="-Djena.db.url=jdbc:jtds:sqlserver://localhost/Test"
-DEFS=" $DEFS  -Djena.db.user=test"
-DEFS=" $DEFS  -Djena.db.password=foo"
+DEFS="-Djena.db.url=jdbc:jtds:sqlserver://localhost/jenatest"
+DEFS=" $DEFS  -Djena.db.user=user"
+DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MsSQL"
 DEFS=" $DEFS  -Djena.db.driver=net.sourceforge.jtds.jdbc.Driver"
 DEFS=" $DEFS  -Djena.db.concurrent=false"
 JDBC="${JDBC:-}"
 ;;
 
-# MS SQL Server, Microsoft driver, full SQL Server (in Palo Alto, beware speed!)
+# MS SQL Server, Microsoft driver, full SQL Server
+# (in Palo Alto, beware speed!)
 mssqlMsFull)
 echo "MS SQL Server / Microsoft driver"
 DEFS="-Djena.db.url=jdbc:sqlserver://dbase-pa2.labs.hpl.hp.com;databaseName=JenaTest"

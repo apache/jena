@@ -6,61 +6,24 @@
 </head>
 <body>
 
-This version: 0.2<br/> Date: 18 April 2005
-
 <h1>HowTo Use MySQL Database System with Jena2</h1>
 
 <h2>What is MySQL</h2>
 
-<p>MySQL is an open-source SQL database system available without fee under GPL 
+<p><a href="http://www.mysql.com/">MySQL</a> is an open-source SQL database system available without fee under GPL 
 (Gnu General Public License). It combines good performance with a wide feature 
 set and comes in a variety of configurations to support difference application 
 requirements. See <a href="http://www.mysql.com/">http://www.mysql.com/</a> for 
-more information. Jena2 has been tested with the MySQL Standard binary release. 
-Jena tables are created using InnoDB tables which provide ACID transaction 
-support. Modifications to Jena database models are immediately written to the 
-database. If the application has an open transaction (see <i>model.begin()</i>), 
-the changes are committed (u.e. visible to other Jena applications) when the 
-application does a commit. Otherwise, the changes are immediately committed to 
-the database (i.e., each modification is its own transaction). Jena 
-communicates with MySQL through a JDBC driver.</p>
+more information. When using InnoDB tables, Jena provides full ACID transaction 
+support.</p>
 
 <h2>Download and Installation of MySQL</h2>
 
 <p>MySQL software and the JDBC driver may be downloaded from
-<a href="http://www.mysql.com/downloads/">http://www.mysql.com/downloads/l</a>. 
-The JDBC driver is available from the same Web page (see MySQL Connector/J). If these links are not 
+<a href="http://www.mysql.com/downloads/">http://www.mysql.com/downloads/</a>. 
+The JDBC driver is available from the same Web page (see MySQL Connector/J). (If these links are not 
 found, go to the MySQL home page and search for downloads for the latest version 
-of the server and JDBC driver. Jena2 has been tested with the binary 
-distributions of the MySQL server and driver on Windows XP and Linux RedHat 
-9.0 as listed below. The download package is approximately 20 MB.</p>
-
-<table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
-  <tr><td><b>OS</b></td><td><b>Server</b></td><td><br>Diver</td>
-  </tr>
-  <tr>
-    <td>Windows XP</td>
-    <td>MySQL 4.1.11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    </td>
-    <td>mysql-connector-java-3.0.16-bin.jar 
-    and<br>
-    mysql-connector-java-3.2.0-alpha-bin.jar<br>
-    (versions 3.1.x do not work with Jena; see <a href="#JConn3.1.x">note</a> 
-    below)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    </td>
-  </tr>
-  <tr>
-    <td>Linux RH9.0</td>
-    <td>MySQL 4.0.24</td>
-    <td>mysql-connector-java-3.1.7-bin.jar</td>
-  </tr>
-</table>
-
-<p>Depending on the platform, there may be a few post-installation steps 
-required to properly configure MySQL. See the MySQL documentation for details (<i>Post-Installation 
-Setup and Testing</i> in Chapter 2). The MySQL documentation should be included 
-with the distribution.</p>
-
+of the server and JDBC driver.)</p>
 <p><a name="JConn3.1.x">Note: </a>Versions 3.1.x of the MySQL Connector/J JDBC 
 driver do not correctly handle Jena long objects (long literals and long URIs). 
 One symptom of the problem is that long objects may have random text appended 
@@ -74,128 +37,57 @@ may use both types of models identically. However, there are some differences
 in how the models are created. Creating a memory model can be done with a single 
 Jena call. Creating a database model, or opening a previously created one, 
 requires several steps as as follows.</p>
-
+<p>Persistent models are <a href="creating-db-models.html">created</a> in the 
+same way for any database system: </p>
 <blockquote>
   <ol>
     <li>Load the JDBC driver. This enables the Jena program to communicate with 
     the database instance.</li>
     <li>Create a database connection. This creates a Java object for a database 
     connection.</li>
-    <li>Create or open a model on the connection. This connects to the database 
-    and creates an empty model or opens a previously created model.</li>
+    <li>Create a ModleMaker for the database</li>
+    <li>Create a Model for existing or new data.</li>
   </ol>
 </blockquote>
 
 <p>These steps are illustrated in the following Java code.</p>
 
-<blockquote>
-  <dl>
-    <dd><font face="Courier New" size="2">// Load the Driver</font></dd>
-    <font SIZE="2">
-    <dd><font face="Courier New">String className = &quot;com.mysql.jdbc.Driver&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    // path of driver class</font></dd>
-    <dd><font face="Courier New">Class.forName (className);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    // load driver</font></dd>
-    <dd>&nbsp;</dd>
-    <dd><font face="Courier New">String DB_URL = &quot;jdbc:mysql://localhost/test&quot;;&nbsp; 
-    // URL of database server</font></dd>
-    <dd><font face="Courier New">String DB_USER = &quot;test&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    // database user id</font></dd>
-    <dd><font face="Courier New">String DB_PASSWD = &quot;&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    // database password</font></dd>
-    <dd><font face="Courier New">String DB = &quot;MySQL&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    // database type</font></dd>
-    <dt>&nbsp;</dt>
-    <dd><font face="Courier New">// Create database connection</font></dd>
-    <dd><font face="Courier New">IDBConnection conn =</font></font><font SIZE="2" face="Courier New"><b> 
-    new</b> DBConnection ( URL, DB_USER, DB_PASSWD, DB ); </font></dd>
-    <dd><font SIZE="2"><font face="Courier New">// Create a model in the 
-    database</font></dd>
-    <dd></dd>
-    <dd></dd>
-    <dd></dd>
-    <dd></dd>
-    <dd></dd>
-    <dd><font face="Courier New">ModelRDB m = ModelRDB.createModel ( conn );
-    </font></dd>
-    <dd>&nbsp;</dd>
-    <dd><font face="Courier New">&lt; your Jena code to work with the model goes 
-    here &gt;</font></dd>
-    <dd>&nbsp;</dd>
-    <dd><font face="Courier New">// Remove the model. NOTE: this deletes the 
-    model from the database.</font></dd>
-    <dd>/<font face="Courier New">/ Subsequent attempts to open this model will 
-    fail.</font></dd>
-    <dd><font face="Courier New">m.remove();&nbsp;&nbsp;&nbsp;// NOTE: remove 
-    deletes the model from the database</font></dd>
-    </font><font SIZE="2">
-    <dd>&nbsp;</dd>
-    <dd><font face="Courier New">// Close the database connection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conn.close();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    </font></dd>
-    </font><font SIZE="2">
-    <dd>&nbsp;</dd>
-    <dd><font face="Courier New">// Alternative to creating an unnamed model ...</font></dd>
-    <dd><font face="Courier New">// Create a named model</font></dd>
-    <dd><font face="Courier New">ModelRDB m = ModelRDB.createModel(conn, </font>
-    </font><font SIZE="2" face="Courier New">&quot;myName&quot;);</font></dd>
-    <dt>&nbsp;</dt>
-    <dd><font face="Courier New" size="2">...&nbsp; later, or in another Jena 
-    application ...</font></dd>
-    <dt>&nbsp;</dt>
-    <font SIZE="2">
-    <dd><font face="Courier New">// Open a named model.</font></dd>
-    <dd><font face="Courier New">ModelRDB m = ModelRDB.open(conn, </font></font>
-    <font SIZE="2" face="Courier New">&quot;myName&quot;</font><font SIZE="2"><font face="Courier New">);</font></dd>
-  </dl>
-</blockquote>
-<p></p>
-</font>
+<pre class="box">
+String className = &quot;<font face="Courier New" SIZE="2">com.mysql.jdbc.Driver</font>&quot;;         // path of driver class
+Class.forName (className);                          // Load the Driver
+String DB_URL =     &quot;<font face="Courier New" SIZE="2">jdbc:mysql://localhost/test</font>&quot;;  // URL of database 
+String DB_USER =   &quot;????&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     // database user id
+String DB_PASSWD = &quot;????&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      // database password
+String DB =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;<font face="Courier New" SIZE="2">MySQL</font>&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      // database type
 
-<p>&nbsp;</p>
+// Create database connection
+IDBConnection conn = new DBConnection ( URL, DB_USER, DB_PASSWD, DB );
+ModelMaker maker = ModelFactory.createModelRDBMaker(conn)
 
+// create or open the default model
+Model model = maker.createModel();
+
+// Close the database connection
+conn.close();
+</pre>
+    
 <h2>Performance and Usage Notes</h2>
 
 <p>Jena stores all models in a single database using whatever database (name) specified on the database connection. See the <a href="index.html">Jena Database Release Notes</a> for 
 details on the physical layout.</p>
 
-<h4>MySQL Server Status</h4>
+<h4>MySQL Driver issues</h4>
+<ul>
+  <li>Drivers from the 3.0 and 3.1 series work with Jena 2.4 and later.</li>
+  <li>Drivers from the 3.1.* series do not work with Jena before Jena version 
+  2.4</li>
+  <li>The 5.0.0-beta driver is unreliable due to a concurrency bug in the JDBC 
+  driver.</li>
+</ul>
 
-<p>After installation, you may want to check that the MySQL database server is up and 
-running with the following command..</p>
-
-<blockquote>
-
-<p><font face="Courier New">mysqladmin version status proc</font></p>
-
-</blockquote>
-
-<p>On Windows, the MySQL server should be automatically started as a service. On 
-Linux, the server may need to be started manually. See the MySQL documentation (<i>Starting 
-the MySQL Server</i> in Chapter 2) for details.</p>
-
-<h4>MySQL Utility Commands</h4>
-
-<p>Some Jena users may wish to occasionally access the MySQL database directly 
-to determine if changes have taken effect. Some useful MySQL commands are listed 
-here (replace the names in italics by names for your database instance). To use them, start the MySQL command line interface:<font face="Courier New"> 
-mysql [<i>database</i>]</font></p>
-
-<h4>List All Databases Available: <span style="font-weight: 400">
-<font face="Courier New">show databases;</font></span></h4>
-
-<h4>Use a Specific Database: <span style="font-weight: 400">
-<font face="Courier New">use <i>databaseName</i>;</font></span></h4>
-
-<h4><font face="Verdana">List All Tables in the Database: </font>
-<span style="font-weight: 400"><font face="Courier New">show tables;</font></span></h4>
-
-<h4><font face="Verdana">List Summary Information about Tables:</font><font face="Times New Roman"> </font><font face="Times New Roman">&nbsp;</font><span style="font-weight: 400"><font face="Courier New">show table status; </font></span>
-<i><font face="Verdana" size="1">(includes the row count)</font></i></h4>
-
-<h4><font face="Verdana">List All Rows in a Table:</font><font face="Times New Roman"> </font>
-<span style="font-weight: 400"><font face="Courier New">select * from <i>
-tableName</i>;</font></span></h4>
-
+<p>The situations where the 5.0.0-beta will deadlock are rare.&nbsp; The 
+5.0.0-beta driver can be used by setting &quot;Query Only Asserted&quot; (see
+<a href="options.html">options</a>).</p>
 <p>&nbsp;</p>
 
 <p>&nbsp;</p>

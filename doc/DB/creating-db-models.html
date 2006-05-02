@@ -8,36 +8,28 @@
 
 
 
-<h1>Jena2 Database Interface - HowTo Create Persistent Models</h1>
-
-
-
-<h3>28 August, 2003</h3>
+<h1>Jena2 Database Interface - How To Create Persistent Models</h1>
 
 
 
 <p>The Jena2&nbsp; persistent storage subsystem implements an extension of the 
 Model class that provides transparent persistence for models through the use of 
 a database engine. Three database engines are currently supported, MySQL, 
-Oracle, PostgreSQL, on two platforms, Linux and WindowsXP. The Jena2 persistence 
-subsystem is largely compatible with Jena1 but does not support the various 
-Jena1 layouts. Existing Jena1 databases cannot be accessed by Jena2 and must be 
-reloaded.</p>
+Oracle, PostgreSQL and Microsoft SQL server, on both Linux and WindowsXP. </p>
 <p>This document provides a brief overview of creating and accessing Jena2 
-persistent models. Note that the recommended mechanism for creating and opening 
-persistent models has changed from Jena1 and also from the preliminary releases 
-of Jena2. Users are now encouraged to use the new factory mechanisms described 
+persistent models. Users are now encouraged to use the factory mechanisms described 
 in <font size="2" face="Courier New"><a href="../how-to/model-factory.html">model-factory</a></font>. 
-Previous mechanisms based on ModelRDB are now deprecated. However, the factory 
-mechanism are still under development and are not yet a complete replacement for 
-ModelRDB. Consequently, the deprecated Jena2 mechanisms may also be needed and 
-are reviewed here as well.</p>
+Previous mechanisms based on directly calling <code>ModelRDB</code> methods are 
+now deprecated.</p>
 <p>The various options for configuring and accessing persistent models are 
 described in <font face="Courier New" size="2"> <a href="options.html">Options</a></font>.&nbsp; 
 For details on installing and configuring the various database engines for use 
-with Jena2, see the database engine-specific howto documents ( <font face="Courier New" size="2"><a href="mysql-howto.html">MySQL-HowTo</a>,
-<a href="oracle-howto.html">Oracle-HowTo</a>,
-<a href="postgresql-howto.html">PostgreSQL-HowTo)</a></font>.</p>
+with Jena2, see the database engine-specific &quot;how to&quot; documents
+(<a href="hsql-howto.html">HSQLDB Howto</a>, <a href="mysql-howto.html">MySQL HowTo</a>,
+<a href="oracle-howto.html">Oracle HowTo</a>,
+<a href="postgresql-howto.html">PostgreSQL HowTo</a>,
+<a href="mssql-howto.html">Microsoft SQL Server HowTo</a>).
+</p>
 
 <h2>Creating and Accessing Persistent Models</h2>
 
@@ -62,33 +54,43 @@ models for each mechanism.</p>
 <h3>Factory Methods</h3>
 
 <p>Creating or opening a model is a three-step process. First, the driver class 
-must be loaded and a connection established to the database. Note that in Jena2, 
-the database type is specified as part of the database connection unlike in 
-Jena1 where it is part of the model constructor. Second, a model maker class is 
+must be loaded and a connection established to the database (note that in Jena2, 
+the database type is specified as part of the database connection). Second, a model maker class is 
 constructed. The model maker creates persistent instances of the Model class. 
 Third, the model maker class is invoked to create new models or to open existing 
 models. The following examples show how this is done.</p>
 
 <font SIZE="2">
 <blockquote>
-  <pre><font face="Courier New"><font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_URL = <font SIZE="2" COLOR="#2a00ff">&quot;jdbc:mysql://localhost/test&quot;</font>; // database URL
-<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_USER = <font SIZE="2" COLOR="#2a00ff">&quot;test&quot;</font>;     // database user id
-<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_PASSWD = <font SIZE="2" COLOR="#2a00ff">&quot;&quot;</font>;   // database user password
-<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB = <font SIZE="2" COLOR="#2a00ff">&quot;MySQL&quot;</font>;  // database engine
-<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DBDRIVER_CLASS = <font SIZE="2" COLOR="#2a00ff">&quot;com.mysql.jdbc.Driver&quot;</font>;  // database driver</font></pre>
-  <pre><font face="Courier New">// load the the driver class
-Class.forName(M_DBDRIVER_CLASS);</font><font face="Courier">
+  <pre><font face="Courier New">    // database URL
+String M_DB_URL         = <font SIZE="2" COLOR="#2a00ff">&quot;jdbc:mysql://localhost/test&quot;</font>;</font></pre>
+  <pre><font face="Courier New">    // User name</font></pre>
+  <pre><font face="Courier New">String M_DB_USER        = <font SIZE="2" COLOR="#2a00ff">&quot;test&quot;</font>;</font></pre>
+  <pre><font face="Courier New">    // Password</font></pre>
+  <pre><font face="Courier New">String M_DB_PASSWD      = <font SIZE="2" COLOR="#2a00ff">&quot;&quot;</font>;</font></pre>
+  <pre><font face="Courier New">    // Database engine name</font></pre>
+  <pre><font face="Courier New">String M_DB = <font SIZE="2" COLOR="#2a00ff">&quot;MySQL&quot;</font>;</font></pre>
+  <pre><font face="Courier New">    // JDBC driver</font></pre>
+  <pre><font face="Courier New">String M_DBDRIVER_CLASS = <font SIZE="2" COLOR="#2a00ff">&quot;com.mysql.jdbc.Driver&quot;</font>;</font></pre>
+  <pre><font face="Courier New">   // load the the driver class
+Class.forName(M_DBDRIVER_CLASS);</font></pre>
+  <pre><font face="Courier">
 </font><font face="Courier New">// create a database connection
-</font>IDBConnection <font face="Courier New">conn = </font></font><font SIZE="2" COLOR="#7f0055" face="Courier New"><b>new</b></font><font SIZE="2"><font face="Courier New"> DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);</font><font face="Courier">
+</font>IDBConnection <font face="Courier New">conn = </font></font><font SIZE="2" COLOR="#7f0055" face="Courier New"><b>new</b></font><font SIZE="2"><font face="Courier New"> DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);</font></font></pre>
+  <pre><font SIZE="2"><font face="Courier">
 </font><font face="Courier New">// create a model maker with the given connection parameters
-</font>ModelMaker <font face="Courier New">maker = ModelFactory.createModelRDBMaker(conn);</font></pre>
+</font>ModelMaker <font face="Courier New">maker = ModelFactory.createModelRDBMaker(conn);</font></font></pre>
+  <pre><font SIZE="2"></pre>
   <pre><font face="Courier New">// create a default model
 Model defModel = maker.createModel();</font></pre>
   <pre><font face="Courier New">...</font></pre>
-  <pre><font face="Courier New">// create a named model
+  <pre><font face="Courier New">// Open existing default model</font></pre>
+  <pre><font face="Courier New">Model defModel = maker.openModel();</font></pre>
+  <pre>&nbsp;</pre>
+  <pre><font face="Courier New">// or create a named model
 Model nmModel = maker.createModel(&quot;MyNamedModel&quot;);</font></pre>
   <pre><font face="Courier New">...</font></pre>
-  <pre><font face="Courier New">// open a previously created model
+  <pre><font face="Courier New">// or open a previously created named model
 Model prvModel = maker.openModel(&quot;AnExistingModel&quot;);</font></pre>
 </blockquote>
 </font>
@@ -96,14 +98,16 @@ Model prvModel = maker.openModel(&quot;AnExistingModel&quot;);</font></pre>
 <p>&nbsp;</p>
 
 <h3><a name="ModelRDB Methods"></a>ModelRDB Methods</h3>
+<p>If using datbase-specific, low-level options (see &quot;<a href="options.html">Options 
+for Initialization and Access</a>&quot;), then the application may need to more 
+directly use the ModelRDB interface.</p>
 <p>
 Database-backed RDF models are instances of the class <code>jena.db.ModelRDB</code> 
 which supports the full <code>jena.model.Model</code> interface and also 
-provides static methods to create, extend and reopen database instances. 
-For backwards-compatibility, ModelRDB supports Jena1 methods for creating and 
-opening databases (see release notes for details on changes).</p>
+provides static methods to create, extend and reopen database instances.</p>
 
-<p>ModelRDB supports several options (see <a href="howto.html">HowTol</a>). Some
+<p>ModelRDB supports several options (see &quot;<a href="options.html">Options for 
+Initialization and Access</a>&quot;). Some
 options alter the underlying database table structure and must be specified before the database is formatted.
 These methods are invoked on the underlying database driver instance for the 
 connection. Ideally, the driver class need not be exposed to Jena applications. 
@@ -123,23 +127,34 @@ existing ones. The following examples show how this is done.</p>
 
 <font SIZE="2">
 <blockquote>
-  <pre><font face="Courier New"><font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_URL = <font SIZE="2" COLOR="#2a00ff">&quot;jdbc:mysql://localhost/test&quot;</font>; // database URL
-<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_USER = <font SIZE="2" COLOR="#2a00ff">&quot;test&quot;</font>;     // database user id
-<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_PASSWD = <font SIZE="2" COLOR="#2a00ff">&quot;&quot;</font>;   // database user password
-<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB = <font SIZE="2" COLOR="#2a00ff">&quot;MySQL&quot;</font>;  // database engine
-<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DBDRIVER_CLASS = <font SIZE="2" COLOR="#2a00ff">&quot;com.mysql.jdbc.Driver&quot;</font>;  // database driver</font></pre>
+  <pre><font face="Courier New">// As before ...</font></pre>
+  <pre><font face="Courier New">String M_DB_URL          = <font SIZE="2" COLOR="#2a00ff">&quot;jdbc:mysql://localhost/test&quot;</font>;
+String M_DB_USER         = <font SIZE="2" COLOR="#2a00ff">&quot;test&quot;</font>;
+String M_DB_PASSWD       = <font SIZE="2" COLOR="#2a00ff">&quot;&quot;</font>;
+String M_DB              = <font SIZE="2" COLOR="#2a00ff">&quot;MySQL&quot;</font>;
+String M_DBDRIVER_CLASS  = <font SIZE="2" COLOR="#2a00ff">&quot;com.mysql.jdbc.Driver&quot;</font>;</font></pre>
   <pre><font face="Courier New">// load the the driver class
-Class.forName(M_DBDRIVER_CLASS);</font><font face="Courier">
+Class.forName(M_DBDRIVER_CLASS);</font></pre>
+  <pre><font face="Courier">
 </font><font face="Courier New">// create a database connection
-</font>IDBConnection <font face="Courier New">conn = </font></font><font SIZE="2" COLOR="#7f0055" face="Courier New"><b>new</b></font><font SIZE="2"><font face="Courier New"> DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);</font></pre>
+</font>IDBConnection <font face="Courier New">conn = </font></font><font SIZE="2" COLOR="#7f0055" face="Courier New"><b>new</b></font><font SIZE="2"><font face="Courier New"> DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);</font></font></pre>
+  <pre>&nbsp;</pre>
+  <pre><font face="Courier New">// ---- Directly use ModelRDB</font></pre>
+  <pre>&nbsp;</pre><font SIZE="2">
   <pre><font face="Courier New">// create a default model
 </font>ModelRDB <font face="Courier New">defModel = ModelRDB.createModel(conn);</font></pre>
-  <pre><font face="Courier New">...</font></pre>
+  <pre><font face="Courier New">...
+// Open an existing model.
+</font>ModelRDB <font face="Courier New">defModel2 = ModelRDB.openModel(conn);</font></pre>
+  <pre><font face="Courier New">...
+</font></pre>
   <pre><font face="Courier New">// create a named model
 </font>ModelRDB <font face="Courier New">nmModel = ModelRDB.createModel(conn,&quot;MyModelName&quot;);</font></pre>
   <pre><font face="Courier New">...</font></pre>
-  <pre><font face="Courier New">// open a previously created model
-</font>ModelRDB <font face="Courier New">prvModel = maker.openModel(conn,&quot;AnExistingModel&quot;);</font></pre>
+  <pre><font face="Courier New">// open a named model
+</font>ModelRDB <font face="Courier New">nmModel2 = ModelRDB.openModel(conn,&quot;ExistingModelName&quot;);</font></pre>
+  <pre><font face="Courier New">...</font></pre>
+  <pre>&nbsp;</pre>
   </font>
 </blockquote>
 <code>
