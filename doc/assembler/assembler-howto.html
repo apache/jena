@@ -188,8 +188,8 @@ specifications. For example:</p>
 
 <pre>eg:common-example a ja:MemoryModel 
     ; ja:content eg:sharedContent 
-    ; ja:content [ja:externalContent &amp;lt;file:///home/kers/projects/jena2/Data/A.rdf&amp;gt;] 
     ; ja:content [ja:externalContent &amp;lt;file:///home/kers/projects/jena2/Data/B.rdf&amp;gt;] 
+    ; ja:content [ja:externalContent &amp;lt;file:///home/kers/projects/jena2/Data/A.rdf&amp;gt;] 
     . 
 eg:sharedContent
     ja:externalContent &amp;lt;http://somewhere/RDF/ont.owl&amp;gt; 
@@ -217,8 +217,8 @@ specifications.</p>
 <p>A model may have a single <code>ja:reificationMode</code>
 property whose value must be one of the constants <code>ja:standard</code>,
 <code>ja:convenient</code>, or <code>ja:minimal</code>. The
-model's reification mode is set accordingly, if possible. 
-<span class="note">Not implemented yet.</span></p>
+model's reification mode is set accordingly, if possible.
+</p>
 
 <h2><a name="TOC-ID-4"></a><a name="spec-content">content</a></h2>
 
@@ -358,15 +358,15 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="show-class">ja:Connection a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
 <div class="show-subclass">.</div>
 <div class="show-property">ja:dbPasswordProperty a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
@@ -556,8 +556,8 @@ the specification, or outside from some resource (file or http: URL):
     ja:reasoner [ja:rule "[r1: (?x my:P ?y) -&amp;gt; (?x rdf:type my:T)]"] 
     . </pre>
 
-This reasoner will infer a type declaration from a use of a property.
-<span class="note">say something about the prefix <i>my</i>.</span>
+This reasoner will infer a type declaration from a use of a property. (The
+prefix <i>my</i> will have to be known to the rule parser, of course.)
 
 </p>
 
@@ -624,16 +624,15 @@ This reasoner will infer a type declaration from a use of a property.
 the base model for the inference model; if omitted, an empty memory model is
 used. </p> 
 
-<p>An InfModel's <code>ja:Reasoner</code> property value specifies
+<p>An InfModel's <code>ja:ReasonerFactory</code> property value specifies
 the Reasoner for this inference model; if omitted, a GenericRuleReasoner
 is used.
-<span class="note">FIX: now a reasonerFactory.</span>
 </p>
 
 <p>A Reasoner's optional <code>ja:schema</code> property
 specifies a Model which contains the schema for the reasoner to
 be bound to. If omitted, no schema is used.
-<span class="note">Not implemented yet.</span></p>
+</p>
 
 <p>If the Reasoner is a GenericRuleReasoner, it may have any of the
 RuleSet properties <code>ja:rules</code>, <code>ja:rulesFrom</code>,
@@ -642,8 +641,6 @@ are added to the <code>Reasoner</code>.
 </p>
 
 <h3><a name="TOC-ID-8"></a>rulesets</h3>
-
-<span class="note">RuleSet examples go here.</span>
 
 <p>
 A <code>RuleSet</code> specification allows rules (for ReasonerFactories)
@@ -752,9 +749,11 @@ OntModelSpec constant (looked up by reflection).</p>
 <ul>
 <li><code>ja:importSource</code>:
 The value of this optional unique property is a <code>ModelSource</code>
-description which describes where imports are obtained from.
-<span class="note">Description incomplete - note this replaces the ImportMaker
-from the ModelSpec code.</span></li>
+description which describes where imports are obtained from. A <code>ModelSource</code>
+my be of class <code>ja:ModelSource</code>, for which memory models are constructed,
+or a <code>ja:RDBModelSource</code> with a <code>ja:connection</code> property,
+for which models are constructed in the specified database. 
+</li>
 
 <li><code>ja:documentManager</code>:
 This value of this optional unique property is a DocumentManager specification.
@@ -762,8 +761,8 @@ If absent, the default document manager is used.
 
 </li><li><code>ja:reasonerURL</code>:
 The value of this optional unique property is the URL of the ReasonerFactory
-to be used to construct this OntModelSpec's reasoner. 
-<span class="note">Fix up WRT InfModels;m note what happens to rulesets.</span></li>
+to be used to construct this OntModelSpec's reasoner.
+</li>
 
 <li><code>ja:ontLanguage</code>:
 The value of this optional unique property is one of the values in the
@@ -901,8 +900,6 @@ single <i>root</i> model. The root model is the one written to when
 the union model is updated; the submodels are untouched.
 </p>
 
-<p><span class="note">example needed here.</span></p>
-
 
 <div class="surrounding">
 <div class="show" id="1018A"><a href="javascript:exchange('1018')">&nabla; show as N3</a>
@@ -940,7 +937,7 @@ property).
 <h2><a name="TOC-ID-12"></a>prefix mappings</h2>
 
 <p>The PrefixMappings of a model may be set from PrefixMapping specifications.
-<span class="note">examples please.</span></p>
+</p>
 
 
 <div class="surrounding">
@@ -1022,8 +1019,6 @@ or, equivalently,
 then the specification is regarded as also containing the contents of the
 RDF at <code>someURL</code>. That RDF may in turn contain 
 <code>imports</code> referring to other RDF. 
-<span class="note">Cycle detection is not yet implemented. The loaded
-models are cached; cache control is not implemented yet.</span>
 </p>
 
 <h1><a name="TOC-ID-16"></a>inside Assemblers</h1>
@@ -1261,11 +1256,9 @@ This allows sensitive information to be left out of the RDF description.
 </p>
 
 <p>The ConnectionAssembler embedded in Assembler.general has
-defaults taken from the system proeprties <code>jena.dbUser</code>
-and <code>jena.dbType</code> (<span class="note">not implemented yet</span>. 
+defaults taken from the system properties <code>jena.dbUser</code>
+and <code>jena.dbType</code> 
 </p>
-
-<p class="note">Driver issues? Defaulting the database type?</p>
 
 <h2><a name="TOC-ID-20"></a>basic assembler RulesetAssembler</h2>
 
