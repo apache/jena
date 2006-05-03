@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.26 2006-05-02 15:12:16 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.27 2006-05-03 11:12:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -557,10 +557,13 @@ public class TestConnection extends TestCase {
     		return count >= i;
     	}
     	
-    	public synchronized void incCount() {
-    		count++;
-    	}
- 
+    	public void incCount() { incCount(1) ; }
+
+        public synchronized void incCount(int N) {
+            count = count+N ;
+        }
+
+        
     	public void waitOnCount ( int cnt ) {
         	int i = 0;
         	for ( i=0; i<100; i++ )
@@ -578,8 +581,12 @@ public class TestConnection extends TestCase {
     }
     
 	syncOnCount s;
-
+    String msg = "" ;
+    
     public void testConcurrentThread() {
+        
+        
+        
 		class thread1 extends Thread {
 			syncOnCount s;
 
@@ -588,28 +595,44 @@ public class TestConnection extends TestCase {
 				s = sc;
 			}
 
-			public void run() {
-				IDBConnection conn = makeAndCleanTestConnection();
-				ModelRDB foo = ModelRDB.createModel(conn, "foo");
-				s.incCount(); // count is now 1
-				s.waitOnCount(2);
-				Resource u = foo.createResource("test#subject");
-				Property p = foo.createProperty("test#predicate");
-				Resource o = foo.createResource("test#object");
-				Statement stmt = foo.createStatement(u, p, o);
-				assertFalse(foo.contains(stmt)); // Invalid test - thread2 may get in first
-				s.incCount();
-				s.waitOnCount(4);
-				assertTrue(foo.contains(stmt));
-				foo.remove(stmt);
-				s.incCount();
-				try {
-					conn.close();
-				} catch (Exception e) {
-					assertTrue(false);
-				}
-			}
-		}
+			public void run() 
+            {
+			    IDBConnection conn = makeAndCleanTestConnection();         
+			    try {
+			        ModelRDB foo = ModelRDB.createModel(conn, "foo");
+			        s.incCount(); // count is now 1
+			        s.waitOnCount(2);
+			        Resource u = foo.createResource("test#subject");
+			        Property p = foo.createProperty("test#predicate");
+			        Resource o = foo.createResource("test#object");
+			        Statement stmt = foo.createStatement(u, p, o);
+			        if ( foo.contains(stmt) )
+			            synchronized(msg)
+			            {
+			                if ( msg.length() == 0 ) msg = "Thread 1 can see uncommited statement" ;
+			                s.incCount(99);
+			                return ;
+			            }
+
+			        //assertFalse(foo.contains(stmt)); // Invalid test - JUnit does not work concurrently.
+			        s.incCount();
+			        s.waitOnCount(4);
+			        if ( foo.contains(stmt) )
+			            synchronized(msg)
+                        {
+			                if ( msg.length() == 0 ) msg = "Thread 1 can't see commited statement" ;
+			                s.incCount(99);
+			                return ;
+			            }
+			        //assertTrue(foo.contains(stmt));
+			        foo.remove(stmt);
+			        s.incCount();
+			    } finally {
+			        try { conn.close() ; }
+			        catch (Exception e) { e.printStackTrace() ; }
+			    }
+            }
+        }
 
 		class thread2 extends Thread {
 			syncOnCount s;
@@ -619,34 +642,51 @@ public class TestConnection extends TestCase {
 				s = sc;
 			}
 
-			public void run() {
-				s.waitOnCount(1);
-				IDBConnection conn = makeTestConnection();
-				ModelRDB foo = ModelRDB.open(conn, "foo");
-				foo.begin();
-				Resource u = foo.createResource("test#subject");
-				Property p = foo.createProperty("test#predicate");
-				Resource o = foo.createResource("test#object");
-				Statement stmt = foo.createStatement(u, p, o);
-				foo.add(stmt);
-				s.incCount();
-				s.waitOnCount(3);
-				assertTrue(foo.contains(stmt));
-				try {
-					foo.commit();
-				} catch (Exception e) {
-					assertTrue(false);
-				}
-				s.incCount(); // wake up thread1
-				s.waitOnCount(5); // thread1 has now removed stmt
-				assertFalse(foo.contains(stmt));
-				try {
-					conn.close();
-				} catch (Exception e) {
-					assertTrue(false);
-				}
+			public void run()
+			{
+			    s.waitOnCount(1);
+			    IDBConnection conn = makeTestConnection();
+			    try {
+			        ModelRDB foo = ModelRDB.open(conn, "foo");
+			        foo.begin();
+			        Resource u = foo.createResource("test#subject");
+			        Property p = foo.createProperty("test#predicate");
+			        Resource o = foo.createResource("test#object");
+			        Statement stmt = foo.createStatement(u, p, o);
+			        foo.add(stmt);
+			        s.incCount();
+			        s.waitOnCount(3);
+			        if ( foo.contains(stmt) )
+			            synchronized(msg)
+                        {
+			                if ( msg.length() == 0 ) msg = "Thread 2 can't see statement it just added" ;
+			                s.incCount(99);
+			                return ;
+			            }
+			        //assertTrue(foo.contains(stmt));
+			        try {
+			            foo.commit();
+			        } catch (Exception e) {
+			            if ( msg.length() == 0 ) msg = "Failed to commit transaction: "+e.getMessage() ;
+			            return ;
+			        }
+			        s.incCount(); // wake up thread 1
+			        s.waitOnCount(5); // thread1 has now removed stmt
+			        //assertFalse(foo.contains(stmt));
+			        if ( ! foo.contains(stmt) )
+			            synchronized(msg)
+                        {
+			                if ( msg.length() == 0 ) msg = "Thread 2 can see statement thread 1 shoudl have removed" ;
+			                s.incCount(99);
+			                return ;
+			            }
+                    
+                } finally {
+                    try { conn.close() ; }
+                    catch (Exception e) { e.printStackTrace() ; }
+                }
 			}
-		}
+        }
 
         if ( ! TestPackage.M_DBCONCURRENT ) {
             logger.warn("Transaction isolation test surpressed");
@@ -663,6 +703,9 @@ public class TestConnection extends TestCase {
 		} catch (Exception e) {
 			assertTrue(false);
 		}
+        if ( msg != null )
+            assertTrue(msg, false) ;
+        
 	}	
 
 }

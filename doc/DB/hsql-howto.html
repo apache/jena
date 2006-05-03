@@ -16,9 +16,11 @@ simple way to give persistence to RDF data by using HSQLDB within the
 application JVM, using the file system for persistence.&nbsp; HSQLDB can also 
 run as a database server, handling connections from different JVMs, and also as 
 a purely in-memory engine.</p>
-<p>Using it within the application JVM, and using file-based persistence, is the 
-most useful mode with Jena.</p>
-<p>HSQLDB does not support full transaction isolation.</p>
+<p>Using it within one application JVM, and using file-based persistence, is the 
+most useful mode with Jena. The application should manage internal concurrency 
+with <a href="../how-to/concurrency.html">MRSW (multi-reader, single-writer) 
+locking</a>, or Java synchronized (which is single reader, single writer 
+locking), because HSQLDB does not support full transaction isolation. </p>
 
 <h2>Download and Installation of HSQL</h2>
 
@@ -75,6 +77,9 @@ conn.close();
 </pre>
     
 <h2>HSQLDB Notes</h2>
+<p>HSQLDB does not support full ACID transactions.&nbsp; The application should 
+use locking within the application <a href="../how-to/concurrency.html">MRSW 
+locking</a> or it's own locking to ensure that updates and reads do not overlap.</p>
 <p>Jena does not compact the database because it does not know when the database 
 is no longer required by the application - the application must arrange to do 
 this itself.</p>

@@ -6,6 +6,7 @@ Release Notes
 JAR file changes:
     Added:    wstx-asl-2.8.jar
               json.jar
+              iri.jar
     Removed:  stax-1.1.1-dev.jar
               jakarta-oro-2.0.8.jar
               
