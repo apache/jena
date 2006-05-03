@@ -8,7 +8,7 @@
 
 <h1>HowTo Use MySQL Database System with Jena2</h1>
 
-<h2>What is MySQL</h2>
+<h2>What is MySQL?</h2>
 
 <p><a href="http://www.mysql.com/">MySQL</a> is an open-source SQL database system available without fee under GPL 
 (Gnu General Public License). It combines good performance with a wide feature 
@@ -24,12 +24,6 @@ support.</p>
 The JDBC driver is available from the same Web page (see MySQL Connector/J). (If these links are not 
 found, go to the MySQL home page and search for downloads for the latest version 
 of the server and JDBC driver.)</p>
-<p><a name="JConn3.1.x">Note: </a>Versions 3.1.x of the MySQL Connector/J JDBC 
-driver do not correctly handle Jena long objects (long literals and long URIs). 
-One symptom of the problem is that long objects may have random text appended 
-upon retrieval. The 3.1.x versions of Connector/J should not be used with Jena2 
-applications unless the user is certain long objects are not used. </p>
-
 <h2>Connecting Your Jena Program to MySQL</h2>
 
 <p>Jena supports both memory models and database models. In general, a Jena program 
@@ -45,7 +39,7 @@ same way for any database system: </p>
     the database instance.</li>
     <li>Create a database connection. This creates a Java object for a database 
     connection.</li>
-    <li>Create a ModleMaker for the database</li>
+    <li>Create a ModelMaker for the database</li>
     <li>Create a Model for existing or new data.</li>
   </ol>
 </blockquote>
@@ -71,7 +65,7 @@ Model model = maker.createModel();
 conn.close();
 </pre>
     
-<h2>Performance and Usage Notes</h2>
+<h2>Notes</h2>
 
 <p>Jena stores all models in a single database using whatever database (name) specified on the database connection. See the <a href="index.html">Jena Database Release Notes</a> for 
 details on the physical layout.</p>

@@ -22,14 +22,14 @@ with <a href="../how-to/concurrency.html">MRSW (multi-reader, single-writer)
 locking</a>, or Java synchronized (which is single reader, single writer 
 locking), because HSQLDB does not support full transaction isolation. </p>
 
-<h2>Download and Installation of HSQL</h2>
+<h2>Download and Installation of HSQLDB</h2>
 
 <p><a href="http://sourceforge.net/project/showfiles.php?group_id=23316">
 Download HSQLDB</a> from SourceForge, unpack the zip file and put the <code>hsqldb.jar</code> 
 file on the application classpath. This includes the JDBC driver and the 
 database engine.</p>
 
-<h2>Connecting Your Jena Program to MySQL</h2>
+<h2>Connecting Your Jena Program to HSQLDB</h2>
 <h3>JDBC URLs</h3>
 <p>JDBC URLs for HSQLDB look like the following:</p>
 <ul>
@@ -50,7 +50,7 @@ same way for any database system: </p>
     the database instance.</li>
     <li>Create a database connection. This creates a Java object for a database 
     connection.</li>
-    <li>Create a ModleMaker for the database</li>
+    <li>Create a ModelMaker for the database</li>
     <li>Create a Model for existing or new data.</li>
   </ol>
 </blockquote>
@@ -60,7 +60,7 @@ same way for any database system: </p>
 <pre class="box">
 String className = &quot;org.hsqldb.jdbcDriver&quot;;       // path of driver class
 Class.forName (className);                        // Load the Driver
-String DB_URL =     &quot;jdbc:hsqldb:file:test&quot;;      // URL of database 
+String DB_URL =    &quot;jdbc:hsqldb:file:<i>filename</i>&quot;;   // URL of database 
 String DB_USER =   &quot;sa&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   // database user id
 String DB_PASSWD = &quot;&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    // database password
 String DB =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;HSQL&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    // database type
@@ -78,17 +78,12 @@ conn.close();
     
 <h2>HSQLDB Notes</h2>
 <p>HSQLDB does not support full ACID transactions.&nbsp; The application should 
-use locking within the application <a href="../how-to/concurrency.html">MRSW 
-locking</a> or it's own locking to ensure that updates and reads do not overlap.</p>
+use locking within the application, such as <a href="../how-to/concurrency.html">MRSW 
+locking</a> or provide it's own locking, to ensure that updates and reads do not overlap.</p>
 <p>Jena does not compact the database because it does not know when the database 
 is no longer required by the application - the application must arrange to do 
-this itself.</p>
-<p>This can be by using the database manager (<code>org.hsqldb.util.DatabaseManager</code>) 
+this itself. This can be by using the database manager (<code>org.hsqldb.util.DatabaseManager</code>) 
 to compact the database</p>
-<p>
-Example: <code>java -cp ../hsqldb.jar org.hsqldb.Server -database.0 myJenaDB 
--dbname.0 myJenaDB</code></p>
-
 <p>Or the application can do it by either:</p>
 <ol>
   <li>Get the Jena driver , cast to Driver_HSQL and call .shutdown().</li>

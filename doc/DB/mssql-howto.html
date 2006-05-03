@@ -8,22 +8,22 @@
 
 <h1>HowTo Use Microsoft SQL Server Database System with Jena2</h1>
 
-<h2>What is Microsoft SQL Server</h2>
+<h2>What is Microsoft SQL Server?</h2>
 
-<p><i>Microsoft SQL Server</i> refers to a range of Database servers available from Microsoft Corporation
+<p><i>Microsoft SQL Server</i> refers to a range of database servers available from Microsoft Corporation
 for use under the Windows operating system. Jena has been tested with Microsoft 
 SQL Server 2005 Express, Microsoft SQL Server 2000 (Enterprise Edition), and with the Microsoft SQL Server 2000 Desktop Edition (MSDE) Release A.</p>
 <h2>Download and Installation of SQL Server Express
 </h2>
 <p>Download and install Microsoft SQL Server 2005 Express SP1. It is convenient 
-to isntall the server manager as well.</p>
+to install the server manager as well.</p>
 <p>Installation will need to include enabling TCP/IP access via the Microsoft 
 Surface Area configuration tool.</p>
 
 <p>Install a JDBC driver. The Microsoft JDBC driver has been tested with Jena. All 
 that is required is the JAR file, so you may choose to install the .msi file or 
 download download the Unix version (.tar.gz) and just pull the jar out of it and 
-use that WindowsXP.</p>
+use that on WindowsXP.</p>
 <p>
 In addition there is an open source driver compatible with SQL Server available from 
 <a href="http://jtds.sourceforge.net/">http://jtds.sourceforge.net/</a>.
@@ -67,10 +67,7 @@ usual way: </p>
 </blockquote>
 
 <p>
-The JDBC driver class name is (Microsoft driver): &quot;<code>com.microsoft.sqlserver.jdbc.SQLServerDriver</code>&quot;.<br>
-<br>
-&nbsp;</p>
-<p>
+The JDBC driver class name is (Microsoft driver): &quot;<code>com.microsoft.sqlserver.jdbc.SQLServerDriver</code>&quot;.</p>
 
 <h2>Installation of MS SQL Server</h2>
 
@@ -80,7 +77,7 @@ as a store have a correctly configured instance running. The Desktop Edition (MS
 free and redistributable software. See <a href="http://www.microsoft.com/sql/msde/default.mspx">http://www.microsoft.com/sql/msde/default.mspx</a>
 for download, installation and license information.</p>
 
-<h2>Performance and Usage Notes</h2>
+<h2>Notes</h2>
 
 <p>The single biggest limitation with the SQL Server 2000 driver implementation 
 is that while a transaction is in progress inserting triples into a Model
