@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.18 2006-04-25 16:41:07 andy_seaborne Exp $
+  $Id: TestBasicOperations.java,v 1.19 2006-05-03 11:12:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -248,7 +248,7 @@ public class TestBasicOperations extends TestCase {
 	}
 	
 	public void testAddRemoveHugeLiteral() {
-		String base = "This is a huge string that repeats.";
+		String base = Data.str1 ; // Data from a special place that is binary-safe.
 		StringBuffer buffer = new StringBuffer(4096);
 		while (buffer.length() < 4000)
 			buffer.append(base);

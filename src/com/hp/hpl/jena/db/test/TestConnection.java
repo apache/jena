@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.27 2006-05-03 11:12:18 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.28 2006-05-03 11:13:56 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -585,8 +585,6 @@ public class TestConnection extends TestCase {
     
     public void testConcurrentThread() {
         
-        
-        
 		class thread1 extends Thread {
 			syncOnCount s;
 
@@ -595,8 +593,7 @@ public class TestConnection extends TestCase {
 				s = sc;
 			}
 
-			public void run() 
-            {
+			public void run() {
 			    IDBConnection conn = makeAndCleanTestConnection();         
 			    try {
 			        ModelRDB foo = ModelRDB.createModel(conn, "foo");
@@ -642,8 +639,7 @@ public class TestConnection extends TestCase {
 				s = sc;
 			}
 
-			public void run()
-			{
+			public void run() {
 			    s.waitOnCount(1);
 			    IDBConnection conn = makeTestConnection();
 			    try {
