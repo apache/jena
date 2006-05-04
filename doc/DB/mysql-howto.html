@@ -69,8 +69,23 @@ conn.close();
 
 <p>Jena stores all models in a single database using whatever database (name) specified on the database connection. See the <a href="index.html">Jena Database Release Notes</a> for 
 details on the physical layout.</p>
+<h3>MySQL and character sets</h3>
+<p>To handle the full range of characters, you can use the
+<a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a> character set: in the 
+server configuration file:</p>
+<pre>default-character-set=utf8</pre>
+<p>Note: the character set name must be exactly &quot;utf8&quot;.&nbsp; It must not be 
+&quot;utf-8&quot; (an alias name) - the server will not start if the character set name is 
+wrong.</p>
+<p>Alternatively, if the server needs to run with some other character set, 
+create the database as a UTF-8 database and force the JDBC driver to use Unicode 
+regards of negotiation with the server:</p>
+<p>Database creation:</p>
+<pre>create database <i>jenatest</i> character set utf8 ;</pre>
+<p>JDBC URL arguments:</p>
+<pre>?useUnicode=yes&amp;characterEncoding=utf8</pre>
 
-<h4>MySQL Driver issues</h4>
+<h3>MySQL Driver issues</h3>
 <ul>
   <li>Drivers from the 3.0 and 3.1 series work with Jena 2.4 and later.</li>
   <li>Drivers from the 3.1.* series do not work with Jena before Jena version 
