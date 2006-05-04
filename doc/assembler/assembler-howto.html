@@ -59,7 +59,7 @@
 This document describes how to use the Assembler classes to construct models 
 -- and other things -- from RDF descriptions that use the 
 Jena Assembler vocabulary. That vocabulary is available in
-<a href="vocab.n3">ja-vocabulary.n3</a> as an RDFS schema
+<a href="../../vocabularies/assembler.n3">ja-vocabulary.n3</a> as an RDFS schema
 with conventional prefix <code>ja</code> for the URI
 <code>http://jena.hpl.hp.com/2005/11/Assembler#</code>;
 the class <code>JA</code> is its Jena Java rendition.
@@ -356,17 +356,17 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbType <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1007B"><a href="javascript:exchange('1007')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connection a rdfs:Class
-<div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass">.</div>
 <div class="show-property">ja:dbPasswordProperty a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
