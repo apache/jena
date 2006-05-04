@@ -8,6 +8,7 @@ package com.hp.hpl.jena.db.impl;
 import java.sql.*;
 import java.util.*;
 import java.util.zip.CRC32;
+import java.io.UnsupportedEncodingException;
 import java.lang.Thread;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
@@ -42,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.60 $ on $Date: 2006-04-28 17:14:39 $
+* @version $Revision: 1.61 $ on $Date: 2006-05-04 13:19:51 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -2173,7 +2174,15 @@ public abstract class DriverRDB implements IRDBDriver {
                 if ( obj instanceof String )
                     res.tail = (String)obj ;
                 else if ( obj instanceof byte[] )
-                    res.tail = new String((byte[])obj) ;
+                {
+                    try
+                    {
+                        res.tail = new String((byte[])obj, "UTF-8") ;
+                    } catch (UnsupportedEncodingException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                }
                 else
                     throw new RDFRDBException("Long object is of unexpected class: "+obj.getClass());
                 // OLD code (remove after 2.4) res.tail = rs.getString(2);			

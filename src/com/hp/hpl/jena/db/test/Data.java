@@ -10,7 +10,9 @@ package com.hp.hpl.jena.db.test;
 
 public class Data
 {
-    static final String str1 = "This is a huge string that repeats. αβγδε אבגדה ابةتث";
+    // This file is binary.
+    public static final String strLong = "This is a huge string that repeats. αβγδε אבגדה ابةتث";
+    public static final String strUTF = "αβγδε אבגדה ابةتث" ;
 }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.19 2006-05-03 11:12:19 andy_seaborne Exp $
+  $Id: TestBasicOperations.java,v 1.20 2006-05-04 13:19:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -247,8 +247,18 @@ public class TestBasicOperations extends TestCase {
 		}
 	}
 	
+    public void testAddRemoveUTFLiteral()
+    {
+        String str = Data.strLong ;
+        Resource s = model.createResource("test#subject");
+        Property p = model.createProperty("test#predicate");
+        Literal l = model.createLiteral(str);
+
+        addRemove(model.createStatement(s, p, l));
+    }
+    
 	public void testAddRemoveHugeLiteral() {
-		String base = Data.str1 ; // Data from a special place that is binary-safe.
+		String base = Data.strLong ;
 		StringBuffer buffer = new StringBuffer(4096);
 		while (buffer.length() < 4000)
 			buffer.append(base);
@@ -421,7 +431,7 @@ public class TestBasicOperations extends TestCase {
 	}
 
 	public void testAddRemoveHugeDatatype() {
-		String base = "This is a huge string that repeats.";
+		String base = Data.strLong ;
 		StringBuffer buffer = new StringBuffer(4096);
 		while (buffer.length() < 4000)
 			buffer.append(base);

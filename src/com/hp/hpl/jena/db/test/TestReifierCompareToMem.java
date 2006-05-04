@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifierCompareToMem.java,v 1.8 2006-03-22 13:53:11 andy_seaborne Exp $
+  $Id: TestReifierCompareToMem.java,v 1.9 2006-05-04 13:19:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -189,7 +189,7 @@ public class TestReifierCompareToMem extends TestCase
     } 
 
     public void testAddRemoveHugeLiteralObject() {
-    	String base = "This is a huge string that repeats.";
+        String base = Data.strLong ;
     	StringBuffer buffer = new StringBuffer(4096);
     	while(buffer.length() < 4000 )
     		buffer.append(base);
@@ -207,7 +207,7 @@ public class TestReifierCompareToMem extends TestCase
     } 
 
 	public void testAddRemoveHugeDatatypeObject() {
-		String base = "This is a huge string that repeats.";
+        String base = Data.strLong ;
 		StringBuffer buffer = new StringBuffer(4096);
 		while(buffer.length() < 4000 )
 			buffer.append(base);
@@ -218,7 +218,7 @@ public class TestReifierCompareToMem extends TestCase
 	} 
     
 	public void testAddRemoveHugeLiteral2Object() {
-		String base = "This is a huge string that repeats.";
+        String base = Data.strLong ;
 		StringBuffer buffer = new StringBuffer(4096);
 		while(buffer.length() < 4000 )
 			buffer.append(base);

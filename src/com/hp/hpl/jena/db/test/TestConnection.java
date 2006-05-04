@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.28 2006-05-03 11:13:56 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.29 2006-05-04 13:19:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -461,91 +461,6 @@ public class TestConnection extends TestCase {
 		conn.close();
 	}
 	
-	public void testDBMutex() {
-		IDBConnection conn = makeAndCleanTestConnection();
-		IRDBDriver d = conn.getDriver();
-
-		d.lockDB();
-		try {
-			ModelRDB foo = ModelRDB.createModel(conn,"foo");
-			assertTrue(false); // db lock should prevent model create
-		} catch ( Exception e) {			
-		}
-
-		d.unlockDB();
-		
-		if ( d.isDBFormatOK() )
-			assertTrue(false); // db contains no model
-		
-		if ( conn.containsModel("foo") )
-			assertTrue(false);
-		
-		// check that containsModel does not format db
-		if ( d.isDBFormatOK() )
-			assertTrue(false); // db contains no model
-		
-		ModelRDB foo = ModelRDB.createModel(conn,"foo");
-		
-		if ( d.isDBFormatOK() == false )
-			assertTrue(false); // db should be formatted
-		
-		if ( conn.containsModel("foo") == false )
-			assertTrue(false);
-		
-		if ( conn.containsModel("bar") )
-			assertTrue(false);
-
-		// now, delete a system table so db fmt is bad
-		d.deleteTable(d.getSystemTableName(0));
-		
-		if ( d.isDBFormatOK() )
-			assertTrue(false); // db should not be formatted
-		
-		try {
-			conn.close();
-		} catch ( Exception e) {
-			assertTrue(false);
-		}
-		
-		conn = makeTestConnection();
-		d = conn.getDriver();
-
-		if ( conn.containsModel("foo") )
-			assertTrue(false);
-		
-		if ( d.isDBFormatOK() )
-			assertTrue(false); // db should still not be formatted
-	
-		// following should format db
-		ModelRDB bar = ModelRDB.createModel(conn,"bar");
-		
-		if ( d.isDBFormatOK() == false )
-			assertTrue(false); // db should be formatted
-			
-		if ( conn.containsModel("foo") )
-			assertTrue(false);
-
-		if ( conn.containsModel("bar") == false )
-			assertTrue(false);
-		
-		bar.begin();
-		
-		try {
-			bar.remove(); // should fail due to active xact
-			assertTrue(false);
-		} catch ( Exception e) {			
-		}
-		
-		bar.abort();
-		
-		bar.remove();
-		
-		try {
-			conn.close();
-		} catch ( Exception e) {
-			assertTrue(false);
-		}
-	}
 
 	// helper class to sync threads
     public class syncOnCount {
@@ -611,10 +526,10 @@ public class TestConnection extends TestCase {
 			                return ;
 			            }
 
-			        //assertFalse(foo.contains(stmt)); // Invalid test - JUnit does not work concurrently.
+			        //assertFalse(foo.contains(stmt));
 			        s.incCount();
 			        s.waitOnCount(4);
-			        if ( foo.contains(stmt) )
+			        if ( ! foo.contains(stmt) )
 			            synchronized(msg)
                         {
 			                if ( msg.length() == 0 ) msg = "Thread 1 can't see commited statement" ;
@@ -652,7 +567,7 @@ public class TestConnection extends TestCase {
 			        foo.add(stmt);
 			        s.incCount();
 			        s.waitOnCount(3);
-			        if ( foo.contains(stmt) )
+			        if ( !foo.contains(stmt) )
 			            synchronized(msg)
                         {
 			                if ( msg.length() == 0 ) msg = "Thread 2 can't see statement it just added" ;
@@ -669,10 +584,10 @@ public class TestConnection extends TestCase {
 			        s.incCount(); // wake up thread 1
 			        s.waitOnCount(5); // thread1 has now removed stmt
 			        //assertFalse(foo.contains(stmt));
-			        if ( ! foo.contains(stmt) )
+			        if ( foo.contains(stmt) )
 			            synchronized(msg)
                         {
-			                if ( msg.length() == 0 ) msg = "Thread 2 can see statement thread 1 shoudl have removed" ;
+			                if ( msg.length() == 0 ) msg = "Thread 2 can see statement thread 1 should have removed" ;
 			                s.incCount(99);
 			                return ;
 			            }
@@ -699,10 +614,96 @@ public class TestConnection extends TestCase {
 		} catch (Exception e) {
 			assertTrue(false);
 		}
-        if ( msg != null )
+        if ( msg != null && msg.length() > 0 )
             assertTrue(msg, false) ;
         
 	}	
+
+    public void testDBMutex() {
+        IDBConnection conn = makeAndCleanTestConnection();
+        IRDBDriver d = conn.getDriver();
+
+        d.lockDB();
+        try {
+            ModelRDB foo = ModelRDB.createModel(conn,"foo");
+            assertTrue(false); // db lock should prevent model create
+        } catch ( Exception e) {            
+        }
+
+        d.unlockDB();
+        
+        if ( d.isDBFormatOK() )
+            assertTrue(false); // db contains no model
+        
+        if ( conn.containsModel("foo") )
+            assertTrue(false);
+        
+        // check that containsModel does not format db
+        if ( d.isDBFormatOK() )
+            assertTrue(false); // db contains no model
+        
+        ModelRDB foo = ModelRDB.createModel(conn,"foo");
+        
+        if ( d.isDBFormatOK() == false )
+            assertTrue(false); // db should be formatted
+        
+        if ( conn.containsModel("foo") == false )
+            assertTrue(false);
+        
+        if ( conn.containsModel("bar") )
+            assertTrue(false);
+
+        // now, delete a system table so db fmt is bad
+        d.deleteTable(d.getSystemTableName(0));
+        
+        if ( d.isDBFormatOK() )
+            assertTrue(false); // db should not be formatted
+        
+        try {
+            conn.close();
+        } catch ( Exception e) {
+            assertTrue(false);
+        }
+        
+        conn = makeTestConnection();
+        d = conn.getDriver();
+
+        if ( conn.containsModel("foo") )
+            assertTrue(false);
+        
+        if ( d.isDBFormatOK() )
+            assertTrue(false); // db should still not be formatted
+    
+        // following should format db
+        ModelRDB bar = ModelRDB.createModel(conn,"bar");
+        
+        if ( d.isDBFormatOK() == false )
+            assertTrue(false); // db should be formatted
+            
+        if ( conn.containsModel("foo") )
+            assertTrue(false);
+
+        if ( conn.containsModel("bar") == false )
+            assertTrue(false);
+        
+        bar.begin();
+        
+        try {
+            bar.remove(); // should fail due to active xact
+            assertTrue(false);
+        } catch ( Exception e) {            
+        }
+        
+        bar.abort();
+        
+        bar.remove();
+        
+        try {
+            conn.close();
+        } catch ( Exception e) {
+            assertTrue(false);
+        }
+    }
 
 }
     	

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTransactions.java,v 1.9 2006-03-22 13:53:11 andy_seaborne Exp $
+  $Id: TestTransactions.java,v 1.10 2006-05-04 13:19:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -105,7 +105,7 @@ public class TestTransactions extends TestCase
 	
 	
 	public void testAddCommitHugeLiteral() {
-    	String base = "This is a huge string that repeats.";
+        String base = Data.strLong ;
     	StringBuffer buffer = new StringBuffer(4096);
     	while(buffer.length() < 4000 )
     		buffer.append(base);
@@ -117,16 +117,16 @@ public class TestTransactions extends TestCase
     } 
     
 	public void testAddAbortHugeLiteral() {
-			String base = "This is a huge string that repeats.";
-			StringBuffer buffer = new StringBuffer(4096);
-			while(buffer.length() < 4000 )
-				buffer.append(base);
-			Resource s = model.createResource("test#subject");
-			Property p = model.createProperty("test#predicate");
-			Literal l = model.createLiteral(buffer.toString());
-    	
-			addAbort( model.createStatement(s,p,l));    	
-		} 
+	    String base = Data.strLong ;
+	    StringBuffer buffer = new StringBuffer(4096);
+	    while(buffer.length() < 4000 )
+	        buffer.append(base);
+	    Resource s = model.createResource("test#subject");
+	    Property p = model.createProperty("test#predicate");
+	    Literal l = model.createLiteral(buffer.toString());
+
+	    addAbort( model.createStatement(s,p,l));    	
+	} 
     
     public void testAddCommitDatatype() {
     	Resource s = model.createResource("test#subject");
@@ -146,7 +146,7 @@ public class TestTransactions extends TestCase
 
 
     public void testAddAbortHugeDatatype() {
-    	String base = "This is a huge string that repeats.";
+        String base = Data.strLong ;
     	StringBuffer buffer = new StringBuffer(4096);
     	while(buffer.length() < 4000 )
     		buffer.append(base);
@@ -157,17 +157,17 @@ public class TestTransactions extends TestCase
     	addAbort( model.createStatement(s,p,l2));    	
     } 
     
-	public void testAddCommitHugeDatatype() {
-			String base = "This is a huge string that repeats.";
-			StringBuffer buffer = new StringBuffer(4096);
-			while(buffer.length() < 4000 )
-				buffer.append(base);
-			Resource s = model.createResource("test#subject");
-			Property p = model.createProperty("test#predicate");
-			Literal l2 = model.createTypedLiteral(buffer.toString());
-    	
-			addCommit( model.createStatement(s,p,l2));    	
-		} 
+    public void testAddCommitHugeDatatype() {
+        String base = Data.strLong ;
+        StringBuffer buffer = new StringBuffer(4096);
+        while(buffer.length() < 4000 )
+            buffer.append(base);
+        Resource s = model.createResource("test#subject");
+        Property p = model.createProperty("test#predicate");
+        Literal l2 = model.createTypedLiteral(buffer.toString());
+
+        addCommit( model.createStatement(s,p,l2));    	
+    } 
     
    public void testAddCommitBNode() {
     	Resource s = model.createResource();

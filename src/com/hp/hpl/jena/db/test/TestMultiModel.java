@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMultiModel.java,v 1.7 2006-04-25 16:41:07 andy_seaborne Exp $
+  $Id: TestMultiModel.java,v 1.8 2006-05-04 13:19:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -230,7 +230,7 @@ public class TestMultiModel extends TestCase
 	}
 	
 	public void testAddRemoveHugeLiteral() {
-    	String base = "This is a huge string that repeats.";
+        String base = Data.strLong ;
     	StringBuffer buffer = new StringBuffer(4096);
     	while(buffer.length() < 4000 )
     		buffer.append(base);
@@ -250,7 +250,7 @@ public class TestMultiModel extends TestCase
     } 
 
     public void testAddRemoveHugeDatatype() {
-    	String base = "This is a huge string that repeats.";
+        String base = Data.strLong ;
     	StringBuffer buffer = new StringBuffer(4096);
     	while(buffer.length() < 4000 )
     		buffer.append(base);
