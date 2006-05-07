@@ -38,6 +38,19 @@ DEFS=" $DEFS  -Djena.db.concurrent=false"
 JDBC=${JDBC:-$HOME/jlib/hsqldb.jar}
 ;;
 
+derby)
+echo "Apache Derby (embedded)"
+DEFS="-Djena.db.url=jdbc:derby:tmp/jenatest;create=true"
+## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://localhost/jenatest"
+## DEFS="-Djena.db.url=jdbc:hsqldb:http://localhost:88/jenatest
+DEFS=" $DEFS  -Djena.db.user="
+DEFS=" $DEFS  -Djena.db.password="
+DEFS=" $DEFS  -Djena.db.type=Derby"
+DEFS=" $DEFS  -Djena.db.driver=org.apache.derby.jdbc.EmbeddedDriver"
+# No row level locking
+DEFS=" $DEFS  -Djena.db.concurrent=false"
+JDBC="${JDBC:-$HOME/jlib/db-derby-10.1.2.1-bin/lib/derby.jar}"
+;;
 
 postgres|postgresql) 
 echo PostgreSQL
@@ -107,7 +120,7 @@ DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
 JDBC="${JDBC:-$HOME/jlib/sqljdbc.jar}"
 ;;
 
-*) echo "you must specify a database type [postgres, mysql, mssql, mssqle, hsqldb]"; exit ;;
+*) echo "you must specify a database type [postgres, mysql, mssql, mssqle, hsqldb, derby]"; exit ;;
 esac
 
 if [ "$JDBC" = "" ]

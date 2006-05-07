@@ -27,25 +27,25 @@ CREATE CACHED TABLE ${c}SYS_STMT (
  GraphID    INTEGER
 ) ;;
 CREATE CACHED TABLE ${c}LONG_LIT (
- ID      	INTEGER NOT NULL IDENTITY, 
+ ID      	INTEGER NOT NULL IDENTITY PRIMARY KEY, 
  Head    	${b} NOT NULL,
  ChkSum		BIGINT,
  Tail    	VARCHAR
 ) ;;
 CREATE CACHED TABLE ${c}LONG_URI (
- ID      	INTEGER NOT NULL IDENTITY,
+ ID      	INTEGER NOT NULL IDENTITY PRIMARY KEY,
  Head    	${b} NOT NULL,
  ChkSum 	BIGINT,
  Tail    	VARCHAR
 ) ;;
 CREATE CACHED TABLE ${c}PREFIX (
- ID      	INTEGER NOT NULL IDENTITY,
+ ID      	INTEGER NOT NULL IDENTITY PRIMARY KEY,
  Head    	${b} NOT NULL,
  ChkSum		BIGINT,
  Tail    	VARCHAR
 ) ;;
 CREATE CACHED TABLE ${c}GRAPH (
- ID      INTEGER NOT NULL IDENTITY,
+ ID      INTEGER NOT NULL IDENTITY PRIMARY KEY,
  Name    VARCHAR(1024)
 ) ;;
 CREATE UNIQUE INDEX ${c}IXLIT ON ${c}LONG_LIT(Head,ChkSum);;
@@ -371,12 +371,7 @@ selectReifNodeN
 SELECT DISTINCT S.Stmt
 FROM ${a} S WHERE S.Stmt = ? AND S.GraphID = ?
 
-#-------------------------------------------------------------------DEFS="-Djena.db.url=jdbc:postgresql://localhost/jenatest"
-DEFS=" $DEFS  -Djena.db.user=test"
-DEFS=" $DEFS  -Djena.db.password=password"
-DEFS=" $DEFS  -Djena.db.type=PostgreSQL"
-DEFS=" $DEFS  -Djena.db.driver=org.postgresql.Driver"
-JDBC=${JDBC:-}
+#-------------------------------------------------------------------
 
 # HSQL-specific shutdown command
 shutdown
