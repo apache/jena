@@ -39,8 +39,10 @@ database engine.</p>
   <li><code>jdbc:hsqldb:mem:</code><i><code>DBname</code></i>: in-memory only</li>
 </ul>
 <p>By default, for file-persistence, the user name is &quot;sa&quot; and the password is 
-&quot;&quot;. See the HSQLDB documentation for further details.</p>
-<p>The database JDBC driver is class <code>org.hsqldb.jdbcDriver</code>.</p>
+&quot;&quot;. See the HSQLDB documentation for further details. </p>
+<p>The database JDBC driver is class <code>org.hsqldb.jdbcDriver</code>.&nbsp; 
+Compare this to Derby where the driver changes but the URL is the same for 
+server or embedded use.</p>
 <p>The Jena driver name is HSQL.</p>
 <p>Persistent models are <a href="creating-db-models.html">created</a> in the 
 same way for any database system: </p>
@@ -77,7 +79,8 @@ conn.close();
 </pre>
     
 <h2>HSQLDB Notes</h2>
-<p>HSQLDB does not support full ACID transactions.&nbsp; The application should 
+<p>HSQLDB does not support full ACID transactions; the application can read 
+uncommitted updates from other transactions. The application should 
 use locking within the application, such as <a href="../how-to/concurrency.html">MRSW 
 locking</a> or provide it's own locking, to ensure that updates and reads do not overlap.</p>
 <p>Jena does not compact the database because it does not know when the database 
