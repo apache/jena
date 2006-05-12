@@ -11,8 +11,9 @@ package com.hp.hpl.jena.db.test;
 public class Data
 {
     // This file is binary.
-    public static final String strLong = "This is a huge string that repeats. αβγδε אבגדה ابةتث";
-    public static final String strUTF = "αβγδε אבגדה ابةتث" ;
+//    public static final String strLong = "This is a huge string that repeats. αβγδε �?בגדה ابةتث";
+    public static final String strLong = "This is a huge string that repeats. Some padding again. ";
+    public static final String strUTF = "αβγδε �?בגדה ابةتث" ;
 }
 
 /*
