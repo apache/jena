@@ -20,7 +20,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
 
-///* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE IMPORT STATEMENTS)  -------
+/* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE IMPORT STATEMENTS)  -------
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BLOB;
 import oracle.jdbc.OracleDatabaseMetaData;
@@ -39,7 +39,7 @@ import oracle.jdbc.OracleDatabaseMetaData;
  */
    public class Driver_Oracle extends DriverRDB {
 
-/* //* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
+//* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
 	
 	public interface BLOB extends java.sql.Blob {
 		OutputStream getBinaryOutputStream();
@@ -96,7 +96,7 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	 */
 	public void setConnection( IDBConnection dbcon ) {
 		m_dbcon = dbcon;
-// /* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE TRY BLOCK)  -------
+/* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE TRY BLOCK)  -------
 		try {
 			OracleDatabaseMetaData dmd = (OracleDatabaseMetaData)dbcon.getConnection().getMetaData();
 			if (dmd == null)
