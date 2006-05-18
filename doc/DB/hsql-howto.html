@@ -68,8 +68,8 @@ String DB_PASSWD = &quot;&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 String DB =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;HSQL&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    // database type
 
 // Create database connection
-IDBConnection conn = new DBConnection ( URL, DB_USER, DB_PASSWD, DB );
-ModelMaker maker = ModelFactory.createModelRDBMaker(conn)
+IDBConnection conn = new DBConnection ( DB_URL, DB_USER, DB_PASSWD, DB );
+ModelMaker maker = ModelFactory.createModelRDBMaker(conn) ;
 
 // create or open the default model
 Model model = maker.createModel();
