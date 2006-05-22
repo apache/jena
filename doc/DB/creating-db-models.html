@@ -64,17 +64,17 @@ models. The following examples show how this is done.</p>
 
 <font SIZE="2">
 <blockquote>
-  <pre><font face="Courier New">    // database URL
+  <pre><font face="Courier New">// database URL
 String M_DB_URL         = <font SIZE="2" COLOR="#2a00ff">&quot;jdbc:mysql://localhost/test&quot;</font>;</font></pre>
-  <pre><font face="Courier New">    // User name</font></pre>
+  <pre><font face="Courier New">// User name</font></pre>
   <pre><font face="Courier New">String M_DB_USER        = <font SIZE="2" COLOR="#2a00ff">&quot;test&quot;</font>;</font></pre>
-  <pre><font face="Courier New">    // Password</font></pre>
+  <pre><font face="Courier New">// Password</font></pre>
   <pre><font face="Courier New">String M_DB_PASSWD      = <font SIZE="2" COLOR="#2a00ff">&quot;&quot;</font>;</font></pre>
-  <pre><font face="Courier New">    // Database engine name</font></pre>
+  <pre><font face="Courier New">// Database engine name</font></pre>
   <pre><font face="Courier New">String M_DB = <font SIZE="2" COLOR="#2a00ff">&quot;MySQL&quot;</font>;</font></pre>
-  <pre><font face="Courier New">    // JDBC driver</font></pre>
+  <pre><font face="Courier New">// JDBC driver</font></pre>
   <pre><font face="Courier New">String M_DBDRIVER_CLASS = <font SIZE="2" COLOR="#2a00ff">&quot;com.mysql.jdbc.Driver&quot;</font>;</font></pre>
-  <pre><font face="Courier New">   // load the the driver class
+  <pre><font face="Courier New">// load the the driver class
 Class.forName(M_DBDRIVER_CLASS);</font></pre>
   <pre><font face="Courier">
 </font><font face="Courier New">// create a database connection
@@ -175,17 +175,17 @@ DBConnection dbcon = new DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);<b
 </font>
 </code>
 
-<font face="Courier New" size="2">conn.getDriver().setDoCompressURI(true);<br>
+<font face="Courier New" size="2">dbcon.getDriver().setDoCompressURI(true);<br>
 </font>
 <code>
 <font face="Courier New" size="2">ModelRDB model = ModelRDB.createModel(dbcon, "myModelName&quot;);<br>
 // double the size of the prefix cache<br>
 </font></code>
 
-<font face="Courier New" size="2">int cacheSize = conn.getDriver().getCompressCacheSize();</font><code><font face="Courier New" size="2"><br>
+<font face="Courier New" size="2">int cacheSize = dbcon.getDriver().getCompressCacheSize();</font><code><font face="Courier New" size="2"><br>
 </font></code>
 
-<font face="Courier New" size="2">conn.getDriver().setCompressCacheSize(cacheSize*2);</font></blockquote>
+<font face="Courier New" size="2">dbcon.getDriver().setCompressCacheSize(cacheSize*2);</font></blockquote>
 <h5>Detect multiple models per database</h5>
 <p>
 In Jena2, all databases are multi-model and each model is, by default, stored in 
@@ -216,8 +216,8 @@ created models.</p>
 <font face="Courier New" size="2">Class.forName(M_DBDRIVER_CLASS);<br>
 DBConnection dbcon = new DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);<br>
 ModelRDB model1, model2;<br>
-model1 = ModelRDB.createModel(dbcon, "myModel1&quot;);&nbsp; // create a new model 
-model</font></code><font face="Courier New" size="2">conn.getDriver().setStoreWithModel(</font><code><font face="Courier New" size="2">"myModelName&quot;</font></code><font face="Courier New" size="2">);</font><code><font face="Courier New" size="2"><br>
+model1 = ModelRDB.createModel(dbcon, "myModel1&quot;);&nbsp; // create a new model <br>
+dbcon.getDriver().setStoreWithModel("myModel1&quot;);<br>
 model2 = ModelRDB.createModel(dbcon, "myModel2&quot;); // model2 is stored with 
 model1</font></code></p>
 </blockquote>
