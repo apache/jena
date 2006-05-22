@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierTripleMap.java,v 1.11 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: SimpleReifierTripleMap.java,v 1.12 2006-05-22 15:24:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -26,6 +26,11 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     public Triple getTriple( Node tag )
         { return (Triple) forwardMap.get( tag ); }
 
+    public void clear()
+        {
+        forwardMap.clear();
+        inverseMap.clear();
+        }
     /**
          Answer true iff we have a reified triple <code>t</code>.
     */

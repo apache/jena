@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.24 2006-05-22 14:41:40 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.25 2006-05-22 15:24:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -51,7 +51,7 @@ public class TestReifier extends AbstractTestReifier
         }   
         
     public Graph getGraph()
-        { return getGraph( ReificationStyle.Minimal ); }
+        { return getGraph( style ); }
     
     public Graph getGraph( ReificationStyle style ) 
         {

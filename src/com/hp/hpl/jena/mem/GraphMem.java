@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.56 2006-03-22 13:52:18 andy_seaborne Exp $
+  $Id: GraphMem.java,v 1.57 2006-05-22 15:24:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
@@ -77,7 +78,10 @@ public class GraphMem extends GraphMemBase implements Graph
         Clear this GraphMem, ie remove all its triples (delegated to the store).
     */
     public void clear()
-        { store.clear(); }
+        { 
+        store.clear(); 
+        ((SimpleReifier) getReifier()).clear();
+        }
     }
 
 /*

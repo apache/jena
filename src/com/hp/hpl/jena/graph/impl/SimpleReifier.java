@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.50 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: SimpleReifier.java,v 1.51 2006-05-22 15:24:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -73,6 +73,12 @@ public class SimpleReifier implements Reifier
     public ExtendedIterator allNodes( Triple t )
         { return tripleMap.tagIterator( t ); }
 
+    public void clear()
+        {
+        fragmentsMap.clear();
+        tripleMap.clear();
+        }
+    
     /** 
         reifiy <code>toReify</code> with tag <code>tag</code>. If a different triple is 
         already reified under <code>tag</code>, throw an AlreadyReifiedException.

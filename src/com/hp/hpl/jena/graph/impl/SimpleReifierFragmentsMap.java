@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.20 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.21 2006-05-22 15:24:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -22,7 +22,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 */
 public class SimpleReifierFragmentsMap implements ReifierFragmentsMap 
     {
-    
     protected Map forwardMap = CollectionFactory.createHashedMap();
     
     protected Fragments getFragments( Node tag )
@@ -30,6 +29,9 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     
     protected void removeFragments( Node key )
         { forwardMap.remove( key ); }
+    
+    public void clear()
+        { forwardMap.clear(); }
     
     /**
     update the map with (node -> fragment); return the fragment.

@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierFragmentsMap.java,v 1.10 2006-03-22 13:53:15 andy_seaborne Exp $
+ $Id: ReifierFragmentsMap.java,v 1.11 2006-05-22 15:24:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -37,6 +37,11 @@ public interface ReifierFragmentsMap
          Answer true iff this map has fragments associated with <code>tag</code>.
     */
     public abstract boolean hasFragments( Node tag );
+    
+    /**
+        Clear away all the fragments.
+    */
+    public void clear();
     }
 
 /*

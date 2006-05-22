@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.12 2006-03-22 13:52:19 andy_seaborne Exp $
+  $Id: SmallGraphMem.java,v 1.13 2006-05-22 15:24:38 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -58,7 +58,10 @@ public class SmallGraphMem extends GraphMemBase
         { triples = null; }
     
     public void clear()
-        { triples.clear(); }
+        { 
+        triples.clear(); 
+        ((SimpleReifier) getReifier()).clear();
+        }
     
     public BulkUpdateHandler getBulkUpdateHandler()
         {
@@ -71,7 +74,7 @@ public class SmallGraphMem extends GraphMemBase
         return 
             SimpleEventManager.notifyingRemove( this, triples.iterator() ) 
             .filterKeep ( new TripleMatchFilter( m.asTriple() ) );
-        }
+        }    
     }
 
 /*

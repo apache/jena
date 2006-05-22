@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierTripleMap.java,v 1.6 2006-03-22 13:53:15 andy_seaborne Exp $
+ $Id: ReifierTripleMap.java,v 1.7 2006-05-22 15:24:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -72,6 +72,11 @@ public interface ReifierTripleMap
          <code>t</code>.
     */
     public abstract ExtendedIterator tagIterator( Triple t );
+    
+    /**
+        Clear away all the triples.
+    */
+    public void clear();    
     }
 
 /*

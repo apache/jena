@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.13 2006-03-22 13:53:31 andy_seaborne Exp $
+ 	$Id: GraphMemFaster.java,v 1.14 2006-05-22 15:24:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Reifier.Util;
-import com.hp.hpl.jena.graph.impl.TripleStore;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
@@ -44,7 +44,7 @@ public class GraphMemFaster extends GraphMemBase
         if (queryHandler == null) queryHandler = new GraphMemFasterQueryHandler( this );
         return queryHandler;
         }
-        
+    
     /**
          Answer an ExtendedIterator over all the triples in this graph that match the
          triple-pattern <code>m</code>. Delegated to the store.
@@ -98,7 +98,10 @@ public class GraphMemFaster extends GraphMemBase
         Clear this GraphMem, ie remove all its triples (delegated to the store).
     */
     public void clear()
-        { store.clear(); }
+        { 
+        store.clear(); 
+        ((SimpleReifier) getReifier()).clear();
+        }
     }
 
 

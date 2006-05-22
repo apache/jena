@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.30 2006-05-22 14:41:40 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.31 2006-05-22 15:24:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -31,8 +31,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     public AbstractTestReifier( String name )
         { super( name ); }
         
-    public abstract Graph getGraph()
-        ; // { return getGraph( Minimal ); }
+    public abstract Graph getGraph();
     
     public abstract Graph getGraph( ReificationStyle style );
 
@@ -380,7 +379,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     */
     public void testDynamicHiddenTriples()
         {
-        Graph g = getGraph();
+        Graph g = getGraph( Minimal );
         Reifier r = g.getReifier();
         Graph h = getHiddenTriples( r );
         Graph wanted = graphWith
@@ -496,7 +495,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         {
         Graph g = getGraphWith( "x rdf:subject S" );
         g.getBulkUpdateHandler().removeAll();
-        assertEquals( Collections.EMPTY_SET, g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );        
+        assertEquals( "oops: " + g.getClass(), Collections.EMPTY_SET, g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );        
         }
     
     public void testBulkClearReificationTriples2()
