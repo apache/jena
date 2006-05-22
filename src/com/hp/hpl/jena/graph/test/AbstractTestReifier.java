@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.29 2006-04-21 13:33:13 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.30 2006-05-22 14:41:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -28,11 +28,11 @@ public abstract class AbstractTestReifier extends GraphTestBase
 
     protected static final Triple ALL = Triple.create( "?? ?? ??" );
     
-    public AbstractTestReifier(String name)
-        { super(name); }
+    public AbstractTestReifier( String name )
+        { super( name ); }
         
-    public Graph getGraph()
-        { return getGraph( Minimal ); }
+    public abstract Graph getGraph()
+        ; // { return getGraph( Minimal ); }
     
     public abstract Graph getGraph( ReificationStyle style );
 

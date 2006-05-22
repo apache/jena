@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: MetaTestGraph.java,v 1.7 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: MetaTestGraph.java,v 1.8 2006-05-22 14:41:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -37,6 +37,11 @@ public class MetaTestGraph extends AbstractTestGraph
     public static TestSuite suite()
         { return suite( MetaTestGraph.class, GraphMem.class, ReificationStyle.Minimal ); }
             
+    /**
+        Construct a suite of tests from the test class <code>testClass</code>
+        by instantiating it three times, once each for the three reification styles,
+        and applying it to the graph <code>graphClass</code>.
+    */
     public static TestSuite suite( Class testClass, Class graphClass )
         {
         TestSuite result = new TestSuite();

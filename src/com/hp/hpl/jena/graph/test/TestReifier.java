@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.23 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: TestReifier.java,v 1.24 2006-05-22 14:41:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.graph.impl.SimpleReifier;
 import com.hp.hpl.jena.graph.impl.SimpleReifierFragmentsMap;
 import com.hp.hpl.jena.graph.impl.SimpleReifierTripleMap;
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -45,9 +46,13 @@ public class TestReifier extends AbstractTestReifier
         { 
         TestSuite result = new TestSuite();
         result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem.class ) );
+        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMemFaster.class ) );
         return result; 
         }   
         
+    public Graph getGraph()
+        { return getGraph( ReificationStyle.Minimal ); }
+    
     public Graph getGraph( ReificationStyle style ) 
         {
         try
