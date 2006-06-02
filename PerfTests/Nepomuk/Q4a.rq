@@ -1,0 +1,17 @@
+PREFIX  rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  schema: <http://www.cogsci.princeton.edu/~wn/schema/>
+
+SELECT  ?word ?superTypeA ?superTypeB ?superTypeC ?superTypeD
+WHERE
+  { ?concept  rdf:type          schema:Verb .
+#    ?concept  schema:hyponymOf  ?h1 .
+#    ?h1       schema:hyponymOf  ?h2 .
+#    ?h2       schema:hyponymOf  ?h3 .
+#    ?h3       schema:hyponymOf  ?h4 .
+
+#    ?concept  schema:wordForm   ?word .
+#    ?h1       schema:wordForm   ?superTypeA .
+#    ?h2       schema:wordForm   ?superTypeB .
+#    ?h3       schema:wordForm   ?superTypeC .
+#    ?h4       schema:wordForm   ?superTypeD .
+  }

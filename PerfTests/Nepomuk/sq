@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ "$ARQROOT" == "" ]
+then
+    echo "ARQROOT not set" 1>&2
+    exit 1
+    fi
+
+CP=$($ARQROOT/bin/arq_path)
+java -Xmx1024M $SOCKS -cp "$CP" arq.sparql "$@"

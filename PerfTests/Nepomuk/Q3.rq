@@ -1,0 +1,8 @@
+PREFIX  schema: <http://www.cogsci.princeton.edu/~wn/schema/>
+SELECT  ?word ?definition
+WHERE
+  { ?myConcept  schema:wordForm     "happy" ;
+              schema:similarTo      ?thatConcept .
+    ?thatConcept  schema:wordForm   ?word ;
+              schema:glossaryEntry  ?definition .
+  }

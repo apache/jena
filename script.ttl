@@ -1,0 +1,36 @@
+@prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
+@prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+<x> rdf:type acmd:Script ;
+    acmd:steps
+    # features needed: 
+    # Include from elsewhere
+    #  bNodes - "here"
+    #  URI - check to see if here else read.
+    (
+#        [ acmd:seeOther <file:cmd.ttl> ]
+        _:s1
+        _:s2
+    ) .
+
+_:s1 rdf:type acmd:Cmd ;
+    acmd:main        "arq.sparql" ;
+    # OR
+    acmd:classname  "arq.qparse" ;
+    # OR
+    acmd:classname  <java:arq.qparse> ;
+    
+    # The trouble with URIs is that might want to retain the relativeness
+    acmd:args (
+        "--query" "Q.rq"
+        "D2.ttl"
+    ) .
+
+_:s2 rdf:type acmd:Cmd ;
+    acmd:main        "sdb.sdbprint" ;
+    
+    acmd:args (
+    ) .
+

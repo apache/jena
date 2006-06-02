@@ -1,0 +1,59 @@
+SDB ToDo list (and general notes)
+=================================
+
+c.f. SQLCache and returning prepared statements
+  Named parameters in INSERT for robustness.
+  Sequences, not autoIncrement
+
+Encode upper/lower case into SQL identifiers.
+  SQLidAllocate(String) => String
+  SPARQid2SQLid and reverse
+    
+Need to handle connection management to be concurrency and connection pooling friendly.
+
+Layout2 :
+  Lexical forms : use a binary form, binary
+    MySQL: BLOB, VARBINARY
+    HSQL : Text is OK - it's string unchanged
+    PostgreSQL: TEXT or bytea (byte array :: does not have BLOB's)
+    Derby : blobs need blob handling.
+      Abstract into SQLUtils
+  Normalize values?
+
+Remove all "defaults" from table creation everywhere and use code to set defaults.
+
+SchemaBase.join
+  "if ( right.isRestrict() )" -- move to GenerateSQL
+
+HSQL: can it handle LJs of J expressions?
+  SQL format of LEFT JOINs to make HSQL work (no leading "(" in LHS join expression")
+  Currently, optional generation is OFF in StoreTriplesNodesHSQL
+
++ CompileContext
+  var => triples
+  var => values (id col)
+
+----
+Stabilize the core
+
+ -- Value lookups in pattern matching?
+    e.g. "string" and "string"^^xsd:string
+----
+
++ Test for "?x :p ?x" etc
+
++ Check flow of variables and offramp joins in the presence of left joins.
+  Need to do flow analysis on Blocks
+    + Pass in projection variables IIF completely optimized (PlanBlock of a PlanSDB)
+    + Warning cases : 
+      + Always Unbound vars in filters 
+      + two-mention across optionals blocks
+      Need warning architecture for tests.
+    
++ SQL comparisions
+   SELECT FROM .. ON .. with SELECT FROM .. WHERE
+
+   SELECT FROM (SELECT .... WHERE) AS T [LEFT] JOIN ...
+   with
+   SELECT FROM T AS [LEFT] JOIN ... WHERE ...
+   (should be the same but ...)

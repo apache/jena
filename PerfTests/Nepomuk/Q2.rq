@@ -1,0 +1,7 @@
+PREFIX wordnet: <http://www.cogsci.princeton.edu/~wn/concept#>
+PREFIX schema: <http://www.cogsci.princeton.edu/~wn/schema/>
+SELECT ?word
+WHERE 
+{ <http://www.cogsci.princeton.edu/~wn/concept#102669463> 
+                  schema:wordForm ?word .
+}

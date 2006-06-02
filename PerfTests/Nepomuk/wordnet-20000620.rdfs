@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+ <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+ <!ENTITY s 'http://www.w3.org/TR/1999/PR-rdf-schema-19990303#'>
+ <!ENTITY wn 'http://www.cogsci.princeton.edu/~wn/schema/'>
+ <!ENTITY dc 'http://purl.org/dc/elements/1.1/'>
+]>
+
+<rdf:RDF
+   xmlns="&rdf;"
+   xmlns:rdf="&rdf;"
+   xmlns:s="&s;"
+   xmlns:wn="&wn;"
+   xmlns:dc="&dc;"
+>
+
+<!--
+  This is an inofficial RDF Schema for WordNet data written by
+  Sergey Melnik, melnik@db.stanford.edu -->
+
+<s:Class rdf:about="&wn;LexicalConcept"
+  s:comment='A lexical concept identifies a sense or a meaning, captured by a set of synonyms that serves as an unambiguous designator. The synonym set does not explain what the concept is; it merely signifies that the concept exists.' />
+
+<s:Class rdf:about="&wn;Verb"
+  s:comment="A verb.">
+  <s:subClassOf rdf:resource="&wn;LexicalConcept"/>
+</s:Class>
+
+<s:Class rdf:about="&wn;Noun"
+  s:comment="A noun.">
+  <s:subClassOf rdf:resource="&wn;LexicalConcept"/>
+</s:Class>
+
+<s:Class rdf:about="&wn;Adjective"
+  s:comment="An adjective.">
+  <s:subClassOf rdf:resource="&wn;LexicalConcept"/>
+</s:Class>
+
+<s:Class rdf:about="&wn;AdjectiveSatellite"
+  s:comment="An adjective satellite.">
+  <s:subClassOf rdf:resource="&wn;Adjective"/>
+</s:Class>
+
+<s:Class rdf:about="&wn;Adverb"
+  s:comment="An adverb.">
+  <s:subClassOf rdf:resource="&wn;LexicalConcept"/>
+</s:Class>
+
+<rdf:Property rdf:about="&wn;glossaryEntry"
+  s:comment="The glossary entry (a gloss) helps to resolve the polysemy. The gloss is not intended for use in constructing a new lexical concept by someone not already familiar with it, and it differs from a synonym in that it is not used to gain access to information stored in the mental lexicon. It fulfills its purpose if it enables the user of WordNet, who is assumed to know English, to differentiate this sense from others with which it could be confused.">
+  <s:domain rdf:resource="&wn;LexicalConcept" />
+  <s:range rdf:resource="&s;Literal" />
+</rdf:Property>
+
+<rdf:Property rdf:about="&wn;wordForm"
+  s:comment='A word form is used to refer to the physical utterance or inscription and "word meaning" to refer to the lexicalized concept that a form can be used to express.'>
+  <s:domain rdf:resource="&wn;LexicalConcept" />
+  <s:range rdf:resource="&s;Literal" />
+</rdf:Property>
+
+<rdf:Property rdf:about="&wn;similarTo"
+  s:comment='Specifies that the second lexical concept is similar in meaning to the first concept. This means that the second concept is a satellite the first one, which is the cluster head. This relation only holds for adjectives.'>
+  <s:domain rdf:resource="&wn;Adjective"/>
+  <s:range rdf:resource="&wn;Adjective"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="&wn;antonymOf"
+  s:comment='This is a lexical relation that specifies antonymous words; it holds for all syntactic categories. This relation is transitive.'>
+  <s:domain rdf:resource="&wn;LexicalConcept"/>
+  <s:range rdf:resource="&wn;LexicalConcept"/>
+</rdf:Property>
+
+<rdf:Property rdf:about="&wn;hyponymOf"
+  s:comment='This is a lexical relation that specifies that the first concept is a hyponym of the second concept. This relation holds for nouns and verbs. The reflexive operator, hypernym, implies that the second concept is a hypernym of the first one.'>
+  <s:domain rdf:resource="&wn;LexicalConcept"/>
+  <s:range rdf:resource="&wn;LexicalConcept"/>
+</rdf:Property>
+
+</rdf:RDF>
+
