@@ -45,10 +45,10 @@ public class JDBC
     { return makeURL(type, host, null, dbName, null, null) ; }
 
     public static String makeURL(String type, String host, String dbName, String user, String password)
-    { return makeURL(type, host, null, dbName, user, password) ; }
+    { return makeURL(type, host, dbName, null, user, password) ; }
 
     // How to make URLs.
-    public static String makeURL(String type, String host, String argStr, String dbName, String user, String password)
+    public static String makeURL(String type, String host, String dbName, String argStr, String user, String password)
     {
         type = type.toLowerCase() ;
         

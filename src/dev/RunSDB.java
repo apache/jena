@@ -47,10 +47,10 @@ public class RunSDB
         //runQuery() ;
         //runPrint() ;
         //runLoad() ;
-        runScript() ;
+        //runScript() ;
         
         //runTest() ;
-        //runCommand() ;
+        runCommand() ;
         //runCode() ;
         runConf() ;
         //runTestManifest() ;
