@@ -1,0 +1,60 @@
+/*
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.sdb.condition;
+
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.graph.Node;
+
+/** As a node : for all layouts, this is the thing in the triples table columns
+ * 
+ * @author Andy Seaborne
+ * @version $Id: C_Node.java,v 1.1 2006/04/19 17:23:32 andy_seaborne Exp $
+ */
+
+public class C_Node extends CompiledConstraintBase
+{
+    Node var ;
+    
+    public C_Node(Node var)
+    { 
+        if ( ! var.isVariable() )
+            LogFactory.getLog(CompiledConstraintVisitor.class).fatal("Not a variable: "+var) ;
+        this.var = var ;
+    }
+    
+    public void visit(CompiledConstraintVisitor visitor) { visitor.visit(this) ; }
+
+    public Node getVar() { return var ; }
+}
+
+/*
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
