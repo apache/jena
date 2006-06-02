@@ -46,13 +46,13 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         //runQuery() ;
         //runPrint() ;
-        //runLoad() ;
+        runLoad() ;
         //runScript() ;
         
         //runTest() ;
-        runCommand() ;
+        //runCommand() ;
         //runCode() ;
-        runConf() ;
+        //runConf() ;
         //runTestManifest() ;
         
         
@@ -123,12 +123,7 @@ public class RunSDB
     public static void runLoad()
     {
         String dir = "PerfTests/Nepomuk/" ;
-        String a[]= { "--sdb=tmp/sdb.ttl", "--layout=layout2", "-v", "tmp/U10.nt",
-                      //dir+"wordnet_glossary-20010201.rdf",
-                      //dir+"wordnet_hyponyms-20010201.rdf",
-                      //dir+"wordnet_nouns-20010201.rdf",
-                      //dir+"wordnet_similar-20010201.rdf",
-        } ;
+        String a[]= { "--sdb=sdb.ttl", "Data/data.ttl" } ;
         sdbload.main(a) ;
         System.exit(0) ;
     }

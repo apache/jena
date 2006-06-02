@@ -199,6 +199,12 @@ public abstract class CmdStore extends CmdGeneral
 //            System.exit(9);
 //        }
 
+        if ( storeDesc == null )
+        {
+            System.err.println("No store description");
+            System.exit(1);
+        }
+        
         driverName = storeDesc.connDesc.driver ;
         
         if (contains(argDeclJdbcDriver))

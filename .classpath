@@ -17,8 +17,8 @@
 	<classpathentry kind="lib" path="lib/wstx-asl-2.8.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
-	<classpathentry sourcepath="arq-src.zip" kind="lib" path="lib/arq.jar"/>
 	<classpathentry kind="lib" path="jdbc/hsqldb.jar"/>
 	<classpathentry kind="lib" path="jdbc/mysql-connector-java-5.0.0-beta-bin.jar"/>
+	<classpathentry sourcepath="arq-src.zip" kind="lib" path="lib/arq.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
