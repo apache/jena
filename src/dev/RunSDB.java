@@ -44,9 +44,9 @@ public class RunSDB
     public static void main(String[]argv)
     {
         //SDBConnection.logSQLStatements = true ;
-        //runQuery() ;
+        runQuery() ;
         //runPrint() ;
-        runLoad() ;
+        //runLoad() ;
         //runScript() ;
         
         //runTest() ;
@@ -83,9 +83,7 @@ public class RunSDB
 //            "-v",
 //        } ;
         
-        // The database is protected in other ways than user/password
-        String a[] = {"-v", "--sdb=sdb.ttl", "--layout=layout2", "@Q.rq" } ;
-        //String a[] = {"--sdb=Remote/sdb.ttl", "--layout=layout2, "@Remote/Q.rq"} ;
+        String a[] = {"-v", "--sdb=sdb.ttl", "@Q.rq" } ;
       
         SDBConnection.logSQLStatements = false ;
         SDBConnection.logSQLExceptions = true ;

@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
 import com.hp.hpl.jena.util.FileManager;
  
- /** Query an SDB model..
+ /** Query an SDB model.
   * 
   *  <p>
   *  Usage:<pre>
