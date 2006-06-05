@@ -8,6 +8,7 @@ package dev;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.*;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -19,22 +20,22 @@ import sdb.cmd.CmdDesc;
 import sdb.cmd.ScriptDesc;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.junit.SimpleTestRunner;
 import com.hp.hpl.jena.query.junit.TestItem;
+import com.hp.hpl.jena.query.util.ExprUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.Access;
-import com.hp.hpl.jena.sdb.ModelSDB;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.graph.PrefixMappingSDB;
+import com.hp.hpl.jena.sdb.condition.ExprMatcher;
+import com.hp.hpl.jena.sdb.condition.ExprMatcher.MatchAction;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBase;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -152,7 +153,13 @@ public class RunSDB
 
     public static void runCode()
     {
+        Expr e = ExprUtils.parseExpr("regex(?x , 'smith')") ;
         
+        Expr p = ExprUtils.parseExpr("regex(?a1 , ?a2)") ;
+        
+        ExprMatcher eMatch = new ExprMatcher(p) ;
+        Map<String, MatchAction> m = new HashMap<String, MatchAction>() ;
+        Object obj = eMatch.matches(m, e) ;
     }
 
     static void runScript()

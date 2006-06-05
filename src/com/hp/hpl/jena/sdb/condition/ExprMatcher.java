@@ -8,18 +8,21 @@ package com.hp.hpl.jena.sdb.condition;
 
 import java.util.Map;
 
-import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.*;
 import com.hp.hpl.jena.query.util.ExprUtils;
 
 /**
  * Matches an expression template to a query expression.  
  * @author Andy Seaborne
- * @version $Id$
+ * @version $Id:$
  */
 
 public class ExprMatcher
 {
-    public interface Restriction {} 
+    public interface MatchAction
+    {
+        void invoke(Expr x) ;
+    }
     
     Expr pattern ; 
     
@@ -35,12 +38,50 @@ public class ExprMatcher
     
     // Takes a set of restrictions on the expression (bindings for named variables)
     // Returns what variables are bound to.
-    public Object matches(Map<String, Restriction> x)
+    public Object matches(Map<String, MatchAction> x, Expr expression)
     {
         
         return null ;
     }
 
+}
+
+class MatchWalker extends ExprWalker
+{
+    public MatchWalker(ExprVisitor visitor)
+    {
+        super(visitor) ;
+        
+    }
+}
+
+class MatchOne implements ExprVisitor
+{
+    //public void  
+    
+    public void startVisit()
+    {}
+
+    public void visit(ExprNode1 expr)
+    {}
+
+    public void visit(ExprNode2 expr)
+    {}
+
+    public void visit(ExprNodeFunction expr)
+    {
+        
+    }
+
+    public void visit(NodeValue nv)
+    {}
+
+    public void visit(NodeVar nv)
+    {}
+
+    public void finishVisit()
+    {}
+    
 }
 
 /*
