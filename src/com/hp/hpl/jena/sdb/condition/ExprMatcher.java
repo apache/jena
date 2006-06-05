@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.hp.hpl.jena.query.expr.*;
@@ -14,15 +15,12 @@ import com.hp.hpl.jena.query.util.ExprUtils;
 /**
  * Matches an expression template to a query expression.  
  * @author Andy Seaborne
- * @version $Id:$
+ * @version $Id$
  */
 
 public class ExprMatcher
 {
-    public interface MatchAction
-    {
-        void invoke(Expr x) ;
-    }
+    
     
     Expr pattern ; 
     
@@ -38,13 +36,45 @@ public class ExprMatcher
     
     // Takes a set of restrictions on the expression (bindings for named variables)
     // Returns what variables are bound to.
-    public Object matches(Map<String, MatchAction> x, Expr expression)
+    public Object matches(ActionMap x, Expr expression)
     {
-        
+        MatchOne m = new MatchOne(x, expression) ;
+        try {
+            pattern.visit(m) ;
+        } catch (NoMatch ex) 
+        {}
         return null ;
     }
 
+    
+    public static void run()
+    {
+        Expr e = ExprUtils.parseExpr("regex(?x , 'smith')") ;
+        
+        Expr p = ExprUtils.parseExpr("regex(?a1 , ?a2)") ;
+        
+        ExprMatcher eMatch = new ExprMatcher(p) ;
+        ActionMap m = new ActionMap() ;
+        m.put("a1", new PrintAction()) ;
+        Object obj = eMatch.matches(m, e) ;
+    }
 }
+
+interface MatchAction
+{
+    void invoke(Expr expr) ;
+}
+
+class PrintAction implements MatchAction
+{
+    public void invoke(Expr expr)
+    {
+        System.out.println(expr) ;
+    }
+    
+}
+
+class ActionMap extends HashMap<String, MatchAction> {}
 
 class MatchWalker extends ExprWalker
 {
@@ -55,9 +85,16 @@ class MatchWalker extends ExprWalker
     }
 }
 
+class NoMatch extends RuntimeException {}
+
+// Walk the pattern
 class MatchOne implements ExprVisitor
 {
+    private Expr target ;
+    private ActionMap aMap ;
+    
     //public void  
+    MatchOne(ActionMap aMap, Expr target) { this.aMap = aMap ; this.target = target ; }
     
     public void startVisit()
     {}
@@ -68,16 +105,42 @@ class MatchOne implements ExprVisitor
     public void visit(ExprNode2 expr)
     {}
 
-    public void visit(ExprNodeFunction expr)
+    public void visit(ExprNodeFunction patExpr)
     {
+        if ( patExpr.getClass() != target.getClass() )
+            throw new NoMatch() ;
         
+        ExprNodeFunction exprTarget = (ExprNodeFunction)target ;
+        
+        if ( patExpr.numArgs() != exprTarget.numArgs() )
+            throw new NoMatch() ;
+        
+        for ( int i = 1 ; i <= exprTarget.numArgs() ; i++ )
+        {
+            Expr p = patExpr.getArg(i) ;
+            Expr e = exprTarget.getArg(i) ;
+            
+            MatchOne m = new MatchOne(aMap, e) ;
+            p.visit(m) ;
+        }
     }
 
     public void visit(NodeValue nv)
     {}
 
-    public void visit(NodeVar nv)
-    {}
+    public void visit(NodeVar patternVar)
+    {
+        String vn = patternVar.getVarName() ;
+        if ( aMap.containsKey(vn) )
+        {
+            MatchAction a = aMap.get(vn) ;
+            a.invoke(target) ;
+            return ;
+        }
+        // Variable not in the action map.
+        // Assign in the result.
+        System.out.println("?"+vn+" = "+target) ;
+    }
 
     public void finishVisit()
     {}
