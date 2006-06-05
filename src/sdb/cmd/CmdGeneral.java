@@ -12,10 +12,9 @@ import java.util.List;
 
 import arq.cmd.TerminateException;
 import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdLineArgs;
+import arq.cmdline.CmdMain;
 
-
-public abstract class CmdGeneral extends CmdLineArgs
+public abstract class CmdGeneral extends CmdMain
 {
     static {
         //  Tune N3 output for result set output.

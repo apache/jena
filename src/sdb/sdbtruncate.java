@@ -11,7 +11,6 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
-import arq.cmd.CmdException;
 import arq.cmd.TerminateException;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -24,21 +23,7 @@ public class sdbtruncate extends CmdArgsDB
                                                     
     public static void main (String [] argv)
     {
-        try { main2(argv) ; }
-        catch (CmdException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            if ( ex.getCause() != null )
-                ex.getCause().printStackTrace(System.err) ;
-        }
-        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
-    }
-
-    public static void main2(String[] args)
-    {
-        sdbtruncate cmd = new sdbtruncate(args);
-        cmd.process();
-        cmd.exec() ;
+        new sdbtruncate(argv).mainAndExit() ;
     }
 
     protected sdbtruncate(String[] args)

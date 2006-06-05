@@ -7,8 +7,6 @@ package sdb;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.CmdException;
-import arq.cmd.TerminateException;
 import arq.cmdline.* ;
 
  /** Write out the data from an SDB model.  Only works for small models
@@ -35,23 +33,9 @@ public class sdbdump extends CmdArgsDB
 
     public static void main (String [] argv)
     {
-        try { main2(argv) ; }
-        catch (CmdException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            if ( ex.getCause() != null )
-                ex.getCause().printStackTrace(System.err) ;
-        }
-        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
+        new sdbdump(argv).mainAndExit() ;
     }
 
-    public static void main2(String[] args)
-    {
-        sdbdump cmd = new sdbdump(args);
-        cmd.process();
-        cmd.exec();
-    }
-    
     protected sdbdump(String[] args)
     {
         super("sdbdump", args);
@@ -60,7 +44,6 @@ public class sdbdump extends CmdArgsDB
     
     @Override
     protected void addCmdUsage(List<String> acc) { acc.add(usage) ; }
-
 
     @Override
     protected void checkCommandLine()

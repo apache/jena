@@ -12,8 +12,6 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
-import arq.cmd.CmdException;
-import arq.cmd.TerminateException;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.sdb.sql.RS;
@@ -29,21 +27,7 @@ public class sdbsql extends CmdArgsDB
     
     public static void main (String [] argv)
     {
-        try { main2(argv) ; }
-        catch (CmdException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            if ( ex.getCause() != null )
-                ex.getCause().printStackTrace(System.err) ;
-        }
-        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
-    }
-
-    public static void main2(String[] args)
-    {
-        sdbsql cmd = new sdbsql(args);
-        cmd.process() ;
-        cmd.exec();
+        new sdbsql(argv).mainAndExit() ;
     }
 
     private sdbsql(String[] argv)

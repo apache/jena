@@ -10,8 +10,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.CmdException;
-import arq.cmd.TerminateException;
 import arq.cmdline.* ;
 
  /** Write out the data from an SDB model.  Only works for small models
@@ -38,21 +36,7 @@ public class sdbinfo extends CmdArgsDB
 
     public static void main (String [] argv)
     {
-        try { main2(argv) ; }
-        catch (CmdException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            if ( ex.getCause() != null )
-                ex.getCause().printStackTrace(System.err) ;
-        }
-        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
-    }
-
-    public static void main2(String[] args)
-    {
-        sdbinfo cmd = new sdbinfo(args);
-        cmd.process();
-        cmd.exec();
+        new sdbinfo(argv).mainAndExit() ;
     }
     
     protected sdbinfo(String[] args)

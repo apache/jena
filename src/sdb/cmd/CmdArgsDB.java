@@ -38,6 +38,7 @@ public abstract class CmdArgsDB extends CmdStore
     // true means continue transaction
     protected abstract boolean exec1(String arg) ;
 
+    @Override
     protected void exec()
     {
         SDB.init() ;

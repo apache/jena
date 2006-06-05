@@ -11,8 +11,6 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
-import arq.cmd.CmdException;
-import arq.cmd.TerminateException;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.graph.Graph;
@@ -41,21 +39,7 @@ public class sdbload extends CmdArgsDB
     
     public static void main (String [] argv)
     {
-        try { main2(argv) ; }
-        catch (CmdException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            if ( ex.getCause() != null )
-                ex.getCause().printStackTrace(System.err) ;
-        }
-        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
-    }
-
-    public static void main2(String[] args)
-    {
-        sdbload cmd = new sdbload(args);
-        cmd.process() ;
-        cmd.exec();
+        new sdbload(argv).mainAndExit() ;
     }
     
     String filename = null ;
