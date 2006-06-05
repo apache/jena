@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.9 2006-03-22 13:52:20 andy_seaborne Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.10 2006-06-05 14:47:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -17,6 +17,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.iterator.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2006-03-22 13:52:20 $
+ * @version $Revision: 1.10 $ on $Date: 2006-06-05 14:47:34 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -152,7 +153,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     public synchronized ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
         if (!isPrepared) prepare();
-        ExtendedIterator result = engine.find(pattern);
+        ExtendedIterator result = new UniqueExtendedIterator(engine.find(pattern));
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.42 2006-03-22 13:53:01 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.43 2006-06-05 14:47:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.42 $ on $Date: 2006-03-22 13:53:01 $
+ * @version $Revision: 1.43 $ on $Date: 2006-06-05 14:47:32 $
  */
 public class TestBugs extends TestCase {
 
@@ -770,6 +770,27 @@ public class TestBugs extends TestCase {
         Property guard = im.createProperty(PrintUtil.egNS + "guard");
         TestUtil.assertIteratorValues(this, 
                 im.listStatements(), new Object[] {im.createStatement(i, guard, "done")});
+    }
+    
+    /**
+     * test duplicate removal when using pure backward rules
+     */
+    public void testBackwardDupRemoval() {
+        String NS = PrintUtil.egNS;
+        Model base = ModelFactory.createDefaultModel();
+        Resource i = base.createResource(NS + "i");
+        Resource a = base.createResource(NS + "a");
+        Property p = base.createProperty(NS, "p");
+        Property q = base.createProperty(NS, "q");
+        Property r = base.createProperty(NS, "r");
+        base.add(i, p, a);
+        base.add(i, q, a);
+        List rules = Rule.parseRules(
+                "(eg:i eg:r eg:a) <- (eg:i eg:p eg:a). (eg:i eg:r eg:a) <- (eg:i eg:q eg:a)."); 
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+        reasoner.setMode(GenericRuleReasoner.BACKWARD);
+        InfModel im = ModelFactory.createInfModel(reasoner, base);
+        TestUtil.assertIteratorLength(im.listStatements(i, r, a), 1);
     }
     
     // debug assistant
