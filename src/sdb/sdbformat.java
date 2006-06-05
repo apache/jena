@@ -11,6 +11,9 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
+import arq.cmd.CmdException;
+import arq.cmd.TerminateException;
+
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** Format an SDB database.  Destroys all existing data permanently. */ 
@@ -19,7 +22,19 @@ public class sdbformat extends CmdArgsDB
 {
     public static final String usage = "sdbformat --sdb <SPEC> --dbName <NAME>" ;
                                                     
-    public static void main(String[] args)
+    public static void main (String [] argv)
+    {
+        try { main2(argv) ; }
+        catch (CmdException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            if ( ex.getCause() != null )
+                ex.getCause().printStackTrace(System.err) ;
+        }
+        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
+    }
+
+    public static void main2(String[] args)
     {
         sdbformat cmd = new sdbformat(args);
         cmd.process();
@@ -66,8 +81,7 @@ public class sdbformat extends CmdArgsDB
     protected boolean exec1(String arg)
     {
         System.err.println("Unexpected positional argument") ;
-        System.exit(99) ;
-        return false ;
+        throw new TerminateException(99) ;
     }
 }
 

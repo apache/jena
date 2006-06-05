@@ -10,6 +10,9 @@ import java.util.List;
 import junit.framework.TestSuite;
 import sdb.cmd.CmdArgsDB;
 
+import arq.cmd.CmdException;
+import arq.cmd.TerminateException;
+
 import com.hp.hpl.jena.query.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
@@ -30,7 +33,19 @@ public class sdbtest extends CmdArgsDB
 {
     public static final String usage = "sdbtest <SPEC> --schema schemaName [--direct] [manifest]" ;
     
-    public static void main(String[] args)
+    public static void main (String [] argv)
+    {
+        try { main2(argv) ; }
+        catch (CmdException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            if ( ex.getCause() != null )
+                ex.getCause().printStackTrace(System.err) ;
+        }
+        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
+    }
+
+    public static void main2(String[] args)
     {
         sdbtest cmd = new sdbtest(args);
         cmd.process() ;

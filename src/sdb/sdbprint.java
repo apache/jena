@@ -25,7 +25,9 @@ import com.hp.hpl.jena.sdb.store.StoreBase;
 
 import com.hp.hpl.jena.util.FileUtils;
 
+import arq.cmd.CmdException;
 import arq.cmd.QCmd;
+import arq.cmd.TerminateException;
 import arq.cmdline.*;
 
 /**
@@ -43,9 +45,21 @@ public class sdbprint // NOT CmdArgsDB
     static boolean verbose = false ;
 
     // Rough!
-    public static void main(String[] argv)
+    public static void main (String [] argv)
     {
-        CmdLineArgs cl = new CmdLineArgs(argv) ;
+        try { main2(argv) ; }
+        catch (CmdException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            if ( ex.getCause() != null )
+                ex.getCause().printStackTrace(System.err) ;
+        }
+        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
+    }
+
+    public static void main2(String[] args)
+    {
+        CmdLineArgs cl = new CmdLineArgs(args) ;
         
         ArgDecl helpDecl = new ArgDecl(ArgDecl.NoValue, "h", "help") ;
         cl.add(helpDecl) ;
@@ -80,20 +94,20 @@ public class sdbprint // NOT CmdArgsDB
         {
             System.err.println(ex.getMessage()) ;
             usage(System.err) ;
-            System.exit(2) ;
+            throw new TerminateException(2) ;
         }        
         
         //---- Basic stuff
         if ( cl.contains(helpDecl) )
         {
             usage(System.out) ;
-            System.exit(0) ;
+            throw new TerminateException(0) ;
         }
         
         if ( cl.contains(versionDecl) )
         {
             System.out.println("SDB Version: "+SDB.VERSION+"  ARQ Version: "+ARQ.VERSION+"  Jena: "+Jena.VERSION+"") ;
-            System.exit(0) ;
+            throw new TerminateException(0) ;
         }
         
         // Now set all the arguments.
@@ -153,13 +167,13 @@ public class sdbprint // NOT CmdArgsDB
         if ( layoutName.equalsIgnoreCase("layout1") ) 
         {
             compilePrint(query, new QueryCompilerSimple()) ;
-            System.exit(0) ;
+            throw new TerminateException(0) ;
         }
         
         if ( layoutName.equalsIgnoreCase("layout2") ) 
         {
             compilePrint(query, new QueryCompiler2()) ;
-            System.exit(0) ;
+            throw new TerminateException(0) ;
         }
         
         argError("Unknown layout name: "+layoutName) ;
@@ -175,7 +189,7 @@ public class sdbprint // NOT CmdArgsDB
     {
         System.err.println("Argument Error: "+s) ;
         //usage(System.err) ;
-        System.exit(3) ;
+        throw new TerminateException(3) ;
     }
     
     public static void compilePrint(String queryString, String layoutName)

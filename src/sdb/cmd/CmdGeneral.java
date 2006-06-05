@@ -10,6 +10,7 @@ import static java.lang.String.format;
 
 import java.util.List;
 
+import arq.cmd.TerminateException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdLineArgs;
 
@@ -58,13 +59,13 @@ public abstract class CmdGeneral extends CmdLineArgs
         {
             System.err.println(ex.getMessage()) ;
             usage() ;
-            System.exit(1) ;
+            throw new TerminateException(1) ;
         }
         
         if ( contains(argDeclHelp) )
         {
             usage() ;
-            System.exit(0) ;
+            throw new TerminateException(0) ;
         }
         
         verbose = contains(argDeclVerbose) ;
@@ -151,7 +152,7 @@ public abstract class CmdGeneral extends CmdLineArgs
     {
         System.err.println(msg) ;
         if ( exit )
-            System.exit(5) ;
+            throw new TerminateException(5) ;
     }
 
     protected void addGeneralUsage(List<String> u)

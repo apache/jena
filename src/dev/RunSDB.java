@@ -44,14 +44,14 @@ public class RunSDB
     public static void main(String[]argv)
     {
         //SDBConnection.logSQLStatements = true ;
-        runQuery() ;
+        //runQuery() ;
         //runPrint() ;
         //runLoad() ;
         //runScript() ;
         
         //runTest() ;
         //runCommand() ;
-        //runCode() ;
+        runCode() ;
         //runConf() ;
         //runTestManifest() ;
         
@@ -149,51 +149,10 @@ public class RunSDB
         store.close() ;
         System.exit(0) ;
     }
-//    
-//    public static void runTest1()
-//    {
-//        SDBConnection conn = new SDBConnection("jdbc:mysql://localhost/SDB1", DB.getUser(), DB.getPassword()) ;
-//        TestItem testItem = new TestItem("SDB",
-//                                         "testing/General/general-2.rq",
-//                                         "testing/General/data.ttl",
-//                                         null) ;
-//        Schema schema = new SimpleSchema() ;
-//        Test test = new QueryTestSDB(conn, schema, "SDB", null, testItem) ;
-//        TestSuite ts = new TestSuite() ;
-//        ts.addTest(test) ;
-//        SimpleTestRunner.runAndReport(ts) ;
-//        System.exit(0) ;
-//    }
-    
+
     public static void runCode()
     {
-        JDBC.loadDriverHSQL() ;
         
-        String hsql = "jdbc:hsqldb:mem:aname" ;
-        //String hsql = "jdbc:hsqldb:file:tmp/db" ;
-
-        SDB.init() ;
-        SDBConnection sdb = SDBFactory.createConnection(hsql, "sa", "");
-        Store store = new StoreSimpleHSQL(sdb) ;
-        store.getTableFormatter().format();
-        ModelSDB m = SDBFactory.connectModel(store) ;
-        
-        PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
-        pmap.setNsPrefix("ex", "http://example/") ;
-        
-        PrefixMapping pmap2 = new PrefixMappingSDB(sdb) ;
-        String x = pmap2.getNsPrefixURI("ex") ;
-        System.out.println("uri = "+x) ;
-        System.out.println("prefix = "+pmap2.getNsURIPrefix("http://example/")) ;
-        System.out.println("uri = "+pmap2.expandPrefix("ex:foo")) ;
-        System.out.println("qname = "+pmap2.shortForm("http://example/foo")) ;
-        System.out.println("qname = "+pmap2.qnameFor("http://example/foo")) ;
-        
-        pmap.setNsPrefix("ex2", "http://example.org/ns#") ;
-        System.out.println("qname = "+pmap2.qnameFor("http://example.org/ns#foo")) ;
-        System.out.println("qname = "+pmap.qnameFor("http://example.org/ns#foo")) ;
-        
-        System.exit(0) ;
     }
 
     static void runScript()

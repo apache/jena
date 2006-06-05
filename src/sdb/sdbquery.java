@@ -11,8 +11,10 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
+import arq.cmd.CmdException;
 import arq.cmd.QExec;
 import arq.cmd.ResultsFormat;
+import arq.cmd.TerminateException;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.query.*;
@@ -45,7 +47,19 @@ public class sdbquery extends CmdArgsDB
     boolean printResults = true ;
     int repeatCount = 1 ;
 
-    public static void main(String[] args)
+    public static void main (String [] argv)
+    {
+        try { main2(argv) ; }
+        catch (CmdException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            if ( ex.getCause() != null )
+                ex.getCause().printStackTrace(System.err) ;
+        }
+        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
+    }
+
+    public static void main2(String[] args)
     {
         sdbquery cmd = new sdbquery(args);
         cmd.process() ;
