@@ -16,6 +16,8 @@ import com.hp.hpl.jena.query.expr.*;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.util.Pair;
 
+//TODO Condition compiler to be replaced by ExprMatcher.
+
 public class ConditionCompilerTmp
 {
 //    public static boolean recognize(Block block, Constraint c)
@@ -86,7 +88,7 @@ public class ConditionCompilerTmp
         }
 
         @Override
-        public void visit(ExprNodeFunction ex)
+        public void visit(ExprFunction ex)
         {
             if ( ex instanceof E_Regex )
                 visitRegex((E_Regex)ex) ;

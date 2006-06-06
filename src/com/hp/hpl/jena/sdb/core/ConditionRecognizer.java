@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.core.Constraint;
 import com.hp.hpl.jena.query.expr.*;
 
-// TODO Condition recognition should be per schema
+// TODO Condition recognition to be replaced by ExprMatcher.
 
 public class ConditionRecognizer
 {
@@ -36,7 +36,7 @@ public class ConditionRecognizer
         RecognizeExpr(Block block) { this.block = block ; }
         
         @Override
-        public void visit(ExprNodeFunction ex)
+        public void visit(ExprFunction ex)
         {
             if ( ex instanceof E_Regex )
                 visitRegex((E_Regex)ex) ;
@@ -63,7 +63,6 @@ public class ConditionRecognizer
             if ( varName == null )
                 return ;
             
-            // TODO NodeVar to have .asNode()
             Node var = Node.createVariable(varName) ;
             
             if ( ! block.getPatternVars().contains(var) )

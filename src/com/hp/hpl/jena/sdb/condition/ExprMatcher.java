@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sdb.condition;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import com.hp.hpl.jena.query.expr.*;
 import com.hp.hpl.jena.query.util.ExprUtils;
@@ -20,7 +19,11 @@ import com.hp.hpl.jena.query.util.ExprUtils;
 
 public class ExprMatcher
 {
+    // Better might be to turn exprs in a more convenient form (class, list of args).
+    // then process that.  Allows more variance in types (but do we need it?) 
     
+    // Using visitors directly relies on testing for concrete expression tytpes (abstracted by the
+    // visitor).
     
     Expr pattern ; 
     
@@ -36,45 +39,74 @@ public class ExprMatcher
     
     // Takes a set of restrictions on the expression (bindings for named variables)
     // Returns what variables are bound to.
-    public Object matches(ActionMap x, Expr expression)
+    public ResultMap matches(ActionMap x, Expr expression, ResultMap rm)
     {
-        MatchOne m = new MatchOne(x, expression) ;
+        MatchOne m = new MatchOne(x, expression, rm) ;
         try {
             pattern.visit(m) ;
-        } catch (NoMatch ex) 
-        {}
-        return null ;
+        } catch (NoMatch ex)
+        { return null ; } 
+        return rm ;
     }
 
-    
     public static void run()
     {
-        Expr e = ExprUtils.parseExpr("regex(?x , 'smith')") ;
-        
-        Expr p = ExprUtils.parseExpr("regex(?a1 , ?a2)") ;
+        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2)")) ;
+        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2, ?a3)")) ;
+        runOne(ExprUtils.parseExpr("regex(?x , 'smith', 'i')") , ExprUtils.parseExpr("regex(?a1 , ?a2, ?a3)")) ;
+    }
+    
+    public static void runOne(Expr e, Expr p)
+    {
+        System.out.println("Expr:    "+e) ;
+        System.out.println("Pattern: "+p) ;
         
         ExprMatcher eMatch = new ExprMatcher(p) ;
         ActionMap m = new ActionMap() ;
+        ResultMap rm = new ResultMap() ;
+        
         m.put("a1", new PrintAction()) ;
-        Object obj = eMatch.matches(m, e) ;
+        m.put("a2", new AssignAction(rm)) ;
+        rm = eMatch.matches(m, e, rm) ;
+        if ( rm == null )
+        {
+            System.out.println("No match") ;
+            System.out.println() ;
+            return ;
+        }
+        System.out.println("Match:") ;
+        for ( String x : rm.keySet() )
+        {
+            Expr exprMatch = rm.get(x) ;
+            System.out.printf("?%-4s ==>>  %s\n", x, exprMatch) ;
+        }
+        System.out.println() ;
     }
 }
 
 interface MatchAction
 {
-    void invoke(Expr expr) ;
+    void invoke(String vn, Expr expr) ;
 }
 
 class PrintAction implements MatchAction
 {
-    public void invoke(Expr expr)
+    public void invoke(String vn, Expr expr) { System.out.println("?"+vn+": "+expr) ; }
+}
+
+class AssignAction implements MatchAction
+{
+    private ResultMap rMap ;
+    AssignAction(ResultMap rMap) { this.rMap = rMap ; }  
+    public void invoke(String varName, Expr expr)
     {
-        System.out.println(expr) ;
+        rMap.put(varName, expr) ;
     }
     
 }
 
 class ActionMap extends HashMap<String, MatchAction> {}
+class ResultMap extends HashMap<String, Expr> {}
 
 class MatchWalker extends ExprWalker
 {
@@ -92,54 +124,64 @@ class MatchOne implements ExprVisitor
 {
     private Expr target ;
     private ActionMap aMap ;
+    private ResultMap rMap ;
     
     //public void  
-    MatchOne(ActionMap aMap, Expr target) { this.aMap = aMap ; this.target = target ; }
+    MatchOne(ActionMap aMap, Expr target, ResultMap rMap)
+    { 
+        this.aMap = aMap ;
+        this.rMap = rMap ; 
+        this.target = target ;
+    }
     
     public void startVisit()
     {}
 
-    public void visit(ExprNode1 expr)
-    {}
-
-    public void visit(ExprNode2 expr)
-    {}
-
-    public void visit(ExprNodeFunction patExpr)
+    public void visit(ExprFunction patExpr)
     {
-        if ( patExpr.getClass() != target.getClass() )
+        if ( ! ( target instanceof ExprFunction ) )
             throw new NoMatch() ;
         
-        ExprNodeFunction exprTarget = (ExprNodeFunction)target ;
+        ExprFunction funcTarget = (ExprFunction)target ;
         
-        if ( patExpr.numArgs() != exprTarget.numArgs() )
+        if ( ! patExpr.getFunctionSymbol().equals(funcTarget.getFunctionSymbol()) )
             throw new NoMatch() ;
         
-        for ( int i = 1 ; i <= exprTarget.numArgs() ; i++ )
+        if ( patExpr.numArgs() != funcTarget.numArgs() )
+            throw new NoMatch() ;
+        
+        for ( int i = 1 ; i <= funcTarget.numArgs() ; i++ )
         {
             Expr p = patExpr.getArg(i) ;
-            Expr e = exprTarget.getArg(i) ;
+            Expr e = funcTarget.getArg(i) ;
             
-            MatchOne m = new MatchOne(aMap, e) ;
+            MatchOne m = new MatchOne(aMap, e, rMap) ;
             p.visit(m) ;
         }
     }
 
     public void visit(NodeValue nv)
-    {}
+    {
+        if ( ! ( target instanceof NodeValue ) )
+            throw new NoMatch() ;
+    }
 
+    MatchAction defaultAction = new MatchAction()
+    {
+        public void invoke(String varName, Expr expr) { System.out.println("Default: ?"+varName+": "+expr) ; }
+    } ;
+    
     public void visit(NodeVar patternVar)
     {
         String vn = patternVar.getVarName() ;
         if ( aMap.containsKey(vn) )
         {
             MatchAction a = aMap.get(vn) ;
-            a.invoke(target) ;
+            a.invoke(vn, target) ;
             return ;
         }
-        // Variable not in the action map.
-        // Assign in the result.
-        System.out.println("?"+vn+" = "+target) ;
+        
+        defaultAction.invoke(vn, target) ;
     }
 
     public void finishVisit()
