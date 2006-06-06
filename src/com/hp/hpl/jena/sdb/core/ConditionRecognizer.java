@@ -14,6 +14,8 @@ import com.hp.hpl.jena.query.expr.*;
 
 public class ConditionRecognizer
 {
+    // 1 - insert here
+    
     public static boolean recognize(Block block, Constraint c)
     {
         if ( ! c.isExpr() )
