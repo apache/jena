@@ -27,7 +27,8 @@ public class ExprMatcher
     
     // Notes: 
     // 1/ Could extend with special functions in the pattern that cause callouts.
-    //    A function => special action map 
+    //    A function => special action map
+    // 2/ Package for matcher : inc matcher library
     
     Expr pattern ; 
     
@@ -49,7 +50,10 @@ public class ExprMatcher
         try {
             pattern.visit(m) ;
         } catch (NoMatch ex)
-        { return null ; } 
+        { 
+            System.out.println("NoMatch: "+ex.getMessage()) ;
+            return null ;
+        } 
         return rm ;
     }
 
@@ -58,7 +62,18 @@ public class ExprMatcher
         runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2)")) ;
         runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2, ?a3)")) ;
         runOne(ExprUtils.parseExpr("regex(?x , 'smith', 'i')") , ExprUtils.parseExpr("regex(?a1 , ?a2, ?a3)")) ;
+        runOne(ExprUtils.parseExpr("regex(?x , 'smith', 'i')") , ExprUtils.parseExpr("?x + ?y")) ;
+        
+        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(str(?a1) , ?a2)")) ;
+        
+        // Matches but should it?
+        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2)")) ;
+
+        // a3 is VarAction
+        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(?a3 , ?a2)")) ;
+        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(str(?a1) , ?a2)")) ;
     }
+    
     
     public static void runOne(Expr e, Expr p)
     {
@@ -69,16 +84,17 @@ public class ExprMatcher
         ActionMap m = new ActionMap() ;
         ResultMap rm = new ResultMap() ;
         
-        m.put("a1", new PrintAction()) ;
+        m.put("a1", new AssignAction(rm)) ;
         m.put("a2", new AssignAction(rm)) ;
+        m.put("a3", new VarAction(rm)) ;
         rm = eMatch.matches(m, e, rm) ;
         if ( rm == null )
         {
-            System.out.println("No match") ;
+            System.out.println("**** No match") ;
             System.out.println() ;
             return ;
         }
-        System.out.println("Match:") ;
+        System.out.println("**** Match:") ;
         for ( String x : rm.keySet() )
         {
             Expr exprMatch = rm.get(x) ;
@@ -93,10 +109,24 @@ interface MatchAction
     void invoke(String vn, Expr expr) ;
 }
 
-class PrintAction implements MatchAction
+//class PrintAction implements MatchAction
+//{
+//    public void invoke(String vn, Expr expr) { System.out.println("?"+vn+": "+expr) ; }
+//}
+
+class VarAction extends AssignAction
 {
-    public void invoke(String vn, Expr expr) { System.out.println("?"+vn+": "+expr) ; }
+    VarAction(ResultMap rMap) { super(rMap) ; }  
+
+    @Override
+    public void invoke(String vn, Expr expr)
+    {
+        if ( ! expr.isVariable() )
+            throw new NoMatch("VarAction: Not a variable: "+expr) ;
+        super.invoke(vn, expr) ;
+    }
 }
+
 
 class AssignAction implements MatchAction
 {
@@ -121,7 +151,11 @@ class MatchWalker extends ExprWalker
     }
 }
 
-class NoMatch extends RuntimeException {}
+class NoMatch extends RuntimeException
+{
+    //NoMatch() { this(null) ; }
+    NoMatch(String msg) { super(msg) ; }
+}
 
 // Walk the pattern
 class MatchOne implements ExprVisitor
@@ -144,15 +178,15 @@ class MatchOne implements ExprVisitor
     public void visit(ExprFunction patExpr)
     {
         if ( ! ( target instanceof ExprFunction ) )
-            throw new NoMatch() ;
+            throw new NoMatch("Not a ExprFunction: "+target) ;
         
         ExprFunction funcTarget = (ExprFunction)target ;
         
         if ( ! patExpr.getFunctionSymbol().equals(funcTarget.getFunctionSymbol()) )
-            throw new NoMatch() ;
+            throw new NoMatch("Different function symbols: "+patExpr.getFunctionSymbol().getSymbol()+" // "+funcTarget.getFunctionSymbol().getSymbol()) ;
         
         if ( patExpr.numArgs() != funcTarget.numArgs() )
-            throw new NoMatch() ;
+            throw new NoMatch("Different arity: "+patExpr.numArgs()+"/"+funcTarget.numArgs()) ;
         
         for ( int i = 1 ; i <= funcTarget.numArgs() ; i++ )
         {
@@ -167,7 +201,9 @@ class MatchOne implements ExprVisitor
     public void visit(NodeValue nv)
     {
         if ( ! ( target instanceof NodeValue ) )
-            throw new NoMatch() ;
+            throw new NoMatch("Not a NodeValue") ;
+        if ( ! nv.equals(target.getConstant()) )
+            throw new NoMatch("Different value: "+nv+" & "+target.getConstant()) ;
     }
 
     MatchAction defaultAction = new MatchAction()
