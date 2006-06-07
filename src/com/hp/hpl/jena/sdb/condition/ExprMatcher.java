@@ -25,6 +25,10 @@ public class ExprMatcher
     // Using visitors directly relies on testing for concrete expression tytpes (abstracted by the
     // visitor).
     
+    // Notes: 
+    // 1/ Could extend with special functions in the pattern that cause callouts.
+    //    A function => special action map 
+    
     Expr pattern ; 
     
     public ExprMatcher(String template)
