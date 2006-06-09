@@ -182,7 +182,7 @@ public class sdbprint // NOT CmdArgsDB
     
     static void usage(java.io.PrintStream out)
     {
-        out.println("Usage: [--schema schemaName] [--query URL | string ] ") ;
+        out.println("Usage: [--layout schemaName] [--query URL | string ] ") ;
     }
     
     // Does not return

@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -48,7 +49,7 @@ public class StoreFactory
             switch (desc.dbType)
             {
                 case MySQL5:
-                    return new StoreTriplesNodesMySQL(sdb, desc.engineType) ;
+                    return new StoreSimpleMySQL(sdb, desc.engineType) ;
                 case MySQL41:
                 case PostgreSQL:
                 case Oracle10:

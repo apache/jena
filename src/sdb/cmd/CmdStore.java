@@ -60,7 +60,7 @@ public abstract class CmdStore extends CmdGeneral
     protected String driverName = null;      // JDBC class name
     //protected String argDriverTypeName = null;  // Jena driver name
     //protected String argModelName = null;
-    protected String layoutName = null ;
+    //protected String layoutName = null ;
 
     // DB types to JDBC driver name (some common choices)
     private static Map<String,String> jdbcDrivers = new HashMap<String,String>();
@@ -161,7 +161,7 @@ public abstract class CmdStore extends CmdGeneral
 
         if (contains(argDeclLayout))
         {
-            layoutName = getArg(argDeclLayout).getValue() ;
+            String layoutName = getArg(argDeclLayout).getValue() ;
             // TODO LayoutEnum
             
             // Crude fixup
@@ -171,6 +171,7 @@ public abstract class CmdStore extends CmdGeneral
                 System.err.println("Don't recognize layout name '"+layoutName+"'") ;
                 throw new TerminateException(2) ;
             }
+            storeDesc.layoutName = layoutName ;
         }
 
         //storeDesc.connDesc.initJDBC() ;
@@ -186,7 +187,7 @@ public abstract class CmdStore extends CmdGeneral
             if ( storeDesc.connDesc.argStr != null )
                 System.out.println("Args      = " + storeDesc.connDesc.argStr);
                 
-            System.out.println("Layout    = " + layoutName) ;
+            System.out.println("Layout    = " + storeDesc.layoutName) ;
             //System.out.println("Name      = " + argModelName);
 
             SDBConnection.logSQLExceptions = true ;

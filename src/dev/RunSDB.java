@@ -11,10 +11,7 @@ import java.lang.reflect.Method;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import sdb.sdbinfo;
-import sdb.sdbload;
-import sdb.sdbquery;
-import sdb.sdbtest;
+import sdb.*;
 import sdb.cmd.CmdDesc;
 import sdb.cmd.ScriptDesc;
 import arq.cmd.CmdUtils;
@@ -91,13 +88,17 @@ public class RunSDB
     public static void runPrint()
     {
         //String[] a = {"-v", "--layout=layout2", "@Q.rq"} ;
-        String[] a = {"-v", "--layout=layout2", "@testing/Expressions/regex-1.rq"} ;
+        String[] a = {"-v", "--layout=layout1", "@Q.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }
     
     public static void runCommand()
     {
+        String args[] = { "-v", "--sdb=sdb.ttl", "--layout=layout1", "--dbName=D", "--dbHost=sweb-sdb-1" } ; 
+        sdbformat.main(args) ;
+        System.exit(0) ;
+        
         //String DB= "brainz" ;
         String DB="sdb2" ;
 //        String a[] = {"--dbtype=mySQL",
@@ -105,6 +106,9 @@ public class RunSDB
 //            "--schema=schema2",
 //            "-v",
 //        } ;
+        
+        
+        
         
         // The database is protected in other ways than user/password
         String a[] = {"--debug", "--sdb=sdb.ttl"} ;
@@ -149,7 +153,8 @@ public class RunSDB
 
     public static void runCode()
     {
-        ExprMatcher.run() ; System.exit(0) ;
+        ExprMatcher.run() ;
+        System.exit(0) ;
     }
 
     static void runScript()

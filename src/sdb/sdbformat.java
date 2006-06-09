@@ -14,6 +14,8 @@ import sdb.cmd.CmdArgsDB;
 import arq.cmd.TerminateException;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreFormatter;
 
 /** Format an SDB database.  Destroys all existing data permanently. */ 
 
@@ -46,7 +48,11 @@ public class sdbformat extends CmdArgsDB
     @Override
     protected void exec0()
     {
-        getStore().getTableFormatter().format() ;
+        Store store = getStore() ;
+        StoreFormatter f = store.getTableFormatter() ; 
+        f.format() ;
+        
+        //getStore().getTableFormatter().format() ;
         // For hsql -- shutdown when finished
         SDBConnection conn = getConnection();
         try

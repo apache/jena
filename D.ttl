@@ -1,0 +1,9 @@
+@prefix : <http://example/> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc11:         <http://purl.org/dc/elements/1.1/> .
+@prefix dc10:         <http://purl.org/dc/elements/1.0/> .
+
+:a dc10:title "thing" .
+:a dc10:creator "John Smith" .
+:a dc11:creator _:jb .
+_:jb rdf:value "Joe Bloggs" .

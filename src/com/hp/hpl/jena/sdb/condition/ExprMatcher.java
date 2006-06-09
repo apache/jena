@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.condition;
 
 import java.util.HashMap;
+import java.util.List;
 
 import com.hp.hpl.jena.query.expr.*;
 import com.hp.hpl.jena.query.util.ExprUtils;
@@ -44,9 +45,9 @@ public class ExprMatcher
     
     // Takes a set of restrictions on the expression (bindings for named variables)
     // Returns what variables are bound to.
-    public ResultMap matches(ActionMap x, Expr expression, ResultMap rm)
+    public ResultMap matches(ActionMap x, Expr expression, ResultMap rm, CalloutMap cMap)
     {
-        MatchOne m = new MatchOne(x, expression, rm) ;
+        MatchOne m = new MatchOne(x, expression, rm, cMap) ;
         try {
             pattern.visit(m) ;
         } catch (NoMatch ex)
@@ -59,19 +60,22 @@ public class ExprMatcher
 
     public static void run()
     {
-        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2)")) ;
-        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2, ?a3)")) ;
-        runOne(ExprUtils.parseExpr("regex(?x , 'smith', 'i')") , ExprUtils.parseExpr("regex(?a1 , ?a2, ?a3)")) ;
-        runOne(ExprUtils.parseExpr("regex(?x , 'smith', 'i')") , ExprUtils.parseExpr("?x + ?y")) ;
-        
-        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(str(?a1) , ?a2)")) ;
-        
-        // Matches but should it?
-        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2)")) ;
+//        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2)")) ;
+//        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2, ?a3)")) ;
+//        runOne(ExprUtils.parseExpr("regex(?x , 'smith', 'i')") , ExprUtils.parseExpr("regex(?a1 , ?a2, ?a3)")) ;
+//        runOne(ExprUtils.parseExpr("regex(?x , 'smith', 'i')") , ExprUtils.parseExpr("?x + ?y")) ;
+//        
+//        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(str(?a1) , ?a2)")) ;
+//        
+//        // Matches but should it?
+//        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(?a1 , ?a2)")) ;
+//
+//        // a3 is VarAction
+//        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(?a3 , ?a2)")) ;
+//        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(str(?a1) , ?a2)")) ;
 
-        // a3 is VarAction
-        runOne(ExprUtils.parseExpr("regex(str(?x) , 'smith')") , ExprUtils.parseExpr("regex(?a3 , ?a2)")) ;
-        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(str(?a1) , ?a2)")) ;
+        runOne(ExprUtils.parseExpr("regex(?x , 'smith')") , ExprUtils.parseExpr("regex(<urn:xyz>(?a1) , ?a2)")) ;
+
     }
     
     
@@ -83,11 +87,15 @@ public class ExprMatcher
         ExprMatcher eMatch = new ExprMatcher(p) ;
         ActionMap m = new ActionMap() ;
         ResultMap rm = new ResultMap() ;
+        CalloutMap cm = new CalloutMap() ;
         
         m.put("a1", new AssignAction(rm)) ;
         m.put("a2", new AssignAction(rm)) ;
         m.put("a3", new VarAction(rm)) ;
-        rm = eMatch.matches(m, e, rm) ;
+
+        cm.put("urn:xyz", new SpecialFunction()) ;
+        
+        rm = eMatch.matches(m, e, rm, cm) ;
         if ( rm == null )
         {
             System.out.println("**** No match") ;
@@ -139,8 +147,22 @@ class AssignAction implements MatchAction
     
 }
 
-class ActionMap extends HashMap<String, MatchAction> {}
-class ResultMap extends HashMap<String, Expr> {}
+interface SpecialAction { public boolean callout(String fn, List args) ; }
+
+class SpecialFunction implements SpecialAction
+{
+
+    public boolean callout(String fn, List args)
+    {
+        System.out.println("Call: "+fn+" "+args) ;
+        return true ;
+    }
+    
+}
+
+class ActionMap  extends HashMap<String, MatchAction> {}
+class CalloutMap extends HashMap<String, SpecialAction> {}
+class ResultMap  extends HashMap<String, Expr> {}
 
 class MatchWalker extends ExprWalker
 {
@@ -163,12 +185,14 @@ class MatchOne implements ExprVisitor
     private Expr target ;
     private ActionMap aMap ;
     private ResultMap rMap ;
+    private CalloutMap cMap ;
     
     //public void  
-    MatchOne(ActionMap aMap, Expr target, ResultMap rMap)
+    MatchOne(ActionMap aMap, Expr target, ResultMap rMap, CalloutMap cMap)
     { 
         this.aMap = aMap ;
-        this.rMap = rMap ; 
+        this.rMap = rMap ;
+        this.cMap = cMap ;
         this.target = target ;
     }
     
@@ -177,8 +201,17 @@ class MatchOne implements ExprVisitor
 
     public void visit(ExprFunction patExpr)
     {
+        String uri = patExpr.getFunctionIRI() ;
+        
+        if ( uri != null && cMap.containsKey(uri) )
+        {
+            if( ! cMap.get(uri).callout(uri, patExpr.getArgs()) )
+                throw new NoMatch("Function callout rejected match") ;
+            return ;
+        }
+        
         if ( ! ( target instanceof ExprFunction ) )
-            throw new NoMatch("Not a ExprFunction: "+target) ;
+            throw new NoMatch("Not an ExprFunction: "+target) ;
         
         ExprFunction funcTarget = (ExprFunction)target ;
         
@@ -193,7 +226,7 @@ class MatchOne implements ExprVisitor
             Expr p = patExpr.getArg(i) ;
             Expr e = funcTarget.getArg(i) ;
             
-            MatchOne m = new MatchOne(aMap, e, rMap) ;
+            MatchOne m = new MatchOne(aMap, e, rMap, cMap) ;
             p.visit(m) ;
         }
     }
