@@ -20,16 +20,7 @@ import com.hp.hpl.jena.query.util.ExprUtils;
 
 public class ExprMatcher
 {
-    // Better might be to turn exprs in a more convenient form (class, list of args).
-    // then process that.  Allows more variance in types (but do we need it?) 
-    
-    // Using visitors directly relies on testing for concrete expression tytpes (abstracted by the
-    // visitor).
-    
-    // Notes: 
-    // 1/ Could extend with special functions in the pattern that cause callouts.
-    //    A function => special action map
-    // 2/ Package for matcher : inc matcher library
+    // ?? Package for matcher : inc matcher library
     
     Expr pattern ; 
     
@@ -43,6 +34,7 @@ public class ExprMatcher
         this.pattern = pattern ;
     }
     
+    // static??
     // Takes a set of restrictions on the expression (bindings for named variables)
     // Returns what variables are bound to.
     public ResultMap matches(ActionMap x, Expr expression, ResultMap rm, CalloutMap cMap)
