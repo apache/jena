@@ -219,8 +219,11 @@ public class sdbprint // NOT CmdArgsDB
         if ( verbose )
         {
             System.out.println(divider) ;
-            System.out.print(query.toString()) ;
+//            query.serialize(System.out, Syntax.syntaxARQ) ;
+//            System.out.println(divider) ;
+            query.serialize(System.out, Syntax.syntaxPrefix) ;
             System.out.println(divider) ;
+
         }
 
         Store store = new StoreBase(null, new PlanTranslatorGeneral(true, true), null, null, compiler) ;

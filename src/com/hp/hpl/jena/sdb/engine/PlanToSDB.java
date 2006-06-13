@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -40,16 +39,27 @@ public class PlanToSDB extends PlanVisitorBase
     }
 
     
+    
+    @Override
+    public void visit(PlanOptional planElt)
+    {
+        log.info("PlanOptional") ;
+        // LHS, RHS done.
+        PlanSDB pSDB = new PlanSDB(query, store) ;
+    }
+
     @Override
     public void visit(PlanTriplePattern planElt)
     {
-        
+        log.warn("PlanTriplePattern found - converted to a basic graph pattern") ;
+        visit(planElt.toBlockTriples()) ;
     }
     
     @Override
     @SuppressWarnings("unchecked")
     public void visit(PlanBasicGraphPattern planElt)
     {
+        log.info("PlanBasicGraphPattern") ;
         process(planElt.getPlanElements()) ;
     }
     
@@ -57,14 +67,15 @@ public class PlanToSDB extends PlanVisitorBase
     @SuppressWarnings("unchecked")
     public void visit(PlanGroup planElt)
     {
+        log.info("PlanGroup") ;
         process(planElt.getPlanElements()) ;
     }
 
     // PlanGroup and PlanBasicGraphPattern
     private void process(List<PlanElement> planElements)
     {
-        log.fatal("Not converted to ARQ's new internal structure") ;
-      elementsLoop:
+        log.warn("Not converted to ARQ's new internal structure") ;
+      //elementsLoop:
         for ( int i = 0 ; i < planElements.size() ; i++ )
         {
             if ( planElements.get(i) == null )
