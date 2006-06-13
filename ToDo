@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Variable tracking
+  Use SQL COALESCE for OPTIONALs with shared variables
+
 c.f. SQLCache and returning prepared statements
   Named parameters in INSERT for robustness.
   Sequences, not autoIncrement

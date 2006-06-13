@@ -14,7 +14,6 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.Plan;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.PlanWalker;
-import com.hp.hpl.jena.query.engine1.compiler.PlanBlock;
 import com.hp.hpl.jena.query.engine1.compiler.PlanGroup;
 import com.hp.hpl.jena.sdb.store.PlanTranslator;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -68,10 +67,8 @@ public class PlanTranslatorGeneral implements PlanTranslator
 
     private PlanSDB getPlanSDB(PlanElement planElt)
     {
-        //pBlock = (PlanSDB)((PlanGroup)((PlanBlock)pElt).getSub()).getPlanElements().get(0) ;
         try {
-            PlanBlock pb = (PlanBlock)planElt ;
-            PlanGroup g = (PlanGroup)pb.getSub() ;
+            PlanGroup g = (PlanGroup)planElt ;
             List x = g.getPlanElements() ;
             if (x.size() != 1 )
                 return null ;

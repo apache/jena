@@ -55,10 +55,8 @@ public class QueryEngineSDB extends QueryEngine
     
     private PlanSDB getPlanSDB(PlanElement planElt)
     {
-        //pBlock = (PlanSDB)((PlanGroup)((PlanBlock)pElt).getSub()).getPlanElements().get(0) ;
         try {
-            PlanBlock pb = (PlanBlock)planElt ;
-            PlanGroup g = (PlanGroup)pb.getSub() ;
+            PlanGroup g = (PlanGroup)planElt ;
             List x = g.getPlanElements() ;
             if (x.size() != 1 )
                 return null ;

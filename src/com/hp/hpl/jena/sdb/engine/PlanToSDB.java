@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.engine;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
@@ -23,6 +24,8 @@ import com.hp.hpl.jena.sdb.store.Store;
 
 public class PlanToSDB extends PlanVisitorBase
 {
+    private static Log log = LogFactory.getLog(PlanToSDB.class) ;
+    
     private Query query ;
     private Store store ;
     private boolean translateOptionals ;
@@ -36,86 +39,127 @@ public class PlanToSDB extends PlanVisitorBase
         this.translateConstraints = translateConstraints ;
     }
 
-//    // Basic patterns
-//    public void visit(PlanBasePattern planElt) {}
-//    public void visit(PlanTriplePattern planElt) {}
+    
+    @Override
+    public void visit(PlanTriplePattern planElt)
+    {
+        
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public void visit(PlanBasicGraphPattern planElt)
+    {
+        process(planElt.getPlanElements()) ;
+    }
     
     @Override
     @SuppressWarnings("unchecked")
     public void visit(PlanGroup planElt)
     {
-        // Visitors happen bottom up - called on subgroups first.
-        
-        List x =  planElt.getPlanElements() ;
-      elementsLoop:
-        for ( int i = 0 ; i < x.size() ; i++ )
-        {
-            if ( x.get(i) == null )
-                // Zapped entry
-                continue ;
-            
-            PlanElement pElt = (PlanElement)x.get(i) ;
-            if (! ( pElt instanceof PlanBasicPattern ) )
-                // Not the start of a Block
-                continue ;
-                
-            PlanSDB pBlock = new PlanSDB(query, store) ;
-            PlanBasicPattern bgp = (PlanBasicPattern)pElt ;
-            
-            // Do the basic pattern
-            processBasicGraphPattern(pBlock, bgp, x, i) ;  
-            int j = i+1 ;
-            
-            if ( translateConstraints )
-            {
-                // Lookahead for constraints
-                for( ; j < x.size() ; j++ )
-                {
-                    Constraint c = extractConstraint(x, j) ;
-                    if ( c == null )
-                        break ;
-                    
-                    boolean fullyHandled = processConstraint(pBlock, c, x, j) ;
-                    if ( ! fullyHandled )
-                        // Something tricky - just do a basic pattern and
-                        // whatever constraints we could do.  The block may
-                        // now have constraints that are partial (they will
-                        // filter out some, but not all solutions and the
-                        // original constraint must be reexecuted.
-                        break elementsLoop ;
-                    
-                    // Contraint assumed by SQL layer.  Remove it.
-                    x.set(j, null) ;
-                    // Move the outer index to this point (it will move on in the loop)
-                    i = j ;
-                }
-            }
-            
-            if ( translateOptionals )
-            {
-                // Look for optionals IFF all the filter could be handled.
-                for ( ; j < x.size() ; j++ )
-                {
-                    // Followed by an optional?
-                    Block pOpt = extractOptional(query, store.getQueryCompiler(), x, j) ;
-                    if ( pOpt == null )
-                        break ;
-                    pBlock.addOptional(pOpt) ;
-                    x.set(j, null) ;
-                    i = j ;
-                }
-            }
-        }
-        // Trim nulls
-        for ( Iterator iter = x.listIterator() ; iter.hasNext() ; )
-        {
-            if ( iter.next() == null )
-                iter.remove() ;
-        }
+        process(planElt.getPlanElements()) ;
+    }
+
+    // PlanGroup and PlanBasicGraphPattern
+    private void process(List<PlanElement> planElements)
+    {
+        log.fatal("Not converted to ARQ's new internal structure") ;
+//      elementsLoop:
+//        for ( int i = 0 ; i < planElements.size() ; i++ )
+//        {
+//            if ( planElements.get(i) == null )
+//                // Zapped entry
+//                continue ;
+//            
+//            PlanElement pElt = planElements.get(i) ;
+//            
+//            if ( pElt instanceof PlanBlockTriples )
+//            {
+//                PlanBlockTriples blkTriples = (PlanBlockTriples)pElt ;
+//                continue ;
+//            }
+//
+//            if ( pElt instanceof PlanOptional )
+//            {
+//                PlanOptional pOpt = (PlanOptional)pElt ;  
+//                continue ;
+//            }
+//
+//            if ( pElt instanceof PlanBasicGraphPattern )
+//            {}
+//            
+//            if ( pElt instanceof PlanFilter )
+//            {}
+//            
+//            
+//            
+//            
+//            
+//            
+//            
+//            
+//            
+//            
+//            
+//            
+//            
+//            PlanSDB pBlock = new PlanSDB(query, store) ;
+//            PlanBasicPattern bgp = (PlanBasicPattern)pElt ;
+//            
+//            // Do the basic pattern
+//            processBasicGraphPattern(pBlock, bgp, x, i) ;  
+//            int j = i+1 ;
+//            
+//            if ( translateConstraints )
+//            {
+//                // Lookahead for constraints
+//                for( ; j < x.size() ; j++ )
+//                {
+//                    Constraint c = extractConstraint(x, j) ;
+//                    if ( c == null )
+//                        break ;
+//                    
+//                    boolean fullyHandled = processConstraint(pBlock, c, x, j) ;
+//                    if ( ! fullyHandled )
+//                        // Something tricky - just do a basic pattern and
+//                        // whatever constraints we could do.  The block may
+//                        // now have constraints that are partial (they will
+//                        // filter out some, but not all solutions and the
+//                        // original constraint must be reexecuted.
+//                        break elementsLoop ;
+//                    
+//                    // Contraint assumed by SQL layer.  Remove it.
+//                    x.set(j, null) ;
+//                    // Move the outer index to this point (it will move on in the loop)
+//                    i = j ;
+//                }
+//            }
+//            
+//            if ( translateOptionals )
+//            {
+//                // Look for optionals IFF all the filter could be handled.
+//                for ( ; j < x.size() ; j++ )
+//                {
+//                    // Followed by an optional?
+//                    Block pOpt = extractOptional(query, store.getQueryCompiler(), x, j) ;
+//                    if ( pOpt == null )
+//                        break ;
+//                    pBlock.addOptional(pOpt) ;
+//                    x.set(j, null) ;
+//                    i = j ;
+//                }
+//            }
+//        }
+//        // Trim nulls
+//        for ( Iterator iter = x.listIterator() ; iter.hasNext() ; )
+//        {
+//            if ( iter.next() == null )
+//                iter.remove() ;
+//        }
     }
     
     @SuppressWarnings("unchecked")
-    private void processBasicGraphPattern(PlanSDB pBlock, PlanBasicPattern bgp, List x, int i)
+    private void processBasicGraphPattern(PlanSDB pBlock, PlanBlockTriples bgp, List x, int i)
     {
         pBlock.add(new BasicPattern(bgp.getPattern())) ;
         x.set(i, pBlock) ;
@@ -124,22 +168,25 @@ public class PlanToSDB extends PlanVisitorBase
     // Find an already converted basic pattern in an optional.
     private Block extractOptional(Query query, QueryCompiler compiler, List x, int i)
     {
-        if ( i >= x.size() ) return null ;
+        log.fatal("extractOptional") ;
+        return null ;
         
-        try {
-            PlanOptional pOpt = (PlanOptional)x.get(i) ;
-            
-            // Get the subpattern and check it.
-            PlanGroup pGrp = (PlanGroup)pOpt.getSub() ;
-            if ( pGrp.getPlanElements().size() != 1 )
-                return null ;
-            // Is it a precompiled subelement?
-            PlanSDB p = (PlanSDB)pGrp.getPlanElements().get(0) ;
-            return p ;
-        } catch (ClassCastException cce)
-        {
-            return null ;
-        }
+//        if ( i >= x.size() ) return null ;
+//        
+//        try {
+//            PlanOptional pOpt = (PlanOptional)x.get(i) ;
+//            
+//            // Get the subpattern and check it.
+//            PlanGroup pGrp = (PlanGroup)pOpt.getSub() ;
+//            if ( pGrp.getPlanElements().size() != 1 )
+//                return null ;
+//            // Is it a precompiled subelement?
+//            PlanSDB p = (PlanSDB)pGrp.getPlanElements().get(0) ;
+//            return p ;
+//        } catch (ClassCastException cce)
+//        {
+//            return null ;
+//        }
     }
 
     // Find a Constraint we can deal with
@@ -148,7 +195,7 @@ public class PlanToSDB extends PlanVisitorBase
         // TODO Condition compiler
         if ( store.getQueryCompiler().getConditionCompiler() == null )
         {
-            LogFactory.getLog(this.getClass()).warn("No condition compiler - skipped") ;
+            log.warn("No condition compiler - skipped") ;
             return null ;
         }
         
