@@ -14,7 +14,6 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.Plan;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.PlanWalker;
-import com.hp.hpl.jena.query.engine1.compiler.PlanGroup;
 import com.hp.hpl.jena.sdb.store.PlanTranslator;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -40,13 +39,7 @@ public class PlanTranslatorGeneral implements PlanTranslator
 
     private PlanElement modify(PlanElement planElt)
     {
-        // A full optimized query looks like:
-        // PlanBlock
-        //   PlanGroup(1)
-        //     PlanSDB
-        // If it is like this, we can set the projection for the PlanSDB Block. 
-
-        PlanSDB planSDB = getPlanSDB(planElt) ;
+        PlanSDB planSDB = PlanSDB.getPlanSDB(planElt) ;
         if ( planSDB == null )
         {
             // Can't improve - not a full rewritten query (PlanSDB not at the top) - return original
@@ -61,42 +54,8 @@ public class PlanTranslatorGeneral implements PlanTranslator
             planSDB.addProjectVar(Node.createVariable(vn)) ;
         }
 
-        // Later, maybe return the planSDB but the block is used for dataset (via it's ElementBlock)
-        return planElt ;
+        return planSDB ;
     }
-
-    private PlanSDB getPlanSDB(PlanElement planElt)
-    {
-        try {
-            PlanGroup g = (PlanGroup)planElt ;
-            List x = g.getPlanElements() ;
-            if (x.size() != 1 )
-                return null ;
-            PlanSDB planSDB = (PlanSDB)x.get(0) ;
-            return planSDB ;
-        } catch (ClassCastException ex) { return null ; }
-
-    }
-
-// --------
-
-//public Block toBlock()
-//{
-//    // try to get the block for this query, assuming that the query is completely an SQL-optimized query
-//    Plan plan = new Plan() ;
-//    PlanElement pElt = makePlanForQueryPattern(plan) ;
-//    
-//    pElt = queryPlanHook(plan, pElt) ;
-//    
-//    if ( pElt instanceof PlanSDB )
-//        // modify() reorg'ed the tree
-//        return ((PlanSDB)pElt) ;
-//    
-//    PlanSDB pBlock = getPlanSDB(pElt) ;
-//    if ( pBlock == null )
-//        System.err.println("Can't get the top block") ;
-//    return pBlock ;
-//}
 }
 
 /*

@@ -64,34 +64,34 @@ public class PlanToSDB extends PlanVisitorBase
     private void process(List<PlanElement> planElements)
     {
         log.fatal("Not converted to ARQ's new internal structure") ;
-//      elementsLoop:
-//        for ( int i = 0 ; i < planElements.size() ; i++ )
-//        {
-//            if ( planElements.get(i) == null )
-//                // Zapped entry
-//                continue ;
-//            
-//            PlanElement pElt = planElements.get(i) ;
-//            
-//            if ( pElt instanceof PlanBlockTriples )
-//            {
-//                PlanBlockTriples blkTriples = (PlanBlockTriples)pElt ;
-//                continue ;
-//            }
-//
-//            if ( pElt instanceof PlanOptional )
-//            {
-//                PlanOptional pOpt = (PlanOptional)pElt ;  
-//                continue ;
-//            }
-//
-//            if ( pElt instanceof PlanBasicGraphPattern )
-//            {}
-//            
-//            if ( pElt instanceof PlanFilter )
-//            {}
-//            
-//            
+      elementsLoop:
+        for ( int i = 0 ; i < planElements.size() ; i++ )
+        {
+            if ( planElements.get(i) == null )
+                // Zapped entry
+                continue ;
+            
+            PlanElement pElt = planElements.get(i) ;
+            
+            if ( pElt instanceof PlanBlockTriples )
+            {
+                PlanBlockTriples blkTriples = (PlanBlockTriples)pElt ;
+                continue ;
+            }
+
+            if ( pElt instanceof PlanOptional )
+            {
+                PlanOptional pOpt = (PlanOptional)pElt ;  
+                continue ;
+            }
+
+            if ( pElt instanceof PlanBasicGraphPattern )
+            {}
+            
+            if ( pElt instanceof PlanFilter )
+            {}
+        }
+            
 //            
 //            
 //            

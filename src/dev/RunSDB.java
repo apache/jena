@@ -39,13 +39,13 @@ public class RunSDB
     {
         //SDBConnection.logSQLStatements = true ;
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runLoad() ;
         //runScript() ;
         
         //runTest() ;
         //runCommand() ;
-        runCode() ;
+        //runCode() ;
         //runConf() ;
         //runTestManifest() ;
         

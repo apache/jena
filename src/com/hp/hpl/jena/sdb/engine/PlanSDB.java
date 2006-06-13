@@ -6,11 +6,14 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
+import java.util.List;
+
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.*;
+import com.hp.hpl.jena.query.engine1.compiler.PlanGroup;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -35,6 +38,8 @@ public class PlanSDB
     public void visit(PlanVisitor visitor)
     {
         // Hmm ... not extensible
+        // Could have a PlanOther in the visitor and the writer 
+        // calls .output() or .toString() by reflection. 
         LogFactory.getLog(PlanSDB.class).warn(".visit called - nothing implemented") ;
     }
     
@@ -50,6 +55,24 @@ public class PlanSDB
 
     public Query getQuery()   { return query ; }
 //    public Schema getSchema() { return schema ; }
+
+    // Get the PlanSDB element from a PlanElement tree (assuming there is
+    // exactly one as the result of query translation.
+    public static PlanSDB getPlanSDB(PlanElement planElt)
+    {
+        if ( planElt instanceof PlanSDB )
+            return (PlanSDB)planElt ;
+        try {
+            PlanGroup g = (PlanGroup)planElt ;
+            List x = g.getPlanElements() ;
+            if (x.size() != 1 )
+                return null ;
+            PlanSDB planSDB = (PlanSDB)x.get(0) ;
+            LogFactory.getLog(PlanSDB.class).info("Not top element ... found in group of one") ;
+            return planSDB ;
+        } catch (ClassCastException ex) { return null ; }
+
+    }
 
 }
 

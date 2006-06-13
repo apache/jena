@@ -6,14 +6,11 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.*;
-import com.hp.hpl.jena.query.engine1.compiler.*;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -26,6 +23,9 @@ public class QueryEngineSDB extends QueryEngine
     {
         super(q) ;
         this.store = store ;
+        if ( queryPlanElement == null )
+            // May need to change this if WHERE-less queries get this far.  
+            log.warn("No queryPlanElement") ;
     }
 
     
@@ -53,20 +53,6 @@ public class QueryEngineSDB extends QueryEngine
         return store.getPlanTranslator().queryPlanTranslate(getQuery(), store, plan, planElt) ;
     }
     
-    private PlanSDB getPlanSDB(PlanElement planElt)
-    {
-        try {
-            PlanGroup g = (PlanGroup)planElt ;
-            List x = g.getPlanElements() ;
-            if (x.size() != 1 )
-                return null ;
-            PlanSDB planSDB = (PlanSDB)x.get(0) ;
-            return planSDB ;
-        } catch (ClassCastException ex) { return null ; }
-    }
-//    
-//    // --------
-    
     public Block toBlock()
     {
         // try to get the block for this query, assuming that the query is completely an SQL-optimized query
@@ -74,14 +60,9 @@ public class QueryEngineSDB extends QueryEngine
         PlanElement pElt = makePlanForQueryPattern(plan) ;
         
         pElt = queryPlanHook(plan, pElt) ;
-        
-        if ( pElt instanceof PlanSDB )
-            // modify() reorg'ed the tree
-            return ((PlanSDB)pElt) ;
-        
-        PlanSDB pBlock = getPlanSDB(pElt) ;
+        PlanSDB pBlock = PlanSDB.getPlanSDB(pElt) ;
         if ( pBlock == null )
-            System.err.println("Can't get the top block") ;
+            log.warn("Can't get the top block") ;
         return pBlock ;
     }
 }
