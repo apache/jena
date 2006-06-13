@@ -23,9 +23,6 @@ public class QueryEngineSDB extends QueryEngine
     {
         super(q) ;
         this.store = store ;
-        if ( queryPlanElement == null )
-            // May need to change this if WHERE-less queries get this far.  
-            log.warn("No queryPlanElement") ;
     }
 
     
