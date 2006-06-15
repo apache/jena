@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.*;
+import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -45,9 +46,9 @@ public class QueryEngineSDB extends QueryEngine
      */
     
     @Override
-    protected PlanElement queryPlanHook(Plan plan, PlanElement planElt)
+    protected PlanElement queryPlanHook(Context context, PlanElement planElt)
     {
-        return store.getPlanTranslator().queryPlanTranslate(getQuery(), store, plan, planElt) ;
+        return store.getPlanTranslator().queryPlanTranslate(context, getQuery(), store, planElt) ;
     }
     
     public Block toBlock()
@@ -59,7 +60,7 @@ public class QueryEngineSDB extends QueryEngine
         PlanSDB pBlock = PlanSDB.getPlanSDB(pElt) ;
         if ( pBlock == null )
             log.warn("Can't get the top block") ;
-        return pBlock ;
+        return pBlock.getBlock() ;
     }
 }
 

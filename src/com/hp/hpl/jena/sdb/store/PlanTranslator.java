@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.engine1.Plan;
 import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.util.Context;
 
 /** Algorthim interface to translation from a general query plan (from
  *  ARQ engine1) to one involving SQL-backed stages.  May be the whole
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.query.engine1.PlanElement;
 
 public interface PlanTranslator
 {
-    public PlanElement queryPlanTranslate(Query query, Store store, Plan plan, PlanElement planElement) ;
+    public PlanElement queryPlanTranslate(Context context, Query query, Store store, PlanElement planElement) ;
 }
 
 /*

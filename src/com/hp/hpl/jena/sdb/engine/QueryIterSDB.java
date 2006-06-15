@@ -18,10 +18,10 @@ class QueryIterSDB extends QueryIterRepeatApply
 {
     Store store ;
     Query query ;
-    PlanSDB pBlock ;
+    Block pBlock ;
     
-    public QueryIterSDB(Query query, Store store, PlanSDB pBlock,
-                              QueryIterator input, ExecutionContext execCxt)
+    public QueryIterSDB(Query query, Store store, Block pBlock,
+                        QueryIterator input, ExecutionContext execCxt)
     {
         super(input, execCxt) ;
         this.store = store ;

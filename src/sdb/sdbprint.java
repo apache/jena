@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import com.hp.hpl.jena.Jena;
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.engine1.Plan;
+import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.PlanFormatter;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Block;
@@ -215,7 +215,7 @@ public class sdbprint // NOT CmdArgsDB
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
         if ( verbose )
         {
-            Plan plan = qe.getPlan() ;
+            PlanElement plan = qe.getPlan() ;
             PlanFormatter.out(System.out, plan) ;
             System.out.println(divider) ;
         }

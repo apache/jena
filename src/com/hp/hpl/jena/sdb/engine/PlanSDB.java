@@ -6,12 +6,11 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import java.util.List;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.*;
 import com.hp.hpl.jena.query.engine1.plan.* ;
+import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -19,36 +18,42 @@ import com.hp.hpl.jena.sdb.store.Store;
 /** A block + the Plan operations for QueryIter generation */
 
 public class PlanSDB
-    // Maybe be able to extend PlanExternalBase when/if Block goes away. 
-    extends Block
+    extends PlanElementExternalBase 
+    //extends Block
     implements PlanElementExternal
 {
     Store store ;
     Query query ;
+    Block block = new Block();
 
-    public PlanSDB(Query query, Store store)
-    { this.store = store ; this.query = query ; }
+    public PlanSDB(Context context, Query query, Store store)
+    {   
+        super() ;
+        this.store = store ;
+        this.query = query ;
+    }
 
     public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
     {
-        return new QueryIterSDB(query, store, this, input, execCxt ) ;
+        return new QueryIterSDB(query, store, getBlock(), input, execCxt ) ;
     }
 
-    public void visit(PlanVisitor visitor) { visitor.visit(this) ; }
-    public void visit(PlanStructureVisitor visitor) { } ;
+//    public void visit(PlanVisitor visitor) { visitor.visit(this) ; }
+//    public void visit(PlanStructureVisitor visitor) { } ;
     
     @Override
     public void output(IndentedWriter out)
     {
         out.println("[PlanSDB") ;
         out.incIndent() ;
-        super.output(out) ;
+        block.output(out) ;
         out.decIndent() ;
         out.print("]") ;
     }
 
     public Query getQuery()   { return query ; }
 //    public Schema getSchema() { return schema ; }
+    public Block getBlock()   { return block ; }
 
     // Get the PlanSDB element from a PlanElement tree (assuming there is
     // exactly one as the result of query translation.
@@ -63,15 +68,6 @@ public class PlanSDB
             PlanSDB planSDB = (PlanSDB)g.getSubElement(0) ;
             return planSDB ;
         } catch (ClassCastException ex) { return null ; }
-    }
-
-    public PlanElement getSubElement(int i) { return null ; }
-    public int numSubElement()    { return 0 ; }
-    public List getSubElements()  { return null ; }
-
-    public int numSubElements()
-    {
-        return 0 ;
     }
 }
 

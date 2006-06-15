@@ -11,9 +11,9 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.engine1.Plan;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.Transformation;
+import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.store.PlanTranslator;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -28,9 +28,9 @@ public class PlanTranslatorGeneral implements PlanTranslator
         this.translateConstraints = translateConstraints ;
     }
     
-    public PlanElement queryPlanTranslate(Query query, Store store, Plan plan, PlanElement planElement)
+    public PlanElement queryPlanTranslate(Context context, Query query, Store store, PlanElement planElement)
     {
-        PlanToSDB xform = new PlanToSDB(query, store, translateOptionals,translateConstraints) ;
+        PlanToSDB xform = new PlanToSDB(context, query, store, translateOptionals,translateConstraints) ;
         planElement = Transformation.transform(xform, planElement) ;
         planElement = modify(planElement) ;
         return planElement ;
@@ -50,7 +50,7 @@ public class PlanTranslatorGeneral implements PlanTranslator
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
         {
             String vn = (String)iter.next() ;
-            planSDB.addProjectVar(Node.createVariable(vn)) ;
+            planSDB.getBlock().addProjectVar(Node.createVariable(vn)) ;
         }
 
         return planSDB ;
