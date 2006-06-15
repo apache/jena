@@ -5,7 +5,9 @@ PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?name
 WHERE {
-   ?a dc10:title "thing" .
+   ?a dc10:title "thing1" .
+   ?a dc10:title "thing2" .
+   FILTER isIRI(?a)
    OPTIONAL { ?a dc10:creator ?name }
    OPTIONAL { ?a dc11:creator ?c .
               ?c rdf:value ?name }

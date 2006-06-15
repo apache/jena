@@ -10,7 +10,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine1.QueryIterRepeatApply;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterRepeatApply ;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.store.Store;
 

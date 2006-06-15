@@ -10,6 +10,8 @@ import java.io.IOException;
 
 import com.hp.hpl.jena.Jena;
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.engine1.Plan;
+import com.hp.hpl.jena.query.engine1.PlanFormatter;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
@@ -198,22 +200,6 @@ public class sdbprint // NOT CmdArgsDB
         System.err.println("BROKEN - FIX ME") ;
     }
     
-//    public static void compilePrint2(Query query)
-//    {
-//        compilePrint(query,  ) ;
-//    }
-//    
-//    public static void compilePrint1(Query query)
-//    {
-//        //GraphSDB graphSDB = setup() ;
-//        //Model modelSDB    = ModelFactory.createModelForGraph(graphSDB) ;
-//        
-//        PrefixMapping pmap = new PrefixMappingImpl();
-//        pmap.setNsPrefix("", "http://example/") ;
-//        
-//        compilePrint(query, store) ;
-//    }
-//    
     private static void compilePrint(Query query, QueryCompiler compiler)
     {
         if ( verbose )
@@ -223,16 +209,21 @@ public class sdbprint // NOT CmdArgsDB
 //            System.out.println(divider) ;
             query.serialize(System.out, Syntax.syntaxPrefix) ;
             System.out.println(divider) ;
-
         }
 
         Store store = new StoreBase(null, new PlanTranslatorGeneral(true, true), null, null, compiler) ;
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
+        if ( verbose )
+        {
+            Plan plan = qe.getPlan() ;
+            PlanFormatter.out(System.out, plan) ;
+            System.out.println(divider) ;
+        }
         Block block = qe.toBlock() ;
         
         if ( verbose )
         {
-            QueryCompilerBase.printBlock = true ;
+            QueryCompilerBase.printBlock = false ;  // Done earlier.
             QueryCompilerBase.printAbstractSQL = true ;
             QueryCompilerBase.printDivider = divider ;
         }

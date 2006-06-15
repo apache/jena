@@ -52,11 +52,10 @@ public class QueryEngineSDB extends QueryEngine
     
     public Block toBlock()
     {
-        // try to get the block for this query, assuming that the query is completely an SQL-optimized query
-        Plan plan = new Plan() ;
-        PlanElement pElt = makePlanForQueryPattern(plan) ;
+        // try to get the block for this query, 
+        // assuming that the query is completely an SQL-optimized query
+        PlanElement pElt = super.getPlanPattern() ;
         
-        pElt = queryPlanHook(plan, pElt) ;
         PlanSDB pBlock = PlanSDB.getPlanSDB(pElt) ;
         if ( pBlock == null )
             log.warn("Can't get the top block") ;

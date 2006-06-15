@@ -8,12 +8,10 @@ package com.hp.hpl.jena.sdb.engine;
 
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.*;
-import com.hp.hpl.jena.query.engine1.compiler.PlanGroup;
+import com.hp.hpl.jena.query.engine1.plan.* ;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -21,27 +19,23 @@ import com.hp.hpl.jena.sdb.store.Store;
 /** A block + the Plan operations for QueryIter generation */
 
 public class PlanSDB
+    // Maybe be able to extend PlanExternalBase when/if Block goes away. 
     extends Block
-    implements PlanElement
+    implements PlanElementExternal
 {
     Store store ;
     Query query ;
 
     public PlanSDB(Query query, Store store)
-    { this.store = store ; this.query = query ; } 
-    
+    { this.store = store ; this.query = query ; }
+
     public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
     {
-        return new QueryIterSDB(query, store, this, input, execCxt) ;
+        return new QueryIterSDB(query, store, this, input, execCxt ) ;
     }
-    
-    public void visit(PlanVisitor visitor)
-    {
-        // Hmm ... not extensible
-        // Could have a PlanOther in the visitor and the writer 
-        // calls .output() or .toString() by reflection. 
-        LogFactory.getLog(PlanSDB.class).warn(".visit called - nothing implemented") ;
-    }
+
+    public void visit(PlanVisitor visitor) { visitor.visit(this) ; }
+    public void visit(PlanStructureVisitor visitor) { } ;
     
     @Override
     public void output(IndentedWriter out)
@@ -63,20 +57,23 @@ public class PlanSDB
         if ( planElt instanceof PlanSDB )
             return (PlanSDB)planElt ;
         try {
-            PlanGroup g = (PlanGroup)planElt ;
-            List x = g.getPlanElements() ;
-            if (x.size() != 1 )
+            PlanElementN g = (PlanElementN)planElt ;
+            if (g.numSubElements() != 1 )
                 return null ;
-            PlanSDB planSDB = (PlanSDB)x.get(0) ;
-            LogFactory.getLog(PlanSDB.class).info("Not top element ... found in group of one") ;
+            PlanSDB planSDB = (PlanSDB)g.getSubElement(0) ;
             return planSDB ;
         } catch (ClassCastException ex) { return null ; }
-
     }
 
+    public PlanElement getSubElement(int i) { return null ; }
+    public int numSubElement()    { return 0 ; }
+    public List getSubElements()  { return null ; }
+
+    public int numSubElements()
+    {
+        return 0 ;
+    }
 }
-
-
 
 /*
  * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP

@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.Plan;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.PlanWalker;
+import com.hp.hpl.jena.query.engine1.Transformation;
 import com.hp.hpl.jena.sdb.store.PlanTranslator;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -30,9 +30,8 @@ public class PlanTranslatorGeneral implements PlanTranslator
     
     public PlanElement queryPlanTranslate(Query query, Store store, Plan plan, PlanElement planElement)
     {
-        PlanWalker.walk(new PlanToSDB(query, store, translateOptionals,translateConstraints), planElement) ;
-        // If we have optimized everything, drop the unnecessary plan elements
-        // and set the project variables of the top Block.
+        PlanToSDB xform = new PlanToSDB(query, store, translateOptionals,translateConstraints) ;
+        planElement = Transformation.transform(xform, planElement) ;
         planElement = modify(planElement) ;
         return planElement ;
     }

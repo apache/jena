@@ -21,7 +21,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine1.QueryIterPlainWrapper;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.core.*;

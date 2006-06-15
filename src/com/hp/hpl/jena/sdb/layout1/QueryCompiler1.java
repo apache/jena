@@ -20,7 +20,7 @@ import com.hp.hpl.jena.query.core.BindingMap;
 import com.hp.hpl.jena.query.core.Constraint;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine1.QueryIterPlainWrapper;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.NodeUtils;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
