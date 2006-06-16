@@ -288,7 +288,7 @@
   which can be used for programmatic handling of the violations.</p>
 <p>For example, to check a data set and list any problems one could do something 
   like:</p>
-<pre>    Model data = ModelLoader.loadModel(fname);
+<pre>    Model data = FileManager.get().loadModel(fname);
     InfModel infmodel = ModelFactory.createRDFSModel(data);
     ValidityReport validity = infmodel.validate();
     if (validity.isValid()) {
@@ -627,8 +627,8 @@ _:anon1 rdf:type datatype .</pre>
 <p>Then the following code fragment can be used to read files containing these 
   definitions, create an inference model and query it for information on the <code>rdf:type</code> 
   of <code>colin</code> and the <code>rdf:type</code> of <code>Person</code>:</p>
-<pre>Model schema = ModelLoader.loadModel("file:data/rdfsDemoSchema.rdf");
-Model data = ModelLoader.loadModel("file:data/rdfsDemoData.rdf");
+<pre>Model schema = FileManager.get().loadModel("file:data/rdfsDemoSchema.rdf");
+Model data = FileManager.get().loadModel("file:data/rdfsDemoData.rdf");
 InfModel infmodel = ModelFactory.createRDFSModel(schema, data);
         
 Resource colin = infmodel.getResource("urn:x-hp:eg/colin");
@@ -1022,8 +1022,8 @@ configuration still leaves something to be desired and will the subject of futur
   and &quot;<code>bigName42</code>&quot;.</p>
 <p>We can create an instance of the OWL reasoner, specialized to the demo schema 
   and then apply that to the demo data to obtain an inference model, as follows:</p>
-<pre>    Model schema = ModelLoader.loadModel("file:data/owlDemoSchema.owl");
-    Model data = ModelLoader.loadModel("file:data/owlDemoData.rdf");
+<pre>    Model schema = FileManager.get().loadModel("file:data/owlDemoSchema.owl");
+    Model data = FileManager.get().loadModel("file:data/owlDemoData.rdf");
     Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
     reasoner = reasoner.bindSchema(schema);
     InfModel infmodel = ModelFactory.createInfModel(reasoner, data);</pre>
@@ -1777,7 +1777,7 @@ configuration.addProperty(ReasonerVocabulary.PROPruleSet,  "data/demo.rules");
 Reasoner reasoner = GenericRuleReasonerFactory.theInstance().create(configuration);
 
 // Load test data
-Model data = ModelLoader.loadModel("file:data/demoData.rdf");
+Model data = FileManager.get().loadModel("file:data/demoData.rdf");
 InfModel infmodel = ModelFactory.createInfModel(reasoner, data);
  
 // Query for all things related to "a" by "p"
@@ -1919,7 +1919,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.29 2006-03-26 12:06:49 der Exp $</i>
+  Last modification: $Id: index.html,v 1.30 2006-06-16 08:53:47 der Exp $</i>
 </p>
 </body>
 </html>
