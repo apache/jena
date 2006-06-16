@@ -36,17 +36,15 @@ public class QueryEngineSDB extends QueryEngine
 //    {
 //        return super.makePlanForQueryPattern(plan) ;
 //    }
-    
-    /** Inspect, and possibily modify, the query plan and execution tree.
-     * Called after plan creation getPlanForQueryPattern
-     * 
-     * @param plan
-     * @param planElt
-     * @return PlanElement  New root of the planning tree (often, the one passed in)
-     */
+
+//    @Override
+//    protected  PlanElement queryPlanHook(Context context, PlanElement planElt)
+//    {
+//        return planElt ;
+//    }
     
     @Override
-    protected PlanElement queryPlanHook(Context context, PlanElement planElt)
+    protected PlanElement queryPlanPatternHook(Context context, PlanElement planElt)
     {
         return store.getPlanTranslator().queryPlanTranslate(context, getQuery(), store, planElt) ;
     }
@@ -59,7 +57,10 @@ public class QueryEngineSDB extends QueryEngine
         
         PlanSDB pBlock = PlanSDB.getPlanSDB(pElt) ;
         if ( pBlock == null )
+        {
             log.warn("Can't get the top block") ;
+            return null ;
+        }
         return pBlock.getBlock() ;
     }
 }

@@ -3,13 +3,12 @@ PREFIX  dc10:     <http://purl.org/dc/elements/1.0/>
 PREFIX  dc11:     <http://purl.org/dc/elements/1.1/>
 PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?name
+SELECT ?name1 ?name2
 WHERE {
    ?a dc10:title "thing1" .
    ?a dc10:title "thing2" .
 ##   FILTER isIRI(?a)
-##    OPTIONAL { ?a dc10:creator ?name }
-##    OPTIONAL { ?a dc11:creator ?c .
-##               ?c rdf:value ?name }
-
+   OPTIONAL { ?a dc10:creator ?name1 }
+   OPTIONAL { ?a dc11:creator ?c .
+              ?c rdf:value ?name2 }
 }

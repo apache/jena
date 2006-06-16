@@ -14,8 +14,11 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.TransformCopy;
+import com.hp.hpl.jena.query.engine1.plan.TransformCopy;
+import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
 import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
+import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
+import com.hp.hpl.jena.query.engine1.plan.PlanOptional;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -40,7 +43,6 @@ public class PlanToSDB extends TransformCopy
         this.translateOptionals = translateOptionals ;
         this.translateConstraints = translateConstraints ;
     }
-
     
     @SuppressWarnings("unchecked")
     @Override
@@ -52,6 +54,50 @@ public class PlanToSDB extends TransformCopy
             x.getBlock().add(t) ;
         }
         return x ;
+    }
+    
+    @Override
+    public PlanElement transform(PlanFilter planElt)
+    {
+        return super.transform(planElt) ;
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public PlanElement transform(PlanBasicGraphPattern planElt, List newElements)
+    { 
+        // Check that the BGP is wholly converted
+        // If so, remove it as it is merely a wrapper.
+        // TODO Need to cope with PlanFilter here
+        
+        if ( newElements.size() != 1 )
+            return planElt.copy(newElements) ; 
+        
+        // Loop will be needed.
+        for ( PlanElement e : (List<PlanElement>)newElements )
+        {
+            if ( ! ( e instanceof PlanSDB ) )
+                // No good
+                return super.transform(planElt, newElements) ;
+        }
+        
+        return (PlanSDB)newElements.get(0) ; 
+    }
+    
+    @Override
+    public PlanElement transform(PlanOptional planElt, PlanElement fixed, PlanElement optional)
+    {
+        if ( fixed instanceof PlanSDB && optional instanceof PlanSDB )
+        {
+            PlanSDB fixedSDB = (PlanSDB)fixed ;
+            PlanSDB optionalSDB = (PlanSDB)optional ;
+            // Converted both sides - can convert this node.
+            PlanSDB planSDB = new PlanSDB(context, query, store) ;
+            fixedSDB.getBlock().addOptional(optionalSDB.getBlock()) ;
+            return fixed ;
+        }
+        // We're not interested - do whatever the default is.
+        return super.transform(planElt, fixed, optional) ;
     }
 }
 

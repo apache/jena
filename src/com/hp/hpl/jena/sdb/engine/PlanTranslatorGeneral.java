@@ -12,7 +12,7 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.Transformation;
+import com.hp.hpl.jena.query.engine1.plan.Transformation;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.store.PlanTranslator;
 import com.hp.hpl.jena.sdb.store.Store;

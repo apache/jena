@@ -9,16 +9,21 @@ package sdb;
 import java.io.IOException;
 
 import com.hp.hpl.jena.Jena;
+import com.hp.hpl.jena.db.impl.Driver_MySQL;
+import com.hp.hpl.jena.db.impl.IRDBDriver;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.PlanFormatter;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 
 import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
+import com.hp.hpl.jena.sdb.layout1.CodecRDB;
+import com.hp.hpl.jena.sdb.layout1.QueryCompiler1;
 import com.hp.hpl.jena.sdb.layout1.QueryCompilerSimple;
 
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
@@ -173,6 +178,14 @@ public class sdbprint // NOT CmdArgsDB
             throw new TerminateException(0) ;
         }
         
+        if ( layoutName.equalsIgnoreCase("modelRDB") ) 
+        {
+            // Kludge something to work.
+            IRDBDriver iDriver = new Driver_MySQL() ;
+            compilePrint(query, new QueryCompiler1(new CodecRDB(iDriver))) ;
+            throw new TerminateException(0) ;
+        }
+        
         if ( layoutName.equalsIgnoreCase("layout2") ) 
         {
             compilePrint(query, new QueryCompiler2()) ;
@@ -219,7 +232,13 @@ public class sdbprint // NOT CmdArgsDB
             PlanFormatter.out(System.out, plan) ;
             System.out.println(divider) ;
         }
-        Block block = qe.toBlock() ;
+        PlanSDB planSDB = PlanSDB.getPlanSDB(qe.getPlanPattern()) ;
+
+        if ( planSDB == null )
+        {
+            System.out.println("Query does not compile into a single SQL statement") ;
+            return ;
+        }
         
         if ( verbose )
         {
@@ -227,6 +246,8 @@ public class sdbprint // NOT CmdArgsDB
             QueryCompilerBase.printAbstractSQL = true ;
             QueryCompilerBase.printDivider = divider ;
         }
+        
+        Block block = qe.toBlock() ;
         String sqlStmt = store.getQueryCompiler().asSQL(block) ;
         System.out.println(sqlStmt) ;
         
