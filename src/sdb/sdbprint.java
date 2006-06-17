@@ -232,7 +232,8 @@ public class sdbprint // NOT CmdArgsDB
             PlanFormatter.out(System.out, plan) ;
             System.out.println(divider) ;
         }
-        PlanSDB planSDB = PlanSDB.getPlanSDB(qe.getPlanPattern()) ;
+        
+        PlanSDB planSDB = PlanSDB.getFirstPlanSDB(qe.getPlan()) ;
 
         if ( planSDB == null )
         {
@@ -247,7 +248,7 @@ public class sdbprint // NOT CmdArgsDB
             QueryCompilerBase.printDivider = divider ;
         }
         
-        Block block = qe.toBlock() ;
+        Block block = planSDB.getBlock() ;
         String sqlStmt = store.getQueryCompiler().asSQL(block) ;
         System.out.println(sqlStmt) ;
         

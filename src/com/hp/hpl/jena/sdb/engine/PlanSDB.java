@@ -61,13 +61,26 @@ public class PlanSDB
     {
         if ( planElt instanceof PlanSDB )
             return (PlanSDB)planElt ;
-        try {
-            PlanElementN g = (PlanElementN)planElt ;
-            if (g.numSubElements() != 1 )
+//        try {
+//            PlanElementN g = (PlanElementN)planElt ;
+//            if (g.numSubElements() != 1 )
+//                return null ;
+//            PlanSDB planSDB = (PlanSDB)g.getSubElement(0) ;
+//            return planSDB ;
+//        } catch (ClassCastException ex) { } 
+        return null ;
+    }
+    
+    public static PlanSDB getFirstPlanSDB(PlanElement planElt)
+    {
+        do {
+            if ( planElt instanceof PlanSDB )
+                return (PlanSDB)planElt ;
+            if ( planElt instanceof PlanElement1 )
+                planElt = ((PlanElement1)planElt).getSubElement() ;
+            else 
                 return null ;
-            PlanSDB planSDB = (PlanSDB)g.getSubElement(0) ;
-            return planSDB ;
-        } catch (ClassCastException ex) { return null ; }
+        } while (true) ;
     }
 }
 

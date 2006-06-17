@@ -7,9 +7,7 @@
 package com.hp.hpl.jena.sdb.test;
 
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.graph.PrefixMappingSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -18,23 +16,13 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class TestPrefixMappingSDB extends TestCase
 {
-    public static TestSuite suite()
-    {
-        TestSuite ts = new TestSuite(TestPrefixMappingSDB.class,
-                                     Utils.classShortName(TestPrefixMappingSDB.class)) ;
-        return ts ;
-    }
-
-    
     static final String hsql = "jdbc:hsqldb:mem:aname" ;
 
-    TestPrefixMappingSDB() {}
-    
     SDBConnection sdb = null ;
     
-    @Override
-    protected void setUp()
+    // Cheap and nasty TestSuite initialization
     {
+        System.err.println("Not working yet") ;
         JDBC.loadDriverHSQL() ;
         //SDB.init() ;
         sdb = SDBFactory.createConnection(hsql, "sa", "");

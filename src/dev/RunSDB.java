@@ -22,13 +22,13 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.condition.ExprMatcher;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBase;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.test.TestExprMatch;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -39,13 +39,13 @@ public class RunSDB
     {
         //SDBConnection.logSQLStatements = true ;
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runLoad() ;
         //runScript() ;
         
         //runTest() ;
         //runCommand() ;
-        //runCode() ;
+        runCode() ;
         //runConf() ;
         //runTestManifest() ;
         
@@ -153,7 +153,6 @@ public class RunSDB
 
     public static void runCode()
     {
-        ExprMatcher.run() ;
         System.exit(0) ;
     }
 

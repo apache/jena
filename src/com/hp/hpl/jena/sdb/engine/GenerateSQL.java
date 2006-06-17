@@ -207,12 +207,17 @@ public class GenerateSQL implements SqlNodeVisitor
 
     public void conditionList(ConditionList conditions)
     {
-        String sep = "" ;
+        String sep = "AND  " ;
+        boolean first = true ;
         for ( Condition c : conditions )
         {
-            out.print(sep) ;
-            sep = " AND " ;
+            if ( ! first )
+            {
+                out.println();
+                out.print(sep) ;
+            }
             out.print(conditionToString(c)) ;
+            first = false ;
         }
     }
     

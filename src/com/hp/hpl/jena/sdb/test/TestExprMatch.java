@@ -1,0 +1,348 @@
+/*
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.sdb.test;
+
+import junit.framework.TestCase;
+
+import com.hp.hpl.jena.query.util.ExprUtils;
+import com.hp.hpl.jena.sdb.exprmatch.*;
+
+public class TestExprMatch extends TestCase
+{
+    
+    private MapResult match(String expr, String pattern, MapAction aMap, MapResult expected)
+    {
+        MapResult rMap = ExprMatcher.match(expr, pattern, aMap) ; 
+        assertNotNull(rMap) ;
+        if ( expected != null )
+            assertEquals(expected, rMap) ;
+        return rMap ;
+    }
+
+    private void noMatch(String expr, String pattern, MapAction aMap)
+    {
+        MapResult rMap = ExprMatcher.match(expr, pattern, aMap) ; 
+        assertNull(rMap) ;
+    }
+    
+    // Basic tests
+    public void test_match_0()
+    {
+        MapAction mapAction = new MapAction() ;
+        match("?x", "?a", mapAction, null) ;
+    }
+    
+    public void test_match_1()
+    {
+        MapAction mapAction = new MapAction() ;
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a", "?x") ;
+        
+        match("?x", "?a", mapAction, null) ;
+    }
+    
+    public void test_match_2()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a", new ActionMatchVar()) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a", ExprUtils.parse("?x")) ;
+        
+        match("?x", "?a", mapAction, mapResult) ;
+    }
+    
+    public void test_match_3()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a", new ActionMatchNoBind()) ;
+        
+        MapResult mapResult = new MapResult() ;
+        
+        match("?x", "?a", mapAction, mapResult) ;
+    }
+    
+    public void test_match_4()
+    {
+        MapAction mapAction = new MapAction() ;
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a", "1") ;   // Value one
+        
+        match("1", "?a", mapAction, mapResult) ;
+    }
+    
+    public void test_match_5()
+    {
+        MapAction mapAction = new MapAction() ;
+        noMatch("?a", "1", mapAction) ;
+    }
+    
+    public void test_struct_1()
+    {
+        MapAction mapAction = new MapAction() ;
+        MapResult mapResult = new MapResult() ;
+        
+        match("1+2=3", "(1+2)=3", mapAction, null) ;
+    }
+    
+    public void test_struct_2()
+    {
+        MapAction mapAction = new MapAction() ;
+        MapResult mapResult = new MapResult() ;
+        
+        match("1+2+3", "(1+2)+3", mapAction, null) ;
+    }
+    
+    public void test_struct_3()
+    {
+        MapAction mapAction = new MapAction() ;
+        // Different structures.
+        noMatch("1+2+3", "1+(2+3)", mapAction) ;
+    }
+    
+    // Comparison tests
+    public void test_cond_1()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put("a2", new ActionMatchBind()) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "?x") ;
+        mapResult.put("a2", "3") ;
+        
+        match("?x < 3",
+              "?a1 < ?a2",
+              mapAction, mapResult) ;
+    }
+
+    
+    public void test_cond_2()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put("a2", new ActionMatchBind()) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "?x") ;
+        mapResult.put("a2", "3") ;
+        
+        noMatch("?x < 3", "?a1 > ?a2", mapAction) ;
+    }
+    
+    
+    // Regex tests
+    public void test_regex_1()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put("a2", new ActionMatchString()) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "?x") ;
+        mapResult.put("a2", "'smith'") ;
+        
+        match("regex(?x , 'smith')",
+              "regex(?a1 , ?a2)",
+              mapAction, mapResult) ;
+    }
+    
+    public void test_regex_2()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put("a2", new ActionMatchString()) ;
+        mapAction.put("a3", new ActionMatchString()) ;
+        
+        noMatch("regex(?x , 'smith')",
+                "regex(?a1 , ?a2, ?a3)",
+                mapAction) ;
+    }
+    
+    public void test_regex_3()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put("a2", new ActionMatchString()) ;
+        mapAction.put("a3", new ActionMatchString()) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "?x") ;
+        mapResult.put("a2", "'smith'") ;
+        mapResult.put("a3", "'i'") ;
+        
+        match("regex(?x , 'smith', 'i')",
+              "regex(?a1, ?a2, ?a3)",
+              mapAction, mapResult) ;
+    }
+
+    public void test_regex_4()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put("a2", new ActionMatchString()) ;
+        mapAction.put("a3", new ActionMatchExact("'i'")) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "?x") ;
+        mapResult.put("a2", "'smith'") ;
+        mapResult.put("a3", "'i'") ;
+        
+        match("regex(?x , 'smith', 'i')",
+              "regex(?a1, ?a2, ?a3)",
+              mapAction, mapResult) ;
+    }
+
+    public void test_regex_5()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put("a2", new ActionMatchString()) ;
+        
+        noMatch("regex(?x , 'smith', 'i')",
+                "regex(?a1, ?a2)",
+                mapAction) ;
+    }
+    
+    public void test_regex_6()
+    {
+        MapAction mapAction = new MapAction() ;
+        //mapAction.put("a1", new ActionMatch
+        mapAction.put("a2", new ActionMatchString()) ;
+        mapAction.put("a3", new ActionMatchExact("'i'")) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "str(?x)") ;
+        mapResult.put("a2", "'smith'") ;
+        mapResult.put("a3", "'i'") ;
+        
+        match("regex(str(?x) , 'smith', 'i')",
+              "regex(?a1, ?a2, ?a3)",
+              mapAction, mapResult) ;
+    }
+
+    public void test_regex_7()
+    {
+        MapAction mapAction = new MapAction() ;
+        //mapAction.put("a1", new ActionMatch
+        mapAction.put("a2", new ActionMatchString()) ;
+        mapAction.put("a3", new ActionMatchExact("'i'")) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "?x") ;
+        mapResult.put("a2", "'smith'") ;
+        mapResult.put("a3", "'i'") ;
+        
+        match("regex(str(?x) , 'smith', 'i')",
+              "regex(str(?a1), ?a2, ?a3)",
+              mapAction, mapResult) ;
+    }
+    
+    
+    public void test_regex_8()
+    {
+        MapAction mapAction = new MapAction() ;
+        //mapAction.put("a1", new ActionMatch
+        mapAction.put("a2", new ActionMatchString()) ;
+        mapAction.put("a3", new ActionMatchExact("'i'")) ;
+        
+        noMatch("regex(?x , 'smith', 'i')",
+                "regex(str(?a1), ?a2, ?a3)",
+                mapAction) ;
+    }
+}
+    
+//    public static void runSomething()
+//    {
+//        runOne(ExprUtils.parse("regex(?x , 'smith')") , ExprUtils.parse("regex(?a1 , ?a2)")) ;
+//        runOne(ExprUtils.parse("regex(?x , 'smith')") , ExprUtils.parse("regex(?a1 , ?a2, ?a3)")) ;
+//        runOne(ExprUtils.parse("regex(?x , 'smith', 'i')") , ExprUtils.parse("regex(?a1 , ?a2, ?a3)")) ;
+//        runOne(ExprUtils.parse("regex(?x , 'smith', 'i')") , ExprUtils.parse("?x + ?y")) ;
+//        
+//        runOne(ExprUtils.parse("regex(str(?x) , 'smith')") , ExprUtils.parse("regex(str(?a1) , ?a2)")) ;
+//        
+//        // Matches but should it?
+//        runOne(ExprUtils.parse("regex(str(?x) , 'smith')") , ExprUtils.parse("regex(?a1 , ?a2)")) ;
+//
+//        // a3 is VarAction
+//        runOne(ExprUtils.parse("regex(str(?x) , 'smith')") , ExprUtils.parse("regex(?a3 , ?a2)")) ;
+//        runOne(ExprUtils.parse("regex(?x , 'smith')") , ExprUtils.parse("regex(str(?a1) , ?a2)")) ;
+//
+//        runOne(ExprUtils.parse("regex(?x , 'smith')") , ExprUtils.parse("regex(<urn:xyz>(?a1) , ?a2)")) ;
+//
+//    }
+//    
+//    
+//    public static void runOne(Expr e, Expr p)
+//    {
+//        System.out.println("Expr:    "+e) ;
+//        System.out.println("Pattern: "+p) ;
+//        
+//        MapAction am = new MapAction() ;
+//        MapResult rm = new MapResult() ;
+//        MapCallout cm = new MapCallout() ;
+//        
+//        am.put("a1", new ActionMatchBind()) ;
+//        am.put("a2", new ActionMatchBind()) ;
+//        am.put("a3", new ActionMatchVar()) ;
+//
+//        cm.put("urn:xyz", new SpecialFunction()) ;
+//        
+//        rm = ExprMatcher.match(e, p, am, cm, rm) ;
+//        if ( rm == null )
+//        {
+//            System.out.println("**** No match") ;
+//            System.out.println() ;
+//            return ;
+//        }
+//        System.out.println("**** Match:") ;
+//        for ( String x : rm.keySet() )
+//        {
+//            Expr exprMatch = rm.get(x) ;
+//            System.out.printf("?%-4s ==>>  %s\n", x, exprMatch) ;
+//        }
+//        System.out.println() ;
+//    }
+//}
+//
+//class SpecialFunction implements FunctionAction
+//{
+//
+//    public boolean match(String fn, List args, MapResult resultMap)
+//    {
+//        System.out.println("Call: "+fn+" "+args) ;
+//        return true ;
+//    }
+//    
+//}
+
+/*
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

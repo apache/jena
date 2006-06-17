@@ -17,8 +17,8 @@ import com.hp.hpl.jena.sdb.util.Pair;
 public class SqlNodeTextVisitor implements SqlNodeVisitor
 {
     // TODO Use .ensureNewLine and .atStartOfLine more
-    private static final String DelimOpen = "[" ;
-    private static final String DelimClose = "]" ;
+    private static final String DelimOpen = "" ;
+    private static final String DelimClose = "" ;
     
     final static boolean closeOnSameLine = true ;
     private IndentedWriter out ;
