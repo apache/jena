@@ -9,15 +9,15 @@ package com.hp.hpl.jena.sdb.test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-// Collect the misc tests together.
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestExprMatch.class,
-    TestPrefixMappingSDB.class,
+@Suite.SuiteClasses( {
+    //SDBTestMisc.class,
+    SDBTestSuite1.class,
+    SDBTestSuite2.class,
 } )
-public class SDBTestMisc
+public class SDBTest
 {
+
 }
 
 /*

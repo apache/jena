@@ -16,8 +16,10 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 
 import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.AllTests;
 
-
+@RunWith(AllTests.class)
 public class SDBTestSuite2 extends TestSuite
 {
     static final String testDirSDB = "testing/" ;
@@ -37,7 +39,7 @@ public class SDBTestSuite2 extends TestSuite
         {
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2",  Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreTriplesNodesMySQL(sdb),
-                                             testDirSDB+"/manifest-sdb.ttl")) ;
+                                             testDirSDB+"manifest-sdb.ttl")) ;
         }
         
         JDBC.loadDriverHSQL() ;

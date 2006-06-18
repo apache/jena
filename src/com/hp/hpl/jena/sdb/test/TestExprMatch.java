@@ -6,37 +6,23 @@
 
 package com.hp.hpl.jena.sdb.test;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import com.hp.hpl.jena.query.util.ExprUtils;
 import com.hp.hpl.jena.sdb.exprmatch.*;
 
-public class TestExprMatch extends TestCase
-{
-    
-    private MapResult match(String expr, String pattern, MapAction aMap, MapResult expected)
-    {
-        MapResult rMap = ExprMatcher.match(expr, pattern, aMap) ; 
-        assertNotNull(rMap) ;
-        if ( expected != null )
-            assertEquals(expected, rMap) ;
-        return rMap ;
-    }
 
-    private void noMatch(String expr, String pattern, MapAction aMap)
-    {
-        MapResult rMap = ExprMatcher.match(expr, pattern, aMap) ; 
-        assertNull(rMap) ;
-    }
-    
+public class TestExprMatch
+{
     // Basic tests
-    public void test_match_0()
+    @Test public void match_0()
     {
         MapAction mapAction = new MapAction() ;
         match("?x", "?a", mapAction, null) ;
     }
     
-    public void test_match_1()
+    @Test public void match_1()
     {
         MapAction mapAction = new MapAction() ;
         MapResult mapResult = new MapResult() ;
@@ -45,7 +31,7 @@ public class TestExprMatch extends TestCase
         match("?x", "?a", mapAction, null) ;
     }
     
-    public void test_match_2()
+    @Test public void match_2()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a", new ActionMatchVar()) ;
@@ -56,7 +42,7 @@ public class TestExprMatch extends TestCase
         match("?x", "?a", mapAction, mapResult) ;
     }
     
-    public void test_match_3()
+    @Test public void match_3()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a", new ActionMatchNoBind()) ;
@@ -66,7 +52,7 @@ public class TestExprMatch extends TestCase
         match("?x", "?a", mapAction, mapResult) ;
     }
     
-    public void test_match_4()
+    @Test public void match_4()
     {
         MapAction mapAction = new MapAction() ;
         MapResult mapResult = new MapResult() ;
@@ -75,13 +61,13 @@ public class TestExprMatch extends TestCase
         match("1", "?a", mapAction, mapResult) ;
     }
     
-    public void test_match_5()
+    @Test public void match_5()
     {
         MapAction mapAction = new MapAction() ;
         noMatch("?a", "1", mapAction) ;
     }
     
-    public void test_struct_1()
+    @Test public void struct_1()
     {
         MapAction mapAction = new MapAction() ;
         MapResult mapResult = new MapResult() ;
@@ -89,7 +75,7 @@ public class TestExprMatch extends TestCase
         match("1+2=3", "(1+2)=3", mapAction, null) ;
     }
     
-    public void test_struct_2()
+    @Test public void struct_2()
     {
         MapAction mapAction = new MapAction() ;
         MapResult mapResult = new MapResult() ;
@@ -97,7 +83,7 @@ public class TestExprMatch extends TestCase
         match("1+2+3", "(1+2)+3", mapAction, null) ;
     }
     
-    public void test_struct_3()
+    @Test public void struct_3()
     {
         MapAction mapAction = new MapAction() ;
         // Different structures.
@@ -105,7 +91,7 @@ public class TestExprMatch extends TestCase
     }
     
     // Comparison tests
-    public void test_cond_1()
+    @Test public void cond_1()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a1", new ActionMatchVar()) ;
@@ -121,7 +107,7 @@ public class TestExprMatch extends TestCase
     }
 
     
-    public void test_cond_2()
+    @Test public void cond_2()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a1", new ActionMatchVar()) ;
@@ -136,7 +122,7 @@ public class TestExprMatch extends TestCase
     
     
     // Regex tests
-    public void test_regex_1()
+    @Test public void regex_1()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a1", new ActionMatchVar()) ;
@@ -151,7 +137,7 @@ public class TestExprMatch extends TestCase
               mapAction, mapResult) ;
     }
     
-    public void test_regex_2()
+    @Test public void regex_2()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a1", new ActionMatchVar()) ;
@@ -163,7 +149,7 @@ public class TestExprMatch extends TestCase
                 mapAction) ;
     }
     
-    public void test_regex_3()
+    @Test public void regex_3()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a1", new ActionMatchVar()) ;
@@ -180,7 +166,7 @@ public class TestExprMatch extends TestCase
               mapAction, mapResult) ;
     }
 
-    public void test_regex_4()
+    @Test public void regex_4()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a1", new ActionMatchVar()) ;
@@ -197,7 +183,7 @@ public class TestExprMatch extends TestCase
               mapAction, mapResult) ;
     }
 
-    public void test_regex_5()
+    @Test public void regex_5()
     {
         MapAction mapAction = new MapAction() ;
         mapAction.put("a1", new ActionMatchVar()) ;
@@ -208,7 +194,7 @@ public class TestExprMatch extends TestCase
                 mapAction) ;
     }
     
-    public void test_regex_6()
+    @Test public void regex_6()
     {
         MapAction mapAction = new MapAction() ;
         //mapAction.put("a1", new ActionMatch
@@ -225,7 +211,7 @@ public class TestExprMatch extends TestCase
               mapAction, mapResult) ;
     }
 
-    public void test_regex_7()
+    @Test public void regex_7()
     {
         MapAction mapAction = new MapAction() ;
         //mapAction.put("a1", new ActionMatch
@@ -243,7 +229,7 @@ public class TestExprMatch extends TestCase
     }
     
     
-    public void test_regex_8()
+    @Test public void regex_8()
     {
         MapAction mapAction = new MapAction() ;
         //mapAction.put("a1", new ActionMatch
@@ -253,6 +239,28 @@ public class TestExprMatch extends TestCase
         noMatch("regex(?x , 'smith', 'i')",
                 "regex(str(?a1), ?a2, ?a3)",
                 mapAction) ;
+    }
+
+    //    //Run JUnit4 tests in a JUnit3 environment
+    //    public static junit.framework.Test suite()
+    //    { 
+    //        return new JUnit4TestAdapter(TestExprMatch.class); 
+    //    }
+        
+        
+        private MapResult match(String expr, String pattern, MapAction aMap, MapResult expected)
+        {
+            MapResult rMap = ExprMatcher.match(expr, pattern, aMap) ; 
+            assertNotNull(rMap) ;
+            if ( expected != null )
+                assertEquals(expected, rMap) ;
+            return rMap ;
+        }
+
+    private void noMatch(String expr, String pattern, MapAction aMap)
+    {
+        MapResult rMap = ExprMatcher.match(expr, pattern, aMap) ; 
+        assertNull(rMap) ;
     }
 }
     

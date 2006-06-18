@@ -28,7 +28,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBase;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.test.TestExprMatch;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 

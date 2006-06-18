@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="lib/jena.jar"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar"/>
 	<classpathentry kind="lib" path="lib/json.jar"/>
-	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.12.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-2.8.jar"/>
@@ -20,5 +19,6 @@
 	<classpathentry kind="lib" path="jdbc/hsqldb.jar"/>
 	<classpathentry kind="lib" path="jdbc/mysql-connector-java-5.0.0-beta-bin.jar"/>
 	<classpathentry sourcepath="arq-src.zip" kind="lib" path="lib/arq.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.1.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

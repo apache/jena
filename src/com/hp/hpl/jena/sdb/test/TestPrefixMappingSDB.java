@@ -6,7 +6,11 @@
 
 package com.hp.hpl.jena.sdb.test;
 
-import junit.framework.TestCase;
+import junit.framework.JUnit4TestAdapter;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.* ;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.graph.PrefixMappingSDB;
@@ -14,33 +18,47 @@ import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
-public class TestPrefixMappingSDB extends TestCase
+public class TestPrefixMappingSDB
 {
     static final String hsql = "jdbc:hsqldb:mem:aname" ;
 
-    SDBConnection sdb = null ;
+    public static junit.framework.Test suite() { 
+        return new JUnit4TestAdapter(TestPrefixMappingSDB.class); 
+    }
     
-    // Cheap and nasty TestSuite initialization
+    static SDBConnection sdb = null ;
+    
+    @BeforeClass
+    public static void setUpClass()
     {
         System.err.println("Not working yet") ;
         JDBC.loadDriverHSQL() ;
         //SDB.init() ;
         sdb = SDBFactory.createConnection(hsql, "sa", "");
     }
+
+    @AfterClass
+    public static void teardownClass()
+    {
+        if ( sdb != null )
+            sdb = null ;
+    }
     
-    public void test_prefix1()
+    
+    
+    @Test public void prefix1()
     {
         PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
     }
     
-    public void test_prefix2()
+    @Test public void prefix2()
     {
         PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
         pmap.setNsPrefix("ex", "http://example/") ;
         assertNotNull(pmap.getNsPrefixURI("ex")) ;
     }
     
-    public void test_prefix3()
+    @Test public void prefix3()
     {
         String uri = "http://example/" ;
         PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
@@ -53,7 +71,7 @@ public class TestPrefixMappingSDB extends TestCase
         assertEquals(uri,x) ;
     }
         
-    public void test_prefix4()
+    @Test public void prefix4()
     {
         String uri = "http://example/" ;
         PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
@@ -62,7 +80,7 @@ public class TestPrefixMappingSDB extends TestCase
         assertEquals(uri, pmap.getNsURIPrefix("http://example/")) ;
     }
         
-    public void test_prefix5()
+    @Test public void prefix5()
     {
         String uri = "http://example/" ;
         PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
@@ -71,7 +89,7 @@ public class TestPrefixMappingSDB extends TestCase
         assertEquals(uri+"foo", pmap.expandPrefix("ex:foo")) ;
     }
 
-    public void test_prefix6()
+    @Test public void prefix6()
     {
         String uri = "http://example/" ;
         PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
@@ -80,7 +98,7 @@ public class TestPrefixMappingSDB extends TestCase
         assertEquals("ex:foo", pmap.qnameFor("http://example/foo")) ;
     }
 
-    public void test_prefix7()
+    @Test public void prefix7()
     {
         String uri1 = "http://example/" ;
         String uri2 = "http://example/ns#" ;

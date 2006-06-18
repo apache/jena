@@ -15,12 +15,21 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 
 import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.AllTests;
 
 
+@RunWith(AllTests.class)
 public class SDBTestSuite1 extends TestSuite
 {
     static final String testDirSDB = "testing/" ;
     
+    // JUnit3 to JUnit4 adapter
+//    public static junit.framework.Test suite() { 
+//        return new JUnit4TestAdapter(SDBTestSuite1.class); 
+//    }
+    
+    // Is there a better way to dynamically build a set of tests?
     static public TestSuite suite() {
         return new SDBTestSuite1();
     }
@@ -29,11 +38,12 @@ public class SDBTestSuite1 extends TestSuite
     {
         super("SDB - Schema 1") ;
         if ( true ) SDBConnection.logSQLExceptions = true ;
+        
         {
             JDBC.loadDriverMySQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreSimpleMySQL(sdb),
-                                             testDirSDB+"/manifest-sdb.ttl")) ;
+                                             testDirSDB+"manifest-sdb.ttl")) ;
         }
         
         JDBC.loadDriverHSQL() ;
@@ -41,7 +51,7 @@ public class SDBTestSuite1 extends TestSuite
             SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb1", "sa", "") ;
             Store store = new StoreSimpleHSQL(sdb) ;
             store.getTableFormatter().format() ;
-            TestSuite ts = QueryTestSDBFactory.make(store, testDirSDB+"/manifest-sdb.ttl") ; 
+            TestSuite ts = QueryTestSDBFactory.make(store, testDirSDB+"manifest-sdb.ttl") ; 
             ts.setName(ts.getName()+"/HSQL-mem") ;
             addTest(ts) ;
         }
