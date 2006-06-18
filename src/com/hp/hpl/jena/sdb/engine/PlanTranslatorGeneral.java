@@ -12,7 +12,7 @@ import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.plan.Transformation;
+import com.hp.hpl.jena.query.engine1.plan.Transformer;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.store.PlanTranslator;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -31,7 +31,7 @@ public class PlanTranslatorGeneral implements PlanTranslator
     public PlanElement queryPlanTranslate(Context context, Query query, Store store, PlanElement planElement)
     {
         PlanToSDB xform = new PlanToSDB(context, query, store, translateOptionals,translateConstraints) ;
-        planElement = Transformation.transform(xform, planElement) ;
+        planElement = Transformer.transform(xform, planElement) ;
         planElement = modify(planElement) ;
         return planElement ;
     }

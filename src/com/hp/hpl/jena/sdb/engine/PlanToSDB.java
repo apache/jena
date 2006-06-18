@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.engine1.plan.PlanOptional;
 import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.util.CollectionUtils;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
@@ -88,36 +89,34 @@ public class PlanToSDB extends TransformCopy
         {
             log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
             // Constraint into block.
-            // Null out the filter.
-            // Check null means "drop" into outer block.
+            return new ConstraintSDB(expr) ; 
             //return null ;
         }
-        
-        
-        
         return super.transform(planElt) ;
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public PlanElement transform(PlanBasicGraphPattern planElt, List newElements)
+    public PlanElement transform(PlanBasicGraphPattern planElt, List newElts)
     { 
-        // Check that the BGP is wholly converted
-        // If so, remove it as it is merely a wrapper.
-        // TODO Need to cope with PlanFilter here
+        List<PlanElement> newElements = (List<PlanElement>)newElts ;
+        // Nulls mean no element anymore (e.g. FILTER that has been absorbed into the SDB part)  
+        CollectionUtils.removeNulls(newElements) ;
+        
+        // Check that the FilteredBGP is wholly converted.
+        // If so, remove this wrapper.
         
         if ( newElements.size() != 1 )
             return planElt.copy(newElements) ; 
         
-        // Loop will be needed.
-        for ( PlanElement e : (List<PlanElement>)newElements )
+        if ( newElements.get(0) instanceof PlanSDB  )
         {
-            if ( ! ( e instanceof PlanSDB ) )
-                // No good
-                return super.transform(planElt, newElements) ;
+            // Good to remove
+            return (PlanSDB)newElements.get(0) ;
         }
         
-        return (PlanSDB)newElements.get(0) ; 
+        // No good
+        return super.transform(planElt, newElements) ;
     }
     
     @Override
