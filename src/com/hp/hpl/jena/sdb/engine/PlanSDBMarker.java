@@ -6,27 +6,19 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import com.hp.hpl.jena.query.core.Constraint;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternalBase;
 
-// carrier class - used to mark a Constraint as acceptable. 
+// carrier class - used to mark something as acceptable to SDB (pending further work) 
 
-public class ConstraintSDB extends PlanElementExternalBase 
+public abstract class PlanSDBMarker extends PlanElementExternalBase 
 {
-    private Constraint constraint ;
-
-    ConstraintSDB(Constraint constraint)
-    {
-        this.constraint = constraint ;
-    }
-    
-    Constraint getConstraint() { return constraint ; }
-
     public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
     {
-        // Not used.
+        LogFactory.getLog(this.getClass()).warn("Attempt to build a placeholder") ;
         return null ;
     } 
 }

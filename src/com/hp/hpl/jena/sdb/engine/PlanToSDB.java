@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -89,7 +90,8 @@ public class PlanToSDB extends TransformCopy
         {
             log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
             // Constraint into block.
-            return new ConstraintSDB(expr) ; 
+            // Later - add the appropriate condition
+            return new PlanSDBConstraint(expr) ; 
             //return null ;
         }
         return super.transform(planElt) ;
@@ -102,6 +104,35 @@ public class PlanToSDB extends TransformCopy
         List<PlanElement> newElements = (List<PlanElement>)newElts ;
         // Nulls mean no element anymore (e.g. FILTER that has been absorbed into the SDB part)  
         CollectionUtils.removeNulls(newElements) ;
+        
+        PlanSDB lastSDB = null ;
+        // Coalesce wrapped objects
+        for ( Iterator<PlanElement> iter = newElements.iterator() ; iter.hasNext() ; )
+        {
+            PlanElement e = iter.next() ;
+            if ( e == null )
+                iter.remove() ;
+            
+            if ( e instanceof PlanSDB )
+            {
+                lastSDB = (PlanSDB)e ;
+                continue ;
+            }
+                
+            if ( e instanceof PlanSDBConstraint )
+            {
+                if ( lastSDB == null )
+                    continue ;
+                
+                lastSDB.getBlock().add(((PlanSDBConstraint)e).get()) ;
+                iter.remove() ;
+                continue ;
+            }
+            if ( e instanceof PlanSDBMarker )
+                log.warn("PlanSDBMArker still present!") ;
+            lastSDB = null ;
+        }
+        
         
         // Check that the FilteredBGP is wholly converted.
         // If so, remove this wrapper.
