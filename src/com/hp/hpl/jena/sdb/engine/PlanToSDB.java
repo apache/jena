@@ -19,7 +19,12 @@ import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
 import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.engine1.plan.PlanOptional;
+import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.sdb.exprmatch.Action;
+import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
+import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
+import com.hp.hpl.jena.sdb.exprmatch.MapResult;
 import com.hp.hpl.jena.sdb.store.Store;
 
 
@@ -56,9 +61,40 @@ public class PlanToSDB extends TransformCopy
         return x ;
     }
     
+    private ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
+                                                 new String[]{ "a1" , "a2" },
+                                                 new Action[]{ new ActionMatchVar() ,
+                                                               new ActionMatchString()}) ;
+    
+    private ExprPattern regex2 = new ExprPattern("regex(?a1, ?a2, 'i')",
+                                                 new String[]{ "a1" , "a2" },
+                                                 new Action[]{ new ActionMatchVar() ,
+                                                               new ActionMatchString()}) ;
+    private ExprPattern regex3 = new ExprPattern("regex(str(?a1), ?a2)",
+                                                 new String[]{ "a1" , "a2" },
+                                                 new Action[]{ new ActionMatchVar() ,
+                                                               new ActionMatchString()}) ;
+    private ExprPattern regex4 = new ExprPattern("regex(str(?a1), ?a2, 'i')",
+                                                 new String[]{ "a1" , "a2" },
+                                                 new Action[]{ new ActionMatchVar() ,
+                                                               new ActionMatchString()}) ;
     @Override
     public PlanElement transform(PlanFilter planElt)
     {
+        Expr expr = planElt.getConstraint().getExpr() ; 
+        MapResult rMap = null ;
+        
+        if ( (rMap = regex1.match(expr)) != null )
+        {
+            log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+            // Constraint into block.
+            // Null out the filter.
+            // Check null means "drop" into outer block.
+            //return null ;
+        }
+        
+        
+        
         return super.transform(planElt) ;
     }
     
