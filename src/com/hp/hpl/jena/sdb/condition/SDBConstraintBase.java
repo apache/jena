@@ -1,29 +1,38 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.condition;
 
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Symbol;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 
-// TODO Merge into ARQ (FmtUtils?), along with Format/Printable
-
-public class Formatter
+public abstract class SDBConstraintBase implements SDBConstraint
 {
-    static String toString(Printable f)
-    { 
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter out = buff.getIndentedWriter() ;
-        f.output(out) ;
-        return buff.toString() ;
+    private Symbol label ;
+    
+    public SDBConstraintBase(String labelStr)
+    {
+        label = new Symbol(labelStr) ;
     }
+    
+    public String getLabel() { return label.toString() ; }
+    
+    public final String asSQL(CompileContext cxt)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        SDBConstraintVisitor v = new SQLCondition(buff.getIndentedWriter(),cxt) ;
+        v.visit(this) ;
+        return buff.asString() ;
+    }
+
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

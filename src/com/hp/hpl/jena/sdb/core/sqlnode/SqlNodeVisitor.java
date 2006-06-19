@@ -1,48 +1,23 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.*;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.util.Pair;
-
-public class SqlProject extends SqlNodeBase1
+public interface SqlNodeVisitor
 {
-    private List<Pair<Node, Column>> cols = null ; 
-    
-    public SqlProject(SqlNode sqlNode)
-    { 
-        super(sqlNode.getAliasName(), sqlNode) ;
-        this.cols = new ArrayList<Pair<Node, Column>>() ; 
-    }
-    
-    public SqlProject(SqlNode sqlNode, List<Pair<Node, Column>> cols)
-    { 
-        super(sqlNode.getAliasName(), sqlNode) ;
-        this.cols = cols ;
-    }
-    
-    @Override
-    public boolean isProject() { return true ; }
-    @Override
-    public SqlProject getProject() { return this ; }
-    
-    @Override 
-    public boolean usesColumn(Column c) { return cols.contains(c) ; }
-
-    public List<Pair<Node, Column>> getCols() { return cols ; }
-
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    public void visit(SqlProject        sqlProject) ;
+    public void visit(SqlRestrict       sqlRestrict) ;
+    public void visit(SqlTable          sqlTable) ;
+    public void visit(SqlJoinInner      sqlJoin) ;
+    public void visit(SqlJoinLeftOuter  sqlJoin) ;
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -11,16 +11,16 @@ import java.util.List;
 
 import com.hp.hpl.jena.sdb.layout2.ValueType;
 
-public class C_NodeType extends CompiledConstraintBase 
+public class C_NodeType extends SDBConstraintBase 
 {
     // Layout2 dependent
     List<ValueType> x = new ArrayList<ValueType>() ;
     
-    public C_NodeType() {}
+    public C_NodeType() { super("NodeType") ; }
     public void addValueType(ValueType vt) { x.add(vt) ; }
     
     // generate SQL like  foo.type in (1,2,3,4)
-    public void visit(CompiledConstraintVisitor visitor) { visitor.visit(this) ; }
+    public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*

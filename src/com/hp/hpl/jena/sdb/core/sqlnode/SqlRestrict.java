@@ -1,21 +1,57 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.core.Column;
+import com.hp.hpl.jena.sdb.core.ConditionList;
 
-// TODO Propagate use of this interface in ARQ.
-public interface Printable
+
+public class SqlRestrict extends SqlNodeBase1
 {
-    public void output(IndentedWriter out) ;
+    private ConditionList conditions = new ConditionList() ;
+    
+    
+    public SqlRestrict(String aliasName, SqlNode sqlNode, ConditionList conditions)
+    { 
+        super(aliasName, sqlNode) ;
+        this.conditions = conditions ;
+    }
+    
+    public SqlRestrict(SqlTable table, ConditionList conditions)
+    { 
+        super(table.getAliasName(), table) ;
+        this.conditions = conditions ;
+    }
+
+    @Override
+    public boolean isRestrict() { return true ; }
+    @Override
+    public SqlRestrict getRestrict() { return this ; }
+
+    public ConditionList getConditions() { return conditions ; }
+//    public void addCondition(Condition cond) { conditions.add(cond) ; }
+//    public 
+    
+    @Override 
+    public boolean usesColumn(Column c)
+    { 
+        // Don't need to test the conditions?
+        return getSubNode().usesColumn(c) ;
+    }
+            
+        
+
+    public void visit(SqlNodeVisitor visitor)
+    { visitor.visit(this) ; }
+
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

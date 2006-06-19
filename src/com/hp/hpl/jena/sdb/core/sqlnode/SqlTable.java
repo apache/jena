@@ -4,7 +4,9 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
+
+import com.hp.hpl.jena.sdb.core.Column;
 
 /** Root of all concrete tables */
 

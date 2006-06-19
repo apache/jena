@@ -6,13 +6,20 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
-public interface CompiledConstraintVisitor
+import com.hp.hpl.jena.sdb.core.CompileContext;
+
+/**
+ * The result of recognizing and translating an ARQ expression.
+ * Still expressed in terms of variables but the operations themselves
+ * reflect SQL.
+ *   
+ * @author Andy Seaborne
+ * @version $Id: CompiledConstraint.java,v 1.1 2006/04/19 17:23:32 andy_seaborne Exp $
+ */
+public interface SDBConstraint
 {
-    public void visit(CompiledConstraint c) ;
-    public void visit(C2 c2) ;
-    public void visit(C1 c1) ;
-    public void visit(C_Node node) ;
-    public void visit(C_NodeType node) ;
+    public String asSQL(CompileContext cxt) ;
+    public void visit(SDBConstraintVisitor visitor) ;
 }
 
 /*

@@ -31,7 +31,7 @@ public class TestPrefixMappingSDB
     @BeforeClass
     public static void setUpClass()
     {
-        System.err.println("Not working yet") ;
+        System.err.println("TestPrefixMappingSDB: Not working yet") ;
         JDBC.loadDriverHSQL() ;
         //SDB.init() ;
         sdb = SDBFactory.createConnection(hsql, "sa", "");

@@ -4,17 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.condition;
 
-
-
-public abstract class SqlNodeBase1 extends SqlNodeBase 
+public interface SDBConstraintVisitor
 {
-    private SqlNode sqlNode ;
-
-    protected SqlNodeBase1(String aliasName, SqlNode sqlNode) { super(aliasName) ; this.sqlNode = sqlNode ; }
-    
-    public SqlNode getSubNode() { return sqlNode ; } 
+    public void visit(SDBConstraint c) ;
+    public void visit(C2 c2) ;
+    public void visit(C1 c1) ;
+    public void visit(C_Node node) ;
+    public void visit(C_NodeType node) ;
 }
 
 /*

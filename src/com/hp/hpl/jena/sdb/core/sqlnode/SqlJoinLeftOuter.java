@@ -1,43 +1,28 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.List;
+import com.hp.hpl.jena.sdb.core.JoinType;
 
-public interface SqlNode extends Printable
+
+public class SqlJoinLeftOuter extends SqlJoin
 {
-    public String         getAliasName() ;
+    public SqlJoinLeftOuter(SqlNode left, SqlNode right)
+    { super(JoinType.LEFT, left, right) ; }
     
-    public boolean        isJoin() ;
-    public SqlJoin        getJoin() ;
+    public SqlJoinLeftOuter(SqlNode left, SqlNode right, String alias)
+    { super(JoinType.LEFT, left, right, alias) ; }
     
-    public boolean        isRestrict() ;                // isSelect is confusing
-    public SqlRestrict    getRestrict() ;
+    public void visit(SqlNodeVisitor visitor) { visitor.visit(this) ; }
     
-    public boolean        isProject() ;
-    public SqlProject     getProject() ;
-    
-    public boolean        isTable() ;                   // isConcrete
-    public SqlTable       getTable() ;
-    
-    // public Collection<SqlTable> tablesInvolved() ;
-    
-    public boolean usesColumn(Column c) ;  // Does this subtree mentioned a column?
-    
-    public List<String> getAnnotations() ;
-    public void addAnnotation(String s) ;
-    public boolean hasAnnotations() ;
-    public boolean hasOneAnnotation() ;
-    
-    public void visit(SqlNodeVisitor visitor) ;
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

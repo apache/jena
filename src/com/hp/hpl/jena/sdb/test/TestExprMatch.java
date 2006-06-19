@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sdb.exprmatch.*;
 
 public class TestExprMatch
 {
-    // Basic tests
+    // ---- Basic tests
     @Test public void match_0()
     {
         MapAction mapAction = new MapAction() ;
@@ -90,7 +90,7 @@ public class TestExprMatch
         noMatch("1+2+3", "1+(2+3)", mapAction) ;
     }
     
-    // Comparison tests
+    // ---- Comparison tests
     @Test public void cond_1()
     {
         MapAction mapAction = new MapAction() ;
@@ -105,7 +105,6 @@ public class TestExprMatch
               "?a1 < ?a2",
               mapAction, mapResult) ;
     }
-
     
     @Test public void cond_2()
     {
@@ -121,7 +120,7 @@ public class TestExprMatch
     }
     
     
-    // Regex tests
+    // ---- Regex tests
     @Test public void regex_1()
     {
         MapAction mapAction = new MapAction() ;

@@ -18,6 +18,7 @@ import com.hp.hpl.jena.query.core.Constraint;
 import com.hp.hpl.jena.query.engine1.QueryEngineUtils;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Printable;
 
 
 /** A unit of SQL execution - a basic pattern, filter clauses and optionals.
@@ -176,7 +177,7 @@ public class Block implements Printable
     @Override
     public String toString()
     {
-        return Formatter.toString(this) ;
+        return FmtUtils.toString(this) ;
     }
 
     public void output(IndentedWriter out)

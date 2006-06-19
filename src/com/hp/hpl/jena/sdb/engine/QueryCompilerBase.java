@@ -22,6 +22,7 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -29,8 +30,10 @@ import com.hp.hpl.jena.sdb.store.Store;
 import static com.hp.hpl.jena.sdb.core.JoinType.* ;
 
 /**
- * Compile a query (in the form of Blocks) for the triple table only layout.
- * Parameterized by encoding of the columns. 
+ * Compile a query (in the form of Blocks).  This is the general part of the
+ * algorithm where optionals are turned into left joins.  It is parameterized
+ * by encoding of the basic patterns.  The different layouts provide that part
+ * of the translation to SQL.
  *  
  * @author Andy Seaborne
  * @version $Id: QueryCompilerBase.java,v 1.1 2006/04/22 13:45:58 andy_seaborne Exp $
@@ -40,7 +43,6 @@ public abstract class QueryCompilerBase implements QueryCompiler
 {
     private static Log log = LogFactory.getLog(QueryCompilerBase.class) ;
     
-    // TODO Generalize with SDBConnection logging.
     public static String  printDivider      = null ;
     public static boolean printBlock        = false ;
     public static boolean printAbstractSQL  = false ;

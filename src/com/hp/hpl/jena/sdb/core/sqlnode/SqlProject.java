@@ -4,22 +4,42 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.condition;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.CompileContext;
+import java.util.*;
 
-/**
- * The result of recognizing and translating an ARQ expression.
- * Still expressed in terms of variables but the operations themselves
- * reflect SQL.
- *   
- * @author Andy Seaborne
- * @version $Id: CompiledConstraint.java,v 1.1 2006/04/19 17:23:32 andy_seaborne Exp $
- */
-public interface CompiledConstraint
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.core.Column;
+import com.hp.hpl.jena.sdb.util.Pair;
+
+public class SqlProject extends SqlNodeBase1
 {
-    public String asSQL(CompileContext cxt) ;
-    public void visit(CompiledConstraintVisitor visitor) ;
+    private List<Pair<Node, Column>> cols = null ; 
+    
+    public SqlProject(SqlNode sqlNode)
+    { 
+        super(sqlNode.getAliasName(), sqlNode) ;
+        this.cols = new ArrayList<Pair<Node, Column>>() ; 
+    }
+    
+    public SqlProject(SqlNode sqlNode, List<Pair<Node, Column>> cols)
+    { 
+        super(sqlNode.getAliasName(), sqlNode) ;
+        this.cols = cols ;
+    }
+    
+    @Override
+    public boolean isProject() { return true ; }
+    @Override
+    public SqlProject getProject() { return this ; }
+    
+    @Override 
+    public boolean usesColumn(Column c) { return cols.contains(c) ; }
+
+    public List<Pair<Node, Column>> getCols() { return cols ; }
+
+    public void visit(SqlNodeVisitor visitor)
+    { visitor.visit(this) ; }
 }
 
 /*

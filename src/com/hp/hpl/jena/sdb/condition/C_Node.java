@@ -16,18 +16,19 @@ import com.hp.hpl.jena.graph.Node;
  * @version $Id: C_Node.java,v 1.1 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public class C_Node extends CompiledConstraintBase
+public class C_Node extends SDBConstraintBase
 {
     Node var ;
     
     public C_Node(Node var)
     { 
+        super("Var") ;
         if ( ! var.isVariable() )
-            LogFactory.getLog(CompiledConstraintVisitor.class).fatal("Not a variable: "+var) ;
+            LogFactory.getLog(SDBConstraintVisitor.class).fatal("Not a variable: "+var) ;
         this.var = var ;
     }
     
-    public void visit(CompiledConstraintVisitor visitor) { visitor.visit(this) ; }
+    public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
 
     public Node getVar() { return var ; }
 }

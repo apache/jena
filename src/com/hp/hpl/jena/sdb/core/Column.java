@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+
 
 public class Column implements Item
 {

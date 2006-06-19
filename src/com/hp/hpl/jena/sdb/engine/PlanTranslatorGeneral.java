@@ -17,6 +17,20 @@ import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.store.PlanTranslator;
 import com.hp.hpl.jena.sdb.store.Store;
 
+/** Turns plans, that is a tree of PlanElements, from engine1 into a form
+ * that SDB can process.  Involves checking and extracting those parts that
+ * can be done in SQL.  This results in a new PlanElement tree with specific
+ * elements for calls on the SDB subsystem.  This may be the entire PlanElement
+ * tree (the whole query was translated) or it may rely on engine1 to put
+ * execute some parts and only execute SQL statements directly for specific
+ * parts of the plan in order to keep exact SPARQL semantics.
+ * 
+ * As development proceeeds, more and more of the engine1 tree will
+ * be subsuimed by the SDB susbsystem.     
+ * 
+ * @author Andy Seaborne
+ * @version $Id$
+ */ 
 public class PlanTranslatorGeneral implements PlanTranslator
 {
     private boolean translateOptionals ;

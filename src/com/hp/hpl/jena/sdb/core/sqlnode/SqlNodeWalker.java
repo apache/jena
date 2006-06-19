@@ -4,58 +4,55 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import org.apache.commons.logging.LogFactory;
 
-public abstract class SqlJoin extends SqlNodeBase
+public class SqlNodeWalker 
 {
-    private JoinType joinType ;
-    private SqlNode left ;
-    private SqlNode right ;
-    private ConditionList conditions = new ConditionList() ;
-
-//    public static SqlJoin create(JoinType joinType, SqlNode left, SqlNode right)
-//    { return create(joinType, left, right) ; }
+    public SqlNodeVisitor visitor ;
     
-    public static SqlJoin create(JoinType joinType, SqlNode left, SqlNode right, String alias)
+    public SqlNodeWalker(SqlNodeVisitor visitor) { this.visitor = visitor ; }
+
+    public static void walk(SqlNode node, SqlNodeVisitor visitor)
     {
-        switch (joinType)
-        {
-            case INNER: return new SqlJoinInner(left, right, alias) ;
-            case LEFT: return new SqlJoinLeftOuter(left, right, alias) ;
-        }
-        LogFactory.getLog(SqlJoin.class).warn("Unknown join type: "+joinType.printName()) ;
-        return null ;
+        node.visit(new Walker(visitor)) ;
     }
-
-
-    protected SqlJoin(JoinType joinType, SqlNode left, SqlNode right)
-    { this(joinType, left, right, null) ; }
-
-    protected SqlJoin(JoinType joinType, SqlNode left, SqlNode right, String alias)
-    { 
-        super(alias) ;
-        this.joinType = joinType ;
-        this.left = left ;
-        this.right = right ;
-    } 
     
-    public SqlNode   getLeft()   { return left ; }
-    public SqlNode   getRight()  { return right ; }
-    
-    public JoinType  getJoinType() { return joinType ; }
-    
-    @Override 
-    public boolean   isJoin()             { return true ; }
-    @Override 
-    public SqlJoin   getJoin()            { return this ; }
-    
-    public ConditionList getConditions() { return conditions ; }
-    @Override
-    public boolean usesColumn(Column c)
+    static class Walker implements SqlNodeVisitor
     {
-        return getLeft().usesColumn(c) || getRight().usesColumn(c) ; 
+        public SqlNodeVisitor visitor ;
+        private Walker(SqlNodeVisitor visitor) { this.visitor = visitor ; }
+        
+        public void visit(SqlProject sqlNode)
+        {
+            sqlNode.visit(visitor) ;
+            sqlNode.getSubNode().visit(this) ;
+        }
+    
+        public void visit(SqlRestrict sqlNode)
+        {
+            sqlNode.visit(visitor) ;
+            sqlNode.getSubNode().visit(this) ;
+        }
+    
+        public void visit(SqlTable sqlNode)
+        {
+            sqlNode.visit(visitor) ;
+        }
+    
+        public void visit(SqlJoinInner sqlNode)
+        {
+            sqlNode.visit(visitor) ;
+            sqlNode.getLeft().visit(this) ;
+            sqlNode.getRight().visit(this) ;
+        }
+    
+        public void visit(SqlJoinLeftOuter sqlNode)
+        {
+            sqlNode.visit(visitor) ;
+            sqlNode.getLeft().visit(this) ;
+            sqlNode.getRight().visit(this) ;
+        }
     }
 }
 

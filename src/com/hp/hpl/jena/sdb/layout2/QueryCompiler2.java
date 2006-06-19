@@ -25,6 +25,10 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.store.CompiledConstraint;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
@@ -168,7 +172,9 @@ public class QueryCompiler2 extends QueryCompilerBase
     }
     
     @Override
-    protected SqlNode finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<Constraint> constraints, SqlNode sqlNode, ConditionList delayedConditions)
+    protected SqlNode finishBasicBlock(CompileContext context,
+                                       BasicPattern basicPattern, List<Constraint> constraints,
+                                       SqlNode sqlNode, ConditionList delayedConditions)
     { 
         constants.pop() ;
         // Find new vars in this block - insert the joins to get the values
@@ -317,7 +323,9 @@ public class QueryCompiler2 extends QueryCompilerBase
         return r ;
     }
 
-    private SqlNode extractResults(CompileContext context, List<Node>vars, SqlNode sqlNode, ConditionList delayedConditions)
+    private SqlNode extractResults(CompileContext context,
+                                   List<Node>vars, SqlNode sqlNode,
+                                   ConditionList delayedConditions)
     {
         for ( Node v : vars )
         {
@@ -364,7 +372,8 @@ public class QueryCompiler2 extends QueryCompilerBase
         return r ;
     }
     
-    private void processTripleSlot(CompileContext context, TableTriples triples, ConditionList conditions, Node node, String colName)
+    private void processTripleSlot(CompileContext context, TableTriples triples,
+                                   ConditionList conditions, Node node, String colName)
     {
         Column thisCol = new Column(triples, colName) ;
         
@@ -407,7 +416,9 @@ public class QueryCompiler2 extends QueryCompilerBase
     static private String allocAlias(String aliasBase)  { return  aliasBase+(nodesAliasCount++) ; }
     
     @Override
-    protected QueryIterator assembleResults(ResultSet rs, Binding binding, List<Node> vars, ExecutionContext execCxt) throws SQLException
+    protected QueryIterator assembleResults(ResultSet rs, Binding binding,
+                                            List<Node> vars, ExecutionContext execCxt)
+        throws SQLException
     {
         List<Binding> results = new ArrayList<Binding>() ;
         while(rs.next())

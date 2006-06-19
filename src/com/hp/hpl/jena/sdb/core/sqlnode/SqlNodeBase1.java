@@ -4,17 +4,17 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
-
-import com.hp.hpl.jena.graph.Node;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
 
-public class AliasNodeColumn extends Map2<Node, Column>
+
+public abstract class SqlNodeBase1 extends SqlNodeBase 
 {
-    public Column getByNode(Node node) { return super.getByLeft(node) ; }
+    private SqlNode sqlNode ;
+
+    protected SqlNodeBase1(String aliasName, SqlNode sqlNode) { super(aliasName) ; this.sqlNode = sqlNode ; }
     
-    public Node getByColumn(Column col) { return super.getByRight(col) ; }
-    
+    public SqlNode getSubNode() { return sqlNode ; } 
 }
 
 /*

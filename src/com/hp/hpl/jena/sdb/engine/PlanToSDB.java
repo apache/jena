@@ -21,6 +21,7 @@ import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.engine1.plan.PlanOptional;
 import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.NodeVar;
 import com.hp.hpl.jena.query.util.CollectionUtils;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
@@ -63,23 +64,25 @@ public class PlanToSDB extends TransformCopy
         return x ;
     }
     
-    private ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
-                                                 new String[]{ "a1" , "a2" },
-                                                 new Action[]{ new ActionMatchVar() ,
-                                                               new ActionMatchString()}) ;
+    // --- regex : testing a term (in a variable)
+    private static ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
+                                                        new String[]{ "a1" , "a2" },
+                                                        new Action[]{ new ActionMatchVar() ,
+                                                                      new ActionMatchString()}) ;
     
-    private ExprPattern regex2 = new ExprPattern("regex(?a1, ?a2, 'i')",
-                                                 new String[]{ "a1" , "a2" },
-                                                 new Action[]{ new ActionMatchVar() ,
-                                                               new ActionMatchString()}) ;
-    private ExprPattern regex3 = new ExprPattern("regex(str(?a1), ?a2)",
-                                                 new String[]{ "a1" , "a2" },
-                                                 new Action[]{ new ActionMatchVar() ,
-                                                               new ActionMatchString()}) ;
-    private ExprPattern regex4 = new ExprPattern("regex(str(?a1), ?a2, 'i')",
-                                                 new String[]{ "a1" , "a2" },
-                                                 new Action[]{ new ActionMatchVar() ,
-                                                               new ActionMatchString()}) ;
+    private static ExprPattern regex2 = new ExprPattern("regex(?a1, ?a2, 'i')",
+                                                        new String[]{ "a1" , "a2" },
+                                                        new Action[]{ new ActionMatchVar() ,
+                                                                      new ActionMatchString()}) ;
+    // --- regex : testing the lexical form of a term (in a variable)
+    private static ExprPattern regex3 = new ExprPattern("regex(str(?a1), ?a2)",
+                                                        new String[]{ "a1" , "a2" },
+                                                        new Action[]{ new ActionMatchVar() ,
+                                                                      new ActionMatchString()}) ;
+    private static ExprPattern regex4 = new ExprPattern("regex(str(?a1), ?a2, 'i')",
+                                                        new String[]{ "a1" , "a2" },
+                                                        new Action[]{ new ActionMatchVar() ,
+                                                                      new ActionMatchString()}) ;
     @Override
     public PlanElement transform(PlanFilter planElt)
     {
@@ -89,8 +92,15 @@ public class PlanToSDB extends TransformCopy
         if ( (rMap = regex1.match(expr)) != null )
         {
             log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+            NodeVar var = rMap.get("a1").getVar() ;
+            String pattern = rMap.get("a2").getConstant().getString() ;
+            
+            // CompiledConstraint c = new C_Regex(c, pattern) ;
             // Constraint into block.
             // Later - add the appropriate condition
+            // Not null
+            // 
+            
             return new PlanSDBConstraint(expr) ; 
             //return null ;
         }

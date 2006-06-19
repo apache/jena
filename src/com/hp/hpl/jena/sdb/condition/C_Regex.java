@@ -9,14 +9,14 @@ package com.hp.hpl.jena.sdb.condition;
 public class C_Regex extends C2
 {
     
-    protected C_Regex(CompiledConstraint left, CompiledConstraint right)
+    protected C_Regex(SDBConstraint left, SDBConstraint right)
     {
-        // Need to make a paramter of the compilation
+        // Need to make a parameter of the compilation
         super("regexp", left, right) ;
     }
     
     @Override
-    public void visit(CompiledConstraintVisitor visitor) { visitor.visit(this) ; }
+    public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*

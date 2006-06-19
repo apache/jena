@@ -41,7 +41,6 @@ public class ExprMatcher
             pattern.visit(m) ;
         } catch (NoExprMatch ex)
         { 
-            System.out.println("NoMatch: "+ex.getMessage()) ;
             return null ;
         } 
         return mapResult ;

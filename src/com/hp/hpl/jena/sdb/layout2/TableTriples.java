@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.core.SqlTable;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 /**
  * @author Andy Seaborne

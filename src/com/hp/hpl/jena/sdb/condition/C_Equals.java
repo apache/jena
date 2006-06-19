@@ -8,11 +8,11 @@ package com.hp.hpl.jena.sdb.condition;
 
 public class C_Equals extends C2
 {
-    protected C_Equals(CompiledConstraint left, CompiledConstraint right)
+    protected C_Equals(SDBConstraint left, SDBConstraint right)
     { super("=", left, right) ; }
 
     @Override
-    public void visit(CompiledConstraintVisitor visitor) { visitor.visit(this) ; }
+    public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*

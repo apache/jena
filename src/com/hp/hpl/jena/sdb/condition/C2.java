@@ -6,24 +6,22 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
-public abstract class C2 extends CompiledConstraintBase
+public abstract class C2 extends SDBConstraintBase
 {
-    private String opSymbol ;
-    private CompiledConstraint left ;
-    private CompiledConstraint right ;
+    private SDBConstraint left ;
+    private SDBConstraint right ;
 
-    protected C2(String opSymbol, CompiledConstraint left, CompiledConstraint right)
+    protected C2(String label, SDBConstraint left, SDBConstraint right)
     {
-        this.opSymbol = opSymbol ;
+        super(label) ;
         this.left = left ;
         this.right = right ;
     }
     
-    public abstract void visit(CompiledConstraintVisitor visitor) ;
+    public abstract void visit(SDBConstraintVisitor visitor) ;
 
-    public String getOpSymbol()           { return opSymbol ; }
-    public CompiledConstraint getLeft()   { return left ; }
-    public CompiledConstraint getRight()  { return right ; }
+    public SDBConstraint getLeft()   { return left ; }
+    public SDBConstraint getRight()  { return right ; }
 }
 
 /*

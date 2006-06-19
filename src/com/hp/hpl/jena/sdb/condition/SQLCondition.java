@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sdb.core.CompileContext;
 
 import org.apache.commons.logging.LogFactory;
 
-public class SQLCondition implements CompiledConstraintVisitor
+public class SQLCondition implements SDBConstraintVisitor
 {
     private IndentedWriter out ;
     private CompileContext cxt ;
@@ -27,7 +27,7 @@ public class SQLCondition implements CompiledConstraintVisitor
         out.print("( ") ;
         c2.getLeft().visit(this) ;
         out.print(") ") ;
-        out.print(c2.getOpSymbol()) ;
+        out.print(c2.getLabel()) ;
         out.print(" ( ") ;
         c2.getRight().visit(this) ;
         out.print(")") ;
@@ -35,11 +35,11 @@ public class SQLCondition implements CompiledConstraintVisitor
 
     public void visit(C_Node node)
     {
-        out.print(cxt.getAlias(node.getVar()).asString()) ;
+        //out.print(cxt.getAlias(node.getVar()).asString()) ;
     }
 
     
-    public void visit(CompiledConstraint c)
+    public void visit(SDBConstraint c)
     {
         LogFactory.getLog(c.getClass()).warn("Not implemented") ;
     }

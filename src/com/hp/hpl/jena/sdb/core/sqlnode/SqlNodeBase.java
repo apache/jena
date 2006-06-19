@@ -4,13 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.*;
 
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sdb.core.Column;
 
 
 public abstract class SqlNodeBase implements SqlNode

@@ -4,11 +4,39 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import java.util.List;
 
-public enum VarScope {
-    LIVE, MAYBE_LIVE, NONE
+import com.hp.hpl.jena.query.util.Printable;
+import com.hp.hpl.jena.sdb.core.Column;
+
+public interface SqlNode extends Printable
+{
+    public String         getAliasName() ;
+    
+    public boolean        isJoin() ;
+    public SqlJoin        getJoin() ;
+    
+    public boolean        isRestrict() ;                // isSelect is confusing
+    public SqlRestrict    getRestrict() ;
+    
+    public boolean        isProject() ;
+    public SqlProject     getProject() ;
+    
+    public boolean        isTable() ;                   // isConcrete
+    public SqlTable       getTable() ;
+    
+    // public Collection<SqlTable> tablesInvolved() ;
+    
+    public boolean usesColumn(Column c) ;  // Does this subtree mentioned a column?
+    
+    public List<String> getAnnotations() ;
+    public void addAnnotation(String s) ;
+    public boolean hasAnnotations() ;
+    public boolean hasOneAnnotation() ;
+    
+    public void visit(SqlNodeVisitor visitor) ;
 }
 
 /*
