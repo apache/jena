@@ -13,8 +13,8 @@ import java.util.List;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.core.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.layout1.StoreRDB;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.shared.Lock;
 
 

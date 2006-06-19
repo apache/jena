@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.shared;
 
 import com.hp.hpl.jena.query.QueryException;
 
