@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.44 $
+ * Revision           $Revision: 1.45 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:34 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-06-19 17:51:27 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.44 2006-03-22 13:52:34 andy_seaborne Exp $
+ * @version CVS $Id: schemagen.java,v 1.45 2006-06-19 17:51:27 der Exp $
  */
 public class schemagen {
     // Constants
@@ -1363,7 +1363,14 @@ public class schemagen {
             }
 
             if (m_prop != null  &&  m_root.hasProperty( m_prop )) {
-                return m_root.getRequiredProperty( m_prop ).getString();
+                // Was: (fixed der 19/6/06)
+                // return m_root.getRequiredProperty( m_prop ).getString();
+                RDFNode val = m_root.getRequiredProperty( m_prop ).getObject();
+                if (val instanceof Literal) {
+                    return ((Literal)val).getLexicalForm();
+                } else {
+                    return ((Resource)val).getURI().toString();
+                }
             }
 
             // not set
