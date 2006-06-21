@@ -4,19 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-public class Constant implements Item
+import java.util.Collection;
+
+public interface SqlExpr
 {
-    private String str ;
-    
-    // Form already encoded for this schema
-    public Constant(String str) { this.str = str ; }
-    
-    public String  asString()    { return str ; }
-    public boolean isConstant()  { return true ; }
-    public boolean isColumn()    { return false ; }
-    public Column  asColumn()    { return null ; }
+    public abstract void visit(SqlExprVisitor visitor) ;
+    public String asSQL() ;
+    public Collection<SqlColumn> getColumnsNeeded() ;
 }
 
 /*

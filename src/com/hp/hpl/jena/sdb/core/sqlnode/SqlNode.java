@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.List;
 
 import com.hp.hpl.jena.query.util.Printable;
-import com.hp.hpl.jena.sdb.core.Column;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 public interface SqlNode extends Printable
 {
@@ -29,7 +29,7 @@ public interface SqlNode extends Printable
     
     // public Collection<SqlTable> tablesInvolved() ;
     
-    public boolean usesColumn(Column c) ;  // Does this subtree mentioned a column?
+    public boolean usesColumn(SqlColumn c) ;  // Does this subtree mentioned a column?
     
     public List<String> getAnnotations() ;
     public void addAnnotation(String s) ;

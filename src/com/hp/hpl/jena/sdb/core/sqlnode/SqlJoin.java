@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.Column;
-import com.hp.hpl.jena.sdb.core.ConditionList;
 import com.hp.hpl.jena.sdb.core.JoinType;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 
 import org.apache.commons.logging.LogFactory;
 
@@ -17,7 +17,7 @@ public abstract class SqlJoin extends SqlNodeBase
     private JoinType joinType ;
     private SqlNode left ;
     private SqlNode right ;
-    private ConditionList conditions = new ConditionList() ;
+    private SqlExprList conditions = new SqlExprList() ;
 
 //    public static SqlJoin create(JoinType joinType, SqlNode left, SqlNode right)
 //    { return create(joinType, left, right) ; }
@@ -55,9 +55,9 @@ public abstract class SqlJoin extends SqlNodeBase
     @Override 
     public SqlJoin   getJoin()            { return this ; }
     
-    public ConditionList getConditions() { return conditions ; }
+    public SqlExprList getConditions() { return conditions ; }
     @Override
-    public boolean usesColumn(Column c)
+    public boolean usesColumn(SqlColumn c)
     {
         return getLeft().usesColumn(c) || getRight().usesColumn(c) ; 
     }

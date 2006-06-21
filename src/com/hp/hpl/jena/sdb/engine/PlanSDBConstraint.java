@@ -10,8 +10,13 @@ import com.hp.hpl.jena.query.core.Constraint;
 
 public class PlanSDBConstraint extends PlanSDBMarker
 {
-    Constraint constraint ;
-    PlanSDBConstraint(Constraint constraint) { this.constraint = constraint ; }
+    // A note that this constraint is checked.
+    private Constraint constraint ;
+    
+    PlanSDBConstraint(Constraint constraint)
+    { 
+        this.constraint = constraint ;
+    }
     
     Constraint get() { return constraint ; }
 }

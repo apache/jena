@@ -6,22 +6,22 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.Column;
-import com.hp.hpl.jena.sdb.core.ConditionList;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 
 
 public class SqlRestrict extends SqlNodeBase1
 {
-    private ConditionList conditions = new ConditionList() ;
+    private SqlExprList conditions = new SqlExprList() ;
     
     
-    public SqlRestrict(String aliasName, SqlNode sqlNode, ConditionList conditions)
+    public SqlRestrict(String aliasName, SqlNode sqlNode, SqlExprList conditions)
     { 
         super(aliasName, sqlNode) ;
         this.conditions = conditions ;
     }
     
-    public SqlRestrict(SqlTable table, ConditionList conditions)
+    public SqlRestrict(SqlTable table, SqlExprList conditions)
     { 
         super(table.getAliasName(), table) ;
         this.conditions = conditions ;
@@ -32,12 +32,12 @@ public class SqlRestrict extends SqlNodeBase1
     @Override
     public SqlRestrict getRestrict() { return this ; }
 
-    public ConditionList getConditions() { return conditions ; }
+    public SqlExprList getConditions() { return conditions ; }
 //    public void addCondition(Condition cond) { conditions.add(cond) ; }
 //    public 
     
     @Override 
-    public boolean usesColumn(Column c)
+    public boolean usesColumn(SqlColumn c)
     { 
         // Don't need to test the conditions?
         return getSubNode().usesColumn(c) ;

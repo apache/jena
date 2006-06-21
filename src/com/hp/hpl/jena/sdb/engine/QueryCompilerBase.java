@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.engine;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -22,6 +23,10 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
@@ -107,7 +112,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
     protected abstract SqlNode  finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode) ;
     
     protected abstract SqlNode  startBasicBlock(CompileContext context, BasicPattern basicPattern, SqlNode sqlNode) ;
-    protected abstract SqlNode  finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<Constraint> constraints, SqlNode sqlNode, ConditionList delayedConditions) ;
+    protected abstract SqlNode  finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<Constraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions) ;
 
     protected SqlNode  match(CompileContext context, BasicPattern triples) { return null ; }
     protected abstract SqlNode  match(CompileContext context, Triple triple) ;
@@ -116,22 +121,25 @@ public abstract class QueryCompilerBase implements QueryCompiler
     {
         SqlNode sqlNode = startQueryBlock(context, block, null) ;
         
-        ConditionList delayedConditions = new ConditionList() ;
+        SqlExprList delayedConditions = new SqlExprList() ;
         
         sqlNode = blockToTable(context, block, sqlNode, delayedConditions, 0) ;
         
         if ( delayedConditions.size() != 0 )
         {
             int count = 0 ;
-            for ( Condition c : delayedConditions )
+            for ( SqlExpr c : delayedConditions )
+            {
+                count++ ;
                 log.warn("Unhandled condition ("+count+"): "+c) ;
+            }
         }
         
         sqlNode = finishQueryBlock(context, block, sqlNode) ;
         return sqlNode ;
     }
     
-    private SqlNode blockToTable(CompileContext context, Block block, SqlNode sqlNode, ConditionList delayedConditions, int levelCount)
+    private SqlNode blockToTable(CompileContext context, Block block, SqlNode sqlNode, SqlExprList delayedConditions, int levelCount)
     {
         sqlNode = basicPatternJoin(context, block, sqlNode, delayedConditions) ;
         
@@ -146,7 +154,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
         return sNode2 ;
     }
     
-    private SqlNode basicPatternJoin(CompileContext context, Block block, SqlNode sqlNode, ConditionList delayedConditions)
+    private SqlNode basicPatternJoin(CompileContext context, Block block, SqlNode sqlNode, SqlExprList delayedConditions)
     {
         if ( block.getBasicPattern().size() == 0 )
         {
@@ -174,20 +182,20 @@ public abstract class QueryCompilerBase implements QueryCompiler
                 sqlNode = innerJoin(context, sqlNode, sNode, delayedConditions) ;
         }
 
-        sqlNode = finishBasicBlock(context, block.getBasicPattern(), block.getBlockConstraints(), sqlNode, delayedConditions) ;
+        sqlNode = finishBasicBlock(context, block.getBasicPattern(), block.getConstraints(), sqlNode, delayedConditions) ;
 
         // Conditions
         
         return sqlNode ;
     }
     
-    protected SqlNode innerJoin(CompileContext context, SqlNode left, SqlNode right, ConditionList delayedConditions)
+    protected SqlNode innerJoin(CompileContext context, SqlNode left, SqlNode right, SqlExprList delayedConditions)
     {
         // Uses the fact that inner joins never contain outer joins (block = BP*, opt(BP)*) 
         return join(context, left, right, INNER, delayedConditions) ; 
     }
     
-    protected SqlNode leftJoin(CompileContext context, SqlNode base, List<SqlNode> opts, ConditionList delayedConditions)
+    protected SqlNode leftJoin(CompileContext context, SqlNode base, List<SqlNode> opts, SqlExprList delayedConditions)
     {
         if ( opts.size() == 0 )
             return base ;
@@ -215,7 +223,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
     }
     
     private SqlNode join(CompileContext context, SqlNode left, SqlNode right,
-                         JoinType joinType, ConditionList delayedConditions)
+                         JoinType joinType, SqlExprList delayedConditions)
     {
         if ( false )
         {
@@ -231,7 +239,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
             // Case : first table in "join"
             return right ;
         
-        ConditionList conditions = new ConditionList() ;
+        SqlExprList conditions = new SqlExprList() ;
         
         // Flatten some cases
         if ( left.isRestrict() )
@@ -263,8 +271,8 @@ public abstract class QueryCompilerBase implements QueryCompiler
                 else
                 {
                     // But if a Left Join, find spanning conditions only
-                    ConditionList c1 = new ConditionList() ;    // Spanning - move to LJ
-                    ConditionList c2 = new ConditionList() ;    // Non-spanning - leave alone
+                    SqlExprList c1 = new SqlExprList() ;    // Spanning - move to LJ
+                    SqlExprList c2 = new SqlExprList() ;    // Non-spanning - leave alone
                     // There should be no conditions not involving the left or right (the restricted table)
                     // (Not sure about this - may be a variable in the table that is not in the left (i.e. not spanning)  
                     assignConditions(left, right, right.getRestrict().getConditions(), c2, c2, c1, null) ;
@@ -277,7 +285,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
             }
         }
         
-        // Put any delayed conditions into the connditions to be considered.
+        // Put any delayed conditions into the conditions to be considered.
         if ( delayedConditions != null )
         {
             conditions.addAll(delayedConditions) ;
@@ -295,53 +303,37 @@ public abstract class QueryCompilerBase implements QueryCompiler
     // involves columns from the right only, involves columns of left and right (it's a join
     // join condition) or "other" which means it uses a column not in the left or right and
     // so will be done elsewhere.
-    private void assignConditions(SqlNode left, SqlNode right, ConditionList conditions,
-                                  ConditionList leftConditions,
-                                  ConditionList rightConditions, // Not used different : rename to "localConditions"
-                                  ConditionList spanningConditions,
-                                  ConditionList nonSpanningConditions)
+    private void assignConditions(SqlNode left, SqlNode right, SqlExprList conditions,
+                                  SqlExprList leftConditions,
+                                  SqlExprList rightConditions,
+                                  SqlExprList spanningConditions,
+                                  SqlExprList nonSpanningConditions)
     {
-        for ( Condition c : conditions )
+        for ( SqlExpr c : conditions )
         {
-            // Set<Column> s = c.getColumnsNeeded() 
+            Collection<SqlColumn> s = c.getColumnsNeeded() ;
+            boolean usedLeft = false ;
+            boolean usedRight = false ;
             
-            Column colLeft  = null ;
-            if ( c.getLeft() != null )
-                colLeft = c.getLeft().asColumn() ;
-            
-            Column colRight = null ;
-            if ( c.getRight() != null )
-                colRight = c.getRight().asColumn() ;
-            
-            if ( colLeft == null && colRight == null )
+            for ( SqlColumn col : s )
             {
-                log.warn("Condition does not involve left or right: "+c) ;
-                nonSpanningConditions.add(c) ;
-                continue ;
-            }
-             
-            if ( colLeft == null )
-            {
-                rightConditions.add(c) ;
-                continue ;
+                usedLeft  = usedLeft || left.usesColumn(col) ;
+                usedRight = usedRight || right.usesColumn(col) ;
             }
 
-            if ( colRight == null )
+            if ( usedLeft && ! usedRight )
             {
                 leftConditions.add(c) ;
                 continue ;
             }
-            
-            boolean colLeftScope =  ( left.usesColumn(colLeft)  || right.usesColumn(colLeft) ) ; 
-            boolean colRightScope = ( left.usesColumn(colRight) || right.usesColumn(colRight) ) ;
-
-            if ( colLeftScope && colRightScope )
+        
+            if ( !usedLeft && usedRight )
             {
-                if ( ! ( c instanceof ConditionEqual ) )
-                    log.warn("Non-equality condition in spanning conditions") ;
-                spanningConditions.add(c) ;
+                rightConditions.add(c) ;
+                continue ;
             }
-            else
+            
+            if ( !usedLeft && !usedRight )
             {
                 if( nonSpanningConditions == null )
                 {
@@ -350,6 +342,55 @@ public abstract class QueryCompilerBase implements QueryCompiler
                 }
                 nonSpanningConditions.add(c) ;
             }
+            
+            // usedLeft and usedRight
+            spanningConditions.add(c) ;
+            
+//            SqlColumn colLeft  = null ;
+//            if ( c.getLeft() != null )
+//                colLeft = c.getLeft().asColumn() ;
+//            
+//            SqlColumn colRight = null ;
+//            if ( c.getRight() != null )
+//                colRight = c.getRight().asColumn() ;
+//            
+//            if ( colLeft == null && colRight == null )
+//            {
+//                log.warn("Condition does not involve left or right: "+c) ;
+//                nonSpanningConditions.add(c) ;
+//                continue ;
+//            }
+//             
+//            if ( colLeft == null )
+//            {
+//                rightConditions.add(c) ;
+//                continue ;
+//            }
+//
+//            if ( colRight == null )
+//            {
+//                leftConditions.add(c) ;
+//                continue ;
+//            }
+//            
+//            boolean colLeftScope =  ( left.usesColumn(colLeft)  || right.usesColumn(colLeft) ) ; 
+//            boolean colRightScope = ( left.usesColumn(colRight) || right.usesColumn(colRight) ) ;
+//
+//            if ( colLeftScope && colRightScope )
+//            {
+//                if ( ! ( c instanceof S_Equal ) )
+//                    log.warn("Non-equality condition in spanning conditions") ;
+//                spanningConditions.add(c) ;
+//            }
+//            else
+//            {
+//                if( nonSpanningConditions == null )
+//                {
+//                    log.warn("Condition involves something else unexpectedly: "+c) ;
+//                    continue ;
+//                }
+//                nonSpanningConditions.add(c) ;
+//            }
         }
     }
     

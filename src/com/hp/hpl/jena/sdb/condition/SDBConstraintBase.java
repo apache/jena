@@ -6,9 +6,12 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
+import java.util.Collection;
+
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.Var;
 
 public abstract class SDBConstraintBase implements SDBConstraint
 {
@@ -25,10 +28,16 @@ public abstract class SDBConstraintBase implements SDBConstraint
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         SDBConstraintVisitor v = new SQLCondition(buff.getIndentedWriter(),cxt) ;
-        v.visit(this) ;
+        this.visit(v) ;
         return buff.asString() ;
     }
 
+    final
+    public void varsMentioned(Collection<Var> acc)
+    {
+        SDBConstraintVisitor visitor = new VarsMentionVisitor(acc) ;
+        this.visit(visitor) ;
+    }
 }
 
 /*

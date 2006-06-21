@@ -8,10 +8,9 @@ package com.hp.hpl.jena.sdb.condition;
 
 public interface SDBConstraintVisitor
 {
-    public void visit(SDBConstraint c) ;
     public void visit(C2 c2) ;
     public void visit(C1 c1) ;
-    public void visit(C_Node node) ;
+    public void visit(C_Var node) ;
     public void visit(C_NodeType node) ;
 }
 

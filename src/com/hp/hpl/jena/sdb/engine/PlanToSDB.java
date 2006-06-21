@@ -21,9 +21,12 @@ import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.engine1.plan.PlanOptional;
 import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.expr.NodeVar;
 import com.hp.hpl.jena.query.util.CollectionUtils;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.sdb.condition.C_Regex;
+import com.hp.hpl.jena.sdb.condition.C_Var;
+import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.sdb.core.Var;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
@@ -92,17 +95,13 @@ public class PlanToSDB extends TransformCopy
         if ( (rMap = regex1.match(expr)) != null )
         {
             log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            NodeVar var = rMap.get("a1").getVar() ;
+            
+            // TODO - think about whether we should use a
+            // parallel class hierarchy of constraints (e.g. vars extracted).
+            Var var = new Var(rMap.get("a1").getVar()) ;
             String pattern = rMap.get("a2").getConstant().getString() ;
-            
-            // CompiledConstraint c = new C_Regex(c, pattern) ;
-            // Constraint into block.
-            // Later - add the appropriate condition
-            // Not null
-            // 
-            
+            SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
             return new PlanSDBConstraint(expr) ; 
-            //return null ;
         }
         return super.transform(planElt) ;
     }

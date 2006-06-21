@@ -33,7 +33,7 @@ public class Block implements Printable
     private static Log log = LogFactory.getLog(Block.class) ;
     
     List<Node> patternVars = new ArrayList<Node>() ;
-    List<Node> filterVars  = new ArrayList<Node>() ;
+    List<Var> filterVars   = new ArrayList<Var>() ;
     List<Node> projectVars = null ;
     
     BasicPattern basicPattern = new BasicPattern() ;
@@ -58,17 +58,11 @@ public class Block implements Printable
     public void add(Triple triple)
     { basicPattern.add(triple) ; accVar(patternVars, triple) ; }
 
-    // Accumulate constraints in this block (not optionals)
+    // Accumulate constraints we understand for this block basic patterns
     public void add(Constraint constraint)
     { 
-//        Condition condition = ConditionFactory.make(constraint) ;
-//        if ( condition == null )
-//        {
-//            log.warn("Can't translate '"+constraint+"' to an SQL-based condition") ;
-//            throw new SDBNotImplemented("Constraint: "+constraint) ;
-//        }
-        blockConstraints.add(constraint.getExpr()) ;
-        constraint.getExpr().varsMentioned(filterVars) ;
+        blockConstraints.add(constraint) ;
+        constraint.varsMentioned(filterVars) ;
     }
     
     // Accumulate optionals
@@ -77,13 +71,13 @@ public class Block implements Printable
     
     // Access 
     
-    public BasicPattern      getBasicPattern()      { return basicPattern ; }
-    public List<Block>       getOptionals()         { return blockOptionals ; }
-    public List<Constraint>  getBlockConstraints()  { return blockConstraints ; }
-    public List<Node>        getPatternVars()       { return patternVars ; }
-    public List<Node>        getFilterVars()        { return filterVars ; }
-    public List<Node>        getProjectVars()       { return projectVars ; }
-    public void              addProjectVar(Node var)             
+    public BasicPattern        getBasicPattern()      { return basicPattern ; }
+    public List<Block>         getOptionals()         { return blockOptionals ; }
+    public List<Constraint> getConstraints()          { return blockConstraints ; }
+    public List<Node>          getPatternVars()       { return patternVars ; }
+    public List<Var>           getFilterVars()        { return filterVars ; }
+    public List<Node>          getProjectVars()       { return projectVars ; }
+    public void                addProjectVar(Node var)             
     { 
         if ( projectVars == null )
             projectVars = new ArrayList<Node>() ;

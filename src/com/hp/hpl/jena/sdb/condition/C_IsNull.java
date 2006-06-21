@@ -6,12 +6,16 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
-public class C_IsNull extends SDBConstraintBase
+public class C_IsNull extends C1
 {
+    public C_IsNull(SDBConstraint x)
+    {
+        super("isNull", x) ;
+    }
 
-    public C_IsNull() { super("isNull") ; }
-    
-    public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
+    @Override
+    public void visit(SDBConstraintVisitor visitor)
+    { visitor.visit(this) ; }
 }
 
 /*

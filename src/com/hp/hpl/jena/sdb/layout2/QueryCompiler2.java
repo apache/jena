@@ -25,6 +25,7 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
@@ -59,10 +60,10 @@ public class QueryCompiler2 extends QueryCompilerBase
     Stack<List<Node>> boundVars = null ;
 
     // Used to record the constants in each block
-    Stack<Map<Node, Column>> constants = null ;
+    Stack<Map<Node, SqlColumn>> constants = null ;
     
     // Record projection vars.  err - why isn't this a Map?
-    List<Pair<Node, Column>> projectVarCols = null ; 
+    List<Pair<Node, SqlColumn>> projectVarCols = null ; 
     
     public QueryCompiler2() { }
     
@@ -83,8 +84,8 @@ public class QueryCompiler2 extends QueryCompilerBase
     protected SqlNode startQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
     {
         boundVars = new Stack<List<Node>>() ;
-        constants = new Stack<Map<Node, Column>>() ;
-        projectVarCols = new ArrayList<Pair<Node, Column>>() ;
+        constants = new Stack<Map<Node, SqlColumn>>() ;
+        projectVarCols = new ArrayList<Pair<Node, SqlColumn>>() ;
         return sqlNode ;
     }
     
@@ -104,10 +105,10 @@ public class QueryCompiler2 extends QueryCompilerBase
         return n ;
     }
         
-    private SqlNode makeProject(List<Pair<Node, Column>>cols, SqlNode sqlNode, List<Node> project)
+    private SqlNode makeProject(List<Pair<Node, SqlColumn>>cols, SqlNode sqlNode, List<Node> project)
     {
-        List<Pair<Node, Column>> projCol = new ArrayList<Pair<Node, Column>>() ;
-        for ( Pair<Node, Column> p : cols )
+        List<Pair<Node, SqlColumn>> projCol = new ArrayList<Pair<Node, SqlColumn>>() ;
+        for ( Pair<Node, SqlColumn> p : cols )
         {
             if ( ! p.getLeft().isVariable() )
             {
@@ -125,21 +126,21 @@ public class QueryCompiler2 extends QueryCompilerBase
             
             String n = p.car().getName() ;
             Node nLex = Node.createVariable(n+"$lex") ;
-            Column cLex = new Column(p.cdr().getTable(), "lex") ;
+            SqlColumn cLex = new SqlColumn(p.cdr().getTable(), "lex") ;
 
             Node nDatatype = Node.createVariable(n+"$datatype") ;
-            Column cDatatype = new Column(p.cdr().getTable(), "datatype") ;
+            SqlColumn cDatatype = new SqlColumn(p.cdr().getTable(), "datatype") ;
 
             Node nLang = Node.createVariable(n+"$lang") ;
-            Column cLang = new Column(p.cdr().getTable(), "lang") ;
+            SqlColumn cLang = new SqlColumn(p.cdr().getTable(), "lang") ;
             
             Node nType = Node.createVariable(n+"$type") ;
-            Column cType = new Column(p.cdr().getTable(), "type") ;
+            SqlColumn cType = new SqlColumn(p.cdr().getTable(), "type") ;
 
-            projCol.add(new Pair<Node, Column>(nLex,  cLex)) ; 
-            projCol.add(new Pair<Node, Column>(nDatatype, cDatatype)) ;
-            projCol.add(new Pair<Node, Column>(nLang, cLang)) ;
-            projCol.add(new Pair<Node, Column>(nType, cType)) ;
+            projCol.add(new Pair<Node, SqlColumn>(nLex,  cLex)) ; 
+            projCol.add(new Pair<Node, SqlColumn>(nDatatype, cDatatype)) ;
+            projCol.add(new Pair<Node, SqlColumn>(nLang, cLang)) ;
+            projCol.add(new Pair<Node, SqlColumn>(nType, cType)) ;
         }
         
         // Needs further refinement
@@ -151,7 +152,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     protected SqlNode  startBasicBlock(CompileContext context, BasicPattern basicPattern, SqlNode sqlNode)
     { 
         boundVars.push(new ArrayList<Node>()) ;
-        constants.push(new HashMap<Node, Column>()) ;
+        constants.push(new HashMap<Node, SqlColumn>()) ;
         List<Node>consts = new ArrayList<Node>() ;
         
         for ( Triple t : basicPattern )
@@ -174,7 +175,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     @Override
     protected SqlNode finishBasicBlock(CompileContext context,
                                        BasicPattern basicPattern, List<Constraint> constraints,
-                                       SqlNode sqlNode, ConditionList delayedConditions)
+                                       SqlNode sqlNode, SqlExprList delayedConditions)
     { 
         constants.pop() ;
         // Find new vars in this block - insert the joins to get the values
@@ -188,9 +189,9 @@ public class QueryCompiler2 extends QueryCompilerBase
     // Non-hash version
     private SqlNode insertConstantAccesses(CompileContext context, List<Node> consts, SqlNode sqlNode)
     {   
-        ConditionList delayedConditions = new ConditionList() ; 
+        SqlExprList delayedConditions = new SqlExprList() ; 
         
-        Map<Node, Column> constantsHere = constants.peek() ;
+        Map<Node, SqlColumn> constantsHere = constants.peek() ;
         
         for ( Node n : consts )
         {
@@ -210,18 +211,18 @@ public class QueryCompiler2 extends QueryCompilerBase
 
             // Hash
             long hash = TableNodes.hash(lexForm,langStr,datatypeStr,vType.getTypeId());
-            Constant hashValue = new Constant(Long.toString(hash)) ;
+            SqlConstant hashValue = new SqlConstant(Long.toString(hash)) ;
 
             // Access nodes table.
             
             SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
             nTable.addAnnotation("Const: "+FmtUtils.stringForNode(n)) ; 
-            ConditionList conds = new ConditionList() ;
-            Column cHash = new Column(nTable, TableNodes.colHash) ;
+            SqlExprList conds = new SqlExprList() ;
+            SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
             
-            Condition c = new ConditionEqual(cHash, hashValue) ;
+            SqlExpr c = new S_Equal(cHash, hashValue) ;
             conds.add(c) ;
-            constantsHere.put(n, new Column(nTable, "id")) ;
+            constantsHere.put(n, new SqlColumn(nTable, "id")) ;
             
             // Same as placing in delayedConditions.
             SqlNode r = new SqlRestrict(nTable, conds) ;
@@ -234,88 +235,38 @@ public class QueryCompiler2 extends QueryCompilerBase
     }
 
     
-    
-//    private SqlNode insertConstantAccesses(CompileContext context, List<Node> consts, SqlNode sqlNode)
-//    {   
-//        ConditionList delayedConditions = new ConditionList() ; 
-//        
-//        Map<Node, Column> constantsHere = constants.peek() ;
-//        
-//        for ( Node n : consts )
-//        {
-//            String lexForm = (n.isURI()) ? n.getURI() : n.getLiteralLexicalForm() ;
-//            ValueType vType = ValueType.lookup(n) ;
-//            
-//            // Get from Nodes.
-//            SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
-//            nTable.addAnnotation("Const: "+FmtUtils.stringForNode(n)) ; 
-//            ConditionList conds = new ConditionList() ;
-//            
-//            Column cLex = new Column(nTable, "lex") ;
-//            Column cType = new Column(nTable, "type") ;
-//            Column cDatatype = new Column(nTable, "datatype") ;
-//            Column cLang = new Column(nTable, "lang") ;
-//            
-//            String datatypeStr = null ;
-//            if ( n.isLiteral() )
-//                datatypeStr = n.getLiteralDatatypeURI() ;
-//            if ( datatypeStr == null )
-//                datatypeStr = "" ;
-//            String langStr = null ;
-//            if ( n.isLiteral() )
-//                langStr = n.getLiteralLanguage() ;
-//            if ( langStr == null )
-//                langStr = "" ;
-//            
-//            Condition c1 = new ConditionEqual(cLex,      new Constant(SQLUtils.quote(lexForm))) ;
-//            Condition c2 = new ConditionEqual(cType,     new Constant(Integer.toString(vType.getTypeId()) )) ;
-//            Condition c3 = new ConditionEqual(cDatatype, new Constant(SQLUtils.quote(datatypeStr)));
-//            Condition c4 = new ConditionEqual(cLang,     new Constant(SQLUtils.quote(langStr)));
-//            
-//            conds.add(c1) ;
-//            conds.add(c2);
-//            conds.add(c3) ; 
-//            conds.add(c4) ;
-//            constantsHere.put(n, new Column(nTable, "id")) ;
-//            
-//            // Same as placing in delayedConditions.
-//            SqlNode r = new SqlRestrict(nTable, conds) ;
-//            sqlNode = innerJoin(context, sqlNode, r, delayedConditions) ;
-//        }
-//        
-//        if ( delayedConditions.size() > 0 )
-//            log.warn("Delayed conditions in start of basic block") ;
-//        return sqlNode ;
-//    }
 
     private SqlNode addRestrictions(CompileContext context, SqlNode sqlNode,
-                                    List<Constraint> constraints, ConditionList delayedConditions)
+                                    List<Constraint> constraints, SqlExprList delayedConditions)
     {
+        // This looks like assignConditions in QueryCompilerBase.
+        log.info("addRestrictions called") ;
         if ( constraints.size() == 0 )
             return sqlNode ;
         
-        ConditionList cList = new ConditionList() ;
+        SqlExprList cList = new SqlExprList() ;
         for ( Constraint c : constraints )
         {
-            Condition cond = ConditionCompilerTmp.make(context, projectVarCols, c) ;
-            // Decide where to put it
-            
-            // Consider { ?x OPT { ?x regex(?x) } }
-            // Consider { ?x OPT { ... regex(?x) } }
-            // The offramp column is in the outer LJ
-            
-            boolean hereAndNow = true ; 
-            // See also assignConditions
-            if ( cond.getLeft() != null && cond.getLeft().isColumn() )
-                if ( ! sqlNode.usesColumn(cond.getLeft().asColumn()) )
-                    hereAndNow = false ;
-            if ( cond.getRight() != null && cond.getRight().isColumn() )
-                if ( ! sqlNode.usesColumn(cond.getRight().asColumn()) )
-                    hereAndNow = false ;
-            if ( hereAndNow )
-                cList.add(cond) ;
-            else
-                delayedConditions.add(cond) ;
+            log.warn("addRestrictions: Needs fixing") ;
+//            SqlExpr cond = ConditionCompilerTmp.make(context, projectVarCols, c) ;
+//            // Decide where to put it
+//            
+//            // Consider { ?x OPT { ?x regex(?x) } }
+//            // Consider { ?x OPT { ... regex(?x) } }
+//            // The offramp column is in the outer LJ
+//            
+//            boolean hereAndNow = true ; 
+//            // See also assignConditions
+//            if ( cond.getLeft() != null && cond.getLeft().isColumn() )
+//                if ( ! sqlNode.usesColumn(cond.getLeft().asColumn()) )
+//                    hereAndNow = false ;
+//            if ( cond.getRight() != null && cond.getRight().isColumn() )
+//                if ( ! sqlNode.usesColumn(cond.getRight().asColumn()) )
+//                    hereAndNow = false ;
+//            if ( hereAndNow )
+//                cList.add(cond) ;
+//            else
+//                delayedConditions.add(cond) ;
         }
         
         
@@ -325,7 +276,7 @@ public class QueryCompiler2 extends QueryCompilerBase
 
     private SqlNode extractResults(CompileContext context,
                                    List<Node>vars, SqlNode sqlNode,
-                                   ConditionList delayedConditions)
+                                   SqlExprList delayedConditions)
     {
         for ( Node v : vars )
         {
@@ -335,17 +286,17 @@ public class QueryCompiler2 extends QueryCompilerBase
                 continue ;
             }
             
-            Column c1 = context.getAlias(v) ;
+            SqlColumn c1 = context.getAlias(v) ;
             if ( c1 == null )
                 continue ;
             
             SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
             nTable.addAnnotation("Var: "+v) ;
-            Column c2 = new Column(nTable, "id") ;
+            SqlColumn c2 = new SqlColumn(nTable, "id") ;
             
-            Condition cond = new ConditionEqual(c1, c2) ;
+            SqlExpr cond = new S_Equal(c1, c2) ;
             delayedConditions.add(cond) ;
-            projectVarCols.add(new Pair<Node, Column>(v, c2)) ;
+            projectVarCols.add(new Pair<Node, SqlColumn>(v, c2)) ;
             sqlNode = innerJoin(context, sqlNode, nTable, delayedConditions) ;
         }
         // Has delayed conditions for the outer join
@@ -356,7 +307,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     protected SqlNode match(CompileContext context, Triple triple)
     {
         String alias = context.allocTableAlias() ;
-        ConditionList conditions = new ConditionList() ;
+        SqlExprList conditions = new SqlExprList() ;
         
         TableTriples triples = new TableTriples(alias) ;
         triples.addAnnotation(FmtUtils.stringForTriple(triple, null)) ;
@@ -373,30 +324,30 @@ public class QueryCompiler2 extends QueryCompilerBase
     }
     
     private void processTripleSlot(CompileContext context, TableTriples triples,
-                                   ConditionList conditions, Node node, String colName)
+                                   SqlExprList conditions, Node node, String colName)
     {
-        Column thisCol = new Column(triples, colName) ;
+        SqlColumn thisCol = new SqlColumn(triples, colName) ;
         
         // Existing thing.
         if ( context.hasAlias(node) )
         {
-            Column otherCol = context.getAlias(node) ;
-            Condition c = new ConditionEqual(otherCol, thisCol) ;
+            SqlColumn otherCol = context.getAlias(node) ;
+            SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             return ;
         }
         
         if ( ! node.isVariable() )
         {
-            Map<Node, Column> constantsHere = constants.peek() ;
+            Map<Node, SqlColumn> constantsHere = constants.peek() ;
             
-            Column colId = constantsHere.get(node) ;
+            SqlColumn colId = constantsHere.get(node) ;
             if ( colId == null )
             {
                 log.warn("Failed to find id col for "+node) ;
                 return ;
             }
-            Condition c = new ConditionEqual(thisCol, colId) ;
+            SqlExpr c = new S_Equal(thisCol, colId) ;
             conditions.add(c) ;
             return ; 
         }

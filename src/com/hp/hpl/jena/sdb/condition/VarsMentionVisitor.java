@@ -4,30 +4,39 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.condition;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import java.util.Collection;
 
-/** Root of all concrete tables */
+import com.hp.hpl.jena.sdb.core.Var;
 
-public class SqlTable extends SqlNodeBase
+public class VarsMentionVisitor implements SDBConstraintVisitor
 {
-    private String tableName ;
-    
-    protected SqlTable(String tableName, String aliasName) { super(aliasName) ; this.tableName = tableName ; }
-    
-    @Override
-    public boolean isTable() { return true ; }
-    @Override
-    public SqlTable getTable() { return this ; }
-    
-    @Override
-    public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }
 
-    public String getTableName()  { return tableName ; }
+
+    private Collection<Var> acc ;
+
+    VarsMentionVisitor(Collection<Var> acc) { this.acc = acc ; }
     
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    public void visit(C2 c2)
+    {
+        c2.getLeft().visit(this) ;
+        c2.getRight().visit(this) ;
+    }
+
+    public void visit(C1 c1)
+    {
+        c1.getConstraint().visit(this) ;
+    }
+
+    public void visit(C_Var node)
+    {
+        
+    }
+
+    public void visit(C_NodeType node)
+    {}
+
 }
 
 /*

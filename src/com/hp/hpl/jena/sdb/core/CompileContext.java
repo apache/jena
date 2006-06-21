@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.core;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 /** A collection of things to track during query compilation
  * from SPARQL to SQL.
@@ -20,12 +21,15 @@ public class CompileContext
     private Scope varAliases = new Scope() ;
     
     public boolean hasAlias(Node var) { return varAliases.containsKey(var) ; }
-    public Column  getAlias(Node var) { return varAliases.get(var) ; } 
-    public void    setAlias(Node var, Column column) { varAliases.put(var, column) ; }
+    public SqlColumn  getAlias(Node var) { return varAliases.get(var) ; } 
+    public void    setAlias(Node var, SqlColumn column) { varAliases.put(var, column) ; }
     
     int countTable = 1 ;    
     private static final String triplesTableAliasBase = "T"+SDBConstants.SQLmark ;
-    
+
+    int allocCount = 1 ;
+    public String allocAlias(String root) { return root+(allocCount++) ; }
+
     public String allocTableAlias() { return triplesTableAliasBase+(countTable++) ; }
 
     int countJoin = 1 ;    

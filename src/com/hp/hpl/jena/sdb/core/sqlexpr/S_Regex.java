@@ -1,37 +1,42 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-/** Root of all concrete tables */
 
-public class SqlTable extends SqlNodeBase
+public class S_Regex extends SqlExprBase
 {
-    private String tableName ;
+    SqlExpr expr ;
+    String pattern ;
+    String flags ;
     
-    protected SqlTable(String tableName, String aliasName) { super(aliasName) ; this.tableName = tableName ; }
+    public S_Regex(SqlExpr expr, String pattern, String flags)
+    { this.expr = expr ; this.pattern = pattern ; }
     
-    @Override
-    public boolean isTable() { return true ; }
-    @Override
-    public SqlTable getTable() { return this ; }
-    
-    @Override
-    public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }
+    public SqlExpr getExpr()
+    {
+        return expr ;
+    }
 
-    public String getTableName()  { return tableName ; }
+    public String getFlags()
+    {
+        return flags ;
+    }
+
+    public String getPattern()
+    {
+        return pattern ;
+    }
     
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

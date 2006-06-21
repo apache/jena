@@ -4,14 +4,18 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import java.util.ArrayList ;
+import java.util.Collection;
 
-public class ConditionList extends ArrayList<Condition>
+public class SqlExprColumnsUsed extends SqlExprVisitorBase
 {
-    public ConditionList() { super() ; }
-    public ConditionList(ConditionList cl2) { super(cl2) ; }
+    Collection<SqlColumn> acc ;
+
+    public SqlExprColumnsUsed(Collection<SqlColumn> acc) { this.acc = acc ; }
+
+    @Override
+    public void visit(SqlColumn column) { acc.add(column) ; }
 }
 
 /*

@@ -9,11 +9,12 @@ package com.hp.hpl.jena.sdb.core;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 
-public class Scope extends HashMap<Node, Column>
+public class Scope extends HashMap<Node, SqlColumn>
 {
-    Map<Node, Column> other = null ;
+    Map<Node, SqlColumn> other = null ;
     public Scope() { super() ; }
     public Scope(Scope other) { super(other) ; }    // Copy - maybe should be "parent"
 }

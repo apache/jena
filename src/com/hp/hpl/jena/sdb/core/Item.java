@@ -6,12 +6,14 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+
 
 public interface Item
 {
     public boolean isConstant() ;
     public boolean isColumn() ;
-    public Column  asColumn() ;
+    public SqlColumn  asColumn() ;
     public String  asString() ;
 }
 

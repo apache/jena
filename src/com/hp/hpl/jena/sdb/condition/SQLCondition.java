@@ -33,7 +33,7 @@ public class SQLCondition implements SDBConstraintVisitor
         out.print(")") ;
     }
 
-    public void visit(C_Node node)
+    public void visit(C_Var node)
     {
         //out.print(cxt.getAlias(node.getVar()).asString()) ;
     }

@@ -11,8 +11,8 @@ import java.util.Collection;
 import com.hp.hpl.jena.graph.Node;
 import static com.hp.hpl.jena.query.util.FmtUtils.* ;
 import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.sdb.core.Column;
-import com.hp.hpl.jena.sdb.core.Condition;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 
@@ -35,7 +35,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         else
         {
             boolean first = true ; 
-            for ( Pair<Node, Column> c : sqlNode.getCols() )
+            for ( Pair<Node, SqlColumn> c : sqlNode.getCols() )
             {
                 if ( ! first ) out.print(" ") ;
                 first = false ;
@@ -51,7 +51,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     {
         start(sqlNode, "Restrict", null) ;
         out.incIndent() ;
-        for ( Condition c : sqlNode.getConditions() )
+        for ( SqlExpr c : sqlNode.getConditions() )
         {
             out.println(c.toString()) ;
         }
@@ -111,10 +111,10 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         }
     }
     
-    private void outputConditionList(Collection<Condition>cond)
+    private void outputConditionList(Collection<SqlExpr>cond)
     {   
         boolean first = true ;
-        for ( Condition c : cond )
+        for ( SqlExpr c : cond )
         {
             if ( ! first ) out.println() ;
             first = false ;

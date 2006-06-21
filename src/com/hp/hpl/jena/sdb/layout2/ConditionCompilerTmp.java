@@ -14,6 +14,9 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.core.Constraint;
 import com.hp.hpl.jena.query.expr.*;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Regex;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 //TODO Condition compiler to be replaced by ExprMatcher.
@@ -34,14 +37,14 @@ public class ConditionCompilerTmp
 //        return v.recognized ;
 //    }
     
-    public static Condition make(CompileContext context, List<Pair<Node, Column>> projectVarCols, Constraint c)
+    public static SqlExpr make(CompileContext context, List<Pair<Node, SqlColumn>> projectVarCols, Constraint c)
     {
         if ( ! c.isExpr() )
             return null ;
         return make(context, projectVarCols, c.getExpr()) ;
     }
     
-    public static Condition make(CompileContext context, List<Pair<Node, Column>> projectVarCols, Expr expr)
+    public static SqlExpr make(CompileContext context, List<Pair<Node, SqlColumn>> projectVarCols, Expr expr)
     {
         CompileExpr v = new CompileExpr(context, projectVarCols) ;
         expr.visit(v) ;
@@ -77,11 +80,11 @@ public class ConditionCompilerTmp
     
     static class CompileExpr extends ExprVisitorBase
     {
-        Condition condition = null ;
+        SqlExpr condition = null ;
         CompileContext context = null ;
-        List<Pair<Node, Column>> projectVarCols = null ;
+        List<Pair<Node, SqlColumn>> projectVarCols = null ;
        
-        CompileExpr(CompileContext context, List<Pair<Node, Column>> projectVarCols)
+        CompileExpr(CompileContext context, List<Pair<Node, SqlColumn>> projectVarCols)
         { 
             this.context = context ;
             this.projectVarCols = projectVarCols ;
@@ -126,7 +129,7 @@ public class ConditionCompilerTmp
             String f = null ;
             if ( flags != null ) f = flags.getConstant().asString() ;
 
-            Column id = findColumn(var) ;
+            SqlColumn id = findColumn(var) ;
             if ( id == null )
             {
                 LogFactory.getLog(this.getClass()).warn("Not found ; offramp for "+var) ;
@@ -134,16 +137,16 @@ public class ConditionCompilerTmp
             }
             
             // Better: is str seen =>
-            Column colLex = new Column(id.getTable(), TableNodes.colLex) ;
-            condition = new ConditionRegex(colLex, pattern.getConstant().asString(), f) ;
+            SqlColumn colLex = new SqlColumn(id.getTable(), TableNodes.colLex) ;
+            condition = new S_Regex(colLex, pattern.getConstant().asString(), f) ;
             // Else check type.
             // ...
         }
         
-        private Column findColumn(Node var)
+        private SqlColumn findColumn(Node var)
         {
-            Column id = null ;
-            for ( Pair<Node, Column> x : projectVarCols)
+            SqlColumn id = null ;
+            for ( Pair<Node, SqlColumn> x : projectVarCols)
             {
                 if ( x.car().equals(var) )
                     return x.cdr() ;

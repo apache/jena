@@ -1,43 +1,52 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-// ==> JoinCondition and non-JoinCondition
-public class ConditionEqual implements Condition
+
+public class SqlExprWalker
 {
-    public Item left, right ;
+    public static void walk(SqlExpr expr, SqlExprVisitor visitor)
+    {
+        expr.visit(new Walker(visitor)) ;
+    }
     
-    // Simple placeholder.
+    private static class Walker implements SqlExprVisitor
+    {
+        private SqlExprVisitor visitor ;
 
-    public ConditionEqual(Item left, Item right) { this.left = left ; this.right = right ; }
+        private Walker(SqlExprVisitor visitor) { this.visitor = visitor ;  }
+        
+        public void visit(SqlColumn column) { column.visit(visitor) ; }
+        
+        public void visit(SqlConstant constant) { constant.visit(visitor) ; }
+        
+        public void visit(SqlExpr1 expr)
+        {
+            expr.getExpr().visit(this) ;
+            expr.visit(visitor) ;
+        }
     
-    public Item getLeft()
-    {
-        return left ;
+        public void visit(SqlExpr2 expr)
+        {
+            expr.getLeft().visit(this) ;
+            expr.getRight().visit(this) ;
+            expr.visit(visitor) ;
+        }
+    
+        public void visit(S_Regex regex)
+        {
+            regex.getExpr().visit(this) ;
+            regex.visit(visitor) ;
+        }
     }
-    
-    public Item getRight()
-    {
-        return right ;
-    }
-
-    public String getOpSymbol()
-    {
-       return "=" ;
-    }
-    
-    @Override
-    public String toString()
-    { return getLeft().asString()+" "+getOpSymbol()+" "+getRight().asString() ; }
-    
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

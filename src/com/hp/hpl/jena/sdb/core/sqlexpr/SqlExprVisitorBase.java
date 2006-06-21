@@ -1,54 +1,28 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-
-
-public class ConditionRegex implements Condition
+public class SqlExprVisitorBase implements SqlExprVisitor
 {
-    Column col ;
-    String pattern ;
-    String flags ;
-    
-    // Simple placeholder. 
 
-    public ConditionRegex(Column col, String pattern, String flags)
-    { this.col = col ; this.pattern = pattern ; }
-    
-    public Item getLeft()
-    {
-        return col ;
-    }
-    
-    public Item getRight()
-    {
-        // TODO WRONG - need schema.condition to SQL
-        return null ; 
-    }
+    public void visit(SqlColumn column)      {}
 
-    public String getPattern() { return pattern ; }
-    
-    public String getOpSymbol()
-    {
-       return "regex" ;
-    }
-    
-    @Override
-    public String toString()
-    {
-        if ( flags == null )
-            return "regexp("+col+", '"+ pattern+"')" ;
-        else
-            return "regexp("+col+", '"+ pattern+"', '"+flags+"'" ;
-    }
+    public void visit(SqlConstant constant)  {}
+
+    public void visit(SqlExpr1 expr)         {}
+
+    public void visit(SqlExpr2 expr)         {}
+
+    public void visit(S_Regex regex)         {}
+
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

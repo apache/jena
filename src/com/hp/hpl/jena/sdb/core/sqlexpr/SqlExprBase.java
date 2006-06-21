@@ -4,14 +4,39 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
+import java.util.Collection;
+import java.util.HashSet;
 
-public interface Condition
+import com.hp.hpl.jena.query.util.IndentedLineBuffer;
+
+public abstract class SqlExprBase implements SqlExpr
 {
-    public Item getLeft() ; 
-    public Item getRight() ; 
-    public String getOpSymbol() ;
+    @Override
+    public final String toString()
+    {
+        return asSQL(this) ;
+    }
+    
+    public String asSQL() { return asSQL(this) ; } 
+    
+    public static String asSQL(SqlExpr expr)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        SqlExprVisitor v = new SqlExprGenerateSQL(buff.getIndentedWriter()) ;
+        expr.visit(v) ;
+        return buff.toString() ; 
+    }
+    
+    public Collection<SqlColumn> getColumnsNeeded()
+    {
+        Collection<SqlColumn> acc = new HashSet<SqlColumn>() ;
+        SqlExprVisitor v = new SqlExprColumnsUsed(acc) ;
+        SqlExprWalker.walk(this, v) ;
+        return acc ;
+    }
+    
 }
 
 /*

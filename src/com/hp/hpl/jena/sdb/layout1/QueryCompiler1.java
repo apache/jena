@@ -23,6 +23,7 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.NodeUtils;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
@@ -64,7 +65,7 @@ public class QueryCompiler1
     @Override
     protected SqlNode finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
     {
-        List<Pair<Node, Column>>cols = new ArrayList<Pair<Node, Column>>() ;
+        List<Pair<Node, SqlColumn>>cols = new ArrayList<Pair<Node, SqlColumn>>() ;
         for ( Node v : block.getAllVars() )
         {
             if ( ! v.isVariable() )
@@ -73,7 +74,7 @@ public class QueryCompiler1
             }
             if ( ! NodeUtils.isApplicationVar(v) )
                 continue ;
-            cols.add(new Pair<Node, Column>(v, context.getAlias(v))) ;
+            cols.add(new Pair<Node, SqlColumn>(v, context.getAlias(v))) ;
         }
         return new SqlProject(sqlNode, cols) ;
     }
@@ -83,11 +84,17 @@ public class QueryCompiler1
     { return sqlNode ; }
     
     @Override
-    protected SqlNode finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<Constraint> constraints, SqlNode sqlNode, ConditionList delayedConditions)
+    protected SqlNode finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<Constraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions)
     { 
         if ( constraints.size() > 0 )
+        {
             log.warn("Constraints not implemented - ignored") ;
-        return sqlNode ; }
+            //String alias = context.allocAlias("R$") ;
+            //sqlNode = new SqlRestrict(alias, sqlNode, constraints) ;
+        }
+
+        return sqlNode ;
+    }
     
     @Override
     protected SqlNode match(CompileContext context, Triple triple)
@@ -98,7 +105,7 @@ public class QueryCompiler1
         
         String alias = context.allocTableAlias() ;
         TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
-        ConditionList conditions = new ConditionList() ;
+        SqlExprList conditions = new SqlExprList() ;
         
         // Turn triple pattern into conditions
         processVar(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
@@ -110,15 +117,15 @@ public class QueryCompiler1
         return new SqlRestrict(tripleTable, conditions) ;
     }
     
-    private void processVar(CompileContext context, TableTriples1 triples, Node n, String col, ConditionList conditions)
+    private void processVar(CompileContext context, TableTriples1 triples, Node n, String col, SqlExprList conditions)
     {
-        Column thisCol = new Column(triples, col) ;
+        SqlColumn thisCol = new SqlColumn(triples, col) ;
         
         if ( ! n.isVariable() )
         {
             String str = codec.encode(n) ;
             str = SQLUtils.quote(str) ;
-            Condition c = new ConditionEqual(thisCol, new Constant(str)) ;
+            SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
             conditions.add(c) ;
             return ;
         }
@@ -126,8 +133,8 @@ public class QueryCompiler1
         // Variable
         if ( context.hasAlias(n) )
         {
-            Column otherCol = context.getAlias(n) ;
-            Condition c = new ConditionEqual(otherCol, thisCol) ;
+            SqlColumn otherCol = context.getAlias(n) ;
+            SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             return ;
         }

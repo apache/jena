@@ -6,7 +6,10 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
+import java.util.Collection;
+
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.Var;
 
 /**
  * The result of recognizing and translating an ARQ expression.
@@ -20,6 +23,7 @@ public interface SDBConstraint
 {
     public String asSQL(CompileContext cxt) ;
     public void visit(SDBConstraintVisitor visitor) ;
+    public void varsMentioned(Collection<Var> acc) ;
 }
 
 /*

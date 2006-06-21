@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sdb.SDBException;
 
 public enum ValueType
 {
-    /* The ID order matters: SPARQl says:
+    /* The ID order matters: SPARQL says:
     1.  (Lowest) no value assigned to the variable or expression in this solution.
     2. Blank nodes
     3. IRIs

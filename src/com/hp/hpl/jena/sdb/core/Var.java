@@ -4,30 +4,46 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.expr.NodeVar;
+import com.hp.hpl.jena.sdb.SDBException;
 
-/** Root of all concrete tables */
+/** A SPARQL variable
+ * 
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 
-public class SqlTable extends SqlNodeBase
+public class Var
 {
-    private String tableName ;
+    Node node ;
+    public Var(Node v)
+    {
+        if ( ! v.isVariable() )
+            throw new NotAVariableException(v.toString()) ;
+        node = v ;
+    }
     
-    protected SqlTable(String tableName, String aliasName) { super(aliasName) ; this.tableName = tableName ; }
+    public Var(NodeVar v)
+    {
+        this(v.getAsNode()) ;
+    }
     
-    @Override
-    public boolean isTable() { return true ; }
-    @Override
-    public SqlTable getTable() { return this ; }
+    public Var(String varName)
+    {
+        node = Node.createVariable(varName) ;
+    }
     
-    @Override
-    public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }
-
-    public String getTableName()  { return tableName ; }
+    public Node asNode() { return node ; }
     
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    public String getName() { return node.getName() ; }
+    
+    static class NotAVariableException extends SDBException
+    {
+        NotAVariableException(String msg) { super(msg) ; }
+    }
 }
 
 /*

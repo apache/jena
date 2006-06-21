@@ -1,37 +1,63 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
-
-public class Column implements Item
+public class SqlExprGenerateSQL implements SqlExprVisitor
 {
-    SqlTable  table ;
-    String columnName ;
-    public Column(SqlTable sqlNode, String colName) { this.table = sqlNode ; this.columnName = colName ; }
+    private IndentedWriter out ;
 
-    public String getColumnName() { return columnName ; }
+    SqlExprGenerateSQL(IndentedWriter out)
+    {
+        this.out = out ;
+    }
 
-    public SqlTable getTable()  { return table ;  }
+    public void visit(SqlColumn column)     { out.print(column.asString()) ; }
+    
+    public void visit(SqlConstant constant) { out.print(SQLUtils.quote(constant.asString())) ; }
+    
+    public void visit(SqlExpr1 expr)
+    {
+        out.print(expr.getFuncSymbol()) ;
+        out.print("(") ;
+        expr.visit(this) ;
+        out.print(")") ;
+    }
 
-    public String asString()
-    { return getTable().getAliasName()+"."+columnName ; }
+    public void visit(SqlExpr2 expr)
+    {
+        expr.getLeft().visit(this) ;
+        out.print(" ") ;
+        out.print(expr.getOpSymbol()) ;
+        out.print(" ") ;
+        expr.getRight().visit(this) ;
+    }
 
-    @Override
-    public String toString() { return asString() ; }
-
-    public boolean isConstant() { return false ; }
-    public boolean isColumn()   { return true ; }
-    public Column  asColumn() { return this ; }
+    public void visit(S_Regex regex)
+    {
+        // Err ...
+        out.print("regex") ;
+        out.print("(") ;
+        regex.getExpr().visit(this) ;
+        out.print(", ") ;
+        out.print(regex.getPattern()) ;
+        if ( regex.getFlags() != null && !regex.getFlags().equals("") )
+        {
+            out.print(", ") ;
+            out.print(regex.getFlags()) ;
+        }
+        out.print(")") ;
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

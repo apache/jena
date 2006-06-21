@@ -4,30 +4,29 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.condition;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.Var;
 
-/** Root of all concrete tables */
+/** As a node : for all layouts, this is the thing in the triples table columns
+ * 
+ * @author Andy Seaborne
+ * @version $Id: C_Node.java,v 1.1 2006/04/19 17:23:32 andy_seaborne Exp $
+ */
 
-public class SqlTable extends SqlNodeBase
+public class C_Var extends SDBConstraintBase
 {
-    private String tableName ;
+    Var var ;
     
-    protected SqlTable(String tableName, String aliasName) { super(aliasName) ; this.tableName = tableName ; }
+    public C_Var(Var var)
+    { 
+        super("Var") ;
+        this.var = var ;
+    }
     
-    @Override
-    public boolean isTable() { return true ; }
-    @Override
-    public SqlTable getTable() { return this ; }
-    
-    @Override
-    public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }
+    public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
 
-    public String getTableName()  { return tableName ; }
-    
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    public Var getVar() { return var ; }
 }
 
 /*

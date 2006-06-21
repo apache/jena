@@ -4,30 +4,30 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+/** Precondition for a condition
+ * 
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 
-/** Root of all concrete tables */
 
-public class SqlTable extends SqlNodeBase
+public class ValScope
 {
-    private String tableName ;
+    // Need a value for a variable in a given type.
+    static enum ValType { STRING, NUMBER, DATETIME } ;
     
-    protected SqlTable(String tableName, String aliasName) { super(aliasName) ; this.tableName = tableName ; }
+    private Var var ;
+    private ValType valType ;
     
-    @Override
-    public boolean isTable() { return true ; }
-    @Override
-    public SqlTable getTable() { return this ; }
+    public ValScope(Var var, ValType valType)
+    {
+        this.var = var ;
+        this.valType = valType ;
+    }
     
-    @Override
-    public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }
 
-    public String getTableName()  { return tableName ; }
-    
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
 }
 
 /*

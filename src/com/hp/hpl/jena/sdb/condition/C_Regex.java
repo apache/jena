@@ -6,13 +6,17 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
-public class C_Regex extends C2
+public class C_Regex extends C1
 {
+    String pattern ;
+    boolean caseInsensitive ;
+    SDBConstraint operand ;
     
-    protected C_Regex(SDBConstraint left, SDBConstraint right)
+    public C_Regex(SDBConstraint target, String pattern, boolean caseInsensitive)
     {
-        // Need to make a parameter of the compilation
-        super("regexp", left, right) ;
+        super("regexp", target) ;
+        this.pattern = pattern ;
+        this.caseInsensitive = caseInsensitive ;
     }
     
     @Override

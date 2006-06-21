@@ -1,40 +1,34 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.condition;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
-
-/** As a node : for all layouts, this is the thing in the triples table columns
- * 
- * @author Andy Seaborne
- * @version $Id: C_Node.java,v 1.1 2006/04/19 17:23:32 andy_seaborne Exp $
- */
-
-public class C_Node extends SDBConstraintBase
+public class SqlExpr2 extends SqlExprBase
 {
-    Node var ;
+    public SqlExpr left ;
+    public SqlExpr right ;
+    public String opSymbol ;
     
-    public C_Node(Node var)
-    { 
-        super("Var") ;
-        if ( ! var.isVariable() )
-            LogFactory.getLog(SDBConstraintVisitor.class).fatal("Not a variable: "+var) ;
-        this.var = var ;
+    public SqlExpr2(SqlExpr left, SqlExpr right, String symbol)
+    {
+        this.left = left ;
+        this.right = right ;
+        this.opSymbol = symbol ;
     }
     
-    public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
-
-    public Node getVar() { return var ; }
+    public SqlExpr getLeft() { return left ; }
+    public SqlExpr getRight() { return right ; }
+    public String getOpSymbol() { return opSymbol ; }
+    
+    public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -12,8 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 // This is not a general purpose SQL writer - it needs only work with the SQL node trees
@@ -30,7 +30,7 @@ public class GenerateSQL implements SqlNodeVisitor
     private CompileContext context ;
     private IndentedWriter out ;
     int level = 0 ;
-    ConditionList remains = new ConditionList() ;
+    SqlExprList remains = new SqlExprList() ;
     
     public GenerateSQL(CompileContext context, IndentedWriter out)
     { this.context = context ; this.out = out ; }
@@ -44,7 +44,7 @@ public class GenerateSQL implements SqlNodeVisitor
         if ( sqlNode.getCols().size() == 0 )
             log.warn("No SELECT columns") ;
         
-        for ( Pair<Node, Column> c : sqlNode.getCols() )
+        for ( Pair<Node, SqlColumn> c : sqlNode.getCols() )
         {
             out.print(sep) ;
             sep = ", " ;
@@ -147,7 +147,7 @@ public class GenerateSQL implements SqlNodeVisitor
 //        }
     }
     
-    private void genWHERE(ConditionList conditions)
+    private void genWHERE(SqlExprList conditions)
     {
         out.print("WHERE") ;
         out.print(" ") ;
@@ -206,18 +206,18 @@ public class GenerateSQL implements SqlNodeVisitor
         out.print(" )");
     }
 
-    public void conditionList(ConditionList conditions)
+    public void conditionList(SqlExprList conditions)
     {
         String sep = "AND  " ;
         boolean first = true ;
-        for ( Condition c : conditions )
+        for ( SqlExpr c : conditions )
         {
             if ( ! first )
             {
                 out.println();
                 out.print(sep) ;
             }
-            out.print(conditionToString(c)) ;
+            out.print(c.asSQL()) ;
             first = false ;
         }
     }
@@ -256,28 +256,28 @@ public class GenerateSQL implements SqlNodeVisitor
         level -- ;
     }
 
-    protected String conditionToString(Condition c)
-    {
-        if ( c instanceof ConditionRegex )
-        {
-            ConditionRegex cr = (ConditionRegex)c ;
-            String i = itemToString(c.getLeft()) ;
-            return i+" regexp "+SQLUtils.quote(cr.getPattern()) ;
-        }
-
-        String i1 = itemToString(c.getLeft()) ;
-        String i2 = itemToString(c.getRight()) ;
-        return i1+" "+c.getOpSymbol()+" "+i2 ;
-    }
-    
-    protected String itemToString(Item item)
-    {
-        if ( item instanceof Constant )
-            return item.asString() ;
-        
-        Column col = (Column)item ;
-        return col.asString() ;
-    }
+//    protected String conditionToString(SqlExpr c)
+//    {
+//        if ( c instanceof S_Regex )
+//        {
+//            S_Regex cr = (S_Regex)c ;
+//            String i = itemToString(c.getLeft()) ;
+//            return i+" regexp "+SQLUtils.quote(cr.getPattern()) ;
+//        }
+//
+//        String i1 = itemToString(c.getLeft()) ;
+//        String i2 = itemToString(c.getRight()) ;
+//        return i1+" "+c.getOpSymbol()+" "+i2 ;
+//    }
+//    
+//    protected String itemToString(Item item)
+//    {
+//        if ( item instanceof SqlConstant )
+//            return item.asString() ;
+//        
+//        SqlColumn col = (SqlColumn)item ;
+//        return col.asString() ;
+//    }
 
     
 }

@@ -4,30 +4,20 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-/** Root of all concrete tables */
-
-public class SqlTable extends SqlNodeBase
+public interface SqlExprVisitor
 {
-    private String tableName ;
+    public void visit(SqlColumn column) ;
     
-    protected SqlTable(String tableName, String aliasName) { super(aliasName) ; this.tableName = tableName ; }
+    public void visit(SqlConstant constant) ;
     
-    @Override
-    public boolean isTable() { return true ; }
-    @Override
-    public SqlTable getTable() { return this ; }
-    
-    @Override
-    public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }
+    public void visit(SqlExpr1 expr) ;
 
-    public String getTableName()  { return tableName ; }
-    
-    public void visit(SqlNodeVisitor visitor)
-    { visitor.visit(this) ; }
+    public void visit(SqlExpr2 expr) ;
+
+    public void visit(S_Regex regex) ; 
 }
 
 /*

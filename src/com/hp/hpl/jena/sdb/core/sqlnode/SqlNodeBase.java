@@ -11,7 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.Column;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 
 public abstract class SqlNodeBase implements SqlNode
@@ -41,7 +41,7 @@ public abstract class SqlNodeBase implements SqlNode
         this.visit(new SqlNodeTextVisitor(out)) ;
     }
     
-    public boolean usesColumn(Column c) { return false ; }
+    public boolean usesColumn(SqlColumn c) { return false ; }
     
     final
     public String getAliasName() { return aliasName ; }

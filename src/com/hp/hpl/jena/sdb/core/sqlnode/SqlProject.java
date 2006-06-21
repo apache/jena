@@ -9,20 +9,20 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.core.Column;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 public class SqlProject extends SqlNodeBase1
 {
-    private List<Pair<Node, Column>> cols = null ; 
+    private List<Pair<Node, SqlColumn>> cols = null ; 
     
     public SqlProject(SqlNode sqlNode)
     { 
         super(sqlNode.getAliasName(), sqlNode) ;
-        this.cols = new ArrayList<Pair<Node, Column>>() ; 
+        this.cols = new ArrayList<Pair<Node, SqlColumn>>() ; 
     }
     
-    public SqlProject(SqlNode sqlNode, List<Pair<Node, Column>> cols)
+    public SqlProject(SqlNode sqlNode, List<Pair<Node, SqlColumn>> cols)
     { 
         super(sqlNode.getAliasName(), sqlNode) ;
         this.cols = cols ;
@@ -34,9 +34,9 @@ public class SqlProject extends SqlNodeBase1
     public SqlProject getProject() { return this ; }
     
     @Override 
-    public boolean usesColumn(Column c) { return cols.contains(c) ; }
+    public boolean usesColumn(SqlColumn c) { return cols.contains(c) ; }
 
-    public List<Pair<Node, Column>> getCols() { return cols ; }
+    public List<Pair<Node, SqlColumn>> getCols() { return cols ; }
 
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
