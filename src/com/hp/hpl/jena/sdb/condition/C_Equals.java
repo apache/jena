@@ -11,7 +11,6 @@ public class C_Equals extends C2
     protected C_Equals(SDBConstraint left, SDBConstraint right)
     { super("=", left, right) ; }
 
-    @Override
     public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
 }
 

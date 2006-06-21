@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.Constraint;
+import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
 /** Block processor that finds nodes in blocks 
  * 
@@ -57,7 +57,7 @@ public class BlockNodes implements BlockProc
         }
     }
     
-    public void restriction(Constraint c)
+    public void restriction(SDBConstraint c)
     { 
         System.err.println("BlockNodes: Condition checking not done") ;
     }

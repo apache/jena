@@ -8,7 +8,7 @@ WHERE {
    ?a dc10:title "thing1" .
    ?a dc10:title ?name 
    FILTER regex(?name, "smith") 
-##    OPTIONAL { ?a dc10:creator ?name1 }
-##    OPTIONAL { ?a dc11:creator ?c .
+   OPTIONAL { ?a dc10:creator ?name1 }
+##   OPTIONAL { ?a dc11:creator ?c .
 ##               ?c rdf:value ?name2 }
 }

@@ -18,8 +18,6 @@ public abstract class C2 extends SDBConstraintBase
         this.right = right ;
     }
     
-    public abstract void visit(SDBConstraintVisitor visitor) ;
-
     public SDBConstraint getLeft()   { return left ; }
     public SDBConstraint getRight()  { return right ; }
 }

@@ -21,6 +21,16 @@ public class C_Regex extends C1
     
     @Override
     public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
+
+    public boolean isCaseInsensitive()
+    {
+        return caseInsensitive ;
+    }
+
+    public String getPattern()
+    {
+        return pattern ;
+    }
 }
 
 /*

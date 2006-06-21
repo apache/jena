@@ -101,7 +101,7 @@ public class PlanToSDB extends TransformCopy
             Var var = new Var(rMap.get("a1").getVar()) ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
-            return new PlanSDBConstraint(expr) ; 
+            return new PlanSDBConstraint(c, true) ; 
         }
         return super.transform(planElt) ;
     }
@@ -133,8 +133,11 @@ public class PlanToSDB extends TransformCopy
                 if ( lastSDB == null )
                     continue ;
                 
-                lastSDB.getBlock().add(((PlanSDBConstraint)e).get()) ;
-                iter.remove() ;
+                PlanSDBConstraint c = (PlanSDBConstraint)e ;
+                
+                lastSDB.getBlock().add( c.get() ) ;
+                if ( c.isComplete() )
+                    iter.remove() ;
                 continue ;
             }
             if ( e instanceof PlanSDBMarker )

@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.query.core.Constraint;
+import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
 public interface BlockProc
 {
     public void basicPattern(BasicPattern basicPattern) ;
-    public void restriction(Constraint c) ;
+    public void restriction(SDBConstraint c) ;
     public void optional(Block optBlock) ;
 }
 

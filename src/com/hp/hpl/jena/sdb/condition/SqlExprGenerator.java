@@ -6,51 +6,56 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Regex;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 
-import org.apache.commons.logging.LogFactory;
-
-public class SQLCondition implements SDBConstraintVisitor
+public class SqlExprGenerator
 {
-    private IndentedWriter out ;
-    
-    public SQLCondition(IndentedWriter out) { this.out = out ; }
-    
-    public void visit(C2 c2)
+    public static SqlExpr compile(CompileContext cxt, SDBConstraint c)
     {
-        out.print("( ") ;
-        c2.getLeft().visit(this) ;
-        out.print(") ") ;
-        out.print(c2.getLabel()) ;
-        out.print(" ( ") ;
-        c2.getRight().visit(this) ;
-        out.print(")") ;
+        Generator g = new Generator(cxt) ; 
+        c.visit(g) ;
+        return g.getResult() ;
     }
-
-    public void visit(C_Var node)
-    {
-        //out.print(cxt.getAlias(node.getVar()).asString()) ;
-    }
-
     
-    public void visit(SDBConstraint c)
+    static class Generator implements SDBConstraintVisitor
     {
-        LogFactory.getLog(c.getClass()).warn("Not implemented") ;
+    
+        private CompileContext cxt ;
+        private SqlExpr result = null ; 
+        
+        public Generator(CompileContext cxt) { this.cxt = cxt ; }
+        public SqlExpr getResult()           { return result ; }
+        
+
+        public void visit(C_Regex regex)
+        {
+            SqlExpr sub = compile(cxt, regex.getConstraint()) ;
+            result = new S_Regex(sub,
+                                 regex.getPattern(),
+                                 regex.isCaseInsensitive() ? "i": null) ;
+            
+        }
+        
+        
+        public void visit(C_Equals c)
+        {
+            result = new S_Equal(compile(cxt, c.getLeft()),
+                                 compile(cxt, c.getRight())) ;
+        }
+        
+        public void visit(C_Var node) { result = cxt.getAlias(node.getVar().asNode()) ; }
+
+        public void visit(C_NodeType node) { throw new SDBNotImplemented("C_NodeType") ; } 
+
+        public void visit(C_IsNotNull c)   { throw new SDBNotImplemented("C_IsNotNull") ; }
+
+        public void visit(C_IsNull c)      { throw new SDBNotImplemented("C_IsNull") ; }
+ 
     }
-
-    public void visit(C1 c1) {}
-
-    public void visit(C_IsNull c)     { LogFactory.getLog(c.getClass()).warn("Not implemented/IsNull") ; }
-    public void visit(C_IsNotNull c)  { LogFactory.getLog(c.getClass()).warn("Not implemented/IsNotNull") ; }
-
-    public void visit(C_NodeType node)
-    {}
-
-    public void visit(C_Regex regex)
-    {}
-
-    public void visit(C_Equals c)
-    {}
 }
 
 /*

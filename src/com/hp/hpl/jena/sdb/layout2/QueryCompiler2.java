@@ -24,6 +24,7 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -174,7 +175,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     
     @Override
     protected SqlNode finishBasicBlock(CompileContext context,
-                                       BasicPattern basicPattern, List<Constraint> constraints,
+                                       BasicPattern basicPattern, List<SDBConstraint> constraints,
                                        SqlNode sqlNode, SqlExprList delayedConditions)
     { 
         constants.pop() ;
@@ -237,7 +238,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     
 
     private SqlNode addRestrictions(CompileContext context, SqlNode sqlNode,
-                                    List<Constraint> constraints, SqlExprList delayedConditions)
+                                    List<SDBConstraint> constraints, SqlExprList delayedConditions)
     {
         // This looks like assignConditions in QueryCompilerBase.
         log.info("addRestrictions called") ;
@@ -245,7 +246,7 @@ public class QueryCompiler2 extends QueryCompilerBase
             return sqlNode ;
         
         SqlExprList cList = new SqlExprList() ;
-        for ( Constraint c : constraints )
+        for ( SDBConstraint c : constraints )
         {
             log.warn("addRestrictions: Needs fixing") ;
 //            SqlExpr cond = ConditionCompilerTmp.make(context, projectVarCols, c) ;

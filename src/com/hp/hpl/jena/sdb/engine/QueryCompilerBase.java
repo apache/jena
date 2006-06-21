@@ -17,13 +17,12 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.Constraint;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
-import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -112,7 +111,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
     protected abstract SqlNode  finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode) ;
     
     protected abstract SqlNode  startBasicBlock(CompileContext context, BasicPattern basicPattern, SqlNode sqlNode) ;
-    protected abstract SqlNode  finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<Constraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions) ;
+    protected abstract SqlNode  finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<SDBConstraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions) ;
 
     protected SqlNode  match(CompileContext context, BasicPattern triples) { return null ; }
     protected abstract SqlNode  match(CompileContext context, Triple triple) ;

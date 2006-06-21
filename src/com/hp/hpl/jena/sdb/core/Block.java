@@ -14,11 +14,11 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.Constraint;
 import com.hp.hpl.jena.query.engine1.QueryEngineUtils;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Printable;
+import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
 
 /** A unit of SQL execution - a basic pattern, filter clauses and optionals.
@@ -38,11 +38,7 @@ public class Block implements Printable
     
     BasicPattern basicPattern = new BasicPattern() ;
     
-    // Constaints are the unit that comes from the ARQ query system
-    List<Constraint> blockConstraints = new ArrayList<Constraint>() ;
-    
-    // Conditions are compiled version of constraints
-    //ConditionList blockConditions = new ConditionList() ;
+    List<SDBConstraint> blockConstraints = new ArrayList<SDBConstraint>() ;
     
     List<Block>blockOptionals  = new ArrayList<Block>() ;
 
@@ -59,7 +55,7 @@ public class Block implements Printable
     { basicPattern.add(triple) ; accVar(patternVars, triple) ; }
 
     // Accumulate constraints we understand for this block basic patterns
-    public void add(Constraint constraint)
+    public void add(SDBConstraint constraint)
     { 
         blockConstraints.add(constraint) ;
         constraint.varsMentioned(filterVars) ;
@@ -73,7 +69,7 @@ public class Block implements Printable
     
     public BasicPattern        getBasicPattern()      { return basicPattern ; }
     public List<Block>         getOptionals()         { return blockOptionals ; }
-    public List<Constraint> getConstraints()          { return blockConstraints ; }
+    public List<SDBConstraint> getConstraints()       { return blockConstraints ; }
     public List<Node>          getPatternVars()       { return patternVars ; }
     public List<Var>           getFilterVars()        { return filterVars ; }
     public List<Node>          getProjectVars()       { return projectVars ; }
@@ -117,7 +113,7 @@ public class Block implements Printable
     public void apply(BlockProc proc, boolean deep)
     {
         proc.basicPattern(basicPattern) ;
-        for ( Constraint c : blockConstraints )
+        for ( SDBConstraint c : blockConstraints )
             proc.restriction(c) ;
         for ( Block optBlk : blockOptionals )
         {
@@ -213,7 +209,7 @@ public class Block implements Printable
             out.println() ;
             out.print("(Condition") ;
             out.incIndent() ;
-            for ( Constraint c : blockConstraints )
+            for ( SDBConstraint c : blockConstraints )
             {
                 out.println() ;
                 out.print(c.toString()) ;

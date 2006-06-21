@@ -6,19 +6,27 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import com.hp.hpl.jena.query.core.Constraint;
+import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
 public class PlanSDBConstraint extends PlanSDBMarker
 {
-    // A note that this constraint is checked.
-    private Constraint constraint ;
+    private SDBConstraint constraint ;
+    boolean completeConstraint ;
     
-    PlanSDBConstraint(Constraint constraint)
+    /**
+     * @param constraint           The processed constraint
+     * @param completeConstraint   Whether this completely fulfils the SPARQL contract
+     */
+    
+    PlanSDBConstraint(SDBConstraint constraint, boolean completeConstraint)
     { 
         this.constraint = constraint ;
+        this.completeConstraint = completeConstraint ;
     }
     
-    Constraint get() { return constraint ; }
+    public SDBConstraint get() { return constraint ; }
+    public boolean isComplete() { return completeConstraint ; }
+
 }
 
 /*

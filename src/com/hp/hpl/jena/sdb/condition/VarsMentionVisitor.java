@@ -18,24 +18,32 @@ public class VarsMentionVisitor implements SDBConstraintVisitor
 
     VarsMentionVisitor(Collection<Var> acc) { this.acc = acc ; }
     
-    public void visit(C2 c2)
+    public void visitC2(C2 c2)
     {
         c2.getLeft().visit(this) ;
         c2.getRight().visit(this) ;
     }
 
-    public void visit(C1 c1)
+    public void visitC1(C1 c1)
     {
         c1.getConstraint().visit(this) ;
     }
 
     public void visit(C_Var node)
     {
-        
+        acc.add(node.getVar()) ;
     }
 
     public void visit(C_NodeType node)
     {}
+
+    public void visit(C_Regex regex)  { regex.getConstraint().visit(this) ; }
+
+    public void visit(C_Equals c)     { visitC2(c) ; }
+
+    public void visit(C_IsNotNull c)  { visitC1(c) ; }
+
+    public void visit(C_IsNull c)     { visitC1(c) ; }    
 
 }
 

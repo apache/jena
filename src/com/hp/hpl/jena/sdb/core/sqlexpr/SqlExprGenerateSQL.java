@@ -46,7 +46,7 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
         out.print("(") ;
         regex.getExpr().visit(this) ;
         out.print(", ") ;
-        out.print(regex.getPattern()) ;
+        out.print(SQLUtils.quote(regex.getPattern())) ;
         if ( regex.getFlags() != null && !regex.getFlags().equals("") )
         {
             out.print(", ") ;

@@ -17,18 +17,17 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.BindingMap;
-import com.hp.hpl.jena.query.core.Constraint;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.NodeUtils;
+import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.util.Pair;
 
@@ -84,13 +83,19 @@ public class QueryCompiler1
     { return sqlNode ; }
     
     @Override
-    protected SqlNode finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<Constraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions)
+    protected SqlNode finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<SDBConstraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions)
     { 
         if ( constraints.size() > 0 )
         {
-            log.warn("Constraints not implemented - ignored") ;
-            //String alias = context.allocAlias("R$") ;
-            //sqlNode = new SqlRestrict(alias, sqlNode, constraints) ;
+            String alias = context.allocAlias("R$") ;
+            // Convert to SqlExprList
+            SqlExprList sqlConditions = new SqlExprList() ;
+            for ( SDBConstraint c : constraints )
+            {
+                SqlExpr sqlExpr = c.asSqlExpr(context) ;
+                sqlConditions.add(sqlExpr) ;
+            }
+            sqlNode = new SqlRestrict(alias, sqlNode, sqlConditions) ;
         }
 
         return sqlNode ;
@@ -124,7 +129,7 @@ public class QueryCompiler1
         if ( ! n.isVariable() )
         {
             String str = codec.encode(n) ;
-            str = SQLUtils.quote(str) ;
+            //str = SQLUtils.quote(str) ;
             SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
             conditions.add(c) ;
             return ;

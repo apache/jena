@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.Var;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 
 public abstract class SDBConstraintBase implements SDBConstraint
 {
@@ -24,14 +25,30 @@ public abstract class SDBConstraintBase implements SDBConstraint
     
     public String getLabel() { return label.toString() ; }
     
-    public final String asSQL(CompileContext cxt)
+    public SqlExpr asSqlExpr(CompileContext cxt)
     {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        SDBConstraintVisitor v = new SQLCondition(buff.getIndentedWriter(),cxt) ;
-        this.visit(v) ;
-        return buff.asString() ;
+        // Will need to worry about isBound() and being the right type later 
+        return SqlExprGenerator.compile(cxt, this) ;
     }
+    
+//    public final String asSQL(CompileContext cxt)
+//    {
+//        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+//        SDBConstraintVisitor v = new SQLCondition(buff.getIndentedWriter(),cxt) ;
+//        this.visit(v) ;
+//        return buff.asString() ;
+//    }
 
+    @Override
+    final
+    public String toString()
+    {
+          IndentedLineBuffer buff = new IndentedLineBuffer() ;
+          SDBConstraintVisitor v = new SQLCondition(buff.getIndentedWriter()) ;
+          this.visit(v) ;
+          return buff.asString() ;
+    }
+    
     final
     public void varsMentioned(Collection<Var> acc)
     {
