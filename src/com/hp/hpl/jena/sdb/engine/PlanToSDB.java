@@ -95,8 +95,7 @@ public class PlanToSDB extends TransformCopy
         {
             log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
             
-            // TODO - think about whether we should use a
-            // parallel class hierarchy of constraints (e.g. vars extracted).
+            // TODO - think about need for the C_ parallel class hierarchy of constraints
             Var var = new Var(rMap.get("a1").getVar()) ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
