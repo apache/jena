@@ -7,8 +7,8 @@ SELECT ?name1 ?name2
 WHERE {
    ?a dc10:title "thing1" .
    ?a dc10:title ?name 
-   FILTER regex(?name, "smith") 
    OPTIONAL { ?a dc10:creator ?name1 }
+   FILTER regex(?name, "smith") 
 ##   OPTIONAL { ?a dc11:creator ?c .
 ##               ?c rdf:value ?name2 }
 }

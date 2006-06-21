@@ -6,26 +6,30 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
+import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
 public class PlanSDBConstraint extends PlanSDBMarker
 {
     private SDBConstraint constraint ;
     boolean completeConstraint ;
+    PlanFilter original ;
     
     /**
      * @param constraint           The processed constraint
      * @param completeConstraint   Whether this completely fulfils the SPARQL contract
      */
     
-    PlanSDBConstraint(SDBConstraint constraint, boolean completeConstraint)
+    PlanSDBConstraint(SDBConstraint constraint, PlanFilter original, boolean completeConstraint)
     { 
         this.constraint = constraint ;
         this.completeConstraint = completeConstraint ;
+        this.original = original ;
     }
     
     public SDBConstraint get() { return constraint ; }
     public boolean isComplete() { return completeConstraint ; }
+    public PlanFilter getOriginal() { return original ; }
 
 }
 

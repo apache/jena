@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -101,7 +100,7 @@ public class PlanToSDB extends TransformCopy
             Var var = new Var(rMap.get("a1").getVar()) ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
-            return new PlanSDBConstraint(c, true) ; 
+            return new PlanSDBConstraint(c, planElt, true) ; 
         }
         return super.transform(planElt) ;
     }
@@ -112,15 +111,12 @@ public class PlanToSDB extends TransformCopy
     { 
         List<PlanElement> newElements = (List<PlanElement>)newElts ;
         // Nulls mean no element anymore (e.g. FILTER that has been absorbed into the SDB part)  
-        CollectionUtils.removeNulls(newElements) ;
         
         PlanSDB lastSDB = null ;
         // Coalesce wrapped objects
-        for ( Iterator<PlanElement> iter = newElements.iterator() ; iter.hasNext() ; )
+        for ( int i = 0 ; i < newElements.size() ; i++ )
         {
-            PlanElement e = iter.next() ;
-            if ( e == null )
-                iter.remove() ;
+            PlanElement e = newElements.get(i) ;
             
             if ( e instanceof PlanSDB )
             {
@@ -130,21 +126,27 @@ public class PlanToSDB extends TransformCopy
                 
             if ( e instanceof PlanSDBConstraint )
             {
-                if ( lastSDB == null )
-                    continue ;
-                
                 PlanSDBConstraint c = (PlanSDBConstraint)e ;
                 
+                if ( lastSDB == null )
+                {
+                    // Not working on an SDB element.
+                    // Put back the constriant.
+                    PlanFilter f = c.getOriginal() ;
+                    newElements.set(i, f) ;
+                    continue ;
+                }
                 lastSDB.getBlock().add( c.get() ) ;
                 if ( c.isComplete() )
-                    iter.remove() ;
+                    newElements.set(i, null) ;
                 continue ;
             }
             if ( e instanceof PlanSDBMarker )
                 log.warn("PlanSDBMArker still present!") ;
             lastSDB = null ;
         }
-        
+
+        CollectionUtils.removeNulls(newElements) ;
         
         // Check that the FilteredBGP is wholly converted.
         // If so, remove this wrapper.
