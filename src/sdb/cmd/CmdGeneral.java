@@ -10,6 +10,7 @@ import static java.lang.String.format;
 
 import java.util.List;
 
+import arq.cmd.CmdUtils;
 import arq.cmd.TerminateException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdMain;
@@ -17,6 +18,7 @@ import arq.cmdline.CmdMain;
 public abstract class CmdGeneral extends CmdMain
 {
     static {
+        CmdUtils.setLog4j() ;
         //  Tune N3 output for result set output.
         System.setProperty("usePropertySymbols",   "false") ;
         System.setProperty("objectLists" ,         "false") ;

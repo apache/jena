@@ -93,13 +93,13 @@ public class PlanToSDB extends TransformCopy
         
         if ( (rMap = regex1.match(expr)) != null )
         {
-            log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            
+            //log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
             // TODO - think about need for the C_ parallel class hierarchy of constraints
             Var var = new Var(rMap.get("a1").getVar()) ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
-            return new PlanSDBConstraint(c, planElt, true) ; 
+            // I am not perfect ...
+            return new PlanSDBConstraint(c, planElt, false) ; 
         }
         return super.transform(planElt) ;
     }
@@ -109,10 +109,10 @@ public class PlanToSDB extends TransformCopy
     public PlanElement transform(PlanBasicGraphPattern planElt, List newElts)
     { 
         List<PlanElement> newElements = (List<PlanElement>)newElts ;
-        // Nulls mean no element anymore (e.g. FILTER that has been absorbed into the SDB part)  
         
         PlanSDB lastSDB = null ;
         // Coalesce wrapped objects
+        // Could equally well not convert PlanFilter in the tranformer but do here instead. 
         for ( int i = 0 ; i < newElements.size() ; i++ )
         {
             PlanElement e = newElements.get(i) ;
@@ -126,25 +126,24 @@ public class PlanToSDB extends TransformCopy
             if ( e instanceof PlanSDBConstraint )
             {
                 PlanSDBConstraint c = (PlanSDBConstraint)e ;
+                PlanFilter filter = c.getOriginal() ;
                 
-                if ( lastSDB == null )
+                if ( lastSDB != null )
                 {
-                    // Not working on an SDB element.
-                    // Put back the constriant.
-                    PlanFilter f = c.getOriginal() ;
-                    newElements.set(i, f) ;
-                    continue ;
+                    lastSDB.getBlock().add( c.get() ) ;
+                    if ( c.isComplete() )
+                        filter = null ;
                 }
-                lastSDB.getBlock().add( c.get() ) ;
-                if ( c.isComplete() )
-                    newElements.set(i, null) ;
+
+                newElements.set(i, filter) ;
                 continue ;
             }
             if ( e instanceof PlanSDBMarker )
-                log.warn("PlanSDBMArker still present!") ;
+                log.warn("PlanSDBMarker still present!") ;
             lastSDB = null ;
         }
 
+        // Nulls mean no element anymore (e.g. FILTER that has been absorbed into the SDB part)  
         CollectionUtils.removeNulls(newElements) ;
         
         // Check that the FilteredBGP is wholly converted.
@@ -154,10 +153,8 @@ public class PlanToSDB extends TransformCopy
             return planElt.copy(newElements) ; 
         
         if ( newElements.get(0) instanceof PlanSDB  )
-        {
             // Good to remove
             return (PlanSDB)newElements.get(0) ;
-        }
         
         // No good
         return super.transform(planElt, newElements) ;

@@ -8,34 +8,39 @@ package sdb;
 
 import java.io.IOException;
 
+import arq.cmd.CmdException;
+import arq.cmd.CmdUtils;
+import arq.cmd.QCmd;
+import arq.cmd.TerminateException;
+import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdLineArgs;
+
 import com.hp.hpl.jena.Jena;
 import com.hp.hpl.jena.db.impl.Driver_MySQL;
 import com.hp.hpl.jena.db.impl.IRDBDriver;
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.PlanFormatter;
+import com.hp.hpl.jena.query.engine1.PlanVisitorBase;
+import com.hp.hpl.jena.query.engine1.PlanWalker;
+import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-
-import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
 import com.hp.hpl.jena.sdb.layout1.CodecRDB;
 import com.hp.hpl.jena.sdb.layout1.QueryCompiler1;
 import com.hp.hpl.jena.sdb.layout1.QueryCompilerSimple;
-
+import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBase;
-
 import com.hp.hpl.jena.util.FileUtils;
-
-import arq.cmd.CmdException;
-import arq.cmd.QCmd;
-import arq.cmd.TerminateException;
-import arq.cmdline.*;
 
 /**
  * Compile and print the SQL for a SPARQL query.
@@ -45,6 +50,9 @@ import arq.cmdline.*;
 
 public class sdbprint // NOT CmdArgsDB
 {
+    static { CmdUtils.setLog4j() ; }
+
+    
     // This command knows how to create queries without needing a store or connection.
     
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
@@ -232,28 +240,41 @@ public class sdbprint // NOT CmdArgsDB
             PlanFormatter.out(System.out, plan) ;
             System.out.println(divider) ;
         }
-        
-        PlanSDB planSDB = PlanSDB.getFirstPlanSDB(qe.getPlan()) ;
 
-        if ( planSDB == null )
+        // Print all SDB things in the plan
+        PlanWalker.walk(qe.getPlan(), new Printer(store)) ;
+        
+    }
+
+
+    static class Printer extends PlanVisitorBase
+    {
+        private Store store ;
+        String separator = null ;
+
+        Printer(Store store) { this.store = store ; }
+        
+        @Override
+        public void visit(PlanElementExternal planElt)
         {
-            System.out.println("Query does not compile into a single SQL statement") ;
-            return ;
+            if ( planElt instanceof PlanSDB )
+            {
+                if ( separator != null )
+                    System.out.println(separator) ;
+                separator = divider ;
+                PlanSDB planSDB = (PlanSDB)planElt ;
+                if ( verbose )
+                {
+                    QueryCompilerBase.printBlock = false ;  // Done earlier.
+                    QueryCompilerBase.printAbstractSQL = false ;
+                    QueryCompilerBase.printDivider = divider ;
+                }
+                
+                Block block = planSDB.getBlock() ;
+                String sqlStmt = store.getQueryCompiler().asSQL(block) ;
+                System.out.println(sqlStmt) ;
+            }
         }
-        
-        if ( verbose )
-        {
-            QueryCompilerBase.printBlock = false ;  // Done earlier.
-            QueryCompilerBase.printAbstractSQL = true ;
-            QueryCompilerBase.printDivider = divider ;
-        }
-        
-        Block block = planSDB.getBlock() ;
-        String sqlStmt = store.getQueryCompiler().asSQL(block) ;
-        System.out.println(sqlStmt) ;
-        
-        if ( verbose )
-            System.out.println(divider) ;
     }
     
 }
