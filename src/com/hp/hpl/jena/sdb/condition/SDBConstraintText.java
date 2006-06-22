@@ -7,14 +7,15 @@
 package com.hp.hpl.jena.sdb.condition;
 
 import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 import org.apache.commons.logging.LogFactory;
 
-public class SQLCondition implements SDBConstraintVisitor
+public class SDBConstraintText implements SDBConstraintVisitor
 {
     private IndentedWriter out ;
     
-    public SQLCondition(IndentedWriter out) { this.out = out ; }
+    public SDBConstraintText(IndentedWriter out) { this.out = out ; }
     
     public void visit(C2 c2)
     {
@@ -29,7 +30,7 @@ public class SQLCondition implements SDBConstraintVisitor
 
     public void visit(C_Var node)
     {
-        //out.print(cxt.getAlias(node.getVar()).asString()) ;
+        out.print("?"+node.getVar().getName()) ;
     }
 
     
@@ -47,7 +48,15 @@ public class SQLCondition implements SDBConstraintVisitor
     {}
 
     public void visit(C_Regex regex)
-    {}
+    {
+        
+        out.print(String.format("regex(%s, %s",
+                  regex.getConstraint().toString(),
+                  SQLUtils.quote(regex.getPattern()))) ;
+        if ( regex.isCaseInsensitive() )
+            out.print(", \"i\"") ;
+        out.print(")") ;
+    }
 
     public void visit(C_Equals c)
     {}

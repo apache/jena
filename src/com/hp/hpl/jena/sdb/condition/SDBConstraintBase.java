@@ -44,7 +44,7 @@ public abstract class SDBConstraintBase implements SDBConstraint
     public String toString()
     {
           IndentedLineBuffer buff = new IndentedLineBuffer() ;
-          SDBConstraintVisitor v = new SQLCondition(buff.getIndentedWriter()) ;
+          SDBConstraintVisitor v = new SDBConstraintText(buff.getIndentedWriter()) ;
           this.visit(v) ;
           return buff.asString() ;
     }

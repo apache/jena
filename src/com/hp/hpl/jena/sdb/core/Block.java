@@ -207,15 +207,12 @@ public class Block implements Printable
         if ( this.blockConstraints.size() > 0 )
         {
             out.println() ;
-            out.print("(Condition") ;
-            out.incIndent() ;
             for ( SDBConstraint c : blockConstraints )
             {
-                out.println() ;
+                out.print("(Condition ") ;
                 out.print(c.toString()) ;
+                out.print(")") ;
             }
-            out.decIndent() ;
-            out.println() ;
         }
         
         if ( blockOptionals.size() > 0 )
@@ -233,6 +230,7 @@ public class Block implements Printable
             out.decIndent() ;
         }
         out.decIndent() ; // Dec-1
+        out.println();
         out.print(")") ;
     }
 }

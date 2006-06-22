@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,13 +13,12 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 // This is not a general purpose SQL writer - it needs only work with the SQL node trees
 // that the schemas generate.  In particular:
 // 1/ Many conditions are already pushed into joins - a join node
-//    is actaully restrict(join)
+//    is actually restrict(join)
 // 2/ SqlRestrict can only occur in a few places (under project, SqlRestict-SqlTable) 
 //    and the generator only covers there
 
@@ -42,7 +41,10 @@ public class GenerateSQL implements SqlNodeVisitor
         // SELECT vars
         String sep = "" ;
         if ( sqlNode.getCols().size() == 0 )
-            log.warn("No SELECT columns") ;
+        {
+            log.info("No SELECT columns") ;
+            out.print("*") ;
+        }
         
         for ( Pair<Node, SqlColumn> c : sqlNode.getCols() )
         {

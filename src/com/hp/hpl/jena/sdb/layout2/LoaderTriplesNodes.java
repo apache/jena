@@ -266,9 +266,9 @@ public abstract class LoaderTriplesNodes
 
         PreparedNode(Node node)
         {
-            lex = TableNodes.nodeToLex(node);
+            lex = NodeLayout2.nodeToLex(node);
             ValueType vType = ValueType.lookup(node);
-            typeId = TableNodes.nodeToType(node);
+            typeId = NodeLayout2.nodeToType(node);
 
             lang = "";
             datatype = "";
@@ -297,7 +297,7 @@ public abstract class LoaderTriplesNodes
             else
                 valDateTime = new Timestamp(0);
 
-            hash = TableNodes.hash(lex, lang, datatype, typeId);
+            hash = NodeLayout2.hash(lex, lang, datatype, typeId);
         }
     }
 

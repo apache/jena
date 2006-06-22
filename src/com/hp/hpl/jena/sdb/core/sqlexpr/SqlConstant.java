@@ -6,14 +6,19 @@
 
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
+
 public class SqlConstant extends SqlExprBase
 {
     private String str ;
     
     // Form already encoded for this schema
-    public SqlConstant(String str) { this.str = str ; }
+    public SqlConstant(String str) { this.str = SQLUtils.quote(str) ; }
+    public SqlConstant(long number) { this.str = Long.toString(number) ; }
     
-    public String  asString()    { return str ; }
+    public String  asSqlString()
+    { return str ; }
+    
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }
 

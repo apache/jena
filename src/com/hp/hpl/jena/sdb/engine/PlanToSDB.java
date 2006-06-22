@@ -99,7 +99,7 @@ public class PlanToSDB extends TransformCopy
             String pattern = rMap.get("a2").getConstant().getString() ;
             SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
             // I am not perfect ...
-            return new PlanSDBConstraint(c, planElt, false) ; 
+            return new PlanSDBConstraint(c, planElt, true) ; 
         }
         return super.transform(planElt) ;
     }

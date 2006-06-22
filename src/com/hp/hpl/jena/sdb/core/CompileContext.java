@@ -18,6 +18,12 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 public class CompileContext
 {
+    // a stack, surely?
+    // Things to track:
+    // query var -- triple column
+    // query var -- value column
+    // constant -- column if no hash indexing.
+    
     private Scope varAliases = new Scope() ;
     
     public boolean hasAlias(Node var) { return varAliases.containsKey(var) ; }

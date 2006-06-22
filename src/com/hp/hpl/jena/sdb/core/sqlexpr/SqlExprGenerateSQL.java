@@ -20,7 +20,7 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
 
     public void visit(SqlColumn column)     { out.print(column.asString()) ; }
     
-    public void visit(SqlConstant constant) { out.print(SQLUtils.quote(constant.asString())) ; }
+    public void visit(SqlConstant constant) { out.print(constant.asSqlString()) ; }
     
     public void visit(SqlExpr1 expr)
     {

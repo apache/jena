@@ -40,7 +40,6 @@ public class SqlExprGenerator
             
         }
         
-        
         public void visit(C_Equals c)
         {
             result = new S_Equal(compile(cxt, c.getLeft()),

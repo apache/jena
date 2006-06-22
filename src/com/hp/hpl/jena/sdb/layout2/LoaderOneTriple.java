@@ -121,18 +121,21 @@ public class LoaderOneTriple
     private static int getIndex(SDBConnection conn, Node node, boolean create) throws SQLException
     {
         try {
-            int typeId  = TableNodes.nodeToType(node) ;
-            String lex  = TableNodes.nodeToLex(node) ;
-            String lang = TableNodes.nodeToLang(node) ;
-            String datatype = "" ;
-            if ( node.isLiteral() )
-            {
-                String x = node.getLiteralDatatypeURI() ;
-                if ( x != null )
-                    datatype = x ;
-            }
-            
-            long hash = TableNodes.hash( lex, lang, datatype, typeId) ;
+            // Old - remove if the reorg is working
+//            int typeId  = TableNodes.nodeToType(node) ;
+//            String lex  = TableNodes.nodeToLex(node) ;
+//            String lang = TableNodes.nodeToLang(node) ;
+//            String datatype = "" ;
+//            if ( node.isLiteral() )
+//            {
+//                String x = node.getLiteralDatatypeURI() ;
+//                if ( x != null )
+//                    datatype = x ;
+//            }
+//            
+//            long hash = Hash.hash( lex, lang, datatype, typeId) ;
+            long hash = NodeLayout2.hash(node) ;
+            String lex  = NodeLayout2.nodeToLex(node) ;
             String hashStr = Long.toString(hash) ;
             
             String sqlStmt = strjoinNL(
@@ -164,7 +167,7 @@ public class LoaderOneTriple
     private static void insertNode(SDBConnection conn, String lex,  Node node) throws SQLException
     {
         ValueType vType = ValueType.lookup(node) ;
-        int typeId  = TableNodes.nodeToType(node) ;
+        int typeId  = NodeLayout2.nodeToType(node) ;
         
         String lang = "" ;
         String datatype = "" ;
@@ -191,7 +194,7 @@ public class LoaderOneTriple
         
         valDateTime = SQLUtils.quote(valDateTime) ;
         
-        long hash = TableNodes.hash(lex,lang,datatype,typeId);
+        long hash = NodeLayout2.hash(lex,lang,datatype,typeId);
         
         String sqlStmt = strjoinNL(
                 "INSERT INTO "+TableNodes.tableName+"(hash,lex,lang,datatype,type,vInt,vDouble,vDateTime) VALUES",

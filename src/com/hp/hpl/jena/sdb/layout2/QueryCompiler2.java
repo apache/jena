@@ -187,7 +187,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     }
     
     
-    // Non-hash version
+    // Does not use hashed into the triple table, just to access the node table.
     private SqlNode insertConstantAccesses(CompileContext context, List<Node> consts, SqlNode sqlNode)
     {   
         SqlExprList delayedConditions = new SqlExprList() ; 
@@ -196,23 +196,8 @@ public class QueryCompiler2 extends QueryCompilerBase
         
         for ( Node n : consts )
         {
-            // Get the bits and pieces for a value
-            String lexForm = (n.isURI()) ? n.getURI() : n.getLiteralLexicalForm() ;
-            String datatypeStr = null ;
-            if ( n.isLiteral() )
-                datatypeStr = n.getLiteralDatatypeURI() ;
-            if ( datatypeStr == null )
-                datatypeStr = "" ;
-            String langStr = null ;
-            if ( n.isLiteral() )
-                langStr = n.getLiteralLanguage() ;
-            if ( langStr == null )
-                langStr = "" ;
-            ValueType vType = ValueType.lookup(n) ;
-
-            // Hash
-            long hash = TableNodes.hash(lexForm,langStr,datatypeStr,vType.getTypeId());
-            SqlConstant hashValue = new SqlConstant(Long.toString(hash)) ;
+            long hash = NodeLayout2.hash(n);
+            SqlConstant hashValue = new SqlConstant(hash) ;
 
             // Access nodes table.
             
@@ -241,14 +226,17 @@ public class QueryCompiler2 extends QueryCompilerBase
                                     List<SDBConstraint> constraints, SqlExprList delayedConditions)
     {
         // This looks like assignConditions in QueryCompilerBase.
-        log.info("addRestrictions called") ;
         if ( constraints.size() == 0 )
             return sqlNode ;
+
+        log.warn("addRestrictions called (with constraints)") ;
+        
+        // 1/ Get the val columns
+        // 2/ Generate the SQL conditions
         
         SqlExprList cList = new SqlExprList() ;
         for ( SDBConstraint c : constraints )
         {
-            log.warn("addRestrictions: Needs fixing") ;
 //            SqlExpr cond = ConditionCompilerTmp.make(context, projectVarCols, c) ;
 //            // Decide where to put it
 //            

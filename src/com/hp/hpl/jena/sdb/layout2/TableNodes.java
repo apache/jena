@@ -6,17 +6,11 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+
 /**
  * @author Andy Seaborne
  * @version $Id: TableNodes.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
@@ -53,79 +47,6 @@ public class TableNodes extends SqlTable
     
     public TableNodes(String aliasName)
     { super(tableName, aliasName) ; }
-    
-    // Turn into the lexcial form
-
-    public static String nodeToLex(Node node)
-    {
-        if ( node.isURI() )        return node.getURI() ;
-        if ( node.isLiteral() )    return node.getLiteralLexicalForm() ;
-        if ( node.isBlank() )      return node.getBlankNodeId().getLabelString() ;
-        throw new SDBException("Can't create lexical representation for "+node) ;
-    }
-    
-    public static String nodeToLexTruncate(Node node, int length)
-    { return nodeToLexTruncate(node, length, null) ; }
-
-    public static String nodeToLexTruncate(Node node, int length, String logPrefix)
-    {
-        String lex = nodeToLex(node) ;
-        
-        if ( length < 0 )
-            return lex ;
-        
-        if ( lex.length() > length )
-        {
-            String tmp = "Too long ("+length+"/"+lex.length()+"): "+lex.substring(0,20)+"..." ;
-            if ( logPrefix != null )
-                tmp = logPrefix+": "+tmp ;
-            log.warn(tmp) ;
-            lex = lex.substring(0, length) ;
-        }
-        return lex ;
-    }
-    
-    public static int nodeToType(Node node)
-    {
-        return ValueType.lookup(node).getTypeId() ;
-//        ValueType vType = ValueType.lookup(node) ;
-//        if ( vType == ValueType.OTHER )
-//            throw new SDBException("Can't find node type for "+node) ;
-//        return vType.getTypeId() ;
-    }
-	
-	public static long hash(String lex, String lang, String datatype, int type)
-	{
-		String toHash = lex + "|" + lang + "|" + datatype;
-		MessageDigest digest;
-		try
-		{
-			digest = MessageDigest.getInstance("MD5");
-			digest.update(toHash.getBytes("UTF8"));
-			digest.update((byte) type);
-			byte[] hash = digest.digest();
-			BigInteger bigInt = new BigInteger(hash);
-			return bigInt.longValue();
-		}
-		catch (NoSuchAlgorithmException e)
-		{
-			e.printStackTrace();
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return -1;
-	}
-    
-     public static String nodeToLang(Node node)
-    {
-        if ( !node.isLiteral() ) return "" ;
-        String lang = node.getLiteralLanguage() ;
-        if ( lang == null ) return "" ;
-        return lang ;
-    }
 
 }
 
