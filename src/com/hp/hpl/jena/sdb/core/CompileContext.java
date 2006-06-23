@@ -20,9 +20,9 @@ public class CompileContext
 {
     // a stack, surely?
     // Things to track:
-    // query var -- triple column
-    // query var -- value column
-    // constant -- column if no hash indexing.
+    // query var --> triple column
+    // query var --> value column
+    // (constant --> column if no hash for triple -- unlikely to be needed long term)
     
     private Scope varAliases = new Scope() ;
     
