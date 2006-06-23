@@ -62,7 +62,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
             java.sql.ResultSet rs = store.getConnection().execQuery(sqlStmt) ;
             List<Node> x = block.getProjectVars() ;
             if ( x == null )
-                x = block.getAllVars() ;
+                x = block.getDefinedVars() ;
             try {
                 return assembleResults(rs, binding, x, execCxt) ;
             } finally { rs.close() ; }

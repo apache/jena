@@ -80,7 +80,7 @@ public class Block implements Printable
         projectVars.add(var) ;
     }
     
-    public List<Node>        getAllVars()           { return BlockNodes.allVars(this) ; }
+    public List<Node>        getDefinedVars()         { return BlockNodes.definedVars(this) ; }
 
     // Turn a block into another block, after substituting for variables. 
     

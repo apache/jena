@@ -226,8 +226,8 @@ public class sdbprint // NOT CmdArgsDB
         if ( verbose )
         {
             System.out.println(divider) ;
-//            query.serialize(System.out, Syntax.syntaxARQ) ;
-//            System.out.println(divider) ;
+            query.serialize(System.out, Syntax.syntaxARQ) ;
+            System.out.println(divider) ;
             query.serialize(System.out, Syntax.syntaxPrefix) ;
             System.out.println(divider) ;
         }

@@ -106,9 +106,6 @@ public class RunSDB
 //            "-v",
 //        } ;
         
-        
-        
-        
         // The database is protected in other ways than user/password
         String a[] = {"--debug", "--sdb=sdb.ttl"} ;
       

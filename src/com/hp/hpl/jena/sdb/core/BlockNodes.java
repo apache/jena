@@ -28,7 +28,7 @@ public class BlockNodes implements BlockProc
         return proc.getNodes() ;
     }
     
-    public static List<Node> allVars(Block block)
+    public static List<Node> definedVars(Block block)
     {
         BlockNodes proc = new BlockNodes(true, false) ;
         block.apply(proc, true) ;
@@ -59,7 +59,7 @@ public class BlockNodes implements BlockProc
     
     public void restriction(SDBConstraint c)
     { 
-        System.err.println("BlockNodes: Condition checking not done") ;
+        //System.err.println("BlockNodes: Condition checking not done") ;
     }
     
     public void optional(Block optBlock)

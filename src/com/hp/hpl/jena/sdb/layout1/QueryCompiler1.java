@@ -64,8 +64,13 @@ public class QueryCompiler1
     @Override
     protected SqlNode finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
     {
+        // Add projection
         List<Pair<Node, SqlColumn>>cols = new ArrayList<Pair<Node, SqlColumn>>() ;
-        for ( Node v : block.getAllVars() )
+        List<Node> x = block.getProjectVars() ;
+        
+        if ( x == null )
+            x = block.getDefinedVars() ;
+        for ( Node v : block.getDefinedVars() )
         {
             if ( ! v.isVariable() )
             {

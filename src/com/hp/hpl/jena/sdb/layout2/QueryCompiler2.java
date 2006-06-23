@@ -96,7 +96,7 @@ public class QueryCompiler2 extends QueryCompilerBase
         // Add projection
         List<Node> x = block.getProjectVars() ;
         if ( x == null )
-            x = block.getAllVars() ;
+            x = block.getDefinedVars() ;
         SqlNode n =  makeProject(projectVarCols, sqlNode, x) ;
         
         // Clearup
