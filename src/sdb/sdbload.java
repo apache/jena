@@ -50,9 +50,12 @@ public class sdbload extends CmdArgsDB
         super(args);
         add(argDeclTruncate) ;
     }
-    
+
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
+    
+    @Override
+    protected String getSummary()  { return getCommandName()+" <SPEC> file ..."; }
     
     @Override
     protected void checkCommandLine()
@@ -72,7 +75,7 @@ public class sdbload extends CmdArgsDB
         if ( first )
         {
             if ( contains(argDeclTruncate) ) 
-                super.getStore().getTableFormatter().truncate() ;
+                getModStore().getStore().getTableFormatter().truncate() ;
             first = false ;
         }
         
@@ -82,8 +85,8 @@ public class sdbload extends CmdArgsDB
         {
         	//System.out.println(TableUtils.dumpDB(getConnection().getSqlConnection()));
             System.out.println("Start load: "+arg) ;
-            monitor = new Monitor(getStore().getLoader().getChunkSize()) ;
-            getGraph().getEventManager().register(monitor) ;
+            monitor = new Monitor(getModStore().getStore().getLoader().getChunkSize()) ;
+            getModStore().getGraph().getEventManager().register(monitor) ;
         }
 
         // Crude but convenient
@@ -91,27 +94,27 @@ public class sdbload extends CmdArgsDB
             arg = "file:"+arg ;
 
         String lang = FileUtils.guessLang(arg) ;
-        startTimer() ;
+        getModTime().startTimer() ;
         
         // Load here
         if ( true )
-            getModel().read(arg, lang) ;
+            getModStore().getModel().read(arg, lang) ;
         else
             // Use bulkloader directly
             ;
         
-        long timeMilli = endTimer() ;
+        long timeMilli = getModTime().endTimer() ;
             
         if ( monitor != null )
         {
             System.out.println("Added "+monitor.addCount+" triples") ; 
         
-            if ( timeCommand && !quiet )
+            if ( getModTime().timingEnabled() && !quiet )
                 System.out.printf("Loaded in %.3f seconds [%d triples/s]\n", 
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
         }
         
-        closedown() ;
+        getModStore().closedown() ;
         return true ;
     }
         

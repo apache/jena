@@ -5,7 +5,6 @@
 
 package sdb;
 
-
 import junit.framework.TestSuite;
 import sdb.cmd.CmdArgsDB;
 
@@ -44,8 +43,10 @@ public class sdbtest extends CmdArgsDB
 
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
-
-
+    
+    @Override
+    protected String getSummary()  { return Utils.className(this)+" <SPEC> --schema schemaName [--direct] [manifest]" ; }
+    
     @Override
     protected void checkCommandLine()
     { }
@@ -82,7 +83,7 @@ public class sdbtest extends CmdArgsDB
             System.out.println("Manifest: "+manifest) ;
         }
         TestSuite ts = new TestSuite() ;
-        ts.addTest(QueryTestSDBFactory.make(getStore(), manifest)) ;
+        ts.addTest(QueryTestSDBFactory.make(getModStore().getStore(), manifest)) ;
         SimpleTestRunner.runAndReport(ts) ;
     }
 }

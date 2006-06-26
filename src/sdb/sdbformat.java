@@ -21,8 +21,6 @@ import com.hp.hpl.jena.sdb.store.StoreFormatter;
 
 public class sdbformat extends CmdArgsDB
 {
-    public static final String usage = "sdbformat --sdb <SPEC> --dbName <NAME>" ;
-           
     public static void main(String [] argv)
     {
         new sdbformat(argv).mainAndExit() ;
@@ -37,24 +35,28 @@ public class sdbformat extends CmdArgsDB
     protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
+    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> --dbName <NAME>" ; }
+
+    @Override
     protected void checkCommandLine()
     {
         if ( getNumPositional() > 0 )
             cmdError("No positional arguments allowed", true) ;
-        if ( !contains(super.argDeclDbName) )
+        // safety check
+        if ( !contains("dbName") )
             cmdError("Must give the name of the database", true) ;
     }
     
     @Override
     protected void exec0()
     {
-        Store store = getStore() ;
+        Store store = getModStore().getStore() ;
         StoreFormatter f = store.getTableFormatter() ; 
         f.format() ;
         
         //getStore().getTableFormatter().format() ;
         // For hsql -- shutdown when finished
-        SDBConnection conn = getConnection();
+        SDBConnection conn = getModStore().getConnection();
         try
 		{
 			if (conn.getSqlConnection().getMetaData().getDatabaseProductName().contains("HSQL")) {

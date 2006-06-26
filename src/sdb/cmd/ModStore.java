@@ -8,15 +8,14 @@ package sdb.cmd;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdTime;
+import arq.cmdline.ArgModule;
+import arq.cmdline.CmdArgModule;
 
 import com.hp.hpl.jena.sdb.ModelSDB;
-import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
@@ -35,7 +34,7 @@ import com.hp.hpl.jena.shared.NotFoundException;
  * @version $Id: CmdStore.java,v 1.1 2006/04/22 19:51:12 andy_seaborne Exp $
  */ 
 
-public abstract class CmdStore extends CmdTime
+public class ModStore implements ArgModule 
 {
     // -------- This ...
     protected final ArgDecl argDeclSDBdesc       = new ArgDecl(true, "sdb");
@@ -90,35 +89,36 @@ public abstract class CmdStore extends CmdTime
     DatasetStore dataset = null ;
     ModelSDB model = null ;
     
-    protected CmdStore(String argv[])
+    public ModStore()
     {
-        super(argv) ;
-        SDB.init() ;
-
-        add(argDeclSDBdesc) ;
-        // Connection-level
-        add(argDeclJdbcURL);
-        add(argDeclJdbcDriver);
-        add(argDeclDbHost);
-        add(argDeclDbName);
-        add(argDeclDbArgs);
-        add(argDeclDbType);
-        add(argDeclDbUser);
-        add(argDeclDbPassword);
-
-        // Store
-        add(argDeclLayout) ;
-        add(this.argDeclMySQLEngine) ;
     }
     
-    @Override 
-    public void process()
+    public void registerWith(CmdArgModule cmdLine)
     {
-       super.process();
+        cmdLine.add(argDeclSDBdesc) ;
+        // Connection-level
+        cmdLine.add(argDeclJdbcURL);
+        cmdLine.add(argDeclJdbcDriver);
+        cmdLine.add(argDeclDbHost);
+        cmdLine.add(argDeclDbName);
+        cmdLine.add(argDeclDbArgs);
+        cmdLine.add(argDeclDbType);
+        cmdLine.add(argDeclDbUser);
+        cmdLine.add(argDeclDbPassword);
+
+        // Store
+        cmdLine.add(argDeclLayout) ;
+        cmdLine.add(argDeclMySQLEngine) ;
+    }
+    
+    public void checkCommandLine(CmdArgModule cmdLine)
+    {}
         
-       if (contains(argDeclSDBdesc))
+    public void process(CmdArgModule cmdLine)
+    {
+       if (cmdLine.contains(argDeclSDBdesc))
         {
-            String f = getArg(argDeclSDBdesc).getValue() ;
+            String f = cmdLine.getArg(argDeclSDBdesc).getValue() ;
             try {
                 storeDesc = StoreDesc.read(f) ;
             } catch (SDBException ex)
@@ -135,27 +135,27 @@ public abstract class CmdStore extends CmdTime
         }
         
         // Overrides.
-        if (contains(argDeclDbHost))
-            storeDesc.connDesc.host = getArg(argDeclDbHost).getValue();
+        if (cmdLine.contains(argDeclDbHost))
+            storeDesc.connDesc.host = cmdLine.getArg(argDeclDbHost).getValue();
         
-        if (contains(argDeclDbName))
-            storeDesc.connDesc.name = getArg(argDeclDbName).getValue();
+        if (cmdLine.contains(argDeclDbName))
+            storeDesc.connDesc.name = cmdLine.getArg(argDeclDbName).getValue();
         
-        if (contains(argDeclDbType))
-            storeDesc.connDesc.type = getArg(argDeclDbType).getValue();
+        if (cmdLine.contains(argDeclDbType))
+            storeDesc.connDesc.type = cmdLine.getArg(argDeclDbType).getValue();
 
-        if (contains(argDeclDbArgs))
-            storeDesc.connDesc.argStr = getArg(argDeclDbArgs).getValue();
+        if (cmdLine.contains(argDeclDbArgs))
+            storeDesc.connDesc.argStr = cmdLine.getArg(argDeclDbArgs).getValue();
 
-        if (contains(argDeclDbUser))
-            storeDesc.connDesc.user = getArg(argDeclDbUser).getValue();
+        if (cmdLine.contains(argDeclDbUser))
+            storeDesc.connDesc.user = cmdLine.getArg(argDeclDbUser).getValue();
 
-        if (contains(argDeclDbPassword))
-            storeDesc.connDesc.password = getArg(argDeclDbPassword).getValue();
+        if (cmdLine.contains(argDeclDbPassword))
+            storeDesc.connDesc.password = cmdLine.getArg(argDeclDbPassword).getValue();
 
-        if (contains(argDeclLayout))
+        if (cmdLine.contains(argDeclLayout))
         {
-            String layoutName = getArg(argDeclLayout).getValue() ;
+            String layoutName = cmdLine.getArg(argDeclLayout).getValue() ;
             // TODO LayoutEnum
             
             // Crude fixup
@@ -170,7 +170,7 @@ public abstract class CmdStore extends CmdTime
 
         //storeDesc.connDesc.initJDBC() ;
         
-        if ( debug )
+        if ( false )
         {
             //System.out.println("URL       = " + storeDesc.connDesc.URL);
             System.out.println("Type      = " + storeDesc.connDesc.type);
@@ -203,8 +203,8 @@ public abstract class CmdStore extends CmdTime
         
         driverName = storeDesc.connDesc.driver ;
         
-        if (contains(argDeclJdbcDriver))
-            driverName = getArg(argDeclJdbcDriver).getValue();
+        if (cmdLine.contains(argDeclJdbcDriver))
+            driverName = cmdLine.getArg(argDeclJdbcDriver).getValue();
 
         if ( driverName == null )
             driverName = jdbcDrivers.get(storeDesc.connDesc.type.toLowerCase());
@@ -218,14 +218,14 @@ public abstract class CmdStore extends CmdTime
         JDBC.loadDriver(driverName);
     }
     
-    protected Store getStore()
+    public Store getStore()
     { 
         if ( store == null )
             store = StoreFactory.create(storeDesc, getConnection()) ;
         return store ; 
     }
 
-    protected DatasetStore getDataset()
+    public DatasetStore getDataset()
     { 
         if ( dataset == null )
             dataset = new DatasetStore(getStore()) ;
@@ -233,19 +233,19 @@ public abstract class CmdStore extends CmdTime
         return dataset ;
     }
     
-    protected ModelSDB getModel()
+    public ModelSDB getModel()
     {
         if ( model == null )
             model = SDBFactory.connectModel(getStore()) ;
         return model ;
     }
     
-    protected GraphSDB getGraph()
+    public GraphSDB getGraph()
     {
         return getModel().getGraphSDB() ;
     }
     
-    protected SDBConnection getConnection()
+    public SDBConnection getConnection()
     {
         if ( connection == null )
             connection = SDBFactory.createConnection(storeDesc.connDesc) ;
@@ -256,7 +256,7 @@ public abstract class CmdStore extends CmdTime
     boolean hsqlDetech = false ;
     boolean isHSQL = false ;
     
-    protected boolean isHSQL()
+    public boolean isHSQL()
     {
         if ( !hsqlDetech )
         {
@@ -268,25 +268,10 @@ public abstract class CmdStore extends CmdTime
         return isHSQL ;
     }
     
-    protected void closedown()
+    public void closedown()
     {
         if ( store != null )
             store.close() ;
-    }
-
-    protected void addSpecUsage(List<String> u)
-    {
-        u.add("--sdb=SDB") ;
-        u.add("--dbName=") ;
-        u.add("--dbHost=") ;
-        u.add("--dbType=") ;
-        u.add("--dbArgs=") ;
-        u.add("--dbUser=") ;
-        u.add("--dbPassword=") ;
-        u.add("--layout=") ;
-        u.add("--engine=  [MySQL]") ;
-        u.add("--jdbc=") ; 
-        u.add("--jdbcDriver=") ;
     }
 }
 

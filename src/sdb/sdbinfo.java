@@ -47,6 +47,9 @@ public class sdbinfo extends CmdArgsDB
 
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
+    
+    @Override
+    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC>" ; }
 
     @Override
     protected void checkCommandLine()
@@ -58,7 +61,7 @@ public class sdbinfo extends CmdArgsDB
     @Override
     protected void exec0()
     {
-        StoreConfig sConf = getStore().getConfiguration() ;
+        StoreConfig sConf = getModStore().getStore().getConfiguration() ;
         if ( sConf == null )
         {
             System.out.println("Configuration is null") ;

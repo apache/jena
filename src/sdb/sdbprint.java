@@ -8,10 +8,7 @@ package sdb;
 
 import java.io.IOException;
 
-import arq.cmd.CmdException;
-import arq.cmd.CmdUtils;
-
-import arq.cmd.TerminationException;
+import arq.cmd.*;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdLineArgs;
 
@@ -125,11 +122,6 @@ public class sdbprint // NOT CmdArgsDB
             System.out.println("SDB Version: "+SDB.VERSION+"  ARQ Version: "+ARQ.VERSION+"  Jena: "+Jena.VERSION+"") ;
             throw new TerminationException(0) ;
         }
-        
-        // ==== General things
-        verbose = cl.contains(verboseDecl) ;
-        boolean quiet = cl.contains(quietDecl) ;
-        
         
 //        if ( cl.contains(querySyntaxDecl) )
 //        {

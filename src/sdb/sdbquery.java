@@ -13,6 +13,7 @@ import sdb.cmd.CmdArgsDB;
 import arq.cmd.QExec;
 import arq.cmd.ResultsFormat;
 import arq.cmdline.ArgDecl;
+import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
@@ -42,6 +43,8 @@ public class sdbquery extends CmdArgsDB
     private static ArgDecl argDeclDirect  = new ArgDecl(false,  "direct") ;
     private static ArgDecl argDeclRepeat   = new ArgDecl(true,  "repeat") ;
     
+    ModTime modTime = new ModTime() ;
+    
     boolean printResults = true ;
     int repeatCount = 1 ;
 
@@ -53,24 +56,26 @@ public class sdbquery extends CmdArgsDB
     protected sdbquery(String[] args)
     {
         super(args);
-        add(argDeclQuery, "--query", "The query") ;
+        add(argDeclQuery) ;
         add(argDeclDirect) ;
         add(argDeclRepeat) ;
     }
+
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
+    
+    @Override
+    protected String getSummary()  { return getCommandName()+" <SPEC> [--direct] [ <query> | --query=file ]"; }
 
     @Override
     protected void checkCommandLine()
     {
+        
         if ( contains(argDeclQuery) && getNumPositional() > 0 )
             cmdError("Can't have both --query and a positional query string", true) ;
             
         if ( !contains(argDeclQuery) && getNumPositional() == 0 )
             cmdError("No query to execute", true) ;
-        
-        if ( quiet )
-            printResults = false ;
         
         if ( contains(argDeclRepeat) )
             repeatCount = Integer.parseInt(getArg(argDeclRepeat).getValue()) ;
@@ -122,22 +127,22 @@ public class sdbquery extends CmdArgsDB
     
     protected void execQuery(String queryStr)
     {
-        if ( timeCommand )
+        if ( modTime.timingEnabled() )
         {
             // Setup costs : fluish classes into memory and establish connection
-            startTimer() ;
-            getStore() ;
-            long connectTime = endTimer() ;
+            modTime.startTimer() ;
+            getModStore().getStore() ;
+            long connectTime =  modTime.endTimer() ;
             //System.out.println("Connect time:    "+timeStr(connectTime)) ;
             
-            startTimer() ;
+            modTime.startTimer() ;
             Query query = QueryFactory.create(queryStr) ;
 //            QueryExecution qExec = QueryExecutionFactory.create(query, getSDBModel()) ;
 //            qExec.close() ;
-            long javaTime = endTimer() ;
+            long javaTime = modTime.endTimer() ;
             
             if ( verbose )
-                System.out.println("Class load time: "+timeStr(javaTime)) ;
+                System.out.println("Class load time: "+modTime.timeStr(javaTime)) ;
         }
         
         
@@ -157,14 +162,14 @@ public class sdbquery extends CmdArgsDB
         try {
             for ( int i = 0 ; i < repeatCount ; i++ )
             {
-                startTimer() ;
+                modTime.startTimer() ;
                 Query query = QueryFactory.create(queryStr) ;
-                QueryExecution qExec = QueryExecutionFactory.create(query, getDataset()) ;
+                QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
                 QExec.executeQuery(query, qExec, fmt) ;
                 qExec.close() ;
-                long queryTime = endTimer() ;
+                long queryTime = modTime.endTimer() ;
                 totalTime += queryTime ;
             }
         } catch (QueryException ex)
@@ -172,7 +177,7 @@ public class sdbquery extends CmdArgsDB
             System.out.println("Query exception: "+ex.getMessage()) ;
         }
         finally {
-            if ( timeCommand )
+            if ( modTime.timingEnabled() )
             {
                 System.out.println("Execute time:    "+String.format("%.4f", new Double(totalTime/(1000.0*repeatCount)) )) ;
             }

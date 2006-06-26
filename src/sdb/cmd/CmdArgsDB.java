@@ -6,30 +6,38 @@
 
 package sdb.cmd;
 
+import arq.cmdline.CmdArgModule;
+import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.shared.Command;
 
-public abstract class CmdArgsDB extends CmdStore
+public abstract class CmdArgsDB extends CmdArgModule
 {
+    
+    
     static {
         //  Tune N3 output for result set output.
         System.setProperty("usePropertySymbols",   "false") ;
         System.setProperty("objectLists" ,         "false") ;
         System.setProperty("minGap",               "2") ;
         System.setProperty("propertyColumn",       "14") ;
-    }    
+    }
+    
+    ModStore modStore = new ModStore() ;
+    ModTime  modTime  = new ModTime() ;
 
     protected CmdArgsDB(String argv[])
     {
         super(argv) ;
+        addModule(modStore) ;
+        addModule(modTime) ;
     }
     
-    @Override 
-    public void process()
-    {
-        super.process();
-    }
+    protected void setModStore(ModStore modStore) { this.modStore = modStore ; }
+    
+    protected ModStore getModStore() { return modStore  ; }
+    protected ModTime getModTime()   { return modTime  ; }
     
     protected abstract void exec0() ;
     // true means continue transaction
@@ -50,7 +58,7 @@ public abstract class CmdArgsDB extends CmdStore
     protected void execZero()
     {
         exec0() ;
-        closedown() ;
+        modStore.closedown() ;
     }
 
     private int index ;
@@ -60,7 +68,7 @@ public abstract class CmdArgsDB extends CmdStore
         
         while ( index < getNumPositional() )
         {
-            getStore().getConnection().executeInTransaction(new Command(){
+            modStore.getStore().getConnection().executeInTransaction(new Command(){
                 public Object execute()
                 {
                     for ( ; index < getNumPositional() ; )
@@ -74,7 +82,7 @@ public abstract class CmdArgsDB extends CmdStore
                     return null ;
                 }}) ;
         }
-        closedown() ;
+        modStore.closedown() ;
     }
 }
 

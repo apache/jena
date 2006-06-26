@@ -23,8 +23,6 @@ public class sdbsql extends CmdArgsDB
     
     static public final String usage = "sdbsql --sdb <SPEC> SQLSTRING | --file=FILE" ;
     
-    boolean quietMode = false ;
-    
     public static void main (String [] argv)
     {
         new sdbsql(argv).mainAndExit() ;
@@ -33,11 +31,15 @@ public class sdbsql extends CmdArgsDB
     private sdbsql(String[] argv)
     {
         super(argv) ;
-        add(argDeclQuery) ;
+        add(argDeclQuery, "--file=", "SQL command to execute (or positional arguments)") ;
+        // default is time off
     }
     
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
+    
+    @Override
+    protected String getSummary()  { return getCommandName()+" --sdb <SPEC> SQLSTRING | --file=FILE"; }
 
     @Override
     protected void checkCommandLine()
@@ -50,9 +52,6 @@ public class sdbsql extends CmdArgsDB
         
         if ( getNumPositional() > 1 )
             cmdError("Too many statements to execute", true) ;
-        
-        if ( quiet )
-            quietMode = true ;
     }
     
     @Override
@@ -76,12 +75,12 @@ public class sdbsql extends CmdArgsDB
         if ( sqlStmt.startsWith("@") ) 
             sqlStmt = FileManager.get().readWholeFileAsUTF8(sqlStmt.substring(1)) ;
         
-        startTimer() ;
+        getModTime().startTimer() ;
         long x = 0 ;
         try {
-            ResultSet rs = getConnection().execQuery(sqlStmt) ;
-            x = readTimer() ;
-            if ( quietMode )
+            ResultSet rs = getModStore().getConnection().execQuery(sqlStmt) ;
+            x = getModTime().readTimer() ;
+            if ( quiet )
                 RS.consume(rs) ;
             else
                 RS.printResultSet(rs) ;
@@ -90,9 +89,9 @@ public class sdbsql extends CmdArgsDB
             System.err.println("SQL Exception: "+ex.getMessage()) ;
             return false ;
         }
-        long time = endTimer() ;
-        if ( timeCommand )
-            System.out.println("Query: "+timeStr(time)+"("+timeStr(x)+"/"+timeStr(time-x)+")") ; 
+        long time = getModTime().endTimer() ;
+        if ( getModTime().timingEnabled() )
+            System.out.println("Query: "+getModTime().timeStr(time)+"("+getModTime().timeStr(x)+"/"+getModTime().timeStr(time-x)+")") ; 
         
         return false ;
     }

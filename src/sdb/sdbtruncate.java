@@ -19,8 +19,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class sdbtruncate extends CmdArgsDB
 {
-    public static final String usage = "sdbtruncate --sdb <SPEC> --dbName <NAME>" ;
-                                                    
     public static void main (String [] argv)
     {
         new sdbtruncate(argv).mainAndExit() ;
@@ -34,22 +32,26 @@ public class sdbtruncate extends CmdArgsDB
     
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
-
+    
+    @Override
+    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> --dbName <NAME>" ; }
+    
     @Override
     protected void checkCommandLine()
     {
         if ( getNumPositional() > 0 )
             cmdError("No positional arguments allowed", true) ;
-        if ( !contains(super.argDeclDbName) )
+        // Safety check
+        if ( !contains("dbName") )
             cmdError("Must give the name of the database", true) ;
     }
     
     @Override
     protected void exec0()
     {
-        getStore().getTableFormatter().truncate() ;
+        getModStore().getStore().getTableFormatter().truncate() ;
 //      For hsql -- shutdown when finished
-        SDBConnection conn = getConnection();
+        SDBConnection conn = getModStore().getConnection();
         try
         {
             if (conn.getSqlConnection().getMetaData().getDatabaseProductName().contains("HSQL")) {

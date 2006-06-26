@@ -47,10 +47,13 @@ public class sdbdump extends CmdArgsDB
     protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
+    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> [--format syntax]" ; }
+
+    @Override
     protected void checkCommandLine()
     {
         if ( getNumPositional() > 0 )
-            cmdError("No positional arguments allowed") ;
+            cmdError("No positional arguments allowed", true) ;
     }
     
     @Override
@@ -64,7 +67,7 @@ public class sdbdump extends CmdArgsDB
             System.out.println("Debug: syntax is "+syntax) ;
         
         try {
-            getModel().write(System.out, syntax) ;
+            getModStore().getModel().write(System.out, syntax) ;
         } catch (Exception ex)
         {
             System.err.println("Exception: "+ex+" :: "+ex.getMessage()) ;
