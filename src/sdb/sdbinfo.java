@@ -4,8 +4,8 @@
  */
 
 package sdb;
-import java.util.List;
 
+import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 
@@ -41,12 +41,12 @@ public class sdbinfo extends CmdArgsDB
     
     protected sdbinfo(String[] args)
     {
-        super("sdbinfo", args);
+        super(args);
         add(argDeclFormat) ;
     }
 
     @Override
-    protected void addCmdUsage(List<String> acc) { acc.add(usage) ; }
+    protected String getCommandName() { return Utils.className(this) ; }
 
     @Override
     protected void checkCommandLine()

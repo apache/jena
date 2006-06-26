@@ -26,6 +26,7 @@ import com.hp.hpl.jena.query.util.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
@@ -125,6 +126,7 @@ public class QueryCompiler2 extends QueryCompilerBase
                 // Skip blank node variables and system variables.
                 continue ;
             
+            // TODO Check this - use of Node here is odd
             String n = p.car().getName() ;
             Node nLex = Node.createVariable(n+"$lex") ;
             SqlColumn cLex = new SqlColumn(p.cdr().getTable(), "lex") ;
@@ -225,43 +227,53 @@ public class QueryCompiler2 extends QueryCompilerBase
     private SqlNode addRestrictions(CompileContext context, SqlNode sqlNode,
                                     List<SDBConstraint> constraints, SqlExprList delayedConditions)
     {
+        // TODO Place restriction in best place.
+        // i.e. inlne with basic block processing
+        // Sort out out of scope/place issues
+
+        
         // This looks like assignConditions in QueryCompilerBase.
         if ( constraints.size() == 0 )
             return sqlNode ;
 
-        log.warn("addRestrictions called (with constraints)") ;
-        
         // 1/ Get the val columns
         // 2/ Generate the SQL conditions
+        
+        CompileContext valContext = new CompileContext() ;
         
         SqlExprList cList = new SqlExprList() ;
         for ( SDBConstraint c : constraints )
         {
-//            SqlExpr cond = ConditionCompilerTmp.make(context, projectVarCols, c) ;
-//            // Decide where to put it
-//            
-//            // Consider { ?x OPT { ?x regex(?x) } }
-//            // Consider { ?x OPT { ... regex(?x) } }
-//            // The offramp column is in the outer LJ
-//            
-//            boolean hereAndNow = true ; 
-//            // See also assignConditions
-//            if ( cond.getLeft() != null && cond.getLeft().isColumn() )
-//                if ( ! sqlNode.usesColumn(cond.getLeft().asColumn()) )
-//                    hereAndNow = false ;
-//            if ( cond.getRight() != null && cond.getRight().isColumn() )
-//                if ( ! sqlNode.usesColumn(cond.getRight().asColumn()) )
-//                    hereAndNow = false ;
-//            if ( hereAndNow )
-//                cList.add(cond) ;
-//            else
-//                delayedConditions.add(cond) ;
+            List<Var> acc = new ArrayList<Var>() ;
+            c.varsMentioned(acc) ;
+            for ( Var v : acc )
+            {
+                SqlColumn col = context.getAlias(v.asNode()) ; // from triple pattern
+                if ( col == null )
+                {
+                    // Not in scope.
+                    log.info("Var not in scope for value of expression: "+v) ;
+                    continue ;
+                }
+                // ASSUME lexical/string form needed 
+                SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+                // Slurp the value up.
+                sqlNode = innerJoin(context, sqlNode, nTable, delayedConditions) ;
+                // Record it
+                valContext.setAlias(v.asNode(), col) ;
+            }
         }
-        
-        
-        SqlNode r = new SqlRestrict(null, sqlNode, cList) ; // Name?
-        return r ;
+        // valContext is now all the required values.
+        SqlExprList exprs = new SqlExprList() ;
+        for ( SDBConstraint c : constraints )
+        {
+            SqlExpr e = c.asSqlExpr(valContext) ;
+            exprs.add(e) ;
+        }
+        sqlNode = new SqlRestrict(/*context.allocAlias("R")*/null, sqlNode, exprs) ;
+        return sqlNode ;
     }
+
 
     private SqlNode extractResults(CompileContext context,
                                    List<Node>vars, SqlNode sqlNode,

@@ -85,6 +85,17 @@ public class PlanToSDB extends TransformCopy
                                                         new String[]{ "a1" , "a2" },
                                                         new Action[]{ new ActionMatchVar() ,
                                                                       new ActionMatchString()}) ;
+    
+    // --- starts-with
+    private static ExprPattern startsWith1 = new ExprPattern("fn:starts-with(?a1, ?a2)",
+                                                             new String[]{ "a1" , "a2" },
+                                                             new Action[]{ new ActionMatchVar() ,
+                                                                           new ActionMatchString()}) ;
+
+    private static ExprPattern startsWith2 = new ExprPattern("fn:starts-with(str(?a1), ?a2)",
+                                                             new String[]{ "a1" , "a2" },
+                                                             new Action[]{ new ActionMatchVar() ,
+                                                                           new ActionMatchString()}) ;
     @Override
     public PlanElement transform(PlanFilter planElt)
     {
@@ -98,9 +109,20 @@ public class PlanToSDB extends TransformCopy
             Var var = new Var(rMap.get("a1").getVar()) ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
+            // IsNotNull AND ...
             // I am not perfect ...
             return new PlanSDBConstraint(c, planElt, true) ; 
         }
+        
+        if ( (rMap = startsWith1.match(expr)) != null )
+        {
+            log.info("startsWith - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+            Var var = new Var(rMap.get("a1").getVar()) ;
+            String pattern = rMap.get("a2").getConstant().getString() ;
+            
+            // becomes; isNotNull(var) AND var LIKE 'pattern%'
+        }
+        
         return super.transform(planElt) ;
     }
     

@@ -7,12 +7,12 @@
 package sdb;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
-import arq.cmd.TerminateException;
+import arq.cmd.TerminationException;
 
+import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreFormatter;
@@ -30,11 +30,11 @@ public class sdbformat extends CmdArgsDB
     
     protected sdbformat(String[] args)
     {
-        super("sdbformat", args);
+        super(args);
     }
 
     @Override
-    protected void addCmdUsage(List<String> acc) { acc.add(usage) ; }
+    protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
     protected void checkCommandLine()
@@ -72,7 +72,7 @@ public class sdbformat extends CmdArgsDB
     protected boolean exec1(String arg)
     {
         System.err.println("Unexpected positional argument") ;
-        throw new TerminateException(99) ;
+        throw new TerminationException(99) ;
     }
 }
 

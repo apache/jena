@@ -240,6 +240,32 @@ public class TestExprMatch
                 mapAction) ;
     }
 
+    @Test public void function_1()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "?x") ;
+        
+        match("fn:not(?x)",
+              "fn:not(?a1)",
+              mapAction,
+              mapResult) ;
+    }
+    
+    @Test public void function_2()
+    {
+        MapAction mapAction = new MapAction() ;
+        mapAction.put("a1", new ActionMatchVar()) ;
+        
+        MapResult mapResult = new MapResult() ;
+        mapResult.put("a1", "?x") ;
+        
+        noMatch("fn:not(?x)",
+                "fn:notNot(?a1)",
+                mapAction) ;
+    }
     //    //Run JUnit4 tests in a JUnit3 environment
     //    public static junit.framework.Test suite()
     //    { 

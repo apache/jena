@@ -118,6 +118,11 @@ class MatchVisitor implements ExprVisitor
         if ( patExpr.numArgs() != funcTarget.numArgs() )
             throw new NoExprMatch("Different arity: "+patExpr.numArgs()+"/"+funcTarget.numArgs()) ;
         
+        // Either both null (some built-in) or both the same IRI 
+        if ( ! ( patExpr.getFunctionIRI() == null && funcTarget.getFunctionIRI() == null ) )
+            if ( ! patExpr.getFunctionIRI().equals(funcTarget.getFunctionIRI()) )
+                throw new NoExprMatch("Different functions: "+patExpr.getFunctionIRI()+" "+funcTarget.getFunctionIRI()) ;
+        
         for ( int i = 1 ; i <= funcTarget.numArgs() ; i++ )
         {
             // Recurse, breaking up the target. 

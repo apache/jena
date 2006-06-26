@@ -1,14 +1,17 @@
 PREFIX   :      <http://example/>
-PREFIX  dc10:     <http://purl.org/dc/elements/1.0/>
-PREFIX  dc11:     <http://purl.org/dc/elements/1.1/>
+PREFIX  dc10:   <http://purl.org/dc/elements/1.0/>
+PREFIX  dc11:   <http://purl.org/dc/elements/1.1/>
 PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  fn:     <http://www.w3.org/2005/xpath-functions#> 
 
 SELECT ?name1
 WHERE {
    ?a dc10:title "thing1" .  
    ?a dc10:title ?name  
    FILTER regex(?name, "smith") 
-##   OPTIONAL { ?a dc10:creator ?name1 }
+   FILTER fn:starts-with(?name, "ABC")
+   FILTER fn:ends-with(?name, "ABCD")
+   OPTIONAL { ?a dc10:creator ?name1 }
 ##   OPTIONAL { ?a dc11:creator ?c .
 ##               ?c rdf:value ?name2 }
 }

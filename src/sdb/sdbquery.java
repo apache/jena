@@ -7,7 +7,6 @@ package sdb;
 
 
 import java.util.Iterator;
-import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
@@ -18,6 +17,7 @@ import arq.cmdline.ArgDecl;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
 import com.hp.hpl.jena.util.FileManager;
@@ -52,26 +52,24 @@ public class sdbquery extends CmdArgsDB
    
     protected sdbquery(String[] args)
     {
-        super("sdbquery", args);
-        add(argDeclQuery) ;
+        super(args);
+        add(argDeclQuery, "--query", "The query") ;
         add(argDeclDirect) ;
         add(argDeclRepeat) ;
     }
-
     @Override
-    protected void addCmdUsage(List<String> acc) { acc.add(usage) ; }
+    protected String getCommandName() { return Utils.className(this) ; }
 
     @Override
     protected void checkCommandLine()
     {
-        
         if ( contains(argDeclQuery) && getNumPositional() > 0 )
             cmdError("Can't have both --query and a positional query string", true) ;
             
         if ( !contains(argDeclQuery) && getNumPositional() == 0 )
             cmdError("No query to execute", true) ;
         
-        if ( contains(argDeclQuiet) )
+        if ( quiet )
             printResults = false ;
         
         if ( contains(argDeclRepeat) )
@@ -164,7 +162,7 @@ public class sdbquery extends CmdArgsDB
                 QueryExecution qExec = QueryExecutionFactory.create(query, getDataset()) ;
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
-                QExec.doQuery(query, qExec, fmt) ;
+                QExec.executeQuery(query, qExec, fmt) ;
                 qExec.close() ;
                 long queryTime = endTimer() ;
                 totalTime += queryTime ;

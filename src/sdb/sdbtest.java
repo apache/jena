@@ -5,12 +5,12 @@
 
 package sdb;
 
-import java.util.List;
 
 import junit.framework.TestSuite;
 import sdb.cmd.CmdArgsDB;
 
 import com.hp.hpl.jena.query.junit.SimpleTestRunner;
+import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
  
@@ -39,11 +39,12 @@ public class sdbtest extends CmdArgsDB
 
     protected sdbtest(String[] args)
     {
-        super("sdbtest", args);
+        super(args);
     }
 
     @Override
-    protected void addCmdUsage(List<String> acc) { acc.add(usage) ; }
+    protected String getCommandName() { return Utils.className(this) ; }
+
 
     @Override
     protected void checkCommandLine()

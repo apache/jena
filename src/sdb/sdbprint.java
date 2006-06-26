@@ -10,8 +10,8 @@ import java.io.IOException;
 
 import arq.cmd.CmdException;
 import arq.cmd.CmdUtils;
-import arq.cmd.QCmd;
-import arq.cmd.TerminateException;
+
+import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdLineArgs;
 
@@ -64,13 +64,13 @@ public class sdbprint // NOT CmdArgsDB
     {
         // TODO To be integrated ...
         try { main2(argv) ; }
+        catch (TerminationException ex) { System.exit(ex.getCode()) ; }
         catch (CmdException ex)
         {
             System.err.println(ex.getMessage()) ;
             if ( ex.getCause() != null )
                 ex.getCause().printStackTrace(System.err) ;
         }
-        catch (TerminateException ex) { System.exit(ex.getCode()) ; }
     }
 
     public static void main2(String[] args)
@@ -110,31 +110,25 @@ public class sdbprint // NOT CmdArgsDB
         {
             System.err.println(ex.getMessage()) ;
             usage(System.err) ;
-            throw new TerminateException(2) ;
+            throw new TerminationException(2) ;
         }        
         
         //---- Basic stuff
         if ( cl.contains(helpDecl) )
         {
             usage(System.out) ;
-            throw new TerminateException(0) ;
+            throw new TerminationException(0) ;
         }
         
         if ( cl.contains(versionDecl) )
         {
             System.out.println("SDB Version: "+SDB.VERSION+"  ARQ Version: "+ARQ.VERSION+"  Jena: "+Jena.VERSION+"") ;
-            throw new TerminateException(0) ;
+            throw new TerminationException(0) ;
         }
         
-        // Now set all the arguments.
-        QCmd qCmd = new QCmd() ;
-
         // ==== General things
         verbose = cl.contains(verboseDecl) ;
-        if ( verbose ) qCmd.setMessageLevel(qCmd.getMessageLevel()+1) ;
-        
         boolean quiet = cl.contains(quietDecl) ;
-        if ( quiet ) qCmd.setMessageLevel(qCmd.getMessageLevel()-1) ;
         
         
 //        if ( cl.contains(querySyntaxDecl) )
@@ -183,7 +177,7 @@ public class sdbprint // NOT CmdArgsDB
         if ( layoutName.equalsIgnoreCase("layout1") ) 
         {
             compilePrint(query, new QueryCompilerSimple()) ;
-            throw new TerminateException(0) ;
+            throw new TerminationException(0) ;
         }
         
         if ( layoutName.equalsIgnoreCase("modelRDB") ) 
@@ -191,13 +185,13 @@ public class sdbprint // NOT CmdArgsDB
             // Kludge something to work.
             IRDBDriver iDriver = new Driver_MySQL() ;
             compilePrint(query, new QueryCompiler1(new CodecRDB(iDriver))) ;
-            throw new TerminateException(0) ;
+            throw new TerminationException(0) ;
         }
         
         if ( layoutName.equalsIgnoreCase("layout2") ) 
         {
             compilePrint(query, new QueryCompiler2()) ;
-            throw new TerminateException(0) ;
+            throw new TerminationException(0) ;
         }
         
         argError("Unknown layout name: "+layoutName) ;
@@ -213,7 +207,7 @@ public class sdbprint // NOT CmdArgsDB
     {
         System.err.println("Argument Error: "+s) ;
         //usage(System.err) ;
-        throw new TerminateException(3) ;
+        throw new TerminationException(3) ;
     }
     
     public static void compilePrint(String queryString, String layoutName)

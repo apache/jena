@@ -7,9 +7,6 @@
 package sdb.cmd;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.shared.Command;
 
@@ -23,9 +20,9 @@ public abstract class CmdArgsDB extends CmdStore
         System.setProperty("propertyColumn",       "14") ;
     }    
 
-    protected CmdArgsDB(String name, String argv[])
+    protected CmdArgsDB(String argv[])
     {
-        super(name, argv) ;
+        super(argv) ;
     }
     
     @Override 
@@ -79,18 +76,6 @@ public abstract class CmdArgsDB extends CmdStore
         }
         closedown() ;
     }
-    
-    protected abstract void addCmdUsage(List<String> acc) ;
-    @Override
-    protected List<String> getUsage()
-    { 
-        List<String> u = new ArrayList<String>() ;
-        addCmdUsage(u) ;
-        addSpecUsage(u) ;
-        addGeneralUsage(u) ;
-        return u ;
-    }
-
 }
 
 /*

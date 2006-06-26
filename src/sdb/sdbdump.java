@@ -4,7 +4,8 @@
  */
 
 package sdb;
-import java.util.List;
+
+import com.hp.hpl.jena.query.util.Utils;
 
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.* ;
@@ -38,18 +39,18 @@ public class sdbdump extends CmdArgsDB
 
     protected sdbdump(String[] args)
     {
-        super("sdbdump", args);
+        super(args);
         add(argDeclFormat) ;
     }
     
     @Override
-    protected void addCmdUsage(List<String> acc) { acc.add(usage) ; }
-
+    protected String getCommandName() { return Utils.className(this) ; }
+    
     @Override
     protected void checkCommandLine()
     {
         if ( getNumPositional() > 0 )
-            cmdError("No positional arguments allowed", true) ;
+            cmdError("No positional arguments allowed") ;
     }
     
     @Override

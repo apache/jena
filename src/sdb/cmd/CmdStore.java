@@ -11,8 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import arq.cmd.TerminateException;
+import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdTime;
 
 import com.hp.hpl.jena.sdb.ModelSDB;
 import com.hp.hpl.jena.sdb.SDB;
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.shared.NotFoundException;
  * @version $Id: CmdStore.java,v 1.1 2006/04/22 19:51:12 andy_seaborne Exp $
  */ 
 
-public abstract class CmdStore extends CmdGeneral
+public abstract class CmdStore extends CmdTime
 {
     // -------- This ...
     protected final ArgDecl argDeclSDBdesc       = new ArgDecl(true, "sdb");
@@ -89,9 +90,9 @@ public abstract class CmdStore extends CmdGeneral
     DatasetStore dataset = null ;
     ModelSDB model = null ;
     
-    protected CmdStore(String name, String argv[])
+    protected CmdStore(String argv[])
     {
-        super(name, argv) ;
+        super(argv) ;
         SDB.init() ;
 
         add(argDeclSDBdesc) ;
@@ -113,14 +114,7 @@ public abstract class CmdStore extends CmdGeneral
     @Override 
     public void process()
     {
-        try {
-            super.process();
-        } catch (IllegalArgumentException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            usage() ;
-            throw new TerminateException(1) ;
-        }
+       super.process();
         
        if (contains(argDeclSDBdesc))
         {
@@ -131,12 +125,12 @@ public abstract class CmdStore extends CmdGeneral
             {
                 System.err.println("Failed to read the store description");
                 System.err.println(ex.getMessage()) ;
-                throw new TerminateException(1) ;
+                throw new TerminationException(1) ;
             }
             catch (NotFoundException ex)
             {
                 System.err.println(f+" : Store description not found");
-                throw new TerminateException(1) ;
+                throw new TerminationException(1) ;
             }
         }
         
@@ -169,7 +163,7 @@ public abstract class CmdStore extends CmdGeneral
                  !layoutName.equalsIgnoreCase("layout2") )
             {
                 System.err.println("Don't recognize layout name '"+layoutName+"'") ;
-                throw new TerminateException(2) ;
+                throw new TerminationException(2) ;
             }
             storeDesc.layoutName = layoutName ;
         }
@@ -198,13 +192,13 @@ public abstract class CmdStore extends CmdGeneral
 //        if ( argDbURL == null )
 //        {
 //            System.err.println("Missing a required argument (JDBC URL)");
-//            throw new TerminateException(9);
+//            throw new TerminationException(9);
 //        }
 
         if ( storeDesc == null )
         {
             System.err.println("No store description");
-            throw new TerminateException(1);
+            throw new TerminationException(1);
         }
         
         driverName = storeDesc.connDesc.driver ;
@@ -218,7 +212,7 @@ public abstract class CmdStore extends CmdGeneral
         if (driverName == null)
         {
             System.err.println("No known driver: please say which JDBC driver to use");
-            throw new TerminateException(9);
+            throw new TerminationException(9);
         }
 
         JDBC.loadDriver(driverName);

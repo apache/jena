@@ -16,6 +16,7 @@ import arq.cmdline.ArgDecl;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.util.FileUtils;
  
  /** Load data files into an SDB model in a database.
@@ -46,12 +47,12 @@ public class sdbload extends CmdArgsDB
 
     public sdbload(String[] args)
     {
-        super("sdbload",args);
+        super(args);
         add(argDeclTruncate) ;
     }
-
+    
     @Override
-    protected void addCmdUsage(List<String> acc) { acc.add(usage) ; }
+    protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
     protected void checkCommandLine()

@@ -208,15 +208,16 @@ public class GenerateSQL implements SqlNodeVisitor
         out.print(" )");
     }
 
+    static boolean allOnOneLine = true ;
     public void conditionList(SqlExprList conditions)
     {
-        String sep = "AND  " ;
+        String sep = " AND " ;
         boolean first = true ;
         for ( SqlExpr c : conditions )
         {
             if ( ! first )
             {
-                out.println();
+                if ( ! allOnOneLine ) out.println();
                 out.print(sep) ;
             }
             out.print(c.asSQL()) ;

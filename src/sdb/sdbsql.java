@@ -8,12 +8,12 @@ package sdb;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
 import arq.cmdline.ArgDecl;
 
+import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -32,14 +32,12 @@ public class sdbsql extends CmdArgsDB
 
     private sdbsql(String[] argv)
     {
-        super("sdbsql", argv) ;
+        super(argv) ;
         add(argDeclQuery) ;
-        // default is time off
-        super.timeCommand = false ;
     }
     
     @Override
-    protected void addCmdUsage(List<String> acc) { acc.add(usage) ; }
+    protected String getCommandName() { return Utils.className(this) ; }
 
     @Override
     protected void checkCommandLine()
@@ -53,7 +51,7 @@ public class sdbsql extends CmdArgsDB
         if ( getNumPositional() > 1 )
             cmdError("Too many statements to execute", true) ;
         
-        if ( contains(argDeclQuiet) )
+        if ( quiet )
             quietMode = true ;
     }
     

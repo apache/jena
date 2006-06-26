@@ -44,6 +44,9 @@ public class Var
     {
         NotAVariableException(String msg) { super(msg) ; }
     }
+    
+    @Override
+    public String toString() { return node.toString() ; }
 }
 
 /*
