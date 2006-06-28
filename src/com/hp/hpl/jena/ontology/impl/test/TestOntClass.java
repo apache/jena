@@ -7,11 +7,11 @@
  * Web site           http://jena.sourceforge.net
  * Created            07-Dec-2004
  * Filename           $RCSfile: TestOntClass.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:53:13 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-06-28 00:38:35 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -27,6 +27,8 @@ package com.hp.hpl.jena.ontology.impl.test;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.reasoner.test.TestUtil;
+import com.hp.hpl.jena.vocabulary.*;
 
 
 /**
@@ -36,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: TestOntClass.java,v 1.5 2006-03-22 13:53:13 andy_seaborne Exp $
+ * @version CVS $Id: TestOntClass.java,v 1.6 2006-06-28 00:38:35 ian_dickinson Exp $
  */
 public class TestOntClass
     extends ModelTestBase
@@ -178,9 +180,129 @@ public class TestOntClass
         assertFalse( b.isHierarchyRoot() );
     }
 
+    public void testListSubClasses0() {
+        // no inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        TestUtil.assertIteratorValues( this, a.listSubClasses(), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, a.listSubClasses( false ), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, a.listSubClasses( true ), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, b.listSubClasses( true ), new Object[] {d,e} );
+    }
+
+    public void testListSubClasses1() {
+        // rule inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM_RULE_INF );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        TestUtil.assertIteratorValues( this, a.listSubClasses(), new Object[] {b,c,d,e,f} );
+        TestUtil.assertIteratorValues( this, a.listSubClasses( false ), new Object[] {b,c,d,e,f} );
+        TestUtil.assertIteratorValues( this, a.listSubClasses( true ), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, b.listSubClasses( true ), new Object[] {d,e} );
+    }
+
+    public void testListSubClasses2() {
+        // micro rule inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        TestUtil.assertIteratorValues( this, a.listSubClasses(), new Object[] {b,c,d,e,f,OWL.Nothing} );
+        TestUtil.assertIteratorValues( this, a.listSubClasses( false ), new Object[] {b,c,d,e,f,OWL.Nothing} );
+        TestUtil.assertIteratorValues( this, a.listSubClasses( true ), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, b.listSubClasses( true ), new Object[] {d,e} );
+    }
+
+    public void testListSuperClasses0() {
+        // no inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses( true ), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, b.listSuperClasses( true ), new Object[] {a} );
+    }
+
+    public void testListSuperClasses1() {
+        // rule inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM_RULE_INF );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c,a,RDFS.Resource,OWL.Thing} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a,RDFS.Resource,OWL.Thing} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses( true ), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, b.listSuperClasses( true ), new Object[] {a} );
+    }
+
+    public void testListSuperClasses2() {
+        // micro rule inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c,a,OWL.Thing} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a,OWL.Thing} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses( true ), new Object[] {b,c} );
+        TestUtil.assertIteratorValues( this, b.listSuperClasses( true ), new Object[] {a} );
+    }
 
     // Internal implementation methods
     //////////////////////////////////
+
+    protected OntModel createABCDEFModel( OntModelSpec spec ) {
+        OntModel m = ModelFactory.createOntologyModel( spec );
+        OntClass a = m.createClass( NS + "A" );
+        OntClass b = m.createClass( NS + "B" );
+        OntClass c = m.createClass( NS + "C" );
+        OntClass d = m.createClass( NS + "D" );
+        OntClass e = m.createClass( NS + "E" );
+        OntClass f = m.createClass( NS + "F" );
+
+        //      A
+        //     / \
+        //    B   C
+        //   / \ / \
+        //  D   E   F
+
+        a.addSubClass( b );
+        a.addSubClass( c );
+        b.addSubClass( d );
+        b.addSubClass( e );
+        c.addSubClass( e );
+        c.addSubClass( f );
+        return m;
+    }
+
 
     //==============================================================================
     // Inner class definitions
