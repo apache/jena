@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.26 $
+ * Revision           $Revision: 1.27 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:37 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-06-28 01:23:56 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.26 2006-03-22 13:52:37 andy_seaborne Exp $
+ * @version CVS $Id: OntClass.java,v 1.27 2006-06-28 01:23:56 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -407,12 +407,25 @@ public interface OntClass
 
     /**
      * <p>Answer an iterator over the individuals in the model that have this
-     * class among their types.<p>
+     * class among their types. Equivalent to {@link #listInstances(boolean)}
+     * with an argument <code>false</code>.<p>
      *
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
     public ExtendedIterator listInstances();
+
+
+    /**
+     * <p>Answer an iterator over the individuals in the model that have this
+     * class among their types, optionally excluding sub-classes of this class.<p>
+     *
+     * @param  direct If true, only direct instances are counted (i.e. not instances
+     * of sub-classes of this class)
+     * @return An iterator over those instances that have this class as one of
+     *         the classes to which they belong
+     */
+    public ExtendedIterator listInstances( boolean direct );
 
 
     /**

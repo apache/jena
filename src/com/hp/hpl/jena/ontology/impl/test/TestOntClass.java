@@ -7,10 +7,10 @@
  * Web site           http://jena.sourceforge.net
  * Created            07-Dec-2004
  * Filename           $RCSfile: TestOntClass.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-06-28 00:38:35 $
+ * Last modified on   $Date: 2006-06-28 01:23:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: TestOntClass.java,v 1.6 2006-06-28 00:38:35 ian_dickinson Exp $
+ * @version CVS $Id: TestOntClass.java,v 1.7 2006-06-28 01:23:59 ian_dickinson Exp $
  */
 public class TestOntClass
     extends ModelTestBase
@@ -274,6 +274,75 @@ public class TestOntClass
         TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a,OWL.Thing} );
         TestUtil.assertIteratorValues( this, e.listSuperClasses( true ), new Object[] {b,c} );
         TestUtil.assertIteratorValues( this, b.listSuperClasses( true ), new Object[] {a} );
+    }
+
+    public void testListInstances0() {
+        // no inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        Individual ia = a.createIndividual();
+        Individual ib = b.createIndividual();
+        Individual ic = c.createIndividual();
+        Individual id = d.createIndividual();
+        Individual ie = e.createIndividual();
+
+        TestUtil.assertIteratorValues( this, a.listInstances(), new Object[] {ia} );
+        TestUtil.assertIteratorValues( this, b.listInstances(), new Object[] {ib} );
+
+        TestUtil.assertIteratorValues( this, a.listInstances(true), new Object[] {ia} );
+        TestUtil.assertIteratorValues( this, b.listInstances(true), new Object[] {ib} );
+    }
+
+    public void testListInstances1() {
+        // no inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM_RULE_INF );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        Individual ia = a.createIndividual(NS + "iA");
+        Individual ib = b.createIndividual(NS + "iB");
+        Individual ic = c.createIndividual(NS + "iC");
+        Individual id = d.createIndividual(NS + "iD");
+        Individual ie = e.createIndividual(NS + "iE");
+
+        TestUtil.assertIteratorValues( this, a.listInstances(), new Object[] {ia,ib,ic,id,ie} );
+        TestUtil.assertIteratorValues( this, b.listInstances(), new Object[] {ib,id,ie} );
+
+        TestUtil.assertIteratorValues( this, a.listInstances(true), new Object[] {ia} );
+        TestUtil.assertIteratorValues( this, b.listInstances(true), new Object[] {ib} );
+    }
+
+    public void testListInstances2() {
+        // no inference
+        OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF );
+        OntClass a = m.getOntClass( NS + "A" );
+        OntClass b = m.getOntClass( NS + "B" );
+        OntClass c = m.getOntClass( NS + "C" );
+        OntClass d = m.getOntClass( NS + "D" );
+        OntClass e = m.getOntClass( NS + "E" );
+        OntClass f = m.getOntClass( NS + "F" );
+
+        Individual ia = a.createIndividual(NS + "iA");
+        Individual ib = b.createIndividual(NS + "iB");
+        Individual ic = c.createIndividual(NS + "iC");
+        Individual id = d.createIndividual(NS + "iD");
+        Individual ie = e.createIndividual(NS + "iE");
+
+        TestUtil.assertIteratorValues( this, a.listInstances(), new Object[] {ia,ib,ic,id,ie} );
+        TestUtil.assertIteratorValues( this, b.listInstances(), new Object[] {ib,id,ie} );
+
+        TestUtil.assertIteratorValues( this, a.listInstances(true), new Object[] {ia} );
+        TestUtil.assertIteratorValues( this, b.listInstances(true), new Object[] {ib} );
     }
 
     // Internal implementation methods
