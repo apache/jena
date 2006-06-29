@@ -3,5 +3,5 @@ PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT *
 WHERE {
-    ?x :p ?v . FILTER ( ?v = "aaa" )
+    ?x :p ?v . OPTIONAL { ?x :q ?w }
 }

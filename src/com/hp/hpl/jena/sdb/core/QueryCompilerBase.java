@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.core;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
-import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -161,6 +160,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
             throw new SDBException("Zero-length basic pattern") ;
         }
 
+        context.scopeStart() ;
         // Give the real schema a chance to grab the whole basic pattern. 
         SqlNode sn = match(context, block.getBasicPattern()) ;
         if ( sn != null )
@@ -182,6 +182,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
         }
 
         sqlNode = finishBasicBlock(context, block.getBasicPattern(), block.getConstraints(), sqlNode, delayedConditions) ;
+        context.scopeEnd() ;
 
         // Conditions
         

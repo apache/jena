@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.store.CompiledConstraint;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.util.Pair;
@@ -248,7 +247,7 @@ public class QueryCompiler2 extends QueryCompilerBase
             c.varsMentioned(acc) ;
             for ( Var v : acc )
             {
-                SqlColumn col = context.getAlias(v.asNode()) ; // from triple pattern
+                SqlColumn col = context.getCurrentScope().getAlias(v.asNode()) ; // from triple pattern
                 if ( col == null )
                 {
                     // Not in scope.
@@ -260,7 +259,7 @@ public class QueryCompiler2 extends QueryCompilerBase
                 // Slurp the value up.
                 sqlNode = innerJoin(context, sqlNode, nTable, delayedConditions) ;
                 // Record it
-                valContext.setAlias(v.asNode(), col) ;
+                valContext.getCurrentScope().setAlias(v.asNode(), col) ;
             }
         }
         // valContext is now all the required values.
@@ -287,7 +286,7 @@ public class QueryCompiler2 extends QueryCompilerBase
                 continue ;
             }
             
-            SqlColumn c1 = context.getAlias(v) ;
+            SqlColumn c1 = context.getCurrentScope().getAlias(v) ;
             if ( c1 == null )
                 continue ;
             
@@ -330,9 +329,9 @@ public class QueryCompiler2 extends QueryCompilerBase
         SqlColumn thisCol = new SqlColumn(triples, colName) ;
         
         // Existing thing.
-        if ( context.hasAlias(node) )
+        if ( context.getCurrentScope().hasAlias(node) )
         {
-            SqlColumn otherCol = context.getAlias(node) ;
+            SqlColumn otherCol = context.getCurrentScope().getAlias(node) ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             return ;
@@ -354,7 +353,7 @@ public class QueryCompiler2 extends QueryCompilerBase
         }
         
         // New variable mentioned
-        context.setAlias(node, thisCol) ;
+        context.getCurrentScope().setAlias(node, thisCol) ;
         // Record for this block.
         boundVars.peek().add(node) ;
     }

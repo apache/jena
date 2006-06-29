@@ -8,15 +8,51 @@ package com.hp.hpl.jena.sdb.core;
 
 import java.util.*;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 
-public class Scope extends HashMap<Node, SqlColumn>
+public class Scope
 {
-    Map<Node, SqlColumn> other = null ;
-    public Scope() { super() ; }
-    public Scope(Scope other) { super(other) ; }    // Copy - maybe should be "parent"
+    Map<Node, SqlColumn> frame = new HashMap<Node, SqlColumn>() ;
+    Scope parent = null ;
+    
+    public Scope() {}
+    public Scope(Scope parent)
+    { 
+        this.parent = parent ;
+    }
+    
+    public boolean hasAlias(Node var)
+    { 
+        if ( frame.containsKey(var) )
+            return true ;
+        if ( parent != null )
+            return parent.hasAlias(var) ;
+        return false ;
+    }
+        
+    public SqlColumn getAlias(Node var)
+    { 
+        if ( frame.containsKey(var) )
+            return frame.get(var) ;
+        if ( parent != null )
+            return parent.getAlias(var) ;
+        return null ;
+    }
+        
+    public void setAlias(Node var, SqlColumn column)
+    { 
+        if ( hasAlias(var) )
+        {
+            LogFactory.getLog(Scope.class).warn("Already has an alias: "+var+" => "+getAlias(var)) ;
+            return ;
+        }
+        frame.put(var, column) ;
+    }
+
 }
 
 /*

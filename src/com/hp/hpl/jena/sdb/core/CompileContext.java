@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import java.util.Stack;
 
 /** A collection of things to track during query compilation
  * from SPARQL to SQL.
@@ -18,17 +17,18 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 public class CompileContext
 {
-    // a stack, surely?
     // Things to track:
     // query var --> triple column
     // query var --> value column
     // (constant --> column if no hash for triple -- unlikely to be needed long term)
     
-    private Scope varAliases = new Scope() ;
+    private Stack<Scope> scopeStack = new Stack<Scope>() ;
+    //private Scope varAliases = new Scope() ;
+
+    public void scopeStart() { scopeStack.push(new Scope()) ; }
+    public void scopeEnd()   { scopeStack.pop() ; }
     
-    public boolean hasAlias(Node var) { return varAliases.containsKey(var) ; }
-    public SqlColumn  getAlias(Node var) { return varAliases.get(var) ; } 
-    public void    setAlias(Node var, SqlColumn column) { varAliases.put(var, column) ; }
+    public Scope getCurrentScope() { return  scopeStack.lastElement() ; }
     
     int countTable = 1 ;    
     private static final String triplesTableAliasBase = "T"+SDBConstants.SQLmark ;
@@ -41,6 +41,7 @@ public class CompileContext
     int countJoin = 1 ;    
     private String joinAliasBase = "J$" ;
     public String allocJoinAlias() { return joinAliasBase+(countJoin++) ; }
+    
 }
 
 /*

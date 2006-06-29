@@ -27,7 +27,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
-import com.hp.hpl.jena.sdb.engine.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.util.Pair;
 
@@ -78,7 +77,7 @@ public class QueryCompiler1
             }
             if ( ! NodeUtils.isApplicationVar(v) )
                 continue ;
-            cols.add(new Pair<Node, SqlColumn>(v, context.getAlias(v))) ;
+            cols.add(new Pair<Node, SqlColumn>(v, context.getCurrentScope().getAlias(v))) ;
         }
         return new SqlProject(sqlNode, cols) ;
     }
@@ -141,16 +140,16 @@ public class QueryCompiler1
         }
     
         // Variable
-        if ( context.hasAlias(n) )
+        if ( context.getCurrentScope().hasAlias(n) )
         {
-            SqlColumn otherCol = context.getAlias(n) ;
+            SqlColumn otherCol = context.getCurrentScope().getAlias(n) ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             return ;
         }
     
         // New variable mentioned
-        context.setAlias(n, thisCol) ;
+        context.getCurrentScope().setAlias(n, thisCol) ;
     }
     
     @Override
