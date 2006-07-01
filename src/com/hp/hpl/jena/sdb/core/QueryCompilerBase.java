@@ -148,7 +148,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
             opts.add(optNode) ;
         }
         
-        SqlNode sNode2 = leftJoin(context, sqlNode, opts, delayedConditions) ;
+        SqlNode sNode2 = optBlocks(context, sqlNode, opts, delayedConditions) ;
         return sNode2 ;
     }
     
@@ -194,8 +194,14 @@ public abstract class QueryCompilerBase implements QueryCompiler
         // Uses the fact that inner joins never contain outer joins (block = BP*, opt(BP)*) 
         return join(context, left, right, INNER, delayedConditions) ; 
     }
+
+    protected SqlNode leftJoin(CompileContext context, SqlNode left, SqlNode right, SqlExprList delayedConditions)
+    {
+        return join(context, left, right, LEFT, delayedConditions) ; 
+    }
+
     
-    protected SqlNode leftJoin(CompileContext context, SqlNode base, List<SqlNode> opts, SqlExprList delayedConditions)
+    private SqlNode optBlocks(CompileContext context, SqlNode base, List<SqlNode> opts, SqlExprList delayedConditions)
     {
         if ( opts.size() == 0 )
             return base ;
@@ -204,7 +210,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
         {
             if ( opt.isProject() )
                 opt = opt.getProject().getSubNode() ;
-            base = join(context, base, opt, LEFT, delayedConditions) ;
+            base = leftJoin(context, base, opt, delayedConditions) ;
         }
         
         return base ;

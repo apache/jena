@@ -16,11 +16,11 @@ public class SqlProject extends SqlNodeBase1
 {
     private List<Pair<Node, SqlColumn>> cols = null ; 
     
-    public SqlProject(SqlNode sqlNode)
-    { 
-        super(sqlNode.getAliasName(), sqlNode) ;
-        this.cols = new ArrayList<Pair<Node, SqlColumn>>() ; 
-    }
+//    public SqlProject(SqlNode sqlNode)
+//    { 
+//        super(sqlNode.getAliasName(), sqlNode) ;
+//        this.cols = new ArrayList<Pair<Node, SqlColumn>>() ; 
+//    }
     
     public SqlProject(SqlNode sqlNode, List<Pair<Node, SqlColumn>> cols)
     { 
