@@ -19,6 +19,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.*;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
@@ -26,7 +27,6 @@ import com.hp.hpl.jena.query.util.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
-import com.hp.hpl.jena.sdb.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
@@ -58,13 +58,13 @@ public class QueryCompiler2 extends QueryCompilerBase
     // NB Concurrency issue.  But schemas do not need to be shared. 
     
     // Used to record the boundVars at each basic block.
-    Stack<List<Node>> boundVars = null ;
+    Stack<List<Var>> boundVars = null ;
 
     // Used to record the constants in each block
     Stack<Map<Node, SqlColumn>> constants = null ;
     
     // Record projection vars.  err - why isn't this a Map?
-    List<Pair<Node, SqlColumn>> projectVarCols = null ; 
+    List<Pair<Var, SqlColumn>> projectVarCols = null ; 
     
     public QueryCompiler2() { }
     
@@ -84,9 +84,9 @@ public class QueryCompiler2 extends QueryCompilerBase
     @Override
     protected SqlNode startQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
     {
-        boundVars = new Stack<List<Node>>() ;
+        boundVars = new Stack<List<Var>>() ;
         constants = new Stack<Map<Node, SqlColumn>>() ;
-        projectVarCols = new ArrayList<Pair<Node, SqlColumn>>() ;
+        projectVarCols = new ArrayList<Pair<Var, SqlColumn>>() ;
         return sqlNode ;
     }
     
@@ -94,7 +94,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     protected SqlNode finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
     { 
         // Add projection
-        List<Node> x = block.getProjectVars() ;
+        List<Var> x = block.getProjectVars() ;
         if ( x == null )
             x = block.getDefinedVars() ;
         SqlNode n =  makeProject(projectVarCols, sqlNode, x) ;
@@ -106,43 +106,37 @@ public class QueryCompiler2 extends QueryCompilerBase
         return n ;
     }
         
-    private SqlNode makeProject(List<Pair<Node, SqlColumn>>cols, SqlNode sqlNode, List<Node> project)
+    private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, List<Var> project)
     {
-        List<Pair<Node, SqlColumn>> projCol = new ArrayList<Pair<Node, SqlColumn>>() ;
-        for ( Pair<Node, SqlColumn> p : cols )
+        List<Pair<Var, SqlColumn>> projCol = new ArrayList<Pair<Var, SqlColumn>>() ;
+        for ( Pair<Var, SqlColumn> p : cols )
         {
-            if ( ! p.getLeft().isVariable() )
-            {
-                log.warn("makeProject: Found non-variable in projection: "+p.getLeft()) ;
-                continue ;
-            }
-
             // Not in the projection - skip 
             if ( ! project.contains(p.getLeft()) )
                 continue ;
             
-            if ( ! NodeUtils.isApplicationVar(p.getLeft()) )
+            if ( ! NodeUtils.isApplicationVar(p.getLeft().asNode()) )
                 // Skip blank node variables and system variables.
                 continue ;
             
             // TODO Check this - use of Node here is odd
             String n = p.car().getName() ;
-            Node nLex = Node.createVariable(n+"$lex") ;
+            Var vLex = new Var(n+"$lex") ;
             SqlColumn cLex = new SqlColumn(p.cdr().getTable(), "lex") ;
 
-            Node nDatatype = Node.createVariable(n+"$datatype") ;
+            Var vDatatype = new Var(n+"$datatype") ;
             SqlColumn cDatatype = new SqlColumn(p.cdr().getTable(), "datatype") ;
 
-            Node nLang = Node.createVariable(n+"$lang") ;
+            Var vLang = new Var(n+"$lang") ;
             SqlColumn cLang = new SqlColumn(p.cdr().getTable(), "lang") ;
             
-            Node nType = Node.createVariable(n+"$type") ;
+            Var vType = new Var(n+"$type") ;
             SqlColumn cType = new SqlColumn(p.cdr().getTable(), "type") ;
 
-            projCol.add(new Pair<Node, SqlColumn>(nLex,  cLex)) ; 
-            projCol.add(new Pair<Node, SqlColumn>(nDatatype, cDatatype)) ;
-            projCol.add(new Pair<Node, SqlColumn>(nLang, cLang)) ;
-            projCol.add(new Pair<Node, SqlColumn>(nType, cType)) ;
+            projCol.add(new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
+            projCol.add(new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
+            projCol.add(new Pair<Var, SqlColumn>(vLang, cLang)) ;
+            projCol.add(new Pair<Var, SqlColumn>(vType, cType)) ;
         }
         
         // Needs further refinement
@@ -153,7 +147,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     @Override
     protected SqlNode  startBasicBlock(CompileContext context, BasicPattern basicPattern, SqlNode sqlNode)
     { 
-        boundVars.push(new ArrayList<Node>()) ;
+        boundVars.push(new ArrayList<Var>()) ;
         constants.push(new HashMap<Node, SqlColumn>()) ;
         List<Node>consts = new ArrayList<Node>() ;
         
@@ -181,7 +175,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     { 
         constants.pop() ;
         // Find new vars in this block - insert the joins to get the values
-        List<Node> vars = boundVars.pop() ;
+        List<Var> vars = boundVars.pop() ;
         sqlNode = extractResults(context, vars, sqlNode, delayedConditions) ; 
         sqlNode = addRestrictions(context, sqlNode, constraints, delayedConditions) ;
         return sqlNode ;
@@ -247,7 +241,7 @@ public class QueryCompiler2 extends QueryCompilerBase
             c.varsMentioned(acc) ;
             for ( Var v : acc )
             {
-                SqlColumn col = context.getCurrentScope().getAlias(v.asNode()) ; // from triple pattern
+                SqlColumn col = context.getCurrentScope().getAlias(v) ; // from triple pattern
                 if ( col == null )
                 {
                     // Not in scope.
@@ -259,7 +253,7 @@ public class QueryCompiler2 extends QueryCompilerBase
                 // Slurp the value up.
                 sqlNode = innerJoin(context, sqlNode, nTable, delayedConditions) ;
                 // Record it
-                valContext.getCurrentScope().setAlias(v.asNode(), col) ;
+                valContext.getCurrentScope().setAlias(v, col) ;
             }
         }
         // valContext is now all the required values.
@@ -275,17 +269,11 @@ public class QueryCompiler2 extends QueryCompilerBase
 
 
     private SqlNode extractResults(CompileContext context,
-                                   List<Node>vars, SqlNode sqlNode,
+                                   List<Var>vars, SqlNode sqlNode,
                                    SqlExprList delayedConditions)
     {
-        for ( Node v : vars )
+        for ( Var v : vars )
         {
-            if ( !v.isVariable() )
-            {
-                log.warn("finishBasicBlock/extractResults: non-variable: "+v) ;
-                continue ;
-            }
-            
             SqlColumn c1 = context.getCurrentScope().getAlias(v) ;
             if ( c1 == null )
                 continue ;
@@ -296,7 +284,7 @@ public class QueryCompiler2 extends QueryCompilerBase
             
             SqlExpr cond = new S_Equal(c1, c2) ;
             delayedConditions.add(cond) ;
-            projectVarCols.add(new Pair<Node, SqlColumn>(v, c2)) ;
+            projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
             sqlNode = innerJoin(context, sqlNode, nTable, delayedConditions) ;
         }
         // Has delayed conditions for the outer join
@@ -328,15 +316,6 @@ public class QueryCompiler2 extends QueryCompilerBase
     {
         SqlColumn thisCol = new SqlColumn(triples, colName) ;
         
-        // Existing thing.
-        if ( context.getCurrentScope().hasAlias(node) )
-        {
-            SqlColumn otherCol = context.getCurrentScope().getAlias(node) ;
-            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-            conditions.add(c) ;
-            return ;
-        }
-        
         if ( ! node.isVariable() )
         {
             Map<Node, SqlColumn> constantsHere = constants.peek() ;
@@ -352,10 +331,19 @@ public class QueryCompiler2 extends QueryCompilerBase
             return ; 
         }
         
+        Var var = new Var(node) ;
+        if ( context.getCurrentScope().hasAlias(var) )
+        {
+            SqlColumn otherCol = context.getCurrentScope().getAlias(var) ;
+            SqlExpr c = new S_Equal(otherCol, thisCol) ;
+            conditions.add(c) ;
+            return ;
+        }
+        
         // New variable mentioned
-        context.getCurrentScope().setAlias(node, thisCol) ;
+        context.getCurrentScope().setAlias(var, thisCol) ;
         // Record for this block.
-        boundVars.peek().add(node) ;
+        boundVars.peek().add(var) ;
     }
 
     private static int nodesAliasCount = 1 ;
@@ -368,17 +356,17 @@ public class QueryCompiler2 extends QueryCompilerBase
     
     @Override
     protected QueryIterator assembleResults(ResultSet rs, Binding binding,
-                                            List<Node> vars, ExecutionContext execCxt)
+                                            List<Var> vars, ExecutionContext execCxt)
         throws SQLException
     {
         List<Binding> results = new ArrayList<Binding>() ;
         while(rs.next())
         {
             Binding b = new BindingMap(binding) ;
-            for ( Node node : vars )
+            for ( Var v : vars )
             {
-                String n = node.getName() ;
-                if ( NodeUtils.isBlankNodeVar(node) )
+                String n = v.getName() ;
+                if ( v.isBlankNodeVar() )
                     // Skip bNodes.
                     continue ;
                 

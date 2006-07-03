@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
-import com.hp.hpl.jena.sdb.core.Var;
+import com.hp.hpl.jena.query.core.Var;
 
 /** As a node : for all layouts, this is the thing in the triples table columns
  * 

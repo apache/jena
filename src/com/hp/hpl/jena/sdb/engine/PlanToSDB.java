@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.plan.TransformCopy;
 import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
@@ -25,7 +26,6 @@ import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.condition.C_Regex;
 import com.hp.hpl.jena.sdb.condition.C_Var;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
-import com.hp.hpl.jena.sdb.core.Var;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;

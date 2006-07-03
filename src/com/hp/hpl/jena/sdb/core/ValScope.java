@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import com.hp.hpl.jena.query.core.Var;
+
 /** Precondition for a condition
  * 
  * @author Andy Seaborne

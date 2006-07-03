@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sdb.engine;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.plan.Transformer;
 import com.hp.hpl.jena.query.util.Context;
@@ -64,7 +64,7 @@ public class PlanTranslatorGeneral implements PlanTranslator
         for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
         {
             String vn = (String)iter.next() ;
-            planSDB.getBlock().addProjectVar(Node.createVariable(vn)) ;
+            planSDB.getBlock().addProjectVar(new Var(vn)) ;
         }
 
         return planSDB ;

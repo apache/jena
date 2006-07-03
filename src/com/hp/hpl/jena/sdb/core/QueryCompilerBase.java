@@ -14,9 +14,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
@@ -59,7 +59,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
         String sqlStmt = asSQL(block) ;
         try {
             java.sql.ResultSet rs = store.getConnection().execQuery(sqlStmt) ;
-            List<Node> x = block.getProjectVars() ;
+            List<Var> x = block.getProjectVars() ;
             if ( x == null )
                 x = block.getDefinedVars() ;
             try {
@@ -74,7 +74,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
 
     protected abstract QueryIterator assembleResults(java.sql.ResultSet rs,
                                                      Binding binding,
-                                                     List<Node> vars,
+                                                     List<Var> vars,
                                                      ExecutionContext execCxt)
                                                     throws SQLException ;
     

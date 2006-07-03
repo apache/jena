@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
@@ -46,7 +46,7 @@ public class GenerateSQL implements SqlNodeVisitor
             out.print("*") ;
         }
         
-        for ( Pair<Node, SqlColumn> c : sqlNode.getCols() )
+        for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
         {
             out.print(sep) ;
             sep = ", " ;

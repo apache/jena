@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
 /** Block processor that finds nodes in blocks 
@@ -23,29 +24,26 @@ public class BlockNodes implements BlockProc
 {
     public static List<Node> allConstants(Block block)
     {
-        BlockNodes proc = new BlockNodes(false, true) ;
+        BlockNodes proc = new BlockNodes() ;
         block.apply(proc, true) ;
-        return proc.getNodes() ;
+        return proc.getConstants() ;
     }
     
-    public static List<Node> definedVars(Block block)
+    public static List<Var> definedVars(Block block)
     {
-        BlockNodes proc = new BlockNodes(true, false) ;
+        BlockNodes proc = new BlockNodes() ;
         block.apply(proc, true) ;
-        return proc.getNodes() ;
+        return proc.getVars() ;
     }
     
     
     // A Set would be slightly better.
     // but predictable lists are easier to debug :-)
-    List<Node> nodes = new ArrayList<Node>() ;
-    boolean includeVars = true ;
-    boolean includeConsts = true ;
+    List<Var> vars        = new ArrayList<Var>() ;
+    List<Node> constants  = new ArrayList<Node>() ;
     
-    BlockNodes(boolean includeVars, boolean includeConsts)
-    { this.includeVars = includeVars ; this.includeConsts = includeConsts ; }
-    
-    List<Node> getNodes() { return nodes ; }
+    List<Var> getVars() { return vars ; }
+    List<Node> getConstants() { return constants ; }
     
     public void basicPattern(BasicPattern basicPattern)
     {
@@ -67,11 +65,17 @@ public class BlockNodes implements BlockProc
     
     private void node(Node node)
     {
-        if ( includeVars && node.isVariable() && ! nodes.contains(node) ) 
-            nodes.add(node) ;
-        
-        if ( includeConsts && ! node.isVariable() && ! nodes.contains(node) )
-            nodes.add(node) ;
+        if ( node.isVariable() )
+        {
+            Var v = new Var(node) ;
+            if ( ! vars.contains(v) )
+                vars.add(v) ;
+        }
+        else
+        {
+            if ( ! constants.contains(node) )
+                constants.add(node) ;
+        }
     }
 
 }

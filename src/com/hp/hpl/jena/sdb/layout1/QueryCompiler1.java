@@ -17,10 +17,11 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.BindingMap;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.query.util.NodeUtils;
+
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
@@ -64,20 +65,17 @@ public class QueryCompiler1
     protected SqlNode finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
     {
         // Add projection
-        List<Pair<Node, SqlColumn>>cols = new ArrayList<Pair<Node, SqlColumn>>() ;
-        List<Node> x = block.getProjectVars() ;
+        // This is a Scope?
+        List<Pair<Var, SqlColumn>>cols = new ArrayList<Pair<Var, SqlColumn>>() ;
+        List<Var> x = block.getProjectVars() ;
         
         if ( x == null )
             x = block.getDefinedVars() ;
-        for ( Node v : block.getDefinedVars() )
+        for ( Var v : block.getDefinedVars() )
         {
-            if ( ! v.isVariable() )
-            {
-                log.warn("finishQueryBlock: Not a variable: "+v) ;
-            }
-            if ( ! NodeUtils.isApplicationVar(v) )
+            if ( v.isSystemVar() )
                 continue ;
-            cols.add(new Pair<Node, SqlColumn>(v, context.getCurrentScope().getAlias(v))) ;
+            cols.add(new Pair<Var, SqlColumn>(v, context.getCurrentScope().getAlias(v))) ;
         }
         return new SqlProject(sqlNode, cols) ;
     }
@@ -140,28 +138,30 @@ public class QueryCompiler1
         }
     
         // Variable
-        if ( context.getCurrentScope().hasAlias(n) )
+        Var var = new Var(n) ;
+        
+        if ( context.getCurrentScope().hasAlias(var) )
         {
-            SqlColumn otherCol = context.getCurrentScope().getAlias(n) ;
+            SqlColumn otherCol = context.getCurrentScope().getAlias(var) ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             return ;
         }
     
         // New variable mentioned
-        context.getCurrentScope().setAlias(n, thisCol) ;
+        context.getCurrentScope().setAlias(var, thisCol) ;
     }
     
     @Override
     protected QueryIterator assembleResults(java.sql.ResultSet rs, Binding binding,
-                                            List<Node> vars, ExecutionContext execCxt) throws SQLException
+                                            List<Var> vars, ExecutionContext execCxt) throws SQLException
     {
         List<Binding> results = new ArrayList<Binding>() ;
         
         while(rs.next())
         {
             Binding b = new BindingMap(binding) ;
-            for ( Node v : vars )
+            for ( Var v : vars )
             {
                 try {
                     String s = rs.getString(v.getName()) ;

@@ -46,7 +46,7 @@ public class SqlExprGenerator
                                  compile(cxt, c.getRight())) ;
         }
         
-        public void visit(C_Var node) { result = cxt.getCurrentScope().getAlias(node.getVar().asNode()) ; }
+        public void visit(C_Var node) { result = cxt.getCurrentScope().getAlias(node.getVar()) ; }
 
         public void visit(C_NodeType node) { throw new SDBNotImplemented("C_NodeType") ; } 
 

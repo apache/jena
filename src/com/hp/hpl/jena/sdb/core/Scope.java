@@ -10,13 +10,12 @@ import java.util.*;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-
 
 public class Scope
 {
-    Map<Node, SqlColumn> frame = new HashMap<Node, SqlColumn>() ;
+    Map<Var, SqlColumn> frame = new HashMap<Var, SqlColumn>() ;
     Scope parent = null ;
     
     public Scope() {}
@@ -25,7 +24,7 @@ public class Scope
         this.parent = parent ;
     }
     
-    public boolean hasAlias(Node var)
+    public boolean hasAlias(Var var)
     { 
         if ( frame.containsKey(var) )
             return true ;
@@ -34,7 +33,7 @@ public class Scope
         return false ;
     }
         
-    public SqlColumn getAlias(Node var)
+    public SqlColumn getAlias(Var var)
     { 
         if ( frame.containsKey(var) )
             return frame.get(var) ;
@@ -43,7 +42,7 @@ public class Scope
         return null ;
     }
         
-    public void setAlias(Node var, SqlColumn column)
+    public void setAlias(Var var, SqlColumn column)
     { 
         if ( hasAlias(var) )
         {

@@ -8,10 +8,10 @@ package com.hp.hpl.jena.sdb.condition;
 
 import java.util.Collection;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 
 public abstract class SDBConstraintBase implements SDBConstraint

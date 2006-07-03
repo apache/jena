@@ -8,8 +8,9 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.Collection;
 
-import com.hp.hpl.jena.graph.Node;
 import static com.hp.hpl.jena.query.util.FmtUtils.* ;
+
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
@@ -35,11 +36,11 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         else
         {
             boolean first = true ; 
-            for ( Pair<Node, SqlColumn> c : sqlNode.getCols() )
+            for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
             {
                 if ( ! first ) out.print(" ") ;
                 first = false ;
-                out.print(stringForNode(c.car())+"/"+c.cdr().asString()) ;
+                out.print(stringForNode(c.car().asNode())+"/"+c.cdr().asString()) ;
             }
             out.println() ; 
         }

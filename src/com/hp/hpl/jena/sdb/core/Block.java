@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.QueryEngineUtils;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
@@ -32,9 +33,9 @@ public class Block implements Printable
 {
     private static Log log = LogFactory.getLog(Block.class) ;
     
-    List<Node> patternVars = new ArrayList<Node>() ;
+    List<Var> patternVars  = new ArrayList<Var>() ;
     List<Var> filterVars   = new ArrayList<Var>() ;
-    List<Node> projectVars = null ;
+    List<Var> projectVars = null ;
     
     BasicPattern basicPattern = new BasicPattern() ;
     
@@ -70,17 +71,18 @@ public class Block implements Printable
     public BasicPattern        getBasicPattern()      { return basicPattern ; }
     public List<Block>         getOptionals()         { return blockOptionals ; }
     public List<SDBConstraint> getConstraints()       { return blockConstraints ; }
-    public List<Node>          getPatternVars()       { return patternVars ; }
+    public List<Var>           getPatternVars()       { return patternVars ; }
     public List<Var>           getFilterVars()        { return filterVars ; }
-    public List<Node>          getProjectVars()       { return projectVars ; }
-    public void                addProjectVar(Node var)             
+    public List<Var>           getProjectVars()       { return projectVars ; }
+    
+    public void                addProjectVar(Var var)             
     { 
         if ( projectVars == null )
-            projectVars = new ArrayList<Node>() ;
+            projectVars = new ArrayList<Var>() ;
         projectVars.add(var) ;
     }
     
-    public List<Node>        getDefinedVars()         { return BlockNodes.definedVars(this) ; }
+    public List<Var>        getDefinedVars()         { return BlockNodes.definedVars(this) ; }
 
     // Turn a block into another block, after substituting for variables. 
     
@@ -124,19 +126,19 @@ public class Block implements Printable
     
     // ----------------
     
-    private static void accVar(Collection<Node> acc, Triple triple)
+    private static void accVar(Collection<Var> acc, Triple triple)
     {
         accVar(acc, triple.getSubject()) ;
         accVar(acc, triple.getPredicate()) ;
         accVar(acc, triple.getObject()) ;
     }
     
-    private static void accVar(Collection<Node> acc, Node node)
+    private static void accVar(Collection<Var> acc, Node node)
     {
         if ( node.isVariable() ) 
         {
             if ( !acc.contains(node) )
-                acc.add(node) ;
+                acc.add(new Var(node)) ;
             return ;
         }
         // Constant
@@ -146,7 +148,7 @@ public class Block implements Printable
 
     private void checkOptional(Block optBlock)
     {
-        for ( Node v : optBlock.getPatternVars() )
+        for ( Var v : optBlock.getPatternVars() )
         {
             // Look for multiple use free vars
             if ( ! patternVars.contains(v) )
@@ -175,10 +177,10 @@ public class Block implements Printable
         out.println("(Block") ;
         out.incIndent() ;   // Inc-1
         out.print("(Vars") ;
-        for ( Node n : patternVars )
+        for ( Var var : patternVars )
         {
             out.print(" ") ;
-            out.print(n.toString()) ;
+            out.print(var.toString()) ;
         }
         
         if ( patternVars.size() == 0 )
@@ -189,11 +191,11 @@ public class Block implements Printable
         {
             String sep = "" ;
             out.print(" [") ;
-            for ( Node n : projectVars )
+            for ( Var var : projectVars )
             {
                 out.print(sep) ;
                 sep = " "; 
-                out.print(n.toString()) ;
+                out.print(var.toString()) ;
             }
             out.print("]") ;
         }
