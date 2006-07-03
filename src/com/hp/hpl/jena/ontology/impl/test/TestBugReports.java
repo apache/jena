@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.75 $
+ * Revision           $Revision: 1.76 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-04-24 23:22:36 $
+ * Last modified on   $Date: 2006-07-03 10:33:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
@@ -1641,6 +1641,13 @@ public class TestBugReports
         OntClass c = defModel.createClass( "http://example.com/test#A" );
         Individual i = c.createIndividual();
         assertTrue( "i should be an individual", i.isIndividual() );
+    }
+
+    /** Reported NPE with owl lite profile */
+    public void test_getClassOwlLite() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM );
+        // throws NPE
+        OntClass c = m.getOntClass( "http://example.com/foo" );
     }
 
     /** This underpins a problem I'm having with imports processing */

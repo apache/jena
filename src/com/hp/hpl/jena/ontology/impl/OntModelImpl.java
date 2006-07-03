@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.93 $
+ * Revision           $Revision: 1.94 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-07-03 10:33:45 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.93 2006-03-22 13:52:39 andy_seaborne Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.94 2006-07-03 10:33:45 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -841,15 +841,13 @@ public class OntModelImpl
         // special case for nothing and thing
         if (c == null) {
             Resource thing = getProfile().THING();
-            if (thing != null) {
-                Resource nothing = getProfile().NOTHING();
+            if (thing != null && thing.getURI().equals( uri )) {
+                c = (OntClass) thing.inModel( this ).as( OntClass.class );
+            }
 
-                if (thing.getURI().equals( uri )) {
-                    c = (OntClass) thing.inModel( this ).as( OntClass.class );
-                }
-                else if (nothing.getURI().equals( uri )) {
-                    c = (OntClass) nothing.inModel( this ).as( OntClass.class );
-                }
+            Resource nothing = getProfile().NOTHING();
+            if (nothing != null && nothing.getURI().equals( uri )) {
+                c = (OntClass) nothing.inModel( this ).as( OntClass.class );
             }
         }
 
