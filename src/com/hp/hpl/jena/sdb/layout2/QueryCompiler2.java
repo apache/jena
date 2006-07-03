@@ -233,6 +233,7 @@ public class QueryCompiler2 extends QueryCompilerBase
         // 2/ Generate the SQL conditions
         
         CompileContext valContext = new CompileContext() ;
+        valContext.scopeStart() ;
         
         SqlExprList cList = new SqlExprList() ;
         for ( SDBConstraint c : constraints )
@@ -252,8 +253,10 @@ public class QueryCompiler2 extends QueryCompilerBase
                 SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
                 // Slurp the value up.
                 sqlNode = innerJoin(context, sqlNode, nTable, delayedConditions) ;
+                // TODO Need to know the value type.
+                SqlColumn vCol = new SqlColumn(nTable, "lex") ;
                 // Record it
-                valContext.getCurrentScope().setAlias(v, col) ;
+                valContext.getCurrentScope().setAlias(v, vCol) ;
             }
         }
         // valContext is now all the required values.
@@ -264,6 +267,7 @@ public class QueryCompiler2 extends QueryCompilerBase
             exprs.add(e) ;
         }
         sqlNode = new SqlRestrict(/*context.allocAlias("R")*/null, sqlNode, exprs) ;
+        valContext.scopeEnd() ;
         return sqlNode ;
     }
 
