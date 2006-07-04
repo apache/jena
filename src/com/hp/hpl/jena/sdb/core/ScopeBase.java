@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,11 @@ public class ScopeBase implements Scope
         return false ;
     }
         
+    public Collection<Var> getVars()
+    {
+        return frame.keySet() ;
+    }
+    
     public SqlColumn getColumnForVar(Var var)
     { 
         if ( frame.containsKey(var) )

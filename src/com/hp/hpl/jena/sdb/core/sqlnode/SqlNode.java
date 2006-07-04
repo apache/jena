@@ -40,6 +40,7 @@ public interface SqlNode extends Printable, Scope
     
     public List<String> getAnnotations() ;
     public void addAnnotation(String s) ;
+    public void addAnnotations(List<String> annotations) ;
     public boolean hasAnnotations() ;
     public boolean hasOneAnnotation() ;
     

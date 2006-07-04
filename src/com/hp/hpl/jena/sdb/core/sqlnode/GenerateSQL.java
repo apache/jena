@@ -30,12 +30,15 @@ public class GenerateSQL implements SqlNodeVisitor
     private IndentedWriter out ;
     int level = 0 ;
     SqlExprList remains = new SqlExprList() ;
+    private boolean doAnnotations = true ;
+    private static final int annotationColumn = 30 ;
     
     public GenerateSQL(CompileContext context, IndentedWriter out)
     { this.context = context ; this.out = out ; }
     
     public void visit(SqlProject sqlNode)
     {
+        annotate(sqlNode) ;
         out.println("SELECT ") ;
         out.incIndent() ;
         // SELECT vars
@@ -82,6 +85,7 @@ public class GenerateSQL implements SqlNodeVisitor
 
     public void visit(SqlRestrict sqlNode)
     {
+        annotate(sqlNode) ;
         if ( sqlNode.getConditions().size() == 0 )
         {
             log.warn("No conditions associated with this restriction") ;
@@ -98,7 +102,7 @@ public class GenerateSQL implements SqlNodeVisitor
             
         if ( node2.isJoin() )
         {
-            
+            // Common with QueryCompilerBase.join?? 
             // Push condition into the inner join ON clause
             // Avoid mutating the Join - create a new one and merge the conditions.
             // (As we do not use the old join, we could reuse it alias)
@@ -163,6 +167,7 @@ public class GenerateSQL implements SqlNodeVisitor
         out.print(table.getTableName()) ;
         out.print(" AS ") ;
         out.print(table.getAliasName()) ;
+        annotate(table) ;
     }
 
     // --------
@@ -228,37 +233,55 @@ public class GenerateSQL implements SqlNodeVisitor
     
     private void outputNode(SqlNode sqlNode, boolean mayNeedBrackets)
     {
+        if ( sqlNode.isTable() )
+        {
+            sqlNode.visit(this) ;
+            return ;
+        }
+
         level ++ ;
         // 
-        if ( sqlNode.isTable() )
-            sqlNode.visit(this) ;
-        else
+        if ( mayNeedBrackets )
         {
-            if ( mayNeedBrackets )
-            {
-                out.print("( ") ;
-                out.incIndent() ;
-            }
-            sqlNode.visit(this) ;
-            if ( mayNeedBrackets )
-            {
-                out.decIndent() ;
-                out.println() ;
-                out.print(")") ;
-            }
+            out.print("( ") ;
+            out.incIndent() ;
+        }
+        sqlNode.visit(this) ;
+        if ( mayNeedBrackets )
+        {
+            out.decIndent() ;
+            out.println() ;
+            out.print(")") ;
+        }
             
             
             // Every derived table (SELECT ...) must have an alias.
             // Is there a more principled way to do this? .isDerived?
 //            if ( sqlNode.isRestrict() || sqlNode.isProject())
 //                out.print(" AS "+sqlNode.getAliasName()) ;
-            if ( sqlNode.getAliasName() != null )
-                out.print(" AS "+sqlNode.getAliasName()) ;
+        if ( sqlNode.getAliasName() != null )
+            out.print(" AS "+sqlNode.getAliasName()) ;
             
-        }
+        
+        annotate(sqlNode) ;
         level -- ;
     }
 
+    private void annotate(SqlNode sqlNode)
+    {
+        if ( doAnnotations )
+        {
+            boolean first = true ;
+            for ( String s : sqlNode.getAnnotations() )
+            {
+                if ( !first ) out.println();
+                first = false; 
+                out.pad(annotationColumn) ;
+                out.print("/* ") ; out.print(s) ; out.print(" */") ;
+            }
+        }
+    }
+    
 //    protected String conditionToString(SqlExpr c)
 //    {
 //        if ( c instanceof S_Regex )

@@ -42,7 +42,11 @@ public abstract class SqlNodeBase implements SqlNode
         this.visit(new SqlNodeTextVisitor(out)) ;
     }
     
+    // Scope
+    
     public boolean hasColumnForVar(Var var) { return getColumnForVar(var) != null ; }
+//    public Iterator<Var> vars()
+//    { return getVars().iterator() ; }
     
     public boolean usesColumn(SqlColumn c) { return false ; }
     
@@ -79,6 +83,12 @@ public abstract class SqlNodeBase implements SqlNode
     {
         initAnnotations() ;
         annotations.add(s) ;
+    }
+    
+    public void addAnnotations(List<String> annotations)
+    {
+        initAnnotations() ;
+        this.annotations.addAll(annotations) ;
     }
 
     private void initAnnotations()

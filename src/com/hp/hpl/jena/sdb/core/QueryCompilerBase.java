@@ -22,6 +22,7 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -110,7 +111,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
     protected abstract SqlNode  finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode) ;
     
     protected abstract SqlNode  startBasicBlock(CompileContext context, BasicPattern basicPattern, SqlNode sqlNode) ;
-    protected abstract SqlNode  finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<SDBConstraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions) ;
+    protected abstract SqlNode  finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<SDBConstraint> constraints, SqlNode sqlNode) ;
 
     protected SqlNode  match(CompileContext context, BasicPattern triples) { return null ; }
     protected abstract SqlNode match(CompileContext context, Triple triple) ;
@@ -119,40 +120,34 @@ public abstract class QueryCompilerBase implements QueryCompiler
     {
         SqlNode sqlNode = startQueryBlock(context, block, null) ;
         
-        SqlExprList delayedConditions = new SqlExprList() ;
-        
-        sqlNode = blockToTable(context, block, sqlNode, delayedConditions, 0) ;
-        
-        if ( delayedConditions.size() != 0 )
-        {
-            int count = 0 ;
-            for ( SqlExpr c : delayedConditions )
-            {
-                count++ ;
-                log.warn("Unhandled condition ("+count+"): "+c) ;
-            }
-        }
+        sqlNode = blockToTable(context, block, sqlNode, 0) ;
         
         sqlNode = finishQueryBlock(context, block, sqlNode) ;
         return sqlNode ;
     }
     
-    private SqlNode blockToTable(CompileContext context, Block block, SqlNode sqlNode, SqlExprList delayedConditions, int levelCount)
+    private SqlNode blockToTable(CompileContext context, Block block, SqlNode sqlNode, int levelCount)
     {
-        sqlNode = basicPatternJoin(context, block, sqlNode, delayedConditions) ;
-        
+        sqlNode = basicPatternJoin(context, block, sqlNode) ;
+
         List<SqlNode> opts = new ArrayList<SqlNode>() ;
         for ( Block optBlk : block.getOptionals() )
         {
-            SqlNode optNode = blockToTable(context, optBlk, null, delayedConditions, levelCount+1) ;
-            opts.add(optNode) ;
+            SqlNode optNode = blockToTable(context, optBlk, null, levelCount+1) ;
+            
+            if ( optNode.isProject() )
+            {
+                log.info("Projection from an optional{} block") ;
+                optNode = optNode.getProject().getSubNode() ;
+            }
+            
+            sqlNode = leftJoin(context, sqlNode, optNode) ;
+            context.setScope(sqlNode) ;
         }
-        
-        SqlNode sNode2 = optBlocks(context, sqlNode, opts, delayedConditions) ;
-        return sNode2 ;
+        return sqlNode ;
     }
     
-    private SqlNode basicPatternJoin(CompileContext context, Block block, SqlNode sqlNode, SqlExprList delayedConditions)
+    private SqlNode basicPatternJoin(CompileContext context, Block block, SqlNode sqlNode)
     {
         if ( block.getBasicPattern().size() == 0 )
         {
@@ -160,6 +155,8 @@ public abstract class QueryCompilerBase implements QueryCompiler
             throw new SDBException("Zero-length basic pattern") ;
         }
 
+        //????????????????
+        
         // Give the real schema a chance to grab the whole basic pattern. 
         SqlNode sn = match(context, block.getBasicPattern()) ;
         if ( sn != null )
@@ -177,42 +174,29 @@ public abstract class QueryCompilerBase implements QueryCompiler
         {
             SqlNode sNode = match(context, triple) ;
             if ( sNode != null )
-                sqlNode = innerJoin(context, sqlNode, sNode, delayedConditions) ;
+            {
+                sqlNode = innerJoin(context, sqlNode, sNode) ;
+                context.setScope(sqlNode) ;
+            }
         }
 
-        sqlNode = finishBasicBlock(context, block.getBasicPattern(), block.getConstraints(), sqlNode, delayedConditions) ;
+        sqlNode = finishBasicBlock(context, block.getBasicPattern(), block.getConstraints(), sqlNode) ;
 
         // Conditions
         
         return sqlNode ;
     }
     
-    protected SqlNode innerJoin(CompileContext context, SqlNode left, SqlNode right, SqlExprList delayedConditions)
+    protected SqlNode innerJoin(CompileContext context, SqlNode left, SqlNode right)
     {
-        // Uses the fact that inner joins never contain outer joins (block = BP*, opt(BP)*) 
-        return join(context, left, right, INNER, delayedConditions) ; 
+        return join(context, left, right, INNER) ; 
     }
 
-    protected SqlNode leftJoin(CompileContext context, SqlNode left, SqlNode right, SqlExprList delayedConditions)
+    protected SqlNode leftJoin(CompileContext context, SqlNode left, SqlNode right)
     {
-        return join(context, left, right, LEFT, delayedConditions) ; 
+        return join(context, left, right, LEFT) ; 
     }
 
-    
-    private SqlNode optBlocks(CompileContext context, SqlNode base, List<SqlNode> opts, SqlExprList delayedConditions)
-    {
-        if ( opts.size() == 0 )
-            return base ;
-        
-        for ( SqlNode opt : opts )
-        {
-            if ( opt.isProject() )
-                opt = opt.getProject().getSubNode() ;
-            base = leftJoin(context, base, opt, delayedConditions) ;
-        }
-        
-        return base ;
-    }
     
     // Put somewhere useful
     private String sqlNodeName(SqlNode sNode)
@@ -226,81 +210,125 @@ public abstract class QueryCompilerBase implements QueryCompiler
         return "<unknown>" ;
     }
     
-    private SqlNode join(CompileContext context, SqlNode left, SqlNode right,
-                         JoinType joinType, SqlExprList delayedConditions)
+    private SqlNode join(CompileContext context, SqlNode left, SqlNode right, JoinType joinType)
     {
-        if ( false )
-        {
-            String c = delayedConditions.toString() ;
-            log.info("join: "+joinType+"("+sqlNodeName(left)+" & "+sqlNodeName(right)+") "+c) ;
-        }
-        
-        List<String> annotations = null ;
-        // left - the SQL tree built so far
-        // right - the access to one triple to add (usually) 
-        
         if ( left == null )
-            // Case : first table in "join"
-            return right ;
-        
+            return right ; 
+
         SqlExprList conditions = new SqlExprList() ;
+
         
-        // Flatten some cases
         if ( left.isRestrict() )
         {
-            // We can yank up the conditions into the inner join.
-            if ( joinType == INNER )
-            {
-                conditions.addAll(left.getRestrict().getConditions()) ;
-                // Loose the restriction.
-                left = left.getRestrict().getSubNode() ;
-            }
+            SqlRestrict r = left.getRestrict() ; 
+            left = removeRestrict(r, conditions) ;
         }
-        
+            
         if ( right.isRestrict() )
         {
             if ( right.getRestrict().getSubNode().isTable() )
             {
-                // Restrict-Table : happens when we are building joins from triples.
-                // Maybe a special node type for this?
-                annotations = right.getRestrict().getSubNode().getAnnotations() ;
-                if ( joinType == INNER )
-                {
-                    // If the RHS is a restriction of a single table and it's an inner join,
-                    // then all are candidates to move into the join ON clause
-                    // and we can collapse the restriction node itself.
-                    conditions.addAll(right.getRestrict().getConditions()) ;
-                    right = right.getRestrict().getSubNode() ;
-                }
-                else
-                {
-                    // But if a Left Join, find spanning conditions only
-                    SqlExprList c1 = new SqlExprList() ;    // Spanning - move to LJ
-                    SqlExprList c2 = new SqlExprList() ;    // Non-spanning - leave alone
-                    // There should be no conditions not involving the left or right (the restricted table)
-                    // (Not sure about this - may be a variable in the table that is not in the left (i.e. not spanning)  
-                    assignConditions(left, right, right.getRestrict().getConditions(), c2, c2, c1, null) ;
-                    conditions.addAll(c1) ;
-                    right.getRestrict().getConditions().retainAll(c2) ;
-                    // Remove if no conditions left
-                    if ( right.getRestrict().getConditions().size() == 0 )
-                        right = right.getRestrict().getSubNode() ;
-                }
+                SqlRestrict r = right.getRestrict() ; 
+                right = removeRestrict(r, conditions) ;
+            }
+            else
+            {
+                log.info("join: restriction not over a table") ;
             }
         }
         
-        // Put any delayed conditions into the conditions to be considered.
-        if ( delayedConditions != null )
+        for ( Var v : left.getVars() )
         {
-            conditions.addAll(delayedConditions) ;
-            delayedConditions.clear() ;
+            if ( right.hasColumnForVar(v) ) 
+            {
+                SqlExpr c = new S_Equal(left.getColumnForVar(v), right.getColumnForVar(v)) ;
+                conditions.add(c) ;
+            }
         }
         
         SqlJoin join = SqlJoin.create(joinType, left, right, null) ;
-        assignConditions(left, right, conditions, join.getConditions(), join.getConditions(), join.getConditions(), delayedConditions) ;
-        if ( annotations != null )
-            join.getAnnotations().addAll(annotations) ;
+        join.addConditions(conditions) ;
         return join ;
+    }
+    
+//    private SqlNode join(CompileContext context, SqlNode left, SqlNode right, JoinType joinType)
+//    {
+//        List<String> annotations = null ;
+//        // left - the SQL tree built so far
+//        // right - the access to one triple to add (usually) 
+//        
+//        if ( left == null )
+//            // Case : first table in "join"
+//            return right ;
+//        
+//        SqlExprList conditions = new SqlExprList() ;
+//        
+//        // Flatten some cases
+//        if ( left.isRestrict() )
+//        {
+//            // We can yank up the conditions into the inner join.
+//            if ( joinType == INNER )
+//            {
+//                conditions.addAll(left.getRestrict().getConditions()) ;
+//                // Loose the restriction.
+//                left = left.getRestrict().getSubNode() ;
+//            }
+//        }
+//        
+//        if ( right.isRestrict() )
+//        {
+//            if ( right.getRestrict().getSubNode().isTable() )
+//            {
+//                // Restrict-Table : happens when we are building joins from triples.
+//                // Maybe a special node type for this?
+//                annotations = right.getRestrict().getSubNode().getAnnotations() ;
+//                if ( joinType == INNER )
+//                {
+//                    // If the RHS is a restriction of a single table and it's an inner join,
+//                    // then all are candidates to move into the join ON clause
+//                    // and we can collapse the restriction node itself.
+//                    conditions.addAll(right.getRestrict().getConditions()) ;
+//                    right = right.getRestrict().getSubNode() ;
+//                }
+//                else
+//                {
+//                    // But if a Left Join, find spanning conditions only
+//                    SqlExprList c1 = new SqlExprList() ;    // Spanning - move to LJ
+//                    SqlExprList c2 = new SqlExprList() ;    // Non-spanning - leave alone
+//                    // There should be no conditions not involving the left or right (the restricted table)
+//                    // (Not sure about this - may be a variable in the table that is not in the left (i.e. not spanning)  
+//                    assignConditions(left, right, right.getRestrict().getConditions(), c2, c2, c1, null) ;
+//                    conditions.addAll(c1) ;
+//                    right.getRestrict().getConditions().retainAll(c2) ;
+//                    // Remove if no conditions left
+//                    if ( right.getRestrict().getConditions().size() == 0 )
+//                        right = right.getRestrict().getSubNode() ;
+//                }
+//            }
+//        }
+//        
+//        // Put any delayed conditions into the conditions to be considered.
+//        if ( delayedConditions != null )
+//        {
+//            conditions.addAll(delayedConditions) ;
+//            delayedConditions.clear() ;
+//        }
+//        
+//        SqlJoin join = SqlJoin.create(joinType, left, right, null) ;
+//        assignConditions(left, right, conditions, join.getConditions(), join.getConditions(), join.getConditions(), delayedConditions) ;
+//        if ( annotations != null )
+//            join.getAnnotations().addAll(annotations) ;
+//        return join ;
+//    }
+    
+    private SqlNode removeRestrict(SqlRestrict restrict, SqlExprList conditions)
+    {
+        // Move the conditions up.
+        conditions.addAll(restrict.getConditions()) ;
+        // Loose the restriction
+        SqlNode sqlNode = restrict.getSubNode() ;
+        sqlNode.addAnnotations(restrict.getAnnotations()) ;
+        return sqlNode ;
     }
     
     // Take a list conditions and assign each to a bucket: involves columns from the left only,
@@ -349,52 +377,6 @@ public abstract class QueryCompilerBase implements QueryCompiler
             
             // usedLeft and usedRight
             spanningConditions.add(c) ;
-            
-//            SqlColumn colLeft  = null ;
-//            if ( c.getLeft() != null )
-//                colLeft = c.getLeft().asColumn() ;
-//            
-//            SqlColumn colRight = null ;
-//            if ( c.getRight() != null )
-//                colRight = c.getRight().asColumn() ;
-//            
-//            if ( colLeft == null && colRight == null )
-//            {
-//                log.warn("Condition does not involve left or right: "+c) ;
-//                nonSpanningConditions.add(c) ;
-//                continue ;
-//            }
-//             
-//            if ( colLeft == null )
-//            {
-//                rightConditions.add(c) ;
-//                continue ;
-//            }
-//
-//            if ( colRight == null )
-//            {
-//                leftConditions.add(c) ;
-//                continue ;
-//            }
-//            
-//            boolean colLeftScope =  ( left.usesColumn(colLeft)  || right.usesColumn(colLeft) ) ; 
-//            boolean colRightScope = ( left.usesColumn(colRight) || right.usesColumn(colRight) ) ;
-//
-//            if ( colLeftScope && colRightScope )
-//            {
-//                if ( ! ( c instanceof S_Equal ) )
-//                    log.warn("Non-equality condition in spanning conditions") ;
-//                spanningConditions.add(c) ;
-//            }
-//            else
-//            {
-//                if( nonSpanningConditions == null )
-//                {
-//                    log.warn("Condition involves something else unexpectedly: "+c) ;
-//                    continue ;
-//                }
-//                nonSpanningConditions.add(c) ;
-//            }
         }
     }
     

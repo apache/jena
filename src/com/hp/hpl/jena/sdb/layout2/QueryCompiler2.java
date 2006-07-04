@@ -19,7 +19,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.*;
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
@@ -28,10 +27,7 @@ import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.store.CompiledConstraint;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.util.Pair;
@@ -171,13 +167,13 @@ public class QueryCompiler2 extends QueryCompilerBase
     @Override
     protected SqlNode finishBasicBlock(CompileContext context,
                                        BasicPattern basicPattern, List<SDBConstraint> constraints,
-                                       SqlNode sqlNode, SqlExprList delayedConditions)
+                                       SqlNode sqlNode)
     { 
         constants.pop() ;
         // Find new vars in this block - insert the joins to get the values
         List<Var> vars = boundVars.pop() ;
-        sqlNode = extractResults(context, vars, sqlNode, delayedConditions) ; 
-        sqlNode = addRestrictions(context, sqlNode, constraints, delayedConditions) ;
+        sqlNode = extractResults(context, vars, sqlNode) ; 
+        sqlNode = addRestrictions(context, sqlNode, constraints) ;
         return sqlNode ;
     }
     
@@ -185,8 +181,6 @@ public class QueryCompiler2 extends QueryCompilerBase
     // Does not use hashed into the triple table, just to access the node table.
     private SqlNode insertConstantAccesses(CompileContext context, List<Node> consts, SqlNode sqlNode)
     {   
-        SqlExprList delayedConditions = new SqlExprList() ; 
-        
         Map<Node, SqlColumn> constantsHere = constants.peek() ;
         
         for ( Node n : consts )
@@ -205,20 +199,17 @@ public class QueryCompiler2 extends QueryCompilerBase
             conds.add(c) ;
             constantsHere.put(n, new SqlColumn(nTable, "id")) ;
             
-            // Same as placing in delayedConditions.
             SqlNode r = new SqlRestrict(nTable, conds) ;
-            sqlNode = innerJoin(context, sqlNode, r, delayedConditions) ;
+            sqlNode = innerJoin(context, sqlNode, r) ;
         }
         
-        if ( delayedConditions.size() > 0 )
-            log.warn("Delayed conditions in start of basic block") ;
         return sqlNode ;
     }
 
     
 
     private SqlNode addRestrictions(CompileContext context, SqlNode sqlNode,
-                                    List<SDBConstraint> constraints, SqlExprList delayedConditions)
+                                    List<SDBConstraint> constraints)
     {
         // TODO Place restriction in best place.
         // i.e. inlne with basic block processing
@@ -252,7 +243,7 @@ public class QueryCompiler2 extends QueryCompilerBase
                 // ASSUME lexical/string form needed 
                 SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
                 // Slurp the value up.
-                sqlNode = innerJoin(context, sqlNode, nTable, delayedConditions) ;
+                sqlNode = innerJoin(context, sqlNode, nTable) ;
                 // TODO Need to know the value type.
                 SqlColumn vCol = new SqlColumn(nTable, "lex") ;
                 // Record it
@@ -272,8 +263,7 @@ public class QueryCompiler2 extends QueryCompilerBase
 
 
     private SqlNode extractResults(CompileContext context,
-                                   List<Var>vars, SqlNode sqlNode,
-                                   SqlExprList delayedConditions)
+                                   List<Var>vars, SqlNode sqlNode)
     {
         for ( Var v : vars )
         {
@@ -286,11 +276,11 @@ public class QueryCompiler2 extends QueryCompilerBase
             SqlColumn c2 = new SqlColumn(nTable, "id") ;
             
             SqlExpr cond = new S_Equal(c1, c2) ;
-            delayedConditions.add(cond) ;
             projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
-            sqlNode = innerJoin(context, sqlNode, nTable, delayedConditions) ;
+            SqlNode n = innerJoin(context, sqlNode, nTable) ;
+            SqlNode r = new SqlRestrict(null, n, cond) ;
+            sqlNode = r ;
         }
-        // Has delayed conditions for the outer join
         return sqlNode ;
     }
 

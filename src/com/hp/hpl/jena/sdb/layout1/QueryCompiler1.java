@@ -86,7 +86,7 @@ public class QueryCompiler1
     { return sqlNode ; }
     
     @Override
-    protected SqlNode finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<SDBConstraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions)
+    protected SqlNode finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<SDBConstraint> constraints, SqlNode sqlNode)
     { 
         if ( constraints.size() > 0 )
         {

@@ -3,5 +3,12 @@ PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT *
 WHERE {
-    ?x :p ?v . FILTER regex(?v , "foo")
+    ?x :p ?v . 
+    OPTIONAL
+    { 
+        ?y :q1 ?v .
+        ?y :q2 ?v .
+    }
+    #FILTER regex(?v , "foo")
+    
 }

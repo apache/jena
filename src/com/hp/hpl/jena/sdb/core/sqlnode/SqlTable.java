@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,8 @@ public class SqlTable extends SqlNodeBase
     @Override
     public SqlTable getTable() { return this ; }
     
+    public Collection<Var> getVars() { return cols.keySet() ; }
+
     @Override
     public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }
 

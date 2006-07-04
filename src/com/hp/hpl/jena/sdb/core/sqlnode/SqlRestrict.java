@@ -7,13 +7,20 @@
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 
 
 public class SqlRestrict extends SqlNodeBase1
 {
     private SqlExprList conditions = new SqlExprList() ;
-    
+
+    public SqlRestrict(String aliasName, SqlNode sqlNode, SqlExpr condition)
+    { 
+        super(aliasName, sqlNode) ;
+        this.conditions.add(condition) ; 
+    }
+
     
     public SqlRestrict(String aliasName, SqlNode sqlNode, SqlExprList conditions)
     { 

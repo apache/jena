@@ -6,9 +6,14 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 
 import org.apache.commons.logging.LogFactory;
@@ -57,10 +62,21 @@ public abstract class SqlJoin extends SqlNodeBase
     public SqlJoin   getJoin()            { return this ; }
     
     public SqlExprList getConditions() { return conditions ; }
+    public void addCondition(SqlExpr e) { conditions.add(e) ; }
+    public void addConditions(SqlExprList exprs) { conditions.addAll(exprs) ; }
+    
     @Override
     public boolean usesColumn(SqlColumn c)
     {
         return getLeft().usesColumn(c) || getRight().usesColumn(c) ; 
+    }
+    
+    public Collection<Var> getVars()
+    { 
+        Set<Var> acc = new HashSet<Var>() ;
+        acc.addAll(getLeft().getVars()) ;
+        acc.addAll(getRight().getVars()) ;
+        return acc ;
     }
     
     public SqlColumn getColumnForVar(Var var)
