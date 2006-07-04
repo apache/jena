@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.54 2006-03-22 13:52:22 andy_seaborne Exp $
+ * $Id: TestTypedLiterals.java,v 1.55 2006-07-04 17:24:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.vocabulary.XSD;
 import com.hp.hpl.jena.enhanced.EnhNode;
@@ -34,7 +35,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.54 $ on $Date: 2006-03-22 13:52:22 $
+ * @version $Revision: 1.55 $ on $Date: 2006-07-04 17:24:35 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -534,6 +535,20 @@ public class TestTypedLiterals extends TestCase {
         testCal4.set(Calendar.MILLISECOND, 2);
         doDateTimeTest(testCal4, "1999-05-30T15:09:32.002Z", 32.002);
         
+        // Illegal dateTimes
+        boolean ok = false;
+        boolean old = JenaParameters.enableEagerLiteralValidation;
+        try {
+            JenaParameters.enableEagerLiteralValidation = true;
+            l1 = m.createTypedLiteral(new Date(12345656l), XSDDatatype.XSDdateTime);
+        } catch (DatatypeFormatException e) {
+            ok = true;
+        } finally {
+            JenaParameters.enableEagerLiteralValidation = old;
+        }
+        assertTrue("Early detection of invalid literals", ok);
+            
+
         // date
         l1 = m.createTypedLiteral("1999-05-31", XSDDatatype.XSDdate);
         assertEquals("dateTime data type", XSDDatatype.XSDdate, l1.getDatatype());

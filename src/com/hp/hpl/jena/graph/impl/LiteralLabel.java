@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.26 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: LiteralLabel.java,v 1.27 2006-07-04 17:24:34 der Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -122,6 +122,15 @@ final public class LiteralLabel {
         }
         
         normalize();
+        
+        if (dtype != null && lexicalForm == null) {
+            // We are creating a literal from a java object, check the lexical form of the object is acceptable
+            // Done here and uses this.dtype so it can use the normalized type
+            wellformed = this.dtype.isValidValue( value );
+            if (JenaParameters.enableEagerLiteralValidation && !wellformed) {
+                throw new DatatypeFormatException(lexicalForm,  dtype, "in literal creation");
+            }
+        }
 	}
 
 	/**
