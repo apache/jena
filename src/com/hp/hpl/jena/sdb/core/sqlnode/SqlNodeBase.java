@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.*;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
@@ -40,6 +41,8 @@ public abstract class SqlNodeBase implements SqlNode
     {
         this.visit(new SqlNodeTextVisitor(out)) ;
     }
+    
+    public boolean hasColumnForVar(Var var) { return getColumnForVar(var) != null ; }
     
     public boolean usesColumn(SqlColumn c) { return false ; }
     

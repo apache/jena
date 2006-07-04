@@ -4,26 +4,9 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-
-
-
-public abstract class SqlNodeBase1 extends SqlNodeBase 
-{
-    private SqlNode sqlNode ;
-
-    protected SqlNodeBase1(String aliasName, SqlNode sqlNode) { super(aliasName) ; this.sqlNode = sqlNode ; }
-    
-    public SqlColumn getColumnForVar(Var var)
-    {
-        return sqlNode.getColumnForVar(var) ;
-    }
-    
-    public SqlNode getSubNode() { return sqlNode ; } 
-}
+public enum ValueSpace { STRING, NUMBER, DATETIME }
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

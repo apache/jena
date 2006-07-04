@@ -252,7 +252,6 @@ public class ModStore implements ArgModule
         return connection ;
     }
 
-
     boolean hsqlDetech = false ;
     boolean isHSQL = false ;
     

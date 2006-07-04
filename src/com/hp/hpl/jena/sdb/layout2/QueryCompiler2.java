@@ -232,8 +232,8 @@ public class QueryCompiler2 extends QueryCompilerBase
         // 1/ Get the val columns
         // 2/ Generate the SQL conditions
         
-        CompileContext valContext = new CompileContext() ;
-        valContext.scopeStart() ;
+        ScopeBase valScope = new ScopeBase(sqlNode) ;
+        Scope scope = sqlNode ;
         
         SqlExprList cList = new SqlExprList() ;
         for ( SDBConstraint c : constraints )
@@ -242,7 +242,7 @@ public class QueryCompiler2 extends QueryCompilerBase
             c.varsMentioned(acc) ;
             for ( Var v : acc )
             {
-                SqlColumn col = context.getCurrentScope().getAlias(v) ; // from triple pattern
+                SqlColumn col = scope.getColumnForVar(v) ;
                 if ( col == null )
                 {
                     // Not in scope.
@@ -256,18 +256,17 @@ public class QueryCompiler2 extends QueryCompilerBase
                 // TODO Need to know the value type.
                 SqlColumn vCol = new SqlColumn(nTable, "lex") ;
                 // Record it
-                valContext.getCurrentScope().setAlias(v, vCol) ;
+                valScope.setColumnForVar(v, vCol) ;
             }
         }
         // valContext is now all the required values.
         SqlExprList exprs = new SqlExprList() ;
         for ( SDBConstraint c : constraints )
         {
-            SqlExpr e = c.asSqlExpr(valContext) ;
+            SqlExpr e = c.asSqlExpr(valScope) ;
             exprs.add(e) ;
         }
         sqlNode = new SqlRestrict(/*context.allocAlias("R")*/null, sqlNode, exprs) ;
-        valContext.scopeEnd() ;
         return sqlNode ;
     }
 
@@ -278,7 +277,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     {
         for ( Var v : vars )
         {
-            SqlColumn c1 = context.getCurrentScope().getAlias(v) ;
+            SqlColumn c1 = context.getScope().getColumnForVar(v) ;
             if ( c1 == null )
                 continue ;
             
@@ -336,16 +335,16 @@ public class QueryCompiler2 extends QueryCompilerBase
         }
         
         Var var = new Var(node) ;
-        if ( context.getCurrentScope().hasAlias(var) )
+        if ( context.getScope().hasColumnForVar(var) )
         {
-            SqlColumn otherCol = context.getCurrentScope().getAlias(var) ;
+            SqlColumn otherCol = context.getScope().getColumnForVar(var) ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             return ;
         }
         
         // New variable mentioned
-        context.getCurrentScope().setAlias(var, thisCol) ;
+        triples.setColumnForVar(var, thisCol) ;
         // Record for this block.
         boundVars.peek().add(var) ;
     }

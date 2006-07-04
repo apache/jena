@@ -14,6 +14,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.StoreType;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
@@ -35,6 +36,8 @@ public class StoreDesc
         return worker(m) ;
     }
         
+    public StoreType getLayout() { return StoreType.lookup(layoutName) ; }
+    
     private static StoreDesc extract(Model m)
     {
         Model mDup = ModelFactory.createDefaultModel() ;

@@ -10,7 +10,7 @@ import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.TranslationTable;
 
 
-public class StoreName extends Symbol
+public class StoreType extends Symbol
 {
     //TODO Design AND finish
     // Need :: layout + database type + options
@@ -18,30 +18,37 @@ public class StoreName extends Symbol
     
     private static final String BASE = "http://jena.hpl.hp.com/2006/04/store/" ; 
     
-    public static final StoreName layoutSimple   = new StoreName(BASE+"simple") ;
-    public static final StoreName layout2        = new StoreName(BASE+"layout2") ;
-    public static final StoreName layoutRDB      = new StoreName(BASE+"layoutRDB") ;
-    public static final StoreName layout2bulk    = new StoreName(BASE+"layout2bulk") ;
-    public static final StoreName layout2pg      = new StoreName(BASE+"layout2pg") ;
-    public static final StoreName layout2hsql    = new StoreName(BASE+"layout2hsql") ;
+    public static final StoreType layoutSimple   = new StoreType(BASE+"simple") ;
+    public static final StoreType layout2        = new StoreType(BASE+"layout2") ;
+    public static final StoreType layoutRDB      = new StoreType(BASE+"layoutRDB") ;
+    public static final StoreType layout2bulk    = new StoreType(BASE+"layout2bulk") ;
+    public static final StoreType layout2pg      = new StoreType(BASE+"layout2pg") ;
+    public static final StoreType layout2hsql    = new StoreType(BASE+"layout2hsql") ;
     
     public static TranslationTable layoutNames = new TranslationTable(true) ;
-    static {
-        layoutNames.put("layout1",       StoreName.layoutSimple) ;
-        layoutNames.put("simple",        StoreName.layoutSimple) ;
-        layoutNames.put("layout2",       StoreName.layout2) ;
-        layoutNames.put("layoutRDB",     StoreName.layoutRDB) ;
-        layoutNames.put("layout2bulk",   StoreName.layout2bulk) ;
-        layoutNames.put("layout2pg",     StoreName.layout2pg) ;
-        layoutNames.put("layout2hsql",   StoreName.layout2hsql) ;
+    private static void put(String name, StoreType storeName)
+    {
+        layoutNames.put(canonical(name), storeName) ; 
     }
     
-    protected StoreName(String s)     { super(s) ; }
-    protected StoreName(StoreName s)  { super(s) ; }
+    static {
+        put("layout1",       StoreType.layoutSimple) ;
+        put("simple",        StoreType.layoutSimple) ;
+        put("layout2",       StoreType.layout2) ;
+        put("layoutRDB",     StoreType.layoutRDB) ;
+        put("layout2bulk",   StoreType.layout2bulk) ;
+        put("layout2pg",     StoreType.layout2pg) ;
+        put("layout2hsql",   StoreType.layout2hsql) ;
+    }
     
-    public static StoreName lookup(String s)
+    protected StoreType(String s)     { super(s) ; }
+    protected StoreType(StoreType s)  { super(s) ; }
+    
+    private static String canonical(String s) { return s.toLowerCase() ; }
+    
+    public static StoreType lookup(String s)
     {
-        return (StoreName)layoutNames.lookup(s) ;
+        return (StoreType)layoutNames.lookup(s.toLowerCase()) ;
     }
 }
 

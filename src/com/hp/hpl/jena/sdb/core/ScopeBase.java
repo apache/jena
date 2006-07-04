@@ -4,25 +4,54 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-
-
-public abstract class SqlNodeBase1 extends SqlNodeBase 
+public class ScopeBase implements Scope
 {
-    private SqlNode sqlNode ;
-
-    protected SqlNodeBase1(String aliasName, SqlNode sqlNode) { super(aliasName) ; this.sqlNode = sqlNode ; }
+    Map<Var, SqlColumn> frame = new HashMap<Var, SqlColumn>() ;
+    Scope parent = null ;
     
-    public SqlColumn getColumnForVar(Var var)
-    {
-        return sqlNode.getColumnForVar(var) ;
+    public ScopeBase() {}
+    public ScopeBase(Scope parent)
+    { 
+        this.parent = parent ;
     }
     
-    public SqlNode getSubNode() { return sqlNode ; } 
+    public boolean hasColumnForVar(Var var)
+    { 
+        if ( frame.containsKey(var) )
+            return true ;
+        if ( parent != null )
+            return parent.hasColumnForVar(var) ;
+        return false ;
+    }
+        
+    public SqlColumn getColumnForVar(Var var)
+    { 
+        if ( frame.containsKey(var) )
+            return frame.get(var) ;
+        if ( parent != null )
+            return parent.getColumnForVar(var) ;
+        return null ;
+    }
+        
+    public void setColumnForVar(Var var, SqlColumn column)
+    { 
+        if ( hasColumnForVar(var) )
+        {
+            LogFactory.getLog(Scope.class).warn("Already has an alias: "+var+" => "+getColumnForVar(var)) ;
+            return ;
+        }
+        frame.put(var, column) ;
+    }
 }
 
 /*

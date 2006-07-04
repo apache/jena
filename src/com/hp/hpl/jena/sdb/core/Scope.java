@@ -6,52 +6,13 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.*;
-
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-public class Scope
+public interface Scope
 {
-    Map<Var, SqlColumn> frame = new HashMap<Var, SqlColumn>() ;
-    Scope parent = null ;
-    
-    public Scope() {}
-    public Scope(Scope parent)
-    { 
-        this.parent = parent ;
-    }
-    
-    public boolean hasAlias(Var var)
-    { 
-        if ( frame.containsKey(var) )
-            return true ;
-        if ( parent != null )
-            return parent.hasAlias(var) ;
-        return false ;
-    }
-        
-    public SqlColumn getAlias(Var var)
-    { 
-        if ( frame.containsKey(var) )
-            return frame.get(var) ;
-        if ( parent != null )
-            return parent.getAlias(var) ;
-        return null ;
-    }
-        
-    public void setAlias(Var var, SqlColumn column)
-    { 
-        if ( hasAlias(var) )
-        {
-            LogFactory.getLog(Scope.class).warn("Already has an alias: "+var+" => "+getAlias(var)) ;
-            return ;
-        }
-        frame.put(var, column) ;
-    }
-
+    public boolean        hasColumnForVar(Var var) ;
+    public SqlColumn      getColumnForVar(Var var) ;     
 }
 
 /*

@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.condition;
 import java.util.Collection;
 
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 
 /**
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
  */
 public interface SDBConstraint
 {
-    public SqlExpr asSqlExpr(CompileContext cxt) ;
+    public SqlExpr asSqlExpr(Scope scope) ;
     public void visit(SDBConstraintVisitor visitor) ;
     public void varsMentioned(Collection<Var> acc) ;
 }

@@ -113,7 +113,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
     protected abstract SqlNode  finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<SDBConstraint> constraints, SqlNode sqlNode, SqlExprList delayedConditions) ;
 
     protected SqlNode  match(CompileContext context, BasicPattern triples) { return null ; }
-    protected abstract SqlNode  match(CompileContext context, Triple triple) ;
+    protected abstract SqlNode match(CompileContext context, Triple triple) ;
     
     protected SqlNode blockToTable(CompileContext context, Block block)
     {
@@ -160,7 +160,6 @@ public abstract class QueryCompilerBase implements QueryCompiler
             throw new SDBException("Zero-length basic pattern") ;
         }
 
-        context.scopeStart() ;
         // Give the real schema a chance to grab the whole basic pattern. 
         SqlNode sn = match(context, block.getBasicPattern()) ;
         if ( sn != null )
@@ -182,7 +181,6 @@ public abstract class QueryCompilerBase implements QueryCompiler
         }
 
         sqlNode = finishBasicBlock(context, block.getBasicPattern(), block.getConstraints(), sqlNode, delayedConditions) ;
-        context.scopeEnd() ;
 
         // Conditions
         

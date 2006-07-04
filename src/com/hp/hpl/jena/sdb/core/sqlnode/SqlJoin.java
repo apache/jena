@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -60,6 +61,14 @@ public abstract class SqlJoin extends SqlNodeBase
     public boolean usesColumn(SqlColumn c)
     {
         return getLeft().usesColumn(c) || getRight().usesColumn(c) ; 
+    }
+    
+    public SqlColumn getColumnForVar(Var var)
+    {
+        SqlColumn col = getLeft().getColumnForVar(var) ;
+        if ( col != null )
+            return col ;
+        return getRight().getColumnForVar(var) ;
     }
 }
 

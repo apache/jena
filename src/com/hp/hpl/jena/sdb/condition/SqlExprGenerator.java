@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
-import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Regex;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
@@ -14,9 +14,9 @@ import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 
 public class SqlExprGenerator
 {
-    public static SqlExpr compile(CompileContext cxt, SDBConstraint c)
+    public static SqlExpr compile(Scope scope, SDBConstraint c)
     {
-        Generator g = new Generator(cxt) ; 
+        Generator g = new Generator(scope) ; 
         c.visit(g) ;
         return g.getResult() ;
     }
@@ -24,16 +24,16 @@ public class SqlExprGenerator
     static class Generator implements SDBConstraintVisitor
     {
     
-        private CompileContext cxt ;
+        private Scope scope ;
         private SqlExpr result = null ; 
         
-        public Generator(CompileContext cxt) { this.cxt = cxt ; }
+        public Generator(Scope scope) { this.scope = scope ; }
         public SqlExpr getResult()           { return result ; }
         
 
         public void visit(C_Regex regex)
         {
-            SqlExpr sub = compile(cxt, regex.getConstraint()) ;
+            SqlExpr sub = compile(scope, regex.getConstraint()) ;
             result = new S_Regex(sub,
                                  regex.getPattern(),
                                  regex.isCaseInsensitive() ? "i": null) ;
@@ -42,11 +42,11 @@ public class SqlExprGenerator
         
         public void visit(C_Equals c)
         {
-            result = new S_Equal(compile(cxt, c.getLeft()),
-                                 compile(cxt, c.getRight())) ;
+            result = new S_Equal(compile(scope, c.getLeft()),
+                                 compile(scope, c.getRight())) ;
         }
         
-        public void visit(C_Var node) { result = cxt.getCurrentScope().getAlias(node.getVar()) ; }
+        public void visit(C_Var node) { result = scope.getColumnForVar(node.getVar()) ; }
 
         public void visit(C_NodeType node) { throw new SDBNotImplemented("C_NodeType") ; } 
 

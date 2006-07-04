@@ -4,25 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-
-
-public abstract class SqlNodeBase1 extends SqlNodeBase 
+public class ScopeNull implements Scope 
 {
-    private SqlNode sqlNode ;
-
-    protected SqlNodeBase1(String aliasName, SqlNode sqlNode) { super(aliasName) ; this.sqlNode = sqlNode ; }
-    
-    public SqlColumn getColumnForVar(Var var)
-    {
-        return sqlNode.getColumnForVar(var) ;
-    }
-    
-    public SqlNode getSubNode() { return sqlNode ; } 
+    public boolean        hasColumnForVar(Var var)  { return false ; }
+    public SqlColumn      getColumnForVar(Var var)  { return null ; }     
 }
 
 /*

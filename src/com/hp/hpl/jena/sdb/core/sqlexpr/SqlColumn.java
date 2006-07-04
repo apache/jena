@@ -18,9 +18,10 @@ public class SqlColumn extends SqlExprBase
     public String getColumnName() { return columnName ; }
     public SqlTable getTable()  { return table ;  }
 
-    public String asString()
-    { return getTable().getAliasName()+"."+columnName ; }
-
+    public String getFullColumnName() { return getTable().getAliasName()+"."+columnName ; }
+    
+    public String asString() { return getFullColumnName() ; }
+    
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }
 

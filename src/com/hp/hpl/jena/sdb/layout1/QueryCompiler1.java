@@ -75,7 +75,8 @@ public class QueryCompiler1
         {
             if ( v.isSystemVar() )
                 continue ;
-            cols.add(new Pair<Var, SqlColumn>(v, context.getCurrentScope().getAlias(v))) ;
+            SqlColumn c = sqlNode.getColumnForVar(v) ;
+            cols.add(new Pair<Var, SqlColumn>(v, c)) ;
         }
         return new SqlProject(sqlNode, cols) ;
     }
@@ -89,12 +90,11 @@ public class QueryCompiler1
     { 
         if ( constraints.size() > 0 )
         {
-            String alias = context.allocAlias("R$") ;
-            // Convert to SqlExprList
+            String alias = context.allocAlias("R"+SDBConstants.SQLmark) ;
             SqlExprList sqlConditions = new SqlExprList() ;
             for ( SDBConstraint c : constraints )
             {
-                SqlExpr sqlExpr = c.asSqlExpr(context) ;
+                SqlExpr sqlExpr = c.asSqlExpr(context.getScope()) ;
                 sqlConditions.add(sqlExpr) ;
             }
             sqlNode = new SqlRestrict(alias, sqlNode, sqlConditions) ;
@@ -140,16 +140,16 @@ public class QueryCompiler1
         // Variable
         Var var = new Var(n) ;
         
-        if ( context.getCurrentScope().hasAlias(var) )
+        if ( context.getScope().hasColumnForVar(var) )
         {
-            SqlColumn otherCol = context.getCurrentScope().getAlias(var) ;
+            SqlColumn otherCol = context.getScope().getColumnForVar(var) ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             return ;
         }
     
         // New variable mentioned
-        context.getCurrentScope().setAlias(var, thisCol) ;
+        triples.setColumnForVar(var, thisCol) ;
     }
     
     @Override

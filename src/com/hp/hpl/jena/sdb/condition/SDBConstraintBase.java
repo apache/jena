@@ -11,7 +11,7 @@ import java.util.Collection;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.Symbol;
-import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 
 public abstract class SDBConstraintBase implements SDBConstraint
@@ -25,10 +25,10 @@ public abstract class SDBConstraintBase implements SDBConstraint
     
     public String getLabel() { return label.toString() ; }
     
-    public SqlExpr asSqlExpr(CompileContext cxt)
+    public SqlExpr asSqlExpr(Scope scope)
     {
         // Will need to worry about isBound() and being the right type later 
-        return SqlExprGenerator.compile(cxt, this) ;
+        return SqlExprGenerator.compile(scope, this) ;
     }
     
 //    public final String asSQL(CompileContext cxt)

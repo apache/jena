@@ -8,10 +8,11 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.List;
 
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.query.util.Printable;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-public interface SqlNode extends Printable
+public interface SqlNode extends Printable, Scope
 {
     public String         getAliasName() ;
     
@@ -24,10 +25,16 @@ public interface SqlNode extends Printable
     public boolean        isProject() ;
     public SqlProject     getProject() ;
     
-    public boolean        isTable() ;                   // isConcrete
+    public boolean        isTable() ;
     public SqlTable       getTable() ;
     
-    // public Collection<SqlTable> tablesInvolved() ;
+    // Scope
+//    public boolean        hasColumnForVar(Var var) ;
+//    public SqlColumn      getColumnForVar(Var var) ;       // Get the col for this var - or null. 
+
+    //public SqlColumn      getValColumnForVar(Var var, ValueSpace vSpace) ;
+    //public void           setColumnForVar(Var var, SqlColumn) ; 
+    
     
     public boolean usesColumn(SqlColumn c) ;  // Does this subtree mentioned a column?
     

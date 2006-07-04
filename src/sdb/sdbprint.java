@@ -8,14 +8,13 @@ package sdb;
 
 import java.io.IOException;
 
-import arq.cmd.*;
+import arq.cmd.CmdUtils;
+import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdLineArgs;
+import arq.cmdline.CmdArgModule;
 
-import com.hp.hpl.jena.Jena;
 import com.hp.hpl.jena.db.impl.Driver_MySQL;
 import com.hp.hpl.jena.db.impl.IRDBDriver;
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -24,7 +23,7 @@ import com.hp.hpl.jena.query.engine1.PlanFormatter;
 import com.hp.hpl.jena.query.engine1.PlanVisitorBase;
 import com.hp.hpl.jena.query.engine1.PlanWalker;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
-import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
@@ -45,169 +44,225 @@ import com.hp.hpl.jena.util.FileUtils;
  * @version $Id: sdbprint.java,v 1.12 2006/04/24 17:31:26 andy_seaborne Exp $
  */
 
-public class sdbprint // NOT CmdArgsDB
+public class sdbprint extends CmdArgModule
 {
     static { CmdUtils.setLog4j() ; }
+
+    private static ArgDecl argDeclLayout = new ArgDecl(ArgDecl.HasValue, "layout") ;
+    private static ArgDecl argDeclQuery   = new ArgDecl(ArgDecl.HasValue,   "query") ;
+
+    // TODO ModLayout when StoreType is two dimensions (DB type, layout) 
+    String layoutNameDefault = "layout2" ;
 
     
     // This command knows how to create queries without needing a store or connection.
     
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
 
-    static boolean verbose = false ;
-
-    // Rough!
     public static void main (String [] argv)
     {
-        // TODO To be integrated ...
-        try { main2(argv) ; }
-        catch (TerminationException ex) { System.exit(ex.getCode()) ; }
-        catch (CmdException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            if ( ex.getCause() != null )
-                ex.getCause().printStackTrace(System.err) ;
-        }
+        new sdbprint(argv).mainAndExit() ;
+    }
+    
+    protected sdbprint(String[] args)
+    {
+        super(args);
+        add(argDeclLayout, "layout", "Store layout") ;
+        add(argDeclQuery, "query", "The query") ;
     }
 
-    public static void main2(String[] args)
-    {
-        CmdLineArgs cl = new CmdLineArgs(args) ;
-        
-        ArgDecl helpDecl = new ArgDecl(ArgDecl.NoValue, "h", "help") ;
-        cl.add(helpDecl) ;
-        
-        ArgDecl verboseDecl = new ArgDecl(ArgDecl.NoValue, "v", "verbose") ;
-        cl.add(verboseDecl) ;
-        
-        ArgDecl versionDecl = new ArgDecl(ArgDecl.NoValue, "ver", "version", "V") ;
-        cl.add(versionDecl) ;
-        
-        ArgDecl quietDecl = new ArgDecl(ArgDecl.NoValue, "q", "quiet") ;
-        cl.add(quietDecl) ;
-
-        ArgDecl noExecDecl = new ArgDecl(ArgDecl.NoValue, "n", "noExec", "noexec") ;
-        cl.add(noExecDecl) ;
-        
-        ArgDecl layoutDecl = new ArgDecl(ArgDecl.HasValue, "layout") ;
-        cl.add(layoutDecl) ;
-
-        ArgDecl queryDecl = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
-        cl.add(queryDecl) ;
-
-        //ArgDecl querySyntaxDecl = new ArgDecl(ArgDecl.HasValue, "syntax", "syn", "in") ;
-        //cl.add(querySyntaxDecl) ;
-        
-        String layoutNameDefault = "layout2" ;
-        String queryString = null ;
-        
-        try {
-            cl.process() ;
-        } catch (IllegalArgumentException ex)
-        {
-            System.err.println(ex.getMessage()) ;
-            usage(System.err) ;
-            throw new TerminationException(2) ;
-        }        
-        
-        //---- Basic stuff
-        if ( cl.contains(helpDecl) )
-        {
-            usage(System.out) ;
-            throw new TerminationException(0) ;
-        }
-        
-        if ( cl.contains(versionDecl) )
-        {
-            System.out.println("SDB Version: "+SDB.VERSION+"  ARQ Version: "+ARQ.VERSION+"  Jena: "+Jena.VERSION+"") ;
-            throw new TerminationException(0) ;
-        }
-        
-//        if ( cl.contains(querySyntaxDecl) )
+    
+//    public static void main2(String[] args)
+//    {
+//        CmdLineArgs cl = new CmdLineArgs(args) ;
+//        
+//        ArgDecl helpDecl = new ArgDecl(ArgDeNoValue, "h", "help") ;
+//        add(helpDecl) ;
+//        
+//        ArgDecl verboseDecl = new ArgDecl(ArgDeNoValue, "v", "verbose") ;
+//        add(verboseDecl) ;
+//        
+//        ArgDecl versionDecl = new ArgDecl(ArgDeNoValue, "ver", "version", "V") ;
+//        add(versionDecl) ;
+//        
+//        ArgDecl quietDecl = new ArgDecl(ArgDeNoValue, "q", "quiet") ;
+//        add(quietDecl) ;
+//
+//        ArgDecl noExecDecl = new ArgDecl(ArgDeNoValue, "n", "noExec", "noexec") ;
+//        add(noExecDecl) ;
+//        
+//        ArgDecl layoutDecl = new ArgDecl(ArgDeHasValue, "layout") ;
+//        add(layoutDecl) ;
+//
+//        ArgDecl queryDecl = new ArgDecl(ArgDeHasValue, "query", "file") ;
+//        add(queryDecl) ;
+//
+//        //ArgDecl querySyntaxDecl = new ArgDecl(ArgDeHasValue, "syntax", "syn", "in") ;
+//        //add(querySyntaxDecl) ;
+//        
+//        String layoutNameDefault = "layout2" ;
+//        String queryString = null ;
+//        
+//        try {
+//            process() ;
+//        } catch (IllegalArgumentException ex)
 //        {
-//            // short name
-//            String s = cl.getValue(querySyntaxDecl) ;
-//            Syntax syn = Syntax.lookup(s) ;
-//            if ( syn == null )
-//                argError("Unrecognized syntax: "+syn) ;
+//            System.err.println(ex.getMessage()) ;
+//            usage(System.err) ;
+//            throw new TerminationException(2) ;
+//        }        
+//        
+//        //---- Basic stuff
+//        if ( contains(helpDecl) )
+//        {
+//            usage(System.out) ;
+//            throw new TerminationException(0) ;
 //        }
-
-        //---- Query
-        
-        String queryFile = cl.getValue(queryDecl) ;
-        
-        if ( cl.getNumPositional() == 0 && queryFile == null )
-            argError("No query string or query file") ;
-
-        if ( cl.getNumPositional() > 1 )
-            argError("Only one query string allowed") ;
-        
-        if ( cl.getNumPositional() == 1 && queryFile != null )
-            argError("Either query string or query file - not both") ;
-
-        try {
-            if ( queryFile != null )
-                queryString  = FileUtils.readWholeFileAsUTF8(queryFile) ;
-            else
-            {
-                queryString = cl.getPositionalArg(0) ;
-                queryString = cl.indirect(queryString) ;
-            }
-                
-        } catch (IOException ex)
-        {
-            System.err.println("Failed to read: "+queryFile) ;
-            System.err.println(ex.getMessage()) ;
-        }
- 
-        String layoutName = cl.getValue(layoutDecl) ;
-        if ( layoutName == null )
-            layoutName = layoutNameDefault ;
-
-        Query query = QueryFactory.create(queryString) ;
-        
-        if ( layoutName.equalsIgnoreCase("layout1") ) 
-        {
-            compilePrint(query, new QueryCompilerSimple()) ;
-            throw new TerminationException(0) ;
-        }
-        
-        if ( layoutName.equalsIgnoreCase("modelRDB") ) 
-        {
-            // Kludge something to work.
-            IRDBDriver iDriver = new Driver_MySQL() ;
-            compilePrint(query, new QueryCompiler1(new CodecRDB(iDriver))) ;
-            throw new TerminationException(0) ;
-        }
-        
-        if ( layoutName.equalsIgnoreCase("layout2") ) 
-        {
-            compilePrint(query, new QueryCompiler2()) ;
-            throw new TerminationException(0) ;
-        }
-        
-        argError("Unknown layout name: "+layoutName) ;
-    }
-    
-    static void usage(java.io.PrintStream out)
-    {
-        out.println("Usage: [--layout schemaName] [--query URL | string ] ") ;
-    }
-    
-    // Does not return
-    static void argError(String s)
-    {
-        System.err.println("Argument Error: "+s) ;
-        //usage(System.err) ;
-        throw new TerminationException(3) ;
-    }
+//        
+//        if ( contains(versionDecl) )
+//        {
+//            System.out.println("SDB Version: "+SDB.VERSION+"  ARQ Version: "+ARQ.VERSION+"  Jena: "+Jena.VERSION+"") ;
+//            throw new TerminationException(0) ;
+//        }
+//        
+//        verbose = contains(verboseDecl) ;
+//        
+////        if ( contains(querySyntaxDecl) )
+////        {
+////            // short name
+////            String s = getValue(querySyntaxDecl) ;
+////            Syntax syn = Syntax.lookup(s) ;
+////            if ( syn == null )
+////                argError("Unrecognized syntax: "+syn) ;
+////        }
+//
+//        //---- Query
+//        
+//        String queryFile = getValue(queryDecl) ;
+//        
+//        if ( getNumPositional() == 0 && queryFile == null )
+//            argError("No query string or query file") ;
+//
+//        if ( getNumPositional() > 1 )
+//            argError("Only one query string allowed") ;
+//        
+//        if ( getNumPositional() == 1 && queryFile != null )
+//            argError("Either query string or query file - not both") ;
+//
+//        try {
+//            if ( queryFile != null )
+//                queryString  = FileUtils.readWholeFileAsUTF8(queryFile) ;
+//            else
+//            {
+//                queryString = getPositionalArg(0) ;
+//                queryString = indirect(queryString) ;
+//            }
+//                
+//        } catch (IOException ex)
+//        {
+//            System.err.println("Failed to read: "+queryFile) ;
+//            System.err.println(ex.getMessage()) ;
+//        }
+// 
+//        String layoutName = getValue(layoutDecl) ;
+//        if ( layoutName == null )
+//            layoutName = layoutNameDefault ;
+//
+//        Query query = QueryFactory.create(queryString) ;
+//        
+//        if ( layoutName.equalsIgnoreCase("layout1") ) 
+//        {
+//            compilePrint(query, new QueryCompilerSimple()) ;
+//            throw new TerminationException(0) ;
+//        }
+//        
+//        if ( layoutName.equalsIgnoreCase("modelRDB") ) 
+//        {
+//            // Kludge something to work.
+//            IRDBDriver iDriver = new Driver_MySQL() ;
+//            compilePrint(query, new QueryCompiler1(new CodecRDB(iDriver))) ;
+//            throw new TerminationException(0) ;
+//        }
+//        
+//        if ( layoutName.equalsIgnoreCase("layout2") ) 
+//        {
+//            compilePrint(query, new QueryCompiler2()) ;
+//            throw new TerminationException(0) ;
+//        }
+//        
+//        argError("Unknown layout name: "+layoutName) ;
+//    }
+//    
     
     public static void compilePrint(String queryString, String layoutName)
     {
         System.err.println("BROKEN - FIX ME") ;
     }
     
-    private static void compilePrint(Query query, QueryCompiler compiler)
+    @Override
+    protected void exec()
+    {
+      //---- Query
+      
+      String queryFile = getValue(argDeclQuery) ;
+      String queryString = null ;
+      
+      if ( getNumPositional() == 0 && queryFile == null )
+          cmdError("No query string or query file") ;
+
+      if ( getNumPositional() > 1 )
+          cmdError("Only one query string allowed") ;
+      
+      if ( getNumPositional() == 1 && queryFile != null )
+          cmdError("Either query string or query file - not both") ;
+
+      try {
+          if ( queryFile != null )
+              queryString  = FileUtils.readWholeFileAsUTF8(queryFile) ;
+          else
+          {
+              queryString = getPositionalArg(0) ;
+              queryString = indirect(queryString) ;
+          }
+              
+      } catch (IOException ex)
+      {
+          System.err.println("Failed to read: "+queryFile) ;
+          System.err.println(ex.getMessage()) ;
+      }
+
+      String layoutName = getValue(argDeclLayout) ;
+      if ( layoutName == null )
+          layoutName = layoutNameDefault ;
+
+      Query query = QueryFactory.create(queryString) ;
+      
+      if ( layoutName.equalsIgnoreCase("layout1") ) 
+      {
+          compilePrint(query, new QueryCompilerSimple()) ;
+          throw new TerminationException(0) ;
+      }
+      
+      if ( layoutName.equalsIgnoreCase("modelRDB") ) 
+      {
+          // Kludge something to work.
+          IRDBDriver iDriver = new Driver_MySQL() ;
+          compilePrint(query, new QueryCompiler1(new CodecRDB(iDriver))) ;
+          throw new TerminationException(0) ;
+      }
+      
+      if ( layoutName.equalsIgnoreCase("layout2") ) 
+      {
+          compilePrint(query, new QueryCompiler2()) ;
+          throw new TerminationException(0) ;
+      }
+      
+      cmdError("Unknown layout name: "+layoutName) ;
+  }
+
+
+    
+    private void compilePrint(Query query, QueryCompiler compiler)
     {
         if ( verbose )
         {
@@ -228,17 +283,17 @@ public class sdbprint // NOT CmdArgsDB
         }
 
         // Print all SDB things in the plan
-        PlanWalker.walk(qe.getPlan(), new Printer(store)) ;
+        PlanWalker.walk(qe.getPlan(), new PrintSDBBlocks(store)) ;
         
     }
 
 
-    static class Printer extends PlanVisitorBase
+    class PrintSDBBlocks extends PlanVisitorBase
     {
         private Store store ;
         String separator = null ;
 
-        Printer(Store store) { this.store = store ; }
+        PrintSDBBlocks(Store store) { this.store = store ; }
         
         @Override
         public void visit(PlanElementExternal planElt)
@@ -262,6 +317,16 @@ public class sdbprint // NOT CmdArgsDB
             }
         }
     }
+
+
+    @Override
+    protected String getSummary()
+    {
+        return "Usage: [--layout schemaName] [--query URL | string ] " ;
+    }
+
+    @Override
+    protected String getCommandName() { return Utils.className(this) ; }
     
 }
 

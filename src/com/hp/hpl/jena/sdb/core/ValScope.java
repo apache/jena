@@ -18,12 +18,10 @@ import com.hp.hpl.jena.query.core.Var;
 public class ValScope
 {
     // Need a value for a variable in a given type.
-    static enum ValType { STRING, NUMBER, DATETIME } ;
-    
     private Var var ;
-    private ValType valType ;
+    private ValueSpace valType ;
     
-    public ValScope(Var var, ValType valType)
+    public ValScope(Var var, ValueSpace valType)
     {
         this.var = var ;
         this.valType = valType ;
