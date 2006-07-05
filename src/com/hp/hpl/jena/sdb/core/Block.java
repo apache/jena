@@ -79,7 +79,8 @@ public class Block implements Printable
     { 
         if ( projectVars == null )
             projectVars = new ArrayList<Var>() ;
-        projectVars.add(var) ;
+        if ( ! projectVars.contains(var) )
+            projectVars.add(var) ;
     }
     
     public List<Var>        getDefinedVars()         { return BlockNodes.definedVars(this) ; }
@@ -137,8 +138,9 @@ public class Block implements Printable
     {
         if ( node.isVariable() ) 
         {
-            if ( !acc.contains(node) )
-                acc.add(new Var(node)) ;
+            Var v = new Var(node) ;
+            if ( !acc.contains(v) )
+                acc.add(v) ;
             return ;
         }
         // Constant

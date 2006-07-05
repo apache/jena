@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sdb.core.NotesBase;
+import com.hp.hpl.jena.sdb.core.AnnotationsBase;
 
-public abstract class SqlExprBase extends NotesBase implements SqlExpr
+public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
 {
     @Override
     public final String toString()

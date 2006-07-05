@@ -12,6 +12,7 @@ import static com.hp.hpl.jena.query.util.FmtUtils.* ;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.util.Pair;
@@ -25,6 +26,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     
     final static boolean closeOnSameLine = true ;
     private IndentedWriter out ;
+    private static final int annotationColumn = 40 ; 
 
     public SqlNodeTextVisitor(IndentedWriter out) { this.out = out ; }
     
@@ -80,35 +82,44 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     public void visit(SqlJoinLeftOuter sqlJoin)
     { visitJoin(sqlJoin) ; }
     
+    int depth = 0 ;
+    
     private void visitJoin(SqlJoin sqlJoin)
     {
+        depth ++ ;
         out.ensureStartOfLine() ;
         start(sqlJoin, sqlJoin.getJoinType().printName(), sqlJoin.getAliasName()) ;
         sqlJoin.getLeft().visit(this) ;
-        out.println("-- LEFT") ;
+        out.println() ;
         sqlJoin.getRight().visit(this) ;
-        out.println("-- RIGHT") ;
         outputConditionList(sqlJoin.getConditions()) ;
         finish() ;
+        depth -- ;
     }
     
     
-    private void addAnnotations(SqlNode n)
+    private void addAnnotations(Annotations n)
     {
         if ( n == null || !n.hasNotes() ) return ;
         
-        if ( n.getNotes().size() == 1 )
-        {
-            out.print(" -- ") ;
-            out.print(n.getNotes().get(0)) ;
-            return ;
-        }
+        boolean first = true ;
+        
+//        if ( n.getNotes().size() == 1 )
+//        {
+//            out.pad(annotationColumn) ;
+//            out.print(" -- ") ;
+//            out.print(n.getNotes().get(0)) ;
+//            return ;
+//        }
         
         for ( String s : n.getNotes() )
         {
-            out.ensureStartOfLine() ;
+            if ( !first )
+                out.ensureStartOfLine() ;
+            first = false ;
+            out.pad(annotationColumn, true ) ;
             out.print("-- ") ;
-            out.println(s) ;
+            out.print(s) ;
         }
     }
     
@@ -117,11 +128,12 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         boolean first = true ;
         for ( SqlExpr c : cond )
         {
-            if ( ! first ) out.println() ;
+            out.println() ;
             first = false ;
             out.print(DelimOpen) ;
             out.print("Condition ") ;
             out.print(c.toString()) ;
+            addAnnotations(c) ;
             out.print(DelimClose) ;
         }
     }
@@ -144,7 +156,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     private void finish()
     {
         if ( ! closeOnSameLine )
-            out.println('F') ;
+            out.println() ;
         out.print(DelimClose) ;
         out.decIndent() ;
     }

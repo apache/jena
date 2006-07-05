@@ -54,87 +54,36 @@ public class PlanToSDB extends TransformCopy
         this.translateConstraints = translateConstraints ;
     }
     
-    @SuppressWarnings("unchecked")
     @Override
     public PlanElement transform(PlanBlockTriples planElt)
     { 
         PlanSDB x = new PlanSDB(context, query, store) ;
-        for ( Triple t : (List<Triple>)planElt.getPattern() )
-        {
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)planElt.getPattern() ;
+        
+        for ( Triple t : triples )  
             x.getBlock().add(t) ;
-        }
         return x ;
     }
     
-    // --- regex : testing a term (in a variable)
-    private static ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
+   
+//    @Override
+//    public PlanElement transform(PlanFilter planElt)
+//    {
+//        PlanSDBConstraint sdb = transformFilter(planElt) ;
+//        if ( sdb == null )
+//            return super.transform(planElt) ;
+//        return sdb ;
+//    }
     
-    private static ExprPattern regex2 = new ExprPattern("regex(?a1, ?a2, 'i')",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
-    // --- regex : testing the lexical form of a term (in a variable)
-    private static ExprPattern regex3 = new ExprPattern("regex(str(?a1), ?a2)",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
-    private static ExprPattern regex4 = new ExprPattern("regex(str(?a1), ?a2, 'i')",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
     
-    // --- starts-with
-    private static ExprPattern startsWith1 = new ExprPattern("fn:starts-with(?a1, ?a2)",
-                                                             new String[]{ "a1" , "a2" },
-                                                             new Action[]{ new ActionMatchVar() ,
-                                                                           new ActionMatchString()}) ;
-
-    private static ExprPattern startsWith2 = new ExprPattern("fn:starts-with(str(?a1), ?a2)",
-                                                             new String[]{ "a1" , "a2" },
-                                                             new Action[]{ new ActionMatchVar() ,
-                                                                           new ActionMatchString()}) ;
-    @Override
-    public PlanElement transform(PlanFilter planElt)
-    {
-        Expr expr = planElt.getConstraint().getExpr() ; 
-        MapResult rMap = null ;
-        
-        if ( (rMap = regex1.match(expr)) != null )
-        {
-            //log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            // TODO - think about need for the C_ parallel class hierarchy of constraints
-            Var var = new Var(rMap.get("a1").getVar()) ;
-            String pattern = rMap.get("a2").getConstant().getString() ;
-            SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
-            // IsNotNull AND ...
-            // I am not perfect ...
-            return new PlanSDBConstraint(c, planElt, true) ; 
-        }
-        
-        if ( (rMap = startsWith1.match(expr)) != null )
-        {
-            log.info("startsWith - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            Var var = new Var(rMap.get("a1").getVar()) ;
-            String pattern = rMap.get("a2").getConstant().getString() ;
-            
-            // becomes; isNotNull(var) AND var LIKE 'pattern%'
-        }
-        
-        return super.transform(planElt) ;
-    }
-    
-    @SuppressWarnings("unchecked")
     @Override
     public PlanElement transform(PlanBasicGraphPattern planElt, List newElts)
     { 
+        @SuppressWarnings("unchecked")
         List<PlanElement> newElements = (List<PlanElement>)newElts ;
         
         PlanSDB lastSDB = null ;
-        // Coalesce wrapped objects
-        // Could equally well not convert PlanFilter in the tranformer but do here instead. 
         for ( int i = 0 ; i < newElements.size() ; i++ )
         {
             PlanElement e = newElements.get(i) ;
@@ -144,22 +93,48 @@ public class PlanToSDB extends TransformCopy
                 lastSDB = (PlanSDB)e ;
                 continue ;
             }
-                
-            if ( e instanceof PlanSDBConstraint )
+             
+            
+            if ( e instanceof PlanFilter )
             {
-                PlanSDBConstraint c = (PlanSDBConstraint)e ;
-                PlanFilter filter = c.getOriginal() ;
-                
-                if ( lastSDB != null )
+                // If filters have not been transofrmed earlier.
+                // Better here so can test for whether the filte ris appropriate for the BGP.
+                PlanSDBConstraint c = transformFilter((PlanFilter)e) ;
+                if ( c != null )
                 {
-                    lastSDB.getBlock().add( c.get() ) ;
-                    if ( c.isComplete() )
-                        filter = null ;
-                }
+                    PlanFilter filter = c.getOriginal() ;
+                    // Check for complete and partial filters.
+                    if ( lastSDB != null )
+                    {
+                        lastSDB.getBlock().add( c.get() ) ;
+                        if ( c.isComplete() )
+                            filter = null ;
+                    }
 
-                newElements.set(i, filter) ;
-                continue ;
+                    // Put back in the remained external filter (may be null). 
+                    newElements.set(i, filter) ;
+                    continue ;
+                }
             }
+                
+            // Or do PlanFilters in two steps.
+//            if ( e instanceof PlanSDBConstraint )
+//            {
+//                PlanSDBConstraint c = (PlanSDBConstraint)e ;
+//                PlanFilter filter = c.getOriginal() ;
+//                
+//                if ( lastSDB != null )
+//                {
+//                    lastSDB.getBlock().add( c.get() ) ;
+//                    if ( c.isComplete() )
+//                        filter = null ;
+//                }
+//
+//                newElements.set(i, filter) ;
+//                continue ;
+//            }
+            
+            
             if ( e instanceof PlanSDBMarker )
                 log.warn("PlanSDBMarker still present!") ;
             lastSDB = null ;
@@ -197,6 +172,68 @@ public class PlanToSDB extends TransformCopy
         // We're not interested - do whatever the default is.
         return super.transform(planElt, fixed, optional) ;
     }
+    
+    // -------- Constraints
+    
+    // --- regex : testing a term (in a variable)
+    private static ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
+                                                        new String[]{ "a1" , "a2" },
+                                                        new Action[]{ new ActionMatchVar() ,
+                                                                      new ActionMatchString()}) ;
+    
+    private static ExprPattern regex2 = new ExprPattern("regex(?a1, ?a2, 'i')",
+                                                        new String[]{ "a1" , "a2" },
+                                                        new Action[]{ new ActionMatchVar() ,
+                                                                      new ActionMatchString()}) ;
+    // --- regex : testing the lexical form of a term (in a variable)
+    private static ExprPattern regex3 = new ExprPattern("regex(str(?a1), ?a2)",
+                                                        new String[]{ "a1" , "a2" },
+                                                        new Action[]{ new ActionMatchVar() ,
+                                                                      new ActionMatchString()}) ;
+    private static ExprPattern regex4 = new ExprPattern("regex(str(?a1), ?a2, 'i')",
+                                                        new String[]{ "a1" , "a2" },
+                                                        new Action[]{ new ActionMatchVar() ,
+                                                                      new ActionMatchString()}) ;
+    
+    // --- starts-with
+    private static ExprPattern startsWith1 = new ExprPattern("fn:starts-with(?a1, ?a2)",
+                                                             new String[]{ "a1" , "a2" },
+                                                             new Action[]{ new ActionMatchVar() ,
+                                                                           new ActionMatchString()}) ;
+
+    private static ExprPattern startsWith2 = new ExprPattern("fn:starts-with(str(?a1), ?a2)",
+                                                             new String[]{ "a1" , "a2" },
+                                                             new Action[]{ new ActionMatchVar() ,
+                                                                           new ActionMatchString()}) ;
+    private PlanSDBConstraint transformFilter(PlanFilter planElt)
+    {
+        Expr expr = planElt.getConstraint().getExpr() ; 
+        MapResult rMap = null ;
+        
+        if ( (rMap = regex1.match(expr)) != null )
+        {
+            //log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+            // TODO - think about need for the C_ parallel class hierarchy of constraints
+            Var var = new Var(rMap.get("a1").getVar()) ;
+            String pattern = rMap.get("a2").getConstant().getString() ;
+            SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
+            // IsNotNull AND ...
+            // I am not perfect ...
+            return new PlanSDBConstraint(c, planElt, true) ; 
+        }
+        
+        if ( (rMap = startsWith1.match(expr)) != null )
+        {
+            log.info("startsWith - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+            Var var = new Var(rMap.get("a1").getVar()) ;
+            String pattern = rMap.get("a2").getConstant().getString() ;
+            
+            // becomes; isNotNull(var) AND var LIKE 'pattern%'
+        }
+        return null ;
+    }
+ 
+    
 }
 
 /*

@@ -12,11 +12,11 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.NotesBase;
+import com.hp.hpl.jena.sdb.core.AnnotationsBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 
-public abstract class SqlNodeBase extends NotesBase implements SqlNode
+public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
 {
     private String aliasName ;
     

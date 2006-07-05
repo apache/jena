@@ -15,6 +15,13 @@ public class SqlRestrict extends SqlNodeBase1
 {
     private SqlExprList conditions = new SqlExprList() ;
 
+
+    public SqlRestrict(SqlNode sqlNode, SqlExpr condition)
+    { 
+        super(null, sqlNode) ;
+        this.conditions.add(condition) ; 
+    }
+
     public SqlRestrict(String aliasName, SqlNode sqlNode, SqlExpr condition)
     { 
         super(aliasName, sqlNode) ;

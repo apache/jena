@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sdb.store.Store;
 
 public class PlanSDB
     extends PlanElementExternalBase 
-    //extends Block
     implements PlanElementExternal
 {
     Store store ;

@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.core;
 
 import java.util.List;
 
-public interface Notes
+public interface Annotations
 {
     public List<String> getNotes() ;
     public void addNote(String s) ;

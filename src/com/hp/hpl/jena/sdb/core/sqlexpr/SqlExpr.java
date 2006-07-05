@@ -8,9 +8,9 @@ package com.hp.hpl.jena.sdb.core.sqlexpr;
 
 import java.util.Collection;
 
-import com.hp.hpl.jena.sdb.core.Notes;
+import com.hp.hpl.jena.sdb.core.Annotations;
 
-public interface SqlExpr extends Notes
+public interface SqlExpr extends Annotations
 {
     public abstract void visit(SqlExprVisitor visitor) ;
     public String asSQL() ;

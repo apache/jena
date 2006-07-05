@@ -17,6 +17,7 @@ public class BasicPattern extends LinkedList<Triple>
     public BasicPattern(List<Triple> list) { super(list) ; }
     public BasicPattern(BasicPattern pattern) { super(pattern) ; }
 }
+
 /*
  * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.

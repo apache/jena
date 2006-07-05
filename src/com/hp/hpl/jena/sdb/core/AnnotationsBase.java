@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.core;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotesBase implements Notes
+public class AnnotationsBase implements Annotations
 {
     //---- Annotations
     List<String> annotations = null ;

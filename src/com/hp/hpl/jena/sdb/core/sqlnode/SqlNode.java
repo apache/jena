@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.Notes;
+import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.query.util.Printable;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-public interface SqlNode extends Printable, Scope, Notes
+public interface SqlNode extends Printable, Scope, Annotations
 {
     public String         getAliasName() ;
     

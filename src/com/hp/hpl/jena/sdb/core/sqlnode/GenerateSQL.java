@@ -31,7 +31,7 @@ public class GenerateSQL implements SqlNodeVisitor
     int level = 0 ;
     SqlExprList remains = new SqlExprList() ;
     private boolean doAnnotations = true ;
-    private static final int annotationColumn = 30 ;
+    private static final int annotationColumn = 40 ;
     private static boolean commentSQLStyle = true ;
     
     public GenerateSQL(CompileContext context, IndentedWriter out)
@@ -207,17 +207,22 @@ public class GenerateSQL implements SqlNodeVisitor
         outputNode(right, true) ;
         out.decIndent() ;
         out.println() ;
-        out.print("ON ( ") ;
+        out.print("ON ") ;
         if ( join.getConditions().size() > 0 )
             conditionList(join.getConditions()) ;
         else
-            out.print("true") ;
-        out.print(" )");
+            out.print(" ( true )") ;
     }
 
+    // Interaction with annotations
     static boolean allOnOneLine = true ;
     public void conditionList(SqlExprList conditions)
     {
+        if ( conditions.size() == 0 )
+            return ;
+        
+        out.print("( ") ;
+        
         String sep = " AND " ;
         boolean first = true ;
         for ( SqlExpr c : conditions )
@@ -229,6 +234,17 @@ public class GenerateSQL implements SqlNodeVisitor
             }
             out.print(c.asSQL()) ;
             first = false ;
+        }
+        out.print(" )") ;
+        first = true ; 
+        for ( SqlExpr c : conditions )
+        {
+            if ( c.hasNotes() )
+            {
+                if ( !first ) out.println() ;
+                annotate(c) ;
+                first = false ;
+            }
         }
     }
     
@@ -269,7 +285,7 @@ public class GenerateSQL implements SqlNodeVisitor
         level -- ;
     }
 
-    private void annotate(SqlNode sqlNode)
+    private void annotate(Annotations sqlNode)
     {
         if ( doAnnotations )
         {
@@ -278,7 +294,7 @@ public class GenerateSQL implements SqlNodeVisitor
             {
                 if ( !first ) out.println();
                 first = false; 
-                out.pad(annotationColumn) ;
+                out.pad(annotationColumn, true) ;
                 if ( commentSQLStyle )
                 {
                     out.print("-- ") ; out.print(s) ;
