@@ -32,6 +32,7 @@ public class GenerateSQL implements SqlNodeVisitor
     SqlExprList remains = new SqlExprList() ;
     private boolean doAnnotations = true ;
     private static final int annotationColumn = 30 ;
+    private static boolean commentSQLStyle = true ;
     
     public GenerateSQL(CompileContext context, IndentedWriter out)
     { this.context = context ; this.out = out ; }
@@ -199,6 +200,7 @@ public class GenerateSQL implements SqlNodeVisitor
         //out.print(" ") ;
         
         out.print(join.getJoinType().sqlOperator()) ;
+        annotate(join) ;
         out.println() ;
 
         out.incIndent() ;
@@ -272,12 +274,18 @@ public class GenerateSQL implements SqlNodeVisitor
         if ( doAnnotations )
         {
             boolean first = true ;
-            for ( String s : sqlNode.getAnnotations() )
+            for ( String s : sqlNode.getNotes() )
             {
                 if ( !first ) out.println();
                 first = false; 
                 out.pad(annotationColumn) ;
-                out.print("/* ") ; out.print(s) ; out.print(" */") ;
+                if ( commentSQLStyle )
+                {
+                    out.print("-- ") ; out.print(s) ;
+                }else{
+                    out.print("/* ") ; out.print(s) ; out.print(" */") ;
+                }
+                    
             }
         }
     }

@@ -12,10 +12,11 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sdb.core.NotesBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 
-public abstract class SqlNodeBase implements SqlNode
+public abstract class SqlNodeBase extends NotesBase implements SqlNode
 {
     private String aliasName ;
     
@@ -65,39 +66,6 @@ public abstract class SqlNodeBase implements SqlNode
         return t.acc ;
     }
 
-    //---- Annotations
-    List<String> annotations = null ;
-    public List<String> getAnnotations()
-    {
-        initAnnotations() ;
-        return annotations ;
-    }
-
-    public boolean hasAnnotations()
-    { return annotations != null && annotations.size() > 0 ; }
-    
-    public boolean hasOneAnnotation()
-    { return annotations != null && annotations.size() == 1 ; }
-    
-    public void addAnnotation(String s)
-    {
-        initAnnotations() ;
-        annotations.add(s) ;
-    }
-    
-    public void addAnnotations(List<String> annotations)
-    {
-        initAnnotations() ;
-        this.annotations.addAll(annotations) ;
-    }
-
-    private void initAnnotations()
-    {
-        if ( annotations == null )
-            annotations = new ArrayList<String>() ;
-    }
-    //---- Annotations
-    
     @Override public String toString()
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;

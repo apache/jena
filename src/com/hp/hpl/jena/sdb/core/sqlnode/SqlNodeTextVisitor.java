@@ -64,13 +64,13 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
 
     public void visit(SqlTable sqlNode)
     {
-        if ( ! sqlNode.hasOneAnnotation() )
-            addAnnotations(sqlNode) ;
+//        if ( ! sqlNode.hasOneNote() )
+//            addAnnotations(sqlNode) ;
         out.print(DelimOpen) ;
         out.print("Table ") ;
         out.print(sqlNode.getAliasName()) ;
         out.print(DelimClose) ;
-        if ( sqlNode.hasOneAnnotation() )
+//        if ( sqlNode.hasOneNote() )
             addAnnotations(sqlNode) ;
     }
 
@@ -85,9 +85,9 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         out.ensureStartOfLine() ;
         start(sqlJoin, sqlJoin.getJoinType().printName(), sqlJoin.getAliasName()) ;
         sqlJoin.getLeft().visit(this) ;
-        out.println() ;
+        out.println("-- LEFT") ;
         sqlJoin.getRight().visit(this) ;
-        out.println() ;
+        out.println("-- RIGHT") ;
         outputConditionList(sqlJoin.getConditions()) ;
         finish() ;
     }
@@ -95,16 +95,16 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     
     private void addAnnotations(SqlNode n)
     {
-        if ( n == null || !n.hasAnnotations() ) return ;
+        if ( n == null || !n.hasNotes() ) return ;
         
-        if ( n.getAnnotations().size() == 1 )
+        if ( n.getNotes().size() == 1 )
         {
             out.print(" -- ") ;
-            out.print(n.getAnnotations().get(0)) ;
+            out.print(n.getNotes().get(0)) ;
             return ;
         }
         
-        for ( String s : n.getAnnotations() )
+        for ( String s : n.getNotes() )
         {
             out.ensureStartOfLine() ;
             out.print("-- ") ;
@@ -144,7 +144,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     private void finish()
     {
         if ( ! closeOnSameLine )
-            out.println() ;
+            out.println('F') ;
         out.print(DelimClose) ;
         out.decIndent() ;
     }

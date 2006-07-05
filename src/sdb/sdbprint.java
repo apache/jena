@@ -307,7 +307,7 @@ public class sdbprint extends CmdArgModule
                 if ( verbose )
                 {
                     QueryCompilerBase.printBlock = false ;  // Done earlier.
-                    QueryCompilerBase.printAbstractSQL = false ;
+                    QueryCompilerBase.printAbstractSQL = true ;
                     QueryCompilerBase.printDivider = divider ;
                 }
                 

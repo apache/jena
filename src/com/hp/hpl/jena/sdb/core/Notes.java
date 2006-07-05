@@ -4,40 +4,17 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.core.Notes;
-import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.query.util.Printable;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import java.util.List;
 
-public interface SqlNode extends Printable, Scope, Notes
+public interface Notes
 {
-    public String         getAliasName() ;
-    
-    public boolean        isJoin() ;
-    public SqlJoin        getJoin() ;
-    
-    public boolean        isRestrict() ;                // isSelect is confusing
-    public SqlRestrict    getRestrict() ;
-    
-    public boolean        isProject() ;
-    public SqlProject     getProject() ;
-    
-    public boolean        isTable() ;
-    public SqlTable       getTable() ;
-    
-    // Scope
-//    public boolean        hasColumnForVar(Var var) ;
-//    public SqlColumn      getColumnForVar(Var var) ;       // Get the col for this var - or null. 
-
-    //public SqlColumn      getValColumnForVar(Var var, ValueSpace vSpace) ;
-    //public void           setColumnForVar(Var var, SqlColumn) ; 
-    
-    
-    public boolean usesColumn(SqlColumn c) ;  // Does this subtree mentioned a column?
-    
-    public void visit(SqlNodeVisitor visitor) ;
+    public List<String> getNotes() ;
+    public void addNote(String s) ;
+    public void addNotes(List<String> annotations) ;
+    public boolean hasNotes() ;
+    public boolean hasOneNote() ;
 }
 
 /*

@@ -327,7 +327,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
         conditions.addAll(restrict.getConditions()) ;
         // Loose the restriction
         SqlNode sqlNode = restrict.getSubNode() ;
-        sqlNode.addAnnotations(restrict.getAnnotations()) ;
+        sqlNode.addNotes(restrict.getNotes()) ;
         return sqlNode ;
     }
     

@@ -191,7 +191,7 @@ public class QueryCompiler2 extends QueryCompilerBase
             // Access nodes table.
             
             SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
-            nTable.addAnnotation("Const: "+FmtUtils.stringForNode(n)) ; 
+            nTable.addNote("Const: "+FmtUtils.stringForNode(n)) ; 
             SqlExprList conds = new SqlExprList() ;
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
             
@@ -272,7 +272,7 @@ public class QueryCompiler2 extends QueryCompilerBase
                 continue ;
             
             SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
-            nTable.addAnnotation("Var: "+v) ;
+            nTable.addNote("Var: "+v) ;
             SqlColumn c2 = new SqlColumn(nTable, "id") ;
             
             SqlExpr cond = new S_Equal(c1, c2) ;
@@ -291,7 +291,7 @@ public class QueryCompiler2 extends QueryCompilerBase
         SqlExprList conditions = new SqlExprList() ;
         
         TableTriples triples = new TableTriples(alias) ;
-        triples.addAnnotation(FmtUtils.stringForTriple(triple, null)) ;
+        triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
         
         processTripleSlot(context, triples, conditions, triple.getSubject(),   "s") ; 
         processTripleSlot(context, triples, conditions, triple.getPredicate(), "p") ;

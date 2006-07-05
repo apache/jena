@@ -4,40 +4,47 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.core.Notes;
-import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.query.util.Printable;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import java.util.ArrayList;
+import java.util.List;
 
-public interface SqlNode extends Printable, Scope, Notes
+public class NotesBase implements Notes
 {
-    public String         getAliasName() ;
-    
-    public boolean        isJoin() ;
-    public SqlJoin        getJoin() ;
-    
-    public boolean        isRestrict() ;                // isSelect is confusing
-    public SqlRestrict    getRestrict() ;
-    
-    public boolean        isProject() ;
-    public SqlProject     getProject() ;
-    
-    public boolean        isTable() ;
-    public SqlTable       getTable() ;
-    
-    // Scope
-//    public boolean        hasColumnForVar(Var var) ;
-//    public SqlColumn      getColumnForVar(Var var) ;       // Get the col for this var - or null. 
+    //---- Annotations
+    List<String> annotations = null ;
+    public List<String> getNotes()
+    {
+        initAnnotations() ;
+        return annotations ;
+    }
 
-    //public SqlColumn      getValColumnForVar(Var var, ValueSpace vSpace) ;
-    //public void           setColumnForVar(Var var, SqlColumn) ; 
+    public boolean hasNotes()
+    { return annotations != null && annotations.size() > 0 ; }
     
+    public boolean hasOneNote()
+    { return annotations != null && annotations.size() == 1 ; }
     
-    public boolean usesColumn(SqlColumn c) ;  // Does this subtree mentioned a column?
+    public void addNote(String s)
+    {
+        initAnnotations() ;
+        annotations.add(s) ;
+    }
     
-    public void visit(SqlNodeVisitor visitor) ;
+    public void addNotes(List<String> annotations)
+    {
+        initAnnotations() ;
+        this.annotations.addAll(annotations) ;
+    }
+
+    private void initAnnotations()
+    {
+        if ( annotations == null )
+            annotations = new ArrayList<String>() ;
+    }
+    //---- Annotations
+    
+
 }
 
 /*
