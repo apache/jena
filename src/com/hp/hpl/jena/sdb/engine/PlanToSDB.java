@@ -93,8 +93,7 @@ public class PlanToSDB extends TransformCopy
                 lastSDB = (PlanSDB)e ;
                 continue ;
             }
-             
-            
+
             if ( e instanceof PlanFilter )
             {
                 // If filters have not been transofrmed earlier.
