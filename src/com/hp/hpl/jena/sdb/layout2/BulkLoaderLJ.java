@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
  * @version $Id: BulkLoaderLJ.java,v 1.4 2006/04/21 12:40:20 andy_seaborne Exp $
  */
 
-public abstract class BulkLoaderLJ extends BulkLoader
+public abstract class BulkLoaderLJ extends LoaderTriplesNodes
 {
 	public BulkLoaderLJ(SDBConnection connection)
     {
@@ -28,40 +28,29 @@ public abstract class BulkLoaderLJ extends BulkLoader
 
 	public void createPreparedStatements()
 	{
-        try {
+		try {
 		Connection conn = connection().getSqlConnection();
 
-        super.clearLoaderTable = conn.prepareStatement("DELETE FROM NTrip;");
-        super.insertLoaderTable = conn
-            .prepareStatement("INSERT INTO NTrip VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        super.clearTripleLoaderTable = conn.prepareStatement("DELETE FROM NTrip;");
+        super.clearNodeLoaderTable = conn.prepareStatement("DELETE FROM NNode;");
+        super.insertTripleLoaderTable = conn.prepareStatement("INSERT INTO NTrip VALUES (?,?,?);");
+        super.insertNodeLoaderTable = conn
+            .prepareStatement("INSERT INTO NNode VALUES (?,?,?,?,?,?,?,?);");
         
-        super.insertObjects = conn.prepareStatement(sqlStr(
+        super.insertNodes = conn.prepareStatement(sqlStr(
         		"INSERT INTO Nodes (hash, lex, lang, datatype, type, vInt, vDouble, vDateTime)",
-        		"	SELECT DISTINCT NTrip.hash, NTrip.lex, NTrip.lang, NTrip.datatype, NTrip.type, NTrip.vInt, NTrip.vDouble, NTrip.vDateTime",
-        		"	FROM NTrip LEFT JOIN Nodes ON ",
-        		"		(NTrip.hash=Nodes.hash)",
+        		"	SELECT DISTINCT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type, NNode.vInt, NNode.vDouble, NNode.vDateTime",
+        		"	FROM NNode LEFT JOIN Nodes ON ",
+        		"		(NNode.hash=Nodes.hash)",
         		"WHERE Nodes.id IS NULL"
             ));
-		super.insertSubjects = conn.prepareStatement(sqlStr(
-        		"INSERT INTO Nodes (hash, lex, type)",
-        		"	SELECT DISTINCT NTrip.shash, NTrip.slex, NTrip.stype",
-        		"	FROM NTrip LEFT JOIN Nodes ON ",
-        		"		(NTrip.shash=Nodes.hash)",
-        		"	WHERE Nodes.id IS NULL"
-		    ));
-		super.insertPredicates = conn.prepareStatement(sqlStr(
-				"INSERT INTO Nodes (hash, lex, type)",
-				"	SELECT DISTINCT NTrip.phash, NTrip.plex, NTrip.ptype",
-				"	FROM NTrip LEFT JOIN Nodes ON",
-				"		(NTrip.phash=Nodes.hash)",
-				"	WHERE Nodes.id IS NULL"
-            ));
+        
 		super.insertTriples = conn.prepareStatement(sqlStr(
 				"INSERT INTO Triples",
 				"	SELECT DISTINCT S.id, P.id, O.id FROM",
-				"	  NTrip JOIN Nodes AS S ON (NTrip.shash=S.hash)",
-				"     JOIN Nodes AS P ON (NTrip.phash=P.hash)",
-				"     JOIN Nodes AS O ON (NTrip.hash=O.hash)",
+				"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)",
+				"     JOIN Nodes AS P ON (NTrip.p=P.hash)",
+				"     JOIN Nodes AS O ON (NTrip.o=O.hash)",
 				"     LEFT JOIN Triples ON (S.id=Triples.s AND P.id=Triples.p AND O.id=Triples.o)",
 				"     WHERE Triples.s IS NULL OR Triples.p IS NULL OR Triples.o IS NULL"
             ));

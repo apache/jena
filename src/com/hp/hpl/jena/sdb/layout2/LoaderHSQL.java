@@ -59,11 +59,6 @@ public class LoaderHSQL extends BulkLoaderLJ
         { throw new SDBExceptionSQL("Making loader table",ex) ; }
     }
 
-    @Override
-    String truncateTable(String tableName) throws SQLException
-    {
-        return "DELETE FROM "+tableName ;
-    }
 }
 
 /*

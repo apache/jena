@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.sdb.layout2;
 
 import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.logging.Log;
@@ -35,20 +37,22 @@ public abstract class LoaderTriplesNodes
 
     Thread commitThread = null ;
     PreparedTriple flushSignal = new PreparedTriple();
-    boolean threading = false;
+    boolean threading = true;
     ArrayBlockingQueue<PreparedTriple> queue ;
     
     int count;
     int chunkSize = 10000;
     
     private boolean autoCommit ;                    // State of the connection
-    protected PreparedStatement insertLoaderTable;
-    protected PreparedStatement insertObjects;
-    protected PreparedStatement insertPredicates;
-    protected PreparedStatement insertSubjects;
+    protected PreparedStatement insertTripleLoaderTable;
+    protected PreparedStatement insertNodeLoaderTable;
+    protected PreparedStatement insertNodes;
     protected PreparedStatement insertTriples;
-    protected PreparedStatement clearLoaderTable;
-
+    protected PreparedStatement clearTripleLoaderTable;
+    protected PreparedStatement clearNodeLoaderTable;
+    
+    private Set<PreparedNode> seenNodes;
+    
     public LoaderTriplesNodes(SDBConnection connection)
     {
         super(connection) ;
@@ -87,21 +91,10 @@ public abstract class LoaderTriplesNodes
         
         createLoaderTable();
         createPreparedStatements() ; 
-//        try
-//        {
-//            Connection conn = connection().getSqlConnection();
-//            this.clearLoaderTable = conn.prepareStatement("DELETE FROM NTrip;");
-//            this.insertLoaderTable = conn
-//                .prepareStatement("INSERT INTO NTrip VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-//            initStatements();
-//        }
-//        catch (SQLException e)
-//        {
-//            log.error("Problem creating bulk loader", e);
-//        }
-
         count = 0;
 
+        seenNodes = new HashSet<PreparedNode>();
+        
         if (threading)
         {
             queue = new ArrayBlockingQueue<PreparedTriple>(chunkSize);
@@ -147,10 +140,15 @@ public abstract class LoaderTriplesNodes
         try
         {
             count++;
-            addToInsert(insertLoaderTable, triple.subject, 1, false);
-            addToInsert(insertLoaderTable, triple.predicate, 4, false);
-            addToInsert(insertLoaderTable, triple.object, 7, true);
-            insertLoaderTable.addBatch();
+            addToInsert(insertNodeLoaderTable, triple.subject);
+            addToInsert(insertNodeLoaderTable, triple.predicate);
+            addToInsert(insertNodeLoaderTable, triple.object);
+            
+            insertTripleLoaderTable.setLong(1, triple.subject.hash);
+            insertTripleLoaderTable.setLong(2, triple.predicate.hash);
+            insertTripleLoaderTable.setLong(3, triple.object.hash);
+            insertTripleLoaderTable.addBatch();
+            
             if (count >= chunkSize)
                 commitTriples();
         }
@@ -165,37 +163,46 @@ public abstract class LoaderTriplesNodes
         }
     }
 
-    private void addToInsert(PreparedStatement s, PreparedNode node,
-                             int offset, boolean fill)
+    private void addToInsert(PreparedStatement s, PreparedNode node)
         throws SQLException
     {
-        s.setLong(offset, node.hash);
-        s.setString(offset + 1, node.lex);
-
-        if (!fill) // s or p, very small
-        {
-            s.setInt(offset + 2, node.typeId);
-            return;
-        }
-
-        s.setString(offset + 2, node.lang);
-        s.setString(offset + 3, node.datatype);
-        s.setInt(offset + 4, node.typeId);
-        s.setInt(offset + 5, node.valInt);
-        s.setDouble(offset + 6, node.valDouble);
-        s.setTimestamp(offset + 7, node.valDateTime);
+    	if (seenNodes.contains(node)) return; // Suppress dupes in batches
+    	seenNodes.add(node);
+    	
+        s.setLong(1, node.hash);
+        s.setString(2, node.lex);
+        s.setString(3, node.lang);
+        s.setString(4, node.datatype);
+        s.setInt(5, node.typeId);
+        if (node.valInt != 0)
+        	s.setInt(6, node.valInt);
+        else
+        	s.setString(6, "");
+        if (node.valDouble != 0)
+        	s.setDouble(7, node.valDouble);
+        else
+        	s.setString(7, "");
+        if (node.valDateTime != null)
+        	s.setTimestamp(8, node.valDateTime);
+        else
+        	s.setString(8, "");
+        
+        s.addBatch();
     }
     
     // Put the queued triples into the database
     private void commitTriples() throws SQLException
     {
         count = 0;
-        insertLoaderTable.executeBatch();
-        insertObjects.execute();
-        insertPredicates.execute();
-        insertSubjects.execute();
+        seenNodes = new HashSet<PreparedNode>();
+        
+        insertNodeLoaderTable.executeBatch();
+        insertTripleLoaderTable.executeBatch();
+        insertNodes.execute();
         insertTriples.execute();
-        clearLoaderTable.execute() ;
+        clearNodeLoaderTable.execute() ;
+        clearTripleLoaderTable.execute();
+        
         if ( autoCommit )
             // Commit the transaction if started outside of a transaction 
             connection().getSqlConnection().commit();
@@ -295,9 +302,21 @@ public abstract class LoaderTriplesNodes
                 valDateTime = Timestamp.valueOf(dateTime);
             }
             else
-                valDateTime = new Timestamp(0);
+                valDateTime = null;
 
             hash = NodeLayout2.hash(lex, lang, datatype, typeId);
+        }
+        
+        @Override
+        public int hashCode()
+        {
+        	return (int) (hash & 0xFFFF);
+        }
+        
+        @Override
+        public boolean equals(Object other)
+        {
+        	return ((PreparedNode) other).hash == hash;
         }
     }
 
@@ -325,7 +344,7 @@ public abstract class LoaderTriplesNodes
                         addOneTriple(triple);
                 }
             }
-            catch (InterruptedException e)
+            catch (InterruptedException e) // TODO handle this properly
             {
                 e.printStackTrace();
             }

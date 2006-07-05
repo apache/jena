@@ -11,6 +11,7 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -30,21 +31,12 @@ public class LoaderMySQL extends BulkLoaderLJ
     {
         try {
             Connection conn = connection().getSqlConnection();
-
-            if (SQLUtils.hasTable(conn, "NTrip"))
-                return;
-
-            PreparedStatement createLoaderTable = conn.prepareStatement(sqlStr(
-                    "CREATE TEMPORARY TABLE IF NOT EXISTS NTrip",
+            Statement s = connection().getSqlConnection().createStatement();
+            s.execute(sqlStr(
+                    "CREATE TEMPORARY TABLE IF NOT EXISTS NNode",
                     "(",
-                    "  shash BIGINT NOT NULL default 0,",
-                    "  slex TEXT BINARY CHARACTER SET utf8 NOT NULL default '',",
-                    "  stype int unsigned NOT NULL default '0',",
-                    "  phash BIGINT NOT NULL default 0,",
-                    "  plex TEXT BINARY CHARACTER SET utf8 NOT NULL default '',",
-                    "  ptype int unsigned NOT NULL default '0',",
-                    "  hash BIGINT NOT NULL default 0,",
-                    "  lex TEXT BINARY CHARACTER SET utf8 NOT NULL default '',",
+                    "  hash BIGINT NOT NULL,",
+                    "  lex TEXT BINARY CHARACTER SET utf8 NOT NULL,",
                     "  lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
                     "  datatype VARCHAR("+ TableNodes.UriLength+ ") BINARY CHARACTER SET utf8 NOT NULL default '',",
                     "  type int unsigned NOT NULL default '0',",
@@ -53,17 +45,32 @@ public class LoaderMySQL extends BulkLoaderLJ
                     "  vDateTime datetime NOT NULL default '0000-00-00 00:00:00'",
                     ") DEFAULT CHARSET=utf8;"
             ));
-            createLoaderTable.execute();
+            s.execute(sqlStr(
+            		"CREATE TEMPORARY TABLE IF NOT EXISTS NTrip",
+            		"(",
+            		"  s BIGINT NOT NULL,",
+            		"  p BIGINT NOT NULL,",
+            		"  o BIGINT NOT NULL",
+            		");"
+            ));
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL("Making loader table",ex) ; }
     }
-
+    
+    // Use TRUNCATE not DELETE FROM to clear
     @Override
-    String truncateTable(String tableName) throws SQLException
+    public void createPreparedStatements()
     {
-        // MySQL note: DELETE FROM is trnasactional, TRUNCATE is not.
-        return "TRUNCATE "+tableName ;
+    	super.createPreparedStatements();
+    	
+    	try {
+    		Connection conn = connection().getSqlConnection();
+
+            super.clearTripleLoaderTable = conn.prepareStatement("TRUNCATE NTrip;");
+            super.clearNodeLoaderTable = conn.prepareStatement("TRUNCATE NNode;");
+    	} catch (SQLException ex)
+        { throw new SDBExceptionSQL("Preparing statements",ex) ; }
     }
 }
 
