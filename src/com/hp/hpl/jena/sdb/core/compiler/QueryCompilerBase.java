@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.Constraint;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
@@ -24,6 +25,8 @@ import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sdb.store.CompiledConstraint;
+import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -130,6 +133,17 @@ public abstract class QueryCompilerBase implements QueryCompiler
         }
         SqlNode sqlNode = QC.leftJoin(context, fixedNode, optNode) ;
         return sqlNode ;
+    }
+    
+    public ConditionCompiler getConditionCompiler()
+    {
+        // TODO ConditionCompiler - redundant??
+        // Anything not null will cause the fixed algorithm to be used
+        return new ConditionCompiler(){
+            public CompiledConstraint compile(Constraint constraint)
+            {
+                return null ;
+            }} ; 
     }
     
     static private void verbose(boolean flag, Object thing)

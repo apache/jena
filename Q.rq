@@ -5,7 +5,7 @@ SELECT *
 WHERE {
     ?x :p ?v . 
 ##    ?x :p ?v2 . 
-   FILTER regex(?v , "foo")
+##   FILTER regex(?v , "foo")
 ##     OPTIONAL
 ##     { 
 ##         ?y :q1 ?v .

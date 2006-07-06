@@ -47,22 +47,7 @@ public class RunSDB
         //runCode() ;
         //runConf() ;
         //runTestManifest() ;
-        
-        
-        
-        
-        //run1("Q.rq", "Data/data.ttl") ;
-        //run1("testing/Optionals1/opt-3.rq", "testing/Optionals1/data.ttl") ;
-        //run1("testing/BasicPatterns/basic-1.rq", "testing/BasicPatterns/data.ttl") ;
-        
-//        run2("Q.rq", "Data/data.ttl") ;
-//        run2("testing/BasicPatterns/basic-1.rq", "testing/BasicPatterns/data.ttl") ;
-//        run2("testing/BasicPatterns/basic-2.rq", "testing/BasicPatterns/data.ttl") ;
-//        run2("testing/BasicPatterns/basic-3.rq", "testing/BasicPatterns/data.ttl") ;
-//        run2("testing/Optionals1/opt-1.rq",      "testing/Optionals1/data.ttl") ;
-//        run2("testing/Optionals1/opt-2.rq",      "testing/Optionals1/data.ttl") ;
-//        run2("testing/Optionals1/opt-3.rq",      "testing/Optionals1/data.ttl") ;
-        
+
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
