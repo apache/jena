@@ -66,8 +66,6 @@ public class SDBTestSuite1 extends TestSuite
             ts.setName(ts.getName()+"/HSQL-file") ;
             addTest(ts) ;
         }
-        
-        
     }
 }
 
