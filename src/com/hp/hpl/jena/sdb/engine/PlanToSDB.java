@@ -26,6 +26,8 @@ import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.condition.C_Regex;
 import com.hp.hpl.jena.sdb.condition.C_Var;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+import com.hp.hpl.jena.sdb.core.compiler.BlockOptional;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
@@ -42,7 +44,6 @@ public class PlanToSDB extends TransformCopy
     private Context context ;
     private boolean translateOptionals ;
     private boolean translateConstraints ;
-
     
     PlanToSDB(Context context, Query query, Store store, boolean translateOptionals, boolean translateConstraints)
     {
@@ -57,12 +58,12 @@ public class PlanToSDB extends TransformCopy
     @Override
     public PlanElement transform(PlanBlockTriples planElt)
     { 
-        PlanSDB x = new PlanSDB(context, query, store) ;
         @SuppressWarnings("unchecked")
         List<Triple> triples = (List<Triple>)planElt.getPattern() ;
-        
+        BlockBGP b = new BlockBGP() ;
         for ( Triple t : triples )  
-            x.getBlock().add(t) ;
+            b.add(t) ;
+        PlanSDB x = new PlanSDB(context, query, store, b) ;
         return x ;
     }
     
@@ -84,6 +85,7 @@ public class PlanToSDB extends TransformCopy
         List<PlanElement> newElements = (List<PlanElement>)newElts ;
         
         PlanSDB lastSDB = null ;
+        
         for ( int i = 0 ; i < newElements.size() ; i++ )
         {
             PlanElement e = newElements.get(i) ;
@@ -96,16 +98,20 @@ public class PlanToSDB extends TransformCopy
 
             if ( e instanceof PlanFilter )
             {
-                // If filters have not been transofrmed earlier.
+                // If filters have not been transformed earlier.
                 // Better here so can test for whether the filte ris appropriate for the BGP.
                 PlanSDBConstraint c = transformFilter((PlanFilter)e) ;
+                if ( c == null )
+                    continue ;
+                
                 if ( c != null )
                 {
                     PlanFilter filter = c.getOriginal() ;
                     // Check for complete and partial filters.
-                    if ( lastSDB != null )
+                    if ( lastSDB != null && lastSDB.getBlock() instanceof BlockBGP )
                     {
-                        lastSDB.getBlock().add( c.get() ) ;
+                        BlockBGP b = (BlockBGP)lastSDB.getBlock() ;
+                        b.add(c.get()) ;
                         if ( c.isComplete() )
                             filter = null ;
                     }
@@ -121,17 +127,7 @@ public class PlanToSDB extends TransformCopy
 //            {
 //                PlanSDBConstraint c = (PlanSDBConstraint)e ;
 //                PlanFilter filter = c.getOriginal() ;
-//                
-//                if ( lastSDB != null )
-//                {
-//                    lastSDB.getBlock().add( c.get() ) ;
-//                    if ( c.isComplete() )
-//                        filter = null ;
-//                }
-//
-//                newElements.set(i, filter) ;
-//                continue ;
-//            }
+//                ...            
             
             
             if ( e instanceof PlanSDBMarker )
@@ -163,10 +159,10 @@ public class PlanToSDB extends TransformCopy
         {
             PlanSDB fixedSDB = (PlanSDB)fixed ;
             PlanSDB optionalSDB = (PlanSDB)optional ;
+            BlockOptional b = new BlockOptional(fixedSDB.getBlock(), optionalSDB.getBlock()) ;
             // Converted both sides - can convert this node.
-            PlanSDB planSDB = new PlanSDB(context, query, store) ;
-            fixedSDB.getBlock().addOptional(optionalSDB.getBlock()) ;
-            return fixed ;
+            PlanSDB planSDB = new PlanSDB(context, query, store, b) ;
+            return planSDB ;
         }
         // We're not interested - do whatever the default is.
         return super.transform(planElt, fixed, optional) ;

@@ -23,13 +23,14 @@ public class PlanSDB
 {
     Store store ;
     Query query ;
-    Block block = new Block();
+    Block block ;
 
-    public PlanSDB(Context context, Query query, Store store)
+    public PlanSDB(Context context, Query query, Store store, Block block)
     {   
         super() ;
         this.store = store ;
         this.query = query ;
+        this.block = block ;
     }
 
     public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
@@ -37,9 +38,6 @@ public class PlanSDB
         return new QueryIterSDB(query, store, getBlock(), input, execCxt ) ;
     }
 
-//    public void visit(PlanVisitor visitor) { visitor.visit(this) ; }
-//    public void visit(PlanStructureVisitor visitor) { } ;
-    
     @Override
     public void output(IndentedWriter out)
     {
@@ -51,7 +49,6 @@ public class PlanSDB
     }
 
     public Query getQuery()   { return query ; }
-//    public Schema getSchema() { return schema ; }
     public Block getBlock()   { return block ; }
 
     // Get the PlanSDB element from a PlanElement tree (assuming there is

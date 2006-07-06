@@ -6,15 +6,23 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sdb.core.Block;
 
-public abstract class BlockBase implements Block_I
+public abstract class BlockBase implements Block
 {
-    List<Var> projectVars = null ;
-    public List<Var> getProjectVars() { return projectVars ; }
-    public void setProjectVars(List<Var> projectVars) { this.projectVars = projectVars ; }
+    Set<Var> projectVars = null ;
+    public Set<Var> getProjectVars() { return projectVars ; }
+    public void setProjectVars(Set<Var> projectVars) { this.projectVars = projectVars ; }
+    public void addProjectVar(Var var)
+    {
+        if ( projectVars == null )
+            projectVars = new LinkedHashSet<Var>() ;
+        projectVars.add(var) ;
+    }
 }
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

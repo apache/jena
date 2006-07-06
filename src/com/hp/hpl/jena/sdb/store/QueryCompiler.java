@@ -23,7 +23,7 @@ public interface QueryCompiler
     
     public String asSQL(Block block) ;
     
-    public ConditionCompiler getConditionCompiler() ;
+    //public ConditionCompiler getConditionCompiler() ;
     
  }
 

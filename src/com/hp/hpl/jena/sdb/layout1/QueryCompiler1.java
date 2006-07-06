@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.layout1;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,22 +22,23 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
-
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
-import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
+import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
-import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-
-public class QueryCompiler1
-    extends QueryCompilerBase
-    //implements QueryCompiler
+public class QueryCompiler1 extends QueryCompilerBase
 {
     private static Log log = LogFactory.getLog(QueryCompiler1.class) ;
+    
     private EncoderDecoder codec ;
     private TripleTableDesc tripleTableDesc ;
 
@@ -51,48 +53,83 @@ public class QueryCompiler1
     
     public QueryCompiler1(EncoderDecoder codec) { this(codec, null) ; }
     
-    // This layout does not optimize conditions. 
-    public ConditionCompiler getConditionCompiler()
-    {
-        return null ;
-    }
-    
     @Override
-    protected SqlNode startQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
-    { return sqlNode ; }
+    public SqlNode compile(BlockBGP blockBGP, CompileContext context)
+    {
+        
+        
+        // Common code - hmmm ...
+        SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
+        
+        for ( Triple triple : blockBGP.getTriples() )
+        {
+            SqlNode sNode = match(context, triple) ;
+            if ( sNode != null )
+            {
+                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
+                context.setScope(sqlNode) ;
+            }
+        }
+        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
+        return sqlNode ;
+
+    }
+
 
     @Override
-    protected SqlNode finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
-    {
-        // Add projection
-        // This is a Scope?
-        List<Pair<Var, SqlColumn>>cols = new ArrayList<Pair<Var, SqlColumn>>() ;
-        List<Var> x = block.getProjectVars() ;
+    public void startCompile(CompileContext context, Block block)
+    { return ; } 
+
+
+  @Override
+  protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
+  {
+      List<Pair<Var, SqlColumn>>cols = new ArrayList<Pair<Var, SqlColumn>>() ;
+      Set<Var> x = block.getProjectVars() ;
+      
+      if ( x == null )
+          x = block.getDefinedVars() ;
+      for ( Var v : x )
+      {
+          if ( v.isSystemVar() )
+              continue ;
+          SqlColumn c = sqlNode.getColumnForVar(v) ;
+          cols.add(new Pair<Var, SqlColumn>(v, c)) ;
+      }
+      return new SqlProject(sqlNode, cols) ;
+  }
+    
         
-        if ( x == null )
-            x = block.getDefinedVars() ;
-        for ( Var v : block.getDefinedVars() )
+        protected SqlNode match(CompileContext context, Triple triple)
         {
-            if ( v.isSystemVar() )
-                continue ;
-            SqlColumn c = sqlNode.getColumnForVar(v) ;
-            cols.add(new Pair<Var, SqlColumn>(v, c)) ;
+            String sCol = tripleTableDesc.getSubjectColName() ;
+            String pCol = tripleTableDesc.getPredicateColName() ;
+            String oCol = tripleTableDesc.getObjectColName() ;
+            
+            String alias = context.allocTableAlias() ;
+            TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
+            SqlExprList conditions = new SqlExprList() ;
+            
+            // Turn triple pattern into conditions
+            processVar(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
+            processVar(context, tripleTable, triple.getPredicate(), pCol, conditions) ;
+            processVar(context, tripleTable, triple.getObject(),    oCol, conditions) ;
+            
+            if ( conditions.size() == 0 )
+                return tripleTable ;
+            return new SqlRestrict(tripleTable, conditions) ;
         }
-        return new SqlProject(sqlNode, cols) ;
-    }
+
+    private SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
+    { return null ; }
     
-    @Override
-    protected SqlNode startBasicBlock(CompileContext context, BasicPattern basicPattern, SqlNode sqlNode)
-    { return sqlNode ; }
-    
-    @Override
-    protected SqlNode finishBasicBlock(CompileContext context, BasicPattern basicPattern, List<SDBConstraint> constraints, SqlNode sqlNode)
+    private SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP)
     { 
-        if ( constraints.size() > 0 )
+        if ( blockBGP.getConstraints().size() > 0 )
         {
             String alias = context.allocAlias("R"+SDBConstants.SQLmark) ;
             SqlExprList sqlConditions = new SqlExprList() ;
-            for ( SDBConstraint c : constraints )
+            for ( SDBConstraint c : blockBGP.getConstraints() )
             {
                 SqlExpr sqlExpr = c.asSqlExpr(context.getScope()) ;
                 sqlConditions.add(sqlExpr) ;
@@ -100,28 +137,17 @@ public class QueryCompiler1
             sqlNode = new SqlRestrict(alias, sqlNode, sqlConditions) ;
         }
 
-        return sqlNode ;
-    }
-    
-    @Override
-    protected SqlNode match(CompileContext context, Triple triple)
-    {
-        String sCol = tripleTableDesc.getSubjectColName() ;
-        String pCol = tripleTableDesc.getPredicateColName() ;
-        String oCol = tripleTableDesc.getObjectColName() ;
-        
-        String alias = context.allocTableAlias() ;
-        TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
-        SqlExprList conditions = new SqlExprList() ;
-        
-        // Turn triple pattern into conditions
-        processVar(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
-        processVar(context, tripleTable, triple.getPredicate(), pCol, conditions) ;
-        processVar(context, tripleTable, triple.getObject(),    oCol, conditions) ;
-        
-        if ( conditions.size() == 0 )
-            return tripleTable ;
-        return new SqlRestrict(tripleTable, conditions) ;
+        // Add projection
+        // This is a Scope?
+        List<Pair<Var, SqlColumn>>cols = new ArrayList<Pair<Var, SqlColumn>>() ;
+        for ( Var v : blockBGP.getProjectVars() )
+        {
+            if ( v.isSystemVar() )
+                continue ;
+            SqlColumn c = sqlNode.getColumnForVar(v) ;
+            cols.add(new Pair<Var, SqlColumn>(v, c)) ;
+        }
+        return new SqlProject(sqlNode, cols) ;
     }
     
     private void processVar(CompileContext context, TableTriples1 triples, Node n, String col, SqlExprList conditions)
@@ -154,7 +180,7 @@ public class QueryCompiler1
     
     @Override
     protected QueryIterator assembleResults(java.sql.ResultSet rs, Binding binding,
-                                            List<Var> vars, ExecutionContext execCxt) throws SQLException
+                                            Set<Var> vars, ExecutionContext execCxt) throws SQLException
     {
         List<Binding> results = new ArrayList<Binding>() ;
         
@@ -178,7 +204,6 @@ public class QueryCompiler1
         // Crude - copying.
         return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
     }
-
 }
 
 /*

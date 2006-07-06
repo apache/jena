@@ -18,8 +18,8 @@ import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -87,7 +87,7 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
         if ( p.isVariable() ) vars.add(p) ;
         if ( o.isVariable() ) vars.add(o) ;
         
-        Block block = new Block() ;
+        BlockBGP block = new BlockBGP() ;
         block.add(triple) ;
 
         QueryIterator qIter = store.getQueryCompiler().execSQL(getStore(), block, null, null) ;

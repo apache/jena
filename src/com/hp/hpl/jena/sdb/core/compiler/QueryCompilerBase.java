@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.core.compiler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +19,7 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -36,9 +37,9 @@ import com.hp.hpl.jena.sdb.store.Store;
  * @version $Id: QueryCompilerBase.java,v 1.1 2006/04/22 13:45:58 andy_seaborne Exp $
  */
 
-public abstract class QueryCompilerNew implements QueryCompiler
+public abstract class QueryCompilerBase implements QueryCompiler
 {
-    private static Log log = LogFactory.getLog(QueryCompilerNew.class) ;
+    private static Log log = LogFactory.getLog(QueryCompilerBase.class) ;
     
     public static String  printDivider      = null ;
     public static boolean printBlock        = false ;
@@ -46,16 +47,19 @@ public abstract class QueryCompilerNew implements QueryCompiler
     public static boolean printSQL          = false ;
     
     public final QueryIterator execSQL(Store store,
-                                       Block_I block,
+                                       Block block,
                                        Binding binding,
                                        ExecutionContext execCxt)
     {
         String sqlStmt = asSQL(block) ;
         try {
             java.sql.ResultSet rs = store.getConnection().execQuery(sqlStmt) ;
-            List<Var> x = block.getProjectVars() ;
+            Set<Var> x = block.getProjectVars() ;
             if ( x == null )
-                log.warn("No projection variables") ;
+                log.warn("Null for projection variables") ;
+            x = block.getDefinedVars() ;
+            if ( x == null )
+                log.warn("Null for defined variables") ;
             try {
                 return assembleResults(rs, binding, x, execCxt) ;
             } finally { rs.close() ; }
@@ -65,10 +69,10 @@ public abstract class QueryCompilerNew implements QueryCompiler
         }
     }
 
-    protected abstract QueryIterator assembleResults(ResultSet rs, Binding binding, List<Var> x, ExecutionContext execCxt)
+    protected abstract QueryIterator assembleResults(ResultSet rs, Binding binding, Set<Var> x, ExecutionContext execCxt)
         throws SQLException;
 
-    public String asSQL(Block_I block)
+    public String asSQL(Block block)
     {
         verbose ( printBlock, block ) ; 
         CompileContext context = new CompileContext() ;
@@ -82,8 +86,12 @@ public abstract class QueryCompilerNew implements QueryCompiler
         
         // ... to SqlNode structure
         
+        startCompile(context, block) ;
+        
         SqlNode sqlNode = block.generateSQL(context, this) ; 
 
+        sqlNode = finishCompile(context, block, sqlNode) ;
+        
         verbose ( printAbstractSQL, sqlNode ) ;
 
         // ... SqlNode to SQL string
@@ -95,7 +103,7 @@ public abstract class QueryCompilerNew implements QueryCompiler
     }
 
     /** A chance for subclasses to analyse and alter the block to be compiled into SQL */
-    protected Block_I modify(Block_I block) { return block ; }
+    protected Block modify(Block block) { return block ; }
 
     protected String generateSQL(SqlNode sqlNode)
     {
@@ -105,7 +113,10 @@ public abstract class QueryCompilerNew implements QueryCompiler
         return buff.asString() ;
     }
 
-    public abstract SqlNode compile(BlockBGP blockBGP, CompileContext context) ;
+    protected abstract void startCompile(CompileContext context, Block block) ;
+    protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode) ;
+    
+    protected abstract SqlNode compile(BlockBGP blockBGP, CompileContext context) ;
     
     public SqlNode compile(BlockOptional blockOpt, CompileContext context)
     {

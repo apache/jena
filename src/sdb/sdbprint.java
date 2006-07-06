@@ -25,7 +25,7 @@ import com.hp.hpl.jena.query.engine1.PlanWalker;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.QueryCompilerBase;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
@@ -275,6 +275,7 @@ public class sdbprint extends CmdArgModule
 
         Store store = new StoreBase(null, new PlanTranslatorGeneral(true, true), null, null, compiler) ;
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
+
         if ( verbose )
         {
             PlanElement plan = qe.getPlan() ;
@@ -284,9 +285,7 @@ public class sdbprint extends CmdArgModule
 
         // Print all SDB things in the plan
         PlanWalker.walk(qe.getPlan(), new PrintSDBBlocks(store)) ;
-        
     }
-
 
     class PrintSDBBlocks extends PlanVisitorBase
     {

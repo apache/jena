@@ -44,6 +44,9 @@ public class PlanTranslatorGeneral implements PlanTranslator
     
     public PlanElement queryPlanTranslate(Context context, Query query, Store store, PlanElement planElement)
     {
+        // Expand SELECT * etc.  Shouldn't this happen in QueryEngine.getPlan()?
+        query.setResultVars() ;
+        
         PlanToSDB xform = new PlanToSDB(context, query, store, translateOptionals,translateConstraints) ;
         planElement = Transformer.transform(xform, planElement) ;
         planElement = modify(planElement) ;
@@ -61,12 +64,15 @@ public class PlanTranslatorGeneral implements PlanTranslator
 
         // It's a single SDB plan - set the projection on the top Block/PlanSDB.  
         List x = planSDB.getQuery().getResultVars() ;   // Names
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+        
+        if ( x.size() > 0 )
         {
-            String vn = (String)iter.next() ;
-            planSDB.getBlock().addProjectVar(new Var(vn)) ;
+            for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
+            {
+                String vn = (String)iter.next() ;
+                planSDB.getBlock().addProjectVar(new Var(vn)) ;
+            }
         }
-
         return planSDB ;
     }
 }

@@ -1,246 +1,33 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.*;
+import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine1.QueryEngineUtils;
-import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Printable;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-
-/** A unit of SQL execution - a basic pattern, filter clauses and optionals.
- *  It is structured as found in the original query (for example, conditions
- *  have not been moved around to reflect SQL requirements).
- *    
- * @author Andy Seaborne
- * @version $Id: Block.java,v 1.34 2006/04/20 17:18:31 andy_seaborne Exp $
- */  
-public class Block implements Printable
+public interface Block extends Printable
 {
-    private static Log log = LogFactory.getLog(Block.class) ;
+    public static final int INDENT = 2 ; 
     
-    List<Var> patternVars  = new ArrayList<Var>() ;
-    List<Var> filterVars   = new ArrayList<Var>() ;
-    List<Var> projectVars = null ;
-    
-    BasicPattern basicPattern = new BasicPattern() ;
-    
-    List<SDBConstraint> blockConstraints = new ArrayList<SDBConstraint>() ;
-    
-    List<Block>blockOptionals  = new ArrayList<Block>() ;
-
-    public Block() {}
-
-    public void add(BasicPattern bp)
-    {
-        for ( Triple t : bp )
-            add(t) ;
-    }
-    
-    // Accumulate triples
-    public void add(Triple triple)
-    { basicPattern.add(triple) ; accVar(patternVars, triple) ; }
-
-    // Accumulate constraints we understand for this block basic patterns
-    public void add(SDBConstraint constraint)
-    { 
-        blockConstraints.add(constraint) ;
-        constraint.varsMentioned(filterVars) ;
-    }
-    
-    // Accumulate optionals
-    public void addOptional(Block optBlock)
-    { checkOptional(optBlock) ; blockOptionals.add(optBlock) ; }
-    
-    // Access 
-    
-    public BasicPattern        getBasicPattern()      { return basicPattern ; }
-    public List<Block>         getOptionals()         { return blockOptionals ; }
-    public List<SDBConstraint> getConstraints()       { return blockConstraints ; }
-    public List<Var>           getPatternVars()       { return patternVars ; }
-    public List<Var>           getFilterVars()        { return filterVars ; }
-    public List<Var>           getProjectVars()       { return projectVars ; }
-    
-    public void                addProjectVar(Var var)             
-    { 
-        if ( projectVars == null )
-            projectVars = new ArrayList<Var>() ;
-        if ( ! projectVars.contains(var) )
-            projectVars.add(var) ;
-    }
-    
-    public List<Var>        getDefinedVars()         { return BlockNodes.definedVars(this) ; }
-
-    // Turn a block into another block, after substituting for variables. 
-    
-    public Block substitute(Binding binding)
-    {
-        Block block = new Block() ;
-        
-        for ( Triple t : basicPattern )
-        {
-            if ( binding != null )
-                t = QueryEngineUtils.substituteIntoTriple(t, binding) ;
-            block.add(t) ;
-        }
-
-//        for ( Constraint c : blockConstraints )
-//        {
-//        }
-            
-        for ( Block opt : blockOptionals )
-        {
-            Block blockOpt = opt.substitute(binding) ;
-            block.addOptional(blockOpt) ;
-        }
-            
-        block.projectVars = projectVars ;
-        block.blockConstraints = blockConstraints ;
-        return block ;
-    }
-
-    public void apply(BlockProc proc, boolean deep)
-    {
-        proc.basicPattern(basicPattern) ;
-        for ( SDBConstraint c : blockConstraints )
-            proc.restriction(c) ;
-        for ( Block optBlk : blockOptionals )
-        {
-            proc.optional(optBlk) ;
-            if ( deep ) optBlk.apply(proc, deep) ;
-        }
-    }
-    
-    // ----------------
-    
-    private static void accVar(Collection<Var> acc, Triple triple)
-    {
-        accVar(acc, triple.getSubject()) ;
-        accVar(acc, triple.getPredicate()) ;
-        accVar(acc, triple.getObject()) ;
-    }
-    
-    private static void accVar(Collection<Var> acc, Node node)
-    {
-        if ( node.isVariable() ) 
-        {
-            Var v = new Var(node) ;
-            if ( !acc.contains(v) )
-                acc.add(v) ;
-            return ;
-        }
-        // Constant
-        
-    }
-    
-
-    private void checkOptional(Block optBlock)
-    {
-        for ( Var v : optBlock.getPatternVars() )
-        {
-            // Look for multiple use free vars
-            if ( ! patternVars.contains(v) )
-            {
-                // If not used by outer (this) then see if used
-                // in an optional already part of this Block.
-                for ( Block b : blockOptionals )
-                {
-                    if (  b.getPatternVars().contains(v) ) 
-                        log.warn("Unconstrained, multiple use, variable: "+v) ;
-                }
-            }
-        }
-    }
-
-    // ---- Appearance
-    
-    @Override
-    public String toString()
-    {
-        return FmtUtils.toString(this) ;
-    }
-
-    public void output(IndentedWriter out)
-    {
-        out.println("(Block") ;
-        out.incIndent() ;   // Inc-1
-        out.print("(Vars") ;
-        for ( Var var : patternVars )
-        {
-            out.print(" ") ;
-            out.print(var.toString()) ;
-        }
-        
-        if ( patternVars.size() == 0 )
-            out.print("(<no vars>") ;
-        out.print(")") ;
-        
-        if ( projectVars != null )
-        {
-            String sep = "" ;
-            out.print(" [") ;
-            for ( Var var : projectVars )
-            {
-                out.print(sep) ;
-                sep = " "; 
-                out.print(var.toString()) ;
-            }
-            out.print("]") ;
-        }
-
-        for ( Triple t : basicPattern )
-        {
-            out.println() ;
-            out.print(FmtUtils.stringForTriple(t, null)) ;
-        }
-        
-        if ( this.blockConstraints.size() > 0 )
-        {
-            out.println() ;
-            for ( SDBConstraint c : blockConstraints )
-            {
-                out.print("(Condition ") ;
-                out.print(c.toString()) ;
-                out.print(")") ;
-            }
-        }
-        
-        if ( blockOptionals.size() > 0 )
-        {
-            out.println() ;
-            out.print("(Optionals") ;
-            out.incIndent() ;
-            
-            for ( Block b : blockOptionals )
-            {
-                out.println() ;
-                b.output(out) ;
-            }
-            out.print(")") ;
-            out.decIndent() ;
-        }
-        out.decIndent() ; // Dec-1
-        out.println();
-        out.print(")") ;
-    }
+    Block substitute(Binding binding) ;
+    SqlNode generateSQL(CompileContext context, QueryCompilerBase queryCompiler) ;
+    Set<Var> getProjectVars() ;
+    Set<Var> getDefinedVars() ;
+    void setProjectVars(Set<Var> projectVars) ;
+    void addProjectVar(Var var) ;
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

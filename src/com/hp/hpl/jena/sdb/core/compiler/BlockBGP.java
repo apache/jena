@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -20,6 +17,7 @@ import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
+import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
@@ -42,16 +40,16 @@ public class BlockBGP extends BlockBase
     
     // ---- Structure
     private boolean classified = false ;
-    private List<Var> definedVars = null ;
-    private List<Node> constants = null ;
+    private Set<Var> definedVars = null ;
+    private Set<Node> constants = null ;
     
-    public Collection<Var> getDefinedVars()
+    public Set<Var> getDefinedVars()
     {
         classify() ;
         return definedVars ;
     }
 
-    public Collection<Node> getConstants()
+    public Set<Node> getConstants()
     {
         classify() ;
         return constants ;
@@ -61,18 +59,18 @@ public class BlockBGP extends BlockBase
     {
         if ( classified )
             return ;
-        constants = new ArrayList<Node>() ;
-        definedVars = new ArrayList<Var>() ;
+        constants = new LinkedHashSet<Node>() ;
+        definedVars = new LinkedHashSet<Var>() ;
         BlockFunctions.classifyNodes(triples, definedVars, constants) ;
         classified = true ;
     }
     
-    public SqlNode generateSQL(CompileContext context, QueryCompilerNew queryCompiler)
+    public SqlNode generateSQL(CompileContext context, QueryCompilerBase queryCompiler)
     {
         return queryCompiler.compile(this, context) ;
     }
 
-    public Block_I substitute(Binding binding)
+    public Block substitute(Binding binding)
     {
         BlockBGP block = new BlockBGP() ;
         
@@ -85,9 +83,7 @@ public class BlockBGP extends BlockBase
 
         return block ;
     }
-    
 
-    
     public void output(IndentedWriter out)
     {
         out.print("(BlockBGP") ;

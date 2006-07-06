@@ -18,91 +18,259 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.*;
+import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.BindingMap;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.query.util.*;
+import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.query.util.NodeUtils;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
-import com.hp.hpl.jena.sdb.store.CompiledConstraint;
-import com.hp.hpl.jena.sdb.store.ConditionCompiler;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.util.Pair;
-
-/**
- * Query generation for layout2
- * 
- * @author Andy Seaborne
- * @version $Id: QueryCompiler2.java,v 1.4 2006/04/23 18:40:23 andy_seaborne Exp $
- */
 
 public class QueryCompiler2 extends QueryCompilerBase
 {
     private static Log log = LogFactory.getLog(QueryCompiler2.class) ;
-    private static final String classShortName = Utils.classShortName(QueryCompiler2.class)  ;
     
-    // TODO Ensure repeated and concurrent use works
-    // TODO Access constants only if needed (nested blocks).
-    // TODO Variable flow.  Offramp only and FILTER only
-    // TODO Refactor.
+    // TODO Parallel execution.
+    // Compiler factory per Store?
+    private Map<Node, SqlColumn> constantCols = null ;
+    private ArrayList<Pair<Var, SqlColumn>> projectVarCols = null ;
     
-    // Need a per-QueryBlock mechanism
-    // --- This is the "context" information.
-    // NB Concurrency issue.  But schemas do not need to be shared. 
-    
-    // Used to record the boundVars at each basic block.
-    Stack<List<Var>> boundVars = null ;
-
-    // Used to record the constants in each block
-    Stack<Map<Node, SqlColumn>> constants = null ;
-    
-    // Record projection vars.  err - why isn't this a Map?
-    List<Pair<Var, SqlColumn>> projectVarCols = null ; 
-    
-    public QueryCompiler2() { }
-    
-    public ConditionCompiler getConditionCompiler()
-    {
-        // TODO ConditionCompiler
-        // Anything not null will cause the fixed algorithm to be used
-        return new ConditionCompiler(){
-            public CompiledConstraint compile(Constraint constraint)
-            {
-                return null ;
-            }} ; 
-    }
-
-    // Assumes there is only one basic block in progress at anyone time per compiler
+    // -------- Basic Graph pattern compilation
     
     @Override
-    protected SqlNode startQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
+    public SqlNode compile(BlockBGP blockBGP, CompileContext context)
     {
-        boundVars = new Stack<List<Var>>() ;
-        constants = new Stack<Map<Node, SqlColumn>>() ;
-        projectVarCols = new ArrayList<Pair<Var, SqlColumn>>() ;
+       SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
+        
+        for ( Triple triple : blockBGP.getTriples() )
+        {
+            SqlNode sNode = match(context, triple) ;
+            if ( sNode != null )
+            {
+                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
+                context.setScope(sqlNode) ;
+            }
+        }
+        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
         return sqlNode ;
     }
+
+    protected SqlNode match(CompileContext context, Triple triple)
+    {
+        String alias = context.allocTableAlias() ;
+        SqlExprList conditions = new SqlExprList() ;
+        
+        TableTriples triples = new TableTriples(alias) ;
+        triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
+        
+        processTripleSlot(context, triples, conditions, triple.getSubject(),   "s") ; 
+        processTripleSlot(context, triples, conditions, triple.getPredicate(), "p") ;
+        processTripleSlot(context, triples, conditions, triple.getObject(),    "o") ;
+        
+        if ( conditions.size() == 0 )
+            return triples ;
+        
+        SqlRestrict r = new SqlRestrict(triples, conditions) ;
+        return r ;
+    }
+
+    
+    private void processTripleSlot(CompileContext context, TableTriples triples,
+                                   SqlExprList conditions, Node node, String colName)
+    {
+        SqlColumn thisCol = new SqlColumn(triples, colName) ;
+        
+        if ( ! node.isVariable() )
+        {
+            
+            SqlColumn colId = constantCols.get(node) ;
+            if ( colId == null )
+            {
+                log.warn("Failed to find id col for "+node) ;
+                return ;
+            }
+            SqlExpr c = new S_Equal(thisCol, colId) ;
+            conditions.add(c) ;
+            return ; 
+        }
+        
+        Var var = new Var(node) ;
+        if ( context.getScope().hasColumnForVar(var) )
+        {
+            SqlColumn otherCol = context.getScope().getColumnForVar(var) ;
+            SqlExpr c = new S_Equal(otherCol, thisCol) ;
+            conditions.add(c) ;
+            return ;
+        }
+        
+        // New variable mentioned
+        triples.setColumnForVar(var, thisCol) ;
+    }
+    
+
+    //  -------- Start basic graph pattern 
+    
+    
+    
+    private SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
+    {
+        Collection<Node> constants = blockBGP.getConstants() ;
+        SqlNode sqlNode = insertConstantAccesses(context, constants, null) ;
+        return sqlNode ;
+        
+    }
+
+    private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants, Object object)
+    {
+        SqlNode sqlNode = null ;
+        for ( Node n : constants )
+        {
+            long hash = NodeLayout2.hash(n);
+            SqlConstant hashValue = new SqlConstant(hash) ;
+
+            // Access nodes table.
+            
+            SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
+            nTable.addNote("Const: "+FmtUtils.stringForNode(n)) ; 
+            SqlExprList conds = new SqlExprList() ;
+            SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
+            
+            // Record 
+            constantCols.put(n, new SqlColumn(nTable, "id")) ;
+            
+            SqlExpr c = new S_Equal(cHash, hashValue) ;
+            conds.add(c) ;
+            
+            SqlNode r = new SqlRestrict(nTable, conds) ;
+            sqlNode = QC.innerJoin(context, sqlNode, r) ;
+        }
+        
+        return sqlNode ;
+
+    }
+
+    // --------- Finish basic graph pattern
+    
+    private SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode, BlockBGP blockBGP)
+    {
+        sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
+        // TODO Improve - extract less variables
+        sqlNode = extractResults(context, blockBGP.getDefinedVars(), sqlNode) ; 
+        return sqlNode ;
+    }
+    private SqlNode extractResults(CompileContext context,
+                                   Collection<Var>vars, SqlNode sqlNode)
+    {
+        for ( Var v : vars )
+        {
+            SqlColumn c1 = context.getScope().getColumnForVar(v) ;
+            if ( c1 == null )
+                continue ;
+            
+            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+            nTable.addNote("Var: "+v) ;
+            SqlColumn c2 = new SqlColumn(nTable, "id") ;
+            
+            SqlExpr cond = new S_Equal(c1, c2) ;
+            projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
+            SqlNode n = QC.innerJoin(context, sqlNode, nTable) ;
+            SqlNode r = new SqlRestrict(null, n, cond) ;
+            sqlNode = r ;
+        }
+        return sqlNode ;
+    }
+
+    private SqlNode addRestrictions(CompileContext context, SqlNode sqlNode,
+                                    List<SDBConstraint> constraints)
+    {
+        // TODO Place restriction in best place.
+        // i.e. inline with basic block processing
+        // Sort out out of scope/place issues
+
+        
+        // This looks like assignConditions in QueryCompilerBase.
+        if ( constraints.size() == 0 )
+            return sqlNode ;
+
+        // 1/ Get the val columns
+        // 2/ Generate the SQL conditions
+        
+        ScopeBase valScope = new ScopeBase(sqlNode) ;
+        Scope scope = sqlNode ;
+        
+        SqlExprList cList = new SqlExprList() ;
+        for ( SDBConstraint c : constraints )
+        {
+            List<Var> acc = new ArrayList<Var>() ;
+            c.varsMentioned(acc) ;
+            for ( Var v : acc )
+            {
+                SqlColumn col = scope.getColumnForVar(v) ;
+                if ( col == null )
+                {
+                    // Not in scope.
+                    log.info("Var not in scope for value of expression: "+v) ;
+                    continue ;
+                }
+                // ASSUME lexical/string form needed 
+                SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+                // Slurp the value up.
+                sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
+                // TODO Need to know the value type.
+                SqlColumn vCol = new SqlColumn(nTable, "lex") ;
+                // Record it
+                valScope.setColumnForVar(v, vCol) ;
+            }
+        }
+        // valContext is now all the required values.
+        SqlExprList exprs = new SqlExprList() ;
+        for ( SDBConstraint c : constraints )
+        {
+            SqlExpr e = c.asSqlExpr(valScope) ;
+            exprs.add(e) ;
+        }
+        sqlNode = new SqlRestrict(/*context.allocAlias("R")*/null, sqlNode, exprs) ;
+        return sqlNode ;
+    }
+
+    @Override
+    protected void startCompile(CompileContext context, Block block)
+    {
+        if ( constantCols != null || projectVarCols != null )
+            log.fatal("Currently already compilign a BlockBGP") ;
+        
+        constantCols = new HashMap<Node, SqlColumn>() ;
+        projectVarCols = new ArrayList<Pair<Var, SqlColumn>>() ;
+    }
     
     @Override
-    protected SqlNode finishQueryBlock(CompileContext context, Block block, SqlNode sqlNode)
-    { 
+    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
+    {
         // Add projection
-        List<Var> x = block.getProjectVars() ;
+        Set<Var> x = block.getProjectVars() ;
         if ( x == null )
             x = block.getDefinedVars() ;
         SqlNode n =  makeProject(projectVarCols, sqlNode, x) ;
         
-        // Clearup
-        boundVars = null ;
-        constants = null ;
-        projectVarCols = null ; // Especially this, as this was only ever added to.
+        constantCols = null ;
+        projectVarCols = null ;
         return n ;
     }
-        
-    private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, List<Var> project)
+    
+    private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, Set<Var> project)
     {
         List<Pair<Var, SqlColumn>> projCol = new ArrayList<Pair<Var, SqlColumn>>() ;
         for ( Pair<Var, SqlColumn> p : cols )
@@ -140,208 +308,12 @@ public class QueryCompiler2 extends QueryCompilerBase
         return p ;
     }
 
-    @Override
-    protected SqlNode  startBasicBlock(CompileContext context, BasicPattern basicPattern, SqlNode sqlNode)
-    { 
-        boundVars.push(new ArrayList<Var>()) ;
-        constants.push(new HashMap<Node, SqlColumn>()) ;
-        List<Node>consts = new ArrayList<Node>() ;
-        
-        for ( Triple t : basicPattern )
-        {
-            addConstant(t.getSubject(), consts) ;
-            addConstant(t.getPredicate(), consts) ;
-            addConstant(t.getObject(), consts) ;
-        }
-        
-        sqlNode = insertConstantAccesses(context, consts, sqlNode) ;
-        return sqlNode ;
-    }
-    
-    private void addConstant(Node node, List<Node>consts)
-    {
-        if ( !node.isVariable() && !consts.contains(node) )
-            consts.add(node) ;
-    }
-    
-    @Override
-    protected SqlNode finishBasicBlock(CompileContext context,
-                                       BasicPattern basicPattern, List<SDBConstraint> constraints,
-                                       SqlNode sqlNode)
-    { 
-        constants.pop() ;
-        // Find new vars in this block - insert the joins to get the values
-        List<Var> vars = boundVars.pop() ;
-        sqlNode = extractResults(context, vars, sqlNode) ; 
-        sqlNode = addRestrictions(context, sqlNode, constraints) ;
-        return sqlNode ;
-    }
-    
-    
-    // Does not use hashed into the triple table, just to access the node table.
-    private SqlNode insertConstantAccesses(CompileContext context, List<Node> consts, SqlNode sqlNode)
-    {   
-        Map<Node, SqlColumn> constantsHere = constants.peek() ;
-        
-        for ( Node n : consts )
-        {
-            long hash = NodeLayout2.hash(n);
-            SqlConstant hashValue = new SqlConstant(hash) ;
-
-            // Access nodes table.
-            
-            SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
-            nTable.addNote("Const: "+FmtUtils.stringForNode(n)) ; 
-            SqlExprList conds = new SqlExprList() ;
-            SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
-            
-            SqlExpr c = new S_Equal(cHash, hashValue) ;
-            conds.add(c) ;
-            constantsHere.put(n, new SqlColumn(nTable, "id")) ;
-            
-            SqlNode r = new SqlRestrict(nTable, conds) ;
-            sqlNode = innerJoin(context, sqlNode, r) ;
-        }
-        
-        return sqlNode ;
-    }
 
     
-
-    private SqlNode addRestrictions(CompileContext context, SqlNode sqlNode,
-                                    List<SDBConstraint> constraints)
-    {
-        // TODO Place restriction in best place.
-        // i.e. inline with basic block processing
-        // Sort out out of scope/place issues
-
-        
-        // This looks like assignConditions in QueryCompilerBase.
-        if ( constraints.size() == 0 )
-            return sqlNode ;
-
-        // 1/ Get the val columns
-        // 2/ Generate the SQL conditions
-        
-        ScopeBase valScope = new ScopeBase(sqlNode) ;
-        Scope scope = sqlNode ;
-        
-        SqlExprList cList = new SqlExprList() ;
-        for ( SDBConstraint c : constraints )
-        {
-            List<Var> acc = new ArrayList<Var>() ;
-            c.varsMentioned(acc) ;
-            for ( Var v : acc )
-            {
-                SqlColumn col = scope.getColumnForVar(v) ;
-                if ( col == null )
-                {
-                    // Not in scope.
-                    log.info("Var not in scope for value of expression: "+v) ;
-                    continue ;
-                }
-                // ASSUME lexical/string form needed 
-                SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
-                // Slurp the value up.
-                sqlNode = innerJoin(context, sqlNode, nTable) ;
-                // TODO Need to know the value type.
-                SqlColumn vCol = new SqlColumn(nTable, "lex") ;
-                // Record it
-                valScope.setColumnForVar(v, vCol) ;
-            }
-        }
-        // valContext is now all the required values.
-        SqlExprList exprs = new SqlExprList() ;
-        for ( SDBConstraint c : constraints )
-        {
-            SqlExpr e = c.asSqlExpr(valScope) ;
-            exprs.add(e) ;
-        }
-        sqlNode = new SqlRestrict(/*context.allocAlias("R")*/null, sqlNode, exprs) ;
-        return sqlNode ;
-    }
-
-
-    private SqlNode extractResults(CompileContext context,
-                                   List<Var>vars, SqlNode sqlNode)
-    {
-        for ( Var v : vars )
-        {
-            SqlColumn c1 = context.getScope().getColumnForVar(v) ;
-            if ( c1 == null )
-                continue ;
-            
-            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
-            nTable.addNote("Var: "+v) ;
-            SqlColumn c2 = new SqlColumn(nTable, "id") ;
-            
-            SqlExpr cond = new S_Equal(c1, c2) ;
-            projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
-            SqlNode n = innerJoin(context, sqlNode, nTable) ;
-            SqlNode r = new SqlRestrict(null, n, cond) ;
-            sqlNode = r ;
-        }
-        return sqlNode ;
-    }
-
-    @Override
-    protected SqlNode match(CompileContext context, Triple triple)
-    {
-        String alias = context.allocTableAlias() ;
-        SqlExprList conditions = new SqlExprList() ;
-        
-        TableTriples triples = new TableTriples(alias) ;
-        triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
-        
-        processTripleSlot(context, triples, conditions, triple.getSubject(),   "s") ; 
-        processTripleSlot(context, triples, conditions, triple.getPredicate(), "p") ;
-        processTripleSlot(context, triples, conditions, triple.getObject(),    "o") ;
-        
-        if ( conditions.size() == 0 )
-            return triples ;
-        
-        SqlRestrict r = new SqlRestrict(triples, conditions) ;
-        return r ;
-    }
-    
-    private void processTripleSlot(CompileContext context, TableTriples triples,
-                                   SqlExprList conditions, Node node, String colName)
-    {
-        SqlColumn thisCol = new SqlColumn(triples, colName) ;
-        
-        if ( ! node.isVariable() )
-        {
-            Map<Node, SqlColumn> constantsHere = constants.peek() ;
-            
-            SqlColumn colId = constantsHere.get(node) ;
-            if ( colId == null )
-            {
-                log.warn("Failed to find id col for "+node) ;
-                return ;
-            }
-            SqlExpr c = new S_Equal(thisCol, colId) ;
-            conditions.add(c) ;
-            return ; 
-        }
-        
-        Var var = new Var(node) ;
-        if ( context.getScope().hasColumnForVar(var) )
-        {
-            SqlColumn otherCol = context.getScope().getColumnForVar(var) ;
-            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-            conditions.add(c) ;
-            return ;
-        }
-        
-        // New variable mentioned
-        triples.setColumnForVar(var, thisCol) ;
-        // Record for this block.
-        boundVars.peek().add(var) ;
-    }
-
+    // TODO Move/merge with CompileContext
     private static int nodesAliasCount = 1 ;
-    private static final String nodesConstantAliasBase = "N"+SDBConstants.SQLmark ;
-    private static final String nodesResultAliasBase = "R"+SDBConstants.SQLmark ;
+    private static final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
+    private static final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
     
     static private String allocNodeConstantAlias()      { return allocAlias(nodesConstantAliasBase) ; }
     static private String allocNodeResultAlias()        { return allocAlias(nodesResultAliasBase) ; }
@@ -349,7 +321,7 @@ public class QueryCompiler2 extends QueryCompilerBase
     
     @Override
     protected QueryIterator assembleResults(ResultSet rs, Binding binding,
-                                            List<Var> vars, ExecutionContext execCxt)
+                                            Set<Var> vars, ExecutionContext execCxt)
         throws SQLException
     {
         List<Binding> results = new ArrayList<Binding>() ;
@@ -415,8 +387,6 @@ public class QueryCompiler2 extends QueryCompilerBase
                 return Node.createLiteral("UNRECOGNIZED") ; 
         }
     }
-    
- 
 }
 
 /*
@@ -434,7 +404,7 @@ public class QueryCompiler2 extends QueryCompilerBase
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
  * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,

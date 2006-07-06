@@ -19,7 +19,8 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.QueryCompilerBase;
+
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
 import com.hp.hpl.jena.util.FileManager;
  

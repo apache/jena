@@ -10,7 +10,7 @@ import sdb.cmd.CmdArgsDB;
 
 import com.hp.hpl.jena.query.junit.SimpleTestRunner;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.QueryCompilerBase;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
  
  /** Run a test suite

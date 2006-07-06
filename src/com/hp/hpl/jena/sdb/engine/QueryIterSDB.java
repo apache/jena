@@ -14,26 +14,26 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterRepeatApply ;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.store.Store;
 
-class QueryIterSDB extends QueryIterRepeatApply
+public class QueryIterSDB extends QueryIterRepeatApply
 {
     Store store ;
     Query query ;
-    Block pBlock ;
+    Block block ;
     
-    public QueryIterSDB(Query query, Store store, Block pBlock,
+    public QueryIterSDB(Query query, Store store, Block block,
                         QueryIterator input, ExecutionContext execCxt)
     {
         super(input, execCxt) ;
         this.store = store ;
         this.query = query ;
-        this.pBlock = pBlock ;
+        this.block = block ;
     }
     
     @Override
     protected QueryIterator nextStage(Binding binding)
     {
-        Block block = pBlock.substitute(binding) ;
-        return store.getQueryCompiler().execSQL(store, block, binding, super.getExecContext()) ;
+        Block block2 = block.substitute(binding) ;
+        return store.getQueryCompiler().execSQL(store, block2, binding, super.getExecContext()) ;
     }
 }
 

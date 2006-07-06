@@ -6,32 +6,50 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public class BlockOptional extends BlockBase
 {
-    Block_I left ;
-    Block_I right ;
+    Block left ;
+    Block right ;
     
-    public BlockOptional(Block_I left, Block_I right)
+    public BlockOptional(Block left, Block right)
     {
         this.left = left ;
         this.right = right ;
     }
 
-    public Block_I getLeft() { return left ; }
+    public Block getLeft() { return left ; }
 
-    public Block_I getRight() { return right ; }
+    public Block getRight() { return right ; }
 
-    public SqlNode generateSQL(CompileContext context, QueryCompilerNew queryCompiler)
+    public Set<Var> getDefinedVars()
+    {
+        // TODO Make this more efficient if it is used much
+        Set<Var> s1 = left.getDefinedVars() ;
+        Set<Var> s2 = right.getDefinedVars() ;
+        Set<Var> x = new LinkedHashSet<Var>() ;
+        x.addAll(s1) ;
+        x.addAll(s2) ;
+        return x ;
+    }
+
+    
+    
+    public SqlNode generateSQL(CompileContext context, QueryCompilerBase queryCompiler)
     {
         return queryCompiler.compile(this, context) ;
     }
     
-    public Block_I substitute(Binding binding)
+    public Block substitute(Binding binding)
     {
         return new BlockOptional(left.substitute(binding),
                                  right.substitute(binding)) ;
@@ -43,6 +61,7 @@ public class BlockOptional extends BlockBase
         out.println("(Optional") ;
         out.incIndent(INDENT) ;
         left.output(out) ;
+        out.println();
         right.output(out) ;
         out.decIndent(INDENT) ;
         out.print(")") ;
