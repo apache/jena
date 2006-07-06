@@ -4,35 +4,18 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import java.util.List;
 
-public class PlanSDBConstraint extends PlanSDBMarker
+import com.hp.hpl.jena.query.core.Var;
+
+public abstract class BlockBase implements Block_I
 {
-    private SDBConstraint constraint ;
-    boolean completeConstraint ;
-    PlanFilter original ;
-    
-    /**
-     * @param constraint           The processed constraint
-     * @param completeConstraint   Whether this completely fulfils the SPARQL contract
-     */
-    
-    public PlanSDBConstraint(SDBConstraint constraint, PlanFilter original, boolean completeConstraint)
-    { 
-        this.constraint = constraint ;
-        this.completeConstraint = completeConstraint ;
-        this.original = original ;
-    }
-    
-    public SDBConstraint get() { return constraint ; }
-    public boolean isComplete() { return completeConstraint ; }
-    public PlanFilter getOriginal() { return original ; }
-
+    List<Var> projectVars = null ;
+    public List<Var> getProjectVars() { return projectVars ; }
+    public void setProjectVars(List<Var> projectVars) { this.projectVars = projectVars ; }
 }
-
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.

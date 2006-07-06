@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoader;

@@ -4,33 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import java.util.List;
 
-public class PlanSDBConstraint extends PlanSDBMarker
+import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.util.Printable;
+import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+
+public interface Block_I extends Printable
 {
-    private SDBConstraint constraint ;
-    boolean completeConstraint ;
-    PlanFilter original ;
+    public static final int INDENT = 2 ; 
     
-    /**
-     * @param constraint           The processed constraint
-     * @param completeConstraint   Whether this completely fulfils the SPARQL contract
-     */
-    
-    public PlanSDBConstraint(SDBConstraint constraint, PlanFilter original, boolean completeConstraint)
-    { 
-        this.constraint = constraint ;
-        this.completeConstraint = completeConstraint ;
-        this.original = original ;
-    }
-    
-    public SDBConstraint get() { return constraint ; }
-    public boolean isComplete() { return completeConstraint ; }
-    public PlanFilter getOriginal() { return original ; }
-
+    Block_I substitute(Binding binding) ;
+    SqlNode generateSQL(CompileContext context, QueryCompilerNew queryCompiler) ;
+    List<Var> getProjectVars() ;
+    void setProjectVars(List<Var> projectVars) ;
 }
 
 /*

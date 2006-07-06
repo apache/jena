@@ -26,7 +26,6 @@ public class GenerateSQL implements SqlNodeVisitor
 {
     private static Log log = LogFactory.getLog(GenerateSQL.class) ;
     
-    private CompileContext context ;
     private IndentedWriter out ;
     int level = 0 ;
     SqlExprList remains = new SqlExprList() ;
@@ -34,8 +33,8 @@ public class GenerateSQL implements SqlNodeVisitor
     private static final int annotationColumn = 40 ;
     private static boolean commentSQLStyle = true ;
     
-    public GenerateSQL(CompileContext context, IndentedWriter out)
-    { this.context = context ; this.out = out ; }
+    public GenerateSQL(IndentedWriter out)
+    { this.out = out ; }
     
     public void visit(SqlProject sqlNode)
     {

@@ -79,26 +79,28 @@ public abstract class QueryCompilerBase implements QueryCompiler
                                                      ExecutionContext execCxt)
                                                     throws SQLException ;
     
-    protected String generateSQL(CompileContext context, SqlNode sqlNode)
-    {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        GenerateSQL v = new GenerateSQL(context, buff.getIndentedWriter()) ;
-        sqlNode.visit(v) ;
-        return buff.asString() ;
-    }
-
     public final String asSQL(Block block)
     {
         verbose ( printBlock, block ) ; 
         CompileContext context = new CompileContext() ;
 
+        // ... to SqlNode structure
         SqlNode sqlNode = blockToTable(context, block) ;
         verbose ( printAbstractSQL, sqlNode ) ;
 
+        // ... SqlNode to SQL string
         String sqlStmt = generateSQL ( context,  sqlNode ) ; 
         verbose ( printSQL, sqlStmt ) ; 
 
         return sqlStmt ;
+    }
+
+    protected String generateSQL(CompileContext context, SqlNode sqlNode)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        GenerateSQL v = new GenerateSQL(buff.getIndentedWriter()) ;
+        sqlNode.visit(v) ;
+        return buff.asString() ;
     }
 
     // ----------------

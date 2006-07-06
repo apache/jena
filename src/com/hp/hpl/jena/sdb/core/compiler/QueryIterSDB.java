@@ -1,40 +1,45 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterRepeatApply ;
+import com.hp.hpl.jena.sdb.store.Store;
 
-public class PlanSDBConstraint extends PlanSDBMarker
+class QueryIterSDB extends QueryIterRepeatApply
 {
-    private SDBConstraint constraint ;
-    boolean completeConstraint ;
-    PlanFilter original ;
+    Store store ;
+    Query query ;
+    Block_I block ;
     
-    /**
-     * @param constraint           The processed constraint
-     * @param completeConstraint   Whether this completely fulfils the SPARQL contract
-     */
-    
-    public PlanSDBConstraint(SDBConstraint constraint, PlanFilter original, boolean completeConstraint)
-    { 
-        this.constraint = constraint ;
-        this.completeConstraint = completeConstraint ;
-        this.original = original ;
+    public QueryIterSDB(Query query, Store store, Block_I block,
+                        QueryIterator input, ExecutionContext execCxt)
+    {
+        super(input, execCxt) ;
+        this.store = store ;
+        this.query = query ;
+        this.block = block ;
     }
     
-    public SDBConstraint get() { return constraint ; }
-    public boolean isComplete() { return completeConstraint ; }
-    public PlanFilter getOriginal() { return original ; }
-
+    @Override
+    protected QueryIterator nextStage(Binding binding)
+    {
+        Block_I block2 = block.substitute(binding) ;
+        // TMP
+        return new QueryCompiler2().execSQL(store, block2, binding, super.getExecContext()) ;
+        //return store.getQueryCompiler().execSQL(store, block2, binding, super.getExecContext()) ;
+    }
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

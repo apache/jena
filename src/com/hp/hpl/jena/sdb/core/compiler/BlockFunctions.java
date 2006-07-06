@@ -4,32 +4,49 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import java.util.Collection;
 
-public class PlanSDBConstraint extends PlanSDBMarker
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.core.Var;
+
+/**
+ * Separated out code sequences
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+
+public class BlockFunctions
 {
-    private SDBConstraint constraint ;
-    boolean completeConstraint ;
-    PlanFilter original ;
-    
-    /**
-     * @param constraint           The processed constraint
-     * @param completeConstraint   Whether this completely fulfils the SPARQL contract
-     */
-    
-    public PlanSDBConstraint(SDBConstraint constraint, PlanFilter original, boolean completeConstraint)
-    { 
-        this.constraint = constraint ;
-        this.completeConstraint = completeConstraint ;
-        this.original = original ;
+    static public void classifyNodes(Collection<Triple> triples, Collection<Var> definedVars, Collection<Node> constants)
+    {
+        for ( Triple t : triples )
+        {
+            node(t.getSubject(), definedVars, constants) ;
+            node(t.getPredicate(), definedVars, constants) ;
+            node(t.getObject(), definedVars, constants) ;
+        }
+    }
+
+    static private void node(Node node, Collection<Var> definedVars, Collection<Node> constants)
+    {
+        if ( node.isVariable() )
+        {
+            Var v = new Var(node) ;
+            if ( ! definedVars.contains(v) )
+                definedVars.add(v) ;
+        }
+        else
+        {
+            if ( ! constants.contains(node) )
+                constants.add(node) ;
+        }
     }
     
-    public SDBConstraint get() { return constraint ; }
-    public boolean isComplete() { return completeConstraint ; }
-    public PlanFilter getOriginal() { return original ; }
+    // ---- 
+    
 
 }
 

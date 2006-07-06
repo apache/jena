@@ -212,7 +212,7 @@ public class QueryCompiler2 extends QueryCompilerBase
                                     List<SDBConstraint> constraints)
     {
         // TODO Place restriction in best place.
-        // i.e. inlne with basic block processing
+        // i.e. inline with basic block processing
         // Sort out out of scope/place issues
 
         

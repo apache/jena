@@ -4,32 +4,50 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public class PlanSDBConstraint extends PlanSDBMarker
+public class BlockOptional extends BlockBase
 {
-    private SDBConstraint constraint ;
-    boolean completeConstraint ;
-    PlanFilter original ;
+    Block_I left ;
+    Block_I right ;
     
-    /**
-     * @param constraint           The processed constraint
-     * @param completeConstraint   Whether this completely fulfils the SPARQL contract
-     */
-    
-    public PlanSDBConstraint(SDBConstraint constraint, PlanFilter original, boolean completeConstraint)
-    { 
-        this.constraint = constraint ;
-        this.completeConstraint = completeConstraint ;
-        this.original = original ;
+    public BlockOptional(Block_I left, Block_I right)
+    {
+        this.left = left ;
+        this.right = right ;
+    }
+
+    public Block_I getLeft() { return left ; }
+
+    public Block_I getRight() { return right ; }
+
+    public SqlNode generateSQL(CompileContext context, QueryCompilerNew queryCompiler)
+    {
+        return queryCompiler.compile(this, context) ;
     }
     
-    public SDBConstraint get() { return constraint ; }
-    public boolean isComplete() { return completeConstraint ; }
-    public PlanFilter getOriginal() { return original ; }
+    public Block_I substitute(Binding binding)
+    {
+        return new BlockOptional(left.substitute(binding),
+                                 right.substitute(binding)) ;
+    }
+
+    public void output(IndentedWriter out)
+    {
+        out.ensureStartOfLine() ;
+        out.println("(Optional") ;
+        out.incIndent(INDENT) ;
+        left.output(out) ;
+        right.output(out) ;
+        out.decIndent(INDENT) ;
+        out.print(")") ;
+    }
+
 
 }
 
