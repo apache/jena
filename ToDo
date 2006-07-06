@@ -3,6 +3,8 @@ SDB ToDo list (and general notes)
 
 == Next
   1/ IsNotNull: C_, S_ and generated PlanToSDB
+     SDBConstrinats are before substituion so need .substitute(Binding)
+     So is S_ really needed?
   2/ Testing
      Build coverage test suite
   3/ (Detect fn:starts-with function)
