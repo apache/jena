@@ -13,17 +13,15 @@ import com.hp.hpl.jena.sdb.core.Block;
 
 public interface QueryCompiler
 {
-    // What about query plan to block?
-    // Needed because the plan->block process needs some control points.
-    
     public QueryIterator execSQL(Store store,
                                  Block block,
                                  Binding binding,
                                  ExecutionContext execCxt) ;
     
+    // Convenient to have this.
     public String asSQL(Block block) ;
     
-    //public ConditionCompiler getConditionCompiler() ;
+    public ConditionCompiler getConditionCompiler() ;
     
  }
 
