@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.condition;
 
 import com.hp.hpl.jena.query.core.Constraint;
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.query.core.Constraint;
 
 public interface ConditionCompiler
 {
-    CompiledConstraint compile(Constraint constraint) ;
+    SDBConstraint compile(Constraint constraint) ;
 }
 
 /*

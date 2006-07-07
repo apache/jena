@@ -30,7 +30,6 @@ public class QueryCompiler1_OLD {}
 //import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 //import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 //import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
-//import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 //import com.hp.hpl.jena.sdb.util.Pair;
 //
 //

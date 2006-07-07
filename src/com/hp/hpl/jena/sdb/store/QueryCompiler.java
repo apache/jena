@@ -20,9 +20,6 @@ public interface QueryCompiler
     
     // Convenient to have this.
     public String asSQL(Block block) ;
-    
-    public ConditionCompiler getConditionCompiler() ;
-    
  }
 
 /*
