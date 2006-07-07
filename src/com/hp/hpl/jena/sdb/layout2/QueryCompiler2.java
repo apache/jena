@@ -53,32 +53,32 @@ public class QueryCompiler2 extends QueryCompilerBase
     @Override
     public SqlNode compile(BlockBGP blockBGP, CompileContext context)
     {
-       SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
+       ScopeBase scope = new ScopeBase() ; 
+       SqlNode sqlNode = startBasicBlock(context, scope, blockBGP) ;
         
         for ( Triple triple : blockBGP.getTriples() )
         {
-            SqlNode sNode = match(context, triple) ;
+            SqlNode sNode = match(context, scope, triple) ;
             if ( sNode != null )
             {
                 sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
-                context.setScope(sqlNode) ;
             }
         }
-        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
+        sqlNode = finishBasicBlock(context, scope, sqlNode, blockBGP) ;
         return sqlNode ;
     }
 
-    protected SqlNode match(CompileContext context, Triple triple)
+    protected SqlNode match(CompileContext context, ScopeBase scope, Triple triple)
     {
         String alias = context.allocTableAlias() ;
         SqlExprList conditions = new SqlExprList() ;
         
-        TableTriples triples = new TableTriples(alias) ;
+        TableTriples triples = new TableTriples(alias, scope) ;
         triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
         
-        processTripleSlot(context, triples, conditions, triple.getSubject(),   "s") ; 
-        processTripleSlot(context, triples, conditions, triple.getPredicate(), "p") ;
-        processTripleSlot(context, triples, conditions, triple.getObject(),    "o") ;
+        processSlot(context, scope, triples, conditions, triple.getSubject(),   "s") ; 
+        processSlot(context, scope, triples, conditions, triple.getPredicate(), "p") ;
+        processSlot(context, scope, triples, conditions, triple.getObject(),    "o") ;
         
         if ( conditions.size() == 0 )
             return triples ;
@@ -88,8 +88,9 @@ public class QueryCompiler2 extends QueryCompilerBase
     }
 
     
-    private void processTripleSlot(CompileContext context, TableTriples triples,
-                                   SqlExprList conditions, Node node, String colName)
+    private void processSlot(CompileContext context, ScopeBase scope,
+                             TableTriples triples, SqlExprList conditions,
+                             Node node, String colName)
     {
         SqlColumn thisCol = new SqlColumn(triples, colName) ;
         
@@ -108,16 +109,15 @@ public class QueryCompiler2 extends QueryCompilerBase
         }
         
         Var var = new Var(node) ;
-        if ( context.getScope().hasColumnForVar(var) )
+        if ( scope.hasColumnForVar(var) )
         {
-            SqlColumn otherCol = context.getScope().getColumnForVar(var) ;
+            SqlColumn otherCol = scope.getColumnForVar(var) ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
+            c.addNote("processVar: "+node) ;
             return ;
         }
-        
-        // New variable mentioned
-        triples.setColumnForVar(var, thisCol) ;
+        scope.setColumnForVar(var, thisCol) ;
     }
     
 
@@ -125,15 +125,15 @@ public class QueryCompiler2 extends QueryCompilerBase
     
     
     
-    private SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
+    private SqlNode startBasicBlock(CompileContext context, Scope scope, BlockBGP blockBGP)
     {
         Collection<Node> constants = blockBGP.getConstants() ;
-        SqlNode sqlNode = insertConstantAccesses(context, constants, null) ;
+        SqlNode sqlNode = insertConstantAccesses(context, scope, constants, null) ;
         return sqlNode ;
         
     }
 
-    private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants, Object object)
+    private SqlNode insertConstantAccesses(CompileContext context, Scope scope, Collection<Node> constants, Object object)
     {
         SqlNode sqlNode = null ;
         for ( Node n : constants )
@@ -143,7 +143,7 @@ public class QueryCompiler2 extends QueryCompilerBase
 
             // Access nodes table.
             
-            SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
+            SqlTable nTable = new TableNodes(allocNodeConstantAlias(), scope) ;
             nTable.addNote("Const: "+FmtUtils.stringForNode(n)) ; 
             SqlExprList conds = new SqlExprList() ;
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
@@ -164,23 +164,24 @@ public class QueryCompiler2 extends QueryCompilerBase
 
     // --------- Finish basic graph pattern
     
-    private SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode, BlockBGP blockBGP)
+    private SqlNode finishBasicBlock(CompileContext context, ScopeBase scope,
+                                     SqlNode sqlNode, BlockBGP blockBGP)
     {
-        sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
+        sqlNode = addRestrictions(context, scope, sqlNode, blockBGP.getConstraints()) ;
         // TODO Improve - extract less variables
-        sqlNode = extractResults(context, blockBGP.getDefinedVars(), sqlNode) ; 
+        sqlNode = extractResults(context, scope, blockBGP.getDefinedVars(), sqlNode) ; 
         return sqlNode ;
     }
-    private SqlNode extractResults(CompileContext context,
+    private SqlNode extractResults(CompileContext context, Scope scope,
                                    Collection<Var>vars, SqlNode sqlNode)
     {
         for ( Var v : vars )
         {
-            SqlColumn c1 = context.getScope().getColumnForVar(v) ;
+            SqlColumn c1 = scope.getColumnForVar(v) ;
             if ( c1 == null )
                 continue ;
             
-            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+            SqlTable nTable = new TableNodes(allocNodeResultAlias(), scope) ;
             nTable.addNote("Var: "+v) ;
             SqlColumn c2 = new SqlColumn(nTable, "id") ;
             
@@ -193,7 +194,8 @@ public class QueryCompiler2 extends QueryCompilerBase
         return sqlNode ;
     }
 
-    private SqlNode addRestrictions(CompileContext context, SqlNode sqlNode,
+    private SqlNode addRestrictions(CompileContext context, ScopeBase scope,
+                                    SqlNode sqlNode,
                                     List<SDBConstraint> constraints)
     {
         // TODO Place restriction in best place.
@@ -208,8 +210,7 @@ public class QueryCompiler2 extends QueryCompilerBase
         // 1/ Get the val columns
         // 2/ Generate the SQL conditions
         
-        ScopeBase valScope = new ScopeBase(sqlNode) ;
-        Scope scope = sqlNode ;
+        ScopeBase valScope = new ScopeBase() ;
         
         SqlExprList cList = new SqlExprList() ;
         for ( SDBConstraint c : constraints )
@@ -226,7 +227,7 @@ public class QueryCompiler2 extends QueryCompilerBase
                     continue ;
                 }
                 // ASSUME lexical/string form needed 
-                SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+                SqlTable nTable = new TableNodes(allocNodeResultAlias(), valScope) ;
                 // Slurp the value up.
                 sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
                 // TODO Need to know the value type.

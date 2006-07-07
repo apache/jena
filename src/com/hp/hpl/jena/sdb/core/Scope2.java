@@ -4,18 +4,48 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.core.Scope;
+import java.util.*;
 
-public abstract class SqlNodeBase1 extends SqlNodeBase 
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+
+public class Scope2 implements Scope
 {
-    private SqlNode sqlNode ;
-
-    protected SqlNodeBase1(String aliasName, SqlNode sqlNode) { super(aliasName) ; this.sqlNode = sqlNode ; }
+    Scope left ; 
+    Scope right ;
     
-    public Scope   getScope()   { return sqlNode.getScope() ; }
-    public SqlNode getSubNode() { return sqlNode ; } 
+    public Scope2(Scope left, Scope right) { this.left = left ; this.right = right ; } 
+    
+    public boolean hasColumnForVar(Var var)
+    { 
+        if ( left.hasColumnForVar(var) )
+            return true ;
+        if ( right.hasColumnForVar(var) )
+            return true ;
+        return false ;
+    }
+        
+    public Collection<Var> getVars()
+    {
+        // Better - implement Iterable 
+        Set<Var> acc = new LinkedHashSet<Var>() ;
+        acc.addAll(left.getVars()) ;
+        acc.addAll(right.getVars()) ;
+        return acc ;
+    }
+    
+    public SqlColumn getColumnForVar(Var var)
+    { 
+        SqlColumn c = left.getColumnForVar(var) ;
+        if ( c != null )
+            return c ;
+        c = right.getColumnForVar(var) ;
+        if ( c != null )
+            return c ;
+        return null ;
+    }
 }
 
 /*

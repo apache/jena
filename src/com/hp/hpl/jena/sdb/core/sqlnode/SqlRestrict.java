@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 
@@ -50,14 +49,6 @@ public class SqlRestrict extends SqlNodeBase1
 //    public void addCondition(Condition cond) { conditions.add(cond) ; }
 //    public 
     
-    @Override 
-    public boolean usesColumn(SqlColumn c)
-    { 
-        // Don't need to test the conditions?
-        return getSubNode().usesColumn(c) ;
-    }
-            
-        
 
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }

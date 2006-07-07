@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -109,6 +110,11 @@ public abstract class QueryCompilerBase implements QueryCompiler
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
         GenerateSQL v = new GenerateSQL(buff.getIndentedWriter()) ;
+        
+        // Top must be a project to cause the SELECT to be written
+        if ( ! sqlNode.isProject() )
+            sqlNode = new SqlProject(sqlNode, null) ;
+        
         sqlNode.visit(v) ;
         return buff.asString() ;
     }

@@ -20,7 +20,6 @@ public class SqlJoinInner extends SqlJoin
     }
     
     public void visit(SqlNodeVisitor visitor) { visitor.visit(this) ; }
-    
 }
 
 /*

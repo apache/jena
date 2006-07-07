@@ -6,23 +6,20 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.JoinType;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.Scope2;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-
-import org.apache.commons.logging.LogFactory;
 
 public abstract class SqlJoin extends SqlNodeBase
 {
     private JoinType joinType ;
     private SqlNode left ;
     private SqlNode right ;
+    private Scope scope ;
     private SqlExprList conditions = new SqlExprList() ;
 
 //    public static SqlJoin create(JoinType joinType, SqlNode left, SqlNode right)
@@ -49,6 +46,7 @@ public abstract class SqlJoin extends SqlNodeBase
         this.joinType = joinType ;
         this.left = left ;
         this.right = right ;
+        scope = new Scope2(left.getScope(), right.getScope()) ;
     } 
     
     public SqlNode   getLeft()   { return left ; }
@@ -65,27 +63,13 @@ public abstract class SqlJoin extends SqlNodeBase
     public void addCondition(SqlExpr e) { conditions.add(e) ; }
     public void addConditions(SqlExprList exprs) { conditions.addAll(exprs) ; }
     
-    @Override
-    public boolean usesColumn(SqlColumn c)
-    {
-        return getLeft().usesColumn(c) || getRight().usesColumn(c) ; 
-    }
+    public Scope getScope() { return scope ; }
     
-    public Collection<Var> getVars()
-    { 
-        Set<Var> acc = new HashSet<Var>() ;
-        acc.addAll(getLeft().getVars()) ;
-        acc.addAll(getRight().getVars()) ;
-        return acc ;
-    }
-    
-    public SqlColumn getColumnForVar(Var var)
-    {
-        SqlColumn col = getLeft().getColumnForVar(var) ;
-        if ( col != null )
-            return col ;
-        return getRight().getColumnForVar(var) ;
-    }
+//    @Override
+//    public boolean usesColumn(SqlColumn c)
+//    {
+//        return getLeft().usesColumn(c) || getRight().usesColumn(c) ; 
+//    }
 }
 
 /*

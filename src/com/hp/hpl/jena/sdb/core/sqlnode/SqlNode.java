@@ -9,9 +9,8 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.query.util.Printable;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-public interface SqlNode extends Printable, Scope, Annotations
+public interface SqlNode extends Printable, Annotations
 {
     public String         getAliasName() ;
     
@@ -27,6 +26,7 @@ public interface SqlNode extends Printable, Scope, Annotations
     public boolean        isTable() ;
     public SqlTable       getTable() ;
     
+    public Scope getScope() ;
     // Scope
 //    public boolean        hasColumnForVar(Var var) ;
 //    public SqlColumn      getColumnForVar(Var var) ;       // Get the col for this var - or null. 
@@ -35,7 +35,7 @@ public interface SqlNode extends Printable, Scope, Annotations
     //public void           setColumnForVar(Var var, SqlColumn) ; 
     
     
-    public boolean usesColumn(SqlColumn c) ;  // Does this subtree mentioned a column?
+//    public boolean usesColumn(SqlColumn c) ;  // Does this subtree mentioned a column?
     
     public void visit(SqlNodeVisitor visitor) ;
 }

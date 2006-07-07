@@ -17,8 +17,10 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 // This is not a general purpose SQL writer - it needs only work with the SQL node trees
 // that the schemas generate.  In particular:
+
 // 1/ Many conditions are already pushed into joins - a join node
 //    is actually restrict(join)
+
 // 2/ SqlRestrict can only occur in a few places (under project, SqlRestict-SqlTable) 
 //    and the generator only covers there
 
@@ -214,7 +216,7 @@ public class GenerateSQL implements SqlNodeVisitor
     }
 
     // Interaction with annotations
-    static boolean allOnOneLine = true ;
+    static boolean allOnOneLine = false ;
     public void conditionList(SqlExprList conditions)
     {
         if ( conditions.size() == 0 )
@@ -224,25 +226,35 @@ public class GenerateSQL implements SqlNodeVisitor
         
         String sep = " AND " ;
         boolean first = true ;
+        boolean lastAnnotated = false ;
         for ( SqlExpr c : conditions )
         {
             if ( ! first )
             {
-                if ( ! allOnOneLine ) out.println();
+                if ( ! allOnOneLine )
+                    out.println();
                 out.print(sep) ;
             }
             out.print(c.asSQL()) ;
+            if ( ! allOnOneLine )
+                lastAnnotated = annotate(c) ;
             first = false ;
         }
+        if ( ! allOnOneLine && lastAnnotated )
+            out.println("") ;
         out.print(" )") ;
         first = true ; 
-        for ( SqlExpr c : conditions )
-        {
-            if ( c.hasNotes() )
+        
+        if ( allOnOneLine )
+        {            
+            for ( SqlExpr c : conditions )
             {
-                if ( !first ) out.println() ;
-                annotate(c) ;
-                first = false ;
+                if ( c.hasNotes() )
+                {
+                    if ( !first ) out.println() ;
+                    annotate(c) ;
+                    first = false ;
+                }
             }
         }
     }
@@ -284,25 +296,26 @@ public class GenerateSQL implements SqlNodeVisitor
         level -- ;
     }
 
-    private void annotate(Annotations sqlNode)
+    // return true if annotation was output and it runs to end-of-line  
+    private boolean annotate(Annotations sqlNode)
     {
-        if ( doAnnotations )
+        if ( ! doAnnotations )
+            return false ;
+        
+        boolean first = true ;
+        for ( String s : sqlNode.getNotes() )
         {
-            boolean first = true ;
-            for ( String s : sqlNode.getNotes() )
+            if ( !first ) out.println();
+            first = false; 
+            out.pad(annotationColumn, true) ;
+            if ( commentSQLStyle )
             {
-                if ( !first ) out.println();
-                first = false; 
-                out.pad(annotationColumn, true) ;
-                if ( commentSQLStyle )
-                {
-                    out.print("-- ") ; out.print(s) ;
-                }else{
-                    out.print("/* ") ; out.print(s) ; out.print(" */") ;
-                }
-                    
+                out.print("-- ") ; out.print(s) ;
+            }else{
+                out.print("/* ") ; out.print(s) ; out.print(" */") ;
             }
         }
+        return !commentSQLStyle || !first ;  
     }
     
 //    protected String conditionToString(SqlExpr c)

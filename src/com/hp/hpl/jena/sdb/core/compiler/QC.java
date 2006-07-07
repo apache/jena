@@ -68,12 +68,13 @@ public class QC
                 LogFactory.getLog(QC.class).info("join: restriction not over a table") ;
         }
         
-        for ( Var v : left.getVars() )
+        for ( Var v : left.getScope().getVars() )
         {
-            if ( right.hasColumnForVar(v) ) 
+            if ( right.getScope().hasColumnForVar(v) ) 
             {
-                SqlExpr c = new S_Equal(left.getColumnForVar(v), right.getColumnForVar(v)) ;
+                SqlExpr c = new S_Equal(left.getScope().getColumnForVar(v), right.getScope().getColumnForVar(v)) ;
                 conditions.add(c) ;
+                c.addNote("Join var: "+v) ; 
             }
         }
         

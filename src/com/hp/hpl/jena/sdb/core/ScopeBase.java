@@ -21,10 +21,10 @@ public class ScopeBase implements Scope
     Scope parent = null ;
     
     public ScopeBase() {}
-    public ScopeBase(Scope parent)
-    { 
-        this.parent = parent ;
-    }
+//    public ScopeBase(Scope parent)
+//    { 
+//        this.parent = parent ;
+//    }
     
     public boolean hasColumnForVar(Var var)
     { 

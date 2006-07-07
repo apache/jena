@@ -16,23 +16,23 @@ package com.hp.hpl.jena.sdb.core;
 
 public class CompileContext
 {
-    // Things to track:
-    // query var --> triple column
-    // query var --> value column
-    // (constant --> column if no hash for triple -- unlikely to be needed long term)
-    
-//    private Stack<Scope> scopeStack = new Stack<Scope>() ;
-//    //private Scope varAliases = new Scope() ;
-//
-//    public void scopeStart() { scopeStack.push(new Scope(getCurrentScope())) ; }
-//    public void scopeEnd()   { scopeStack.pop() ; }
+//    // Things to track:
+//    // query var --> triple column
+//    // query var --> value column
+//    // (constant --> column if no hash for triple -- unlikely to be needed long term)
 //    
-//    public Scope getCurrentScope() { return  scopeStack.lastElement() ; }
-    
-    private Scope scope = new ScopeNull() ;
-    
-    public void  setScope(Scope scope) { this.scope = scope ; }
-    public Scope getScope() { return scope ; }
+////    private Stack<Scope> scopeStack = new Stack<Scope>() ;
+////    //private Scope varAliases = new Scope() ;
+////
+////    public void scopeStart() { scopeStack.push(new Scope(getCurrentScope())) ; }
+////    public void scopeEnd()   { scopeStack.pop() ; }
+////    
+////    public Scope getCurrentScope() { return  scopeStack.lastElement() ; }
+//    
+//    private Scope scope = new ScopeNull() ;
+//    
+//    public void  setScope(Scope scope) { this.scope = scope ; }
+//    public Scope getScope() { return scope ; }
     
     
     int countTable = 1 ;    

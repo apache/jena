@@ -6,12 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 /** Root of all concrete tables */
@@ -19,36 +14,41 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 public class SqlTable extends SqlNodeBase
 {
     private String tableName ;
-    private Map<Var, SqlColumn> cols = new HashMap<Var, SqlColumn>() ;
+    private Scope scope = null ;
+    //Map<Var, SqlColumn> cols = new HashMap<Var, SqlColumn>() ;
     
-    protected SqlTable(String tableName, String aliasName) { super(aliasName) ; this.tableName = tableName ; }
+    
+    protected SqlTable(String tableName, String aliasName, Scope scope)
+    {
+        super(aliasName) ;
+        this.tableName = tableName ;
+        this.scope = scope ;
+    }
     
     @Override
     public boolean isTable() { return true ; }
     @Override
     public SqlTable getTable() { return this ; }
     
-    public Collection<Var> getVars() { return cols.keySet() ; }
-
     @Override
     public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }
 
     public String getTableName()  { return tableName ; }
     
-    public SqlColumn getColumnForVar(Var var)
-    {
-        return cols.get(var) ; 
-    }
-
-    public void setColumnForVar(Var var, SqlColumn col)
-    {
-        if ( !col.getTable().getTableName().equals(getTableName()) )
-            throw new SDBException("Attempt to set column in wrong table: Table="+this.getTableName()+" Column: "+col.getFullColumnName()) ;
-        cols.put(var, col) ;
-    }
+//    public void setColumnForVar(Var var, SqlColumn col)
+//    {
+//        if ( !col.getTable().getTableName().equals(getTableName()) )
+//            throw new SDBException("Attempt to set column in wrong table: Table="+this.getTableName()+" Column: "+col.getFullColumnName()) ;
+//        cols.put(var, col) ;
+//    }
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
+
+    public Scope getScope()
+    {
+        return scope ;
+    }
 }
 
 /*
