@@ -55,7 +55,7 @@ public abstract class BulkLoaderLJ extends LoaderTriplesNodes
 				"     WHERE Triples.s IS NULL OR Triples.p IS NULL OR Triples.o IS NULL"
             ));
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("Preparing statements",ex) ; }
+        { ex.printStackTrace(); throw new SDBExceptionSQL("Preparing statements",ex) ; }
 	}
 }
 

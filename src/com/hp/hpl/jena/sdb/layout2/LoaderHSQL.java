@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sdb.layout2;
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -29,34 +29,36 @@ public class LoaderHSQL extends BulkLoaderLJ
     public void createLoaderTable()
     {
         try {
-            Connection conn = connection().getSqlConnection();
+        	Connection conn = connection().getSqlConnection();
+            Statement s = conn.createStatement();
 
-            if (SQLUtils.hasTable(conn, "NTrip"))
-                return;
-
-            PreparedStatement createLoaderTable = conn.prepareStatement(sqlStr(
-                    "CREATE TEMPORARY TABLE NTrip",
+            if (!SQLUtils.hasTable(conn, "NNode"))
+            	s.execute(sqlStr(
+                    "CREATE TEMPORARY TABLE NNode",
                     "(",
-                    "  shash BIGINT NOT NULL ,",
-                    "  slex VARCHAR NOT NULL ,",
-                    "  stype int NOT NULL ,",
-                    "  phash BIGINT NOT NULL,",
-                    "  plex VARCHAR NOT NULL ,",
-                    "  ptype int NOT NULL ,",
                     "  hash BIGINT NOT NULL ,",
                     "  lex VARCHAR NOT NULL ,",
                     "  lang VARCHAR(10) NOT NULL ,",
                     "  datatype VARCHAR("+ TableNodes.UriLength+ ") NOT NULL ,",
                     "  type int NOT NULL ,",
-                    "  vInt int NOT NULL ,",
-                    "  vDouble double NOT NULL ,",
-                    "  vDateTime datetime NOT NULL ",
+                    "  vInt int NOT NULL,",
+                    "  vDouble double NOT NULL,",
+                    "  vDateTime datetime NOT NULL",
                     ") "
                 ));
-            createLoaderTable.execute();
+            
+            if (!SQLUtils.hasTable(conn, "NTrip"))
+            	s.execute(sqlStr(
+            			"CREATE TEMPORARY TABLE NTrip",
+                		"(",
+                		"  s BIGINT NOT NULL,",
+                		"  p BIGINT NOT NULL,",
+                		"  o BIGINT NOT NULL",
+                		");"
+                ));
         }
         catch (SQLException ex)
-        { throw new SDBExceptionSQL("Making loader table",ex) ; }
+        { ex.printStackTrace(); throw new SDBExceptionSQL("Making loader table",ex) ; }
     }
 
 }

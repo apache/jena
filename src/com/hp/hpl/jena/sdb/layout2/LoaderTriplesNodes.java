@@ -6,7 +6,10 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import java.sql.*;
+import java.sql.BatchUpdateException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -16,8 +19,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
-import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -30,7 +31,7 @@ public abstract class LoaderTriplesNodes
     implements StoreLoader, LoaderFmt
 {
     private static Log log = LogFactory.getLog(LoaderTriplesNodes.class);
-    private static final String classShortName = Utils.classShortName(LoaderTriplesNodes.class)  ;
+    //private static final String classShortName = Utils.classShortName(LoaderTriplesNodes.class)  ;
     
     // Delayed initialization until first bulk load.
     private boolean initialized = false ;
@@ -174,18 +175,9 @@ public abstract class LoaderTriplesNodes
         s.setString(3, node.lang);
         s.setString(4, node.datatype);
         s.setInt(5, node.typeId);
-        if (node.valInt != 0)
-        	s.setInt(6, node.valInt);
-        else
-        	s.setString(6, "");
-        if (node.valDouble != 0)
-        	s.setDouble(7, node.valDouble);
-        else
-        	s.setString(7, "");
-        if (node.valDateTime != null)
-        	s.setTimestamp(8, node.valDateTime);
-        else
-        	s.setString(8, "");
+        s.setInt(6, node.valInt);
+        s.setDouble(7, node.valDouble);
+        s.setTimestamp(8, node.valDateTime);
         
         s.addBatch();
     }
@@ -302,7 +294,7 @@ public abstract class LoaderTriplesNodes
                 valDateTime = Timestamp.valueOf(dateTime);
             }
             else
-                valDateTime = null;
+                valDateTime = new Timestamp(0);
 
             hash = NodeLayout2.hash(lex, lang, datatype, typeId);
         }

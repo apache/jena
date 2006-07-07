@@ -9,13 +9,11 @@ package com.hp.hpl.jena.sdb.layout2;
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 /** Interface to setting up the bulk loader environment.
  * 
@@ -30,7 +28,6 @@ public class LoaderMySQL extends BulkLoaderLJ
     public void createLoaderTable()
     {
         try {
-            Connection conn = connection().getSqlConnection();
             Statement s = connection().getSqlConnection().createStatement();
             s.execute(sqlStr(
                     "CREATE TEMPORARY TABLE IF NOT EXISTS NNode",
