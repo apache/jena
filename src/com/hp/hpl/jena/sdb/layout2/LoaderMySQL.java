@@ -55,20 +55,35 @@ public class LoaderMySQL extends BulkLoaderLJ
         { throw new SDBExceptionSQL("Making loader table",ex) ; }
     }
     
-    // Use TRUNCATE not DELETE FROM to clear
+    // Use INSERT IGNORE and TRUNCATE to clear
     @Override
     public void createPreparedStatements()
-    {
-    	super.createPreparedStatements();
-    	
-    	try {
-    		Connection conn = connection().getSqlConnection();
+	{
+		try {
+		Connection conn = connection().getSqlConnection();
 
-            super.clearTripleLoaderTable = conn.prepareStatement("TRUNCATE NTrip;");
-            super.clearNodeLoaderTable = conn.prepareStatement("TRUNCATE NNode;");
-    	} catch (SQLException ex)
-        { throw new SDBExceptionSQL("Preparing statements",ex) ; }
-    }
+        super.clearTripleLoaderTable = conn.prepareStatement("TRUNCATE NTrip;");
+        super.clearNodeLoaderTable = conn.prepareStatement("TRUNCATE NNode;");
+        super.insertTripleLoaderTable = conn.prepareStatement("INSERT INTO NTrip VALUES (?,?,?);");
+        super.insertNodeLoaderTable = conn
+            .prepareStatement("INSERT INTO NNode VALUES (?,?,?,?,?,?,?,?);");
+        
+        super.insertNodes = conn.prepareStatement(sqlStr(
+        		"INSERT IGNORE INTO Nodes (hash, lex, lang, datatype, type, vInt, vDouble, vDateTime)",
+        		"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type, NNode.vInt, NNode.vDouble, NNode.vDateTime",
+        		"	FROM NNode"
+            ));
+        
+		super.insertTriples = conn.prepareStatement(sqlStr(
+				"INSERT IGNORE INTO Triples",
+				"	SELECT S.id, P.id, O.id FROM",
+				"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)",
+				"     JOIN Nodes AS P ON (NTrip.p=P.hash)",
+				"     JOIN Nodes AS O ON (NTrip.o=O.hash)"
+            ));
+        } catch (SQLException ex)
+        { ex.printStackTrace(); throw new SDBExceptionSQL("Preparing statements",ex) ; }
+	}
 }
 
 /*
