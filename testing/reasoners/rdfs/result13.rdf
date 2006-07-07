@@ -19,11 +19,13 @@
    <rdf:Property rdf:about="&rdf;first" />
    <rdf:Property rdf:about="&rdf;rest" />
    <rdf:Property rdf:about="&rdf;type" />
+   <rdf:Property rdf:about="&rdf;value" />
    
    <rdf:Property rdf:about="&rdfs;range" />
    <rdf:Property rdf:about="&rdfs;domain" />
    <rdf:Property rdf:about="&rdfs;subPropertyOf" />
    <rdf:Property rdf:about="&rdfs;subClassOf" />
+   <rdf:Property rdf:about="&rdfs;member" />
 
    <rdf:Property rdf:about="&rdfs;seeAlso" />
    <rdf:Property rdf:about="&rdfs;label" />

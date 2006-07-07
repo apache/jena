@@ -32,6 +32,7 @@
    <rdfs:Resource rdf:about="&rdf;object" />
    <rdfs:Resource rdf:about="&rdf;first" />
    <rdfs:Resource rdf:about="&rdf;rest" />
+   <rdfs:Resource rdf:about="&rdf;value" />
    
    <rdfs:Resource rdf:about="&rdfs;Resource" />
    <rdfs:Resource rdf:about="&rdfs;Literal" />
@@ -41,6 +42,7 @@
    <rdfs:Resource rdf:about="&rdfs;domain" />
    <rdfs:Resource rdf:about="&rdfs;subPropertyOf" />
    <rdfs:Resource rdf:about="&rdfs;subClassOf" />
+   <rdfs:Resource rdf:about="&rdfs;member" />
 
    <rdfs:Resource rdf:about="&rdf;Seq" />
    <rdfs:Resource rdf:about="&rdf;Bag" />

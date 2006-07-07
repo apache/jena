@@ -2,7 +2,7 @@
 # RDFS rule set v0.1.
 # This variant is used in the case where the subclass and subproperty
 # lattices have been precomputed by a transitive graph closure cache.
-# $Id: rdfs-fb-tgc.rules,v 1.8 2005-04-08 14:20:22 der Exp $
+# $Id: rdfs-fb-tgc.rules,v 1.9 2006-07-07 10:08:16 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -25,6 +25,8 @@
 -> (rdf:predicate  rdf:type  rdf:Property).
 -> (rdf:first      rdf:type  rdf:Property).
 -> (rdf:rest       rdf:type  rdf:Property).
+-> (rdf:value      rdf:type  rdf:Property).
+-> (rdfs:member     rdf:type  rdf:Property).
         
 -> (rdfs:subPropertyOf rdfs:domain rdf:Property).
 -> (rdfs:subClassOf rdfs:domain rdfs:Class).

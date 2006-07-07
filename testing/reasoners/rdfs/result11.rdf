@@ -32,6 +32,7 @@
    <rdfs:Resource rdf:about="&rdf;object" />
    <rdfs:Resource rdf:about="&rdf;first" />
    <rdfs:Resource rdf:about="&rdf;rest" />
+   <rdfs:Resource rdf:about="&rdf;value" />
    
    <rdfs:Resource rdf:about="&rdfs;Resource" />
    <rdfs:Resource rdf:about="&rdfs;Literal" />
@@ -41,6 +42,7 @@
    <rdfs:Resource rdf:about="&rdfs;domain" />
    <rdfs:Resource rdf:about="&rdfs;subPropertyOf" />
    <rdfs:Resource rdf:about="&rdfs;subClassOf" />
+   <rdfs:Resource rdf:about="&rdfs;member" />
    
   <rdf:Property rdf:about="&eg;p" />
   <rdf:Property rdf:about="&eg;q" />
@@ -53,11 +55,13 @@
    <rdf:Property rdf:about="&rdf;first" />
    <rdf:Property rdf:about="&rdf;rest" />
    <rdf:Property rdf:about="&rdf;type" />
+   <rdf:Property rdf:about="&rdf;value" />
    
    <rdf:Property rdf:about="&rdfs;range" />
    <rdf:Property rdf:about="&rdfs;domain" />
    <rdf:Property rdf:about="&rdfs;subPropertyOf" />
    <rdf:Property rdf:about="&rdfs;subClassOf" />
+   <rdf:Property rdf:about="&rdfs;member" />
 
   <rdfs:Class rdf:about="&eg;D" />
   <rdfs:Class rdf:about="&eg;C1" />
