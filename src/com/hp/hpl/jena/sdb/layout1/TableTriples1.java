@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
-import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 /**
@@ -18,8 +17,11 @@ public class TableTriples1 extends SqlTable
 {
     //static final String triplesName = "Triples" ;
     
-    public TableTriples1(String tableName, String aliasName, Scope scope)
-    { super(tableName, aliasName, scope) ; }
+    public TableTriples1(String tableName, String aliasName)
+    { super(tableName, aliasName) ; }
+    
+
+ 
 }
 
 /*

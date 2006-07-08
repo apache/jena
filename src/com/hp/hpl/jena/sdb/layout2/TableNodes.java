@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.layout2;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 /**
@@ -46,8 +45,8 @@ public class TableNodes extends SqlTable
 //        colNameMap.put("{"+colDatetime+"}",  colDatetime) ; 
 //    }
     
-    public TableNodes(String aliasName, Scope scope)
-    { super(tableName, aliasName, scope) ; }
+    public TableNodes(String aliasName)
+    { super(tableName, aliasName) ; }
 
 }
 

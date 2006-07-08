@@ -1,15 +1,9 @@
-PREFIX   :      <http://example/>
+PREFIX     :    <http://example/>
 PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT *
-WHERE {
-    ?x :p ?v . 
-##    ?x :p ?v2 . 
-##   FILTER regex(?v , "foo")
-##     OPTIONAL
-##     { 
-##         ?y :q1 ?v .
-## ##        ?y :q2 ?v .
-##     }
-    
+SELECT * WHERE
+{ 
+    ?x :p 1 .
+    ?x :p 2 .
+    OPTIONAL { ?x :p ?a . ?a :q1 ?v .}
 }

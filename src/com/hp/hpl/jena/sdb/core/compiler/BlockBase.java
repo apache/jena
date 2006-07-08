@@ -9,7 +9,9 @@ package com.hp.hpl.jena.sdb.core.compiler;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.util.StringUtils;
 import com.hp.hpl.jena.sdb.core.Block;
 
 public abstract class BlockBase implements Block
@@ -22,6 +24,28 @@ public abstract class BlockBase implements Block
         if ( projectVars == null )
             projectVars = new LinkedHashSet<Var>() ;
         projectVars.add(var) ;
+    }
+    
+
+    final
+    public Block substitute(Binding binding)
+    {
+        BlockBase block = substit(binding) ;
+        if ( projectVars != null )
+        {
+            block.projectVars = new LinkedHashSet<Var>() ;
+            block.projectVars.addAll(getProjectVars()) ;
+        }
+        return block ; 
+    }
+    
+    protected abstract BlockBase substit(Binding binding) ;
+
+    
+    @Override
+    public String toString()
+    {
+        return StringUtils.toString(this) ;
     }
 }
 /*

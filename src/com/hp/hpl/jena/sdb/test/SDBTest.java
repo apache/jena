@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
 } )
 public class SDBTest
 {
-
+    public static final String testDirSDB = "testing/" ;
 }
 
 /*

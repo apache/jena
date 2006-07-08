@@ -39,7 +39,7 @@ public class QueryCompiler1 extends QueryCompilerBase
     private static Log log = LogFactory.getLog(QueryCompiler1.class) ;
     
     private EncoderDecoder codec ;
-    private TripleTableDesc tripleTableDesc ;
+    private TripleTableDesc tripleTableDesc ; // ==> Tablefactory??
 
     public QueryCompiler1(EncoderDecoder codec, TripleTableDesc tripleTableDesc)
     {
@@ -55,23 +55,22 @@ public class QueryCompiler1 extends QueryCompilerBase
     @Override
     public SqlNode compile(BlockBGP blockBGP, CompileContext context)
     {
-        ScopeBase scope = new ScopeBase() ; 
         // Common code - hmmm ...
-        SqlNode sqlNode = startBasicBlock(context, scope, blockBGP) ;
+        SqlNode sqlNode = startBasicBlock(context, null, blockBGP) ;
 
         for ( Triple triple : blockBGP.getTriples() )
         {
-            SqlNode sNode = match(context, scope, triple) ;
+            SqlNode sNode = match(context, triple) ;
             if ( sNode != null )
                 sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
         }
-        sqlNode = finishBasicBlock(context, scope, sqlNode, blockBGP) ;
+        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
         return sqlNode ;
     }
 
 
     @Override
-    public void startCompile(CompileContext context, Block block)
+    protected void startCompile(CompileContext context, Block block)
     { return ; } 
 
 
@@ -94,20 +93,20 @@ public class QueryCompiler1 extends QueryCompilerBase
     }
 
 
-    protected SqlNode match(CompileContext context, ScopeBase scope, Triple triple)
+    protected SqlNode match(CompileContext context, Triple triple)
     {
         String sCol = tripleTableDesc.getSubjectColName() ;
         String pCol = tripleTableDesc.getPredicateColName() ;
         String oCol = tripleTableDesc.getObjectColName() ;
 
         String alias = context.allocTableAlias() ;
-        TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias, scope) ;
+        TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
         tripleTable.addNote(FmtUtils.stringForTriple(triple, null)) ;
         
         SqlExprList conditions = new SqlExprList() ;
-        processSlot(context, scope, tripleTable, triple.getSubject(),   sCol, conditions) ; 
-        processSlot(context, scope, tripleTable, triple.getPredicate(), pCol, conditions) ;
-        processSlot(context, scope, tripleTable, triple.getObject(),    oCol, conditions) ;
+        processSlot(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
+        processSlot(context, tripleTable, triple.getPredicate(), pCol, conditions) ;
+        processSlot(context, tripleTable, triple.getObject(),    oCol, conditions) ;
 
         if ( conditions.size() == 0 )
             return tripleTable ;
@@ -117,7 +116,7 @@ public class QueryCompiler1 extends QueryCompilerBase
     private SqlNode startBasicBlock(CompileContext context, ScopeBase scope, BlockBGP blockBGP)
     { return null ; }
 
-    private SqlNode finishBasicBlock(CompileContext context, ScopeBase scope, SqlNode sqlNode,  BlockBGP blockBGP)
+    private SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP)
     { 
         if ( blockBGP.getConstraints().size() > 0 )
         {
@@ -125,7 +124,7 @@ public class QueryCompiler1 extends QueryCompilerBase
             SqlExprList sqlConditions = new SqlExprList() ;
             for ( SDBConstraint c : blockBGP.getConstraints() )
             {
-                SqlExpr sqlExpr = c.asSqlExpr(scope) ;
+                SqlExpr sqlExpr = c.asSqlExpr(sqlNode.getScope()) ;
                 sqlConditions.add(sqlExpr) ;
             }
             sqlNode = new SqlRestrict(alias, sqlNode, sqlConditions) ;
@@ -133,7 +132,7 @@ public class QueryCompiler1 extends QueryCompilerBase
         return sqlNode ; 
     }
     
-    private void processSlot(CompileContext context, ScopeBase scope, TableTriples1 triples, Node n, String col, SqlExprList conditions)
+    private void processSlot(CompileContext context, TableTriples1 triples, Node n, String col, SqlExprList conditions)
     {
         SqlColumn thisCol = new SqlColumn(triples, col) ;
         
@@ -150,7 +149,7 @@ public class QueryCompiler1 extends QueryCompilerBase
         // Variable
         Var var = new Var(n) ;
         
-        if ( scope.hasColumnForVar(var) )
+        if ( triples.getScope().hasColumnForVar(var) )
         {
             // Becomes join condition.
 //            SqlColumn otherCol = scope.getColumnForVar(var) ;
@@ -159,7 +158,7 @@ public class QueryCompiler1 extends QueryCompilerBase
 //            conditions.add(c) ;
             return ;
         }
-        scope.setColumnForVar(var, thisCol) ;
+        triples.setColumnForVar(var, thisCol) ;
     }
     
     @Override

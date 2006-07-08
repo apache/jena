@@ -78,7 +78,7 @@ public abstract class QueryCompilerBase implements QueryCompiler
         verbose ( printBlock, block ) ; 
         CompileContext context = new CompileContext() ;
 
-        // A chance for subclasses to chnage the block structure (including insert their own block types)
+        // A chance for subclasses to change the block structure (including insert their own block types)
         // TODO Better done in translation phase so done once?
         block = modify(block) ;
 

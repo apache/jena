@@ -22,8 +22,6 @@ import org.junit.runners.AllTests;
 @RunWith(AllTests.class)
 public class SDBTestSuite1 extends TestSuite
 {
-    static final String testDirSDB = "testing/" ;
-    
     // JUnit3 to JUnit4 adapter
 //    public static junit.framework.Test suite() { 
 //        return new JUnit4TestAdapter(SDBTestSuite1.class); 
@@ -43,7 +41,7 @@ public class SDBTestSuite1 extends TestSuite
             JDBC.loadDriverMySQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreSimpleMySQL(sdb),
-                                             testDirSDB+"manifest-sdb.ttl")) ;
+                                             SDBTest.testDirSDB+"manifest-sdb.ttl")) ;
         }
         
         JDBC.loadDriverHSQL() ;
@@ -51,7 +49,7 @@ public class SDBTestSuite1 extends TestSuite
             SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb1", "sa", "") ;
             Store store = new StoreSimpleHSQL(sdb) ;
             store.getTableFormatter().format() ;
-            TestSuite ts = QueryTestSDBFactory.make(store, testDirSDB+"manifest-sdb.ttl") ; 
+            TestSuite ts = QueryTestSDBFactory.make(store, SDBTest.testDirSDB+"manifest-sdb.ttl") ; 
             ts.setName(ts.getName()+"/HSQL-mem") ;
             addTest(ts) ;
         }
@@ -62,7 +60,7 @@ public class SDBTestSuite1 extends TestSuite
             Store store = new StoreSimpleHSQL(sdb) ;
             store.getTableFormatter().format() ;
             TestSuite ts = QueryTestSDBFactory.make(new StoreSimpleHSQL(sdb),
-                                                   testDirSDB+"/manifest-sdb.ttl") ; 
+                                                    SDBTest.testDirSDB+"/manifest-sdb.ttl") ; 
             ts.setName(ts.getName()+"/HSQL-file") ;
             addTest(ts) ;
         }

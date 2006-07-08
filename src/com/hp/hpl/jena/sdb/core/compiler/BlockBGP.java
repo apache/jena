@@ -17,7 +17,6 @@ import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
-import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
@@ -70,7 +69,8 @@ public class BlockBGP extends BlockBase
         return queryCompiler.compile(this, context) ;
     }
 
-    public Block substitute(Binding binding)
+    @Override
+    public BlockBase substit(Binding binding)
     {
         BlockBGP block = new BlockBGP() ;
         
@@ -80,7 +80,6 @@ public class BlockBGP extends BlockBase
                 t = QueryEngineUtils.substituteIntoTriple(t, binding) ;
             block.add(t) ;
         }
-
         return block ;
     }
 

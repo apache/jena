@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.ScopeBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 /** Root of all concrete tables */
@@ -14,15 +16,15 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 public class SqlTable extends SqlNodeBase
 {
     private String tableName ;
-    private Scope scope = null ;
+    private ScopeBase scope = null ;
     //Map<Var, SqlColumn> cols = new HashMap<Var, SqlColumn>() ;
     
     
-    protected SqlTable(String tableName, String aliasName, Scope scope)
+    protected SqlTable(String tableName, String aliasName)
     {
         super(aliasName) ;
         this.tableName = tableName ;
-        this.scope = scope ;
+        this.scope = new ScopeBase() ; ;
     }
     
     @Override
@@ -48,6 +50,11 @@ public class SqlTable extends SqlNodeBase
     public Scope getScope()
     {
         return scope ;
+    }
+    
+    public void setColumnForVar(Var var, SqlColumn thisCol)
+    {
+        scope.setColumnForVar(var, thisCol) ;
     }
 }
 

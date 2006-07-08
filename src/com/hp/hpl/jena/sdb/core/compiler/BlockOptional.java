@@ -41,15 +41,14 @@ public class BlockOptional extends BlockBase
         x.addAll(s2) ;
         return x ;
     }
-
-    
     
     public SqlNode generateSQL(CompileContext context, QueryCompilerBase queryCompiler)
     {
         return queryCompiler.compile(this, context) ;
     }
     
-    public Block substitute(Binding binding)
+    @Override
+    public BlockBase substit(Binding binding)
     {
         return new BlockOptional(left.substitute(binding),
                                  right.substitute(binding)) ;

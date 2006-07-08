@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 /**
@@ -19,8 +18,8 @@ public class TableTriples extends SqlTable
     //private static Log log = LogFactory.getLog(TableTriples.class) ;
     public static final String tableName    = "Triples" ;
     
-    public TableTriples(String aliasName, Scope scope)
-    { super(tableName, aliasName, scope) ; }
+    public TableTriples(String aliasName)
+    { super(tableName, aliasName) ; }
     
 }
 

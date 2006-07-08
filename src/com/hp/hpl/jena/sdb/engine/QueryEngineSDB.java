@@ -46,7 +46,8 @@ public class QueryEngineSDB extends QueryEngine
     @Override
     protected PlanElement queryPlanPatternHook(Context context, PlanElement planElt)
     {
-        return store.getPlanTranslator().queryPlanTranslate(context, getQuery(), store, planElt) ;
+        PlanElement e = store.getPlanTranslator().queryPlanTranslate(context, getQuery(), store, planElt) ;
+        return e ;
     }
     
     public Block toBlock()
