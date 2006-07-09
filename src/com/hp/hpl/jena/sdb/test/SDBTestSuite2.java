@@ -22,6 +22,9 @@ import org.junit.runners.AllTests;
 @RunWith(AllTests.class)
 public class SDBTestSuite2 extends TestSuite
 {
+    static boolean includeMySQL = true ;
+    static boolean includeHSQL = false ;
+    
     static final String testDirSDB = "testing/" ;
     
     static public TestSuite suite() {
@@ -35,15 +38,19 @@ public class SDBTestSuite2 extends TestSuite
         if ( true ) SDBConnection.logSQLExceptions = true ;
         if ( false ) QueryTestSDB.VERBOSE = true ;
         
-        JDBC.loadDriverMySQL() ;
+        
+        if ( includeMySQL )
         {
+            JDBC.loadDriverMySQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2",  Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreTriplesNodesMySQL(sdb),
                                              testDirSDB+"manifest-sdb.ttl")) ;
         }
         
-        JDBC.loadDriverHSQL() ;
+        
+        if ( includeHSQL )
         {
+            JDBC.loadDriverHSQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
             Store store = new StoreTriplesNodesHSQL(sdb) ;
             store.getTableFormatter().format() ;
