@@ -3,18 +3,17 @@
 @prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
+## Layout 1 (simple form)
 
 _:c rdf:type acmd:SDBConnection ;
     acmd:sdbType    "MySQL" ;
     acmd:sdbHost    "localhost" ;
-    acmd:sdbName    "SDB2" ;
+    acmd:sdbName    "SDB1" ;
     acmd:driver     "com.mysql.jdbc.Driver" ;
     .
 
 [] rdf:type acmd:Store ;
-    acmd:layout     "layout2" ;
+    acmd:layout     "layout1" ;
     acmd:connection _:c ;
     acmd:engine     "InnoDB" ;
     .
-
-## For HSQL, in memory, need data loading as well.
