@@ -64,7 +64,7 @@ public class BlockBGP extends BlockBase
         classified = true ;
     }
     
-    public SqlNode generateSQL(CompileContext context, QueryCompilerBase queryCompiler)
+    public SqlNode generateSQL(CompileContext context, QueryCompilerBasicPattern queryCompiler)
     {
         return queryCompiler.compile(this, context) ;
     }

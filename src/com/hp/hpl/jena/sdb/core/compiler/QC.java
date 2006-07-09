@@ -51,7 +51,7 @@ public class QC
         SqlExprList conditions = new SqlExprList() ;
 
         
-        if ( left.isRestrict() )
+        if ( left.isRestrict() && joinType == JoinType.INNER )
         {
             SqlRestrict r = left.getRestrict() ; 
             left = removeRestrict(r, conditions) ;

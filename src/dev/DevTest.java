@@ -12,9 +12,11 @@ import org.junit.runners.AllTests;
 
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
+import com.hp.hpl.jena.sdb.Access;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -38,9 +40,9 @@ public class DevTest extends TestSuite
         {
             SDBConnection.logSQLExceptions = true ;
             SDBConnection.logSQLStatements = false ;
-            QueryCompilerBase.printSQL = false ;
+            QueryCompilerBasicPattern.printSQL = false ;
         }
-        init() ;
+        initMySQL() ;
         loadTests() ;
     }
         
@@ -54,11 +56,11 @@ public class DevTest extends TestSuite
     private void loadManifest(String s)
     {
         TestSuite ts = QueryTestSDBFactory.make(store, s) ; 
-        ts.setName(ts.getName()+"/HSQL-mem") ;
+        ts.setName(ts.getName()) ;
         addTest(ts) ;
     }
     
-    private void init()
+    private void initHSQL()
     {
         JDBC.loadDriverHSQL() ;
         SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb1", "sa", "") ;
@@ -67,6 +69,12 @@ public class DevTest extends TestSuite
         store.getTableFormatter().format() ;
     }
     
+    private void initMySQL()
+    {
+        JDBC.loadDriverMySQL() ;
+        SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
+        store = new StoreSimpleMySQL(sdb) ;
+    }
 }
 
 /*

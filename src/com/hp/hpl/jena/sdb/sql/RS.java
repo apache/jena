@@ -67,8 +67,7 @@ public class RS
         for ( int i = 1; i <= rsmd.getColumnCount() ; i++)
         {
             if ( i != 1 )
-                out.print(sep) ;
-            fmt(out, rsmd.getColumnName(i), colWidths[i]) ;
+            fmt(out, rsmd.getColumnLabel(i), colWidths[i]) ;
         }
         out.print(" |") ;
         out.println() ;
@@ -138,7 +137,7 @@ public class RS
 
         for ( int i = 1; i <= rsmd.getColumnCount() ; i++)
         {
-            int w = rsmd.getColumnName(i).length() ;
+            int w = rsmd.getColumnLabel(i).length() ;
             col[i] = w ;
         }
         

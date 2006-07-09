@@ -202,6 +202,9 @@ public class PlanToSDB extends TransformCopy
                                                                            new ActionMatchString()}) ;
     private PlanSDBConstraint transformFilter(PlanFilter planElt)
     {
+        if ( ! translateConstraints )
+            return null ;
+        
         Expr expr = planElt.getConstraint().getExpr() ; 
         MapResult rMap = null ;
         

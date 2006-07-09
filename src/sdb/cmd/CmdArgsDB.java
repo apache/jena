@@ -14,8 +14,6 @@ import com.hp.hpl.jena.shared.Command;
 
 public abstract class CmdArgsDB extends CmdArgModule
 {
-    
-    
     static {
         //  Tune N3 output for result set output.
         System.setProperty("usePropertySymbols",   "false") ;
@@ -24,8 +22,8 @@ public abstract class CmdArgsDB extends CmdArgModule
         System.setProperty("propertyColumn",       "14") ;
     }
     
-    ModStore modStore = new ModStore() ;
-    ModTime  modTime  = new ModTime() ;
+    private ModStore modStore = new ModStore() ;
+    private ModTime  modTime  = new ModTime() ;
 
     protected CmdArgsDB(String argv[])
     {

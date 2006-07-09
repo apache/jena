@@ -25,7 +25,7 @@ import com.hp.hpl.jena.query.engine1.PlanWalker;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
@@ -305,9 +305,9 @@ public class sdbprint extends CmdArgModule
                 PlanSDB planSDB = (PlanSDB)planElt ;
                 if ( verbose )
                 {
-                    QueryCompilerBase.printBlock = false ;  // Done earlier.
-                    QueryCompilerBase.printAbstractSQL = true ;
-                    QueryCompilerBase.printDivider = divider ;
+                    QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
+                    QueryCompilerBasicPattern.printAbstractSQL = true ;
+                    QueryCompilerBasicPattern.printDivider = divider ;
                 }
                 
                 Block block = planSDB.getBlock() ;

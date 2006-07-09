@@ -31,7 +31,8 @@ import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
+
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
@@ -39,7 +40,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class QueryCompiler2 extends QueryCompilerBase
+public class QueryCompiler2 extends QueryCompilerTriplePattern
 {
     private static Log log = LogFactory.getLog(QueryCompiler2.class) ;
     
@@ -51,22 +52,6 @@ public class QueryCompiler2 extends QueryCompilerBase
     // -------- Basic Graph pattern compilation
     
     @Override
-    public SqlNode compile(BlockBGP blockBGP, CompileContext context)
-    {
-       SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
-        
-        for ( Triple triple : blockBGP.getTriples() )
-        {
-            SqlNode sNode = match(context, triple) ;
-            if ( sNode != null )
-            {
-                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
-            }
-        }
-        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
-        return sqlNode ;
-    }
-
     protected SqlNode match(CompileContext context, Triple triple)
     {
         String alias = context.allocTableAlias() ;
@@ -123,8 +108,8 @@ public class QueryCompiler2 extends QueryCompilerBase
     //  -------- Start basic graph pattern 
     
     
-    
-    private SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
+    @Override
+    protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     {
         Collection<Node> constants = blockBGP.getConstants() ;
         SqlNode sqlNode = insertConstantAccesses(context, constants, null) ;
@@ -163,7 +148,8 @@ public class QueryCompiler2 extends QueryCompilerBase
 
     // --------- Finish basic graph pattern
     
-    private SqlNode finishBasicBlock(CompileContext context,
+    @Override
+    protected SqlNode finishBasicBlock(CompileContext context,
                                      SqlNode sqlNode, BlockBGP blockBGP)
     {
         sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;

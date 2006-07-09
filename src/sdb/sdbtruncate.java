@@ -10,12 +10,14 @@ import java.sql.SQLException;
 
 import sdb.cmd.CmdArgsDB;
 
-import arq.cmd.TerminationException;
-
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
-/** Format an SDB database.  Destroys all existing data permanently. */ 
+/** Format an SDB database.  Destroys all existing data permanently.
+ *  Ignores -dbName argument in favour of the command line positional parameter. 
+ * @author Andy Seaborne
+ * @version $Id$
+ */ 
 
 public class sdbtruncate extends CmdArgsDB
 {
@@ -24,6 +26,8 @@ public class sdbtruncate extends CmdArgsDB
         new sdbtruncate(argv).mainAndExit() ;
     }
 
+    private String dbToZap = null ;
+    
     protected sdbtruncate(String[] args)
     {
         super(args);
@@ -34,16 +38,22 @@ public class sdbtruncate extends CmdArgsDB
     protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
-    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> --dbName <NAME>" ; }
+    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> <NAME>" ; }
     
     @Override
     protected void checkCommandLine()
     {
-        if ( getNumPositional() > 0 )
-            cmdError("No positional arguments allowed", true) ;
-        // Safety check
-        if ( !contains("dbName") )
-            cmdError("Must give the name of the database", true) ;
+        if ( getNumPositional() == 1 )
+        {
+            String dbToZap = getPositionalArg(0) ;
+            getModStore().setDbName(dbToZap) ;
+        }
+        else
+            cmdError("Must give the database name explicitly") ;
+        
+//        // Safety check
+//        if ( !contains("dbName") )
+//            cmdError("Must give the name of the database") ;
     }
     
     @Override
@@ -68,8 +78,11 @@ public class sdbtruncate extends CmdArgsDB
     @Override
     protected boolean exec1(String arg)
     {
-        System.err.println("Unexpected positional argument") ;
-        throw new TerminationException(99) ;
+        // caught in checkCommandLine to set early
+        exec0() ; 
+//        System.err.println("Unexpected positional argument") ;
+//        throw new TerminationException(99) ;
+        return false ;
     }
 }
 

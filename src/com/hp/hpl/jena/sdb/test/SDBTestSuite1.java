@@ -22,6 +22,9 @@ import org.junit.runners.AllTests;
 @RunWith(AllTests.class)
 public class SDBTestSuite1 extends TestSuite
 {
+    static boolean includeMySQL = true ;
+    static boolean includeHSQL = false ;
+    
     // JUnit3 to JUnit4 adapter
 //    public static junit.framework.Test suite() { 
 //        return new JUnit4TestAdapter(SDBTestSuite1.class); 
@@ -37,6 +40,7 @@ public class SDBTestSuite1 extends TestSuite
         super("SDB - Schema 1") ;
         if ( true ) SDBConnection.logSQLExceptions = true ;
         
+        if ( includeMySQL )
         {
             JDBC.loadDriverMySQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
@@ -44,8 +48,9 @@ public class SDBTestSuite1 extends TestSuite
                                              SDBTest.testDirSDB+"manifest-sdb.ttl")) ;
         }
         
-        JDBC.loadDriverHSQL() ;
+        if ( includeHSQL )
         {
+            JDBC.loadDriverHSQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb1", "sa", "") ;
             Store store = new StoreSimpleHSQL(sdb) ;
             store.getTableFormatter().format() ;
@@ -54,7 +59,7 @@ public class SDBTestSuite1 extends TestSuite
             addTest(ts) ;
         }
         
-        if ( false )
+        if ( includeHSQL )
         {
             SDBConnection sdb = new SDBConnection("jdbc:hsqldb:file:tmp/testdb1", "sa", "") ;
             Store store = new StoreSimpleHSQL(sdb) ;

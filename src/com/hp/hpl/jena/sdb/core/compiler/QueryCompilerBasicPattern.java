@@ -38,9 +38,9 @@ import com.hp.hpl.jena.sdb.store.Store;
  * @version $Id: QueryCompilerBase.java,v 1.1 2006/04/22 13:45:58 andy_seaborne Exp $
  */
 
-public abstract class QueryCompilerBase implements QueryCompiler
+public abstract class QueryCompilerBasicPattern implements QueryCompiler
 {
-    private static Log log = LogFactory.getLog(QueryCompilerBase.class) ;
+    private static Log log = LogFactory.getLog(QueryCompilerBasicPattern.class) ;
     
     public static String  printDivider      = null ;
     public static boolean printBlock        = false ;
@@ -123,6 +123,9 @@ public abstract class QueryCompilerBase implements QueryCompiler
     protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode) ;
     
     protected abstract SqlNode compile(BlockBGP blockBGP, CompileContext context) ;
+    
+    
+    
     
     public SqlNode compile(BlockOptional blockOpt, CompileContext context)
     {

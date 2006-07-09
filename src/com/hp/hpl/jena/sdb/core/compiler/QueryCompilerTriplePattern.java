@@ -1,33 +1,50 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import java.util.Set;
-
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.Printable;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public interface Block extends Printable
+/**
+ * Compile a query requiring only mapping triple patterns the actual DB schema.
+ */
+
+public abstract class QueryCompilerTriplePattern extends QueryCompilerBasicPattern
 {
-    public static final int INDENT = 2 ; 
+    //private static Log log = LogFactory.getLog(QueryCompilerBaseTriple.class) ;
     
-    Block substitute(Binding binding) ;
-    SqlNode generateSQL(CompileContext context, QueryCompilerBasicPattern queryCompiler) ;
-    Set<Var> getProjectVars() ;
-    Set<Var> getDefinedVars() ;
-    void setProjectVars(Set<Var> projectVars) ;
-    void addProjectVar(Var var) ;
+    @Override
+    final
+    public SqlNode compile(BlockBGP blockBGP, CompileContext context)
+    {
+        SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
+
+        for ( Triple triple : blockBGP.getTriples() )
+        {
+            SqlNode sNode = match(context, triple) ;
+            if ( sNode != null )
+                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
+        }
+        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
+        return sqlNode ;
+    }
+    
+    protected abstract SqlNode match(CompileContext context, Triple triple) ;
+ 
+    protected abstract SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP) ;
+
+    protected abstract SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP) ;
+    
+
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

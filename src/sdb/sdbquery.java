@@ -20,7 +20,7 @@ import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.query.util.Utils;
 
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
 import com.hp.hpl.jena.util.FileManager;
  
@@ -116,10 +116,10 @@ public class sdbquery extends CmdArgsDB
         
         if ( verbose )
         {
-            QueryCompilerBase.printBlock = true ;
-            QueryCompilerBase.printAbstractSQL = true ;
-            QueryCompilerBase.printSQL = true ;
-            QueryCompilerBase.printDivider = divider ;
+            QueryCompilerBasicPattern.printBlock = true ;
+            QueryCompilerBasicPattern.printAbstractSQL = true ;
+            QueryCompilerBasicPattern.printSQL = true ;
+            QueryCompilerBasicPattern.printDivider = divider ;
         }
         
         execQuery(queryStr) ;
@@ -149,7 +149,7 @@ public class sdbquery extends CmdArgsDB
         
         if ( verbose )
         {
-            QueryCompilerBase.printSQL = true ;
+            QueryCompilerBasicPattern.printSQL = true ;
             Query query = QueryFactory.create(queryStr) ;
             query.serialize(System.out) ;
             System.out.println(divider) ; 

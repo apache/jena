@@ -26,15 +26,14 @@ import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
-import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBase;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class QueryCompiler1 extends QueryCompilerBase
+public class QueryCompiler1 extends QueryCompilerTriplePattern
 {
     private static Log log = LogFactory.getLog(QueryCompiler1.class) ;
     
@@ -53,21 +52,25 @@ public class QueryCompiler1 extends QueryCompilerBase
     public QueryCompiler1(EncoderDecoder codec) { this(codec, null) ; }
     
     @Override
-    public SqlNode compile(BlockBGP blockBGP, CompileContext context)
+    protected SqlNode match(CompileContext context, Triple triple)
     {
-        // Common code - hmmm ...
-        SqlNode sqlNode = startBasicBlock(context, null, blockBGP) ;
-
-        for ( Triple triple : blockBGP.getTriples() )
-        {
-            SqlNode sNode = match(context, triple) ;
-            if ( sNode != null )
-                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
-        }
-        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
-        return sqlNode ;
+        String sCol = tripleTableDesc.getSubjectColName() ;
+        String pCol = tripleTableDesc.getPredicateColName() ;
+        String oCol = tripleTableDesc.getObjectColName() ;
+    
+        String alias = context.allocTableAlias() ;
+        TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
+        tripleTable.addNote(FmtUtils.stringForTriple(triple, null)) ;
+        
+        SqlExprList conditions = new SqlExprList() ;
+        processSlot(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
+        processSlot(context, tripleTable, triple.getPredicate(), pCol, conditions) ;
+        processSlot(context, tripleTable, triple.getObject(),    oCol, conditions) ;
+    
+        if ( conditions.size() == 0 )
+            return tripleTable ;
+        return new SqlRestrict(tripleTable, conditions) ;
     }
-
 
     @Override
     protected void startCompile(CompileContext context, Block block)
@@ -92,31 +95,12 @@ public class QueryCompiler1 extends QueryCompilerBase
         return new SqlProject(sqlNode, cols) ;
     }
 
-
-    protected SqlNode match(CompileContext context, Triple triple)
-    {
-        String sCol = tripleTableDesc.getSubjectColName() ;
-        String pCol = tripleTableDesc.getPredicateColName() ;
-        String oCol = tripleTableDesc.getObjectColName() ;
-
-        String alias = context.allocTableAlias() ;
-        TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
-        tripleTable.addNote(FmtUtils.stringForTriple(triple, null)) ;
-        
-        SqlExprList conditions = new SqlExprList() ;
-        processSlot(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
-        processSlot(context, tripleTable, triple.getPredicate(), pCol, conditions) ;
-        processSlot(context, tripleTable, triple.getObject(),    oCol, conditions) ;
-
-        if ( conditions.size() == 0 )
-            return tripleTable ;
-        return new SqlRestrict(tripleTable, conditions) ;
-    }
-
-    private SqlNode startBasicBlock(CompileContext context, ScopeBase scope, BlockBGP blockBGP)
+    @Override
+    protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     { return null ; }
 
-    private SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP)
+    @Override
+    protected SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP)
     { 
         if ( blockBGP.getConstraints().size() > 0 )
         {
@@ -141,7 +125,7 @@ public class QueryCompiler1 extends QueryCompilerBase
             String str = codec.encode(n) ;
             //str = SQLUtils.quote(str) ;
             SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-            c.addNote("Const: "+n) ;
+            c.addNote("Const: "+FmtUtils.stringForNode(n)) ;
             conditions.add(c) ;
             return ;
         }

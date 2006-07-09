@@ -1,10 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
-Constarint compilation - done in PlanToSDB recognizer but needs later substitution.
-See also ConditionCompiler
-Add back to Query Compiler?
-
+Constraint compilation - done in PlanToSDB recognizer but needs later substitution.
+IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
 
 == Next
   1/ IsNotNull: C_, S_ and generated PlanToSDB

@@ -10,8 +10,6 @@ import java.sql.SQLException;
 
 import sdb.cmd.CmdArgsDB;
 
-import arq.cmd.TerminationException;
-
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -35,16 +33,22 @@ public class sdbformat extends CmdArgsDB
     protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
-    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> --dbName <NAME>" ; }
+    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> <NAME>" ; }
 
     @Override
     protected void checkCommandLine()
     {
-        if ( getNumPositional() > 0 )
-            cmdError("No positional arguments allowed", true) ;
-        // safety check
-        if ( !contains("dbName") )
-            cmdError("Must give the name of the database", true) ;
+        if ( getNumPositional() == 1 )
+        {
+            String dbToZap = getPositionalArg(0) ;
+            getModStore().setDbName(dbToZap) ;
+        }
+        else
+            cmdError("Must give the database name explicitly") ;
+        
+//        // Safety check
+//        if ( !contains("dbName") )
+//            cmdError("Must give the name of the database") ;
     }
     
     @Override
@@ -73,8 +77,11 @@ public class sdbformat extends CmdArgsDB
     @Override
     protected boolean exec1(String arg)
     {
-        System.err.println("Unexpected positional argument") ;
-        throw new TerminationException(99) ;
+        // caught in checkCommandLine to set early
+        exec0() ; 
+//        System.err.println("Unexpected positional argument") ;
+//        throw new TerminationException(99) ;
+        return false ;
     }
 }
 

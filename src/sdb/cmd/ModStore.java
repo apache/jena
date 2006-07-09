@@ -225,6 +225,18 @@ public class ModStore implements ArgModule
         return store ; 
     }
 
+    public StoreDesc getStoreDesc()
+    {
+        return storeDesc ;
+    }
+
+    public void setDbName(String dbName)
+    {
+        // used by truncate and format.
+        storeDesc.connDesc.name = dbName ;
+    }
+    
+    
     public DatasetStore getDataset()
     { 
         if ( dataset == null )
