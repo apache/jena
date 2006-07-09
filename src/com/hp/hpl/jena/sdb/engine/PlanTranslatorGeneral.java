@@ -47,6 +47,8 @@ public class PlanTranslatorGeneral implements PlanTranslator
         // Expand SELECT * etc.  Shouldn't this happen in QueryEngine.getPlan()?
         query.setResultVars() ;
         
+        PlanTranslator t = store.getPlanTranslator() ; 
+        
         PlanToSDB xform = new PlanToSDB(context, query, store, translateOptionals,translateConstraints) ;
         planElement = Transformer.transform(xform, planElement) ;
         planElement = modify(planElement) ;
