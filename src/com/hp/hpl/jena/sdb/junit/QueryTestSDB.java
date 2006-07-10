@@ -30,11 +30,16 @@ public class QueryTestSDB extends TestCase
     TestItem item ;
     private static Log log = LogFactory.getLog(QueryTestSDB.class) ; 
     
-    public QueryTestSDB(Store store, String testName, FileManager fileManager, TestItem item)
+    public QueryTestSDB(Store store, String testName, TestItem item)
     {
         super(testName) ;
         this.store = store ;
         this.item = item ;
+    }
+
+    public QueryTestSDB(Store store, String testName, FileManager fileManager, TestItem item)
+    {
+        this(store, testName, item) ;
     }
 
     // NB static.
