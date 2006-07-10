@@ -55,6 +55,9 @@ public class GenerateSQL implements SqlNodeVisitor
         {
             out.print(sep) ;
             sep = ", " ;
+            
+            if ( c.cdr() == null )
+                System.out.println(c) ;    
             out.print(c.cdr().asString()) ;
             out.print(" AS ") ;
             out.print(c.car().getName()) ;

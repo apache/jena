@@ -51,24 +51,24 @@ public class DevTest extends TestSuite
             QueryCompilerBasicPattern.printSQL = false ;
             GenerateSQL.outputAnnotations = false ;
         }
-        initHSQL_1() ;
+        initMySQL_1() ;
         loadTests() ;
     }
         
     private void loadTests()
     {
 //        test(store,
-//             SDBTest.testDirSDB+"General/general-1.rq",
+//             SDBTest.testDirSDB+"General/vars-2.rq",
 //             SDBTest.testDirSDB+"General/data.ttl") ;
 //        test(store,
 //             SDBTest.testDirSDB+"Expressions/regex-2.rq",
 //             SDBTest.testDirSDB+"Expressions/data.ttl") ;
-
         
         loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
-//        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
-//        loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ; 
-//        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
+        loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
     }
 
     private void loadManifest(String s)

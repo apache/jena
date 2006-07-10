@@ -87,10 +87,11 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
             x = block.getDefinedVars() ;
         for ( Var v : x )
         {
-            if ( v.isSystemVar() )
+            if ( ! v.isNamedVar() )
                 continue ;
             SqlColumn c = sqlNode.getScope().getColumnForVar(v) ;
-            cols.add(new Pair<Var, SqlColumn>(v, c)) ;
+            if ( c != null )
+                cols.add(new Pair<Var, SqlColumn>(v, c)) ;
         }
         return new SqlProject(sqlNode, cols) ;
     }

@@ -41,8 +41,14 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
             for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
             {
                 if ( ! first ) out.print(" ") ;
+                String a = "<null>" ;
+                String b = "<null>" ;
                 first = false ;
-                out.print(stringForNode(c.car().asNode())+"/"+c.cdr().asString()) ;
+                if ( c.car() != null )
+                    a = stringForNode(c.car().asNode()) ;
+                if ( c.cdr() != null )
+                    b = c.cdr().asString() ;
+                out.print(a+"/"+b) ;
             }
             out.println() ; 
         }

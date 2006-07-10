@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import static com.hp.hpl.jena.query.util.StringUtils.str ;
 
 public class Pair<A, B>
 {
@@ -20,8 +21,7 @@ public class Pair<A, B>
     public B cdr() { return b ; }
     
     @Override 
-    public String toString() { return "("+a.toString()+", "+b.toString()+")" ; }  
-    
+    public String toString() { return "("+str(a)+", "+str(b)+")" ; }  
 }
 
 /*

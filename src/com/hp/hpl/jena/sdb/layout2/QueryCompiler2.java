@@ -157,6 +157,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         sqlNode = extractResults(context, blockBGP.getDefinedVars(), sqlNode) ; 
         return sqlNode ;
     }
+    
     private SqlNode extractResults(CompileContext context,
                                    Collection<Var>vars, SqlNode sqlNode)
     {
@@ -164,6 +165,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         {
             SqlColumn c1 = sqlNode.getScope().getColumnForVar(v) ;
             if ( c1 == null )
+                // Variable not actually in results. 
                 continue ;
             
             SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
@@ -171,6 +173,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             SqlColumn c2 = new SqlColumn(nTable, "id") ;
             
             SqlExpr cond = new S_Equal(c1, c2) ;
+            // Remember var -> value column for project at end of compilation
             projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
             SqlNode n = QC.innerJoin(context, sqlNode, nTable) ;
             SqlNode r = new SqlRestrict(null, n, cond) ;
@@ -254,13 +257,13 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         return n ;
     }
     
-    private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, Set<Var> project)
+    private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, Set<Var> projectVars)
     {
         List<Pair<Var, SqlColumn>> projCol = new ArrayList<Pair<Var, SqlColumn>>() ;
         for ( Pair<Var, SqlColumn> p : cols )
         {
             // Not in the projection - skip 
-            if ( ! project.contains(p.getLeft()) )
+            if ( ! projectVars.contains(p.getLeft()) )
                 continue ;
             
             if ( ! NodeUtils.isApplicationVar(p.getLeft().asNode()) )
@@ -315,8 +318,8 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             for ( Var v : vars )
             {
                 String n = v.getName() ;
-                if ( v.isBlankNodeVar() )
-                    // Skip bNodes.
+                if ( ! v.isNamedVar() )
+                    // Skip bNodes and system variables
                     continue ;
                 
                 try {

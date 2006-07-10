@@ -57,8 +57,11 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
             java.sql.ResultSet rs = store.getConnection().execQuery(sqlStmt) ;
             Set<Var> x = block.getProjectVars() ;
             if ( x == null )
-                log.warn("Null for projection variables") ;
-            x = block.getDefinedVars() ;
+            {
+                // This happens when the query isn't a single SDB block. 
+                //log.warn("Null for projection variables") ;
+                x = block.getDefinedVars() ;
+            }
             if ( x == null )
                 log.warn("Null for defined variables") ;
             try {
@@ -115,6 +118,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         if ( ! sqlNode.isProject() )
             sqlNode = new SqlProject(sqlNode, null) ;
         
+        sqlNode.toString();
         sqlNode.visit(v) ;
         return buff.asString() ;
     }
