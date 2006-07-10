@@ -51,7 +51,7 @@ public class DevTest extends TestSuite
             QueryCompilerBasicPattern.printSQL = false ;
             GenerateSQL.outputAnnotations = false ;
         }
-        initMySQL_1() ;
+        initHSQL_2() ;
         loadTests() ;
     }
         
