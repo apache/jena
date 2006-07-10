@@ -32,7 +32,7 @@ public class StoreSimpleMySQL extends StoreBase
     public StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType, CodecSimple codec)
     {
         super(connection,
-              new PlanTranslatorGeneral(true, true),
+              new PlanTranslatorGeneral(true, false),
               new LoaderSimple(connection, codec), 
               new FormatterSimpleMySQL(connection, engineType),
               new QueryCompiler1(codec)) ;

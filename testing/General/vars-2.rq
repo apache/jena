@@ -1,0 +1,4 @@
+# Unreferenced variable in SELECT
+
+SELECT ?s ?z { ?s ?p ?o }
+

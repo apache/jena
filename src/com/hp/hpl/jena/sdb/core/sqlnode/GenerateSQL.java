@@ -31,7 +31,7 @@ public class GenerateSQL implements SqlNodeVisitor
     private IndentedWriter out ;
     int level = 0 ;
     SqlExprList remains = new SqlExprList() ;
-    private boolean doAnnotations = true ;
+    public static boolean outputAnnotations = true ;
     private static final int annotationColumn = 40 ;
     private static boolean commentSQLStyle = true ;
     
@@ -299,7 +299,7 @@ public class GenerateSQL implements SqlNodeVisitor
     // return true if annotation was output and it runs to end-of-line  
     private boolean annotate(Annotations sqlNode)
     {
-        if ( ! doAnnotations )
+        if ( ! outputAnnotations )
             return false ;
         
         boolean first = true ;

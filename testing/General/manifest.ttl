@@ -23,4 +23,13 @@
        [  mf:name   "General-5" ;
           mf:action [ qt:query <general-5.rq> ; qt:data <data.ttl> ] ;
        ]
+       [  mf:name   "Vars-1" ;
+          mf:action [ qt:query <vars-1.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name   "Vars-2" ;
+          mf:action [ qt:query <vars-2.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name   "Vars-3" ;
+          mf:action [ qt:query <vars-3.rq> ; qt:data <data.ttl> ] ;
+       ]
     ).

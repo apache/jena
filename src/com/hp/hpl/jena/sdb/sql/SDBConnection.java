@@ -45,6 +45,7 @@ public class SDBConnection
     // Make per-connection 
     public static boolean logSQLExceptions = false ;
     public static boolean logSQLStatements = false ;
+    public static boolean logSQLQueries    = false ;
 
     public SDBConnection(DataSource ds) throws SQLException
     {
@@ -90,7 +91,7 @@ public class SDBConnection
     
     public ResultSet execQuery(String sqlString) throws SQLException
     {
-        if ( logSQLStatements )
+        if ( logSQLStatements || logSQLQueries )
             log.info("execQuery\n\n"+sqlString+"\n") ;
         
         Connection conn = getSqlConnection() ;

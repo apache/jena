@@ -16,6 +16,7 @@ import arq.cmd.CmdUtils;
 import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
@@ -38,6 +39,7 @@ public class DevTest extends TestSuite
     }
 
     private Store store ;
+    private String extraLabel = ""; 
     
     private DevTest()
     {
@@ -45,32 +47,34 @@ public class DevTest extends TestSuite
         if ( true )
         {
             SDBConnection.logSQLExceptions = true ;
-            SDBConnection.logSQLStatements = false ;
+            SDBConnection.logSQLQueries = false ;
             QueryCompilerBasicPattern.printSQL = false ;
+            GenerateSQL.outputAnnotations = false ;
         }
-        initMySQL_2() ;
+        initHSQL_1() ;
         loadTests() ;
     }
         
     private void loadTests()
     {
-        test(store,
-             SDBTest.testDirSDB+"General/general-1.rq",
-             SDBTest.testDirSDB+"General/data.ttl") ;
-        test(store,
-             SDBTest.testDirSDB+"BasicPatterns/basic-1.rq",
-             SDBTest.testDirSDB+"Data/data.ttl") ;
+//        test(store,
+//             SDBTest.testDirSDB+"General/general-1.rq",
+//             SDBTest.testDirSDB+"General/data.ttl") ;
+//        test(store,
+//             SDBTest.testDirSDB+"Expressions/regex-2.rq",
+//             SDBTest.testDirSDB+"Expressions/data.ttl") ;
 
         
-//        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
 //        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
 //        loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ; 
+//        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
     }
 
     private void loadManifest(String s)
     {
         TestSuite ts = QueryTestSDBFactory.make(store, s) ; 
-        ts.setName(ts.getName()) ;
+        ts.setName(ts.getName()+extraLabel) ;
         addTest(ts) ;
     }
     
@@ -81,6 +85,7 @@ public class DevTest extends TestSuite
         store = new StoreSimpleHSQL(sdb) ;
         // Init.
         store.getTableFormatter().format() ;
+        extraLabel = "/HSQL 1" ;
     }
 
     private void initHSQL_2()
@@ -90,6 +95,7 @@ public class DevTest extends TestSuite
         store = new StoreTriplesNodesHSQL(sdb) ;
         // Init.
         store.getTableFormatter().format() ;
+        extraLabel = "/HSQL 2" ;
     }
     
     private void initMySQL_1()
@@ -97,6 +103,7 @@ public class DevTest extends TestSuite
         JDBC.loadDriverMySQL() ;
         SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
         store = new StoreSimpleMySQL(sdb) ;
+        extraLabel = "/MySQL 1" ;
     }
 
     private void initMySQL_2()
@@ -104,6 +111,7 @@ public class DevTest extends TestSuite
         JDBC.loadDriverMySQL() ;
         SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2", Access.getUser(), Access.getPassword()) ;
         store = new StoreTriplesNodesMySQL(sdb) ;
+        extraLabel = "/MySQL 2" ;
     }
     
     private void test(Store store, String queryFile, String dataFile) { test(store, null, queryFile, dataFile) ; }
@@ -111,7 +119,7 @@ public class DevTest extends TestSuite
     private void test(Store store, String testName, String queryFile, String dataFile)
     {
         if ( testName == null )
-            testName = "Test "+(++count) ;
+            testName = "Test "+(++count)+extraLabel ;
         
         TestItem testItem = new TestItem(testName, queryFile, dataFile, null) ;
         TestCase tc = new QueryTestSDB(store, testName, FileManager.get() , testItem) ;

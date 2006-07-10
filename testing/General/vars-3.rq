@@ -1,0 +1,3 @@
+# Blank node in query pattern
+
+SELECT * { ?s ?p _:b }
