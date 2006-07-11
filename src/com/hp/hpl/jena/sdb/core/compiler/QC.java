@@ -49,12 +49,17 @@ public class QC
             return right ; 
 
         SqlExprList conditions = new SqlExprList() ;
-
         
+        // Flatten some cases.
         if ( left.isRestrict() && joinType == JoinType.INNER )
         {
-            SqlRestrict r = left.getRestrict() ; 
-            left = removeRestrict(r, conditions) ;
+            SqlNode sub = left.getRestrict().getSubNode() ;
+            if ( sub.isTable() || 
+                 ( sub.isJoin() && sub.getJoin().getJoinType() == JoinType.INNER ) )
+            {
+                SqlRestrict r = left.getRestrict() ; 
+                left = removeRestrict(r, conditions) ;
+            }
         }
             
         if ( right.isRestrict() )

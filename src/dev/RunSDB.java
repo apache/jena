@@ -36,10 +36,13 @@ public class RunSDB
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     public static void main(String[]argv)
     {
+        SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
         //runQuery() ;
         runPrint() ;
         //runLoad() ;
+        
+        //runDump() ;
         //runScript() ;
         
         //runTest() ;
@@ -72,14 +75,14 @@ public class RunSDB
     public static void runPrint()
     {
         //String[] a = {"-v", "--layout=layout2", "@Q.rq"} ;
-        String[] a = {"-v", "--layout=layout1", "@Q.rq"} ;
+        String[] a = {"-v", "--layout=layout2", "@Q.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }
     
     public static void runCommand()
     {
-        String args[] = { "-v", "--sdb=sdb.ttl", "--layout=layout1", "--dbName=D", "--dbHost=sweb-sdb-1" } ; 
+        String args[] = { "-v", "--sdb=sdb-hsqldb.ttl", "tmp/SDB2"} ; 
         sdbformat.main(args) ;
         System.exit(0) ;
         
@@ -102,9 +105,15 @@ public class RunSDB
     
     public static void runLoad()
     {
-        String dir = "PerfTests/Nepomuk/" ;
-        String a[]= { "--sdb=sdb.ttl", "Data/data.ttl" } ;
+        String a[]= { "--sdb=sdb-hsqldb.ttl", "Data/data.ttl" } ;
         sdbload.main(a) ;
+        System.exit(0) ;
+    }
+    
+    public static void runDump()
+    {
+        String a[]= { "--sdb=sdb-hsqldb.ttl"} ;
+        sdbdump.main(a) ;
         System.exit(0) ;
     }
     

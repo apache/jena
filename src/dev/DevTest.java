@@ -64,11 +64,11 @@ public class DevTest extends TestSuite
 //             SDBTest.testDirSDB+"Expressions/regex-2.rq",
 //             SDBTest.testDirSDB+"Expressions/data.ttl") ;
         
-        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
-        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
+//        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
+//        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
         loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ;
-        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
-        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
+//        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
+//        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
     }
 
     private void loadManifest(String s)

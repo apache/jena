@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sdb.util.HSQLUtils;
 
 public class StoreBaseHSQL extends StoreBase
 {
-    protected boolean currentlyOpen = false ;
+    protected boolean currentlyOpen = true ;
     
     public StoreBaseHSQL(SDBConnection connection, 
                          PlanTranslator planTranslator,

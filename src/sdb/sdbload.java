@@ -114,7 +114,6 @@ public class sdbload extends CmdArgsDB
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
         }
         
-        getModStore().closedown() ;
         return true ;
     }
         

@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.util.Pair;
+import static com.hp.hpl.jena.query.util.StringUtils.str ;
 
 // This is not a general purpose SQL writer - it needs only work with the SQL node trees
 // that the schemas generate.  In particular:
@@ -51,13 +52,26 @@ public class GenerateSQL implements SqlNodeVisitor
             out.print("*") ;
         }
         
+        // Put common prefix on same line
+        String currentPrefix = null ; 
         for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
         {
             out.print(sep) ;
             sep = ", " ;
             
             if ( c.cdr() == null )
-                System.out.println(c) ;    
+                log.warn("Null SqlColumn for "+str(c.car())) ;    
+
+            // Var name formatting. 
+            String p = c.car().getName() ;
+            String x[] = p.split("\\"+SDBConstants.SQLmark) ;
+            p = x[0] ;
+            if ( currentPrefix != null && ! p.equals(currentPrefix) )
+            {
+                out.println() ;
+            }
+            currentPrefix = p ;
+            
             out.print(c.cdr().asString()) ;
             out.print(" AS ") ;
             out.print(c.car().getName()) ;

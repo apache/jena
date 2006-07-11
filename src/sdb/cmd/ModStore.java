@@ -91,6 +91,7 @@ public class ModStore implements ArgModule
     
     public ModStore()
     {
+        SDBConnection.logSQLExceptions = true ;
     }
     
     public void registerWith(CmdArgModule cmdLine)

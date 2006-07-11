@@ -6,12 +6,9 @@
 
 package sdb;
 
-import java.sql.SQLException;
-
 import sdb.cmd.CmdArgsDB;
 
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreFormatter;
 
@@ -57,20 +54,6 @@ public class sdbformat extends CmdArgsDB
         Store store = getModStore().getStore() ;
         StoreFormatter f = store.getTableFormatter() ; 
         f.format() ;
-        
-        //getStore().getTableFormatter().format() ;
-        // For hsql -- shutdown when finished
-        SDBConnection conn = getModStore().getConnection();
-        try
-		{
-			if (conn.getSqlConnection().getMetaData().getDatabaseProductName().contains("HSQL")) {
-				conn.execAny("SHUTDOWN COMPACT;");
-			}
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
     }
     
 

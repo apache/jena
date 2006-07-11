@@ -34,10 +34,7 @@ import com.hp.hpl.jena.sdb.core.compiler.QC;
 
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 public class QueryCompiler2 extends QueryCompilerTriplePattern
@@ -176,8 +173,17 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             // Remember var -> value column for project at end of compilation
             projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
             SqlNode n = QC.innerJoin(context, sqlNode, nTable) ;
-            SqlNode r = new SqlRestrict(null, n, cond) ;
-            sqlNode = r ;
+            if ( n instanceof SqlJoin )
+            {
+                // TODO Remove hack (and the mess in QC.join) - rewrite later. 
+                ((SqlJoin)n).addCondition(cond) ;
+                sqlNode = n ;
+            }
+            else
+            {
+                SqlNode r = new SqlRestrict(null, n, cond) ;
+                sqlNode = r ;
+            }
         }
         return sqlNode ;
     }
@@ -190,8 +196,6 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         // i.e. inline with basic block processing
         // Sort out out of scope/place issues
 
-        
-        // This looks like assignConditions in QueryCompilerBase.
         if ( constraints.size() == 0 )
             return sqlNode ;
 

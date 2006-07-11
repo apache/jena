@@ -129,7 +129,6 @@ public class PlanToSDB extends TransformCopy
 //                PlanFilter filter = c.getOriginal() ;
 //                ...            
             
-            
             if ( e instanceof PlanSDBMarker )
                 log.warn("PlanSDBMarker still present!") ;
             lastSDB = null ;
@@ -155,6 +154,9 @@ public class PlanToSDB extends TransformCopy
     @Override
     public PlanElement transform(PlanOptional planElt, PlanElement fixed, PlanElement optional)
     {
+        if ( ! translateOptionals )
+            return super.transform(planElt, fixed, optional) ;
+        
         if ( fixed instanceof PlanSDB && optional instanceof PlanSDB )
         {
             PlanSDB fixedSDB = (PlanSDB)fixed ;
