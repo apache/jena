@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sdb.core.compiler;
 
 import java.util.*;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
@@ -80,6 +82,10 @@ public class BlockBGP extends BlockBase
                 t = QueryEngineUtils.substituteIntoTriple(t, binding) ;
             block.add(t) ;
         }
+        
+        if ( constraints.size() > 0 )
+            LogFactory.getLog(BlockBGP.class).warn("Subsituting constraints not done.") ;
+        
         return block ;
     }
 

@@ -30,6 +30,9 @@ public class PlanSDBConstraint extends PlanSDBMarker
     public SDBConstraint get() { return constraint ; }
     public boolean isComplete() { return completeConstraint ; }
     public PlanFilter getOriginal() { return original ; }
+    
+    @Override
+    public String toString() { return "[PlanSDBConstraint "+original.getConstraint()+"]" ; }
 
 }
 
