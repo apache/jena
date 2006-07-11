@@ -44,10 +44,6 @@ public class BlockFunctions
                 constants.add(node) ;
         }
     }
-    
-    // ---- 
-    
-
 }
 
 /*

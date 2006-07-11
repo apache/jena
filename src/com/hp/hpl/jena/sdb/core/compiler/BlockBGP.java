@@ -72,7 +72,7 @@ public class BlockBGP extends BlockBase
     }
 
     @Override
-    public BlockBase substit(Binding binding)
+    protected BlockBase substit(Binding binding)
     {
         BlockBGP block = new BlockBGP() ;
         
@@ -83,8 +83,11 @@ public class BlockBGP extends BlockBase
             block.add(t) ;
         }
         
-        if ( constraints.size() > 0 )
-            LogFactory.getLog(BlockBGP.class).warn("Subsituting constraints not done.") ;
+        
+        for ( SDBConstraint c : constraints )
+        {
+            LogFactory.getLog(BlockBGP.class).warn("Subsituting constraint not done: "+c) ;
+        }
         
         return block ;
     }
