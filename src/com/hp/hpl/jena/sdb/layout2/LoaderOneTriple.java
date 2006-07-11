@@ -26,7 +26,6 @@ public class LoaderOneTriple
     implements StoreLoader
 {
     // Not used - a loader that does one triple directly.
-    // The bulk loader using a temporary table is far better. 
     private static Log log = LogFactory.getLog(LoaderOneTriple.class);
     private static final String classShortName = Utils.classShortName(LoaderOneTriple.class)  ;
     
@@ -121,19 +120,6 @@ public class LoaderOneTriple
     private static int getIndex(SDBConnection conn, Node node, boolean create) throws SQLException
     {
         try {
-            // Old - remove if the reorg is working
-//            int typeId  = TableNodes.nodeToType(node) ;
-//            String lex  = TableNodes.nodeToLex(node) ;
-//            String lang = TableNodes.nodeToLang(node) ;
-//            String datatype = "" ;
-//            if ( node.isLiteral() )
-//            {
-//                String x = node.getLiteralDatatypeURI() ;
-//                if ( x != null )
-//                    datatype = x ;
-//            }
-//            
-//            long hash = Hash.hash( lex, lang, datatype, typeId) ;
             long hash = NodeLayout2.hash(node) ;
             String lex  = NodeLayout2.nodeToLex(node) ;
             String hashStr = Long.toString(hash) ;

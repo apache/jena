@@ -17,15 +17,17 @@ import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
+import com.hp.hpl.jena.sdb.layout2.*;
 import com.hp.hpl.jena.sdb.sql.JDBC;
+import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreBase;
 import com.hp.hpl.jena.sdb.test.SDBTest;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -51,7 +53,7 @@ public class DevTest extends TestSuite
             QueryCompilerBasicPattern.printSQL = false ;
             GenerateSQL.outputAnnotations = false ;
         }
-        initHSQL_2() ;
+        initMySQL_2() ;
         loadTests() ;
     }
         
@@ -64,11 +66,11 @@ public class DevTest extends TestSuite
 //             SDBTest.testDirSDB+"Expressions/regex-2.rq",
 //             SDBTest.testDirSDB+"Expressions/data.ttl") ;
         
-//        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
-//        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
+        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
         loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ;
-//        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
-//        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
     }
 
     private void loadManifest(String s)
@@ -92,7 +94,16 @@ public class DevTest extends TestSuite
     {
         JDBC.loadDriverHSQL() ;
         SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
-        store = new StoreTriplesNodesHSQL(sdb) ;
+        
+        //store = new StoreTriplesNodesHSQL(sdb) ;
+        // Layout 2 loader is misbehaving ..
+        System.err.println("Using BFI loader for layout2") ;
+        store = new StoreBase(sdb,
+                              new PlanTranslatorGeneral(false, false),
+                              new LoaderOneTriple(sdb),
+                              new FmtLayout2HSQL(sdb),
+                              new QueryCompiler2()) ;
+        
         // Init.
         store.getTableFormatter().format() ;
         extraLabel = "/HSQL 2" ;
@@ -110,7 +121,13 @@ public class DevTest extends TestSuite
     {
         JDBC.loadDriverMySQL() ;
         SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2", Access.getUser(), Access.getPassword()) ;
-        store = new StoreTriplesNodesMySQL(sdb) ;
+        //store = new StoreTriplesNodesMySQL(sdb) ;
+        System.err.println("Using BFI loader for layout2") ;
+        store = new StoreBase(sdb,
+                              new PlanTranslatorGeneral(true, true),
+                              new LoaderOneTriple(sdb),
+                              new FmtLayout2MySQL(sdb, MySQLEngineType.MyISAM),
+                              new QueryCompiler2()) ;
         extraLabel = "/MySQL 2" ;
     }
     

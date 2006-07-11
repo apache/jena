@@ -2,6 +2,5 @@ PREFIX : <http://example/>
 
 SELECT * WHERE
 { 
-    ?x :p 1 .
-    OPTIONAL { ?x :q1 ?v }
+  ?s ?p ?o
 }

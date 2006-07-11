@@ -76,7 +76,13 @@ public class NodeLayout2
     public static long hash(Node n)
     {
         // Get the bits and pieces for a value
-        String lexForm = (n.isURI()) ? n.getURI() : n.getLiteralLexicalForm() ;
+        String lexForm = null ; 
+        
+        if ( n.isURI() )           lexForm = n.getURI() ;
+        else if ( n.isLiteral() )  lexForm = n.getLiteralLexicalForm() ;
+        else if ( n.isBlank() )    lexForm = n.getBlankNodeLabel() ;
+        else throw new SDBException("Attempt to hash a variable") ;
+                         
         String datatypeStr = null ;
         if ( n.isLiteral() )
             datatypeStr = n.getLiteralDatatypeURI() ;
