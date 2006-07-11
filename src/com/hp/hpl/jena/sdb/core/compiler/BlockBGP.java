@@ -86,7 +86,7 @@ public class BlockBGP extends BlockBase
         
         for ( SDBConstraint c : constraints )
         {
-            LogFactory.getLog(BlockBGP.class).warn("Subsituting constraint not done: "+c) ;
+            LogFactory.getLog(BlockBGP.class).warn("Substituting constraint not done: "+c) ;
         }
         
         return block ;
