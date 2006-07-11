@@ -62,7 +62,7 @@ public interface RDFNode extends FrontsNode
     public boolean isLiteral();
     
     /** 
-        Answer true iff this RDFNode is an anonynous resource. Useful for
+        Answer true iff this RDFNode is an named resource. Useful for
         one-off tests: see also visitWith() for making literal/anon/URI choices.
     */
     public boolean isURIResource();
