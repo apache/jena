@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Graph.java,v 1.27 2006-03-22 13:52:54 andy_seaborne Exp $
+  $Id: Graph.java,v 1.28 2006-07-12 13:22:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -131,7 +131,11 @@ public interface Graph  extends GraphAdd
      */
 	 int size();
 
-}
+    /**
+        Answer true iff .close() has been called onn this Graph.
+    */
+    boolean isClosed();
+    }
 
 /*
     (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPolyadicPrefixMapping.java,v 1.6 2006-03-22 13:53:36 andy_seaborne Exp $
+  $Id: TestPolyadicPrefixMapping.java,v 1.7 2006-07-12 13:22:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -100,6 +100,13 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
         assertEquals( null, poly.getPrefixMapping().getNsURIPrefix( imported ) );
         }
     
+    public void testPolyDoesntSeeImportedDefaultPrefix()
+        {
+        String imported = "http://imported#";
+        g1.getPrefixMapping().setNsPrefix( "", imported );
+        assertEquals( null, poly.getPrefixMapping().getNsPrefixURI( "" ) );
+        }
+
     }
 
 /*

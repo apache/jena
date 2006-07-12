@@ -2,6 +2,22 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+Model
+    o Model has acquired a new method isClosed(), true iff the model has
+      been .close()d
+      
+    o Graph ditto
+    
+    o The built-in Graph and Model implementations have been modified to 
+      implement this method.
+      
+OntModel
+    o the prefix mapping of an OntModel will not offer as a default URI
+      the default URI of any non-base component.
+      
+    o this change is implemented via Polyadic and hence any MultiUnion
+      will have this behaviour.
+
 Reasoners
    o fixed bug in duplicate removal in GenericRuleReasoner in pure backward mode
    

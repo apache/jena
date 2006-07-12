@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.13 2006-03-22 13:53:24 andy_seaborne Exp $
+  $Id: AbstractTestModel.java,v 1.14 2006-07-12 13:22:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -174,6 +174,14 @@ public abstract class AbstractTestModel extends ModelTestBase
 	            }
 	    }
 	
+    public void testIsClosedDelegatedToGraph()
+        {
+        Model m = getModel();
+        assertFalse( m.isClosed() );
+        m.close();
+        assertTrue( m.isClosed() );
+        }
+    
 	protected Model copy( Model m )
 	    {
 	    return ModelFactory.createDefaultModel().add( m );

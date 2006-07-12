@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.41 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: GraphBase.java,v 1.42 2006-07-12 13:22:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -67,6 +67,9 @@ public abstract class GraphBase implements GraphWithPerform
     public void close() 
         { closed = true;
         if (reifier != null) reifier.close(); }
+    
+    public boolean isClosed()
+        { return closed; }
             
     /**
          Default implemenentation answers <code>true</code> iff this graph is the

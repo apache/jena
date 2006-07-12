@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.113 2006-04-21 11:34:20 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.114 2006-07-12 13:22:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -1171,6 +1171,9 @@ public class ModelCom
 
     public void close() 
         { graph.close(); }
+    
+    public boolean isClosed()
+        { return graph.isClosed(); }
     
     public boolean supportsSetOperations() 
         {return true;}

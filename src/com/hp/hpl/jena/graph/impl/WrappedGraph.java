@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedGraph.java,v 1.12 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: WrappedGraph.java,v 1.13 2006-07-12 13:22:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -81,6 +81,9 @@ public class WrappedGraph implements GraphWithPerform
 
     public void close()
         { base.close(); }
+    
+    public boolean isClosed()
+        { return base.isClosed(); }
 
     public boolean isEmpty()
         { return base.isEmpty(); }

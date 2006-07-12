@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.62 2006-03-22 13:53:12 andy_seaborne Exp $
+  $Id: Model.java,v 1.63 2006-07-12 13:22:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.62 $Date: 2005/10/29 08:30:51 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.63 $Date: 2006/03/22 13:53:12 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -961,6 +961,11 @@ public interface Model
     */
     public Model removeAll( Resource s, Property p, RDFNode r );
 
+    /**
+        Answer true iff .close() has been called on this Model.
+    */
+    public boolean isClosed();
+
 }
 
 /*
@@ -988,5 +993,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.62 2006-03-22 13:53:12 andy_seaborne Exp $
+ * $Id: Model.java,v 1.63 2006-07-12 13:22:45 chris-dollin Exp $
  */
