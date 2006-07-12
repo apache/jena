@@ -13,25 +13,13 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.plan.TransformCopy;
-import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
-import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
-import com.hp.hpl.jena.query.engine1.plan.PlanOptional;
+import com.hp.hpl.jena.query.engine1.plan.*;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.CollectionUtils;
 import com.hp.hpl.jena.query.util.Context;
-import com.hp.hpl.jena.sdb.condition.C_Regex;
-import com.hp.hpl.jena.sdb.condition.C_Var;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.BlockOptional;
-import com.hp.hpl.jena.sdb.exprmatch.Action;
-import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
-import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
-import com.hp.hpl.jena.sdb.exprmatch.MapResult;
 import com.hp.hpl.jena.sdb.store.Store;
 
 
@@ -170,67 +158,18 @@ public class PlanToSDB extends TransformCopy
         return super.transform(planElt, fixed, optional) ;
     }
     
-    // -------- Constraints
-    
-    // --- regex : testing a term (in a variable)
-    private static ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
-    
-    private static ExprPattern regex2 = new ExprPattern("regex(?a1, ?a2, 'i')",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
-    // --- regex : testing the lexical form of a term (in a variable)
-    private static ExprPattern regex3 = new ExprPattern("regex(str(?a1), ?a2)",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
-    private static ExprPattern regex4 = new ExprPattern("regex(str(?a1), ?a2, 'i')",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
-    
-    // --- starts-with
-    private static ExprPattern startsWith1 = new ExprPattern("fn:starts-with(?a1, ?a2)",
-                                                             new String[]{ "a1" , "a2" },
-                                                             new Action[]{ new ActionMatchVar() ,
-                                                                           new ActionMatchString()}) ;
 
-    private static ExprPattern startsWith2 = new ExprPattern("fn:starts-with(str(?a1), ?a2)",
-                                                             new String[]{ "a1" , "a2" },
-                                                             new Action[]{ new ActionMatchVar() ,
-                                                                           new ActionMatchString()}) ;
     private PlanSDBConstraint transformFilter(PlanFilter planElt)
     {
         if ( ! translateConstraints )
             return null ;
         
         Expr expr = planElt.getConstraint().getExpr() ; 
-        MapResult rMap = null ;
-        
-        if ( (rMap = regex1.match(expr)) != null )
-        {
-            //log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            // TODO - think about need for the C_ parallel class hierarchy of constraints
-            Var var = new Var(rMap.get("a1").getVar()) ;
-            String pattern = rMap.get("a2").getConstant().getString() ;
-            SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
-            // IsNotNull AND ...
-            // I am not perfect ...
-            return new PlanSDBConstraint(c, planElt, true) ; 
-        }
-        
-        if ( (rMap = startsWith1.match(expr)) != null )
-        {
-            log.info("startsWith - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            Var var = new Var(rMap.get("a1").getVar()) ;
-            String pattern = rMap.get("a2").getConstant().getString() ;
-            
-            // becomes; isNotNull(var) AND var LIKE 'pattern%'
-        }
-        return null ;
+        // TODO Make this a feature of the store.
+        ConditionCompiler cc = new ConditionCompiler() ;
+        PlanSDBConstraint psc = cc.match(planElt) ;
+        // Maybe null (not recognized)
+        return psc ;
     }
  
     

@@ -8,6 +8,9 @@ package com.hp.hpl.jena.sdb.condition;
 
 import java.util.Collection;
 
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.Symbol;
@@ -54,6 +57,13 @@ public abstract class SDBConstraintBase implements SDBConstraint
     {
         SDBConstraintVisitor visitor = new VarsMentionVisitor(acc) ;
         this.visit(visitor) ;
+    }
+    
+
+    public SDBConstraint substitue(Binding binding)
+    {
+        LogFactory.getLog(SDBConstraintBase.class).warn("substitution glossed over") ;
+        return this ;
     }
 }
 

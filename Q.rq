@@ -2,5 +2,5 @@ PREFIX : <http://example/>
 
 SELECT * WHERE
 { 
-  ?s ?p ?o
+  ?s ?p ?o . FILTER regex(?o, "%a%" )
 }

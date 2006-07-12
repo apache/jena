@@ -18,6 +18,7 @@ import com.hp.hpl.jena.db.impl.IRDBDriver;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.query.core.BindingRoot;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.PlanFormatter;
 import com.hp.hpl.jena.query.engine1.PlanVisitorBase;
@@ -309,8 +310,10 @@ public class sdbprint extends CmdArgModule
                     QueryCompilerBasicPattern.printAbstractSQL = true ;
                     QueryCompilerBasicPattern.printDivider = divider ;
                 }
-                
+                // Mimic what the QueryIterSDB/QueryCompilerBasicPattern does.
                 Block block = planSDB.getBlock() ;
+                block = block.substitute(new BindingRoot());
+                
                 String sqlStmt = store.getQueryCompiler().asSQL(block) ;
                 System.out.println(sqlStmt) ;
             }

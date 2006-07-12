@@ -48,7 +48,7 @@ public class BlockOptional extends BlockBase
     }
     
     @Override
-    protected BlockBase substit(Binding binding)
+    protected BlockBase replace(Binding binding)
     {
         return new BlockOptional(left.substitute(binding),
                                  right.substitute(binding)) ;

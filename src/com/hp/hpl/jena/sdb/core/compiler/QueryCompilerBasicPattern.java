@@ -53,6 +53,8 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
                                        ExecutionContext execCxt)
     {
         String sqlStmt = asSQL(block) ;
+        // Some way to print this out for debugging?
+        
         try {
             java.sql.ResultSet rs = store.getConnection().execQuery(sqlStmt) ;
             Set<Var> x = block.getProjectVars() ;
@@ -82,7 +84,6 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         CompileContext context = new CompileContext() ;
 
         // A chance for subclasses to change the block structure (including insert their own block types)
-        // TODO Better done in translation phase so done once?
         block = modify(block) ;
 
         if ( block == null )
@@ -144,17 +145,6 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         SqlNode sqlNode = QC.leftJoin(context, fixedNode, optNode) ;
         return sqlNode ;
     }
-    
-//    public ConditionCompiler getConditionCompiler()
-//    {
-//        // TODO ConditionCompiler - redundant??
-//        // Anything not null will cause the fixed algorithm to be used
-//        return new ConditionCompiler(){
-//            public CompiledConstraint compile(Constraint constraint)
-//            {
-//                return null ;
-//            }} ; 
-//    }
     
     static private void verbose(boolean flag, Object thing)
     {

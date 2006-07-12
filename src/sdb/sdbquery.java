@@ -128,6 +128,8 @@ public class sdbquery extends CmdArgsDB
     
     protected void execQuery(String queryStr)
     {
+        // Force setup
+        getModStore().getStore() ;
         if ( modTime.timingEnabled() )
         {
             // Setup costs : fluish classes into memory and establish connection

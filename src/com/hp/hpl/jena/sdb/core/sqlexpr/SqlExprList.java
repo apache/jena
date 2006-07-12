@@ -10,7 +10,6 @@ import java.util.ArrayList ;
 
 public class SqlExprList extends ArrayList<SqlExpr>
 {
-    // TODO Just use AND?
     public SqlExprList() { super() ; }
     public SqlExprList(SqlExprList cl2) { super(cl2) ; }
 }

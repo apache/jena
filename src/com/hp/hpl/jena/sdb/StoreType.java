@@ -12,7 +12,6 @@ import com.hp.hpl.jena.query.util.TranslationTable;
 
 public class StoreType extends Symbol
 {
-    //TODO Design AND finish
     // Need :: layout + database type + options
     // Maybe connection+database+options => instance ;; instant+layout => store 
     

@@ -67,6 +67,7 @@ public class RS
         for ( int i = 1; i <= rsmd.getColumnCount() ; i++)
         {
             if ( i != 1 )
+                out.print(" | ") ;
             fmt(out, rsmd.getColumnLabel(i), colWidths[i]) ;
         }
         out.print(" |") ;

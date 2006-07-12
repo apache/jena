@@ -30,7 +30,7 @@ public abstract class BlockBase implements Block
     final
     public Block substitute(Binding binding)
     {
-        BlockBase block = substit(binding) ;
+        BlockBase block = replace(binding) ;
         if ( projectVars != null )
         {
             block.projectVars = new LinkedHashSet<Var>() ;
@@ -39,7 +39,7 @@ public abstract class BlockBase implements Block
         return block ; 
     }
     
-    protected abstract BlockBase substit(Binding binding) ;
+    protected abstract BlockBase replace(Binding binding) ;
 
     
     @Override

@@ -46,33 +46,34 @@ public class DevTest extends TestSuite
     private DevTest()
     {
         super("SDB - Dev test") ;
-        if ( true )
-        {
-            SDBConnection.logSQLExceptions = true ;
-            SDBConnection.logSQLQueries = false ;
-            QueryCompilerBasicPattern.printAbstractSQL = true ;
-            QueryCompilerBasicPattern.printSQL = false ;
-            GenerateSQL.outputAnnotations = true ;
-        }
         initMySQL_2() ;
         loadTests() ;
     }
         
     private void loadTests()
     {
+        if ( true )
+        {
+            SDBConnection.logSQLExceptions = true ;
+            SDBConnection.logSQLQueries = false ;
+            QueryCompilerBasicPattern.printAbstractSQL = false ;
+            QueryCompilerBasicPattern.printSQL = false ;
+            GenerateSQL.outputAnnotations = true ;
+        }
+
 //        test(store,
 //             SDBTest.testDirSDB+"General/vars-2.rq",
 //             SDBTest.testDirSDB+"General/data.ttl") ;
-        QueryCompilerBasicPattern.printSQL = true ;
-        test(store,
-             SDBTest.testDirSDB+"Expressions/regex-1.rq",
-             SDBTest.testDirSDB+"Expressions/data.ttl") ;
+        //QueryCompilerBasicPattern.printSQL = true ;
+//        test(store,
+//             SDBTest.testDirSDB+"Expressions/regex-1.rq",
+//             SDBTest.testDirSDB+"Expressions/data.ttl") ;
         
-//        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
-//        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
-//        loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ;
-//        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
-//        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
+        loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
+        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
     }
 
     private void loadManifest(String s)

@@ -19,7 +19,6 @@ public interface StoreLoader
 	public void setChunkSize(int chunks);
 	public int  getChunkSize();
 
-    // TODO Maybe these should be part of the implementation
     public void setUseThreading(boolean useThreading);
     public boolean getUseThreading();
     

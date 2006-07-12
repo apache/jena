@@ -59,9 +59,6 @@ public class RunRDB
     @SuppressWarnings("deprecation")
     public static void main(String[]argv)
     {
-        // TODO to get ModelRDB working
-        // SQL utils: SQLUtils.getCell(table, keyColName, keyColValue, valueColName)  
-
         try
         {
  
@@ -78,7 +75,6 @@ public class RunRDB
             
         } catch (Exception e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             System.exit(1) ;
         }

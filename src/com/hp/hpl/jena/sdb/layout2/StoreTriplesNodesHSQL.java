@@ -21,7 +21,7 @@ public class StoreTriplesNodesHSQL extends StoreBaseHSQL
     
     public StoreTriplesNodesHSQL(SDBConnection connection, MySQLEngineType tableType)
     {
-        // TODO Fix SQL generation so LHS of LEFT JOIN is legal HSQL syntax 
+        // HSQL can't handle complex RHS of a left join so no optional spotting. 
         super(connection,
               new PlanTranslatorGeneral(false, false),
               new LoaderHSQL(connection),

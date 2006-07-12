@@ -46,7 +46,7 @@ public class RunSDB
         //runScript() ;
         
         //runTest() ;
-        //runCommand() ;
+        //runSQL() ;
         //runCode() ;
         //runConf() ;
         //runTestManifest() ;
@@ -80,27 +80,12 @@ public class RunSDB
         System.exit(0) ;
     }
     
-    public static void runCommand()
+    public static void runSQL()
     {
-        String args[] = { "-v", "--sdb=sdb-hsqldb.ttl", "tmp/SDB2"} ; 
-        sdbformat.main(args) ;
+        String args[] = { "--sdb=sdb.ttl", "--file=S" } ; 
+        sdbsql.main(args) ;
         System.exit(0) ;
         
-        //String DB= "brainz" ;
-        String DB="sdb2" ;
-//        String a[] = {"--dbtype=mySQL",
-//            "--dbHost=localhost", "--dbName=SDB2",
-//            "--schema=schema2",
-//            "-v",
-//        } ;
-        
-        // The database is protected in other ways than user/password
-        String a[] = {"--debug", "--sdb=sdb.ttl"} ;
-      
-        SDBConnection.logSQLStatements = false ;
-        SDBConnection.logSQLExceptions = true ;
-        sdbinfo.main(a) ;
-        System.exit(0) ;
     }
     
     public static void runLoad()

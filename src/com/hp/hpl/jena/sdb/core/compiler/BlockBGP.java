@@ -8,8 +8,6 @@ package com.hp.hpl.jena.sdb.core.compiler;
 
 import java.util.*;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
@@ -72,7 +70,7 @@ public class BlockBGP extends BlockBase
     }
 
     @Override
-    protected BlockBase substit(Binding binding)
+    protected BlockBase replace(Binding binding)
     {
         BlockBGP block = new BlockBGP() ;
         
@@ -82,12 +80,15 @@ public class BlockBGP extends BlockBase
                 t = QueryEngineUtils.substituteIntoTriple(t, binding) ;
             block.add(t) ;
         }
+
+      for ( SDBConstraint c : constraints )
+          block.add(c) ;
         
         
-        for ( SDBConstraint c : constraints )
-        {
-            LogFactory.getLog(BlockBGP.class).warn("Substituting constraint not done: "+c) ;
-        }
+//        for ( SDBConstraint c : constraints )
+//        {
+//            c.substitue(binding) ;
+//        }
         
         return block ;
     }
@@ -96,29 +97,6 @@ public class BlockBGP extends BlockBase
     {
         out.print("(BlockBGP") ;
         out.incIndent() ;   // Inc-1
-//        out.print("(Vars") ;
-//        for ( Var var : patternVars )
-//        {
-//            out.print(" ") ;
-//            out.print(var.toString()) ;
-//        }
-//        
-//        if ( patternVars.size() == 0 )
-//            out.print("(<no vars>") ;
-//        out.print(")") ;
-//        
-//        if ( projectVars != null )
-//        {
-//            String sep = "" ;
-//            out.print(" [") ;
-//            for ( Var var : projectVars )
-//            {
-//                out.print(sep) ;
-//                sep = " "; 
-//                out.print(var.toString()) ;
-//            }
-//            out.print("]") ;
-//        }
 
         for ( Triple t : triples )
         {

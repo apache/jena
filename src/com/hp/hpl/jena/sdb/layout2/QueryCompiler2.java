@@ -41,8 +41,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
 {
     private static Log log = LogFactory.getLog(QueryCompiler2.class) ;
     
-    // TODO Parallel execution.
-    // Compiler factory per Store?
+    // TODO Check for parallel execution.
     private Map<Node, SqlColumn> constantCols = null ;
     private ArrayList<Pair<Var, SqlColumn>> projectVarCols = null ;
     
@@ -150,7 +149,6 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                                      SqlNode sqlNode, BlockBGP blockBGP)
     {
         sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
-        // TODO Improve - extract less variables
         sqlNode = extractResults(context, blockBGP.getDefinedVars(), sqlNode) ; 
         return sqlNode ;
     }
@@ -170,12 +168,11 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             SqlColumn c2 = new SqlColumn(nTable, "id") ;
             
             SqlExpr cond = new S_Equal(c1, c2) ;
-            // Remember var -> value column for project at end of compilation
+            // TODO Maninatin value scopes and id scopes separately.
             projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
             SqlNode n = QC.innerJoin(context, sqlNode, nTable) ;
             if ( n instanceof SqlJoin )
             {
-                // TODO Remove hack (and the mess in QC.join) - rewrite later. 
                 ((SqlJoin)n).addCondition(cond) ;
                 sqlNode = n ;
             }
@@ -192,17 +189,13 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                                     SqlNode sqlNode,
                                     List<SDBConstraint> constraints)
     {
-        // TODO Place restriction in best place.
-        // i.e. inline with basic block processing
-        // Sort out out of scope/place issues
-
         if ( constraints.size() == 0 )
             return sqlNode ;
 
         // 1/ Get the val columns
         // 2/ Generate the SQL conditions
         
-        SqlExprList cList = new SqlExprList() ;
+        //SqlExprList cList = new SqlExprList() ;
         for ( SDBConstraint c : constraints )
         {
             List<Var> acc = new ArrayList<Var>() ;
@@ -218,22 +211,31 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                 }
                 // ASSUME lexical/string form needed 
                 SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+                SqlColumn colId = new SqlColumn(nTable, "id") ;
+                SqlColumn colLex = new SqlColumn(nTable, "lex") ;
+                SqlColumn colType = new SqlColumn(nTable, "type") ;
+                
+                ScopeBase s = new ScopeBase() ;
+                s.setColumnForVar(v, colLex) ;          // Value scope
+                nTable.setColumnForVar(v, colId) ;      // Id scope
+                
+                
+                SqlExprList l = new SqlExprList() ;
+                {
+                    SqlExpr e1 = c.asSqlExpr(s) ;
+                    e1.addNote(c.toString()) ;
+                    
+                    SqlExpr e2 = new S_Equal(colType, new SqlConstant(ValueType.STRING.getTypeId())) ;
+                    l.add(e1) ;
+                    l.add(e2) ;
+                }
+                SqlNode r = new SqlRestrict(nTable, l) ;
+
                 // Slurp the value up.
-                sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
-                // TODO Need to know the value type.
-                SqlColumn vCol = new SqlColumn(nTable, "lex") ;
-                // Record it
-                nTable.setColumnForVar(v, vCol) ;
+                sqlNode = QC.innerJoin(context, sqlNode, r) ;
             }
         }
-        // valContext is now all the required values.
-        SqlExprList exprs = new SqlExprList() ;
-        for ( SDBConstraint c : constraints )
-        {
-            SqlExpr e = c.asSqlExpr(sqlNode.getScope()) ;
-            exprs.add(e) ;
-        }
-        sqlNode = new SqlRestrict(/*context.allocAlias("R")*/null, sqlNode, exprs) ;
+        
         return sqlNode ;
     }
 
@@ -274,7 +276,6 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                 // Skip blank node variables and system variables.
                 continue ;
             
-            // TODO Check this - use of Node here is odd
             String n = p.car().getName() ;
             Var vLex = new Var(n+"$lex") ;
             SqlColumn cLex = new SqlColumn(p.cdr().getTable(), "lex") ;

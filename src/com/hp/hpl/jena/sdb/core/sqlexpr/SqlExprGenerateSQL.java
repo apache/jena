@@ -42,11 +42,10 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
     public void visit(S_Regex regex)
     {
         // Err ... need to choose bewteen regex and LIKE
-        // TODO This code assumes a LIKE string.
 
         regex.getExpr().visit(this) ;
         // MySQL :: LIKE // LIKE BINARY
-        out.print(" LIKE ") ;
+        out.print(" REGEXP ") ;
         out.print(SQLUtils.quote(regex.getPattern())) ;
         
         

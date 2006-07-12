@@ -58,9 +58,6 @@ public class PrefixMappingSDB extends PrefixMappingImpl
           )
      */
     
-    // TODO A read-through version which has no caching
-    // Chnage to get() and set()
-    
     SDBConnection connection = null ; 
     
     public PrefixMappingSDB(SDBConnection sdb)
