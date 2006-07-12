@@ -6,19 +6,21 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -37,12 +39,15 @@ public abstract class LoaderTriplesNodes
     private boolean initialized = false ;
 
     Thread commitThread = null ;
-    PreparedTriple flushSignal = new PreparedTriple();
+    final static PreparedTriple flushSignal = new PreparedTriple();
+    final static PreparedTriple finishSignal = new PreparedTriple();
     boolean threading = true;
     ArrayBlockingQueue<PreparedTriple> queue ;
+    AtomicReference<Throwable> threadException ;
+    AtomicBoolean threadFlushing ;
     
     int count;
-    int chunkSize = 10000;
+    int chunkSize = 20000;
     
     private boolean autoCommit ;                    // State of the connection
     protected PreparedStatement insertTripleLoaderTable;
@@ -59,6 +64,27 @@ public abstract class LoaderTriplesNodes
         super(connection) ;
     }
     
+    /**
+     * Close this loader and finish the thread (if required)
+     *
+     */
+    public void close()
+    {
+    	if (threading)
+    	{
+    		try {
+				queue.put(finishSignal);
+				while (commitThread.isAlive()) Thread.sleep(100);
+			} catch (InterruptedException e) {
+				throw new SDBException("Problem sending finish signal", e);
+			}
+			queue = null;
+			commitThread = null;
+    	}
+    	
+    	initialized = false;
+    }
+    
     public void startBulkLoad()
     {
         init() ;
@@ -72,7 +98,7 @@ public abstract class LoaderTriplesNodes
                 connection().getSqlConnection().setAutoCommit(false) ;
         }
         catch (SQLException ex)
-        { throw new SDBExceptionSQL("Failed to set auto committ state", ex) ; }
+        { throw new SDBExceptionSQL("Failed to set auto commit state", ex) ; }
     }
     
     public void finishBulkLoad()
@@ -99,6 +125,8 @@ public abstract class LoaderTriplesNodes
         if (threading)
         {
             queue = new ArrayBlockingQueue<PreparedTriple>(chunkSize);
+            threadException = new AtomicReference<Throwable>();
+            threadFlushing = new AtomicBoolean();
             commitThread = new Thread(new Commiter());
             commitThread.start();
             log.info("Threading");
@@ -120,7 +148,7 @@ public abstract class LoaderTriplesNodes
         if (threading)
         {
             if (!commitThread.isAlive())
-                log.warn("Loader thread has died");
+                throw new SDBException("Thread is dead");
             else
                 try
                 {
@@ -128,40 +156,38 @@ public abstract class LoaderTriplesNodes
                 }
                 catch (InterruptedException e)
                 {
-                    e.printStackTrace();
+                    throw new SDBException("Issue adding to queue", e);
                 }
-        }
-        else
-            addOneTriple(pTriple);
+                
+            if (threadException.get() != null)
+            {
+            	Throwable e = threadException.getAndSet(null);
+            	e.printStackTrace();
+            	throw new SDBException("Loader thread exception", e);
+            }
+        } else
+			try {
+				addOneTriple(pTriple);
+			} catch (SQLException e) {
+				throw new SDBExceptionSQL("Problem adding triple", e);
+			}
     }
 
     // Queue up a triple, committing if we have enough chunks
-    private void addOneTriple(PreparedTriple triple)
+    private void addOneTriple(PreparedTriple triple) throws SQLException
     {
-        try
-        {
-            count++;
-            addToInsert(insertNodeLoaderTable, triple.subject);
-            addToInsert(insertNodeLoaderTable, triple.predicate);
-            addToInsert(insertNodeLoaderTable, triple.object);
-            
-            insertTripleLoaderTable.setLong(1, triple.subject.hash);
-            insertTripleLoaderTable.setLong(2, triple.predicate.hash);
-            insertTripleLoaderTable.setLong(3, triple.object.hash);
-            insertTripleLoaderTable.addBatch();
-            
-            if (count >= chunkSize)
-                commitTriples();
-        }
-        catch (BatchUpdateException e)
-        {
-            e.printStackTrace();
-            e.getNextException().printStackTrace();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+    	count++;
+    	addToInsert(insertNodeLoaderTable, triple.subject);
+    	addToInsert(insertNodeLoaderTable, triple.predicate);
+    	addToInsert(insertNodeLoaderTable, triple.object);
+    	
+    	insertTripleLoaderTable.setLong(1, triple.subject.hash);
+    	insertTripleLoaderTable.setLong(2, triple.predicate.hash);
+    	insertTripleLoaderTable.setLong(3, triple.object.hash);
+    	insertTripleLoaderTable.addBatch();
+    	
+    	if (count >= chunkSize)
+    		commitTriples();
     }
 
     private void addToInsert(PreparedStatement s, PreparedNode node)
@@ -204,27 +230,33 @@ public abstract class LoaderTriplesNodes
     
     public void flushTriples()
     {
-        try
+    	if (threading && !commitThread.isAlive())
+    		throw new SDBException("Loader thread has died");
+        else if (threading)
         {
-            if (threading && !commitThread.isAlive())
-                log.warn("Loader thread has died");
-            else if (!threading)
-                commitTriples();
-            else
-            { // finish up threaded load
-                queue.put(flushSignal);
-                while (commitThread.isAlive())
-                    Thread.sleep(100);
-            }
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        	// finish up threaded load
+        	threadFlushing.set(true);
+        	try {
+				queue.put(flushSignal);
+				while (threadFlushing.get())
+					Thread.sleep(100);
+        	}
+        	catch (InterruptedException e)
+        	{
+        		throw new SDBException("Problem sending flush signal", e);
+        	}
+        	
+        	if (threadException.get() != null)
+        	{
+        		Throwable e = threadException.getAndSet(null);
+        		throw new SDBException("Exception in thread", e);
+        	}
+        } else
+			try {
+				commitTriples();
+			} catch (SQLException e) {
+				throw new SDBExceptionSQL(e);
+			}
     }
     
     public void setChunkSize(int chunkSize)            { this.chunkSize = chunkSize ; }
@@ -245,14 +277,14 @@ public abstract class LoaderTriplesNodes
      * the db load thread
      */
 
-    class PreparedTriple
+    static class PreparedTriple
     {
         PreparedNode subject;
         PreparedNode predicate;
         PreparedNode object;
     }
 
-    class PreparedNode
+    static class PreparedNode
     {
         long hash;
         String lex;
@@ -322,27 +354,36 @@ public abstract class LoaderTriplesNodes
         public void run()
         {
             log.info("Running loader thread");
-            try
+            threadException.set(null);
+            while (true)
             {
-                while (true)
-                {
-                    PreparedTriple triple = queue.take();
-                    if (triple == flushSignal)
-                    {
-                        commitTriples(); // force commit
-                        break;
-                    }
-                    else
-                        addOneTriple(triple);
-                }
-            }
-            catch (InterruptedException e) // TODO handle this properly
-            {
-                e.printStackTrace();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
+            	try
+            	{
+            		PreparedTriple triple = queue.take();
+            		if (triple == flushSignal)
+            		{
+            			commitTriples(); // force commit
+            			threadFlushing.set(false);
+            		}
+            		else if (triple == finishSignal)
+            		{
+            			commitTriples(); // force commit
+            			break;
+            		}
+            		else
+            		{
+            			addOneTriple(triple);
+            		}
+            	}
+            	catch (Throwable e)
+            	{
+            		try {
+						connection().getSqlConnection().rollback();
+					} catch (SQLException e1) {
+						log.error("Problem rolling back", e1);
+					}
+            		threadException.set(e);
+            	}
             }
         }
     }
