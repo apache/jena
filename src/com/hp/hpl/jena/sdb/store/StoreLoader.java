@@ -15,6 +15,7 @@ public interface StoreLoader
     public void deleteTriple(Triple triple);
 	public void flushTriples();
     public void finishBulkLoad() ;
+    public void close() ;
     
 	public void setChunkSize(int chunks);
 	public int  getChunkSize();

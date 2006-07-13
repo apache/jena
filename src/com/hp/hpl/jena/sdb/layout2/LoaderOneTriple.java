@@ -31,6 +31,8 @@ public class LoaderOneTriple
     
     public LoaderOneTriple(SDBConnection connection) { super(connection) ; }
     
+    public void close() {}
+    
     public void startBulkLoad() {}
 
     public void addTriple(Triple triple) { addTriple(connection(), triple) ; }

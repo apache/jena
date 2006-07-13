@@ -30,7 +30,8 @@ public class LoaderSimple
 
     public void startBulkLoad() {}
     public void finishBulkLoad() {}
-
+    public void close() {}
+    
     public void addTriple(Triple t )
     {
         // not transactional
