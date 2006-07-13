@@ -53,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.34 2006-04-25 14:12:37 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.35 2006-07-13 11:30:04 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -378,6 +378,7 @@ public class FileManager
             throw new NotFoundException("Not found: "+filenameOrURI) ;
         }
         model.read(in, baseURI, syntax) ;
+        try { in.close(); } catch (IOException ex) {}
         return model ;
     }
 
