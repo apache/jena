@@ -13,28 +13,71 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 public class SqlRestrict extends SqlNodeBase1
 {
     private SqlExprList conditions = new SqlExprList() ;
+    
+    public static SqlNode restrict(SqlNode sqlNode, SqlExpr condition)
+    {
+        // TODO Consider just making a Restriction node
+        // and do moving into Joins as part of rela algraebra tree optimizations
+        // c.f. the Join creation code that also moving restrictions around.
+        
+        if ( sqlNode.isJoin() )
+        {
+            sqlNode.getJoin().addCondition(condition) ;
+            return sqlNode ;
+        }
+        
+        if ( sqlNode.isRestrict() )
+        {
+            // Already a restriction - add to the restrictions already in place
+            sqlNode.getRestrict().conditions.add(condition) ;
+            return sqlNode ;
+        }
+        
+        return new SqlRestrict(sqlNode.getAliasName(), sqlNode, condition) ;
+    }
 
+    public static SqlNode restrict(SqlNode sqlNode, SqlExprList restrictions)
+    {
+        // TODO Consider just making a Restriction node
+        // and do moving into Joins as part of rela algraebra tree optimizations
+        // c.f. the Join creation code that also moving restrictions around.
+        
+        if ( sqlNode.isJoin() )
+        {
+            sqlNode.getJoin().addConditions(restrictions);
+            return sqlNode ;
+        }
+        
+        if ( sqlNode.isRestrict() )
+        {
+            // Already a restriction - add to the restrictions already in place
+            sqlNode.getRestrict().conditions.addAll(restrictions) ;
+            return sqlNode ;
+        }
+        
+        return new SqlRestrict(sqlNode.getAliasName(), sqlNode, restrictions) ;
+    }
 
-    public SqlRestrict(SqlNode sqlNode, SqlExpr condition)
+    private SqlRestrict(SqlNode sqlNode, SqlExpr condition)
     { 
         super(null, sqlNode) ;
         this.conditions.add(condition) ; 
     }
 
-    public SqlRestrict(String aliasName, SqlNode sqlNode, SqlExpr condition)
+    private SqlRestrict(String aliasName, SqlNode sqlNode, SqlExpr condition)
     { 
         super(aliasName, sqlNode) ;
         this.conditions.add(condition) ; 
     }
 
     
-    public SqlRestrict(String aliasName, SqlNode sqlNode, SqlExprList conditions)
+    private SqlRestrict(String aliasName, SqlNode sqlNode, SqlExprList conditions)
     { 
         super(aliasName, sqlNode) ;
         this.conditions = conditions ;
     }
     
-    public SqlRestrict(SqlTable table, SqlExprList conditions)
+    private SqlRestrict(SqlTable table, SqlExprList conditions)
     { 
         super(table.getAliasName(), table) ;
         this.conditions = conditions ;

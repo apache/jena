@@ -42,6 +42,7 @@ public class DevTest extends TestSuite
 
     private Store store ;
     private String extraLabel = ""; 
+    private boolean useSingleTripleLoader = false ;
     
     private DevTest()
     {
@@ -65,15 +66,15 @@ public class DevTest extends TestSuite
 //             SDBTest.testDirSDB+"General/vars-2.rq",
 //             SDBTest.testDirSDB+"General/data.ttl") ;
         //QueryCompilerBasicPattern.printSQL = true ;
-//        test(store,
-//             SDBTest.testDirSDB+"Expressions/regex-1.rq",
-//             SDBTest.testDirSDB+"Expressions/data.ttl") ;
+        test(store,
+             SDBTest.testDirSDB+"Expressions/regex-1.rq",
+             SDBTest.testDirSDB+"Expressions/data.ttl") ;
         
-        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
-        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
-        loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ;
-        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
-        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
+//        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
+//        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
+//        loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ;
+//        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;
+//        loadManifest(SDBTest.testDirSDB+"Expressions/manifest.ttl") ;
     }
 
     private void loadManifest(String s)
@@ -98,15 +99,16 @@ public class DevTest extends TestSuite
         JDBC.loadDriverHSQL() ;
         SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
         
-        //store = new StoreTriplesNodesHSQL(sdb) ;
-        // Layout 2 loader is misbehaving ..
-        System.err.println("Using BFI loader for layout2") ;
-        store = new StoreBase(sdb,
-                              new PlanTranslatorGeneral(false, false),
-                              new LoaderOneTriple(sdb),
-                              new FmtLayout2HSQL(sdb),
-                              new QueryCompiler2()) ;
-        
+        if ( useSingleTripleLoader )
+        {
+            store = new StoreBase(sdb,
+                                  new PlanTranslatorGeneral(false, false),
+                                  new LoaderOneTriple(sdb),
+                                  new FmtLayout2HSQL(sdb),
+                                  new QueryCompiler2()) ;
+        } else
+            store = new StoreTriplesNodesHSQL(sdb) ;
+
         // Init.
         store.getTableFormatter().format() ;
         extraLabel = "/HSQL 2" ;
@@ -124,13 +126,17 @@ public class DevTest extends TestSuite
     {
         JDBC.loadDriverMySQL() ;
         SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2", Access.getUser(), Access.getPassword()) ;
-        //store = new StoreTriplesNodesMySQL(sdb) ;
-        System.err.println("Using BFI loader for layout2") ;
-        store = new StoreBase(sdb,
-                              new PlanTranslatorGeneral(true, true),
-                              new LoaderOneTriple(sdb),
-                              new FmtLayout2MySQL(sdb, MySQLEngineType.MyISAM),
-                              new QueryCompiler2()) ;
+        
+        if ( useSingleTripleLoader )
+        {
+            store = new StoreBase(sdb,
+                                  new PlanTranslatorGeneral(true, true),
+                                  new LoaderOneTriple(sdb),
+                                  new FmtLayout2MySQL(sdb, MySQLEngineType.InnoDB),
+                                  new QueryCompiler2()) ;
+        }
+        else
+            store = new StoreTriplesNodesMySQL(sdb) ;
         extraLabel = "/MySQL 2" ;
     }
     

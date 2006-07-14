@@ -13,18 +13,20 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 /** Root of all concrete tables */
 
-public class SqlTable extends SqlNodeBase
+public abstract class SqlTable extends SqlNodeBase
 {
-    private String tableName ;
-    private ScopeBase scope = null ;
-    //Map<Var, SqlColumn> cols = new HashMap<Var, SqlColumn>() ;
+    // Alternative: SqlTableValue and SqlTableTriple
     
+    private String tableName ;
+    protected ScopeBase idScope = null ;
+    protected ScopeBase valueScope = null ;
     
     protected SqlTable(String tableName, String aliasName)
     {
         super(aliasName) ;
         this.tableName = tableName ;
-        this.scope = new ScopeBase() ; ;
+        this.idScope = new ScopeBase() ; ;
+        this.valueScope = null ;
     }
     
     @Override
@@ -47,15 +49,34 @@ public class SqlTable extends SqlNodeBase
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
 
-    public Scope getScope()
-    {
-        return scope ;
+//    public Scope getScope()
+//    {
+//        return scope ;
+//    }
+    
+    public Scope getIdScope() { return idScope ; }
+
+    public Scope getValueScope()
+    { 
+        if ( valueScope == null )
+            valueScope = new ScopeBase() ;
+        return valueScope ;
     }
     
-    public void setColumnForVar(Var var, SqlColumn thisCol)
+    public void setIdColumnForVar(Var var, SqlColumn thisCol)
     {
-        scope.setColumnForVar(var, thisCol) ;
+        if ( idScope == null )
+            idScope = new ScopeBase() ;
+        idScope.setColumnForVar(var, thisCol) ;
     }
+    
+    public void setValueColumnForVar(Var var, SqlColumn thisCol)
+    {
+        if ( valueScope == null )
+            valueScope = new ScopeBase() ;
+        valueScope.setColumnForVar(var, thisCol) ;
+    }
+
 }
 
 /*

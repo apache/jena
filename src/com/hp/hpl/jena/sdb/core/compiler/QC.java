@@ -50,6 +50,8 @@ public class QC
 
         SqlExprList conditions = new SqlExprList() ;
         
+        // TODO Consider doing this a a rel algebra tree optimization reorganisation later 
+        
         // Flatten some cases.
         if ( left.isRestrict() && joinType == JoinType.INNER )
         {
@@ -73,11 +75,11 @@ public class QC
                 LogFactory.getLog(QC.class).info("join: restriction not over a table") ;
         }
         
-        for ( Var v : left.getScope().getVars() )
+        for ( Var v : left.getIdScope().getVars() )
         {
-            if ( right.getScope().hasColumnForVar(v) ) 
+            if ( right.getIdScope().hasColumnForVar(v) ) 
             {
-                SqlExpr c = new S_Equal(left.getScope().getColumnForVar(v), right.getScope().getColumnForVar(v)) ;
+                SqlExpr c = new S_Equal(left.getIdScope().getColumnForVar(v), right.getIdScope().getColumnForVar(v)) ;
                 conditions.add(c) ;
                 c.addNote("Join var: "+v) ; 
             }

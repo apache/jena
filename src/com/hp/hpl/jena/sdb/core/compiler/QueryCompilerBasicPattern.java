@@ -117,7 +117,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         
         // Top must be a project to cause the SELECT to be written
         if ( ! sqlNode.isProject() )
-            sqlNode = new SqlProject(sqlNode, null) ;
+            sqlNode = SqlProject.project(sqlNode) ;
         
         sqlNode.toString();
         sqlNode.visit(v) ;

@@ -18,10 +18,11 @@ public class TableTriples1 extends SqlTable
     //static final String triplesName = "Triples" ;
     
     public TableTriples1(String tableName, String aliasName)
-    { super(tableName, aliasName) ; }
-    
-
- 
+    { 
+        super(tableName, aliasName) ;
+        super.valueScope = super.idScope ;
+    }
+        
 }
 
 /*

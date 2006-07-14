@@ -9,10 +9,10 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.Collection;
 
 import static com.hp.hpl.jena.query.util.FmtUtils.* ;
-
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.Annotations;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.util.Pair;
@@ -38,18 +38,28 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         else
         {
             boolean first = true ; 
+            String currentPrefix = null ; 
+            out.incIndent() ;
             for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
             {
                 if ( ! first ) out.print(" ") ;
+                first = false ;
+                
                 String a = "<null>" ;
                 String b = "<null>" ;
-                first = false ;
                 if ( c.car() != null )
                     a = stringForNode(c.car().asNode()) ;
                 if ( c.cdr() != null )
                     b = c.cdr().asString() ;
+                
+                // Var name formatting. 
+                String x[] = a.split("\\"+SDBConstants.SQLmark) ;
+                if ( currentPrefix != null && ! x[0].equals(currentPrefix) )
+                    out.println() ;
+                currentPrefix = x[0] ;
                 out.print(a+"/"+b) ;
             }
+            out.decIndent() ;
             out.println() ; 
         }
         sqlNode.getSubNode().visit(this) ;

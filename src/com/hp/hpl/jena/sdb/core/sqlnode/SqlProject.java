@@ -14,18 +14,29 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 public class SqlProject extends SqlNodeBase1
 {
+    public static SqlNode project(SqlNode sqlNode, Pair<Var, SqlColumn> col)
+    {
+        SqlProject p = null ;
+        if ( sqlNode.isProject() )
+            p = sqlNode.getProject() ;
+        else
+            p = new SqlProject(sqlNode) ;
+        if ( col != null )
+            p.cols.add(col) ;
+        return p ;
+    }
+    
+    public static SqlNode project(SqlNode sqlNode)
+    {
+        return project(sqlNode, null) ;
+    }
+    
     private List<Pair<Var, SqlColumn>> cols = null ; 
     
-//    public SqlProject(SqlNode sqlNode)
-//    { 
-//        super(sqlNode.getAliasName(), sqlNode) ;
-//        this.cols = new ArrayList<Pair<Node, SqlColumn>>() ; 
-//    }
-    
-    public SqlProject(SqlNode sqlNode, List<Pair<Var, SqlColumn>> cols)
+    private SqlProject(SqlNode sqlNode)
     { 
         super(sqlNode.getAliasName(), sqlNode) ;
-        this.cols = cols ;
+        this.cols = new ArrayList<Pair<Var, SqlColumn>>() ; 
     }
     
     @Override

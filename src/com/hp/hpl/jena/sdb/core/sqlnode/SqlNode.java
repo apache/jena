@@ -26,7 +26,9 @@ public interface SqlNode extends Printable, Annotations
     public boolean        isTable() ;
     public SqlTable       getTable() ;
     
-    public Scope getScope() ;
+    public Scope getIdScope() ;
+    public Scope getValueScope() ;
+    
     // Scope
 //    public boolean        hasColumnForVar(Var var) ;
 //    public SqlColumn      getColumnForVar(Var var) ;       // Get the col for this var - or null. 

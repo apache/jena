@@ -19,7 +19,8 @@ public abstract class SqlJoin extends SqlNodeBase
     private JoinType joinType ;
     private SqlNode left ;
     private SqlNode right ;
-    private Scope scope ;
+    private Scope idScope ;
+    private Scope valueScope ;
     private SqlExprList conditions = new SqlExprList() ;
 
 //    public static SqlJoin create(JoinType joinType, SqlNode left, SqlNode right)
@@ -46,7 +47,8 @@ public abstract class SqlJoin extends SqlNodeBase
         this.joinType = joinType ;
         this.left = left ;
         this.right = right ;
-        scope = new Scope2(left.getScope(), right.getScope()) ;
+        idScope = new Scope2(left.getIdScope(), right.getIdScope()) ;
+        valueScope = new Scope2(left.getValueScope(), right.getValueScope()) ;
     } 
     
     public SqlNode   getLeft()   { return left ; }
@@ -63,13 +65,8 @@ public abstract class SqlJoin extends SqlNodeBase
     public void addCondition(SqlExpr e) { conditions.add(e) ; }
     public void addConditions(SqlExprList exprs) { conditions.addAll(exprs) ; }
     
-    public Scope getScope() { return scope ; }
-    
-//    @Override
-//    public boolean usesColumn(SqlColumn c)
-//    {
-//        return getLeft().usesColumn(c) || getRight().usesColumn(c) ; 
-//    }
+    public Scope getIdScope()     { return idScope ; }
+    public Scope getValueScope()  { return valueScope ; }
 }
 
 /*

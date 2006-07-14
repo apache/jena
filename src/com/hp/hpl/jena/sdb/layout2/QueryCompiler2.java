@@ -63,8 +63,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         if ( conditions.size() == 0 )
             return triples ;
         
-        SqlRestrict r = new SqlRestrict(triples, conditions) ;
-        return r ;
+        return SqlRestrict.restrict(triples, conditions) ;
     }
 
     
@@ -89,15 +88,15 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         }
         
         Var var = new Var(node) ;
-        if ( triples.getScope().hasColumnForVar(var) )
+        if ( triples.getIdScope().hasColumnForVar(var) )
         {
-            SqlColumn otherCol = triples.getScope().getColumnForVar(var) ;
+            SqlColumn otherCol = triples.getIdScope().getColumnForVar(var) ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             c.addNote("processVar: "+node) ;
             return ;
         }
-        triples.setColumnForVar(var, thisCol) ;
+        triples.setIdColumnForVar(var, thisCol) ;
     }
     
 
@@ -107,6 +106,8 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     @Override
     protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     {
+        // Add constants to start of a block.
+        // TODO See if any constants already in scope.
         Collection<Node> constants = blockBGP.getConstants() ;
         SqlNode sqlNode = insertConstantAccesses(context, constants, null) ;
         return sqlNode ;
@@ -125,17 +126,14 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             
             SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
             nTable.addNote("Const: "+FmtUtils.stringForNode(n)) ; 
-            SqlExprList conds = new SqlExprList() ;
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
             
             // Record 
             constantCols.put(n, new SqlColumn(nTable, "id")) ;
             
             SqlExpr c = new S_Equal(cHash, hashValue) ;
-            conds.add(c) ;
-            
-            SqlNode r = new SqlRestrict(nTable, conds) ;
-            sqlNode = QC.innerJoin(context, sqlNode, r) ;
+            sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
+            sqlNode = SqlRestrict.restrict(sqlNode, c)  ;
         }
         
         return sqlNode ;
@@ -149,6 +147,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                                      SqlNode sqlNode, BlockBGP blockBGP)
     {
         sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
+        // Intersection of defined and project?
         sqlNode = extractResults(context, blockBGP.getDefinedVars(), sqlNode) ; 
         return sqlNode ;
     }
@@ -156,31 +155,39 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     private SqlNode extractResults(CompileContext context,
                                    Collection<Var>vars, SqlNode sqlNode)
     {
+        // for each var and it's id column, make sure there is value column. 
         for ( Var v : vars )
         {
-            SqlColumn c1 = sqlNode.getScope().getColumnForVar(v) ;
+            SqlColumn c1 = sqlNode.getIdScope().getColumnForVar(v) ;
             if ( c1 == null )
                 // Variable not actually in results. 
                 continue ;
             
-            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
-            nTable.addNote("Var: "+v) ;
-            SqlColumn c2 = new SqlColumn(nTable, "id") ;
+            // Already in scope from a condition?
+            SqlColumn c2 = sqlNode.getValueScope().getColumnForVar(v) ;
+            if ( c2 != null )
+            {
+                log.info("Column already in scope : ("+v+", "+c2+")") ;
+                // Convert to "id" column
+                c2 = new SqlColumn(c2.getTable(), "id") ; 
+                projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
+                continue ;
+            }
             
+            // Not in scope -- add a table to get it (share some code with addRestrictions?) 
+            // Value table.
+            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+            nTable.setValueColumnForVar(v, c1) ;
+            
+            // Condition for value: triple table column = node table id 
+            nTable.addNote("Var: "+v) ;
+            c2 = new SqlColumn(nTable, "id") ;                  // nTable.getColFor("id") ;
             SqlExpr cond = new S_Equal(c1, c2) ;
-            // TODO Maninatin value scopes and id scopes separately.
-            projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
             SqlNode n = QC.innerJoin(context, sqlNode, nTable) ;
-            if ( n instanceof SqlJoin )
-            {
-                ((SqlJoin)n).addCondition(cond) ;
-                sqlNode = n ;
-            }
-            else
-            {
-                SqlNode r = new SqlRestrict(null, n, cond) ;
-                sqlNode = r ;
-            }
+            sqlNode = SqlRestrict.restrict(n, cond) ;
+            
+            // remember for the projection
+            projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
         }
         return sqlNode ;
     }
@@ -202,37 +209,35 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             c.varsMentioned(acc) ;
             for ( Var v : acc )
             {
-                SqlColumn col = sqlNode.getScope().getColumnForVar(v) ;
-                if ( col == null )
+                // For Variables used in this SQL constraint, make sure the value is available.  
+                
+                SqlColumn tripleTableCol = sqlNode.getIdScope().getColumnForVar(v) ;   // tripleTableCol
+                if ( tripleTableCol == null )
                 {
                     // Not in scope.
                     log.info("Var not in scope for value of expression: "+v) ;
                     continue ;
                 }
-                // ASSUME lexical/string form needed 
-                SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
-                SqlColumn colId = new SqlColumn(nTable, "id") ;
-                SqlColumn colLex = new SqlColumn(nTable, "lex") ;
+                
+                // Value table column
+                SqlTable nTable =   new TableNodes(allocNodeResultAlias()) ;
+                SqlColumn colId =   new SqlColumn(nTable, "id") ;
+                SqlColumn colLex =  new SqlColumn(nTable, "lex") ;
                 SqlColumn colType = new SqlColumn(nTable, "type") ;
                 
-                ScopeBase s = new ScopeBase() ;
-                s.setColumnForVar(v, colLex) ;          // Value scope
-                nTable.setColumnForVar(v, colId) ;      // Id scope
-                
-                
-                SqlExprList l = new SqlExprList() ;
-                {
-                    SqlExpr e1 = c.asSqlExpr(s) ;
-                    e1.addNote(c.toString()) ;
-                    
-                    SqlExpr e2 = new S_Equal(colType, new SqlConstant(ValueType.STRING.getTypeId())) ;
-                    l.add(e1) ;
-                    l.add(e2) ;
-                }
-                SqlNode r = new SqlRestrict(nTable, l) ;
+                nTable.setValueColumnForVar(v, colLex) ;        // ASSUME lexical/string form needed 
+                nTable.setIdColumnForVar(v, colId) ;            // Id scope => join
+                sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
 
-                // Slurp the value up.
-                sqlNode = QC.innerJoin(context, sqlNode, r) ;
+                // "is a string"
+                SqlExpr isStr = new S_Equal(colType, new SqlConstant(ValueType.STRING.getTypeId())) ;
+                isStr.addNote("is a string" ) ;
+                sqlNode = SqlRestrict.restrict(sqlNode, isStr) ;
+
+                // test value of string
+                SqlExpr sCond = c.asSqlExpr(nTable.getValueScope()) ;
+                sCond.addNote(c.toString()) ;
+                sqlNode = SqlRestrict.restrict(sqlNode, sCond) ;
             }
         }
         
@@ -265,7 +270,6 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     
     private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, Set<Var> projectVars)
     {
-        List<Pair<Var, SqlColumn>> projCol = new ArrayList<Pair<Var, SqlColumn>>() ;
         for ( Pair<Var, SqlColumn> p : cols )
         {
             // Not in the projection - skip 
@@ -289,15 +293,13 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             Var vType = new Var(n+"$type") ;
             SqlColumn cType = new SqlColumn(p.cdr().getTable(), "type") ;
 
-            projCol.add(new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
-            projCol.add(new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
-            projCol.add(new Pair<Var, SqlColumn>(vLang, cLang)) ;
-            projCol.add(new Pair<Var, SqlColumn>(vType, cType)) ;
+            // Get the 3 part of the RDF term and its internbal type number.
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
         }
-        
-        // Needs further refinement
-        SqlNode p = new SqlProject(sqlNode, projCol) ;
-        return p ;
+        return sqlNode ;
     }
 
 

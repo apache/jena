@@ -59,19 +59,14 @@ public class QueryTestSDBFactory extends TestFactory
             
             if ( testItem.getTestType() != null )
             {
-//                // Good syntax
-//                if ( item.getTestType().equals(TestManifestX.TestSyntax) )
-//                    test = new SyntaxTest(testName, item) ;
-//                
-//                // Bad syntax
-//                if ( item.getTestType().equals(TestManifestX.TestBadSyntax) )
-//                    test = new SyntaxTest(testName, item, false) ;
-//                
-//                if ( item.getTestType().equals(TestManifestX.TestSerialization) )
-//                    test = new SerializerTest(testName, item) ;
-                
                 if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
                     test = new QueryTestSDB(store, testName, fileManager, testItem) ;
+                
+                if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
+                    test = new SurpressedTest(testName, testItem.getComment()) ;
+                
+                if ( test == null )
+                    System.err.println("Unrecognized test type: "+testItem.getTestType()) ;
             }
             // Default 
             if ( test == null )

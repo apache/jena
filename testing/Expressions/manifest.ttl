@@ -25,11 +25,14 @@
           mf:action [ qt:query <regex-opt-2.rq> ; qt:data <data.ttl> ] ;
        ]
 
-       ## These have vbariables spanning blocks.
        [  mf:name   "Regex-opt-3" ;
+          rdf:type  mfx:TestSurpressed ;
+          rdfs:comment "Variable spans blocks" ;
           mf:action [ qt:query <regex-opt-3.rq> ; qt:data <data.ttl> ] ;
        ]
        [  mf:name   "Regex-opt-4" ;
+          rdf:type  mfx:TestSurpressed ;
+          rdfs:comment "Variable spans blocks" ;
           mf:action [ qt:query <regex-opt-4.rq> ; qt:data <data.ttl> ] ;
        ]
     ).

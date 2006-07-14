@@ -20,9 +20,9 @@ public class Scope2 implements Scope
     
     public boolean hasColumnForVar(Var var)
     { 
-        if ( left.hasColumnForVar(var) )
+        if ( left != null && left.hasColumnForVar(var) )
             return true ;
-        if ( right.hasColumnForVar(var) )
+        if ( right != null && right.hasColumnForVar(var) )
             return true ;
         return false ;
     }
@@ -31,19 +31,26 @@ public class Scope2 implements Scope
     {
         // Better - implement Iterable 
         Set<Var> acc = new LinkedHashSet<Var>() ;
-        acc.addAll(left.getVars()) ;
-        acc.addAll(right.getVars()) ;
+        if ( left != null ) acc.addAll(left.getVars()) ;
+        if ( right != null ) acc.addAll(right.getVars()) ;
         return acc ;
     }
     
     public SqlColumn getColumnForVar(Var var)
     { 
-        SqlColumn c = left.getColumnForVar(var) ;
+        SqlColumn c = null ;
+        
+        if ( left != null )
+            c = left.getColumnForVar(var) ;
+        
         if ( c != null )
             return c ;
-        c = right.getColumnForVar(var) ;
+        
+        if ( right != null )
+            c = right.getColumnForVar(var) ;
         if ( c != null )
             return c ;
+        
         return null ;
     }
 }

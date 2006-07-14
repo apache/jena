@@ -54,6 +54,7 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     @Override
     protected SqlNode match(CompileContext context, Triple triple)
     {
+        // For a triple, add the table triple table 
         String sCol = tripleTableDesc.getSubjectColName() ;
         String pCol = tripleTableDesc.getPredicateColName() ;
         String oCol = tripleTableDesc.getObjectColName() ;
@@ -69,7 +70,7 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     
         if ( conditions.size() == 0 )
             return tripleTable ;
-        return new SqlRestrict(tripleTable, conditions) ;
+        return SqlRestrict.restrict(tripleTable, conditions) ;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     @Override
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
     {
-        List<Pair<Var, SqlColumn>>cols = new ArrayList<Pair<Var, SqlColumn>>() ;
+        // Generate the SQL SELECT projection
         Set<Var> x = block.getProjectVars() ;
 
         if ( x == null )
@@ -89,11 +90,14 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
         {
             if ( ! v.isNamedVar() )
                 continue ;
-            SqlColumn c = sqlNode.getScope().getColumnForVar(v) ;
-            if ( c != null )
-                cols.add(new Pair<Var, SqlColumn>(v, c)) ;
+            // Value scope == IdScope for layout1
+            SqlColumn c = sqlNode.getValueScope().getColumnForVar(v) ;
+            if ( c == null )
+                log.warn("Can';t find column for var: "+v) ;
+            else
+                sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
         }
-        return new SqlProject(sqlNode, cols) ;
+        return sqlNode ;
     }
 
     @Override
@@ -103,16 +107,14 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     @Override
     protected SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP)
     { 
+        // End of BGP - add any constraints.
         if ( blockBGP.getConstraints().size() > 0 )
         {
-            String alias = context.allocAlias("R"+SDBConstants.SQLmark) ;
-            SqlExprList sqlConditions = new SqlExprList() ;
             for ( SDBConstraint c : blockBGP.getConstraints() )
             {
-                SqlExpr sqlExpr = c.asSqlExpr(sqlNode.getScope()) ;
-                sqlConditions.add(sqlExpr) ;
+                SqlExpr sqlExpr = c.asSqlExpr(sqlNode.getValueScope()) ;
+                sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
             }
-            sqlNode = new SqlRestrict(alias, sqlNode, sqlConditions) ;
         }
         return sqlNode ; 
     }
@@ -134,7 +136,7 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
         // Variable
         Var var = new Var(n) ;
         
-        if ( triples.getScope().hasColumnForVar(var) )
+        if ( triples.getIdScope().hasColumnForVar(var) )
         {
             // Becomes join condition.
 //            SqlColumn otherCol = scope.getColumnForVar(var) ;
@@ -143,7 +145,7 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
 //            conditions.add(c) ;
             return ;
         }
-        triples.setColumnForVar(var, thisCol) ;
+        triples.setIdColumnForVar(var, thisCol) ;
     }
     
     @Override
