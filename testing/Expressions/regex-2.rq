@@ -9,5 +9,3 @@ WHERE
      [ ?p ?v ] 
    FILTER regex(?v, "^a")
  }
-
-     
