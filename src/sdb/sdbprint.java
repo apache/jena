@@ -73,128 +73,6 @@ public class sdbprint extends CmdArgModule
     }
 
     
-//    public static void main2(String[] args)
-//    {
-//        CmdLineArgs cl = new CmdLineArgs(args) ;
-//        
-//        ArgDecl helpDecl = new ArgDecl(ArgDeNoValue, "h", "help") ;
-//        add(helpDecl) ;
-//        
-//        ArgDecl verboseDecl = new ArgDecl(ArgDeNoValue, "v", "verbose") ;
-//        add(verboseDecl) ;
-//        
-//        ArgDecl versionDecl = new ArgDecl(ArgDeNoValue, "ver", "version", "V") ;
-//        add(versionDecl) ;
-//        
-//        ArgDecl quietDecl = new ArgDecl(ArgDeNoValue, "q", "quiet") ;
-//        add(quietDecl) ;
-//
-//        ArgDecl noExecDecl = new ArgDecl(ArgDeNoValue, "n", "noExec", "noexec") ;
-//        add(noExecDecl) ;
-//        
-//        ArgDecl layoutDecl = new ArgDecl(ArgDeHasValue, "layout") ;
-//        add(layoutDecl) ;
-//
-//        ArgDecl queryDecl = new ArgDecl(ArgDeHasValue, "query", "file") ;
-//        add(queryDecl) ;
-//
-//        //ArgDecl querySyntaxDecl = new ArgDecl(ArgDeHasValue, "syntax", "syn", "in") ;
-//        //add(querySyntaxDecl) ;
-//        
-//        String layoutNameDefault = "layout2" ;
-//        String queryString = null ;
-//        
-//        try {
-//            process() ;
-//        } catch (IllegalArgumentException ex)
-//        {
-//            System.err.println(ex.getMessage()) ;
-//            usage(System.err) ;
-//            throw new TerminationException(2) ;
-//        }        
-//        
-//        //---- Basic stuff
-//        if ( contains(helpDecl) )
-//        {
-//            usage(System.out) ;
-//            throw new TerminationException(0) ;
-//        }
-//        
-//        if ( contains(versionDecl) )
-//        {
-//            System.out.println("SDB Version: "+SDB.VERSION+"  ARQ Version: "+ARQ.VERSION+"  Jena: "+Jena.VERSION+"") ;
-//            throw new TerminationException(0) ;
-//        }
-//        
-//        verbose = contains(verboseDecl) ;
-//        
-////        if ( contains(querySyntaxDecl) )
-////        {
-////            // short name
-////            String s = getValue(querySyntaxDecl) ;
-////            Syntax syn = Syntax.lookup(s) ;
-////            if ( syn == null )
-////                argError("Unrecognized syntax: "+syn) ;
-////        }
-//
-//        //---- Query
-//        
-//        String queryFile = getValue(queryDecl) ;
-//        
-//        if ( getNumPositional() == 0 && queryFile == null )
-//            argError("No query string or query file") ;
-//
-//        if ( getNumPositional() > 1 )
-//            argError("Only one query string allowed") ;
-//        
-//        if ( getNumPositional() == 1 && queryFile != null )
-//            argError("Either query string or query file - not both") ;
-//
-//        try {
-//            if ( queryFile != null )
-//                queryString  = FileUtils.readWholeFileAsUTF8(queryFile) ;
-//            else
-//            {
-//                queryString = getPositionalArg(0) ;
-//                queryString = indirect(queryString) ;
-//            }
-//                
-//        } catch (IOException ex)
-//        {
-//            System.err.println("Failed to read: "+queryFile) ;
-//            System.err.println(ex.getMessage()) ;
-//        }
-// 
-//        String layoutName = getValue(layoutDecl) ;
-//        if ( layoutName == null )
-//            layoutName = layoutNameDefault ;
-//
-//        Query query = QueryFactory.create(queryString) ;
-//        
-//        if ( layoutName.equalsIgnoreCase("layout1") ) 
-//        {
-//            compilePrint(query, new QueryCompilerSimple()) ;
-//            throw new TerminationException(0) ;
-//        }
-//        
-//        if ( layoutName.equalsIgnoreCase("modelRDB") ) 
-//        {
-//            // Kludge something to work.
-//            IRDBDriver iDriver = new Driver_MySQL() ;
-//            compilePrint(query, new QueryCompiler1(new CodecRDB(iDriver))) ;
-//            throw new TerminationException(0) ;
-//        }
-//        
-//        if ( layoutName.equalsIgnoreCase("layout2") ) 
-//        {
-//            compilePrint(query, new QueryCompiler2()) ;
-//            throw new TerminationException(0) ;
-//        }
-//        
-//        argError("Unknown layout name: "+layoutName) ;
-//    }
-//    
-    
     public static void compilePrint(String queryString, String layoutName)
     {
         System.err.println("BROKEN - FIX ME") ;
@@ -244,7 +122,7 @@ public class sdbprint extends CmdArgModule
           throw new TerminationException(0) ;
       }
       
-      if ( layoutName.equalsIgnoreCase("modelRDB") ) 
+      if ( layoutName.equalsIgnoreCase("modelRDB") || layoutName.equalsIgnoreCase("RDB") ) 
       {
           // Kludge something to work.
           IRDBDriver iDriver = new Driver_MySQL() ;

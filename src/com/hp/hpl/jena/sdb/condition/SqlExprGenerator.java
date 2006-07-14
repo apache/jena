@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.condition;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Regex;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 
@@ -53,6 +54,13 @@ public class SqlExprGenerator
         public void visit(C_IsNotNull c)   { throw new SDBNotImplemented("C_IsNotNull") ; }
 
         public void visit(C_IsNull c)      { throw new SDBNotImplemented("C_IsNull") ; }
+        
+        public void visit(C_Constant constant)
+        {
+            result = new SqlConstant(constant.getValue()) ;
+        }
+        
+        
  
     }
 }

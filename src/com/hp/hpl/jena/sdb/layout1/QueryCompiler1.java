@@ -54,12 +54,12 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     @Override
     protected SqlNode match(CompileContext context, Triple triple)
     {
+        String alias = context.allocTableAlias() ;
         // For a triple, add the table triple table 
         String sCol = tripleTableDesc.getSubjectColName() ;
         String pCol = tripleTableDesc.getPredicateColName() ;
         String oCol = tripleTableDesc.getObjectColName() ;
     
-        String alias = context.allocTableAlias() ;
         TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
         tripleTable.addNote(FmtUtils.stringForTriple(triple, null)) ;
         
@@ -71,6 +71,32 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
         if ( conditions.size() == 0 )
             return tripleTable ;
         return SqlRestrict.restrict(tripleTable, conditions) ;
+    }
+
+    private void processSlot(CompileContext context, TableTriples1 triples, Node node, String col, SqlExprList conditions)
+    {
+        SqlColumn thisCol = new SqlColumn(triples, col) ;
+
+        if ( ! node.isVariable() )
+        {
+            String str = codec.encode(node) ;
+            SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
+            c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+            conditions.add(c) ;
+            return ;
+        }
+
+        // Variable : in common with QC2
+        Var var = new Var(node) ;
+        if ( triples.getIdScope().hasColumnForVar(var) )
+        {
+            SqlColumn otherCol = triples.getIdScope().getColumnForVar(var) ;
+            SqlExpr c = new S_Equal(otherCol, thisCol) ;
+            conditions.add(c) ;
+            c.addNote("processVar: "+var) ;
+            return ;
+        }
+        triples.setIdColumnForVar(var, thisCol) ;
     }
 
     @Override
@@ -118,35 +144,6 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
             }
         }
         return sqlNode ; 
-    }
-    
-    private void processSlot(CompileContext context, TableTriples1 triples, Node n, String col, SqlExprList conditions)
-    {
-        SqlColumn thisCol = new SqlColumn(triples, col) ;
-        
-        if ( ! n.isVariable() )
-        {
-            String str = codec.encode(n) ;
-            //str = SQLUtils.quote(str) ;
-            SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-            c.addNote("Const: "+FmtUtils.stringForNode(n)) ;
-            conditions.add(c) ;
-            return ;
-        }
-    
-        // Variable
-        Var var = new Var(n) ;
-        
-        if ( triples.getIdScope().hasColumnForVar(var) )
-        {
-            // Becomes join condition.
-//            SqlColumn otherCol = scope.getColumnForVar(var) ;
-//            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-//            c.addNote("processVar: "+var) ;
-//            conditions.add(c) ;
-            return ;
-        }
-        triples.setIdColumnForVar(var, thisCol) ;
     }
     
     @Override

@@ -14,6 +14,7 @@ public interface SDBConstraintVisitor
     public void visit(C_NodeType  node) ;
     public void visit(C_IsNotNull c) ;
     public void visit(C_IsNull    c) ;
+    public void visit(C_Constant  constant) ;
 }
 
 /*

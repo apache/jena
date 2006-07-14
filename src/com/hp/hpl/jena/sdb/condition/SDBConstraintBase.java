@@ -26,7 +26,7 @@ public abstract class SDBConstraintBase implements SDBConstraint
         label = new Symbol(labelStr) ;
     }
     
-    public String getLabel() { return label.toString() ; }
+    public String getLabel() { return label.getSymbol() ; }
     
     public SqlExpr asSqlExpr(Scope scope)
     {

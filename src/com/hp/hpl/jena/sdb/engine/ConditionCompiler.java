@@ -13,9 +13,7 @@ import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.condition.C_Regex;
-import com.hp.hpl.jena.sdb.condition.C_Var;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.sdb.condition.*;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
@@ -58,6 +56,27 @@ public class ConditionCompiler
                                                              new Action[]{ new ActionMatchVar() ,
                                                                            new ActionMatchString()}) ;
     
+    private static ExprPattern equalsString1 = new ExprPattern("?a1 = ?a2",
+                                                               new String[]{ "a1" , "a2" },
+                                                               new Action[]{ new ActionMatchVar() ,
+                                                                             new ActionMatchString()}) ;
+    // As equalsString1 but reverse the arguments.
+    private static ExprPattern equalsString2 = new ExprPattern("?a1 = ?a2",
+                                                               new String[]{ "a1" , "a2" },
+                                                               new Action[]{ new ActionMatchString() ,
+                                                                             new ActionMatchVar() }) ;
+
+    private static ExprPattern equalsString3 = new ExprPattern("str(?a1) = ?a2",
+                                                               new String[]{ "a1" , "a2" },
+                                                               new Action[]{ new ActionMatchVar() ,
+                                                                             new ActionMatchString()}) ;
+    // As equalsString3 but reverse the arguments.
+    private static ExprPattern equalsString4 = new ExprPattern("?a1 = str(?a2)",
+                                                               new String[]{ "a1" , "a2" },
+                                                               new Action[]{ new ActionMatchString() ,
+                                                                             new ActionMatchVar() }) ;
+
+    
     public PlanSDBConstraint match(PlanFilter planFilter)
     {
         MapResult rMap = null ;
@@ -99,12 +118,24 @@ public class ConditionCompiler
         
         if ( (rMap = startsWith1.match(expr)) != null )
         {
-            LogFactory.getLog(ConditionCompiler.class).info("startsWith - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+            log.info("startsWith - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
             Var var = new Var(rMap.get("a1").getVar()) ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             // Unfinished
             return null ;
             // becomes; isNotNull(var) AND var LIKE 'pattern%'
+        }
+        
+        if (   (rMap = equalsString1.match(expr)) != null
+            || (rMap = equalsString3.match(expr)) != null )
+        {
+            // TODO WRONG later - the str() form should not have the same type check
+            // still needs to check for bNodes.  How - this is layout1 as well? 
+            log.info("equalsString - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+            Var var = new Var(rMap.get("a1").getVar()) ;
+            String str = rMap.get("a2").getConstant().getString() ;
+            SDBConstraint c = new C_Equals(new C_Var(var), new C_Constant(str)) ;
+            return c ;
         }
         
         // Not recognized

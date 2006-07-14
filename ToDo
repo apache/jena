@@ -1,16 +1,26 @@
 SDB ToDo list (and general notes)
 =================================
 
-Constraint compilation - done in PlanToSDB recognizer but needs later substitution.
+A/ Constraint compilation - done in PlanToSDB recognizer but needs later substitution.
 IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
+
+OR imporve the generation of SQL output and leave the tree much as is.
+OR canonical tree SPJ
+
+B/ FILTER ( ?x = "string" )
+
+C/ Out-of-scope variables / surpessed tests
+
+D/ HSQl/MySQL joint testing
+
 
 == Next
   1/ IsNotNull: C_, S_ and generated PlanToSDB
-     SDBConstrinats are before substituion so need .substitute(Binding)
-     So is S_ really needed?
+       C_ is variables, S_ is columns
+     
   2/ Testing
      Build coverage test suite
-  3/ (Detect fn:starts-with function)
+  3/ (Detect fn:starts-with function) - do something!
   4/ ==> Performance testing
 
 + Variable tracking

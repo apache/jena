@@ -6,16 +6,17 @@
 
 package com.hp.hpl.jena.sdb.condition;
 
-import com.hp.hpl.jena.query.core.Constraint;
-
-/**
- * @author Andy Seaborne
- * @version $Id: ConditionCompiler.java,v 1.1 2006/04/16 18:47:29 andy_seaborne Exp $
- */
-
-public interface ConditionCompiler
+public class C_Constant extends SDBConstraintBase
 {
-    SDBConstraint compile(Constraint constraint) ;
+    private String value ; 
+    public C_Constant(String value)
+    {
+        super("const") ;
+        this.value = value ;
+    }
+    
+    public String getValue() { return value ; }
+    public void visit(SDBConstraintVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*

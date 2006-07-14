@@ -15,6 +15,11 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 public class TableTriples extends SqlTable
 {
+    public static final String subjectCol    = "s" ;
+    public static final String predicateCol  = "p" ;
+    public static final String objectCol     = "o" ;
+    
+    
     //private static Log log = LogFactory.getLog(TableTriples.class) ;
     public static final String tableName    = "Triples" ;
     

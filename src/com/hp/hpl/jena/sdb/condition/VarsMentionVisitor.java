@@ -12,8 +12,6 @@ import com.hp.hpl.jena.query.core.Var;
 
 public class VarsMentionVisitor implements SDBConstraintVisitor
 {
-
-
     private Collection<Var> acc ;
 
     VarsMentionVisitor(Collection<Var> acc) { this.acc = acc ; }
@@ -43,8 +41,9 @@ public class VarsMentionVisitor implements SDBConstraintVisitor
 
     public void visit(C_IsNotNull c)  { visitC1(c) ; }
 
-    public void visit(C_IsNull c)     { visitC1(c) ; }    
+    public void visit(C_IsNull c)     { visitC1(c) ; }
 
+    public void visit(C_Constant constant) {}
 }
 
 /*

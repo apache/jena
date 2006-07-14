@@ -50,15 +50,17 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     @Override
     protected SqlNode match(CompileContext context, Triple triple)
     {
+        // Make a TripleTableDesc, share this code in QCTriple.
+        // Abstract maketable, processSlot
         String alias = context.allocTableAlias() ;
         SqlExprList conditions = new SqlExprList() ;
         
         TableTriples triples = new TableTriples(alias) ;
         triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
         
-        processSlot(context, triples, conditions, triple.getSubject(),   "s") ; 
-        processSlot(context, triples, conditions, triple.getPredicate(), "p") ;
-        processSlot(context, triples, conditions, triple.getObject(),    "o") ;
+        processSlot(context, triples, conditions, triple.getSubject(),   TableTriples.subjectCol) ; 
+        processSlot(context, triples, conditions, triple.getPredicate(), TableTriples.predicateCol) ;
+        processSlot(context, triples, conditions, triple.getObject(),    TableTriples.objectCol) ;
         
         if ( conditions.size() == 0 )
             return triples ;
@@ -73,9 +75,10 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     {
         SqlColumn thisCol = new SqlColumn(triples, colName) ;
         
+        // Abstract : QC1 does an encode, QC2, finds.
+        // abstract: node=>column
         if ( ! node.isVariable() )
         {
-            
             SqlColumn colId = constantCols.get(node) ;
             if ( colId == null )
             {
@@ -83,10 +86,12 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                 return ;
             }
             SqlExpr c = new S_Equal(thisCol, colId) ;
+            c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
             conditions.add(c) ;
             return ; 
         }
         
+        // In common with QC1
         Var var = new Var(node) ;
         if ( triples.getIdScope().hasColumnForVar(var) )
         {

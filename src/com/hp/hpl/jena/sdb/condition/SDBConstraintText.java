@@ -9,23 +9,34 @@ package com.hp.hpl.jena.sdb.condition;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class SDBConstraintText implements SDBConstraintVisitor
 {
+    static private Log log = LogFactory.getLog(SDBConstraintText.class) ;
     private IndentedWriter out ;
     
     public SDBConstraintText(IndentedWriter out) { this.out = out ; }
     
-    public void visit(C2 c2)
+    public void visitC2(C2 c2)
     {
-        out.print("( ") ;
-        c2.getLeft().visit(this) ;
-        out.print(") ") ;
+        // Prefix notation
+        out.print("(") ;
         out.print(c2.getLabel()) ;
-        out.print(" ( ") ;
+        out.print(" ") ;
+        c2.getLeft().visit(this) ;
+        out.print(" ") ;
         c2.getRight().visit(this) ;
         out.print(")") ;
+        
+//        out.print("( ") ;
+//        c2.getLeft().visit(this) ;
+//        out.print(" ") ;
+//        out.print(c2.getLabel()) ;
+//        out.print(" ") ;
+//        c2.getRight().visit(this) ;
+//        out.print(")") ;
     }
 
     public void visit(C_Var node)
@@ -39,13 +50,19 @@ public class SDBConstraintText implements SDBConstraintVisitor
         LogFactory.getLog(c.getClass()).warn("Not implemented") ;
     }
 
-    public void visit(C1 c1) {}
+    public void visitC1(C1 c1)
+    {
+        out.print("( ") ;
+        out.print(c1.getLabel()) ;
+        out.print(" ") ;
+        c1.getConstraint() ; 
+        out.print(")") ;
+    }
 
-    public void visit(C_IsNull c)     { LogFactory.getLog(c.getClass()).warn("Not implemented/IsNull") ; }
-    public void visit(C_IsNotNull c)  { LogFactory.getLog(c.getClass()).warn("Not implemented/IsNotNull") ; }
+    public void visit(C_IsNull c)     { visitC1(c) ; }
+    public void visit(C_IsNotNull c)  { visitC1(c) ; }
 
-    public void visit(C_NodeType node)
-    {}
+    public void visit(C_NodeType node) { out.print("C_NodeType") ; }
 
     public void visit(C_Regex regex)
     {
@@ -58,8 +75,13 @@ public class SDBConstraintText implements SDBConstraintVisitor
         out.print(")") ;
     }
 
-    public void visit(C_Equals c)
-    {}
+    public void visit(C_Equals c) { visitC2(c) ; } 
+    
+    public void visit(C_Constant c)
+    {
+        out.print(SQLUtils.quote(c.getValue())) ;
+    }
+    
 }
 
 /*
