@@ -8,20 +8,20 @@
     rdfs:label "General tests" ;
     mf:entries
     ( 
-       [  mf:name   "General-1" ;
-          mf:action [ qt:query <general-1.rq> ; qt:data <data.ttl> ] ;
+       [  mf:name   "Term-1" ;
+          mf:action [ qt:query <term-1.rq> ; qt:data <data.ttl> ] ;
        ]
-       [  mf:name   "General-2" ;
-          mf:action [ qt:query <general-2.rq> ; qt:data <data.ttl> ] ;
+       [  mf:name   "Term-2" ;
+          mf:action [ qt:query <term-2.rq> ; qt:data <data.ttl> ] ;
        ]
-       [  mf:name   "General-3" ;
-          mf:action [ qt:query <general-3.rq> ; qt:data <data.ttl> ] ;
+       [  mf:name   "Term-3" ;
+          mf:action [ qt:query <term-3.rq> ; qt:data <data.ttl> ] ;
        ]
-       [  mf:name   "General-4" ;
-          mf:action [ qt:query <general-4.rq> ; qt:data <data.ttl> ] ;
+       [  mf:name   "Term-4" ;
+          mf:action [ qt:query <term-4.rq> ; qt:data <data.ttl> ] ;
        ]
-       [  mf:name   "General-5" ;
-          mf:action [ qt:query <general-5.rq> ; qt:data <data.ttl> ] ;
+       [  mf:name   "Term-5" ;
+          mf:action [ qt:query <term-5.rq> ; qt:data <data.ttl> ] ;
        ]
        [  mf:name   "Vars-1" ;
           mf:action [ qt:query <vars-1.rq> ; qt:data <data.ttl> ] ;
