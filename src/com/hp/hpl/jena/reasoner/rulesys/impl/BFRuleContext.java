@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.15 2006-03-22 13:52:24 andy_seaborne Exp $
+ * $Id: BFRuleContext.java,v 1.16 2006-07-14 12:26:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2006-03-22 13:52:24 $
+ * @version $Revision: 1.16 $ on $Date: 2006-07-14 12:26:46 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -204,10 +204,11 @@ public class BFRuleContext implements RuleContext {
     }
     
     /**
-     * Reset the binding environemnt back to empty
+     * Reset the binding environemnt back to empty.
+     * @param newSize the number of variables needed for processing the new rule
      */
-    public void resetEnv() {
-        env.reset();
+    public void resetEnv(int newSize) {
+        env.reset(newSize);
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEEngine.java,v 1.27 2006-03-22 13:52:24 andy_seaborne Exp $
+ * $Id: RETEEngine.java,v 1.28 2006-07-14 12:26:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2006-03-22 13:52:24 $
+ * @version $Revision: 1.28 $ on $Date: 2006-07-14 12:26:46 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -471,7 +471,6 @@ public class RETEEngine implements FRuleEngineI {
      */
     protected void findAndProcessActions() {
         RETERuleContext tempContext = new RETERuleContext(infGraph, this);
-        tempContext.setEnv(new BindingVector());
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
             Rule r = (Rule)i.next();
             if (r.bodyLength() == 0) {
@@ -482,6 +481,7 @@ public class RETEEngine implements FRuleEngineI {
                         Builtin imp = f.getImplementor();
                         if (imp != null) {
                             tempContext.setRule(r);
+                            tempContext.setEnv(new BindingVector( r.getNumVars() ));
                             imp.headAction(f.getArgs(), f.getArgLength(), tempContext);
                         } else {
                             throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + r.toShortString());

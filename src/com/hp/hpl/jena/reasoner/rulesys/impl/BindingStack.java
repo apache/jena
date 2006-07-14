@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingStack.java,v 1.9 2006-03-22 13:52:24 andy_seaborne Exp $
+ * $Id: BindingStack.java,v 1.10 2006-07-14 12:26:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,13 +21,15 @@ import java.util.*;
  * Provides a trail of possible variable bindings for a forward rule.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2006-03-22 13:52:24 $
+ * @version $Revision: 1.10 $ on $Date: 2006-07-14 12:26:46 $
  */
 public class BindingStack implements BindingEnvironment {
     
-    // Current slightly quirky implementation tries to avoid allocating
-    // store in which will be an inner loop. Does one array copy on
-    // push but handles both versions of pop with point manipulation.
+    // We used to have a strange implmentation that avoided GC overheads
+    // by doing copying up a fixed-width stack. The interface to this object
+    // is weird because of this, though the current implementation is a little
+    // more normal
+    
     
     /** The current binding set */
     protected Node[] environment;
@@ -38,31 +40,25 @@ public class BindingStack implements BindingEnvironment {
     /** Index of the current binding set */
     protected int index = 0;
     
-    /** Index of maximum allocated slot in the trail */
-    protected int highWater = 0;
-    
-    /** Maximum number of distinct variables allowed in rules */
-    protected static final int MAX_VAR = 10;
-    
     /**
-     * Constructor
+     * Constructor. The stack isn't ready for use until reset has been called.
      */
     public BindingStack() {
-        trail.add(new Node[MAX_VAR]);
-        environment = (Node[])trail.get(0);
-        index = highWater = 0;
+        index = 0;
     }
     
     /**
      * Save the current environment on an internal stack 
      */
     public void push() {
-        if (index == highWater) {
-            trail.add(new Node[MAX_VAR]);
-            highWater++;
+        if (trail.size() > index) {
+            trail.set(index, environment);
+        } else {
+            trail.add(environment);
         }
-        Node[] newenv = (Node[]) trail.get(++index);
-        System.arraycopy(environment, 0, newenv, 0, MAX_VAR);
+        index++;
+        Node[] newenv = new Node[ environment.length ];
+        System.arraycopy(environment, 0, newenv, 0, environment.length);
         environment = newenv;
     }
     
@@ -75,6 +71,7 @@ public class BindingStack implements BindingEnvironment {
         if (index > 0) {
             // just point to previous stack entry
             environment = (Node[]) trail.get(--index);
+            trail.set(index, null);     // free the old space for GC
         } else {
             throw new IndexOutOfBoundsException("Underflow of BindingEnvironment");
         }
@@ -86,10 +83,7 @@ public class BindingStack implements BindingEnvironment {
      */
     public void commit() throws IndexOutOfBoundsException {
         if (index > 0) {
-            // Swap top and previous stack entries and point to previous
-            Node[] newenv = (Node[]) trail.get(index-1);
-            trail.set(index-1, environment);
-            trail.set(index, newenv);
+            trail.set(index-1, null);
             --index;
         } else {
             throw new IndexOutOfBoundsException("Underflow of BindingEnvironment");
@@ -98,11 +92,12 @@ public class BindingStack implements BindingEnvironment {
    
     /**
      * Reset the binding environment to empty.
+     * @param newSize the number of variables needed for processing the new rule
      */
-    public void reset() {
+    public void reset(int newSize) {
         index = 0;
-        environment = (Node[]) trail.get(0);
-        Arrays.fill(environment, null);
+        trail.clear();
+        environment = new Node[newSize];
     }
     
     /**

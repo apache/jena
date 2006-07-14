@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.34 2006-03-22 13:53:01 andy_seaborne Exp $
+ * $Id: TestBackchainer.java,v 1.35 2006-07-14 12:26:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,9 +33,12 @@ import junit.framework.TestSuite;
  * LP engine, though the bulk of such tests are really done by TestBasicLP.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.34 $ on $Date: 2006-03-22 13:53:01 $
+ * @version $Revision: 1.35 $ on $Date: 2006-07-14 12:26:52 $
  */
 public class TestBackchainer extends TestCase {
+    
+    // Maximum size of binding environment needed in the tests
+    private static final int MAX_VARS = 10;
 
     // Useful constants
     protected Node p = Node.createURI("p");
@@ -180,10 +183,10 @@ public class TestBackchainer extends TestCase {
         doTestUnify(gf, hf3, true, new Node[] {null, b});
         
         // Check binding environment use
-        BindingVector env = BindingVector.unify(g2, h1);
+        BindingVector env = BindingVector.unify(g2, h1, MAX_VARS);
         env.bind(xh, c);
         assertEquals(env.getBinding(yh), c);
-        env = BindingVector.unify(g2, h1);
+        env = BindingVector.unify(g2, h1, MAX_VARS);
         env.bind(yh, c);
         assertEquals(env.getBinding(xh), c);
     }
@@ -197,7 +200,7 @@ public class TestBackchainer extends TestCase {
      * 
      */
     private void doTestUnify(TriplePattern goal, TriplePattern head, boolean succeed, Node[] env) {
-        BindingVector result = BindingVector.unify(goal, head);
+        BindingVector result = BindingVector.unify(goal, head, MAX_VARS);
         if (succeed) {
             assertNotNull(result);
             if (env != null) {

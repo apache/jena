@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.25 2006-03-22 13:52:24 andy_seaborne Exp $
+ * $Id: FRuleEngine.java,v 1.26 2006-07-14 12:26:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2006-03-22 13:52:24 $
+ * @version $Revision: 1.26 $ on $Date: 2006-07-14 12:26:46 $
  */
 public class FRuleEngine implements FRuleEngineI {
     
@@ -220,7 +220,7 @@ public class FRuleEngine implements FRuleEngineI {
             while (i.hasNext()) {
                 ClausePointer cp = (ClausePointer) i.next();
                 if (firedRules.contains(cp.rule)) continue;
-                context.resetEnv();
+                context.resetEnv( cp.rule.getNumVars() );
                 TriplePattern trigger = (TriplePattern) cp.rule.getBodyElement(cp.index);
                 if (match(trigger, t, context.getEnvStack())) {
                     nRulesTriggered++;

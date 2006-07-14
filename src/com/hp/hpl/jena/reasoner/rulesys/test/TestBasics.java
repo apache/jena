@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.36 2006-07-14 10:51:31 der Exp $
+ * $Id: TestBasics.java,v 1.37 2006-07-14 12:26:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,9 +27,13 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.36 $ on $Date: 2006-07-14 10:51:31 $
+ * @version $Revision: 1.37 $ on $Date: 2006-07-14 12:26:52 $
  */
 public class TestBasics extends TestCase  {
+    
+    // Maximum size of binding environment needed in the tests
+    private static final int MAX_VARS = 10;
+    
     // Useful constants
     Node p = Node.createURI("p");
     Node q = Node.createURI("q");
@@ -147,6 +151,7 @@ public class TestBasics extends TestCase  {
      */
     public void testBindingEnvironment() {
         BindingStack env = new BindingStack();
+        env.reset(MAX_VARS);
         
         env.bind(3, n1);
         assertEquals(n1, env.getEnvironment()[3]);
@@ -186,6 +191,7 @@ public class TestBasics extends TestCase  {
      */
     public void testClauseMaching() {
         BindingStack env = new BindingStack();
+        env.reset(MAX_VARS);
         List rules = new ArrayList();
         BasicForwardRuleInfGraph inf = new BasicForwardRuleInfGraph(
                                             new BasicForwardRuleReasoner(rules), rules, null);
