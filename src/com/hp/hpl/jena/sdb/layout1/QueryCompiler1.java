@@ -92,10 +92,11 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
                 continue ;
             // Value scope == IdScope for layout1
             SqlColumn c = sqlNode.getValueScope().getColumnForVar(v) ;
-            if ( c == null )
-                log.warn("Can';t find column for var: "+v) ;
-            else
+            if ( c != null )
                 sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
+//            else
+//                log.warn("Can't find column for var: "+v) ;
+                
         }
         return sqlNode ;
     }
