@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.35 2006-03-22 13:53:01 andy_seaborne Exp $
+ * $Id: TestBasics.java,v 1.36 2006-07-14 10:51:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.35 $ on $Date: 2006-03-22 13:53:01 $
+ * @version $Revision: 1.36 $ on $Date: 2006-07-14 10:51:31 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -77,7 +77,8 @@ public class TestBasics extends TestCase  {
             "-> print(\" literal characters \").",
             "-> print(42). ",
             "-> print('42'^^xsd:byte). ",
-            "-> print('42'^^http://www.w3.org/2001/XMLSchema#int). "
+            "-> print('42'^^http://www.w3.org/2001/XMLSchema#int). ",
+            "-> print('42'^^foobar:byte). "
         };
         String[] testResults = new String[] {
             "[ (?a rdf:type ?_) -> (?a rdf:type ?b) ]",
@@ -94,9 +95,11 @@ public class TestBasics extends TestCase  {
             "[ -> print(' literal characters ') ]",
             "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#int) ]",
             "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#byte) ]",
-            "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#int) ]"
+            "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#int) ]",
+            "[ -> print('42'^^http://foobar#byte) ]",
         };
         
+        PrintUtil.registerPrefix("foobar", "http://foobar#");
         for (int i = 0; i < testRules.length; i++) {
             Rule r = Rule.parseRule(testRules[i]);
             assertEquals(testResults[i], r.toString());
