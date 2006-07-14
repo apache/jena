@@ -17,4 +17,17 @@
        [  mf:name    "Basic - 3" ;
           mf:action [ qt:query <basic-3.rq> ; qt:data <../Data/data.ttl> ] ;
        ]
+       [  mf:name    "Triple - 1" ;
+          mf:action [ qt:query <triple-1.rq> ; qt:data <../Data/data.ttl> ] ;
+       ]
+       [  mf:name    "Triple - 2" ;
+          mf:action [ qt:query <triple-2.rq> ; qt:data <../Data/data.ttl> ] ;
+       ]
+       [  mf:name    "Triple - 3" ;
+          mf:action [ qt:query <triple-3.rq> ; qt:data <../Data/data.ttl> ] ;
+       ]
+       [  mf:name    "Triple - 4" ;
+          mf:action [ qt:query <triple-4.rq> ; qt:data <../Data/data.ttl> ] ;
+       ]
+
     ).

@@ -7,7 +7,7 @@
 <>  rdf:type mf:Manifest ;
     rdfs:label "SDB - Scripts" ;
     mfx:include (
-        <Terms/manifest.ttl>
+        <General/manifest.ttl>
         <BasicPatterns/manifest.ttl>
         <Optionals1/manifest.ttl>
         <Integration/manifest.ttl>
