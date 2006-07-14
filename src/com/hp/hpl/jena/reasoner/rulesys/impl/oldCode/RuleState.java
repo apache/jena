@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleState.java,v 1.6 2006-03-22 13:53:06 andy_seaborne Exp $
+ * $Id: RuleState.java,v 1.7 2006-07-14 13:00:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2006-03-22 13:53:06 $
+ * @version $Revision: 1.7 $ on $Date: 2006-07-14 13:00:00 $
  */
 public class RuleState {
 
@@ -279,7 +279,7 @@ public class RuleState {
         if (n.isVariable()) {
             if (n == head.getSubject() || n == head.getPredicate() || n == head.getObject() ) {
                 Node val = env.getBinding(n);
-                if (n == null || n.isVariable()) return -5;
+                if (val == null || val.isVariable()) return -5;
                 return 5;
             } else {
                 return 0;
