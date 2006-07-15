@@ -23,7 +23,7 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
+import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 public class QueryCompiler1 extends QueryCompilerTriplePattern
@@ -135,13 +136,11 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     protected SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP)
     { 
         // End of BGP - add any constraints.
-        if ( blockBGP.getConstraints().size() > 0 )
+        for ( SDBConstraint c : blockBGP.getConstraints() )
         {
-            for ( SDBConstraint c : blockBGP.getConstraints() )
-            {
-                SqlExpr sqlExpr = c.asSqlExpr(sqlNode.getValueScope()) ;
-                sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
-            }
+            throw new SDBException("ConditionCompiler for layout 1 not writtern") ;
+//                SqlExpr sqlExpr = null ;
+//                sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
         }
         return sqlNode ; 
     }

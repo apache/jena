@@ -6,33 +6,30 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
+import com.hp.hpl.jena.query.expr.Expr;
 
-public class PlanSDBConstraint extends PlanSDBMarker
+// TODO rename to SDBConstraint
+public class SDBConstraint
 {
-    private SDBConstraint constraint ;
     boolean completeConstraint ;
-    PlanFilter original ;
+    private Expr       expr ;
     
     /**
-     * @param constraint           The processed constraint
      * @param completeConstraint   Whether this completely fulfils the SPARQL contract
      */
     
-    public PlanSDBConstraint(SDBConstraint constraint, PlanFilter original, boolean completeConstraint)
+    public SDBConstraint(Expr expr, boolean completeConstraint)
     { 
-        this.constraint = constraint ;
         this.completeConstraint = completeConstraint ;
-        this.original = original ;
+        this.expr = expr;
     }
     
-    public SDBConstraint get() { return constraint ; }
+    public Expr getExpr()             { return expr ; }
+    
     public boolean isComplete() { return completeConstraint ; }
-    public PlanFilter getOriginal() { return original ; }
     
     @Override
-    public String toString() { return "[PlanSDBConstraint "+original.getConstraint()+"]" ; }
+    public String toString() { return "[PlanSDBConstraint "+getExpr()+"]" ; }
 
 }
 

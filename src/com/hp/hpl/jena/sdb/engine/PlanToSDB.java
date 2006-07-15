@@ -86,28 +86,28 @@ public class PlanToSDB extends TransformCopy
 
             if ( e instanceof PlanFilter )
             {
+                PlanFilter filter = (PlanFilter)e ;
+                
                 // If filters have not been transformed earlier.
-                // Better here so can test for whether the filte ris appropriate for the BGP.
-                PlanSDBConstraint c = transformFilter((PlanFilter)e) ;
+                // Better here so can test for whether the filter is appropriate for the BGP.
+
+                SDBConstraint c = transformFilter(filter) ;
                 if ( c == null )
+                    // No good.
                     continue ;
                 
-                if ( c != null )
+                // Check for complete and partial filters.
+                if ( lastSDB != null && lastSDB.getBlock() instanceof BlockBGP )
                 {
-                    PlanFilter filter = c.getOriginal() ;
-                    // Check for complete and partial filters.
-                    if ( lastSDB != null && lastSDB.getBlock() instanceof BlockBGP )
-                    {
-                        BlockBGP b = (BlockBGP)lastSDB.getBlock() ;
-                        b.add(c.get()) ;
-                        if ( c.isComplete() )
-                            filter = null ;
-                    }
-
-                    // Put back in the remained external filter (may be null). 
-                    newElements.set(i, filter) ;
-                    continue ;
+                    BlockBGP b = (BlockBGP)lastSDB.getBlock() ;
+                    b.add(c) ;
+                    if ( c.isComplete() )
+                        filter = null ;
                 }
+
+                // Put back in the remained external filter (may be null). 
+                newElements.set(i, filter) ;
+                continue ;
             }
                 
             // Or do PlanFilters in two steps.
@@ -116,19 +116,16 @@ public class PlanToSDB extends TransformCopy
 //                PlanSDBConstraint c = (PlanSDBConstraint)e ;
 //                PlanFilter filter = c.getOriginal() ;
 //                ...            
-            
-            if ( e instanceof PlanSDBMarker )
-                log.warn("PlanSDBMarker still present!") ;
+            // Nothing done - end of SDB block (if there was one).
             lastSDB = null ;
         }
 
         // Nulls mean no element anymore (e.g. FILTER that has been absorbed into the SDB part)  
         CollectionUtils.removeNulls(newElements) ;
         
-        // Check that the FilteredBGP is wholly converted.
-        // If so, remove this wrapper.
-        
         if ( newElements.size() != 1 )
+            // Still more than one top level step.
+            // return a new PlanBasicGraphPattern with the new elements
             return planElt.copy(newElements) ; 
         
         if ( newElements.get(0) instanceof PlanSDB  )
@@ -159,15 +156,14 @@ public class PlanToSDB extends TransformCopy
     }
     
 
-    private PlanSDBConstraint transformFilter(PlanFilter planElt)
+    private SDBConstraint transformFilter(PlanFilter planElt)
     {
         if ( ! translateConstraints )
             return null ;
         
         Expr expr = planElt.getConstraint().getExpr() ; 
         // TODO Make this a feature of the store.
-        ConditionCompiler cc = new ConditionCompiler() ;
-        PlanSDBConstraint psc = cc.match(planElt) ;
+        SDBConstraint psc = ConditionCompiler.match(planElt) ;
         // Maybe null (not recognized)
         return psc ;
     }

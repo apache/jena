@@ -13,12 +13,13 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.QueryEngineUtils;
+import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 
 public class BlockBGP extends BlockBase
 {
@@ -73,7 +74,7 @@ public class BlockBGP extends BlockBase
     protected BlockBase replace(Binding binding)
     {
         BlockBGP block = new BlockBGP() ;
-        
+
         for ( Triple t : triples )
         {
             if ( binding != null )
@@ -81,15 +82,13 @@ public class BlockBGP extends BlockBase
             block.add(t) ;
         }
 
-      for ( SDBConstraint c : constraints )
-          block.add(c) ;
-        
-        
-//        for ( SDBConstraint c : constraints )
-//        {
-//            c.substitue(binding) ;
-//        }
-        
+        for ( SDBConstraint c : constraints )
+        {
+            Expr expr = c.getExpr().copySubstitute(binding) ;
+            c = new SDBConstraint(expr, c.isComplete()) ;
+            block.add(c) ;
+        }
+
         return block ;
     }
 

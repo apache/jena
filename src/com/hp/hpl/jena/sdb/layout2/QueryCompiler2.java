@@ -27,7 +27,6 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.NodeUtils;
 import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.sdb.condition.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
@@ -35,6 +34,8 @@ import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
+import com.hp.hpl.jena.sdb.engine.ConditionCompiler;
+import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 public class QueryCompiler2 extends QueryCompilerTriplePattern
@@ -149,7 +150,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     
     @Override
     protected SqlNode finishBasicBlock(CompileContext context,
-                                     SqlNode sqlNode, BlockBGP blockBGP)
+                                       SqlNode sqlNode, BlockBGP blockBGP)
     {
         sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
         // Intersection of defined and project?
@@ -204,16 +205,14 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         if ( constraints.size() == 0 )
             return sqlNode ;
 
-        // 1/ Get the val columns
-        // 2/ Generate the SQL conditions
-        
-        //SqlExprList cList = new SqlExprList() ;
+        // Add all value columns
         for ( SDBConstraint c : constraints )
         {
-            List<Var> acc = new ArrayList<Var>() ;
-            c.varsMentioned(acc) ;
-            for ( Var v : acc )
+            List<String> acc = new ArrayList<String>() ;
+            c.getExpr().varsMentioned(acc) ;
+            for ( String $ : acc )
             {
+                Var v = new Var($) ;
                 // For Variables used in this SQL constraint, make sure the value is available.  
                 
                 SqlColumn tripleTableCol = sqlNode.getIdScope().getColumnForVar(v) ;   // tripleTableCol
@@ -233,19 +232,12 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                 nTable.setValueColumnForVar(v, colLex) ;        // ASSUME lexical/string form needed 
                 nTable.setIdColumnForVar(v, colId) ;            // Id scope => join
                 sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
-
-                // "is a string"
-                SqlExpr isStr = new S_Equal(colType, new SqlConstant(ValueType.STRING.getTypeId())) ;
-                isStr.addNote("is a string" ) ;
-                sqlNode = SqlRestrict.restrict(sqlNode, isStr) ;
-
-                // test value of string
-                SqlExpr sCond = c.asSqlExpr(nTable.getValueScope()) ;
-                sCond.addNote(c.toString()) ;
-                sqlNode = SqlRestrict.restrict(sqlNode, sCond) ;
             }
+            
+            // Compile SQL expression for this constraint
+            SqlExpr sqlExpr = ConditionCompiler.compile(c, sqlNode.getValueScope()) ;
+            sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
         }
-        
         return sqlNode ;
     }
 

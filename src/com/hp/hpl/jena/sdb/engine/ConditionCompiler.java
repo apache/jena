@@ -9,19 +9,23 @@ package com.hp.hpl.jena.sdb.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.condition.*;
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
+import com.hp.hpl.jena.sdb.layout2.ValueType;
 
 public class ConditionCompiler
 {
     private static Log log = LogFactory.getLog(ConditionCompiler.class) ;
+    
+    private ConditionCompiler() {}
     
     // -------- Constraints
 
@@ -76,44 +80,61 @@ public class ConditionCompiler
                                                                new Action[]{ new ActionMatchString() ,
                                                                              new ActionMatchVar() }) ;
 
+    // Better structure ???????????
     
-    public PlanSDBConstraint match(PlanFilter planFilter)
+    public static SDBConstraint match(PlanFilter planFilter)
     {
-        MapResult rMap = null ;
         Expr expr = planFilter.getConstraint().getExpr() ;
-        if ( expr == null )
-            return null ;
-        SDBConstraint c = compile(expr, null) ;
-        PlanSDBConstraint psc = new PlanSDBConstraint(c, planFilter, true) ;
-        return psc ;
+        
+        // Need to set the partial flag better.
+        if ( regex1.match(expr)         != null ||
+             startsWith1.match(expr)    != null || 
+             equalsString1.match(expr)  != null )
+        {
+            return new SDBConstraint(expr, true) ;    
+        }
+
+        return null ;
     }
     
-    public SDBConstraint compile(PlanSDBConstraint planConstraint, Binding binding)
+    public static SqlExpr compile(SDBConstraint planConstraint, Scope scope)
     {
         try {
-            // A bit crude - unpack and recompile.
-            return compile(planConstraint.getOriginal().getConstraint().getExpr(), binding) ;
+            return compile(planConstraint.getExpr(), scope) ;
         } catch (NullPointerException ex)
         {
-            return null ;
+            throw new SDBException("Couldn't compile: "+planConstraint) ;
         }
             
     }
     
-    private SDBConstraint compile(Expr expr, Binding binding)
+    // Layout 2 only here.
+    private static SqlExpr compile(Expr expr, Scope scope)
     {
-        if ( binding != null )
-            expr = expr.copySubstitute(binding) ;
-        
         MapResult rMap = null ;
         if ( (rMap = regex1.match(expr)) != null )
         {
             //log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            // TODO - think about need for the C_ parallel class hierarchy of constraints
             Var var = new Var(rMap.get("a1").getVar()) ;
             String pattern = rMap.get("a2").getConstant().getString() ;
-            SDBConstraint c = new C_Regex(new C_Var(var), pattern, false) ;
-            return c ;
+            
+            SqlColumn vCol = scope.getColumnForVar(var) ;
+
+            // LAYOUT2
+            // Ensure its the lex column
+            SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
+            SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
+
+            // "is a string"
+            SqlExpr isStr = new S_Equal(vTypeCol, new SqlConstant(ValueType.STRING.getTypeId())) ;
+            isStr.addNote("is a string" ) ;
+            
+            // regex.
+            SqlExpr sCond = new S_Regex(vCol, pattern, null) ;
+            sCond.addNote(expr.toString()) ;
+            
+            SqlExpr sqlExpr = new S_And(isStr, sCond) ;
+            return sqlExpr ;
         }
         
         if ( (rMap = startsWith1.match(expr)) != null )
@@ -126,16 +147,24 @@ public class ConditionCompiler
             // becomes; isNotNull(var) AND var LIKE 'pattern%'
         }
         
-        if (   (rMap = equalsString1.match(expr)) != null
-            || (rMap = equalsString3.match(expr)) != null )
+        if ( ( rMap = equalsString1.match(expr)) != null )
         {
             // TODO WRONG later - the str() form should not have the same type check
             // still needs to check for bNodes.  How - this is layout1 as well? 
-            log.info("equalsString - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+            //log.info("equalsString - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
             Var var = new Var(rMap.get("a1").getVar()) ;
             String str = rMap.get("a2").getConstant().getString() ;
-            SDBConstraint c = new C_Equals(new C_Var(var), new C_Constant(str)) ;
-            return c ;
+            SqlColumn vCol = scope.getColumnForVar(var) ;
+            SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
+            SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
+            
+            // "is a string"
+            SqlExpr isStr = new S_Equal(vTypeCol, new SqlConstant(ValueType.STRING.getTypeId())) ;
+            isStr.addNote("is a string" ) ;
+            // Equality
+            SqlExpr strEquals = new S_Equal(lexCol, new SqlConstant(str)) ;
+            isStr.addNote(expr.toString()) ; 
+            return new S_And(isStr, strEquals) ;
         }
         
         // Not recognized

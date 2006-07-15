@@ -19,19 +19,12 @@ QC1 and Q2 match/processSlot have much in common.
   QC_Slot?
 
 == Next
-  1/ IsNotNull: C_, S_ and generated PlanToSDB
-       C_ is variables, S_ is columns
-       Why not make C_ == S_ with a var/var=>col subsitution engine?
-       No // C_ is layout independent as well.
-       Need a C_ str function.
-       ** Or get rid of C_ and keep the expr for (re)compilation.
-         Recognizer - works during plan transformation
-         Compiler - works (with substitution) at Block=>SQL.         
+  1/ Better condition compilation
+     Layout1 conditions?
      
   2/ Testing
      Build coverage test suite
      ?x :p ?x
-     
      
   3/ (Detect fn:starts-with function) - do something!
   4/ ==> Performance testing
