@@ -26,12 +26,14 @@ import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+import com.hp.hpl.jena.sdb.core.compiler.ConditionCompilerNone;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.engine.SDBConstraint;
+import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 public class QueryCompiler1 extends QueryCompilerTriplePattern
@@ -170,6 +172,11 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
         }
         // Crude - copying.
         return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+    }
+
+    public ConditionCompiler getConditionCompiler()
+    {
+        return ConditionCompilerNone.get() ;
     }
 }
 

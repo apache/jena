@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.layout2;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,17 +15,19 @@ import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.engine.ExprPattern;
+import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
-import com.hp.hpl.jena.sdb.layout2.ValueType;
+import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 
-public class ConditionCompiler
+public class ConditionCompiler2 implements ConditionCompiler
 {
-    private static Log log = LogFactory.getLog(ConditionCompiler.class) ;
+    private static Log log = LogFactory.getLog(ConditionCompiler2.class) ;
     
-    private ConditionCompiler() {}
+    public ConditionCompiler2() {}
     
     // -------- Constraints
 
@@ -82,7 +84,7 @@ public class ConditionCompiler
 
     // Better structure ???????????
     
-    public static SDBConstraint match(PlanFilter planFilter)
+    public SDBConstraint recognize(PlanFilter planFilter)
     {
         Expr expr = planFilter.getConstraint().getExpr() ;
         
@@ -97,7 +99,7 @@ public class ConditionCompiler
         return null ;
     }
     
-    public static SqlExpr compile(SDBConstraint planConstraint, Scope scope)
+    public SqlExpr compile(SDBConstraint planConstraint, Scope scope)
     {
         try {
             return compile(planConstraint.getExpr(), scope) ;
@@ -108,8 +110,7 @@ public class ConditionCompiler
             
     }
     
-    // Layout 2 only here.
-    private static SqlExpr compile(Expr expr, Scope scope)
+    private SqlExpr compile(Expr expr, Scope scope)
     {
         MapResult rMap = null ;
         if ( (rMap = regex1.match(expr)) != null )

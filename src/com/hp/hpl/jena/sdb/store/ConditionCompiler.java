@@ -6,23 +6,19 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
+import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 
-public interface QueryCompiler
+public interface ConditionCompiler
 {
-    public ConditionCompiler getConditionCompiler() ;
-    
-    public QueryIterator execSQL(Store store,
-                                 Block block,
-                                 Binding binding,
-                                 ExecutionContext execCxt) ;
-    
-    // Convenient to have this.
-    public String asSQL(Block block) ;
- }
+    // Whereas patterns go patterns => blocks => SqlNodes => SQL
+    // Conditions go Exprs => SqlExprs => SQL
+    // so this interface spans engine patterns => blocks, and query compilation.  
+    public SDBConstraint recognize(PlanFilter planFilter) ;
+    public SqlExpr compile(SDBConstraint planConstraint, Scope scope) ;
+}
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

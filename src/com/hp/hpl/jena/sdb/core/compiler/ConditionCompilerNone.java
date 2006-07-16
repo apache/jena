@@ -4,25 +4,40 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.sdb.core.Block;
+import org.apache.commons.logging.LogFactory;
 
-public interface QueryCompiler
+import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.engine.SDBConstraint;
+import com.hp.hpl.jena.sdb.store.ConditionCompiler;
+
+/**
+ * ConditionCompiler that does nothing, refusing to recognize any conditions  
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+public class ConditionCompilerNone implements ConditionCompiler
 {
-    public ConditionCompiler getConditionCompiler() ;
+    private static ConditionCompilerNone theNone = new ConditionCompilerNone() ;
     
-    public QueryIterator execSQL(Store store,
-                                 Block block,
-                                 Binding binding,
-                                 ExecutionContext execCxt) ;
+    public static ConditionCompilerNone get() { return theNone ; }
     
-    // Convenient to have this.
-    public String asSQL(Block block) ;
- }
+    private ConditionCompilerNone() {}
+    
+    public SDBConstraint recognize(PlanFilter planFilter)
+    { return null ; }
+    
+    public SqlExpr compile(SDBConstraint planConstraint, Scope scope)
+    { 
+        LogFactory.getLog(this.getClass()).fatal("Internal Error: ConditionCompilerNone.compile called") ;
+        throw new SDBException("Internal Error: ConditionCompilerNone.compile called") ;
+        
+    }
+}
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

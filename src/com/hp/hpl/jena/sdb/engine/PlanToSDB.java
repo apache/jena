@@ -163,7 +163,7 @@ public class PlanToSDB extends TransformCopy
         
         Expr expr = planElt.getConstraint().getExpr() ; 
         // TODO Make this a feature of the store.
-        SDBConstraint psc = ConditionCompiler.match(planElt) ;
+        SDBConstraint psc = store.getQueryCompiler().getConditionCompiler().recognize(planElt) ;
         // Maybe null (not recognized)
         return psc ;
     }

@@ -34,8 +34,8 @@ import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
-import com.hp.hpl.jena.sdb.engine.ConditionCompiler;
 import com.hp.hpl.jena.sdb.engine.SDBConstraint;
+import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 public class QueryCompiler2 extends QueryCompilerTriplePattern
@@ -235,7 +235,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             }
             
             // Compile SQL expression for this constraint
-            SqlExpr sqlExpr = ConditionCompiler.compile(c, sqlNode.getValueScope()) ;
+            SqlExpr sqlExpr = getConditionCompiler().compile(c, sqlNode.getValueScope()) ;
             sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
         }
         return sqlNode ;
@@ -377,6 +377,12 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                 log.warn("Unrecognized: ("+lex+", "+lang+", "+vType+")") ;
                 return Node.createLiteral("UNRECOGNIZED") ; 
         }
+    }
+
+    private ConditionCompiler conditionCompiler = new ConditionCompiler2() ;
+    public ConditionCompiler getConditionCompiler()
+    {
+        return conditionCompiler ;
     }
 }
 
