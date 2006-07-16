@@ -61,7 +61,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
             if ( x == null )
             {
                 // This happens when the query isn't a single SDB block. 
-                //log.warn("Null for projection variables") ;
+                log.info("Null for projection variables - not a single block?") ;
                 x = block.getDefinedVars() ;
             }
             if ( x == null )

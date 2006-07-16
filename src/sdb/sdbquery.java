@@ -116,8 +116,9 @@ public class sdbquery extends CmdArgsDB
         
         if ( verbose )
         {
-            QueryCompilerBasicPattern.printBlock = true ;
-            QueryCompilerBasicPattern.printAbstractSQL = true ;
+            // ModSDBAdmin - various printing options?
+            //QueryCompilerBasicPattern.printBlock = true ;
+            //QueryCompilerBasicPattern.printAbstractSQL = true ;
             QueryCompilerBasicPattern.printSQL = true ;
             QueryCompilerBasicPattern.printDivider = divider ;
         }

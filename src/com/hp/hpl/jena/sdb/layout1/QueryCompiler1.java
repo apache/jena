@@ -111,6 +111,8 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
     {
         // Generate the SQL SELECT projection
+        // DRYout - choosing variable shareable with QC2 
+        // and call in QBBase?
         Set<Var> x = block.getProjectVars() ;
 
         if ( x == null )

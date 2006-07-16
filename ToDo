@@ -29,6 +29,9 @@ QC1 and Q2 match/processSlot have much in common.
   3/ (Detect fn:starts-with function) - do something!
   4/ ==> Performance testing
 
++ sdprint, sdbquery : ModSDB? for printing queries, blocks, RelAlg and SQL?
+  Are these two commands nearl the same? No - sdbprint does not need --sdb
+
 + Variable tracking
   Use SQL COALESCE for OPTIONALs with shared variables
 

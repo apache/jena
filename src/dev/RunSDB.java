@@ -75,7 +75,7 @@ public class RunSDB
     public static void runPrint()
     {
         //String[] a = {"-v", "--layout=layout2", "@Q.rq"} ;
-        String[] a = {"-v", "--layout=layout2", "@Q.rq"} ;
+        String[] a = {"--layout=layout2", "@Q.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }

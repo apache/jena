@@ -173,7 +173,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             SqlColumn c2 = sqlNode.getValueScope().getColumnForVar(v) ;
             if ( c2 != null )
             {
-                log.info("Column already in scope : ("+v+", "+c2+")") ;
+                //log.info("Column already in scope : ("+v+", "+c2+")") ;
                 // Convert to "id" column
                 c2 = new SqlColumn(c2.getTable(), "id") ; 
                 projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
@@ -254,12 +254,13 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     @Override
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
     {
-        // Add projection
+        // Add projection - need to check that this a complete block, not part of a pattern 
         Set<Var> x = block.getProjectVars() ;
         if ( x == null )
             x = block.getDefinedVars() ;
         SqlNode n =  makeProject(projectVarCols, sqlNode, x) ;
         
+        // Needed anymore?
         constantCols = null ;
         projectVarCols = null ;
         return n ;

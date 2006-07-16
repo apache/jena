@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.util.CollectionUtils;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.BlockOptional;
+import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 
 
@@ -163,7 +164,8 @@ public class PlanToSDB extends TransformCopy
         
         Expr expr = planElt.getConstraint().getExpr() ; 
         // TODO Make this a feature of the store.
-        SDBConstraint psc = store.getQueryCompiler().getConditionCompiler().recognize(planElt) ;
+        ConditionCompiler cc = store.getQueryCompiler().getConditionCompiler() ;
+        SDBConstraint psc = cc.recognize(planElt) ;
         // Maybe null (not recognized)
         return psc ;
     }

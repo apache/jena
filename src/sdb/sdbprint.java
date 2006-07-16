@@ -139,17 +139,26 @@ public class sdbprint extends CmdArgModule
       cmdError("Unknown layout name: "+layoutName) ;
   }
 
-
+    boolean needDivider = false ;
+    private void divider()
+    {
+        if ( needDivider ) System.out.println(divider) ;
+        needDivider = true ;
+    }
     
     private void compilePrint(Query query, QueryCompiler compiler)
     {
+        
+        if ( ! quiet )
+        {
+            divider() ;
+            query.serialize(System.out, Syntax.syntaxARQ) ;
+        }
+        
         if ( verbose )
         {
-            System.out.println(divider) ;
-            query.serialize(System.out, Syntax.syntaxARQ) ;
-            System.out.println(divider) ;
+            divider() ;
             query.serialize(System.out, Syntax.syntaxPrefix) ;
-            System.out.println(divider) ;
         }
 
         Store store = new StoreBase(null, new PlanTranslatorGeneral(true, true), null, null, compiler) ;
@@ -157,12 +166,14 @@ public class sdbprint extends CmdArgModule
 
         if ( verbose )
         {
+            
             PlanElement plan = qe.getPlan() ;
+            divider() ;
             PlanFormatter.out(System.out, plan) ;
-            System.out.println(divider) ;
         }
 
         // Print all SDB things in the plan
+        divider() ;
         PlanWalker.walk(qe.getPlan(), new PrintSDBBlocks(store)) ;
     }
 
