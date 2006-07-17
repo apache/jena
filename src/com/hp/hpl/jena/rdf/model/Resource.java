@@ -35,29 +35,35 @@ import com.hp.hpl.jena.graph.Node;
 
 
 /** An RDF Resource.
- *
- * <p>Resource instances when created are associated with a specific model.
- * They support a range of methods, such as <CODE>getProperty()</CODE> and
- * <CODE>addProperty()</CODE> which will access or modify that model.  This
- * enables the programmer to write code in a compact and easy style.</p>
- *
- * <p>This interface provides methods supporting typed literals.  This means
- *    that methods are provided which will translate a built in type, or an
- *    object to an RDF Literal.  This translation is done by invoking the
- *    <CODE>toString()</CODE> method of the object, or its built in equivalent.
- *    The reverse translation is also supported.  This is built in for built
- *    in types.  Factory objects, provided by the application, are used
- *    for application objects.</p>
- * <p>This interface provides methods for supporting enhanced resources.  An
- *    enhanced resource is a resource to which the application has added
- *    behaviour.  RDF containers are examples of enhanced resources built in
- *    to this package.  Enhanced resources are supported by encapsulating a
- *    resource created by an implementation in another class which adds
- *    the extra behaviour.  Factory objects are used to construct such
- *    enhanced resources.</p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2006-03-22 13:53:12 $'
- */
+
+    Resource instances when created may be associated with a specific model.
+    Resources created <i>by</i> a model will refer to that model, and support
+    a range of methods, such as <code>getProperty()</code> and
+    <code>addProperty()</code> which will access or modify that model.  This
+    enables the programmer to write code in a compact and easy style.
+    
+<p>
+    Resources created by ResourceFactory will not refer to any model, and will 
+    not permit operations which require a model. Such resources are useful
+    as general constants.
+ 
+  <p>This interface provides methods supporting typed literals.  This means
+     that methods are provided which will translate a built in type, or an
+     object to an RDF Literal.  This translation is done by invoking the
+     <CODE>toString()</CODE> method of the object, or its built in equivalent.
+     The reverse translation is also supported.  This is built in for built
+     in types.  Factory objects, provided by the application, are used
+     for application objects.</p>
+  <p>This interface provides methods for supporting enhanced resources.  An
+     enhanced resource is a resource to which the application has added
+     behaviour.  RDF containers are examples of enhanced resources built in
+     to this package.  Enhanced resources are supported by encapsulating a
+     resource created by an implementation in another class which adds
+     the extra behaviour.  Factory objects are used to construct such
+     enhanced resources.</p>
+  @author bwm
+  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2006-07-17 15:26:36 $'
+*/
 public interface Resource extends RDFNode {
 
     /** Returns an a unique identifier for anonymous resources.
@@ -372,7 +378,9 @@ public interface Resource extends RDFNode {
      */
     public Resource commit();
 
-    /** Return the model associated with this resource.
+    /** Return the model associated with this resource. If the Resource
+     * was not created by a Model, the result may be null.
+     * 
      * @return The model associated with this resource.
      */
     public Model getModel();

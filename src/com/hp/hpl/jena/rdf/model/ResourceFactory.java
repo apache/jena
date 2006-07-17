@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceFactory.java,v 1.9 2006-03-22 13:53:12 andy_seaborne Exp $
+  $Id: ResourceFactory.java,v 1.10 2006-07-17 15:26:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -10,7 +10,10 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 
 /** A Factory class for creating resources.
  * 
- * <p> This class creates resources and properties and things of that ilk.</p>
+ * <p> This class creates resources and properties and things of that ilk.
+ * These resources are <i>not</i> associated with a user-modifiable
+ * model: doing getModel() on them will return null.
+ * </p>
  * 
  * <p> It is designed as a singleton.  There are static convenience
  * methods on this class itself, so the easy way to create resource
