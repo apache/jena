@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.63 2006-07-12 13:22:45 chris-dollin Exp $
+  $Id: Model.java,v 1.64 2006-07-17 13:06:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.63 $Date: 2006/03/22 13:53:12 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.64 $Date: 2006/07/12 13:22:45 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -796,25 +796,37 @@ public interface Model
 	 */
 	Model query(Selector s) ;
 
-	/** Create a new model containing all the statements in this model
-	 * together with all of those in another given model.
-	 * @return A new model containing all the statements that are in either model
-	 * @param model The other model whose statements are to be included.
-
-	 */
+	/** 
+         Create a new, independant, model containing all the statements in this model
+         together with all of those in another given model. By <i>independant</i>
+         we mean that changes to the result model do not affect the operand
+         models, and <i>vice versa</i>.
+     <p>
+         The new model need not be of the same type as either this model or
+         the argument model: typically it will be a memory-based model, even
+         if this model is a database model.
+         
+         @return A new model containing all the statements that are in either model
+         @param model The other model whose statements are to be included.
+	*/
 	Model union(Model model) ;
 
-	/** Create a new model containing all the statements which are in both
-	 * this model and another.  As models are sets of statements, a statement
-	 * contained in both models will only appear once in the resulting model.
-	 * @return A new model containing all the statements that are in both models.
-	 * @param model The other model.
-
-	 */
+	/** 
+         Create a new, independant, model containing all the statements which are in both
+         this model and another.  As models are sets of statements, a statement
+         contained in both models will only appear once in the resulting model.
+         The new model need not be of the same type as either this model or
+         the argument model: typically it will be a memory-based model.
+         
+         @return A new model containing all the statements that are in both models.
+         @param model The other model.
+	*/
 	Model intersection(Model model) ;
 
-	/** Create a new model containing all the statements in this model which
+	/** Create a new, independant, model containing all the statements in this model which
 	 * are not in another.
+         The new model need not be of the same type as either this model or
+         the argument model: typically it will be a memory-based model.
 	 * @return a new model containing all the statements in this model that
 	 *         are not in the given model.
 	 * @param model the other model whose statements are to be excluded.
@@ -993,5 +1005,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.63 2006-07-12 13:22:45 chris-dollin Exp $
+ * $Id: Model.java,v 1.64 2006-07-17 13:06:44 chris-dollin Exp $
  */

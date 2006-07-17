@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.46 2006-03-22 13:53:12 andy_seaborne Exp $
+  $Id: ModelFactory.java,v 1.47 2006-07-17 13:06:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -406,7 +406,15 @@ public class ModelFactory extends ModelFactoryBase
     }
 
     /**
-         Answer a new model that is the dynamic union of two other models.
+         Answer a new model that is the dynamic union of two other models. By
+         <i>dynamic union</i>, we mean that changes to either <code>m1</code>
+         or <code>m2</code> will be reflected in the result model, and
+         <i>vice versa</i>: specifically, additions to and removals from the union 
+         will be implemented as operations on <code>m1</code> 
+         <strong>only</strong>. See also the behaviour of OntModel
+         and the MultiUnion class.
+     <p>
+        <code>createUnion</code> only creates two-element unions.
     */
     public static Model createUnion(Model m1, Model m2)
         { return createModelForGraph( new Union( m1.getGraph(), m2.getGraph() ) );   }
