@@ -11,20 +11,23 @@ import com.hp.hpl.jena.query.expr.Expr;
 // TODO rename to SDBConstraint
 public class SDBConstraint
 {
-    boolean completeConstraint ;
-    private Expr       expr ;
+    private boolean completeConstraint ;
+    private Expr        expr ;
+    private ExprPattern exprPattern ;
     
     /**
      * @param completeConstraint   Whether this completely fulfils the SPARQL contract
      */
     
-    public SDBConstraint(Expr expr, boolean completeConstraint)
+    public SDBConstraint(Expr expr, ExprPattern exprPattern, boolean completeConstraint)
     { 
-        this.completeConstraint = completeConstraint ;
         this.expr = expr;
+        this.exprPattern = exprPattern ;
+        this.completeConstraint = completeConstraint ;
     }
     
     public Expr getExpr()             { return expr ; }
+    public ExprPattern getExprPattern()      { return exprPattern ; }
     
     public boolean isComplete() { return completeConstraint ; }
     

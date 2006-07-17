@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
+import com.hp.hpl.jena.sdb.util.Pair;
 
 public class ConditionCompiler2 implements ConditionCompiler
 {
@@ -81,23 +82,68 @@ public class ConditionCompiler2 implements ConditionCompiler
                                                                new String[]{ "a1" , "a2" },
                                                                new Action[]{ new ActionMatchString() ,
                                                                              new ActionMatchVar() }) ;
+    
+    // ********
+    interface Compile { SqlExpr compile(Expr expr, Scope scope) ; }
+    
+    Compile act1 = new Compile(){
 
-    // Better structure ???????????
+        public SqlExpr compile(Expr expr, Scope scope)
+        {
+            return null ;
+        }
+    } ;
+
+    class SqlExprCompile extends Pair<ExprPattern, Compile>
+    { 
+        SqlExprCompile(ExprPattern p, Compile c) { super(p,c) ; }
+        ExprPattern getPattern() { return car() ; } 
+        Compile getMaker() { return cdr() ; }
+    }
+    
+    // Asscoiates pattern with the code to do something.
+    // Remember,the code is executed on the substitutes expression, not the one matched.
+    SqlExprCompile reg[] = {  
+        new SqlExprCompile(regex1, 
+                           new Compile(){
+            public SqlExpr compile(Expr expr, Scope scope)
+            {
+                MapResult rMap = regex1.match(expr) ;
+                if ( rMap == null )
+                    throw new SDBException("Couldn't compile after all: "+expr) ;
+                Var var = new Var(rMap.get("a1").getVar()) ;
+                String pattern = rMap.get("a2").getConstant().getString() ;
+                
+                SqlColumn vCol = scope.getColumnForVar(var) ;
+
+                // Ensure its the lex column
+                SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
+                SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
+                
+                // "is a string"
+                SqlExpr isStr = new S_Equal(vTypeCol, new SqlConstant(ValueType.STRING.getTypeId())) ;
+                isStr.addNote("is a string" ) ;
+                
+                // regex.
+                SqlExpr sCond = new S_Regex(vCol, pattern, null) ;
+                sCond.addNote(expr.toString()) ;
+                
+                SqlExpr sqlExpr = new S_And(isStr, sCond) ;
+                return sqlExpr ;
+            }}) ,
+    } ;
+    // ********
+    
     
     public SDBConstraint recognize(PlanFilter planFilter)
     {
         Expr expr = planFilter.getConstraint().getExpr() ;
         
-        equalsString1.match(expr) ;
-        
-        // Need to set the partial flag better.
-        if ( regex1.match(expr)         != null ||
-             startsWith1.match(expr)    != null || 
-             equalsString1.match(expr)  != null )
+        for ( int i = 0 ; i < reg.length ; i++ )
         {
-            return new SDBConstraint(expr, true) ;    
+            if ( reg[i].car().match(expr) != null )
+                return new SDBConstraint(expr, reg[i].getPattern(), true) ;   
         }
-
         return null ;
     }
     
