@@ -8,7 +8,6 @@ OR canonical tree SPJ
 
 B/ FILTER ( ?x = "string" ) 
    FILTER ( ?x = <uri> ) 
-     design - need "encode"/getLex indirection then remove C_
 
 C/ Out-of-scope variables / surpessed tests
 
