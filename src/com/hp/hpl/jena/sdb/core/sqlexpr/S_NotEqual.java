@@ -1,59 +1,21 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.ExprToSqlCompiler;
-
-public class SDBConstraint
+public class S_NotEqual extends SqlExpr2
 {
-    private boolean completeConstraint ;
-    private Expr expr ;
-    private ExprToSqlCompiler sqlExprCompiler ;
-    
-    /**
-     * @param completeConstraint   Whether this completely fulfils the SPARQL contract
-     */
-    
-    public SDBConstraint(Expr expr, ExprToSqlCompiler sqlExprCompiler, boolean completeConstraint)
+    public S_NotEqual(SqlExpr left, SqlExpr right)
     { 
-        this.expr = expr ; 
-        this.sqlExprCompiler = sqlExprCompiler ;
-        this.completeConstraint = completeConstraint ;
+        super(left, right, "!=") ;
     }
-    
-    public SDBConstraint substitute(Binding binding)
-    {
-        SDBConstraint s2 = new SDBConstraint(expr.copySubstitute(binding),
-                                             sqlExprCompiler,
-                                             completeConstraint) ;
-        return s2 ;
-    }
-    
-    public boolean isComplete() { return completeConstraint ; }
-    
-    @Override
-    public String toString() { return "[PlanSDBConstraint "+expr+"]" ; }
-
-    public Expr getExpr()
-    {
-        return expr ;
-    }
-
-    public ExprToSqlCompiler getSqlExprCompiler()
-    {
-        return sqlExprCompiler ;
-    }
-
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

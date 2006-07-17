@@ -13,7 +13,6 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.QueryEngineUtils;
-import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 
@@ -81,11 +80,7 @@ public class BlockBGP extends BlockBase
         }
 
         for ( SDBConstraint c : constraints )
-        {
-            Expr expr = c.getExpr().copySubstitute(binding) ;
-            c = new SDBConstraint(expr, c.isComplete()) ;
-            block.add(c) ;
-        }
+            block.add(c.substitute(binding)) ;
 
         return block ;
     }

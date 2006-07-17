@@ -13,6 +13,8 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.ExprCompile;
+import com.hp.hpl.jena.sdb.core.ExprToSqlCompiler;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.engine.ExprPattern;
@@ -22,7 +24,6 @@ import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
-import com.hp.hpl.jena.sdb.util.Pair;
 
 public class ConditionCompiler2 implements ConditionCompiler
 {
@@ -38,19 +39,79 @@ public class ConditionCompiler2 implements ConditionCompiler
                                                         new Action[]{ new ActionMatchVar() ,
                                                                       new ActionMatchString()}) ;
     
-    private static ExprPattern regex2 = new ExprPattern("regex(?a1, ?a2, 'i')",
-                                                        new String[]{ "a1" , "a2" },
-                                                        new Action[]{ new ActionMatchVar() ,
+    private static ExprPattern regex1_i = new ExprPattern("regex(?a1, ?a2, 'i')",
+                                                           new String[]{ "a1" , "a2" },
+                                                           new Action[]{ new ActionMatchVar() ,
                                                                       new ActionMatchString()}) ;
+    
+    private static ExprCompile regex1_compile = new ExprCompile() 
+    {
+        public SqlExpr compile(Expr expr, ExprPattern exprPattern, Scope scope)
+        {
+            MapResult rMap = regex1.match(expr) ;
+            if ( rMap == null )
+                throw new SDBException("Couldn't compile after all: "+expr) ;
+            Var var = new Var(rMap.get("a1").getVar()) ;
+            String pattern = rMap.get("a2").getConstant().getString() ;
+            
+            SqlColumn vCol = scope.getColumnForVar(var) ;
+
+            // Ensure it's the lex column
+            SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
+            SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
+            
+            // "is a string"
+            SqlExpr isStr = new S_Equal(vTypeCol, new SqlConstant(ValueType.STRING.getTypeId())) ;
+            isStr.addNote("is a string" ) ;
+            
+            // regex.
+            SqlExpr sCond = new S_Regex(vCol, pattern, 
+                                        (exprPattern==regex1_i)?"i":null) ;
+            sCond.addNote(expr.toString()) ;
+            SqlExpr sqlExpr = new S_And(isStr, sCond) ;
+            return sqlExpr ;
+        }
+    } ;
+    
+    
     // --- regex : testing the lexical form of a term (in a variable)
-    private static ExprPattern regex3 = new ExprPattern("regex(str(?a1), ?a2)",
+    private static ExprPattern regex2 = new ExprPattern("regex(str(?a1), ?a2)",
                                                         new String[]{ "a1" , "a2" },
                                                         new Action[]{ new ActionMatchVar() ,
                                                                       new ActionMatchString()}) ;
-    private static ExprPattern regex4 = new ExprPattern("regex(str(?a1), ?a2, 'i')",
+    private static ExprPattern regex2_i = new ExprPattern("regex(str(?a1), ?a2, 'i')",
                                                         new String[]{ "a1" , "a2" },
                                                         new Action[]{ new ActionMatchVar() ,
                                                                       new ActionMatchString()}) ;
+    
+    private static ExprCompile regex2_compile = new ExprCompile() 
+    {
+        public SqlExpr compile(Expr expr, ExprPattern exprPattern, Scope scope)
+        {
+            MapResult rMap = exprPattern.match(expr) ;
+            if ( rMap == null )
+                throw new SDBException("Couldn't compile after all: "+expr) ;
+            Var var = new Var(rMap.get("a1").getVar()) ;
+            String pattern = rMap.get("a2").getConstant().getString() ;
+            
+            SqlColumn vCol = scope.getColumnForVar(var) ;
+
+            // Ensure it's the lex column
+            SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
+            SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
+            
+            // "not a bNode"
+            SqlExpr isStr = new S_NotEqual(vTypeCol, new SqlConstant(ValueType.BNODE.getTypeId())) ;
+            isStr.addNote("not a bNode" ) ;
+            
+            // regex.
+            SqlExpr sCond = new S_Regex(vCol, pattern, 
+                                        (exprPattern==regex2_i)?"i":null) ;
+            sCond.addNote(expr.toString()) ;
+            SqlExpr sqlExpr = new S_And(isStr, sCond) ;
+            return sqlExpr ;
+        }
+    } ;
     
     // --- starts-with
     private static ExprPattern startsWith1 = new ExprPattern("fn:starts-with(?a1, ?a2)",
@@ -72,6 +133,30 @@ public class ConditionCompiler2 implements ConditionCompiler
                                                                new String[]{ "a1" , "a2" },
                                                                new Action[]{ new ActionMatchString() ,
                                                                              new ActionMatchVar() }) ;
+    
+    private static ExprCompile equalsString1_compile = new ExprCompile() 
+    {
+        public SqlExpr compile(Expr expr, ExprPattern exprPattern, Scope scope)
+        {
+            MapResult rMap = exprPattern.match(expr) ;
+            if ( rMap == null )
+                throw new SDBException("Couldn't compile after all: "+expr) ;
+          //log.info("equalsString - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
+          Var var = new Var(rMap.get("a1").getVar()) ;
+          String str = rMap.get("a2").getConstant().getString() ;
+          SqlColumn vCol = scope.getColumnForVar(var) ;
+          SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
+          SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
+          
+          // "is a string"
+          SqlExpr isStr = new S_Equal(vTypeCol, new SqlConstant(ValueType.STRING.getTypeId())) ;
+          isStr.addNote("is a string" ) ;
+          // Equality
+          SqlExpr strEquals = new S_Equal(lexCol, new SqlConstant(str)) ;
+          isStr.addNote(expr.toString()) ; 
+          return new S_And(isStr, strEquals) ;
+        } 
+    } ;
 
     private static ExprPattern equalsString3 = new ExprPattern("str(?a1) = ?a2",
                                                                new String[]{ "a1" , "a2" },
@@ -84,65 +169,35 @@ public class ConditionCompiler2 implements ConditionCompiler
                                                                              new ActionMatchVar() }) ;
     
     // ********
-    interface Compile { SqlExpr compile(Expr expr, Scope scope) ; }
     
-    Compile act1 = new Compile(){
+    static ExprCompile notImplemented = new ExprCompile(){
 
-        public SqlExpr compile(Expr expr, Scope scope)
+        public SqlExpr compile(Expr expr, ExprPattern ePattern, Scope scope)
         {
-            return null ;
+            log.warn("Not implemented: compile: "+expr) ;
+            throw new SDBException("Not implemented: compile: "+expr) ;
         }
     } ;
 
-    class SqlExprCompile extends Pair<ExprPattern, Compile>
-    { 
-        SqlExprCompile(ExprPattern p, Compile c) { super(p,c) ; }
-        ExprPattern getPattern() { return car() ; } 
-        Compile getMaker() { return cdr() ; }
-    }
-    
-    // Asscoiates pattern with the code to do something.
-    // Remember,the code is executed on the substitutes expression, not the one matched.
-    SqlExprCompile reg[] = {  
-        new SqlExprCompile(regex1, 
-                           new Compile(){
-            public SqlExpr compile(Expr expr, Scope scope)
-            {
-                MapResult rMap = regex1.match(expr) ;
-                if ( rMap == null )
-                    throw new SDBException("Couldn't compile after all: "+expr) ;
-                Var var = new Var(rMap.get("a1").getVar()) ;
-                String pattern = rMap.get("a2").getConstant().getString() ;
-                
-                SqlColumn vCol = scope.getColumnForVar(var) ;
-
-                // Ensure its the lex column
-                SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
-                SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
-                
-                // "is a string"
-                SqlExpr isStr = new S_Equal(vTypeCol, new SqlConstant(ValueType.STRING.getTypeId())) ;
-                isStr.addNote("is a string" ) ;
-                
-                // regex.
-                SqlExpr sCond = new S_Regex(vCol, pattern, null) ;
-                sCond.addNote(expr.toString()) ;
-                
-                SqlExpr sqlExpr = new S_And(isStr, sCond) ;
-                return sqlExpr ;
-            }}) ,
+    // Associates patterns with the code to do something.
+    // Remember, the code is executed on the substituted expression, not the one matched.
+    static ExprToSqlCompiler reg[] = { 
+        new ExprToSqlCompiler(regex1, regex1_compile) ,
+        new ExprToSqlCompiler(regex1_i, regex1_compile) ,
+        new ExprToSqlCompiler(regex2, regex2_compile) ,
+        new ExprToSqlCompiler(regex2_i, regex2_compile) ,
+        new ExprToSqlCompiler(equalsString1, equalsString1_compile) ,
     } ;
-    // ********
-    
-    
+
     public SDBConstraint recognize(PlanFilter planFilter)
     {
         Expr expr = planFilter.getConstraint().getExpr() ;
         
         for ( int i = 0 ; i < reg.length ; i++ )
         {
-            if ( reg[i].car().match(expr) != null )
-                return new SDBConstraint(expr, reg[i].getPattern(), true) ;   
+            MapResult rMap = reg[i].getPattern().match(expr) ; 
+            if (  rMap != null )
+                return new SDBConstraint(expr, reg[i], true) ;   
         }
         return null ;
     }
@@ -150,75 +205,13 @@ public class ConditionCompiler2 implements ConditionCompiler
     public SqlExpr compile(SDBConstraint planConstraint, Scope scope)
     {
         try {
-            return compile(planConstraint.getExpr(), scope) ;
+            Expr expr = planConstraint.getExpr() ;
+            ExprToSqlCompiler c = planConstraint.getSqlExprCompiler() ;
+            return c.getMaker().compile(expr, c.getPattern(), scope) ;
         } catch (NullPointerException ex)
         {
             throw new SDBException("Couldn't compile: "+planConstraint) ;
         }
-            
-    }
-    
-    private SqlExpr compile(Expr expr, Scope scope)
-    {
-        MapResult rMap = null ;
-        if ( (rMap = regex1.match(expr)) != null )
-        {
-            //log.info("Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            Var var = new Var(rMap.get("a1").getVar()) ;
-            String pattern = rMap.get("a2").getConstant().getString() ;
-            
-            SqlColumn vCol = scope.getColumnForVar(var) ;
-
-            // LAYOUT2
-            // Ensure its the lex column
-            SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
-            SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
-
-            // "is a string"
-            SqlExpr isStr = new S_Equal(vTypeCol, new SqlConstant(ValueType.STRING.getTypeId())) ;
-            isStr.addNote("is a string" ) ;
-            
-            // regex.
-            SqlExpr sCond = new S_Regex(vCol, pattern, null) ;
-            sCond.addNote(expr.toString()) ;
-            
-            SqlExpr sqlExpr = new S_And(isStr, sCond) ;
-            return sqlExpr ;
-        }
-        
-        if ( (rMap = startsWith1.match(expr)) != null )
-        {
-            log.info("startsWith - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            Var var = new Var(rMap.get("a1").getVar()) ;
-            String pattern = rMap.get("a2").getConstant().getString() ;
-            // Unfinished
-            return null ;
-            // becomes; isNotNull(var) AND var LIKE 'pattern%'
-        }
-        
-        if ( ( rMap = equalsString1.match(expr)) != null )
-        {
-            // TODO WRONG later - the str() form should not have the same type check
-            // still needs to check for bNodes.  How - this is layout1 as well? 
-            //log.info("equalsString - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-            Var var = new Var(rMap.get("a1").getVar()) ;
-            String str = rMap.get("a2").getConstant().getString() ;
-            SqlColumn vCol = scope.getColumnForVar(var) ;
-            SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
-            SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
-            
-            // "is a string"
-            SqlExpr isStr = new S_Equal(vTypeCol, new SqlConstant(ValueType.STRING.getTypeId())) ;
-            isStr.addNote("is a string" ) ;
-            // Equality
-            SqlExpr strEquals = new S_Equal(lexCol, new SqlConstant(str)) ;
-            isStr.addNote(expr.toString()) ; 
-            return new S_And(isStr, strEquals) ;
-        }
-        
-        // Not recognized
-        return null ;
-
     }
 }
 
