@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.layout1;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -111,13 +112,19 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
     {
         // Generate the SQL SELECT projection
-        // DRYout - choosing variable shareable with QC2 
-        // and call in QBBase?
+        // DRYout - choosing variable shareable with QC2 - finishCompile => makeProject and finishCompile is just a signal 
         Set<Var> x = block.getProjectVars() ;
 
         if ( x == null )
             x = block.getDefinedVars() ;
-        for ( Var v : x )
+        
+        sqlNode = makeProject(x, sqlNode) ;
+        return sqlNode ;
+    }
+
+    private SqlNode makeProject(Collection<Var> projectVars, SqlNode sqlNode)
+    {
+        for ( Var v : projectVars )
         {
             if ( ! v.isNamedVar() )
                 continue ;
@@ -131,7 +138,7 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
         }
         return sqlNode ;
     }
-
+    
     @Override
     protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     { return null ; }

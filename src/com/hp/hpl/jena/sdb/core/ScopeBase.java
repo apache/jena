@@ -58,6 +58,20 @@ public class ScopeBase implements Scope
         }
         frame.put(var, column) ;
     }
+    
+    @Override
+    public String toString()
+    {
+        String str = "" ;
+        String sep = "" ;
+        for ( Var v : frame.keySet() )
+        {
+            SqlColumn c = frame.get(v) ;
+            str = str + sep + v + ":"+c ;
+            sep = " " ;
+        }
+        return str ;
+    }
 }
 
 /*

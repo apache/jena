@@ -18,7 +18,10 @@ public abstract class BlockBase implements Block
 {
     Set<Var> projectVars = null ;
     public Set<Var> getProjectVars() { return projectVars ; }
-    public void setProjectVars(Set<Var> projectVars) { this.projectVars = projectVars ; }
+    
+    public void setProjectVars(Set<Var> projectVars)
+    { this.projectVars = projectVars ; }
+    
     public void addProjectVar(Var var)
     {
         if ( projectVars == null )
@@ -36,11 +39,15 @@ public abstract class BlockBase implements Block
             block.projectVars = new LinkedHashSet<Var>() ;
             block.projectVars.addAll(getProjectVars()) ;
         }
+        block.completePattern = completePattern ;
         return block ; 
     }
     
     protected abstract BlockBase replace(Binding binding) ;
 
+    boolean completePattern = false ;
+    public boolean isCompletePattern() { return completePattern ; }
+    public void setCompletePattern(boolean completePattern)   { this.completePattern = completePattern ; }
     
     @Override
     public String toString()

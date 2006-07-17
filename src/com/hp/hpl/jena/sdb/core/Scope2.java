@@ -53,6 +53,12 @@ public class Scope2 implements Scope
         
         return null ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return left.toString() + " " + right.toString(); 
+    }
 }
 
 /*

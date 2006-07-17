@@ -28,9 +28,7 @@ public class BlockBGP extends BlockBase
     private List<Triple> triples = new  LinkedList<Triple>() ;
     private List<SDBConstraint> constraints = new  LinkedList<SDBConstraint>() ;
     
-    public BlockBGP()
-    {
-    }
+    public BlockBGP() {}
     
     public void add(Triple triple) { triples.add(triple) ; }
     public void add(SDBConstraint constraint) { constraints.add(constraint) ; }

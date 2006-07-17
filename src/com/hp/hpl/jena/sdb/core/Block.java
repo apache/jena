@@ -20,6 +20,11 @@ public interface Block extends Printable
     
     Block substitute(Binding binding) ;
     SqlNode generateSQL(CompileContext context, QueryCompilerBasicPattern queryCompiler) ;
+
+    // Temp?
+    boolean isCompletePattern() ;
+    void setCompletePattern(boolean isComplete) ;
+
     Set<Var> getProjectVars() ;
     Set<Var> getDefinedVars() ;
     void setProjectVars(Set<Var> projectVars) ;

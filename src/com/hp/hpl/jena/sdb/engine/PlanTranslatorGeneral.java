@@ -64,6 +64,8 @@ public class PlanTranslatorGeneral implements PlanTranslator
             return planElt ;
         }
 
+        planSDB.getBlock().setCompletePattern(true) ;
+        
         // It's a single SDB plan - set the projection on the top Block/PlanSDB.  
         List x = planSDB.getQuery().getResultVars() ;   // Names
         

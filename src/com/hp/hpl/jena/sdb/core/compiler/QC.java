@@ -50,7 +50,7 @@ public class QC
 
         SqlExprList conditions = new SqlExprList() ;
         
-        // TODO Consider doing this a a rel algebra tree optimization reorganisation later 
+        // TODO Consider doing this a rel algebra tree optimization reorganisation later 
         
         // Flatten some cases.
         if ( left.isRestrict() && joinType == JoinType.INNER )

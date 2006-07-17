@@ -25,7 +25,6 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.query.util.NodeUtils;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
@@ -42,9 +41,8 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
 {
     private static Log log = LogFactory.getLog(QueryCompiler2.class) ;
     
-    // TODO Check for parallel execution.
+    // Only one active basic graph pattern compilation at a time.
     private Map<Node, SqlColumn> constantCols = null ;
-    private ArrayList<Pair<Var, SqlColumn>> projectVarCols = null ;
     
     // -------- Basic Graph pattern compilation
     
@@ -76,7 +74,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     {
         SqlColumn thisCol = new SqlColumn(triples, colName) ;
         
-        // Abstract : QC1 does an encode, QC2, finds.
+        // Abstract : QC_1 does an encode, QC_2, finds.
         // abstract: node=>column
         if ( ! node.isVariable() )
         {
@@ -87,7 +85,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                 return ;
             }
             SqlExpr c = new S_Equal(thisCol, colId) ;
-            c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+            c.addNote("Const condition: "+FmtUtils.stringForNode(node)) ;
             conditions.add(c) ;
             return ; 
         }
@@ -112,6 +110,11 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     @Override
     protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     {
+        if ( constantCols != null /*|| projectVarCols != null*/ )
+            log.fatal("Currently already compiling a BlockBGP") ;
+        
+        constantCols = new HashMap<Node, SqlColumn>() ;
+        
         // Add constants to start of a block.
         // TODO See if any constants already in scope.
         Collection<Node> constants = blockBGP.getConstants() ;
@@ -120,6 +123,18 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         
     }
 
+    @Override
+    protected SqlNode finishBasicBlock(CompileContext context,
+                                       SqlNode sqlNode, BlockBGP blockBGP)
+    {
+        sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
+        // Intersection of defined and project?
+        sqlNode = extractResults(context, blockBGP.getDefinedVars(), sqlNode) ;
+        // Drop the constants mapping
+        constantCols = null ;
+        return sqlNode ;
+    }
+    
     private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants, Object object)
     {
         SqlNode sqlNode = null ;
@@ -127,7 +142,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         {
             long hash = NodeLayout2.hash(n);
             SqlConstant hashValue = new SqlConstant(hash) ;
-
+    
             // Access nodes table.
             
             SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
@@ -143,21 +158,10 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         }
         
         return sqlNode ;
-
+    
     }
 
-    // --------- Finish basic graph pattern
-    
-    @Override
-    protected SqlNode finishBasicBlock(CompileContext context,
-                                       SqlNode sqlNode, BlockBGP blockBGP)
-    {
-        sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
-        // Intersection of defined and project?
-        sqlNode = extractResults(context, blockBGP.getDefinedVars(), sqlNode) ; 
-        return sqlNode ;
-    }
-    
+
     private SqlNode extractResults(CompileContext context,
                                    Collection<Var>vars, SqlNode sqlNode)
     {
@@ -172,28 +176,22 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
             // Already in scope from a condition?
             SqlColumn c2 = sqlNode.getValueScope().getColumnForVar(v) ;
             if ( c2 != null )
-            {
-                //log.info("Column already in scope : ("+v+", "+c2+")") ;
-                // Convert to "id" column
-                c2 = new SqlColumn(c2.getTable(), "id") ; 
-                projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
+                // Already there
                 continue ;
-            }
             
             // Not in scope -- add a table to get it (share some code with addRestrictions?) 
             // Value table.
             SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
-            nTable.setValueColumnForVar(v, c1) ;
-            
+            c2 = new SqlColumn(nTable, "id") ;                  // nTable.getColFor("id") ;
+
+            nTable.setValueColumnForVar(v, c2) ;
             // Condition for value: triple table column = node table id 
             nTable.addNote("Var: "+v) ;
-            c2 = new SqlColumn(nTable, "id") ;                  // nTable.getColFor("id") ;
+            
+            
             SqlExpr cond = new S_Equal(c1, c2) ;
             SqlNode n = QC.innerJoin(context, sqlNode, nTable) ;
             sqlNode = SqlRestrict.restrict(n, cond) ;
-            
-            // remember for the projection
-            projectVarCols.add(new Pair<Var, SqlColumn>(v, c2)) ;
         }
         return sqlNode ;
     }
@@ -244,59 +242,59 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     @Override
     protected void startCompile(CompileContext context, Block block)
     {
-        if ( constantCols != null || projectVarCols != null )
-            log.fatal("Currently already compilign a BlockBGP") ;
-        
-        constantCols = new HashMap<Node, SqlColumn>() ;
-        projectVarCols = new ArrayList<Pair<Var, SqlColumn>>() ;
     }
     
     @Override
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
     {
-        // Add projection - need to check that this a complete block, not part of a pattern 
+        // Generate the SQL SELECT projection
+        // DRYout - choosing variable shareable with QC2 - finishCompile => makeProject and finishCompile is just a signal
+        
+        if ( ! block.isCompletePattern() && block.getProjectVars() != null )
+            log.warn("Not a complete pattern block but there are projection variables set") ;
+        
         Set<Var> x = block.getProjectVars() ;
         if ( x == null )
             x = block.getDefinedVars() ;
-        SqlNode n =  makeProject(projectVarCols, sqlNode, x) ;
-        
-        // Needed anymore?
-        constantCols = null ;
-        projectVarCols = null ;
+        SqlNode n =  makeProject(sqlNode, x) ;
         return n ;
     }
     
-    private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, Set<Var> projectVars)
+//    private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, Set<Var> projectVars)
+    private SqlNode makeProject(SqlNode sqlNode, Set<Var> projectVars)
     {
-        for ( Pair<Var, SqlColumn> p : cols )
+        for ( Var v : projectVars )
         {
-            // Not in the projection - skip 
-            if ( ! projectVars.contains(p.getLeft()) )
-                continue ;
+            // See if we have a value column already.
+            SqlColumn vCol = sqlNode.getValueScope().getColumnForVar(v) ;
+            if ( vCol == null )
+            {
+                // Should be a column mentioned in the SELECT which is not mentionedd in this block 
+                return sqlNode ;
+            }
             
-            if ( ! NodeUtils.isApplicationVar(p.getLeft().asNode()) )
-                // Skip blank node variables and system variables.
-                continue ;
+          SqlTable table = vCol.getTable() ; 
+          Var vLex = new Var(v.getName()+"$lex") ;
+          SqlColumn cLex = new SqlColumn(table, "lex") ;
+
+          Var vDatatype = new Var(v.getName()+"$datatype") ;
+          SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
+
+          Var vLang = new Var(v.getName()+"$lang") ;
+          SqlColumn cLang = new SqlColumn(table, "lang") ;
+          
+          Var vType = new Var(v.getName()+"$type") ;
+          SqlColumn cType = new SqlColumn(table, "type") ;
+
+          // Get the 3 part of the RDF term and its internal type number.
+          sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
+          sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
+          sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
+          sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
+
             
-            String n = p.car().getName() ;
-            Var vLex = new Var(n+"$lex") ;
-            SqlColumn cLex = new SqlColumn(p.cdr().getTable(), "lex") ;
-
-            Var vDatatype = new Var(n+"$datatype") ;
-            SqlColumn cDatatype = new SqlColumn(p.cdr().getTable(), "datatype") ;
-
-            Var vLang = new Var(n+"$lang") ;
-            SqlColumn cLang = new SqlColumn(p.cdr().getTable(), "lang") ;
-            
-            Var vType = new Var(n+"$type") ;
-            SqlColumn cType = new SqlColumn(p.cdr().getTable(), "type") ;
-
-            // Get the 3 part of the RDF term and its internbal type number.
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
         }
+        
         return sqlNode ;
     }
 
