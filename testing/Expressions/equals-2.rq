@@ -6,7 +6,4 @@ PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 # No matches
 
 SELECT ?v
-WHERE { 
-  ?x :p ?v . 
-  FILTER ( ?v = ":x1" )
-}
+WHERE { ?x :p ?v . FILTER ( ?v = "aaa" ) }

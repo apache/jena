@@ -88,6 +88,8 @@ public class ConditionCompiler2 implements ConditionCompiler
     {
         Expr expr = planFilter.getConstraint().getExpr() ;
         
+        equalsString1.match(expr) ;
+        
         // Need to set the partial flag better.
         if ( regex1.match(expr)         != null ||
              startsWith1.match(expr)    != null || 

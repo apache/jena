@@ -22,8 +22,9 @@ import com.hp.hpl.jena.query.core.BindingRoot;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.PlanFormatter;
 import com.hp.hpl.jena.query.engine1.PlanVisitorBase;
-import com.hp.hpl.jena.query.engine1.PlanWalker;
+import com.hp.hpl.jena.query.engine1.PlanFormatterVisitor;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
+import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
@@ -37,6 +38,7 @@ import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBase;
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.FileUtils;
 
 /**
@@ -174,9 +176,43 @@ public class sdbprint extends CmdArgModule
 
         // Print all SDB things in the plan
         divider() ;
-        PlanWalker.walk(qe.getPlan(), new PrintSDBBlocks(store)) ;
+        //PlanWalker.walk(qe.getPlan(), new PrintSDBBlocks(store)) ;
+        
+        // Print the new plan with SQL.
+        IndentedWriter w = new IndentedWriter(System.out) ;
+        PlanFormatterVisitor fmt = new PrintPlanSQL(w, store) ;
+        fmt.startVisit() ;
+        qe.getPlan().visit(fmt) ;
+        fmt.finishVisit() ;
     }
 
+    class PrintPlanSQL extends PlanFormatterVisitor
+    {
+        private Store store ;
+        public PrintPlanSQL(IndentedWriter w, Store store) { super(w, (PrefixMapping)null) ; this.store = store ; }
+
+        @Override
+        public void visit(PlanElementExternal planElt)
+        {
+            if ( ! ( planElt instanceof PlanSDB ) )
+            {
+                super.visit(planElt) ; 
+                return ;
+            }
+            PlanSDB planSDB = (PlanSDB)planElt ;
+            Block block = planSDB.getBlock() ;
+            block = block.substitute(new BindingRoot());
+            String sqlStmt = store.getQueryCompiler().asSQL(block) ;
+            out.println("[SQL --------") ;
+            out.incIndent() ;
+            out.print(sqlStmt) ;
+            out.decIndent() ;
+            out.println();
+            out.print("-------- ]") ;
+        }
+    }
+    
+    // Find SQL-ish blocks.
     class PrintSDBBlocks extends PlanVisitorBase
     {
         private Store store ;
@@ -208,8 +244,7 @@ public class sdbprint extends CmdArgModule
             }
         }
     }
-
-
+    
     @Override
     protected String getSummary()
     {

@@ -6,33 +6,19 @@ IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
 OR improve the generation of SQL output and leave the tree much as is.
 OR canonical tree SPJ
 
-B/ FILTER ( ?x = "string" ) 
-   FILTER ( ?x = <uri> ) 
+HSQL/MySQL joint testing
 
-C/ Out-of-scope variables / surpessed tests
-
-D/ HSQL/MySQL joint testing
-
-DRY:
+DRYing out:
 QC1 and Q2 match/processSlot have much in common.
   QC_Slot?
 
 == Next
-  1/ Better condition compilation
-     Layout1 conditions?
-     
-  2/ Testing
-     Build coverage test suite
-     ?x :p ?x
-     
-  3/ (Detect fn:starts-with function) - do something!
   4/ ==> Performance testing
 
 + sdprint, sdbquery : ModSDB? for printing queries, blocks, RelAlg and SQL?
   Are these two commands nearl the same? No - sdbprint does not need --sdb
 
-+ Variable tracking
-  Use SQL COALESCE for OPTIONALs with shared variables
++ Use SQL COALESCE for OPTIONALs with shared variables
 
 c.f. SQLCache and returning prepared statements
   Named parameters in INSERT for robustness.
@@ -46,7 +32,6 @@ Encode upper/lower case into SQL identifiers.
 Need to handle connection management to be concurrency and connection pooling friendly.
 
 + Test for 
-   + "?x :p ?x"
    + FILTER and out-of-block variables ; OPTIONAL { FILTER (?x = .. ) ?x :p ?q }
    + Nested optionals with var not used by outer one (bottom up/top down issue)
    + Two optionals with a shared var

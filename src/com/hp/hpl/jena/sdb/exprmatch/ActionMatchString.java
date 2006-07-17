@@ -17,6 +17,9 @@ public class ActionMatchString extends ActionMatchBind
             // throw new NoMatch("ActionMatchString: Not a variable: "+expr) ;
             return false ;
         
+        if ( ! expr.getConstant().isString() )
+            return false ;
+        
         String x = expr.getConstant().getString() ;
         // Managed to get the string - pass on up.
         return super.match(varName, expr, resultMap) ;

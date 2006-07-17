@@ -35,4 +35,11 @@
           rdfs:comment "Variable spans blocks" ;
           mf:action [ qt:query <regex-opt-4.rq> ; qt:data <data.ttl> ] ;
        ]
+
+       [  mf:name   "Equals-1" ;
+          mf:action [ qt:query <equals-1.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name   "Equals-2" ;
+          mf:action [ qt:query <equals-2.rq> ; qt:data <data.ttl> ] ;
+       ]
     ).
