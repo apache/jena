@@ -30,7 +30,7 @@ import arq.cmdline.* ;
  
 public class sdbinfo extends CmdArgsDB
 {
-    public static final String usage = "sdbinfo <SPEC>" ;
+    public static final String usage = "sdbinfo --sdb <SPEC>" ;
 
     static ArgDecl argDeclFormat = new ArgDecl(true, "format","fmt") ;
 

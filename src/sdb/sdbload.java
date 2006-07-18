@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.FileUtils;
  
 public class sdbload extends CmdArgsDB
 {
-    private static final String usage = "sdbload <SPEC> file" ;
+    private static final String usage = "sdbload --sdb <SPEC> file" ;
     
     private static ArgDecl argDeclTruncate = new ArgDecl(false, "truncate") ;
     

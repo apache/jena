@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.FileManager;
  
 public class sdbquery extends CmdArgsDB
 {
-    public static final String usage = "sdbquery <SPEC> [--direct] [ <query> | --query=file ]" ;
+    public static final String usage = "sdbquery --sdb <SPEC> [--direct] [ <query> | --query=file ]" ;
     
     private static ArgDecl argDeclQuery   = new ArgDecl(true,   "query") ;
     private static ArgDecl argDeclDirect  = new ArgDecl(false,  "direct") ;

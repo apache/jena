@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
  
 public class sdbtest extends CmdArgsDB
 {
-    public static final String usage = "sdbtest <SPEC> --schema schemaName [--direct] [manifest]" ;
+    public static final String usage = "sdbtest --sdb <SPEC> --schema schemaName [--direct] [manifest]" ;
     
     public static void main (String [] argv)
     {
