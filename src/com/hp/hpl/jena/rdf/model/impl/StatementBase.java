@@ -1,7 +1,7 @@
 /*
 	 (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.7 2006-03-22 13:52:29 andy_seaborne Exp $
+	 $Id: StatementBase.java,v 1.8 2006-07-18 14:08:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -27,9 +27,7 @@ public abstract class StatementBase
 		}
 
 	public Model getModel()
-		{
-		return model;
-		}
+		{ return model; }
 
 	/**
 	 * replace this StaementImpl [ie the one of which this is the base] with (S,
@@ -66,59 +64,37 @@ public abstract class StatementBase
 	 * disappear.
 	 */
 	protected StatementImpl stringReplace( String s )
-		{
-		return stringReplace( s, "", false );
-		}
+		{ return stringReplace( s, "", false ); }
 
 	public Statement changeObject( boolean o )
-		{
-		return stringReplace( String.valueOf( o ) );
-		}
+		{ return stringReplace( String.valueOf( o ) ); }
 
 	public Statement changeObject( long o )
-		{
-		return stringReplace( String.valueOf( o ) );
-		}
+		{ return stringReplace( String.valueOf( o ) ); }
 
 	public Statement changeObject( char o )
-		{
-		return stringReplace( String.valueOf( o ) );
-		}
+		{ return stringReplace( String.valueOf( o ) ); }
 
 	public Statement changeObject( float o )
-		{
-		return stringReplace( String.valueOf( o ) );
-		}
+		{ return stringReplace( String.valueOf( o ) ); }
 
 	public Statement changeObject( double o )
-		{
-		return stringReplace( String.valueOf( o ) );
-		}
+		{ return stringReplace( String.valueOf( o ) ); }
 
 	public Statement changeObject( String o )
-		{
-		return stringReplace( String.valueOf( o ) );
-		}
+		{ return stringReplace( String.valueOf( o ) ); }
 
 	public Statement changeObject( String o, boolean wellFormed )
-		{
-		return stringReplace( String.valueOf( o ), "", wellFormed );
-		}
+		{ return stringReplace( String.valueOf( o ), "", wellFormed ); }
 
 	public Statement changeObject( String o, String l )
-		{
-		return stringReplace( String.valueOf( o ), l, false );
-		}
+		{ return stringReplace( String.valueOf( o ), l, false ); }
 
 	public Statement changeObject( String o, String l, boolean wellFormed )
-		{
-		return stringReplace( String.valueOf( o ), l, wellFormed );
-		}
+		{ return stringReplace( String.valueOf( o ), l, wellFormed ); }
 
 	public Statement changeObject( RDFNode o )
-		{
-		return replace( o );
-		}
+		{ return replace( o ); }
 
 	public Statement changeObject( Object o )
 		{
@@ -128,49 +104,31 @@ public abstract class StatementBase
 		}
 
 	public boolean getBoolean()
-		{
-		return getLiteral().getBoolean();
-		}
+		{ return getLiteral().getBoolean(); }
 
 	public byte getByte()
-		{
-		return getLiteral().getByte();
-		}
+		{ return getLiteral().getByte(); }
 
 	public short getShort()
-		{
-		return getLiteral().getShort();
-		}
+		{ return getLiteral().getShort(); }
 
 	public int getInt()
-		{
-		return getLiteral().getInt();
-		}
+		{ return getLiteral().getInt(); }
 
 	public long getLong()
-		{
-		return getLiteral().getLong();
-		}
+		{ return getLiteral().getLong(); }
 
 	public char getChar()
-		{
-		return getLiteral().getChar();
-		}
+		{ return getLiteral().getChar(); }
 
 	public float getFloat()
-		{
-		return getLiteral().getFloat();
-		}
+		{ return getLiteral().getFloat(); }
 
 	public double getDouble()
-		{
-		return getLiteral().getDouble();
-		}
+		{ return getLiteral().getDouble(); }
 
 	public String getString()
-		{
-		return getLiteral().getLexicalForm();
-		}
+		{ return getLiteral().getLexicalForm(); }
 
 	/**
 	 * utility: check that node is a Resource, throw otherwise
@@ -184,14 +142,13 @@ public abstract class StatementBase
 		}
 
 	public String getLanguage()
-		{
-		return getLiteral().getLanguage();
-		}
+		{ return getLiteral().getLanguage(); }
 
 	public boolean getWellFormed()
-		{
-		return getLiteral().isWellFormedXML();
-		}
+		{ return hasWellFormedXML(); }
+    
+    public boolean hasWellFormedXML()
+        { return getLiteral().isWellFormedXML(); }
 
 	/**
 	 	Answer a string describing this Statement in a vagely pretty way, with the 
@@ -211,9 +168,7 @@ public abstract class StatementBase
 	 	Answer a string describing <code>object</code>, quoting it if it is a literal.
 	*/
 	protected String objectString( RDFNode object )
-		{
-		return object.asNode().toString( null, true );
-		}
+		{ return object.asNode().toString( null, true ); }
 
 	}
 

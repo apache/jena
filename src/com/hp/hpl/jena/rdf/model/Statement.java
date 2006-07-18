@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2000-2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.13 2006-03-22 13:53:12 andy_seaborne Exp $
+	$Id: Statement.java,v 1.14 2006-07-18 14:08:30 chris-dollin Exp $
 */
 
 
@@ -14,7 +14,9 @@ import com.hp.hpl.jena.graph.*;
  * <p>A Statement is not a Resource, but can produce a ReifiedStatement
  * that represents it and from which the Statement can be recovered.</p>
  *
- * <p>A statement instance tracks which model it is associated with.</p>
+ * <p>A statement instance tracks which model created it, if any. All the
+ * Resource components of a Statement are in the same model as the
+ * Statement, if it has one, and are in no model if the Statement isn't.</p>
  *
  * <p>This interface provides methods supporting typed literals.  This means
  *    that methods are provided which will translate a built in type, or an
@@ -25,7 +27,7 @@ import com.hp.hpl.jena.graph.*;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.13 $ $Date: 2006-03-22 13:53:12 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2006-07-18 14:08:30 $
  */
 
 public interface Statement extends FrontsTriple
@@ -248,8 +250,16 @@ public interface Statement extends FrontsTriple
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * 
      * @return true if the Literal object is well formed
+     * @deprecated use hasWellFormedXML instead.
      */    
     public boolean getWellFormed() ;
+
+    /**
+        Answer true iff the Literal object of this statement is well-formed XML
+        (ie equivalent to getLiteral().isWellFormedXML()). If the object is not
+        a Literal, throw an exception.
+    */
+    public boolean hasWellFormedXML();
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      * @return this object to enable cascading of method calls.
