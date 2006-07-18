@@ -8,5 +8,5 @@ PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 SELECT ?v
 WHERE { 
   ?x :p ?v . 
-  FILTER ( ?v = ":x1" )
+  FILTER regex(?v, "^a.", "i") 
 }

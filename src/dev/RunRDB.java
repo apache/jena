@@ -13,6 +13,7 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ModelMaker;
 import com.hp.hpl.jena.sdb.Access;
@@ -31,7 +32,7 @@ public class RunRDB
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
 
-    private static void jdbcBasic()
+    private static void jdbcGetMetadata()
     {
         String jdbcURL = "jdbc:mysql://localhost/jenatest" ;
         String user = null ;
@@ -57,11 +58,11 @@ public class RunRDB
     }
 
     @SuppressWarnings("deprecation")
-    public static void main(String[]argv)
+    public static void dwim(String[]argv)
     {
+        // Crate a model - normal way
         try
         {
- 
             String className = "com.mysql.jdbc.Driver";         // path of driver class
             //Class.forName (className);                          // Load the Driver
             String DB_URL =     "jdbc:mysql://localhost/test";  // URL of database 
@@ -69,9 +70,9 @@ public class RunRDB
             String DB_PASSWD = "????";                          // database password
             String DB =        "MySQL";                         // database type
 
-//             Create database connection
             IDBConnection conn = new DBConnection ( DB_URL, DB_USER, DB_PASSWD, DB );
             ModelMaker maker = ModelFactory.createModelRDBMaker(conn) ;
+            Model m = maker.createDefaultModel() ;
             
         } catch (Exception e)
         {
@@ -79,7 +80,8 @@ public class RunRDB
             System.exit(1) ;
         }
         
-        
+        // Description for ModelRDB -- need to incorporate elsewhere
+        // Use the 
         SDB.init() ;
 
         String f = "sdb.ttl" ; 

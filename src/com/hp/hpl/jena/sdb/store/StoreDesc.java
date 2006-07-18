@@ -27,8 +27,9 @@ public class StoreDesc
     
     public SDBConnectionDesc connDesc  = null ;
     public String layoutName           = null ;
-    public MySQLEngineType engineType  = null ;
+    public MySQLEngineType engineType  = null ;     // MySQL specific
     public DatabaseType dbType         = null ;
+    public String modelName            = null ;     // ModelRDB specific
     
     public static StoreDesc read(String filename)
     {

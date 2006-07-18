@@ -68,7 +68,12 @@ public class AssemblerVocab
     // Store (uses pSDBtype) 
     public static final Property pLayout            = ResourceFactory.createProperty(NS, "layout") ;
     public static final Property pConnection        = ResourceFactory.createProperty(NS, "connection") ;
+    
+    // Specific to something
+    // MySQl engine type
     public static final Property pMySQLEngine       = ResourceFactory.createProperty(NS, "engine") ;
+    // ModeRDB graph name
+    public static final Property pModelRDBname      = ResourceFactory.createProperty(NS, "modelName") ;
     
     private static boolean initialized = false ; 
     

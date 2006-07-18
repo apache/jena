@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sdb.shared.Named;
  */
 
 public enum DatabaseType implements Named{
+    // These should be compatible with the DBnames that Jena uses for ModelRDB
     MySQL5     { public String getName() { return "MySQL5" ; } } ,
     MySQL41    { public String getName() { return "MySQL41" ; } } ,
     PostgreSQL { public String getName() { return "PostgreSQL" ; } } ,

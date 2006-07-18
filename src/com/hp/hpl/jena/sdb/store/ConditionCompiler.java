@@ -7,17 +7,11 @@
 package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
-import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 
 public interface ConditionCompiler
 {
-    // Whereas patterns go patterns => blocks => SqlNodes => SQL
-    // Conditions go Exprs => SqlExprs => SQL
-    // so this interface spans engine patterns => blocks, and query compilation.  
     public SDBConstraint recognize(PlanFilter planFilter) ;
-    public SqlExpr compile(SDBConstraint planConstraint, Scope scope) ;
 }
 
 /*

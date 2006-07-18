@@ -232,8 +232,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                 sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
             }
             
-            // Compile SQL expression for this constraint
-            SqlExpr sqlExpr = getConditionCompiler().compile(c, sqlNode.getValueScope()) ;
+            SqlExpr sqlExpr = c.compile(sqlNode.getValueScope()) ;
             sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
         }
         return sqlNode ;

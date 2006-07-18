@@ -14,7 +14,8 @@ _:c rdf:type acmd:SDBConnection ;
 [] rdf:type acmd:Store ;
     acmd:layout     "layout2" ;
     acmd:connection _:c ;
-    acmd:engine     "InnoDB" ;
+    acmd:modelName  "" ;        # ModelRDB specific
+    acmd:engine     "InnoDB" ;  # MySQL/SDB specific
     .
 
 ## For HSQL, in memory, need data loading as well.

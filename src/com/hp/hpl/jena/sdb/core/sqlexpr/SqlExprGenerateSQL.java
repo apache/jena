@@ -42,7 +42,8 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
     public void visit(S_Regex regex)
     {
         // Err ... need to choose bewteen regex and LIKE
-
+        // TODO Understand case-sensitivity
+        // TODO Make per-store dependent for syntax and case sensitiveity reasons.
         regex.getExpr().visit(this) ;
         // MySQL :: LIKE // LIKE BINARY
         out.print(" REGEXP ") ;

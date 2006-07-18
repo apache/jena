@@ -10,8 +10,12 @@ import static java.lang.String.format;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.db.DBConnection;
+import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.layout1.StoreRDB;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
@@ -27,15 +31,6 @@ public class StoreFactory
 {
     private static Log log = LogFactory.getLog(StoreFactory.class) ;
 
-//    public static Store create(SDBConnection connection,
-//                                StoreName schemaName)
-//    { return create(connection, schemaName, false) ; }
-//    
-//    public static Store create(SDBConnection connection,
-//                                StoreName schemaName,
-//                                boolean canCreate)
-//    { return null; }
-    
     public static Store create(StoreDesc desc)
     { return create(desc, null) ; }
     
@@ -80,6 +75,19 @@ public class StoreFactory
                     throw new SDBException(format("Unknown DB type: %s [layout=%s]",
                                                   desc.dbType.getName(), desc.layoutName)) ;
             }
+        }
+        
+        if ( desc.layoutName.equalsIgnoreCase("modelRDB") )
+        {
+            IDBConnection conn = new DBConnection(sdb.getSqlConnection(), desc.dbType.name()) ;
+            String mName = desc.modelName ;
+            ModelRDB modelRDB = null ;
+            if ( mName == null || mName.equals("") || mName.equalsIgnoreCase("default") )
+                modelRDB = ModelRDB.open(conn) ;
+            else
+                modelRDB = ModelRDB.open(conn, mName) ;
+            StoreRDB store = new StoreRDB(modelRDB) ;
+            return store ;
         }
 
         log.warn(format("Can't make (%s, %s)", desc.layoutName, desc.connDesc.type)) ; 

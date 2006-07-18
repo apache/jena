@@ -4,38 +4,26 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 
-public abstract class SDBConstraint
+public abstract class ConditionCompilerBase implements ConditionCompiler
 {
-    private boolean completeConstraint ;
-    private Expr expr ;
-    
-    public SDBConstraint(Expr expr, boolean completeConstraint)
-    { 
-        this.expr = expr ; 
-        this.completeConstraint = completeConstraint ;
-    }
-    
-    abstract public SDBConstraint substitute(Binding binding) ;
-    
-    public boolean isComplete() { return completeConstraint ; }
-    
-    @Override
-    public String toString() { return "[PlanSDBConstraint "+expr+"]" ; }
-
-    public Expr getExpr()
+    final
+    public SDBConstraint recognize(PlanFilter planFilter)
     {
-        return expr ;
+        if ( ! planFilter.getConstraint().isExpr() )
+            return null ;
+        
+        Expr expr = planFilter.getConstraint().getExpr() ;
+        return recognize(expr) ;
     }
 
-    public abstract SqlExpr compile(Scope scope) ;
-    
+    abstract 
+    protected SDBConstraint recognize(Expr expr) ;
 }
 
 /*
