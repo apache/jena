@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.layout2;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -209,9 +210,10 @@ public abstract class LoaderTriplesNodes
 	{
 	    if ( initialized ) return ;
 	    initialized = true ;
-	    
+	    try {
 	    createLoaderTable();
-	    createPreparedStatements() ; 
+	    createPreparedStatements() ;
+	    } catch (RuntimeException e) { e.printStackTrace(); throw e;}
 	    count = 0;
 	
 	    seenNodes = new HashSet<PreparedNode>();
@@ -270,9 +272,18 @@ public abstract class LoaderTriplesNodes
         s.setString(3, node.lang);
         s.setString(4, node.datatype);
         s.setInt(5, node.typeId);
-        s.setInt(6, node.valInt);
-        s.setDouble(7, node.valDouble);
-        s.setTimestamp(8, node.valDateTime);
+        if (node.valInt != null)
+        	s.setInt(6, node.valInt);
+        else
+        	s.setNull(6, Types.INTEGER);
+        if (node.valDouble  != null)
+        	s.setDouble(7, node.valDouble);
+        else
+        	s.setNull(7, Types.DOUBLE);
+        if (node.valDateTime != null)
+        	s.setTimestamp(8, node.valDateTime);
+        else
+        	s.setNull(8, Types.TIMESTAMP);
         
         s.addBatch();
     }
@@ -327,8 +338,8 @@ public abstract class LoaderTriplesNodes
         String lang;
         String datatype;
         int typeId;
-        int valInt;
-        double valDouble;
+        Integer valInt;
+        Double valDouble;
         Timestamp valDateTime;
 
         PreparedNode(Node node)
@@ -348,21 +359,20 @@ public abstract class LoaderTriplesNodes
                     datatype = "";
             }
             // Value of the node
-            valInt = 0;
+            valInt = null;
             if (vType == ValueType.INTEGER)
                 valInt = Integer.parseInt(lex);
 
-            valDouble = 0;
+            valDouble = null;
             if (vType == ValueType.DOUBLE)
                 valDouble = Double.parseDouble(lex);
-
+            
+            valDateTime = null;
             if (vType == ValueType.DATETIME)
             {
                 String dateTime = SQLUtils.toSQLdatetimeString(lex);
                 valDateTime = Timestamp.valueOf(dateTime);
             }
-            else
-                valDateTime = new Timestamp(0);
 
             hash = NodeLayout2.hash(lex, lang, datatype, typeId);
         }

@@ -65,9 +65,6 @@ public class FmtLayout2HSQL extends FmtLayout2
                      "   lang VARCHAR(10) default '' NOT NULL ,",
                      "   datatype VARCHAR default '' NOT NULL ,",
                      "   type int default 0 NOT NULL ,",
-                     "   vInt int default 0 NOT NULL ,", 
-                     "   vDouble double default 0 NOT NULL ,", 
-                     "   vDateTime datetime default '' NOT NULL ,",
                      "   PRIMARY KEY (id)",
                      ")"  
                 )) ;

@@ -71,10 +71,7 @@ public class FmtLayout2MySQL extends FmtLayout2
                                  "   lex TEXT BINARY CHARACTER SET utf8 ,",
                                  "   lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
                                  "   datatype VARCHAR("+TableNodes.UriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
-                                 "   type int unsigned NOT NULL default '0',",      // SDB built-in type
-                                 "   vInt int NOT NULL default '0',", 
-                                 "   vDouble double NOT NULL default '0',", 
-                                 "   vDateTime datetime NOT NULL default '0000-00-00 00:00:00',",
+                                 "   type int unsigned NOT NULL default '0',",      // SDB built-in
                                  "   PRIMARY KEY Id  (id)",
                                  ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8;"  
                     )) ;

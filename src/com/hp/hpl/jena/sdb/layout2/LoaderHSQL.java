@@ -41,9 +41,9 @@ public class LoaderHSQL extends BulkLoaderLJ
                     "  lang VARCHAR(10) NOT NULL ,",
                     "  datatype VARCHAR("+ TableNodes.UriLength+ ") NOT NULL ,",
                     "  type int NOT NULL ,",
-                    "  vInt int NOT NULL,",
-                    "  vDouble double NOT NULL,",
-                    "  vDateTime datetime NOT NULL",
+                    "  vInt int,",
+                    "  vDouble double,",
+                    "  vDateTime datetime",
                     ") "
                 ));
             

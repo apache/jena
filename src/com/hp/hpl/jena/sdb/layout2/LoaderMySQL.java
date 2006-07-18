@@ -34,12 +34,12 @@ public class LoaderMySQL extends BulkLoaderLJ
                     "(",
                     "  hash BIGINT NOT NULL,",
                     "  lex TEXT BINARY CHARACTER SET utf8 NOT NULL,",
-                    "  lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
-                    "  datatype VARCHAR("+ TableNodes.UriLength+ ") BINARY CHARACTER SET utf8 NOT NULL default '',",
-                    "  type int unsigned NOT NULL default '0',",
-                    "  vInt int NOT NULL default '0',",
-                    "  vDouble double NOT NULL default '0',",
-                    "  vDateTime datetime NOT NULL default '0000-00-00 00:00:00'",
+                    "  lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL,",
+                    "  datatype VARCHAR("+ TableNodes.UriLength+ ") BINARY CHARACTER SET utf8 NOT NULL,",
+                    "  type int unsigned NOT NULL,",
+                    "  vInt int,",
+                    "  vDouble double,",
+                    "  vDateTime datetime",
                     ") DEFAULT CHARSET=utf8;"
             ));
             s.execute(sqlStr(
@@ -69,8 +69,8 @@ public class LoaderMySQL extends BulkLoaderLJ
             .prepareStatement("INSERT INTO NNode VALUES (?,?,?,?,?,?,?,?);");
         
         super.insertNodes = conn.prepareStatement(sqlStr(
-        		"INSERT IGNORE INTO Nodes (hash, lex, lang, datatype, type, vInt, vDouble, vDateTime)",
-        		"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type, NNode.vInt, NNode.vDouble, NNode.vDateTime",
+        		"INSERT IGNORE INTO Nodes (hash, lex, lang, datatype, type)",
+        		"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type",
         		"	FROM NNode"
             ));
         
