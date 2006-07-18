@@ -13,7 +13,6 @@ import sdb.cmd.CmdArgsDB;
 import arq.cmd.QExec;
 import arq.cmd.ResultsFormat;
 import arq.cmdline.ArgDecl;
-import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
@@ -43,8 +42,6 @@ public class sdbquery extends CmdArgsDB
     private static ArgDecl argDeclQuery   = new ArgDecl(true,   "query") ;
     private static ArgDecl argDeclDirect  = new ArgDecl(false,  "direct") ;
     private static ArgDecl argDeclRepeat   = new ArgDecl(true,  "repeat") ;
-    
-    ModTime modTime = new ModTime() ;
     
     boolean printResults = true ;
     int repeatCount = 1 ;
@@ -131,22 +128,22 @@ public class sdbquery extends CmdArgsDB
     {
         // Force setup
         getModStore().getStore() ;
-        if ( modTime.timingEnabled() )
+        if ( getModTime().timingEnabled() )
         {
             // Setup costs : fluish classes into memory and establish connection
-            modTime.startTimer() ;
+            getModTime().startTimer() ;
             getModStore().getStore() ;
-            long connectTime =  modTime.endTimer() ;
+            long connectTime =  getModTime().endTimer() ;
             //System.out.println("Connect time:    "+timeStr(connectTime)) ;
             
-            modTime.startTimer() ;
+            getModTime().startTimer() ;
             Query query = QueryFactory.create(queryStr) ;
 //            QueryExecution qExec = QueryExecutionFactory.create(query, getSDBModel()) ;
 //            qExec.close() ;
-            long javaTime = modTime.endTimer() ;
+            long javaTime = getModTime().endTimer() ;
             
             if ( verbose )
-                System.out.println("Class load time: "+modTime.timeStr(javaTime)) ;
+                System.out.println("Class load time: "+getModTime().timeStr(javaTime)) ;
         }
         
         
@@ -166,14 +163,14 @@ public class sdbquery extends CmdArgsDB
         try {
             for ( int i = 0 ; i < repeatCount ; i++ )
             {
-                modTime.startTimer() ;
+                getModTime().startTimer() ;
                 Query query = QueryFactory.create(queryStr) ;
                 QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
                 QExec.executeQuery(query, qExec, fmt) ;
                 qExec.close() ;
-                long queryTime = modTime.endTimer() ;
+                long queryTime = getModTime().endTimer() ;
                 totalTime += queryTime ;
             }
         } catch (QueryException ex)
@@ -181,7 +178,7 @@ public class sdbquery extends CmdArgsDB
             System.out.println("Query exception: "+ex.getMessage()) ;
         }
         finally {
-            if ( modTime.timingEnabled() )
+            if ( getModTime().timingEnabled() )
             {
                 System.out.println("Execute time:    "+String.format("%.4f", new Double(totalTime/(1000.0*repeatCount)) )) ;
             }

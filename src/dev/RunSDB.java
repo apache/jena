@@ -38,8 +38,8 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
-        //runQuery() ;
-        runPrint() ;
+        runQuery() ;
+        //runPrint() ;
         //runLoad() ;
         
         //runDump() ;
@@ -64,10 +64,10 @@ public class RunSDB
 //            "-v",
 //        } ;
         
-        String a[] = {"-v", "--sdb=sdb.ttl", "@Q.rq" } ;
+        String a[] = {"-v", "--time","--sdb=sdb.ttl", "@Q.rq" } ;
       
-        SDBConnection.logSQLStatements = false ;
-        SDBConnection.logSQLExceptions = true ;
+//        SDBConnection.logSQLStatements = false ;
+//        SDBConnection.logSQLExceptions = true ;
         sdbquery.main(a) ;
         System.exit(0) ;
     }
