@@ -71,13 +71,17 @@ public class SDBConnection
 
     private void init(String url, String user, String password)
     {
+        if ( url == null )
+            throw new SDBException("JDBC URL is null") ;
         if ( user == null )
             user = Access.getUser() ;
         if ( password == null )
             password = Access.getPassword() ;
         try
         {
-            sqlConnection = DriverManager.getConnection(url, user, password) ;
+            sqlConnection = null ;
+            if ( ! url.equals(JDBC.jdbcNone))
+                sqlConnection = DriverManager.getConnection(url, user, password) ;
             label = url ;
         } catch (SQLException e)
         {

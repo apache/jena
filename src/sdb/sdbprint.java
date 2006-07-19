@@ -51,13 +51,15 @@ public class sdbprint extends CmdArgModule
 {
     static { CmdUtils.setLog4j() ; }
 
-    private static ArgDecl argDeclLayout = new ArgDecl(ArgDecl.HasValue, "layout") ;
-    private static ArgDecl argDeclQuery   = new ArgDecl(ArgDecl.HasValue,   "query") ;
+    private static ArgDecl argDeclLayout  = new ArgDecl(ArgDecl.HasValue, "layout") ;
+    private static ArgDecl argDeclQuery   = new ArgDecl(ArgDecl.HasValue, "query") ;
 
-    // TODO ModLayout when StoreType is two dimensions (DB type, layout) 
-    String layoutNameDefault = "layout2" ;
-
+    // TODO use modules. CmdArgsDB and ignore unwanted.
+    // Have a dummy connection just to connect a store:
+    // 1?/ type == "none" => Fixed JDBC URL (""?) JDBC.nullURL. 
+    // 2?/ jdbc:none
     
+    String layoutNameDefault = "layout2" ;
     // This command knows how to create queries without needing a store or connection.
     
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
@@ -71,7 +73,7 @@ public class sdbprint extends CmdArgModule
     {
         super(args);
         add(argDeclLayout, "layout", "Store layout") ;
-        add(argDeclQuery, "query", "The query") ;
+        add(argDeclQuery,  "query",  "The query") ;
     }
 
     

@@ -15,8 +15,10 @@ import com.hp.hpl.jena.sdb.shared.DBtype;
 
 public class JDBC
 {
-
-    public static Map<DBtype, String> driver = new HashMap<DBtype, String>() ;
+    // The "well known" not a JDBC connection really scheme
+    public static final String jdbcNone = "jdbc:none" ;
+    
+    private static Map<DBtype, String> driver = new HashMap<DBtype, String>() ;
     static {
         driver.put(DBtype.MySQL,       "com.mysql.jdbc.Driver") ;
         driver.put(DBtype.PostgreSQL,  "org.postgresql.Driver") ;
@@ -25,6 +27,8 @@ public class JDBC
         //driver.put(DBtype.Derby,       "org.apache.derby.jdbc.ClientDriver") ;
         driver.put(DBtype.SQLserver,   "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
     }
+    
+    static public String getDriver(DBtype dbType) { return driver.get(dbType) ; }
     
     static public void loadDriverHSQL()  { loadDriver(driver.get(DBtype.HSQL)) ; }
     static public void loadDriverMySQL() { loadDriver(driver.get(DBtype.MySQL)) ; }
@@ -57,7 +61,7 @@ public class JDBC
         if ( password == null )
             password = Access.getPassword() ;
         
-        if ( type.equals("mysql") || type.equals("postgresql") )
+        if ( type.equalsIgnoreCase("mysql") || type.equalsIgnoreCase("postgresql") )
         {
             String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
             if ( argStr != null && ! argStr.equals("") )
@@ -72,6 +76,9 @@ public class JDBC
                 s = s+ "?"+ argStr ;
             return s ;
         }
+        
+        if ( type.equalsIgnoreCase("none") )
+            return jdbcNone ;
         
         throw new SDBException("Don't know how to construct a JDBC URL for "+type) ;
     }

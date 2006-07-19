@@ -26,21 +26,21 @@ public class RDB
     {
         set("jena.db.url",        "jdbc:mysql://localhost/"+dbName) ;
         set("jena.db.type",       DBtype.MySQL.getName()) ;
-        set("jena.db.driver",     JDBC.driver.get(DBtype.MySQL)) ;
+        set("jena.db.driver",     JDBC.getDriver(DBtype.MySQL)) ;
     }
     
     public static void set_PostgreSQL(String dbName)
     {
         set("jena.db.url",       "jdbc:postgresql://localhost/"+dbName) ;
         set("jena.db.type",      DBtype.PostgreSQL.getName()) ;
-        set("jena.db.driver",    JDBC.driver.get(DBtype.PostgreSQL) ) ;
+        set("jena.db.driver",    JDBC.getDriver(DBtype.PostgreSQL) ) ;
     }
     
     public static void set_SQLserver(String dbName)
     {
         set("jena.db.url",         "jdbc:sqlserver://localhost\\SQLEXPRESS;database="+dbName) ;
         set("jena.db.type",        DBtype.SQLserver.getName()) ;
-        set("jena.db.driver",      JDBC.driver.get(DBtype.SQLserver) ) ;
+        set("jena.db.driver",      JDBC.getDriver(DBtype.SQLserver) ) ;
         //set("jena.db.concurrent",  "false") ;
     }
     
@@ -49,7 +49,7 @@ public class RDB
         // "host" = "mem"
         set("jena.db.url",         "jdbc:hsqldb:mem:"+dbName) ;
         set("jena.db.type",        DBtype.HSQL.getName()) ;
-        set("jena.db.driver",      JDBC.driver.get(DBtype.HSQL) ) ;
+        set("jena.db.driver",      JDBC.getDriver(DBtype.HSQL) ) ;
         set("jena.db.concurrent",  "false") ;
     }
 
@@ -57,7 +57,7 @@ public class RDB
     {
         set("jena.db.url",         "jdbc:derby:"+dbName) ;
         set("jena.db.type",        DBtype.Derby.getName()) ;
-        set("jena.db.driver",      JDBC.driver.get(DBtype.Derby) ) ;
+        set("jena.db.driver",      JDBC.getDriver(DBtype.Derby) ) ;
         set("jena.db.concurrent",  "false") ;
     }
     
