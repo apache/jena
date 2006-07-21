@@ -23,7 +23,7 @@ public class SDBFactory
     
     public static SDBConnection createConnection(SDBConnectionDesc desc)
     {
-        return new SDBConnection(desc) ;
+        return desc.createConnection() ;
     }
     
     public static GraphSDB connectGraph(Store store)

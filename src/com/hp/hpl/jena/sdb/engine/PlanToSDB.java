@@ -162,7 +162,7 @@ public class PlanToSDB extends TransformCopy
         if ( ! translateConstraints )
             return null ;
         
-        Expr expr = planElt.getConstraint().getExpr() ; 
+        Expr expr = planElt.getExpr() ; 
         // TODO Make this a feature of the store.
         ConditionCompiler cc = store.getQueryCompiler().getConditionCompiler() ;
         SDBConstraint psc = cc.recognize(planElt) ;

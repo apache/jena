@@ -350,7 +350,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
         return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
     }
 
-    private Node makeNode(String lex, String datatype, String lang, ValueType vType)
+    private static Node makeNode(String lex, String datatype, String lang, ValueType vType)
     {
         switch (vType)
         {

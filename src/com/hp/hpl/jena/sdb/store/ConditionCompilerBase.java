@@ -15,11 +15,7 @@ public abstract class ConditionCompilerBase implements ConditionCompiler
     final
     public SDBConstraint recognize(PlanFilter planFilter)
     {
-        if ( ! planFilter.getConstraint().isExpr() )
-            return null ;
-        
-        Expr expr = planFilter.getConstraint().getExpr() ;
-        return recognize(expr) ;
+        return recognize(planFilter.getExpr()) ;
     }
 
     abstract 

@@ -52,14 +52,6 @@ public class SDBConnection
         this(ds.getConnection()) ;
     }
     
-    public SDBConnection(SDBConnectionDesc desc)
-    {
-        desc.initJDBC() ;
-        if ( desc.driver != null )
-            JDBC.loadDriver(desc.driver) ;
-        init(desc.jdbcURL, desc.user, desc.password) ;
-    }
-    
     public SDBConnection(String url, String user, String password)
     { init(url, user, password) ; }
     

@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Reconstruction QC.assembleResults should separated out.
+  QC.getBobTheBuilder()=> Rebuilder .assembleResult().
+
 SqlExpr::
 IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
 OR improve the generation of SQL output and leave the tree much as is.

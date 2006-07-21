@@ -29,7 +29,7 @@ public class ConditionCompiler2 implements ConditionCompiler
 
     public SDBConstraint recognize(PlanFilter planFilter)
     {
-        Expr expr = planFilter.getConstraint().getExpr() ;
+        Expr expr = planFilter.getExpr() ;
         
         for ( int i = 0 ; i < reg.length ; i++ )
         {

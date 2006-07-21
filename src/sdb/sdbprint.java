@@ -55,9 +55,6 @@ public class sdbprint extends CmdArgModule
     private static ArgDecl argDeclQuery   = new ArgDecl(ArgDecl.HasValue, "query") ;
 
     // TODO use modules. CmdArgsDB and ignore unwanted.
-    // Have a dummy connection just to connect a store:
-    // 1?/ type == "none" => Fixed JDBC URL (""?) JDBC.nullURL. 
-    // 2?/ jdbc:none
     
     String layoutNameDefault = "layout2" ;
     // This command knows how to create queries without needing a store or connection.

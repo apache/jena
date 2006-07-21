@@ -50,6 +50,14 @@ public class SDBConnectionDesc
         if ( jdbcURL == null )
             jdbcURL = JDBC.makeURL(type, host, name, argStr, user, password) ;
     }
+    
+    public SDBConnection createConnection()
+    {
+        initJDBC() ;
+        if ( driver != null )
+            JDBC.loadDriver(driver) ;
+        return new SDBConnection(jdbcURL, user, password) ;
+    }
 
 }
 

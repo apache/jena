@@ -39,6 +39,7 @@ public class sdbquery extends CmdArgsDB
 {
     public static final String usage = "sdbquery --sdb <SPEC> [--direct] [ <query> | --query=file ]" ;
     
+    // ModQueryIn, ModResultsOut or maybe extend arq.query itself.
     private static ArgDecl argDeclQuery   = new ArgDecl(true,   "query") ;
     private static ArgDecl argDeclDirect  = new ArgDecl(false,  "direct") ;
     private static ArgDecl argDeclRepeat   = new ArgDecl(true,  "repeat") ;
