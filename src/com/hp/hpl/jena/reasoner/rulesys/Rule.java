@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.42 2006-07-14 09:53:16 der Exp $
+ * $Id: Rule.java,v 1.43 2006-07-21 08:52:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -62,7 +62,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.42 $ on $Date: 2006-07-14 09:53:16 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.43 $ on $Date: 2006-07-21 08:52:26 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -383,6 +383,7 @@ public class Rule implements ClauseEntry {
      * be treated as an axiom.
      */
     public boolean isAxiom() {
+        if (isBackward() && body.length > 0) return false;
         for (int i = 0; i < body.length; i++) {
             if (body[i] instanceof TriplePattern) {
                 return false;
