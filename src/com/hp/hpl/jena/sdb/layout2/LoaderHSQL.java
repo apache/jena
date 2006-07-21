@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 /** Interface to setting up the bulk loader environment.
@@ -26,15 +25,14 @@ public class LoaderHSQL extends BulkLoaderLJ
 {
     public LoaderHSQL(SDBConnection connection) { super(connection) ; }
     
-    public void createLoaderTable()
+    public void createLoaderTable() throws SQLException
     {
-        try {
-        	Connection conn = connection().getSqlConnection();
-            Statement s = conn.createStatement();
+        Connection conn = connection().getSqlConnection();
+        Statement s = conn.createStatement();
 
-            if (!SQLUtils.hasTable(conn, "NNode"))
-            	s.execute(sqlStr(
-                    "CREATE TEMPORARY TABLE NNode",
+        if (!SQLUtils.hasTable(conn, "NNode"))
+        	s.execute(sqlStr(
+        			"CREATE TEMPORARY TABLE NNode",
                     "(",
                     "  hash BIGINT NOT NULL ,",
                     "  lex VARCHAR NOT NULL ,",
@@ -45,20 +43,17 @@ public class LoaderHSQL extends BulkLoaderLJ
                     "  vDouble double,",
                     "  vDateTime datetime",
                     ") "
-                ));
-            
-            if (!SQLUtils.hasTable(conn, "NTrip"))
-            	s.execute(sqlStr(
-            			"CREATE TEMPORARY TABLE NTrip",
-                		"(",
-                		"  s BIGINT NOT NULL,",
-                		"  p BIGINT NOT NULL,",
-                		"  o BIGINT NOT NULL",
-                		");"
-                ));
-        }
-        catch (SQLException ex)
-        { ex.printStackTrace(); throw new SDBExceptionSQL("Making loader table",ex) ; }
+        	));
+        
+        if (!SQLUtils.hasTable(conn, "NTrip"))
+        	s.execute(sqlStr(
+        			"CREATE TEMPORARY TABLE NTrip",
+        			"(",
+        			"  s BIGINT NOT NULL,",
+        			"  p BIGINT NOT NULL,",
+        			"  o BIGINT NOT NULL",
+        			");"
+        	));
     }
 
 }

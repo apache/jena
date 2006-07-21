@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 /** 
  * @author Damian Steer
@@ -26,9 +25,8 @@ public abstract class BulkLoaderLJ extends LoaderTriplesNodes
         super(connection) ;
     }
 
-	public void createPreparedStatements()
+	public void createPreparedStatements() throws SQLException
 	{
-		try {
 		Connection conn = connection().getSqlConnection();
 
         super.clearTripleLoaderTable = conn.prepareStatement("DELETE FROM NTrip;");
@@ -54,8 +52,6 @@ public abstract class BulkLoaderLJ extends LoaderTriplesNodes
 				"     LEFT JOIN Triples ON (S.id=Triples.s AND P.id=Triples.p AND O.id=Triples.o)",
 				"     WHERE Triples.s IS NULL OR Triples.p IS NULL OR Triples.o IS NULL"
             ));
-        } catch (SQLException ex)
-        { ex.printStackTrace(); throw new SDBExceptionSQL("Preparing statements",ex) ; }
 	}
 }
 

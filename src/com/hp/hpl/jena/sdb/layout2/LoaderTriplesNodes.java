@@ -38,19 +38,21 @@ public abstract class LoaderTriplesNodes
     
     // Delayed initialization until first bulk load.
     private boolean initialized = false ;
-
-    Thread commitThread = null ;
-    final static PreparedTriple flushSignal = new PreparedTriple();
-    final static PreparedTriple finishSignal = new PreparedTriple();
-    boolean threading = true;
-    ArrayBlockingQueue<PreparedTriple> queue ;
-    AtomicReference<Throwable> threadException ;
-    AtomicBoolean threadFlushing ;
+    
+    boolean threading = true; // Do we want to thread?
+    Thread commitThread = null ; // The loader thread
+    final static PreparedTriple flushSignal = new PreparedTriple(); // Signal to thread to commit
+    final static PreparedTriple finishSignal = new PreparedTriple(); // Signal to thread to finish
+    ArrayBlockingQueue<PreparedTriple> queue ; // Pipeline to loader thread
+    AtomicReference<Throwable> threadException ; // Placeholder for problems thrown in the thread
+    AtomicBoolean threadFlushing ; // We spin lock on this when flushing (not ideal, but works)
     
     int count;
     int chunkSize = 20000;
     
-    private boolean autoCommit ;                    // State of the connection
+    private boolean autoCommit ;  // State of the connection
+    
+    // The following do all the database work
     protected PreparedStatement insertTripleLoaderTable;
     protected PreparedStatement insertNodeLoaderTable;
     protected PreparedStatement insertNodes;
@@ -58,7 +60,7 @@ public abstract class LoaderTriplesNodes
     protected PreparedStatement clearTripleLoaderTable;
     protected PreparedStatement clearNodeLoaderTable;
     
-    private Set<PreparedNode> seenNodes;
+    private Set<PreparedNode> seenNodes; // Contains nodes seen in a chunk, to suppress dupes
     
     public LoaderTriplesNodes(SDBConnection connection)
     {
@@ -67,10 +69,9 @@ public abstract class LoaderTriplesNodes
     
     public void startBulkLoad()
 	{
-	    init() ;
-	    
-	    try
-	    { 
+    	try
+    	{
+    		init() ;
 	        // Record the state of the JDBC connection as we start 
 	        autoCommit = connection().getSqlConnection().getAutoCommit() ;
 	        
@@ -78,7 +79,10 @@ public abstract class LoaderTriplesNodes
 	            connection().getSqlConnection().setAutoCommit(false) ;
 	    }
 	    catch (SQLException ex)
-	    { throw new SDBExceptionSQL("Failed to set auto commit state", ex) ; }
+	    {
+	    	log.error("Failure while starting bulk load: " + ex.getMessage());
+	    	throw new SDBExceptionSQL("Failed to start up bulk loader", ex);
+	    }
 	}
 
 	public void finishBulkLoad()
@@ -97,29 +101,33 @@ public abstract class LoaderTriplesNodes
      */
     public void close()
     {
-    	if (threading)
+    	try
     	{
-    		try 
+    		if (threading && commitThread.isAlive())
     		{
-    			if (commitThread.isAlive())
-    			{
-    				queue.put(finishSignal);
-    				while (commitThread.isAlive()) Thread.sleep(100);
-    			}
-			} 
-    		catch (InterruptedException e)
-    		{
-				throw new SDBException("Problem sending finish signal", e);
-			}
-    		finally
-    		{
-    			queue = null;
-    			commitThread = null;
-    			initialized = false;
+    			queue.put(finishSignal);
+    			while (commitThread.isAlive()) Thread.sleep(100);
     		}
+
+    		insertTripleLoaderTable.close();
+    		insertNodeLoaderTable.close();
+    		insertNodes.close();
+    		insertTriples.close();
+    		clearTripleLoaderTable.close();
+    		clearNodeLoaderTable.close();
     	}
-    	else
-    		initialized = false;
+    	catch (Exception e)
+    	{
+    		log.error("Problem closing loader: " + e.getMessage());
+    		throw new SDBException("Problem closing loader", e);
+    	}
+    	finally
+    	{
+    		this.initialized = false;
+    		this.commitThread = null;
+    		this.seenNodes = null;
+    		this.queue = null;
+    	}
     }
     
     public void addTriple(Triple triple)
@@ -139,7 +147,8 @@ public abstract class LoaderTriplesNodes
 	        }
 	        catch (InterruptedException e)
 	        {
-	        	throw new SDBException("Issue adding to queue", e);
+	        	log.error("Issue adding to queue: " + e.getMessage());
+	        	throw new SDBException("Issue adding to queue" + e.getMessage(), e);
 	        }
 	    }
 	    else
@@ -158,6 +167,7 @@ public abstract class LoaderTriplesNodes
 				{
 					log.error("Error rolling back",e);
 				}
+				log.error("Problem adding triple: " + e.getMessage());
 				throw new SDBExceptionSQL("Problem adding triple", e);
 			}
 	    }
@@ -181,6 +191,7 @@ public abstract class LoaderTriplesNodes
 	    	}
 	    	catch (InterruptedException e)
 	    	{
+	    		log.error("Problem sending flush signal: " + e.getMessage());
 	    		throw new SDBException("Problem sending flush signal", e);
 	    	}
 	    	checkThreadStatus();
@@ -199,21 +210,21 @@ public abstract class LoaderTriplesNodes
 				} 
 				catch (SQLException e1) 
 				{
+					log.error("Error rolling back: " + e.getMessage());
 					log.error("Error rolling back", e);
 				}
-				throw new SDBExceptionSQL(e);
+				log.error("Problem commiting: " + e.getMessage());
+				throw new SDBExceptionSQL("Problem commiting", e);
 			}
 		}
 	}
 
-	private void init()
+	private void init() throws SQLException
 	{
 	    if ( initialized ) return ;
-	    initialized = true ;
-	    try {
+
 	    createLoaderTable();
 	    createPreparedStatements() ;
-	    } catch (RuntimeException e) { e.printStackTrace(); throw e;}
 	    count = 0;
 	
 	    seenNodes = new HashSet<PreparedNode>();
@@ -225,8 +236,10 @@ public abstract class LoaderTriplesNodes
 	        threadFlushing = new AtomicBoolean();
 	        commitThread = new Thread(new Commiter());
 	        commitThread.start();
-	        log.debug("Threading");
+	        log.debug("Threading started");
 	    }
+	    
+	    initialized = true;
 	}
 
 	private void checkThreadStatus()
@@ -431,6 +444,7 @@ public abstract class LoaderTriplesNodes
             		{
 						log.error("Problem rolling back", e1);
 					}
+            		log.error("Error in thread: " + e.getMessage());
             		threadException.set(e);
             	}
             }

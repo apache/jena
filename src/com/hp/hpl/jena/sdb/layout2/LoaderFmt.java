@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import java.sql.SQLException;
+
 /** Interface to setting up the bulk loader environment.
  * 
  * @author Andy Seaborne
@@ -13,8 +15,8 @@ package com.hp.hpl.jena.sdb.layout2;
  */
 public interface LoaderFmt
 {
-    public void createLoaderTable() ;
-    public void createPreparedStatements() ;
+    public void createLoaderTable() throws SQLException ;
+    public void createPreparedStatements() throws SQLException ;
 }
 
 /*
