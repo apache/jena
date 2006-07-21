@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-Sep-2003
  * Filename           $RCSfile: QualifiedRestrictionImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-07-21 11:00:48 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -27,7 +27,7 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.*;
 
 
 /**
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: QualifiedRestrictionImpl.java,v 1.6 2006-03-22 13:52:39 andy_seaborne Exp $
+ * @version CVS $Id: QualifiedRestrictionImpl.java,v 1.7 2006-07-21 11:00:48 chris-dollin Exp $
  */
 public class QualifiedRestrictionImpl
     extends RestrictionImpl
@@ -64,13 +64,19 @@ public class QualifiedRestrictionImpl
             }
         }
 
-        public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, QualifiedRestriction.class );
-        }
+        public boolean canWrap( Node node, EnhGraph eg ) 
+            { return isValidQualifiedRestriction( node, eg ); }
     };
-
+    
+    private static boolean isValidQualifiedRestriction( Node node, EnhGraph eg )
+        {
+        // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent
+        Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+        return (profile != null)  &&  profile.isSupported( node, eg, QualifiedRestriction.class );
+        }
+    
+    public boolean isValid() 
+        { return isValidQualifiedRestriction( asNode(), getGraph() ); }
 
     // Instance variables
     //////////////////////////////////
@@ -154,7 +160,8 @@ public class QualifiedRestrictionImpl
      * @param cls The ont class that is the object of the <code>hasClassQ</code> property.
      */
     public void removeHasClassQ( OntClass cls ) {
-        removePropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", cls );
+        Property has_class_q = getProfile().HAS_CLASS_Q();
+        removePropertyValue( has_class_q, "HAS_CLASS_Q", cls );
     }
 
     /**

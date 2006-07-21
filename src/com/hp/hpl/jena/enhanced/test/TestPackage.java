@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.18 2006-03-22 13:53:20 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.19 2006-07-21 11:00:47 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -13,6 +13,7 @@ package com.hp.hpl.jena.enhanced.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.enhanced.*;
 
 import junit.framework.*;
@@ -428,6 +429,7 @@ public class TestPackage extends GraphTestBase  {
             }
         catch (UnsupportedPolymorphismException e) 
             {
+            assertEquals( en, e.getBadNode() );
             assertTrue( "exception should have cuplprit graph", eg == e.getBadGraph() );
             assertTrue( "exception should have culprit class", TestPackage.class == e.getBadClass() );
             }
@@ -439,6 +441,33 @@ public class TestPackage extends GraphTestBase  {
         Node n = Node.create( "eh:something" );
         EnhNode en = new EnhNode( n, eg );
         assertFalse( en.canAs( Integer.class ) );        
+        }
+    
+    public void testAsToOwnClassWithNoModel()
+        {
+        Resource r = ResourceFactory.createResource();
+        assertEquals( null, r.getModel() );
+        assertTrue( r.canAs( Resource.class ) );
+        assertSame( r, r.as( Resource.class ) );
+        }
+
+    public void testCanAsReturnsFalseIfNoModel()
+        {
+        Resource r = ResourceFactory.createResource();
+        assertEquals( false, r.canAs( Example.class ) ); 
+        }
+    
+    public void testAsThrowsPolymorphismExceptionIfNoModel()
+        {
+        Resource r = ResourceFactory.createResource();
+        try 
+            { r.as( Example.class ); 
+            fail( "should throw UnsupportedPolymorphismException" ); }
+        catch (UnsupportedPolymorphismException e) 
+            {
+            assertEquals( null, e.getBadGraph() );
+            assertEquals( Example.class, e.getBadClass() );
+            }
         }
 
 }

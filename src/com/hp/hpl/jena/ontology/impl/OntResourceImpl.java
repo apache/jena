@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.60 $
+ * Revision           $Revision: 1.61 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-04-24 23:09:24 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-07-21 11:00:48 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -32,7 +32,6 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
 import com.hp.hpl.jena.util.ResourceUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -51,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.60 2006-04-24 23:09:24 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.61 2006-07-21 11:00:48 chris-dollin Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -475,13 +474,8 @@ public class OntResourceImpl
      */
     public void removeVersionInfo( String info ) {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
-
         StmtIterator i = getModel().listStatements( this, getProfile().VERSION_INFO(), info );
-        if (i.hasNext()) {
-            i.nextStatement().remove();
-        }
-
-        i.close();
+        while (i.hasNext()) i.removeNext();
     }
 
     // label
@@ -940,12 +934,8 @@ public class OntResourceImpl
      *         returns null.
      */
     public RDFNode getPropertyValue( Property property ) {
-        try {
-            return getRequiredProperty( property ).getObject();
-        }
-        catch (PropertyNotFoundException ignore) {
-            return null;
-        }
+        Statement s = getProperty( property );
+        return s == null ? null : s.getObject();
     }
 
 
@@ -1028,10 +1018,7 @@ public class OntResourceImpl
      * @param value The specific value of the property to be removed
      */
     public void removeProperty( Property property, RDFNode value ) {
-        // have to do this in two phases to avoid concurrent modification exception
-        Set s = new HashSet();
-        for (StmtIterator i = getModel().listStatements( this, property, value ); i.hasNext(); s.add( i.nextStatement() ) );
-        for (Iterator i = s.iterator(); i.hasNext(); ((Statement) i.next()).remove() );
+          getModel().remove( this, property, value );
     }
 
 
@@ -1244,11 +1231,7 @@ public class OntResourceImpl
 
     /** Answer true if the node has the given type in the graph */
     protected static boolean hasType( Node n, EnhGraph g, Resource type ) {
-        boolean hasType = false;
-        ClosableIterator i = g.asGraph().find( n, RDF.type.asNode(), type.asNode() );
-        hasType = i.hasNext();
-        i.close();
-        return hasType;
+        return g.asGraph().contains( n, RDF.Nodes.type, type.asNode() );
     }
 
     /**
@@ -1312,12 +1295,8 @@ public class OntResourceImpl
     /** Answer the object of a statement with the given property, .as() the given class */
     protected Object objectAs( Property p, String name, Class asClass ) {
         checkProfile( p, name );
-        try {
-            return getRequiredProperty( p ).getObject().as( asClass );
-        }
-        catch (PropertyNotFoundException e) {
-            return null;
-        }
+        Statement s = getProperty( p );
+        return s == null ? null : s.getObject().as( asClass );
     }
 
 
@@ -1537,13 +1516,7 @@ public class OntResourceImpl
     /** Remove a specified property-value pair, if it exists */
     protected void removePropertyValue( Property prop, String name, RDFNode value ) {
         checkProfile( prop, name );
-
-        StmtIterator i = getModel().listStatements( this, prop, value );
-        if (i.hasNext()) {
-            i.nextStatement().remove();
-        }
-
-        i.close();
+        this.removeProperty( prop, value );
     }
 
     //==============================================================================

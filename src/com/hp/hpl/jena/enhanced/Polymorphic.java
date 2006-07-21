@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Polymorphic.java,v 1.9 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: Polymorphic.java,v 1.10 2006-07-21 11:00:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -80,6 +80,14 @@ public abstract class Polymorphic {
             if (r == this) return null;
             }
         }
+    
+    /**
+        Answer true iff this polymorphic object already has a valid view of
+        type <code>t</code> in its ring (so .as()ing it doesn't need to
+        construct a new object).
+    */
+    protected boolean alreadyHasView( Class t )
+        { return findExistingView( t ) != null; }
         
     /**
         answer true iff this enhanced node is still underpinned in the graph

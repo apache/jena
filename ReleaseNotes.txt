@@ -2,6 +2,33 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+EnhNodes/UnsupportedPolymorhismException/QualifiedRestriction
+    o Any EnhNode now automatically canAs any type already on its
+      view ring if that view is still isValid. Previously it
+      required finding a relevant Personality and Implementation
+      and trying canWrap, which failed if the EnhNode had no EnhGraph,
+      eg a Resource allocated by ResourceFactory.
+
+    o This exposed problems with the QualifiedRestriction family of
+      classes, which didn't override isValid. They do now.
+
+    o Attempting to .as() an EnhNode with no EnhGraph no longer generates
+      a NullPointerException, instead giving an explicit
+      UnsupportedPolymorphism exception. 
+
+    o Attempting to canAs an EnhNode with no existing implementation
+      of the required type and no EnhGraph returns false.
+
+OntResource
+    o some internal modifications to simplify/correct the code:
+
+        - corrected uses of .remove duing an iteration
+        - replaced some loops by existing single Graph methods
+        - some uses of getRequiredProperty + exception handling
+          (probably hangovers from the old days when getProperty
+          threw an exception) replaced by uses of getProperty and
+          tests for null
+
 Statement
     o the method getWellFormed has been deprecated in favour of a new
       method hasWellFormedXML(), paralleling Literal's newish 

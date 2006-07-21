@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:53:13 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-07-21 11:00:50 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -30,7 +30,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.vocabulary.XSD;
 
 import junit.framework.*;
 
@@ -42,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.32 2006-03-22 13:53:13 andy_seaborne Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.33 2006-07-21 11:00:50 chris-dollin Exp $
  */
 public class TestClassExpression
     extends OntTestBase
@@ -622,7 +621,8 @@ public class TestClassExpression
                     OntClass c = m.createClass( NS + "C" );
                     OntClass d = m.createClass( NS + "D" );
 
-                    QualifiedRestriction A = m.createMaxCardinalityQRestriction( NS + "A", p, 3, c  );
+                    String nameA = "ABCBA";
+                    QualifiedRestriction A = m.createMaxCardinalityQRestriction( NS + nameA, p, 3, c  );
 
                     assertEquals( "Restriction should hasClassQ c", c, A.getHasClassQ() );
                     assertTrue( "Restriction should be hasClassQ c", A.hasHasClassQ( c ) );
@@ -634,9 +634,9 @@ public class TestClassExpression
                     assertTrue( "Restriction should be hasClassQ d", A.hasHasClassQ( d ) );
                     assertFalse( "Restriction should not be hasClassQ c", A.hasHasClassQ( c ) );
 
-                    assertTrue( "Should be a qualified restriction", m.getResource( NS + "A" ).canAs( QualifiedRestriction.class ) );
+                    assertTrue( "Should be a qualified restriction", m.getResource( NS + nameA ).canAs( QualifiedRestriction.class ) );
                     A.removeHasClassQ( d );
-                    assertFalse( "Should not be a qualified restriction", m.getResource( NS + "A" ).canAs( QualifiedRestriction.class ) );
+                    assertFalse( "Should not be a qualified restriction", m.getResource( NS + nameA ).canAs( QualifiedRestriction.class ) );
                 }
             },
             new OntTestCase( "CardinalityQRestriction.cardinality", false, false, true, false ) {

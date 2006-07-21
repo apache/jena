@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.16 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: EnhNode.java,v 1.17 2006-07-21 11:00:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -130,26 +130,30 @@ public class EnhNode extends Polymorphic implements FrontsNode
     /** 
         Answer an new enhanced node object that presents <i>this</i> in a way 
         which satisfies type <code>t</code>. The new object is linked into this
-        object's sibling ring. 
+        object's sibling ring. If the node cannot be converted, throw an
+        UnsupportedPolymorphismException.
     */
     protected Polymorphic convertTo( Class t ) 
         {
         EnhGraph eg = getGraph();
+        if (eg == null) throw new UnsupportedPolymorphismException( this, t );
         Implementation imp = getPersonality().getImplementation( t );
-        if (imp == null) throw new UnsupportedPolymorphismException( eg, t );
+        if (imp == null) throw new UnsupportedPolymorphismException( this, t );
         Polymorphic result = imp.wrap( asNode(), eg );          
         this.addView( result );
         return result;
         }
     
     /**
-        answer true iff this enhanced node can support the class _t_, ie, it can be
-        converted to an instance of t.
-        @param t the (interface) class being tested
-        @return true iff the implementation can wrap this enhanced node
+        answer true iff this enhanced node can support the class <code>t</code>,
+        ie it is already a value <code>t</code> or it can be reimplemented
+        as a <code>t</code> via the graph's personality's implementation.
+        If this node has no graph, answer false.       
     */
     protected boolean canSupport( Class t )
         {
+        if (alreadyHasView( t )) return true;
+        if (getGraph() == null) return false;
         Implementation imp = getPersonality().getImplementation( t );
         return imp == null ? false : imp.canWrap( asNode(), getGraph() );
         }

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-Sep-2003
  * Filename           $RCSfile: CardinalityQRestrictionImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:39 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-07-21 11:00:48 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: CardinalityQRestrictionImpl.java,v 1.5 2006-03-22 13:52:39 andy_seaborne Exp $
+ * @version CVS $Id: CardinalityQRestrictionImpl.java,v 1.6 2006-07-21 11:00:48 chris-dollin Exp $
  */
 public class CardinalityQRestrictionImpl 
     extends QualifiedRestrictionImpl
@@ -63,13 +63,18 @@ public class CardinalityQRestrictionImpl
             } 
         }
             
-        public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, CardinalityQRestriction.class );
-        }
+        public boolean canWrap( Node node, EnhGraph eg ) 
+            { return isCardinalityQRestriction( node, eg ); }
     };
+
+    public static boolean isCardinalityQRestriction( Node node, EnhGraph eg ) {
+        // node will support being a QualifiedRestriction facet if it has rdf:type owl:Restriction or equivalent
+        Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
+        return (profile != null)  &&  profile.isSupported( node, eg, CardinalityQRestriction.class );
+    }
     
+    public boolean isValid()
+        { return isCardinalityQRestriction( asNode(), getGraph() ); }
 
     // Instance variables
     //////////////////////////////////

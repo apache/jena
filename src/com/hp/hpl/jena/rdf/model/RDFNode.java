@@ -80,13 +80,21 @@ public interface RDFNode extends FrontsNode
         resulting RDFNode should be an instance of <code>view</code> and should 
         have any internal invariants as specified.
     <p>
-        If the RDFNode cannot be converted, an exception is thrown.
+        If the RDFNode has no Model attached, it can only be .as()ed to
+        a type it (this particular RDFNOde) already has.
+    <p>
+        If the RDFNode cannot be converted, an UnsupportedPolymorphism
+        exception is thrown..
     */
     public RDFNode as( Class view );
     
     /**
         Answer true iff this RDFNode can be viewed as an instance of
-        <code>view</code>.
+        <code>view</code>: that is, if it has already been viewed in this
+        way, or if it has an attached model in which it has properties that
+        permit it to be viewed in this way. If <code>canAs</code> returns
+        <code>true</code>, <code>as</code> on the same view should
+        deliver an instance of that class. 
     */
     public boolean canAs( Class view );
     
