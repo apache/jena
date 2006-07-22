@@ -33,7 +33,7 @@ public class sdbformat extends CmdArgsDB
     protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> <NAME>" ; }
 
     @Override
-    protected void processArgs()
+    protected void processModulesAndArgs()
     {
         if ( getNumPositional() == 1 )
         {

@@ -50,7 +50,7 @@ public class sdbdump extends CmdArgsDB
     protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> [--format syntax]" ; }
 
     @Override
-    protected void processArgs()
+    protected void processModulesAndArgs()
     {
         if ( getNumPositional() > 0 )
             cmdError("No positional arguments allowed", true) ;

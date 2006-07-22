@@ -58,7 +58,7 @@ public class sdbload extends CmdArgsDB
     protected String getSummary()  { return getCommandName()+" <SPEC> file ..."; }
     
     @Override
-    protected void processArgs()
+    protected void processModulesAndArgs()
     {
         if ( getNumPositional() == 0 )
             cmdError("Need filenames of RDF data to load", true) ;

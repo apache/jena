@@ -67,7 +67,7 @@ public class sdbquery extends CmdArgsDB
     protected String getSummary()  { return getCommandName()+" <SPEC> [--direct] [ <query> | --query=file ]"; }
 
     @Override
-    protected void processArgs()
+    protected void processModulesAndArgs()
     {
         
         if ( contains(argDeclQuery) && getNumPositional() > 0 )

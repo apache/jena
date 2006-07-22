@@ -57,7 +57,7 @@ public class sdbprint extends CmdArgsDB
     }
 
     @Override
-    protected void processArgs()
+    protected void processModulesAndArgs()
     {
         // Force the connection to be a null one.
         // Known to be called after arg module initialization.

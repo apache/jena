@@ -42,7 +42,7 @@ public class sdbsql extends CmdArgsDB
     protected String getSummary()  { return getCommandName()+" --sdb <SPEC> SQLSTRING | --file=FILE"; }
 
     @Override
-    protected void processArgs()
+    protected void processModulesAndArgs()
     {
         if ( contains(argDeclQuery) && getNumPositional() > 0 )
             cmdError("Can't have both --query and a positional query string", true) ;
