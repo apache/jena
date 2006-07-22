@@ -15,6 +15,8 @@ QC1 and Q2 match/processSlot have much in common.
 == Next
   4/ ==> Performance testing
 
++ Connection + Layout = Store?
+
 + sdprint, sdbquery : ModSDB? for printing queries, blocks, RelAlg and SQL?
   Are these two commands nearl the same? No - sdbprint does not need --sdb
 
@@ -35,12 +37,3 @@ Need to handle connection management to be concurrency and connection pooling fr
    + FILTER and out-of-block variables ; OPTIONAL { FILTER (?x = .. ) ?x :p ?q }
    + Nested optionals with var not used by outer one (bottom up/top down issue)
    + Two optionals with a shared var
-
-+ SQL comparisions
-   SELECT FROM .. ON .. with SELECT FROM .. WHERE
-
-   Inner SELECT
-   SELECT FROM (SELECT .... WHERE) AS T [LEFT] JOIN ...
-   with
-   SELECT FROM T AS [LEFT] JOIN ... WHERE ...
-   (should be the same but ...)
