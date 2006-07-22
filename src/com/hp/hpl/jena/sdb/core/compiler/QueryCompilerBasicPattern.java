@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
@@ -26,6 +25,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
+import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.store.Store;
 
 /**
@@ -56,7 +56,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         // Some way to print this out for debugging?
         
         try {
-            java.sql.ResultSet rs = store.getConnection().execQuery(sqlStmt) ;
+            java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
             Set<Var> x = block.getProjectVars() ;
             if ( x == null )
             {
@@ -67,16 +67,16 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
             if ( x == null )
                 log.warn("Null for defined variables") ;
             try {
-                return assembleResults(rs, binding, x, execCxt) ;
-            } finally { rs.close() ; }
+                return getResultBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;
+            } finally { jdbcResultSet.close() ; }
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException in executing a basic block", ex) ;
         }
     }
 
-    protected abstract QueryIterator assembleResults(ResultSet rs, Binding binding, Set<Var> x, ExecutionContext execCxt)
-        throws SQLException;
+    //protected abstract ConditionCompiler getConditionCompiler() ;
+    protected abstract ResultsBuilder getResultBuilder() ;
 
     public String asSQL(Block block)
     {

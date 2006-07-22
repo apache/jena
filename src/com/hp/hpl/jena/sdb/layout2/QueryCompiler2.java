@@ -6,35 +6,29 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.BindingMap;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
-
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
+import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 public class QueryCompiler2 extends QueryCompilerTriplePattern
@@ -290,10 +284,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
           sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
           sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
           sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
-
-            
         }
-        
         return sqlNode ;
     }
 
@@ -308,80 +299,15 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     static private String allocNodeResultAlias()        { return allocAlias(nodesResultAliasBase) ; }
     static private String allocAlias(String aliasBase)  { return  aliasBase+(nodesAliasCount++) ; }
     
-    @Override
-    protected QueryIterator assembleResults(ResultSet rs, Binding binding,
-                                            Set<Var> vars, ExecutionContext execCxt)
-        throws SQLException
-    {
-        List<Binding> results = new ArrayList<Binding>() ;
-        while(rs.next())
-        {
-            Binding b = new BindingMap(binding) ;
-            for ( Var v : vars )
-            {
-                String n = v.getName() ;
-                if ( ! v.isNamedVar() )
-                    // Skip bNodes and system variables
-                    continue ;
-                
-                try {
-                    String lex = rs.getString(n+"$lex") ;   // chars
-//                    byte bytes[] = rs.getBytes(n+"$lex") ;      // bytes
-//                    try {
-//                        String $ = new String(bytes, "UTF-8") ;
-//                        log.info("lex bytes : "+$+"("+$.length()+")") ;
-//                    } catch (Exception ex) {}
-                    // Same as rs.wasNull()
-                    if ( lex == null )
-                        continue ;
-                    int type = rs.getInt(n+"$type") ;
-                    String datatype =  rs.getString(n+"$datatype") ;
-                    String lang =  rs.getString(n+"$lang") ;
-                    ValueType vType = ValueType.lookup(type) ;
-                    Node r = makeNode(lex, datatype, lang, vType) ;
-                    b.add(n, r) ;
-                } catch (SQLException ex)
-                { // Unknown variable?
-                  //log.warn("Not reconstructed: "+n) ;
-                } 
-            }
-            results.add(b) ;
-        }
-        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
-    }
-
-    private static Node makeNode(String lex, String datatype, String lang, ValueType vType)
-    {
-        switch (vType)
-        {
-            case BNODE:
-                return Node.createAnon(new AnonId(lex)) ;
-            case URI:
-                return Node.createURI(lex) ;
-            case STRING:
-                return Node.createLiteral(lex, lang, false) ;
-            case XSDSTRING:
-                return Node.createLiteral(lex, null, XSDDatatype.XSDstring) ;
-            case INTEGER:
-                return Node.createLiteral(lex, null, XSDDatatype.XSDinteger) ;
-            case DOUBLE:
-                return Node.createLiteral(lex, null, XSDDatatype.XSDdouble) ;
-            case DATETIME:       
-                return Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
-            case OTHER:
-                RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(datatype);
-                return Node.createLiteral(lex, null, dt) ;
-            default:
-                log.warn("Unrecognized: ("+lex+", "+lang+", "+vType+")") ;
-                return Node.createLiteral("UNRECOGNIZED") ; 
-        }
-    }
-
     private ConditionCompiler conditionCompiler = new ConditionCompiler2() ;
     public ConditionCompiler getConditionCompiler()
-    {
-        return conditionCompiler ;
-    }
+    { return conditionCompiler ; }
+    
+    private ResultsBuilder resultBuilder = new ResultsBuilder2() ;
+    @Override
+    public ResultsBuilder getResultBuilder()
+    { return resultBuilder ; }
+    
 }
 
 /*
