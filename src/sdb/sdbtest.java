@@ -48,7 +48,7 @@ public class sdbtest extends CmdArgsDB
     protected String getSummary()  { return Utils.className(this)+" <SPEC> --schema schemaName [--direct] [manifest]" ; }
     
     @Override
-    protected void checkCommandLine()
+    protected void processArgs()
     { }
     
     // Don't use exec1 which has a transaction wrapper.

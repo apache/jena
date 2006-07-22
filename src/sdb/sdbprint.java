@@ -6,23 +6,16 @@
 
 package sdb;
 
-import java.io.IOException;
+import sdb.cmd.CmdArgsDB;
+import arq.cmdline.ModQueryIn;
 
-import arq.cmd.CmdUtils;
-import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-
-import com.hp.hpl.jena.db.impl.Driver_MySQL;
-import com.hp.hpl.jena.db.impl.IRDBDriver;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.core.BindingRoot;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.PlanFormatter;
-import com.hp.hpl.jena.query.engine1.PlanVisitorBase;
 import com.hp.hpl.jena.query.engine1.PlanFormatterVisitor;
+import com.hp.hpl.jena.query.engine1.PlanVisitorBase;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
@@ -31,15 +24,12 @@ import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.layout1.CodecRDB;
-import com.hp.hpl.jena.sdb.layout1.QueryCompiler1;
-import com.hp.hpl.jena.sdb.layout1.QueryCompilerSimple;
-import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
+import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBase;
+import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.FileUtils;
 
 /**
  * Compile and print the SQL for a SPARQL query.
@@ -47,19 +37,13 @@ import com.hp.hpl.jena.util.FileUtils;
  * @version $Id: sdbprint.java,v 1.12 2006/04/24 17:31:26 andy_seaborne Exp $
  */
 
-public class sdbprint extends CmdArgModule
+public class sdbprint extends CmdArgsDB
 {
-    static { CmdUtils.setLog4j() ; }
-
-    private static ArgDecl argDeclLayout  = new ArgDecl(ArgDecl.HasValue, "layout") ;
-    private static ArgDecl argDeclQuery   = new ArgDecl(ArgDecl.HasValue, "query") ;
-
-    // TODO use modules. CmdArgsDB and ignore unwanted.
-    
     String layoutNameDefault = "layout2" ;
-    // This command knows how to create queries without needing a store or connection.
-    
+
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
+    
+    ModQueryIn modQuery = new ModQueryIn() ;
 
     public static void main (String [] argv)
     {
@@ -69,11 +53,22 @@ public class sdbprint extends CmdArgModule
     protected sdbprint(String[] args)
     {
         super(args);
-        add(argDeclLayout, "layout", "Store layout") ;
-        add(argDeclQuery,  "query",  "The query") ;
+        super.addModule(modQuery) ;
     }
 
-    
+    @Override
+    protected void processArgs()
+    {
+        // Force the connection to be a null one.
+        // Known to be called after arg module initialization.
+        StoreDesc storeDesc = getModStore().getStoreDesc() ;
+        storeDesc.connDesc.jdbcURL = JDBC.jdbcNone ;
+        storeDesc.connDesc.type = "none" ;
+        if ( storeDesc.layoutName == null )
+            storeDesc.layoutName = layoutNameDefault ;
+        
+    }
+
     public static void compilePrint(String queryString, String layoutName)
     {
         System.err.println("BROKEN - FIX ME") ;
@@ -82,62 +77,10 @@ public class sdbprint extends CmdArgModule
     @Override
     protected void exec()
     {
-      //---- Query
-      
-      String queryFile = getValue(argDeclQuery) ;
-      String queryString = null ;
-      
-      if ( getNumPositional() == 0 && queryFile == null )
-          cmdError("No query string or query file") ;
+        Query query = modQuery.getQuery() ;
+        Store store = getModStore().getStore() ; 
 
-      if ( getNumPositional() > 1 )
-          cmdError("Only one query string allowed") ;
-      
-      if ( getNumPositional() == 1 && queryFile != null )
-          cmdError("Either query string or query file - not both") ;
-
-      try {
-          if ( queryFile != null )
-              queryString  = FileUtils.readWholeFileAsUTF8(queryFile) ;
-          else
-          {
-              queryString = getPositionalArg(0) ;
-              queryString = indirect(queryString) ;
-          }
-              
-      } catch (IOException ex)
-      {
-          System.err.println("Failed to read: "+queryFile) ;
-          System.err.println(ex.getMessage()) ;
-      }
-
-      String layoutName = getValue(argDeclLayout) ;
-      if ( layoutName == null )
-          layoutName = layoutNameDefault ;
-
-      Query query = QueryFactory.create(queryString) ;
-      
-      if ( layoutName.equalsIgnoreCase("layout1") ) 
-      {
-          compilePrint(query, new QueryCompilerSimple()) ;
-          throw new TerminationException(0) ;
-      }
-      
-      if ( layoutName.equalsIgnoreCase("modelRDB") || layoutName.equalsIgnoreCase("RDB") ) 
-      {
-          // Kludge something to work.
-          IRDBDriver iDriver = new Driver_MySQL() ;
-          compilePrint(query, new QueryCompiler1(new CodecRDB(iDriver))) ;
-          throw new TerminationException(0) ;
-      }
-      
-      if ( layoutName.equalsIgnoreCase("layout2") ) 
-      {
-          compilePrint(query, new QueryCompiler2()) ;
-          throw new TerminationException(0) ;
-      }
-      
-      cmdError("Unknown layout name: "+layoutName) ;
+        compilePrint(query, store.getQueryCompiler()) ;
   }
 
     boolean needDivider = false ;
@@ -252,6 +195,16 @@ public class sdbprint extends CmdArgModule
 
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
+
+    @Override
+    protected void exec0()
+    {}
+
+    @Override
+    protected boolean exec1(String arg)
+    {
+        return false ;
+    }
     
 }
 

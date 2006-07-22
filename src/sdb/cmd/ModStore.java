@@ -112,27 +112,27 @@ public class ModStore implements ArgModule
         cmdLine.add(argDeclMySQLEngine) ;
     }
     
-    public void checkCommandLine(CmdArgModule cmdLine)
-    {}
-        
-    public void process(CmdArgModule cmdLine)
+    public void processArgs(CmdArgModule cmdLine)
     {
-       if (cmdLine.contains(argDeclSDBdesc))
+        if (! cmdLine.contains(argDeclSDBdesc))
         {
-            String f = cmdLine.getArg(argDeclSDBdesc).getValue() ;
-            try {
-                storeDesc = StoreDesc.read(f) ;
-            } catch (SDBException ex)
-            {
-                System.err.println("Failed to read the store description");
-                System.err.println(ex.getMessage()) ;
-                throw new TerminationException(1) ;
-            }
-            catch (NotFoundException ex)
-            {
-                System.err.println(f+" : Store description not found");
-                throw new TerminationException(1) ;
-            }
+            System.err.println("No store description");
+            throw new TerminationException(1);
+        }
+        
+        String f = cmdLine.getArg(argDeclSDBdesc).getValue() ;
+        try {
+            storeDesc = StoreDesc.read(f) ;
+        } catch (SDBException ex)
+        {
+            System.err.println("Failed to read the store description");
+            System.err.println(ex.getMessage()) ;
+            throw new TerminationException(1) ;
+        }
+        catch (NotFoundException ex)
+        {
+            System.err.println(f+" : Store description not found");
+            throw new TerminationException(1) ;
         }
         
         // Overrides.
@@ -196,12 +196,7 @@ public class ModStore implements ArgModule
 //            throw new TerminationException(9);
 //        }
 
-        if ( storeDesc == null )
-        {
-            System.err.println("No store description");
-            throw new TerminationException(1);
-        }
-        
+       
         driverName = storeDesc.connDesc.driver ;
         
         if (cmdLine.contains(argDeclJdbcDriver))

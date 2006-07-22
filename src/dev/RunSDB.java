@@ -38,8 +38,8 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
-        runQuery() ;
-        //runPrint() ;
+        //runQuery() ;
+        runPrint() ;
         //runLoad() ;
         
         //runDump() ;
@@ -75,7 +75,7 @@ public class RunSDB
     public static void runPrint()
     {
         //String[] a = {"-v", "--layout=layout2", "@Q.rq"} ;
-        String[] a = {"--layout=layout2", "@Q.rq"} ;
+        String[] a = {"--sdb=sdb.ttl", "--layout=layout2", "@Q.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }

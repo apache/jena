@@ -41,7 +41,7 @@ public class sdbtruncate extends CmdArgsDB
     protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> <NAME>" ; }
     
     @Override
-    protected void checkCommandLine()
+    protected void processArgs()
     {
         if ( getNumPositional() == 1 )
         {

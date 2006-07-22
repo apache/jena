@@ -35,7 +35,7 @@ public abstract class CmdArgsDB extends CmdArgModule
     protected void setModStore(ModStore modStore) { this.modStore = modStore ; }
     
     protected ModStore getModStore() { return modStore  ; }
-    protected ModTime getModTime()   { return modTime  ; }
+    protected ModTime  getModTime()  { return modTime  ; }
     
     protected abstract void exec0() ;
     // true means continue transaction
@@ -45,7 +45,6 @@ public abstract class CmdArgsDB extends CmdArgModule
     protected void exec()
     {
         SDB.init() ;
-        checkCommandLine() ;
         
         if ( getNumPositional() > 0 )
             execWithArgs() ;

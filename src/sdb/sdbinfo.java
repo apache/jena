@@ -52,7 +52,7 @@ public class sdbinfo extends CmdArgsDB
     protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC>" ; }
 
     @Override
-    protected void checkCommandLine()
+    protected void processArgs()
     {
 //        if ( getNumPositional() > 0 )
 //            cmdError("No positional arguments allowed", true) ;
