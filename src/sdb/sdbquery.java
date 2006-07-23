@@ -62,9 +62,9 @@ public class sdbquery extends CmdArgsDB
         super(args);
         addModule(modQuery) ;
         addModule(modResults) ;
-        
+        getUsage().startCategory("Misc") ;
         add(argDeclRepeat) ;
-        addArgUsage("--repeat=N", "Do the query N times (for timing)") ; 
+        getUsage().addUsage("--repeat=N", "Do the query N times (for timing)") ; 
     }
 
     @Override

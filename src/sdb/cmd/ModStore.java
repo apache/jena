@@ -96,7 +96,7 @@ public class ModStore implements ArgModule
     
     public void registerWith(CmdArgModule cmdLine)
     {
-        cmdLine.addModuleDesc("Store and connection") ;
+        cmdLine.getUsage().startCategory("Store and connection") ;
         
         cmdLine.add(argDeclSDBdesc,
                     "--sdb=<file>", "Store and connection description") ;
