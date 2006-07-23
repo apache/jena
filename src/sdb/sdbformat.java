@@ -6,6 +6,8 @@
 
 package sdb;
 
+import java.util.List;
+
 import sdb.cmd.CmdArgsDB;
 
 import com.hp.hpl.jena.query.util.Utils;
@@ -49,22 +51,12 @@ public class sdbformat extends CmdArgsDB
     }
     
     @Override
-    protected void exec0()
+    protected void execCmd(List<String> args)
     {
         Store store = getModStore().getStore() ;
         StoreFormatter f = store.getTableFormatter() ; 
         f.format() ;
-    }
-    
-
-    @Override
-    protected boolean exec1(String arg)
-    {
-        // caught in checkCommandLine to set early
-        exec0() ; 
-//        System.err.println("Unexpected positional argument") ;
-//        throw new TerminationException(99) ;
-        return false ;
+        store.close() ;
     }
 }
 

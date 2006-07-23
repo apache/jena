@@ -6,12 +6,11 @@
 
 package sdb;
 
-import java.sql.SQLException;
+import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** Format an SDB database.  Destroys all existing data permanently.
  *  Ignores -dbName argument in favour of the command line positional parameter. 
@@ -57,32 +56,10 @@ public class sdbtruncate extends CmdArgsDB
     }
     
     @Override
-    protected void exec0()
+    protected void execCmd(List<String> args)
     {
         getModStore().getStore().getTableFormatter().truncate() ;
-//      For hsql -- shutdown when finished
-        SDBConnection conn = getModStore().getConnection();
-        try
-        {
-            if (conn.getSqlConnection().getMetaData().getDatabaseProductName().contains("HSQL")) {
-                conn.execAny("SHUTDOWN COMPACT;");
-            }
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-    }
-    
-
-    @Override
-    protected boolean exec1(String arg)
-    {
-        // caught in checkCommandLine to set early
-        exec0() ; 
-//        System.err.println("Unexpected positional argument") ;
-//        throw new TerminationException(99) ;
-        return false ;
+        getModStore().getStore().close() ;
     }
 }
 

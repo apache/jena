@@ -6,6 +6,8 @@
 
 package sdb;
 
+import java.util.List;
+
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ModQueryIn;
 
@@ -69,13 +71,8 @@ public class sdbprint extends CmdArgsDB
         
     }
 
-    public static void compilePrint(String queryString, String layoutName)
-    {
-        System.err.println("BROKEN - FIX ME") ;
-    }
-    
     @Override
-    protected void exec()
+    protected void execCmd(List<String> positionalArgs)
     {
         Query query = modQuery.getQuery() ;
         Store store = getModStore().getStore() ; 
@@ -195,17 +192,6 @@ public class sdbprint extends CmdArgsDB
 
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
-
-    @Override
-    protected void exec0()
-    {}
-
-    @Override
-    protected boolean exec1(String arg)
-    {
-        return false ;
-    }
-    
 }
 
 /*

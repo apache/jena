@@ -96,20 +96,42 @@ public class ModStore implements ArgModule
     
     public void registerWith(CmdArgModule cmdLine)
     {
-        cmdLine.add(argDeclSDBdesc) ;
-        // Connection-level
-        cmdLine.add(argDeclJdbcURL);
-        cmdLine.add(argDeclJdbcDriver);
-        cmdLine.add(argDeclDbHost);
-        cmdLine.add(argDeclDbName);
-        cmdLine.add(argDeclDbArgs);
-        cmdLine.add(argDeclDbType);
-        cmdLine.add(argDeclDbUser);
-        cmdLine.add(argDeclDbPassword);
-
-        // Store
-        cmdLine.add(argDeclLayout) ;
-        cmdLine.add(argDeclMySQLEngine) ;
+        cmdLine.addModuleDesc("Store and connection") ;
+        
+        cmdLine.add(argDeclSDBdesc,
+                    "--sdb=<file>", "Store and connection description") ;
+        
+        cmdLine.add(argDeclLayout,
+                    "--layout=NAME", "Database schema") ;
+        
+//        // Connection-level
+//        cmdLine.add(argDeclJdbcURL);
+//        cmdLine.addArgUsage("--jdbc", "JDBC URL") ;
+//        
+//        cmdLine.add(argDeclJdbcDriver);
+//        cmdLine.addArgUsage("--jdbcDriver=", "JDBC driver class name") ;
+//        
+//        cmdLine.add(argDeclDbHost);
+//        cmdLine.addArgUsage("--dbHost=", "DB Host") ;
+//
+//        cmdLine.add(argDeclDbName);
+//        cmdLine.addArgUsage("--dbName=", "Database name") ;
+//        
+//        cmdLine.add(argDeclDbArgs);
+//        cmdLine.addArgUsage("--dbArgs=", "Additional arguments for JDBC URL") ;
+//
+//        cmdLine.add(argDeclDbType);
+//        cmdLine.addArgUsage("--dbType=", "Database type") ;
+//
+//        cmdLine.add(argDeclDbUser);
+//        cmdLine.addArgUsage("--dbUser=", "Database user") ;
+//
+//        cmdLine.add(argDeclDbPassword);
+//        cmdLine.addArgUsage("--dbPassword", "Daatbase user password") ;
+//
+//        // Store
+//        cmdLine.add(argDeclMySQLEngine) ;
+//        cmdLine.addArgUsage("--engine=", "MySQL engine type") ;
     }
     
     public void processArgs(CmdArgModule cmdLine)

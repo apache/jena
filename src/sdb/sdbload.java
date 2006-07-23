@@ -65,44 +65,35 @@ public class sdbload extends CmdArgsDB
     }
     
     @Override
-    protected void exec0() { return ; }
-
-    boolean first = true ; 
-    
-    @Override
-    protected boolean exec1(String arg)
+    protected void execCmd(List<String> args)
     {
-        if ( first )
-        {
-            if ( contains(argDeclTruncate) ) 
-                getModStore().getStore().getTableFormatter().truncate() ;
-            first = false ;
-        }
-        
+        if ( contains(argDeclTruncate) ) 
+            getModStore().getStore().getTableFormatter().truncate() ;
+        for ( String x : args )
+            loadOne(x) ;
+    }
+    
+    private void loadOne(String filename)
+    {
         Monitor monitor = null ;
         
         if ( verbose )
         {
         	//System.out.println(TableUtils.dumpDB(getConnection().getSqlConnection()));
-            System.out.println("Start load: "+arg) ;
+            System.out.println("Start load: "+filename) ;
             monitor = new Monitor(getModStore().getStore().getLoader().getChunkSize()) ;
             getModStore().getGraph().getEventManager().register(monitor) ;
         }
 
         // Crude but convenient
-        if ( arg.indexOf(':') == -1 )
-            arg = "file:"+arg ;
+        if ( filename.indexOf(':') == -1 )
+            filename = "file:"+filename ;
 
-        String lang = FileUtils.guessLang(arg) ;
+        String lang = FileUtils.guessLang(filename) ;
         getModTime().startTimer() ;
         
         // Load here
-        if ( true )
-            getModStore().getModel().read(arg, lang) ;
-        else
-            // Use bulkloader directly
-            ;
-        
+        getModStore().getModel().read(filename, lang) ;
         long timeMilli = getModTime().endTimer() ;
             
         if ( monitor != null )
@@ -113,8 +104,6 @@ public class sdbload extends CmdArgsDB
                 System.out.printf("Loaded in %.3f seconds [%d triples/s]\n", 
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
         }
-        
-        return true ;
     }
         
     static class Monitor implements GraphListener

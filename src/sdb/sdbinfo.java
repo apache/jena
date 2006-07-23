@@ -5,6 +5,8 @@
 
 package sdb;
 
+import java.util.List;
+
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
@@ -59,7 +61,7 @@ public class sdbinfo extends CmdArgsDB
     }
     
     @Override
-    protected void exec0()
+    protected void execCmd(List args)
     {
         StoreConfig sConf = getModStore().getStore().getConfiguration() ;
         if ( sConf == null )
@@ -70,12 +72,6 @@ public class sdbinfo extends CmdArgsDB
         Model m = sConf.getModel() ;
         m.write(System.out, "N3") ;
     }
-
-    @Override
-    protected boolean exec1(String arg)
-    {
-        System.out.println("<arg>"+arg) ;
-        return false ; }
 }
  
 

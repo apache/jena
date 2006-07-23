@@ -5,6 +5,8 @@
 
 package sdb;
 
+import java.util.List;
+
 import junit.framework.TestSuite;
 import sdb.cmd.CmdArgsDB;
 
@@ -54,25 +56,12 @@ public class sdbtest extends CmdArgsDB
     // Don't use exec1 which has a transaction wrapper.
     
     @Override 
-    protected void execWithArgs()
+    protected void execCmd(List<String> positionalArgs)
     {
-        for ( Object x : getPositional() )
-        {
-            execOneManifest((String)x) ;
-        }
+        for ( String x : positionalArgs )
+            execOneManifest(x) ;
     }
     
-    
-    @Override
-    protected void exec0()
-    {
-        execOneManifest("testing/manifest-sdb.ttl") ;
-    }
-
-    @Override
-    protected boolean exec1(String manifest)
-    { return false ; }
-
     private void execOneManifest(String manifest)
     { 
         if ( verbose )

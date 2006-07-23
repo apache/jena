@@ -6,11 +6,12 @@
 
 package sdb.cmd;
 
+import java.util.List;
+
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.shared.Command;
 
 public abstract class CmdArgsDB extends CmdArgModule
 {
@@ -37,49 +38,21 @@ public abstract class CmdArgsDB extends CmdArgModule
     protected ModStore getModStore() { return modStore  ; }
     protected ModTime  getModTime()  { return modTime  ; }
     
-    protected abstract void exec0() ;
+    //protected abstract void exec0() ;
     // true means continue transaction
-    protected abstract boolean exec1(String arg) ;
-
+    //protected abstract boolean exec1(String arg) ;
+    
+    protected abstract void execCmd(List<String> positionalArgs) ;
+    
+    @SuppressWarnings("unchecked")
     @Override
+    final
     protected void exec()
     {
         SDB.init() ;
-        
-        if ( getNumPositional() > 0 )
-            execWithArgs() ;
-        else
-            execZero() ;
-    }
-    
-    protected void execZero()
-    {
-        exec0() ;
-        modStore.closedown() ;
-    }
-
-    private int index ;
-    protected void execWithArgs()
-    {
-        index = 0 ;
-        
-        while ( index < getNumPositional() )
-        {
-            modStore.getStore().getConnection().executeInTransaction(new Command(){
-                public Object execute()
-                {
-                    for ( ; index < getNumPositional() ; )
-                    {
-                        // Execute until end or false.
-                        boolean rc = exec1(getPositionalArg(index)) ;
-                        index++ ;
-                        if ( ! rc )
-                            break ;
-                    }
-                    return null ;
-                }}) ;
-        }
-        modStore.closedown() ;
+        @SuppressWarnings("unchecked")
+        List<String> positionalArgs = (List<String>)super.getPositional() ;
+        execCmd(positionalArgs) ;
     }
 }
 

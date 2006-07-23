@@ -8,9 +8,11 @@ package sdb;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
+import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.query.util.Utils;
@@ -55,15 +57,20 @@ public class sdbsql extends CmdArgsDB
     }
     
     @Override
-    protected void exec0()
+    protected void execCmd(List<String> positionalArg)
     {
-        String x = super.getValue(argDeclQuery) ;
-        String sqlStmt = FileManager.get().readWholeFileAsUTF8(x) ;
-        exec1(sqlStmt) ;
+        if ( contains(argDeclQuery) )
+        {
+            String x = super.getValue(argDeclQuery) ;
+            String sqlStmt = FileManager.get().readWholeFileAsUTF8(x) ;
+            positionalArg.add(sqlStmt) ;
+        }
+        
+        for ( String x : positionalArg)
+            execOneSQL(x) ;
     }
-
-    @Override
-    protected boolean exec1(String sqlStmt)
+    
+    private void execOneSQL(String sqlStmt)
     {
         if ( verbose )
         {
@@ -87,13 +94,11 @@ public class sdbsql extends CmdArgsDB
         } catch (SQLException ex)
         {
             System.err.println("SQL Exception: "+ex.getMessage()) ;
-            return false ;
+            throw new TerminationException(9) ;
         }
         long time = getModTime().endTimer() ;
         if ( getModTime().timingEnabled() )
             System.out.println("Query: "+getModTime().timeStr(time)+"("+getModTime().timeStr(x)+"/"+getModTime().timeStr(time-x)+")") ; 
-        
-        return false ;
     }
 
 }

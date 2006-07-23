@@ -5,6 +5,8 @@
 
 package sdb;
 
+import java.util.List;
+
 import com.hp.hpl.jena.query.util.Utils;
 
 import sdb.cmd.CmdArgsDB;
@@ -57,7 +59,7 @@ public class sdbdump extends CmdArgsDB
     }
     
     @Override
-    protected void exec0()
+    protected void execCmd(List args)
     {
         // This is a streamable syntax.
         String syntax = "N-TRIPLES" ;
@@ -75,8 +77,6 @@ public class sdbdump extends CmdArgsDB
         }
     }
 
-    @Override
-    protected boolean exec1(String arg) { return false ; }
 }
  
 
