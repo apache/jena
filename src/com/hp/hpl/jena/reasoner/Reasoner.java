@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Reasoner.java,v 1.17 2006-03-22 13:52:53 andy_seaborne Exp $
+ * $Id: Reasoner.java,v 1.18 2006-07-24 09:58:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2006-03-22 13:52:53 $
+ * @version $Revision: 1.18 $ on $Date: 2006-07-24 09:58:09 $
  */
 public interface Reasoner {
     
@@ -41,8 +41,7 @@ public interface Reasoner {
      * <p>A reasoner is free to simply note this set of RDF and merge with any
      * future RDF rather than do processing at this time. </p>
      * @param tbox the ontology axioms or rule set encoded in RDF
-     * @return a reasoner instace which can be used to process a data graph,
-     * it may be the same instance - bindSchema is not required to be side-effect free.
+     * @return a reasoner instace which can be used to process a data graph
      * @throws ReasonerException if the reasoner cannot be
      * bound to a rule set in this way, for example if the underlying engine
      * can only accept a single rule set in this way and one rule set has
@@ -66,8 +65,7 @@ public interface Reasoner {
      * <p>A reasoner is free to simply note this set of RDF and merge with any
      * future RDF rather than do processing at this time. </p>
      * @param tbox the ontology axioms or rule set encoded in RDF
-     * @return a reasoner instace which can be used to process a data graph,
-     * it may be the same instance - bindSchema is not required to be side-effect free.
+     * @return a reasoner instace which can be used to process a data graph
      * @throws ReasonerException if the reasoner cannot be
      * bound to a rule set in this way, for example if the underlying engine
      * can only accept a single rule set in this way and one rule set has
