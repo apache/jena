@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.core.compiler;
 
 import static com.hp.hpl.jena.sdb.core.JoinType.INNER;
 import static com.hp.hpl.jena.sdb.core.JoinType.LEFT;
-import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.CompileContext;
@@ -50,30 +49,10 @@ public class QC
 
         SqlExprList conditions = new SqlExprList() ;
         
-        // TODO Consider doing this a rel algebra tree optimization reorganisation later 
+        if ( joinType == JoinType.INNER )
+            left = removeRestrict(left, conditions) ;
         
-        // Flatten some cases.
-        if ( left.isRestrict() && joinType == JoinType.INNER )
-        {
-            SqlNode sub = left.getRestrict().getSubNode() ;
-            if ( sub.isTable() || 
-                 ( sub.isJoin() && sub.getJoin().getJoinType() == JoinType.INNER ) )
-            {
-                SqlRestrict r = left.getRestrict() ; 
-                left = removeRestrict(r, conditions) ;
-            }
-        }
-            
-        if ( right.isRestrict() )
-        {
-            if ( right.getRestrict().getSubNode().isTable() )
-            {
-                SqlRestrict r = right.getRestrict() ; 
-                right = removeRestrict(r, conditions) ;
-            }
-            else
-                LogFactory.getLog(QC.class).info("join: restriction not over a table") ;
-        }
+        right = removeRestrict(right, conditions) ;
         
         for ( Var v : left.getIdScope().getVars() )
         {
@@ -86,21 +65,22 @@ public class QC
         }
         
         SqlJoin join = SqlJoin.create(joinType, left, right, null) ;
-        join.addConditions(conditions) ;
-        return join ;
+        return SqlRestrict.restrict(join, conditions) ;
     }
     
-    private static SqlNode removeRestrict(SqlRestrict restrict, SqlExprList conditions)
+    private static SqlNode removeRestrict(SqlNode sqlNode, SqlExprList conditions)
     {
-        // Move the conditions up.
+        if ( ! sqlNode.isRestrict() ) 
+            return sqlNode ;
+        
+        SqlRestrict restrict = sqlNode.getRestrict() ;
+        SqlNode subNode = restrict.getSubNode() ;
+        if ( ! subNode.isTable() && ! subNode.isInnerJoin() )
+            return sqlNode ;
         conditions.addAll(restrict.getConditions()) ;
-        // Loose the restriction
-        SqlNode sqlNode = restrict.getSubNode() ;
-        sqlNode.addNotes(restrict.getNotes()) ;
-        return sqlNode ;
+        subNode.addNotes(restrict.getNotes()) ;
+        return subNode ;
     }
-    
- 
 }
 
 /*
