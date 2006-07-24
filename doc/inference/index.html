@@ -258,7 +258,8 @@
 <p>This creates a new reasoner, independent from the original, which contains 
   the schema data. Any queries to an InfModel created using the boundReasoner 
   will see the schema statements, the data statements and any statements entailed 
-  from the combination of the two.</p>
+  from the combination of the two. Any updates to the InfModel will be reflected
+  in updates to the underlying data model - the schema model will not be affected.</p>
 <p>[<a href="#api">API index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="operationsOnInferenceModels"></a>Operations on inference models</h2>
@@ -1919,7 +1920,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.30 2006-06-16 08:53:47 der Exp $</i>
+  Last modification: $Id: index.html,v 1.31 2006-07-24 10:04:33 der Exp $</i>
 </p>
 </body>
 </html>
