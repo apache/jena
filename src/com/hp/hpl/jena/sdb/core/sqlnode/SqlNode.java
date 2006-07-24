@@ -15,6 +15,11 @@ public interface SqlNode extends Printable, Annotations
     public String         getAliasName() ;
     
     public boolean        isJoin() ;
+    public boolean        isInnerJoin() ;
+    public boolean        isLeftJoin() ;
+//    public boolean        isRightJoin() ;
+//    public boolean        isOuterJoin() ;
+    
     public SqlJoin        getJoin() ;
     
     public boolean        isRestrict() ;                // isSelect is confusing

@@ -22,6 +22,10 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     public SqlNodeBase(String aliasName) { this.aliasName = aliasName ; }
     
     public boolean isJoin() { return false ; }
+    public boolean isInnerJoin() { return false ; }
+    public boolean isLeftJoin() { return false ; }
+//    public boolean isRightJoin() { return false ; }
+//    public boolean isOuterJoin() { return false ; }
 
     public SqlJoin getJoin() { classError(SqlJoin.class) ; return null  ; }
 
