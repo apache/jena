@@ -6,5 +6,5 @@
 
 for c in sdb[a-z]*
 do
-  cp sdb_blank $c
+  cp sdb_cmd $c
   done
