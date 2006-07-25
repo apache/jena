@@ -18,7 +18,7 @@ QC1 and Q2 match/processSlot have much in common.
 + Connection + Layout = Store?
 
 + sdprint, sdbquery : ModSDB? for printing queries, blocks, RelAlg and SQL?
-  Are these two commands nearl the same? No - sdbprint does not need --sdb
+  Are these two commands nearly the same? ytes - if dummy connection.
 
 + Use SQL COALESCE for OPTIONALs with shared variables
 
