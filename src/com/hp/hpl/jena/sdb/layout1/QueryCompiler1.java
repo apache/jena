@@ -107,7 +107,7 @@ public class QueryCompiler1 extends QueryCompilerTriplePatternSlot
     }
     
     @Override
-    protected SqlTable makeTriplesTable(String alias)
+    protected SqlTable accessTriplesTable(String alias)
     {
         return new TableTriples1(tripleTableDesc.getTableName(), alias) ;
     }

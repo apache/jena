@@ -30,12 +30,10 @@ public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriple
     final
     protected SqlNode match(CompileContext context, Triple triple)
     {
-        // Make a TripleTableDesc, share this code in QCTriple.
-        // Abstract maketable, processSlot
         String alias = context.allocTableAlias() ;
         SqlExprList conditions = new SqlExprList() ;
         
-        SqlTable triples = makeTriplesTable(alias) ;
+        SqlTable triples = accessTriplesTable(alias) ;
         triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
         
         processSlot(context, triples, conditions, triple.getSubject(),   TableTriples.subjectCol) ; 
@@ -73,8 +71,11 @@ public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriple
         table.setIdColumnForVar(var, thisCol) ;
     }
     
+    /** Deal with an access to a constant in the query tripe pattern */
     protected abstract void constantSlot(Node node, SqlColumn thisCol, SqlExprList conditions) ;
-    protected abstract SqlTable makeTriplesTable(String alias) ;
+    
+    /** Retrun an SqlTable for the relevant triples table (use the alias given) */ 
+    protected abstract SqlTable accessTriplesTable(String alias) ;
 }
 
 /*
