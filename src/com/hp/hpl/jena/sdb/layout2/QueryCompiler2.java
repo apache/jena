@@ -12,7 +12,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.Block;
@@ -20,7 +19,7 @@ import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePatternSlot;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
@@ -31,7 +30,7 @@ import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class QueryCompiler2 extends QueryCompilerTriplePattern
+public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
 {
     private static Log log = LogFactory.getLog(QueryCompiler2.class) ;
     
@@ -40,63 +39,83 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
     
     // -------- Basic Graph pattern compilation
     
+//    @Override
+//    protected SqlNode match(CompileContext context, Triple triple)
+//    {
+//        // Make a TripleTableDesc, share this code in QCTriple.
+//        // Abstract maketable, processSlot
+//        String alias = context.allocTableAlias() ;
+//        SqlExprList conditions = new SqlExprList() ;
+//        
+//        TableTriples triples = new TableTriples(alias) ;
+//        triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
+//        
+//        processSlot(context, triples, conditions, triple.getSubject(),   TableTriples.subjectCol) ; 
+//        processSlot(context, triples, conditions, triple.getPredicate(), TableTriples.predicateCol) ;
+//        processSlot(context, triples, conditions, triple.getObject(),    TableTriples.objectCol) ;
+//        
+//        if ( conditions.size() == 0 )
+//            return triples ;
+//        
+//        return SqlRestrict.restrict(triples, conditions) ;
+//    }
+//
+//    
+//    private void processSlot(CompileContext context,
+//                             SqlTable table, SqlExprList conditions,
+//                             Node node, String colName)
+//    {
+//        SqlColumn thisCol = new SqlColumn(table, colName) ;
+//        
+//        // Abstract : QC_1 does an encode, QC_2, finds.
+//        // abstract: node=>column
+//        if ( ! node.isVariable() )
+//        {
+//            SqlColumn colId = constantCols.get(node) ;
+//            if ( colId == null )
+//            {
+//                log.warn("Failed to find id col for "+node) ;
+//                return ;
+//            }
+//            SqlExpr c = new S_Equal(thisCol, colId) ;
+//            c.addNote("Const condition: "+FmtUtils.stringForNode(node)) ;
+//            conditions.add(c) ;
+//            return ; 
+//        }
+//        
+//        // In common with QC1
+//        Var var = new Var(node) ;
+//        if ( table.getIdScope().hasColumnForVar(var) )
+//        {
+//            SqlColumn otherCol = table.getIdScope().getColumnForVar(var) ;
+//            SqlExpr c = new S_Equal(otherCol, thisCol) ;
+//            conditions.add(c) ;
+//            c.addNote("processVar: "+node) ;
+//            return ;
+//        }
+//        table.setIdColumnForVar(var, thisCol) ;
+//    }
+    
     @Override
-    protected SqlNode match(CompileContext context, Triple triple)
+    protected void constantSlot(Node node, SqlColumn thisCol, SqlExprList conditions)
     {
-        // Make a TripleTableDesc, share this code in QCTriple.
-        // Abstract maketable, processSlot
-        String alias = context.allocTableAlias() ;
-        SqlExprList conditions = new SqlExprList() ;
-        
-        TableTriples triples = new TableTriples(alias) ;
-        triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
-        
-        processSlot(context, triples, conditions, triple.getSubject(),   TableTriples.subjectCol) ; 
-        processSlot(context, triples, conditions, triple.getPredicate(), TableTriples.predicateCol) ;
-        processSlot(context, triples, conditions, triple.getObject(),    TableTriples.objectCol) ;
-        
-        if ( conditions.size() == 0 )
-            return triples ;
-        
-        return SqlRestrict.restrict(triples, conditions) ;
+      SqlColumn colId = constantCols.get(node) ;
+      if ( colId == null )
+      {
+          log.warn("Failed to find id col for "+node) ;
+          return ;
+      }
+      SqlExpr c = new S_Equal(thisCol, colId) ;
+      c.addNote("Const condition: "+FmtUtils.stringForNode(node)) ;
+      conditions.add(c) ;
+      return ; 
     }
-
-    
-    private void processSlot(CompileContext context,
-                             TableTriples triples, SqlExprList conditions,
-                             Node node, String colName)
+                                      
+    @Override
+    protected SqlTable makeTriplesTable(String alias)
     {
-        SqlColumn thisCol = new SqlColumn(triples, colName) ;
-        
-        // Abstract : QC_1 does an encode, QC_2, finds.
-        // abstract: node=>column
-        if ( ! node.isVariable() )
-        {
-            SqlColumn colId = constantCols.get(node) ;
-            if ( colId == null )
-            {
-                log.warn("Failed to find id col for "+node) ;
-                return ;
-            }
-            SqlExpr c = new S_Equal(thisCol, colId) ;
-            c.addNote("Const condition: "+FmtUtils.stringForNode(node)) ;
-            conditions.add(c) ;
-            return ; 
-        }
-        
-        // In common with QC1
-        Var var = new Var(node) ;
-        if ( triples.getIdScope().hasColumnForVar(var) )
-        {
-            SqlColumn otherCol = triples.getIdScope().getColumnForVar(var) ;
-            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-            conditions.add(c) ;
-            c.addNote("processVar: "+node) ;
-            return ;
-        }
-        triples.setIdColumnForVar(var, thisCol) ;
+        return new TableTriples(alias) ;
     }
-    
 
     //  -------- Start basic graph pattern 
     
@@ -265,25 +284,25 @@ public class QueryCompiler2 extends QueryCompilerTriplePattern
                 // Should be a column mentioned in the SELECT which is not mentionedd in this block 
                 return sqlNode ;
             }
-            
-          SqlTable table = vCol.getTable() ; 
-          Var vLex = new Var(v.getName()+"$lex") ;
-          SqlColumn cLex = new SqlColumn(table, "lex") ;
 
-          Var vDatatype = new Var(v.getName()+"$datatype") ;
-          SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
+            SqlTable table = vCol.getTable() ; 
+            Var vLex = new Var(v.getName()+"$lex") ;
+            SqlColumn cLex = new SqlColumn(table, "lex") ;
 
-          Var vLang = new Var(v.getName()+"$lang") ;
-          SqlColumn cLang = new SqlColumn(table, "lang") ;
-          
-          Var vType = new Var(v.getName()+"$type") ;
-          SqlColumn cType = new SqlColumn(table, "type") ;
+            Var vDatatype = new Var(v.getName()+"$datatype") ;
+            SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
 
-          // Get the 3 part of the RDF term and its internal type number.
-          sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
-          sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
-          sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
-          sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
+            Var vLang = new Var(v.getName()+"$lang") ;
+            SqlColumn cLang = new SqlColumn(table, "lang") ;
+
+            Var vType = new Var(v.getName()+"$type") ;
+            SqlColumn cType = new SqlColumn(table, "type") ;
+
+            // Get the 3 part of the RDF term and its internal type number.
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
         }
         return sqlNode ;
     }

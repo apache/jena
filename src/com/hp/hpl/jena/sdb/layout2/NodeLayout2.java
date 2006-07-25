@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
 
-/** Operations associated with Nodes and layouyt 2 (the Triples+Nodes layout)
+/** Operations associated with nodes and layout 2 (the Triples+Nodes layout)
  * 
  * @author Andy Seaborne
  * @version $Id$

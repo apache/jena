@@ -47,7 +47,7 @@ public class DevTest extends TestSuite
     private DevTest()
     {
         super("SDB - Dev test") ;
-        initMySQL_2() ;
+        initMySQL_1() ;
         loadTests() ;
     }
         
@@ -62,15 +62,19 @@ public class DevTest extends TestSuite
             GenerateSQL.outputAnnotations = true ;
         }
 
-//        test(store,
-//             SDBTest.testDirSDB+"General/vars-2.rq",
-//             SDBTest.testDirSDB+"General/data.ttl") ;
-        //QueryCompilerBasicPattern.printSQL = true ;
+        QueryCompilerBasicPattern.printSQL = true ;
         test(store,
-             SDBTest.testDirSDB+"Expressions/regex-1.rq",
-             SDBTest.testDirSDB+"Expressions/data.ttl") ;
+             SDBTest.testDirSDB+"General/term-1.rq",
+             SDBTest.testDirSDB+"General/data-1.ttl") ;
+        test(store,
+             SDBTest.testDirSDB+"General/term-2.rq",
+             SDBTest.testDirSDB+"General/data-1.ttl") ;
+        //QueryCompilerBasicPattern.printSQL = true ;
+//        test(store,
+//             SDBTest.testDirSDB+"Expressions/regex-1.rq",
+//             SDBTest.testDirSDB+"Expressions/data.ttl") ;
         
-//        loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
+//       loadManifest(SDBTest.testDirSDB+"General/manifest.ttl") ;
 //        loadManifest(SDBTest.testDirSDB+"BasicPatterns/manifest.ttl") ; 
 //        loadManifest(SDBTest.testDirSDB+"Optionals1/manifest.ttl") ;
 //        loadManifest(SDBTest.testDirSDB+"Integration/manifest.ttl") ;

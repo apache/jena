@@ -53,7 +53,6 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
                                        ExecutionContext execCxt)
     {
         String sqlStmt = asSQL(block) ;
-        // Some way to print this out for debugging?
         
         try {
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;

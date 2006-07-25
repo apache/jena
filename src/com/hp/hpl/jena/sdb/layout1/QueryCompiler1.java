@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.SDBException;
@@ -21,17 +20,17 @@ import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.ConditionCompilerNone;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePattern;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePatternSlot;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class QueryCompiler1 extends QueryCompilerTriplePattern
+public class QueryCompiler1 extends QueryCompilerTriplePatternSlot
 {
     private static Log log = LogFactory.getLog(QueryCompiler1.class) ;
     
@@ -49,54 +48,70 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
     
     public QueryCompiler1(EncoderDecoder codec) { this(codec, null) ; }
     
+//    @Override
+//    protected SqlNode match(CompileContext context, Triple triple)
+//    {
+//        String alias = context.allocTableAlias() ;
+//        // For a triple, add the table triple table 
+//        String sCol = tripleTableDesc.getSubjectColName() ;
+//        String pCol = tripleTableDesc.getPredicateColName() ;
+//        String oCol = tripleTableDesc.getObjectColName() ;
+//    
+//        TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
+//        tripleTable.addNote(FmtUtils.stringForTriple(triple, null)) ;
+//        
+//        SqlExprList conditions = new SqlExprList() ;
+//        processSlot(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
+//        processSlot(context, tripleTable, triple.getPredicate(), pCol, conditions) ;
+//        processSlot(context, tripleTable, triple.getObject(),    oCol, conditions) ;
+//    
+//        if ( conditions.size() == 0 )
+//            return tripleTable ;
+//        return SqlRestrict.restrict(tripleTable, conditions) ;
+//    }
+//
+//    private void processSlot(CompileContext context, TableTriples1 triples, Node node, String col, SqlExprList conditions)
+//    {
+//        SqlColumn thisCol = new SqlColumn(triples, col) ;
+//
+//        if ( ! node.isVariable() )
+//        {
+//            String str = codec.encode(node) ;
+//            SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
+//            c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+//            conditions.add(c) ;
+//            return ;
+//        }
+//
+//        // Variable : in common with QC2
+//        Var var = new Var(node) ;
+//        if ( triples.getIdScope().hasColumnForVar(var) )
+//        {
+//            SqlColumn otherCol = triples.getIdScope().getColumnForVar(var) ;
+//            SqlExpr c = new S_Equal(otherCol, thisCol) ;
+//            conditions.add(c) ;
+//            c.addNote("processVar: "+var) ;
+//            return ;
+//        }
+//        triples.setIdColumnForVar(var, thisCol) ;
+//    }
+
     @Override
-    protected SqlNode match(CompileContext context, Triple triple)
+    protected void constantSlot(Node node, SqlColumn thisCol, SqlExprList conditions)
     {
-        String alias = context.allocTableAlias() ;
-        // For a triple, add the table triple table 
-        String sCol = tripleTableDesc.getSubjectColName() ;
-        String pCol = tripleTableDesc.getPredicateColName() ;
-        String oCol = tripleTableDesc.getObjectColName() ;
-    
-        TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
-        tripleTable.addNote(FmtUtils.stringForTriple(triple, null)) ;
-        
-        SqlExprList conditions = new SqlExprList() ;
-        processSlot(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
-        processSlot(context, tripleTable, triple.getPredicate(), pCol, conditions) ;
-        processSlot(context, tripleTable, triple.getObject(),    oCol, conditions) ;
-    
-        if ( conditions.size() == 0 )
-            return tripleTable ;
-        return SqlRestrict.restrict(tripleTable, conditions) ;
+          String str = codec.encode(node) ;
+          SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
+          c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+          conditions.add(c) ;
+          return ;
     }
-
-    private void processSlot(CompileContext context, TableTriples1 triples, Node node, String col, SqlExprList conditions)
+    
+    @Override
+    protected SqlTable makeTriplesTable(String alias)
     {
-        SqlColumn thisCol = new SqlColumn(triples, col) ;
-
-        if ( ! node.isVariable() )
-        {
-            String str = codec.encode(node) ;
-            SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-            c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
-            conditions.add(c) ;
-            return ;
-        }
-
-        // Variable : in common with QC2
-        Var var = new Var(node) ;
-        if ( triples.getIdScope().hasColumnForVar(var) )
-        {
-            SqlColumn otherCol = triples.getIdScope().getColumnForVar(var) ;
-            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-            conditions.add(c) ;
-            c.addNote("processVar: "+var) ;
-            return ;
-        }
-        triples.setIdColumnForVar(var, thisCol) ;
+        return new TableTriples1(tripleTableDesc.getTableName(), alias) ;
     }
-
+    
     @Override
     protected void startCompile(CompileContext context, Block block)
     { return ; } 
@@ -123,7 +138,8 @@ public class QueryCompiler1 extends QueryCompilerTriplePattern
             if ( ! v.isNamedVar() )
                 continue ;
             // Value scope == IdScope for layout1
-            SqlColumn c = sqlNode.getValueScope().getColumnForVar(v) ;
+            // CHECK
+            SqlColumn c = sqlNode.getIdScope().getColumnForVar(v) ;
             if ( c != null )
                 sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
 //            else

@@ -16,7 +16,6 @@ import com.hp.hpl.jena.sdb.assembler.CommandAssemblerException;
 import com.hp.hpl.jena.sdb.assembler.TypeNotUniqueException;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-
 public class AssemblerUtils
 {
     public static List<String> multiValueString(Resource r, Property p)

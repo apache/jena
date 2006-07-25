@@ -22,6 +22,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -38,8 +39,8 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
-        //runQuery() ;
-        runPrint() ;
+        runQuery() ;
+        //runPrint() ;
         //runLoad() ;
         
         //runDump() ;
@@ -64,8 +65,12 @@ public class RunSDB
 //            "-v",
 //        } ;
         
-        String a[] = {"-v", "--time","--sdb=sdb.ttl", "@Q.rq" } ;
-      
+        //String a[] = {"-v", "--time","--sdb=sdb.ttl", "@Q.rq" } ;
+        String a[] = {"-v", "--time","--sdb=sdb1.ttl", "--query=testing/General/term-2.rq" } ;
+        QueryCompilerBasicPattern.printBlock = true ;
+        QueryCompilerBasicPattern.printAbstractSQL = true ;
+        QueryCompilerBasicPattern.printSQL = true ;
+        
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
         sdbquery.main(a) ;
