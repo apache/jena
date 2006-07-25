@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.43 2006-07-21 08:52:26 der Exp $
+ * $Id: Rule.java,v 1.44 2006-07-25 07:45:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -62,7 +62,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.43 $ on $Date: 2006-07-21 08:52:26 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.44 $ on $Date: 2006-07-25 07:45:37 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -851,7 +851,7 @@ public class Rule implements ClauseEntry {
                 if (peekToken().startsWith("^^")) {
                     String dtURI = nextToken().substring(2);
                     if (dtURI.indexOf(':') != -1) {
-                        // Thanks to Steve Crane for pointing out the need for prefix expansion here
+                        // Thanks to Steve Cranefield for pointing out the need for prefix expansion here
                         String exp = prefixMapping.expandPrefix(dtURI); // Local map first
                         exp = PrintUtil.expandQname(exp);  // Retain global map for backward compatibility
                         if (exp == dtURI) {

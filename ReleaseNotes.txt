@@ -53,7 +53,7 @@ OntModel
 Reasoners
    o fixed bug in duplicate removal in GenericRuleReasoner in pure backward mode
    o fixed bug in parsing of typed literals to handle user defined prefixes
-     (thanks to Steve Crane for the fix)
+     (thanks to Steve Cranefield for the fix)
    o removed MAX_VARS limit from the old forward rule engine
    
 ==== Jena 2.4
