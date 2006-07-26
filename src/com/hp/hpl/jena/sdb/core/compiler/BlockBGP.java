@@ -85,6 +85,15 @@ public class BlockBGP extends BlockBase
         return block ;
     }
 
+    public BlockBGP copy()
+    {
+        BlockBGP block = new BlockBGP() ;
+        block.triples.addAll(triples) ;
+        block.constraints.addAll(constraints) ;
+        block.projectVars = this.projectVars ;
+        return block ;
+    }
+    
     public void output(IndentedWriter out)
     {
         out.print("(BlockBGP") ;

@@ -16,6 +16,7 @@ _:c rdf:type acmd:SDBConnection ;
     acmd:connection _:c ;
     acmd:modelName  "" ;        # ModelRDB specific
     acmd:engine     "InnoDB" ;  # MySQL/SDB specific
-    .
+    acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
+.
 
 ## For HSQL, in memory, need data loading as well.

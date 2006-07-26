@@ -24,12 +24,10 @@ import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
-import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreBase;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
@@ -102,7 +100,7 @@ public class sdbprint extends CmdArgsDB
             query.serialize(System.out, Syntax.syntaxPrefix) ;
         }
 
-        Store store = new StoreBase(null, new PlanTranslatorGeneral(true, true), null, null, compiler, null) ;
+        Store store = getModStore().getStore() ;
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
 
         if ( verbose )
