@@ -18,9 +18,10 @@ public class StoreBaseHSQL extends StoreBase
                          PlanTranslator planTranslator,
                          StoreLoader loader,
                          StoreFormatter formatter,
-                         QueryCompiler compiler)
+                         QueryCompiler compiler,
+                         StoreCustomizer customizer)
     {
-        super(connection, planTranslator, loader, formatter, compiler) ;
+        super(connection, planTranslator, loader, formatter, compiler, customizer) ;
     }
 
     @Override 

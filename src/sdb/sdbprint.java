@@ -102,7 +102,7 @@ public class sdbprint extends CmdArgsDB
             query.serialize(System.out, Syntax.syntaxPrefix) ;
         }
 
-        Store store = new StoreBase(null, new PlanTranslatorGeneral(true, true), null, null, compiler) ;
+        Store store = new StoreBase(null, new PlanTranslatorGeneral(true, true), null, null, compiler, null) ;
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
 
         if ( verbose )
@@ -141,7 +141,7 @@ public class sdbprint extends CmdArgsDB
             PlanSDB planSDB = (PlanSDB)planElt ;
             Block block = planSDB.getBlock() ;
             block = block.substitute(new BindingRoot());
-            String sqlStmt = store.getQueryCompiler().asSQL(block) ;
+            String sqlStmt = store.getQueryCompiler().asSQL(store, block) ;
             out.println("[SQL --------") ;
             out.incIndent() ;
             out.print(sqlStmt) ;
@@ -178,7 +178,7 @@ public class sdbprint extends CmdArgsDB
                 Block block = planSDB.getBlock() ;
                 block = block.substitute(new BindingRoot());
                 
-                String sqlStmt = store.getQueryCompiler().asSQL(block) ;
+                String sqlStmt = store.getQueryCompiler().asSQL(store, block) ;
                 System.out.println(sqlStmt) ;
             }
         }

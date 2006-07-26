@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
+import com.hp.hpl.jena.query.util.Loader;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreRDB;
@@ -36,6 +37,18 @@ public class StoreFactory
     
     public static Store create(StoreDesc desc, SDBConnection sdb)
     {
+        Store store = _create(desc, sdb) ;
+        if ( desc.customizerClass != null )
+        {
+            StoreCustomizer customizer = 
+                (StoreCustomizer)Loader.loadAndInstantiate(desc.customizerClass, StoreCustomizer.class) ;
+            store.setCustomizer(customizer) ;
+        }
+        return store ;
+    }
+    
+    private static Store _create(StoreDesc desc, SDBConnection sdb)
+    {    
         if ( sdb == null ) 
             sdb = SDBFactory.createConnection(desc.connDesc) ;
         

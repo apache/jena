@@ -10,6 +10,8 @@ import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
 
@@ -43,30 +45,35 @@ public class StoreConfig extends SDBConnectionHolder
     private static final String serializationFormat = FileUtils.langNTriple ;
     
     private boolean initialized = false ;
-    private Model config = null ;
+    private Map<String, Model> cache = new HashMap<String, Model>() ;
     NamedString storage ;
     
     public StoreConfig(SDBConnection sdb)
     { super(sdb) ; }
     
-    public Model getModel()
+    public Model getModel() { return getModel(configName) ; }
+
+    public Model getModel(String name)
     {
         init() ;
-        return config ; 
+        if ( ! cache.containsKey(name) )
+        {
+            Model m = readModel(name) ;
+            cache.put(name, m) ;
+            return m ;
+        }
+        return cache.get(name) ;
     }
     
-    public void setModel(Model m)
+    public void setModel(Model m) { setModel(configName, m) ; }
+    public void setModel(String name, Model m)
     {
         init() ;
-        config = m ;
-        writeConfigModel() ;
+        cache.put(name, m) ;
+        writeModel(name, m) ;
     }
     
-    public void flush() { writeConfigModel() ; }
-    
-    //public void format() { format(connection()) ; }
-    
-    //static void format(SDBConnection sdb) {}
+    //public void flush() { writeConfigModel() ; }
     
     private void init()
     {
@@ -74,9 +81,6 @@ public class StoreConfig extends SDBConnectionHolder
             return ;
         initialized = true ;
         
-        
-        if ( config != null )
-            return ;
         if ( storage != null )
             return ;
         
@@ -84,28 +88,26 @@ public class StoreConfig extends SDBConnectionHolder
         
         LogFactory.getLog(this.getClass()).warn("TESTING: config storage reset") ;
         storage.reset() ;
+    }
+    
+    private Model readModel(String name)
+    {
+        String s = storage.get(name) ;
         
-        String s = storage.get(configName) ;
         if ( s == null )
-        {
-            // No such row ; put something there.
-            config = ModelFactory.createDefaultModel() ;
-            writeConfigModel() ;
-            return ;
-        }
+            return null ;
         
         Model m = ModelFactory.createDefaultModel() ;
         StringReader r =  new StringReader(s) ; 
         m.read(s, serializationFormat) ;
-        config = m ;
+        return m ;
     }
     
-    private void writeConfigModel()
+    private void writeModel(String name, Model model)
     {
-        init() ;
         StringWriter x = new StringWriter() ;
-        config.write(x, serializationFormat) ;
-        storage.set(configName, x.toString());
+        model.write(x, serializationFormat) ;
+        storage.set(name, x.toString());
     }
 }
 

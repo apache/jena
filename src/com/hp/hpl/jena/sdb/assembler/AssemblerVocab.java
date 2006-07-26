@@ -48,6 +48,7 @@ public class AssemblerVocab
     public static final Property pNamedGraphData     = ResourceFactory.createProperty(NS, "namedGraph") ;
     
     public static final Property pOutputFormat       = ResourceFactory.createProperty(NS, "outputFormat") ;
+    public static final Property pCustomizerClass    = ResourceFactory.createProperty(NS, "customizer") ;
 
     // renaming: sdbFoo => foo ?/
     

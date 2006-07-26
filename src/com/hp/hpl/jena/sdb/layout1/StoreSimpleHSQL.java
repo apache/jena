@@ -29,7 +29,7 @@ public class StoreSimpleHSQL extends StoreBaseHSQL
               new PlanTranslatorGeneral(false, false),
               new LoaderSimple(sdb, codec),
               new FormatterSimpleHSQL(sdb) ,
-              new QueryCompiler1(codec)) ;
+              new QueryCompiler1(codec), null) ;
     }
 }
 

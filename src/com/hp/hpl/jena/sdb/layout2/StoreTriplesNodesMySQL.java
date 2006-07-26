@@ -26,7 +26,7 @@ public class StoreTriplesNodesMySQL extends StoreBase
               new LoaderMySQL(connection),
               new FmtLayout2MySQL(connection, 
                                         (tableType!=null)? tableType : MySQLEngineType.InnoDB),
-              new QueryCompiler2()) ;
+              new QueryCompiler2(), null) ;
     }
 }
 

@@ -38,6 +38,11 @@ public interface Store
     /** Return the processor that turns SPARQL queries into SQL expressions */
     QueryCompiler    getQueryCompiler() ; 
     
+    /** Return the store instance specific modification engine */
+    StoreCustomizer  getCustomizer() ;
+    /** Set the store instance specific modification engine */
+    void setCustomizer(StoreCustomizer customizer) ;
+    
     /** Return the processor that creates the database tables */
     StoreFormatter   getTableFormatter() ;
     

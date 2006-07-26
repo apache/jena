@@ -35,7 +35,7 @@ public class StoreSimpleMySQL extends StoreBase
               new PlanTranslatorGeneral(true, false),
               new LoaderSimple(connection, codec), 
               new FormatterSimpleMySQL(connection, engineType),
-              new QueryCompiler1(codec)) ;
+              new QueryCompiler1(codec), null) ;
     }
 }
 

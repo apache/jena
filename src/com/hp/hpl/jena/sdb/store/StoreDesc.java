@@ -30,6 +30,7 @@ public class StoreDesc
     public MySQLEngineType engineType  = null ;     // MySQL specific
     public DatabaseType dbType         = null ;
     public String modelName            = null ;     // ModelRDB specific
+    public String customizerClass      = null ;
     
     public static StoreDesc read(String filename)
     {

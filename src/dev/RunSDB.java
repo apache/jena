@@ -9,25 +9,20 @@ package dev;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import sdb.*;
+import sdb.sdbdump;
+import sdb.sdbload;
+import sdb.sdbquery;
+import sdb.sdbsql;
 import sdb.cmd.CmdDesc;
 import sdb.cmd.ScriptDesc;
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.query.junit.SimpleTestRunner;
-import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
-import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreBase;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
@@ -39,8 +34,8 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
-        runQuery() ;
-        //runPrint() ;
+        //runQuery() ;
+        runPrint() ;
         //runLoad() ;
         
         //runDump() ;
@@ -104,30 +99,6 @@ public class RunSDB
     {
         String a[]= { "--sdb=sdb-hsqldb.ttl"} ;
         sdbdump.main(a) ;
-        System.exit(0) ;
-    }
-    
-    public static void runTestManifest()
-    {
-        String manifest = "testing/BasicPatterns/manifest.ttl" ;
-        String a[]= { "--sdb=sdb.ttl", "--schema=schema2", manifest } ;
-        sdbtest.main(a) ;
-        System.exit(0) ;
-    }
-        
-    public static void runTest()
-    {
-        SDBConnection conn = new SDBConnection("jdbc:mysql://localhost/SDB2", Access.getUser(), Access.getPassword()) ;
-        TestItem testItem = new TestItem("SDB",
-                                         "testing/Integration/integrate-1.rq",
-                                         "testing/Integration/data.ttl",
-                                         null) ;
-        Store store = new StoreBase(null, null, null, null, null ) ; 
-        Test test = new QueryTestSDB(store, "SDB", null, testItem) ;
-        TestSuite ts = new TestSuite() ;
-        ts.addTest(test) ;
-        SimpleTestRunner.runAndReport(ts) ;
-        store.close() ;
         System.exit(0) ;
     }
 

@@ -52,7 +52,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
                                        Binding binding,
                                        ExecutionContext execCxt)
     {
-        String sqlStmt = asSQL(block) ;
+        String sqlStmt = asSQL(store, block) ;
         
         try {
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
@@ -77,10 +77,10 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
     //protected abstract ConditionCompiler getConditionCompiler() ;
     protected abstract ResultsBuilder getResultBuilder() ;
 
-    public String asSQL(Block block)
+    public String asSQL(Store store, Block block)
     {
         verbose ( printBlock, block ) ; 
-        CompileContext context = new CompileContext() ;
+        CompileContext context = new CompileContext(store) ;
 
         // A chance for subclasses to change the block structure (including insert their own block types)
         block = modify(block) ;
@@ -125,10 +125,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
 
     protected abstract void startCompile(CompileContext context, Block block) ;
     protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode) ;
-    
     protected abstract SqlNode compile(BlockBGP blockBGP, CompileContext context) ;
-    
-    
     
     
     public SqlNode compile(BlockOptional blockOpt, CompileContext context)

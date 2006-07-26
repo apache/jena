@@ -23,6 +23,9 @@ public abstract class QueryCompilerTriplePattern extends QueryCompilerBasicPatte
     public SqlNode compile(BlockBGP blockBGP, CompileContext context)
     {
         SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
+        
+        // Allow per store instance modification.
+        blockBGP = context.getStore().getCustomizer().modify(blockBGP) ;
 
         for ( Triple triple : blockBGP.getTriples() )
         {

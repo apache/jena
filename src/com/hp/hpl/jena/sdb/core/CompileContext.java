@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreHolder;
+
 
 /** A collection of things to track during query compilation
  * from SPARQL to SQL.
@@ -14,27 +17,12 @@ package com.hp.hpl.jena.sdb.core;
  * @version $Id: CompileContext.java,v 1.14 2006/04/17 11:55:35 andy_seaborne Exp $
  */
 
-public class CompileContext
+public class CompileContext extends StoreHolder
 {
-//    // Things to track:
-//    // query var --> triple column
-//    // query var --> value column
-//    // (constant --> column if no hash for triple -- unlikely to be needed long term)
-//    
-////    private Stack<Scope> scopeStack = new Stack<Scope>() ;
-////    //private Scope varAliases = new Scope() ;
-////
-////    public void scopeStart() { scopeStack.push(new Scope(getCurrentScope())) ; }
-////    public void scopeEnd()   { scopeStack.pop() ; }
-////    
-////    public Scope getCurrentScope() { return  scopeStack.lastElement() ; }
-//    
-//    private Scope scope = new ScopeNull() ;
-//    
-//    public void  setScope(Scope scope) { this.scope = scope ; }
-//    public Scope getScope() { return scope ; }
     
-    
+    public CompileContext(Store store) { super(store) ; }
+    public Store getStore()            { return store() ; }
+
     int countTable = 1 ;    
     private static final String triplesTableAliasBase = "T"+SDBConstants.SQLmark ;
 
@@ -46,7 +34,6 @@ public class CompileContext
     int countJoin = 1 ;    
     private String joinAliasBase = "J"+SDBConstants.SQLmark ;
     public String allocJoinAlias() { return joinAliasBase+(countJoin++) ; }
-    
 }
 
 /*

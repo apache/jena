@@ -30,6 +30,8 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class GraphSDB extends GraphBase implements Graph , GraphListener
 {
+    //TODO Reowrk this sometime now the infrastructure for Stores is more developed.
+    
     private static Log log = LogFactory.getLog(GraphSDB.class) ;
 
     protected PrefixMapping pmap = null ;
@@ -69,7 +71,7 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
-        CompileContext cxt = new CompileContext() ;
+        CompileContext cxt = new CompileContext(getStore()) ;
         List<Node>vars = new ArrayList<Node>() ;
         
         Node s = m.getMatchSubject() ;

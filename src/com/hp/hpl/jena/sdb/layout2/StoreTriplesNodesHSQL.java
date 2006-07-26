@@ -26,7 +26,7 @@ public class StoreTriplesNodesHSQL extends StoreBaseHSQL
               new PlanTranslatorGeneral(false, false),
               new LoaderHSQL(connection),
               new FmtLayout2HSQL(connection),
-              new QueryCompiler2()) ;
+              new QueryCompiler2(), null) ;
     }
 }
 

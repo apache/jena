@@ -9,4 +9,5 @@ SELECT ?v
 WHERE { 
   ?x :p ?v . 
   FILTER regex(?v, "^a.", "i") 
+  ?x :q ?v
 }

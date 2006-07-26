@@ -18,23 +18,28 @@ public class StoreBase
     protected StoreLoader loader ;
     protected StoreFormatter formatter ;
     protected QueryCompiler compiler ;
+    protected StoreCustomizer customizer ;
     
     public StoreBase(SDBConnection connection, 
                      PlanTranslator planTranslator,
                      StoreLoader loader ,
                      StoreFormatter formatter ,
-                     QueryCompiler compiler )
+                     QueryCompiler compiler ,
+                     StoreCustomizer customizer)
     {
         super(connection) ;
         this.loader = loader ;
         this.formatter = formatter ;
         this.compiler = compiler ;
         this.planTranslator = planTranslator ;
+        if ( customizer == null )
+            customizer = new StoreCustomizerBase() ;
+        setCustomizer(customizer) ;
     }
     
     public SDBConnection   getConnection()           {  return connection() ; }
     
-    public  PlanTranslator getPlanTranslator()       { return planTranslator ; }
+    public PlanTranslator getPlanTranslator()        { return planTranslator ; }
     
     public QueryCompiler   getQueryCompiler()        { return compiler ; }
 
@@ -47,6 +52,10 @@ public class StoreBase
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL
     public void close()                              { }
+
+    
+    public StoreCustomizer getCustomizer()           { return customizer ; }
+    public void setCustomizer(StoreCustomizer customizer)       { this.customizer = customizer ; }
 }
 
 /*

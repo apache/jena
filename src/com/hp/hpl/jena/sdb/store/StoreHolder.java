@@ -4,48 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package com.hp.hpl.jena.sdb.store;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import com.hp.hpl.jena.db.ModelRDB;
-import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.*;
-
-/** Store class for the Jena2 databse layout : query-only,
- *  not update via this route (use ModelRDB as normal). 
- * 
- * @author Andy Seaborne
- * @version $Id: StoreRDB.java,v 1.2 2006/04/27 21:43:48 andy_seaborne Exp $
- */
-
-public class StoreRDB extends StoreBase
+public class StoreHolder
 {
-    private ModelRDB model ;
+    // It's so common to take and keep a store, that it is worth
+    // making a container for it.
+    
+    private Store store ;
 
-    public StoreRDB(ModelRDB model)
-    {
-        super(makeSDBConnection(model),
-              new PlanTranslatorGeneral(true, false),
-              null,
-              null,
-              new QueryCompiler1(new CodecRDB(model), new TripleTableDescRDB()),
-              null ) ;
-        this.model = model ;
-    }    
+    protected StoreHolder(Store store) { this.store = store ; }
     
-    public static SDBConnection makeSDBConnection(ModelRDB model)
-    {
-        try {
-            Connection jdbc = model.getConnection().getConnection() ;
-             return new SDBConnection(jdbc) ; 
-        } catch (SQLException ex) { throw new SDBExceptionSQL("StoreRDB", ex) ; }
-    }
-    
-    public ModelRDB getModel() { return model ; }
+    // Leave the getter free so the subclass can decide whether to reveal the connection or not.
+    protected Store store() { return store ; }
 }
 
 /*

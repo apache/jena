@@ -81,6 +81,18 @@ public class AssemblerUtils
         return s.getString() ; 
     }
 
+    public static String getAsStringValue(Resource r, Property p)
+    {
+        if ( ! atmostOneProperty(r, p) )
+            throw new CommandAssemblerException(r, "More than one property '"+AssemblerUtils.fmtURI(p)+"'") ;
+        Statement s = r.getProperty(p) ;
+        if ( s == null )
+            return null ;
+        if ( s.getObject().isResource() )
+            return s.getResource().getURI() ;
+        return s.getString() ; 
+    }
+
     public static Resource getResourceValue(Resource r, Property p)
     {
         if ( ! atmostOneProperty(r, p) )

@@ -21,7 +21,7 @@ public interface QueryCompiler
                                  ExecutionContext execCxt) ;
     
     // Convenient to have this.
-    public String asSQL(Block block) ;
+    public String asSQL(Store store, Block block) ;
  }
 
 /*

@@ -34,13 +34,15 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
             return null ;
         storeDesc.connDesc = (SDBConnectionDesc)a.open(c) ;
         storeDesc.dbType = DatabaseType.convert(storeDesc.connDesc.type) ;
-        
         storeDesc.layoutName = AssemblerUtils.getStringValue(root, AssemblerVocab.pLayout) ;
+
         String engineName = AssemblerUtils.getStringValue(root, AssemblerVocab.pMySQLEngine) ;
         storeDesc.engineType = null ;
         if ( engineName != null )
             try { storeDesc.engineType= MySQLEngineType.convert(engineName) ; }
             catch (SDBException ex) {}
+            
+        storeDesc.customizerClass = AssemblerUtils.getAsStringValue(root, AssemblerVocab.pCustomizerClass) ;
         return storeDesc ;
     }
 }

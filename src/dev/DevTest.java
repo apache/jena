@@ -109,7 +109,7 @@ public class DevTest extends TestSuite
                                   new PlanTranslatorGeneral(false, false),
                                   new LoaderOneTriple(sdb),
                                   new FmtLayout2HSQL(sdb),
-                                  new QueryCompiler2()) ;
+                                  new QueryCompiler2(), null) ;
         } else
             store = new StoreTriplesNodesHSQL(sdb) ;
 
@@ -137,7 +137,7 @@ public class DevTest extends TestSuite
                                   new PlanTranslatorGeneral(true, true),
                                   new LoaderOneTriple(sdb),
                                   new FmtLayout2MySQL(sdb, MySQLEngineType.InnoDB),
-                                  new QueryCompiler2()) ;
+                                  new QueryCompiler2(), null) ;
         }
         else
             store = new StoreTriplesNodesMySQL(sdb) ;

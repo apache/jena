@@ -6,16 +6,15 @@ IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
 OR improve the generation of SQL output and leave the tree much as is.
 OR canonical tree SPJ
 
-HSQL/MySQL joint testing
+Need to worrry more about varibale definedness in PlanSDB generation
 
-DRYing out:
-QC1 and Q2 match/processSlot have much in common.
-  QC_Slot?
+HSQL/MySQL joint testing
 
 == Next
   4/ ==> Performance testing
 
 + Connection + Layout = Store?
+  Layout is in Store config?
 
 + sdprint, sdbquery : ModSDB? for printing queries, blocks, RelAlg and SQL?
   Are these two commands nearly the same? ytes - if dummy connection.
