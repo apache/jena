@@ -1,5 +1,4 @@
 #!/bin/bash
 
-STORE_SPEC=" "
 source "$SDBROOT/bin/sdb_init"
 exec java $JVM_ARGS -cp "$CP" sdb.$CMD $STORE_SPEC "$@"

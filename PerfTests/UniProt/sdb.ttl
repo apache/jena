@@ -3,7 +3,6 @@
 @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-
 _:c a acmd:SDBConnection ;
     acmd:sdbType     "mysql" ;
     acmd:sdbHost     "localhost" ;
@@ -14,4 +13,5 @@ _:c a acmd:SDBConnection ;
     acmd:layout     "layout2" ;
     acmd:connection _:c ;
     acmd:engine     "InnoDB" ;
+    acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
     .
