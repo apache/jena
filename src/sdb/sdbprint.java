@@ -9,20 +9,17 @@ package sdb;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
+import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.core.BindingRoot;
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.PlanFormatter;
-import com.hp.hpl.jena.query.engine1.PlanFormatterVisitor;
-import com.hp.hpl.jena.query.engine1.PlanVisitorBase;
+import com.hp.hpl.jena.query.engine1.*;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -44,7 +41,9 @@ public class sdbprint extends CmdArgsDB
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
     
     ModQueryIn modQuery = new ModQueryIn() ;
-
+    ArgDecl argDeclSQL = new ArgDecl(ArgDecl.NoValue, "sql") ;
+    boolean printSQL = false ;
+    
     public static void main (String [] argv)
     {
         new sdbprint(argv).mainAndExit() ;
@@ -54,6 +53,8 @@ public class sdbprint extends CmdArgsDB
     {
         super(args);
         super.addModule(modQuery) ;
+        super.getUsage().startCategory("SQL") ;
+        super.add(argDeclSQL, "--sql", "Print SQL only") ;
     }
 
     @Override
@@ -67,6 +68,7 @@ public class sdbprint extends CmdArgsDB
         if ( storeDesc.layoutName == null )
             storeDesc.layoutName = layoutNameDefault ;
         
+        printSQL = contains(argDeclSQL) ;
     }
 
     @Override
@@ -88,7 +90,7 @@ public class sdbprint extends CmdArgsDB
     private void compilePrint(Query query, QueryCompiler compiler)
     {
         
-        if ( ! quiet )
+        if ( ! quiet && ! printSQL )
         {
             divider() ;
             query.serialize(System.out, Syntax.syntaxARQ) ;
@@ -112,15 +114,23 @@ public class sdbprint extends CmdArgsDB
         }
 
         // Print all SDB things in the plan
-        divider() ;
-        //PlanWalker.walk(qe.getPlan(), new PrintSDBBlocks(store)) ;
         
-        // Print the new plan with SQL.
         IndentedWriter w = new IndentedWriter(System.out) ;
-        PlanFormatterVisitor fmt = new PrintPlanSQL(w, store) ;
-        fmt.startVisit() ;
-        qe.getPlan().visit(fmt) ;
-        fmt.finishVisit() ;
+        
+        if ( printSQL )
+        {
+            PlanVisitor fmt = new PrintSDBBlocks(w, store) ;
+            PlanWalker.walk(qe.getPlan(), fmt) ;
+            w.flush();
+        }
+        else
+        {
+            divider() ;
+            PlanFormatterVisitor fmt = new PrintPlanSQL(w, store) ;
+            fmt.startVisit() ;
+            qe.getPlan().visit(fmt) ;
+            fmt.finishVisit() ;
+        }
     }
 
     class PrintPlanSQL extends PlanFormatterVisitor
@@ -153,31 +163,34 @@ public class sdbprint extends CmdArgsDB
     class PrintSDBBlocks extends PlanVisitorBase
     {
         private Store store ;
+        IndentedWriter out ;
         String separator = null ;
 
-        PrintSDBBlocks(Store store) { this.store = store ; }
+        PrintSDBBlocks(IndentedWriter w, Store store) { this.out = w ; this.store = store ; }
         
         @Override
         public void visit(PlanElementExternal planElt)
         {
             if ( planElt instanceof PlanSDB )
             {
-                if ( separator != null )
-                    System.out.println(separator) ;
-                separator = divider ;
-                PlanSDB planSDB = (PlanSDB)planElt ;
-                if ( verbose )
-                {
-                    QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
-                    QueryCompilerBasicPattern.printAbstractSQL = true ;
-                    QueryCompilerBasicPattern.printDivider = divider ;
-                }
+                divider() ;
+//                if ( separator != null )
+//                    System.out.println(separator) ;
+//                separator = divider ;
+//                PlanSDB planSDB = (PlanSDB)planElt ;
+//                if ( verbose )
+//                {
+//                    QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
+//                    QueryCompilerBasicPattern.printAbstractSQL = true ;
+//                    QueryCompilerBasicPattern.printDivider = divider ;
+//                }
                 // Mimic what the QueryIterSDB/QueryCompilerBasicPattern does.
+                PlanSDB planSDB = (PlanSDB)planElt ;
                 Block block = planSDB.getBlock() ;
                 block = block.substitute(new BindingRoot());
                 
                 String sqlStmt = store.getQueryCompiler().asSQL(store, block) ;
-                System.out.println(sqlStmt) ;
+                out.println(sqlStmt) ;
             }
         }
     }
