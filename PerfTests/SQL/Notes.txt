@@ -1,0 +1,4 @@
+==== Tests of SQL - different ways to writing the same SPARQL query.
+
+UniProt
+

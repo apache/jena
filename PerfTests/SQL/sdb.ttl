@@ -5,13 +5,13 @@
 
 _:c a acmd:SDBConnection ;
     acmd:sdbType     "mysql" ;
-    acmd:sdbHost     "sweb-sdb-2" ;
-    acmd:sdbName     "sdb_test" ;
+    acmd:sdbHost     "localhost" ;
+    acmd:sdbName     "UniProt10" ;
     .
 
 [] rdf:type acmd:Store ;
     acmd:layout     "layout2" ;
     acmd:connection _:c ;
     acmd:engine     "InnoDB" ;
-#    acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
+    #acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
     .

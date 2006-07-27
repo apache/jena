@@ -1,6 +1,17 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Use SQL COALESCE for OPTIONALs with shared variables
+
++ Subquery scoping enhancements
+
++ Config loader
+    sdbmetaload --sdb sdb.ttl --name=<name> FILE
+    sdbmetadump --sdb sdb.ttl --name=<name>
+  or
+    sdbconfig --load --name=<name> FILE
+  
+
 SqlExpr::
 IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
 OR improve the generation of SQL output and leave the tree much as is.
@@ -19,7 +30,7 @@ HSQL/MySQL joint testing
 + sdprint, sdbquery : ModSDB? for printing queries, blocks, RelAlg and SQL?
   Are these two commands nearly the same? ytes - if dummy connection.
 
-+ Use SQL COALESCE for OPTIONALs with shared variables
+
 
 c.f. SQLCache and returning prepared statements
   Named parameters in INSERT for robustness.
