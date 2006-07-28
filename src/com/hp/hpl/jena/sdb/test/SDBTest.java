@@ -13,7 +13,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {
     SDBTestMisc.class,
     SDBTestSuite1.class,
-    SDBTestSuite2.class,
+    SDBTestSuite2.class
 } )
 public class SDBTest
 {

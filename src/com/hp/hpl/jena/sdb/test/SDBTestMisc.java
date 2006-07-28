@@ -14,7 +14,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     TestExprMatch.class,
-    TestPrefixMappingSDB.class,
+    TestPrefixMappingSDB.class
 } )
 public class SDBTestMisc
 {

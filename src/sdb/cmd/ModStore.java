@@ -104,34 +104,34 @@ public class ModStore implements ArgModule
         cmdLine.add(argDeclLayout,
                     "--layout=NAME", "Database schema") ;
         
-//        // Connection-level
-//        cmdLine.add(argDeclJdbcURL);
-//        cmdLine.addArgUsage("--jdbc", "JDBC URL") ;
-//        
-//        cmdLine.add(argDeclJdbcDriver);
-//        cmdLine.addArgUsage("--jdbcDriver=", "JDBC driver class name") ;
-//        
-//        cmdLine.add(argDeclDbHost);
-//        cmdLine.addArgUsage("--dbHost=", "DB Host") ;
-//
-//        cmdLine.add(argDeclDbName);
-//        cmdLine.addArgUsage("--dbName=", "Database name") ;
-//        
-//        cmdLine.add(argDeclDbArgs);
-//        cmdLine.addArgUsage("--dbArgs=", "Additional arguments for JDBC URL") ;
-//
-//        cmdLine.add(argDeclDbType);
-//        cmdLine.addArgUsage("--dbType=", "Database type") ;
-//
-//        cmdLine.add(argDeclDbUser);
-//        cmdLine.addArgUsage("--dbUser=", "Database user") ;
-//
-//        cmdLine.add(argDeclDbPassword);
-//        cmdLine.addArgUsage("--dbPassword", "Daatbase user password") ;
-//
-//        // Store
-//        cmdLine.add(argDeclMySQLEngine) ;
-//        cmdLine.addArgUsage("--engine=", "MySQL engine type") ;
+        // Connection-level
+        cmdLine.add(argDeclJdbcURL);
+//        cmdLine.getUsage().addUsage("--jdbc", "JDBC URL") ;
+        
+        cmdLine.add(argDeclJdbcDriver);
+//        cmdLine.getUsage().addUsage("--jdbcDriver=", "JDBC driver class name") ;
+        
+        cmdLine.add(argDeclDbHost);
+//        cmdLine.getUsage().addUsage("--dbHost=", "DB Host") ;
+
+        cmdLine.add(argDeclDbName);
+//        cmdLine.getUsage().addUsage("--dbName=", "Database name") ;
+        
+        cmdLine.add(argDeclDbArgs);
+//        cmdLine.getUsage().addUsage("--dbArgs=", "Additional arguments for JDBC URL") ;
+
+        cmdLine.add(argDeclDbType);
+//        cmdLine.getUsage().addUsage("--dbType=", "Database type") ;
+
+        cmdLine.add(argDeclDbUser);
+//        cmdLine.getUsage().addUsage("--dbUser=", "Database user") ;
+
+        cmdLine.add(argDeclDbPassword);
+//        cmdLine.getUsage().addUsage("--dbPassword", "Daatbase user password") ;
+
+        // Store
+        cmdLine.add(argDeclMySQLEngine) ;
+//        cmdLine.getUsage().addUsage("--engine=", "MySQL engine type") ;
     }
     
     public void processArgs(CmdArgModule cmdLine)

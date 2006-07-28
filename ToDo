@@ -1,6 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Non-project var is off-ramped in ex1a.rq ??
+
 + Use SQL COALESCE for OPTIONALs with shared variables
 
 + Subquery scoping enhancements
