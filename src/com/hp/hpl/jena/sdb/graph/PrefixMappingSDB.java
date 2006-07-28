@@ -167,7 +167,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
         try {
             String sqlStmt = sqlStr(
                  "DELETE FROM "+prefixTableName+" WHERE",
-                 "   prefix = "+quote(prefix)+" AND uri = "+quote(uri)
+                 "   prefix = "+quote(prefix) //+" AND uri = "+quote(uri)
                  ) ;
             connection.execUpdate(sqlStmt) ;
         } catch (SQLException ex)
