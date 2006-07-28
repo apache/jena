@@ -83,6 +83,9 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         CompileContext context = new CompileContext(store) ;
 
         // A chance for subclasses to change the block structure (including insert their own block types)
+        // Remove?  Now we have customizers?
+        
+        //store.getCustomizer().modify(??) ;
         block = modify(block) ;
 
         if ( block == null )

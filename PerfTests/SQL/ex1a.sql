@@ -1,14 +1,3 @@
-## PREFIX  rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-## PREFIX  :      <urn:lsid:uniprot.org:ontology:>
-## SELECT  ?protein ?name
-## WHERE
-##   { 
-##     ?gene     :name       "CRB" .
-##     ?protein  :encodedBy  ?gene .
-##     ?protein  :name       ?name .
-##     ?protein  rdf:type    :Protein .
-##   }
-
 SELECT 
   R$7.lex AS protein$lex, R$7.datatype AS protein$datatype, R$7.lang AS protein$lang, R$7.type AS protein$type, 
   R$8.lex AS name$lex, R$8.datatype AS name$datatype, R$8.lang AS name$lang, R$8.type AS name$type

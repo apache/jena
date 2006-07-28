@@ -1,13 +1,21 @@
-# Use (SELECT...) for the constants
 SELECT 
-  R$6.lex AS protein$lex, R$6.datatype AS protein$datatype, R$6.lang AS protein$lang, R$6.type AS protein$type, 
-  R$7.lex AS name$lex, R$7.datatype AS name$datatype, R$7.lang AS name$lang, R$7.type AS name$type
+  R$7.lex AS protein$lex, R$7.datatype AS protein$datatype, R$7.lang AS protein$lang, R$7.type AS protein$type, 
+  R$8.lex AS name$lex, R$8.datatype AS name$datatype, R$8.lang AS name$lang, R$8.type AS name$type
 FROM
-    ( SELECT * FROM Nodes WHERE Nodes.hash = -8084558025431482196 ) AS N$1 ,
-    ( SELECT * FROM Nodes WHERE Nodes.hash =  828734478346052422  ) AS N$2 ,
-    ( SELECT * FROM Nodes WHERE Nodes.hash = -2042754374504399221 ) AS N$3 ,
-    ( SELECT * FROM Nodes WHERE Nodes.hash = -6430697865200335348 ) AS N$4 ,
-    ( SELECT * FROM Nodes WHERE Nodes.hash = -3009713141553380375 ) AS N$5 ,
+    Nodes AS N$1                        -- Const: <urn:lsid:uniprot.org:ontology:name>
+  INNER JOIN
+    Nodes AS N$2                        -- Const: "CRB"
+  ON ( N$1.hash = -8084558025431482196
+   AND N$2.hash = 828734478346052422 )
+  INNER JOIN
+    Nodes AS N$3                        -- Const: <urn:lsid:uniprot.org:ontology:encodedBy>
+  ON ( N$3.hash = -2042754374504399221 )
+  INNER JOIN
+    Nodes AS N$4                        -- Const: <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+  ON ( N$4.hash = -6430697865200335348 )
+  INNER JOIN
+    Nodes AS N$5                        -- Const: <urn:lsid:uniprot.org:ontology:Protein>
+  ON ( N$5.hash = -3009713141553380375 )
   INNER JOIN
     Triples AS T$1                      -- ?gene <urn:lsid:uniprot.org:ontology:name> "CRB"
   ON ( T$1.p = N$1.id                   -- Const condition: <urn:lsid:uniprot.org:ontology:name>
@@ -29,9 +37,14 @@ FROM
    AND T$4.o = N$5.id                   -- Const condition: <urn:lsid:uniprot.org:ontology:Protein>
    AND T$2.s = T$4.s                    -- Join var: ?protein
    )
+
+##   INNER JOIN
+##     Nodes AS R$99                       -- Var: ?gene
+##    ON ( T$1.s = R$99.id )
+
   INNER JOIN
-    Nodes AS R$6                        -- Var: ?protein
-  ON ( T$2.s = R$6.id )
+    Nodes AS R$7                        -- Var: ?protein
+  ON ( T$2.s = R$7.id )
   INNER JOIN
-    Nodes AS R$7                        -- Var: ?name
-  ON ( T$3.o = R$7.id )
+    Nodes AS R$8                        -- Var: ?name
+  ON ( T$3.o = R$8.id )

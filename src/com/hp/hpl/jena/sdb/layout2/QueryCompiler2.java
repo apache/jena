@@ -142,7 +142,12 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
     {
         sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
         // Intersection of defined and project?
-        sqlNode = extractResults(context, blockBGP.getDefinedVars(), sqlNode) ;
+        Set<Var> x = blockBGP.getProjectVars() ;
+        if ( x == null )
+            // No project vars => not a top-of-query block.
+            // TODO Better variable use tracking.
+            x = blockBGP.getDefinedVars() ;
+        sqlNode = extractResults(context, x , sqlNode) ;
         // Drop the constants mapping
         constantCols = null ;
         return sqlNode ;
@@ -298,7 +303,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
             Var vType = new Var(v.getName()+"$type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
 
-            // Get the 3 part of the RDF term and its internal type number.
+            // Get the 3 parts of the RDF term and its internal type number.
             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;

@@ -9,10 +9,6 @@ package dev;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
-import sdb.sdbdump;
-import sdb.sdbload;
-import sdb.sdbquery;
-import sdb.sdbsql;
 import sdb.cmd.CmdDesc;
 import sdb.cmd.ScriptDesc;
 import arq.cmd.CmdUtils;
@@ -34,19 +30,14 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
+        
         //runQuery() ;
-        runPrint() ;
-        //runLoad() ;
-        
-        //runDump() ;
+        //runPrint() ;
         //runScript() ;
-        
-        //runTest() ;
         //runSQL() ;
-        //runCode() ;
-        //runConf() ;
-        //runTestManifest() ;
 
+        //runSDBCmd() ;
+        runCode() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -60,53 +51,49 @@ public class RunSDB
 //            "-v",
 //        } ;
         
-        //String a[] = {"-v", "--time","--sdb=sdb.ttl", "@Q.rq" } ;
-        String a[] = {"-v", "--time","--sdb=sdb1.ttl", "--query=testing/General/term-2.rq" } ;
+        String a[] = {"-v", "--time","--sdb=sdb.ttl", "@Q.rq" } ;
         QueryCompilerBasicPattern.printBlock = true ;
         QueryCompilerBasicPattern.printAbstractSQL = true ;
         QueryCompilerBasicPattern.printSQL = true ;
         
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
-        sdbquery.main(a) ;
+        sdb.sdbquery.main(a) ;
         System.exit(0) ;
     }
     
     public static void runPrint()
     {
-        //String[] a = {"-v", "--layout=layout2", "@Q.rq"} ;
-        String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
+        String[] a = {"-v", "--sdb=sdb.ttl", "--layout=layout2", "--sql", "--query=Q.rq"} ;
+        //String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }
     
     public static void runSQL()
     {
-        String args[] = { "--sdb=sdb.ttl", "--file=S" } ; 
-        sdbsql.main(args) ;
+        String args[] = { "--sdb=sdb.ttl", "--dbHost=sweb-sdb-1", "--file=S" } ; 
+        sdb.sdbsql.main(args) ;
         System.exit(0) ;
         
     }
     
-    public static void runLoad()
-    {
-        String a[]= { "--sdb=sdb-hsqldb.ttl", "Data/data.ttl" } ;
-        sdbload.main(a) ;
-        System.exit(0) ;
-    }
-    
-    public static void runDump()
-    {
-        String a[]= { "--sdb=sdb-hsqldb.ttl"} ;
-        sdbdump.main(a) ;
-        System.exit(0) ;
-    }
-
     public static void runCode()
     {
+        System.out.println(String.format("%,d", 10000)) ;
+        System.out.println(String.format("%,d", 100)) ;
         System.exit(0) ;
     }
 
+    
+    public static void runSDBCmd()
+    {
+        String args[] = { "--sdb=sdb.ttl", "--dbHost=sweb-sdb-1", "--file=S" } ; 
+        //sdb.sdbtruncate.main(args) ;
+        System.exit(0) ;
+    }
+
+    
     static void runScript()
     {
         String filename = "script.ttl" ;

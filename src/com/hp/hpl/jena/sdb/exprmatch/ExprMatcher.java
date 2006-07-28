@@ -107,10 +107,10 @@ class MatchVisitor implements ExprVisitor
             return ;
         }
         
-        if ( ! ( target instanceof ExprFunction ) )
+        if ( ! target.isFunction() )  
             throw new NoExprMatch("Not an ExprFunction: "+target) ;
         
-        ExprFunction funcTarget = (ExprFunction)target ;
+        ExprFunction funcTarget = target.getFunction() ;
         
         if ( ! patExpr.getFunctionSymbol().equals(funcTarget.getFunctionSymbol()) )
             throw new NoExprMatch("Different function symbols: "+patExpr.getFunctionSymbol().getSymbol()+" // "+funcTarget.getFunctionSymbol().getSymbol()) ;
@@ -140,7 +140,7 @@ class MatchVisitor implements ExprVisitor
     
     public void visit(NodeValue nv)
     {
-        if ( ! ( target instanceof NodeValue ) )
+        if ( ! target.isConstant() )
             throw new NoExprMatch("Not a NodeValue") ;
         if ( ! nv.equals(target.getConstant()) )
             throw new NoExprMatch("Different value: "+nv+" & "+target.getConstant()) ;

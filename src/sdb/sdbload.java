@@ -109,7 +109,7 @@ public class sdbload extends CmdArgsDB
     static class Monitor implements GraphListener
     {
         int addNotePoint ;
-        int addCount = 0 ;
+        long addCount = 0 ;
 		private long startTime; 
             
         Monitor(int addNotePoint)
@@ -166,8 +166,11 @@ public class sdbload extends CmdArgsDB
             {
                 long mem = Runtime.getRuntime().totalMemory() ;
                 long free = Runtime.getRuntime().freeMemory() ;
-                long tps = ((long) addCount * 1000l) / (System.currentTimeMillis() - startTime);
-                System.out.println("Add: "+addCount+" triples"+" ["+mem+"/"+free+"] (" + tps + ")") ;
+                long tps = (addCount * 1000L) / (System.currentTimeMillis() - startTime);
+                
+                String fmtCount = String.format("%,d", addCount) ;
+                
+                System.out.println("Add: "+fmtCount+" triples"+" (" + tps + ")   [M:"+mem+"/F:"+free+"]") ;
             }
         }
         

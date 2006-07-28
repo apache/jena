@@ -51,13 +51,17 @@ public class sdbtest extends CmdArgsDB
     
     @Override
     protected void processModulesAndArgs()
-    { }
+    { 
+        if ( getPositional().size() == 0 )
+            cmdError("No manifest to run") ;
+    }
     
     // Don't use exec1 which has a transaction wrapper.
     
     @Override 
     protected void execCmd(List<String> positionalArgs)
     {
+        
         for ( String x : positionalArgs )
             execOneManifest(x) ;
     }
