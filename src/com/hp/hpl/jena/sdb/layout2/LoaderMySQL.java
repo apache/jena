@@ -38,7 +38,7 @@ public class LoaderMySQL extends BulkLoaderLJ
         		"  vInt int,",
         		"  vDouble double,",
         		"  vDateTime datetime",
-        		") DEFAULT CHARSET=utf8;"
+        		") ENGINE=MYISAM DEFAULT CHARSET=utf8;"
         ));
         s.execute(sqlStr(
         		"CREATE TEMPORARY TABLE IF NOT EXISTS NTrip",
@@ -46,7 +46,7 @@ public class LoaderMySQL extends BulkLoaderLJ
         		"  s BIGINT NOT NULL,",
         		"  p BIGINT NOT NULL,",
         		"  o BIGINT NOT NULL",
-        		");"
+        		") ENGINE=MYISAM;"
         ));
     }
     
