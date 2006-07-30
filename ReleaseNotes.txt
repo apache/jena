@@ -51,6 +51,8 @@ OntModel
       will have this behaviour.
 
 Reasoners
+   o fixed bug in backward reasoner which caused to try redundant solutions
+     to purely grounded calls. This may improve efficiency in some cases.
    o fixed bug in duplicate removal in GenericRuleReasoner in pure backward mode
    o fixed bug in parsing of typed literals to handle user defined prefixes
      (thanks to Steve Cranefield for the fix)

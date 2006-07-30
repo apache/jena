@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.43 2006-06-05 14:47:32 der Exp $
+ * $Id: TestBugs.java,v 1.44 2006-07-30 12:02:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,11 +13,13 @@ import java.io.*;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
@@ -29,11 +31,12 @@ import junit.framework.TestSuite;
 
 import java.util.*;
 
+
 /**
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.43 $ on $Date: 2006-06-05 14:47:32 $
+ * @version $Revision: 1.44 $ on $Date: 2006-07-30 12:02:11 $
  */
 public class TestBugs extends TestCase {
 
@@ -791,6 +794,43 @@ public class TestBugs extends TestCase {
         reasoner.setMode(GenericRuleReasoner.BACKWARD);
         InfModel im = ModelFactory.createInfModel(reasoner, base);
         TestUtil.assertIteratorLength(im.listStatements(i, r, a), 1);
+    }
+    
+    /**
+     * Test closure of grounded choice points
+     */
+    public void testGroundClosure() {
+        Flag myFlag = new Flag();
+        BuiltinRegistry.theRegistry.register(myFlag);
+        String NS = "http://ont.com/";
+        PrintUtil.registerPrefix("ns", NS);
+        String rules = 
+            "[r1: (ns:a ns:p ns:b) <- (ns:a ns:p ns:a)] " +
+            "[r2: (ns:a ns:p ns:b) <- flag()] " +
+            "[rt: (?a ns:q ?b) <- (?a ns:p ?b)] ";
+        Model m = ModelFactory.createDefaultModel();
+        Resource a = m.createResource(NS + "a");
+        Resource b = m.createResource(NS + "b");
+        Property p = m.createProperty(NS + "p");
+        Property q = m.createProperty(NS + "q");
+        m.add(a, p, a);
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+        InfModel infModel = ModelFactory.createInfModel(reasoner, m);
+        assertTrue( infModel.contains(a, q, b) );
+        assertTrue( ! myFlag.fired );
+    }
+
+    /**
+     * Builtin which just records whether it has been called.
+     * Used in implementing testGroundClosure.
+     */
+    private static class Flag extends BaseBuiltin {
+        public String getName() {  return "flag";  }
+        public boolean fired = false;
+        public boolean bodyCall(Node[] args, int length, RuleContext context) {
+            fired = true; 
+            return true;
+        }
     }
     
     // debug assistant

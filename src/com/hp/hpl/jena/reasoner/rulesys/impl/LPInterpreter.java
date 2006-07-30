@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.12 2006-03-22 13:52:24 andy_seaborne Exp $
+ * $Id: LPInterpreter.java,v 1.13 2006-07-30 12:02:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2006-03-22 13:52:24 $
+ * @version $Revision: 1.13 $ on $Date: 2006-07-30 12:02:18 $
  */
 public class LPInterpreter {
 
@@ -125,7 +125,7 @@ public class LPInterpreter {
                 setupTabledCall(0, 0);
 //                setupClauseCall(0, 0, clauses);
             } else {
-                setupClauseCall(0, 0, clauses);
+                setupClauseCall(0, 0, clauses, goal.isGround());
             }
         }
         
@@ -540,7 +540,9 @@ public class LPInterpreter {
                             // TODO: improved implementation of last call case
                         case RuleClauseCode.CALL_PREDICATE:
                             List clauses = (List)args[ac++];
-                            setupClauseCall(pc, ac, clauses);
+                            // Check if this call is now grounded
+                            boolean groundCall = isGrounded(argVars[0]) && isGrounded(argVars[1]) && isGrounded(argVars[2]);
+                            setupClauseCall(pc, ac, clauses, groundCall);
                             setupTripleMatchCall(pc, ac);
                             continue main;
                                             
@@ -553,7 +555,7 @@ public class LPInterpreter {
                                 clauses = engine.getRuleStore().codeFor(
                                     new TriplePattern(argVars[0], argVars[1], argVars[2]));
                             }
-                            setupClauseCall(pc, ac, clauses);
+                            setupClauseCall(pc, ac, clauses, false);
                             setupTripleMatchCall(pc, ac);
                             continue main;
                                             
@@ -573,7 +575,7 @@ public class LPInterpreter {
                                 // normal call set up
                                 clauses = engine.getRuleStore().codeFor(
                                     new TriplePattern(argVars[0], predicate, argVars[2]));
-                                if (clauses != null) setupClauseCall(pc, ac, clauses);
+                                if (clauses != null) setupClauseCall(pc, ac, clauses, false);
                                 setupTripleMatchCall(pc, ac);
                             }
                             continue main;
@@ -582,6 +584,7 @@ public class LPInterpreter {
                             pc = envFrame.cpc;
                             ac = envFrame.cac;
                             if (traceOn) logger.info("EXIT " + clause);
+                            if (choice != null) choice.noteSuccess();
                             if (recordDerivations && envFrame.getRule() != null) {
                                 if (envFrame instanceof EnvironmentFrameWithDerivation) {
                                     EnvironmentFrameWithDerivation efd = (EnvironmentFrameWithDerivation) envFrame;
@@ -657,8 +660,8 @@ public class LPInterpreter {
     /**
      * Set up a clause choice point as part of a CALL.
      */
-    private void setupClauseCall(int pc, int ac, List clauses) {
-        ChoicePointFrame newChoiceFrame = new ChoicePointFrame(this, clauses);
+    private void setupClauseCall(int pc, int ac, List clauses, boolean isSingleton) {
+        ChoicePointFrame newChoiceFrame = new ChoicePointFrame(this, clauses, isSingleton);
         newChoiceFrame.linkTo(cpFrame);
         newChoiceFrame.setContinuation(pc, ac);
         cpFrame = newChoiceFrame;
@@ -747,6 +750,13 @@ public class LPInterpreter {
         } else {
             return node;
         }
+    }
+    
+    /**
+     * Check if a node values is now grounded
+     */
+    public static boolean isGrounded(Node node) {
+        return !( deref(node) instanceof Node_RuleVariable );
     }
     
     /**
