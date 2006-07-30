@@ -37,7 +37,6 @@ rs.each do
   printf("%-10s => %-10s\n",
          row['table_schema'],
          row['ENGINE'])
-  end
 end
 
 rs.close
