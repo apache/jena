@@ -10,7 +10,6 @@ require 'jdbc'
 
 puts "Going .."
 
-
 ## ds = MysqlDataSource.new()
 ## ds.setUser(ENV['SDB_USER'])
 ## ds.setPassword(ENV['SDB_PASSWORD'])
@@ -35,21 +34,11 @@ rs = c.query(q)
 
 rs.each do
   |row|
-  case row['table_schema'].downcase
-  when 'information_schema':
-  when 'mysql':
-  else
-    printf("%-10s => %-10s\n",
-           row['table_schema'],
-           row['ENGINE'])
+  printf("%-10s => %-10s\n",
+         row['table_schema'],
+         row['ENGINE'])
   end
 end
+
 rs.close
-
 c.close
-
-## conn = DriverManager.getConnection("jdbc:mysql://localhost/SDB2", "user", "password")
-## s = conn.createStatement()
-## rs = s.executeQuery("SELECT lex FROM Nodes")
-## rs.next()
-## puts rs.getString('lex')
