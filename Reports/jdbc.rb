@@ -46,22 +46,47 @@ module JDBC
       @rs.close
     end
 
+    # All the cols (via their display name)
     def cols
       md = @rs.getMetaData
       x=[]
-      (1..md.getColumnCount).each do
-        |i| 
-        x << md.getColumnLabel(i)
-        end
+      1.upto(md.getColumnCount) { |i| x << md.getColumnLabel(i) }
       return x
     end
-
-    # All the rows, as an array of hashes
-    def all      
+      
+    # All the rows, as an array of hashes (values are strings)
+    def all
       x = []
       columns = cols 
       each {|row| x << row.data(columns)}
+      close
       return x
+    end
+
+    def dump
+
+      columns = cols 
+      data = all
+      # Calc widths
+      x = {}
+      columns.each {|c| x[c] = c.length }
+      data.each do
+        |row| row.each do
+          |k,v| 
+          x[k] = v.length if v.length > x[k]
+        end
+      end
+      #
+      columns.each { |c| printf(" %*s ", x[c], c) }
+      print "\n"
+      data.each do
+        |row| row.each { |k,v| printf(" %*s ", x[k], v) }
+        print "\n"
+      end
+    end
+
+    def next
+      raise "Error: calling next on a ResultSet object"
     end
 
   end

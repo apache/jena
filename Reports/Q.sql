@@ -1,6 +1,6 @@
 SELECT 
   R$1.lex AS s$lex, R$1.datatype AS s$datatype, R$1.lang AS s$lang, R$1.type AS s$type, 
-  R$2.lex AS p$lex, R$2.datatype AS p$datatype, R$2.lang AS p$lang, R$2.type AS p$type, 
+  -- R$2.lex AS p$lex, R$2.datatype AS p$datatype, R$2.lang AS p$lang, R$2.type AS p$type, 
   R$3.lex AS o$lex, R$3.datatype AS o$datatype, R$3.lang AS o$lang, R$3.type AS o$type
 FROM
     Triples AS T$1                      -- ?s ?p ?o

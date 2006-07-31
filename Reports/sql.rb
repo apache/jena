@@ -12,18 +12,22 @@ c = JDBC::DB.connect("jdbc:mysql://localhost/SDB2",
                      ENV['SDB_PASSWORD'])
 
 rs = c.query(sqlStr)
-cols = rs.cols
-p cols
-results = rs.all
+rs.dump
 
-
-results.each do
-  |row|
-  row.each do
-    |k,v| 
-    if v 
-      print "/#{v}  /"
-    end
-  end
-  print "\n" 
-end
+## 
+## 
+## cols = rs.cols
+## p cols
+## results = rs.all
+## 
+## 
+## results.each do
+##   |row|
+##   row.each do
+##     |k,v| 
+##     if v 
+##       print "/#{v}  /"
+##     end
+##   end
+##   print "\n" 
+## end
