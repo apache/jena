@@ -5,7 +5,7 @@
 
 _:c a acmd:SDBConnection ;
     acmd:sdbType     "mysql" ;
-    acmd:sdbHost     "sweb-sdb-2" ;
+    acmd:sdbHost     "sweb-sdb-1" ;
     acmd:sdbName     "sdb_test" ;
     .
 
@@ -13,5 +13,5 @@ _:c a acmd:SDBConnection ;
     acmd:layout     "layout2" ;
     acmd:connection _:c ;
     acmd:engine     "InnoDB" ;
-#    acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
+##    acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
     .

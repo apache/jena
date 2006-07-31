@@ -163,7 +163,6 @@ public class PlanToSDB extends TransformCopy
             return null ;
         
         Expr expr = planElt.getExpr() ; 
-        // TODO Make this a feature of the store.
         ConditionCompiler cc = store.getQueryCompiler().getConditionCompiler() ;
         SDBConstraint psc = cc.recognize(planElt) ;
         // Maybe null (not recognized)

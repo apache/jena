@@ -56,15 +56,8 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         
         try {
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
-            Set<Var> x = block.getProjectVars() ;
-            if ( x == null )
-            {
-                // This happens when the query isn't a single SDB block. 
-                log.info("Null for projection variables - not a single block?") ;
-                x = block.getDefinedVars() ;
-            }
-            if ( x == null )
-                log.warn("Null for defined variables") ;
+            
+            Set<Var> x = QC.exitVariables(block) ;
             try {
                 return getResultBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;
             } finally { jdbcResultSet.close() ; }
@@ -97,7 +90,9 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         
         SqlNode sqlNode = block.generateSQL(context, this) ; 
 
-        sqlNode = finishCompile(context, block, sqlNode) ;
+        Set<Var> projectVars = QC.exitVariables(block) ;
+        
+        sqlNode = finishCompile(context, block, sqlNode, projectVars) ;
         
         verbose ( printAbstractSQL, sqlNode ) ;
 
@@ -127,7 +122,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
     }
 
     protected abstract void startCompile(CompileContext context, Block block) ;
-    protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode) ;
+    protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars) ;
     protected abstract SqlNode compile(BlockBGP blockBGP, CompileContext context) ;
     
     

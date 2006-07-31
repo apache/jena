@@ -13,3 +13,4 @@ Try:
 2/ Use (SELECT ...) for the constants
 3/ Reorder
 
+STRAIGHT_JOIN to avoid the optimizer.

@@ -1,0 +1,5 @@
+ex1.rq
+ex1a.rq
+
+Issues to do with query optimizer choices
+STRAIGHT_JOIN to 

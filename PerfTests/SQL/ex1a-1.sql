@@ -1,6 +1,6 @@
 # Just use FROM-WHERE
 
-SELECT 
+SELECT
   R$6.lex AS protein$lex, R$6.datatype AS protein$datatype, R$6.lang AS protein$lang, R$6.type AS protein$type, 
   R$7.lex AS name$lex, R$7.datatype AS name$datatype, R$7.lang AS name$lang, R$7.type AS name$type
 FROM

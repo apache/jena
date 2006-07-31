@@ -17,7 +17,7 @@ public class SqlRestrict extends SqlNodeBase1
     public static SqlNode restrict(SqlNode sqlNode, SqlExpr condition)
     {
         // TODO Consider just making a Restriction node
-        // and do moving into Joins as part of rela algraebra tree optimizations
+        // and do moving into Joins as part of rela algrebra tree optimizations
         // c.f. the Join creation code that also moving restrictions around.
         
         if ( sqlNode.isJoin() )
@@ -38,10 +38,6 @@ public class SqlRestrict extends SqlNodeBase1
 
     public static SqlNode restrict(SqlNode sqlNode, SqlExprList restrictions)
     {
-        // TODO Consider just making a Restriction node
-        // and do moving into Joins as part of rela algraebra tree optimizations
-        // c.f. the Join creation code that also moving restrictions around.
-        
         if ( sqlNode.isJoin() )
         {
             sqlNode.getJoin().addConditions(restrictions);

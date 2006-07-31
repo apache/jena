@@ -1,0 +1,11 @@
+
+PREFIX  rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  :      <urn:lsid:uniprot.org:ontology:>
+SELECT  ?gene # ?protein ?name
+WHERE
+  { 
+    ?gene     :name       "CRB" .
+##     ?protein  :encodedBy  ?gene .
+##     ?protein  :name       ?name .
+##     ?protein  rdf:type    :Protein .
+  }

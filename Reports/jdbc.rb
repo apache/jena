@@ -45,12 +45,32 @@ module JDBC
     def close
       @rs.close
     end
+
+    def cols
+      md = @rs.getMetaData
+      x=[]
+      (1..md.getColumnCount).each do
+        |i| 
+        x << md.getColumnLabel(i)
+        end
+      return x
+    end
+
+    # All the rows, as an array of hashes
+    def all      
+      x = []
+      columns = cols 
+      each {|row| x << row.data(columns)}
+      return x
+    end
+
   end
 
   class Row
     def initialize(row)
       @row = row
     end
+    
     def [](name)
       return getString(name)
     end
@@ -59,11 +79,30 @@ module JDBC
       raise "Error: calling close on a Row object"
     end
 
+    # Needs column names
+    def data(cols)
+      x = {}
+      cols.each do
+        |col| 
+        x[col] = @row.getString(col)
+        if @row.wasNull
+          x[col] = nil
+        end
+      end
+      return x 
+    end
+
+
+
     # Direct any missing methods to the wrapped object
     def method_missing(methId, *args)
       meth = @row.method(methId)
       meth.call *args
     end 
+
+
   end
+
+
 
 end

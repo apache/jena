@@ -118,20 +118,13 @@ public class QueryCompiler1 extends QueryCompilerTriplePatternSlot
 
 
     @Override
-    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
+    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
     {
-        // Generate the SQL SELECT projection
-        // DRYout - choosing variable shareable with QC2 - finishCompile => makeProject and finishCompile is just a signal 
-        Set<Var> x = block.getProjectVars() ;
-
-        if ( x == null )
-            x = block.getDefinedVars() ;
-        
-        sqlNode = makeProject(x, sqlNode) ;
+        sqlNode = makeProject(sqlNode, projectVars) ;
         return sqlNode ;
     }
 
-    private SqlNode makeProject(Collection<Var> projectVars, SqlNode sqlNode)
+    private SqlNode makeProject(SqlNode sqlNode, Collection<Var> projectVars)
     {
         for ( Var v : projectVars )
         {

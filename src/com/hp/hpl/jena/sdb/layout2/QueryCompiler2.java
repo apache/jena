@@ -141,13 +141,8 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
                                        SqlNode sqlNode, BlockBGP blockBGP)
     {
         sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
-        // Intersection of defined and project?
-        Set<Var> x = blockBGP.getProjectVars() ;
-        if ( x == null )
-            // No project vars => not a top-of-query block.
-            // TODO Better variable use tracking.
-            x = blockBGP.getDefinedVars() ;
-        sqlNode = extractResults(context, x , sqlNode) ;
+        Set<Var> projectVars = QC.exitVariables(blockBGP) ;
+        sqlNode = extractResults(context, projectVars , sqlNode) ;
         // Drop the constants mapping
         constantCols = null ;
         return sqlNode ;
@@ -258,22 +253,12 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
 
     @Override
     protected void startCompile(CompileContext context, Block block)
-    {
-    }
+    { return ; }
     
     @Override
-    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode)
+    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
     {
-        // Generate the SQL SELECT projection
-        // DRYout - choosing variable shareable with QC2 - finishCompile => makeProject and finishCompile is just a signal
-        
-        if ( ! block.isCompletePattern() && block.getProjectVars() != null )
-            log.warn("Not a complete pattern block but there are projection variables set") ;
-        
-        Set<Var> x = block.getProjectVars() ;
-        if ( x == null )
-            x = block.getDefinedVars() ;
-        SqlNode n =  makeProject(sqlNode, x) ;
+        SqlNode n =  makeProject(sqlNode, projectVars) ;
         return n ;
     }
     

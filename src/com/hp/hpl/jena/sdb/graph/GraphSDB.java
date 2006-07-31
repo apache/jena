@@ -30,7 +30,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class GraphSDB extends GraphBase implements Graph , GraphListener
 {
-    //TODO Reowrk this sometime now the infrastructure for Stores is more developed.
+    //TODO Rework this sometime now the infrastructure for Stores is more developed.
     
     private static Log log = LogFactory.getLog(GraphSDB.class) ;
 

@@ -9,7 +9,13 @@ package com.hp.hpl.jena.sdb.core.compiler;
 import static com.hp.hpl.jena.sdb.core.JoinType.INNER;
 import static com.hp.hpl.jena.sdb.core.JoinType.LEFT;
 
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
@@ -19,6 +25,8 @@ import com.hp.hpl.jena.sdb.core.sqlnode.*;
 
 public class QC
 {
+    private static Log log = LogFactory.getLog(QC.class) ;
+    
     public static SqlNode innerJoin(CompileContext context, SqlNode left, SqlNode right)
     {
         return join(context, left, right, INNER) ; 
@@ -80,6 +88,20 @@ public class QC
         conditions.addAll(restrict.getConditions()) ;
         subNode.addNotes(restrict.getNotes()) ;
         return subNode ;
+    }
+    
+    public static Set<Var> exitVariables(Block block)
+    {
+        Set<Var> x = block.getProjectVars() ;
+        if ( x == null )
+        {
+            if ( block.isCompletePattern() )
+                log.warn("Null for projection variables - but it's a single block") ;
+            x = block.getDefinedVars() ;
+        }
+        if ( x == null )
+            log.warn("Null for defined variables") ;
+        return x ; 
     }
 }
 
