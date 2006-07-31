@@ -14,6 +14,11 @@ c = JDBC::DB.connect("jdbc:mysql://localhost/SDB2",
 rs = c.query(sqlStr)
 rs.dump
 
+#puts
+#rs = c.query(sqlStr)
+#rs.each { |row| p row }
+
+
 ## 
 ## 
 ## cols = rs.cols

@@ -30,13 +30,21 @@ module JDBC
   # Adding can also be done by "def rs.[]" 
   # Similar for .each above.
   class Results
+  
     def initialize(jdbcResultSet)
       @rs = jdbcResultSet
     end
 
-    def each(&block)
-      while(@rs.next)
-        block.call(Row.new(@rs))
+#    def each(&block)
+#      while(@rs.next)
+#        block.call(Row.new(@rs))
+#      end
+#      close
+#    end
+    
+    def each
+      while(@rs.next) 
+        yield Row.new(@rs)
       end
       close
     end
@@ -56,7 +64,7 @@ module JDBC
     end
       
     # All the rows, as an array of hashes (values are strings)
-    def allRowHash
+    def all_row_hash
       x = []
       columns = cols 
       each {|row| x << row.data(columns)}
@@ -65,17 +73,17 @@ module JDBC
     end
 
     # All the rows, as an array of arrays
-    def allRowArray
+    def all_row_array
       x = []
-      each {|row| x << row.asArray }
+      each {|row| x << row.as_array }
       close
       return x
     end
     
     def dump
       columns = cols 
-      data = allRowArray
-      widths = calcWidths(columns, data)
+      data = all_row_array
+      widths = calc_widths(columns, data)
 
       # Make lines like column names
       lines = []
@@ -83,11 +91,11 @@ module JDBC
       lines2 = []
       columns.each_index { |i| lines2<<"="*(widths[i]) ; }
 
-      printRow(lines, widths, "-", "+", "-", "+")
-      printRow(columns, widths, " ", "|", "|", "|")
-      printRow(lines2, widths, "=", "|", "|", "|")
-      data.each { |row| printRow(row, widths, " ", "|", "|", "|") }
-      printRow(lines, widths, "-", "+", "-", "+")
+      print_row(lines, widths, "-", "+", "-", "+")
+      print_row(columns, widths, " ", "|", "|", "|")
+      print_row(lines2, widths, "=", "|", "|", "|")
+      data.each { |row| print_row(row, widths, " ", "|", "|", "|") }
+      print_row(lines, widths, "-", "+", "-", "+")
     end
 
     def next
@@ -96,22 +104,20 @@ module JDBC
 
     ## -------- Workers
     private
-    def calcWidths(columns, data)
+    def calc_widths(columns, data)
       x = []
       columns.each {|c| x << c.length }
-      data.each do
-        |row| row.each_index do
-          |i|
+      data.each do |row|
+        row.each_index do |i|
           x[i] = row[i].length if row[i].length > x[i]
         end
       end
       return x
     end
     
-    def printRow(items, widths, sep, left, mid, right)
+    def print_row(items, widths, sep, left, mid, right)
       print left
-      items.each_index do
-        |i|
+      items.each_index do |i|
         print mid if i != 0
         print sep
         printf("%*s",widths[i],items[i])
@@ -136,20 +142,17 @@ module JDBC
       raise "Error: calling close on a Row object"
     end
 
-    def asArray
+    def as_array
       len = @row.getMetaData.getColumnCount
       x = []
-      for i in 1..len do
-        x << @row.getString(i)
-      end
+      (1..len).each { |i| x << @row.getString(i) }
       return x
     end
 
     # Needs column names
     def data(cols)
       x = {}
-      cols.each do
-        |col| 
+      cols.each do |col| 
         x[col] = @row.getString(col)
         if @row.wasNull
           x[col] = nil
