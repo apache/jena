@@ -12,6 +12,8 @@ c = JDBC::DB.connect("jdbc:mysql://localhost/SDB2",
                      ENV['SDB_PASSWORD'])
 
 rs = c.query(sqlStr)
+cols = rs.cols
+p cols
 results = rs.all
 
 
@@ -20,7 +22,7 @@ results.each do
   row.each do
     |k,v| 
     if v 
-      print "#{v}  "
+      print "/#{v}  /"
     end
   end
   print "\n" 
