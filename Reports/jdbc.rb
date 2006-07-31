@@ -1,8 +1,11 @@
+# = Module for handling JDBC Result Sets
+
 require 'java'
 include_class 'java.sql.DriverManager' 
 
 module JDBC
 
+# == Class DB: a connection to a database / tablespace
   class DB
     attr_reader   :conn
 
@@ -106,11 +109,9 @@ module JDBC
     private
     def calc_widths(columns, data)
       x = []
-      columns.each {|c| x << c.length }
+      columns.each { |c| x << c.length }
       data.each do |row|
-        row.each_index do |i|
-          x[i] = row[i].length if row[i].length > x[i]
-        end
+        row.each_index { |i|  x[i] = row[i].length if row[i].length > x[i] }
       end
       return x
     end
