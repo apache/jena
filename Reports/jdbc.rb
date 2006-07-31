@@ -143,6 +143,11 @@ module JDBC
       raise "Error: calling close on a Row object"
     end
 
+    def each
+      len = @row.getMetaData.getColumnCount
+      (1..len).each { |i| yield  @row.getString(i) }
+    end
+
     def as_array
       len = @row.getMetaData.getColumnCount
       x = []
