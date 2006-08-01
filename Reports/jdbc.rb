@@ -29,22 +29,12 @@ module JDBC
     end
   end
 
-  # Uses class Row to add a method and remove a method
-  # Adding can also be done by "def rs.[]" 
-  # Similar for .each above.
   class Results
   
     def initialize(jdbcResultSet)
       @rs = jdbcResultSet
     end
 
-#    def each(&block)
-#      while(@rs.next)
-#        block.call(Row.new(@rs))
-#      end
-#      close
-#    end
-    
     def each
       while(@rs.next) 
         yield Row.new(@rs)
@@ -67,7 +57,7 @@ module JDBC
     end
       
     # All the rows, as an array of hashes (values are strings)
-    def all_row_hash
+    def all_rows_hash
       x = []
       columns = cols 
       each {|row| x << row.data(columns)}
@@ -76,7 +66,7 @@ module JDBC
     end
 
     # All the rows, as an array of arrays
-    def all_row_array
+    def all_rows_array
       x = []
       each {|row| x << row.as_array }
       close
@@ -85,7 +75,7 @@ module JDBC
     
     def dump
       columns = cols 
-      data = all_row_array
+      data = all_rows_array
       widths = calc_widths(columns, data)
 
       # Make lines like column names
@@ -94,9 +84,9 @@ module JDBC
       lines2 = []
       columns.each_index { |i| lines2<<"="*(widths[i]) ; }
 
-      print_row(lines, widths, "-", "+", "-", "+")
+      print_row(lines,   widths, "-", "+", "-", "+")
       print_row(columns, widths, " ", "|", "|", "|")
-      print_row(lines2, widths, "=", "|", "|", "|")
+      print_row(lines2,  widths, "=", "|", "|", "|")
       data.each { |row| print_row(row, widths, " ", "|", "|", "|") }
       print_row(lines, widths, "-", "+", "-", "+")
     end
