@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.util.HSQLUtils;
 
@@ -21,7 +22,7 @@ public class StoreBaseHSQL extends StoreBase
                          QueryCompiler compiler,
                          StoreCustomizer customizer)
     {
-        super(connection, planTranslator, loader, formatter, compiler, customizer) ;
+        super(connection, planTranslator, loader, formatter, compiler, new GenerateSQL(), customizer) ;
     }
 
     @Override 

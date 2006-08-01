@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 
@@ -18,6 +19,7 @@ public class StoreBase
     protected StoreLoader loader ;
     protected StoreFormatter formatter ;
     protected QueryCompiler compiler ;
+    protected SQLGenerator sqlGenerator ;
     protected StoreCustomizer customizer ;
     
     public StoreBase(SDBConnection connection, 
@@ -25,6 +27,7 @@ public class StoreBase
                      StoreLoader loader ,
                      StoreFormatter formatter ,
                      QueryCompiler compiler ,
+                     SQLGenerator sqlGenerator ,
                      StoreCustomizer customizer)
     {
         super(connection) ;
@@ -32,6 +35,9 @@ public class StoreBase
         this.formatter = formatter ;
         this.compiler = compiler ;
         this.planTranslator = planTranslator ;
+        if ( sqlGenerator == null )
+            sqlGenerator = new GenerateSQL() ;
+        this.sqlGenerator = sqlGenerator ;
         if ( customizer == null )
             customizer = new StoreCustomizerBase() ;
         setCustomizer(customizer) ;
@@ -39,9 +45,11 @@ public class StoreBase
     
     public SDBConnection   getConnection()           {  return connection() ; }
     
-    public PlanTranslator getPlanTranslator()        { return planTranslator ; }
+    public PlanTranslator  getPlanTranslator()       { return planTranslator ; }
     
     public QueryCompiler   getQueryCompiler()        { return compiler ; }
+
+    public SQLGenerator    getSQLGenerator()         { return sqlGenerator ; }
 
     public StoreFormatter  getTableFormatter()       { return formatter ; }
 

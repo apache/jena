@@ -40,8 +40,12 @@ public interface Store
     
     /** Return the store instance specific modification engine */
     StoreCustomizer  getCustomizer() ;
+    
     /** Set the store instance specific modification engine */
     void setCustomizer(StoreCustomizer customizer) ;
+
+    /** Get the SQL-from-realtional algebra generator */ 
+    SQLGenerator getSQLGenerator() ;
     
     /** Return the processor that creates the database tables */
     StoreFormatter   getTableFormatter() ;

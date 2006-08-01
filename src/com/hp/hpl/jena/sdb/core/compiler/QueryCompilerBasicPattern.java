@@ -17,13 +17,10 @@ import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.ResultsBuilder;
@@ -98,7 +95,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
         verbose ( printAbstractSQL, sqlNode ) ;
 
         // ... SqlNode to SQL string
-        String sqlStmt = generateSQL(sqlNode) ; 
+        String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
         verbose ( printSQL, sqlStmt ) ; 
 
         return sqlStmt ;
@@ -107,20 +104,6 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
 
     /** A chance for subclasses to analyse and alter the block to be compiled into SQL */
     protected Block modify(Block block) { return block ; }
-
-    protected String generateSQL(SqlNode sqlNode)
-    {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        GenerateSQL v = new GenerateSQL(buff.getIndentedWriter()) ;
-        
-        // Top must be a project to cause the SELECT to be written
-        if ( ! sqlNode.isProject() )
-            sqlNode = SqlProject.project(sqlNode) ;
-        
-        sqlNode.toString();
-        sqlNode.visit(v) ;
-        return buff.asString() ;
-    }
 
     protected abstract void startCompile(CompileContext context, Block block) ;
     protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars) ;

@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -35,7 +36,9 @@ public class StoreSimpleMySQL extends StoreBase
               new PlanTranslatorGeneral(true, false),
               new LoaderSimple(connection, codec), 
               new FormatterSimpleMySQL(connection, engineType),
-              new QueryCompiler1(codec), null) ;
+              new QueryCompiler1(codec), 
+              new GenerateSQL() ,
+              null) ;
     }
 }
 

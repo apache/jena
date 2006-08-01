@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.GeneratorVisitor;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
@@ -59,7 +60,7 @@ public class DevTest extends TestSuite
             SDBConnection.logSQLQueries = false ;
             QueryCompilerBasicPattern.printAbstractSQL = false ;
             QueryCompilerBasicPattern.printSQL = false ;
-            GenerateSQL.outputAnnotations = true ;
+            GeneratorVisitor.outputAnnotations = true ;
         }
 
         QueryCompilerBasicPattern.printSQL = true ;
@@ -109,7 +110,9 @@ public class DevTest extends TestSuite
                                   new PlanTranslatorGeneral(false, false),
                                   new LoaderOneTriple(sdb),
                                   new FmtLayout2HSQL(sdb),
-                                  new QueryCompiler2(), null) ;
+                                  new QueryCompiler2(), 
+                                  new GenerateSQL(),
+                                  null) ;
         } else
             store = new StoreTriplesNodesHSQL(sdb) ;
 
@@ -137,7 +140,7 @@ public class DevTest extends TestSuite
                                   new PlanTranslatorGeneral(true, true),
                                   new LoaderOneTriple(sdb),
                                   new FmtLayout2MySQL(sdb, MySQLEngineType.InnoDB),
-                                  new QueryCompiler2(), null) ;
+                                  new QueryCompiler2(), new GenerateSQL(), null) ;
         }
         else
             store = new StoreTriplesNodesMySQL(sdb) ;

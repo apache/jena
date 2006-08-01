@@ -4,50 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.hp.hpl.jena.query.util.IndentedLineBuffer;
+import com.hp.hpl.jena.query.util.IndentedWriter;
 
-import com.hp.hpl.jena.db.ModelRDB;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.*;
-
-/** Store class for the Jena2 databse layout : query-only,
- *  not update via this route (use ModelRDB as normal). 
- * 
- * @author Andy Seaborne
- * @version $Id: StoreRDB.java,v 1.2 2006/04/27 21:43:48 andy_seaborne Exp $
- */
-
-public class StoreRDB extends StoreBase
+public class GenerateSQLMySQL extends GenerateSQL
 {
-    private ModelRDB model ;
-
-    public StoreRDB(ModelRDB model)
+    @Override
+    protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        super(makeSDBConnection(model),
-              new PlanTranslatorGeneral(true, false),
-              null,
-              null,
-              new QueryCompiler1(new CodecRDB(model), new TripleTableDescRDB()),
-              new GenerateSQL() ,
-              null ) ;
-        this.model = model ;
-    }    
-    
-    public static SDBConnection makeSDBConnection(ModelRDB model)
-    {
-        try {
-            Connection jdbc = model.getConnection().getConnection() ;
-             return new SDBConnection(jdbc) ; 
-        } catch (SQLException ex) { throw new SDBExceptionSQL("StoreRDB", ex) ; }
+        return new GeneratorVisitorMySQL(buff.getIndentedWriter()) ;
     }
+}
+
+class GeneratorVisitorMySQL extends GeneratorVisitor
+{
+    static final String InnerJoinOperator = "STRAIGHT_JOIN" ;
     
-    public ModelRDB getModel() { return model ; }
+    public GeneratorVisitorMySQL(IndentedWriter out) { super(out) ; }
+
+    @Override
+    public void visit(SqlJoinInner join)     { visitJoin(join, InnerJoinOperator) ; }    
 }
 
 /*
