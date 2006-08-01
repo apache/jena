@@ -6,7 +6,7 @@
 _:c a acmd:SDBConnection ;
     acmd:sdbType     "mysql" ;
     acmd:sdbHost     "sweb-sdb-1" ;
-    acmd:sdbName     "sdb_test" ;
+    acmd:sdbName     "UniProt100" ;
     .
 
 [] rdf:type acmd:Store ;
