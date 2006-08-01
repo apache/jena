@@ -13,7 +13,7 @@
 
 PREFIX  rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX  :      <urn:lsid:uniprot.org:ontology:>
-SELECT  ?protein ?name
+SELECT  ?protein ?name ?gene
 WHERE
   { 
     ?gene     :name       "CRB" .
