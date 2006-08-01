@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.sdb.core.CompileContext;
@@ -71,7 +72,7 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
-        CompileContext cxt = new CompileContext(getStore()) ;
+        CompileContext cxt = new CompileContext(getStore(), new Query()) ;
         List<Node>vars = new ArrayList<Node>() ;
         
         Node s = m.getMatchSubject() ;

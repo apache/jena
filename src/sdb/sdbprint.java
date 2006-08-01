@@ -119,14 +119,14 @@ public class sdbprint extends CmdArgsDB
         
         if ( printSQL )
         {
-            PlanVisitor fmt = new PrintSDBBlocks(w, store) ;
+            PlanVisitor fmt = new PrintSDBBlocks(w, store, query) ;
             PlanWalker.walk(qe.getPlan(), fmt) ;
             w.flush();
         }
         else
         {
             divider() ;
-            PlanFormatterVisitor fmt = new PrintPlanSQL(w, store) ;
+            PlanFormatterVisitor fmt = new PrintPlanSQL(w, store, query) ;
             fmt.startVisit() ;
             qe.getPlan().visit(fmt) ;
             fmt.finishVisit() ;
@@ -136,7 +136,10 @@ public class sdbprint extends CmdArgsDB
     class PrintPlanSQL extends PlanFormatterVisitor
     {
         private Store store ;
-        public PrintPlanSQL(IndentedWriter w, Store store) { super(w, (PrefixMapping)null) ; this.store = store ; }
+        private Query query ;
+        
+        public PrintPlanSQL(IndentedWriter w, Store store, Query query)
+        { super(w, (PrefixMapping)null) ; this.store = store ; this.query = query ; }
 
         @Override
         public void visit(PlanElementExternal planElt)
@@ -149,7 +152,7 @@ public class sdbprint extends CmdArgsDB
             PlanSDB planSDB = (PlanSDB)planElt ;
             Block block = planSDB.getBlock() ;
             block = block.substitute(new BindingRoot());
-            String sqlStmt = store.getQueryCompiler().asSQL(store, block) ;
+            String sqlStmt = store.getQueryCompiler().asSQL(store, query, block) ;
             out.println("[SQL --------") ;
             out.incIndent() ;
             out.print(sqlStmt) ;
@@ -163,10 +166,12 @@ public class sdbprint extends CmdArgsDB
     class PrintSDBBlocks extends PlanVisitorBase
     {
         private Store store ;
-        IndentedWriter out ;
-        String separator = null ;
+        private Query query ;
+        private IndentedWriter out ;
+        private String separator = null ;
 
-        PrintSDBBlocks(IndentedWriter w, Store store) { this.out = w ; this.store = store ; }
+        PrintSDBBlocks(IndentedWriter w, Store store, Query query)
+        { this.out = w ; this.store = store ; this.query = query ; }
         
         @Override
         public void visit(PlanElementExternal planElt)
@@ -189,7 +194,7 @@ public class sdbprint extends CmdArgsDB
                 Block block = planSDB.getBlock() ;
                 block = block.substitute(new BindingRoot());
                 
-                String sqlStmt = store.getQueryCompiler().asSQL(store, block) ;
+                String sqlStmt = store.getQueryCompiler().asSQL(store, query, block) ;
                 out.println(sqlStmt) ;
             }
         }

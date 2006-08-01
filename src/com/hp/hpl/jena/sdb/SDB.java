@@ -6,9 +6,15 @@
 
 package com.hp.hpl.jena.sdb;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 
 public class SDB
@@ -21,6 +27,32 @@ public class SDB
         QueryEngineRegistry.get().add(new QueryEngineFactorySDB()) ;
         initialized = true ;
     }
+    
+    /** RDF namespace prefix */
+    private static final String rdfPrefix = RDF.getURI() ;
+
+    /** RDFS namespace prefix */
+    private static final String rdfsPrefix = RDFS.getURI() ;
+
+    /** OWL namespace prefix */
+    private static final String owlPrefix = OWL.getURI() ;
+    
+    /** XSD namespace prefix */
+    private static final String xsdPrefix = XSDDatatype.XSD+"#" ;
+    
+    /** The namespace of the XML results format */ 
+    private static final String srxPrefix = "http://www.w3.org/2005/sparql-results#" ;
+    
+ 
+    
+    protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
+    static {
+        globalPrefixMap.setNsPrefix("rdf",  rdfPrefix) ;
+        globalPrefixMap.setNsPrefix("rdfs", rdfsPrefix) ;
+        globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;
+        globalPrefixMap.setNsPrefix("owl" , owlPrefix) ;
+    }
+    public static PrefixMapping getGlobalPrefixMapping() { return globalPrefixMap ; }
     
     // ----------------------------------
     

@@ -35,80 +35,29 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
     private static Log log = LogFactory.getLog(QueryCompiler2.class) ;
     
     // Only one active basic graph pattern compilation at a time.
-    private Map<Node, SqlColumn> constantCols = null ;
+    private class Additional
+    {
+        Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
+    }
     
-    // -------- Basic Graph pattern compilation
+    private Map<CompileContext, Additional> compileState =
+        Collections.synchronizedMap(new HashMap<CompileContext, Additional>()) ;
     
-//    @Override
-//    protected SqlNode match(CompileContext context, Triple triple)
-//    {
-//        // Make a TripleTableDesc, share this code in QCTriple.
-//        // Abstract maketable, processSlot
-//        String alias = context.allocTableAlias() ;
-//        SqlExprList conditions = new SqlExprList() ;
-//        
-//        TableTriples triples = new TableTriples(alias) ;
-//        triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
-//        
-//        processSlot(context, triples, conditions, triple.getSubject(),   TableTriples.subjectCol) ; 
-//        processSlot(context, triples, conditions, triple.getPredicate(), TableTriples.predicateCol) ;
-//        processSlot(context, triples, conditions, triple.getObject(),    TableTriples.objectCol) ;
-//        
-//        if ( conditions.size() == 0 )
-//            return triples ;
-//        
-//        return SqlRestrict.restrict(triples, conditions) ;
-//    }
-//
-//    
-//    private void processSlot(CompileContext context,
-//                             SqlTable table, SqlExprList conditions,
-//                             Node node, String colName)
-//    {
-//        SqlColumn thisCol = new SqlColumn(table, colName) ;
-//        
-//        // Abstract : QC_1 does an encode, QC_2, finds.
-//        // abstract: node=>column
-//        if ( ! node.isVariable() )
-//        {
-//            SqlColumn colId = constantCols.get(node) ;
-//            if ( colId == null )
-//            {
-//                log.warn("Failed to find id col for "+node) ;
-//                return ;
-//            }
-//            SqlExpr c = new S_Equal(thisCol, colId) ;
-//            c.addNote("Const condition: "+FmtUtils.stringForNode(node)) ;
-//            conditions.add(c) ;
-//            return ; 
-//        }
-//        
-//        // In common with QC1
-//        Var var = new Var(node) ;
-//        if ( table.getIdScope().hasColumnForVar(var) )
-//        {
-//            SqlColumn otherCol = table.getIdScope().getColumnForVar(var) ;
-//            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-//            conditions.add(c) ;
-//            c.addNote("processVar: "+node) ;
-//            return ;
-//        }
-//        table.setIdColumnForVar(var, thisCol) ;
-//    }
+    // -------- Slot compilation
     
     @Override
-    protected void constantSlot(Node node, SqlColumn thisCol, SqlExprList conditions)
+    protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
     {
-      SqlColumn colId = constantCols.get(node) ;
-      if ( colId == null )
-      {
-          log.warn("Failed to find id col for "+node) ;
-          return ;
-      }
-      SqlExpr c = new S_Equal(thisCol, colId) ;
-      c.addNote("Const condition: "+FmtUtils.stringForNode(node)) ;
-      conditions.add(c) ;
-      return ; 
+        SqlColumn colId = compileState.get(context).constantCols.get(node) ;
+        if ( colId == null )
+        {
+            log.warn("Failed to find id col for "+node) ;
+            return ;
+        }
+        SqlExpr c = new S_Equal(thisCol, colId) ;
+        c.addNote("Const condition: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
+        conditions.add(c) ;
+        return ; 
     }
                                       
     @Override
@@ -118,18 +67,12 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
     }
 
     //  -------- Start basic graph pattern 
-    
-    
+   
     @Override
     protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     {
-        if ( constantCols != null /*|| projectVarCols != null*/ )
-            log.fatal("Currently already compiling a BlockBGP") ;
-        
-        constantCols = new HashMap<Node, SqlColumn>() ;
-        
-        // Add constants to start of a block.
-        // TODO See if any constants already in scope.
+        // Initialize additional state
+        compileState.put(context, new Additional()) ;
         Collection<Node> constants = blockBGP.getConstants() ;
         SqlNode sqlNode = insertConstantAccesses(context, constants, null) ;
         return sqlNode ;
@@ -144,12 +87,13 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
         Set<Var> projectVars = QC.exitVariables(blockBGP) ;
         sqlNode = extractResults(context, projectVars , sqlNode) ;
         // Drop the constants mapping
-        constantCols = null ;
+        compileState.remove(context) ;
         return sqlNode ;
     }
     
     private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants, Object object)
     {
+        Map<Node, SqlColumn> constantCols = compileState.get(context).constantCols ;
         SqlNode sqlNode = null ;
         for ( Node n : constants )
         {
@@ -159,12 +103,10 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
             // Access nodes table.
             
             SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
-            nTable.addNote("Const: "+FmtUtils.stringForNode(n)) ; 
+            nTable.addNote("Const: "+FmtUtils.stringForNode(n, context.getPrefixMapping())) ; 
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
-            
             // Record 
             constantCols.put(n, new SqlColumn(nTable, "id")) ;
-            
             SqlExpr c = new S_Equal(cHash, hashValue) ;
             sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
             sqlNode = SqlRestrict.restrict(sqlNode, c)  ;
@@ -254,6 +196,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
     @Override
     protected void startCompile(CompileContext context, Block block)
     { return ; }
+        
     
     @Override
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)

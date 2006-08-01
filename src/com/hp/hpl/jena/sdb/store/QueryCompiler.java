@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
@@ -21,7 +22,7 @@ public interface QueryCompiler
                                  ExecutionContext execCxt) ;
     
     // Convenient to have this.
-    public String asSQL(Store store, Block block) ;
+    public String asSQL(Store store, Query query, Block block) ;
  }
 
 /*

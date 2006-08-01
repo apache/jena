@@ -47,61 +47,13 @@ public class QueryCompiler1 extends QueryCompilerTriplePatternSlot
     }
     
     public QueryCompiler1(EncoderDecoder codec) { this(codec, null) ; }
-    
-//    @Override
-//    protected SqlNode match(CompileContext context, Triple triple)
-//    {
-//        String alias = context.allocTableAlias() ;
-//        // For a triple, add the table triple table 
-//        String sCol = tripleTableDesc.getSubjectColName() ;
-//        String pCol = tripleTableDesc.getPredicateColName() ;
-//        String oCol = tripleTableDesc.getObjectColName() ;
-//    
-//        TableTriples1 tripleTable = new TableTriples1(tripleTableDesc.getTableName(), alias) ;
-//        tripleTable.addNote(FmtUtils.stringForTriple(triple, null)) ;
-//        
-//        SqlExprList conditions = new SqlExprList() ;
-//        processSlot(context, tripleTable, triple.getSubject(),   sCol, conditions) ; 
-//        processSlot(context, tripleTable, triple.getPredicate(), pCol, conditions) ;
-//        processSlot(context, tripleTable, triple.getObject(),    oCol, conditions) ;
-//    
-//        if ( conditions.size() == 0 )
-//            return tripleTable ;
-//        return SqlRestrict.restrict(tripleTable, conditions) ;
-//    }
-//
-//    private void processSlot(CompileContext context, TableTriples1 triples, Node node, String col, SqlExprList conditions)
-//    {
-//        SqlColumn thisCol = new SqlColumn(triples, col) ;
-//
-//        if ( ! node.isVariable() )
-//        {
-//            String str = codec.encode(node) ;
-//            SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-//            c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
-//            conditions.add(c) ;
-//            return ;
-//        }
-//
-//        // Variable : in common with QC2
-//        Var var = new Var(node) ;
-//        if ( triples.getIdScope().hasColumnForVar(var) )
-//        {
-//            SqlColumn otherCol = triples.getIdScope().getColumnForVar(var) ;
-//            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-//            conditions.add(c) ;
-//            c.addNote("processVar: "+var) ;
-//            return ;
-//        }
-//        triples.setIdColumnForVar(var, thisCol) ;
-//    }
 
     @Override
-    protected void constantSlot(Node node, SqlColumn thisCol, SqlExprList conditions)
+    protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
     {
           String str = codec.encode(node) ;
           SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-          c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+          c.addNote("Const: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
           conditions.add(c) ;
           return ;
     }

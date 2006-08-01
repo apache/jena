@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
@@ -52,7 +53,7 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
                                        Binding binding,
                                        ExecutionContext execCxt)
     {
-        String sqlStmt = asSQL(store, block) ;
+        String sqlStmt = asSQL(store, execCxt.getQuery(), block) ;
         
         try {
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
@@ -70,10 +71,10 @@ public abstract class QueryCompilerBasicPattern implements QueryCompiler
     //protected abstract ConditionCompiler getConditionCompiler() ;
     protected abstract ResultsBuilder getResultBuilder() ;
 
-    public String asSQL(Store store, Block block)
+    public String asSQL(Store store, Query query, Block block)
     {
         verbose ( printBlock, block ) ; 
-        CompileContext context = new CompileContext(store) ;
+        CompileContext context = new CompileContext(store, query) ;
 
         // A chance for subclasses to change the block structure (including insert their own block types)
         // Remove?  Now we have customizers?

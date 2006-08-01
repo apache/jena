@@ -6,8 +6,11 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreHolder;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 
 /** A collection of things to track during query compilation
@@ -19,9 +22,19 @@ import com.hp.hpl.jena.sdb.store.StoreHolder;
 
 public class CompileContext extends StoreHolder
 {
+    Query query ;
     
-    public CompileContext(Store store) { super(store) ; }
+    public CompileContext(Store store, Query query)
+    { super(store) ; this.query = query ; }
+    
     public Store getStore()            { return store() ; }
+    public Query getQuery()            { return query ; }
+    public PrefixMapping getPrefixMapping()
+    { 
+        if ( query == null )
+            return SDB.getGlobalPrefixMapping() ; 
+        return query.getPrefixMapping() ;
+    }
 
     int countTable = 1 ;    
     private static final String triplesTableAliasBase = "T"+SDBConstants.SQLmark ;

@@ -34,7 +34,7 @@ public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriple
         SqlExprList conditions = new SqlExprList() ;
         
         SqlTable triples = accessTriplesTable(alias) ;
-        triples.addNote(FmtUtils.stringForTriple(triple, null)) ;
+        triples.addNote(FmtUtils.stringForTriple(triple, context.getQuery().getPrefixMapping())) ;
         
         processSlot(context, triples, conditions, triple.getSubject(),   TableTriples.subjectCol) ; 
         processSlot(context, triples, conditions, triple.getPredicate(), TableTriples.predicateCol) ;
@@ -54,7 +54,8 @@ public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriple
         SqlColumn thisCol = new SqlColumn(table, colName) ;
         if ( ! node.isVariable() )
         {
-            constantSlot(node, thisCol, conditions) ;
+            // Is this constant already loaded?
+            constantSlot(context, node, thisCol, conditions) ;
             return ;
         }
         
@@ -72,7 +73,7 @@ public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriple
     }
     
     /** Deal with an access to a constant in the query tripe pattern */
-    protected abstract void constantSlot(Node node, SqlColumn thisCol, SqlExprList conditions) ;
+    protected abstract void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions) ;
     
     /** Retrun an SqlTable for the relevant triples table (use the alias given) */ 
     protected abstract SqlTable accessTriplesTable(String alias) ;
