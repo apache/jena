@@ -1,6 +1,7 @@
 # = Module for handling JDBC Result Sets
 
 require 'java'
+require 'format'
 include_class 'java.sql.DriverManager' 
 
 module JDBC
@@ -22,6 +23,14 @@ module JDBC
     def query(queryString)
       s = @conn.createStatement()
       return Results.new(s.executeQuery(queryString))
+    end
+
+    def query_print(queryString)
+      s = @conn.createStatement()
+      rs = Results.new(s.executeQuery(queryString))
+      rs.dump
+      rs.close
+      return nil
     end
 
     def close
@@ -74,48 +83,10 @@ module JDBC
     end
     
     def dump
+      # Order matters - must get columns before exhausting data and closing ResultSet
       columns = cols 
       data = all_rows_array
-      widths = calc_widths(columns, data)
-
-      # Make lines like column names
-      lines = []
-      columns.each_index { |i| lines<<"-"*(widths[i]) ; }
-      lines2 = []
-      columns.each_index { |i| lines2<<"="*(widths[i]) ; }
-
-      print_row(lines,   widths, "-", "+", "-", "+")
-      print_row(columns, widths, " ", "|", "|", "|")
-      print_row(lines2,  widths, "=", "|", "|", "|")
-      data.each { |row| print_row(row, widths, " ", "|", "|", "|") }
-      print_row(lines, widths, "-", "+", "-", "+")
-    end
-
-    def next
-      raise "Error: calling next on a ResultSet object"
-    end
-
-    ## -------- Workers
-    private
-    def calc_widths(columns, data)
-      x = []
-      columns.each { |c| x << c.length }
-      data.each do |row|
-        row.each_index { |i|  x[i] = row[i].length if row[i].length > x[i] }
-      end
-      return x
-    end
-    
-    def print_row(items, widths, sep, left, mid, right)
-      print left
-      items.each_index do |i|
-        print mid if i != 0
-        print sep
-        printf("%*s",widths[i],items[i])
-        print sep
-      end
-      print right
-      print "\n" 
+      Fmt.table(columns, data)
     end
   end
 

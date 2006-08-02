@@ -1,4 +1,4 @@
-# JRUBY
+#!/bin/env jruby
 
 require 'java'
 #include_class 'java.lang.Class'
@@ -7,8 +7,7 @@ include_class 'java.sql.DriverManager'
 include_class 'com.mysql.jdbc.jdbc2.optional.MysqlDataSource'
 
 require 'jdbc'
-
-puts "Going .."
+require 'format'
 
 ## ds = MysqlDataSource.new()
 ## ds.setUser(ENV['SDB_USER'])
@@ -29,15 +28,5 @@ q = <<EOQ
    WHERE table_schema != 'information_schema' 
    AND table_schema != 'mysql'
 EOQ
-
-rs = c.query(q)
-
-rs.each do
-  |row|
-  printf("%-10s => %-10s\n",
-         row['table_schema'],
-         row['ENGINE'])
-end
-
-rs.close
+c.query_print(q)
 c.close
