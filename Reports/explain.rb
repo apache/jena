@@ -1,8 +1,5 @@
 #require 'java'
-#include_class 'java.sql.DriverManager' 
-
-# Ruby has a CSV 
-#require 'csv'
+#$:<<"#{ENV['JRUBY_HOME']}/lib/ruby/1.8"
 
 def calc_widths(columns, data)
   x = []
@@ -28,15 +25,28 @@ end
 columns=nil
 data=[]
 
-ARGF.each do |line|
-  line.chomp!
-  v = line.split("\t")
+
+
+#ARGF.each do |line|
+#  line.chomp!
+#  v = line.split("\t")
+#  if !columns
+#    columns = v
+#  else
+#    data << v 
+#  end
+#end
+
+# Ruby has CSV 
+require 'csv.rb'
+CSV::Reader.parse(ARGF, "\t") do |row|
   if !columns
-    columns = v
+    columns = row
   else
-    data << v 
+    data << row
   end
 end
+
 
 widths = calc_widths(columns, data)
 # Make lines like column names
