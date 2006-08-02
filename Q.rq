@@ -1,23 +1,27 @@
-# ==== Ex 1 : Names of proteins with a gene with a specific name or synonym
+# ==== Ex 3 : Proteins with publications by authors with matching names
 # 
 # SELECT 
-#   ?protein, ?name 
+#   ?protein, ?author, ?title
 # WHERE 
 #   [?protein rdf:type :Protein] AND 
-#   [?protein :name ?name] AND 
-#   [?protein :encodedBy ?gene] AND 
-#   [?gene :name "CRB"] 
+#   [?protein :modified ?modified] AND 
+#   [?protein :citation ?citation] AND 
+#   [?citation :author ?author] AND 
+#   ?author ~ "bairoch %" AND 
+#   [?citation :title ?title] 
 # USING 
 #   "urn:lsid:uniprot.org:ontology:",
 #   "http://www.w3.org/1999/02/22-rdf-syntax-ns#" AS rdf
 
-PREFIX  rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX  :      <urn:lsid:uniprot.org:ontology:>
-SELECT  *
-WHERE
-  {
-    ?gene     :name       "CRB" .
-##     ?protein  :encodedBy  ?gene .
-##     ?protein  :name       ?name .
-##     ?protein  rdf:type    :Protein .
-  }
+PREFIX :     <urn:lsid:uniprot.org:ontology:>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT 
+  ?protein ?author ?title 
+{
+  ?citation :author ?author .
+  ?citation :title ?title .
+  FILTER ( regex(?author, "^Bairoch ", "i") ) .
+##   ?protein :citation ?citation .
+## #  ?protein :modified ?modified .
+}

@@ -215,7 +215,7 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
             if ( vCol == null )
             {
                 // Should be a column mentioned in the SELECT which is not mentionedd in this block 
-                return sqlNode ;
+                continue ;
             }
 
             SqlTable table = vCol.getTable() ; 

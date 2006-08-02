@@ -3,6 +3,8 @@ SDB ToDo list (and general notes)
 
 + Non-project var is off-ramped in ex1a.rq ??
 
++ "Proper order" for BGPs, and better SDB handling of whole BGP
+
 + Use SQL COALESCE for OPTIONALs with shared variables
 
 + Subquery scoping enhancements

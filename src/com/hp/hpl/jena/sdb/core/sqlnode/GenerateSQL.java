@@ -20,7 +20,6 @@ public class GenerateSQL implements SQLGenerator
         if ( ! sqlNode.isProject() )
             sqlNode = SqlProject.project(sqlNode) ;
 
-        sqlNode.toString();
         sqlNode.visit(v) ;
         return buff.asString() ;
     }

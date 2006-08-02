@@ -20,9 +20,9 @@ SELECT
   ?protein ?author ?title 
 {
   ?citation :author ?author .
-  FILTER ( regex(?author, "^Bairoch ", "i") ) .
   ?citation :title ?title .
   ?protein :citation ?citation .
 #  ?protein :modified ?modified .
   ?protein rdf:type :Protein .
+  FILTER ( regex(?author, "^Bairoch ", "i") ) .
 }
