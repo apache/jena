@@ -168,7 +168,7 @@ public class sdbload extends CmdArgsDB
                 long free = Runtime.getRuntime().freeMemory() ;
                 long tps = (addCount * 1000L) / (System.currentTimeMillis() - startTime);
                 
-                System.out.printf("Add: %,d  triples (%d)   [M:%,d/F:%,d]",
+                System.out.printf("Add: %,d  triples (%d)   [M:%,d/F:%,d]\n",
                                   addCount, tps, mem, free) ;
             }
         }
