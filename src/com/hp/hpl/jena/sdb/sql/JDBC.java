@@ -32,7 +32,7 @@ public class JDBC
     
     static public void loadDriverHSQL()  { loadDriver(driver.get(DBtype.HSQL)) ; }
     static public void loadDriverMySQL() { loadDriver(driver.get(DBtype.MySQL)) ; }
-
+    static public void loadDriverPGSQL() { loadDriver(driver.get(DBtype.PostgreSQL)); }
     static public void loadDriver(String className) { loadClass(className) ; }
     
 //    static public void loadClass(String className)
@@ -75,6 +75,14 @@ public class JDBC
             if ( argStr != null && ! argStr.equals("") )
                 s = s+ "?"+ argStr ;
             return s ;
+        }
+        
+        if ( type.startsWith("pgsql"))
+        {
+        	String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
+        	if (argStr != null && ! argStr.equals("") )
+        		s = s+ "?"+ argStr ;
+        	return s ;
         }
         
         if ( type.equalsIgnoreCase("none") )

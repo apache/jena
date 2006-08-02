@@ -10,18 +10,16 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 
-public class FmtLayout2PG extends FmtLayout2
+public class FmtLayout2PGSQL extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FormatterTriplesNodesMySQL.class) ;
-    private MySQLEngineType engineType ;
+    //static private Log log = LogFactory.getLog(FormatterTriplesNodesPGSQL.class) ;
     
-    public FmtLayout2PG(SDBConnection connection, MySQLEngineType tableType)
+    public FmtLayout2PGSQL(SDBConnection connection)
     { 
         super(connection) ;
     }
@@ -33,9 +31,9 @@ public class FmtLayout2PG extends FmtLayout2
         try { 
             connection().execAny(sqlStr(
                                  "CREATE TABLE "+TableTriples.tableName+" (",
-                                 "    s integer NOT NULL default '0',",
-                                 "    p integer NOT NULL default '0',",
-                                 "    o integer NOT NULL default '0',",
+                                 "    s integer NOT NULL,",
+                                 "    p integer NOT NULL,",
+                                 "    o integer NOT NULL,",
                                  "    PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
@@ -55,13 +53,10 @@ public class FmtLayout2PG extends FmtLayout2
             connection().execAny(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
                                        "   id SERIAL,",
                                        "   hash BIGINT NOT NULL,",
-                                       "   lex TEXT NOT NULL default '',",
+                                       "   lex TEXT NOT NULL,",
                                        "   lang varchar NOT NULL default '',",
                                        "   datatype varchar("+TableNodes.UriLength+") NOT NULL default '',",
                                        "   type integer NOT NULL default '0',",
-                                       "   vInt integer NOT NULL default '0',", 
-                                       "   vDouble double precision NOT NULL default '0',", 
-                                       "   vDateTime timestamp NOT NULL default '-infinity',",
                                        "   PRIMARY KEY (id)",
                                        ")"
                     )) ;
@@ -79,8 +74,8 @@ public class FmtLayout2PG extends FmtLayout2
         try { 
             connection().execAny(sqlStr(
                                       "CREATE TABLE "+TablePrefixes.tableName+" (",
-                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") BINARY NOT NULL ,",
-                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") BINARY NOT NULL ,", 
+                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
+                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
                                       "    PRIMARY KEY  (prefix)",
                                       ")"            
                     )) ;

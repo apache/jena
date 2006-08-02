@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesPGSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** 
@@ -58,8 +59,8 @@ public class StoreFactory
             {
                 case MySQL5:
                     return new StoreSimpleMySQL(sdb, desc.engineType) ;
-                case MySQL41:
                 case PostgreSQL:
+                case MySQL41:
                 case Oracle10:
                 case SQLServer:
                     throw new SDBException("Not supported (yet): "+desc.layoutName+" : "+desc.dbType.getName()) ;
@@ -77,8 +78,9 @@ public class StoreFactory
             {
                 case MySQL5:
                     return new StoreTriplesNodesMySQL(sdb, desc.engineType) ;
-                case MySQL41:
                 case PostgreSQL:
+                	return new StoreTriplesNodesPGSQL(sdb) ;
+                case MySQL41:
                 case Oracle10:
                 case SQLServer:
                     throw new SDBException("Not supported (yet): "+desc.layoutName+" : "+desc.dbType.getName()) ;
