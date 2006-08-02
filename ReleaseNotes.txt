@@ -19,7 +19,7 @@ EnhNodes/UnsupportedPolymorhismException/QualifiedRestriction
     o Attempting to canAs an EnhNode with no existing implementation
       of the required type and no EnhGraph returns false.
 
-OntResource
+OntResourceImpl
     o some internal modifications to simplify/correct the code:
 
         - corrected uses of .remove duing an iteration
