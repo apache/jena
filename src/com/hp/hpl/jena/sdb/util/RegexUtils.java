@@ -35,7 +35,6 @@ public class RegexUtils
                     return false ; 
             }
         }
-        
         return true ;
     }
     
