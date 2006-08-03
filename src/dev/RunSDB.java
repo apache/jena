@@ -32,11 +32,11 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
         //runSQL() ;
 
-        //runSDBCmd() ;
+        runSDBCmd() ;
         //runCode() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
@@ -89,8 +89,8 @@ public class RunSDB
     
     public static void runSDBCmd()
     {
-        String args[] = { "--sdb=sdb.ttl", "--dbHost=sweb-sdb-1", "--file=S" } ; 
-        //sdb.sdbtruncate.main(args) ;
+        String args[] = { "--sdb=sdb.ttl", "--engine=MyISAM", "u10" } ; 
+        sdb.sdbformat.main(args) ;
         System.exit(0) ;
     }
 

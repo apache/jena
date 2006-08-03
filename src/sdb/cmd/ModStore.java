@@ -20,12 +20,14 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
+import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.store.LayoutType; 
 import com.hp.hpl.jena.shared.NotFoundException;
 
 /** construction of a store from a store description,
@@ -176,19 +178,19 @@ public class ModStore implements ArgModule
         if (cmdLine.contains(argDeclDbPassword))
             storeDesc.connDesc.password = cmdLine.getArg(argDeclDbPassword).getValue();
 
+        if (cmdLine.contains(argDeclMySQLEngine))
+            storeDesc.engineType = MySQLEngineType.convert(cmdLine.getArg(argDeclMySQLEngine).getValue());
+        
         if (cmdLine.contains(argDeclLayout))
         {
             String layoutName = cmdLine.getArg(argDeclLayout).getValue() ;
-            // TODO LayoutEnum
-            
-            // Crude fixup
-            if ( !layoutName.equalsIgnoreCase("layout1") &&
-                 !layoutName.equalsIgnoreCase("layout2") )
+            storeDesc.layout = LayoutType.create(layoutName) ;
+
+            if ( storeDesc.layout == null )
             {
                 System.err.println("Don't recognize layout name '"+layoutName+"'") ;
                 throw new TerminationException(2) ;
             }
-            storeDesc.layoutName = layoutName ;
         }
 
         //storeDesc.connDesc.initJDBC() ;
@@ -204,7 +206,7 @@ public class ModStore implements ArgModule
             if ( storeDesc.connDesc.argStr != null )
                 System.out.println("Args      = " + storeDesc.connDesc.argStr);
                 
-            System.out.println("Layout    = " + storeDesc.layoutName) ;
+            System.out.println("Layout    = " + storeDesc.layout.getName()) ;
             //System.out.println("Name      = " + argModelName);
 
             SDBConnection.logSQLExceptions = true ;

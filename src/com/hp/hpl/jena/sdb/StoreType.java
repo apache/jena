@@ -38,6 +38,8 @@ public class StoreType extends Symbol
 //        put("layout2hsql",   StoreType.layout2hsql) ;
     }
     
+    //protected StoreType(DatabaseType dbType, LayoutType layoutType) {}
+    
     protected StoreType(String s)     { super(s) ; }
     protected StoreType(StoreType s)  { super(s) ; }
     

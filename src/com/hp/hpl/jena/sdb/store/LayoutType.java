@@ -13,18 +13,24 @@ import com.hp.hpl.jena.sdb.shared.Named;
  * @version $Id: Layout.java,v 1.3 2006/05/07 19:19:24 andy_seaborne Exp $
  */
 
-public enum Layout implements Named {
+public enum LayoutType implements Named {
     // The Jena2 database layout
     LayoutRDB          { public String getName() { return "RDB" ; } } ,          
     // A database layout that uses a single triple table, with entries being SPARQL-syntax RDF-terms
-    LayoutSimple       { public String getName() { return "Simple" ; } } ,   
+    LayoutSimple       { public String getName() { return "Layout1" ; } } ,   
     // The Triple table/Node table layout 
-    LayoutTripleNodes  { public String getName() { return "TriplesNodes" ; } } ,   
+    LayoutTripleNodes  { public String getName() { return "TriplesNodes" ; } } , 
     ;
     
-    static Layout generate(String s)
+    public static LayoutType create(String s)
     {
         if ( s.equalsIgnoreCase(LayoutRDB.getName()) ) return LayoutRDB ;
+        
+        if ( s.equalsIgnoreCase(LayoutSimple.getName()) ) return LayoutSimple ;
+        if ( s.equalsIgnoreCase("layout1") ) return LayoutSimple ;
+        
+        if ( s.equalsIgnoreCase(LayoutTripleNodes.getName()) ) return LayoutTripleNodes ;
+        if ( s.equalsIgnoreCase("layout2") ) return LayoutTripleNodes ;
         return null ;
     }
 }

@@ -48,12 +48,27 @@ public class StoreFactory
         return store ;
     }
     
+    // A Store has four components:
+    //   1/ A connection
+    //   2/ A database type
+    //   3/ A layout
+    //   4/ Specific configuration for that layout.
+    // 1 & 2 are related 
+    //    - the database type can be extracted from a JDBC connection
+    //    - may not be true for all connection technologies
+    // 3 & 4 are related
+    //    - layout indicates the code to use. 
+    //    - configuration is per layout and parameterises that code
+    
+    // The StoreDesc has all these details but the connection can be overriden
+    // (convenient to redirect a fixed setup to a test installation, say).
+    
     private static Store _create(StoreDesc desc, SDBConnection sdb)
     {    
         if ( sdb == null ) 
             sdb = SDBFactory.createConnection(desc.connDesc) ;
         
-        if ( desc.layoutName.equalsIgnoreCase("layout1") )
+        if ( desc.layout == LayoutType.LayoutSimple )
         {
             switch (desc.dbType)
             {
@@ -63,16 +78,16 @@ public class StoreFactory
                 case MySQL41:
                 case Oracle10:
                 case SQLServer:
-                    throw new SDBException("Not supported (yet): "+desc.layoutName+" : "+desc.dbType.getName()) ;
+                    throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
                 case HSQLDB:
                     return new StoreSimpleHSQL(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s]",
-                                                  desc.dbType.getName(), desc.layoutName)) ;
+                                                  desc.dbType.getName(), desc.layout.getName())) ;
             }
         }
 
-        if ( desc.layoutName.equalsIgnoreCase("layout2") )
+        if ( desc.layout == LayoutType.LayoutTripleNodes )
         {
             switch (desc.dbType)
             {
@@ -83,16 +98,16 @@ public class StoreFactory
                 case MySQL41:
                 case Oracle10:
                 case SQLServer:
-                    throw new SDBException("Not supported (yet): "+desc.layoutName+" : "+desc.dbType.getName()) ;
+                    throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
                 case HSQLDB:
                     return new StoreTriplesNodesHSQL(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s]",
-                                                  desc.dbType.getName(), desc.layoutName)) ;
+                                                  desc.dbType.getName(), desc.layout.getName())) ;
             }
         }
         
-        if ( desc.layoutName.equalsIgnoreCase("modelRDB") )
+        if ( desc.layout == LayoutType.LayoutRDB )
         {
             IDBConnection conn = new DBConnection(sdb.getSqlConnection(), desc.dbType.name()) ;
             String mName = desc.modelName ;
@@ -105,7 +120,7 @@ public class StoreFactory
             return store ;
         }
 
-        log.warn(format("Can't make (%s, %s)", desc.layoutName, desc.connDesc.type)) ; 
+        log.warn(format("Can't make (%s, %s)", desc.layout.getName(), desc.connDesc.type)) ; 
         return null ;
     }
 }

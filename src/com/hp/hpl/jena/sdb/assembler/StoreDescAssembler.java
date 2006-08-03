@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
+import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 
 public class StoreDescAssembler extends AssemblerBase implements Assembler
@@ -34,7 +35,8 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
             return null ;
         storeDesc.connDesc = (SDBConnectionDesc)a.open(c) ;
         storeDesc.dbType = DatabaseType.convert(storeDesc.connDesc.type) ;
-        storeDesc.layoutName = AssemblerUtils.getStringValue(root, AssemblerVocab.pLayout) ;
+        String layoutName = AssemblerUtils.getStringValue(root, AssemblerVocab.pLayout) ;
+        storeDesc.layout = LayoutType.create(layoutName) ; 
 
         String engineName = AssemblerUtils.getStringValue(root, AssemblerVocab.pMySQLEngine) ;
         storeDesc.engineType = null ;

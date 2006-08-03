@@ -29,6 +29,8 @@ public enum DatabaseType implements Named{
     HSQLDB     { public String getName() { return "HSQLDB" ; } } ,
     ;
     
+    private DatabaseType() {}
+    
     public static DatabaseType convert(String databaseTypeName)
     {
         if ( databaseTypeName.equalsIgnoreCase("MySQL") )         return MySQL5 ;

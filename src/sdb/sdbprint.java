@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
+import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class sdbprint extends CmdArgsDB
 {
-    String layoutNameDefault = "layout2" ;
+    LayoutType layoutDefault = LayoutType.LayoutTripleNodes ;
 
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
     
@@ -65,8 +66,8 @@ public class sdbprint extends CmdArgsDB
         StoreDesc storeDesc = getModStore().getStoreDesc() ;
         storeDesc.connDesc.jdbcURL = JDBC.jdbcNone ;
         storeDesc.connDesc.type = "none" ;
-        if ( storeDesc.layoutName == null )
-            storeDesc.layoutName = layoutNameDefault ;
+        if ( storeDesc.layout == null )
+            storeDesc.layout = layoutDefault ;
         
         printSQL = contains(argDeclSQL) ;
     }

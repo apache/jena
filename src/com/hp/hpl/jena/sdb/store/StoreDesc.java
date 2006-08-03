@@ -14,7 +14,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.StoreType;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
@@ -25,12 +24,17 @@ public class StoreDesc
 {
     private static Log log = LogFactory.getLog(StoreDesc.class) ;
     
+    // Connection + DatabaseType + Layout + Configuration 
+    
     public SDBConnectionDesc connDesc  = null ;
-    public String layoutName           = null ;
-    public MySQLEngineType engineType  = null ;     // MySQL specific
     public DatabaseType dbType         = null ;
+    
+    public LayoutType layout           = null ;
+    
+    // Configuration
     public String modelName            = null ;     // ModelRDB specific
     public String customizerClass      = null ;
+    public MySQLEngineType engineType  = null ;     // MySQL specific
     
     public static StoreDesc read(String filename)
     {
@@ -38,7 +42,7 @@ public class StoreDesc
         return worker(m) ;
     }
         
-    public StoreType getLayout() { return StoreType.lookup(layoutName) ; }
+    public LayoutType getLayout() { return layout ; }
     
     private static StoreDesc extract(Model m)
     {

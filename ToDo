@@ -1,8 +1,11 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Non-project var is off-ramped in ex1a.rq ??
++ Bug: unmentioned var in FILTER regex => NPE
 
++ Non-project var is off-ramped in ex1a.rq ??
+  Note where this is done.
+  
 + "Proper order" for BGPs, and better SDB handling of whole BGP
 
 + Use SQL COALESCE for OPTIONALs with shared variables
