@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.util.RegexUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -36,8 +37,8 @@ public class RunSDB
         //runScript() ;
         //runSQL() ;
 
-        runSDBCmd() ;
-        //runCode() ;
+        //runSDBCmd() ;
+        runCode() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -81,11 +82,16 @@ public class RunSDB
     
     public static void runCode()
     {
-        System.out.println(String.format("%,d", 10000)) ;
-        System.out.println(String.format("%,d", 100)) ;
+        one("foo") ;
         System.exit(0) ;
     }
 
+    
+    static void one(String string)
+    {
+        System.out.print("'"+string+"' => ") ;
+        System.out.println(RegexUtils.noMetaChars(string, 0)) ;
+    }
     
     public static void runSDBCmd()
     {
