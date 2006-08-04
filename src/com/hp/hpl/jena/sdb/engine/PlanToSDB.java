@@ -81,15 +81,26 @@ public class PlanToSDB extends TransformCopy
             
             if ( e instanceof PlanSDB )
             {
-                if( lastSDB != null )
-                    log.warn("Adjacent PlanSDB") ;
-                // A block of triples, already translated.
-                lastSDB = (PlanSDB)e ;
-                if ( ! ( lastSDB.getBlock() instanceof BlockBGP ) )
-                    log.warn("Sub-block is not a BlockBGP") ;
-                
-                // Remember variables.
-                inScope = new HashSet<Var>(lastSDB.getBlock().getDefinedVars()) ;
+                PlanSDB thisSDB = (PlanSDB)e ;
+
+                if ( lastSDB == null ||
+                     ! ( lastSDB.getBlock() instanceof BlockBGP ) ||
+                     ! ( thisSDB.getBlock() instanceof BlockBGP ) )
+                {
+                    // New block, or this+last blokc not BGPs.
+                    if( lastSDB != null )
+                        log.warn("Adjacent compound PlanSDB") ;
+                    lastSDB = thisSDB ;
+                    inScope = new HashSet<Var>(thisSDB.getBlock().getDefinedVars()) ;
+                    continue ;
+                }
+
+                // Adjacent BGP: merge, and use the in-progress PlanSDB.
+                BlockBGP lastBGP = (BlockBGP)lastSDB.getBlock() ;
+                BlockBGP thisBGP = (BlockBGP)thisSDB.getBlock() ;
+                lastBGP.add(thisBGP) ;
+                // Eliminate this new element.
+                newElements.set(i, null) ;      
                 continue ;
             }
 

@@ -1,13 +1,12 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Bug: unmentioned var in FILTER regex => NPE
-
 + Non-project var is off-ramped in ex1a.rq ??
   Note where this is done.
   
 + "Proper order" for BGPs, and better SDB handling of whole BGP
-
+  Step one - triples/filter mix.
+  
 + Use SQL COALESCE for OPTIONALs with shared variables
 
 + Subquery scoping enhancements
@@ -23,8 +22,6 @@ SqlExpr::
 IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
 OR improve the generation of SQL output and leave the tree much as is.
 OR canonical tree SPJ
-
-Need to worrry more about varibale definedness in PlanSDB generation
 
 HSQL/MySQL joint testing
 

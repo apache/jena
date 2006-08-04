@@ -32,6 +32,12 @@ public class BlockBGP extends BlockBase
     public void add(Triple triple) { triples.add(triple) ; }
     public void add(SDBConstraint constraint) { constraints.add(constraint) ; }
     
+    public void add(BlockBGP other)
+    {
+        triples.addAll(other.triples) ;
+        constraints.addAll(other.constraints) ;
+    }
+    
     public List<Triple> getTriples() { return triples ; } 
     public List<SDBConstraint> getConstraints() { return constraints ; }
     
