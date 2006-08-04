@@ -41,13 +41,13 @@ public class RegexCompiler extends ConditionCompilerBase
         
         if ( ( rMap = regex1.match(expr) ) != null )
         {
-            Var var = new Var(rMap.get("a1").getVar()) ;
+            Var var = rMap.get("a1").getNodeVar().getAsVar() ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             return new RegexSqlGen(expr, regex1, pattern, null, true) ;
         }
         if ( ( rMap = regex1_i.match(expr) ) != null )
         {
-            Var var = new Var(rMap.get("a1").getVar()) ;
+            Var var = rMap.get("a1").getNodeVar().getAsVar() ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             return new RegexSqlGen(expr, regex1_i, pattern, "i", true) ;
         }
@@ -87,7 +87,7 @@ class RegexSqlGen extends SDBConstraint
         if ( rMap == null )
             throw new SDBException("Couldn't compile after all: "+getExpr()) ;
         
-        Var var = new Var(rMap.get("a1").getVar()) ;
+        Var var = rMap.get("a1").getNodeVar().getAsVar() ;
         String pattern = rMap.get("a2").getConstant().getString() ;
         
         SqlColumn vCol = scope.getColumnForVar(var) ;

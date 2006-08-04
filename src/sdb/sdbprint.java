@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -114,6 +115,13 @@ public class sdbprint extends CmdArgsDB
             PlanFormatter.out(System.out, plan) ;
         }
 
+          if ( verbose )
+          {
+              //QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
+              QueryCompilerBasicPattern.printAbstractSQL = true ;
+          }
+
+        
         // Print all SDB things in the plan
         
         IndentedWriter w = new IndentedWriter(System.out) ;

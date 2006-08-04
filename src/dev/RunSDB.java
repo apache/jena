@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.util.RegexUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -33,12 +32,12 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
         //runSQL() ;
 
         //runSDBCmd() ;
-        runCode() ;
+        //runCode() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -65,8 +64,8 @@ public class RunSDB
     
     public static void runPrint()
     {
-        QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {"-v", "--sdb=sdb.ttl", "--query=Q.rq"} ;
+        //QueryCompilerBasicPattern.printAbstractSQL = true ;
+        String[] a = {/*"-v",*/ "--sdb=sdb.ttl", "--query=Q.rq"} ;
         //String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
@@ -82,15 +81,7 @@ public class RunSDB
     
     public static void runCode()
     {
-        one("foo") ;
         System.exit(0) ;
-    }
-
-    
-    static void one(String string)
-    {
-        System.out.print("'"+string+"' => ") ;
-        System.out.println(RegexUtils.noMetaChars(string, 0)) ;
     }
     
     public static void runSDBCmd()

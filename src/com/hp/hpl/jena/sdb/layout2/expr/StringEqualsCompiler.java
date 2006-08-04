@@ -40,7 +40,7 @@ public class StringEqualsCompiler extends ConditionCompilerBase
         
         if ( ( rMap = equalsString1.match(expr) ) != null )
         {
-            Var var = new Var(rMap.get("a1").getVar()) ;
+            Var var = rMap.get("a1").getNodeVar().getAsVar() ;
             String str = rMap.get("a2").getConstant().getString() ;
             return new StringEqualsSqlGen(expr, equalsString1, true) ;
         }
@@ -75,7 +75,7 @@ class StringEqualsSqlGen extends SDBConstraint
         if ( rMap == null )
             throw new SDBException("Couldn't compile after all: "+getExpr()) ;
           //log.info("equalsString - Matched: ?a1 = "+rMap.get("a1")+" : ?a2 = "+rMap.get("a2")) ;
-          Var var = new Var(rMap.get("a1").getVar()) ;
+          Var var = rMap.get("a1").getNodeVar().getAsVar() ;
           String str = rMap.get("a2").getConstant().getString() ;
 
         SqlColumn vCol = scope.getColumnForVar(var) ;

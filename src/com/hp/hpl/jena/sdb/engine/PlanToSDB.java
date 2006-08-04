@@ -6,18 +6,22 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.plan.*;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.CollectionUtils;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.BlockOptional;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
@@ -47,11 +51,9 @@ public class PlanToSDB extends TransformCopy
     @Override
     public PlanElement transform(PlanBlockTriples planElt)
     { 
-        @SuppressWarnings("unchecked")
-        List<Triple> triples = (List<Triple>)planElt.getPattern() ;
-        BlockBGP b = new BlockBGP() ;
-        for ( Triple t : triples )  
-            b.add(t) ;
+        Block b = this.transformBlockOfTriples(planElt) ;
+        if ( b == null )
+            return super.transform(planElt) ;
         PlanSDB x = new PlanSDB(context, query, store, b) ;
         return x ;
     }
@@ -60,10 +62,6 @@ public class PlanToSDB extends TransformCopy
 //    @Override
 //    public PlanElement transform(PlanFilter planElt)
 //    {
-//        PlanSDBConstraint sdb = transformFilter(planElt) ;
-//        if ( sdb == null )
-//            return super.transform(planElt) ;
-//        return sdb ;
 //    }
     
     
@@ -72,7 +70,9 @@ public class PlanToSDB extends TransformCopy
     { 
         @SuppressWarnings("unchecked")
         List<PlanElement> newElements = (List<PlanElement>)newElts ;
+        Set<Var> inScope = null ;
         
+        // Where to accumulate stuff we can execute as a single block (single SQL unit). 
         PlanSDB lastSDB = null ;
         
         for ( int i = 0 ; i < newElements.size() ; i++ )
@@ -81,14 +81,31 @@ public class PlanToSDB extends TransformCopy
             
             if ( e instanceof PlanSDB )
             {
+                if( lastSDB != null )
+                    log.warn("Adjacent PlanSDB") ;
+                // A block of triples, already translated.
                 lastSDB = (PlanSDB)e ;
+                if ( ! ( lastSDB.getBlock() instanceof BlockBGP ) )
+                    log.warn("Sub-block is not a BlockBGP") ;
+                
+                // Remember variables.
+                inScope = new HashSet<Var>(lastSDB.getBlock().getDefinedVars()) ;
                 continue ;
             }
 
             if ( e instanceof PlanFilter )
             {
                 PlanFilter filter = (PlanFilter)e ;
+                Set<Var> v = getVarsInFilter(filter) ; 
                 
+                if ( ! inScope.containsAll(v) )
+                {
+                    v.removeAll(inScope) ;
+                    log.info("Filter uses unmentioned vars: "+v) ;
+                    continue ;
+                }
+                    
+
                 // If filters have not been transformed earlier.
                 // Better here so can test for whether the filter is appropriate for the BGP.
 
@@ -110,15 +127,10 @@ public class PlanToSDB extends TransformCopy
                 newElements.set(i, filter) ;
                 continue ;
             }
-                
-            // Or do PlanFilters in two steps.
-//            if ( e instanceof PlanSDBConstraint )
-//            {
-//                PlanSDBConstraint c = (PlanSDBConstraint)e ;
-//                PlanFilter filter = c.getOriginal() ;
-//                ...            
-            // Nothing done - end of SDB block (if there was one).
+            
+            // Some other subplan - end this unit - can't translate so leave in-place.
             lastSDB = null ;
+            inScope = null ;
         }
 
         // Nulls mean no element anymore (e.g. FILTER that has been absorbed into the SDB part)  
@@ -156,6 +168,15 @@ public class PlanToSDB extends TransformCopy
         return super.transform(planElt, fixed, optional) ;
     }
     
+    private Block transformBlockOfTriples(PlanBlockTriples planElt)
+    {
+        @SuppressWarnings("unchecked")
+        List<Triple> triples = (List<Triple>)planElt.getPattern() ;
+        BlockBGP b = new BlockBGP() ;
+        for ( Triple t : triples )  
+            b.add(t) ;
+        return b ;
+    }
 
     private SDBConstraint transformFilter(PlanFilter planElt)
     {
@@ -168,8 +189,16 @@ public class PlanToSDB extends TransformCopy
         // Maybe null (not recognized)
         return psc ;
     }
- 
-    
+
+    private Set<Var> getVarsInFilter(PlanFilter filter)
+    {
+        Set<Var> vars = new HashSet<Var>() ;
+        @SuppressWarnings("unchecked")
+        Set<String> nVars = (Set<String>)filter.getExpr().getVarsMentioned() ;
+        for ( String vn : nVars )
+            vars.add(new Var(vn)) ;
+        return vars ;
+    }
 }
 
 /*
