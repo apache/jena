@@ -5,9 +5,9 @@ def parse(filename, xhash, yhash)
 	yhash[filename] = []
 	file = File.new(filename)
 	file.each_line do |line|
-		matches = /Add: (\d+).*\((\d+)\)/.match(line)
+		matches = /Add:\s+([\d,]+).*\((\d+)\)/.match(line)
 		next unless matches
-		xhash[filename] << matches[1].to_i
+		xhash[filename] << matches[1].gsub(/,/,"").to_i
 		yhash[filename] << matches[2].to_i
 	end
 end
