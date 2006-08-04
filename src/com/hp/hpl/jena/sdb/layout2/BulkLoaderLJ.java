@@ -37,7 +37,7 @@ public abstract class BulkLoaderLJ extends LoaderTriplesNodes
         
         super.insertNodes = conn.prepareStatement(sqlStr(
         		"INSERT INTO Nodes (hash, lex, lang, datatype, type)",
-        		"	SELECT DISTINCT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type",
+        		"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type",
         		"	FROM NNode LEFT JOIN Nodes ON ",
         		"		(NNode.hash=Nodes.hash)",
         		"WHERE Nodes.id IS NULL"

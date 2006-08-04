@@ -35,14 +35,14 @@ public class LoaderPGSQL extends BulkLoaderLJ
         			"CREATE TEMPORARY TABLE NNode",
                     "(",
                     "  hash BIGINT NOT NULL ,",
-                    "  lex VARCHAR NOT NULL ,",
+                    "  lex TEXT NOT NULL ,",
                     "  lang VARCHAR(10) NOT NULL ,",
                     "  datatype VARCHAR("+ TableNodes.UriLength+ ") NOT NULL ,",
                     "  type int NOT NULL ,",
                     "  vInt int,",
                     "  vDouble double precision,",
                     "  vDateTime timestamp",
-                    ") "
+                    ") ON COMMIT DELETE ROWS"
         	));
         
         if (!SQLUtils.hasTable(conn, "NTrip"))
@@ -52,10 +52,18 @@ public class LoaderPGSQL extends BulkLoaderLJ
         			"  s BIGINT NOT NULL,",
         			"  p BIGINT NOT NULL,",
         			"  o BIGINT NOT NULL",
-        			");"
+        			") ON COMMIT DELETE ROWS"
         	));
     }
-
+    
+    @Override
+    public void createPreparedStatements() throws SQLException
+    {
+        super.createPreparedStatements();
+        Connection conn = connection().getSqlConnection();
+        super.clearTripleLoaderTable = conn.prepareStatement("");
+        super.clearNodeLoaderTable = conn.prepareStatement("");
+    }
 }
 
 /*
