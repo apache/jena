@@ -1,12 +1,12 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Non-project var is off-ramped in ex1a.rq ??
-  Note where this is done.
-  
++ String value table
+   With no URIs, much shorter.
+   Full text indexing where available
+
 + "Proper order" for BGPs, and better SDB handling of whole BGP
-  Step one - triples/filter mix.
-  
+
 + Use SQL COALESCE for OPTIONALs with shared variables
 
 + Subquery scoping enhancements
@@ -27,13 +27,6 @@ HSQL/MySQL joint testing
 
 == Next
   4/ ==> Performance testing
-
-+ Connection + Layout = Store?
-  Layout is in Store config?
-
-+ sdprint, sdbquery : ModSDB? for printing queries, blocks, RelAlg and SQL?
-  Are these two commands nearly the same? ytes - if dummy connection.
-
 
 
 c.f. SQLCache and returning prepared statements
