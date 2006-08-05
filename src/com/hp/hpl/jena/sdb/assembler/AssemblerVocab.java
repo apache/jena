@@ -24,11 +24,8 @@ public class AssemblerVocab
     public static final Resource DatasetAssemblerType           = type(NS, "Dataset") ;
     public static final Resource SDBConnectionAssemblerType     = type(NS, "SDBConnection") ;
     public static final Resource StoreAssemblerType             = type(NS, "Store") ;
-
     
-    
-    
-    // Commands
+    // ---- Commands
     public static final Property pSteps         = ResourceFactory.createProperty(NS, "steps") ;
     
     public static final Property pMain          = ResourceFactory.createProperty(NS, "main") ;
@@ -52,29 +49,29 @@ public class AssemblerVocab
 
     // renaming: sdbFoo => foo ?/
     
-    // Connection
+    // ---- Connection
     public static final Property pDriver             = ResourceFactory.createProperty(NS, "driver") ;
     public static final Property pSDBtype            = ResourceFactory.createProperty(NS, "sdbType") ;
     public static final Property pSDBhost            = ResourceFactory.createProperty(NS, "sdbHost") ;
     public static final Property pSDBargStr          = ResourceFactory.createProperty(NS, "sdbArgStr") ;
     public static final Property pSDBname            = ResourceFactory.createProperty(NS, "sdbName") ;
     public static final Property pSDBschema          = ResourceFactory.createProperty(NS, "sdbSchema") ;
+    // ModeRDB graph name - on the connection
+    public static final Property pRDBtype           = ResourceFactory.createProperty(NS, "rdbType") ;
     
     // The JDBC URL written out long form.  Overrides the above.
     public static final Property pJDBC               = ResourceFactory.createProperty(NS, "jdbcURL") ;
-
     public static final Property pSDBuser            = ResourceFactory.createProperty(NS, "sdbUser") ;
     public static final Property pSDBpassword        = ResourceFactory.createProperty(NS, "sdbPassword") ;
     
-    // Store (uses pSDBtype) 
+    // ---- Store (uses pSDBtype) 
     public static final Property pLayout            = ResourceFactory.createProperty(NS, "layout") ;
     public static final Property pConnection        = ResourceFactory.createProperty(NS, "connection") ;
     
-    // Specific to something
-    // MySQl engine type
+    // MySQL engine type
     public static final Property pMySQLEngine       = ResourceFactory.createProperty(NS, "engine") ;
-    // ModeRDB graph name
-    public static final Property pModelRDBname      = ResourceFactory.createProperty(NS, "modelName") ;
+    // ModeRDB graph name - on the layout
+    public static final Property pModelRDBname      = ResourceFactory.createProperty(NS, "rdbModelName") ;
     
     private static boolean initialized = false ; 
     

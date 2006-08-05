@@ -65,8 +65,13 @@ public class sdbprint extends CmdArgsDB
         // Force the connection to be a null one.
         // Known to be called after arg module initialization.
         StoreDesc storeDesc = getModStore().getStoreDesc() ;
-        storeDesc.connDesc.jdbcURL = JDBC.jdbcNone ;
-        storeDesc.connDesc.type = "none" ;
+        if ( storeDesc.layout != LayoutType.LayoutRDB )
+        {
+            // Only fake the conenction if not ModelRDB
+            // else we need a live conenction (currently)
+            storeDesc.connDesc.jdbcURL = JDBC.jdbcNone ;
+            storeDesc.connDesc.type = "none" ;
+        }
         if ( storeDesc.layout == null )
             storeDesc.layout = layoutDefault ;
         

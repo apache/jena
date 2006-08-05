@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.util.FileUtils;
  
  /** Load data files into an SDB model in a database.
@@ -71,6 +72,7 @@ public class sdbload extends CmdArgsDB
             getModStore().getStore().getTableFormatter().truncate() ;
         for ( String x : args )
             loadOne(x) ;
+        StoreBaseHSQL.close(getModStore().getStore()) ;
     }
     
     private void loadOne(String filename)
@@ -104,6 +106,7 @@ public class sdbload extends CmdArgsDB
                 System.out.printf("Loaded in %.3f seconds [%d triples/s]\n", 
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
         }
+        StoreBaseHSQL.checkpoint(getModStore().getStore()) ;
     }
         
     static class Monitor implements GraphListener

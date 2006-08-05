@@ -34,10 +34,7 @@ public class RunSDB
         //runQuery() ;
         runPrint() ;
         //runScript() ;
-        //runSQL() ;
-
-        //runSDBCmd() ;
-        //runCode() ;
+        //run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -65,29 +62,17 @@ public class RunSDB
     public static void runPrint()
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {/*"-v",*/ "--sdb=sdb.ttl", "--query=Q.rq"} ;
+        String[] a = {/*"-v",*/ "--sql", "--sdb=sdb.ttl", 
+            "--layout=rdb","--query=WorkSpace/X.rq"} ;
         //String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }
     
-    public static void runSQL()
-    {
-        String args[] = { "--sdb=sdb.ttl", "--dbHost=sweb-sdb-1", "--file=S" } ; 
-        sdb.sdbsql.main(args) ;
-        System.exit(0) ;
-        
-    }
-    
-    public static void runCode()
-    {
-        System.exit(0) ;
-    }
-    
-    public static void runSDBCmd()
+    public static void run()
     {
         String args[] = { "--sdb=sdb.ttl", "--engine=MyISAM", "u10" } ; 
-        sdb.sdbformat.main(args) ;
+        sdb.sdbprint.main(args) ;
         System.exit(0) ;
     }
 

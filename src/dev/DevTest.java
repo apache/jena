@@ -17,7 +17,7 @@ import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.GeneratorVisitor;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLVisitor;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
@@ -60,7 +60,7 @@ public class DevTest extends TestSuite
             SDBConnection.logSQLQueries = false ;
             QueryCompilerBasicPattern.printAbstractSQL = false ;
             QueryCompilerBasicPattern.printSQL = false ;
-            GeneratorVisitor.outputAnnotations = true ;
+            GenerateSQLVisitor.outputAnnotations = true ;
         }
 
         QueryCompilerBasicPattern.printSQL = true ;

@@ -32,6 +32,19 @@ public class StoreBaseHSQL extends StoreBase
             HSQLUtils.shutdown(getConnection()) ;
         currentlyOpen = false ; 
     }
+
+    public static void close(Store store)
+    {
+        if ( store instanceof StoreBaseHSQL)
+            ((StoreBaseHSQL)store).close() ;
+    }
+    
+    
+    public static void checkpoint(Store store)
+    {
+        if ( store instanceof StoreBaseHSQL)
+            ((StoreBaseHSQL)store).checkpoint() ;
+    }
     
     public void checkpoint()
     { 

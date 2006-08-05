@@ -28,12 +28,14 @@ public class StoreDesc
     
     public SDBConnectionDesc connDesc  = null ;
     public DatabaseType dbType         = null ;
-    
     public LayoutType layout           = null ;
-    
-    // Configuration
-    public String modelName            = null ;     // ModelRDB specific
     public String customizerClass      = null ;
+    
+    // ModelRDB
+    public String rdbModelName         = null ;     // ModelRDB specific
+    public String rdbModelType         = null ;     // ModelRDB specific
+
+    // MySQL
     public MySQLEngineType engineType  = null ;     // MySQL specific
     
     public static StoreDesc read(String filename)

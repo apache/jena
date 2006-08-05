@@ -9,8 +9,9 @@ package com.hp.hpl.jena.sdb.layout2;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.shared.Named;
 
-public enum ValueType
+public enum ValueType implements Named
 {
     /* The ID order matters: SPARQL says:
     1.  (Lowest) no value assigned to the variable or expression in this solution.
@@ -25,56 +26,56 @@ public enum ValueType
     {
         @Override public XSDDatatype getDatatype()  { return null ; }
         @Override public int getTypeId()            { return 1 ; }
-        @Override public String printName()         { return "BNode" ; }
+        @Override public String getName()         { return "BNode" ; }
     } ,
     
     URI
     {
         @Override public XSDDatatype getDatatype()  { return null ; }
         @Override public int getTypeId()            { return 2 ; }
-        @Override public String printName()         { return "URI" ; }
+        @Override public String getName()         { return "URI" ; }
     } ,
     
     STRING
     {
         @Override public XSDDatatype getDatatype()  { return null ; }
         @Override public int getTypeId()            { return 3 ; }
-        @Override public String printName()         { return "String" ; }
+        @Override public String getName()         { return "String" ; }
     } ,
     
     XSDSTRING
     {
         @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDstring ; }
         @Override public int getTypeId()            { return 4 ; }
-        @Override public String printName()         { return "XSD String" ; }
+        @Override public String getName()         { return "XSD String" ; }
     } ,
     
     INTEGER
     {
         @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDinteger ; }
         @Override public int getTypeId()            { return 5 ; }
-        @Override public String printName()         { return "Integer" ; }
+        @Override public String getName()         { return "Integer" ; }
     } ,
     
     DOUBLE
     { 
         @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDdouble ; }
         @Override public int getTypeId()            { return 6 ; }
-        @Override public String printName()         { return "Double" ; }
+        @Override public String getName()         { return "Double" ; }
     } ,
     
     DATETIME
     { 
         @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDdateTime ; }
         @Override public int getTypeId()            { return 7 ; }
-        @Override public String printName()         { return "Datetime" ; }
+        @Override public String getName()         { return "Datetime" ; }
     } ,
     
     OTHER
     { 
         @Override public XSDDatatype getDatatype()  { return null ; }
         @Override public int getTypeId()            { return 50 ; }
-        @Override public String printName()         { return "Other" ; }
+        @Override public String getName()         { return "Other" ; }
     } ,
 
 //    UNKNOWN
@@ -88,8 +89,8 @@ public enum ValueType
     
     abstract public int getTypeId() ;
     abstract public XSDDatatype getDatatype() ;
-    abstract public String printName() ;
-    @Override public String toString() { return printName() ; }
+    abstract public String getName() ;
+    @Override public String toString() { return getName() ; }
     
     static public ValueType lookup(Node n)
     {

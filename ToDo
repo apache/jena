@@ -1,11 +1,31 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Proper order for BGPs.
+
++ List arguments to property functions (ARQ)
+
++ StoreRDB
+  1/ use jena assembler for ModelRDB? Separate section in config graph
+  2/ Need to fudge to work with jdbc:none.
+  
+
++ more in .shared.
+
++ starts-with strings.
+  Partial patterns.
+  
++ ValueTables
+
++ HSQL (inc large ?)
+
 + String value table
    With no URIs, much shorter.
    Full text indexing where available
 
 + "Proper order" for BGPs, and better SDB handling of whole BGP
+  Better order to constraint inclusion (as soon as possible, record variables already offramped)
+  (Or a big SELECT-WHERE)
 
 + Use SQL COALESCE for OPTIONALs with shared variables
 

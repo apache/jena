@@ -25,9 +25,9 @@ import static com.hp.hpl.jena.query.util.StringUtils.str ;
 // 2/ SqlRestrict can only occur in a few places (under project, SqlRestict-SqlTable) 
 //    and the generator only covers there
 
-public class GeneratorVisitor implements SqlNodeVisitor
+public class GenerateSQLVisitor implements SqlNodeVisitor
 {
-    private static Log log = LogFactory.getLog(GeneratorVisitor.class) ;
+    private static Log log = LogFactory.getLog(GenerateSQLVisitor.class) ;
     
     private IndentedWriter out ;
     int level = 0 ;
@@ -36,7 +36,7 @@ public class GeneratorVisitor implements SqlNodeVisitor
     private static final int annotationColumn = 40 ;
     private static boolean commentSQLStyle = true ;
     
-    public GeneratorVisitor(IndentedWriter out)
+    public GenerateSQLVisitor(IndentedWriter out)
     { this.out = out ; }
     
     public void visit(SqlProject sqlNode)

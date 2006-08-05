@@ -109,8 +109,9 @@ public class StoreFactory
         
         if ( desc.layout == LayoutType.LayoutRDB )
         {
-            IDBConnection conn = new DBConnection(sdb.getSqlConnection(), desc.dbType.name()) ;
-            String mName = desc.modelName ;
+            // TODO Cope with no real connection
+            IDBConnection conn = new DBConnection(sdb.getSqlConnection(), desc.connDesc.rdbType) ;
+            String mName = desc.rdbModelName ;
             ModelRDB modelRDB = null ;
             if ( mName == null || mName.equals("") || mName.equalsIgnoreCase("default") )
                 modelRDB = ModelRDB.open(conn) ;

@@ -42,8 +42,9 @@ public class StoreRDB extends StoreBase
     public static SDBConnection makeSDBConnection(ModelRDB model)
     {
         try {
+           // TODO Cope with no real connection 
             Connection jdbc = model.getConnection().getConnection() ;
-             return new SDBConnection(jdbc) ; 
+            return new SDBConnection(jdbc) ; 
         } catch (SQLException ex) { throw new SDBExceptionSQL("StoreRDB", ex) ; }
     }
     

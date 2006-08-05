@@ -32,7 +32,8 @@ public class SDBConnectionDescAssembler extends AssemblerBase implements Assembl
         sDesc.password  = AssemblerUtils.getStringValue(root, AssemblerVocab.pSDBpassword) ;
         sDesc.driver    = AssemblerUtils.getStringValue(root, AssemblerVocab.pDriver) ;
         sDesc.jdbcURL   = AssemblerUtils.getStringValue(root, AssemblerVocab.pJDBC) ;
-        
+        sDesc.rdbType   = AssemblerUtils.getStringValue(root, AssemblerVocab.pRDBtype) ;
+
         if ( sDesc.jdbcURL == null && sDesc.user == null )
             sDesc.user = Access.getUser() ;
         if ( sDesc.jdbcURL == null && sDesc.password == null )

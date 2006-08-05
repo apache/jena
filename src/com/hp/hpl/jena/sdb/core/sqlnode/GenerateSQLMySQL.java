@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import com.hp.hpl.jena.query.util.IndentedLineBuffer;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.core.JoinType;
 
 public class GenerateSQLMySQL extends GenerateSQL
 {
@@ -18,14 +19,19 @@ public class GenerateSQLMySQL extends GenerateSQL
     }
 }
 
-class GeneratorVisitorMySQL extends GeneratorVisitor
+class GeneratorVisitorMySQL extends GenerateSQLVisitor
 {
-    static final String InnerJoinOperator = "STRAIGHT_JOIN" ;
+    // STRAIGHT_JOIN stops the optimizer reordering inner join
+    // It requires that the left table and right table are kept as left and right,
+    // so a sequence of joins can not be reordered. 
+    
+    static final String InnerJoinOperatorStraight = "STRAIGHT_JOIN" ;
+    static final String InnerJoinOperatorDefault = JoinType.INNER.sqlOperator() ;
     
     public GeneratorVisitorMySQL(IndentedWriter out) { super(out) ; }
 
     @Override
-    public void visit(SqlJoinInner join)     { visitJoin(join, InnerJoinOperator) ; }    
+    public void visit(SqlJoinInner join)     { visitJoin(join, InnerJoinOperatorDefault) ; }    
 }
 
 /*

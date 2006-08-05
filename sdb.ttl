@@ -3,19 +3,22 @@
 @prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
+# better to have a specific ModelRDB section using Jena assembler?
 
 _:c rdf:type acmd:SDBConnection ;
-    acmd:sdbType    "MySQL" ;
-    acmd:sdbHost    "localhost" ;
-    acmd:sdbName    "SDB2" ;
-    acmd:driver     "com.mysql.jdbc.Driver" ;
+    acmd:sdbType       "MySQL" ;    # Needed for JDBC URL
+    acmd:rdbType       "MySQL" ;    # ModelRDB only
+    acmd:sdbHost       "localhost" ;
+    acmd:sdbName       "SDB2" ;
+#    acmd:sdbName       "jenatest" ;
+    acmd:driver        "com.mysql.jdbc.Driver" ;
     .
 
 [] rdf:type acmd:Store ;
     acmd:layout     "layout2" ;
     acmd:connection _:c ;
-    acmd:modelName  "" ;        # ModelRDB specific
-    acmd:engine     "InnoDB" ;  # MySQL/SDB specific
+    acmd:rdbModelName  "" ;         # ModelRDB only
+    acmd:engine     "InnoDB" ;      # MySQL/SDB specific
     acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
 .
 

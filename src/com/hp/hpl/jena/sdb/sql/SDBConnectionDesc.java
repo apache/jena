@@ -24,6 +24,9 @@ public class SDBConnectionDesc
     public String password  = null ;
     public String driver    = null ;
     public String jdbcURL   = null ;
+    
+    public String rdbType   = null ;    // ModelRDB specific
+    
 
     public static SDBConnectionDesc read(String filename)
     {

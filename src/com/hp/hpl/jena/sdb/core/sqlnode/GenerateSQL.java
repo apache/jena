@@ -26,7 +26,7 @@ public class GenerateSQL implements SQLGenerator
     
     protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        return new GeneratorVisitor(buff.getIndentedWriter()) ;
+        return new GenerateSQLVisitor(buff.getIndentedWriter()) ;
     }
 }
 
