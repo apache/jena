@@ -32,9 +32,9 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
-        //run() ;
+        run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -74,6 +74,29 @@ public class RunSDB
         String args[] = { "--sdb=sdb.ttl", "--engine=MyISAM", "u10" } ; 
         sdb.sdbprint.main(args) ;
         System.exit(0) ;
+//        Model m = ModelFactory.createDefaultModel() ;
+//        m.setNsPrefix("ex", "http://example/") ;
+//        Resource r = m.createResource("http://example/") ;
+//        Property p = m.createProperty("http://example/p") ;
+//        m.add(r, p, "a\nb\r\nc") ;
+//        m.write(System.out, "RDF/XML-ABBREV") ;
+//        m.write(System.out, "RDF/XML") ;
+//        m.write(System.out, "N3") ;
+//        
+//        StringWriter sw = new StringWriter() ; 
+//        m.write(sw, "RDF/XML-ABBREV") ;
+//        sw.flush() ;
+//        String s = sw.toString() ;
+//        // fake OS xfer.
+//        s = s.replaceAll("\r", "") ;
+//        Model m2 = ModelFactory.createDefaultModel() ;
+//        m2.read(new StringReader(s), null, null) ;
+//        m2.write(System.out,"RDF/XML-ABBREV") ;
+//        String x = m2.getRequiredProperty(r, p).getString() ;
+//        x = "X"+x+"X" ;
+//        System.out.println("XX"+x+"XX") ;
+//        System.exit(0) ;
+        
     }
 
     
