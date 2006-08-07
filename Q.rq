@@ -21,7 +21,7 @@ SELECT
 {
   ?citation :author ?author .
   ?citation :title ?title .
-  FILTER ( regex(?author, "^Bairoch ", "i") ) .
+  FILTER ( regex(?Xauthor, "^Bairoch ", "i") ) .
   ?protein :citation ?citation .
 #  ?protein :modified ?modified .
 }
