@@ -23,8 +23,11 @@ public class RegexUtils
     } ;
     
     public static boolean noMetaChars(String string, int fromIndex)
+    { return noMetaChars(string, fromIndex, string.length()) ; }
+    
+    public static boolean noMetaChars(String string, int fromIndex, int endIndex)
     {
-        StringCharacterIterator iter = new StringCharacterIterator(string, fromIndex) ;
+        StringCharacterIterator iter = new StringCharacterIterator(string, fromIndex, endIndex, fromIndex) ;
         
         char ch ;
         while ( ( ch = iter.next() ) != StringCharacterIterator.DONE )
@@ -38,15 +41,34 @@ public class RegexUtils
         return true ;
     }
     
-    public static boolean isStartsWith(String pattern)
+    public static boolean isSimpleStartsWith(String pattern)
     {
-        return pattern.charAt(0) == '^' && noMetaChars(pattern, 1) ; 
+        return pattern.charAt(0) == '^' && noMetaChars(pattern, 1) ;
     }
+
+    public static boolean isSimpleAnchored(String pattern)
+    {
+        return pattern.charAt(0) == '^' && 
+               pattern.charAt(pattern.length()-1) == '$' && 
+               noMetaChars(pattern, 1, pattern.length()-1) ;
+    }
+
     
     public static boolean isEndsWith(String pattern)
     {
-        return pattern.charAt(0) == '^' && noMetaChars(pattern, 1) ; 
+        return pattern.charAt(pattern.length()-1) == '$' && noMetaChars(pattern, 0) ; 
     }
+    
+    public static String regexToLike(String pattern)
+    {
+        if ( ! pattern.startsWith("^") ) return null ;
+        if ( isSimpleAnchored(pattern) )
+            return pattern.substring(1,pattern.length()-1) ;
+        if ( isSimpleStartsWith(pattern) )
+            return pattern.substring(1)+"%" ;
+        return null ;
+    }
+    
 
 }
 

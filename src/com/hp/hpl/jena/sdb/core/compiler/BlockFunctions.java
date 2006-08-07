@@ -6,11 +6,20 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
-import java.util.Collection;
+import java.util.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
+import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
+import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sdb.engine.PlanSDB;
 
 /**
  * Separated out code sequences
@@ -20,6 +29,9 @@ import com.hp.hpl.jena.query.core.Var;
 
 public class BlockFunctions
 {
+    private static Log log = LogFactory.getLog(BlockFunctions.class) ;
+    
+
     static public void classifyNodes(Collection<Triple> triples, Collection<Var> definedVars, Collection<Node> constants)
     {
         for ( Triple t : triples )
@@ -34,16 +46,89 @@ public class BlockFunctions
     {
         if ( node.isVariable() )
         {
-            Var v = new Var(node) ;
-            if ( ! definedVars.contains(v) )
-                definedVars.add(v) ;
+            if ( definedVars != null )
+            {
+                Var v = new Var(node) ;
+                if ( ! definedVars.contains(v) )
+                    definedVars.add(v) ;
+            }
         }
         else
         {
-            if ( ! constants.contains(node) )
-                constants.add(node) ;
+            if ( constants != null )
+            {
+                if ( ! constants.contains(node) )
+                    constants.add(node) ;
+            }
         }
     }
+    
+    // Allow filters to be moved later in the BGP
+    private static boolean MaximiseBoundVariables = false ; 
+    
+    // Think: ?? should be done in ARQ => before PlanSDB'ization
+    // No - do in PlanBasicGraphPattern.build hence do in SDB.
+    // Do in BlockBGP!
+    
+    public static List<PlanElement> properOrder(List<PlanElement> planElements)
+    {
+        List<Triple> triples = new ArrayList<Triple>() ;
+        List<Expr> filters = new ArrayList<Expr>() ;
+        Set<Var> varsSeen = new HashSet<Var>() ;
+        
+        for ( PlanElement obj : planElements )
+        {
+            if ( obj instanceof PlanSDB )
+            {
+                PlanSDB planSDB = (PlanSDB)obj ;
+                varsSeen.addAll(planSDB.getBlock().getDefinedVars()) ;
+                continue ;
+            }
+            
+            if ( obj instanceof PlanFilter )
+            {
+                PlanFilter filter = (PlanFilter)obj ;
+                @SuppressWarnings("unchecked")
+                Set<Var> vars = filter.getExpr().getVarsMentioned() ;
+                if ( ! varsSeen.containsAll(vars) )
+                    log.info("Out of order filter") ;
+                continue ;
+            }
+            if ( obj instanceof PlanBlockTriples )
+            {
+                PlanBlockTriples tBlk = (PlanBlockTriples)obj ;
+                @SuppressWarnings("unchecked")
+                List<Triple> triplePattern = (List<Triple>)tBlk.getPattern() ;
+                findVars(varsSeen, triplePattern) ;
+                continue ;
+            }
+            log.warn("Unexpected plan element type: "+Utils.className(obj)) ;
+        }
+        return planElements ;
+    }
+    
+    // Very like Block.getDefinedVars: Suggests there is common processing going on.
+    // Maybe Blocks don't need to calculate defined vars, but can have setDefinedVars
+    
+    private static void findVars(Set<Var> varsSeen, List<Triple> triplePattern)
+    {
+        for ( Triple t : triplePattern )
+        {
+            node(t.getSubject(), varsSeen) ;
+            node(t.getPredicate(), varsSeen) ;
+            node(t.getObject(), varsSeen) ;
+        }
+    }
+
+    private static void node(Node node, Set<Var> varsSeen)
+    {
+        if ( node.isVariable() )
+        {
+            Var v = new Var(node) ;
+            varsSeen.add(v) ;
+        }
+    }
+    
 }
 
 /*

@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.exprmatch;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 
 
@@ -18,7 +19,7 @@ import com.hp.hpl.jena.query.expr.Expr;
 
 public interface Action
 {
-    boolean match(String vn, Expr expr, MapResult resultMap) ;
+    boolean match(Var var, Expr expr, MapResult resultMap) ;
 }
 
 /*

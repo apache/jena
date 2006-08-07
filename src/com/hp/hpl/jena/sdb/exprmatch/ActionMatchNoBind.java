@@ -6,11 +6,12 @@
 
 package com.hp.hpl.jena.sdb.exprmatch;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 
 public class ActionMatchNoBind implements Action
 {
-    public boolean match(String varName, Expr expr, MapResult resultMap)
+    public boolean match(Var var, Expr expr, MapResult resultMap)
     { return true ; }
 }
 

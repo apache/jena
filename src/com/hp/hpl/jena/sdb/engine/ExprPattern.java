@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.ExprUtils;
 import com.hp.hpl.jena.sdb.SDBException;
@@ -18,8 +19,8 @@ public class ExprPattern
     
     
     public ExprPattern(String pattern ,
-                         String[] vars,
-                         Action[] actions)
+                       Var[] vars,
+                       Action[] actions)
     {
         this.pattern = ExprUtils.parse(pattern) ;
         if ( vars.length != actions.length )
@@ -27,9 +28,9 @@ public class ExprPattern
         mapAction = new MapAction() ;
         for ( int i = 0 ; i < vars.length ; i++ )
         {
-            String vn = vars[i] ;
+            Var var = vars[i] ;
             Action a = actions[i] ;
-            mapAction.put(vn, a) ;
+            mapAction.put(var, a) ;
         }
     }
     

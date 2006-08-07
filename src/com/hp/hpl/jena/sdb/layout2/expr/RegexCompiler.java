@@ -25,15 +25,15 @@ public class RegexCompiler extends ConditionCompilerBase
 {
     // --- regex : testing a term (in a variable)
     private static ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
-                                                        new String[]{ "a1" , "a2" },
+                                                        new Var[]{ new Var("a1") , new Var("a2") },
                                                         new Action[]{ new ActionMatchVar() ,
                                                                       new ActionMatchString()}) ;
     
     private static ExprPattern regex1_i = new ExprPattern("regex(?a1, ?a2, 'i')",
-                                                           new String[]{ "a1" , "a2" },
-                                                           new Action[]{ new ActionMatchVar() ,
-                                                                      new ActionMatchString()}) ;
-    
+                                                          new Var[]{ new Var("a1") , new Var("a2") },
+                                                          new Action[]{ new ActionMatchVar() ,
+                                                                        new ActionMatchString()}) ;
+        
     @Override
     public SDBConstraint recognize(Expr expr)
     {
@@ -47,8 +47,8 @@ public class RegexCompiler extends ConditionCompilerBase
         }
         if ( ( rMap = regex1_i.match(expr) ) != null )
         {
-            Var var = rMap.get("a1").getNodeVar().getAsVar() ;
-            String pattern = rMap.get("a2").getConstant().getString() ;
+            Var var = rMap.get(new Var("a1")).getNodeVar().getAsVar() ;
+            String pattern = rMap.get(new Var("a2")).getConstant().getString() ;
             return new RegexSqlGen(expr, regex1_i, pattern, "i", true) ;
         }
         return null ;
@@ -87,8 +87,8 @@ class RegexSqlGen extends SDBConstraint
         if ( rMap == null )
             throw new SDBException("Couldn't compile after all: "+getExpr()) ;
         
-        Var var = rMap.get("a1").getNodeVar().getAsVar() ;
-        String pattern = rMap.get("a2").getConstant().getString() ;
+        Var var = rMap.get(new Var("a1")).getNodeVar().getAsVar() ;
+        String pattern = rMap.get(new Var("a2")).getConstant().getString() ;
         
         SqlColumn vCol = scope.getColumnForVar(var) ;
 
@@ -106,46 +106,6 @@ class RegexSqlGen extends SDBConstraint
         SqlExpr sqlExpr = new S_And(isStr, sCond) ;
         return sqlExpr ;
     }
-    
-//  // --- regex : testing the lexical form of a term (in a variable)
-//  private static ExprPattern regex2 = new ExprPattern("regex(str(?a1), ?a2)",
-//                                                      new String[]{ "a1" , "a2" },
-//                                                      new Action[]{ new ActionMatchVar() ,
-//                                                                    new ActionMatchString()}) ;
-//  private static ExprPattern regex2_i = new ExprPattern("regex(str(?a1), ?a2, 'i')",
-//                                                      new String[]{ "a1" , "a2" },
-//                                                      new Action[]{ new ActionMatchVar() ,
-//                                                                    new ActionMatchString()}) ;
-//  
-//  private static ExprCompile regex2_compile = new ExprCompile() 
-//  {
-//      public SqlExpr compile(Expr expr, ExprPattern exprPattern, Scope scope)
-//      {
-//          MapResult rMap = exprPattern.match(expr) ;
-//          if ( rMap == null )
-//              throw new SDBException("Couldn't compile after all: "+expr) ;
-//          Var var = new Var(rMap.get("a1").getVar()) ;
-//          String pattern = rMap.get("a2").getConstant().getString() ;
-//          
-//          SqlColumn vCol = scope.getColumnForVar(var) ;
-//
-//          // Ensure it's the lex column
-//          SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
-//          SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
-//          
-//          // "not a bNode"
-//          SqlExpr isStr = new S_NotEqual(vTypeCol, new SqlConstant(ValueType.BNODE.getTypeId())) ;
-//          isStr.addNote("not a bNode" ) ;
-//          
-//          // regex.
-//          SqlExpr sCond = new S_Regex(vCol, pattern, 
-//                                      (exprPattern==regex2_i)?"i":null) ;
-//          sCond.addNote(expr.toString()) ;
-//          SqlExpr sqlExpr = new S_And(isStr, sCond) ;
-//          return sqlExpr ;
-//      }
-//  } ;
-
 }
 
 /*

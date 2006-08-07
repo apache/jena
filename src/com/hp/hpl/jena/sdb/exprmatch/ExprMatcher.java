@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.exprmatch;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.*;
 import com.hp.hpl.jena.query.util.ExprUtils;
 
@@ -16,7 +17,7 @@ import com.hp.hpl.jena.query.util.ExprUtils;
 
 public class ExprMatcher
 {
-    /* ActionMap  : what to do when a vraibale is encountered in the pattern
+    /* ActionMap  : what to do when a variable is encountered in the pattern
      * CalloutMap : what to do when a (fixed) function is discovered in the pattern 
      * ResultMap  : Association of var name to expression needed for a match.
      *              Actually, juts a string -> expression mp  
@@ -35,7 +36,6 @@ public class ExprMatcher
                                   MapCallout mapCallout,
                                   MapResult  mapResult)
     {
-
         MatchVisitor m = new MatchVisitor(expression, mapAction, mapCallout, mapResult) ;
         try {
             pattern.visit(m) ;
@@ -154,7 +154,7 @@ class MatchVisitor implements ExprVisitor
     
     public void visit(NodeVar patternVar)
     {
-        String vn = patternVar.getVarName() ;
+        Var vn = patternVar.getAsVar() ;
         Action a = aMap.get(vn) ; 
         if ( a == null )
             a = defaultAction ;

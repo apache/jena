@@ -68,10 +68,11 @@ public class PlanToSDB extends TransformCopy
     @Override
     public PlanElement transform(PlanBasicGraphPattern planElt, List newElts)
     { 
+        
         @SuppressWarnings("unchecked")
         List<PlanElement> newElements = (List<PlanElement>)newElts ;
         Set<Var> inScope = null ;
-        
+
         // Where to accumulate stuff we can execute as a single block (single SQL unit). 
         PlanSDB lastSDB = null ;
         
@@ -139,7 +140,8 @@ public class PlanToSDB extends TransformCopy
                 continue ;
             }
             
-            // Some other subplan - end this unit - can't translate so leave in-place.
+            // **** Any other PlanElement type - keep as is
+            // End this unit - can't translate so leave in-place.
             lastSDB = null ;
             inScope = null ;
         }
@@ -203,13 +205,16 @@ public class PlanToSDB extends TransformCopy
 
     private Set<Var> getVarsInFilter(PlanFilter filter)
     {
-        Set<Var> vars = new HashSet<Var>() ;
         @SuppressWarnings("unchecked")
-        Set<String> nVars = (Set<String>)filter.getExpr().getVarsMentioned() ;
-        for ( String vn : nVars )
-            vars.add(new Var(vn)) ;
+        Set<Var> vars = (Set<Var>)filter.getExpr().getVarsMentioned() ;
         return vars ;
     }
+//        Set<Var> vars = new HashSet<Var>() ;
+//        @SuppressWarnings("unchecked")
+//        Set<String> nVars = (Set<String>)filter.getExpr().getVarsMentioned() ;
+//        for ( String vn : nVars )
+//            vars.add(new Var(vn)) ;
+//        return vars ;
 }
 
 /*

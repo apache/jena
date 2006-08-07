@@ -6,16 +6,17 @@
 
 package com.hp.hpl.jena.sdb.exprmatch;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 
 public class ActionMatchVar extends ActionMatchBind
 {
     @Override
-    public boolean match(String varName, Expr expr, MapResult resultMap)
+    public boolean match(Var var, Expr expr, MapResult resultMap)
     {
         if ( ! expr.isVariable() )
             throw new NoExprMatch("ActionMatchVar: Not a variable: "+expr) ;
-        return super.match(varName, expr, resultMap) ;
+        return super.match(var, expr, resultMap) ;
     }
 }
 /*

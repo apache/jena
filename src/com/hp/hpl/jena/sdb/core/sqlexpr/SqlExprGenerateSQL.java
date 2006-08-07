@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.core.sqlexpr;
 
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.util.RegexUtils;
 
 public class SqlExprGenerateSQL implements SqlExprVisitor
 {
@@ -39,17 +40,31 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
         expr.getRight().visit(this) ;
     }
 
+    public String RegexOperator = "REGEXP" ; 
+    
     public void visit(S_Regex regex)
     {
         // Err ... need to choose bewteen regex and LIKE
         // TODO Make per-store dependent for syntax and case sensitiveity reasons.
         regex.getExpr().visit(this) ;
+        
+        String pattern = regex.getPattern() ;
+        String patternLike = RegexUtils.regexToLike(pattern) ;
+        if ( patternLike != null )
+        {
+            // TODO Binary for MySQL.
+            out.print(" LIKE ") ;
+            out.print(SQLUtils.quote(patternLike)) ;
+            return ;
+        }
+        
         // MySQL :: LIKE // LIKE BINARY
-        out.print(" REGEXP ") ;
+        out.print(" ") ; out.print(RegexOperator) ; out.print(" ") ;
         if ( regex.flags != null && ! regex.flags.equals("i") )
             out.print("BINARY ") ;
         out.print(SQLUtils.quote(regex.getPattern())) ;
     }
+    
 }
 
 /*

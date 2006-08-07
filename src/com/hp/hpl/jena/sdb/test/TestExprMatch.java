@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.test;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.ExprUtils;
 import com.hp.hpl.jena.sdb.exprmatch.*;
 
@@ -26,7 +27,7 @@ public class TestExprMatch
     {
         MapAction mapAction = new MapAction() ;
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a", "?x") ;
+        mapResult.put(new Var("a"), "?x") ;
         
         match("?x", "?a", mapAction, null) ;
     }
@@ -34,10 +35,10 @@ public class TestExprMatch
     @Test public void match_2()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a", new ActionMatchVar()) ;
+        mapAction.put(new Var("a"), new ActionMatchVar()) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a", ExprUtils.parse("?x")) ;
+        mapResult.put(new Var("a"), ExprUtils.parse("?x")) ;
         
         match("?x", "?a", mapAction, mapResult) ;
     }
@@ -45,7 +46,7 @@ public class TestExprMatch
     @Test public void match_3()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a", new ActionMatchNoBind()) ;
+        mapAction.put(new Var("a"), new ActionMatchNoBind()) ;
         
         MapResult mapResult = new MapResult() ;
         
@@ -56,7 +57,7 @@ public class TestExprMatch
     {
         MapAction mapAction = new MapAction() ;
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a", "1") ;   // Value one
+        mapResult.put(new Var("a"), "1") ;   // Value one
         
         match("1", "?a", mapAction, mapResult) ;
     }
@@ -94,12 +95,12 @@ public class TestExprMatch
     @Test public void cond_1()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
-        mapAction.put("a2", new ActionMatchBind()) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
+        mapAction.put(new Var("a2"), new ActionMatchBind()) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "?x") ;
-        mapResult.put("a2", "3") ;
+        mapResult.put(new Var("a1"), "?x") ;
+        mapResult.put(new Var("a2"), "3") ;
         
         match("?x < 3",
               "?a1 < ?a2",
@@ -109,12 +110,12 @@ public class TestExprMatch
     @Test public void cond_2()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
-        mapAction.put("a2", new ActionMatchBind()) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
+        mapAction.put(new Var("a2"), new ActionMatchBind()) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "?x") ;
-        mapResult.put("a2", "3") ;
+        mapResult.put(new Var("a1"), "?x") ;
+        mapResult.put(new Var("a2"), "3") ;
         
         noMatch("?x < 3", "?a1 > ?a2", mapAction) ;
     }
@@ -124,12 +125,12 @@ public class TestExprMatch
     @Test public void regex_1()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
-        mapAction.put("a2", new ActionMatchString()) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
+        mapAction.put(new Var("a2"), new ActionMatchString()) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "?x") ;
-        mapResult.put("a2", "'smith'") ;
+        mapResult.put(new Var("a1"), "?x") ;
+        mapResult.put(new Var("a2"), "'smith'") ;
         
         match("regex(?x , 'smith')",
               "regex(?a1 , ?a2)",
@@ -139,9 +140,9 @@ public class TestExprMatch
     @Test public void regex_2()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
-        mapAction.put("a2", new ActionMatchString()) ;
-        mapAction.put("a3", new ActionMatchString()) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
+        mapAction.put(new Var("a2"), new ActionMatchString()) ;
+        mapAction.put(new Var("a3"), new ActionMatchString()) ;
         
         noMatch("regex(?x , 'smith')",
                 "regex(?a1 , ?a2, ?a3)",
@@ -151,14 +152,14 @@ public class TestExprMatch
     @Test public void regex_3()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
-        mapAction.put("a2", new ActionMatchString()) ;
-        mapAction.put("a3", new ActionMatchString()) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
+        mapAction.put(new Var("a2"), new ActionMatchString()) ;
+        mapAction.put(new Var("a3"), new ActionMatchString()) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "?x") ;
-        mapResult.put("a2", "'smith'") ;
-        mapResult.put("a3", "'i'") ;
+        mapResult.put(new Var("a1"), "?x") ;
+        mapResult.put(new Var("a2"), "'smith'") ;
+        mapResult.put(new Var("a3"), "'i'") ;
         
         match("regex(?x , 'smith', 'i')",
               "regex(?a1, ?a2, ?a3)",
@@ -168,14 +169,14 @@ public class TestExprMatch
     @Test public void regex_4()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
-        mapAction.put("a2", new ActionMatchString()) ;
-        mapAction.put("a3", new ActionMatchExact("'i'")) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
+        mapAction.put(new Var("a2"), new ActionMatchString()) ;
+        mapAction.put(new Var("a3"), new ActionMatchExact("'i'")) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "?x") ;
-        mapResult.put("a2", "'smith'") ;
-        mapResult.put("a3", "'i'") ;
+        mapResult.put(new Var("a1"), "?x") ;
+        mapResult.put(new Var("a2"), "'smith'") ;
+        mapResult.put(new Var("a3"), "'i'") ;
         
         match("regex(?x , 'smith', 'i')",
               "regex(?a1, ?a2, ?a3)",
@@ -185,8 +186,8 @@ public class TestExprMatch
     @Test public void regex_5()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
-        mapAction.put("a2", new ActionMatchString()) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
+        mapAction.put(new Var("a2"), new ActionMatchString()) ;
         
         noMatch("regex(?x , 'smith', 'i')",
                 "regex(?a1, ?a2)",
@@ -196,14 +197,14 @@ public class TestExprMatch
     @Test public void regex_6()
     {
         MapAction mapAction = new MapAction() ;
-        //mapAction.put("a1", new ActionMatch
-        mapAction.put("a2", new ActionMatchString()) ;
-        mapAction.put("a3", new ActionMatchExact("'i'")) ;
+        //mapAction.put(new Var("a1"), new ActionMatch
+        mapAction.put(new Var("a2"), new ActionMatchString()) ;
+        mapAction.put(new Var("a3"), new ActionMatchExact("'i'")) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "str(?x)") ;
-        mapResult.put("a2", "'smith'") ;
-        mapResult.put("a3", "'i'") ;
+        mapResult.put(new Var("a1"), "str(?x)") ;
+        mapResult.put(new Var("a2"), "'smith'") ;
+        mapResult.put(new Var("a3"), "'i'") ;
         
         match("regex(str(?x) , 'smith', 'i')",
               "regex(?a1, ?a2, ?a3)",
@@ -213,14 +214,14 @@ public class TestExprMatch
     @Test public void regex_7()
     {
         MapAction mapAction = new MapAction() ;
-        //mapAction.put("a1", new ActionMatch
-        mapAction.put("a2", new ActionMatchString()) ;
-        mapAction.put("a3", new ActionMatchExact("'i'")) ;
+        //mapAction.put(new Var("a1"), new ActionMatch
+        mapAction.put(new Var("a2"), new ActionMatchString()) ;
+        mapAction.put(new Var("a3"), new ActionMatchExact("'i'")) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "?x") ;
-        mapResult.put("a2", "'smith'") ;
-        mapResult.put("a3", "'i'") ;
+        mapResult.put(new Var("a1"), "?x") ;
+        mapResult.put(new Var("a2"), "'smith'") ;
+        mapResult.put(new Var("a3"), "'i'") ;
         
         match("regex(str(?x) , 'smith', 'i')",
               "regex(str(?a1), ?a2, ?a3)",
@@ -231,9 +232,9 @@ public class TestExprMatch
     @Test public void regex_8()
     {
         MapAction mapAction = new MapAction() ;
-        //mapAction.put("a1", new ActionMatch
-        mapAction.put("a2", new ActionMatchString()) ;
-        mapAction.put("a3", new ActionMatchExact("'i'")) ;
+        //mapAction.put(new Var("a1"), new ActionMatch
+        mapAction.put(new Var("a2"), new ActionMatchString()) ;
+        mapAction.put(new Var("a3"), new ActionMatchExact("'i'")) ;
         
         noMatch("regex(?x , 'smith', 'i')",
                 "regex(str(?a1), ?a2, ?a3)",
@@ -243,10 +244,10 @@ public class TestExprMatch
     @Test public void function_1()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "?x") ;
+        mapResult.put(new Var("a1"), "?x") ;
         
         match("fn:not(?x)",
               "fn:not(?a1)",
@@ -257,10 +258,10 @@ public class TestExprMatch
     @Test public void function_2()
     {
         MapAction mapAction = new MapAction() ;
-        mapAction.put("a1", new ActionMatchVar()) ;
+        mapAction.put(new Var("a1"), new ActionMatchVar()) ;
         
         MapResult mapResult = new MapResult() ;
-        mapResult.put("a1", "?x") ;
+        mapResult.put(new Var("a1"), "?x") ;
         
         noMatch("fn:not(?x)",
                 "fn:notNot(?a1)",
@@ -288,70 +289,6 @@ public class TestExprMatch
         assertNull(rMap) ;
     }
 }
-    
-//    public static void runSomething()
-//    {
-//        runOne(ExprUtils.parse("regex(?x , 'smith')") , ExprUtils.parse("regex(?a1 , ?a2)")) ;
-//        runOne(ExprUtils.parse("regex(?x , 'smith')") , ExprUtils.parse("regex(?a1 , ?a2, ?a3)")) ;
-//        runOne(ExprUtils.parse("regex(?x , 'smith', 'i')") , ExprUtils.parse("regex(?a1 , ?a2, ?a3)")) ;
-//        runOne(ExprUtils.parse("regex(?x , 'smith', 'i')") , ExprUtils.parse("?x + ?y")) ;
-//        
-//        runOne(ExprUtils.parse("regex(str(?x) , 'smith')") , ExprUtils.parse("regex(str(?a1) , ?a2)")) ;
-//        
-//        // Matches but should it?
-//        runOne(ExprUtils.parse("regex(str(?x) , 'smith')") , ExprUtils.parse("regex(?a1 , ?a2)")) ;
-//
-//        // a3 is VarAction
-//        runOne(ExprUtils.parse("regex(str(?x) , 'smith')") , ExprUtils.parse("regex(?a3 , ?a2)")) ;
-//        runOne(ExprUtils.parse("regex(?x , 'smith')") , ExprUtils.parse("regex(str(?a1) , ?a2)")) ;
-//
-//        runOne(ExprUtils.parse("regex(?x , 'smith')") , ExprUtils.parse("regex(<urn:xyz>(?a1) , ?a2)")) ;
-//
-//    }
-//    
-//    
-//    public static void runOne(Expr e, Expr p)
-//    {
-//        System.out.println("Expr:    "+e) ;
-//        System.out.println("Pattern: "+p) ;
-//        
-//        MapAction am = new MapAction() ;
-//        MapResult rm = new MapResult() ;
-//        MapCallout cm = new MapCallout() ;
-//        
-//        am.put("a1", new ActionMatchBind()) ;
-//        am.put("a2", new ActionMatchBind()) ;
-//        am.put("a3", new ActionMatchVar()) ;
-//
-//        cm.put("urn:xyz", new SpecialFunction()) ;
-//        
-//        rm = ExprMatcher.match(e, p, am, cm, rm) ;
-//        if ( rm == null )
-//        {
-//            System.out.println("**** No match") ;
-//            System.out.println() ;
-//            return ;
-//        }
-//        System.out.println("**** Match:") ;
-//        for ( String x : rm.keySet() )
-//        {
-//            Expr exprMatch = rm.get(x) ;
-//            System.out.printf("?%-4s ==>>  %s\n", x, exprMatch) ;
-//        }
-//        System.out.println() ;
-//    }
-//}
-//
-//class SpecialFunction implements FunctionAction
-//{
-//
-//    public boolean match(String fn, List args, MapResult resultMap)
-//    {
-//        System.out.println("Call: "+fn+" "+args) ;
-//        return true ;
-//    }
-//    
-//}
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

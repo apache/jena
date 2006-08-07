@@ -4,13 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.exprmatch;
+package com.hp.hpl.jena.sdb.test;
 
-import java.util.HashMap;
+import com.hp.hpl.jena.sdb.util.RegexUtils;
 
-import com.hp.hpl.jena.query.core.Var;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class MapAction extends HashMap<Var, Action> {}
+public class TestRegex
+{
+    @Test public void like_0() { testRegexLike("foo",       null) ; }
+    @Test public void like_1() { testRegexLike("^foo",      "foo%") ; }
+    @Test public void like_2() { testRegexLike("^foo$",     "foo") ; }
+    @Test public void like_3() { testRegexLike("foo$",      null) ; }
+    @Test public void like_4() { testRegexLike("^fo?o$",    null) ; }
+    
+    private void testRegexLike(String regexPattern, String likePattern)
+    {
+        String p = RegexUtils.regexToLike(regexPattern) ;
+        if ( p == null && likePattern == null ) return ;
+        assertEquals(likePattern ,p) ;
+    }
+}
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

@@ -13,7 +13,7 @@ import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
-import com.hp.hpl.jena.sdb.layout2.expr.StringEqualsCompiler;
+import com.hp.hpl.jena.sdb.layout2.expr.StringExprCompiler;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 
 public class ConditionCompiler2 implements ConditionCompiler
@@ -24,7 +24,7 @@ public class ConditionCompiler2 implements ConditionCompiler
     
     static ConditionCompiler reg[] = { 
         new RegexCompiler() ,
-        new StringEqualsCompiler() ,
+        new StringExprCompiler() ,
     } ;
 
     public SDBConstraint recognize(PlanFilter planFilter)
@@ -40,16 +40,7 @@ public class ConditionCompiler2 implements ConditionCompiler
         return null ;
     }
 }
-//    // --- starts-with
-//    private static ExprPattern startsWith1 = new ExprPattern("fn:starts-with(?a1, ?a2)",
-//                                                             new String[]{ "a1" , "a2" },
-//                                                             new Action[]{ new ActionMatchVar() ,
-//                                                                           new ActionMatchString()}) ;
-//
-//    private static ExprPattern startsWith2 = new ExprPattern("fn:starts-with(str(?a1), ?a2)",
-//                                                             new String[]{ "a1" , "a2" },
-//                                                             new Action[]{ new ActionMatchVar() ,
-//                                                                           new ActionMatchString()}) ;
+
 //    
 //    private static ExprPattern equalsString1 = new ExprPattern("?a1 = ?a2",
 //                                                               new String[]{ "a1" , "a2" },

@@ -8,14 +8,15 @@ package com.hp.hpl.jena.sdb.exprmatch;
 
 import java.util.HashMap;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.ExprUtils;
 
-public class MapResult extends HashMap<String, Expr>
+public class MapResult extends HashMap<Var, Expr>
 {
-    public void put(String k, String v)
+    public void put(Var var, String v)
     {
-        super.put(k, ExprUtils.parse(v)) ;
+        super.put(var, ExprUtils.parse(v)) ;
     }
 }
 

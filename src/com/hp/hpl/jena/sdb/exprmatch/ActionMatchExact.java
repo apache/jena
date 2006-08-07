@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.exprmatch;
 
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.ExprUtils;
 
@@ -24,12 +25,12 @@ public class ActionMatchExact extends ActionMatchBind
     }
     
     @Override
-    public boolean match(String varName, Expr expr, MapResult resultMap)
+    public boolean match(Var var, Expr expr, MapResult resultMap)
     {
         if ( ! exprMatch.equals(expr) )
             throw new NoExprMatch("ActionMatchExact: Do not match: Expected: "+exprMatch+" : Got: "+expr) ;
         // Assign is anyway : otherwise just write a constant
-        return super.match(varName, expr, resultMap) ;
+        return super.match(var, expr, resultMap) ;
     }
 }
 /*

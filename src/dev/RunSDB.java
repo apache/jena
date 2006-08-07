@@ -32,9 +32,9 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
-        run() ;
+        //run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -62,8 +62,7 @@ public class RunSDB
     public static void runPrint()
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {/*"-v",*/ "--sql", "--sdb=sdb.ttl", 
-            "--layout=rdb","--query=WorkSpace/X.rq"} ;
+        String[] a = {/*"-v",*/ "--sql", "--sdb=sdb.ttl", "--query=Q.rq"} ;
         //String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
