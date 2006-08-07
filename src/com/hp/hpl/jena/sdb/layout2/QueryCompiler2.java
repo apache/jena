@@ -161,11 +161,10 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
         // Add all value columns
         for ( SDBConstraint c : constraints )
         {
-            List<String> acc = new ArrayList<String>() ;
-            c.getExpr().varsMentioned(acc) ;
-            for ( String $ : acc )
+            @SuppressWarnings("unchecked")
+            Set<Var> vars = c.getExpr().getVarsMentioned() ;
+            for ( Var v : vars )
             {
-                Var v = new Var($) ;
                 // For Variables used in this SQL constraint, make sure the value is available.  
                 
                 SqlColumn tripleTableCol = sqlNode.getIdScope().getColumnForVar(v) ;   // tripleTableCol
