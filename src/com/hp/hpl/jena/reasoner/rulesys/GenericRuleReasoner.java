@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.27 2006-03-22 13:52:20 andy_seaborne Exp $
+ * $Id: GenericRuleReasoner.java,v 1.28 2006-08-14 12:58:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2006-03-22 13:52:20 $
+ * @version $Revision: 1.28 $ on $Date: 2006-08-14 12:58:15 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -357,15 +357,10 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * Get the single static precomputed rule closure.
      */
     protected synchronized InfGraph getPreload() {
+        // We only support this in HYBRID mode
         if (cachePreload && preload == null && mode == HYBRID) {
-            if (mode == HYBRID) {
-                preload = new FBRuleInfGraph(this, rules, null, new GraphMem());
-                if (enableTGCCaching) ((FBRuleInfGraph)preload).setUseTGCCache();
-            } else if (mode == FORWARD) {
-                preload = new BasicForwardRuleInfGraph(this, rules, null);
-            } else if (mode == FORWARD_RETE) {
-                preload = new RETERuleInfGraph(this, rules, null);
-            }
+            preload = new FBRuleInfGraph(this, rules, null, new GraphMem());
+            if (enableTGCCaching) ((FBRuleInfGraph)preload).setUseTGCCache();
             preload.prepare();
         }
         return preload;
