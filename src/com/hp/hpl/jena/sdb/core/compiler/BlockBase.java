@@ -11,7 +11,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.StringUtils;
+import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.Block;
 
 public abstract class BlockBase implements Block
@@ -52,7 +52,7 @@ public abstract class BlockBase implements Block
     @Override
     public String toString()
     {
-        return StringUtils.toString(this) ;
+        return FmtUtils.toString(this) ;
     }
 }
 /*
