@@ -20,5 +20,6 @@
 	<classpathentry sourcepath="arq-src.zip" path="lib/arq.jar" kind="lib"/>
 	<classpathentry path="lib/junit-4.1.jar" kind="lib"/>
 	<classpathentry path="lib/commons-logging-1.1.jar" kind="lib"/>
+	<classpathentry sourcepath="arq-src.zip" path="lib/arq-extra.jar" kind="lib"/>
 	<classpathentry path="classes" kind="output"/>
 </classpath>
