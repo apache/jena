@@ -8,7 +8,6 @@
 	<classpathentry path="lib/icu4j_3_4.jar" kind="lib"/>
 	<classpathentry path="lib/iri.jar" kind="lib"/>
 	<classpathentry path="lib/jena.jar" kind="lib"/>
-	<classpathentry path="lib/jenatest.jar" kind="lib"/>
 	<classpathentry path="lib/json.jar" kind="lib"/>
 	<classpathentry path="lib/log4j-1.2.12.jar" kind="lib"/>
 	<classpathentry path="lib/stax-api-1.0.jar" kind="lib"/>
