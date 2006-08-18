@@ -1,4 +1,4 @@
-# $Id: boolean-EBV-canonical-result.n3,v 1.1 2006-03-23 15:22:34 andy_seaborne Exp $
+# $Id: boolean-EBV-canonical-result.n3,v 1.2 2006-08-18 11:53:26 andy_seaborne Exp $
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .

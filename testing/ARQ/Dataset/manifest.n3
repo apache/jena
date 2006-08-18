@@ -67,5 +67,17 @@
         mf:result  <graph-08-result.n3> ;
       ]
 
+    [  mf:name    "graph-09" ;
+       # BNodes don't name graphs
+        mf:action
+            [ qt:query  <graph-09.rq> ;
+              qt:graphData  <c.n3> ;
+              qt:graphData  <d.n3> ;
+            ] ;
+        mf:result  <graph-09-result.n3> ;
+      ]
+
+
+
     # End of tests
    ).

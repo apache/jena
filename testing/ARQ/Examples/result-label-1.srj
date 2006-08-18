@@ -1,0 +1,17 @@
+{
+  "head": {
+    "vars": [ "x" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "x": { "type": "uri" , "value": "http://example/x4" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x3" }
+      }
+    ]
+  }
+}

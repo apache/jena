@@ -26,7 +26,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 /** Example : Build a query with a filter programmatically 
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg2.java,v 1.1 2006-03-23 15:22:46 andy_seaborne Exp $
+ * @version $Id: ExProg2.java,v 1.2 2006-08-18 11:55:06 andy_seaborne Exp $
  */
 
 public class ExProg2
@@ -48,15 +48,15 @@ public class ExProg2
         Node varX = Node.createVariable("x") ;
         
         Triple t1 = new Triple(varX, DC.title.asNode(),  varTitle) ;
-        elg.addElement(new ElementTriplePattern(t1)) ;
+        elg.addElementTriplePattern(new ElementTriplePattern(t1)) ;
         
         // Adds a filter.  Need to wrap variable in a NodeVar.
         Expr expr = new E_Regex(new NodeVar(varTitle), "sparql", "i") ;
         ElementFilter filter = new  ElementFilter(expr) ;
-        elg.addElement(filter) ;
+        elg.addElementFilter(filter) ;
         
         // Attach the group to query.  
-        query.setQueryElement(elg) ;
+        query.setQueryPattern(elg) ;
         
         // Choose what we want - SELECT ?title
         query.addResultVar(varTitle) ;

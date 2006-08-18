@@ -6,29 +6,74 @@
 
 package arq.examples.ext;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.engine1.Plan;
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.QueryEngine;
+import com.hp.hpl.jena.query.engine1.*;
+import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
+import com.hp.hpl.jena.query.engine1.plan.Transform;
+import com.hp.hpl.jena.query.engine1.plan.TransformCopy;
+import com.hp.hpl.jena.query.engine1.plan.Transformer;
+import com.hp.hpl.jena.query.util.Context;
 
 /** Example of a custom query engine. */
 
 public class MyQueryEngine extends QueryEngine
 {
+    /* Register an engine with the QueryEngineRegistry */
+    
     public MyQueryEngine(Query q)
     {
         super(q) ;
     }
 
-    protected PlanElement makePlanForQueryPattern(Plan plan)
+//    protected PlanElement makePlanForQueryPattern(Context context, Element queryPatternElement)
+//    {
+//        // Intercept the process of making the plan for the pattern part    
+//        return super.makePlanForQueryPattern(context, queryPatternElement) ;
+//    }
+    
+    // A simpler way to extend the query engine is to get the standard engine
+    // to generate a plan of some kind, then modify it.  There are two hook points:
+    //   when the query pattern is generated
+    //   when the whole has been generated (includes modifiers)
+    
+    protected PlanElement queryPlanPatternHook(Context context, PlanElement planElt)
     { 
-        // Hook in our own pattern compiler code.
-        MyQueryCompilerVisitor comp = new MyQueryCompilerVisitor(plan) ;
-        return comp.compile(getQuery().getQueryBlock()) ;
+        if ( planElt == null )
+        {
+            // No query pattern (no WHERE clause)
+            return planElt ;
+        }
+        
+        // Can hook in here and do a complete plan generation 
+        // with makePlanForQueryPattern ...
+        // generate a plan and replace  
+        Transform f = new ExTransform() ;
+        PlanElement e = Transformer.transform(f, planElt) ;
+        return e ;
+    }
+
+    // Same - except it's the PlanElement for the whole query plan (modifers included).
+    protected PlanElement queryPlanHook(Context context, PlanElement planElt)
+    {
+        return planElt ;
     }
     
-    protected PlanElement queryPlanHook(Plan plan, PlanElement planElt)
-    { return planElt ; } 
+}
+
+class ExTransform extends TransformCopy
+{
+    public PlanElement transform(PlanBlockTriples planElt) 
+    { 
+        // Reverse the order of the triples in every block of triples.
+        PlanBlockTriples pbt = new PlanBlockTriples(planElt.getContext()) ;
+        for ( Iterator iter = planElt.getSubElements().listIterator() ; iter.hasNext(); )
+        {
+            pbt.getSubElements().add(0, iter.next()) ;
+        }
+        return pbt ;
+    }
 }
 
 /*

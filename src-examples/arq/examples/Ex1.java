@@ -9,6 +9,7 @@ package arq.examples;
 
 // The ARQ application API.
 import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.query.util.IndentedWriter;
 //import com.hp.hpl.jena.query.util.IndentedWriter;
 
 import com.hp.hpl.jena.rdf.model.*; 
@@ -18,7 +19,7 @@ import com.hp.hpl.jena.vocabulary.DC;
  *  to find the DC titles contained in a model. 
  * 
  * @author Andy Seaborne
- * @version $Id: Ex1.java,v 1.1 2006-03-23 15:22:46 andy_seaborne Exp $
+ * @version $Id: Ex1.java,v 1.2 2006-08-18 11:55:06 andy_seaborne Exp $
  */
 
 public class Ex1
@@ -40,7 +41,8 @@ public class Ex1
         
         Query query = QueryFactory.create(queryString) ;
         // Print with line numbers
-        //query.serialize(new IndentedWriter(System.out,true)) ;
+        query.serialize(new IndentedWriter(System.out,true)) ;
+        System.out.println() ;
         
         // Create a single execution of this query, apply to a model
         // which is wrapped up as a Dataset

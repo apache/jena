@@ -29,7 +29,6 @@
         <Bound/manifest.n3>
         <Expr/manifest.ttl>
 
-
         <Expr/manifest.ttl>
         <Expr1/manifest.n3>
         <Expr2/manifest.n3>
@@ -37,9 +36,10 @@
         <ExprDatatypes/manifest.ttl>
         <ExprEquals/manifest.n3>
         <ExprRegex/manifest.ttl>
+    	<OpenWorld/manifest.ttl>
 
         <Function/manifest.ttl>
-        <FunctionProperties/manifest.ttl>
+        <PropertyFunctions/manifest.ttl>
         <TypePromotion/manifest.ttl>
 
         <OrderBy/manifest.ttl> # DAWG tests/data/sort
@@ -52,5 +52,6 @@
         <Extensions/manifest.ttl>
 
         <Sort/manifest.ttl>
+        <Examples/manifest.ttl>
     ) .
 

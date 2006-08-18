@@ -1,0 +1,15 @@
+{
+  "head": {
+    "vars": [ "v" , "uc" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "v": { "type": "literal" , "value": "zzz" } ,
+        "uc": { "type": "literal" , "value": "ZZZ" }
+      }
+    ]
+  }
+}

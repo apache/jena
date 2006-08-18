@@ -1,0 +1,23 @@
+{
+  "head": {
+    "vars": [ "x" , "p" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "x": { "type": "uri" , "value": "http://example/x1" } ,
+        "p": { "type": "uri" , "value": "http://www.w3.org/2000/01/rdf-schema#label" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x2" } ,
+        "p": { "type": "uri" , "value": "http://www.w3.org/2000/01/rdf-schema#label" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x3" } ,
+        "p": { "type": "uri" , "value": "http://example/label" }
+      }
+    ]
+  }
+}

@@ -204,5 +204,18 @@
         mf:result  <strlen-2.srj>
       ]
 
+      [ mf:name     "Localname - 1" ;
+        mf:action
+            [ qt:query  <localname-1.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <localname-1.srj>
+      ]
+
+      [ mf:name     "Namespace - 1" ;
+        mf:action
+            [ qt:query  <namespace-1.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <namespace-1.srj>
+      ]
 
     ).

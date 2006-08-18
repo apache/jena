@@ -1,0 +1,17 @@
+{
+  "head": {
+    "vars": [ "x" ]
+  } ,
+  "results": {
+    "distinct": true ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "x": { "type": "literal" , "value": "label" }
+      } ,
+      {
+        "x": { "type": "literal" , "value": "p" }
+      }
+    ]
+  }
+}

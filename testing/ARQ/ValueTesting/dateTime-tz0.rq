@@ -1,5 +1,5 @@
 # dateTime-tz0 - test equivilent timezone representations
-# $Id: dateTime-tz0.rq,v 1.1 2006-03-23 15:22:34 andy_seaborne Exp $
+# $Id: dateTime-tz0.rq,v 1.2 2006-08-18 11:53:26 andy_seaborne Exp $
 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX t: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/dateTime.ttl#>

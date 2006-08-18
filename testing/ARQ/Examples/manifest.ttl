@@ -1,0 +1,61 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "src-examples" ;
+    mf:entries
+    ( 
+      [  mf:name    "Example label - 1" ;
+         mf:action
+           [ qt:query  <ex-label-1.rq> ;
+             qt:data   <data-1.ttl> ] ;
+         mf:result  <result-label-1.srj>
+      ]
+
+      [  mf:name    "Example uppercase - 1" ;
+         mf:action
+           [ qt:query  <ex-uppercase-1.rq> ;
+             qt:data   <data-1.ttl> ] ;
+         mf:result  <result-uppercase-1.srj>
+      ]
+      [  mf:name    "Example uppercase - 2" ;
+         mf:action
+           [ qt:query  <ex-uppercase-2.rq> ;
+             qt:data   <data-1.ttl> ] ;
+         mf:result  <result-uppercase-2.srj>
+      ]
+      [  mf:name    "Example localname - 1" ;
+         mf:action
+           [ qt:query  <ex-localname-1.rq> ;
+             qt:data   <data-2.ttl> ] ;
+         mf:result  <result-localname-1.srj>
+      ]
+      [  mf:name    "Example localname - 2" ;
+         mf:action
+           [ qt:query  <ex-localname-2.rq> ;
+             qt:data   <data-2.ttl> ] ;
+         mf:result  <result-localname-2.srj>
+      ]
+      [  mf:name    "Example localname - 3" ;
+         mf:action
+           [ qt:query  <ex-localname-3.rq> ;
+             qt:data   <data-2.ttl> ] ;
+         mf:result  <result-localname-3.srj>
+      ]
+      [  mf:name    "Example localname - 4" ;
+         mf:action
+           [ qt:query  <ex-localname-4.rq> ;
+             qt:data   <data-2.ttl> ] ;
+         mf:result  <result-localname-4.srj>
+      ]
+      [  mf:name    "Example localname - 5" ;
+         mf:action
+           [ qt:query  <ex-localname-5.rq> ;
+             qt:data   <data-2.ttl> ] ;
+         mf:result  <result-localname-5.srj>
+      ]
+
+    ).

@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 /** Example : Build a query programmatically.
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg1.java,v 1.1 2006-03-23 15:22:46 andy_seaborne Exp $
+ * @version $Id: ExProg1.java,v 1.2 2006-08-18 11:55:06 andy_seaborne Exp $
  */
 
 public class ExProg1
@@ -49,15 +49,15 @@ public class ExProg1
         
         Triple t1 = new Triple(varX, DC.title.asNode(),  varTitle) ;
         ElementTriplePattern tp1 = new ElementTriplePattern(t1) ;
-        elg.addElement(tp1) ;
+        elg.addElementTriplePattern(tp1) ;
         
         // Don't use bNodes for anon variables.  The conversion is done in parsing.
         // BNodes here are assumed to be values from the target graph.
         Triple t2 = new Triple(varX, DC.description.asNode(), Node.createVariable("desc")) ;
-        elg.addElement(new ElementTriplePattern(t2)) ;
+        elg.addElementTriplePattern(new ElementTriplePattern(t2)) ;
         
         // Attach the group to query.  
-        query.setQueryElement(elg) ;
+        query.setQueryPattern(elg) ;
 
         // Choose what we want - SELECT *
         //query.setQueryResultStar(true) ;

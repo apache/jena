@@ -1,0 +1,8 @@
+PREFIX :           <http://example.org/>
+PREFIX apf:        <java:com.hp.hpl.jena.query.pfunction.library.>
+PREFIX xsd:        <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?ns ?ln
+{
+  xsd:integer apf:splitIRI (?ns ?ln)
+}

@@ -1,0 +1,17 @@
+{
+  "head": {
+    "vars": [ "v" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "v": { "type": "literal" , "value": "zzz" }
+      } ,
+      {
+        "v": { "type": "literal" , "value": "zzz" }
+      }
+    ]
+  }
+}

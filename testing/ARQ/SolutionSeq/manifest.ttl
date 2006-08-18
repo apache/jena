@@ -13,7 +13,7 @@
                qt:data   <data-1.ttl> ] ;
          mf:result  <results-seq-01.ttl>
        ]
-       [  mf:name    "Modifer DISTINCT" ;
+       [  mf:name    "Modifier DISTINCT" ;
           mf:action
              [ qt:query  <q-seq-02.rq> ;
                qt:data   <data-1.ttl> ] ;
@@ -25,7 +25,7 @@
                qt:data   <data-1.ttl> ] ;
          mf:result  <results-seq-03.ttl>
        ]
-       [  mf:name    "Modifer DISTINCT and ORDER BY [numbers]" ;
+       [  mf:name    "Modifier DISTINCT and ORDER BY [numbers]" ;
           mf:action
              [ qt:query  <q-seq-04.rq> ;
                qt:data   <data-1.ttl> ] ;
@@ -38,7 +38,7 @@
                qt:data   <data-1.ttl> ] ;
          mf:result  <results-seq-05.ttl>
        ]
-       [  mf:name    "Modifer ORDER BY [strings]" ;
+       [  mf:name    "Modifier ORDER BY [strings]" ;
           mf:action
              [ qt:query  <q-seq-06.rq> ;
                qt:data   <data-1.ttl> ] ;
@@ -46,28 +46,28 @@
        ]
 
 
-       [  mf:name    "Modifer OFFSET" ;
+       [  mf:name    "Modifier OFFSET" ;
           mf:action
              [ qt:query  <q-seq-07.rq> ;
                qt:data   <data-1.ttl> ] ;
          mf:result  <results-seq-07.ttl>
        ]
 
-       [  mf:name    "Modifer LIMIT" ;
+       [  mf:name    "Modifier LIMIT" ;
           mf:action
              [ qt:query  <q-seq-08.rq> ;
                qt:data   <data-1.ttl> ] ;
          mf:result  <results-seq-08.ttl>
        ]
 
-       [  mf:name    "Modifer DISTINCT-LIMIT" ;
+       [  mf:name    "Modifier DISTINCT-LIMIT" ;
           mf:action
              [ qt:query  <q-seq-09.rq> ;
                qt:data   <data-1.ttl> ] ;
          mf:result  <results-seq-09.ttl>
        ]
 
-       [  mf:name    "Modifer LIMIT-OFFSET" ;
+       [  mf:name    "Modifier LIMIT-OFFSET" ;
           mf:action
              [ qt:query  <q-seq-10.rq> ;
                qt:data   <data-1.ttl> ] ;

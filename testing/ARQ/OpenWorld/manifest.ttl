@@ -1,0 +1,47 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "LABEL" ;
+    mf:entries
+    ( 
+       [ mf:name    "OpenWorld 1 - graph match - no lexical form in data" ;
+         mf:action
+            [ qt:query  <open-1.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <open-1-result.ttl>
+      ]
+      [ mf:name    "OpenWorld 2 - graph match - unknown type" ;
+        mf:action
+           [ qt:query  <open-2.rq> ;
+             qt:data   <data.ttl> ] ;
+        mf:result  <open-2-result.ttl>
+      ]
+      [ mf:name    "OpenWorld 3 - Filter(?v=1)" ;
+        mf:action
+           [ qt:query  <open-3.rq> ;
+             qt:data   <data.ttl> ] ;
+        mf:result  <open-3-result.ttl>
+      ]
+      [ mf:name    "OpenWorld 4 - Filter(?v!=1)" ;
+        mf:action
+           [ qt:query  <open-4.rq> ;
+             qt:data   <data.ttl> ] ;
+        mf:result  <open-4-result.ttl>
+      ]
+      [ mf:name    "OpenWorld 5 - FILTER(?v = unknown type)" ;
+        mf:action
+           [ qt:query  <open-5.rq> ;
+             qt:data   <data.ttl> ] ;
+        mf:result  <open-5-result.ttl>
+      ]
+      [ mf:name    "OpenWorld 6 - FILTER(?v != unknown type)" ;
+        mf:action
+           [ qt:query  <open-6.rq> ;
+             qt:data   <data.ttl> ] ;
+        mf:result  <open-6-result.ttl>
+      ]
+    ).
