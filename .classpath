@@ -11,7 +11,6 @@
 	<classpathentry path="lib/json.jar" kind="lib"/>
 	<classpathentry path="lib/log4j-1.2.12.jar" kind="lib"/>
 	<classpathentry path="lib/stax-api-1.0.jar" kind="lib"/>
-	<classpathentry path="lib/wstx-asl-2.8.jar" kind="lib"/>
 	<classpathentry path="lib/xercesImpl.jar" kind="lib"/>
 	<classpathentry path="lib/xml-apis.jar" kind="lib"/>
 	<classpathentry path="jdbc/hsqldb.jar" kind="lib"/>
@@ -21,5 +20,6 @@
 	<classpathentry path="lib/commons-logging-1.1.jar" kind="lib"/>
 	<classpathentry sourcepath="arq-src.zip" path="lib/arq-extra.jar" kind="lib"/>
 	<classpathentry path="lib/jenatest.jar" kind="lib"/>
+	<classpathentry path="lib/wstx-asl-3.0.0.jar" kind="lib"/>
 	<classpathentry path="classes" kind="output"/>
 </classpath>
