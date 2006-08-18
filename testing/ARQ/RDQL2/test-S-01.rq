@@ -1,4 +1,0 @@
-PREFIX  x: <http://rdf.hp.com/>
-SELECT  ?y
-WHERE
-    { x:r ?y "value-é" }

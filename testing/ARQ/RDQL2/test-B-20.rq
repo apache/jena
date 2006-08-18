@@ -1,5 +1,0 @@
-SELECT  *
-WHERE
-    { ?x ?y ?v . 
-      FILTER ( ?v = 5.7 ) .
-    }

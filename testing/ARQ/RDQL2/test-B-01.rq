@@ -1,3 +1,0 @@
-SELECT  ?x ?y
-WHERE
-    { ?x ?y "value" }

@@ -1,3 +1,0 @@
-SELECT  *
-WHERE
-    { <urn:/*not_a_comment*/> ?y ?z }

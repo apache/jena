@@ -122,7 +122,7 @@
   mf:result <result-1-08.n3> ]
 
 
-## Removed : volates qname rules in SPARQL
+## Removed : violates qname rules in SPARQL
 ## [ mf:name "test-1-09.rq" ;
 ##   mf:action [ qt:query <test-1-09.rq> ; qt:data <model1.nt> ] ;
 ##   mf:result <result-1-09.n3> ]

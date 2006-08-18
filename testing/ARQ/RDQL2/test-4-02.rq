@@ -1,5 +1,0 @@
-SELECT  *
-WHERE
-    { ?a <http://rdf.hp.com/p> ?z .
-      ?z <http://rdf.hp.com/p> ?d .
-    }
