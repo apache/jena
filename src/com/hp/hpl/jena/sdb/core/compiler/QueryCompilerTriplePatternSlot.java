@@ -59,7 +59,6 @@ public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriple
             return ;
         }
         
-        // In common
         Var var = new Var(node) ;
         if ( table.getIdScope().hasColumnForVar(var) )
         {
@@ -75,7 +74,7 @@ public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriple
     /** Deal with an access to a constant in the query tripe pattern */
     protected abstract void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions) ;
     
-    /** Retrun an SqlTable for the relevant triples table (use the alias given) */ 
+    /** Return an SqlTable for the relevant triples table (use the alias given) */ 
     protected abstract SqlTable accessTriplesTable(String alias) ;
 }
 
