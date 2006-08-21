@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleTransactionHandler.java,v 1.5 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: SimpleTransactionHandler.java,v 1.6 2006-08-21 08:11:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -27,7 +27,7 @@ public class SimpleTransactionHandler extends TransactionHandlerBase
         { notSupported(); }
         
     private void notSupported()
-        { throw new UnsupportedOperationException( "oops" ); }
+        { throw new UnsupportedOperationException( "this model does not support transactions" ); }
     }
 
 
