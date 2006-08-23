@@ -375,16 +375,6 @@ EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-bnodes-" $N) <<EOF
 PREFIX : <http://example.org/ns#>
-SELECT * WHERE { :x [] :q }
-EOF
-
-N=$((N+1)) ; testGood $(fname "syntax-bnodes-" $N) <<EOF
-PREFIX : <http://example.org/ns#>
-SELECT * WHERE { :x _:a :q }
-EOF
-
-N=$((N+1)) ; testGood $(fname "syntax-bnodes-" $N) <<EOF
-PREFIX : <http://example.org/ns#>
 SELECT * WHERE { [ ?x ?y ] :p [ ?pa ?b ] }
 EOF
 
@@ -414,8 +404,6 @@ N=$((N+1)) ; testGood $(fname "syntax-forms-" $N) <<EOF
 PREFIX : <http://example.org/ns#>
 SELECT * WHERE { ( [] [] ) }
 EOF
-
-
 
 
 ## Optional

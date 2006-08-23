@@ -10,8 +10,7 @@
                   [ rs:binding  [ rs:value    :xb ;
                                   rs:variable  "x"
                                 ] ;
-                    rs:binding  [ rs:value    [ 
-                                              ] ;
+                    rs:binding  [ rs:value    [] ;
                                   rs:variable  "v"
                                 ]
                   ] .

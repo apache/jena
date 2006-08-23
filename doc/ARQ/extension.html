@@ -12,16 +12,17 @@
   <p>There are several ways to extend ARQ:</p>
 
   <ul>
-    <li>Value Functions - additional operations in FILTERS</li>
+    <li><a href="#valueFunctions">Value Functions</a> - additional operations in FILTERS</li>
+    <li><a href="#propertyFunctions">Property functions</a> - adding predicates that introduce custom query 
+    stages</li>
 
-    <li>Graph matching extensions - addition graph matching
-    operations</li>
+    <li><a href="#describeHandlers">DESCRIBE handlers</a></li>
 
-    <li>DESCRIBE handlers</li>
+    <li>Support for <a href="#matchBlankNodeLabels">finding blank nodes by label</a></li>
+    <li>Inserting <a href="#arqExtensions">code into the query processing 
+    pipeline</a>.</li>
 
-    <li>Support for finding blank nodes</li>
-
-    <li>New query engines for performance in special
+    <li><a href="#specializedQueryEngines">New query engines</a> for performance in special
     circumstances</li>
   </ul>
 
@@ -30,7 +31,7 @@
   Applications can <a href="writing_functions.html">write and register their own 
   functions</a>.</p>
 
-  <h2>Functions</h2>
+  <h2><a id="valueFunctions" name="valueFunctions">Functions</a></h2>
 
   <p>A SPARQL custom function is implementation dependent. Most
   details of the ARQ query engine do not have to be understood to
@@ -61,7 +62,7 @@
 
   <p>The <kbd>jfn:now</kbd> returns the time the query started.</p>
 
-  <h2>Function Properties</h2>
+  <h2><a id="propertyFunctions" name="propertyFunctions">Property Functions</a></h2>
 
   <p>Function properties, sometimes called "magic properties", are
   properties that cause triple matching to happen by executing some
@@ -72,17 +73,25 @@
   other of the subject or object to be a query constant or a bound
   value, and not able to generate all possibilities for that
   slot.</p>
+  <p>Property functions must have fixed URI for the predicate (it can't be query 
+  variable). They may take a list for subject or object.</p>
 
   <p>One common case is for access to collections (RDF lists) or
   containers (rdf:Bag, rdf:Seq, rdf:Alt).</p>
   <pre class="box">PREFIX list: &lt;http://jena.hpl.hp.com/ARQ/list#&gt;<br /><br />SELECT ?member<br />{ ?x :p ?list .<br /> ?list list:member ?member .<br />}<br /></pre>
 
-  <p>which can also be written:</p><pre class="box">PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;<br /><br />SELECT ?member<br />{ ?x :p [ list:member ?member ] }<br /></pre>
+  <p>which can also be written:</p><pre class="box">PREFIX list: &lt;http://jena.hpl.hp.com/ARQ/list#&gt;<br /><br />SELECT ?member<br />{ ?x :p [ list:member ?member ] }<br /></pre>
 
-  <p>Likewise, RDF containers:</p><pre class="box">PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;<br /><br />SELECT ?member<br />{ ?x :p ?bag .<br /> ?bag rdfs:member ?member .<br />}<br /></pre><p>Code for properties can be dynamically loaded or
-  pre-registered.</p>
+  <p>Likewise, RDF containers:</p><pre class="box">PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;<br /><br />SELECT ?member<br />{ ?x :p ?bag .<br /> ?bag rdfs:member ?member .<br />}<br /></pre><p>
+  Property functions can also take lists in the subject or object slot.</p>
+  <p>Code for properties can be dynamically loaded or
+  pre-registered. For example, <code>splitIRI</code> will take an IRI and assign 
+  the namespace ad localname parts to variables (if the variables are already 
+  bound, not constants are used, <code>splitIRI</code> will check the values).</p>
+  <pre class="box">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+PREFIX apf: &lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;<br /><br />SELECT ?namespace ?localname<br />{ xsd:string apf:splitIRI (?namespace ?localname) }<br /></pre>
 
-  <p>This feature can conflict with inference rules and it can be
+  <p>Property functions might conflict with inference rules and it can be
   turned off by the Java code:</p>
   <pre class="box"> ARQ.setFalse(ARQ.enablePropertyFunctions) ;<br /></pre>
 
@@ -90,23 +99,6 @@
 
   <p>The function properties in the ARQ distribution are described
   on the <a href="library.html#fprops">library page</a>.</p>
-
-  <h2>Extensions</h2>
-
-  <p>ARQ also provides the ability to write custom extensions. 
-  This not part of SPARQL; the application will need to use the ARQ
-  query language (a superset of SPARQL). Unlike a value function,
-  an extension can set variables and generate multiple solutions.
-  An extensions can also query the dataset.</p>
-  <pre class="box">EXT q:name(?a, ?b, ?c)<br /></pre>
-
-  <p>Writing a an extension requires more understanding of the ARQ
-  query engine. See <a href="architecture.html">ARQ Query Engine
-  Design</a>. Extensions are registered or loaded in a similar
-  manner to functions.</p>
-
-  <p>There are some extensions provided in the ARQ distribution and
-  these are described on the <a href="library.html#extensions">library page</a>.</p>
 
   <h2><a id="describeHandlers" name="describeHandlers">DESCRIBE
   handlers</a></h2>
@@ -129,7 +121,7 @@
   for each resource (not literals) identified by the
   <code>DESCRIBE</code> query.</p>
 
-  <h2>Blank Node Labels</h2>
+  <h2><a name="matchBlankNodeLabels" id="matchBlankNodeLabels">Blank Node Labels</a></h2>
 
   <p>URIs from with scheme name "_" (which is illegal) are created
   as blank node labels for directly accessing a blank node in the
@@ -140,7 +132,26 @@
   <pre class="box">&lt;_:1234-5678-90&gt; # A blank node in the data<br /></pre>
   <pre class="box">_:b0 # A blank node in the query - a variable<br /></pre>
 
-  <h2>Specialized Query Engines</h2>
+  <h2><a name="arqExtensions">Extensions</a></h2>
+
+  <p>Property functions allow custom extensions to be added and still use the 
+  SPARQL syntax.&nbsp; Occasionally, it is convenient to pass in the value of an 
+  expression, not a graph node.&nbsp; Such custom extensions with expression 
+  arguments are supported but this not part of SPARQL; the application will need to use the ARQ
+  query language (a superset of SPARQL). Unlike a value function,
+  an extension can set variables and generate multiple solutions.
+  An extensions can also query the dataset.</p>
+  <pre class="box">EXT q:name(?a, ?b, ?c)<br /></pre>
+
+  <p>Writing a an extension requires more understanding of the ARQ
+  query engine. See <a href="architecture.html">ARQ Query Engine
+  Design</a>. Extensions are registered or loaded in a similar
+  manner to functions.</p>
+
+  <p>There are some extensions provided in the ARQ distribution and
+  these are described on the <a href="library.html#extensions">library page</a>.</p>
+
+  <h2><a name="specializedQueryEngines">Specialized Query Engines</a></h2>
 
   <p class="todo">@@to be written</p>
 

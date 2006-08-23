@@ -1,0 +1,32 @@
+@prefix :        <http://example/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "v" ;
+      rs:resultVariable  "x" ;
+      rs:solution   [ rs:binding    [ rs:value      :d1 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      "2006-08-23"^^xsd:date ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      1
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :d3 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      "2006-08-23+00:00"^^xsd:date ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      3
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :d2 ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      "2006-08-23Z"^^xsd:date ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      2
+                    ] .

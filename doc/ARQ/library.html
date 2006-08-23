@@ -15,7 +15,7 @@
 
   <p>SPARQL allows custom functions in filter expressions so that
   queries can be used on domain-specific data. SPARQL defines a
-  function by URI (or qname) in FILTER expressions.&nbsp; ARQ
+  function by URI (or prefixed name) in FILTER expressions.&nbsp; ARQ
   provides a function library and supports application-provided
   functions.&nbsp; Functions and extensions can be <a href=
   "extension.html">registered or dynamically loaded</a>.</p>
@@ -27,11 +27,196 @@
   <h2><a id="functions" name="functions">Function Library</a></h2>
 
   <p>The prefix <code>jfn</code> is
-  <code>&lt;java:com.hp.hpl.jena.query.function.library.&gt;</code>.</p>
+  <code>&lt;java:com.hp.hpl.jena.query.function.library.&gt;</code>. Note the final dot in the prefix.</p>
 
-  <p>Note the final dot in the prefix.</p>
+  <p>The prefix <code>fn</code> is
+  <code>&lt;http://www.w3.org/2005/xpath-functions#&gt;</code> (the XPath and 
+  XQuery function namespace).</p>
+	<h3>XQuery/XPath functions and operators supported</h3>
+	<p align="center"><b>String Functions</b></p>
 
-  <p><b>RDF Graph Functions</b></p>
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    id="table4" border="1" cellpadding="0" cellspacing="1" width=
+    "90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:contains(<i>string</i>, <i>
+          substr</i>)</code></td>
+
+          <td style="text-align: left;">Test whether <code><i>substr </i></code>
+          occurs in <i>string.</i></td>
+        </tr>
+		<tr>
+          <td style="text-align: left;"><code>fn:starts-with(<i>string</i>, <i>
+          match</i>)</code></td>
+
+          <td style="text-align: left;">Test whether <i><code>string</code></i> 
+          starts with <code><i>substr.</i></code></td>
+        </tr>
+		<tr>
+          <td style="text-align: left;"><code>fn:ends-with(<i>string</i>, <i>
+          match</i>)</code></td>
+
+          <td style="text-align: left;">Test whether <i><code>string</code></i> 
+          ends with <code><i>substr.</i></code></td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:string-length(</code><i><code>string)</code></i></td>
+
+          <td style="text-align: left;">Return the length of a <i><code>string</code></i>.</td>
+        </tr>
+        <tr>
+          <td style="text-align: left;"><code>fn:matches(</code><code><i>string</i>,
+          <i>pattern </i>[,<i> flags])</i></code></td>
+
+          <td style="text-align: left;">Regular expression match.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:string-join(<i>string1</i>, <i>
+          string2</i>)</code></td>
+
+          <td style="text-align: left;">Return the concatenation of
+          two strings.<p>&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:substring(<i>string</i>,
+          <i>begin</i> [,<i>length</i>])</code></td>
+
+          <td style="text-align: left;">Returns the substring of a <i><code>string</code></i>, given 
+			by <code><i>begin</i> </code>&nbsp;(integer) and, optionally, length
+			<code><i>length</i></code>.&nbsp; 
+			Absence of <i> <code>length</code></i> means to end of string.&nbsp; Strings are indexed from zero.<ul>
+			<li><b>Strings start from one</b>, not zero as they do in Java and 
+			C#.</li>
+			<li><b>3rd argument is the length</b>, like C# but unlike Java, where it is the 
+			<i>endIndex</i><b>.</b></li>
+			</ul>
+			</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Notes: </p>
+	<ol>
+		<li>Strings in &quot;<a href="http://www.w3.org/TR/xpath-functions/">XQuery 
+		1.0 and XPath 2.0 Functions and Operators</a>&quot; start from character 
+		position one, unlike Java and C# where strings start from zero.</li>
+		<li>The <code>fn:substring</code> operation takes an optional length, 
+		like C# but different from Java, where it is the <i>endIndex</i> of the 
+		first character after the substring.</li>
+	</ol>
+	<p>The operation <code>jfn:substring</code> provides Java semantics.</p>
+	<p align="center"><b>Mathematical Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:min(num1,
+          num2)</code></td>
+
+          <td style="text-align: left;">Return the minimum of two
+          expressions evaluating to numbers.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:max(num1,
+          num2)</code></td>
+
+          <td style="text-align: left;">Return the maximum of two
+          expressions evaluating to numbers.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>fn:round(v)</code></td>
+
+          <td style="text-align: left;">Return the nearest integer
+          value to the argument.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>fn:abs(v)</code></td>
+
+          <td style="text-align: left;">Return the absolute
+          value.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>fn:floor(v)</code></td>
+
+          <td style="text-align: left;">Return the greatest integer
+          value less than the argument (as a double).</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>fn:ceiling(v)</code></td>
+
+          <td style="text-align: left;">Return the smallest integer
+          value than the argument (as a double).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p align="left">Note: See also <code>jfn:min</code> and <code>jfn:max</code> 
+	for binary min and max functions.</p>
+	<p align="center"><b>Boolean Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%" id="table5">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:boolean(<i>value</i>)</code></td>
+
+          <td style="text-align: left;">Boolean effective value of <code><i>
+          value</i></code>.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:not(<i>value</i>)</code></td>
+
+          <td style="text-align: left;">Logical negation of the boolean 
+          effective value of <code><i>value</i></code>.</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Functions provided by ARQ</h4>
+	<p align="center"><b>RDF Graph Functions</b></p>
 
   <div style="margin-left: 5%; margin-right: 5%;">
     <table style="border-style: solid; border-collapse: collapse;"
@@ -91,6 +276,7 @@
           a member of an RDF alt</td>
         </tr>
 
+<!--
         <tr>
           <td style="text-align: left;">
           <code>jfn:langeq(<i>literal</i>, <i>lang</i>)</code></td>
@@ -99,7 +285,7 @@
           the literal with a language tag. Comparison reflects
           language tag rules so "foo"@en matches "EN-gb".</td>
         </tr>
-
+-->
         <tr>
           <td style="text-align: left;">
           <code>jfn:bnode(?x)</code></td>
@@ -111,12 +297,11 @@
     </table>
   </div>
 
-  <p><b>String Functions</b></p>
+  <p align="center"><b>String Functions</b></p>
 
   <div style="margin-left: 5%; margin-right: 5%;">
     <table style="border-style: solid; border-collapse: collapse;"
-    id="table2" border="1" cellpadding="0" cellspacing="1" width=
-    "90%">
+    border="1" cellpadding="0" cellspacing="1" width="90%">
       <tbody>
         <tr>
           <th style="text-align: left;" bgcolor="#C0C0C0" width=
@@ -126,38 +311,31 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:concat(string1,
-          string2)</code></td>
+          <td style="text-align: left;"><code>jfn:substr(</code><i><code>string,
+			startIndex [,</code></i><code><i>endIndex</i></code>]<code>)</code></td>
 
-          <td style="text-align: left;">Return the concatenation of
-          two strings.</td>
-        </tr>
-		<tr>
-          <td style="text-align: left;"><code>jfn:substring(string,
-          beginIndex [,endIndex])</code></td>
-
-          <td style="text-align: left;">Returns the substring of a string, given 
-			by <code>beginIndex </code>&nbsp;(integer) and, optionally, an <code>
-			endIndex</code>.&nbsp; 
-			Absence of <code>endIndex</code> means to end of string.&nbsp; Strings are indexed from zero.</td>
-        </tr>
-		<tr>
-          <td style="text-align: left;"><code>jfn:substr(string,
-          beginIndex [,endIndex])</code></td>
-
-          <td style="text-align: left;">Synonym for jfn:substring.</td>
+          <td style="text-align: left;">Substring, Java style using <i><code>
+			startIndex</code></i> and <code><i>endIndex</i></code>.</td>
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:strlen()</code></td>
+          <td style="text-align: left;">
+          <code>jfn:substring</code></td>
 
-          <td style="text-align: left;">Return the length of a string.</td>
+          <td style="text-align: left;">Synonym for jfn:substring</td>
+        </tr>
+      	<tr>
+          <td style="text-align: left;">
+          <code>jfn:sha1sum(<i>resource</i>)</code></td>
+
+          <td style="text-align: left;">Calculate the SHA1 checksum of a literal 
+			or URI.</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <p><b>Mathematical Functions</b></p>
+	<p align="center"><b>Mathematical Functions</b></p>
 
   <div style="margin-left: 5%; margin-right: 5%;">
     <table style="border-style: solid; border-collapse: collapse;"
@@ -186,42 +364,11 @@
           expressions evaluating to numbers.</td>
         </tr>
 
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:round(v)</code></td>
-
-          <td style="text-align: left;">Return the nearest integer
-          value to the argument.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:abs(v)</code></td>
-
-          <td style="text-align: left;">Return the absolute
-          value.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:floor(v)</code></td>
-
-          <td style="text-align: left;">Return the greatest integer
-          value less than the argument (as a double).</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code>jfn:ceiling(v)</code></td>
-
-          <td style="text-align: left;">Return the smallest integer
-          value than the argument (as a double).</td>
-        </tr>
       </tbody>
     </table>
   </div>
 
-  <p><b>Miscellaneous Functions</b></p>
+  <p align="center"><b>Miscellaneous Functions</b></p>
 
   <div style="margin-left: 5%; margin-right: 5%;">
     <table style="border-style: solid; border-collapse: collapse;"
@@ -252,7 +399,7 @@
     </table>
   </div>
 
-  <p><b>Debugging Functions</b></p>
+  <p align="center"><b>Debugging Functions</b></p>
 
   <p>Debugging functions can be inserted into queries as extra
   <code>FILTER</code> clauses.&nbsp; They don't affect query
@@ -308,6 +455,9 @@
   <h2><a name="fprops" id="fprops">Function Property
   Library</a></h2>
 
+  <p>The library built-in to the ARQ distribution is loaded from
+  <code>&lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;</code>. Note the final dot in the prefix. 
+  In the table below, the prefix <code>apf:</code> is used for this.</p>
   <p>The prefix <code>list:</code> is <code>http://www.jena.hpl.hp.com/ARQ/list#</code>.</p>
 
   <div style="margin-left: 5%; margin-right: 5%;">
@@ -334,44 +484,24 @@
           <td style="text-align: left;">
           <code>rdfs:member</code></td>
 
-          <td style="text-align: left;">Membershp of an RDF
-          Container (rdf:Bag, rdf:Seq, rdf:Alt)<br /></td>
+          <td style="text-align: left;">Membership of an RDF
+          Container (rdf:Bag, rdf:Seq, rdf:Alt). Pre-registered URI.<br />Implemented by <code>apf:conatiner</code>, <code>apf:seq</code> and
+          <code>apf:alt</code> as below.</td>
         </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h2><a name="extensions" id="extensions">Extension
-  Library</a></h2>
-
-  <p>The prefix <code>jext</code> is
-  <code>&lt;java:com.hp.hpl.jena.query.extension.library.&gt;</code>.</p>
-
-  <p>Extensions are not part of SPARQL; the application will need
-  to use the ARQ query language (a superset of SPARQL). Unlike a
-  value function, an extension can set variables and generate
-  multiple solutions. Extensions are written:</p>
-  <pre class="box">
-EXT q:name(?a, ?b, ?c)
-</pre>
-
-  <p>Note the final dot in the prefix.</p>
-
-  <div style="margin-left: 5%; margin-right: 5%;">
-    <table style="border-style: solid; border-collapse: collapse;"
-    id="table3" border="1" cellpadding="0" cellspacing="1" width=
-    "90%">
-      <tbody>
-        <tr>
-          <th style="text-align: left;" bgcolor="#C0C0C0" width=
-          "40%">Extension name</th>
-
-          <th bgcolor="#C0C0C0" width="60%">Description</th>
-        </tr>
-
+  
         <tr>
           <td style="text-align: left;">
-          <code>jext:list(<i>list</i>, <i>member</i>)</code></td>
+          <i>iri</i> apf:splitIRI (<i>namespace</i> <i>&nbsp;localname</i>)</td>
+
+          <td style="text-align: left;">Split the IRI or URI into namespace (an 
+          IRI) and local name (a string). Compare if given values or bound 
+          variables, otherwise set the variable.<br>
+          <code>splitURI</code> is an synonym.</td>
+        </tr>
+  
+        <tr>
+          <td style="text-align: left;">
+          <code><i>list </i>apf:list <i>member</i></code></td>
 
           <td style="text-align: left;">The argument <i>list</i>
           must be bound by this point in the query or a constant
@@ -383,8 +513,7 @@ EXT q:name(?a, ?b, ?c)
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jext:bag(<i>bag</i>,
-          <i>member</i>)</code></td>
+          <td style="text-align: left;"><code><i>bag </i>apf:bag <i>member</i></code></td>
 
           <td style="text-align: left;">The argument <i>bag</i>
           must be bound by this point in the query or a constant
@@ -396,8 +525,7 @@ EXT q:name(?a, ?b, ?c)
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jext:seq(<i>seq</i>,
-          <i>member</i>)</code></td>
+          <td style="text-align: left;"><code><i>seq</i> apf:seq <i>member</i></code></td>
 
           <td style="text-align: left;">The argument <i>seq</i>
           must be bound by this point in the query or a constant
@@ -409,8 +537,7 @@ EXT q:name(?a, ?b, ?c)
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jext:alt(<i>alt</i>,
-          <i>member</i>)</code></td>
+          <td style="text-align: left;"><code><i>seq</i> apf:alt <i>member</i></code></td>
 
           <td style="text-align: left;">The argument <i>alt</i>
           must be bound by this point in the query or a constant

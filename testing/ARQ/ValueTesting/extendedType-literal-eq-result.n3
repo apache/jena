@@ -1,5 +1,5 @@
 # Test FILTER match on extended type.
-# $Id: extendedType-literal-eq-result.n3,v 1.2 2006-08-18 11:53:26 andy_seaborne Exp $
+# $Id: extendedType-literal-eq-result.n3,v 1.3 2006-08-23 15:41:13 andy_seaborne Exp $
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .

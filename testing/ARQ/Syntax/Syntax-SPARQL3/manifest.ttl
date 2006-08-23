@@ -112,6 +112,18 @@
          rdf:type   mfx:TestBadSyntax ;
          mf:action  <syn-bad-18.rq> ; 
       ]
+      [  mf:name    "syn-bad-19.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-19.rq> ; 
+      ]
+      [  mf:name    "syn-bad-20.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-20.rq> ; 
+      ]
+      [  mf:name    "syn-bad-21.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-21.rq> ; 
+      ]
       [  mf:name    "bnode-dot.rq" ;
          rdf:type   mfx:TestBadSyntax ;
          mf:action  <bnode-dot.rq> ; 

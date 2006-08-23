@@ -1,2 +1,5 @@
-PREFIX : <http://example.org/ns#>
-SELECT * WHERE { [ ?x ?y ] :p [ ?pa ?b ] }
+PREFIX : <http://example.org/ns#> 
+SELECT *
+WHERE { _:a :p1 :q1 .
+        _:a :p2 :q2 .
+      }

@@ -1,0 +1,11 @@
+@prefix     : <http://example/> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+:dt1 :r "2006-08-23T09:00:00+01:00"^^xsd:dateTime .
+
+:d1 :r "2006-08-23"^^xsd:date .
+:d2 :r "2006-08-23Z"^^xsd:date .
+:d3 :r "2006-08-23+00:00"^^xsd:date .
+
+:d4 :r "2001-01-01"^^xsd:date .
+:d5 :r "2001-01-01Z"^^xsd:date .

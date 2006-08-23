@@ -56,6 +56,18 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-general-12.rq> ; 
       ]
+      [  mf:name    "syntax-general-13.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-13.rq> ; 
+      ]
+      [  mf:name    "syntax-general-14.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-14.rq> ; 
+      ]
+      [  mf:name    "syntax-general-15.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-general-15.rq> ; 
+      ]
       [  mf:name    "syntax-keywords-01.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-keywords-01.rq> ; 

@@ -16,13 +16,5 @@
         <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">true</literal>
       </binding>
     </result>
-    <result>
-      <binding name="p">
-        <uri>http://example.org/q</uri>
-      </binding>
-      <binding name="v">
-        <literal datatype="http://example.org/type">unknown</literal>
-      </binding>
-    </result>
   </results>
 </sparql>

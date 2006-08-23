@@ -216,26 +216,17 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-bnodes-02.rq> ; 
       ]
-    ## BNodes in prediate position
-##       [  mf:name    "syntax-bnodes-03.rq" ;
-##          rdf:type   mfx:TestSyntax ;
-##          mf:action  <syntax-bnodes-03.rq> ; 
-##       ]
-##       [  mf:name    "syntax-bnodes-04.rq" ;
-##          rdf:type   mfx:TestSyntax ;
-##          mf:action  <syntax-bnodes-04.rq> ; 
-##       ]
+      [  mf:name    "syntax-bnodes-03.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-bnodes-03.rq> ; 
+      ]
+      [  mf:name    "syntax-bnodes-04.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-bnodes-04.rq> ; 
+      ]
       [  mf:name    "syntax-bnodes-05.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-bnodes-05.rq> ; 
-      ]
-      [  mf:name    "syntax-bnodes-06.rq" ;
-         rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-bnodes-06.rq> ; 
-      ]
-      [  mf:name    "syntax-bnodes-07.rq" ;
-         rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-bnodes-07.rq> ; 
       ]
       [  mf:name    "syntax-forms-01.rq" ;
          rdf:type   mfx:TestSyntax ;

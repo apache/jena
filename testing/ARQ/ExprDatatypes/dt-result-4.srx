@@ -10,26 +10,10 @@
   <results ordered="false" distinct="false">
     <result>
       <binding name="p">
-        <uri>http://example.org/p2</uri>
+        <uri>http://example.org/p6</uri>
       </binding>
       <binding name="v">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">false</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="p">
-        <uri>http://example.org/p3</uri>
-      </binding>
-      <binding name="v">
-        <literal>Other</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="p">
-        <uri>http://example.org/p4</uri>
-      </binding>
-      <binding name="v">
-        <literal></literal>
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal>
       </binding>
     </result>
     <result>
@@ -42,18 +26,26 @@
     </result>
     <result>
       <binding name="p">
-        <uri>http://example.org/p6</uri>
+        <uri>http://example.org/p4</uri>
       </binding>
       <binding name="v">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">0</literal>
+        <literal></literal>
       </binding>
     </result>
     <result>
       <binding name="p">
-        <uri>http://example.org/q</uri>
+        <uri>http://example.org/p3</uri>
       </binding>
       <binding name="v">
-        <literal datatype="http://example.org/type">unknown</literal>
+        <literal>Other</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="p">
+        <uri>http://example.org/p2</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#boolean">false</literal>
       </binding>
     </result>
   </results>

@@ -10,38 +10,89 @@
     ( 
        [ mf:name    "OpenWorld 1 - graph match - no lexical form in data" ;
          mf:action
-            [ qt:query  <open-1.rq> ;
-              qt:data   <data.ttl> ] ;
-        mf:result  <open-1-result.ttl>
+            [ qt:query  <open-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <open-01-result.ttl>
       ]
       [ mf:name    "OpenWorld 2 - graph match - unknown type" ;
         mf:action
-           [ qt:query  <open-2.rq> ;
-             qt:data   <data.ttl> ] ;
-        mf:result  <open-2-result.ttl>
+           [ qt:query  <open-02.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-02-result.ttl>
       ]
       [ mf:name    "OpenWorld 3 - Filter(?v=1)" ;
         mf:action
-           [ qt:query  <open-3.rq> ;
-             qt:data   <data.ttl> ] ;
-        mf:result  <open-3-result.ttl>
+           [ qt:query  <open-03.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-03-result.ttl>
       ]
       [ mf:name    "OpenWorld 4 - Filter(?v!=1)" ;
         mf:action
-           [ qt:query  <open-4.rq> ;
-             qt:data   <data.ttl> ] ;
-        mf:result  <open-4-result.ttl>
+           [ qt:query  <open-04.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-04-result.ttl>
       ]
       [ mf:name    "OpenWorld 5 - FILTER(?v = unknown type)" ;
         mf:action
-           [ qt:query  <open-5.rq> ;
-             qt:data   <data.ttl> ] ;
-        mf:result  <open-5-result.ttl>
+           [ qt:query  <open-05.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-05-result.ttl>
       ]
       [ mf:name    "OpenWorld 6 - FILTER(?v != unknown type)" ;
         mf:action
-           [ qt:query  <open-6.rq> ;
-             qt:data   <data.ttl> ] ;
-        mf:result  <open-6-result.ttl>
+           [ qt:query  <open-06.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-06-result.ttl>
       ]
+
+      [ mf:name    "OpenWorld 7 - Test of '=' " ;
+        mf:action
+           [ qt:query  <open-07.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-07-result.srx>
+      ]
+      [ mf:name    "OpenWorld 8 - Test of '!='" ;
+        mf:action
+           [ qt:query  <open-08.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-08-result.srx>
+      ]
+      [ mf:name    "OpenWorld 9 - Test of '='" ;
+        mf:action
+           [ qt:query  <open-09.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-09-result.srx>
+      ]
+      [ mf:name    "OpenWorld 10 - Test of '!='" ;
+        mf:action
+           [ qt:query  <open-10.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-10-result.srx>
+      ]
+      [ mf:name    "OpenWorld 11 - test of '=' || '!='" ;
+        mf:action
+           [ qt:query  <open-11.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-11-result.srx>
+      ]
+      [ mf:name    "OpenWorld 12 - find pairs that don't value-compare" ;
+        mf:action
+           [ qt:query  <open-12.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-12-result.srx>
+      ]
+    # xsd:date
+         [ mf:name    "Added type : xsd:date '='" ;
+           mf:action
+              [ qt:query  <date-1.rq> ;
+                qt:data   <data-3.ttl> ] ;
+        mf:result  <date-1-result.ttl>
+      ]
+         [ mf:name    "Added type : xsd:date '!='" ;
+           mf:action
+              [ qt:query  <date-2.rq> ;
+                qt:data   <data-3.ttl> ] ;
+        mf:result  <date-2-result.ttl>
+      ]
+
     ).

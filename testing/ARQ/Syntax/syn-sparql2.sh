@@ -67,6 +67,26 @@ N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
 SELECT * WHERE { <a><b>-1.0e-1 }
 EOF
 
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+# Legal, if unusual, IRIs
+SELECT * WHERE { <a> <b> <?z> }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+# Legal, if unusual, IRIs
+BASE </http://example/page.html>
+SELECT * WHERE { <a> <b> <#x> }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
+# Legal, if unusual, IRIs
+BASE </http://example/page.html?query>
+SELECT * WHERE { <a> <b> <&param=value> }
+EOF
+
+
+
+
 # Keywords and qnames.
 N=0
 N=$((N+1)) ; testGood $(fname "syntax-keywords-" $N) <<EOF

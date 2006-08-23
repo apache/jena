@@ -1,5 +1,5 @@
 # Lexical form of EBV
-# $Id: boolean-EBV-canonical.rq,v 1.2 2006-08-18 11:53:26 andy_seaborne Exp $
+# $Id: boolean-EBV-canonical.rq,v 1.3 2006-08-23 15:41:13 andy_seaborne Exp $
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
