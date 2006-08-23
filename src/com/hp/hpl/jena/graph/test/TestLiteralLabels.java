@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestLiteralLabels.java,v 1.4 2006-03-22 13:52:22 andy_seaborne Exp $
+ 	$Id: TestLiteralLabels.java,v 1.5 2006-08-23 13:19:07 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -49,7 +49,42 @@ public class TestLiteralLabels extends GraphTestBase
         LiteralLabel B = node( "'0123'http://www.w3.org/2001/XMLSchema#hexBinary" ).getLiteral();
         assertEquals( A.hashCode(), B.hashCode() );
         }
+
+    // AFS
+    public void testEquality1()
+    {
+        LiteralLabel A = new LiteralLabel("xyz") ;
+        LiteralLabel B = new LiteralLabel("xyz") ;
+        assertTrue(A.equals(B)) ;
+        assertTrue(A.sameValueAs(B)) ;
+        assertEquals(A.hashCode(), B.hashCode()) ;
     }
+    
+    public void testEquality2()
+    {
+        LiteralLabel A = new LiteralLabel("xyz") ;
+        LiteralLabel B = new LiteralLabel("XYZ") ;
+        assertFalse(A.equals(B)) ;
+        assertFalse(A.sameValueAs(B)) ;
+    }
+
+    public void testEquality3()
+    {
+        LiteralLabel A = new LiteralLabel("xyz", "en-us") ;
+        LiteralLabel B = new LiteralLabel("xyz", "en-uk") ;
+        assertFalse(A.equals(B)) ;
+        assertFalse(A.sameValueAs(B)) ;
+    }
+
+    public void testEquality4()
+    {
+        LiteralLabel A = new LiteralLabel("xyz", "en-UK") ;
+        LiteralLabel B = new LiteralLabel("xyz", "en-uk") ;
+        assertFalse(A.equals(B)) ;
+        assertTrue(A.sameValueAs(B)) ;
+    }
+    
+}
 
 
 /*

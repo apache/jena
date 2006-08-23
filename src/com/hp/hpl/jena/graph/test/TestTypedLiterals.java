@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.55 2006-07-04 17:24:35 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.56 2006-08-23 13:19:06 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -16,7 +16,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.vocabulary.XSD;
 import com.hp.hpl.jena.enhanced.EnhNode;
@@ -35,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.55 $ on $Date: 2006-07-04 17:24:35 $
+ * @version $Revision: 1.56 $ on $Date: 2006-08-23 13:19:06 $
  */
 public class TestTypedLiterals extends TestCase {
               

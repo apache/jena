@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.42 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: TestNode.java,v 1.43 2006-08-23 13:19:07 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -97,6 +97,10 @@ public class TestNode extends GraphTestBase
             Node.cache( false );           
             AnonId id = AnonId.create();
             LiteralLabel L2 = new LiteralLabel( id.toString(), "", false );
+            
+            LiteralLabel LLang1 = new LiteralLabel( "xyz", "en", null) ;
+            LiteralLabel LLang2 = new LiteralLabel( "xyz", "EN", null) ;
+            
             String U2 = id.toString();
             String N2 = id.toString();
             return new Object [][]
@@ -106,6 +110,7 @@ public class TestNode extends GraphTestBase
                     { Node.createAnon(), "2" },
                     { Node.createAnon( id ), "1" },
                     { Node.createLiteral( L ), "3" },
+                    
                     { Node.createLiteral( L2 ), "4" },
                     { Node.createLiteral( L ), "3" },
                     { Node.createURI( U ), "5" },
@@ -113,7 +118,10 @@ public class TestNode extends GraphTestBase
                     { Node.createURI( U ), "5" },
                     { Node.createVariable( N ), "7" },
                     { Node.createVariable( N2 ), "8" },
-                    { Node.createVariable( N ), "7" }
+                    { Node.createVariable( N ), "7" } ,
+
+                    { Node.createLiteral( LLang1 ), "9" },
+                    { Node.createLiteral( LLang2 ), "10" },
                 };
             }
         finally
@@ -288,7 +296,7 @@ public class TestNode extends GraphTestBase
         assertEquals( "?? must denote ANY", Node.ANY, Node.create( "??" ) );
         }
     
-    public void testCreatePlainLiteralSIngleQuotes()
+    public void testCreatePlainLiteralSingleQuotes()
         {
         Node n = Node.create( "'xxx'" );
         assertEquals( "xxx", n.getLiteralLexicalForm() );
@@ -333,13 +341,23 @@ public class TestNode extends GraphTestBase
         assertEquals( null, n.getLiteralDatatypeURI() );
         }
 
-    public void testCreateLanguagedLiteralEN()
+    public void testCreateLanguagedLiteralEN1()
         {
         Node n = Node.create( "'chat'en-UK" );
         assertEquals( "chat", n.getLiteralLexicalForm() );
         assertEquals( "en-UK", n.getLiteralLanguage() );
         assertEquals( null, n.getLiteralDatatypeURI() );
         }    
+
+    public void testCreateLanguagedLiteralEN2()
+            {
+            Node n1 = Node.create( "'chat'en-UK" );
+            Node n2 = Node.create( "'chat'EN-UK" );
+            assertTrue(n1.sameValueAs(n2)) ;
+            assertFalse(n1.equals(n2)) ;
+            }    
+
+
     
     public void testCreateLanguagedLiteralXY()
         {
