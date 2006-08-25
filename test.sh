@@ -20,7 +20,7 @@ log4j-1.2.12.jar
 xercesImpl.jar
 xml-apis.jar
 stax-api-1.0.jar
-wstx-asl-2.8.jar
+wstx-asl-3.0.0.jar
 EOF
 )"
 
