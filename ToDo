@@ -46,8 +46,11 @@ OR canonical tree SPJ
 HSQL/MySQL joint testing
 
 == Next
-  4/ ==> Performance testing
+  ==> Performance testing framework
 
+Detachable connections
+
+Slony-I replication support (unique keys)
 
 c.f. SQLCache and returning prepared statements
   Named parameters in INSERT for robustness.
