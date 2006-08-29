@@ -29,6 +29,14 @@ OntResourceImpl
           threw an exception) replaced by uses of getProperty and
           tests for null
 
+ResourceImpl
+    o implementation of removeAll simplified in two ways: uses the
+      Model removeAll method, and no longer tests for an InfModel,
+      since the InfGraph implementation of removeAll works on the
+      base model anyway so no special-case code required. Also
+      avoids iffy (but currently safe) use of remove(StmtIterator)
+      where the StmtIterator is active over the same Model.
+
 Statement
     o the method getWellFormed has been deprecated in favour of a new
       method hasWellFormedXML(), paralleling Literal's newish 

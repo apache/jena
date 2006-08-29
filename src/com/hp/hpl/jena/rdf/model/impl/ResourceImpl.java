@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.36 2006-03-22 13:52:30 andy_seaborne Exp $
+  $Id: ResourceImpl.java,v 1.37 2006-08-29 14:40:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2006-03-22 13:52:30 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date: 2006-08-29 14:40:37 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -243,16 +243,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
     
     public Resource removeAll( Property p ) {
-        Model m = mustHaveModel();
-        // In the case of an inference model we only need to consult the
-        // base model and doing avoid avois unnecessary rebinds. This code
-        // could be refactored out of here by adding a getBaseModel to ModelCom
-        if (m instanceof InfModel) {
-            Model base = ((InfModel)m).getRawModel();
-            m.remove( base.listStatements(this, p, (RDFNode)null) );
-        } else {
-            m.remove( listProperties( p ) );
-        }
+        mustHaveModel().removeAll( this, p, (RDFNode) null );
         return this;
     }
     

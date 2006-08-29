@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFListImpl.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:29 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-08-29 14:40:37 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.14 2006-03-22 13:52:29 andy_seaborne Exp $
+ * @version CVS $Id: RDFListImpl.java,v 1.15 2006-08-29 14:40:37 chris-dollin Exp $
  */
 public class RDFListImpl
     extends ResourceImpl
@@ -98,10 +98,11 @@ public class RDFListImpl
             }
             
             // node will support being an RDFList facet if it has rdf:type rdf:List, is nil, or is in the domain of a list property
-            return  node.equals( nil.asNode() ) || 
-                    g.find( node, first.asNode(), Node.ANY ).hasNext() ||
-                    g.find( node, rest.asNode(), Node.ANY ).hasNext() ||
-                    g.find( node, RDF.type.asNode(), RDF.List.asNode() ).hasNext();
+            return  
+                node.equals( nil.asNode() ) || 
+                g.contains( node, first.asNode(), Node.ANY ) ||
+                g.contains( node, rest.asNode(), Node.ANY ) ||
+                g.contains( node, RDF.type.asNode(), RDF.List.asNode() );
         }
     };
 
