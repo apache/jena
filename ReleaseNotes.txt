@@ -50,6 +50,9 @@ Model
     
     o The built-in Graph and Model implementations have been modified to 
       implement this method.
+
+Typed literals      
+    o Fixed bug in serialization of xsd:duration types.
       
 OntModel
     o the prefix mapping of an OntModel will not offer as a default URI

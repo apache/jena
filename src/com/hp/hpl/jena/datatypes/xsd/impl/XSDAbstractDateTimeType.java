@@ -6,7 +6,7 @@
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: XSDAbstractDateTimeType.java,v 1.6 2006-03-22 13:53:23 andy_seaborne Exp $
+ * $Id: XSDAbstractDateTimeType.java,v 1.7 2006-08-31 09:55:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * Includes support functions for parsing and comparing dates.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2006-03-22 13:53:23 $
+ * @version $Revision: 1.7 $ on $Date: 2006-08-31 09:55:36 $
  */
 public class XSDAbstractDateTimeType extends XSDDatatype {
 
@@ -403,7 +403,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
              pad--;
          }
          int trunc = msString.length();
-         while (msString.charAt(trunc-1) == '0') trunc --;
+         while (trunc > 0 && msString.charAt(trunc-1) == '0') trunc --;
          buff.append(msString.substring(0, trunc));
      }
      

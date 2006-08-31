@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDuration.java,v 1.9 2006-03-22 13:53:39 andy_seaborne Exp $
+ * $Id: XSDDuration.java,v 1.10 2006-08-31 09:55:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * decimals for seconds.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2006-03-22 13:53:39 $
+ * @version $Revision: 1.10 $ on $Date: 2006-08-31 09:55:32 $
  */
 public class XSDDuration extends AbstractDateTime {
 
@@ -100,21 +100,35 @@ public class XSDDuration extends AbstractDateTime {
              negate=-1;
          }
          message.append('P');
-         message.append(negate * data[CY]);
-         message.append('Y');
-         message.append(negate * data[M]);
-         message.append('M');
-         message.append(negate * data[D]);
-         message.append('D');
-         message.append('T');
-         message.append(negate * data[h]);
-         message.append('H');
-         message.append(negate * data[m]);
-         message.append('M');
-         message.append(negate * data[s]);
-         message.append('.');
-         XSDAbstractDateTimeType.appendFractionalTime(message, negate * data[ms], data[msscale]);
-         message.append('S');
+         if (data[CY] != 0) {
+             message.append(negate * data[CY]);
+             message.append('Y');
+         }
+         if (data[M] != 0) {
+             message.append(negate * data[M]);
+             message.append('M');
+         }
+         if (data[D] != 0) {
+             message.append(negate * data[D]);
+             message.append('D');
+         }
+         if (data[h] != 0 && data[m] != 0 && data[s] != 0 && data[ms] != 0) {
+             message.append('T');
+             if (data[h] != 0) {
+                 message.append(negate * data[h]);
+                 message.append('H');
+             }
+             if (data[m] != 0) {
+                 message.append(negate * data[m]);
+                 message.append('M');
+             }
+             if (data[s] != 0 && data[ms] != 0) {
+                 message.append(negate * data[s]);
+                 message.append('.');
+                 XSDAbstractDateTimeType.appendFractionalTime(message, negate * data[ms], data[msscale]);
+                 message.append('S');
+             }
+         }
 
          return message.toString();
      }
