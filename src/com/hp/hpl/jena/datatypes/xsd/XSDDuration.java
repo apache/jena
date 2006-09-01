@@ -5,9 +5,11 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDuration.java,v 1.10 2006-08-31 09:55:32 der Exp $
+ * $Id: XSDDuration.java,v 1.11 2006-09-01 08:31:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
+
+import java.math.BigDecimal;
 
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
 
@@ -18,7 +20,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * decimals for seconds.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2006-08-31 09:55:32 $
+ * @version $Revision: 1.11 $ on $Date: 2006-09-01 08:31:48 $
  */
 public class XSDDuration extends AbstractDateTime {
 
@@ -79,6 +81,15 @@ public class XSDDuration extends AbstractDateTime {
      */
     public double getSeconds() {
         return data[s] + fractionalSeconds;
+    }
+    
+    /**
+     * Return the number of seconds in the duration, including the fractional part,
+     * in a lossless but expensive notation - i.e. a BigDecimal.
+     */
+    public BigDecimal getBigSeconds() {
+        return BigDecimal.valueOf( data[ms], data[msscale])
+                     .add( new BigDecimal(data[s]));
     }
     
     /**

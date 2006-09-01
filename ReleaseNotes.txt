@@ -53,6 +53,8 @@ Model
 
 Typed literals      
     o Fixed bug in serialization of xsd:duration types.
+    o Added getBigSeconds to XSDDuration to avoid rounding errors in 
+      use of getSeconds.
       
 OntModel
     o the prefix mapping of an OntModel will not offer as a default URI
