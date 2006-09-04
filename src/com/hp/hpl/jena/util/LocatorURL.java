@@ -16,22 +16,22 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.8 2006-03-22 13:52:49 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.9 2006-09-04 14:33:42 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
 {
     static Log log = LogFactory.getLog(LocatorURL.class) ;
     static final String acceptHeader = "application/rdf+xml,application/xml;q=0.9,*/*;q=0.5" ;
+    
+    static final String[] schemeNames = { "http:" , "https:" } ;    // Must be lower case and include the ":"
 
     public InputStream open(String filenameOrURI)
     {
-        if ( ! hasScheme(filenameOrURI, "http:") 
-            // && ! hasScheme(filenameOrURI, "file:") // Leave a filelocator to handle this. 
-            ) 
+        if ( ! acceptByScheme(filenameOrURI) )
         {
             if ( FileManager.logAllLookups && log.isTraceEnabled() )
-                log.trace("Not found: "+filenameOrURI) ; 
+                log.trace("Not found : "+filenameOrURI) ; 
             return null;
         }
         
@@ -81,8 +81,23 @@ public class LocatorURL implements Locator
             return null;
         }
     }
+
     public String getName() { return "LocatorURL" ; } 
     
+    private boolean acceptByScheme(String filenameOrURI)
+    {
+        String uriSchemeName = getScheme(filenameOrURI) ;
+        if ( uriSchemeName == null )
+            return false ;
+        uriSchemeName = uriSchemeName.toLowerCase() ; 
+        for ( int i = 0 ; i < schemeNames.length ; i++ )
+        {
+            if ( uriSchemeName.equals(schemeNames[i]) )
+                return true ;
+        }
+        return false ;
+    }
+
     private boolean hasScheme(String uri, String scheme)
     {
         String actualScheme = getScheme(uri) ;

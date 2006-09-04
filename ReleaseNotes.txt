@@ -2,6 +2,10 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+JAR file changes:
+    Added:    arq-extra.jar
+    Changed:  wstx-asl-2.8.jar ==> wstx-asl-3.0.0.jar
+
 EnhNodes/UnsupportedPolymorhismException/QualifiedRestriction
     o Any EnhNode now automatically canAs any type already on its
       view ring if that view is still isValid. Previously it
