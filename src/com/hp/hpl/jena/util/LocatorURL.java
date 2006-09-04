@@ -16,7 +16,7 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.9 2006-09-04 14:33:42 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.10 2006-09-04 14:55:07 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
@@ -71,13 +71,13 @@ public class LocatorURL implements Locator
         }
         catch (IOException ex)
         {
-            if ( ex instanceof ConnectException )
+            if ( ex instanceof ConnectException || ex instanceof java.net.SocketException )
             {
                 if ( FileManager.logAllLookups && log.isTraceEnabled() )
                     log.trace("LocatorURL: not found: "+filenameOrURI) ;
             }
             else
-                log.warn("IO Exception opening URL: " + filenameOrURI+"  "+ex.getMessage());
+                log.warn("I/O Exception opening URL: " + filenameOrURI+"  "+ex.getMessage());
             return null;
         }
     }
