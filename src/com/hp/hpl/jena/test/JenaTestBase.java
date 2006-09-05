@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.23 2006-03-22 13:53:40 andy_seaborne Exp $
+  $Id: JenaTestBase.java,v 1.24 2006-09-05 13:09:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -25,6 +25,12 @@ public class JenaTestBase extends TestCase
     public JenaTestBase( String name )
         { super( name ); }
         
+    /**
+        Does what it says on the can.
+    */
+    public void testToSilenceJunitComplaintsAboutNoTestMethods()
+        {}
+    
     /**
         assert that the two objects must be unequal according to .equals().
         @param title a labelling string for the assertion failure text
