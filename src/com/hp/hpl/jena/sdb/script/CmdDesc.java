@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package sdb.cmd;
+package com.hp.hpl.jena.sdb.script;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class CmdDesc
     
     private static CmdDesc worker(Model m)
     {
-        Resource r = AssemblerUtils.getResourceByType(m, AssemblerVocab.CommandLineType) ;
+        Resource r = AssemblerUtils.getResourceByType(m, ScriptVocab.CommandLineType) ;
         if ( r == null )
             throw new SDBException("Can't find command line description") ;
         return (CmdDesc)AssemblerBase.general.open(r) ;

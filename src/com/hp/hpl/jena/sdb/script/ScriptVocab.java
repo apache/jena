@@ -4,50 +4,51 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.assembler;
-
-import sdb.cmd.CmdDesc;
-import sdb.cmd.ScriptDesc;
+package com.hp.hpl.jena.sdb.script;
 
 import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.sdb.assembler.CmdDescAssembler;
 
-public class ScriptAssembler extends AssemblerBase implements Assembler
+public class ScriptVocab
 {
-    // A script is a number of commands 
-    
+    // A command is ...
+    // a dataset + a query + an output format
+    static final String NS = AssemblerVocab.getURI() ;
+    // Types 
+    public static final Resource CommandLineType                = type(NS, "Cmd") ;
+    public static final Resource ScriptType                     = type(NS, "Script") ;
+    public static final Resource DatasetAssemblerType           = type(NS, "Dataset") ;
 
+    //public static final Resource CommandAssemblerType           = type(NS, "Command") ;
+
+    private static boolean initialized = false ; 
+    static { init() ; }
     
-    
-    @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    public static void init()
     {
-        ScriptDesc sd = new ScriptDesc() ;
-        Resource x = AssemblerUtils.getResourceValue(root, AssemblerVocab.pSteps) ;
-        if ( x != null )
-        {
-            for (; !x.equals(RDF.nil); )
-            {
-                Resource e = x.getRequiredProperty(RDF.first).getResource();
-                // Move to next list item
-                x = x.getRequiredProperty(RDF.rest).getResource();
-                // Process this item.
-                try {
-                    CmdDesc cd = (CmdDesc)a.open(e) ;
-                    sd.add(cd) ;
-                } catch (ClassCastException ex)
-                {
-                    System.err.println("Not a command description : "+ex.getMessage()) ;
-                }
-            }
-        }
-        return sd ;
+        if ( initialized )
+            return ;
+        assemblerClass(CommandLineType,               new CmdDescAssembler()) ;
+        assemblerClass(ScriptType,                    new ScriptAssembler()) ;
+        assemblerClass(DatasetAssemblerType,          new DatasetAssembler()) ;
+        initialized = true ;
     }
+    
+    private static void assemblerClass(Resource r, Assembler a)
+    {
+        Assembler.general.implementWith(r, a) ;
+        //**assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
+    }
+    
+    private static Resource type(String namespace, String localName)
+    { return ResourceFactory.createResource(namespace+localName) ; }
 
+    private static Property property(String namespace, String localName)
+    { return ResourceFactory.createProperty(namespace+localName) ; }
 }
 
 /*

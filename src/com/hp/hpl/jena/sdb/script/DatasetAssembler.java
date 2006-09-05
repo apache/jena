@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.assembler;
+package com.hp.hpl.jena.sdb.script;
 
 import java.util.List;
 
@@ -15,8 +15,10 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 
+//EXPERIMENTAL - Move to ARQ?
 
 public class DatasetAssembler extends AssemblerBase implements Assembler
 {

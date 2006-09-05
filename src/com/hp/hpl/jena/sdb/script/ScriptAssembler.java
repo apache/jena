@@ -4,54 +4,51 @@
  * [See end of file]
  */
 
-package sdb.cmd;
+package com.hp.hpl.jena.sdb.script;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.util.AssemblerUtils;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.vocabulary.RDF;
 
-public class ScriptDesc
+//EXPERIMENTAL - Move to ARQ?
+
+public class ScriptAssembler extends AssemblerBase implements Assembler
 {
-    List<CmdDesc> steps = new ArrayList<CmdDesc>() ;
+    // A script is a number of commands 
     
-    public static ScriptDesc read(String filename)
+
+    
+    
+    @Override
+    public Object open(Assembler a, Resource root, Mode mode)
     {
-        AssemblerVocab.init() ;
-        Model m = FileManager.get().loadModel(filename) ;
-        
-        return worker(m) ;
+        ScriptDesc sd = new ScriptDesc() ;
+        Resource x = AssemblerUtils.getResourceValue(root, AssemblerVocab.pSteps) ;
+        if ( x != null )
+        {
+            for (; !x.equals(RDF.nil); )
+            {
+                Resource e = x.getRequiredProperty(RDF.first).getResource();
+                // Move to next list item
+                x = x.getRequiredProperty(RDF.rest).getResource();
+                // Process this item.
+                try {
+                    CmdDesc cd = (CmdDesc)a.open(e) ;
+                    sd.add(cd) ;
+                } catch (ClassCastException ex)
+                {
+                    System.err.println("Not a command description : "+ex.getMessage()) ;
+                }
+            }
+        }
+        return sd ;
     }
-    
-    public static void run(String filename)
-    {
-        ScriptDesc desc = ScriptDesc.read(filename) ;
-//        System.out.println(desc) ;
-//        try {
-//            String cmd = desc.getCmd() ;
-//            Class c = Class.forName(cmd) ;
-//            Method m = c.getMethod("main", new Class[]{String[].class}) ;
-//            m.invoke(null, new Object[]{desc.asStringArray()}) ;
-//        } catch (Exception ex) { ex.printStackTrace(System.err) ; }
-    }
-    
-    public void add(CmdDesc step) { steps.add(step) ; }
-    public List<CmdDesc> getSteps() { return steps ; } // Temp
-    
-    private static ScriptDesc worker(Model m)
-    {
-        Resource r = AssemblerUtils.getResourceByType(m, AssemblerVocab.ScriptType) ;
-        if ( r == null )
-            throw new SDBException("Can't find command line description") ;
-        return (ScriptDesc)AssemblerBase.general.open(r) ;
-    }
-    
+
 }
 
 /*

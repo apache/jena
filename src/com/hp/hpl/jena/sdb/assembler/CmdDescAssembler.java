@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sdb.assembler;
 
-import sdb.cmd.CmdDesc;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.sdb.script.CmdDesc;
 import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 import com.hp.hpl.jena.vocabulary.RDF;
 

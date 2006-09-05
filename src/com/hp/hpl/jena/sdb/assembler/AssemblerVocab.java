@@ -14,14 +14,10 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 public class AssemblerVocab
 {
     // Vocabulary later
-    static final String NS = "http://jena.hpl.hp.com/2006/01/acmd#" ;
-    // Types 
-    public static final Resource CommandLineType                = type(NS, "Cmd") ;
-    public static final Resource ScriptType                     = type(NS, "Script") ;
+    private static final String NS = "http://jena.hpl.hp.com/2006/01/acmd#" ;
+    public static String getURI() { return NS ; } 
     
-    //public static final Resource CommandAssemblerType           = type(NS, "Command") ;
     public static final Resource QueryAssemblerType             = type(NS, "Query") ;
-    public static final Resource DatasetAssemblerType           = type(NS, "Dataset") ;
     public static final Resource SDBConnectionAssemblerType     = type(NS, "SDBConnection") ;
     public static final Resource StoreAssemblerType             = type(NS, "Store") ;
     
@@ -82,11 +78,8 @@ public class AssemblerVocab
         if ( initialized )
             return ;
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        assemblerClass(CommandLineType,               new CmdDescAssembler()) ;
-        assemblerClass(ScriptType,                    new ScriptAssembler()) ;
         //assemblerClass(CommandAssemblerType,          new CommandAssembler()) ;
         assemblerClass(QueryAssemblerType,            new QueryAssembler()) ;
-        assemblerClass(DatasetAssemblerType,          new DatasetAssembler()) ;
         assemblerClass(SDBConnectionAssemblerType,    new SDBConnectionDescAssembler()) ;
         assemblerClass(StoreAssemblerType,            new StoreDescAssembler()) ;
         initialized = true ;

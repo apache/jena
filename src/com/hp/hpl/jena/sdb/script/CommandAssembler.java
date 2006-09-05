@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.assembler;
+package com.hp.hpl.jena.sdb.script;
 
 import arq.cmd.QExec;
 import arq.cmd.ResultsFormat;
@@ -17,27 +17,17 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.util.AssemblerUtils;
+
+// EXPERIMENTAL - Move to ARQ?
 
 public class CommandAssembler extends AssemblerBase implements Assembler
 {
-    // A command is ...
-    // a dataset + a query + an output format
-    
-    private Assembler queryAssembler = new QueryAssembler() ;
-    private Assembler datasetAssembler = new DatasetAssembler() ;
-    
+
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-//        // Command
-//        String cmdClass = ACmdUtils.super.getStringValue(root, ACmd.pMain) ;
-//        QExec e = null ;
-//        if ( cmdClass != null )
-//            e = (QExec)Loader.loadAndInstantiate("java:"+cmdClass, QExec.class) ;
-//        else
-//            e = new QExec() ;
-        
         // Query
         Resource queryDesc = getUniqueResource(root, AssemblerVocab.pQuery) ;
         Query query = (Query)a.open(a, queryDesc, mode) ;

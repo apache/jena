@@ -9,14 +9,14 @@ package dev;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
-import sdb.cmd.CmdDesc;
-import sdb.cmd.ScriptDesc;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
+import com.hp.hpl.jena.sdb.script.CmdDesc;
+import com.hp.hpl.jena.sdb.script.ScriptDesc;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
