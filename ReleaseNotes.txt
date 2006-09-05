@@ -2,6 +2,17 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+Untyped literal operations deprecated (char, boolean, long, float, double, Object)
+     These operations do not work on typed literals.  They converted their arguments
+     to plain strings and parsed strings to retrive values.  
+     They are a ghost from pre-datatyping RDF.
+     ** The forms on RDFNode, String, String+lang, and XML literals remain.
+     ** Forms taking a typed literal or a lexical form and RDF datatype added (or already exist).
+     Model:      .add, .listStatements, .listSubjectsWithProperty
+     Resource:   .hasProperty, .addProperty
+	
+
+
 JAR file changes:
     Added:    arq-extra.jar
     Changed:  wstx-asl-2.8.jar ==> wstx-asl-3.0.0.jar

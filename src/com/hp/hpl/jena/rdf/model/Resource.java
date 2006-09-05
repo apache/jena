@@ -31,6 +31,7 @@
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.graph.Node;
 
 
@@ -62,7 +63,7 @@ import com.hp.hpl.jena.graph.Node;
      the extra behaviour.  Factory objects are used to construct such
      enhanced resources.</p>
   @author bwm
-  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2006-07-17 15:26:36 $'
+  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2006-09-05 12:15:43 $'
 */
 public interface Resource extends RDFNode {
 
@@ -172,6 +173,7 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * <p> o is converted to a string by calling its <CODE>toString()</CODE>
      * method.</p>
+     * @deprecated Applications should use typed literals 
      * @param p The property to be added.
      * @param o The value of the property to be added.
      * @return This resource to allow cascading calls.
@@ -184,6 +186,7 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * <p> o is converted to a string by calling its <CODE>toString()</CODE>
      * method.</p>
+     * @deprecated Applications should use typed literals 
      * @param p The property to be added.
      * @param o The value of the property to be added.
      * @return This resource to allow cascading calls.
@@ -196,6 +199,7 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * <p> o is converted to a string by calling its <CODE>toString()</CODE>
      * method.</p>
+     * @deprecated Applications should use typed literals 
      * @param p The property to be added.
      * @param o The value of the property to be added.
      * @return This resource to allow cascading calls.
@@ -208,6 +212,7 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * <p> o is converted to a string by calling its <CODE>toString()</CODE>
      * method.</p>
+     * @deprecated Applications should use typed literals 
      * @param p The property to be added.
      * @param o The value of the property to be added.
      * @return This resource to allow cascading calls.
@@ -220,6 +225,7 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * <p> o is converted to a string by calling its <CODE>toString()</CODE>
      * method.</p>
+     * @deprecated Applications should use typed literals 
      * @param p The property to be added.
      * @param o The value of the property to be added.
      * @return This resource to allow cascading calls.
@@ -248,11 +254,24 @@ public interface Resource extends RDFNode {
     public Resource addProperty( Property p, String o, String l );
 
     /** Add a property to this resource.
+    *
+    * <p>A statement with this resource as the subject, p as the predicate and o
+    * as the object is added to the model associated with this resource.</p>
+    * @param p The property to be added.
+    * @param lexicalForm  The lexical form of the literal
+    * @param datatype     The datatype
+    * @return This resource to allow cascading calls.
+    */
+   public Resource addProperty( Property p, String lexicalForm, RDFDatatype datatype );
+
+
+   /** Add a property to this resource.
      *
      * <p>A statement with this resource as the subject, p as the predicate and o
      * as the object is added to the model associated with this resource.</p>
      * <p> o is converted to a string by calling its <CODE>toString()</CODE>
      * method.</p>
+     * @deprecated Applications should use typed literals 
      * @param p The property to be added.
      * @param o The value of the property to be added.
      * @return This resource to allow cascading calls.
@@ -277,6 +296,7 @@ public interface Resource extends RDFNode {
     public boolean hasProperty( Property p );
 
     /** Test if this resource has a given property with a given value.
+     * @deprecated Applications should use typed literals 
      * @param p The property sought.
      * @param o The value of the property sought.
      * @return true if and only if this resource has property p with
@@ -285,6 +305,7 @@ public interface Resource extends RDFNode {
     public boolean hasProperty( Property p, boolean o );
 
     /** Test if this resource has a given property with a given value.
+     * @deprecated Applications should use typed literals 
      * @param p The property sought.
      * @param o The value of the property sought.
      * @return true if and only if this resource has property p with
@@ -293,6 +314,7 @@ public interface Resource extends RDFNode {
     public boolean hasProperty( Property p, long o );
 
     /** Test if this resource has a given property with a given value.
+     * @deprecated Applications should use typed literals 
      * @param p The property sought.
      * @param o The value of the property sought.
      * @return true if and only if this resource has property p with
@@ -301,6 +323,7 @@ public interface Resource extends RDFNode {
     public boolean hasProperty( Property p, char o );
 
     /** Test if this resource has a given property with a given value.
+     * @deprecated Applications should use typed literals 
      * @param p The property sought.
      * @param o The value of the property sought.
      * @return true if and only if this resource has property p with
@@ -309,6 +332,7 @@ public interface Resource extends RDFNode {
     public boolean hasProperty( Property p, float o );
 
     /** Test if this resource has a given property with a given value.
+     * @deprecated Applications should use typed literals 
      * @param p The property sought.
      * @param o The value of the property sought.
      * @return true if and only if this resource has property p with
@@ -334,6 +358,7 @@ public interface Resource extends RDFNode {
     public boolean hasProperty( Property p, String o, String l );
 
     /** Test if this resource has a given property with a given value.
+     * @deprecated Applications should use typed literals 
      * @param p The property sought.
      * @param o The value of the property sought.
      * @return true if and only if this resource has property p with

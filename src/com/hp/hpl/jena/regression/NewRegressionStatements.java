@@ -1,13 +1,14 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionStatements.java,v 1.2 2006-03-22 13:52:54 andy_seaborne Exp $
+ 	$Id: NewRegressionStatements.java,v 1.3 2006-09-05 12:15:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.regression;
 
 import junit.framework.*;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.regression.Regression.*;
@@ -114,6 +115,17 @@ public class NewRegressionStatements extends ModelTestBase
         assertEquals( string, s.getString() );
         assertEquals( lang, m.createStatement( r, p, string, lang ).getLanguage() );
         }
+    
+    public void testCreateStatementTypeLiteral()
+    {
+        Model m = ModelFactory.createDefaultModel();
+        Resource R  = m.createResource("http://example/r") ;
+        Property P = m.createProperty("http://example/p") ;
+        m.add(R, P, "2", XSDDatatype.XSDinteger) ;
+        Literal L = ResourceFactory.createTypedLiteral("2", XSDDatatype.XSDinteger) ;
+        assertTrue(m.contains(R, P, L)) ;
+        assertFalse(m.contains(R, P, "2")) ;
+    }
     
     public void testCreateStatementFactory()
         {

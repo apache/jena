@@ -1,12 +1,15 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestResourceFactory.java,v 1.7 2006-03-22 13:53:24 andy_seaborne Exp $
+  $Id: TestResourceFactory.java,v 1.8 2006-09-05 12:15:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.rdf.model.*;
+
 import junit.framework.*;
 
 public class TestResourceFactory extends TestCase {
@@ -39,7 +42,26 @@ public class TestResourceFactory extends TestCase {
         Property p2 = ResourceFactory.createProperty(uri1, "2");
         assertTrue(p2.getURI().equals(uri1+"2"));
     }
+
+    public void testCreateLiteral()
+    {
+        Literal l = ResourceFactory.createPlainLiteral("lex") ;
+        assertTrue(l.getLexicalForm().equals("lex")) ;
+        assertTrue(l.getLanguage().equals("")) ;
+        assertNull(l.getDatatype()) ;
+        assertNull(l.getDatatypeURI()) ;
+    }
     
+    public void testCreateTypedLiteral()
+    {
+        Literal l = ResourceFactory.createTypedLiteral("22", XSDDatatype.XSDinteger) ;
+        assertTrue(l.getLexicalForm().equals("22")) ;
+        assertTrue(l.getLanguage().equals("")) ;
+        assertTrue(l.getDatatype()==XSDDatatype.XSDinteger) ;
+        assertTrue(l.getDatatypeURI().equals(XSDDatatype.XSDinteger.getURI())) ;
+        
+    }
+
     public void testCreateStatement() {
         Resource s = ResourceFactory.createResource();
         Property p = ResourceFactory.createProperty(uri2);
@@ -87,6 +109,11 @@ public class TestResourceFactory extends TestCase {
             return null;
         }
 
+        public Literal createTypedLiteral(String string, RDFDatatype datatype)
+        {
+            return null ;
+        }
+
         public Property createProperty(String uriref) {
             return null;
         }
@@ -101,6 +128,7 @@ public class TestResourceFactory extends TestCase {
             RDFNode object) {
             return null;
         }
+
     }
 }
 

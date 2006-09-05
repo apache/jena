@@ -33,6 +33,7 @@ package com.hp.hpl.jena.rdf.model;
 
 import java.util.Calendar;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.graph.Node;
 
 
@@ -56,8 +57,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.18 $'
-            Date='$Date: 2006-04-21 11:34:20 $'
+            Revision='$Revision: 1.19 $'
+            Date='$Date: 2006-09-05 12:15:43 $'
  */
 public interface ModelCon {
 
@@ -231,30 +232,35 @@ public interface ModelCon {
      * method. </p>
      * @param v the value of the literal
      * @return a new literal representing the value v
+     * @deprecated Applications should use typed literals
      */
     public Literal createLiteral(boolean v) ; 
     /** create a literal from an integer value.
      *
      * @param v the value of the literal
      * @return a new literal representing the value v
+     * @deprecated Applications should use typed literals
      */   
     public Literal createLiteral(long v) ;
     /** create a literal from a char value.
      *
      * @param v the value of the literal
      * @return a new literal representing the value v
+     * @deprecated Applications should use typed literals
      */
     public Literal createLiteral(char v) ;
     /** create a literal from a float value.
      *
      * @param v the value of the literal
      * @return a new literal representing the value v
+     * @deprecated Applications should use typed literals
      */
     public Literal createLiteral(float v) ;
     /** create a literal from a double value.
      *
      * @param v the value of the literal
      * @return a new literal representing the value v
+     * @deprecated Applications should use typed literals
      */
     public Literal createLiteral(double v) ;
     
@@ -269,7 +275,7 @@ public interface ModelCon {
      *
      * @return a new literal representing the value v
      * @param v the value of the literal.
-      
+     * @deprecated Applications should use typed literals
      */
     public Literal createLiteral(Object v) ;
  
@@ -374,6 +380,7 @@ public interface ModelCon {
      * <p>Creating a statement does not add it to the set of statements in the
      * model. </p>
      * <p>The value o will be converted to a Literal.</P>
+     * @deprecated Applications should use typed literals 
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
@@ -389,6 +396,7 @@ public interface ModelCon {
      * <p>Creating a statement does not add it to the set of statements in the
      * model. </p>
      * <p>The value o will be converted to a Literal.</P>
+     * @deprecated Applications should use typed literals 
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
@@ -404,6 +412,7 @@ public interface ModelCon {
      * <p>Creating a statement does not add it to the set of statements in the
      * model. </p>
      * <p>The value o will be converted to a Literal.</P>
+     * @deprecated Applications should use typed literals 
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
@@ -419,6 +428,7 @@ public interface ModelCon {
      * <p>Creating a statement does not add it to the set of statements in the
      * model. </p>
      * <p>The value o will be converted to a Literal.</P>
+     * @deprecated Applications should use typed literals 
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
@@ -434,6 +444,7 @@ public interface ModelCon {
      * <p>Creating a statement does not add it to the set of statements in the
      * model. </p>
      * <p>The value o will be converted to a Literal.</P>
+     * @deprecated Applications should use typed literals 
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
@@ -515,6 +526,7 @@ public interface ModelCon {
      * <p>Creating a statement does not add it to the set of statements in the
      * model. </p>
      * <p>The value o will be converted to a Literal.</P>
+     * @deprecated Applications should use typed literals 
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
@@ -600,6 +612,7 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
+ * @deprecated Applications should use typed literals 
  */ 
     Model add(Resource s, Property p, boolean o) ;
     
@@ -609,7 +622,7 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
-
+ * @deprecated Applications should use typed literals 
  */ 
     Model add(Resource s, Property p, long o) ;
     
@@ -619,7 +632,7 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
-
+ * @deprecated Applications should use typed literals 
  */ 
     Model add(Resource s, Property p, char o) ;
     
@@ -629,7 +642,7 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- 
+ * @deprecated Applications should use typed literals 
  */ 
     Model add(Resource s, Property p, float o) ;
 /** add a statement to this model.
@@ -638,7 +651,7 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- 
+ * @deprecated Applications should use typed literals
  */ 
     Model add(Resource s, Property p, double o) ;
 
@@ -648,10 +661,21 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- 
  */ 
     Model add(Resource s, Property p, String o) ;
- 
+
+    /** add a statement to this model.
+    *
+    * @return this model
+    * @param s the subject of the statement to add
+    * @param p the predicate of the statement to add
+    * @param lex the lexcial form of the literal
+    * @param datatype the datatype of the literal
+    */ 
+    Model add(Resource s, Property p, String lex, RDFDatatype datatype) ;
+
+    
+    
 /** add a statement to this model.
  *
  * @return this model
@@ -659,7 +683,6 @@ public interface ModelCon {
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
  * @param wellFormed true if o is well formed XML
- 
  */ 
     Model add(Resource s, Property p, String o, boolean wellFormed)
       ;
@@ -699,7 +722,7 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- 
+ * @deprecated Applications should use typed literals 
  */ 
     Model add(Resource s, Property p, Object o) ;
 
@@ -739,6 +762,7 @@ public interface ModelCon {
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
  *  and whose object matchesthe <code>object</code> argument.</p>
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -756,6 +780,7 @@ public interface ModelCon {
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
  *  and whose object matchesthe <code>object</code> argument.</p>
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -773,6 +798,7 @@ public interface ModelCon {
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
  *  and whose object matchesthe <code>object</code> argument.</p>
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -790,6 +816,7 @@ public interface ModelCon {
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
  *  and whose object matchesthe <code>object</code> argument.</p>
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -807,6 +834,7 @@ public interface ModelCon {
  *  whose subject matches the <code>subject</code> argument,
  *  whose predicate matches the <code>predicate</code> argument
  *  and whose object matchesthe <code>object</code> argument.</p>
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param subject   The subject sought
  * @param predicate The predicate sought
@@ -856,6 +884,7 @@ public interface ModelCon {
                                            ;
 
 /** List all subjects with a given property and property value.
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -865,6 +894,7 @@ public interface ModelCon {
                                            ;
 
 /** List all the subjects with a given property and property value.
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -874,6 +904,7 @@ public interface ModelCon {
                                            ;
 
 /** List all subjects with a given property and property value.
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -883,6 +914,7 @@ public interface ModelCon {
                                           ;
 
 /** List all subjects with a given property and property value.
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -891,6 +923,7 @@ public interface ModelCon {
     ResIterator listSubjectsWithProperty(Property p, float o)
                                            ;
 /** lists all subjects with a given property and property value.
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the set of subjects
  * @param p The property sought.
  * @param o The property value sought.
@@ -907,6 +940,7 @@ public interface ModelCon {
     ResIterator listSubjectsWithProperty(Property p, String o)
                                           ;
 /** lists all subjects with a given property and property value.
+ 
  * @return an iterator over the set of subjects
  * @param p The predicate sought.
  * @param o The property value sought.
@@ -917,6 +951,7 @@ public interface ModelCon {
                                           ;
 
 /** List all subjects with a given property and property value.
+ * @deprecated Applications should use typed literals 
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
@@ -931,8 +966,8 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- 
- */ 
+ * @deprecated Applications should use typed literals  
+  */ 
     boolean contains(Resource s, Property p, boolean o) ;
 
 /** Determine if a statement is present in this model.
@@ -941,7 +976,7 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- 
+ * @deprecated Applications should use typed literals  
  */ 
     boolean contains(Resource s, Property p, long o) ;
 
@@ -951,7 +986,7 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- 
+ * @deprecated Applications should use typed literals   
  */ 
     boolean contains(Resource s, Property p, char o) ;
 
@@ -961,7 +996,7 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- 
+ * @deprecated Applications should use typed literals   
  */ 
     boolean contains(Resource s, Property p, float o) ;
 
@@ -971,7 +1006,7 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- 
+ * @deprecated Applications should use typed literals  
  */ 
     boolean contains(Resource s, Property p, double o) ;
 
@@ -981,7 +1016,6 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- 
  */ 
     boolean contains(Resource s, Property p, String o) ;
 
@@ -992,7 +1026,6 @@ public interface ModelCon {
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
  * @param l the language associated with the object
- 
  */ 
     boolean contains(Resource s, Property p, String o, String l)
        ;
@@ -1003,7 +1036,7 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- 
+ * @deprecated Applications should use typed literals   
  */ 
     boolean contains(Resource s, Property p, Object o) ;
 }

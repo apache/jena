@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.114 2006-07-12 13:22:46 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.115 2006-09-05 12:15:40 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -129,9 +129,18 @@ public class ModelCom
         return this;
     }
     
+    public Model add(Resource s, Property p, String lex, RDFDatatype datatype)
+    {
+        add( s, p, literal( lex, datatype)) ;
+        return this;
+    }
+    
     private Literal literal( String s, String lang, boolean wellFormed )
         { return new LiteralImpl( Node.createLiteral( s, lang, wellFormed), this ); }
     
+    private Literal literal( String lex, RDFDatatype datatype)
+    { return new LiteralImpl( Node.createLiteral( lex, "", datatype), this ); }
+
     public Model add( Resource s, Property p, String o, String l )
         { return add( s, p, o, l, false ); }
     
@@ -1283,6 +1292,12 @@ public class ModelCom
             modelLock = new ModelLockImpl() ;
         return modelLock ;
     }
+    
+    public synchronized Lock getLock()
+    {
+        return getModelLock() ;
+    }
+    
     
     public void enterCriticalSection(boolean requestReadLock)
     {

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.37 2006-08-29 14:40:37 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.38 2006-09-05 12:15:40 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.enhanced.*;
 
 import com.hp.hpl.jena.graph.*;
@@ -14,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date: 2006-08-29 14:40:37 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.38 $' Date='$Date: 2006-09-05 12:15:40 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -185,6 +186,12 @@ public class ResourceImpl extends EnhNode implements Resource {
     {
         mustHaveModel().add( this, p, o, l );
         return this;
+    }
+
+    public Resource addProperty(Property p, String lexicalForm, RDFDatatype datatype)
+    {
+        mustHaveModel().add(this, p, lexicalForm, datatype) ;
+        return this ;
     }
 
     public Resource addProperty(Property p, Object o) {

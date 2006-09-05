@@ -1,12 +1,12 @@
 /*
 	(c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: TestStatements.java,v 1.16 2006-07-18 14:08:33 chris-dollin Exp $
+	$Id: TestStatements.java,v 1.17 2006-09-05 12:15:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.FrontsTriple;
 import com.hp.hpl.jena.rdf.model.*;
 import junit.framework.*;
@@ -120,7 +120,6 @@ public class TestStatements extends ModelTestBase
         assertFalse( statement( "S P '<x>/x>'rdf:XMLLiteral" ).hasWellFormedXML() );
         assertTrue( statement( "S P '<x></x>'rdf:XMLLiteral" ).hasWellFormedXML() );
         }
-    
     }
 
 /*

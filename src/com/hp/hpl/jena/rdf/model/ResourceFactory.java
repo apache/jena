@@ -1,11 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceFactory.java,v 1.10 2006-07-17 15:26:36 chris-dollin Exp $
+  $Id: ResourceFactory.java,v 1.11 2006-09-05 12:15:43 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.impl.*;
 
 /** A Factory class for creating resources.
@@ -76,6 +78,13 @@ public class ResourceFactory {
         return instance.createPlainLiteral( string );
     }
 
+    public static Literal createTypedLiteral( String string , RDFDatatype dType)
+    {
+        return instance.createTypedLiteral( string , dType);
+    }
+    
+    
+    
     /** create a new property.
      * 
      * <p>Uses the current factory object to create a new resource.</p>
@@ -138,6 +147,14 @@ public class ResourceFactory {
         */
         public Literal createPlainLiteral( String string );
 
+        /**
+        Answer a typed literal.
+        @param string the string which forms the value of the literal
+        @param datatype RDFDatatype of the type literal
+        @return a Literal node with that string as value
+        */
+        public Literal createTypedLiteral( String string , RDFDatatype datatype) ;
+        
         /** create a new property.
          * 
          * @param uriref URIREF of the property
@@ -183,6 +200,11 @@ public class ResourceFactory {
             return new LiteralImpl( string );
         }
 
+        public Literal createTypedLiteral( String string , RDFDatatype dType)
+        {
+            return new LiteralImpl(Node.createLiteral(string, "", dType), null) ;
+        }
+        
         public Property createProperty(String uriref) {
             return new PropertyImpl(uriref);
         }

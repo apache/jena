@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.64 2006-07-17 13:06:44 chris-dollin Exp $
+  $Id: Model.java,v 1.65 2006-09-05 12:15:43 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.64 $Date: 2006/07/12 13:22:45 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.65 $Date: 2006/07/17 13:06:44 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -931,8 +931,17 @@ public interface Model
      *
      * @see ModelLock
      * @return The ModelLock object associated with this model
+     * @deprecated Applications should use {@link #getLock()}
      */
     public ModelLock getModelLock() ;
+
+    /** Get the model lock for this model.
+     *  See also the convenience operations enterCriticalSection and leaveCriticalSection.
+     *
+     * @see ModelLock
+     * @return The ModelLock object associated with this model
+     */
+    public Lock getLock() ;
 
     /**
         Register a listener for model-changed events on this model. The methods on
@@ -1005,5 +1014,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.64 2006-07-17 13:06:44 chris-dollin Exp $
+ * $Id: Model.java,v 1.65 2006-09-05 12:15:43 andy_seaborne Exp $
  */
