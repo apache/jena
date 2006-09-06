@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.53 $
+ * Revision           $Revision: 1.54 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-04-29 11:35:23 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2006-09-06 12:54:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.53 2006-04-29 11:35:23 chris-dollin Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.54 2006-09-06 12:54:44 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -128,7 +128,7 @@ public class OntDocumentManager
     protected String m_searchPath = DEFAULT_METADATA_PATH;
 
     /** FileManager instance that provides location resolution service - defaults to global instance */
-    protected FileManager m_fileMgr = null;
+    protected FileManager m_fileMgr;
 
     /** Flag to indicate we're using a copy of the global file manager */
     protected boolean m_usingGlobalFileMgr = false;
@@ -149,7 +149,10 @@ public class OntDocumentManager
     protected boolean m_useDeclaredPrefixes = true;
 
     /** The URL of the policy file that was loaded, or null if no external policy file has yet been loaded */
-    protected String m_policyURL = null;
+    protected String m_policyURL;
+
+    /** Optional handler for failed read */
+    protected ReadFailureHandler m_rfHandler;
 
 
     // Constructors
@@ -315,6 +318,24 @@ public class OntDocumentManager
         m_searchPath = path;
         m_policyURL = null;
         initialiseMetadata( path );
+    }
+
+
+    /**
+     * Set the handler for read failures, overwriting any existing value.
+     * @param rfHandler The new handler for failed document read attempts.
+     */
+    public void setReadFailureHandler( ReadFailureHandler rfHandler ) {
+        m_rfHandler = rfHandler;
+    }
+
+    /**
+     * Answer the handler object that handles failed document read attempts,
+     * or null if not defined.
+     * @return The current read failure handler, or null
+     */
+    public ReadFailureHandler getReadFailureHandler() {
+        return m_rfHandler;
     }
 
 
@@ -1092,7 +1113,7 @@ public class OntDocumentManager
      */
     private Model fetchLoadedImportModel( OntModelSpec spec, String importURI )
         {
-        ModelReader loader = new ModelReader() 
+        ModelReader loader = new ModelReader()
                 {
                 public Model readModel( Model toRead, String URL )
                     {
@@ -1134,7 +1155,14 @@ public class OntDocumentManager
             success = true;
         }
         catch (Exception e) {
-            log.warn( "An error occurred while attempting to read from " + uri + ". Msg was '" + e.getMessage() + "'.", e );
+            // if there is a read failure handler, invoke it now
+            if (getReadFailureHandler() != null) {
+                getReadFailureHandler().handleFailedRead( uri, model, e );
+            }
+            else {
+                // otherwise, log the error
+                log.warn( "An error occurred while attempting to read from " + uri + ". Msg was '" + e.getMessage() + "'.", e );
+            }
         }
         return success;
     }
@@ -1154,6 +1182,21 @@ public class OntDocumentManager
     // Inner class definitions
     //==============================================================================
 
+    /**
+     * Interface defining a handler call-back in the case that the {@link OntDocumentManager}
+     * fails in an attempt to read the contents of a URL into a model.
+     */
+    public static interface ReadFailureHandler
+    {
+        /**
+         * Behaviour to invoke when the {@link OntDocumentManager} tries and fails
+         * to read an ontology document from a given URL.
+         * @param url The URL that the OntDocumentManager was trying to read
+         * @param model The model that the OntDocumentManager is reading into
+         * @param e An exception indicating the reason for the failure to read the document
+         */
+        public void handleFailedRead( String url, Model model, Exception e );
+    }
 
 }
 
