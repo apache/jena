@@ -32,7 +32,9 @@ CMD=$(basename $0)
 ## ---- JDBC
 MYSQL_JDBC="${SDBROOT}/jdbc/mysql-connector-java-5.0.0-beta-bin.jar"
 HSQLDB_JDBC="${SDBROOT}/jdbc/hsqldb.jar"
-JDBC="$MYSQL_JDBC"
+PSQL_JDBC="${SDBROOT}/jdbc/postgresql-8.0-314.jdbc3.jar"
+
+JDBC="$PG_JDBC"
 ## ARGS="--dbArgs 'useUnicode=true&characterEncoding=UTF-8'"
 
 
