@@ -32,9 +32,9 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
-        run() ;
+        //run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }

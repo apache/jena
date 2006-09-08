@@ -21,7 +21,6 @@ import com.hp.hpl.jena.query.engine1.plan.*;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.CollectionUtils;
 import com.hp.hpl.jena.query.util.Context;
-import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.BlockOptional;
@@ -112,13 +111,13 @@ public class PlanToSDB extends TransformCopy
                 
                 for ( Var var : inScope )
                 {
-                    System.out.println("In scope: "+ var.getName()) ;
+                    log.info("In scope: "+ var) ;
                 }
                 
                 Set<Var> v = getVarsInFilter(filter) ; 
                 for ( Var var : v )
                 {
-                    System.out.println("Filter: "+var.getName()) ;
+                    log.info("Filter: "+var) ;
                 }
                 
                 if ( ! inScope.containsAll(v) )
@@ -127,7 +126,6 @@ public class PlanToSDB extends TransformCopy
                     log.info("Filter uses unmentioned vars: "+v) ;
                     continue ;
                 }
-                    
 
                 // If filters have not been transformed earlier.
                 // Better here so can test for whether the filter is appropriate for the BGP.
@@ -217,9 +215,6 @@ public class PlanToSDB extends TransformCopy
     private Set<Var> getVarsInFilter(PlanFilter filter)
     {
         Set s = filter.getExpr().getVarsMentioned() ;
-        for ( Object obj : s )
-            System.out.println("  "+obj+Utils.className(obj)) ;
-        
         @SuppressWarnings("unchecked")
         Set<Var> vars = (Set<Var>)filter.getExpr().getVarsMentioned() ;
         return vars ;

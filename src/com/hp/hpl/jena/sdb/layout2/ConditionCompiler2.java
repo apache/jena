@@ -41,35 +41,6 @@ public class ConditionCompiler2 implements ConditionCompiler
     }
 }
 
-//    
-//    private static ExprPattern equalsString1 = new ExprPattern("?a1 = ?a2",
-//                                                               new String[]{ "a1" , "a2" },
-//                                                               new Action[]{ new ActionMatchVar() ,
-//                                                                             new ActionMatchString()}) ;
-//    // As equalsString1 but reverse the arguments.
-//    private static ExprPattern equalsString2 = new ExprPattern("?a1 = ?a2",
-//                                                               new String[]{ "a1" , "a2" },
-//                                                               new Action[]{ new ActionMatchString() ,
-//                                                                             new ActionMatchVar() }) ;
-//    
-//    private static ExprCompile equalsString1_compile = new ExprCompile() 
-//    {
-//        public SqlExpr compile(Expr expr, ExprPattern exprPattern, Scope scope)
-//        {
-//        } 
-//    } ;
-//
-//    private static ExprPattern equalsString3 = new ExprPattern("str(?a1) = ?a2",
-//                                                               new String[]{ "a1" , "a2" },
-//                                                               new Action[]{ new ActionMatchVar() ,
-//                                                                             new ActionMatchString()}) ;
-//    // As equalsString3 but reverse the arguments.
-//    private static ExprPattern equalsString4 = new ExprPattern("?a1 = str(?a2)",
-//                                                               new String[]{ "a1" , "a2" },
-//                                                               new Action[]{ new ActionMatchString() ,
-//                                                                             new ActionMatchVar() }) ;
-
-
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
