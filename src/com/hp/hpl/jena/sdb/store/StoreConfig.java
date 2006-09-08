@@ -151,8 +151,8 @@ class NamedString extends SDBConnectionHolder
         value = encode(value) ;
         try {
             // Delete any old values.
-            connection().execAny("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(name)) ;
-            connection().execAny("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quote(name)+", "+SQLUtils.quote("")+")") ;
+            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(name)) ;
+            connection().exec("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quote(name)+", "+SQLUtils.quote("")+")") ;
             // Hmm - how to include bytes at this point.
             // resultsSets have .updateBytes but how to get the ResultSet?
             Statement s = connection().getSqlConnection().createStatement() ;

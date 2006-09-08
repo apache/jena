@@ -70,8 +70,8 @@ public class RunSDB
     
     public static void run()
     {
-        String args[] = { "--sdb=sdb.ttl"} ; 
-        sdb.sdbinfo.main(args) ;
+        String args[] = { "--sdb=sdb.ttl", "--format=N3"} ; 
+        sdb.sdbdump.main(args) ;
         System.exit(0) ;
     }
 

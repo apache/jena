@@ -47,7 +47,7 @@ public class FormatterSimpleMySQL
     public void truncate()
     {
         try { 
-            connection().execAny("TRUNCATE TABLE Triples") ;
+            connection().exec("TRUNCATE TABLE Triples") ;
         } catch (SQLException ex)
         {
             log.warn("Exception truncating tables") ;
@@ -65,8 +65,8 @@ public class FormatterSimpleMySQL
     private void reformatPrefixesWorker(boolean loadPrefixes)
     {
         try { 
-            connection().execAny("DROP TABLE IF EXISTS Prefixes") ;
-            connection().execAny(sqlStr(
+            connection().exec("DROP TABLE IF EXISTS Prefixes") ;
+            connection().exec(sqlStr(
                     "CREATE TABLE Prefixes (",
                     "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") BINARY NOT NULL ,",
                     "    uri VARCHAR("+TablePrefixes.uriColWidth+") BINARY NOT NULL ,", 
@@ -96,8 +96,8 @@ public class FormatterSimpleMySQL
     private void reformatDataWorker()
     {
         try {
-            connection().execAny("DROP TABLE IF EXISTS Triples") ;
-            connection().execAny(sqlStr(
+            connection().exec("DROP TABLE IF EXISTS Triples") ;
+            connection().exec(sqlStr(
                     "CREATE TABLE Triples",
                     "(", 
                     "  s VARCHAR(200) BINARY NOT NULL ,",
@@ -109,9 +109,9 @@ public class FormatterSimpleMySQL
                 )) ;
             // ?? Indexes limited to 1000 bytes (MyISAM?)
             //connection().execAny("CREATE INDEX SPO     ON "+TableTriples.tableName+" (s,p,o)") ;
-            connection().execAny("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s(100),o(100))") ;
-            connection().execAny("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o(100),p(100))") ;
-            connection().execAny("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p(100))") ;
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s(100),o(100))") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o(100),p(100))") ;
+            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p(100))") ;
         } catch (SQLException ex)
         {
             log.warn("Exception resetting table 'Triples'") ; 

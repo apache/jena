@@ -45,8 +45,8 @@ public class ModStore implements ArgModule
     protected final ArgDecl argDeclJdbcURL      = new ArgDecl(true, "jdbc");
     protected final ArgDecl argDeclJdbcDriver   = new ArgDecl(true, "jdbcDriver", "jdbcdriver");
 
-    protected final ArgDecl argDeclDbHost       = new ArgDecl(true, "dbHost");
-    protected final ArgDecl argDeclDbName       = new ArgDecl(true, "dbName");
+    protected final ArgDecl argDeclDbHost       = new ArgDecl(true, "dbHost", "dbhost");
+    protected final ArgDecl argDeclDbName       = new ArgDecl(true, "dbName", "db");
     
     protected final ArgDecl argDeclDbType      = new ArgDecl(true, "dbType", "dbtype");
     protected final ArgDecl argDeclDbArgs      = new ArgDecl(true, "dbArgs", "dbargs");

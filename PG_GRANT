@@ -1,0 +1,4 @@
+-- sdbsql <this file>
+GRANT ALL ON TABLE nodes TO public;
+GRANT ALL ON TABLE prefixes TO public;salkjaslkdj
+GRANT ALL ON TABLE triples TO public;

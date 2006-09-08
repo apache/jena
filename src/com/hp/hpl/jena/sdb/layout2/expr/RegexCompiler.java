@@ -41,6 +41,9 @@ public class RegexCompiler extends ConditionCompilerBase
         
         if ( ( rMap = regex1.match(expr) ) != null )
         {
+            Object $ = rMap.get(new Var("a1")) ;
+            
+            
             Var var = rMap.get("a1").getNodeVar().getAsVar() ;
             String pattern = rMap.get("a2").getConstant().getString() ;
             return new RegexSqlGen(expr, regex1, pattern, null, true) ;

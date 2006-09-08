@@ -6,8 +6,7 @@
 _:c rdf:type acmd:SDBConnection ;
     acmd:sdbType        "postgresql" ;
     acmd:sdbHost        "sweb-sdb-1.hpl.hp.com" ;
-    #acmd:sdbUser       "user" ;        # Or use env variables SDB_USER/SDB_PASSWORD
-    acmd:sdbName        "sdb2" ;        # Lowercase
+    acmd:sdbName        "db" ;        # Lowercase
     acmd:driver         "org.postgresql.Driver" ;
     .
 

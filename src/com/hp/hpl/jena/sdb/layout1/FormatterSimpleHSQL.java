@@ -37,7 +37,7 @@ public class FormatterSimpleHSQL
     public void truncate()
     {
         try { 
-            connection().execAny("DELETE FROM Triples") ;
+            connection().exec("DELETE FROM Triples") ;
         } catch (SQLException ex)
         {
             log.warn("Exception truncating tables") ;
@@ -55,8 +55,8 @@ public class FormatterSimpleHSQL
     private void reformatPrefixesWorker(boolean loadPrefixes)
     {
         try { // Assumed to be inside a transaction 
-            connection().execAny("DROP TABLE IF EXISTS Prefixes") ;
-            connection().execAny(sqlStr(
+            connection().exec("DROP TABLE IF EXISTS Prefixes") ;
+            connection().exec(sqlStr(
                 "CREATE CACHED TABLE Prefixes (",
                 "    prefix VARCHAR  NOT NULL ,",
                 "    uri    VARCHAR  NOT NULL ,", 
@@ -86,8 +86,8 @@ public class FormatterSimpleHSQL
     private void reformatDataWorker()
     {
         try {
-            connection().execAny("DROP TABLE IF EXISTS Triples") ;
-            connection().execAny(sqlStr(
+            connection().exec("DROP TABLE IF EXISTS Triples") ;
+            connection().exec(sqlStr(
                     "CREATE CACHED TABLE Triples",
                     "(", 
                     "  s VARCHAR(200) NOT NULL ,",
@@ -96,8 +96,8 @@ public class FormatterSimpleHSQL
                     "  PRIMARY KEY (s,p,o)",                
                     ")"
                 )) ;
-            connection().execAny("CREATE INDEX SubjObj ON Triples (s,o)") ;
-            connection().execAny("CREATE INDEX ObjPred ON Triples (o,p)") ;
+            connection().exec("CREATE INDEX SubjObj ON Triples (s,o)") ;
+            connection().exec("CREATE INDEX ObjPred ON Triples (o,p)") ;
             //connection().execAny("CREATE INDEX Pred ON Triples (p)") ;
         } catch (SQLException ex)
         {

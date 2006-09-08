@@ -30,19 +30,18 @@ then
 CMD=$(basename $0)
 
 ## ---- JDBC
-MYSQL_JDBC="${SDBROOT}/jdbc/mysql-connector-java-5.0.0-beta-bin.jar"
-HSQLDB_JDBC="${SDBROOT}/jdbc/hsqldb.jar"
-PSQL_JDBC="${SDBROOT}/jdbc/postgresql-8.0-314.jdbc3.jar"
+JDBC_MYSQL="${SDBROOT}/jdbc/mysql-connector-java-5.0.0-beta-bin.jar"
+JDBC_HSQLDB="${SDBROOT}/jdbc/hsqldb.jar"
+JDBC_PSQL="${SDBROOT}/jdbc/postgresql-8.1-407.jdbc3.jar"
 
-JDBC="$PG_JDBC"
+JDBC="$JDBC_PSQL"
 ## ARGS="--dbArgs 'useUnicode=true&characterEncoding=UTF-8'"
-
 
 ## ---- Additional JDBC jar files.
 CP="${JDBC_CONNECTOR:-$JDBC}"
 
 ## ---- Always put the HSQLDB jar on the path
-CP="$CP$SEP$HSQLDB_JDBC"
+CP="$CP$SEP$JDBC_HSQLDB"
 
 ## ---- JVM Args e.g. -Xmx1024M
 JVM_ARGS=${JVM_ARGS:-}

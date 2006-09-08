@@ -40,7 +40,7 @@ public class FmtLayout2MySQL extends FmtLayout2
     {
         dropTable(TableTriples.tableName) ;
         try { 
-            connection().execAny(sqlStr(
+            connection().exec(sqlStr(
                                  "CREATE TABLE "+TableTriples.tableName+" (",
                                  "    s int  NOT NULL ,",
                                  "    p int  NOT NULL ,",
@@ -48,9 +48,9 @@ public class FmtLayout2MySQL extends FmtLayout2
                                  "    PRIMARY KEY (s, p, o)",
                                  ") ENGINE="+engineType.getEngineName()                
                     )) ;
-            connection().execAny("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s,o)") ;
-            connection().execAny("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o,p)") ;
-            connection().execAny("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s,o)") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o,p)") ;
+            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
@@ -63,7 +63,7 @@ public class FmtLayout2MySQL extends FmtLayout2
         dropTable(TableNodes.tableName) ;
         try { 
             // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
-            connection().execAny(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
+            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
                                  "   id int unsigned NOT NULL auto_increment,",
                                  "   hash BIGINT NOT NULL DEFAULT 0,",
                                  //"   lex VARCHAR("+LexicalLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
@@ -75,7 +75,7 @@ public class FmtLayout2MySQL extends FmtLayout2
                                  "   PRIMARY KEY Id  (id)",
                                  ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8;"  
                     )) ;
-            connection().execAny("CREATE UNIQUE INDEX Hash ON "+TableNodes.tableName+" (hash)") ;
+            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.tableName+" (hash)") ;
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
@@ -87,7 +87,7 @@ public class FmtLayout2MySQL extends FmtLayout2
     {
         dropTable(TablePrefixes.tableName) ;
         try { 
-            connection().execAny(sqlStr(
+            connection().exec(sqlStr(
                                  "CREATE TABLE "+TablePrefixes.tableName+" (",
                                  "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") BINARY NOT NULL ,",
                                  "    uri VARCHAR("+TablePrefixes.uriColWidth+") BINARY NOT NULL ,", 
@@ -105,7 +105,7 @@ public class FmtLayout2MySQL extends FmtLayout2
     { 
         try { 
             // MySQL note: DELETE FROM is transactional, TRUNCATE is not
-            connection().execAny("TRUNCATE "+tableName) ;
+            connection().exec("TRUNCATE "+tableName) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException : Can't truncate table: "+tableName, ex) ; }
     }
@@ -114,7 +114,7 @@ public class FmtLayout2MySQL extends FmtLayout2
     protected void dropTable(String tableName)
     {
         try { 
-            connection().execAny("DROP TABLE IF EXISTS "+tableName) ;
+            connection().exec("DROP TABLE IF EXISTS "+tableName) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
     }

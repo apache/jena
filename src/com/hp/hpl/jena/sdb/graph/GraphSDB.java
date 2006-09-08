@@ -17,8 +17,10 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 
@@ -72,6 +74,7 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
+        // Fake a query.
         CompileContext cxt = new CompileContext(getStore(), new Query()) ;
         List<Node>vars = new ArrayList<Node>() ;
         
@@ -93,7 +96,10 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
         BlockBGP block = new BlockBGP() ;
         block.add(triple) ;
 
-        QueryIterator qIter = store.getQueryCompiler().execSQL(getStore(), block, null, null) ;
+        DataSourceGraph dsg = new DataSourceGraphImpl() ;
+        dsg.setDefaultGraph(this) ;
+        ExecutionContext execCxt = new ExecutionContext(new Context(),  new Query(), this, dsg) ;
+        QueryIterator qIter = store.getQueryCompiler().execSQL(getStore(), block, new BindingRoot(), execCxt) ;
         List<Triple> triples = new ArrayList<Triple>() ;
         
         for (; qIter.hasNext() ; )

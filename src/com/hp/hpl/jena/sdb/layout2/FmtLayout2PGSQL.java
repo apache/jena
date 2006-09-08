@@ -29,7 +29,7 @@ public class FmtLayout2PGSQL extends FmtLayout2
     {
         dropTable(TableTriples.tableName) ;
         try { 
-            connection().execAny(sqlStr(
+            connection().exec(sqlStr(
                                  "CREATE TABLE "+TableTriples.tableName+" (",
                                  "    s integer NOT NULL,",
                                  "    p integer NOT NULL,",
@@ -37,8 +37,8 @@ public class FmtLayout2PGSQL extends FmtLayout2
                                  "    PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
-            connection().execAny("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
-            connection().execAny("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
             //connection().execAny("CREATE INDEX Pred "+TableNameTriples+.tableName+" (p);") ;
             
         } catch (SQLException ex)
@@ -50,7 +50,7 @@ public class FmtLayout2PGSQL extends FmtLayout2
     {
         dropTable(TableNodes.tableName) ;
         try { 
-            connection().execAny(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
+            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
                                        "   id SERIAL,",
                                        "   hash BIGINT NOT NULL,",
                                        "   lex TEXT NOT NULL,",
@@ -60,7 +60,7 @@ public class FmtLayout2PGSQL extends FmtLayout2
                                        "   PRIMARY KEY (id)",
                                        ")"
                     )) ;
-            connection().execAny("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
+            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
@@ -72,7 +72,7 @@ public class FmtLayout2PGSQL extends FmtLayout2
     {
         dropTable(TablePrefixes.tableName) ;
         try { 
-            connection().execAny(sqlStr(
+            connection().exec(sqlStr(
                                       "CREATE TABLE "+TablePrefixes.tableName+" (",
                                       "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
                                       "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
@@ -90,7 +90,7 @@ public class FmtLayout2PGSQL extends FmtLayout2
     {
         try {
             if (SQLUtils.hasTable(connection().getSqlConnection(), TableTriples.tableName))
-                connection().execAny("DROP TABLE "+tableName) ;
+                connection().exec("DROP TABLE "+tableName) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
     }

@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
-
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 
@@ -85,12 +84,18 @@ public class sdbsql extends CmdArgsDB
         getModTime().startTimer() ;
         long x = 0 ;
         try {
-            ResultSet rs = getModStore().getConnection().execQuery(sqlStmt) ;
+            ResultSet rs = getModStore().getConnection().exec(sqlStmt) ;
             x = getModTime().readTimer() ;
-            if ( quiet )
-                RS.consume(rs) ;
+            
+            if ( rs == null )
+                System.out.println("Executed with no errors or results") ;
             else
-                RS.printResultSet(rs) ;
+            { 
+                if ( quiet )
+                    RS.consume(rs) ;
+                else
+                    RS.printResultSet(rs) ;
+            }
         } catch (SQLException ex)
         {
             System.err.println("SQL Exception: "+ex.getMessage()) ;

@@ -47,7 +47,7 @@ public abstract class FmtLayout2
     protected void truncateTable(String tableName)
     {
         try { 
-            connection().execAny("DELETE FROM "+tableName) ;
+            connection().exec("DELETE FROM "+tableName) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException truncating table: "+tableName,ex) ; }
     }

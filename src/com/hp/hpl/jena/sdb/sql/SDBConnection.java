@@ -137,23 +137,26 @@ public class SDBConnection
         }
     }
 
-    public void execAny(String sqlString) throws SQLException
+    /** Execute a statement, return the result set if there was one, else null */
+    public ResultSet exec(String sqlString) throws SQLException
     {
         if ( logSQLStatements )
-            log.info("execAny\n\n"+sqlString+"\n") ;
+            log.info("exec\n\n"+sqlString+"\n") ;
         
         Connection conn = getSqlConnection() ;
         
         try {
             Statement s = conn.createStatement() ;
-            s.execute(sqlString) ;
+            boolean r = s.execute(sqlString) ;
+            if ( r )
+                return s.getResultSet() ; 
             s.close() ;
+            return null ;
         } catch (SQLException ex)
         {
             exception("execAny", ex, sqlString) ;
             throw ex ;
         }
-
     }
 
     private void exception(String who, SQLException ex, String sqlString)

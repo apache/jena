@@ -18,6 +18,10 @@ public class MapResult extends HashMap<Var, Expr>
     {
         super.put(var, ExprUtils.parse(v)) ;
     }
+    
+    // Otherwise, Java6 will call .get(Object)
+    // Why? Isn't this a bug?
+    public Expr get(String varName) { return super.get(new Var(varName)) ; }
 }
 
 /*

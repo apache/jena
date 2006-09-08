@@ -4,14 +4,12 @@
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 _:c a acmd:SDBConnection ;
-    acmd:sdbType     "mysql" ;
-    acmd:sdbHost     "localhost" ;
-    acmd:sdbName     "UniProt10" ;
+    acmd:sdbType     "postgresql" ;
+    acmd:sdbHost     "sweb-sdb-1" ;
+    acmd:sdbName     "sdb2" ;
     .
 
 [] rdf:type acmd:Store ;
     acmd:layout     "layout2" ;
     acmd:connection _:c ;
-    acmd:engine     "InnoDB" ;
-##    acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
     .

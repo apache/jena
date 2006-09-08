@@ -73,7 +73,7 @@ public class sdbdump extends CmdArgsDB
         } catch (Exception ex)
         {
             System.err.println("Exception: "+ex+" :: "+ex.getMessage()) ;
-            ex.printStackTrace(System.out) ;
+            ex.printStackTrace(System.err) ;
         }
     }
 

@@ -20,7 +20,7 @@ public class HSQLUtils
     public static void shutdown(SDBConnection sdb)
     {
         try {
-            sdb.execAny("SHUTDOWN COMPACT;");
+            sdb.exec("SHUTDOWN COMPACT;");
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }
     }
@@ -30,7 +30,7 @@ public class HSQLUtils
     public static void checkpoint(SDBConnection sdb)
     {
         try {
-            sdb.execAny("CHECKPOINT DEFRAG;");
+            sdb.exec("CHECKPOINT DEFRAG;");
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }
     }
