@@ -11,10 +11,10 @@ package com.hp.hpl.jena.sdb.assembler;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 
 public class SDBConnectionDescAssembler extends AssemblerBase implements Assembler
 {
@@ -24,15 +24,15 @@ public class SDBConnectionDescAssembler extends AssemblerBase implements Assembl
     {
         SDBConnectionDesc sDesc = new SDBConnectionDesc() ;
         
-        sDesc.type      = AssemblerUtils.getStringValue(root, AssemblerVocab.pSDBtype) ;
-        sDesc.host      = AssemblerUtils.getStringValue(root, AssemblerVocab.pSDBhost) ;
-        sDesc.argStr    = AssemblerUtils.getStringValue(root, AssemblerVocab.pSDBargStr) ;
-        sDesc.name      = AssemblerUtils.getStringValue(root, AssemblerVocab.pSDBname) ;
-        sDesc.user      = AssemblerUtils.getStringValue(root, AssemblerVocab.pSDBuser) ;
-        sDesc.password  = AssemblerUtils.getStringValue(root, AssemblerVocab.pSDBpassword) ;
-        sDesc.driver    = AssemblerUtils.getStringValue(root, AssemblerVocab.pDriver) ;
-        sDesc.jdbcURL   = AssemblerUtils.getStringValue(root, AssemblerVocab.pJDBC) ;
-        sDesc.rdbType   = AssemblerUtils.getStringValue(root, AssemblerVocab.pRDBtype) ;
+        sDesc.type      = GraphUtils.getStringValue(root, AssemblerVocab.pSDBtype) ;
+        sDesc.host      = GraphUtils.getStringValue(root, AssemblerVocab.pSDBhost) ;
+        sDesc.argStr    = GraphUtils.getStringValue(root, AssemblerVocab.pSDBargStr) ;
+        sDesc.name      = GraphUtils.getStringValue(root, AssemblerVocab.pSDBname) ;
+        sDesc.user      = GraphUtils.getStringValue(root, AssemblerVocab.pSDBuser) ;
+        sDesc.password  = GraphUtils.getStringValue(root, AssemblerVocab.pSDBpassword) ;
+        sDesc.driver    = GraphUtils.getStringValue(root, AssemblerVocab.pDriver) ;
+        sDesc.jdbcURL   = GraphUtils.getStringValue(root, AssemblerVocab.pJDBC) ;
+        sDesc.rdbType   = GraphUtils.getStringValue(root, AssemblerVocab.pRDBtype) ;
 
         if ( sDesc.jdbcURL == null && sDesc.user == null )
             sDesc.user = Access.getUser() ;

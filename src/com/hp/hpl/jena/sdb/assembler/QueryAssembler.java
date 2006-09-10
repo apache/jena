@@ -11,8 +11,9 @@ import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -22,14 +23,14 @@ public class QueryAssembler extends AssemblerBase implements Assembler
     public Object open(Assembler a, Resource cmd, Mode mode)
     {
         if ( cmd.hasProperty(AssemblerVocab.pQueryFile) && cmd.hasProperty(AssemblerVocab.pQueryString) )
-            throw new CommandAssemblerException(cmd, "Both "+AssemblerUtils.fmtURI(AssemblerVocab.pQueryString)+" and "+AssemblerUtils.fmtURI(AssemblerVocab.pQueryFile)+" present") ;
+            throw new CommandAssemblerException(cmd, "Both "+FmtUtils.stringForResource(AssemblerVocab.pQueryString)+" and "+FmtUtils.stringForResource(AssemblerVocab.pQueryFile)+" present") ;
         if ( ! cmd.hasProperty(AssemblerVocab.pQueryFile) && ! cmd.hasProperty(AssemblerVocab.pQueryString) )
             throw new CommandAssemblerException(cmd, "No queryString or queryFile present") ;
         
-        String queryString = AssemblerUtils.getStringValue(cmd, AssemblerVocab.pQueryString) ;
+        String queryString = GraphUtils.getStringValue(cmd, AssemblerVocab.pQueryString) ;
         if ( queryString == null )
         {
-            String filename = AssemblerUtils.getStringValue(cmd, AssemblerVocab.pQueryFile) ;
+            String filename = GraphUtils.getStringValue(cmd, AssemblerVocab.pQueryFile) ;
             queryString = FileManager.get().readWholeFileAsUTF8(filename) ;
         }
         // Base??

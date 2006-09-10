@@ -10,9 +10,9 @@ package com.hp.hpl.jena.sdb.script;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 //EXPERIMENTAL - Move to ARQ?
@@ -28,7 +28,7 @@ public class ScriptAssembler extends AssemblerBase implements Assembler
     public Object open(Assembler a, Resource root, Mode mode)
     {
         ScriptDesc sd = new ScriptDesc() ;
-        Resource x = AssemblerUtils.getResourceValue(root, AssemblerVocab.pSteps) ;
+        Resource x = GraphUtils.getResourceValue(root, AssemblerVocab.pSteps) ;
         if ( x != null )
         {
             for (; !x.equals(RDF.nil); )

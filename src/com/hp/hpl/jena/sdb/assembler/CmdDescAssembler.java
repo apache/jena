@@ -10,9 +10,9 @@ package com.hp.hpl.jena.sdb.assembler;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sdb.script.CmdDesc;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class CmdDescAssembler extends AssemblerBase implements Assembler
@@ -47,12 +47,12 @@ UNION
     {
         CmdDesc cd = new CmdDesc() ; 
         
-        String main = AssemblerUtils.getStringValue(root, AssemblerVocab.pMain) ;
+        String main = GraphUtils.getStringValue(root, AssemblerVocab.pMain) ;
         if ( main == null )
-            main = AssemblerUtils.getStringValue(root, AssemblerVocab.pClassname) ;
+            main = GraphUtils.getStringValue(root, AssemblerVocab.pClassname) ;
         cd.setCmd(main) ;
         
-        Resource x = AssemblerUtils.getResourceValue(root, AssemblerVocab.pArgs) ;
+        Resource x = GraphUtils.getResourceValue(root, AssemblerVocab.pArgs) ;
         if ( x != null )
         {
             for (; !x.equals(RDF.nil); )
@@ -69,8 +69,8 @@ UNION
                 }
                 
                 Resource entry = (Resource)e ; 
-                String name = AssemblerUtils.getStringValue(entry, AssemblerVocab.pArgName) ;
-                String value = AssemblerUtils.getStringValue(entry, AssemblerVocab.pArgValue) ;
+                String name = GraphUtils.getStringValue(entry, AssemblerVocab.pArgName) ;
+                String value = GraphUtils.getStringValue(entry, AssemblerVocab.pArgValue) ;
                 if ( value == null )
                     throw new CommandAssemblerException(entry, "Strange entry: "+entry) ;
                 

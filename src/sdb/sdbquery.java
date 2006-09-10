@@ -8,9 +8,8 @@ package sdb;
 
 import java.util.Iterator;
 import java.util.List;
-
+import arq.cmd.QueryCmdUtils ;
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.QExec;
 import arq.cmd.ResultsFormat;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
@@ -144,7 +143,7 @@ public class sdbquery extends CmdArgsDB
                 QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
-                QExec.executeQuery(query, qExec, fmt) ;
+                QueryCmdUtils.executeQuery(query, qExec, fmt) ;
                 qExec.close() ;
                 long queryTime = getModTime().endTimer() ;
                 totalTime += queryTime ;

@@ -8,43 +8,30 @@ package com.hp.hpl.jena.sdb.script;
 
 import arq.cmd.ResultsFormat;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.Dataset;
+import arq.cmd.QueryCmdUtils ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.util.GraphUtils;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 
-// EXPERIMENTAL - Move to ARQ?
-
-public class CommandAssembler extends AssemblerBase implements Assembler
+public class QExec
 {
+    
+    
+    private Query query ;
+    private QueryExecution exec ;
+    private ResultsFormat format ;
 
-    @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    public QExec(Query query, QueryExecution exec, ResultsFormat format)
     {
-        // Query
-        Resource queryDesc = getUniqueResource(root, AssemblerVocab.pQuery) ;
-        Query query = (Query)a.open(a, queryDesc, mode) ;
-        
-        // Dataset
-        Resource datasetDesc = getUniqueResource(root, AssemblerVocab.pDataset) ;
-        Dataset dataset = (Dataset)a.open(a, datasetDesc, mode) ;
-        
-        // Output format
-        String s = GraphUtils.getStringValue(root, AssemblerVocab.pOutputFormat) ;
-        if ( s == null ) 
-            s = "text" ;
-        ResultsFormat format = ResultsFormat.lookup(s) ;
-        
-        QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
-        
-        return new QExec(query, qExec, format) ;
+        this.query = query ;
+        this.exec = exec ;
+        this.format = format ;
     }
+    
+    public void exec()
+    {
+        QueryCmdUtils.executeQuery(query, exec, format) ;
+    }
+
 }
 
 /*

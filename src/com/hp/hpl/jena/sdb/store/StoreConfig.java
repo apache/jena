@@ -47,72 +47,72 @@ public class StoreConfig extends SDBConnectionHolder
     private static Log log = LogFactory.getLog(StoreConfig.class) ;
     private static final String serializationFormat = FileUtils.langNTriple ;
     
-    public static final String defaultName = "config" ;
+    public static final String defaultTag = "config" ;
     
     private boolean initialized = false ;
     private Map<String, Model> cache = new HashMap<String, Model>() ;
-    NamedString storage = null ;
+    private boolean caching = false ;
+    TaggedString storage = null ;
     
     public StoreConfig(SDBConnection sdb)
     {   
         super(sdb) ;
-        storage = new NamedString(connection()) ;
-        // Turn off for testing
-        cache = null ;
+        storage = new TaggedString(connection()) ;
     }
 
-    public void removeModel() { removeModel(defaultName) ; }
-    public void removeModel(String name)
+    public void removeModel() { removeModel(defaultTag) ; }
+    public void removeModel(String tag)
     { 
         init() ;
-        log.trace(".removeModel: "+name) ;
-        storage.remove(name) ;
+        log.trace(".removeModel: "+tag) ;
+        storage.remove(tag) ;
     }
     
-    public Model getModel() { return getModel(defaultName) ; }
+    public Model getModel() { return getModel(defaultTag) ; }
 
-    public Model getModel(String name)
+    public Model getModel(String tag)
     {
         init() ;
-        log.trace(".getModel: "+name) ;
+        log.trace(".getModel: "+tag) ;
         Model m = null ;
         
-        if ( cache != null && cache.containsKey(name) )
+        if ( caching && cache.containsKey(tag) )
         {
-            log.trace(".getModel: cache hit for "+name) ;
-            return cache.get(name) ;
+            log.trace(".getModel: cache hit for "+tag) ;
+            return cache.get(tag) ;
         }
-        log.trace(".getModel: cache miss for "+name) ;
+        log.trace(".getModel: cache miss for "+tag) ;
         
-        m = readModel(name) ;
+        m = readModel(tag) ;
         if ( m == null )
             return null ;
         
-        if ( cache == null )
-            return m ;
-        cache.put(name, m) ;
-        return cache.get(name) ;
+        if ( caching )
+            cache.put(tag, m) ;
+        return m ;
     }
     
-    public void setModel(Model m) { setModel(defaultName, m) ; }
-    public void setModel(String name, Model m)
+    public void setModel(Model m) { setModel(defaultTag, m) ; }
+    public void setModel(String tag, Model m)
     {
         init() ;
-        log.trace(".setModel: "+name) ;
+        log.trace(".setModel: "+tag) ;
         // Write before caching.
-        writeModel(name, m) ;
-        if ( cache != null )
+        writeModel(tag, m) ;
+        if ( caching )
         {
-            log.trace(".setModel: cache model for "+name) ;
-            cache.put(name, m) ;
+            log.trace(".setModel: cache model for "+tag) ;
+            cache.put(tag, m) ;
         }
     }
     
-    public List<String> getNames()
+    public List<String> getTags()
     {
         init() ;
-        return storage.names() ;
+        return storage.tags() ;
     }
+    
+    public void reset() { storage.reset() ; }
     
     //public void flush() { writeConfigModel() ; }
     
@@ -129,10 +129,10 @@ public class StoreConfig extends SDBConnectionHolder
 //        storage.reset() ;
     }
     
-    private Model readModel(String name)
+    private Model readModel(String tag)
     {
-        log.trace(".readModel: "+name) ;
-        String s = storage.get(name) ;
+        log.trace(".readModel: "+tag) ;
+        String s = storage.get(tag) ;
         
         if ( s == null )
             return null ;
@@ -143,30 +143,32 @@ public class StoreConfig extends SDBConnectionHolder
         return m ;
     }
     
-    private void writeModel(String name, Model model)
+    private void writeModel(String tag, Model model)
     {
-        log.trace(".writeModel: "+name) ;
+        log.trace(".writeModel: "+tag) ;
         StringWriter x = new StringWriter() ;
         model.write(x, serializationFormat) ;
-        storage.set(name, x.toString());
+        storage.set(tag, x.toString());
     }
 }
 
-class NamedString extends SDBConnectionHolder
+class TaggedString extends SDBConnectionHolder
 {
     
     static final String stringTableName  = "Strings" ;
-    static final String columnName       = "name" ;
+    static final String columnName       = "tag" ;
     static final String columnData       = "data" ;
     
     private boolean initialized = false ;
     
-    public NamedString(SDBConnection sdb) { super(sdb) ; }    
+    public TaggedString(SDBConnection sdb) { super(sdb) ; }    
 
     public void reset()
     {
         // MySQL.
         //final String sqlStmt1 = "DROP TABLE IF EXISTS "+stringTableName+" ;" ;
+
+        final String sqlStmt1 = SQLUtils.sqlStr("DROP TABLE "+stringTableName) ;
 
         final String sqlStmt2 = SQLUtils.sqlStr(
                                                 "CREATE TABLE "+stringTableName,
@@ -176,7 +178,9 @@ class NamedString extends SDBConnectionHolder
                                                 "  PRIMARY KEY("+columnName+")",
                                                 ")") ;
         try
-        { connection().execUpdate(sqlStmt2);
+        { 
+            try { connection().execUpdate(sqlStmt1); } catch (SQLException ex){}
+            connection().execUpdate(sqlStmt2);
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("NamedString.reset", ex) ; }
     }
@@ -188,55 +192,55 @@ class NamedString extends SDBConnectionHolder
         // TODO prepare statements
     }
     
-    public List<String> names()
+    public List<String> tags()
     {
         try {
             final String sqlStmt = SQLUtils.sqlStr(
                "SELECT "+columnName,
                "FROM "+stringTableName) ;
             ResultSet rs = connection().execQuery(sqlStmt) ;
-            List<String> names = new ArrayList<String>() ;
+            List<String> tags = new ArrayList<String>() ;
             while ( rs.next() )
             {
                 String x = rs.getString(columnName) ;
-                names.add(x) ;
+                tags.add(x) ;
             }
             RS.close(rs) ;
-            return names ;
+            return tags ;
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL("getString", ex) ; }
     }
     
-    public void remove(String name)
+    public void remove(String tag)
     {
         try {
-            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(name)) ;
+            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(tag)) ;
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL("setString", ex) ; }
         
     }
     
-    public void set(String name, String value)
+    public void set(String tag, String value)
     {
         value = encode(value) ;
         try {
             // Delete any old values.
-            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(name)) ;
-            connection().exec("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quote(name)+", "+SQLUtils.quote(value)+")") ;
+            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(tag)) ;
+            connection().exec("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quote(tag)+", "+SQLUtils.quote(value)+")") ;
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL("setString", ex) ; }
     }
 
-    public String get(String name)
+    public String get(String tag)
     {
         try {
             final String sqlStmt = SQLUtils.sqlStr(
                "SELECT "+columnData,
                "FROM "+stringTableName,
-               "WHERE "+columnName+" = "+SQLUtils.quote(name)) ;
+               "WHERE "+columnName+" = "+SQLUtils.quote(tag)) ;
             ResultSet rs = connection().execQuery(sqlStmt) ;
             if ( rs.next() )
             {

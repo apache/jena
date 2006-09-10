@@ -13,11 +13,11 @@ import java.util.List;
 import arq.cmdline.CmdLineArgs;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -49,7 +49,7 @@ public class CmdDesc
     
     private static CmdDesc worker(Model m)
     {
-        Resource r = AssemblerUtils.getResourceByType(m, ScriptVocab.CommandLineType) ;
+        Resource r = GraphUtils.getResourceByType(m, ScriptVocab.CommandLineType) ;
         if ( r == null )
             throw new SDBException("Can't find command line description") ;
         return (CmdDesc)AssemblerBase.general.open(r) ;

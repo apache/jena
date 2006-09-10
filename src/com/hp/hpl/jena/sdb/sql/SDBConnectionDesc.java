@@ -8,10 +8,12 @@ package com.hp.hpl.jena.sdb.sql;
 
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.query.util.GraphUtils;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class SDBConnectionDesc
@@ -42,7 +44,7 @@ public class SDBConnectionDesc
     
     private static SDBConnectionDesc worker(Model m)
     {
-        Resource r = AssemblerUtils.getResourceByType(m, AssemblerVocab.SDBConnectionAssemblerType) ;
+        Resource r = GraphUtils.getResourceByType(m, AssemblerVocab.SDBConnectionAssemblerType) ;
         if ( r == null )
             throw new SDBException("Can't find connection description") ;
         return (SDBConnectionDesc)AssemblerBase.general.open(r) ;

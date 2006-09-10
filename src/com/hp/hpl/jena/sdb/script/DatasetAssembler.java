@@ -8,15 +8,14 @@ package com.hp.hpl.jena.sdb.script;
 
 import java.util.List;
 
-
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 
 //EXPERIMENTAL - Move to ARQ?
 
@@ -26,8 +25,8 @@ public class DatasetAssembler extends AssemblerBase implements Assembler
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        List graphURIs = AssemblerUtils.multiValueURI(root, AssemblerVocab.pGraphData) ;
-        List namedGraphURIs = AssemblerUtils.multiValueString(root, AssemblerVocab.pNamedGraphData) ;
+        List graphURIs = GraphUtils.multiValueURI(root, AssemblerVocab.pGraphData) ;
+        List namedGraphURIs = GraphUtils.multiValueString(root, AssemblerVocab.pNamedGraphData) ;
         if ( graphURIs.size() == 0 && namedGraphURIs.size() == 0 )
             return null ;
         

@@ -100,7 +100,7 @@ public class RunSDB
 
     static void names(StoreConfig conf)
     {
-        List<String> names = conf.getNames() ; 
+        List<String> names = conf.getTags() ; 
         if ( names.size() == 0 )
             System.out.println("No names") ;
         else

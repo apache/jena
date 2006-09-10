@@ -14,20 +14,23 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 import sdb.cmd.ModStore;
+import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.util.HSQLUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 public class sdbmeta extends CmdArgsDB
 {
     static ArgDecl argDeclFormat = new ArgDecl(true, "format","fmt") ;
-    static ArgDecl argDeclName = new ArgDecl(true, "name") ;
-    String name = StoreConfig.defaultName ;
+    static ArgDecl argDeclTag = new ArgDecl(true, "tag", "name") ;
+    String tag = StoreConfig.defaultTag ;
     
     ModStore modStore = new ModStore();
     
@@ -44,6 +47,8 @@ public class sdbmeta extends CmdArgsDB
     {
         super(argv) ;
         addModule(modStore) ;
+        super.add(argDeclFormat) ;
+        super.add(argDeclTag) ;
     }
 
     @Override
@@ -51,15 +56,15 @@ public class sdbmeta extends CmdArgsDB
     {
         if ( contains(argDeclFormat))
             format = getValue(argDeclFormat) ;
-        if ( contains(argDeclName) )
-            name = getValue(argDeclName) ;
+        if ( contains(argDeclTag) )
+            tag = getValue(argDeclTag) ;
         if (getNumPositional() == 0)
-            cmdError("Subcommand required (get,names,put,remove,reset)", true) ;
+            cmdError("Subcommand required (get,tags,put,remove,reset)", true) ;
     }
 
     @Override
     protected String getSummary()
-    { return Utils.className(this)+" --sdb <SPEC> [--name=NAME] [get|names|put|remove|reset]" ; }
+    { return Utils.className(this)+" --sdb <SPEC> [--tag=TAG] [get|tags|put|remove|reset]" ; }
 
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
@@ -74,15 +79,15 @@ public class sdbmeta extends CmdArgsDB
         
         try {
             if ( subCmd.equalsIgnoreCase("get") )
-                execGet(conf, name) ;
-            else if ( subCmd.equalsIgnoreCase("names") )
-                execNames(conf) ;
+                execGet(conf, tag) ;
+            else if ( subCmd.equalsIgnoreCase("tags") )
+                execTags(conf) ;
             else if ( subCmd.equalsIgnoreCase("put") )
-                execPut(conf, name, positionalArgs) ;
+                execPut(conf, tag, positionalArgs) ;
             else if ( subCmd.equalsIgnoreCase("remove") )
-                execRemove(conf, name) ;
+                execRemove(conf, tag) ;
             else if ( subCmd.equalsIgnoreCase("reset") )
-                execReset(conf, name) ;
+                execReset(conf, tag) ;
             else 
                 cmdError("Subcommand not recognized: "+subCmd, true) ;
         } finally 
@@ -97,9 +102,9 @@ public class sdbmeta extends CmdArgsDB
         }
     }
 
-    private void execGet(StoreConfig conf, String name)
+    private void execGet(StoreConfig conf, String tag)
     {
-        Model m = conf.getModel(name) ;
+        Model m = conf.getModel(tag) ;
         if ( m == null )
         {
             System.out.println("No configuration model") ;
@@ -110,27 +115,41 @@ public class sdbmeta extends CmdArgsDB
         
     }
     
-    private void execPut(StoreConfig conf, String name, List<String> positionalArgs)
-    {}
-    
-    private void execNames(StoreConfig conf)
+    private void execPut(StoreConfig conf, String tag, List<String> positionalArgs)
     {
-        List<String> names = conf.getNames() ;
-        if ( names.size() == 0 )
-            System.out.println("No names") ;
+        if ( positionalArgs.size() == 0 )
+            throw new CmdException("No file to load") ;
+        
+        Model model = conf.getModel(tag) ;
+        if ( model == null )
+            model = ModelFactory.createDefaultModel() ;
+        for ( String filename : positionalArgs)
+            FileManager.get().readModel(model, filename) ;
+        conf.setModel(tag, model) ;
+    }
+    
+    private void execTags(StoreConfig conf)
+    {
+        List<String> tags = conf.getTags() ;
+        if ( tags.size() == 0 )
+            System.out.println("No tags") ;
         else
-            for ( String name : names )
-                System.out.println("Name: "+name) ;
+            for ( String tag : tags )
+                System.out.println("Tag: "+tag) ;
     }
 
     private void execRemove(StoreConfig conf, String name)
-    {}
+    {
+        if ( ! confirm("Confirm the removal of '"+name+"'") )
+            throw new TerminationException(0) ;
+        conf.removeModel(name) ;
+    }
 
     private void execReset(StoreConfig conf, String name)
     {
         if ( ! confirm("Confirm reset") )
             throw new TerminationException(0) ;
-        //conf.reset() ;
+        conf.reset() ;
     }
 
     private boolean confirm(String prompt)

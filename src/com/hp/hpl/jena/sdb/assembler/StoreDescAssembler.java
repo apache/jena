@@ -12,14 +12,14 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
+import com.hp.hpl.jena.sdb.store.StoreDesc;
 
 public class StoreDescAssembler extends AssemblerBase implements Assembler
 {
@@ -30,26 +30,26 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
     {
         StoreDesc storeDesc = new StoreDesc() ; 
         
-        Resource c = AssemblerUtils.getResourceValue(root, AssemblerVocab.pConnection) ;
+        Resource c = GraphUtils.getResourceValue(root, AssemblerVocab.pConnection) ;
         if ( c == null )
             return null ;
         storeDesc.connDesc = (SDBConnectionDesc)a.open(c) ;
         
         storeDesc.dbType = DatabaseType.convert(storeDesc.connDesc.type) ;
-        String layoutName = AssemblerUtils.getStringValue(root, AssemblerVocab.pLayout) ;
+        String layoutName = GraphUtils.getStringValue(root, AssemblerVocab.pLayout) ;
         storeDesc.layout = LayoutType.create(layoutName) ; 
 
         // MySQL specials
-        String engineName = AssemblerUtils.getStringValue(root, AssemblerVocab.pMySQLEngine) ;
+        String engineName = GraphUtils.getStringValue(root, AssemblerVocab.pMySQLEngine) ;
         storeDesc.engineType = null ;
         if ( engineName != null )
             try { storeDesc.engineType= MySQLEngineType.convert(engineName) ; }
             catch (SDBException ex) {}
         // ModelRDB special
-        storeDesc.rdbModelName = AssemblerUtils.getStringValue(root, AssemblerVocab.pModelRDBname) ;
+        storeDesc.rdbModelName = GraphUtils.getStringValue(root, AssemblerVocab.pModelRDBname) ;
 
         // Fixeruper
-        storeDesc.customizerClass = AssemblerUtils.getAsStringValue(root, AssemblerVocab.pCustomizerClass) ;
+        storeDesc.customizerClass = GraphUtils.getAsStringValue(root, AssemblerVocab.pCustomizerClass) ;
         return storeDesc ;
     }
 }

@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -17,7 +18,6 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.sdb.util.AssemblerUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class StoreDesc
@@ -54,7 +54,7 @@ public class StoreDesc
 
     private static StoreDesc worker(Model m)
     {
-        Resource r = AssemblerUtils.getResourceByType(m, AssemblerVocab.StoreAssemblerType) ;
+        Resource r = GraphUtils.getResourceByType(m, AssemblerVocab.StoreAssemblerType) ;
         if ( r == null )
             throw new SDBException("Can't find store description") ;
         return (StoreDesc)AssemblerBase.general.open(r) ;
