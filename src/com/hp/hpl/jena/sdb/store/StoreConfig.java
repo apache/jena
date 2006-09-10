@@ -25,9 +25,8 @@ import com.hp.hpl.jena.util.FileUtils;
 
 // Refactor
 //   Name->BlobBytes class
-//   Need to make DB independent
+//   Need to make (more) DB independent
 //   Prepared statements
-//   Delayed initialization though to make connect to DB fast still.
 
 /**
  * A table that stores small models for small configuration information.
@@ -161,9 +160,9 @@ class TaggedString extends SDBConnectionHolder
     
     private boolean initialized = false ;
     
-    public TaggedString(SDBConnection sdb) { super(sdb) ; }    
+    TaggedString(SDBConnection sdb) { super(sdb) ; }    
 
-    public void reset()
+    void reset()
     {
         // MySQL.
         //final String sqlStmt1 = "DROP TABLE IF EXISTS "+stringTableName+" ;" ;
@@ -192,7 +191,7 @@ class TaggedString extends SDBConnectionHolder
         // TODO prepare statements
     }
     
-    public List<String> tags()
+    List<String> tags()
     {
         try {
             final String sqlStmt = SQLUtils.sqlStr(
@@ -212,7 +211,7 @@ class TaggedString extends SDBConnectionHolder
         { throw new SDBExceptionSQL("getString", ex) ; }
     }
     
-    public void remove(String tag)
+    void remove(String tag)
     {
         try {
             connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(tag)) ;
@@ -222,7 +221,7 @@ class TaggedString extends SDBConnectionHolder
         
     }
     
-    public void set(String tag, String value)
+    void set(String tag, String value)
     {
         value = encode(value) ;
         try {
@@ -234,7 +233,7 @@ class TaggedString extends SDBConnectionHolder
         { throw new SDBExceptionSQL("setString", ex) ; }
     }
 
-    public String get(String tag)
+    String get(String tag)
     {
         try {
             final String sqlStmt = SQLUtils.sqlStr(
@@ -258,13 +257,11 @@ class TaggedString extends SDBConnectionHolder
     }
     
     // Escape non-7bit bytes. e.g. \ u stuff.
+    // Not needed when using N-TRIPLES
     
     private String encode(String s) { return s ; }
         
     private String decode(String s) { return s ; }
-    
-    // rs.updateBytes() ;
-    // rs.updateRow() ;
     
 //  private byte[] encode(String str)
 //  {
