@@ -170,15 +170,17 @@ class TaggedString extends SDBConnectionHolder
         final String sqlStmt1 = SQLUtils.sqlStr("DROP TABLE "+stringTableName) ;
 
         final String sqlStmt2 = SQLUtils.sqlStr(
+                                                // Should be good for all databases
+                                                // TODO Use TEXT
                                                 "CREATE TABLE "+stringTableName,
-                                                "( "+columnName +" VARCHAR NOT NULL,",
-                                                // TODO Make TEXT (or binary blob)
-                                                "  "+columnData+" VARCHAR NOT NULL ,",
+                                                "( "+columnName+" VARCHAR(200) NOT NULL,",
+                                                "  "+columnData+" VARCHAR(20000) NOT NULL ,",
                                                 "  PRIMARY KEY("+columnName+")",
                                                 ")") ;
         try
         { 
-            try { connection().execUpdate(sqlStmt1); } catch (SQLException ex){}
+            if ( SQLUtils.hasTable(connection().getSqlConnection(), stringTableName) )
+                connection().execUpdate(sqlStmt1);
             connection().execUpdate(sqlStmt2);
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("NamedString.reset", ex) ; }

@@ -42,10 +42,15 @@ public class SDBConnection
     // Hard and soft forms of executeInTransaction 
     // begin/commit/abort call-throughs
     
-    // Make per-connection 
+    // Defaults 
     public static boolean logSQLExceptions = false ;
     public static boolean logSQLStatements = false ;
     public static boolean logSQLQueries    = false ;
+    
+    private boolean thisLogSQLExceptions = logSQLExceptions ;
+    private boolean thisLogSQLStatements = logSQLStatements ;
+    private boolean thisLogSQLQueries    = logSQLQueries ;
+    
 
     public SDBConnection(DataSource ds) throws SQLException
     {
@@ -86,8 +91,11 @@ public class SDBConnection
     public TransactionHandler getTransactionHandler() { return transactionHandler ; } 
     
     public ResultSet execQuery(String sqlString) throws SQLException
+    { return execQuery(sqlString, false) ; }
+    
+    private ResultSet execQuery(String sqlString, boolean silent) throws SQLException
     {
-        if ( logSQLStatements || logSQLQueries )
+        if ( loggingSQLStatements() || loggingSQLQueries() )
             log.info("execQuery\n\n"+sqlString+"\n") ;
         
         Connection conn = getSqlConnection() ;
@@ -121,7 +129,7 @@ public class SDBConnection
     
     public int execUpdate(String sqlString) throws SQLException
     {
-        if ( logSQLStatements )
+        if ( loggingSQLStatements() )
             log.info("execUpdate\n\n"+sqlString+"\n") ;
         
         Connection conn = getSqlConnection() ;
@@ -140,7 +148,7 @@ public class SDBConnection
     /** Execute a statement, return the result set if there was one, else null */
     public ResultSet exec(String sqlString) throws SQLException
     {
-        if ( logSQLStatements )
+        if ( loggingSQLStatements() )
             log.info("exec\n\n"+sqlString+"\n") ;
         
         Connection conn = getSqlConnection() ;
@@ -161,13 +169,13 @@ public class SDBConnection
 
     private void exception(String who, SQLException ex, String sqlString)
     {
-        if ( logSQLExceptions )
+        if ( this.loggingSQLExceptions() )
             log.warn(who+": SQLException\n"+ex.getMessage()+"\n"+sqlString) ;
     }
 
     private void exception(String who, SQLException ex)
     {
-        if ( logSQLExceptions )
+        if ( this.loggingSQLExceptions() )
             log.warn(who+": SQLException\n"+ex.getMessage()) ;
     }
 
@@ -192,6 +200,28 @@ public class SDBConnection
     
     @Override
     public String toString() { return label ; }
+
+    public boolean loggingSQLExceptions() { return thisLogSQLExceptions ;
+    }
+
+    public void setLogSQLExceptions(boolean thisLogSQLExceptions)
+    {
+        this.thisLogSQLExceptions = thisLogSQLExceptions ;
+    }
+
+    public boolean loggingSQLQueries() { return thisLogSQLQueries ; }
+
+    public void setLogSQLQueries(boolean thisLogSQLQueries)
+    {
+        this.thisLogSQLQueries = thisLogSQLQueries ;
+    }
+
+    public boolean loggingSQLStatements() { return thisLogSQLStatements ; }
+    
+    public void setLogSQLStatements(boolean thisLogSQLStatements)
+    {
+        this.thisLogSQLStatements = thisLogSQLStatements ;
+    }
 
 }
 
