@@ -32,9 +32,9 @@ import arq.cmdline.* ;
  
 public class sdbinfo extends CmdArgsDB
 {
-    public static final String usage = "sdbinfo --sdb <SPEC>" ;
-
     static ArgDecl argDeclFormat = new ArgDecl(true, "format","fmt") ;
+    String format = "N3" ; 
+
 
     public static void main (String [] argv)
     {
@@ -56,8 +56,10 @@ public class sdbinfo extends CmdArgsDB
     @Override
     protected void processModulesAndArgs()
     {
-//        if ( getNumPositional() > 0 )
-//            cmdError("No positional arguments allowed", true) ;
+        if ( contains(argDeclFormat) )
+            format = getValue(argDeclFormat) ;
+        if ( getNumPositional() > 0 )
+            cmdError("No positional arguments allowed", true) ;
     }
     
     @Override
@@ -70,7 +72,13 @@ public class sdbinfo extends CmdArgsDB
             return ;
         }
         Model m = sConf.getModel() ;
-        m.write(System.out, "N3") ;
+        if ( m == null )
+        {
+            System.out.println("No configuration model") ;
+            return ;
+        }
+            
+        m.write(System.out, format) ;
     }
 }
  

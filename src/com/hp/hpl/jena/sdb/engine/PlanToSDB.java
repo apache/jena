@@ -219,12 +219,6 @@ public class PlanToSDB extends TransformCopy
         Set<Var> vars = (Set<Var>)filter.getExpr().getVarsMentioned() ;
         return vars ;
     }
-//        Set<Var> vars = new HashSet<Var>() ;
-//        @SuppressWarnings("unchecked")
-//        Set<String> nVars = (Set<String>)filter.getExpr().getVarsMentioned() ;
-//        for ( String vn : nVars )
-//            vars.add(new Var(vn)) ;
-//        return vars ;
 }
 
 /*

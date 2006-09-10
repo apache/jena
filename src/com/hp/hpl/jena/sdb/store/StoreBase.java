@@ -21,6 +21,7 @@ public class StoreBase
     protected QueryCompiler compiler ;
     protected SQLGenerator sqlGenerator ;
     protected StoreCustomizer customizer ;
+    protected StoreConfig configuration ;
     
     public StoreBase(SDBConnection connection, 
                      PlanTranslator planTranslator,
@@ -41,6 +42,7 @@ public class StoreBase
         if ( customizer == null )
             customizer = new StoreCustomizerBase() ;
         setCustomizer(customizer) ;
+        configuration = new StoreConfig(connection()) ;
     }
     
     public SDBConnection   getConnection()           {  return connection() ; }
@@ -55,7 +57,7 @@ public class StoreBase
 
     public StoreLoader     getLoader()               { return loader ; }
 
-    public StoreConfig     getConfiguration()        { return null ; }
+    public StoreConfig     getConfiguration()        { return configuration ; }
 
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL

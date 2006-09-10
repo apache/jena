@@ -19,13 +19,12 @@ class TransformerScore extends TransformCopy implements Comparator
 		this.pv = pv;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public PlanElement transform(PlanBlockTriples planElt)
 	{
 		planElt = (PlanBlockTriples) planElt.copy();
-		
 		Collections.sort(planElt.getPattern(), this);
-		
 		return planElt;
 	}
 

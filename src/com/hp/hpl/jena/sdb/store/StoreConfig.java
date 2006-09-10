@@ -6,13 +6,16 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.io.*;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -41,36 +44,74 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class StoreConfig extends SDBConnectionHolder
 {
-    public static final String configName = "config" ;
+    private static Log log = LogFactory.getLog(StoreConfig.class) ;
     private static final String serializationFormat = FileUtils.langNTriple ;
+    
+    public static final String defaultName = "config" ;
     
     private boolean initialized = false ;
     private Map<String, Model> cache = new HashMap<String, Model>() ;
-    NamedString storage ;
+    NamedString storage = null ;
     
     public StoreConfig(SDBConnection sdb)
-    { super(sdb) ; }
+    {   
+        super(sdb) ;
+        storage = new NamedString(connection()) ;
+        // Turn off for testing
+        cache = null ;
+    }
+
+    public void removeModel() { removeModel(defaultName) ; }
+    public void removeModel(String name)
+    { 
+        init() ;
+        log.trace(".removeModel: "+name) ;
+        storage.remove(name) ;
+    }
     
-    public Model getModel() { return getModel(configName) ; }
+    public Model getModel() { return getModel(defaultName) ; }
 
     public Model getModel(String name)
     {
         init() ;
-        if ( ! cache.containsKey(name) )
+        log.trace(".getModel: "+name) ;
+        Model m = null ;
+        
+        if ( cache != null && cache.containsKey(name) )
         {
-            Model m = readModel(name) ;
-            cache.put(name, m) ;
-            return m ;
+            log.trace(".getModel: cache hit for "+name) ;
+            return cache.get(name) ;
         }
+        log.trace(".getModel: cache miss for "+name) ;
+        
+        m = readModel(name) ;
+        if ( m == null )
+            return null ;
+        
+        if ( cache == null )
+            return m ;
+        cache.put(name, m) ;
         return cache.get(name) ;
     }
     
-    public void setModel(Model m) { setModel(configName, m) ; }
+    public void setModel(Model m) { setModel(defaultName, m) ; }
     public void setModel(String name, Model m)
     {
         init() ;
-        cache.put(name, m) ;
+        log.trace(".setModel: "+name) ;
+        // Write before caching.
         writeModel(name, m) ;
+        if ( cache != null )
+        {
+            log.trace(".setModel: cache model for "+name) ;
+            cache.put(name, m) ;
+        }
+    }
+    
+    public List<String> getNames()
+    {
+        init() ;
+        return storage.names() ;
     }
     
     //public void flush() { writeConfigModel() ; }
@@ -84,14 +125,13 @@ public class StoreConfig extends SDBConnectionHolder
         if ( storage != null )
             return ;
         
-        storage = new NamedString(connection()) ;
-        
-        LogFactory.getLog(this.getClass()).warn("TESTING: config storage reset") ;
-        storage.reset() ;
+//        LogFactory.getLog(this.getClass()).warn("TESTING: config storage reset") ;
+//        storage.reset() ;
     }
     
     private Model readModel(String name)
     {
+        log.trace(".readModel: "+name) ;
         String s = storage.get(name) ;
         
         if ( s == null )
@@ -99,12 +139,13 @@ public class StoreConfig extends SDBConnectionHolder
         
         Model m = ModelFactory.createDefaultModel() ;
         StringReader r =  new StringReader(s) ; 
-        m.read(s, serializationFormat) ;
+        m.read(r, null, serializationFormat) ;
         return m ;
     }
     
     private void writeModel(String name, Model model)
     {
+        log.trace(".writeModel: "+name) ;
         StringWriter x = new StringWriter() ;
         model.write(x, serializationFormat) ;
         storage.set(name, x.toString());
@@ -125,11 +166,12 @@ class NamedString extends SDBConnectionHolder
     public void reset()
     {
         // MySQL.
-        final String sqlStmt1 = "DROP TABLE IF EXISTS "+stringTableName+" ;" ;
+        //final String sqlStmt1 = "DROP TABLE IF EXISTS "+stringTableName+" ;" ;
 
         final String sqlStmt2 = SQLUtils.sqlStr(
                                                 "CREATE TABLE "+stringTableName,
                                                 "( "+columnName +" VARCHAR NOT NULL,",
+                                                // TODO Make TEXT (or binary blob)
                                                 "  "+columnData+" VARCHAR NOT NULL ,",
                                                 "  PRIMARY KEY("+columnName+")",
                                                 ")") ;
@@ -146,16 +188,43 @@ class NamedString extends SDBConnectionHolder
         // TODO prepare statements
     }
     
+    public List<String> names()
+    {
+        try {
+            final String sqlStmt = SQLUtils.sqlStr(
+               "SELECT "+columnName,
+               "FROM "+stringTableName) ;
+            ResultSet rs = connection().execQuery(sqlStmt) ;
+            List<String> names = new ArrayList<String>() ;
+            while ( rs.next() )
+            {
+                String x = rs.getString(columnName) ;
+                names.add(x) ;
+            }
+            RS.close(rs) ;
+            return names ;
+        }
+        catch (SQLException ex)
+        { throw new SDBExceptionSQL("getString", ex) ; }
+    }
+    
+    public void remove(String name)
+    {
+        try {
+            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(name)) ;
+        }
+        catch (SQLException ex)
+        { throw new SDBExceptionSQL("setString", ex) ; }
+        
+    }
+    
     public void set(String name, String value)
     {
         value = encode(value) ;
         try {
             // Delete any old values.
             connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(name)) ;
-            connection().exec("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quote(name)+", "+SQLUtils.quote("")+")") ;
-            // Hmm - how to include bytes at this point.
-            // resultsSets have .updateBytes but how to get the ResultSet?
-            Statement s = connection().getSqlConnection().createStatement() ;
+            connection().exec("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quote(name)+", "+SQLUtils.quote(value)+")") ;
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL("setString", ex) ; }

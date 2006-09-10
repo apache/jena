@@ -12,6 +12,7 @@ import java.util.Map;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.shared.DBtype;
+import com.hp.hpl.jena.sdb.shared.SDBNotFoundException;
 
 public class JDBC
 {
@@ -42,7 +43,7 @@ public class JDBC
     { 
         try { Class.forName(className); }
         catch (ClassNotFoundException ex)
-        { throw new RuntimeException("Class.forName("+className+")", ex) ; } 
+        { throw new SDBNotFoundException("Class.forName("+className+")", ex) ; } 
     }
 
     public static String makeURL(String type, String host, String dbName)

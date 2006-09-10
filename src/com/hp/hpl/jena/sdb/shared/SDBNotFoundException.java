@@ -9,10 +9,11 @@ package com.hp.hpl.jena.sdb.shared;
 import com.hp.hpl.jena.sdb.SDBException;
 
 
-public class SDBNotImplemented extends SDBException
+public class SDBNotFoundException extends SDBException
 {
-    public SDBNotImplemented() { super() ; }
-    public SDBNotImplemented(String msg) { super(msg) ; }
+    public SDBNotFoundException() { super() ; }
+    public SDBNotFoundException(String msg) { super(msg) ; }
+    public SDBNotFoundException(String msg, Exception cause) { super(msg, cause) ; }
 }
 
 /*

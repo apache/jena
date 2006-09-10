@@ -8,6 +8,7 @@ package dev;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import arq.cmd.CmdUtils;
 
@@ -19,7 +20,7 @@ import com.hp.hpl.jena.sdb.script.CmdDesc;
 import com.hp.hpl.jena.sdb.script.ScriptDesc;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -32,9 +33,9 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
-        //run() ;
+        run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -67,14 +68,46 @@ public class RunSDB
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }
-    
+   
     public static void run()
     {
-        String args[] = { "--sdb=sdb.ttl", "--format=N3"} ; 
-        sdb.sdbdump.main(args) ;
+        
+        String args[] = { "--sdb=Store/sdb-hsqldb-file.ttl", "--format=N3"} ;
+        
+        StoreDesc sDesc = StoreDesc.read("Store/sdb-hsqldb-file.ttl") ;
+        Store store = StoreFactory.create(sDesc) ;
+        StoreConfig conf = store.getConfiguration() ;
+        
+        names(conf) ;
+        conf.removeModel() ;
+        names(conf) ;
+        
+        Model m = conf.getModel() ;
+        if ( m == null )
+        {
+            System.out.println("No config model");
+            m = FileManager.get().loadModel("D.ttl") ;
+            conf.setModel(m) ;
+            names(conf) ;
+            m = conf.getModel() ;
+        }
+        m.write(System.out, "N3") ;
+        if ( store instanceof StoreBaseHSQL )
+            ((StoreBaseHSQL)store).checkpoint() ;
+        //store.close() ;
         System.exit(0) ;
     }
 
+    static void names(StoreConfig conf)
+    {
+        List<String> names = conf.getNames() ; 
+        if ( names.size() == 0 )
+            System.out.println("No names") ;
+        else
+            for ( String name : names )
+                System.out.println("Name: "+name) ;
+            
+    }
     
     static void runScript()
     {

@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sdb.ModelSDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
+import com.hp.hpl.jena.sdb.shared.SDBNotFoundException;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -246,7 +247,12 @@ public class ModStore implements ArgModule
             throw new TerminationException(9);
         }
 
-        JDBC.loadDriver(driverName);
+        try { JDBC.loadDriver(driverName); }
+        catch (SDBNotFoundException ex)
+        {
+            System.err.println("Driver not found: "+driverName);
+            throw new TerminationException(9);
+        }
     }
     
     public Store getStore()

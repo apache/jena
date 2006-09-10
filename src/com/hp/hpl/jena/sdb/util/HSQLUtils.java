@@ -34,7 +34,6 @@ public class HSQLUtils
         } catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }
     }
-
 }
 
 /*
