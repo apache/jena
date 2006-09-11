@@ -154,7 +154,7 @@ public abstract class AbsXMLContext implements ARPErrorNumbers,
                         && irie.getComponent() == IRIComponents.SCHEME) {
                     if (!forErrors.allowRelativeURIs())
                         forErrors.warning(taintMe, WARN_RELATIVE_URI,
-                                "Relative URIs are not permitted in RDF  <"
+                                "Relative URIs are not permitted in RDF: specifically <"
                                         + rslt.toString() + ">");
 
                 } else

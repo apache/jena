@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.35 2006-03-22 13:53:14 andy_seaborne Exp $
+    $Id: testWriterAndReader.java,v 1.36 2006-09-11 15:22:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.35 $' Date='$Date: 2006-03-22 13:53:14 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2006-09-11 15:22:53 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -405,9 +405,10 @@ public class testWriterAndReader
 				m2.write(System.err,"N-TRIPLE");
 				System.err.println("=");
 				*/
-				assertTrue(
-                        "Comparison of file written out, and file read in.",
-                        s1.isIsomorphicWith(s2));
+//				assertTrue(
+//                        "Comparison of file written out, and file read in.",
+//                        s1.isIsomorphicWith(s2));
+                assertIsoModels( "Comparison of file written out, and file read in.", s1, s2 );
                 // Free resources explicitily.
                 tmpOut.reset() ;
                 tmpOut = null ;
@@ -554,5 +555,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.35 2006-03-22 13:53:14 andy_seaborne Exp $
+ * $Id: testWriterAndReader.java,v 1.36 2006-09-11 15:22:53 chris-dollin Exp $
  */

@@ -30,12 +30,14 @@
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
+import java.util.regex.*;
+
 import org.apache.xerces.util.XMLChar;
 
 /** Some utility functions.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2006-03-22 13:52:29 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2006-09-11 15:22:38 $'
  */
 public class Util extends Object {
 
@@ -79,25 +81,50 @@ public class Util extends Object {
 	    answer true iff this is not a legal NCName character, ie, is
 	    a possible split-point start.
     */
-    public static boolean notNameChar(char ch)
-        {
-        return !XMLChar.isNCName(ch);
-        }
+    public static boolean notNameChar( char ch )
+        { return !XMLChar.isNCName( ch ); }
 
-    public static String substituteStandardEntities(String s) {
-        s = replace(s, "&", "&amp;");
-        s = replace(s, "<", "&lt;");
-        s = replace(s, ">", "&gt;");
-        s = replace(s, "'", "&apos;");
-        s = replace(s, "\t", "&#9;");
-        s = replace(s, "\n", "&#xA;");
-        s = replace(s, "\r", "&#xD;");
-        return replace(s, "\"", "&quot;");
-    }
-    public static String substituteEntitiesInElementContent(String s) {
-        s = replace(s, "&", "&amp;");
-        return replace(s, "<", "&lt;");
-    }
+    protected static Pattern standardEntities = Pattern.compile( "&|<|>|\t|\n|\r|\'|\"" );
+    
+    public static String substituteStandardEntities( String s )
+        {
+        if (standardEntities.matcher( s ).find())
+            {
+            return s
+                .replaceAll( "&", "&amp;" )
+                .replaceAll( "<", "&lt;" )
+                .replaceAll( ">", "&gt;" )
+                .replaceAll( "'", "&apos;" )
+                .replaceAll( "\t","&#9;" )
+                .replaceAll( "\n", "&#xA;" )
+                .replaceAll( "\r", "&#xD;" )
+                .replaceAll( "\"", "&quot;" )
+                ;
+//            s = replace(s, "&", "&amp;");
+//            s = replace(s, "<", "&lt;");
+//            s = replace(s, ">", "&gt;");
+//            s = replace(s, "'", "&apos;");
+//            s = replace(s, "\t", "&#9;");
+//            s = replace(s, "\n", "&#xA;");
+//            s = replace(s, "\r", "&#xD;");
+//            s = replace(s, "\"", "&quot;");
+//            return s;
+            }
+        else
+            return s;
+        }
+    
+    protected static Pattern elementContentEntities = Pattern.compile( "<|>|&" );
+    
+    public static String substituteEntitiesInElementContent( String s ) 
+        {
+        Matcher m = elementContentEntities.matcher( s );
+        if (!m.find())
+        // if (s.indexOf( "&" ) < 0 && s.indexOf( "<" ) < 0 && s.indexOf( ">" ) < 0) 
+            return s;
+        else
+            return s.replaceAll( "&", "&amp;" ).replaceAll( "<", "&lt;" ).replaceAll( ">", "&gt;" );
+        }
 
     public static String replace(
         String s,
