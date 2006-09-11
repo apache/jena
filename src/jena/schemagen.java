@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.46 $
+ * Revision           $Revision: 1.47 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-09-10 23:49:15 $
+ * Last modified on   $Date: 2006-09-11 13:52:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.46 2006-09-10 23:49:15 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.47 2006-09-11 13:52:50 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -887,10 +887,10 @@ public class schemagen {
 
             // we also write out the RDF properties, to mop up any props that are not stated as
             // object, datatype or annotation properties
-            writeRDFProperties();
+            writeRDFProperties( true );
         }
         else {
-            writeRDFProperties();
+            writeRDFProperties( false );
         }
     }
 
@@ -928,8 +928,9 @@ public class schemagen {
     }
 
     /** Write any vanilla RDF properties in the vocabulary */
-    protected void writeRDFProperties() {
+    protected void writeRDFProperties( boolean useOntProperty ) {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
+        String propType = useOntProperty ? "OntProperty" : "Property";
 
         // select the appropriate properties based on the language choice
         Resource[] props;
@@ -946,7 +947,7 @@ public class schemagen {
         // now write the properties
         for (int j = 0;  j < props.length; j++) {
             for (StmtIterator i = m_source.listStatements( null, RDF.type, props[j] ); i.hasNext(); ) {
-                writeValue( i.nextStatement().getSubject(), template, "Property", "createProperty", "_PROP" );
+                writeValue( i.nextStatement().getSubject(), template, propType, "create" + propType, "_PROP" );
             }
         }
     }

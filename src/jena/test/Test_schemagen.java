@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-09-10 23:48:33 $
+ * Last modified on   $Date: 2006-09-11 13:52:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
@@ -24,8 +24,15 @@ package jena.test;
 // Imports
 ///////////////
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -39,6 +46,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.util.FileUtils;
 
 
 /**
@@ -48,7 +56,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.1 2006-09-10 23:48:33 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.2 2006-09-11 13:52:55 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -75,7 +83,7 @@ public class Test_schemagen
     // External signature methods
     //////////////////////////////////
 
-    public void testNoBaseURI0() {
+    public void testNoBaseURI0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         boolean ex = false;
         try {
@@ -92,7 +100,7 @@ public class Test_schemagen
         assertTrue( "Expected abort", ex );
     }
 
-    public void testClass0() {
+    public void testClass0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl"},
@@ -100,7 +108,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
-    public void testClass1() {
+    public void testClass1() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl"},
@@ -108,7 +116,7 @@ public class Test_schemagen
                              new String[] {".*public static final Resource A.*"} );
     }
 
-    public void testClass2() {
+    public void testClass2() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--rdfs"},
@@ -116,7 +124,7 @@ public class Test_schemagen
                              new String[] {".*public static final Resource A.*"} );
     }
 
-    public void testClass3() {
+    public void testClass3() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--rdfs"},
@@ -124,7 +132,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
-    public void testProperty0() {
+    public void testProperty0() throws Exception {
         String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl"},
@@ -132,7 +140,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
-    public void testProperty1() {
+    public void testProperty1() throws Exception {
         String SOURCE = PREFIX + "ex:p a rdf:Property .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl"},
@@ -141,7 +149,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
-    public void testProperty2() {
+    public void testProperty2() throws Exception {
         String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--rdfs"},
@@ -149,7 +157,7 @@ public class Test_schemagen
                              new String[] {".*public static final Property p.*"} );
     }
 
-    public void testProperty3() {
+    public void testProperty3() throws Exception {
         String SOURCE = PREFIX + "ex:p a rdf:Property .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--rdfs"},
@@ -157,7 +165,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
-    public void testInstance0() {
+    public void testInstance0() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl"},
@@ -165,7 +173,7 @@ public class Test_schemagen
                              new String[] {} );
     }
 
-    public void testInstance1() {
+    public void testInstance1() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl"},
@@ -175,7 +183,7 @@ public class Test_schemagen
 
     /* TODO this test fails, because the isInstance check in schemagen is quite weak.
      * Consider whether to fix the test or the code... *
-    public void testInstance2() {
+    public void testInstance2() throws Exception {
         String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--rdfs"},
@@ -184,7 +192,7 @@ public class Test_schemagen
     }
     */
 
-    public void testInstance3() {
+    public void testInstance3() throws Exception {
         String SOURCE = PREFIX + "ex:A a rdfs:Class . ex:i a ex:A .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--rdfs"},
@@ -193,7 +201,7 @@ public class Test_schemagen
     }
 
     /** Bug report by Richard Cyganiak */
-    public void testRC0() {
+    public void testRC0() throws Exception {
         String SOURCE = PREFIX + "ex:class a owl:Class .";
         testSchemagenOutput( SOURCE, null,
                              new String[] {"-a", "http://example.com/sg#", "--owl"},
@@ -202,10 +210,156 @@ public class Test_schemagen
     }
 
 
+    public void testComment0() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"commentcomment\" .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl"},
+                             new String[] {" */\\*\\* <p>commentcomment</p> \\*/ *"},
+                             new String[] {} );
+    }
+
+    public void testComment1() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class ; rdfs:comment \"commentcomment\" .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--nocomments"},
+                             new String[] {},
+                             new String[] {" */\\*\\* <p>commentcomment</p> \\*/ *"} );
+    }
+
+    public void testOntClass0() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--ontology"},
+                             new String[] {".*public static final OntClass A.*"},
+                             new String[] {} );
+    }
+
+    public void testOntClass1() throws Exception {
+        String SOURCE = PREFIX + "ex:A a rdfs:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--ontology"},
+                             new String[] {},
+                             new String[] {".*public static final OntClass A.*"} );
+    }
+
+    public void testOntClass2() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--ontology"},
+                             new String[] {},
+                             new String[] {".*public static final OntClass A.*"} );
+    }
+
+    public void testOntClass3() throws Exception {
+        String SOURCE = PREFIX + "ex:A a rdfs:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--ontology"},
+                             new String[] {".*public static final OntClass A.*"},
+                             new String[] {} );
+    }
+
+    public void testOntProperty0() throws Exception {
+        String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--ontology"},
+                             new String[] {".*public static final ObjectProperty p.*"},
+                             new String[] {} );
+    }
+
+    public void testOntProperty1() throws Exception {
+        String SOURCE = PREFIX + "ex:p a rdf:Property .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--ontology"},
+                             // in OWL mode we permit rdf:properties
+                             new String[] {".*public static final OntProperty p.*"},
+                             new String[] {} );
+    }
+
+    public void testOntProperty2() throws Exception {
+        String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--ontology"},
+                             new String[] {},
+                             new String[] {".*public static final ObjectProperty p.*"} );
+    }
+
+    public void testOntProperty3() throws Exception {
+        String SOURCE = PREFIX + "ex:p a rdf:Property .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--ontology"},
+                             new String[] {".*public static final OntProperty p.*"},
+                             new String[] {} );
+    }
+
+    public void testHeader() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--ontology", "--header", "/* header */\n%package%\n%imports%\n"},
+                             new String[] {"/\\* header \\*/"},
+                             new String[] {} );
+    }
+
+    public void testFooter() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--ontology", "--footer", "/* footer */"},
+                             new String[] {"/\\* footer \\*/"},
+                             new String[] {} );
+    }
+
+    public void testPackage() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--ontology", "--package", "test.test"},
+                             new String[] {"package test.test;\\s*"},
+                             new String[] {} );
+    }
+
+    public void testClassname() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        SchemaGenAux fixture = new SchemaGenAux() {
+            protected String getValue( Object option ) {
+                if (option.equals( OPT_INPUT )) {
+                    // without the -n option, this will force the classname to be Soggy
+                    return "http://example.org/soggy";
+                }
+                else {
+                    return super.getValue( option );
+                }
+            }
+        };
+
+        testSchemagenOutput( SOURCE, fixture,
+                             new String[] {"-a", "http://example.com/soggy#", "--ontology", "--package", "test.test", "-n", "Sg"},
+                             new String[] {},
+                             new String[] {} );
+    }
+
+    public void testClassdec() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--ontology", "--classdec", "\n    implements java.lang.Cloneable\n"},
+                             new String[] {"\\s*implements java.lang.Cloneable\\s*"},
+                             new String[] {} );
+    }
+
+    public void testDeclarations() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--ontology", "--declarations", "protected String m_gnole = \"Fungle\";;\n"},
+                             new String[] {".*Fungle.*"},
+                             new String[] {} );
+    }
+
+
     // Internal implementation methods
     //////////////////////////////////
 
     /**
+     * Test the output from schemagen by saving the output to a string,
+     * then ensuring that every positive regex matches at least one line, and
+     * every negative regex matches at most no lines. Also checks that
+     * compiling the file does not cause any errors.
      *
      * @param source String defining the model, using N3
      * @param sg The schemagen object to test, or null for a default
@@ -214,7 +368,10 @@ public class Test_schemagen
      * @param negPatterns arrays of regexps that must not match the output
      * @return The string defining the java class
      */
-    protected String testSchemagenOutput( String source, SchemaGenAux sg, String[] args, String[] posPatterns, String[] negPatterns ) {
+    protected String testSchemagenOutput( String source, SchemaGenAux sg, String[] args,
+                                          String[] posPatterns, String[] negPatterns )
+        throws Exception
+    {
         sg = (sg == null) ? new SchemaGenAux() : sg;
 
         Model m = ModelFactory.createDefaultModel();
@@ -259,14 +416,76 @@ public class Test_schemagen
             assertTrue( msg, foundPos[i] );
         }
 
+        // check that the file compiles with javac
+        testCompile( result, "Sg" );
+
         return result;
     }
 
+    /**
+     * Test the compilability of the generated output string by saving it to a
+     * class file, and invoking javac on that file.
+     * @param source
+     * @param className
+     * @throws Exception
+     */
+    protected void testCompile( String source, String className )
+        throws Exception
+    {
+        // first write the source file to a temp dir
+        File tmpDir = FileUtils.getScratchDirectory( "schemagen" );
+        File srcFile = new File( tmpDir, className + ".java" );
+        FileWriter out = new FileWriter( srcFile );
+        out.write(  source );
+        out.close();
+
+        // now get ready to invoke javac
+        try {
+            Class jcMain = Class.forName(  "sun.tools.javac.Main" );
+
+            // constructor
+            Constructor jcConstruct = jcMain.getConstructor( new Class[] {OutputStream.class, String.class} );
+            Method jcCompile = jcMain.getMethod( "compile", new Class[] {String[].class} );
+            ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+            Object jc = jcConstruct.newInstance( new Object[] {byteOut, "javac"} );
+
+            // build the args list for javac
+            String[] args = new String[] {"-classpath", getClassPath( tmpDir ), "-d", tmpDir.getPath(), srcFile.getPath() };
+
+            Boolean success = (Boolean) jcCompile.invoke( jc, new Object[] {args} );
+            log.debug( "compiled - success = " + success );
+            log.debug( "message = " + byteOut.toString() );
+            assertTrue( "Errors reported from compilation of schemagen output", success.booleanValue() );
+        }
+        catch (ClassNotFoundException nf) {
+            log.debug( "sun.tools.java.Main not found (no tools.jar on classpath?). schemagen compilation test skipped." );
+        }
+
+        // clean up
+        srcFile.deleteOnExit();
+        new File( tmpDir, className + ".class" ).deleteOnExit();
+        tmpDir.deleteOnExit();
+    }
+
+    /**
+     * answer the classpath we can use to compile the sg output files
+     * @param tmpDir
+     * @return
+     */
+    protected String getClassPath( File tmpDir ) {
+        return System.getProperty ("java.class.path") +
+               System.getProperty ("path.separator") +
+               tmpDir.getPath();
+    }
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
+    /**
+     * An extension to standard schemagen to create a test fixture; we override the
+     * input and output methods.
+     */
     static class SchemaGenAux
         extends schemagen
     {
