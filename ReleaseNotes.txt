@@ -2,6 +2,19 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+RDF/XML output:
+    o bug whereby a literal containing the sequence "]]>" generated illegal
+      XML (because the "]]>" went through unchanged, and is illegal except
+      as CDATA end) fixed by converting any ">" in element content into
+      "&gt;". 
+      
+    o unencodable characters (any control character except \n, \t, \r) now
+      throw exceptions. We may allow a new parameter setting to switch this
+      off later.
+      
+    o the entity-conversion code has been rewritten using Java regex's to
+      avoid multiple conversions.
+
 Untyped literal operations deprecated (char, boolean, long, float, double, Object)
      These operations do not work on typed literals.  They converted their arguments
      to plain strings and parsed strings to retrive values.  
@@ -11,8 +24,6 @@ Untyped literal operations deprecated (char, boolean, long, float, double, Objec
      Model:      .add, .listStatements, .listSubjectsWithProperty
      Resource:   .hasProperty, .addProperty
 	
-
-
 JAR file changes:
     Added:    arq-extra.jar
     Changed:  wstx-asl-2.8.jar ==> wstx-asl-3.0.0.jar

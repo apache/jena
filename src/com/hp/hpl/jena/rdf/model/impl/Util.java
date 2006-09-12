@@ -34,10 +34,12 @@ import java.util.regex.*;
 
 import org.apache.xerces.util.XMLChar;
 
+import com.hp.hpl.jena.shared.*;
+
 /** Some utility functions.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2006-09-11 15:22:38 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2006-09-12 10:21:14 $'
  */
 public class Util extends Object {
 
@@ -90,40 +92,53 @@ public class Util extends Object {
         {
         if (standardEntities.matcher( s ).find())
             {
-            return s
-                .replaceAll( "&", "&amp;" )
-                .replaceAll( "<", "&lt;" )
-                .replaceAll( ">", "&gt;" )
+            return substituteEntitiesInElementContent( s )
                 .replaceAll( "'", "&apos;" )
                 .replaceAll( "\t","&#9;" )
                 .replaceAll( "\n", "&#xA;" )
                 .replaceAll( "\r", "&#xD;" )
                 .replaceAll( "\"", "&quot;" )
                 ;
-//            s = replace(s, "&", "&amp;");
-//            s = replace(s, "<", "&lt;");
-//            s = replace(s, ">", "&gt;");
-//            s = replace(s, "'", "&apos;");
-//            s = replace(s, "\t", "&#9;");
-//            s = replace(s, "\n", "&#xA;");
-//            s = replace(s, "\r", "&#xD;");
-//            s = replace(s, "\"", "&quot;");
-//            return s;
             }
         else
             return s;
         }
     
-    protected static Pattern elementContentEntities = Pattern.compile( "<|>|&" );
-    
+    protected static Pattern elementContentEntities = Pattern.compile( "<|>|&|[\0-\37&&[^\n\r\t]]" );
+    /**
+        Answer <code>s</code> modified to replace &lt;, &gt;, and &amp; by
+        their corresponding entity references. 
+        
+    <p>
+        Implementation note: as a (possibly misguided) performance hack, 
+        the obvious cascade of replaceAll calls is replaced by an explicit
+        loop that looks for all three special characters at once.
+    */
     public static String substituteEntitiesInElementContent( String s ) 
         {
         Matcher m = elementContentEntities.matcher( s );
         if (!m.find())
-        // if (s.indexOf( "&" ) < 0 && s.indexOf( "<" ) < 0 && s.indexOf( ">" ) < 0) 
             return s;
         else
-            return s.replaceAll( "&", "&amp;" ).replaceAll( "<", "&lt;" ).replaceAll( ">", "&gt;" );
+            {
+            int start = 0;
+            StringBuffer result = new StringBuffer();
+            do
+                {
+                result.append( s.substring( start, m.start() ) );
+                char ch = s.charAt( m.start() );
+                switch ( ch )
+                    {
+                    case '<': result.append( "&lt;" ); break;
+                    case '&': result.append( "&amp;" ); break;
+                    case '>': result.append( "&gt;" ); break;
+                    default: throw new CannotEncodeCharacterException( ch, "XML" );
+                    }
+                start = m.end();
+                } while (m.find( start ));
+            result.append( s.substring( start ) );
+            return result.toString();
+            }
         }
 
     public static String replace(
