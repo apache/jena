@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.54 2006-09-12 10:21:16 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.55 2006-09-12 14:01:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.54 $' Date='$Date: 2006-09-12 10:21:16 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.55 $' Date='$Date: 2006-09-12 14:01:53 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -453,6 +453,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
    
 	private void writeXMLBody( Model model, PrintWriter pw, String base ) {
+        String rdfRDF = model.qnameFor( RDF.getURI() + "RDF" );
+        // pw.print( "<!DOCTYPE " + rdfRDF +" []>\n" );
 //		try {
         // TODO errors?
 			if (xmlBase == null) {

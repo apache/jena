@@ -2,16 +2,12 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.36 2006-09-11 15:22:53 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.37 2006-09-12 14:01:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Random;
 import java.util.Vector;
 
@@ -42,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2006-09-11 15:22:53 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date: 2006-09-12 14:01:45 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -326,125 +322,142 @@ public class testWriterAndReader
             
     ByteArrayOutputStream tmpOut;
 	/**
-	 * 
 	 * @param rwLang Use Writer for this lang
 	 * @param seed  A seed for the random number generator
-	 * @param jjjMax Number of random variations
+	 * @param variationMax Number of random variations
 	 * @param wopName  Property names to set on Writer
 	 * @param wopVal   Property values to set on Writer
 	 */
 	public void test(
 		String rwLang,
 		int seed,
-		int jjjMax,
+		int variationMax,
 		String[] wopName,
 		Object[] wopVal)
 		throws IOException {
 
 		Model m1 = createMemModel();
-		Model m2 = createMemModel();
-		//  Model m3 = createMemModel();
-		//  Model m4 = createMemModel();
 		test = "testWriterAndReader lang=" + rwLang + " seed=" + seed;
 		String filebase = "testing/regression/testWriterAndReader/";
 		if (showProgress)
 			System.out.println("Beginning " + test);
 		Random random = new Random(seed);
 
-        RDFReader rdfRdr = m1.getReader(rwLang);
-		RDFWriter rdfWtr = m1.getWriter(rwLang);
+        RDFReader rdfRdr = m1.getReader( rwLang );
+		RDFWriter rdfWtr = m1.getWriter( rwLang );
 
-		// set any writer options
-
-		if (wopName != null) {
-			for (int i = 0; i < wopName.length; i++) {
-				rdfWtr.setProperty(wopName[i], wopVal[i]);
-			}
-		}
-
-		rdfRdr.setErrorHandler(this);
-		rdfWtr.setErrorHandler(this);
-		for (int jjj = 0; jjj < jjjMax; jjj++) {
-			String fileName = "t" + (fileNumber * 1000) + ".rdf";
-			m1 = createMemModel();
-			String baseUriRead;
-			if (fileNumber < baseUris.length)
-				baseUriRead = baseUris[fileNumber];
-			else
-				baseUriRead = "http://foo.com/Hello";
-			InputStream rdr = new FileInputStream(filebase + fileName);
-			m1.read(rdr, baseUriRead);
-			rdr.close();
-			for (int j = 0; j < repetitionsJ; j++) {
-
-                String baseUriWrite =
-					j % 2 == 0 ? baseUriRead : "http://bar.com/irrelevant";
-				int cn = (int) m1.size();
-				if ((j % 2) == 0 && j > 0)
-					prune(m1, random, 1 + cn / 10);
-				if ((j % 2) == 0 && j > 0)
-					expand(m1, random, 1 + cn / 10);
-                
-                tmpOut = new ByteArrayOutputStream() ;
-                rdfWtr.write(m1, tmpOut, baseUriWrite);
-                tmpOut.flush() ;
-                tmpOut.close() ;
-				m2 = createMemModel();
-				//empty(m2);
-                
-                InputStream in = new ByteArrayInputStream(tmpOut.toByteArray()) ;
-				rdfRdr.read(m2, in, baseUriWrite);
-				in.close();
-				Model s1 = m1;
-				Model s2 = m2;
-				/*
-				System.err.println("m1:");
-				m1.write(System.err,"N-TRIPLE");
-				System.err.println("m2:");
-				
-				m2.write(System.err,"N-TRIPLE");
-				System.err.println("=");
-				*/
-//				assertTrue(
-//                        "Comparison of file written out, and file read in.",
-//                        s1.isIsomorphicWith(s2));
-                assertIsoModels( "Comparison of file written out, and file read in.", s1, s2 );
-                // Free resources explicitily.
-                tmpOut.reset() ;
-                tmpOut = null ;
-			}
-			if (showProgress) {
-				System.out.print("+");
-				System.out.flush();
-			}
-
-		}
+		setWriterOptionsAndHandlers( wopName, wopVal, rdfRdr, rdfWtr );
+		for (int variationIndex = 0; variationIndex < variationMax; variationIndex++) 
+			testVariation( filebase, random, rdfRdr, rdfWtr );
 		if (showProgress)
 			System.out.println("End of " + test);
 	}
+    
+    /**
+     	@param wopName
+     	@param wopVal
+     	@param rdfRdr
+     	@param rdfWtr
+    */
+    private void setWriterOptionsAndHandlers( String[] wopName, Object[] wopVal, RDFReader rdfRdr, RDFWriter rdfWtr )
+        {
+        rdfRdr.setErrorHandler( this );
+        rdfWtr.setErrorHandler( this );
+		if (wopName != null)
+			for (int i = 0; i < wopName.length; i++)
+				rdfWtr.setProperty( wopName[i], wopVal[i] );
+        }
+    
+    /**
+     	@param filebase
+     	@param random
+     	@param rdfRdr
+     	@param rdfWtr
+     	@throws FileNotFoundException
+     	@throws IOException
+    */
+    private void testVariation( String filebase, Random random, RDFReader rdfRdr, RDFWriter rdfWtr ) 
+        throws FileNotFoundException, IOException
+        {
+        Model m1 = createMemModel();
+        Model m2;
+        String fileName = "t" + (fileNumber * 1000) + ".rdf";
+        String baseUriRead;
+        if (fileNumber < baseUris.length)
+        	baseUriRead = baseUris[fileNumber];
+        else
+        	baseUriRead = "http://foo.com/Hello";
+        InputStream rdr = new FileInputStream( filebase + fileName );
+        m1.read(rdr, baseUriRead);
+        rdr.close();
+        for (int j = 0; j < repetitionsJ; j++) {
+
+            String baseUriWrite =
+        		j % 2 == 0 ? baseUriRead : "http://bar.com/irrelevant";
+        	int cn = (int) m1.size();
+        	if ((j % 2) == 0 && j > 0)
+        		prune(m1, random, 1 + cn / 10);
+        	if ((j % 2) == 0 && j > 0)
+        		expand(m1, random, 1 + cn / 10);
+            
+            tmpOut = new ByteArrayOutputStream() ;
+            rdfWtr.write(m1, tmpOut, baseUriWrite);
+            tmpOut.flush() ;
+            tmpOut.close() ;
+        	m2 = createMemModel();
+        	//empty(m2);
+            
+            InputStream in = new ByteArrayInputStream( tmpOut.toByteArray() ) ;
+        	rdfRdr.read(m2, in, baseUriWrite);
+        	in.close();
+        	Model s1 = m1;
+        	Model s2 = m2;
+        	/*
+        	System.err.println("m1:");
+        	m1.write(System.err,"N-TRIPLE");
+        	System.err.println("m2:");
+        	
+        	m2.write(System.err,"N-TRIPLE");
+        	System.err.println("=");
+        	*/
+//				assertTrue(
+//                        "Comparison of file written out, and file read in.",
+//                        s1.isIsomorphicWith(s2));
+            assertIsoModels( "Comparison of file written out, and file read in.", s1, s2 );
+            // Free resources explicitily.
+            tmpOut.reset() ;
+            tmpOut = null ;
+        }
+        if (showProgress) {
+        	System.out.print("+");
+        	System.out.flush();
+        }
+        }
+    
   static boolean linuxFileDeleteErrorFlag = false;
-	/**Deletes cnt edges from m chosen by random.
-	 * @param cnt The number of statements to delete.
-	 * @param m A model with more than cnt statements.
+  
+	/**Deletes count edges from m chosen by random.
+	 * @param count The number of statements to delete.
+	 * @param m A model with more than count statements.
 	 */
-	private void prune(Model m, Random random, int cnt)  {
+	private void prune(Model m, Random random, int count)  {
 		//    System.out.println("Pruning from " + (int)m.size() + " by " + cnt );
-		Statement die[] = new Statement[cnt];
+		Statement toRemove[] = new Statement[count];
 		int sz = (int) m.size();
 		StmtIterator ss = m.listStatements();
 		try {
-			for (int i = 0; i < cnt; i++)
-				die[i] = ss.nextStatement();
+			for (int i = 0; i < count; i++)
+				toRemove[i] = ss.nextStatement();
 			while (ss.hasNext()) {
 				int ix = random.nextInt(sz);
-				if (ix < cnt)
-					die[ix] = ss.nextStatement();
+				if (ix < count)
+					toRemove[ix] = ss.nextStatement();
 			}
 		} finally {
 			ss.close();
 		}
-		for (int i = 0; i < cnt; i++)
-			m.remove(die[i]);
+		for (int i = 0; i < count; i++)
+			m.remove( toRemove[i] );
 		//    System.out.println("Reduced to " + (int)m.size()  );
 	}
     
@@ -516,16 +529,6 @@ public class testWriterAndReader
 		error(e);
 		throw new JenaException(e);
 	}
-    
-	/*
-	static public void empty(Model m)  {
-	    StmtIterator iter = m.listStatements();
-	    while (iter.hasNext()) {
-	        iter.nextStatement();
-	        iter.remove();
-	    }
-	}
-	*/
 
 }
 
@@ -555,5 +558,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.36 2006-09-11 15:22:53 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.37 2006-09-12 14:01:45 chris-dollin Exp $
  */

@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.46 2006-03-22 13:53:14 andy_seaborne Exp $
+  $Id: TestXMLFeatures.java,v 1.47 2006-09-12 14:01:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.xmloutput.impl.SimpleLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.46 $ $Date: 2006-03-22 13:53:14 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.47 $ $Date: 2006-09-12 14:01:45 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
@@ -207,6 +207,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		throws IOException {
 		check(filename, encoding, regexPresent, regexAbsent, false, code);
 	}
+    
     private void check(
         String filename,
         String regexAbsent,
@@ -218,6 +219,7 @@ public class TestXMLFeatures extends ModelTestBase {
             },base);
         check(filename, null, null, regexAbsent, false, code, base);
     }
+    
     private void check(
         String filename,
         String encoding,
@@ -228,6 +230,7 @@ public class TestXMLFeatures extends ModelTestBase {
         throws IOException {
         check(filename, encoding, regexPresent, regexAbsent, errs, code, "file:"+filename);
     }
+    
 	private void check(
 		String filename,
 		String encoding,
@@ -369,7 +372,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			"rdf:",
 			new Change() {
 			public void code( Model m ) {
-				m.setNsPrefix("r", RDF.getURI());
+            m.removeNsPrefix( "rdf" ); m.setNsPrefix("r", RDF.getURI()); 
 			}
 		});
 	}
@@ -757,6 +760,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			}
 		});
 	}
+    
 	static final int BadPropURI = 1;
 	static final int NoError = 0;
 	static final int ExtraTriples = 2;
@@ -851,6 +855,7 @@ public class TestXMLFeatures extends ModelTestBase {
     public void testLiAsProperty1() throws IOException {
         checkPropURI(RDF.getURI()+"li", null, null, BadPropURI);
     }
+    
     /*
     public void testLiAsProperty2() throws IOException {
         checkPropURI(RDF.getURI()+"li", "brickley", "true", ExtraTriples);
@@ -863,10 +868,12 @@ public class TestXMLFeatures extends ModelTestBase {
     public void testBadProperty1() throws IOException {
         checkPropURI("http://x/a.b/", null, null, BadPropURI);
     }
+    
     /*
     public void testBadProperty2() throws IOException {
         checkPropURI("http:/a.b/", "brickley", "http://example.org/b#", ExtraTriples);
     }
+    
     */
 	public void testRelativeAPI() {
 		RDFWriter w = createMemModel().getWriter(lang);
@@ -884,6 +891,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		w.setProperty("relativeURIs", "foo"); // will get warning
 		assertTrue("A warning should have been generated.", unblockLogger());
 	}
+    
 	private void relative(
 		String relativeParam,
 		String base,
@@ -948,6 +956,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			}
 		}
 	}
+    
 	static String rData1[][] = {
 		// http://www.example.org/a/b/c/d/
 		{
@@ -1012,8 +1021,8 @@ public class TestXMLFeatures extends ModelTestBase {
 				"[.][.]/[.][.]/c/d/z[?]x=a",
 				},
 				};
+    
 	static String rData2[][] = {
-
 		// http://www.example.org/a/b/c/d
 		{
 			"",
@@ -1077,6 +1086,7 @@ public class TestXMLFeatures extends ModelTestBase {
 				"[.][.]/[.][.]/b/c/d/z[?]x=a",
 				},
 				};
+    
 	static String rData3[][] = {
 		// http://www.example.org/A/B#
 		{
@@ -1123,6 +1133,7 @@ public class TestXMLFeatures extends ModelTestBase {
 				},
 				{
 			"grandparent", null, null, null, null, null, null, null, }, };
+    
 	private void relative(int i, String base, String d[][])
 		throws IOException {
 		Set in = new HashSet();
@@ -1135,7 +1146,6 @@ public class TestXMLFeatures extends ModelTestBase {
 		}
 		// System.out.println(base + "["+i+"]");
 		relative(d[i][0], base, in, out);
-
 	}
 
 	public void testRelative() throws Exception {
@@ -1145,6 +1155,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			relative(i, "http://www.example.org/A/B#", rData3);
 		}
 	}
+    
 	private static String uris[] =
 		{
 			"http://www.example.org/a/b/c/d/",
@@ -1156,8 +1167,8 @@ public class TestXMLFeatures extends ModelTestBase {
 			"http://www.example.org/a/b/c/d/z?x=a",
 			};
 
-
     static IRIFactory factory = IRIFactory.jenaImplementation();
+    
 	static public void main(String args[]) throws Exception {
 		String b[] =
 			{
@@ -1219,5 +1230,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.46 2006-03-22 13:53:14 andy_seaborne Exp $
+ * $Id: TestXMLFeatures.java,v 1.47 2006-09-12 14:01:45 chris-dollin Exp $
  */
