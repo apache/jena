@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.19 2006-03-22 13:53:37 andy_seaborne Exp $
+ *  $Id: Abbreviated.java,v 1.20 2006-09-12 15:18:59 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter(String)
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2006-03-22 13:53:37 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2006-09-12 15:18:59 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
@@ -70,11 +70,10 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
     boolean sParseTypeLiteralPropertyElt;
     boolean sParseTypeResourcePropertyElt;
     boolean sPropertyAttr;
-    
 
     boolean sResourcePropertyElt;
 
-	void unblockAll() {
+	protected void unblockAll() {
 		sDamlCollection = false;
 		sReification = false;
 		sResourcePropertyElt = false;
@@ -85,11 +84,13 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 		sPropertyAttr = false;
         sListExpand = false;
 	}
+    
     {
         unblockAll();
         blockRule(RDFSyntax.propertyAttr);
     }
-    void blockRule(Resource r) {
+    
+    protected void blockRule(Resource r) {
         if (r.equals(RDFSyntax.sectionReification)) sReification=true;
        // else if (r.equals(RDFSyntax.resourcePropertyElt)) sResourcePropertyElt=true;
         else if (r.equals(RDFSyntax.sectionListExpand)) sListExpand=true;
@@ -123,7 +124,7 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
             super.write( baseModel, out, base );
 		}
 		
-	void writeBody(
+	protected void writeBody(
 		Model model,
 		PrintWriter pw,
 		String base,

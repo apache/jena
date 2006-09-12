@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.15 2006-03-22 13:53:37 andy_seaborne Exp $
+  $Id: Basic.java,v 1.16 2006-09-12 15:19:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2006-03-22 13:53:37 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2006-09-12 15:19:00 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -33,7 +33,7 @@ public class Basic extends BaseXMLWriter {
     
     private String space;
 	
-    void writeBody(
+    protected void writeBody(
 		Model model,
 		PrintWriter pw,
 		String base,
@@ -126,11 +126,13 @@ public class Basic extends BaseXMLWriter {
 					+ ">");
 		}
 	}
-    void unblockAll() {
+    protected void unblockAll() {
         blockLiterals = false;
     }
+    
     private boolean blockLiterals = false;
-    void blockRule(Resource r) {
+    
+    protected void blockRule(Resource r) {
         if (r.equals(RDFSyntax.parseTypeLiteralPropertyElt)) {
      //       System.err.println("Blocking");
             blockLiterals = true;

@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.55 2006-09-12 14:01:53 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.56 2006-09-12 15:19:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.55 $' Date='$Date: 2006-09-12 14:01:53 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.56 $' Date='$Date: 2006-09-12 15:19:00 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -77,11 +77,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
   	return old;
   }
   
-    abstract void unblockAll();
+    abstract protected void unblockAll();
     
-    abstract void blockRule(Resource r);
+    abstract protected void blockRule(Resource r);
 
-    abstract void writeBody
+    abstract protected void writeBody
         ( Model mdl, PrintWriter pw, String baseUri, boolean inclXMLBase );
                 
 	
@@ -147,6 +147,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	RDFErrorHandler errorHandler = defaultErrorHandler;
 
 	Boolean showXmlDeclaration = null;
+    
+    protected Boolean showDoctypeDeclaration = Boolean.FALSE;
 
 	/*
 	 * There are two sorts of id's for anonymous resources.  Short id's are the
@@ -453,8 +455,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
    
 	private void writeXMLBody( Model model, PrintWriter pw, String base ) {
-        String rdfRDF = model.qnameFor( RDF.getURI() + "RDF" );
-        // pw.print( "<!DOCTYPE " + rdfRDF +" []>\n" );
+        if (true || showDoctypeDeclaration.booleanValue()) 
+            {
+            String rdfRDF = model.qnameFor( RDF.getURI() + "RDF" );
+            pw.print( "<!DOCTYPE " + rdfRDF +" []>\n" );
+            }
 //		try {
         // TODO errors?
 			if (xmlBase == null) {
@@ -543,6 +548,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	final synchronized public Object setProperty( String propName, Object propValue ) {
 		if (propName.equalsIgnoreCase("showXmlDeclaration")) {
 			return setShowXmlDeclaration(propValue);
+        } else if (propName.equalsIgnoreCase( "showDoctypeDeclaration" )) {
+            return setShowDoctypeDeclaration( propValue );
         } else if (propName.equalsIgnoreCase( "minimalPrefixes" )) {
             try { return new Boolean( !writingAllModelPrefixNamespaces ); }
             finally { writingAllModelPrefixNamespaces = !getBoolean( propValue ); }
@@ -579,16 +586,16 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
     
 	private String setAttributeQuoteChar(Object propValue) {
-		String result = attributeQuoteChar;
+		String oldValue = attributeQuoteChar;
 		if ( "\"".equals(propValue) || "'".equals(propValue) )
 		  attributeQuoteChar = (String)propValue;
 		else 
 		  logger.warn("attributeQutpeChar must be either \"\\\"\" or \', not \""+propValue+"\"" );
-		return result;
+		return oldValue;
 	}
 
 	private Integer setWidth(Object propValue) {
-		Integer result = new Integer(width);
+		Integer oldValue = new Integer(width);
 		if (propValue instanceof Integer) {
 			width = ((Integer) propValue).intValue();
 		} else {
@@ -598,7 +605,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				logger.warn(	"Bad value for width: '" + propValue + "' [" + e.getMessage() + "]" );
 			}
 		}
-		return result;
+		return oldValue;
 	}
 
 	private Integer setTab(Object propValue) {
@@ -614,43 +621,48 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		}
 		return result;
 	}
+    
+    private String setShowDoctypeDeclaration( Object propValue )
+        {
+        String oldValue = showDoctypeDeclaration.toString();
+        showDoctypeDeclaration = getBooleanValue( propValue, Boolean.FALSE );
+        return oldValue;
+        }
 
-	private String setShowXmlDeclaration(Object propValue) {
-		String oldValue;
-		if (showXmlDeclaration == null)
-			oldValue = null;
-		else
-			oldValue = showXmlDeclaration.toString();
-		if (propValue == null)
-			showXmlDeclaration = null;
-		else if (propValue instanceof Boolean)
-			showXmlDeclaration = (Boolean) propValue;
-		else if (propValue instanceof String) {
-			String propValueStr = (String) propValue;
-			if (propValueStr.equalsIgnoreCase("default")) {
-				showXmlDeclaration = null;
-			}
-			if (propValueStr.equalsIgnoreCase("true"))
-				showXmlDeclaration = Boolean.TRUE;
-			else if (propValueStr.equalsIgnoreCase("false"))
-				showXmlDeclaration = Boolean.FALSE;
-			else
-				// Also overloading the error condition.
-				throw new BadBooleanException( propValueStr );
-		}
-		return oldValue;
-	}
+    private String setShowXmlDeclaration( Object propValue ) 
+        {
+        String oldValue = showXmlDeclaration == null ? null : showXmlDeclaration.toString();
+        showXmlDeclaration = getBooleanValue( propValue, null );
+        return oldValue;
+        }
 
     /**
         Answer the boolean value corresponding to o, which must either be a Boolean,
         or a String parsable as a Boolean.
     */
-	static private boolean getBoolean( Object o ) {
-		if (o instanceof Boolean)
-			return ((Boolean) o).booleanValue();
-		return Boolean.valueOf((String) o).booleanValue();
-	}
+    static private boolean getBoolean( Object o ) 
+        { return getBooleanValue( o, Boolean.FALSE ).booleanValue(); }
+    
+    private static Boolean getBooleanValue( Object propValue, Boolean theDefault )
+        {
+        if (propValue == null)
+            return theDefault;
+        else if (propValue instanceof Boolean)
+            return (Boolean) propValue;
+        else if (propValue instanceof String)
+            return stringToBoolean( (String) propValue, theDefault );
+        else
+            throw new JenaException( "cannot treat as boolean: " + propValue );
+        }
 
+	private static Boolean stringToBoolean( String b, Boolean theDefault )
+        {
+        if (b.equals( "default" )) return theDefault;
+        if (b.equalsIgnoreCase( "true" )) return Boolean.TRUE;
+        if (b.equalsIgnoreCase( "false" )) return Boolean.FALSE;
+        throw new BadBooleanException( b );
+        }
+    
 	Resource[] setTypes( Resource x[] ) {
 		logger.warn( "prettyTypes is not a property on the Basic RDF/XML writer." );
 		return null;
