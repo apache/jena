@@ -6,10 +6,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-09-11 13:52:55 $
+ * Last modified on   $Date: 2006-09-12 09:37:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
@@ -23,15 +23,8 @@ package jena.test;
 
 // Imports
 ///////////////
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.StringReader;
+import java.io.*;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
@@ -42,10 +35,7 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
 
 
@@ -56,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.2 2006-09-11 13:52:55 ian_dickinson Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.3 2006-09-12 09:37:22 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -351,6 +341,102 @@ public class Test_schemagen
                              new String[] {} );
     }
 
+    public void testNoClasses() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--ontology", "--noclasses"},
+                             new String[] {},
+                             new String[] {".*OntClass A.*"} );
+    }
+
+    public void testNoProperties() throws Exception {
+        String SOURCE = PREFIX + "ex:p a owl:ObjectProperty .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--ontology", "--noproperties"},
+                             new String[] {},
+                             new String[] {".*Property p.*"} );
+    }
+
+    public void testNoIndividuals() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--noindividuals"},
+                             new String[] {".*Resource A.*"},
+                             new String[] {".*Resource i.*"} );
+    }
+
+    public void testNoHeader() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--noheader"},
+                             new String[] {},
+                             new String[] {"/\\*\\*.*"} );
+    }
+
+    public void testUCNames() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--uppercase"},
+                             new String[] {".*Resource A.*",".*Resource I.*"},
+                             new String[] {} );
+    }
+
+    public void testInference0() throws Exception {
+        String SOURCE = PREFIX + "ex:p rdfs:domain ex:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl"},
+                             new String[] {},
+                             new String[] {".*Resource A.*",".*Property p.*"} );
+    }
+
+    public void testInference1() throws Exception {
+        String SOURCE = PREFIX + "ex:p rdfs:domain ex:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--owl", "--inference"},
+                             new String[] {".*Resource A.*",".*Property p.*"},
+                             new String[] {} );
+    }
+
+    public void testInference2() throws Exception {
+        String SOURCE = PREFIX + "ex:p rdfs:domain ex:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--inference"},
+                             new String[] {".*Resource A.*",".*Property p.*"},
+                             new String[] {} );
+    }
+
+    public void testStrictIndividuals0() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . <http://example.com/different#j> a ex:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs"},
+                             new String[] {".*Resource i.*",".*Resource j.*"},
+                             new String[] {} );
+    }
+
+    public void testStrictIndividuals1() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . <http://example.com/different#j> a ex:A .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--strictIndividuals"},
+                             new String[] {".*Resource i.*"},
+                             new String[] {".*Resource j.*"} );
+    }
+
+    public void testLineEnd0() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . ex:p a rdf:Property .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--strictIndividuals"},
+                             new String[] {},
+                             new String[] {".*\r.*"} );
+    }
+
+    public void testLineEnd1() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class . ex:i a ex:A . ex:p a rdf:Property .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-a", "http://example.com/sg#", "--rdfs", "--dos"},
+                             new String[] {".*\\r"},
+                             new String[] {".*[^\r]"} );
+    }
+
 
     // Internal implementation methods
     //////////////////////////////////
@@ -503,6 +589,9 @@ public class Test_schemagen
             m_source.add( m_auxSource );
         }
         protected void selectOutput() {
+            // call super to allow option processing
+            super.selectOutput();
+            // then override the result
             m_output = m_auxOutput;
         }
 

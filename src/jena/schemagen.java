@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.47 $
+ * Revision           $Revision: 1.48 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-09-11 13:52:50 $
+ * Last modified on   $Date: 2006-09-12 09:37:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.47 2006-09-11 13:52:50 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.48 2006-09-12 09:37:16 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -461,7 +461,7 @@ public class schemagen {
         String header = hasValue( OPT_HEADER ) ? getValue( OPT_HEADER ) : DEFAULT_HEADER_TEMPLATE;
 
         // user can turn of header processing, default is to have it on
-        if (!hasValue( OPT_NOHEADER )) {
+        if (!isTrue( OPT_NOHEADER )) {
             writeln( 0, substitute( header ) );
         }
         else {
