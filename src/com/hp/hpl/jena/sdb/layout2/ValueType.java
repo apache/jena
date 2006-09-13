@@ -26,42 +26,42 @@ public enum ValueType implements Named
     {
         @Override public XSDDatatype getDatatype()  { return null ; }
         @Override public int getTypeId()            { return 1 ; }
-        @Override public String getName()         { return "BNode" ; }
+        @Override public String getName()           { return "BNode" ; }
     } ,
     
     URI
     {
         @Override public XSDDatatype getDatatype()  { return null ; }
         @Override public int getTypeId()            { return 2 ; }
-        @Override public String getName()         { return "URI" ; }
+        @Override public String getName()           { return "URI" ; }
     } ,
     
     STRING
     {
         @Override public XSDDatatype getDatatype()  { return null ; }
         @Override public int getTypeId()            { return 3 ; }
-        @Override public String getName()         { return "String" ; }
+        @Override public String getName()           { return "String" ; }
     } ,
     
     XSDSTRING
     {
         @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDstring ; }
         @Override public int getTypeId()            { return 4 ; }
-        @Override public String getName()         { return "XSD String" ; }
+        @Override public String getName()           { return "XSD String" ; }
     } ,
     
     INTEGER
     {
         @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDinteger ; }
         @Override public int getTypeId()            { return 5 ; }
-        @Override public String getName()         { return "Integer" ; }
+        @Override public String getName()           { return "Integer" ; }
     } ,
     
     DOUBLE
     { 
         @Override public XSDDatatype getDatatype()  { return XSDDatatype.XSDdouble ; }
         @Override public int getTypeId()            { return 6 ; }
-        @Override public String getName()         { return "Double" ; }
+        @Override public String getName()           { return "Double" ; }
     } ,
     
     DATETIME

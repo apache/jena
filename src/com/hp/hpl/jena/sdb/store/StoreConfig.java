@@ -50,7 +50,7 @@ public class StoreConfig extends SDBConnectionHolder
     
     private boolean initialized = false ;
     private Map<String, Model> cache = new HashMap<String, Model>() ;
-    private boolean caching = false ;
+    private boolean caching = true ;
     TaggedString storage = null ;
     
     public StoreConfig(SDBConnection sdb)

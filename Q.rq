@@ -4,5 +4,5 @@ PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT *
 {
-    ?x :p ?v . FILTER regex(?v, "^pat") .
+    ?x rdfs:subClassOf ?y . 
 }

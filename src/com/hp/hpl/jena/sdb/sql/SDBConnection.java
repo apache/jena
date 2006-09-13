@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
-/** The abstraction of a connection to an SQL-backed Jena graph for SDB */
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -25,6 +23,12 @@ import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.graph.TransactionHandlerSDB;
 import com.hp.hpl.jena.shared.Command;
+
+/*
+ * An SDBConnection is the abstraction of the link between client
+ * application and the database.
+ *  There can be many Store's per connection.
+ */  
 
 public class SDBConnection
 {

@@ -26,7 +26,6 @@ then
 
 # CP is the variable collecting the path/
 # It may already have a value.
-
 CP="${CP:-}"
 
 # Append any jars in the lib/ directory
