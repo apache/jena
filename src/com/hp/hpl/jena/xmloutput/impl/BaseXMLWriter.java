@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.57 2006-09-13 08:34:45 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.58 2006-09-14 13:43:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.57 $' Date='$Date: 2006-09-13 08:34:45 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.58 $' Date='$Date: 2006-09-14 13:43:05 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -455,11 +455,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
    
 	private void writeXMLBody( Model model, PrintWriter pw, String base ) {
-        if (showDoctypeDeclaration.booleanValue()) 
-            {
-            String rdfRDF = model.qnameFor( RDF.getURI() + "RDF" );
-            pw.print( "<!DOCTYPE " + rdfRDF +" []>\n" );
-            }
+        if (showDoctypeDeclaration.booleanValue()) generateDoctypeDeclaration( model, pw );
 //		try {
         // TODO errors?
 			if (xmlBase == null) {
@@ -473,6 +469,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 //			throw new BadURIException( e.getMessage(), e);
 //		}
 	}
+
+    private void generateDoctypeDeclaration( Model model, PrintWriter pw )
+        {
+        String rdfRDF = model.qnameFor( RDF.getURI() + "RDF" );
+        pw.print( "<!DOCTYPE " + rdfRDF +" []>\n" );
+        }
 
 	private void writeXMLDeclaration(Writer out, PrintWriter pw) {
 		String decl = null;

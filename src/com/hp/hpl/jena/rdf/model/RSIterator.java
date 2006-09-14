@@ -1,19 +1,19 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RSIterator.java,v 1.5 2006-03-22 13:53:12 andy_seaborne Exp $
+  $Id: RSIterator.java,v 1.6 2006-09-14 13:43:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     An RSIterator is a ClosableIterator (qv) which delivers only ReifedStatement's
     and which has a next-method with that return type.
 */
 
-public interface RSIterator extends ClosableIterator
+public interface RSIterator extends ExtendedIterator
     {
     /** return the next object, cast to a ReifedStatement */
     public ReifiedStatement nextRS();

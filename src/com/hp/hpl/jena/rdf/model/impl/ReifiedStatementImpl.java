@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ReifiedStatementImpl.java,v 1.10 2006-03-22 13:52:29 andy_seaborne Exp $
+	$Id: ReifiedStatementImpl.java,v 1.11 2006-09-14 13:43:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -98,7 +98,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         represents any Statement with this statement's triple. (May throw an
         exception if the node is already reified to something different.)
     */        
-    private ReifiedStatementImpl cache()
+    private ReifiedStatementImpl installInReifier()
         {
         getReifier().reifyAs( this.asNode(), statement.asTriple() );
         return this;
@@ -116,13 +116,19 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         Statement _s_ with uri _uri_. The mapping is remembered.
     */        
     public static ReifiedStatementImpl create( ModelCom m, String uri, Statement s )
-        { return new ReifiedStatementImpl( m, uri, s ).cache(); }        
+        { return new ReifiedStatementImpl( m, uri, s ).installInReifier(); }        
         
     public static ReifiedStatementImpl create( EnhGraph eg, Node n, Statement s )
-        { return new ReifiedStatementImpl( eg, n, s ).cache(); }
+        { return new ReifiedStatementImpl( eg, n, s ).installInReifier(); }
     
     public String toString()
         { return super.toString() + "=>" + statement; }
+
+    public static ReifiedStatement createExistingReifiedStatement( ModelCom model, Node n )
+        {
+        Triple t = model.getGraph().getReifier().getTriple( n );
+        return new ReifiedStatementImpl( model, n, model.asStatement( t ) );
+        }
     }
     
 /*

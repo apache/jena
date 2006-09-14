@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.20 2006-03-22 13:52:30 andy_seaborne Exp $
+	$Id: ModelReifier.java,v 1.21 2006-09-14 13:43:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -202,10 +202,8 @@ public class ModelReifier
         @return a ReifiedStatement associating the resource of n with the statement of t.    
     */
     private ReifiedStatement getRS( Node n )
-        {
-        Triple t = reifier.getTriple( n );
-        Statement s = model.asStatement( t );
-        return ReifiedStatementImpl.create( model, n, s );
+        { 
+        return ReifiedStatementImpl.createExistingReifiedStatement( model, n );
         }              
     }
 
