@@ -45,7 +45,7 @@ public class SpecializedGraphReifier_RDB
 	public IDBID my_GID = null;
 
 	// cache of reified statement status
-	private ReifCacheMap m_reifCache;
+	private ReificationCacheMap m_reifCache;
 
 	public PSet_ReifStore_RDB m_reif;
 
@@ -59,7 +59,7 @@ public class SpecializedGraphReifier_RDB
 		m_pset = (PSet_ReifStore_RDB) pSet;
 		m_dbPropLSet = lProp;
 		my_GID = new DBIDInt(dbGraphID);
-		m_reifCache = new ReifCacheMap(1);
+		m_reifCache = new ReificationCacheMap(this, 1);
 		m_reif = (PSet_ReifStore_RDB) m_pset;
 	}
 
@@ -72,7 +72,7 @@ public class SpecializedGraphReifier_RDB
 	public SpecializedGraphReifier_RDB(IPSet pSet, Integer dbGraphID) {
 		m_pset = (PSet_ReifStore_RDB) pSet;
 		my_GID = new DBIDInt(dbGraphID);
-		m_reifCache = new ReifCacheMap(1);
+		m_reifCache = new ReificationCacheMap(this, 1);
 		m_reif = (PSet_ReifStore_RDB) m_pset;
 	}
 
@@ -80,9 +80,9 @@ public class SpecializedGraphReifier_RDB
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#add(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public void add(Node n, Triple t, CompletionFlag complete) throws CannotReifyException {
-		StmtMask same = new StmtMask();
-		StmtMask diff = new StmtMask();
-		ReifCache rs = m_reifCache.load(n, t, same, diff);
+		ReificationStatementMask same = new ReificationStatementMask();
+		ReificationStatementMask diff = new ReificationStatementMask();
+		ReificationCache rs = m_reifCache.load(n, t, same, diff);
 		if (rs == null) {
 			m_reif.storeReifStmt(n, t, my_GID);
 		} else {
@@ -92,22 +92,22 @@ public class SpecializedGraphReifier_RDB
 				/* add whatever is missing to reify t */
 				if ( !same.hasSubj() ) {
 					Triple st = Triple.create(n,RDF.Nodes.subject,t.getSubject());
-					m_reif.updateFrag(n, st, new StmtMask(st), my_GID);
+					m_reif.updateFrag(n, st, new ReificationStatementMask(st), my_GID);
 					didUpdate = true;
 				}
 				if ( !same.hasPred() ) {
 					Triple pt = Triple.create(n,RDF.Nodes.predicate,t.getPredicate());
-					m_reif.updateFrag(n, pt, new StmtMask(pt), my_GID);
+					m_reif.updateFrag(n, pt, new ReificationStatementMask(pt), my_GID);
 					didUpdate = true;
 				}
 				if ( !same.hasObj() ) {
 					Triple ot = Triple.create(n,RDF.Nodes.object,t.getObject());
-					m_reif.updateFrag(n, ot, new StmtMask(ot), my_GID);
+					m_reif.updateFrag(n, ot, new ReificationStatementMask(ot), my_GID);
 					didUpdate = true;
 				}
 				if ( !rs.mask.hasType() ) {
 					Triple tt = Triple.create(n,RDF.Nodes.type,RDF.Nodes.Statement);
-					m_reif.updateFrag(n, tt, new StmtMask(tt), my_GID);
+					m_reif.updateFrag(n, tt, new ReificationStatementMask(tt), my_GID);
 					didUpdate = true;
 				}
 				if ( didUpdate )
@@ -214,20 +214,20 @@ public class SpecializedGraphReifier_RDB
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public void add(Triple frag, CompletionFlag complete) throws AlreadyReifiedException {
-		StmtMask fragMask = new StmtMask(frag);
+		ReificationStatementMask fragMask = new ReificationStatementMask(frag);
 		if (fragMask.hasNada())
 			return;
 			
 		boolean fragHasType = fragMask.hasType();
 		Node stmtURI = frag.getSubject();
-		ReifCache cachedFrag = m_reifCache.load(stmtURI);
+		ReificationCache cachedFrag = m_reifCache.load(stmtURI);
 		if (cachedFrag == null) {
 			// not in database
 			m_reif.storeFrag(stmtURI, frag, fragMask, my_GID);
 			complete.setDone();
 
 		} else {
-			StmtMask cachedMask = cachedFrag.getStmtMask();
+			ReificationStatementMask cachedMask = cachedFrag.getStmtMask();
 			if (cachedMask.hasIntersect(fragMask)) {
 				// see if this is a duplicate fragment
 				boolean dup = fragHasType && cachedMask.hasType();
@@ -264,7 +264,7 @@ public class SpecializedGraphReifier_RDB
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public void delete(Triple frag, CompletionFlag complete) {
-		StmtMask fragMask = new StmtMask(frag);
+		ReificationStatementMask fragMask = new ReificationStatementMask(frag);
 		if (fragMask.hasNada())
 			return;
 			
@@ -285,7 +285,7 @@ public class SpecializedGraphReifier_RDB
 				fragCompact(stmtURI);
 			}			
 			// remove cache entry, if any
-			ReifCache cachedFrag = m_reifCache.lookup(stmtURI);
+			ReificationCache cachedFrag = m_reifCache.lookup(stmtURI);
 			if ( cachedFrag != null ) m_reifCache.flush(cachedFrag);		
 		}
 		complete.setDone();
@@ -310,16 +310,16 @@ public class SpecializedGraphReifier_RDB
 			t = (Triple) itHasType.next();
 			if ( itHasType.hasNext() ) 
                 throw new JenaException("Multiple HasType fragments for URI");			
-			StmtMask htMask = new StmtMask(t);
+			ReificationStatementMask htMask = new ReificationStatementMask(t);
 			itHasType.close();
 					
 			// now, look at fragments and try to merge them with the hasType fragement 
 			ResultSetReifIterator itFrag = m_reif.findReifStmt(stmtURI,false,my_GID, false);
-			StmtMask upMask = new StmtMask();
+			ReificationStatementMask upMask = new ReificationStatementMask();
 			while ( itFrag.hasNext() ) {
 				t = (Triple) itFrag.next();
 				if ( itFrag.getHasType() ) continue;
-				StmtMask fm = new StmtMask(rowToFrag(stmtURI, t));
+				ReificationStatementMask fm = new ReificationStatementMask(rowToFrag(stmtURI, t));
 				if ( htMask.hasIntersect(fm) )
 					break; // can't merge all fragments
 				// at this point, we can merge in the current fragment
@@ -442,126 +442,6 @@ public class SpecializedGraphReifier_RDB
 		m_reif.removeStatementsFromDB(my_GID);
 	}
 
-	public class ReifCacheMap {
-		protected int cacheSize = 1;
-		protected ReifCache[] cache;
-		protected boolean[] inUse;
-
-		ReifCacheMap(int size) {
-			int i;
-			inUse = new boolean[size];
-			cache = new ReifCache[size];
-			for (i = 0; i < size; i++)
-				inUse[i] = false;
-		}
-
-		ReifCache lookup(Node stmtURI) {
-			int i;
-			for (i = 0; i < cache.length; i++) {
-				if (inUse[i] && (cache[i].getStmtURI().equals(stmtURI)))
-					return cache[i];
-			}
-			return null;
-		}
-
-		public void flushAll() {
-			int i;
-			for (i = 0; i < cache.length; i++)
-				inUse[i] = false;
-		}
-
-		public void flush(ReifCache entry) {
-			flushAll(); // optimize later
-		}
-
-		public ReifCache load(Node stmtURI) {
-			ReifCache entry = lookup(stmtURI);
-			if (entry != null)
-				return entry;
-			return load(stmtURI, null, null, null);
-		}
-			
-
-		public ReifCache load(Node stmtURI, Triple s, StmtMask sm, StmtMask dm ) {
-			flushAll();
-			StmtMask m = new StmtMask();
-			Triple t;
-			boolean  hasSubj, hasPred, hasObj, hasType;
-			boolean  checkSame = sm != null;
-			int cnt = 0;
-			ResultSetReifIterator it = m_reif.findReifStmt(stmtURI,false,my_GID, false);
-			while (it.hasNext()) {
-				cnt++;
-				Triple db = (Triple) it.next();				
-				StmtMask n = new StmtMask();
-				hasSubj = !db.getSubject().equals(Node.NULL);
-				if ( hasSubj && checkSame )
-					if ( db.getSubject().equals(s.getSubject()) )
-						sm.setHasSubj();
-					else
-						dm.setHasSubj();
-				hasPred = !db.getPredicate().equals(Node.NULL);
-				if ( hasPred && checkSame )
-					if ( db.getPredicate().equals(s.getPredicate()) )
-						sm.setHasPred();
-					else
-						dm.setHasPred();
-				hasObj = !db.getObject().equals(Node.NULL);
-				if ( hasObj && checkSame )
-					if ( db.getObject().equals(s.getObject()) )
-						sm.setHasObj();
-					else
-						dm.setHasObj();
-					
-				hasType = it.getHasType();
-
-				n.setMask( hasSubj, hasPred, hasObj, hasType );
-				if ( n.hasNada() ) throw new JenaException("Fragment has no data");
-				m.setMerge(n);
-			}
-			if ( cnt == 0 )
-				return null; // no fragments for subject
-				
-			if (m.hasSPOT() && (cnt == 1))
-				m.setIsStmt();
-
-			inUse[0] = true;
-			cache[0] = new ReifCache(stmtURI, m, cnt);
-			return cache[0];
-		}
-
-	}
-
-	class ReifCache {
-	
-			protected Node stmtURI;
-			protected StmtMask mask;
-			protected int tripleCnt;			
-		
-			ReifCache( Node s, StmtMask m, int cnt )
-				{ stmtURI = s; mask = m; tripleCnt = cnt; }
-		
-			public StmtMask getStmtMask() { return mask; }
-			public int getCnt() { return tripleCnt; }
-			public Node getStmtURI() { return stmtURI; }
-			public void setMask ( StmtMask m ) { mask = m; }
-			public void setCnt ( int cnt ) { tripleCnt = cnt; }
-			public void incCnt ( int cnt ) { tripleCnt++; }
-			public void decCnt ( int cnt ) { tripleCnt--; }
-			public boolean canMerge ( StmtMask fragMask ) {
-				return (!mask.hasIntersect(fragMask)); }			
-			public boolean canUpdate ( StmtMask fragMask ) {
-				return ( canMerge(fragMask) && (tripleCnt == 1)); }			
-			public void update ( StmtMask fragMask ) {
-				mask.setMerge(fragMask);
-				if ( isStmt() )  { mask.setIsStmt(); }
-			}
-			private boolean isStmt() {
-				return mask.hasSPOT() && (tripleCnt == 1);
-			}
-				
-	}
-
 	static boolean isReifProp ( Node_URI p ) {
 		return p.equals(RDF.Nodes.subject) ||
 			p.equals(RDF.Nodes.predicate)||
@@ -569,91 +449,6 @@ public class SpecializedGraphReifier_RDB
 			p.equals(RDF.Nodes.type);			
 	}
 				
-	class StmtMask {
-		
-			protected int mask;
-				
-			public static final int HasSubj = 1;
-			public static final int HasPred = 2;
-			public static final int HasObj = 4;
-			public static final int HasType = 8;
-			public static final int HasSPOT = 15;
-			public static final int IsStmt = 16;
-			public static final int HasNada = 0;
-		
-			public boolean hasSubj () { return (mask & HasSubj) == HasSubj; }
-			public boolean hasPred () { return (mask & HasPred) == HasPred; }
-			public boolean hasObj () { return (mask & HasObj) == HasObj; }
-			public boolean hasType () { return (mask & HasType) == HasType; }
-			public boolean hasSPOT () { return (mask & HasSPOT) == HasSPOT; }
-			public boolean isStmt () { return (mask & IsStmt) == IsStmt; }
-			public boolean hasNada () { return mask == HasNada; }
-			public boolean hasOneBit () { return ( (mask == HasSubj) ||
-				(mask == HasPred) || (mask == HasObj) || ( mask == HasType) );
-			}
-				
-			// note: have SPOT does not imply a reification since
-			// 1) there may be multiple fragments for prop, obj
-			// 2) the fragments may be in multiple tuples
-		
-			StmtMask ( Triple t ) {
-				mask = HasNada;
-				Node p = t.getPredicate();
-				if ( p != null ) {
-					if ( p.equals(RDF.Nodes.subject) ) mask = HasSubj;
-					else if ( p.equals(RDF.Nodes.predicate) ) mask = HasPred; 
-					else if ( p.equals(RDF.Nodes.object) ) mask = HasObj; 
-					else if ( p.equals(RDF.Nodes.type) ) {
-							Node o = t.getObject();
-							if ( o.equals(RDF.Nodes.Statement) ) mask = HasType;
-					}
-				}			
-			}
-		
-			StmtMask () { mask = HasNada; }
-		
-			public void setMerge ( StmtMask m ) {
-				mask |= m.mask;	
-			}
-				
-			public void setHasType () {
-				mask |= HasType;	
-			}
-			
-			public void setMask ( boolean hasSubj, boolean hasProp, boolean hasObj, boolean hasType ) {
-				if ( hasSubj ) mask |= HasSubj;
-				if ( hasProp) mask |= HasPred;
-				if ( hasObj) mask |= HasObj;
-				if ( hasType ) mask |= HasType;	
-			}
-
-		
-			public void setHasSubj () {
-				mask |= HasSubj;	
-			}
-			
-			public void setHasPred () {
-				mask |= HasPred;	
-			}
-
-			public void setHasObj () {
-				mask |= HasObj;	
-			}
-			
-			public void setIsStmt () {
-				mask |= IsStmt;	
-			}
-		
-			public boolean hasIntersect ( StmtMask m ) {
-				return (mask & m.mask) != 0;	
-			}
-		
-			public boolean equals ( StmtMask m ) {
-				return mask == m.mask;	
-			}
-
-	}
-	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#graphIdGet()
 	 */

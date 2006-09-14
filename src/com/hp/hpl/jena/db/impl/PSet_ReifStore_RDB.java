@@ -15,7 +15,6 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -40,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.26 $ on $Date: 2006-03-22 13:52:47 $
+* @version $Revision: 1.27 $ on $Date: 2006-09-14 14:35:48 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -342,7 +341,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	public void storeFrag(
 		Node stmtURI,
 		Triple frag,
-		StmtMask fragMask,
+		ReificationStatementMask fragMask,
 		IDBID my_GID) {
 		Node subj = fragMask.hasSubj() ? frag.getObject() : Node.NULL;
 		Node prop = fragMask.hasPred() ? frag.getObject() : Node.NULL;
@@ -354,7 +353,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	public void updateOneFrag(
 		Node stmtURI,
 		Triple frag,
-		StmtMask fragMask,
+		ReificationStatementMask fragMask,
 		boolean nullify,
 		IDBID my_GID) {
 			
@@ -420,14 +419,14 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
  			}
 		}
 
-	public void nullifyFrag(Node stmtURI, StmtMask fragMask, IDBID my_GID) {
+	public void nullifyFrag(Node stmtURI, ReificationStatementMask fragMask, IDBID my_GID) {
 		updateOneFrag(stmtURI,null,fragMask,true,my_GID);
 	}
 	
 	public void updateFrag(
 		Node stmtURI,
 		Triple frag,
-		StmtMask fragMask,
+		ReificationStatementMask fragMask,
 		IDBID my_GID) {		
 			updateOneFrag(stmtURI,frag,fragMask,false,my_GID);
 		}
@@ -435,7 +434,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	public ResultSetReifIterator findFrag(
 		Node stmtURI,
 		Triple frag,
-		StmtMask fragMask,
+		ReificationStatementMask fragMask,
 		IDBID my_GID) {
 			
 			String stmtStr = null;
@@ -503,7 +502,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	
 	public void deleteFrag(
 		Triple frag,
-		StmtMask fragMask,
+		ReificationStatementMask fragMask,
 		IDBID my_GID) {
 			
 			if ( !fragMask.hasOneBit() )
