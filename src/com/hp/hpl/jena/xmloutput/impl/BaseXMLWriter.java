@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.58 2006-09-14 13:43:05 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.59 2006-09-14 17:14:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.58 $' Date='$Date: 2006-09-14 13:43:05 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.59 $' Date='$Date: 2006-09-14 17:14:48 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -92,7 +92,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     }
     
     protected String qq(String s) {
-        return q(Util.substituteStandardEntities(s));
+        String substituted = Util.substituteStandardEntities( s );
+        if (true) return q( substituted );
+        int split = Util.splitNamespace( substituted );
+        String namespace = substituted.substring(  0, split );
+        String prefix = (String) ns.get( namespace );
+        if (prefix == null) return q( substituted );
+        return q( "&" + prefix + ";" + substituted.substring( split ) );
     }
 
 	static private Set badRDF = new HashSet();
