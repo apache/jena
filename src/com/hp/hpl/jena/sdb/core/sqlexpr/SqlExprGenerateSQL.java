@@ -46,13 +46,13 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
     {
         // Err ... need to choose bewteen regex and LIKE
         // TODO Make per-store dependent for syntax and case sensitiveity reasons.
+        // including "binary" for MySQL
         regex.getExpr().visit(this) ;
         
         String pattern = regex.getPattern() ;
         String patternLike = RegexUtils.regexToLike(pattern) ;
         if ( patternLike != null )
         {
-            // TODO Binary for MySQL.
             out.print(" LIKE ") ;
             out.print(SQLUtils.quote(patternLike)) ;
             return ;

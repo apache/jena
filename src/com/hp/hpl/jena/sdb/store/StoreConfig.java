@@ -171,7 +171,7 @@ class TaggedString extends SDBConnectionHolder
 
         final String sqlStmt2 = SQLUtils.sqlStr(
                                                 // Should be good for all databases
-                                                // TODO Use TEXT
+                                                // TODO Use TEXT? Moderately universal.
                                                 "CREATE TABLE "+stringTableName,
                                                 "( "+columnName+" VARCHAR(200) NOT NULL,",
                                                 "  "+columnData+" VARCHAR(20000) NOT NULL ,",

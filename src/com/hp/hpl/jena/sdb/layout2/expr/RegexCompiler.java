@@ -86,7 +86,7 @@ class RegexSqlGen extends SDBConstraint
     @Override
     public SqlExpr compile(Scope scope)
     {
-        // TODO Convert to value-based?
+        // TODO Convert regex to using a string value table?
         MapResult rMap = exprPattern.match(getExpr()) ;
         if ( rMap == null )
             throw new SDBException("Couldn't compile after all: "+getExpr()) ;
