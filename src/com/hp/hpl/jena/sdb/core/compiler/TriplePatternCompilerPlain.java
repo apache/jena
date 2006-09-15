@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -20,15 +20,9 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
 
-/**
- * Compile a query requiring only dealing with constant slots in triples and knowing the triples table name.
- */
-
-public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriplePattern
+public abstract class TriplePatternCompilerPlain implements TriplePatternCompiler 
 {
-    @Override
-    final
-    protected SqlNode match(CompileContext context, Triple triple)
+    public SqlNode match(CompileContext context, Triple triple)
     {
         String alias = context.allocTableAlias() ;
         SqlExprList conditions = new SqlExprList() ;
@@ -79,7 +73,7 @@ public abstract class QueryCompilerTriplePatternSlot extends QueryCompilerTriple
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

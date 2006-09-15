@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -10,44 +10,13 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-/**
- * Compile a query requiring only mapping triple patterns the actual DB schema.
- */
-
-public abstract class QueryCompilerTriplePattern extends QueryCompilerBasicPattern
+public interface TriplePatternCompiler
 {
-    //private static Log log = LogFactory.getLog(QueryCompilerBaseTriple.class) ;
-    
-    @Override
-    final
-    public SqlNode compile(BlockBGP blockBGP, CompileContext context)
-    {
-        SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
-        
-        // Allow per store instance modification.
-        blockBGP = context.getStore().getCustomizer().modify(blockBGP) ;
-
-        for ( Triple triple : blockBGP.getTriples() )
-        {
-            SqlNode sNode = match(context, triple) ;
-            if ( sNode != null )
-                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
-        }
-        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
-        return sqlNode ;
-    }
-    
-    protected abstract SqlNode match(CompileContext context, Triple triple) ;
- 
-    protected abstract SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP) ;
-
-    protected abstract SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP) ;
-    
-
+    public SqlNode match(CompileContext context, Triple triple) ;
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

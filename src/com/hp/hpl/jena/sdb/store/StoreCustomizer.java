@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 
 public interface StoreCustomizer
 {
-    /** Modify a BlockBGp before query compilation occurs */
+    /** Modify a BlockBGP before query compilation occurs */
     BlockBGP modify(BlockBGP block) ;
 }
 

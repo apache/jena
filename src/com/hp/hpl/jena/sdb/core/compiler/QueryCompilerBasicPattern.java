@@ -6,134 +6,42 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
-import java.sql.SQLException;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.QueryCompiler;
-import com.hp.hpl.jena.sdb.store.ResultsBuilder;
-import com.hp.hpl.jena.sdb.store.Store;
 
 /**
- * Compile a query (in the form of Blocks).  This is the general part of the
- * algorithm where optionals are turned into left joins.  It is parameterized
- * by encoding of the basic patterns.  The different layouts provide that part
- * of the translation to SQL.
- *  
- * @author Andy Seaborne
- * @version $Id: QueryCompilerBase.java,v 1.1 2006/04/22 13:45:58 andy_seaborne Exp $
+ * Compile a query requiring only mapping triple patterns to the actual DB schema.
  */
 
-public abstract class QueryCompilerBasicPattern implements QueryCompiler
+public abstract class QueryCompilerBasicPattern extends QueryCompilerBlock
 {
-    private static Log log = LogFactory.getLog(QueryCompilerBasicPattern.class) ;
+    //private static Log log = LogFactory.getLog(QueryCompilerBaseTriple.class) ;
     
-    public static String  printDivider      = null ;
-    public static boolean printBlock        = false ;
-    public static boolean printAbstractSQL  = false ;
-    public static boolean printSQL          = false ;
-    
-    public final QueryIterator execSQL(Store store,
-                                       Block block,
-                                       Binding binding,
-                                       ExecutionContext execCxt)
+    @Override
+    final
+    public SqlNode compile(BlockBGP blockBGP, CompileContext context)
     {
-        String sqlStmt = asSQL(store, execCxt.getQuery(), block) ;
+        SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
         
-        try {
-            java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
-            
-            Set<Var> x = QC.exitVariables(block) ;
-            try {
-                return getResultBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;
-            } finally { jdbcResultSet.close() ; }
-        } catch (SQLException ex)
+        // Allow per store instance modification.
+        blockBGP = context.getStore().getCustomizer().modify(blockBGP) ;
+
+        for ( Triple triple : blockBGP.getTriples() )
         {
-            throw new SDBExceptionSQL("SQLException in executing a basic block", ex) ;
+            SqlNode sNode = getTriplePatternCompiler().match(context, triple) ;
+            if ( sNode != null )
+                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
         }
-    }
-
-    //protected abstract ConditionCompiler getConditionCompiler() ;
-    protected abstract ResultsBuilder getResultBuilder() ;
-
-    public String asSQL(Store store, Query query, Block block)
-    {
-        verbose ( printBlock, block ) ; 
-        CompileContext context = new CompileContext(store, query) ;
-
-        // A chance for subclasses to change the block structure (including insert their own block types)
-        // Remove?  Now we have customizers?
-        
-        //store.getCustomizer().modify(??) ;
-        block = modify(block) ;
-
-        if ( block == null )
-            throw new SDBException("asSQL: Block to compile is null") ;
-        
-        // ... to SqlNode structure
-        
-        startCompile(context, block) ;
-        
-        SqlNode sqlNode = block.generateSQL(context, this) ; 
-
-        Set<Var> projectVars = QC.exitVariables(block) ;
-        
-        sqlNode = finishCompile(context, block, sqlNode, projectVars) ;
-        
-        verbose ( printAbstractSQL, sqlNode ) ;
-
-        // ... SqlNode to SQL string
-        String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
-        verbose ( printSQL, sqlStmt ) ; 
-
-        return sqlStmt ;
-
-    }
-
-    /** A chance for subclasses to analyse and alter the block to be compiled into SQL */
-    protected Block modify(Block block) { return block ; }
-
-    protected abstract void startCompile(CompileContext context, Block block) ;
-    protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars) ;
-    protected abstract SqlNode compile(BlockBGP blockBGP, CompileContext context) ;
-    
-    
-    public SqlNode compile(BlockOptional blockOpt, CompileContext context)
-    {
-        SqlNode fixedNode = blockOpt.getLeft().generateSQL(context, this) ;
-        SqlNode optNode = blockOpt.getRight().generateSQL(context, this) ;
-        
-        if ( optNode.isProject() )
-        {
-            log.info("Projection from an optional{} block") ;
-            optNode = optNode.getProject().getSubNode() ;
-        }
-        SqlNode sqlNode = QC.leftJoin(context, fixedNode, optNode) ;
+        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
         return sqlNode ;
     }
     
-    static private void verbose(boolean flag, Object thing)
-    {
-        if ( flag )
-        {
-            System.out.println(thing) ;
-            if ( printDivider != null ) 
-                System.out.println(printDivider) ;
-            System.out.flush() ;
-        }
-    }
+    protected abstract TriplePatternCompiler getTriplePatternCompiler() ;
+ 
+    protected abstract SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP) ;
+
+    protected abstract SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP) ;
 }
 
 /*

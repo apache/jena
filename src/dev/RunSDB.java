@@ -15,7 +15,7 @@ import arq.cmd.CmdUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.script.CmdDesc;
 import com.hp.hpl.jena.sdb.script.ScriptDesc;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -33,9 +33,9 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
-        run() ;
+        //run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -50,9 +50,9 @@ public class RunSDB
 //        } ;
         
         String a[] = {"-v", "--time","--sdb=sdb.ttl", "@Q.rq" } ;
-        QueryCompilerBasicPattern.printBlock = true ;
-        QueryCompilerBasicPattern.printAbstractSQL = true ;
-        QueryCompilerBasicPattern.printSQL = true ;
+        QC.printBlock = true ;
+        QC.printAbstractSQL = true ;
+        QC.printSQL = true ;
         
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;

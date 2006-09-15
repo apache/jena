@@ -25,6 +25,15 @@ import com.hp.hpl.jena.sdb.core.sqlnode.*;
 
 public class QC
 {
+    // Tracing control (because the compiler process can be a long way
+    // from the originating request)
+    // 
+    public static String  printDivider      = null ;
+    public static boolean printBlock        = false ;
+    public static boolean printAbstractSQL  = false ;
+    public static boolean printSQL          = false ;
+
+    
     private static Log log = LogFactory.getLog(QC.class) ;
     
     public static SqlNode innerJoin(CompileContext context, SqlNode left, SqlNode right)
@@ -38,7 +47,6 @@ public class QC
     }
 
     
-    // Put somewhere useful
     private static String sqlNodeName(SqlNode sNode)
     {
         if ( sNode == null ) return "<null>" ;

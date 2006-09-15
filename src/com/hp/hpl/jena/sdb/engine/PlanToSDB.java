@@ -88,7 +88,7 @@ public class PlanToSDB extends TransformCopy
                      ! ( lastSDB.getBlock() instanceof BlockBGP ) ||
                      ! ( thisSDB.getBlock() instanceof BlockBGP ) )
                 {
-                    // New block, or this+last blokc not BGPs.
+                    // New block, or this+last block not BGPs.
                     if( lastSDB != null )
                         log.warn("Adjacent compound PlanSDB") ;
                     lastSDB = thisSDB ;

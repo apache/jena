@@ -18,9 +18,7 @@ import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
-import com.hp.hpl.jena.sdb.core.compiler.ConditionCompilerNone;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePatternSlot;
+import com.hp.hpl.jena.sdb.core.compiler.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
@@ -30,12 +28,13 @@ import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class QueryCompiler1 extends QueryCompilerTriplePatternSlot
+public class QueryCompiler1 extends QueryCompilerBasicPattern
 {
     private static Log log = LogFactory.getLog(QueryCompiler1.class) ;
     
     private EncoderDecoder codec ;
     private TripleTableDesc tripleTableDesc ; // ==> Tablefactory??
+    private TriplePatternCompiler tripleCompiler ;
 
     public QueryCompiler1(EncoderDecoder codec, TripleTableDesc tripleTableDesc)
     {
@@ -44,25 +43,14 @@ public class QueryCompiler1 extends QueryCompilerTriplePatternSlot
         else
             this.tripleTableDesc = tripleTableDesc ;
         this.codec = codec ;
+        tripleCompiler = new TriplePatternCompiler1() ;
     }
     
     public QueryCompiler1(EncoderDecoder codec) { this(codec, null) ; }
 
     @Override
-    protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
-    {
-          String str = codec.encode(node) ;
-          SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-          c.addNote("Const: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
-          conditions.add(c) ;
-          return ;
-    }
-    
-    @Override
-    protected SqlTable accessTriplesTable(String alias)
-    {
-        return new TableTriples1(tripleTableDesc.getTableName(), alias) ;
-    }
+    public TriplePatternCompiler getTriplePatternCompiler()
+    { return tripleCompiler ; }
     
     @Override
     protected void startCompile(CompileContext context, Block block)
@@ -120,6 +108,27 @@ public class QueryCompiler1 extends QueryCompilerTriplePatternSlot
     protected ResultsBuilder getResultBuilder()
     {
         return new ResultsBuilder1(codec) ;
+    }
+    
+    class TriplePatternCompiler1 extends TriplePatternCompilerPlain
+    {
+        @Override
+        protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
+        {
+              String str = codec.encode(node) ;
+              SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
+              c.addNote("Const: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
+              conditions.add(c) ;
+              return ;
+        }
+        
+        @Override
+        protected SqlTable accessTriplesTable(String alias)
+        {
+            return new TableTriples1(tripleTableDesc.getTableName(), alias) ;
+        }
+        
+ 
     }
 }
 

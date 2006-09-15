@@ -8,8 +8,9 @@ package sdb;
 
 import java.util.Iterator;
 import java.util.List;
-import arq.cmd.QueryCmdUtils ;
+
 import sdb.cmd.CmdArgsDB;
+import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
@@ -22,7 +23,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
  
@@ -100,8 +101,8 @@ public class sdbquery extends CmdArgsDB
             // ModSDBAdmin - various printing options?
             //QueryCompilerBasicPattern.printBlock = true ;
             //QueryCompilerBasicPattern.printAbstractSQL = true ;
-            QueryCompilerBasicPattern.printSQL = true ;
-            QueryCompilerBasicPattern.printDivider = divider ;
+            QC.printSQL = true ;
+            QC.printDivider = divider ;
         }
 
         // Force setup
@@ -125,7 +126,7 @@ public class sdbquery extends CmdArgsDB
         
         if ( verbose )
         {
-            QueryCompilerBasicPattern.printSQL = true ;
+            QC.printSQL = true ;
             modQuery.getQuery().serialize(System.out) ;
             System.out.println(divider) ; 
         }

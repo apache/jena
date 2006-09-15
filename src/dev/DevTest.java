@@ -10,12 +10,11 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
-
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.sdb.Access;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLVisitor;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
@@ -58,12 +57,12 @@ public class DevTest extends TestSuite
         {
             SDBConnection.logSQLExceptions = true ;
             SDBConnection.logSQLQueries = false ;
-            QueryCompilerBasicPattern.printAbstractSQL = false ;
-            QueryCompilerBasicPattern.printSQL = false ;
+            QC.printAbstractSQL = false ;
+            QC.printSQL = false ;
             GenerateSQLVisitor.outputAnnotations = true ;
         }
 
-        QueryCompilerBasicPattern.printSQL = true ;
+        QC.printSQL = true ;
         test(store,
              SDBTest.testDirSDB+"General/term-1.rq",
              SDBTest.testDirSDB+"General/data-1.ttl") ;

@@ -4,69 +4,48 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.compiler;
+package com.hp.hpl.jena.sdb.data;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.core.VarAlloc;
+import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+import com.hp.hpl.jena.sdb.store.StoreCustomizer;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+/** Rewrite a query based on sub/super property */
 
-public class BlockOptional extends BlockBase
+public class CustomizeProperty implements StoreCustomizer
 {
-    Block left ;
-    Block right ;
+    static final Node RDFS_subPropertyOf = RDFS.subPropertyOf.asNode() ;
+
+    // s p o ==> s ?p o . ?p subPropertyOf p
+    // Assumes  p subPropertyOf p
+    // This may get rewritten later in the process to special SQL (e.g. a subproperty table)   
     
-    public BlockOptional(Block left, Block right)
+    public BlockBGP modify(BlockBGP block)
     {
-        this.left = left ;
-        this.right = right ;
-    }
-
-    public Block getLeft() { return left ; }
-
-    public Block getRight() { return right ; }
-
-    public Set<Var> getDefinedVars()
-    {
-        // TODO Make this more efficient if it is used much
-        Set<Var> s1 = left.getDefinedVars() ;
-        Set<Var> s2 = right.getDefinedVars() ;
-        Set<Var> x = new LinkedHashSet<Var>() ;
-        x.addAll(s1) ;
-        x.addAll(s2) ;
-        return x ;
-    }
-    
-    public SqlNode generateSQL(CompileContext context, QueryCompilerBlock queryCompiler)
-    {
-        return queryCompiler.compile(this, context) ;
+        block = block.copy() ;
+        for ( int i = 0 ; i < block.getTriples().size() ; i++ )
+        {
+            Triple t = block.getTriples().get(i) ;
+            // Test to see if it's a propeerty we wish to 
+            if ( t.getPredicate() != null )
+            {
+                Node v = VarAlloc.getVarAllocator().allocVarNode() ;
+                Node property = t.getPredicate() ;
+                // Assumes that <type> rdfs:subClassOf <type> 
+                Triple t1 = new Triple(t.getSubject(), v, t.getObject()) ;
+                Triple t2 = new Triple(v, RDFS_subPropertyOf, t.getPredicate()) ;
+                block.getTriples().set(i, t1) ;
+                block.getTriples().add(i+1, t2) ;
+                // Skip the indexer over the extra triple.
+                i++ ;
+            }
+        }
+        return block ;
     }
     
-    @Override
-    protected BlockBase replace(Binding binding)
-    {
-        return new BlockOptional(left.substitute(binding),
-                                 right.substitute(binding)) ;
-    }
-
-    public void output(IndentedWriter out)
-    {
-        out.ensureStartOfLine() ;
-        out.println("(Optional") ;
-        out.incIndent(INDENT) ;
-        left.output(out) ;
-        out.println();
-        right.output(out) ;
-        out.decIndent(INDENT) ;
-        out.print(")") ;
-    }
-
-
 }
 
 /*

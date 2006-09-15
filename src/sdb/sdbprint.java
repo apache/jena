@@ -20,7 +20,7 @@ import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBasicPattern;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -123,7 +123,7 @@ public class sdbprint extends CmdArgsDB
           if ( verbose )
           {
               //QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
-              QueryCompilerBasicPattern.printAbstractSQL = true ;
+              QC.printAbstractSQL = true ;
           }
 
         

@@ -17,9 +17,7 @@ import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.SDBConstants;
-import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
-import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerTriplePatternSlot;
+import com.hp.hpl.jena.sdb.core.compiler.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
@@ -30,11 +28,16 @@ import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
+public class QueryCompiler2 extends QueryCompilerBasicPattern
 {
     private static Log log = LogFactory.getLog(QueryCompiler2.class) ;
+    private TriplePatternCompiler tripleCompiler ;
     
-    // Only one active basic graph pattern compilation at a time.
+    public QueryCompiler2()
+    {
+        tripleCompiler = new TripleCompiler2() ;
+    }
+    
     private class Additional
     {
         Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
@@ -43,31 +46,16 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
     private Map<CompileContext, Additional> compileState =
         Collections.synchronizedMap(new HashMap<CompileContext, Additional>()) ;
     
-    // -------- Slot compilation
     
     @Override
-    protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
-    {
-        SqlColumn colId = compileState.get(context).constantCols.get(node) ;
-        if ( colId == null )
-        {
-            log.warn("Failed to find id col for "+node) ;
-            return ;
-        }
-        SqlExpr c = new S_Equal(thisCol, colId) ;
-        c.addNote("Const condition: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
-        conditions.add(c) ;
-        return ; 
-    }
-                                      
-    @Override
-    protected SqlTable accessTriplesTable(String alias)
-    {
-        return new TableTriples(alias) ;
-    }
+    public TriplePatternCompiler getTriplePatternCompiler()
+    { return tripleCompiler ; }
 
-    //  -------- Start basic graph pattern 
-   
+    public void setTriplePatternCompiler(TriplePatternCompiler tpCompiler)
+    { tripleCompiler = tpCompiler ; }
+
+    // -------- Slot compilation
+    
     @Override
     protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     {
@@ -258,6 +246,33 @@ public class QueryCompiler2 extends QueryCompilerTriplePatternSlot
     @Override
     public ResultsBuilder getResultBuilder()
     { return resultBuilder ; }
+
+
+    // -------- Slot compilation
+    
+    class TripleCompiler2 extends TriplePatternCompilerPlain
+    {
+        @Override
+        protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
+        {
+            SqlColumn colId = compileState.get(context).constantCols.get(node) ;
+            if ( colId == null )
+            {
+                log.warn("Failed to find id col for "+node) ;
+                return ;
+            }
+            SqlExpr c = new S_Equal(thisCol, colId) ;
+            c.addNote("Const condition: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
+            conditions.add(c) ;
+            return ; 
+        }
+    
+        @Override
+        protected SqlTable accessTriplesTable(String alias)
+        {
+            return new TableTriples(alias) ;
+        }
+    }
     
 }
 
