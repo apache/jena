@@ -43,7 +43,7 @@ public class QueryCompiler1 extends QueryCompilerBasicPattern
         else
             this.tripleTableDesc = tripleTableDesc ;
         this.codec = codec ;
-        tripleCompiler = new TriplePatternCompiler1() ;
+        tripleCompiler = new TripleCompiler1() ;
     }
     
     public QueryCompiler1(EncoderDecoder codec) { this(codec, null) ; }
@@ -110,7 +110,7 @@ public class QueryCompiler1 extends QueryCompilerBasicPattern
         return new ResultsBuilder1(codec) ;
     }
     
-    class TriplePatternCompiler1 extends TriplePatternCompilerPlain
+    class TripleCompiler1 extends TriplePatternCompilerPlain
     {
         @Override
         protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
