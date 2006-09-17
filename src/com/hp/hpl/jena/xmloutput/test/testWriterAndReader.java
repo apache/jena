@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.38 2006-09-17 14:30:20 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.39 2006-09-17 20:27:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.38 $' Date='$Date: 2006-09-17 14:30:20 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.39 $' Date='$Date: 2006-09-17 20:27:55 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -82,10 +82,6 @@ public class testWriterAndReader
 		return suite(lang, false);
 	}
     
-	static public Test suite() {
-		return suite("special");
-	}
-    
 	static private boolean nBits(int i, int ok[]) {
 		int cnt = 0;
 		while (i > 0) {
@@ -102,11 +98,12 @@ public class testWriterAndReader
 	static Test suite(String lang, boolean lots) {
 		TestSuite langsuite = new TestSuite();
 		langsuite.setName(lang);
-		if (lang.equals("special")) {
-			langsuite.addTest(
-				new TestXMLFeatures("testNoReification", "RDF/XML-ABBREV"));
-			return langsuite;
-		}
+// This code was never invoked. So I deaded it.
+//		if (lang.equals("special")) {
+//			langsuite.addTest(
+//				new TestXMLFeatures("testNoReification", "RDF/XML-ABBREV"));
+//			return langsuite;
+//		}
 		/* */
 		langsuite.addTest(new testWriterInterface("testWriting", lang));
         
@@ -250,6 +247,7 @@ public class testWriterAndReader
 		return langsuite;
 	}
 
+    
 	public void testRandom() throws IOException {
 		doTest(new String[] {
 		}, new Object[] {
@@ -530,5 +528,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.38 2006-09-17 14:30:20 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.39 2006-09-17 20:27:55 chris-dollin Exp $
  */
