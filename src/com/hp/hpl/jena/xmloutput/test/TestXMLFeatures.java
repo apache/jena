@@ -2,110 +2,57 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.47 2006-09-12 14:01:45 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.48 2006-09-17 09:23:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
-
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.iri.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.shared.BadURIException;
-import com.hp.hpl.jena.shared.InvalidPropertyURIException;
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
-import com.hp.hpl.jena.xmloutput.impl.SimpleLogger;
+import com.hp.hpl.jena.xmloutput.impl.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.47 $ $Date: 2006-09-12 14:01:45 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.48 $ $Date: 2006-09-17 09:23:45 $
  */
 
-public class TestXMLFeatures extends ModelTestBase {
+public class TestXMLFeatures extends XMLOutputTestBase {
 //	static AwkCompiler awk = PrettyWriterTest.awk;
 //	static AwkMatcher matcher = PrettyWriterTest.matcher;
     
    // static protected Log logger = LogFactory.getLog( TestXMLFeatures.class );
 
    // static { logger.setLevel( Level.OFF ); }
+
     
-	static private class Change {
-		void code(RDFWriter w) {
-        }
-        void code(Model m){
-        }
-        void code(Model m, RDFWriter w){
-            code(m);
-            code(w);
-        }
-	}
 	private String base1 = "http://example/foobar";
+    
 	private String base2 = "http://example/barfoo";
+    
 	private String file1 = "testing/abbreviated/namespaces.rdf";
-	private String lang;
+    
+    
 	TestXMLFeatures(String name, String lang) {
-		super(name);
-		this.lang = lang;
+		super( name, lang );
 	}
+    
 	public String toString() {
 		return getName() + " " + lang;
 	}
 
 	public static Test suite() {
 		return new TestSuite(TestXMLFeatures.class);
-	}
-	static SimpleLogger realLogger;
-	static boolean sawErrors;
-	static SimpleLogger falseLogger = new SimpleLogger() {
-
-		public void warn(String s) {
-			sawErrors = true;
-		}
-
-		public void warn(String s, Exception e) {
-			sawErrors = true;
-		}
-	};
-	static void blockLogger() {
-		realLogger = BaseXMLWriter.setLogger(falseLogger);
-		sawErrors = false;
-	}
-	static boolean unblockLogger() {
-	  BaseXMLWriter.setLogger(realLogger);
-	  return sawErrors;
 	}
     
     /**
@@ -157,7 +104,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testXMLBase() throws IOException {
 		check(file1, //any will do
 		"xml:base=['\"]" + base2 + "['\"]", new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				String oldvalue = (String) writer.setProperty("xmlbase", base1);
 				assertTrue("xmlbase valued non-null", oldvalue == null);
 
@@ -179,125 +126,6 @@ public class TestXMLFeatures extends ModelTestBase {
   }
 	public void testPropertyURI() throws IOException {
 		doBadPropTest(lang);
-	}
-	/**
-	 * @param code Stuff to do to the writer.
-	 * @param filename Read this file, write it out, read it in.
-	 * @param regex    Written file must match this.
-	 */
-	private void check(String filename, String regex, Change code)
-		throws IOException {
-		check(filename, regex, null, code);
-	}
-	private void check(
-		String filename,
-		String regexPresent,
-		String regexAbsent,
-		Change code)
-		throws IOException {
-		check(filename, null, regexPresent, regexAbsent, false, code);
-	}
-
-	private void check(
-		String filename,
-		String encoding,
-		String regexPresent,
-		String regexAbsent,
-		Change code)
-		throws IOException {
-		check(filename, encoding, regexPresent, regexAbsent, false, code);
-	}
-    
-    private void check(
-        String filename,
-        String regexAbsent,
-        Change code,
-        String base)
-        throws IOException {
-            check(filename,null,regexAbsent,null,false,new Change(){
-                public void code(RDFWriter w){}
-            },base);
-        check(filename, null, null, regexAbsent, false, code, base);
-    }
-    
-    private void check(
-        String filename,
-        String encoding,
-        String regexPresent,
-        String regexAbsent,
-        boolean errs,
-        Change code)
-        throws IOException {
-        check(filename, encoding, regexPresent, regexAbsent, errs, code, "file:"+filename);
-    }
-    
-	private void check(
-		String filename,
-		String encoding,
-		String regexPresent,
-		String regexAbsent,
-		boolean errorExpected,
-		Change code,
-        String base)
-		throws IOException {
-		//TestLogger tl = new TestLogger(BaseXMLWriter.class);
-		blockLogger();
-		boolean errorsFound;
-		Model m = createMemModel();
-        InputStream in = new FileInputStream(filename);
-        m.read(in,base);
-        in.close();
-        //m.read(filename);
-		Writer sw;
-		ByteArrayOutputStream bos = null;
-		if (encoding == null)
-			sw = new StringWriter();
-		else {
-			bos = new ByteArrayOutputStream();
-			sw = new OutputStreamWriter(bos, encoding);
-		}
-		Properties p = (Properties) System.getProperties().clone();
-		RDFWriter writer = m.getWriter(lang);
-		code.code( m, writer );
-		writer.write( m, sw, base );
-		sw.close();
-
-		String contents;
-		if (encoding == null)
-			contents = sw.toString();
-		else {
-			contents = bos.toString(encoding);
-		}
-		try {
-			Model m2 = createMemModel();
-			m2.read(new StringReader(contents), base);
-			assertTrue("Data got changed.",m.isIsomorphicWith(m2));
-			if (regexPresent != null)
-				assertTrue(
-					"Should find /" + regexPresent + "/",
-                    Pattern.compile(regexPresent,Pattern.DOTALL).matcher(contents).find()
-//					matcher.contains(contents, awk.compile(regexPresent))
-                    );
-			if (regexAbsent != null)
-				assertTrue(
-					"Should not find /" + regexAbsent + "/",
-                    !Pattern.compile(regexAbsent,Pattern.DOTALL).matcher(contents).find()
-//					!matcher.contains(contents, awk.compile(regexAbsent))
-                    );
-			contents = null;
-		} finally {
-			errorsFound = unblockLogger();
-			System.setProperties(p);
-			if (contents != null) {
-				System.err.println("===================");
-				System.err.println("Offending content - " + toString());
-				System.err.println("===================");
-				System.err.println(contents);
-				System.err.println("===================");
-			}
-		}
-		assertEquals("Errors (not) detected.", errorExpected, errorsFound);
-
 	}
 
 	void doBadPropTest(String lg) throws IOException {
@@ -323,7 +151,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testUseNamespace()
 		throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
-			public void code(Model m) {
+			public void modify(Model m) {
 				m.setNsPrefix("eg", "http://example.org/#");
 			}
 		});
@@ -332,7 +160,7 @@ public class TestXMLFeatures extends ModelTestBase {
     public void testSingleQuote()
         throws IOException {
         check(file1, "'","\"", new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("attributeQuoteChar", "'");
             }
         });
@@ -340,7 +168,7 @@ public class TestXMLFeatures extends ModelTestBase {
     public void testDoubleQuote()
         throws IOException {
         check(file1, "\"","'", new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("attributeQuoteChar", "\"");
             }
         });
@@ -349,7 +177,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testUseDefaultNamespace()
 		throws IOException {
 		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
-			public void code( Model m ) {
+			public void modify( Model m ) {
 				m.setNsPrefix("", "http://example.org/#");
 			}
 		});
@@ -358,7 +186,7 @@ public class TestXMLFeatures extends ModelTestBase {
     public void testUseUnusedNamespace()
         throws IOException {
         check(file1, "xmlns:unused=['\"]http://unused.org/#['\"]", new Change() {
-            public void code( Model m ) {
+            public void modify( Model m ) {
                 m.setNsPrefix( "unused", "http://unused.org/#");
             }
         });
@@ -371,7 +199,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			"xmlns:r=['\"]" + RDF.getURI() + "['\"]",
 			"rdf:",
 			new Change() {
-			public void code( Model m ) {
+			public void modify( Model m ) {
             m.removeNsPrefix( "rdf" ); m.setNsPrefix("r", RDF.getURI()); 
 			}
 		});
@@ -384,7 +212,7 @@ public class TestXMLFeatures extends ModelTestBase {
             "          ",
             //null,
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("tab", "5");
             }
         });
@@ -396,7 +224,7 @@ public class TestXMLFeatures extends ModelTestBase {
             "  ",
             //null,
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("tab", "0");
             }
         });
@@ -407,24 +235,20 @@ public class TestXMLFeatures extends ModelTestBase {
             "testing/wg/rdfms-xml-literal-namespaces/test001.rdf",
             "#XMLLiteral",
             "[\"']Literal[\"']",
-            new Change() {
-            public void code(RDFWriter writer) {
-                writer.setProperty("blockrules", "parseTypeLiteralPropertyElt");
-            }
-        });
+            Change.setProperty( "blockrules", "parseTypeLiteralPropertyElt" )
+             );
     }
+    
     public void testNoPropAttr()
         throws IOException {
         check(
             file1,
             null,
             "prop1=",
-            new Change() {
-            public void code(RDFWriter writer) {
-                writer.setProperty("blockrules", "propertyAttr");
-            }
-        });
+            Change.setProperty( "blockRules", "propertyAttr" )
+            );
     }
+    
     public void testNoDamlCollection()
         throws IOException {
         check(
@@ -432,7 +256,7 @@ public class TestXMLFeatures extends ModelTestBase {
             null,
             "[\"']daml:collection[\"']",
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("blockrules", "daml:collection");
             }
         });
@@ -444,7 +268,7 @@ public class TestXMLFeatures extends ModelTestBase {
             null,
             "[\"']Collection[\"']",
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("blockrules", "parseTypeCollectionPropertyElt");
             }
         });
@@ -456,7 +280,7 @@ public class TestXMLFeatures extends ModelTestBase {
             null,
             "rdf:li",
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("blockrules", "section-List-Expand");
             }
         });
@@ -468,7 +292,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			null,
 			"j.cook.up",
 			new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				writer.setProperty("blockrules", "");
 			}
 		});
@@ -480,7 +304,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			null,
 			":prop0 *=",
 			new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 			}
 		});
 	}
@@ -491,7 +315,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			":prop0 *=",
 			null,
 			new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				writer.setProperty("blockrules", "");
 			}
 		});
@@ -502,7 +326,7 @@ public class TestXMLFeatures extends ModelTestBase {
             "testing/abbreviated/container.rdf",
             "rdf:ID",
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("blockrules", "idAttr");
             }
             },
@@ -515,7 +339,7 @@ public class TestXMLFeatures extends ModelTestBase {
             "testing/abbreviated/container.rdf",
             "rdf:ID",
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("blockrules", "idAttr");
             }
             },
@@ -528,7 +352,7 @@ public class TestXMLFeatures extends ModelTestBase {
             "testing/abbreviated/container.rdf",
             "['\"]Resource[\"']",
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("blockrules", "parseTypeResourcePropertyElt");
             }
             },
@@ -547,7 +371,7 @@ public class TestXMLFeatures extends ModelTestBase {
         /* */
         check  (filename, null, "rdf:subject",null,  false,
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("blockrules", "section-Reification");
             }
             }, base);
@@ -559,7 +383,7 @@ public class TestXMLFeatures extends ModelTestBase {
             "testing/abbreviated/collection.rdf",
             "                              <[a-zA-Z][-a-zA-Z0-9._]*:Class",
             new Change() {
-            public void code(RDFWriter writer) {
+            public void modify(RDFWriter writer) {
                 writer.setProperty("blockrules", "resourcePropertyElt");
             }
             },
@@ -578,7 +402,7 @@ public class TestXMLFeatures extends ModelTestBase {
 				+ RDF.getURI()
 				+ "['\"]",
 			new Change() {
-			public void code( Model m ) {
+			public void modify( Model m ) {
 				m.setNsPrefix("", RDF.getURI());
 			}
 		});
@@ -601,7 +425,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			"xmlns:eg[12]=['\"]http://example.org/#['\"]",
 			"xmlns:eg[12]=['\"]http://example.org/#['\"].*xmlns:eg[12]=['\"]http://example.org/#['\"]",
 			new Change() {
-			public void code( Model m ) {
+			public void modify( Model m ) {
 				m.setNsPrefix("eg1", "http://example.org/#");
 				m.setNsPrefix("eg2", "http://example.org/#");
 			}
@@ -615,7 +439,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
 			null,
 			new Change() {
-			public void code( Model m ) {
+			public void modify( Model m ) {
 				m.setNsPrefix("eg", "http://example.org/file1#");
 				m.setNsPrefix("eg", "http://example.org/file2#");
 			}
@@ -629,7 +453,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testUseNamespaceSysProp()
 		throws IOException {
 		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("eg", "http://example.org/#");
 			}
 		});
@@ -638,7 +462,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testDefaultNamespaceSysProp()
 		throws IOException {
 		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("", "http://example.org/#");
 			}
 		});
@@ -652,7 +476,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			"xmlns:eg[12]=['\"]http://example.org/#['\"].*xmlns:eg[12]=['\"]http://example.org/#['\"]",
 			new Change() {
 
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("eg1", "http://example.org/#");
 				setNsPrefixSysProp("eg2", "http://example.org/#");
 			}
@@ -666,7 +490,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
 			null,
 			new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("eg", "http://example.org/file1#");
 				setNsPrefixSysProp("eg", "http://example.org/file2#");
 			}
@@ -680,7 +504,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
 			null,
 			new Change() {
-			public void code( Model m ) {
+			public void modify( Model m ) {
 				m.setNsPrefix("eg", "http://example.org/file1#");
 				setNsPrefixSysProp("eg", "http://example.org/file2#");
 			}
@@ -689,7 +513,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testUTF8DeclAbsent()
 		throws IOException {
 		check(file1, "utf-8", null, "<\\?xml", new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 			}
 		});
 
@@ -698,7 +522,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testUTF16DeclAbsent()
 		throws IOException {
 		check(file1, "utf-16", null, "<\\?xml", false, new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 			}
 		});
 	}
@@ -706,7 +530,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testUTF8DeclPresent()
 		throws IOException {
 		check(file1, "utf-8", "<\\?xml", null, new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				writer.setProperty("showXmlDeclaration", Boolean.TRUE);
 			}
 		});
@@ -715,7 +539,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testUTF16DeclPresent()
 		throws IOException {
 		check(file1, "utf-16", "<\\?xml", null, new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				writer.setProperty("showXmlDeclaration", Boolean.TRUE);
 			}
 		});
@@ -724,7 +548,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testISO8859_1_DeclAbsent()
 		throws IOException {
 		check(file1, "iso-8859-1", null, "<\\?xml", new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				writer.setProperty("showXmlDeclaration", Boolean.FALSE);
 			}
 		});
@@ -738,7 +562,7 @@ public class TestXMLFeatures extends ModelTestBase {
 			"<\\?xml[^?]*ISO-8859-1",
 			null,
 			new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 			}
 		});
 	}
@@ -746,7 +570,7 @@ public class TestXMLFeatures extends ModelTestBase {
 	public void testStringDeclAbsent()
 		throws IOException {
 		check(file1, null, "<\\?xml", new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 			}
 		});
 	}
@@ -755,7 +579,7 @@ public class TestXMLFeatures extends ModelTestBase {
 		throws IOException {
 
 		check(file1, "<\\?xml", "encoding", new Change() {
-			public void code(RDFWriter writer) {
+			public void modify(RDFWriter writer) {
 				writer.setProperty("showXmlDeclaration", Boolean.TRUE);
 			}
 		});
@@ -1230,5 +1054,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.47 2006-09-12 14:01:45 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.48 2006-09-17 09:23:45 chris-dollin Exp $
  */
