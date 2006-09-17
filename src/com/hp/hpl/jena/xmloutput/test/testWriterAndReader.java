@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.37 2006-09-12 14:01:45 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.38 2006-09-17 14:30:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date: 2006-09-12 14:01:45 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.38 $' Date='$Date: 2006-09-17 14:30:20 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -50,21 +50,24 @@ public class testWriterAndReader
     
   protected static Log logger = LogFactory.getLog( testWriterAndReader.class );
     
-	String lang;
-	String test;
-	int fileNumber;
-	int options = 0;
-	testWriterAndReader(String name, String lang, int fName) {
-		super(name);
-		this.lang = lang;
-		this.fileNumber = fName;
-	}
+	final String lang;
+   
+	final int fileNumber;
+
+    final int options;
+    
+    String test;
+
+    testWriterAndReader( String name, String lang, int fName ) 
+        { this( name, lang, fName, 0 ); }
+    
 	testWriterAndReader(String name, String lang, int fName, int options) {
-		super(name);
+		super( name );
 		this.lang = lang;
 		this.fileNumber = fName;
 		this.options = options;
 	}
+    
 	public String toString() {
 		return getName()
 			+ " "
@@ -242,39 +245,8 @@ public class testWriterAndReader
 			/* */
             langsuite.addTest( new TestXMLFeatures("testNullBaseWithAbbrev", lang));
 		}
-		if (lang.equals("RDF/XML-ABBREV")) {
-           
-			langsuite.addTest(
-				new TestXMLFeatures("testNoPropAttr", "RDF/XML-ABBREV"));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testNoDamlCollection", "RDF/XML-ABBREV"));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testNoRdfCollection", "RDF/XML-ABBREV"));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testNoLi", "RDF/XML-ABBREV"));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testNoID", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testNoID2", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testNoResource", lang));
-			/* * /
-			langsuite.addTest(
-			    new TestXMLFeatures("testNoStripes", lang));
-			/* */
-			langsuite.addTest(
-			    new TestXMLFeatures("testNoReification", lang));
-			langsuite.addTest(
-				new TestXMLFeatures("testNoPropAttrs", lang));
-			langsuite.addTest(
-				new TestXMLFeatures("testNoCookUp", lang));
-			langsuite.addTest(
-				new TestXMLFeatures("testPropAttrs", lang));
-			/* */
-		}
+		if (lang.equals("RDF/XML-ABBREV")) 
+            langsuite.addTestSuite(  TestXMLAbbrev.class );
 		return langsuite;
 	}
 
@@ -558,5 +530,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.37 2006-09-12 14:01:45 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.38 2006-09-17 14:30:20 chris-dollin Exp $
  */

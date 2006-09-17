@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.48 2006-09-17 09:23:45 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.49 2006-09-17 14:30:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -10,8 +10,6 @@ package com.hp.hpl.jena.xmloutput.test;
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
-
-import junit.framework.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.iri.*;
@@ -24,7 +22,7 @@ import com.hp.hpl.jena.xmloutput.impl.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.48 $ $Date: 2006-09-17 09:23:45 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.49 $ $Date: 2006-09-17 14:30:20 $
  */
 
 public class TestXMLFeatures extends XMLOutputTestBase {
@@ -40,19 +38,15 @@ public class TestXMLFeatures extends XMLOutputTestBase {
     
 	private String base2 = "http://example/barfoo";
     
-	private String file1 = "testing/abbreviated/namespaces.rdf";
+	protected static String file1 = "testing/abbreviated/namespaces.rdf";
     
     
-	TestXMLFeatures(String name, String lang) {
+	TestXMLFeatures( String name, String lang ) {
 		super( name, lang );
 	}
     
 	public String toString() {
 		return getName() + " " + lang;
-	}
-
-	public static Test suite() {
-		return new TestSuite(TestXMLFeatures.class);
 	}
     
     /**
@@ -239,161 +233,21 @@ public class TestXMLFeatures extends XMLOutputTestBase {
              );
     }
     
-    public void testNoPropAttr()
-        throws IOException {
-        check(
-            file1,
-            null,
-            "prop1=",
-            Change.setProperty( "blockRules", "propertyAttr" )
-            );
+    public void testNoStripes() throws IOException 
+       {
+       check
+           (
+           "testing/abbreviated/collection.rdf",
+           "                              <[a-zA-Z][-a-zA-Z0-9._]*:Class",
+           Change.blockRules( "resourcePropertyElt"  ),
+           "http://example.org/foo"
+       );
     }
     
-    public void testNoDamlCollection()
-        throws IOException {
-        check(
-            "testing/abbreviated/daml.rdf",
-            null,
-            "[\"']daml:collection[\"']",
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "daml:collection");
-            }
-        });
-    }
-    public void testNoRdfCollection()
-        throws IOException {
-        check(
-            "testing/abbreviated/collection.rdf",
-            null,
-            "[\"']Collection[\"']",
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "parseTypeCollectionPropertyElt");
-            }
-        });
-    }
-    public void testNoLi()
-        throws IOException {
-        check(
-            "testing/abbreviated/container.rdf",
-            null,
-            "rdf:li",
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "section-List-Expand");
-            }
-        });
-    }
-	public void testNoCookUp()
-		throws IOException {
-		check(
-			"testing/abbreviated/cookup.rdf",
-			null,
-			"j.cook.up",
-			new Change() {
-			public void modify(RDFWriter writer) {
-				writer.setProperty("blockrules", "");
-			}
-		});
-	}
-	public void testNoPropAttrs()
-		throws IOException {
-		check(
-			"testing/abbreviated/namespaces.rdf",
-			null,
-			":prop0 *=",
-			new Change() {
-			public void modify(RDFWriter writer) {
-			}
-		});
-	}
-	public void testPropAttrs()
-		throws IOException {
-		check(
-			"testing/abbreviated/namespaces.rdf",
-			":prop0 *=",
-			null,
-			new Change() {
-			public void modify(RDFWriter writer) {
-				writer.setProperty("blockrules", "");
-			}
-		});
-	}
-    public void testNoID()
-        throws IOException {
-        check(
-            "testing/abbreviated/container.rdf",
-            "rdf:ID",
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "idAttr");
-            }
-            },
-            "http://example.org/foo"
-        );
-    }
-    public void testNoID2()
-        throws IOException {
-        check(
-            "testing/abbreviated/container.rdf",
-            "rdf:ID",
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "idAttr");
-            }
-            },
-            "http://example.org/foo#"
-        );
-    }
-    public void testNoResource()
-        throws IOException {
-        check(
-            "testing/abbreviated/container.rdf",
-            "['\"]Resource[\"']",
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "parseTypeResourcePropertyElt");
-            }
-            },
-            "http://example.org/foo#"
-        );
-    }
-    public void testNoReification()
-        throws IOException {
-           // System.err.println("WARNING: reification output tests suppressed.");
-         String filename = "testing/abbreviated/reification.rdf";
-         String base = "http://example.org/foo";
-         /* * Heisenbug, reification prettiness sometimes fails. * /
-         check(filename,null,null,"rdf:subject",false,new Change(){
-                    public void code(RDFWriter w){}
-                },base);
-        /* */
-        check  (filename, null, "rdf:subject",null,  false,
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "section-Reification");
-            }
-            }, base);
-
-    }
-    public void testNoStripes()
-        throws IOException {
-        check(
-            "testing/abbreviated/collection.rdf",
-            "                              <[a-zA-Z][-a-zA-Z0-9._]*:Class",
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "resourcePropertyElt");
-            }
-            },
-            "http://example.org/foo"
-        );
-    }
-    
-	public void testRDFDefaultNamespace()
-		throws IOException {
-		check(
+	public void testRDFDefaultNamespace() throws IOException 
+        {
+		check
+            (
 			file1,
 			"xmlns=['\"]"
 				+ RDF.getURI()
@@ -408,8 +262,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		});
 	}
     
-	public void testBadPrefixNamespace()
-		throws IOException {
+	public void testBadPrefixNamespace() throws IOException {
 		// Trying to set the prefix should generate a warning.
 //		check(file1, null, null, "xmlns:3", true, new Change() {
 //			public void code( RDFWriter w ) {
@@ -418,9 +271,10 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 //		});
 	}
 
-	public void testDuplicateNamespace()
-		throws IOException {
-		check(
+	public void testDuplicateNamespace() throws IOException 
+        {
+		check
+            (
 			file1,
 			"xmlns:eg[12]=['\"]http://example.org/#['\"]",
 			"xmlns:eg[12]=['\"]http://example.org/#['\"].*xmlns:eg[12]=['\"]http://example.org/#['\"]",
@@ -430,11 +284,12 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				m.setNsPrefix("eg2", "http://example.org/#");
 			}
 		});
-	}
+        }
 
-	public void testDuplicatePrefix()
-		throws IOException {
-		check(
+	public void testDuplicatePrefix() throws IOException 
+        {
+		check
+            (
 			file1,
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
 			null,
@@ -446,12 +301,11 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		});
 	}
 
-	void setNsPrefixSysProp(String prefix, String uri) {
-		System.setProperty(RDFWriter.NSPREFIXPROPBASE + uri, prefix);
-	}
+	void setNsPrefixSysProp(String prefix, String uri) 
+        { System.setProperty( RDFWriter.NSPREFIXPROPBASE + uri, prefix ); }
 
-	public void testUseNamespaceSysProp()
-		throws IOException {
+	public void testUseNamespaceSysProp() throws IOException 
+        {
 		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
 			public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("eg", "http://example.org/#");
@@ -459,8 +313,8 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		});
 	}
 
-	public void testDefaultNamespaceSysProp()
-		throws IOException {
+	public void testDefaultNamespaceSysProp() throws IOException 
+        {
 		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
 			public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("", "http://example.org/#");
@@ -468,9 +322,10 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		});
 	}
 
-	public void testDuplicateNamespaceSysProp()
-		throws IOException {
-		check(
+	public void testDuplicateNamespaceSysProp() throws IOException 
+        {
+		check
+            (
 			file1,
 			"xmlns:eg[12]=['\"]http://example.org/#['\"]",
 			"xmlns:eg[12]=['\"]http://example.org/#['\"].*xmlns:eg[12]=['\"]http://example.org/#['\"]",
@@ -1054,5 +909,5 @@ public class TestXMLFeatures extends XMLOutputTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.48 2006-09-17 09:23:45 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.49 2006-09-17 14:30:20 chris-dollin Exp $
  */

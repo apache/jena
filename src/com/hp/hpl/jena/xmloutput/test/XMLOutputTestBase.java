@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2006 Hewlett-Packard Development Company, LP
     All rights reserved. [See end of file]
-    $Id: XMLOutputTestBase.java,v 1.1 2006-09-17 09:23:45 chris-dollin Exp $
+    $Id: XMLOutputTestBase.java,v 1.2 2006-09-17 14:30:21 chris-dollin Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -56,6 +56,9 @@ public class XMLOutputTestBase extends ModelTestBase
         public void modify( Model m ) {}
         public final void modify( Model m, RDFWriter w ) { modify(m); modify(w); }
         
+        public static Change none()
+            { return new Change(); }
+        
         public static Change setProperty( final String property, final String value )
             {
             return new Change()
@@ -63,6 +66,9 @@ public class XMLOutputTestBase extends ModelTestBase
                     { writer.setProperty( property, value ); }
                 };
             }
+           
+        public static Change blockRules( String ruleName )
+            { return setProperty( "blockrules", ruleName ); }
         }  
     
     /**
