@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.49 2006-09-17 14:30:20 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.50 2006-09-18 14:51:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.xmloutput.impl.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.49 $ $Date: 2006-09-17 14:30:20 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.50 $ $Date: 2006-09-18 14:51:53 $
  */
 
 public class TestXMLFeatures extends XMLOutputTestBase {
@@ -48,13 +48,33 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	public String toString() {
 		return getName() + " " + lang;
 	}
+
+
+    public void SUPPRESSEDtestRelativeURI() 
+        {
+        Model m = ModelFactory.createDefaultModel();
+        m.createResource("foo").addProperty( RDF.value, "bar" );
+        m.write(new OutputStream(){
+            public void write(int b) throws IOException {}}, lang);
+        }    
+    
+    public void SUPPRESStestNoStripes() throws IOException 
+        {
+        check
+            (
+            "testing/abbreviated/collection.rdf",
+            "                              <[a-zA-Z][-a-zA-Z0-9._]*:Class",
+            Change.blockRules( "resourcePropertyElt"  ),
+            "http://example.org/foo"
+            );
+        }
     
     /**
         Very specific test case to trap bug whereby a model which has  a prefix j.0 defined
         (eg it was read in from a model we wrote out earlier) wants to allocate a new j.*
         prefix and picked j.0, BOOM.
     */
-    public void testBrokenPrefixing() throws Exception
+    public void SUPPRESSEDtestBrokenPrefixing() throws Exception
         {
         Model m = ModelFactory.createDefaultModel();    
         m.add( ModelTestBase.statement( m, "a http://bingle.bongle/booty#PP b" ) );
@@ -108,16 +128,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 		});
 	}
-
-  public void testRelativeURI() {
-  	Model m = ModelFactory.createDefaultModel();
-  	m.createResource("foo").addProperty(
-  	RDF.value,
-  	"bar");
-  	m.write(new OutputStream(){
-		public void write(int b) throws IOException {
-		}},lang);
-  }
+    
 	public void testPropertyURI() throws IOException {
 		doBadPropTest(lang);
 	}
@@ -142,52 +153,33 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		file.delete();
 	}
 
-	public void testUseNamespace()
-		throws IOException {
-		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
-			public void modify(Model m) {
-				m.setNsPrefix("eg", "http://example.org/#");
-			}
-		});
-	}
+	public void testUseNamespace() throws IOException 
+        {
+		check( file1, "xmlns:eg=['\"]http://example.org/#['\"]", Change.setPrefix( "eg", "http://example.org/#" ) );
+        }
     
-    public void testSingleQuote()
-        throws IOException {
-        check(file1, "'","\"", new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("attributeQuoteChar", "'");
-            }
-        });
-    }
-    public void testDoubleQuote()
-        throws IOException {
-        check(file1, "\"","'", new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("attributeQuoteChar", "\"");
-            }
-        });
-    }
+    public void testSingleQuote() throws IOException 
+        {
+        check( file1, "'","\"", Change.setProperty( "attributeQuoteChar", "'" ) );
+        }
 
-	public void testUseDefaultNamespace()
-		throws IOException {
-		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
-			public void modify( Model m ) {
-				m.setNsPrefix("", "http://example.org/#");
-			}
-		});
-	}
+    public void testDoubleQuote() throws IOException 
+        {
+        check( file1, "\"","'", Change.setProperty( "attributeQuoteChar", "\"" ) );
+        }
+
+	public void testUseDefaultNamespace() throws IOException 
+        {
+		check( file1, "xmlns=['\"]http://example.org/#['\"]", Change.setPrefix(  "", "http://example.org/#" ) );
+        }
     
-    public void testUseUnusedNamespace()
-        throws IOException {
-        check(file1, "xmlns:unused=['\"]http://unused.org/#['\"]", new Change() {
-            public void modify( Model m ) {
-                m.setNsPrefix( "unused", "http://unused.org/#");
-            }
-        });
-    }
+    public void testUseUnusedNamespace() throws IOException 
+        {
+        check( file1, "xmlns:unused=['\"]http://unused.org/#['\"]", Change.setPrefix( "unused", "http://unused.org/#" ) );
+        }
 
-	public void testRDFNamespace()
-		throws IOException {
+	public void testRDFNamespace() throws IOException 
+        {
 		check(
 			file1,
 			"xmlns:r=['\"]" + RDF.getURI() + "['\"]",
@@ -199,50 +191,26 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		});
 	}
 
-    public void testTab()
-        throws IOException {
-        check(
-            file1,
-            "          ",
-            //null,
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("tab", "5");
-            }
-        });
-    }
-    public void testNoTab()
-        throws IOException {
-        check(
-            file1,
-            "  ",
-            //null,
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("tab", "0");
-            }
-        });
-    }
-    public void testNoLiteral()
-        throws IOException {
-        check(
+    public void testTab() throws IOException 
+        {
+        check( file1, "          ", Change.setProperty( "tab", "5" ) );
+        }
+    
+    public void testNoTab() throws IOException 
+        {
+        check( file1, "  ", Change.setProperty( "tab", "0" ) );
+        }
+    
+    public void testNoLiteral() throws IOException 
+        {
+        check
+            (
             "testing/wg/rdfms-xml-literal-namespaces/test001.rdf",
             "#XMLLiteral",
             "[\"']Literal[\"']",
             Change.setProperty( "blockrules", "parseTypeLiteralPropertyElt" )
              );
-    }
-    
-    public void testNoStripes() throws IOException 
-       {
-       check
-           (
-           "testing/abbreviated/collection.rdf",
-           "                              <[a-zA-Z][-a-zA-Z0-9._]*:Class",
-           Change.blockRules( "resourcePropertyElt"  ),
-           "http://example.org/foo"
-       );
-    }
+        }
     
 	public void testRDFDefaultNamespace() throws IOException 
         {
@@ -255,12 +223,9 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				+ "xmlns:j.cook.up=['\"]"
 				+ RDF.getURI()
 				+ "['\"]",
-			new Change() {
-			public void modify( Model m ) {
-				m.setNsPrefix("", RDF.getURI());
-			}
-		});
-	}
+            Change.setPrefix( "", RDF.getURI() )
+            );
+        }
     
 	public void testBadPrefixNamespace() throws IOException {
 		// Trying to set the prefix should generate a warning.
@@ -306,7 +271,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 	public void testUseNamespaceSysProp() throws IOException 
         {
-		check(file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
+		check( file1, "xmlns:eg=['\"]http://example.org/#['\"]", new Change() {
 			public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("eg", "http://example.org/#");
 			}
@@ -315,7 +280,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 	public void testDefaultNamespaceSysProp() throws IOException 
         {
-		check(file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
+		check( file1, "xmlns=['\"]http://example.org/#['\"]", new Change() {
 			public void modify(RDFWriter writer) {
 				setNsPrefixSysProp("", "http://example.org/#");
 			}
@@ -338,8 +303,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		});
 	}
 
-	public void testDuplicatePrefixSysProp()
-		throws IOException {
+	public void testDuplicatePrefixSysProp() throws IOException {
 		check(
 			file1,
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
@@ -352,8 +316,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		});
 	}
 
-	public void testDuplicatePrefixSysPropAndExplicit()
-		throws IOException {
+	public void testDuplicatePrefixSysPropAndExplicit() throws IOException {
 		check(
 			file1,
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
@@ -365,80 +328,53 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			}
 		});
 	}
-	public void testUTF8DeclAbsent()
-		throws IOException {
-		check(file1, "utf-8", null, "<\\?xml", new Change() {
-			public void modify(RDFWriter writer) {
-			}
-		});
+    
+	public void testUTF8DeclAbsent() throws IOException 
+        {
+		check( file1, "utf-8", null, "<\\?xml", Change.none() );
+        }
 
-	}
+	public void testUTF16DeclAbsent() throws IOException 
+        {
+		check( file1, "utf-16", null, "<\\?xml", false, Change.none() );
+        }
 
-	public void testUTF16DeclAbsent()
-		throws IOException {
-		check(file1, "utf-16", null, "<\\?xml", false, new Change() {
-			public void modify(RDFWriter writer) {
-			}
-		});
-	}
+	public void testUTF8DeclPresent() throws IOException 
+        {
+		check(file1, "utf-8", "<\\?xml", null, Change.setProperty( "showXmlDeclaration", true ) );
+        }
 
-	public void testUTF8DeclPresent()
-		throws IOException {
-		check(file1, "utf-8", "<\\?xml", null, new Change() {
-			public void modify(RDFWriter writer) {
-				writer.setProperty("showXmlDeclaration", Boolean.TRUE);
-			}
-		});
-	}
+	public void testUTF16DeclPresent() throws IOException 
+        {
+		check( file1, "utf-16", "<\\?xml", null, Change.setProperty( "showXmlDeclaration", true ) );
+        }
 
-	public void testUTF16DeclPresent()
-		throws IOException {
-		check(file1, "utf-16", "<\\?xml", null, new Change() {
-			public void modify(RDFWriter writer) {
-				writer.setProperty("showXmlDeclaration", Boolean.TRUE);
-			}
-		});
-	}
+	public void testISO8859_1_DeclAbsent() throws IOException 
+        {
+		check(file1, "iso-8859-1", null, "<\\?xml", Change.setProperty( "showXmlDeclaration", false ) );
+        }
 
-	public void testISO8859_1_DeclAbsent()
-		throws IOException {
-		check(file1, "iso-8859-1", null, "<\\?xml", new Change() {
-			public void modify(RDFWriter writer) {
-				writer.setProperty("showXmlDeclaration", Boolean.FALSE);
-			}
-		});
-	}
-
-	public void testISO8859_1_DeclPresent()
-		throws IOException {
-		check(
+	public void testISO8859_1_DeclPresent() throws IOException 
+        {
+		check
+            (
 			file1,
 			"iso-8859-1",
 			"<\\?xml[^?]*ISO-8859-1",
 			null,
-			new Change() {
-			public void modify(RDFWriter writer) {
-			}
-		});
-	}
+			Change.none()
+            );
+	    }
 
-	public void testStringDeclAbsent()
-		throws IOException {
-		check(file1, null, "<\\?xml", new Change() {
-			public void modify(RDFWriter writer) {
-			}
-		});
-	}
+	public void testStringDeclAbsent() throws IOException 
+        {
+		check( file1, null, "<\\?xml", Change.none() );
+        }
 
-	public void testStringDeclPresent()
-		throws IOException {
-
-		check(file1, "<\\?xml", "encoding", new Change() {
-			public void modify(RDFWriter writer) {
-				writer.setProperty("showXmlDeclaration", Boolean.TRUE);
-			}
-		});
-	}
+	public void testStringDeclPresent() throws IOException 
+        {
+		check(file1, "<\\?xml", "encoding", Change.setProperty( "showXmlDeclaration", true ) );
+        }
     
 	static final int BadPropURI = 1;
 	static final int NoError = 0;
@@ -531,18 +467,20 @@ public class TestXMLFeatures extends XMLOutputTestBase {
             }
     }
 
-    public void testLiAsProperty1() throws IOException {
-        checkPropURI(RDF.getURI()+"li", null, null, BadPropURI);
-    }
+    public void testLiAsProperty1() throws IOException 
+        {
+        checkPropURI( RDF.getURI()+"li", null, null, BadPropURI );
+        }
     
     /*
     public void testLiAsProperty2() throws IOException {
         checkPropURI(RDF.getURI()+"li", "brickley", "true", ExtraTriples);
     }
     */
-    public void testDescriptionAsProperty()throws IOException {
-            checkPropURI(RDF.getURI()+"Description", null, null, BadPropURI);
-    }
+    public void testDescriptionAsProperty()throws IOException 
+        {
+        checkPropURI( RDF.getURI()+"Description", null, null, BadPropURI );
+        }
 
     public void testBadProperty1() throws IOException {
         checkPropURI("http://x/a.b/", null, null, BadPropURI);
@@ -909,5 +847,5 @@ public class TestXMLFeatures extends XMLOutputTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.49 2006-09-17 14:30:20 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.50 2006-09-18 14:51:53 chris-dollin Exp $
  */

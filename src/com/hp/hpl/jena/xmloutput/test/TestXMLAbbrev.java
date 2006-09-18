@@ -1,14 +1,12 @@
 /*
     (c) Copyright 2006 Hewlett-Packard Development Company, LP
     All rights reserved. [See end of file]
-    $Id: TestXMLAbbrev.java,v 1.1 2006-09-17 14:30:20 chris-dollin Exp $
+    $Id: TestXMLAbbrev.java,v 1.2 2006-09-18 14:51:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
 import java.io.IOException;
-
-import com.hp.hpl.jena.rdf.model.RDFWriter;
 
 /**
     The tests testReaderAndWriter includes for the language 
@@ -95,11 +93,7 @@ public class TestXMLAbbrev extends XMLOutputTestBase
             (
             "testing/abbreviated/container.rdf",
             "['\"]Resource[\"']",
-            new Change() {
-            public void modify(RDFWriter writer) {
-                writer.setProperty("blockrules", "parseTypeResourcePropertyElt");
-            }
-            },
+            Change.blockRules( "parseTypeResourcePropertyElt" ),
             "http://example.org/foo#"
             );
         }

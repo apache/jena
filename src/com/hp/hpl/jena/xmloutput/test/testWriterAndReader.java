@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.40 2006-09-18 08:41:18 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.41 2006-09-18 14:51:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.40 $' Date='$Date: 2006-09-18 08:41:18 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.41 $' Date='$Date: 2006-09-18 14:51:53 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -58,13 +58,13 @@ public class testWriterAndReader
     
     String test;
 
-    testWriterAndReader( String name, String lang, int fName ) 
-        { this( name, lang, fName, 0 ); }
+    testWriterAndReader( String name, String lang, int fileNumber ) 
+        { this( name, lang, fileNumber, 0 ); }
     
-	testWriterAndReader(String name, String lang, int fName, int options) {
+	testWriterAndReader(String name, String lang, int fileNumber, int options) {
 		super( name );
 		this.lang = lang;
-		this.fileNumber = fName;
+		this.fileNumber = fileNumber;
 		this.options = options;
 	}
     
@@ -78,229 +78,142 @@ public class testWriterAndReader
 			+ (options != 0 ? ("[" + options + "]") : "");
 	}
     
-	static private TestSuite suite( String lang ) 
-        { return suite(lang, false); }
+	static Test suiteN_TRIPLE()
+        { return baseSuite( "N-TRIPLE" ); }
     
     static TestSuite suiteXML()
-        { return suite( "RDF/XML" ); }
+        { 
+        TestSuite baseTests = baseSuite( "RDF/XML" );
+        baseTests.addTestSuite( TestXMLFeatures_XML.class );
+        baseTests.addTest( addXMLtests( "RDF/XML", false ) );
+        return baseTests; 
+        }
     
     static Test suiteXML_ABBREV()
         { 
-        return suite( "RDF/XML-ABBREV" ); 
+        TestSuite suite = baseSuite( "RDF/XML-ABBREV" );
+        suite.addTestSuite( TestXMLFeatures_XML_ABBREV.class );
+        suite.addTestSuite( TestXMLAbbrev.class );
+        suite.addTest( addXMLtests( "RDF/XML-ABBREV", false ) );
+        return suite; 
         }
     
-    static Test suiteN_TRIPLE()
-        { return suite( "N-TRIPLE" ); }
-    
-	static private boolean nBits(int i, int ok[]) {
-		int cnt = 0;
-		while (i > 0) {
-			if ((i & 1) == 1)
-				cnt++;
-			i >>= 1;
-		}
-		for (int j = 0; j < ok.length; j++)
-			if (cnt == ok[j])
-				return true;
-		return false;
-	}
-    
-	static TestSuite suite(String lang, boolean lots) {
-		TestSuite langsuite = new TestSuite();
-		langsuite.setName(lang);
-// This code was never invoked. So I deaded it.
-//		if (lang.equals("special")) {
-//			langsuite.addTest(
-//				new TestXMLFeatures("testNoReification", "RDF/XML-ABBREV"));
-//			return langsuite;
-//		}
-		/* */
-		langsuite.addTest(new testWriterInterface("testWriting", lang));
-        
+    public static TestSuite repeatedAbbrevSuite()
+        { 
+        TestSuite suite = baseSuite( "RDF/XML-ABBREV" );
+        suite.addTestSuite( TestXMLFeatures_XML_ABBREV.class );
+        suite.addTestSuite( TestXMLAbbrev.class );
+        suite.addTest( addXMLtests( "RDF/XML-ABBREV", true ) );
+        return suite; 
+        }
+
+    static TestSuite baseSuite( String lang ) 
+        {
+        TestSuite langsuite = new TestSuite();
+        langsuite.setName( lang );
+        langsuite.addTest( new testWriterInterface( "testWriting", lang ) );
         langsuite.addTest( new testWriterInterface( "testLineSeparator", lang ) );
-		/* */
-		for (int k = firstTest; k <= lastTest; k++) {
-			//  if ( k==7 )
-			//    continue;
-			/* * /
-			langsuite.addTest(new testWriterAndReader("testRandom", lang, k));
-			/* */
-			if (lang.indexOf("XML") > 0) {
-				/* */
-				langsuite.addTest(
-					new testWriterAndReader("testLongId", lang, k));
-				/* */
-				for (int j = 1;
-					j < (lang.equals("RDF/XML-ABBREV") ? (1<<blockRules.length) : 2);
-					j++) {
-					if (lots || nBits(j, new int[] { 1, 
-                             //                        2,3,4,5,
-                                                     6,7 }))
-						langsuite.addTest(
-							new testWriterAndReader("testOptions "+k + " "+j, lang, k, j) {
-                                public void runTest() throws IOException {
-                                    testOptions();
-                                }
-                            });
-				}
-			}
-		}
-		if (lang.//equals("RDF/XML")) {
-		indexOf("XML") > 0) {
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testBadURIAsProperty1", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testBadURIAsProperty2", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testBadProperty1", lang));
-			/* * /
-			langsuite.addTest(
-			    new TestXMLFeatures("testBadProperty2", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testLiAsProperty1", lang));
-			/* * /
-			langsuite.addTest(
-			    new TestXMLFeatures("testLiAsProperty2", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testDescriptionAsProperty", lang));
-			/* */
+        return langsuite;
+        }
+    
+    public static class TestXMLFeatures_XML extends TestXMLFeatures
+        {
+        public TestXMLFeatures_XML( String name )
+            { super( name, "RDF/XML" ); }
+        }
+    
+    public static class TestXMLFeatures_XML_ABBREV extends TestXMLFeatures
+        {
+        public TestXMLFeatures_XML_ABBREV( String name )
+            { super( name, "RDF/XML-ABBREV" ); }
+        }
+    
+	static private boolean nBits( int i, int [] ok ) 
+        {
+		int bitCount = 0;
+		while (i > 0) 
+            {
+			if ((i & 1) == 1) bitCount += 1;
+			i >>= 1;
+            }
+		for (int j = 0; j < ok.length; j += 1)
+			if (bitCount == ok[j]) return true;
+		return false;
+        }
+    
+    private static TestSuite addXMLtests( String lang, boolean lots )
+        {
+        TestSuite suite = new TestSuite();
+        int optionLimit = (lang.equals( "RDF/XML-ABBREV" ) ? 1 << blockRules.length : 2);
+        for (int fileNumber = firstTest; fileNumber <= lastTest; fileNumber++) 
+            {
+        	suite.addTest(new testWriterAndReader("testRandom", lang, fileNumber ) );
+        	suite.addTest( new testWriterAndReader( "testLongId", lang, fileNumber ) );
+            for (int optionMask = 1; optionMask < optionLimit; optionMask += 1) 
+                {
+        		if (lots || nBits( optionMask, new int[] { 1, /* 2,3,4,5, */ 6,7 } ))
+        			suite.addTest( createTestOptions( lang, fileNumber, optionMask ) );
+                }
+            }
+        return suite;
+        }
 
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testXMLBase", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testRelativeAPI", lang));
-			/* * /
-			langsuite.addTest(new TestXMLFeatures("testRelativeURI", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testRelative", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testBug696057", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testPropertyURI", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testUseNamespace", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testUseDefaultNamespace", lang));
-            /* */    
-            langsuite.addTest(
-                new TestXMLFeatures("testUseUnusedNamespace", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testBadPrefixNamespace", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testRDFNamespace", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures(
-					"testDuplicatePrefixSysPropAndExplicit",
-					lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testRDFDefaultNamespace", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testDuplicateNamespace", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testDuplicatePrefix", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testUseNamespaceSysProp", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testDefaultNamespaceSysProp", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testDuplicateNamespaceSysProp", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testDuplicatePrefixSysProp", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testUTF8DeclAbsent", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testUTF16DeclAbsent", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testUTF8DeclPresent", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testUTF16DeclPresent", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testISO8859_1_DeclAbsent", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testISO8859_1_DeclPresent", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testStringDeclAbsent", lang));
-			/* */
-			langsuite.addTest(
-				new TestXMLFeatures("testStringDeclPresent", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testTab", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testNoLiteral", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testNoTab", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testDoubleQuote", lang));
-			/* */
-			langsuite.addTest(new TestXMLFeatures("testSingleQuote", lang));
-			/* */
-            langsuite.addTest( new TestXMLFeatures("testNullBaseWithAbbrev", lang));
-		}
-		if (lang.equals("RDF/XML-ABBREV")) 
-            langsuite.addTestSuite(  TestXMLAbbrev.class );
-		return langsuite;
-	}
+    private static testWriterAndReader createTestOptions( String lang, int fileNumber, int optionMask )
+        {
+        return new testWriterAndReader( "testOptions " + fileNumber + " " + optionMask, lang, fileNumber, optionMask ) 
+            {
+            public void runTest() throws IOException { testOptions(); }
+            };
+        }
 
+	public void testRandom() throws IOException 
+        {
+		doTest( new String[] {}, new Object[] {} );
+        }
     
-	public void testRandom() throws IOException {
-		doTest(new String[] {
-		}, new Object[] {
-		});
-	}
+	public void testLongId() throws IOException 
+        {
+		doTest( new String[] {"longId"}, new Object[] {Boolean.TRUE} );
+        }
     
-	public void testLongId() throws IOException {
-		doTest(new String[] { "longId" }, new Object[] { new Boolean(true)});
-	}
-    
-	static Resource blockRules[] =
+	static Resource [] blockRules =
 		{
-			RDFSyntax.parseTypeLiteralPropertyElt,
-			RDFSyntax.parseTypeCollectionPropertyElt,
-			RDFSyntax.propertyAttr,
+		RDFSyntax.parseTypeLiteralPropertyElt,
+		RDFSyntax.parseTypeCollectionPropertyElt,
+		RDFSyntax.propertyAttr,
 		RDFSyntax.sectionReification,
 		RDFSyntax.sectionListExpand,
-			RDFSyntax.parseTypeResourcePropertyElt,
-			DAML_OIL.collection };
-	public void testOptions() throws IOException {
-		Vector v = new Vector();
-		for (int i = 0; i < blockRules.length; i++) {
-			if ((options & (1 << i)) != 0)
-				v.add(blockRules[i]);
-		}
-		Resource blocked[] = new Resource[v.size()];
-		v.copyInto(blocked);
-		doTest(new String[] { "blockRules" }, new Object[] { blocked });
-	}
+		RDFSyntax.parseTypeResourcePropertyElt,
+		DAML_OIL.collection 
+        };
     
-	public void doTest(String[] propNames, Object[] propVals)
-		throws IOException {
-		test(lang, 35, 1, propNames, propVals);
-	}
+	public void testOptions() throws IOException 
+        {
+		Vector v = new Vector();
+		for (int i = 0; i < blockRules.length; i += 1) 
+            {
+			if ((options & (1 << i)) != 0) v.add( blockRules[i] );
+            }
+		Resource blocked[] = new Resource[v.size()];
+		v.copyInto( blocked );
+		doTest( new String[] { "blockRules" }, new Object[] { blocked } );
+        }
+    
+	public void doTest( String[] propNames, Object[] propVals ) throws IOException 
+        {
+		test( lang, 35, 1, propNames, propVals );
+        }
 
 	static final String baseUris[] =
 		{
-			"http://foo.com/Hello",
-			"http://foo.com/Hello",
-			"http://daml.umbc.edu/ontologies/calendar-ont",
-			"http://www.daml.org/2001/03/daml+oil-ex" };
+		"http://foo.com/Hello",
+		"http://foo.com/Hello",
+		"http://daml.umbc.edu/ontologies/calendar-ont",
+		"http://www.daml.org/2001/03/daml+oil-ex" 
+        };
             
     ByteArrayOutputStream tmpOut;
+    
 	/**
 	 * @param rwLang Use Writer for this lang
 	 * @param seed  A seed for the random number generator
@@ -442,20 +355,20 @@ public class testWriterAndReader
 	}
     
 	/**
-	 *  Adds cnt edges to m chosen by random.
+	 *  Adds count edges to m chosen by random.
 	 *
-	 * @param cnt The number of statements to add.
+	 * @param count The number of statements to add.
 	 * @param m A model with more than cnt statements.
 	 */
-	private void expand(Model m, Random random, int cnt)  {
+	private void expand(Model m, Random random, int count)  {
 		// System.out.println("Expanding from " + (int)m.size() + " by " + cnt );
-		Resource subject[] = new Resource[cnt];
-		Property predicate[] = new Property[cnt];
-		RDFNode object[] = new RDFNode[cnt];
+		Resource subject[] = new Resource[count];
+		Property predicate[] = new Property[count];
+		RDFNode object[] = new RDFNode[count];
 		int sz = (int) m.size();
 		StmtIterator ss = m.listStatements();
 		try {
-			for (int i = 0; i < cnt; i++) {
+			for (int i = 0; i < count; i++) {
 				Statement s = ss.nextStatement();
 				subject[i] = s.getSubject();
 				predicate[i] = s.getPredicate();
@@ -466,27 +379,27 @@ public class testWriterAndReader
 				Resource subj = s.getSubject();
 				RDFNode obj = s.getObject();
 				int ix = random.nextInt(sz);
-				if (ix < cnt)
+				if (ix < count)
 					subject[ix] = subj;
 				ix = random.nextInt(sz);
-				if (ix < cnt)
+				if (ix < count)
 					object[ix] = subj;
 				ix = random.nextInt(sz);
-				if (ix < cnt)
+				if (ix < count)
 					predicate[ix] = s.getPredicate();
 				ix = random.nextInt(sz);
-				if (ix < cnt)
+				if (ix < count)
 					object[ix] = obj;
 				if (obj instanceof Resource) {
 					ix = random.nextInt(sz);
-					if (ix < cnt)
+					if (ix < count)
 						subject[ix] = (Resource) obj;
 				}
 			}
 		} finally {
 			ss.close();
 		}
-		for (int i = 0; i < cnt; i++)
+		for (int i = 0; i < count; i++)
 			m.add(subject[i], predicate[i], object[i]);
 		//   System.out.println("Expanded to " + (int)m.size()  );
 	}
@@ -538,5 +451,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.40 2006-09-18 08:41:18 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.41 2006-09-18 14:51:53 chris-dollin Exp $
  */

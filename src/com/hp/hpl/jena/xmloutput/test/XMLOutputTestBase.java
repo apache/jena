@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2006 Hewlett-Packard Development Company, LP
     All rights reserved. [See end of file]
-    $Id: XMLOutputTestBase.java,v 1.2 2006-09-17 14:30:21 chris-dollin Exp $
+    $Id: XMLOutputTestBase.java,v 1.3 2006-09-18 14:51:53 chris-dollin Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -29,26 +29,24 @@ public class XMLOutputTestBase extends ModelTestBase
     
     static boolean sawErrors;
     
-    static SimpleLogger falseLogger = new SimpleLogger() {
+    static SimpleLogger falseLogger = new SimpleLogger() 
+        {
+        public void warn(String s) { sawErrors = true; }
 
-        public void warn(String s) {
-            sawErrors = true;
-        }
-
-        public void warn(String s, Exception e) {
-            sawErrors = true;
-        }
-    };
+        public void warn(String s, Exception e) { sawErrors = true; }
+        };
     
-    static void blockLogger() {
-        realLogger = BaseXMLWriter.setLogger(falseLogger);
+    static void blockLogger() 
+        {
+        realLogger = BaseXMLWriter.setLogger( falseLogger );
         sawErrors = false;
-    }
+        }
     
-    static boolean unblockLogger() {
-      BaseXMLWriter.setLogger(realLogger);
-      return sawErrors;
-    }
+    static boolean unblockLogger() 
+        {
+        BaseXMLWriter.setLogger( realLogger );
+        return sawErrors;
+        }
     
     static protected class Change 
         {
@@ -66,6 +64,22 @@ public class XMLOutputTestBase extends ModelTestBase
                     { writer.setProperty( property, value ); }
                 };
             }
+        
+        public static Change setProperty( final String property, final boolean value )
+            {
+            return new Change()
+                { public void modify( RDFWriter writer )
+                    { writer.setProperty( property, Boolean.valueOf( value ) ); }
+                };
+            }
+        
+        public static Change setPrefix( final String prefix, final String URI )
+            {
+            return new Change()
+                { public void modify( Model m )
+                    { m.setNsPrefix( prefix, URI ); }
+                };
+            }
            
         public static Change blockRules( String ruleName )
             { return setProperty( "blockrules", ruleName ); }
@@ -76,10 +90,11 @@ public class XMLOutputTestBase extends ModelTestBase
      * @param filename Read this file, write it out, read it in.
      * @param regex    Written file must match this.
      */
-    protected void check(String filename, String regex, Change code)
-        throws IOException {
-        check(filename, regex, null, code);
-    }
+    protected void check( String filename, String regex, Change code)
+        throws IOException 
+        {
+        check( filename, regex, null, code );
+        }
     
     protected void check(
         String filename,
@@ -87,7 +102,7 @@ public class XMLOutputTestBase extends ModelTestBase
         String regexAbsent,
         Change code)
         throws IOException {
-        check(filename, null, regexPresent, regexAbsent, false, code);
+        check( filename, null, regexPresent, regexAbsent, false, code);
     }
 
     protected void check(

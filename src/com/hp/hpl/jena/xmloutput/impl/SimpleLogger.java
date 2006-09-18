@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  [See end of file]
-  $Id: SimpleLogger.java,v 1.4 2006-03-22 13:53:37 andy_seaborne Exp $
+  $Id: SimpleLogger.java,v 1.5 2006-09-18 14:52:07 chris-dollin Exp $
 */
 package com.hp.hpl.jena.xmloutput.impl;
 
@@ -9,10 +9,11 @@ package com.hp.hpl.jena.xmloutput.impl;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-public interface SimpleLogger {
-  public void warn(String s);
-  public void warn(String s, Exception e);
-}
+public interface SimpleLogger 
+    {
+    public void warn( String s );
+    public void warn( String s, Exception e );
+    }
 
 /*
    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP

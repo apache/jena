@@ -1,12 +1,15 @@
 package com.hp.hpl.jena.xmloutput.test;
 
+import junit.framework.*;
 
-public class BigAbbrevTestPackage {
-    public static junit.framework.Test suite() {
-        return testWriterAndReader.suite("RDF/XML-ABBREV",true);
+public class BigAbbrevTestPackage extends TestCase
+    {
+    public static TestSuite suite() 
+        {
+        return testWriterAndReader.repeatedAbbrevSuite();
+        }
     }
 
-}
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
