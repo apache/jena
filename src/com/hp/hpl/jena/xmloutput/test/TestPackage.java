@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: TestPackage.java,v 1.19 2006-09-12 15:19:09 chris-dollin Exp $
+    $Id: TestPackage.java,v 1.20 2006-09-18 08:41:18 chris-dollin Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.shared.BadURIException;
  * JUnit regression tests for output
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: TestPackage.java,v 1.19 2006-09-12 15:19:09 chris-dollin Exp $,
+ * @version CVS info: $Id: TestPackage.java,v 1.20 2006-09-18 08:41:18 chris-dollin Exp $,
  */
 public class TestPackage extends TestCase{
 
@@ -30,34 +30,19 @@ public class TestPackage extends TestCase{
      */
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
-        String langs[] =
-            new String[] { "RDF/XML", "RDF/XML-ABBREV", 
-                //
-               "N-TRIPLE",
-            //"N3" 
-        };
-        suite.addTest(TestMacEncodings.suite());
+        suite.addTest( TestMacEncodings.suite() );
         // add all the tests defined in this class to the suite
         /* */
-        suite.addTest(new PrettyWriterTest("testAnonDamlClass"));
-        /* */
-        suite.addTest(new PrettyWriterTest("testLi"));
-		suite.addTest(new PrettyWriterTest("test803804"));
-        
-    	//if ( true ) return suite;
-        /* */
-        suite.addTest(new PrettyWriterTest("testRDFCollection"));
-        /* */
-        suite.addTest(new PrettyWriterTest("testOWLPrefix"));
-        /* */
+        suite.addTestSuite( PrettyWriterTest.class );
         suite.addTest(new testWriterInterface("testInterface", null)); 
         /* */
         suite.addTest(new testWriterInterface("testNoWriter", null)); 
         /* */
         suite.addTest(new testWriterInterface("testAnotherWriter", null));
         /* */
-        for (int i = 0; i < langs.length; i++)
-            suite.addTest( testWriterAndReader.suite( langs[i] ) );
+        suite.addTest( testWriterAndReader.suiteXML() );
+        suite.addTest( testWriterAndReader.suiteXML_ABBREV() );
+        suite.addTest( testWriterAndReader.suiteN_TRIPLE() );
         suite.addTestSuite( TestURIExceptions.class );
         suite.addTestSuite( TestEntityOutput.class );
         suite.addTestSuite( TestLiteralEncoding.class );
@@ -113,5 +98,5 @@ public class TestPackage extends TestCase{
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestPackage.java,v 1.19 2006-09-12 15:19:09 chris-dollin Exp $
+ * $Id: TestPackage.java,v 1.20 2006-09-18 08:41:18 chris-dollin Exp $
  */

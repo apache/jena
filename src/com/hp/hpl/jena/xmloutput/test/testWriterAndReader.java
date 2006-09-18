@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.39 2006-09-17 20:27:55 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.40 2006-09-18 08:41:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.39 $' Date='$Date: 2006-09-17 20:27:55 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.40 $' Date='$Date: 2006-09-18 08:41:18 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -78,9 +78,19 @@ public class testWriterAndReader
 			+ (options != 0 ? ("[" + options + "]") : "");
 	}
     
-	static Test suite(String lang) {
-		return suite(lang, false);
-	}
+	static private TestSuite suite( String lang ) 
+        { return suite(lang, false); }
+    
+    static TestSuite suiteXML()
+        { return suite( "RDF/XML" ); }
+    
+    static Test suiteXML_ABBREV()
+        { 
+        return suite( "RDF/XML-ABBREV" ); 
+        }
+    
+    static Test suiteN_TRIPLE()
+        { return suite( "N-TRIPLE" ); }
     
 	static private boolean nBits(int i, int ok[]) {
 		int cnt = 0;
@@ -95,7 +105,7 @@ public class testWriterAndReader
 		return false;
 	}
     
-	static Test suite(String lang, boolean lots) {
+	static TestSuite suite(String lang, boolean lots) {
 		TestSuite langsuite = new TestSuite();
 		langsuite.setName(lang);
 // This code was never invoked. So I deaded it.
@@ -528,5 +538,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.39 2006-09-17 20:27:55 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.40 2006-09-18 08:41:18 chris-dollin Exp $
  */

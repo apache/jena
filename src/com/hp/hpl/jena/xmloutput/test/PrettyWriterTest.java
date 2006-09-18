@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: PrettyWriterTest.java,v 1.12 2006-03-22 13:53:14 andy_seaborne Exp $
+    $Id: PrettyWriterTest.java,v 1.13 2006-09-18 08:41:18 chris-dollin Exp $
 */
 
 // Package
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.12 2006-03-22 13:53:14 andy_seaborne Exp $,
+ * @version CVS info: $Id: PrettyWriterTest.java,v 1.13 2006-09-18 08:41:18 chris-dollin Exp $,
  */
 
 public class PrettyWriterTest extends ModelTestBase {
@@ -50,28 +50,26 @@ public class PrettyWriterTest extends ModelTestBase {
 //	static AwkMatcher matcher = new AwkMatcher();
 
 	/**
-	 * 
 	 * @param filename Read this file, write it out, read it in.
 	 * @param regex    Written file must match this.
 	 */
-	private void check(String filename, String regex)
-		throws IOException {
+	private void check( String filename, String regex ) throws IOException {
 		String contents = null;
 		try {
 			Model m = createMemModel();
-			m.read(filename);
+			m.read( filename );
 			StringWriter sw = new StringWriter();
-			m.write(sw, "RDF/XML-ABBREV", filename);
+			m.write( sw, "RDF/XML-ABBREV", filename );
 			sw.close();
 			contents = sw.toString();
 			Model m2 = createMemModel();
-			m2.read(new StringReader(contents), filename);
-			assertTrue(m.isIsomorphicWith(m2));
+			m2.read( new StringReader( contents ), filename );
+			assertTrue( m.isIsomorphicWith( m2 ) );
             
 			assertTrue(
 				"Looking for /" + regex + "/ ",
 //                +contents,
-                Pattern.compile(regex,Pattern.DOTALL).matcher(contents).find()
+                Pattern.compile( regex,Pattern.DOTALL ).matcher( contents ).find()
 //				matcher.contains(contents, awk.compile(regex))
                 );
 			contents = null;
@@ -83,15 +81,13 @@ public class PrettyWriterTest extends ModelTestBase {
 		}
 	}
 
-	public void testAnonDamlClass()
-		throws IOException {
+	public void testAnonDamlClass() throws IOException {
 		check(
 			"file:testing/abbreviated/daml.rdf",
-			"rdf:parseType=[\"']daml:collection[\"']");
+            "rdf:parseType=[\"']daml:collection[\"']");
 	}
 
-	public void testRDFCollection()
-		throws IOException {
+	public void testRDFCollection() throws IOException {
 		check(
 			"file:testing/abbreviated/collection.rdf",
 			"rdf:parseType=[\"']Collection[\"']");
@@ -170,10 +166,10 @@ public class PrettyWriterTest extends ModelTestBase {
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: PrettyWriterTest.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  *
- * Last modified on   $Date: 2006-03-22 13:53:14 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2006-09-18 08:41:18 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
