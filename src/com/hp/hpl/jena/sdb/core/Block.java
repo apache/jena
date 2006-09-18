@@ -11,7 +11,7 @@ import java.util.Set;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.Printable;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerBlock;
+import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface Block extends Printable
@@ -19,8 +19,8 @@ public interface Block extends Printable
     public static final int INDENT = 2 ; 
     
     Block substitute(Binding binding) ;
-    SqlNode generateSQL(CompileContext context, QueryCompilerBlock queryCompiler) ;
-
+    SqlNode compile(BlockCompiler blockCompiler, CompileContext context) ;
+    
     // Temp?
     boolean isCompletePattern() ;
     void setCompletePattern(boolean isComplete) ;

@@ -27,18 +27,15 @@ import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.store.Store;
 
 /**
- * Compile a query (in the form of Blocks).  This is the general part of the
- * algorithm where optionals are turned into left joins.  It is parameterized
- * by encoding of the basic patterns.  The different layouts provide that part
- * of the translation to SQL.
+ * Compile a query (in the form of Blocks).
  *  
  * @author Andy Seaborne
  * @version $Id: QueryCompilerBase.java,v 1.1 2006/04/22 13:45:58 andy_seaborne Exp $
  */
 
-public abstract class QueryCompilerBlock implements QueryCompiler
+public abstract class QueryCompilerMain implements QueryCompiler
 {
-    private static Log log = LogFactory.getLog(QueryCompilerBlock.class) ;
+    private static Log log = LogFactory.getLog(QueryCompilerMain.class) ;
     
     public final QueryIterator execSQL(Store store,
                                        Block block,
@@ -52,7 +49,7 @@ public abstract class QueryCompilerBlock implements QueryCompiler
             
             Set<Var> x = QC.exitVariables(block) ;
             try {
-                return getResultBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;
+                return getResultsBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;
             } finally { jdbcResultSet.close() ; }
         } catch (SQLException ex)
         {
@@ -60,9 +57,9 @@ public abstract class QueryCompilerBlock implements QueryCompiler
         }
     }
 
-    //protected abstract ConditionCompiler getConditionCompiler() ;
-    protected abstract ResultsBuilder getResultBuilder() ;
-
+    protected abstract ResultsBuilder getResultsBuilder() ;
+    protected abstract BlockCompiler  getBlockCompiler() ;
+    
     public String asSQL(Store store, Query query, Block block)
     {
         verbose ( QC.printBlock, block ) ; 
@@ -81,7 +78,7 @@ public abstract class QueryCompilerBlock implements QueryCompiler
         
         startCompile(context, block) ;
         
-        SqlNode sqlNode = block.generateSQL(context, this) ; 
+        SqlNode sqlNode = block.compile(getBlockCompiler() , context) ; 
 
         Set<Var> projectVars = QC.exitVariables(block) ;
         
@@ -102,22 +99,21 @@ public abstract class QueryCompilerBlock implements QueryCompiler
 
     protected abstract void startCompile(CompileContext context, Block block) ;
     protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars) ;
-    protected abstract SqlNode compile(BlockBGP blockBGP, CompileContext context) ;
-    
-    
-    public SqlNode compile(BlockOptional blockOpt, CompileContext context)
-    {
-        SqlNode fixedNode = blockOpt.getLeft().generateSQL(context, this) ;
-        SqlNode optNode = blockOpt.getRight().generateSQL(context, this) ;
-        
-        if ( optNode.isProject() )
-        {
-            log.info("Projection from an optional{} block") ;
-            optNode = optNode.getProject().getSubNode() ;
-        }
-        SqlNode sqlNode = QC.leftJoin(context, fixedNode, optNode) ;
-        return sqlNode ;
-    }
+//    
+//    
+//    public SqlNode compile(BlockOptional blockOpt, CompileContext context)
+//    {
+//        SqlNode fixedNode = blockOpt.getLeft().generateSQL(context, this) ;
+//        SqlNode optNode = blockOpt.getRight().generateSQL(context, this) ;
+//        
+//        if ( optNode.isProject() )
+//        {
+//            log.info("Projection from an optional{} block") ;
+//            optNode = optNode.getProject().getSubNode() ;
+//        }
+//        SqlNode sqlNode = QC.leftJoin(context, fixedNode, optNode) ;
+//        return sqlNode ;
+//    }
     
     static private void verbose(boolean flag, Object thing)
     {

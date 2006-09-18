@@ -47,11 +47,6 @@ public class CustomizeType implements StoreCustomizer
         }
         return block ;
     }
-    
-    // Move into ARQ
-    static final String VarNameBase = "@" ;
-    static int VarCount = 0 ;
-    
 }
 
 /*

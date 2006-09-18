@@ -68,11 +68,11 @@ public class BlockBGP extends BlockBase
         classified = true ;
     }
     
-    public SqlNode generateSQL(CompileContext context, QueryCompilerBlock queryCompiler)
+    public SqlNode compile(BlockCompiler blockCompiler, CompileContext context)
     {
-        return queryCompiler.compile(this, context) ;
+        return blockCompiler.compile(this, context) ;
     }
-
+    
     @Override
     protected BlockBase replace(Binding binding)
     {

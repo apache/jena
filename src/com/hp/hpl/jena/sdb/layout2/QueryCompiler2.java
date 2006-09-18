@@ -6,193 +6,52 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import java.util.*;
+import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.SDBConstants;
-import com.hp.hpl.jena.sdb.core.compiler.*;
-import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class QueryCompiler2 extends QueryCompilerBasicPattern
+public class QueryCompiler2 extends QueryCompilerMain
 {
-    private static Log log = LogFactory.getLog(QueryCompiler2.class) ;
-    private TriplePatternCompiler tripleCompiler ;
+    private BlockCompiler     blockCompiler ;
+    private ResultsBuilder    resultsBuilder ;
+    private ConditionCompiler conditionCompiler ;
     
     public QueryCompiler2()
     {
-        tripleCompiler = new TripleCompiler2() ;
+        blockCompiler =      new BlockCompiler2() ;
+        resultsBuilder =     new ResultsBuilder2() ;
+        conditionCompiler =  new ConditionCompiler2() ;
     }
-    
-    private class Additional
-    {
-        Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
-    }
-    
-    private Map<CompileContext, Additional> compileState =
-        Collections.synchronizedMap(new HashMap<CompileContext, Additional>()) ;
-    
     
     @Override
-    public TriplePatternCompiler getTriplePatternCompiler()
-    { return tripleCompiler ; }
-
-    public void setTriplePatternCompiler(TriplePatternCompiler tpCompiler)
-    { tripleCompiler = tpCompiler ; }
-
-    // -------- Slot compilation
-    
-    @Override
-    protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
-    {
-        // Initialize additional state
-        compileState.put(context, new Additional()) ;
-        Collection<Node> constants = blockBGP.getConstants() ;
-        SqlNode sqlNode = insertConstantAccesses(context, constants, null) ;
-        return sqlNode ;
-        
-    }
+    protected BlockCompiler  getBlockCompiler() { return blockCompiler ; }
 
     @Override
-    protected SqlNode finishBasicBlock(CompileContext context,
-                                       SqlNode sqlNode, BlockBGP blockBGP)
-    {
-        sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
-        Set<Var> projectVars = QC.exitVariables(blockBGP) ;
-        sqlNode = extractResults(context, projectVars , sqlNode) ;
-        // Drop the constants mapping
-        compileState.remove(context) ;
-        return sqlNode ;
-    }
+    protected ResultsBuilder getResultsBuilder() { return resultsBuilder ; }
+    public ConditionCompiler getConditionCompiler() { return conditionCompiler ; }
     
-    private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants, Object object)
-    {
-        Map<Node, SqlColumn> constantCols = compileState.get(context).constantCols ;
-        SqlNode sqlNode = null ;
-        for ( Node n : constants )
-        {
-            long hash = NodeLayout2.hash(n);
-            SqlConstant hashValue = new SqlConstant(hash) ;
-    
-            // Access nodes table.
-            
-            SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
-            nTable.addNote("Const: "+FmtUtils.stringForNode(n, context.getPrefixMapping())) ; 
-            SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
-            // Record 
-            constantCols.put(n, new SqlColumn(nTable, "id")) ;
-            SqlExpr c = new S_Equal(cHash, hashValue) ;
-            sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
-            sqlNode = SqlRestrict.restrict(sqlNode, c)  ;
-        }
-        
-        return sqlNode ;
-    
-    }
-
-
-    private SqlNode extractResults(CompileContext context,
-                                   Collection<Var>vars, SqlNode sqlNode)
-    {
-        // for each var and it's id column, make sure there is value column. 
-        for ( Var v : vars )
-        {
-            SqlColumn c1 = sqlNode.getIdScope().getColumnForVar(v) ;
-            if ( c1 == null )
-                // Variable not actually in results. 
-                continue ;
-            
-            // Already in scope from a condition?
-            SqlColumn c2 = sqlNode.getValueScope().getColumnForVar(v) ;
-            if ( c2 != null )
-                // Already there
-                continue ;
-            
-            // Not in scope -- add a table to get it (share some code with addRestrictions?) 
-            // Value table.
-            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
-            c2 = new SqlColumn(nTable, "id") ;                  // nTable.getColFor("id") ;
-
-            nTable.setValueColumnForVar(v, c2) ;
-            // Condition for value: triple table column = node table id 
-            nTable.addNote("Var: "+v) ;
-            
-            
-            SqlExpr cond = new S_Equal(c1, c2) ;
-            SqlNode n = QC.innerJoin(context, sqlNode, nTable) ;
-            sqlNode = SqlRestrict.restrict(n, cond) ;
-        }
-        return sqlNode ;
-    }
-
-    private SqlNode addRestrictions(CompileContext context,
-                                    SqlNode sqlNode,
-                                    List<SDBConstraint> constraints)
-    {
-        if ( constraints.size() == 0 )
-            return sqlNode ;
-
-        // Add all value columns
-        for ( SDBConstraint c : constraints )
-        {
-            @SuppressWarnings("unchecked")
-            Set<Var> vars = c.getExpr().getVarsMentioned() ;
-            for ( Var v : vars )
-            {
-                // For Variables used in this SQL constraint, make sure the value is available.  
-                
-                SqlColumn tripleTableCol = sqlNode.getIdScope().getColumnForVar(v) ;   // tripleTableCol
-                if ( tripleTableCol == null )
-                {
-                    // Not in scope.
-                    log.info("Var not in scope for value of expression: "+v) ;
-                    continue ;
-                }
-                
-                // Value table column
-                SqlTable nTable =   new TableNodes(allocNodeResultAlias()) ;
-                SqlColumn colId =   new SqlColumn(nTable, "id") ;
-                SqlColumn colLex =  new SqlColumn(nTable, "lex") ;
-                SqlColumn colType = new SqlColumn(nTable, "type") ;
-                
-                nTable.setValueColumnForVar(v, colLex) ;        // ASSUME lexical/string form needed 
-                nTable.setIdColumnForVar(v, colId) ;            // Id scope => join
-                sqlNode = QC.innerJoin(context, sqlNode, nTable) ;
-            }
-            
-            SqlExpr sqlExpr = c.compile(sqlNode.getValueScope()) ;
-            sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
-        }
-        return sqlNode ;
-    }
-
     @Override
     protected void startCompile(CompileContext context, Block block)
     { return ; }
-        
-    
+
     @Override
-    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
+        protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
     {
         SqlNode n =  makeProject(sqlNode, projectVars) ;
         return n ;
     }
     
-//    private SqlNode makeProject(List<Pair<Var, SqlColumn>>cols, SqlNode sqlNode, Set<Var> projectVars)
     private SqlNode makeProject(SqlNode sqlNode, Set<Var> projectVars)
     {
         for ( Var v : projectVars )
@@ -204,20 +63,20 @@ public class QueryCompiler2 extends QueryCompilerBasicPattern
                 // Should be a column mentioned in the SELECT which is not mentionedd in this block 
                 continue ;
             }
-
+    
             SqlTable table = vCol.getTable() ; 
             Var vLex = new Var(v.getName()+"$lex") ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
-
+    
             Var vDatatype = new Var(v.getName()+"$datatype") ;
             SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
-
+    
             Var vLang = new Var(v.getName()+"$lang") ;
             SqlColumn cLang = new SqlColumn(table, "lang") ;
-
+    
             Var vType = new Var(v.getName()+"$type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
-
+    
             // Get the 3 parts of the RDF term and its internal type number.
             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
@@ -226,54 +85,6 @@ public class QueryCompiler2 extends QueryCompilerBasicPattern
         }
         return sqlNode ;
     }
-
-
-    
-    // TODO Move/merge with CompileContext
-    private static int nodesAliasCount = 1 ;
-    private static final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
-    private static final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
-    
-    static private String allocNodeConstantAlias()      { return allocAlias(nodesConstantAliasBase) ; }
-    static private String allocNodeResultAlias()        { return allocAlias(nodesResultAliasBase) ; }
-    static private String allocAlias(String aliasBase)  { return  aliasBase+(nodesAliasCount++) ; }
-    
-    private ConditionCompiler conditionCompiler = new ConditionCompiler2() ;
-    public ConditionCompiler getConditionCompiler()
-    { return conditionCompiler ; }
-    
-    private ResultsBuilder resultBuilder = new ResultsBuilder2() ;
-    @Override
-    public ResultsBuilder getResultBuilder()
-    { return resultBuilder ; }
-
-
-    // -------- Slot compilation
-    
-    class TripleCompiler2 extends TriplePatternCompilerPlain
-    {
-        @Override
-        protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
-        {
-            SqlColumn colId = compileState.get(context).constantCols.get(node) ;
-            if ( colId == null )
-            {
-                log.warn("Failed to find id col for "+node) ;
-                return ;
-            }
-            SqlExpr c = new S_Equal(thisCol, colId) ;
-            c.addNote("Const condition: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
-            conditions.add(c) ;
-            return ; 
-        }
-    
-        @Override
-        protected SqlTable accessTriplesTable(String alias)
-        {
-            return new TableTriples(alias) ;
-        }
-    }
-    
 }
 
 /*

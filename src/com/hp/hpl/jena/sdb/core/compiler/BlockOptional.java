@@ -42,9 +42,9 @@ public class BlockOptional extends BlockBase
         return x ;
     }
     
-    public SqlNode generateSQL(CompileContext context, QueryCompilerBlock queryCompiler)
+    public SqlNode compile(BlockCompiler blockCompiler, CompileContext context)
     {
-        return queryCompiler.compile(this, context) ;
+        return blockCompiler.compile(this, context) ;
     }
     
     @Override

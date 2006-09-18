@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Var;
@@ -18,11 +21,45 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
 
-public abstract class TriplePatternCompilerPlain implements TriplePatternCompiler 
+public abstract class BlockCompilerBasic implements BlockCompiler
 {
-    public SqlNode match(CompileContext context, Triple triple)
+    private static Log log = LogFactory.getLog(BlockCompilerBasic.class) ;
+    
+    public SqlNode compile(BlockOptional blockOpt, CompileContext context)
+    {
+        SqlNode fixedNode = blockOpt.getLeft().compile(this, context) ;
+        SqlNode optNode = blockOpt.getRight().compile(this, context) ;
+            
+        if ( optNode.isProject() )
+        {
+            log.info("Projection from an optional{} block") ;
+            optNode = optNode.getProject().getSubNode() ;
+        }
+        SqlNode sqlNode = QC.leftJoin(context, fixedNode, optNode) ;
+        return sqlNode ;
+    }
+
+    public SqlNode compile(BlockBGP blockBGP, CompileContext context)
+    {
+        SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
+            
+        // Allow per store instance modification.
+        blockBGP = context.getStore().getCustomizer().modify(blockBGP) ;
+
+        for ( Triple triple : blockBGP.getTriples() )
+        {
+            SqlNode sNode = compile(triple, context) ;
+            if ( sNode != null )
+                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
+        }
+        sqlNode = finishBasicBlock(context, sqlNode, blockBGP) ;
+        return sqlNode ;
+    }
+
+    public SqlNode compile(Triple triple, CompileContext context)
     {
         String alias = context.allocTableAlias() ;
         SqlExprList conditions = new SqlExprList() ;
@@ -39,8 +76,12 @@ public abstract class TriplePatternCompilerPlain implements TriplePatternCompile
         
         return SqlRestrict.restrict(triples, conditions) ;
     }
+
+    public SqlNode compile(SDBConstraint constraint, CompileContext context)
+    {
+        return null ;
+    }
     
-    final
     protected void processSlot(CompileContext context,
                                SqlTable table, SqlExprList conditions,
                                Node node, String colName)
@@ -64,12 +105,22 @@ public abstract class TriplePatternCompilerPlain implements TriplePatternCompile
         }
         table.setIdColumnForVar(var, thisCol) ;
     }
+
+    // ---- Basic pattern hooks
     
+    protected abstract SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP) ;
+
+    protected abstract SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP) ;
+
+    
+    // ---- Encoding hooks
+
     /** Deal with an access to a constant in the query tripe pattern */
     protected abstract void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions) ;
     
     /** Return an SqlTable for the relevant triples table (use the alias given) */ 
     protected abstract SqlTable accessTriplesTable(String alias) ;
+
 }
 
 /*

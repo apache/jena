@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sdb.layout2.expr.StringExprCompiler;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 
-public class ConditionCompiler2 implements ConditionCompiler
+class ConditionCompiler2 implements ConditionCompiler
 {
     private static Log log = LogFactory.getLog(ConditionCompiler2.class) ;
     

@@ -12,50 +12,52 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.compiler.*;
-import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
+import com.hp.hpl.jena.sdb.core.compiler.ConditionCompilerNone;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 import com.hp.hpl.jena.sdb.store.ResultsBuilder;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class QueryCompiler1 extends QueryCompilerBasicPattern
+public class QueryCompiler1 extends QueryCompilerMain
 {
     private static Log log = LogFactory.getLog(QueryCompiler1.class) ;
     
     private EncoderDecoder codec ;
-    private TripleTableDesc tripleTableDesc ; // ==> Tablefactory??
-    private TriplePatternCompiler tripleCompiler ;
+    private BlockCompiler blockCompiler ;
 
     public QueryCompiler1(EncoderDecoder codec, TripleTableDesc tripleTableDesc)
     {
         if ( tripleTableDesc == null )
-            this.tripleTableDesc = new TripleTableDescSPO() ;
-        else
-            this.tripleTableDesc = tripleTableDesc ;
+            tripleTableDesc = new TripleTableDescSPO() ;
         this.codec = codec ;
-        tripleCompiler = new TripleCompiler1() ;
+        blockCompiler = new BlockCompiler1(codec, tripleTableDesc) ;
     }
     
-    public QueryCompiler1(EncoderDecoder codec) { this(codec, null) ; }
+
+    public QueryCompiler1(EncoderDecoder codec)    { this(codec, null) ; }
 
     @Override
-    public TriplePatternCompiler getTriplePatternCompiler()
-    { return tripleCompiler ; }
+    protected BlockCompiler  getBlockCompiler()    { return blockCompiler ; }
     
+    @Override
+    protected ResultsBuilder getResultsBuilder()   { return new ResultsBuilder1(codec) ; }
+
+
+    public ConditionCompiler getConditionCompiler()
+    {
+        return ConditionCompilerNone.get() ;
+    }
+
     @Override
     protected void startCompile(CompileContext context, Block block)
     { return ; } 
-
 
     @Override
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
@@ -82,54 +84,6 @@ public class QueryCompiler1 extends QueryCompilerBasicPattern
         return sqlNode ;
     }
     
-    @Override
-    protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
-    { return null ; }
-
-    @Override
-    protected SqlNode finishBasicBlock(CompileContext context, SqlNode sqlNode,  BlockBGP blockBGP)
-    { 
-        // End of BGP - add any constraints.
-        for ( SDBConstraint c : blockBGP.getConstraints() )
-        {
-            throw new SDBException("ConditionCompiler for layout 1 not writtern") ;
-//                SqlExpr sqlExpr = null ;
-//                sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
-        }
-        return sqlNode ; 
-    }
-    
-    public ConditionCompiler getConditionCompiler()
-    {
-        return ConditionCompilerNone.get() ;
-    }
-
-    @Override
-    protected ResultsBuilder getResultBuilder()
-    {
-        return new ResultsBuilder1(codec) ;
-    }
-    
-    class TripleCompiler1 extends TriplePatternCompilerPlain
-    {
-        @Override
-        protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
-        {
-              String str = codec.encode(node) ;
-              SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-              c.addNote("Const: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
-              conditions.add(c) ;
-              return ;
-        }
-        
-        @Override
-        protected SqlTable accessTriplesTable(String alias)
-        {
-            return new TableTriples1(tripleTableDesc.getTableName(), alias) ;
-        }
-        
- 
-    }
 }
 
 /*
