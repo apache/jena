@@ -29,16 +29,26 @@ public class QueryCompiler2 extends QueryCompilerMain
     
     public QueryCompiler2()
     {
-        blockCompiler =      new BlockCompiler2() ;
-        resultsBuilder =     new ResultsBuilder2() ;
-        conditionCompiler =  new ConditionCompiler2() ;
+        this(null, null, null) ;
+    }
+    
+    protected QueryCompiler2(BlockCompiler blockCompiler,
+                             ResultsBuilder resultsBuilder,
+                             ConditionCompiler conditionCompiler)
+    {
+        if ( blockCompiler == null )
+            blockCompiler = new BlockCompiler2() ;
+        if ( resultsBuilder == null )
+            resultsBuilder = new ResultsBuilder2() ;
+        if ( conditionCompiler == null)
+            conditionCompiler = new ConditionCompiler2() ;
     }
     
     @Override
-    protected BlockCompiler  getBlockCompiler() { return blockCompiler ; }
-
+    protected BlockCompiler  getBlockCompiler()     { return blockCompiler ; }
     @Override
-    protected ResultsBuilder getResultsBuilder() { return resultsBuilder ; }
+    protected ResultsBuilder getResultsBuilder()    { return resultsBuilder ; }
+
     public ConditionCompiler getConditionCompiler() { return conditionCompiler ; }
     
     @Override
