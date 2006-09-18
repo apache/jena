@@ -31,21 +31,23 @@ class BlockCompiler2 extends BlockCompilerBasic
 {
     private static Log log = LogFactory.getLog(BlockCompiler2.class) ;
 
-    private class Additional
+    private static class Additional
     {
         Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
+        
+        private int nodesAliasCount = 1 ;
+        private final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
+        private final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
+
+        String allocNodeConstantAlias()      { return allocAlias(nodesConstantAliasBase) ; }
+        String allocNodeResultAlias()        { return allocAlias(nodesResultAliasBase) ; }
+        String allocAlias(String aliasBase)  { return  aliasBase+(nodesAliasCount++) ; }
+        
     }
 
     private Map<CompileContext, Additional> compileState = Collections.synchronizedMap(new HashMap<CompileContext, Additional>()) ;
 
     // TODO Move/merge with CompileContext
-    private static int nodesAliasCount = 1 ;
-    private static final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
-    private static final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
-
-    static private String allocNodeConstantAlias()      { return allocAlias(nodesConstantAliasBase) ; }
-    static private String allocNodeResultAlias()        { return allocAlias(nodesResultAliasBase) ; }
-    static private String allocAlias(String aliasBase)  { return  aliasBase+(nodesAliasCount++) ; }
 
     @Override
     protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
@@ -78,7 +80,9 @@ class BlockCompiler2 extends BlockCompilerBasic
     
     private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants, Object object)
     {
-        Map<Node, SqlColumn> constantCols = compileState.get(context).constantCols ;
+        Additional state = compileState.get(context) ;
+        
+        Map<Node, SqlColumn> constantCols = state.constantCols ;
         SqlNode sqlNode = null ;
         for ( Node n : constants )
         {
@@ -87,7 +91,7 @@ class BlockCompiler2 extends BlockCompilerBasic
 
             // Access nodes table.
 
-            SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
+            SqlTable nTable = new TableNodes(state.allocNodeConstantAlias()) ;
             nTable.addNote("Const: "+FmtUtils.stringForNode(n, context.getPrefixMapping())) ; 
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
             // Record 
@@ -101,10 +105,11 @@ class BlockCompiler2 extends BlockCompilerBasic
 
     }
 
-
     private SqlNode extractResults(CompileContext context,
                                    Collection<Var>vars, SqlNode sqlNode)
     {
+        Additional state = compileState.get(context) ;
+
         // for each var and it's id column, make sure there is value column. 
         for ( Var v : vars )
         {
@@ -121,7 +126,7 @@ class BlockCompiler2 extends BlockCompilerBasic
 
             // Not in scope -- add a table to get it (share some code with addRestrictions?) 
             // Value table.
-            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+            SqlTable nTable = new TableNodes(state.allocNodeResultAlias()) ;
             c2 = new SqlColumn(nTable, "id") ;                  // nTable.getColFor("id") ;
 
             nTable.setValueColumnForVar(v, c2) ;
@@ -140,6 +145,8 @@ class BlockCompiler2 extends BlockCompilerBasic
                                     SqlNode sqlNode,
                                     List<SDBConstraint> constraints)
     {
+        Additional state = compileState.get(context) ;
+
         if ( constraints.size() == 0 )
             return sqlNode ;
 
@@ -161,7 +168,7 @@ class BlockCompiler2 extends BlockCompilerBasic
                 }
 
                 // Value table column
-                SqlTable nTable =   new TableNodes(allocNodeResultAlias()) ;
+                SqlTable nTable =   new TableNodes(state.allocNodeResultAlias()) ;
                 SqlColumn colId =   new SqlColumn(nTable, "id") ;
                 SqlColumn colLex =  new SqlColumn(nTable, "lex") ;
                 SqlColumn colType = new SqlColumn(nTable, "type") ;
