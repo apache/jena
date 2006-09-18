@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.47 2006-07-17 13:06:44 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.48 2006-09-18 07:14:35 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -303,6 +303,18 @@ public class ModelFactory extends ModelFactoryBase
     public static InfModel createInfModel(Reasoner reasoner, Model schema, Model model) {
          InfGraph graph = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
          return new InfModelImpl( graph );
+    }
+    
+    /**
+     * Build an inference model from an InfGraph. Graphs and InfGraphs
+     * are internal implementation level objects rather than normal user
+     * objects so this method should only be used if you are sure this is
+     * what you need.
+     * @param g and inference graph
+     * @return the same graph wrapped up as an InfModel
+     */
+    public static InfModel createInfModel(InfGraph g) {
+        return new InfModelImpl(g);
     }
 
     /**
