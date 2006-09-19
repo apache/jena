@@ -24,7 +24,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.33 2006-04-28 17:07:10 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.34 2006-09-19 09:50:47 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -241,7 +241,7 @@ public class N3JenaWriterCommon implements RDFWriter
     {
        // Needed only for no prefixes, no blank first line. 
         boolean doingFirst = true;
-        ResIterator rIter = model.listSubjects();
+        ResIterator rIter = listSubjects(model);
         for (; rIter.hasNext();)
         {
             // Subject:
@@ -267,6 +267,8 @@ public class N3JenaWriterCommon implements RDFWriter
         }
         rIter.close();
     } 
+    
+    protected ResIterator listSubjects(Model model) { return model.listSubjects(); }
 
     protected void writeOneGraphNode(Resource subject)
     {
