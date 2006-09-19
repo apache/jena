@@ -3,6 +3,10 @@
 
 @prefix : <http://example/> .
 
+:x rdf:type :C1 .
+:y rdf:type :C3 .
 :C1 rdfs:subClassOf :C2 .
 :C2 rdfs:subClassOf :C3 .
+
+
 

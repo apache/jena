@@ -4,14 +4,16 @@
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 _:c rdf:type acmd:SDBConnection ;
-    acmd:sdbType        "postgresql" ;
-    acmd:sdbHost        "sweb-sdb-1.hpl.hp.com" ;
-    #acmd:sdbUser       "user" ;        # Or use env variables SDB_USER/SDB_PASSWORD
-    acmd:sdbName        "sdb2" ;        # Lowercase
-    acmd:driver         "org.postgresql.Driver" ;
+    acmd:sdbType      "hsqldb" ;
+    acmd:sdbHost      "file" ;
+    acmd:sdbUser      "sa" ;
+    acmd:sdbPassword  "" ;
+    acmd:sdbName      "tmp/SDB2" ;
+    acmd:driver       "org.hsqldb.jdbcDriver" ;
     .
 
 [] rdf:type acmd:Store ;
-    acmd:layout         "layout2" ;
-    acmd:connection     _:c ;
-.
+    acmd:layout     "layout2" ;
+    acmd:connection _:c ;
+    .
+
