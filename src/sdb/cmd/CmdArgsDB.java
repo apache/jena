@@ -52,7 +52,13 @@ public abstract class CmdArgsDB extends CmdArgModule
         SDB.init() ;
         @SuppressWarnings("unchecked")
         List<String> positionalArgs = (List<String>)super.getPositional() ;
-        execCmd(positionalArgs) ;
+        try {
+            execCmd(positionalArgs) ;
+        }
+        finally { 
+            if ( getModStore().isConnected() && getModStore().hasStore() )
+                getModStore().getStore().close();
+        }
     }
 }
 

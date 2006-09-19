@@ -32,7 +32,7 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
         run() ;
         System.err.println("Nothing ran!") ;
@@ -70,7 +70,8 @@ public class RunSDB
    
     public static void run()
     {
-        
+        String[] a = {/*"-v",*/ "--sdb=sdb.ttl", "--format=N3"} ; 
+        sdb.sdbdump.main(a) ;
         System.exit(0) ;
     }
 

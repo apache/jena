@@ -294,9 +294,12 @@ public class ModStore implements ArgModule
         return getModel().getGraphSDB() ;
     }
     
+    public boolean isConnected() { return connection != null ; }
+    public boolean hasStore() { return store != null ; }
+    
     public SDBConnection getConnection()
     {
-        if ( connection == null )
+        if ( ! isConnected() )
             connection = SDBFactory.createConnection(storeDesc.connDesc) ;
         return connection ;
     }

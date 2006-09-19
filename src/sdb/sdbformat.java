@@ -56,7 +56,6 @@ public class sdbformat extends CmdArgsDB
         Store store = getModStore().getStore() ;
         StoreFormatter f = store.getTableFormatter() ; 
         f.format() ;
-        store.close() ;
     }
 }
 

@@ -7,10 +7,10 @@ package sdb;
 
 import java.util.List;
 
-import com.hp.hpl.jena.query.util.Utils;
-
 import sdb.cmd.CmdArgsDB;
-import arq.cmdline.* ;
+import arq.cmdline.ArgDecl;
+
+import com.hp.hpl.jena.query.util.Utils;
 
  /** Write out the data from an SDB model.  Only works for small models
   * because of JDBC limitations in default configurations. 

@@ -42,6 +42,9 @@ public class QueryCompiler2 extends QueryCompilerMain
             resultsBuilder = new ResultsBuilder2() ;
         if ( conditionCompiler == null)
             conditionCompiler = new ConditionCompiler2() ;
+        this.blockCompiler = blockCompiler ;
+        this.resultsBuilder = resultsBuilder ;
+        this.conditionCompiler = conditionCompiler ;
     }
     
     @Override

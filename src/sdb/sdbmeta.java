@@ -9,7 +9,6 @@ package sdb;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
@@ -21,9 +20,7 @@ import arq.cmdline.ArgDecl;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.util.HSQLUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 public class sdbmeta extends CmdArgsDB
@@ -77,29 +74,18 @@ public class sdbmeta extends CmdArgsDB
         // Avoid needing fully built store.
         StoreConfig conf = new StoreConfig(modStore.getConnection()) ;
         
-        try {
-            if ( subCmd.equalsIgnoreCase("get") )
-                execGet(conf, tag) ;
-            else if ( subCmd.equalsIgnoreCase("tags") )
-                execTags(conf) ;
-            else if ( subCmd.equalsIgnoreCase("put") )
-                execPut(conf, tag, positionalArgs) ;
-            else if ( subCmd.equalsIgnoreCase("remove") )
-                execRemove(conf, tag) ;
-            else if ( subCmd.equalsIgnoreCase("reset") )
-                execReset(conf, tag) ;
-            else 
-                cmdError("Subcommand not recognized: "+subCmd, true) ;
-        } finally 
-        {
-            // TODO SDBConnection.close which does the HSQLDB thing
-            // and store.close calls SDBConnection.close
-            // SDBConnections may be shared so not this. 
-            if ( modStore.getStoreDesc().dbType == DatabaseType.HSQLDB )
-                HSQLUtils.shutdown(modStore.getConnection()) ;
-            try { modStore.getConnection().getSqlConnection().close() ; }
-            catch (SQLException ex) {}
-        }
+        if ( subCmd.equalsIgnoreCase("get") )
+            execGet(conf, tag) ;
+        else if ( subCmd.equalsIgnoreCase("tags") )
+            execTags(conf) ;
+        else if ( subCmd.equalsIgnoreCase("put") )
+            execPut(conf, tag, positionalArgs) ;
+        else if ( subCmd.equalsIgnoreCase("remove") )
+            execRemove(conf, tag) ;
+        else if ( subCmd.equalsIgnoreCase("reset") )
+            execReset(conf, tag) ;
+        else 
+            cmdError("Subcommand not recognized: "+subCmd, true) ;
     }
 
     private void execGet(StoreConfig conf, String tag)

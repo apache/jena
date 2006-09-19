@@ -6,6 +6,11 @@
 
 package dev;
 
+
+
+import java.util.HashSet;
+import java.util.Set;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -21,23 +26,119 @@ import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class ClassTable
 {
+    static class ClassPair extends Pair<Integer, Integer>
+    {
+
+        public ClassPair(Integer a, Integer b)
+        {
+            super(a, b) ;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return car().hashCode() | cdr().hashCode() ; 
+        }
+
+        @Override
+        public boolean equals(Object other)
+        {
+            if( ! ( other instanceof ClassPair ) ) return false ;
+            ClassPair p2 = (ClassPair)other ;
+            return  car().equals(p2.car()) && cdr().equals(p2.cdr()) ;
+        }
+    }
+        
+    
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
-        findSubClasses() ;
+        
+        // All wrong!  Not a map, but a set of pairs, pair= = value=.
+        Set<ClassPair> classes = findSubClasses() ;
+        System.out.printf("START\n") ;
+        print(classes) ;
+        
+        for ( ;; )
+        {
+            System.out.printf("--------------\n") ;
+            Set<ClassPair> moreClasses = new HashSet<ClassPair>() ;
+            for ( ClassPair p : classes )
+            {
+                int c1 = p.car() ;
+                Set<Integer>x = findByLeft(classes, p.cdr()) ;
+                for ( int c2 : x )
+                {
+                    add(moreClasses, c1, c2) ;
+                }
+                
+                
+            }
+            System.out.printf("Adding:\n") ;
+            print(moreClasses) ;
+            
+            int size = classes.size() ;
+            classes.addAll(moreClasses) ;
+            if ( size == classes.size() )
+            {
+                System.out.printf("No change\n" ) ;
+                break ;
+            }
+            System.out.printf("Sizes %d ==> %d\n" , size, classes.size()) ; 
+        } 
+        System.out.printf("--------------\n") ;
+        System.out.printf("Exit:\n") ;
+        print(classes) ;
+        
+        // Now put self in
+        
+        Set<ClassPair> moreClasses = new HashSet<ClassPair>() ;
+        for ( ClassPair p : classes )
+        {
+            int c1 = p.car() ;
+            add(moreClasses, c1, c1) ;
+            int c2 = p.cdr() ;
+            add(moreClasses, c2, c2) ;
+        }
+        classes.addAll(moreClasses) ;
+        System.out.printf("==========================\n") ;
+        print(classes) ;
+    }
+
+    static Set<Integer> findByLeft(Set<ClassPair>classes, int c)
+    {
+        Set<Integer> x = new HashSet<Integer>() ;
+        for ( ClassPair p : classes )
+        {
+            if ( p.car() == c )
+                x.add(p.cdr()) ;
+        }
+        return x ;
     }
     
-    static void findSubClasses()
+    static void print(Set<ClassPair> classes)
     {
-        // OR do a SPARQL query and look the nodes up.
-        
-        
+        for ( ClassPair p : classes )
+            System.out.printf("%d ==> %d\n", p.car(), p.cdr()) ;
+    }
+
+    
+    
+    static void add(Set<ClassPair> classes, int c1, int c2)
+    {
+        classes.add(new ClassPair(c1, c2)) ;
+    }
+    
+    static Set<ClassPair> findSubClasses()
+    {
+        Set<ClassPair> classes = new HashSet<ClassPair>() ;
         
         int idSubClassOf = -1 ;
         
@@ -68,12 +169,14 @@ public class ClassTable
                     System.out.printf("s[%d]%-20s  rdfs:subClassOf  o[%d]%s\n",
                                       idSubj, FmtUtils.stringForNode(s),
                                       idObj, FmtUtils.stringForNode(o)) ;
+                    add(classes, idSubj, idObj) ;
                 }
             } finally { qExec.close() ; }
         } catch (Exception ex)
         {
             ex.printStackTrace(System.err) ;
         }
+        return classes ;
     }
     
     static Node build(SDBConnection sdb, int id) throws Exception

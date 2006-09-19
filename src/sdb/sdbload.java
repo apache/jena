@@ -96,6 +96,7 @@ public class sdbload extends CmdArgsDB
         
         // Load here
         getModStore().getModel().read(filename, lang) ;
+
         long timeMilli = getModTime().endTimer() ;
             
         if ( monitor != null )
@@ -106,7 +107,6 @@ public class sdbload extends CmdArgsDB
                 System.out.printf("Loaded in %.3f seconds [%d triples/s]\n", 
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
         }
-        StoreBaseHSQL.checkpoint(getModStore().getStore()) ;
     }
         
     static class Monitor implements GraphListener
