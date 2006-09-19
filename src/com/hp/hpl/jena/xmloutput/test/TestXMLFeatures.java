@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.50 2006-09-18 14:51:53 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.51 2006-09-19 15:20:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.xmloutput.impl.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.50 $ $Date: 2006-09-18 14:51:53 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.51 $ $Date: 2006-09-19 15:20:39 $
  */
 
 public class TestXMLFeatures extends XMLOutputTestBase {
@@ -250,6 +250,30 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			}
 		});
         }
+    
+    public void testEntityDeclaration() throws IOException
+        {
+        check
+            (
+            file1,
+            "<!DOCTYPE rdf:RDF \\[[^]]*<!ENTITY spoo *'goo:boo'>",
+            "SPONGLE",
+            Change
+                .setProperty( "showDoctypeDeclaration", true )
+                .andSetPrefix( "spoo", "goo:boo" )
+            );
+        }
+    
+    public void testEntityUse() throws IOException
+        {
+        check
+            (
+            file1,
+            "rdf:resource=\"&ex0;spoo\"",
+            "SPONGLE",
+            Change.setProperty( "showDoctypeDeclaration", true )
+            );
+        }
 
 	public void testDuplicatePrefix() throws IOException 
         {
@@ -265,7 +289,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 			}
 		});
 	}
-
+    
 	void setNsPrefixSysProp(String prefix, String uri) 
         { System.setProperty( RDFWriter.NSPREFIXPROPBASE + uri, prefix ); }
 
@@ -341,7 +365,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 	public void testUTF8DeclPresent() throws IOException 
         {
-		check(file1, "utf-8", "<\\?xml", null, Change.setProperty( "showXmlDeclaration", true ) );
+		check( file1, "utf-8", "<\\?xml", null, Change.setProperty( "showXmlDeclaration", true ) );
         }
 
 	public void testUTF16DeclPresent() throws IOException 
@@ -351,7 +375,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 
 	public void testISO8859_1_DeclAbsent() throws IOException 
         {
-		check(file1, "iso-8859-1", null, "<\\?xml", Change.setProperty( "showXmlDeclaration", false ) );
+		check( file1, "iso-8859-1", null, "<\\?xml", Change.setProperty( "showXmlDeclaration", false ) );
         }
 
 	public void testISO8859_1_DeclPresent() throws IOException 
@@ -381,7 +405,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 	static final int ExtraTriples = 2;
 	static final int BadURI = 3;
 
-	public void checkPropURI(String s, String p, Object val, int behaviour)
+	public void checkPropURI( String s, String p, Object val, int behaviour )
 		throws IOException {
 		// create triple and graph.
         //BaseXMLWriter.dbg = true;
@@ -449,7 +473,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
         try
             { 
          //   RDFDefaultErrorHandler.logger.setLevel( Level.OFF );
-            checkPropURI("_:aa", null, null, BadURI);
+            checkPropURI( "_:aa", null, null, BadURI );
             }
         finally
             { //RDFDefaultErrorHandler.logger.setLevel( Level.WARN ); 
@@ -847,5 +871,5 @@ public class TestXMLFeatures extends XMLOutputTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.50 2006-09-18 14:51:53 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.51 2006-09-19 15:20:39 chris-dollin Exp $
  */

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2006 Hewlett-Packard Development Company, LP
     All rights reserved. [See end of file]
-    $Id: XMLOutputTestBase.java,v 1.3 2006-09-18 14:51:53 chris-dollin Exp $
+    $Id: XMLOutputTestBase.java,v 1.4 2006-09-19 15:20:39 chris-dollin Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -52,7 +52,8 @@ public class XMLOutputTestBase extends ModelTestBase
         {
         public void modify( RDFWriter w ) {}
         public void modify( Model m ) {}
-        public final void modify( Model m, RDFWriter w ) { modify(m); modify(w); }
+        
+        public void modify( Model m, RDFWriter w ) { modify(m); modify(w); }
         
         public static Change none()
             { return new Change(); }
@@ -83,6 +84,19 @@ public class XMLOutputTestBase extends ModelTestBase
            
         public static Change blockRules( String ruleName )
             { return setProperty( "blockrules", ruleName ); }
+        
+        public Change andSetPrefix( String prefix, String URI )
+            { return and( Change.setPrefix( prefix, URI ) ); }
+        
+        private Change and( final Change change )
+            { return new Change()
+                { public void modify(  Model m, RDFWriter w )
+                    {
+                    Change.this.modify( m, w );
+                    change.modify( m, w );
+                    }
+                };
+            }
         }  
     
     /**
@@ -100,7 +114,7 @@ public class XMLOutputTestBase extends ModelTestBase
         String filename,
         String regexPresent,
         String regexAbsent,
-        Change code)
+        Change code )
         throws IOException {
         check( filename, null, regexPresent, regexAbsent, false, code);
     }
@@ -115,17 +129,18 @@ public class XMLOutputTestBase extends ModelTestBase
         check(filename, encoding, regexPresent, regexAbsent, false, code);
     }
     
-    protected void check(
+    protected void check
+        (
         String filename,
         String regexAbsent,
         Change code,
-        String base)
-        throws IOException {
-            check(filename,null,regexAbsent,null,false,new Change(){
-                public void modify(RDFWriter w){}
-            },base);
-        check(filename, null, null, regexAbsent, false, code, base);
-    }
+        String base
+        )
+        throws IOException 
+        {
+        check( filename, null, regexAbsent, null, false, Change.none(), base );
+        check( filename, null, null, regexAbsent, false, code, base );
+        }
     
     protected void check(
         String filename,

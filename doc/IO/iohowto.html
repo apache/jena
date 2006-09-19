@@ -824,6 +824,19 @@ use the <code><b>write(Model,Writer,String)</b></code>
  <td>true, "true", false, "false" or "default"</td>
   <td>can be true, false or "default" (null)</td>
  </tr>
+
+   <tr BGCOLOR="white" CLASS="TableRowColor">
+   <td>showDoctypeDeclaration</td>
+   <td>If true, an XML Doctype declaration is included in the output.
+       This declaration includes a !ENTITY declaration for each
+       prefix mapping in the model, and any attribute value that
+       starts with the URI of that mapping is written as starting
+       with the corresponding entity invocation. Warning:
+       <i>experimental</i>.
+   <td>String or Boolean
+   <td>true, false, "true", "false"
+   </tr>
+
    <tr BGCOLOR="white" CLASS="TableRowColor">
   <td>tab</td>
   <td>The number of spaces with which to indent XML child elements.</td>

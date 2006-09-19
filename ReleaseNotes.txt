@@ -15,6 +15,12 @@ RDF/XML output:
     o the entity-conversion code has been rewritten using Java regex's to
       avoid multiple conversions.
 
+    o the new Writer property "showDoctypeDeclaration" is used by the RDF/XML
+      writers to force inclusion of a !DOCTYPE header declaring as entities
+      each of the prefix-mappings of the model. Attributes that start with
+      the URIs of the mapping are written to use the entity invocation
+      instead.
+
 Untyped literal operations deprecated (char, boolean, long, float, double, Object)
      These operations do not work on typed literals.  They converted their arguments
      to plain strings and parsed strings to retrive values.  

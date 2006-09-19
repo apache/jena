@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.41 2006-09-18 14:51:53 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.42 2006-09-19 15:20:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.41 $' Date='$Date: 2006-09-18 14:51:53 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.42 $' Date='$Date: 2006-09-19 15:20:39 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -196,7 +196,7 @@ public class testWriterAndReader
             }
 		Resource blocked[] = new Resource[v.size()];
 		v.copyInto( blocked );
-		doTest( new String[] { "blockRules" }, new Object[] { blocked } );
+		doTest( new String[] { "blockRules" }, new Resource[][] { blocked } );
         }
     
 	public void doTest( String[] propNames, Object[] propVals ) throws IOException 
@@ -451,5 +451,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.41 2006-09-18 14:51:53 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.42 2006-09-19 15:20:39 chris-dollin Exp $
  */

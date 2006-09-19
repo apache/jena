@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.59 2006-09-14 17:14:48 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.60 2006-09-19 15:20:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,15 +46,12 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.59 $' Date='$Date: 2006-09-14 17:14:48 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.60 $' Date='$Date: 2006-09-19 15:20:37 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
-	
-    /**
-         Introduced to cope with bug 832682: double spacing on windows platforms
-    */
-    private static final String newline_XMLNS = 
-        JenaRuntime.getSystemProperty( "line.separator" ) + "    xmlns";
+    
+    private static final String newline = 
+        JenaRuntime.getSystemProperty( "line.separator" );
     
     public BaseXMLWriter() {
         setupMaps();
@@ -93,7 +90,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
     protected String qq(String s) {
         String substituted = Util.substituteStandardEntities( s );
-        if (true) return q( substituted );
+        if (!showDoctypeDeclaration.booleanValue()) return q( substituted );
         int split = Util.splitNamespace( substituted );
         String namespace = substituted.substring(  0, split );
         String prefix = (String) ns.get( namespace );
@@ -307,17 +304,17 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
 	String xmlnsDecl() {
 		workOutNamespaces();
-		StringBuffer rslt = new StringBuffer();
+		StringBuffer result = new StringBuffer();
 		Iterator it = ns.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry ent = (Map.Entry) it.next();
 			String prefix = (String) ent.getValue();
 			String uri = (String) ent.getKey();
-            rslt.append( newline_XMLNS );
-			if (prefix.length() > 0) rslt.append( ':' ).append( prefix );
-			rslt.append( '=' ).append( qq( checkURI( uri ) ) );
+            result.append( newline ).append( "    xmlns" );
+			if (prefix.length() > 0) result.append( ':' ).append( prefix );
+			result.append( '=' ).append( qq( checkURI( uri ) ) );
 		}
-		return rslt.toString();
+		return result.toString();
 	}
 
 	static final private int FAST = 1;
@@ -479,7 +476,14 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     private void generateDoctypeDeclaration( Model model, PrintWriter pw )
         {
         String rdfRDF = model.qnameFor( RDF.getURI() + "RDF" );
-        pw.print( "<!DOCTYPE " + rdfRDF +" []>\n" );
+        Map prefixes = model.getNsPrefixMap();
+        pw.print( "<!DOCTYPE " + rdfRDF +" [" );
+        for (Iterator it = prefixes.keySet().iterator(); it.hasNext();)
+            {
+            String prefix = (String) it.next();
+            pw.print(  newline + "  <!ENTITY " + prefix + " '" + prefixes.get( prefix ) + "'>" );
+            }
+        pw.print( "]>" + newline );
         }
 
 	private void writeXMLDeclaration(Writer out, PrintWriter pw) {
