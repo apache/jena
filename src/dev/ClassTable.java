@@ -58,6 +58,7 @@ public class ClassTable
     
     public static void main(String[]argv)
     {
+        final String classTable = "Classes";
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
         
@@ -110,6 +111,17 @@ public class ClassTable
         classes.addAll(moreClasses) ;
         System.out.printf("==========================\n") ;
         print(classes) ;
+        System.out.printf("==========================\n") ;
+        System.out.printf("DROP TABLE %s ;\n", classTable) ;
+        System.out.printf("CREATE TABLE %s (\n", classTable) ;
+        System.out.printf("                 subClass integer not null,\n") ;
+        System.out.printf("                 superClass integer not null\n") ;
+        System.out.printf("                ) ;\n", classTable) ;
+        for ( ClassPair p : classes )
+        {
+            System.out.printf("INSERT INTO %s VALUES(%d, %d) ;\n", classTable, p.car(), p.cdr()) ;
+        }
+        
     }
 
     static Set<Integer> findByLeft(Set<ClassPair>classes, int c)
