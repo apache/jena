@@ -119,6 +119,11 @@ public class LoaderOneTriple
     // ---- Used by deleteTriple
     // To share with LoaderTriplesNodes
     
+    public static int getIndex(SDBConnection conn, Node node) throws SQLException
+    {
+        return getIndex(conn, node, false) ;
+    }
+    
     private static int getIndex(SDBConnection conn, Node node, boolean create) throws SQLException
     {
         try {
