@@ -18,9 +18,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
  * @version $Id: BulkLoaderLJ.java,v 1.4 2006/04/21 12:40:20 andy_seaborne Exp $
  */
 
-public abstract class BulkLoaderLJ extends LoaderTriplesNodes
+public abstract class LoaderLJ extends LoaderTriplesNodes
 {
-	public BulkLoaderLJ(SDBConnection connection)
+	public LoaderLJ(SDBConnection connection)
     {
         super(connection) ;
     }

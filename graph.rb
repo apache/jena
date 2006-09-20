@@ -1,14 +1,17 @@
 require 'gnuplot'
 
-def parse(filename, xhash, yhash)
+def parse(filename, xhash, yhash, skip)
 	xhash[filename] = []
 	yhash[filename] = []
 	file = File.new(filename)
 	file.each_line do |line|
 		matches = /Add:\s+([\d,]+).*\((\d+)\)/.match(line)
 		next unless matches
-		xhash[filename] << matches[1].gsub(/,/,"").to_i
-		yhash[filename] << matches[2].to_i
+		x = matches[1].gsub(/,/,"").to_i
+		y = matches[2].to_i
+		next if x < skip
+		xhash[filename] << x
+		yhash[filename] << y
 	end
 end
 
@@ -19,14 +22,23 @@ terminal = nil
 
 args = ARGV
 
-if ARGV.include?("-term")
-	index = ARGV.index("-term") + 1
-	terminal = ARGV[index]
-	args = ARGV - ["-term",terminal]
+if args.include?("-term")
+	index = args.index("-term") + 1
+	terminal = args[index]
+	args = args - ["-term",terminal]
+end
+
+skip = 0
+
+if args.include?("-skip")
+	index = args.index("-skip") + 1
+	skip = args[index]
+	args = args - ["-skip",skip]
+	skip = skip.to_i
 end
 
 args.each do |filename|
-	parse(filename, xvals, yvals)
+	parse(filename, xvals, yvals, skip)
 end
 
 Gnuplot.open do |gp|

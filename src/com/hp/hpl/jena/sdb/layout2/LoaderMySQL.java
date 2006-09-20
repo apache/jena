@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
  * @version $Id: LoaderMySQL.java,v 1.1 2006/04/21 12:40:20 andy_seaborne Exp $
  */
 
-public class LoaderMySQL extends BulkLoaderLJ
+public class LoaderMySQL extends LoaderLJ
 {
     public LoaderMySQL(SDBConnection connection) { super(connection) ; }
     

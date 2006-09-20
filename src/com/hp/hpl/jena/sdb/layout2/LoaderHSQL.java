@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sdb.sql.SQLUtils;
  * @version $Id: LoaderHSQL.java,v 1.1 2006/04/21 16:53:32 andy_seaborne Exp $
  */
 
-public class LoaderHSQL extends BulkLoaderLJ
+public class LoaderHSQL extends LoaderLJ
 {
     public LoaderHSQL(SDBConnection connection) { super(connection) ; }
     
