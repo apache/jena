@@ -32,7 +32,7 @@ public class QueryCompiler2 extends QueryCompilerMain
         this(null, null, null) ;
     }
     
-    protected QueryCompiler2(BlockCompiler blockCompiler,
+    public QueryCompiler2(BlockCompiler blockCompiler,
                              ResultsBuilder resultsBuilder,
                              ConditionCompiler conditionCompiler)
     {

@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 
 
-class BlockCompiler2 extends BlockCompilerBasic
+public class BlockCompiler2 extends BlockCompilerBasic
 {
     private static Log log = LogFactory.getLog(BlockCompiler2.class) ;
 
@@ -55,11 +55,15 @@ class BlockCompiler2 extends BlockCompilerBasic
         // Initialize additional state
         compileState.put(context, new Additional()) ;
         Collection<Node> constants = blockBGP.getConstants() ;
-        SqlNode sqlNode = insertConstantAccesses(context, constants, null) ;
+        addMoreConstants(constants) ;
+        SqlNode sqlNode = insertConstantAccesses(context, constants) ;
         return sqlNode ;
 
     }
 
+    protected void addMoreConstants(Collection<Node> constants)
+    {}
+    
     @Override
     protected SqlNode finishBasicBlock(CompileContext context,
                                        SqlNode sqlNode, BlockBGP blockBGP)
@@ -78,7 +82,7 @@ class BlockCompiler2 extends BlockCompilerBasic
         return super.compile(triple, context) ;
     }
     
-    private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants, Object object)
+    private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants)
     {
         Additional state = compileState.get(context) ;
         

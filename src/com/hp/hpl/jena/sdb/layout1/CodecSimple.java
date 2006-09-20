@@ -21,7 +21,6 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 
 public class CodecSimple implements EncoderDecoder
-
 {
     private PrefixMapping prefixMapping ;
     

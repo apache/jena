@@ -14,21 +14,16 @@ import arq.cmdline.ModQueryIn;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.query.core.BindingRoot;
-import com.hp.hpl.jena.query.engine1.*;
-import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sdb.util.PrintSDB;
 
 /**
  * Compile and print the SQL for a SPARQL query.
@@ -114,10 +109,8 @@ public class sdbprint extends CmdArgsDB
 
         if ( verbose )
         {
-            
-            PlanElement plan = qe.getPlan() ;
             divider() ;
-            PlanFormatter.out(System.out, plan) ;
+            PrintSDB.printPlan(store, query, qe) ;
         }
 
           if ( verbose )
@@ -133,86 +126,17 @@ public class sdbprint extends CmdArgsDB
         
         if ( printSQL )
         {
-            PlanVisitor fmt = new PrintSDBBlocks(w, store, query) ;
-            PlanWalker.walk(qe.getPlan(), fmt) ;
-            w.flush();
+            divider() ;
+            PrintSDB.printBlocks(store, query, qe) ;
         }
         else
         {
             divider() ;
-            PlanFormatterVisitor fmt = new PrintPlanSQL(w, store, query) ;
-            fmt.startVisit() ;
-            qe.getPlan().visit(fmt) ;
-            fmt.finishVisit() ;
+            PrintSDB.printSQL(store, query, qe) ;
         }
     }
 
-    class PrintPlanSQL extends PlanFormatterVisitor
-    {
-        private Store store ;
-        private Query query ;
-        
-        public PrintPlanSQL(IndentedWriter w, Store store, Query query)
-        { super(w, (PrefixMapping)null) ; this.store = store ; this.query = query ; }
-
-        @Override
-        public void visit(PlanElementExternal planElt)
-        {
-            if ( ! ( planElt instanceof PlanSDB ) )
-            {
-                super.visit(planElt) ; 
-                return ;
-            }
-            PlanSDB planSDB = (PlanSDB)planElt ;
-            Block block = planSDB.getBlock() ;
-            block = block.substitute(new BindingRoot());
-            String sqlStmt = store.getQueryCompiler().asSQL(store, query, block) ;
-            out.println("[SQL --------") ;
-            out.incIndent() ;
-            out.print(sqlStmt) ;
-            out.decIndent() ;
-            out.println();
-            out.print("-------- ]") ;
-        }
-    }
     
-    // Find SQL-ish blocks.
-    class PrintSDBBlocks extends PlanVisitorBase
-    {
-        private Store store ;
-        private Query query ;
-        private IndentedWriter out ;
-        private String separator = null ;
-
-        PrintSDBBlocks(IndentedWriter w, Store store, Query query)
-        { this.out = w ; this.store = store ; this.query = query ; }
-        
-        @Override
-        public void visit(PlanElementExternal planElt)
-        {
-            if ( planElt instanceof PlanSDB )
-            {
-                divider() ;
-//                if ( separator != null )
-//                    System.out.println(separator) ;
-//                separator = divider ;
-//                PlanSDB planSDB = (PlanSDB)planElt ;
-//                if ( verbose )
-//                {
-//                    QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
-//                    QueryCompilerBasicPattern.printAbstractSQL = true ;
-//                    QueryCompilerBasicPattern.printDivider = divider ;
-//                }
-                // Mimic what the QueryIterSDB/QueryCompilerBasicPattern does.
-                PlanSDB planSDB = (PlanSDB)planElt ;
-                Block block = planSDB.getBlock() ;
-                block = block.substitute(new BindingRoot());
-                
-                String sqlStmt = store.getQueryCompiler().asSQL(store, query, block) ;
-                out.println(sqlStmt) ;
-            }
-        }
-    }
     
     @Override
     protected String getSummary()

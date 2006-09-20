@@ -8,8 +8,11 @@ package dev;
 
 
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+
+import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -19,19 +22,26 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.data.CustomizeType;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.layout2.LoaderOneTriple;
+import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
 import com.hp.hpl.jena.sdb.layout2.ValueType;
+import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class ClassTable
 {
+    static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     static class ClassPair extends Pair<Integer, Integer>
     {
 
@@ -54,23 +64,201 @@ public class ClassTable
             return  car().equals(p2.car()) && cdr().equals(p2.cdr()) ;
         }
     }
-        
-    
+
+    static class SubClasses extends HashSet<ClassPair> {} 
+
+    static final String classTable = SubClassTable.tableSubClass ;
+
     public static void main(String[]argv)
     {
-        final String classTable = "Classes";
-        SDBConnection.logSQLExceptions = true ;
-        //SDBConnection.logSQLStatements = true ;
+        StoreDesc storeDesc = StoreDesc.read("sdb.ttl") ;
+        Store store = StoreFactory.create(storeDesc) ;
+        store.getConnection().setLogSQLExceptions(true) ;
+        try {
+            formatAndLoadStore(store) ;
+            buildSubClassTable(store) ;
+            dumpClassTable(store) ;
+            play(store) ;
+        } catch (Exception ex) 
+        { ex.printStackTrace(System.err) ; }
+        finally { store.close() ; }
+    }
+
+    
+    
+    private static void play(Store store)
+    {
+        System.out.println("\nEXPERIMENT\n") ;
+        QueryCompiler qc = new QueryCompiler2(new BlockCompilerSubClass(), null, null) ;
+
+        Store store2 = new StoreBase(store.getConnection(),
+                                     store.getPlanTranslator(),
+                                     store.getLoader(),
+                                     store.getTableFormatter(),
+                                     qc,
+                                     store.getSQLGenerator() ,
+                                     new CustomizeType()) ;
+        play2(store2) ;
+    }
         
-        // All wrong!  Not a map, but a set of pairs, pair= = value=.
-        Set<ClassPair> classes = findSubClasses() ;
+    private static void play2(Store store2)
+    {
+        SDB.init() ;    // Check called - this hsoudl not be needed.
+        String q = "SELECT * { ?x a ?t}" ;
+
+        Query query = QueryFactory.create(q) ;
+        query.serialize(System.out) ;
+        QueryExecution qExec = null ; 
+        
+        //qExec = QueryExecutionFactory.create(query, new DatasetStore(store2)) ;
+        qExec = new QueryEngineSDB(store2, query) ;
+        
+        divider() ;
+        PrintSDB.printBlocks(store2, query, null) ;
+        divider() ;
+        
+        store2.getConnection().setLogSQLQueries(true) ;
+        
+        try {
+            ResultSet rs1 = qExec.execSelect() ;
+            ResultSetRewindable rs = ResultSetFactory.makeRewindable(rs1) ;
+            ResultSetFormatter.out(rs) ;
+            rs.reset() ;
+        } finally { qExec.close(); }
+        store2.getConnection().setLogSQLQueries(false) ;
+    }
+
+
+
+    private static void divider()
+    {
+        System.out.println("-------------------------------------------------") ;
+    }
+
+    private static void dumpClassTable(Store store) throws SQLException
+    {
+        String s = "SELECT * FROM "+classTable ;
+        java.sql.ResultSet rs = store.getConnection().execQuery(s) ;
+        RS.printResultSet(rs) ;
+        RS.close(rs) ;
+    }
+
+    private static void buildSubClassTable(Store store) throws SQLException
+    {
+        
+        //SDBConnection.logSQLStatements = true ;
+
+        // ---- Find declared subclass assertions 
+        SubClasses classes = findSubClasses(store) ;
+
+        // --- debug
         System.out.printf("START\n") ;
         print(classes) ;
+
+        // --- In-memory expansion of subclass relationships. 
+        expand(classes) ;
+
+        // --- debug
+        divider() ;
+        System.out.printf("Exit:\n") ;
+        print(classes) ;
+
+        // ---- Put in X subClassOf X 
+        expandSelf(classes) ;
+
+        // --- debug
+        System.out.printf("==========================\n") ;
+        print(classes) ;
+
+        // Generate SQL
+        System.out.printf("==========================\n") ;
+
+        if ( SQLUtils.hasTable(store.getConnection().getSqlConnection(), classTable) )
+            sql(store, String.format("DROP TABLE %s ;\n", classTable)) ;
+        else
+            System.out.printf("-- Table not present\n" ) ;
+        sql(store, 
+            String.format(
+                          "CREATE TABLE %s (%s integer not null, %s integer not null)",
+                          classTable, SubClassTable.colSubClass, SubClassTable.colSuperClass)) ;
+
+        for ( ClassPair p : classes )
+            sql(store,
+                String.format(
+                              "INSERT INTO %s VALUES(%d, %d) ;\n", classTable, p.car(), p.cdr())) ;
+
+    }
+    private static void formatAndLoadStore(Store store)
+    {
+        store.getTableFormatter().format() ;
+        Model model = SDBFactory.connectModel(store) ;
+        model.read("file:D.ttl", null, "N3") ;
         
+        String q = "SELECT * { ?ss ?pp ?oo}" ;
+
+        Query query = QueryFactory.create(q) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(store)) ;
+        try {
+            ResultSetFormatter.out(qExec.execSelect()) ;
+        } finally { qExec.close() ; }
+        
+    }
+
+    static void sql(Store store, String sql) throws SQLException
+    {
+        if ( true )
+            store.getConnection().execUpdate(sql) ;
+        else
+            System.out.println(sql) ;
+    }
+    
+    static SubClasses findSubClasses(Store store)
+    {
+        SubClasses classes = new SubClasses() ;
+        
+        int idSubClassOf = -1 ;
+        
+        try {
+            String q = 
+                StrUtils.strjoinNL(
+                        String.format("PREFIX rdfs: <%s>", RDFS.getURI()) ,
+                        "SELECT * { ?c1 rdfs:subClassOf ?c2}"
+                        );
+            Query query = QueryFactory.create(q) ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(store)) ;
+            
+            try {
+                ResultSet rs1 = qExec.execSelect() ;
+                ResultSetRewindable rs = ResultSetFactory.makeRewindable(rs1) ;
+                ResultSetFormatter.out(rs) ;
+                rs.reset() ;
+                
+                while(rs.hasNext())
+                {
+                    QuerySolution qs = rs.nextSolution() ;
+                    Node s = qs.get("c1").asNode() ;
+                    Node o = qs.get("c2").asNode() ;
+                    int idSubj = node2id(store.getConnection(), s) ;
+                    int idObj = node2id(store.getConnection(), o) ;
+                    System.out.printf("s[%d]%-20s  rdfs:subClassOf  o[%d]%s\n",
+                                      idSubj, FmtUtils.stringForNode(s),
+                                      idObj, FmtUtils.stringForNode(o)) ;
+                    add(classes, idSubj, idObj) ;
+                }
+            } finally { qExec.close() ; }
+        } catch (Exception ex)
+        {
+            ex.printStackTrace(System.err) ;
+        }
+        return classes ;
+    }
+
+    static void expand(SubClasses classes)
+    {
         for ( ;; )
         {
-            System.out.printf("--------------\n") ;
-            Set<ClassPair> moreClasses = new HashSet<ClassPair>() ;
+            divider() ;
+            SubClasses moreClasses = new SubClasses() ;
             for ( ClassPair p : classes )
             {
                 int c1 = p.car() ;
@@ -94,13 +282,13 @@ public class ClassTable
             }
             System.out.printf("Sizes %d ==> %d\n" , size, classes.size()) ; 
         } 
-        System.out.printf("--------------\n") ;
-        System.out.printf("Exit:\n") ;
-        print(classes) ;
-        
-        // Now put self in
-        
-        Set<ClassPair> moreClasses = new HashSet<ClassPair>() ;
+    }
+    
+    
+    static void expandSelf(SubClasses classes)
+    {
+        // X rdfs:subClassOf X
+        SubClasses moreClasses = new SubClasses() ;
         for ( ClassPair p : classes )
         {
             int c1 = p.car() ;
@@ -109,22 +297,10 @@ public class ClassTable
             add(moreClasses, c2, c2) ;
         }
         classes.addAll(moreClasses) ;
-        System.out.printf("==========================\n") ;
-        print(classes) ;
-        System.out.printf("==========================\n") ;
-        System.out.printf("DROP TABLE %s ;\n", classTable) ;
-        System.out.printf("CREATE TABLE %s (\n", classTable) ;
-        System.out.printf("                 subClass integer not null,\n") ;
-        System.out.printf("                 superClass integer not null\n") ;
-        System.out.printf("                ) ;\n", classTable) ;
-        for ( ClassPair p : classes )
-        {
-            System.out.printf("INSERT INTO %s VALUES(%d, %d) ;\n", classTable, p.car(), p.cdr()) ;
-        }
-        
     }
 
-    static Set<Integer> findByLeft(Set<ClassPair>classes, int c)
+
+    static Set<Integer> findByLeft(SubClasses classes, int c)
     {
         Set<Integer> x = new HashSet<Integer>() ;
         for ( ClassPair p : classes )
@@ -135,63 +311,18 @@ public class ClassTable
         return x ;
     }
     
-    static void print(Set<ClassPair> classes)
+    static void print(SubClasses classes)
     {
         for ( ClassPair p : classes )
             System.out.printf("%d ==> %d\n", p.car(), p.cdr()) ;
     }
-
     
-    
-    static void add(Set<ClassPair> classes, int c1, int c2)
+    static void add(SubClasses classes, int c1, int c2)
     {
         classes.add(new ClassPair(c1, c2)) ;
     }
     
-    static Set<ClassPair> findSubClasses()
-    {
-        Set<ClassPair> classes = new HashSet<ClassPair>() ;
-        
-        int idSubClassOf = -1 ;
-        
-        try {
-            StoreDesc storeDesc = StoreDesc.read("sdb.ttl") ;
-            Store store = StoreFactory.create(storeDesc) ;
-            String q = 
-                StrUtils.strjoinNL(
-                        String.format("PREFIX rdfs: <%s>", RDFS.getURI()) ,
-                        "SELECT * { ?c1 rdfs:subClassOf ?c2}"
-                        );
-            Query query = QueryFactory.create(q) ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(store)) ;
-            
-            try {
-                ResultSet rs1 = qExec.execSelect() ;
-                ResultSetRewindable rs = ResultSetFactory.makeRewindable(rs1) ;
-                ResultSetFormatter.out(rs) ;
-                rs.reset() ;
-                
-                while(rs.hasNext())
-                {
-                    QuerySolution qs = rs.nextSolution() ;
-                    Node s = qs.get("c1").asNode() ;
-                    Node o = qs.get("c2").asNode() ;
-                    int idSubj = lookup(store.getConnection(), s) ;
-                    int idObj = lookup(store.getConnection(), o) ;
-                    System.out.printf("s[%d]%-20s  rdfs:subClassOf  o[%d]%s\n",
-                                      idSubj, FmtUtils.stringForNode(s),
-                                      idObj, FmtUtils.stringForNode(o)) ;
-                    add(classes, idSubj, idObj) ;
-                }
-            } finally { qExec.close() ; }
-        } catch (Exception ex)
-        {
-            ex.printStackTrace(System.err) ;
-        }
-        return classes ;
-    }
-    
-    static Node build(SDBConnection sdb, int id) throws Exception
+    static Node id2node(SDBConnection sdb, int id) throws Exception
     {
         String q = String.format("SELECT * FROM Nodes WHERE id = %d", id) ;
         java.sql.ResultSet rs = sdb.execQuery(q) ;
@@ -209,7 +340,7 @@ public class ClassTable
         return null ;
     }
 
-    static int lookup(SDBConnection sdb, Node n) throws Exception
+    static int node2id(SDBConnection sdb, Node n) throws Exception
     {
         return LoaderOneTriple.getIndex(sdb, n) ;
     }

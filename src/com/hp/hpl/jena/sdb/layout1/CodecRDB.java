@@ -12,7 +12,6 @@ import com.hp.hpl.jena.graph.Node;
 
 public class CodecRDB implements EncoderDecoder
 {
-    
     IRDBDriver driver = null ;
     public CodecRDB(IRDBDriver driver) { this.driver = driver ; } 
     

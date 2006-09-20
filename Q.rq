@@ -4,7 +4,5 @@ PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT *
 {
-#    ?x rdfs:subClassOf ?y . 
-    :x :p ?v .
-    OPTIONAL { ?v ?q ?w }
+    ?x rdf:type ?t . 
 }

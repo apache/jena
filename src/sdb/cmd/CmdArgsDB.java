@@ -56,7 +56,7 @@ public abstract class CmdArgsDB extends CmdArgModule
             execCmd(positionalArgs) ;
         }
         finally { 
-            if ( getModStore().isConnected() && getModStore().hasStore() )
+            if ( getModStore().getStore().getConnection().hasSQLConnection() )
                 getModStore().getStore().close();
         }
     }

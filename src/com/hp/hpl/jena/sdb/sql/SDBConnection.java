@@ -92,6 +92,8 @@ public class SDBConnection
         transactionHandler = new TransactionHandlerSDB(this) ;
     }
     
+    public boolean hasSQLConnection() { return sqlConnection != null ; }
+    
     public TransactionHandler getTransactionHandler() { return transactionHandler ; } 
     
     public ResultSet execQuery(String sqlString) throws SQLException

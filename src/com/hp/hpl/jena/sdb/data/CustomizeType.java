@@ -28,16 +28,16 @@ public class CustomizeType implements StoreCustomizer
     public BlockBGP modify(BlockBGP block)
     {
         block = block.copy() ;
+        // This does not invalidate the SELECT variables.
         for ( int i = 0 ; i < block.getTriples().size() ; i++ )
         {
             Triple t = block.getTriples().get(i) ;
             if ( t.getPredicate().equals(RDF_type) )
             {
                 Node v = VarAlloc.getVarAllocator().allocVarNode() ;
-                Node type = t.getObject() ;
                 // Assumes that <type> rdfs:subClassOf <type> 
                 Triple t1 = new Triple(t.getSubject(), RDF_type, v) ;
-                Triple t2 = new Triple(v, RDFS_subClassOf, type) ;
+                Triple t2 = new Triple(v, RDFS_subClassOf, t.getObject()) ;
                 // replace t by t1 and t2
                 block.getTriples().set(i, t1) ;
                 block.getTriples().add(i+1, t2) ;
