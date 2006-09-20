@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.60 2006-09-19 15:20:37 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.61 2006-09-20 09:51:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.60 $' Date='$Date: 2006-09-19 15:20:37 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.61 $' Date='$Date: 2006-09-20 09:51:27 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
@@ -80,23 +80,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
     abstract protected void writeBody
         ( Model mdl, PrintWriter pw, String baseUri, boolean inclXMLBase );
-                
-	
-    private String attributeQuoteChar ="\"";
-    
-    protected String q(String s) {
-        return attributeQuoteChar +s + attributeQuoteChar;
-    }
-    
-    protected String qq(String s) {
-        String substituted = Util.substituteStandardEntities( s );
-        if (!showDoctypeDeclaration.booleanValue()) return q( substituted );
-        int split = Util.splitNamespace( substituted );
-        String namespace = substituted.substring(  0, split );
-        String prefix = (String) ns.get( namespace );
-        if (prefix == null) return q( substituted );
-        return q( "&" + prefix + ";" + substituted.substring( split ) );
-    }
 
 	static private Set badRDF = new HashSet();
     
@@ -473,6 +456,29 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 //		}
 	}
 
+	protected static final Pattern predefinedEntityNames = Pattern.compile( "amp|lt|gt|apos|quot" );
+    
+    public boolean isPredefinedEntityName( String name )
+        { return predefinedEntityNames.matcher( name ).matches(); }
+                
+    private String attributeQuoteChar ="\"";
+    
+    protected String q( String s ) 
+        {
+        return attributeQuoteChar + s + attributeQuoteChar;
+        }
+    
+    protected String qq( String s ) 
+        {
+        String substituted = Util.substituteStandardEntities( s );
+        if (!showDoctypeDeclaration.booleanValue()) return q( substituted );
+        int split = Util.splitNamespace( substituted );
+        String namespace = substituted.substring(  0, split );
+        String prefix = (String) ns.get( namespace );
+        if (prefix == null) return q( substituted );
+        return q( "&" + prefix + ";" + substituted.substring( split ) );
+        }
+    
     private void generateDoctypeDeclaration( Model model, PrintWriter pw )
         {
         String rdfRDF = model.qnameFor( RDF.getURI() + "RDF" );
@@ -773,7 +779,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         return false;
     }
 
-	static private String flags2str(int f) {
+    static private String flags2str(int f) {
 	StringBuffer oldValue = new StringBuffer(64);
 	if ( (f&IRI.SAMEDOCUMENT)!=0 )
 	   oldValue.append( "same-document, " );
