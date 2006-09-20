@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.39 2006-03-22 13:53:37 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.40 2006-09-20 13:56:23 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -67,55 +67,22 @@ package com.hp.hpl.jena.xmloutput.impl;
  * 
  */
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.*;
 import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.shared.BadURIException;
-import com.hp.hpl.jena.shared.BrokenException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.PropertyNotFoundException;
-import com.hp.hpl.jena.util.iterator.ArrayIterator;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Filter;
-import com.hp.hpl.jena.util.iterator.FilterIterator;
-import com.hp.hpl.jena.util.iterator.IteratorIterator;
-import com.hp.hpl.jena.util.iterator.LateBindingIterator;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.Map1Iterator;
-import com.hp.hpl.jena.util.iterator.MapFilter;
-import com.hp.hpl.jena.util.iterator.MapFilterIterator;
-import com.hp.hpl.jena.util.iterator.NullIterator;
-import com.hp.hpl.jena.util.iterator.SingletonIterator;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.39 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.40 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -1088,7 +1055,7 @@ class Unparser {
     }
 
     private void tab() {
-        int desiredColumn = prettyWriter.tab * indentLevel;
+        int desiredColumn = prettyWriter.tabSize * indentLevel;
         if (desiredColumn > prettyWriter.width) {
             desiredColumn = 4 + (desiredColumn - 4) % prettyWriter.width;
         }
@@ -1113,12 +1080,12 @@ class Unparser {
      * Quote str with either ' or " quotes to be in attribute position in XML.
      * The real rules are found at http://www.w3.org/TR/REC-xml#AVNormalize
      */
-    private String quote(String str) {
-        return prettyWriter.qq(str);
+    private String quote( String str ) {
+        return prettyWriter.substitutedAttribute(str);
     }
 
     private String q(String str) {
-        return prettyWriter.q(str);
+        return prettyWriter.attributeQuoted(str);
     }
 
     /**

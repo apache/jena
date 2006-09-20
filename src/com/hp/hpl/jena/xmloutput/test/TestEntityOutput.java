@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestEntityOutput.java,v 1.6 2006-09-20 09:51:25 chris-dollin Exp $
+ 	$Id: TestEntityOutput.java,v 1.7 2006-09-20 13:56:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -37,20 +37,6 @@ public class TestEntityOutput extends ModelTestBase
         assertEquals( false, w.getShowDoctypeDeclaration() );
         }    
     
-    public void testPlaceHolder()
-        {
-        Model m = createMemModel();
-        m.setNsPrefix( "rdf", RDF.getURI() );
-        StringWriter s = new StringWriter();
-        RDFWriter w = m.getWriter( "RDF/XML-ABBREV" );
-        w.setProperty( "showDoctypeDeclaration", Boolean.TRUE );
-        w.write( m, s, null );
-        // m.write( s, "RDF/XML-ABBREV" );
-        Model m2 = modelWithStatements( "" );
-        m2.read( new StringReader( s.toString() ), null, "RDF/XML" );
-        assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) );
-        }
-    
     public void testKnownEntityNames()
         {
         BaseXMLWriter w = new FakeBaseWriter();
@@ -71,38 +57,72 @@ public class TestEntityOutput extends ModelTestBase
         assertEquals( false, w.isPredefinedEntityName( "acute" ) );
         }
     
+    public void testUsesEntityForPrefix()
+        {
+        Model m = modelWithStatements( "x R fake:uri#bogus" );
+        m.setNsPrefix( "spoo", "fake:uri#" );
+        m.setNsPrefix( "eh", "eh:/" );
+        String s = checkedModelToString( m );
+        assertMatches( "<!DOCTYPE rdf:RDF \\[", s );
+        assertMatches( "<!ENTITY spoo 'fake:uri#'>", s );
+        assertMatches( "rdf:resource=\"&spoo;bogus\"", s );
+        }
+
     public void testCatchesBadEntities()
         {
-        Model m = modelWithStatements( "ampsersand spelt '&'" );
+        testCatchesBadEntity( "amp" );
+        testCatchesBadEntity( "lt" );
+        testCatchesBadEntity( "gt" );
+        testCatchesBadEntity( "apos" );
+        testCatchesBadEntity( "quot" );
+        }
+
+    private void testCatchesBadEntity( String bad )
+        {
+        Model m = modelWithStatements( "ampsersand spelt '&'; x R goo:spoo/noo" );
         m.setNsPrefix( "rdf", RDF.getURI() );
-        m.setNsPrefix( "amp", "goo:spoo" );
+        m.setNsPrefix( bad, "goo:spoo" );
         m.setNsPrefix( "eh", "eh:/" );
+        String s = checkedModelToString( m );
+        assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) );
+        assertMismatches( "<!ENTITY " + bad + " ", s );
+        assertMismatches( "rdf:resource=\"&" + bad + ";noo\"", s );
+        }
+
+    private void checkModelFromXML( Model shouldBe, String s )
+        {
+        Model m = createMemModel();
+        m.read( new StringReader( s ), null, "RDF/XML" );
+        assertIsoModels( "model should be read back correctly", shouldBe, m );
+        }
+
+    private String checkedModelToString( Model m )
+        {
+        String result = modelToString( m );
+        checkModelFromXML( m, result );
+        return result;
+        }
+
+    private String modelToString( Model m )
+        {
         StringWriter s = new StringWriter();
         RDFWriter w = m.getWriter( "RDF/XML-ABBREV" );
         w.setProperty( "showDoctypeDeclaration", Boolean.TRUE );
         w.write( m, s, null );
-        // m.write( s, "RDF/XML-ABBREV" );
-        // System.err.println( ">> " + s.toString() );
-        Model m2 = modelWithStatements( "" );
-        m2.read( new StringReader( s.toString() ), null, "RDF/XML" );
-        assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) );
-        assertIsoModels( m, m2 );
+        return s.toString();
         }
     
-    public void testEntityPropertySetting()
+    private void assertMatches( String pattern, String x )
         {
-        FakeBaseWriter w = new FakeBaseWriter();
-        assertEquals( false, w.getShowDoctypeDeclaration() );
-        assertEquals( "false", w.setProperty( "showDoctypeDeclaration", "true" ) );
-        assertEquals( true, w.getShowDoctypeDeclaration() );
-        assertEquals( "true", w.setProperty( "showDoctypeDeclaration", "false" ) );
-        assertEquals( false, w.getShowDoctypeDeclaration() );
-    //
-        assertEquals( "false", w.setProperty( "showDoctypeDeclaration", Boolean.TRUE ) );
-        assertEquals( true, w.getShowDoctypeDeclaration() );
-        assertEquals( "true", w.setProperty( "showDoctypeDeclaration", Boolean.FALSE ) );
-        assertEquals( false, w.getShowDoctypeDeclaration() );
-        }    
+        if (!x.matches( "(?s).*(" + pattern + ").*" ) )
+                fail( "pattern {" + pattern + "} does not match string {" + x + "}" );
+        }
+    
+    private void assertMismatches( String pattern, String x )
+        {
+        if (x.matches( "(?s).*(" + pattern + ").*" ) )
+                fail( "pattern {" + pattern + "} should not match string {" + x + "}" );
+        }
     
     private final static class FakeBaseWriter extends BaseXMLWriter
         {

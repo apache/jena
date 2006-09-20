@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.61 2006-09-20 09:51:27 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.62 2006-09-20 13:56:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.61 $' Date='$Date: 2006-09-20 09:51:27 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.62 $' Date='$Date: 2006-09-20 13:56:23 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
@@ -119,7 +119,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
     private boolean demandGoodURIs = true;
     
-	int tab = 2;
+	int tabSize = 2;
     
 	int width = 60;
 
@@ -184,6 +184,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     private Relation nameSpaces = new Relation();
     
     private Map ns;
+    
+    private PrefixMapping modelPrefixMapping;
         
 	private Set namespacesNeeded;
     
@@ -295,7 +297,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			String uri = (String) ent.getKey();
             result.append( newline ).append( "    xmlns" );
 			if (prefix.length() > 0) result.append( ':' ).append( prefix );
-			result.append( '=' ).append( qq( checkURI( uri ) ) );
+			result.append( '=' ).append( substitutedAttribute( checkURI( uri ) ) );
 		}
 		return result.toString();
 	}
@@ -387,9 +389,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         switch (type) {
             case FASTATTR :
             case ATTR :
-                return "xmlns:" + prefix + "=" + qq( namespace ) + " " + prefix + ":" + local;
+                return "xmlns:" + prefix + "=" + substitutedAttribute( namespace ) + " " + prefix + ":" + local;
             case START :
-                return prefix  + ":" + local + " xmlns:" + prefix+ "=" + qq( namespace );
+                return prefix  + ":" + local + " xmlns:" + prefix+ "=" + substitutedAttribute( namespace );
             default:
             case END :
                 return prefix + ":" + local;
@@ -405,7 +407,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param base The URL at which the file will be placed.
 	 */
 	final public void write(Model model, OutputStream out, String base)
-		 { write(model, FileUtils.asUTF8(out), base); }
+		 { write( model, FileUtils.asUTF8(out), base ); }
 
 	/** Serialize Model <code>model</code> to Writer <code>out</out>.
 	 * @param out The Writer to which the serialization should be sent.
@@ -431,6 +433,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         {
         this.namespacesNeeded = new HashSet();
         this.ns = null;
+        this.modelPrefixMapping = baseModel;
         primeNamespace( baseModel );
         addNameSpace( RDF.getURI() );
         addNameSpaces(model);
@@ -463,20 +466,24 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
                 
     private String attributeQuoteChar ="\"";
     
-    protected String q( String s ) 
-        {
-        return attributeQuoteChar + s + attributeQuoteChar;
-        }
+    protected String attributeQuoted( String s ) 
+        { return attributeQuoteChar + s + attributeQuoteChar; }
     
-    protected String qq( String s ) 
+    protected String substitutedAttribute( String s ) 
         {
         String substituted = Util.substituteStandardEntities( s );
-        if (!showDoctypeDeclaration.booleanValue()) return q( substituted );
-        int split = Util.splitNamespace( substituted );
-        String namespace = substituted.substring(  0, split );
-        String prefix = (String) ns.get( namespace );
-        if (prefix == null) return q( substituted );
-        return q( "&" + prefix + ";" + substituted.substring( split ) );
+        if (!showDoctypeDeclaration.booleanValue()) 
+            return attributeQuoted( substituted );
+        else
+            {
+            int split = Util.splitNamespace( substituted );
+            String namespace = substituted.substring(  0, split );
+            String prefix = modelPrefixMapping.getNsURIPrefix( namespace );
+            return prefix == null || isPredefinedEntityName( prefix )
+                ? attributeQuoted( substituted )
+                : attributeQuoted( "&" + prefix + ";" + substituted.substring( split ) )
+                ;
+            }
         }
     
     private void generateDoctypeDeclaration( Model model, PrintWriter pw )
@@ -487,7 +494,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         for (Iterator it = prefixes.keySet().iterator(); it.hasNext();)
             {
             String prefix = (String) it.next();
-            pw.print(  newline + "  <!ENTITY " + prefix + " '" + prefixes.get( prefix ) + "'>" );
+            if (!isPredefinedEntityName( prefix ) )
+                pw.print(  newline + "  <!ENTITY " + prefix + " '" + prefixes.get( prefix ) + "'>" );
             }
         pw.print( "]>" + newline );
         }
@@ -501,7 +509,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			    CharEncoding encodingInfo = CharEncoding.create(javaEnc);
 		        
 				String ianaEnc = encodingInfo.name();
-				decl = "<?xml version="+q("1.0")+" encoding=" + q(ianaEnc) + "?>";
+				decl = "<?xml version="+attributeQuoted("1.0")+" encoding=" + attributeQuoted(ianaEnc) + "?>";
 				if (!encodingInfo.isIANA())
 			     logger.warn(encodingInfo.warningMessage()+"\n"+
 				            "   It is better to use a FileOutputStream, in place of a FileWriter.");
@@ -509,7 +517,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			}
 		}
 		if (decl == null && showXmlDeclaration != null)
-			decl = "<?xml version="+q("1.0")+"?>";
+			decl = "<?xml version="+attributeQuoted("1.0")+"?>";
 		if (decl != null) {
 			pw.println(decl);
 		}
@@ -627,12 +635,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	private Integer setTab(Object propValue) {
-		Integer result = new Integer(tab);
+		Integer result = new Integer(tabSize);
 		if (propValue instanceof Integer) {
-			tab = ((Integer) propValue).intValue();
+			tabSize = ((Integer) propValue).intValue();
 		} else {
 			try {
-				tab = Integer.parseInt((String) propValue);
+				tabSize = Integer.parseInt((String) propValue);
 			} catch (Exception e) {
 				logger.warn(	"Bad value for tab: '" + propValue + "' [" + e.getMessage() + "]" );
 			}
