@@ -4,11 +4,11 @@
  * [See end of file]
  */
 
-package dev;
+package dev.inf;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
-class SubClassTable extends SqlTable
+public class SubClassTable extends SqlTable
 {
     //private static Log log = LogFactory.getLog(TableTriples.class) ;
     public static final String tableSubClass = "Classes" ;

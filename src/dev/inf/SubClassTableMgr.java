@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package dev.inf;
 
 import java.sql.SQLException;
 import java.util.HashSet;

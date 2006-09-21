@@ -24,6 +24,10 @@ import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 
+import dev.inf.BlockCompilerSubClass;
+import dev.inf.SubClassTable;
+import dev.inf.SubClassTableMgr;
+
 public class ClassTable
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
