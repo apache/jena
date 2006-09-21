@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.SDBConstants;
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.BlockCompilerBasic;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
@@ -119,8 +120,12 @@ public class BlockCompiler2 extends BlockCompilerBasic
         {
             SqlColumn c1 = sqlNode.getIdScope().getColumnForVar(v) ;
             if ( c1 == null )
-                // Variable not actually in results. 
+            {
+                // Debug.
+                Scope scope = sqlNode.getIdScope() ;
+                // Variable not actually in results.
                 continue ;
+            }
 
             // Already in scope from a condition?
             SqlColumn c2 = sqlNode.getValueScope().getColumnForVar(v) ;
@@ -195,6 +200,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
         SqlColumn colId = compileState.get(context).constantCols.get(node) ;
         if ( colId == null )
         {
+            Map<Node, SqlColumn> x = compileState.get(context).constantCols ;
             log.warn("Failed to find id col for "+node) ;
             return ;
         }

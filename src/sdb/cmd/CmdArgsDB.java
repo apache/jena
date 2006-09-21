@@ -11,7 +11,7 @@ import java.util.List;
 import arq.cmdline.CmdArgModule;
 import arq.cmdline.ModTime;
 
-import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 
 public abstract class CmdArgsDB extends CmdArgModule
 {
@@ -49,7 +49,7 @@ public abstract class CmdArgsDB extends CmdArgModule
     final
     protected void exec()
     {
-        SDB.init() ;
+        AssemblerVocab.init() ;     // Call install the assemblers
         @SuppressWarnings("unchecked")
         List<String> positionalArgs = (List<String>)super.getPositional() ;
         try {

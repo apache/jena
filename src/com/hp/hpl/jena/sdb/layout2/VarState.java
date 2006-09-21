@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-/** The state of a varibale as reocorde by the variable tracking code  */
+/** The state of a variable as reocorde by the variable tracking code  */
 public enum VarState
 {
     UNBOUND,        // The variable is definitely not set 

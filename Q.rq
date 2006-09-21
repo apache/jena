@@ -4,5 +4,6 @@ PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT *
 {
-    ?x rdf:type ?t . 
-}
+    ?x rdf:type ?t .
+} ORDER BY ?x
+

@@ -22,6 +22,10 @@ public class SDB
     static boolean initialized = false ;
     static public void init()
     {
+        // Called from 
+        // + StoreFactory
+        // + DatasetStore
+        // Commands call AssemblerVocab.init() ;
         if ( initialized ) return ;
         AssemblerVocab.init() ;
         QueryEngineRegistry.get().add(new QueryEngineFactorySDB()) ;

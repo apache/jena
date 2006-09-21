@@ -10,6 +10,7 @@ import java.util.Collection;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -40,10 +41,12 @@ public class BlockCompilerSubClass extends BlockCompiler2
         
         SqlTable subClassTriple = new SubClassTable(alias) ;
         
-        subClassTriple.addNote("Special: rdfs:subClassOf") ;
+        subClassTriple.addNote("Special: "+FmtUtils.stringForTriple(triple, context.getQuery().getPrefixMapping())) ;
+//                               String.format("Special: %s rdfs:subClassOf %s", 
+//                                             FmtUtils.stringForNode(triple.getSubject()), triple.getObject()) ;
         
         processSlot(context, subClassTriple, conditions, triple.getSubject(),   SubClassTable.colSubClass) ; 
-        processSlot(context, subClassTriple, conditions, triple.getPredicate(), SubClassTable.colSuperClass) ;
+        processSlot(context, subClassTriple, conditions, triple.getObject(), SubClassTable.colSuperClass) ;
         
         if ( conditions.size() == 0 )
             return subClassTriple ;
@@ -52,19 +55,6 @@ public class BlockCompilerSubClass extends BlockCompiler2
         
     }
 }
-
-class SubClassTable extends SqlTable
-{
-    //private static Log log = LogFactory.getLog(TableTriples.class) ;
-    public static final String tableSubClass = "Classes" ;
-    public static final String colSubClass = "SubClass" ;
-    public static final String colSuperClass = "SuperClass" ;
-    
-    public SubClassTable(String aliasName)
-    { super(tableSubClass, aliasName) ; }
-    
-}
-
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

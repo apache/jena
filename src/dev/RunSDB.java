@@ -12,14 +12,13 @@ import java.lang.reflect.Method;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.script.CmdDesc;
 import com.hp.hpl.jena.sdb.script.ScriptDesc;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.*;
+import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -119,7 +118,6 @@ public class RunSDB
         String hsql = "jdbc:hsqldb:mem:aname" ;
         //String hsql = "jdbc:hsqldb:file:tmp/db" ;
 
-        SDB.init() ;
         SDBConnection sdb = SDBFactory.createConnection(hsql, "sa", "");
         StoreConfig conf = new StoreConfig(sdb) ;
         

@@ -4,19 +4,20 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package dev;
 
-/** A repository is a collection of datasets (Stores)
- *  It corresponds to one database server idea of a "database"
- * 
- * @author Andy Seaborne
- * @version $Id: Repository.java,v 1.1 2006/04/13 19:46:29 andy_seaborne Exp $
- */
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
-public class Repository
+class SubClassTable extends SqlTable
 {
-    // StoreFactory == Repository? 
-    public static Store createStore() { return null ; } 
+    //private static Log log = LogFactory.getLog(TableTriples.class) ;
+    public static final String tableSubClass = "Classes" ;
+    public static final String colSubClass = "SubClass" ;
+    public static final String colSuperClass = "SuperClass" ;
+    
+    public SubClassTable(String aliasName)
+    { super(tableSubClass, aliasName) ; }
+    
 }
 
 /*

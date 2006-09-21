@@ -14,6 +14,7 @@ import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.query.util.Loader;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreRDB;
@@ -32,6 +33,8 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public class StoreFactory
 {
     private static Log log = LogFactory.getLog(StoreFactory.class) ;
+    
+    static { SDB.init() ; } 
 
     public static Store create(StoreDesc desc)
     { return create(desc, null) ; }
