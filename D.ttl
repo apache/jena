@@ -5,9 +5,13 @@
 
 :x rdf:type :C1 .
 :y rdf:type :C3 .
+
 :C1 rdfs:subClassOf :C2 .
 :C2 rdfs:subClassOf :C3 .
 :C2 rdfs:subClassOf :C4 .
 
+:x :p :z1 .
+:x :p2 :z2 .
 
+:p rdfs:subPropertyOf :q .
 

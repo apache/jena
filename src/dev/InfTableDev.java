@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.data.CustomizeProperty;
 import com.hp.hpl.jena.sdb.data.CustomizeType;
 import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
 import com.hp.hpl.jena.sdb.sql.RS;
@@ -25,10 +26,7 @@ import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-import dev.inf.BlockCompilerSubClass;
-import dev.inf.SubClassTable;
-import dev.inf.InfTableMgr;
-import dev.inf.SubPropertyTable;
+import dev.inf.*;
 
 public class InfTableDev
 {
@@ -51,18 +49,21 @@ public class InfTableDev
             {
                 formatAndLoadStore(store) ;
                 InfTableMgr X = new InfTableMgr(SubClassTable.tableSubClass,
-                                                SubClassTable.colSubClass, SubClassTable.colSubClass,
+                                                SubClassTable.colSubClass, SubClassTable.colSuperClass,
                                                 RDFS.subClassOf.asNode()) ;
                 X.buildPairs(store) ;
                 X.writePairs(store) ;
                 InfTableMgr Y = new InfTableMgr(SubPropertyTable.tableSubProperty,
-                                                SubPropertyTable.colSubProperty, SubPropertyTable.colSubProperty,
+                                                SubPropertyTable.colSubProperty, SubPropertyTable.colSuperProperty,
                                                 RDFS.subPropertyOf.asNode()) ;
                 Y.buildPairs(store) ;
                 Y.writePairs(store) ;
             }
             if ( true )
+            {
                 dumpTable(store, SubClassTable.tableSubClass) ;
+                dumpTable(store, SubPropertyTable.tableSubProperty) ;
+            }
             play(store) ;
         } catch (Exception ex) 
         { ex.printStackTrace(System.err) ; }
@@ -76,14 +77,23 @@ public class InfTableDev
         if ( true )
             execQuery(store, "SELECT * { ?subject ?predicate ?object}") ;
         
-        // This does the rewrite of rdf:type.
-        StoreCustomizer sc = new CustomizeType() ;
-        //sc = null ;
-
-        // This does the rdfs:subClassOf to Class table
-        QueryCompiler qc = new QueryCompiler2(new BlockCompilerSubClass(), null, null) ;
-        //qc = null ;
+        StoreCustomizer sc = null ;
+        QueryCompiler qc = null ;
         
+        if ( false )
+        {
+            // This does the rewrite of rdf:type.
+            sc = new CustomizeType() ;
+            // and the SQL intercept for rdfs:subClassOf
+            qc = new QueryCompiler2(new BlockCompilerSubClass(), null, null) ;
+        }
+        else
+        {
+            // This does the rewrite of propertyies.
+            sc = new CustomizeProperty() ;
+            // and the SQL intercept for rdfs:subPropertyOf
+            qc = new QueryCompiler2(new BlockCompilerSubProperty(), null, null) ;
+        }
         Store store2 = new StoreBase(store.getConnection(),
                                      store.getPlanTranslator(),
                                      store.getLoader(),

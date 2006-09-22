@@ -55,7 +55,7 @@ public class InfTableMgr
     {
         try 
         { 
-            writePairsTable(store, pairsTable, SubClassTable.colSubClass, SubClassTable.colSuperClass, pairs) ;
+            writePairsTable(store, pairsTable, colLeft, colRight, pairs) ;
         } 
         catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
     }
@@ -178,7 +178,7 @@ public class InfTableMgr
 
     static void writePairsTable(Store store, String tableName, String colLeft, String colRight, Pairs pairs) throws SQLException
     {
-        if ( SQLUtils.hasTable(store.getConnection().getSqlConnection(), SubClassTable.tableSubClass) )
+        if ( SQLUtils.hasTable(store.getConnection().getSqlConnection(), tableName) )
             sql(store, String.format("DROP TABLE %s ;\n", tableName)) ;
         else
             System.out.printf("-- Table not present\n" ) ;

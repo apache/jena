@@ -4,6 +4,9 @@ PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT *
 {
-    ?x rdf:type ?t .
+##    ?x rdf:type ?t .
+
+# Wrong: not a subproperty so not in the subproperty table at all.
+    :x :p2 ?z .
 } ORDER BY ?x
 
