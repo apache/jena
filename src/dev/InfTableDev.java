@@ -24,7 +24,6 @@ import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.sdb.util.StrUtils;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 import dev.inf.*;
 
@@ -48,21 +47,20 @@ public class InfTableDev
             if ( true )
             {
                 formatAndLoadStore(store) ;
-                InfTableMgr X = new InfTableMgr(SubClassTable.tableSubClass,
-                                                SubClassTable.colSubClass, SubClassTable.colSuperClass,
-                                                RDFS.subClassOf.asNode()) ;
+                TransTable tt1 = new TransSubClassTable() ;
+                TransTableMgr X = new TransTableMgr(tt1) ; 
                 X.buildPairs(store) ;
                 X.writePairs(store) ;
-                InfTableMgr Y = new InfTableMgr(SubPropertyTable.tableSubProperty,
-                                                SubPropertyTable.colSubProperty, SubPropertyTable.colSuperProperty,
-                                                RDFS.subPropertyOf.asNode()) ;
+
+                TransTable tt2 = new TransSubPropertyTable() ;
+                TransTableMgr Y = new TransTableMgr(tt2) ;
                 Y.buildPairs(store) ;
                 Y.writePairs(store) ;
             }
             if ( true )
             {
-                dumpTable(store, SubClassTable.tableSubClass) ;
-                dumpTable(store, SubPropertyTable.tableSubProperty) ;
+                dumpTable(store, new TransSubClassTable()) ;
+                dumpTable(store, new TransSubPropertyTable()) ;
             }
             play(store) ;
         } catch (Exception ex) 
@@ -80,7 +78,7 @@ public class InfTableDev
         StoreCustomizer sc = null ;
         QueryCompiler qc = null ;
         
-        if ( false )
+        if ( true )
         {
             // This does the rewrite of rdf:type.
             sc = new CustomizeType() ;
@@ -92,7 +90,7 @@ public class InfTableDev
             // This does the rewrite of propertyies.
             sc = new CustomizeProperty() ;
             // and the SQL intercept for rdfs:subPropertyOf
-            qc = new QueryCompiler2(new BlockCompilerSubProperty(), null, null) ;
+            qc = new QueryCompiler2(new BlockCompilerTrans(new TransSubPropertyTable()), null, null) ;
         }
         Store store2 = new StoreBase(store.getConnection(),
                                      store.getPlanTranslator(),
@@ -146,6 +144,11 @@ public class InfTableDev
         System.out.println("-------------------------------------------------") ;
     }
 
+    private static void dumpTable(Store store, TransTable table) throws SQLException
+    {
+        dumpTable(store, table.getTableName()) ;  
+    }
+    
     private static void dumpTable(Store store, String tableName) throws SQLException
     {
         String s = "SELECT * FROM "+tableName ;

@@ -6,17 +6,21 @@
 
 package dev.inf;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
-public class SubPropertyTable extends SqlTable
+public class TransSubPropertyTable extends TransTable
 {
     public static final String tableSubProperty = "Properties" ;
-    public static final String colSubProperty = "SubProperty" ;
+    public static final String colSubProperty   = "SubProperty" ;
     public static final String colSuperProperty = "SuperProperty" ;
+
+    public TransSubPropertyTable()
+    {
+        super(tableSubProperty, colSubProperty, colSuperProperty, RDFS.subPropertyOf.asNode()) ;
+        
+    }
     
-    public SubPropertyTable(String aliasName)
-    { super(tableSubProperty, aliasName) ; }
-    
+
 }
 
 /*

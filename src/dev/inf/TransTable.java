@@ -6,51 +6,50 @@
 
 package dev.inf;
 
-import java.util.Collection;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.layout2.BlockCompiler2;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
-public class BlockCompilerSubProperty extends BlockCompiler2
+
+public class TransTable
 {
-    @Override
-    protected void addMoreConstants(Collection<Node> constants)
+    private String tableName ;
+    private String colLeft ;
+    private String colRight ;
+    private Node property ;
+    
+    protected TransTable(String tableName,
+                         String colLeft, String colRight,
+                         Node property)
     {
-        super.addMoreConstants(constants) ;
-        constants.add(RDFS.subPropertyOf.asNode()) ;
+        this.tableName = tableName ;
+        this.colLeft   = colLeft ;
+        this.colRight  = colRight ;
+        this.property = property ;
+    }
+
+    public String getColLeft()
+    {
+        return colLeft ;
+    }
+
+    public String getColRight()
+    {
+        return colRight ;
+    }
+
+    public String getTableName()
+    {
+        return tableName ;
+    }
+
+    public Node getProperty()
+    {
+        return property ;
     }
     
-    @Override
-    public SqlNode compile(Triple triple, CompileContext context)
+    public SqlTable createSqlTable(String alias)
     {
-        if ( ! triple.getPredicate().equals(RDFS.subPropertyOf.asNode()) )
-            return super.compile(triple, context) ;
-        
-        // rdfs:subCPropertyOf - different table.
-        
-        String alias = context.allocAlias("SC") ;
-        SqlExprList conditions = new SqlExprList() ;
-        
-        SqlTable subPropertyTriple = new SubPropertyTable(alias) ;
-        
-        subPropertyTriple.addNote("Special: "+FmtUtils.stringForTriple(triple, context.getQuery().getPrefixMapping())) ;
-        
-        processSlot(context, subPropertyTriple, conditions, triple.getSubject(),   SubPropertyTable.colSubProperty) ; 
-        processSlot(context, subPropertyTriple, conditions, triple.getObject(), SubPropertyTable.colSuperProperty) ;
-        
-        if ( conditions.size() == 0 )
-            return subPropertyTriple ;
-        
-        return SqlRestrict.restrict(subPropertyTriple, conditions) ;
-        
+        return new SqlTable(getTableName(), alias) ;
     }
 }
 

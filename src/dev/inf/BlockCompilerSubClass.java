@@ -6,53 +6,12 @@
 
 package dev.inf;
 
-import java.util.Collection;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.layout2.BlockCompiler2;
-import com.hp.hpl.jena.vocabulary.RDFS;
-
-public class BlockCompilerSubClass extends BlockCompiler2
+public class BlockCompilerSubClass extends BlockCompilerTrans
 {
-    @Override
-    protected void addMoreConstants(Collection<Node> constants)
+    public BlockCompilerSubClass()
     {
-        super.addMoreConstants(constants) ;
-        constants.add(RDFS.subClassOf.asNode()) ;
-    }
-    
-    @Override
-    public SqlNode compile(Triple triple, CompileContext context)
-    {
-        if ( ! triple.getPredicate().equals(RDFS.subClassOf.asNode()) )
-            return super.compile(triple, context) ;
-        
-        // rdfs:subClassOf - different table.
-        
-        String alias = context.allocAlias("SC") ;
-        SqlExprList conditions = new SqlExprList() ;
-        
-        SqlTable subClassTriple = new SubClassTable(alias) ;
-        
-        subClassTriple.addNote("Special: "+FmtUtils.stringForTriple(triple, context.getQuery().getPrefixMapping())) ;
-//                               String.format("Special: %s rdfs:subClassOf %s", 
-//                                             FmtUtils.stringForNode(triple.getSubject()), triple.getObject()) ;
-        
-        processSlot(context, subClassTriple, conditions, triple.getSubject(),   SubClassTable.colSubClass) ; 
-        processSlot(context, subClassTriple, conditions, triple.getObject(), SubClassTable.colSuperClass) ;
-        
-        if ( conditions.size() == 0 )
-            return subClassTriple ;
-        
-        return SqlRestrict.restrict(subClassTriple, conditions) ;
-        
+        super(new TransSubClassTable(), "SC") ;
     }
 }
 

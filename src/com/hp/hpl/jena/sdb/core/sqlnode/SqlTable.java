@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 /** Root of all concrete tables */
 
-public abstract class SqlTable extends SqlNodeBase
+public class SqlTable extends SqlNodeBase
 {
     // Alternative: SqlTableValue and SqlTableTriple
     
@@ -21,7 +21,7 @@ public abstract class SqlTable extends SqlNodeBase
     protected ScopeBase idScope = null ;
     protected ScopeBase valueScope = null ;
     
-    protected SqlTable(String tableName, String aliasName)
+    public SqlTable(String tableName, String aliasName)
     {
         super(aliasName) ;
         this.tableName = tableName ;

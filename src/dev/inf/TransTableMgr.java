@@ -28,25 +28,19 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 
-public class InfTableMgr
+public class TransTableMgr
 {
     private Pairs pairs ;
-    private Node relation ;
-    private String pairsTable ;
-    private String colLeft ;
-    private String colRight ;
+    private TransTable pairsTable ;
     
-    public InfTableMgr(String pairsTable, String colLeft, String colRight, Node relation)
+    public TransTableMgr(TransTable transTable)
     { 
-        this.pairsTable = pairsTable ;
-        this.relation = relation ; 
-        this.colLeft = colLeft ;
-        this.colRight = colRight ;
+        this.pairsTable = transTable ;
     }
     
     public void buildPairs(Store store)
     {
-        pairs = findPairs(store, relation) ;
+        pairs = findPairs(store, pairsTable.getProperty()) ;
         expand(pairs) ;
         expandSelf(pairs) ;
     }
@@ -55,7 +49,7 @@ public class InfTableMgr
     {
         try 
         { 
-            writePairsTable(store, pairsTable, colLeft, colRight, pairs) ;
+            writePairsTable(store, pairsTable, pairs) ;
         } 
         catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
     }
@@ -176,21 +170,21 @@ public class InfTableMgr
         return x ;
     }
 
-    static void writePairsTable(Store store, String tableName, String colLeft, String colRight, Pairs pairs) throws SQLException
+    static void writePairsTable(Store store, TransTable transTable, Pairs pairs) throws SQLException
     {
-        if ( SQLUtils.hasTable(store.getConnection().getSqlConnection(), tableName) )
-            sql(store, String.format("DROP TABLE %s ;\n", tableName)) ;
+        if ( SQLUtils.hasTable(store.getConnection().getSqlConnection(), transTable.getTableName()) )
+            sql(store, String.format("DROP TABLE %s ;\n", transTable.getTableName())) ;
         else
             System.out.printf("-- Table not present\n" ) ;
         sql(store, 
-            String.format(
-                          "CREATE TABLE %s (%s integer not null, %s integer not null)",
-                          tableName, colLeft, colRight)) ;
+            String.format
+            ( "CREATE TABLE %s (%s integer not null, %s integer not null)",
+              transTable.getTableName(), transTable.getColLeft(), transTable.getColRight())) ;
 
         for ( IntPair p : pairs )
             sql(store,
-                String.format(
-                              "INSERT INTO %s VALUES(%d, %d) ;\n", tableName, p.car(), p.cdr())) ;
+                String.format
+                ( "INSERT INTO %s VALUES(%d, %d) ;\n",transTable.getTableName(), p.car(), p.cdr())) ;
 
     }
 
