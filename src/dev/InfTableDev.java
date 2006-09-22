@@ -28,8 +28,9 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import dev.inf.BlockCompilerSubClass;
 import dev.inf.SubClassTable;
 import dev.inf.InfTableMgr;
+import dev.inf.SubPropertyTable;
 
-public class ClassTable
+public class InfTableDev
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
     
@@ -52,9 +53,13 @@ public class ClassTable
                 InfTableMgr X = new InfTableMgr(SubClassTable.tableSubClass,
                                                 SubClassTable.colSubClass, SubClassTable.colSubClass,
                                                 RDFS.subClassOf.asNode()) ;
-                X.buildSubClass(store) ;
-                X.writeSubClass(store) ;
-                //SubClassLoader.buildSubClassTable(store) ;
+                X.buildPairs(store) ;
+                X.writePairs(store) ;
+                InfTableMgr Y = new InfTableMgr(SubPropertyTable.tableSubProperty,
+                                                SubPropertyTable.colSubProperty, SubPropertyTable.colSubProperty,
+                                                RDFS.subPropertyOf.asNode()) ;
+                Y.buildPairs(store) ;
+                Y.writePairs(store) ;
             }
             if ( true )
                 dumpTable(store, SubClassTable.tableSubClass) ;

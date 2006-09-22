@@ -44,14 +44,14 @@ public class InfTableMgr
         this.colRight = colRight ;
     }
     
-    public void buildSubClass(Store store)
+    public void buildPairs(Store store)
     {
         pairs = findPairs(store, relation) ;
         expand(pairs) ;
         expandSelf(pairs) ;
     }
     
-    public void writeSubClass(Store store)
+    public void writePairs(Store store)
     {
         try 
         { 
