@@ -23,10 +23,11 @@ import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.sdb.util.StrUtils;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 import dev.inf.BlockCompilerSubClass;
 import dev.inf.SubClassTable;
-import dev.inf.SubClassTableMgr;
+import dev.inf.InfTableMgr;
 
 public class ClassTable
 {
@@ -48,13 +49,15 @@ public class ClassTable
             if ( true )
             {
                 formatAndLoadStore(store) ;
-                SubClassTableMgr X = new SubClassTableMgr() ;
-                X.build(store) ;
-                X.write(store) ;
+                InfTableMgr X = new InfTableMgr(SubClassTable.tableSubClass,
+                                                SubClassTable.colSubClass, SubClassTable.colSubClass,
+                                                RDFS.subClassOf.asNode()) ;
+                X.buildSubClass(store) ;
+                X.writeSubClass(store) ;
                 //SubClassLoader.buildSubClassTable(store) ;
             }
             if ( true )
-                dumpClassTable(store) ;
+                dumpTable(store, SubClassTable.tableSubClass) ;
             play(store) ;
         } catch (Exception ex) 
         { ex.printStackTrace(System.err) ; }
@@ -128,9 +131,9 @@ public class ClassTable
         System.out.println("-------------------------------------------------") ;
     }
 
-    private static void dumpClassTable(Store store) throws SQLException
+    private static void dumpTable(Store store, String tableName) throws SQLException
     {
-        String s = "SELECT * FROM "+SubClassTable.tableSubClass ;
+        String s = "SELECT * FROM "+tableName ;
         java.sql.ResultSet rs = store.getConnection().execQuery(s) ;
         RS.printResultSet(rs) ;
         RS.close(rs) ;

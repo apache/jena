@@ -27,63 +27,69 @@ import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StrUtils;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
-public class SubClassTableMgr
+public class InfTableMgr
 {
-    SubClasses subClasses = new SubClasses() ;
+    private Pairs pairs ;
+    private Node relation ;
+    private String pairsTable ;
+    private String colLeft ;
+    private String colRight ;
     
-    public SubClassTableMgr()
-    { }
-    
-    public void build(Store store)
-    {
-        findSubClasses(store) ;
-        expand() ;
-        expandSelf() ;
+    public InfTableMgr(String pairsTable, String colLeft, String colRight, Node relation)
+    { 
+        this.pairsTable = pairsTable ;
+        this.relation = relation ; 
+        this.colLeft = colLeft ;
+        this.colRight = colRight ;
     }
     
-    public void write(Store store)
+    public void buildSubClass(Store store)
     {
-        try { writeSubClassTable(store) ; } 
+        pairs = findPairs(store, relation) ;
+        expand(pairs) ;
+        expandSelf(pairs) ;
+    }
+    
+    public void writeSubClass(Store store)
+    {
+        try 
+        { 
+            writePairsTable(store, pairsTable, SubClassTable.colSubClass, SubClassTable.colSuperClass, pairs) ;
+        } 
         catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
     }
 
     // -------- Internal
-    static class ClassPair extends Pair<Integer, Integer>
+    static class IntPair extends Pair<Integer, Integer>
     {
-        public ClassPair(Integer a, Integer b)
+        public IntPair(Integer a, Integer b)
         {
             super(a, b) ;
         }
-
-        @Override
-        public int hashCode()
-        {
-            return car().hashCode() | cdr().hashCode() ; 
-        }
-
+        // HashCode from parent is OK
         @Override
         public boolean equals(Object other)
         {
-            if( ! ( other instanceof ClassPair ) ) return false ;
-            ClassPair p2 = (ClassPair)other ;
-            return  car().equals(p2.car()) && cdr().equals(p2.cdr()) ;
+            if( ! ( other instanceof IntPair ) ) return false ;
+            return super.equals(other) ;
         }
     }
 
-    static class SubClasses extends HashSet<ClassPair> {} 
+    static class Pairs extends HashSet<IntPair> {} 
     // -------- Internal
 
-    private void findSubClasses(Store store)
+    private static Pairs findPairs(Store store, Node relation)
     {
+        Pairs pairs = new Pairs() ;
+        
         int idSubClassOf = -1 ;
         
         try {
             String q = 
                 StrUtils.strjoinNL(
-                        String.format("PREFIX rdfs: <%s>", RDFS.getURI()) ,
-                        "SELECT * { ?c1 rdfs:subClassOf ?c2}"
+                        //String.format("PREFIX rdfs: <%s>", RDFS.getURI()) ,
+                        String.format("SELECT * { ?c1 <%s> ?c2}", relation.getURI())
                         );
             Query query = QueryFactory.create(q) ;
             QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(store)) ;
@@ -105,7 +111,7 @@ public class SubClassTableMgr
                     Node o = qs.get("c2").asNode() ;
                     int idSubj = node2id(store.getConnection(), s) ;
                     int idObj  = node2id(store.getConnection(), o) ;
-                    subClasses.add(new ClassPair(idSubj, idObj)) ;
+                    pairs.add(new IntPair(idSubj, idObj)) ;
 
                     if ( false )
                         System.out.printf("s[%d]%-20s  rdfs:subClassOf  o[%d]%s\n",
@@ -117,49 +123,52 @@ public class SubClassTableMgr
         {
             ex.printStackTrace(System.err) ;
         }
+        return pairs ;
     }
 
     
-    private void expand()
+    private static void expand(Pairs pairs)
     {
         // Crude.
         for ( ;; )
         {
-            SubClasses moreClasses = new SubClasses() ;
-            for ( ClassPair p : subClasses )
+            Pairs morePairs = new Pairs() ;
+            for ( IntPair p : pairs )
             {
                 int c1 = p.car() ;
-                Set<Integer>x = findByLeft(subClasses, p.cdr()) ;
+                Set<Integer>x = findByLeft(pairs, p.cdr()) ;
                 for ( int c2 : x )
-                    moreClasses.add(new ClassPair(c1, c2)) ;
+                    morePairs.add(new IntPair(c1, c2)) ;
             }
             
-            int size = subClasses.size() ;
-            subClasses.addAll(moreClasses) ;
-            if ( size == subClasses.size() )
+            int size = pairs.size() ;
+            pairs.addAll(morePairs) ;
+            if ( size == pairs.size() )
                 break ;
         } 
     }
     
     
-    private void expandSelf()
+    private static void expandSelf(Pairs pairs)
     {
+        // Reflexive.
         // X rdfs:subClassOf X
-        SubClasses moreClasses = new SubClasses() ;
-        for ( ClassPair p : subClasses )
+        // X rdfs:subPropertyOf X 
+        Pairs morePairs = new Pairs() ;
+        for ( IntPair p : pairs )
         {
             int c1 = p.car() ;
-            moreClasses.add(new ClassPair(c1, c1)) ;
+            morePairs.add(new IntPair(c1, c1)) ;
             int c2 = p.cdr() ;
-            moreClasses.add(new ClassPair(c2, c2)) ;
+            morePairs.add(new IntPair(c2, c2)) ;
         }
-        subClasses.addAll(moreClasses) ;
+        pairs.addAll(morePairs) ;
     }
 
-    private static Set<Integer> findByLeft(SubClasses classes, int c)
+    private static Set<Integer> findByLeft(Pairs classes, int c)
     {
         Set<Integer> x = new HashSet<Integer>() ;
-        for ( ClassPair p : classes )
+        for ( IntPair p : classes )
         {
             if ( p.car() == c )
                 x.add(p.cdr()) ;
@@ -167,21 +176,21 @@ public class SubClassTableMgr
         return x ;
     }
 
-    void writeSubClassTable(Store store) throws SQLException
+    static void writePairsTable(Store store, String tableName, String colLeft, String colRight, Pairs pairs) throws SQLException
     {
         if ( SQLUtils.hasTable(store.getConnection().getSqlConnection(), SubClassTable.tableSubClass) )
-            sql(store, String.format("DROP TABLE %s ;\n", SubClassTable.tableSubClass)) ;
+            sql(store, String.format("DROP TABLE %s ;\n", tableName)) ;
         else
             System.out.printf("-- Table not present\n" ) ;
         sql(store, 
             String.format(
                           "CREATE TABLE %s (%s integer not null, %s integer not null)",
-                          SubClassTable.tableSubClass, SubClassTable.colSubClass, SubClassTable.colSuperClass)) ;
+                          tableName, colLeft, colRight)) ;
 
-        for ( ClassPair p : subClasses )
+        for ( IntPair p : pairs )
             sql(store,
                 String.format(
-                              "INSERT INTO %s VALUES(%d, %d) ;\n", SubClassTable.tableSubClass, p.car(), p.cdr())) ;
+                              "INSERT INTO %s VALUES(%d, %d) ;\n", tableName, p.car(), p.cdr())) ;
 
     }
 

@@ -10,7 +10,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 public class SubClassTable extends SqlTable
 {
-    //private static Log log = LogFactory.getLog(TableTriples.class) ;
     public static final String tableSubClass = "Classes" ;
     public static final String colSubClass = "SubClass" ;
     public static final String colSuperClass = "SuperClass" ;
