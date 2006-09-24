@@ -47,15 +47,15 @@ public class InfTableDev
             if ( true )
             {
                 formatAndLoadStore(store) ;
-                TransTable tt1 = new TransSubClassTable() ;
-                TransTableMgr X = new TransTableMgr(tt1) ; 
-                X.buildPairs(store) ;
+                TransTableMgr X = null ;
+                
+                X = new TransTableMgr(new TransSubClassTable()) ; 
+                X.buildPairs(store, true) ;
                 X.writePairs(store) ;
 
-                TransTable tt2 = new TransSubPropertyTable() ;
-                TransTableMgr Y = new TransTableMgr(tt2) ;
-                Y.buildPairs(store) ;
-                Y.writePairs(store) ;
+                X = new TransTableMgr(new TransSubPropertyTable()) ;
+                X.buildPairs(store, true) ;
+                X.writePairs(store) ;
             }
             if ( true )
             {

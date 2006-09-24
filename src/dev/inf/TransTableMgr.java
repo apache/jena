@@ -38,11 +38,12 @@ public class TransTableMgr
         this.pairsTable = transTable ;
     }
     
-    public void buildPairs(Store store)
+    public void buildPairs(Store store, boolean reflexive)
     {
         pairs = findPairs(store, pairsTable.getProperty()) ;
         expand(pairs) ;
-        expandSelf(pairs) ;
+        if ( reflexive )
+            expandSelf(pairs) ;
     }
     
     public void writePairs(Store store)
@@ -123,7 +124,9 @@ public class TransTableMgr
     
     private static void expand(Pairs pairs)
     {
-        // Crude.
+        // rdfs:seeAlso http://en.wikipedia.org/wiki/Floyd-Warshall_algorithm
+        // http://datastructures.itgo.com/graphs/transclosure.htm
+        // Crude.  This is a repetitive "find i->j->k, infer i->k" pass. 
         for ( ;; )
         {
             Pairs morePairs = new Pairs() ;
@@ -140,8 +143,8 @@ public class TransTableMgr
             if ( size == pairs.size() )
                 break ;
         } 
+
     }
-    
     
     private static void expandSelf(Pairs pairs)
     {
@@ -159,13 +162,14 @@ public class TransTableMgr
         pairs.addAll(morePairs) ;
     }
 
-    private static Set<Integer> findByLeft(Pairs classes, int c)
+    private static Set<Integer> findByLeft(Pairs pairs, Integer c)
     {
         Set<Integer> x = new HashSet<Integer>() ;
-        for ( IntPair p : classes )
+        for ( IntPair p : pairs )
         {
             if ( p.car() == c )
                 x.add(p.cdr()) ;
+
         }
         return x ;
     }
