@@ -8,7 +8,6 @@ package dev;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -70,78 +69,73 @@ public class Trans
                 path[i][k] = 1;
         }
      */
-    // Hard if the 2-D array is stored compactly because Java colections
+    // Hard if the 2-D array is stored compactly because Java collections
+    // So collect nodes firsts.
+    
     // can't be modified as they are iterated over.  Leads to taking copies,
     // which costs and may change the algorithm complexity.
     // And we are expanding a tree-ish things anyway which is connection-sparse. 
     
-//    // For every node:
-//    //   If there exists a 2-path, make the 1-path
-//    
-//    static void expand(Links pairs)
-//    {
-//        Set<Integer> closed = new HashSet<Integer>() ;
-//        
-//        for ( Integer i : pairs.keySet() )
-//        {
-//            if ( closed.contains(i) )
-//            {
-//                System.out.println("Cut off: "+i) ;
-//                continue ;
-//            }
-//            closure(pairs, i) ;
-//            // No point doing it again
-//            closed.add(i) ;
-//        }
-//    }
-//    
-//    private static void closure(Links pairs, Integer i)
-//    {
-//        ArrayList<Integer> x = pairs.get(i) ;
-//        if ( x == null )
-//            return ;
-//        
-//        Set<Integer> acc = new HashSet<Integer>() ;
-//        
-//        for ( Integer j : x )
-//        {
-//            ArrayList<Integer> y = pairs.get(j) ;
-//            if ( y == null )
-//                continue ;
-//            for ( Integer k : y )
-//                // Walshall: add (i,k) here but Java util concurrent exceptions ... 
-//                acc.add(k) ;
-//        }
-//        // Delayed add - is this safe? No!
-//        for ( Integer k : acc )
-//            pairs.add(i, k) ;
-//        
-//    }
+    // For every node:
+    //   If there exists a 2-path, make the 1-path
     
-    // Calculate the closure from start.
-    static void closure(Links links, Integer start, Set<Integer>visited)
+    // Walshalls algorithm 
+    // http://datastructures.itgo.com/graphs/transclosure.htm
+    // and many other places.
+    // Adapted only in that it works on the sparse graph representation
+    // used to record the links.
+    
+    static void expand(Links pairs)
     {
-        if ( visited.contains(start) ) 
-            return ;
-        visited.add(start) ;
+        // All the nodes (whether they have links initially or not).
+        // Because this is not updated by any new additions (they only link
+        // existing ndoes), it is safe to iterate over the set while adding
+        // the arrays which record the links.
         
-        for ( Integer n : links.get(start) )
+        Set<Integer> allNodes = pairs.keySet() ;
+
+        for ( Integer i : allNodes )
         {
-            closure(links, n, visited) ;
+            for ( Integer j : allNodes )
+            {
+                if ( pairs.contains(i,j) )
+                {
+                    for ( Integer k : allNodes )
+                        if ( pairs.contains(j, k))
+                            pairs.add(i, k) ;
+                }
+            }
         }
     }
+    
+//    // Calculate the closure from start.
+//    static void closure(Links links, Integer start, Set<Integer>visited)
+//    {
+//        if ( visited.contains(start) ) 
+//            return ;
+//        visited.add(start) ;
+//        
+//        for ( Integer n : links.get(start) )
+//        {
+//            closure(links, n, visited) ;
+//        }
+//    }
 
     public static void main(String[]a)
     {
+        // BUG
         Links pairs = new Links() ;
         pairs.add(1,2) ;
         pairs.add(2,3) ;
         pairs.add(3,4) ;
-        pairs.add(4,5) ;
+        pairs.add(4,1) ;
+        //pairs.add(4,5) ;
+        
         
         
         System.out.println( ) ;
-        //expand(pairs) ;
+        expand(pairs) ;
+        System.out.println("====") ;
         pairs.print() ;
     }
 }
