@@ -6,8 +6,8 @@
 
 package dev;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -15,33 +15,33 @@ public class Trans
 {
     
     // Map : (left) node to link ; ensure all right nodes have an entry
-    static class Links extends HashMap<Integer, ArrayList<Integer>>
+    static class Links extends HashMap<Integer, HashSet<Integer>>
     {
         void add(Integer i, Integer j)
         {
-            ArrayList<Integer> x = ensure(i) ;
+            Set<Integer> x = ensure(i) ;
             x.add(j) ;
             ensure(j) ;
         }
         
-        private ArrayList<Integer> ensure(Integer i)
+        private Set<Integer> ensure(Integer i)
         {
-            ArrayList<Integer> x = get(i) ;
+            HashSet<Integer> x = get(i) ;
             if ( x != null )
                 return x ;
-            x = new ArrayList<Integer>() ;
+            x = new HashSet<Integer>() ;
             put(i, x) ;
             return x ; 
         }
         
         boolean contains(Integer i, Integer j)
         {
-            ArrayList<Integer> x = get(i) ;
+            Set<Integer> x = get(i) ;
             if ( x == null ) return false ;
             return x.contains(j) ;
         }
         
-        void print()
+        void printLinks()
         {
             for ( Integer i : keySet() )
             {
@@ -52,80 +52,65 @@ public class Trans
                     System.out.printf("%2d %2d\n", i, j) ;
             }
         }
-    }
-    
-    /* http://datastructures.itgo.com/graphs/transclosure.htm
-     * transclosure( int adjmat[max][max], int path[max][max])
+        void print()
         {
-         for(i = 0; i < max; i++)
-          for(j = 0; j < max; j++)
-              path[i][j] = adjmat[i][j];
-        
-         for(i = 0;i <max; i++)
-          for(j = 0;j < max; j++)
-           if(path[i][j] == 1)
-            for(k = 0; k < max; k++)
-              if(path[j][k] == 1)
-                path[i][k] = 1;
-        }
-     */
-    // Hard if the 2-D array is stored compactly because Java collections
-    // So collect nodes firsts.
-    
-    // can't be modified as they are iterated over.  Leads to taking copies,
-    // which costs and may change the algorithm complexity.
-    // And we are expanding a tree-ish things anyway which is connection-sparse. 
-    
-    // For every node:
-    //   If there exists a 2-path, make the 1-path
-    
-    // Walshalls algorithm 
-    // http://datastructures.itgo.com/graphs/transclosure.htm
-    // and many other places.
-    // Adapted only in that it works on the sparse graph representation
-    // used to record the links.
-    
-    static void expand(Links pairs)
-    {
-        // All the nodes (whether they have links initially or not).
-        // Because this is not updated by any new additions (they only link
-        // existing ndoes), it is safe to iterate over the set while adding
-        // the arrays which record the links.
-        
-        Set<Integer> allNodes = pairs.keySet() ;
-
-        for ( Integer i : allNodes )
-        {
-            for ( Integer j : allNodes )
+            for ( Integer i : keySet() )
             {
-                if ( pairs.contains(i,j) )
-                {
-                    for ( Integer k : allNodes )
-                        if ( pairs.contains(j, k))
-                            pairs.add(i, k) ;
-                }
+                System.out.printf("%2d : ", i) ;
+                for ( Integer j : get(i) )
+                    System.out.printf("%2d", j) ;
+                System.out.println() ;
             }
         }
     }
     
-//    // Calculate the closure from start.
-//    static void closure(Links links, Integer start, Set<Integer>visited)
-//    {
-//        if ( visited.contains(start) ) 
-//            return ;
-//        visited.add(start) ;
-//        
-//        for ( Integer n : links.get(start) )
-//        {
-//            closure(links, n, visited) ;
-//        }
-//    }
+    /*  
+        http://www.cs.duke.edu/~reynolds/149/warshall.c.html
+   15: void warshall(int size) {
+   16:   register int i, j, k;
+   17:   for (k=size-1; k>=0; k--)
+   18:     for (i=size-1; i>=0; i--)
+   19:       for (j=size-1; j>=0; j--) {
+   20:         double dist = graph[i][k] + graph[k][j];
+   21:         if (dist < graph[i][j]) graph[i][j] = dist;
+   22:       }
+     */
+
+    // Walshall's algorithm
+    // Adapted only in that it works on the sparse graph
+    // representation used to record the links.
+    // TODO CHECK (the internet) in a modern algorithm book!
+    
+    static void expand(Links pairs)
+    {
+        // Iterator over all the nodes (whether they have links initially or not).
+        // Because this is not updated by any new additions (they only link
+        // existing nodes), it is safe to iterate over the set while adding
+        // new links.
+        
+        Set<Integer> allNodes = pairs.keySet() ;
+
+//        for ( Integer k : allNodes )
+//            for ( Integer i : allNodes )
+//                for ( Integer j : allNodes )
+//                    if ( pairs.contains(i, k) &&  pairs.contains(k,j) )
+//                        pairs.add(i, j) ;
+
+        // Move test out one level.
+        for ( Integer k : allNodes )
+            for ( Integer i : allNodes )
+                if ( pairs.contains(i, k) )
+                for ( Integer j : allNodes )
+                    if ( pairs.contains(k,j) )
+                        pairs.add(i, j) ;
+    }
 
     public static void main(String[]a)
     {
         // BUG
         Links pairs = new Links() ;
         pairs.add(1,2) ;
+        pairs.add(1,1) ;
         pairs.add(2,3) ;
         pairs.add(3,4) ;
         pairs.add(4,1) ;
@@ -133,7 +118,7 @@ public class Trans
         
         
         
-        System.out.println( ) ;
+        pairs.print() ;
         expand(pairs) ;
         System.out.println("====") ;
         pairs.print() ;
