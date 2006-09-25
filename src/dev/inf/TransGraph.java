@@ -105,7 +105,7 @@ public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>>
             a.apply(i) ;        
     }
     
-    void printLinks()
+    public void printLinks()
     {
         linkApply(new LinkApply<GNode>()
                   {
@@ -115,7 +115,7 @@ public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>>
             } 
                   }) ;
     }
-    void print()
+    public void print()
     {
         for ( GNode i : keySet() )
         {
@@ -124,23 +124,6 @@ public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>>
                 System.out.printf(" %s", j) ;
             System.out.println() ;
         }
-    }
-    
-    public static void main(String[]a)
-    {
-        // BUG
-        TransGraph<Integer> graph = new TransGraph<Integer>() ;
-        graph.add(1,2) ;
-        graph.add(1,1) ;
-        graph.add(2,3) ;
-        graph.add(3,4) ;
-        graph.add(4,1) ;
-        //pairs.add(4,5) ;
-        
-        graph.print() ;
-        graph.expand() ;
-        System.out.println("====") ;
-        graph.print() ;
     }
 }
 

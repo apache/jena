@@ -101,7 +101,7 @@ public class TransTableMgr
     }
 
     
-    static void writePairsTable(final Store outputStore, final TransTable transTable, TransGraph<Integer> transEngine)
+    static private void writePairsTable(final Store outputStore, final TransTable transTable, TransGraph<Integer> transEngine)
     {
         try {
             if ( SQLUtils.hasTable(outputStore.getConnection().getSqlConnection(), transTable.getTableName()) )
