@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -39,6 +40,9 @@ public abstract class LoaderTriplesNodes
     // Delayed initialization until first bulk load.
     private boolean initialized = false ;
     
+    // Are we adding or removing?
+    private Boolean removingTriples = null ;
+    
     boolean threading = true; // Do we want to thread?
     Thread commitThread = null ; // The loader thread
     final static PreparedTriple flushSignal = new PreparedTriple(); // Signal to thread to commit
@@ -57,6 +61,7 @@ public abstract class LoaderTriplesNodes
     protected PreparedStatement insertNodeLoaderTable;
     protected PreparedStatement insertNodes;
     protected PreparedStatement insertTriples;
+    protected PreparedStatement deleteTriples;
     protected PreparedStatement clearTripleLoaderTable;
     protected PreparedStatement clearNodeLoaderTable;
     
@@ -113,8 +118,12 @@ public abstract class LoaderTriplesNodes
     		insertNodeLoaderTable.close();
     		insertNodes.close();
     		insertTriples.close();
-    		clearTripleLoaderTable.close();
-    		clearNodeLoaderTable.close();
+    		if (deleteTriples != null)
+    			deleteTriples.close();
+    		if (clearTripleLoaderTable != null)
+    			clearTripleLoaderTable.close();
+    		if (clearNodeLoaderTable != null)
+    			clearNodeLoaderTable.close();
     	}
     	catch (Exception e)
     	{
@@ -132,12 +141,23 @@ public abstract class LoaderTriplesNodes
     
     public void addTriple(Triple triple)
 	{
-	    // Prepare our triple for loading. Helps with threaded loader.
+    	updateStore(triple, false);
+	}
+    
+    public void deleteTriple(Triple triple) 
+    {
+    	updateStore(triple, true);
+    }
+
+    private void updateStore(Triple triple, boolean forRemoval)
+    {
+		// Prepare our triple for loading. Helps with threaded loader.
 	    PreparedTriple pTriple = new PreparedTriple();
-	    pTriple.subject = new PreparedNode(triple.getSubject());
-	    pTriple.predicate = new PreparedNode(triple.getPredicate());
-	    pTriple.object = new PreparedNode(triple.getObject());
-	
+	    pTriple.subject = new PreparedNode(triple.getSubject(), forRemoval);
+	    pTriple.predicate = new PreparedNode(triple.getPredicate(), forRemoval);
+	    pTriple.object = new PreparedNode(triple.getObject(), forRemoval);
+	    pTriple.forRemoval = forRemoval;
+	    
 	    if (threading)
 	    {
 	        checkThreadStatus();
@@ -155,7 +175,7 @@ public abstract class LoaderTriplesNodes
 	    {
 			try 
 			{
-				addOneTriple(pTriple);
+				updateOneTriple(pTriple);
 			} 
 			catch (SQLException e)
 			{
@@ -173,9 +193,7 @@ public abstract class LoaderTriplesNodes
 	    }
 	}
 
-	public void deleteTriple(Triple triple) { LoaderOneTriple.deleteTriple(connection(), triple) ; }
-
-    /**
+	/**
 	 * Flush remain triples in queue to database. If threading this blocks until flush is complete.
 	 */
 	public void flushTriples()
@@ -222,9 +240,21 @@ public abstract class LoaderTriplesNodes
 	private void init() throws SQLException
 	{
 	    if ( initialized ) return ;
-
+	    
 	    createLoaderTable();
-	    createPreparedStatements() ;
+	    
+		Connection conn = this.connection().getSqlConnection();
+		insertTripleLoaderTable = conn.prepareStatement(getInsertTripleLoaderTable());
+	    insertNodeLoaderTable = conn.prepareStatement(getInsertNodeLoaderTable());
+	    insertNodes = conn.prepareStatement(getInsertNodes());
+	    insertTriples = conn.prepareStatement(getInsertTriples());
+	    if (getDeleteTriples() != null)
+	    	deleteTriples = conn.prepareStatement(getDeleteTriples());
+	    if (getClearTripleLoaderTable() != null)
+	    	clearTripleLoaderTable = conn.prepareStatement(getClearTripleLoaderTable());
+	    if (getClearNodeLoaderTable() != null)
+	    	clearNodeLoaderTable = conn.prepareStatement(getClearNodeLoaderTable());
+	    
 	    count = 0;
 	
 	    seenNodes = new HashSet<PreparedNode>();
@@ -257,18 +287,35 @@ public abstract class LoaderTriplesNodes
     }
     
     // Queue up a triple, committing if we have enough chunks
-    private void addOneTriple(PreparedTriple triple) throws SQLException
+    private void updateOneTriple(PreparedTriple triple) throws SQLException
     {
+    	// Ensure order of addition / removal
+    	if (removingTriples != null && !removingTriples.equals(triple.forRemoval))
+    	{
+    		commitTriples();
+    		removingTriples = triple.forRemoval;
+    	}
+    	if (removingTriples == null) removingTriples = triple.forRemoval;
     	count++;
     	
-    	addToInsert(insertNodeLoaderTable, triple.subject);
-    	addToInsert(insertNodeLoaderTable, triple.predicate);
-    	addToInsert(insertNodeLoaderTable, triple.object);
+    	if (!removingTriples)
+    	{
+    		addToInsert(insertNodeLoaderTable, triple.subject);
+    		addToInsert(insertNodeLoaderTable, triple.predicate);
+    		addToInsert(insertNodeLoaderTable, triple.object);
+    	}
     	
-    	insertTripleLoaderTable.setLong(1, triple.subject.hash);
-    	insertTripleLoaderTable.setLong(2, triple.predicate.hash);
-    	insertTripleLoaderTable.setLong(3, triple.object.hash);
-    	insertTripleLoaderTable.addBatch();
+    	if (removingTriples && this.deleteTriples == null)
+    	{
+    		log.error("Can't bulk delete triple");
+    	}
+    	else
+    	{
+    		insertTripleLoaderTable.setLong(1, triple.subject.hash);
+    		insertTripleLoaderTable.setLong(2, triple.predicate.hash);
+    		insertTripleLoaderTable.setLong(3, triple.object.hash);
+    		insertTripleLoaderTable.addBatch();
+    	}
     	
     	if (count >= chunkSize)
     		commitTriples();
@@ -307,13 +354,28 @@ public abstract class LoaderTriplesNodes
         count = 0;
         seenNodes = new HashSet<PreparedNode>();
         
-        insertNodeLoaderTable.executeBatch();
         insertTripleLoaderTable.executeBatch();
-        insertNodes.execute();
-        insertTriples.execute();
-        clearNodeLoaderTable.execute() ;
-        clearTripleLoaderTable.execute();
+
+        if (!removingTriples)
+        {
+        	insertNodeLoaderTable.executeBatch();
+        	insertNodes.execute();
+        	insertTriples.execute();
+        	if (clearNodeLoaderTable != null)
+        		clearNodeLoaderTable.execute() ;
+        }
+        else if (deleteTriples != null)
+        {
+        	deleteTriples.execute() ;
+        }
+        else
+        {
+        	log.error("Can't bulk delete triples");
+        }
         
+        if (clearTripleLoaderTable != null)
+        	clearTripleLoaderTable.execute();
+        removingTriples = null;
         if ( autoCommit )
             // Commit the transaction if started outside of a transaction 
             connection().getSqlConnection().commit();
@@ -342,6 +404,7 @@ public abstract class LoaderTriplesNodes
         PreparedNode subject;
         PreparedNode predicate;
         PreparedNode object;
+        boolean forRemoval;
     }
 
     static class PreparedNode
@@ -354,8 +417,13 @@ public abstract class LoaderTriplesNodes
         Integer valInt;
         Double valDouble;
         Timestamp valDateTime;
-
+        
         PreparedNode(Node node)
+        {
+        	this(node, true);
+        }
+        
+        PreparedNode(Node node, boolean computeVals)
         {
             lex = NodeLayout2.nodeToLex(node);
             ValueType vType = ValueType.lookup(node);
@@ -371,23 +439,27 @@ public abstract class LoaderTriplesNodes
                 if (datatype == null)
                     datatype = "";
             }
-            // Value of the node
-            valInt = null;
-            if (vType == ValueType.INTEGER)
-                valInt = Integer.parseInt(lex);
-
-            valDouble = null;
-            if (vType == ValueType.DOUBLE)
-                valDouble = Double.parseDouble(lex);
-            
-            valDateTime = null;
-            if (vType == ValueType.DATETIME)
-            {
-                String dateTime = SQLUtils.toSQLdatetimeString(lex);
-                valDateTime = Timestamp.valueOf(dateTime);
-            }
 
             hash = NodeLayout2.hash(lex, lang, datatype, typeId);
+            
+            if (computeVals) // don't need this for deleting
+            {
+            	// Value of the node
+            	valInt = null;
+            	if (vType == ValueType.INTEGER)
+            		valInt = Integer.parseInt(lex);
+            	
+            	valDouble = null;
+            	if (vType == ValueType.DOUBLE)
+            		valDouble = Double.parseDouble(lex);
+            	
+            	valDateTime = null;
+            	if (vType == ValueType.DATETIME)
+            	{
+            		String dateTime = SQLUtils.toSQLdatetimeString(lex);
+            		valDateTime = Timestamp.valueOf(dateTime);
+            	}
+            }
         }
         
         @Override
@@ -431,7 +503,7 @@ public abstract class LoaderTriplesNodes
             		}
             		else
             		{
-            			addOneTriple(triple);
+            			updateOneTriple(triple);
             		}
             	}
             	catch (Throwable e)

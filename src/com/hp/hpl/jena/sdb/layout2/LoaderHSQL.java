@@ -42,7 +42,7 @@ public class LoaderHSQL extends LoaderLJ
                     "  vInt int,",
                     "  vDouble double,",
                     "  vDateTime datetime",
-                    ") "
+                    ") ON COMMIT DELETE ROWS"
         	));
         
         if (!SQLUtils.hasTable(conn, "NTrip"))
@@ -52,10 +52,27 @@ public class LoaderHSQL extends LoaderLJ
         			"  s BIGINT NOT NULL,",
         			"  p BIGINT NOT NULL,",
         			"  o BIGINT NOT NULL",
-        			");"
+        			") ON COMMIT DELETE ROWS;"
         	));
     }
-
+    
+    @Override
+    public String getClearTripleLoaderTable()
+	{
+		return null;
+	}
+	
+    @Override
+	public String getClearNodeLoaderTable()
+	{
+		return null;
+	}
+    
+    @Override
+    public String getDeleteTriples()
+    {
+    	return null;
+    }
 }
 
 /*

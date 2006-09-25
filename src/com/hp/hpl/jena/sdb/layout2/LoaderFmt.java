@@ -16,7 +16,13 @@ import java.sql.SQLException;
 public interface LoaderFmt
 {
     public void createLoaderTable() throws SQLException ;
-    public void createPreparedStatements() throws SQLException ;
+	public String getInsertTripleLoaderTable();
+	public String getInsertNodeLoaderTable();
+	public String getInsertNodes();
+	public String getInsertTriples();
+	public String getDeleteTriples();
+	public String getClearTripleLoaderTable();
+	public String getClearNodeLoaderTable();
 }
 
 /*

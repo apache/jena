@@ -57,13 +57,16 @@ public class LoaderPGSQL extends LoaderLJ
     }
     
     @Override
-    public void createPreparedStatements() throws SQLException
-    {
-        super.createPreparedStatements();
-        Connection conn = connection().getSqlConnection();
-        super.clearTripleLoaderTable = conn.prepareStatement("");
-        super.clearNodeLoaderTable = conn.prepareStatement("");
-    }
+    public String getClearTripleLoaderTable()
+	{
+		return null;
+	}
+	
+    @Override
+	public String getClearNodeLoaderTable()
+	{
+		return null;
+	}
 }
 
 /*

@@ -6,11 +6,6 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** 
@@ -24,35 +19,59 @@ public abstract class LoaderLJ extends LoaderTriplesNodes
     {
         super(connection) ;
     }
-
-	public void createPreparedStatements() throws SQLException
+	
+	public String getInsertTripleLoaderTable()
 	{
-		Connection conn = connection().getSqlConnection();
-
-        super.clearTripleLoaderTable = conn.prepareStatement("DELETE FROM NTrip;");
-        super.clearNodeLoaderTable = conn.prepareStatement("DELETE FROM NNode;");
-        super.insertTripleLoaderTable = conn.prepareStatement("INSERT INTO NTrip VALUES (?,?,?);");
-        super.insertNodeLoaderTable = conn
-            .prepareStatement("INSERT INTO NNode VALUES (?,?,?,?,?,?,?,?);");
-        
-        super.insertNodes = conn.prepareStatement(sqlStr(
-        		"INSERT INTO Nodes (hash, lex, lang, datatype, type)",
-        		"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type",
-        		"	FROM NNode LEFT JOIN Nodes ON ",
-        		"		(NNode.hash=Nodes.hash)",
-        		"WHERE Nodes.id IS NULL"
-            ));
-        
-		super.insertTriples = conn.prepareStatement(sqlStr(
-				"INSERT INTO Triples",
-				"	SELECT DISTINCT S.id, P.id, O.id FROM",
-				"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)",
-				"     JOIN Nodes AS P ON (NTrip.p=P.hash)",
-				"     JOIN Nodes AS O ON (NTrip.o=O.hash)",
-				"     LEFT JOIN Triples ON (S.id=Triples.s AND P.id=Triples.p AND O.id=Triples.o)",
-				"     WHERE Triples.s IS NULL OR Triples.p IS NULL OR Triples.o IS NULL"
-            ));
+		return "INSERT INTO NTrip VALUES (?,?,?);";
 	}
+	
+	public String getInsertNodeLoaderTable()
+	{
+		return "INSERT INTO NNode VALUES (?,?,?,?,?,?,?,?);";
+	}
+	
+	public String getInsertNodes()
+	{
+		return 
+			"INSERT INTO Nodes (hash, lex, lang, datatype, type)" +
+			"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type" +
+			"	FROM NNode LEFT JOIN Nodes ON " +
+			"		(NNode.hash=Nodes.hash)" +
+			"WHERE Nodes.id IS NULL";
+	}
+	
+	public String getInsertTriples()
+	{
+		return
+			"INSERT INTO Triples" +
+			"	SELECT DISTINCT S.id, P.id, O.id FROM" +
+			"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
+			"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
+			"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
+			"     LEFT JOIN Triples ON (S.id=Triples.s AND P.id=Triples.p AND O.id=Triples.o)" +
+			"     WHERE Triples.s IS NULL OR Triples.p IS NULL OR Triples.o IS NULL";
+	}
+	
+	public String getDeleteTriples()
+	{
+		return
+			"DELETE FROM Triples USING" +
+			"	  Triples, NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
+			"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
+			"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
+			"	WHERE S.id = Triples.s AND P.id = Triples.p AND O.id = Triples.o";
+	}
+	
+	public String getClearTripleLoaderTable()
+	{
+		return "DELETE FROM NTrip;";
+	}
+	
+	public String getClearNodeLoaderTable()
+	{
+		return "DELETE FROM NNode;";
+	}
+
 }
 
 /*

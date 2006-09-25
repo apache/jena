@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -50,32 +49,36 @@ public class LoaderMySQL extends LoaderLJ
         ));
     }
     
-    // Use INSERT IGNORE and TRUNCATE to clear
     @Override
-    public void createPreparedStatements() throws SQLException
+	public String getInsertNodes()
 	{
-		Connection conn = connection().getSqlConnection();
-
-        super.clearTripleLoaderTable = conn.prepareStatement("TRUNCATE NTrip;");
-        super.clearNodeLoaderTable = conn.prepareStatement("TRUNCATE NNode;");
-        super.insertTripleLoaderTable = conn.prepareStatement("INSERT INTO NTrip VALUES (?,?,?);");
-        super.insertNodeLoaderTable = conn
-            .prepareStatement("INSERT INTO NNode VALUES (?,?,?,?,?,?,?,?);");
-        
-        super.insertNodes = conn.prepareStatement(sqlStr(
-        		"INSERT IGNORE INTO Nodes (hash, lex, lang, datatype, type)",
-        		"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type",
-        		"	FROM NNode"
-            ));
-        
-		super.insertTriples = conn.prepareStatement(sqlStr(
-				"INSERT IGNORE INTO Triples",
-				"	SELECT S.id, P.id, O.id FROM",
-				"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)",
-				"     JOIN Nodes AS P ON (NTrip.p=P.hash)",
-				"     JOIN Nodes AS O ON (NTrip.o=O.hash)"
-            ));
+		return 
+			"INSERT IGNORE INTO Nodes (hash, lex, lang, datatype, type)" +
+			"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type" +
+			"	FROM NNode";
 	}
+	
+    @Override
+	public String getInsertTriples()
+	{
+		return
+			"INSERT IGNORE INTO Triples" +
+			"	SELECT S.id, P.id, O.id FROM" +
+			"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
+			"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
+			"     JOIN Nodes AS O ON (NTrip.o=O.hash)";
+	}
+	
+	public String getClearTripleLoaderTable()
+	{
+		return "TRUNCATE NTrip;";
+	}
+	
+	public String getClearNodeLoaderTable()
+	{
+		return "TRUNCATE NNode;";
+	}
+
 }
 
 /*
