@@ -7,8 +7,6 @@
 package dev.inf;
 
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
@@ -25,69 +23,51 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 
 public class TransTableMgr
 {
-    private Pairs pairs ;
-    private TransTable pairsTable ;
+    TransGraph<Integer> transEngine = new TransGraph<Integer>() ;
+    private TransTable transTable ;
+    private Store inputStore ;
     
-    public TransTableMgr(TransTable transTable)
+    public TransTableMgr(Store store, TransTable transTable)
     { 
-        this.pairsTable = transTable ;
+        this.transTable = transTable ;
+        this.inputStore = store ;
     }
     
-    public void buildPairs(Store store, boolean reflexive)
+    public void buildLinks(boolean reflexive)
     {
-        pairs = findPairs(store, pairsTable.getProperty()) ;
-        expand(pairs) ;
+        findPairs() ;
+        transEngine.expand() ;
         if ( reflexive )
-            expandSelf(pairs) ;
+            transEngine.expandReflexive() ;
     }
     
-    public void writePairs(Store store)
+    // Can write to a different store
+    public void write(Store outputStore)
     {
-        try 
-        { 
-            writePairsTable(store, pairsTable, pairs) ;
-        } 
-        catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
+        writePairsTable(outputStore, transTable, transEngine) ;
     }
 
-    // -------- Internal
-    static class IntPair extends Pair<Integer, Integer>
+    public void write()
     {
-        public IntPair(Integer a, Integer b)
-        {
-            super(a, b) ;
-        }
-        // HashCode from parent is OK
-        @Override
-        public boolean equals(Object other)
-        {
-            if( ! ( other instanceof IntPair ) ) return false ;
-            return super.equals(other) ;
-        }
+        writePairsTable(inputStore, transTable, transEngine) ;
     }
 
-    static class Pairs extends HashSet<IntPair> {} 
-    // -------- Internal
-
-    private static Pairs findPairs(Store store, Node relation)
+    private void findPairs()
     {
-        Pairs pairs = new Pairs() ;
-        
         int idSubClassOf = -1 ;
         
         try {
             String q = 
                 StrUtils.strjoinNL(
                         //String.format("PREFIX rdfs: <%s>", RDFS.getURI()) ,
-                        String.format("SELECT * { ?c1 <%s> ?c2}", relation.getURI())
+                        String.format("SELECT * { ?c1 <%s> ?c2}", transTable.getProperty().getURI())
                         );
             Query query = QueryFactory.create(q) ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(store)) ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(inputStore)) ;
             
             try {
                 ResultSet rs = qExec.execSelect() ;
@@ -104,9 +84,9 @@ public class TransTableMgr
                     QuerySolution qs = rs.nextSolution() ;
                     Node s = qs.get("c1").asNode() ;
                     Node o = qs.get("c2").asNode() ;
-                    int idSubj = node2id(store.getConnection(), s) ;
-                    int idObj  = node2id(store.getConnection(), o) ;
-                    pairs.add(new IntPair(idSubj, idObj)) ;
+                    int idSubj = node2id(inputStore.getConnection(), s) ;
+                    int idObj  = node2id(inputStore.getConnection(), o) ;
+                    transEngine.add(idSubj, idObj) ;
 
                     if ( false )
                         System.out.printf("s[%d]%-20s  rdfs:subClassOf  o[%d]%s\n",
@@ -118,78 +98,35 @@ public class TransTableMgr
         {
             ex.printStackTrace(System.err) ;
         }
-        return pairs ;
     }
 
     
-    private static void expand(Pairs pairs)
+    static void writePairsTable(final Store outputStore, final TransTable transTable, TransGraph<Integer> transEngine)
     {
-        // rdfs:seeAlso http://en.wikipedia.org/wiki/Floyd-Warshall_algorithm
-        // http://datastructures.itgo.com/graphs/transclosure.htm
-        // Crude.  This is a repetitive "find i->j->k, infer i->k" pass. 
-        for ( ;; )
-        {
-            Pairs morePairs = new Pairs() ;
-            for ( IntPair p : pairs )
-            {
-                int c1 = p.car() ;
-                Set<Integer>x = findByLeft(pairs, p.cdr()) ;
-                for ( int c2 : x )
-                    morePairs.add(new IntPair(c1, c2)) ;
-            }
-            
-            int size = pairs.size() ;
-            pairs.addAll(morePairs) ;
-            if ( size == pairs.size() )
-                break ;
-        } 
-
-    }
-    
-    private static void expandSelf(Pairs pairs)
-    {
-        // Reflexive.
-        // X rdfs:subClassOf X
-        // X rdfs:subPropertyOf X 
-        Pairs morePairs = new Pairs() ;
-        for ( IntPair p : pairs )
-        {
-            int c1 = p.car() ;
-            morePairs.add(new IntPair(c1, c1)) ;
-            int c2 = p.cdr() ;
-            morePairs.add(new IntPair(c2, c2)) ;
-        }
-        pairs.addAll(morePairs) ;
-    }
-
-    private static Set<Integer> findByLeft(Pairs pairs, Integer c)
-    {
-        Set<Integer> x = new HashSet<Integer>() ;
-        for ( IntPair p : pairs )
-        {
-            if ( p.car() == c )
-                x.add(p.cdr()) ;
-
-        }
-        return x ;
-    }
-
-    static void writePairsTable(Store store, TransTable transTable, Pairs pairs) throws SQLException
-    {
-        if ( SQLUtils.hasTable(store.getConnection().getSqlConnection(), transTable.getTableName()) )
-            sql(store, String.format("DROP TABLE %s ;\n", transTable.getTableName())) ;
-        else
-            System.out.printf("-- Table not present\n" ) ;
-        sql(store, 
-            String.format
-            ( "CREATE TABLE %s (%s integer not null, %s integer not null)",
-              transTable.getTableName(), transTable.getColLeft(), transTable.getColRight())) ;
-
-        for ( IntPair p : pairs )
-            sql(store,
+        try {
+            if ( SQLUtils.hasTable(outputStore.getConnection().getSqlConnection(), transTable.getTableName()) )
+                sql(outputStore, String.format("DROP TABLE %s ;\n", transTable.getTableName())) ;
+            else
+                System.out.printf("-- Table not present\n" ) ;
+            sql(outputStore, 
                 String.format
-                ( "INSERT INTO %s VALUES(%d, %d) ;\n",transTable.getTableName(), p.car(), p.cdr())) ;
-
+                ( "CREATE TABLE %s (%s integer not null, %s integer not null)",
+                  transTable.getTableName(), transTable.getColLeft(), transTable.getColRight())) ;
+            
+            TransGraph.LinkApply<Integer> action = 
+                new TransGraph.LinkApply<Integer>()
+                {
+                    public void apply(Integer i, Integer j)
+                    {
+                        try {
+                            sql(outputStore,
+                                String.format
+                                ( "INSERT INTO %s VALUES(%d, %d) ;\n",transTable.getTableName(), i, j)) ;
+                        } catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
+                    }
+                } ;
+            transEngine.linkApply(action) ;
+        } catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
     }
 
 

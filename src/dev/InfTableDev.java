@@ -33,6 +33,7 @@ public class InfTableDev
     
     static final String prefixes = 
         StrUtils.strjoinNL(
+            "PREFIX  :     <http://example/>",
             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
             "") ;
@@ -49,13 +50,13 @@ public class InfTableDev
                 formatAndLoadStore(store) ;
                 TransTableMgr X = null ;
                 
-                X = new TransTableMgr(new TransSubClassTable()) ; 
-                X.buildPairs(store, true) ;
-                X.writePairs(store) ;
+                X = new TransTableMgr(store, new TransSubClassTable()) ; 
+                X.buildLinks(true) ;
+                X.write(store) ;
 
-                X = new TransTableMgr(new TransSubPropertyTable()) ;
-                X.buildPairs(store, true) ;
-                X.writePairs(store) ;
+                X = new TransTableMgr(store, new TransSubPropertyTable()) ;
+                X.buildLinks(true) ;
+                X.write(store) ;
             }
             if ( true )
             {
@@ -73,7 +74,7 @@ public class InfTableDev
     private static void play(Store store)
     {
         if ( true )
-            execQuery(store, "SELECT * { ?subject ?predicate ?object}") ;
+            execQuery(store, prefixes+"\n"+"SELECT * { ?subject ?predicate ?object} ORDER BY ?subject ?predicate ?object") ;
         
         StoreCustomizer sc = null ;
         QueryCompiler qc = null ;
@@ -187,7 +188,7 @@ public class InfTableDev
         
         QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(store)) ;
         try {
-            ResultSetFormatter.out(qExec.execSelect()) ;
+            ResultSetFormatter.out(qExec.execSelect(), query) ;
         } finally { qExec.close() ; }
 
     }
