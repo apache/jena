@@ -36,6 +36,10 @@ public class Scratch {
 		
 		System.out.println("Model size: " + model.size());
 		
+		model.remove(RDF.type, RDF.type, RDF.type);
+		
+		System.out.println("Model size: " + model.size());
+		
 		model.close();
 	}
 

@@ -39,8 +39,9 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
 
     protected PrefixMapping pmap = null ;
     protected Store store = null ;
-    protected boolean inBulkLoad = false ; 
     
+    // ARP buffers, which results in nested updates from our prespective
+    protected int inBulkUpdate = 0 ;
     
     public GraphSDB(Store store)
     { 
@@ -134,30 +135,31 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
     
     public StoreLoader getBulkLoader() { return store.getLoader() ; }
     
-    
+    @Override
+    public BulkUpdateHandler getBulkUpdateHandler()
+    {
+    	if (bulkHandler == null) bulkHandler = new UpdateHandlerSDB(this);
+    	return bulkHandler;
+    }
     
     @Override
     public void performAdd( Triple triple )
     {
-        if ( ! inBulkLoad )
-            store.getLoader().startBulkLoad() ;
+    	if (inBulkUpdate == 0) store.getLoader().startBulkLoad();
         store.getLoader().addTriple(triple) ;
-        if ( ! inBulkLoad )
-            store.getLoader().finishBulkLoad() ;
+        if (inBulkUpdate == 0) store.getLoader().finishBulkLoad();
     }
     
     @Override
     public void performDelete( Triple triple ) 
     {
-        if ( ! inBulkLoad )
-            store.getLoader().startBulkLoad() ;
+    	if (inBulkUpdate == 0) store.getLoader().startBulkLoad();
         store.getLoader().deleteTriple(triple) ;
-        if ( ! inBulkLoad )
-            store.getLoader().finishBulkLoad() ;
+        if (inBulkUpdate == 0) store.getLoader().finishBulkLoad();
     }
     
-    public void startBulkLoad()  { store.getLoader().startBulkLoad() ;  inBulkLoad = true ; }
-    public void finishBulkLoad() { store.getLoader().finishBulkLoad() ; inBulkLoad = false ; }
+    public void startBulkLoad()  { inBulkUpdate += 1 ; if (inBulkUpdate == 1) store.getLoader().startBulkLoad();}
+    public void finishBulkLoad() { inBulkUpdate -= 1 ; if (inBulkUpdate == 0) store.getLoader().finishBulkLoad();}
     
     @Override
     public TransactionHandler getTransactionHandler() { return store.getConnection().getTransactionHandler() ; }
