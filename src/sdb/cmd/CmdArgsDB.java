@@ -38,13 +38,9 @@ public abstract class CmdArgsDB extends CmdArgModule
     protected ModStore getModStore() { return modStore  ; }
     protected ModTime  getModTime()  { return modTime  ; }
     
-    //protected abstract void exec0() ;
-    // true means continue transaction
-    //protected abstract boolean exec1(String arg) ;
-    
     protected abstract void execCmd(List<String> positionalArgs) ;
     
-    @SuppressWarnings("unchecked")
+//    @SuppressWarnings("unchecked")
     @Override
     final
     protected void exec()

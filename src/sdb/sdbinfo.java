@@ -7,12 +7,12 @@ package sdb;
 
 import java.util.List;
 
+import sdb.cmd.CmdArgsDB;
+import arq.cmdline.ArgDecl;
+
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-
-import sdb.cmd.CmdArgsDB;
-import arq.cmdline.* ;
 
  /** Write out the data from an SDB model.  Only works for small models
   * because of JDBC limitations in default configurations. 
@@ -73,12 +73,16 @@ public class sdbinfo extends CmdArgsDB
         }
         Model m = sConf.getModel() ;
         if ( m == null )
-        {
             System.out.println("No configuration model") ;
-            return ;
+        else            
+            m.write(System.out, format) ;
+        
+        List<String> tableNames = getModStore().getConnection().getTableNames() ;
+        for ( String tableName : tableNames )
+        {
+            System.out.println("Table: "+tableName) ;
         }
-            
-        m.write(System.out, format) ;
+        
     }
 }
  

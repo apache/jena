@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -51,6 +53,7 @@ public class SQLUtils
     }
     
     /** Does this table exist? 
+     * 
      * @throws SQLException */
     public static boolean hasTable(Connection connection, String table) throws SQLException
     {
@@ -70,6 +73,30 @@ public class SQLUtils
     		tableData.close();
     	}
     	return hasTable;
+    }
+    
+    /** Get the names of the application tables */
+    public static List<String> getTableNames(Connection connection)
+    {
+        return getTableNames(connection, "TABLE") ;
+    }
+    
+    /** Get the names of the tables of a particular type*/
+    public static List<String> getTableNames(Connection connection, String tableTypeName)
+    {
+        try {
+            List<String> tableNames = new ArrayList<String>() ;
+            
+            ResultSet rs = connection.getMetaData().getTables(null, null, null, new String[]{tableTypeName});
+            while(rs.next())
+            {
+                String tableName = rs.getString("TABLE_NAME");
+    //            String tableType = rs.getString("TABLE_TYPE");
+    //            if ( tableType.equalsIgnoreCase("TABLE") )
+                    tableNames.add(tableName) ;
+            }
+            return tableNames ;
+        } catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; } 
     }
 }
 

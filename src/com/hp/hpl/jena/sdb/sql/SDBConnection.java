@@ -6,12 +6,8 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -120,16 +116,13 @@ public class SDBConnection
     
     public Object executeSQL(final SQLCommand c)
     {
-        return executeInTransaction(new Command(){
-            public Object execute()
-            {
-                try {
-                    return c.execute() ;
-                } catch (SQLException ex)
-                { 
-                    exception("execQuery", ex) ;
-                    throw new SDBExceptionSQL("execute", ex) ; } 
-            }}) ;
+        try {
+            return c.execute(sqlConnection) ;
+        } catch (SQLException ex)
+        { 
+            exception("SQL", ex) ;
+            throw new SDBExceptionSQL(ex) ;
+        } 
     }
 
     
@@ -185,19 +178,26 @@ public class SDBConnection
             log.warn(who+": SQLException\n"+ex.getMessage()) ;
     }
 
-    public ResultSet metaData(String sqlString) throws SQLException
+    /** Get the names of the application tables */
+    public List<String> getTableNames()
     {
-        try {
-            Connection conn = getSqlConnection() ;
-            DatabaseMetaData dbmd = conn.getMetaData() ;
-            ResultSet rsMD = dbmd.getTables(null, null, null, null) ;
-            return rsMD ;
-        } catch (SQLException e)
-        {
-            exception("metaData", e) ;
-            throw e ;
-        }
+        return SQLUtils.getTableNames(getSqlConnection()) ;
     }
+    
+    
+//    public ResultSet metaData(String sqlString) throws SQLException
+//    {
+//        try {
+//            Connection conn = getSqlConnection() ;
+//            DatabaseMetaData dbmd = conn.getMetaData() ;
+//            ResultSet rsMD = dbmd.getTables(null, null, null, null) ;
+//            return rsMD ;
+//        } catch (SQLException e)
+//        {
+//            exception("metaData", e) ;
+//            throw e ;
+//        }
+//    }
     
     public Connection getSqlConnection()
     {

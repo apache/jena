@@ -219,24 +219,24 @@ class TaggedString extends SDBConnectionHolder
             connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(tag)) ;
         }
         catch (SQLException ex)
-        { throw new SDBExceptionSQL("setString", ex) ; }
-        
+        { throw new SDBExceptionSQL(ex) ; }
     }
     
     void set(String tag, String value)
     {
+        remove(tag) ;
         value = encode(value) ;
         try {
-            // Delete any old values.
-            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(tag)) ;
             connection().exec("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quote(tag)+", "+SQLUtils.quote(value)+")") ;
         }
         catch (SQLException ex)
-        { throw new SDBExceptionSQL("setString", ex) ; }
+        { throw new SDBExceptionSQL("set", ex) ; }
     }
 
     String get(String tag)
     {
+        boolean b = connection().loggingSQLExceptions() ;
+        connection().setLogSQLExceptions(false) ;
         try {
             final String sqlStmt = SQLUtils.sqlStr(
                "SELECT "+columnData,
@@ -255,7 +255,11 @@ class TaggedString extends SDBConnectionHolder
             
         }
         catch (SQLException ex)
-        { throw new SDBExceptionSQL("getString", ex) ; }
+        { 
+            //throw new SDBExceptionSQL("getString", ex) ;
+            return null ;
+        }
+        finally { connection().setLogSQLExceptions(b) ; }
     }
     
     // Escape non-7bit bytes. e.g. \ u stuff.

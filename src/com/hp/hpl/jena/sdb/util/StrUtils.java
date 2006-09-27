@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.query.util.StringUtils;
@@ -19,12 +20,24 @@ public class StrUtils
         return StringUtils.join("\n", args) ;
     }
     
+    /** strjoin with a newline as the separator */
+    public static String strjoinNL(List<String> args)
+    {
+        return StringUtils.join("\n", args) ;
+    }
+    
     /** Concatentate string, using a separator */
     public static String strjoin(String sep, String... args)
     {
         return StringUtils.join(sep, args) ;
     }
     
+    /** Concatentate string, using a separator */
+    public static String strjoin(String sep, List<String> args)
+    {
+        return StringUtils.join(sep, args) ;
+    }
+
     public static String substitute(String str, Map<String, String>subs)
     {
         for ( Map.Entry<String, String> e : subs.entrySet() )

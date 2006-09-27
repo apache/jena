@@ -20,6 +20,7 @@ import arq.cmdline.ArgDecl;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -57,6 +58,12 @@ public class sdbmeta extends CmdArgsDB
             tag = getValue(argDeclTag) ;
         if (getNumPositional() == 0)
             cmdError("Subcommand required (get,tags,put,remove,reset)", true) ;
+        if ( verbose )
+        {
+            SDBConnection.logSQLStatements = true ;
+            SDBConnection.logSQLExceptions = true ;
+        }
+        
     }
 
     @Override

@@ -7,10 +7,11 @@
 package com.hp.hpl.jena.sdb.sql;
 
 import java.sql.SQLException;
+import java.sql.Connection;
 
 public  interface SQLCommand
 {
-    Object execute() throws SQLException ;
+    Object execute(Connection dbConnection) throws SQLException ;
 }
 
 /*
