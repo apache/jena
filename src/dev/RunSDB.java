@@ -32,8 +32,8 @@ public class RunSDB
         
         //runQuery() ;
         //runPrint() ;
-        //runScript() ;
-        run() ;
+        runScript() ;
+        //run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -92,11 +92,14 @@ public class RunSDB
         try {
             String cmd = desc.getCmd() ;
             Class c = Class.forName(cmd) ;
-            Method m = c.getMethod("main", new Class[]{String[].class}) ;
+            Class[] args = new Class[]{String[].class} ;
+            
+            Method m = c.getMethod("mainNoExit", new Class[]{String[].class}) ;
             m.invoke(null, new Object[]{desc.asStringArray()}) ;
+            // MUST NOT EXIT
         } catch (Exception ex) { ex.printStackTrace(System.err) ; }
 
-        System.out.println(desc) ;
+        //System.out.println(desc) ;
     }
     
     static String getString(String filename)

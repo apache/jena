@@ -69,12 +69,14 @@ public class LoaderMySQL extends LoaderLJ
 			"     JOIN Nodes AS O ON (NTrip.o=O.hash)";
 	}
 	
-	public String getClearTripleLoaderTable()
+	@Override
+    public String getClearTripleLoaderTable()
 	{
 		return "TRUNCATE NTrip;";
 	}
 	
-	public String getClearNodeLoaderTable()
+	@Override
+    public String getClearNodeLoaderTable()
 	{
 		return "TRUNCATE NNode;";
 	}

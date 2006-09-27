@@ -41,6 +41,11 @@ public class sdbmeta extends CmdArgsDB
         new sdbmeta(argv).mainAndExit() ;
     }
     
+    public static void mainNoExit(String [] argv)
+    {
+        new sdbmeta(argv).mainNoExit() ;
+    }
+    
     protected sdbmeta(String[] argv)
     {
         super(argv) ;

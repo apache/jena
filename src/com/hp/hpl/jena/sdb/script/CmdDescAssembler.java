@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.assembler;
+package com.hp.hpl.jena.sdb.script;
 
 
 import com.hp.hpl.jena.assembler.Assembler;
@@ -12,7 +12,8 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sdb.script.CmdDesc;
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.sdb.assembler.CommandAssemblerException;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class CmdDescAssembler extends AssemblerBase implements Assembler

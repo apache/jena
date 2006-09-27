@@ -17,7 +17,6 @@ import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -29,7 +28,7 @@ public class CmdDesc
     
     public static CmdDesc read(String filename)
     {
-        AssemblerVocab.init() ;
+        ScriptVocab.init() ;
         Model m = FileManager.get().loadModel(filename) ;
         
         return worker(m) ;
@@ -42,7 +41,7 @@ public class CmdDesc
         try {
             String cmd = desc.getCmd() ;
             Class c = Class.forName(cmd) ;
-            Method m = c.getMethod("main", new Class[]{String[].class}) ;
+            Method m = c.getMethod("mainNoExit", new Class[]{String[].class}) ;
             m.invoke(null, new Object[]{desc.asStringArray()}) ;
         } catch (Exception ex) { ex.printStackTrace(System.err) ; }
     }

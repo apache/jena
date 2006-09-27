@@ -11,7 +11,6 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sdb.assembler.CmdDescAssembler;
 
 public class ScriptVocab
 {
@@ -34,7 +33,6 @@ public class ScriptVocab
             return ;
         assemblerClass(CommandLineType,               new CmdDescAssembler()) ;
         assemblerClass(ScriptType,                    new ScriptAssembler()) ;
-        assemblerClass(DatasetAssemblerType,          new DatasetAssembler()) ;
         initialized = true ;
     }
     

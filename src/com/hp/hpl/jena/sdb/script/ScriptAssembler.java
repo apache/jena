@@ -21,9 +21,6 @@ public class ScriptAssembler extends AssemblerBase implements Assembler
 {
     // A script is a number of commands 
     
-
-    
-    
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
