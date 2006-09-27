@@ -6,98 +6,101 @@ package com.hp.hpl.jena.rdf.arp;
 
 import java.util.Arrays;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
-		NamespaceHandler {
-	static private final int BULK_UPDATE_SIZE = 1000;
+        NamespaceHandler
+    {
+    static private final int BULK_UPDATE_SIZE = 1000;
 
-	private final BulkUpdateHandler bulk;
+    private final BulkUpdateHandler bulk;
 
-	private final Model model;
+    private final PrefixMapping prefixMapping;
 
-	final Triple triples[];
+    protected final Triple triples[];
 
-	int ix = 0;
-	public JenaHandler(Model m,
-			RDFErrorHandler e) {
-		this(m.getGraph(),m,e);
-	}
-	JenaHandler(Graph g,
-			RDFErrorHandler e) {
-		this(g,null,e);
-	}	
-	public JenaHandler(Graph g, Model m,
-			RDFErrorHandler e) {
-		this(g.getBulkUpdateHandler(),m,e);
-	}
-	private JenaHandler(BulkUpdateHandler bulk, Model model,
-			RDFErrorHandler errorHandler) {
-		super(errorHandler);
-		this.bulk = bulk;
-		this.model = model;
-		triples = new Triple[BULK_UPDATE_SIZE];
-	}
+    protected int here = 0;
 
-	public void useWith(ARPHandlers h) {
-		h.setStatementHandler(this);
-		h.setErrorHandler(this);
-		h.setNamespaceHandler(this);
-	}
+    public JenaHandler( Model m, RDFErrorHandler e )
+        { this( m.getGraph(), e ); }
 
-	public void statement(AResource subj, AResource pred, AResource obj) {
-		try {
-			triples[ix++] = JenaReader.convert(subj, pred, obj);
-		} catch (JenaException e) {
-			errorHandler.error(e);
-		}
-		if (ix == BULK_UPDATE_SIZE)
-			bulkUpdate();
-	}
+    public JenaHandler( Graph g, Model m, RDFErrorHandler e )
+        { this( g, modelToPrefixMapping( m ), e ); }
+    
+    private JenaHandler( Graph graph, RDFErrorHandler e )
+        { this( graph, graph.getPrefixMapping(), e ); }
 
-	public void statement(AResource subj, AResource pred, ALiteral lit) {
-		try {
-			triples[ix++] = JenaReader.convert(subj, pred, lit);
-		} catch (JenaException e) {
-			errorHandler.error(e);
-		}
-		if (ix == BULK_UPDATE_SIZE)
-			bulkUpdate();
-	}
+    private JenaHandler( Graph graph, PrefixMapping prefixMapping, RDFErrorHandler errorHandler )
+        {
+        super( errorHandler );
+        this.bulk = graph.getBulkUpdateHandler();
+        this.triples = new Triple[BULK_UPDATE_SIZE];
+        this.prefixMapping = prefixMapping; 
+        }
+    
+    private static PrefixMapping modelToPrefixMapping( Model model )
+        {
+        return model == null 
+            ? PrefixMapping.Factory.create() 
+            : model.getGraph().getPrefixMapping()
+            ;
+        }
 
-	public void bulkUpdate() {
-		try {
-			if (ix == BULK_UPDATE_SIZE)
-				bulk.add(triples);
-			else
-				bulk.add(Arrays.asList(triples).subList(0, ix));
+    public void useWith( ARPHandlers h )
+        {
+        h.setStatementHandler( this );
+        h.setErrorHandler( this );
+        h.setNamespaceHandler( this );
+        }
 
-		} catch (JenaException e) {
-			errorHandler.error(e);
-		} finally {
-			ix = 0;
-		}
-	}
+    public void statement( AResource subj, AResource pred, AResource obj )
+        {
+        try
+            { triples[here++] = JenaReader.convert( subj, pred, obj ); }
+        catch (JenaException e)
+            { errorHandler.error( e ); }
+        if (here == BULK_UPDATE_SIZE) bulkUpdate();
+        }
 
-	public void startPrefixMapping(String prefix, String uri) {
-		if (model != null && PrefixMappingImpl.isNiceURI(uri))
-			model.setNsPrefix(prefix, uri);
-	}
+    public void statement( AResource subj, AResource pred, ALiteral lit )
+        {
+        try
+            { triples[here++] = JenaReader.convert( subj, pred, lit ); }
+        catch (JenaException e)
+            { errorHandler.error( e ); }
+        if (here == BULK_UPDATE_SIZE) bulkUpdate();
+        }
 
-	public void endPrefixMapping(String prefix) {
-	}
-}
+    public void bulkUpdate()
+        {
+        try
+            {
+            if (here == BULK_UPDATE_SIZE) bulk.add( triples );
+            else bulk.add( Arrays.asList( triples ).subList( 0, here ) );
+            }
+        catch (JenaException e)
+            { errorHandler.error( e ); }
+        finally
+            { here = 0; }
+        }
+
+    public void startPrefixMapping( String prefix, String uri )
+        {
+        if (PrefixMappingImpl.isNiceURI( uri )) prefixMapping.setNsPrefix( prefix, uri );
+        }
+
+    public void endPrefixMapping( String prefix )
+        {}
+    }
 
 /*
- * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP All rights
- * reserved.
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP All
+ * rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
