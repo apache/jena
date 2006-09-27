@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.25 2006-03-22 13:52:31 andy_seaborne Exp $
+ * $Id: XMLHandler.java,v 1.26 2006-09-27 20:18:23 chris-dollin Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -288,6 +288,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     private boolean allowRelativeReferences = false;
+    
     private AbsXMLContext initialContextWithBase(String base) throws SAXParseException {
         allowRelativeReferences = false;
             if (base == null) {

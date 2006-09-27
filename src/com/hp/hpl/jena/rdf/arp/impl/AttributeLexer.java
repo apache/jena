@@ -192,6 +192,13 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     private String value() {
         return att.getValue(index);
     }
+    
+    /**
+        Answer the xml:base value, or null if there wasn't one.
+        [Added by kers, in search of xml:base processing]
+    */
+    public String getXMLBase()
+        { return base; }
 
     private String value(Taint taintMe,String prev) throws SAXParseException {
         if (prev != null) {

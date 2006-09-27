@@ -130,6 +130,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
             if (ap.processSpecials(taint, atts) != atts.getLength()) {
                 warning(ERR_SYNTAX_ERROR, "Illegal attributes on rdf:RDF");
             }
+            // TODO this may be one point to intercept xml:base.
             arp.startRDF();
             return new WantTopLevelDescription(this, ap);
         }
