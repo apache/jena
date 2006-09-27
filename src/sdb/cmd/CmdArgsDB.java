@@ -45,7 +45,7 @@ public abstract class CmdArgsDB extends CmdArgModule
     final
     protected void exec()
     {
-        AssemblerVocab.init() ;     // Call install the assemblers
+        AssemblerVocab.init() ;     // Call to install the assemblers
         @SuppressWarnings("unchecked")
         List<String> positionalArgs = (List<String>)super.getPositional() ;
         try {
