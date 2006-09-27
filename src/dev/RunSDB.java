@@ -8,6 +8,7 @@ package dev;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import arq.cmd.CmdUtils;
 
@@ -15,10 +16,13 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.script.CmdDesc;
-import com.hp.hpl.jena.sdb.script.ScriptDesc;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.store.StoreDesc;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.util.StrUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -76,14 +80,25 @@ public class RunSDB
 
     static void runScript()
     {
-        String filename = "script.ttl" ;
-        ScriptDesc sd = ScriptDesc.read(filename) ;
-        for ( CmdDesc cd : sd.getSteps() )
-            runOneCmd(cd) ;
         
-//        String filename = "cmd.ttl" ;
-//        CmdDesc desc = CmdDesc.read(filename) ;
+        Store store = StoreFactory.create(StoreDesc.read("sdb.ttl")) ;
+        StoreConfig config = store.getConfiguration() ;
+        config.reset() ;
+        
+        config.setModel(FileManager.get().loadModel("D.ttl")) ;
+        List<String> x = config.getTags() ;
+        System.out.println(StrUtils.strjoinNL(x)) ;
+        config.getModel().write(System.out, "N3") ;
         System.exit(0) ;
+        
+//        String filename = "script.ttl" ;
+//        ScriptDesc sd = ScriptDesc.read(filename) ;
+//        for ( CmdDesc cd : sd.getSteps() )
+//            runOneCmd(cd) ;
+//        
+////        String filename = "cmd.ttl" ;
+////        CmdDesc desc = CmdDesc.read(filename) ;
+//        System.exit(0) ;
     }
 
     static void runOneCmd(CmdDesc desc)

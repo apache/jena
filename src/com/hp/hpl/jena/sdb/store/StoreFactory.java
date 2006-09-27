@@ -13,10 +13,14 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.util.Loader;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.graph.GraphSDB;
 import com.hp.hpl.jena.sdb.layout1.StoreRDB;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
@@ -36,6 +40,9 @@ public class StoreFactory
     
     static { SDB.init() ; } 
 
+    public static Store create(String filename)
+    { return create(StoreDesc.read(filename), null) ; }
+    
     public static Store create(StoreDesc desc)
     { return create(desc, null) ; }
     
@@ -51,21 +58,37 @@ public class StoreFactory
         return store ;
     }
     
-    // A Store has four components:
-    //   1/ A connection
-    //   2/ A database type
-    //   3/ A layout
-    //   4/ Specific configuration for that layout.
-    // 1 & 2 are related 
-    //    - the database type can be extracted from a JDBC connection
-    //    - may not be true for all connection technologies
-    // 3 & 4 are related
-    //    - layout indicates the code to use. 
-    //    - configuration is per layout and parameterises that code
+    public static Graph createGraph(String filename)
+    {
+        return createGraph(StoreDesc.read(filename)) ;
+    }
+
+    public static Graph createGraph(StoreDesc storeDesc)
+    {
+        return createGraph(create(storeDesc)) ;
+    }
     
-    // The StoreDesc has all these details but the connection can be overriden
-    // (convenient to redirect a fixed setup to a test installation, say).
+    public static Graph createGraph(Store store)
+    {
+        return new GraphSDB(store) ;
+    }
+
     
+    public static Model createModel(String filename)
+    {
+        return createModel(StoreDesc.read(filename)) ;
+    }
+
+    public static Model createModel(StoreDesc storeDesc)
+    {
+        return createModel(create(storeDesc)) ;
+    }
+
+    public static Model createModel(Store store)
+    {
+        return ModelFactory.createModelForGraph(new GraphSDB(store)) ;
+    }
+
     private static Store _create(StoreDesc desc, SDBConnection sdb)
     {    
         if ( sdb == null ) 

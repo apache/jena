@@ -28,62 +28,74 @@ public class UpdateHandlerSDB extends SimpleBulkUpdateHandler {
 		super(graph);
 	}
 
-	public void add(Triple[] arg0) {
+	@Override
+    public void add(Triple[] arg0) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.add(arg0); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
-	public void add(List arg0) {
+    @Override
+    public void add(List arg0) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.add(arg0); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
-	public void add(Iterator arg0) {
+    @Override
+    public void add(Iterator arg0) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.add(arg0); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
-	public void add(Graph arg0) {
+    @Override
+     	public void add(Graph arg0) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.add(arg0); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
+    @Override
 	public void add(Graph arg0, boolean arg1) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.add(arg0, arg1); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
+    @Override
 	public void delete(Triple[] arg0) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.delete(arg0); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
+    @Override
 	public void delete(List arg0) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.delete(arg0); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
+    @Override
 	public void delete(Iterator arg0) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.delete(arg0); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
+    @Override
 	public void delete(Graph arg0) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.delete(arg0); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
-	public void delete(Graph arg0, boolean arg1) {
+	@Override
+    public void delete(Graph arg0, boolean arg1) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.delete(arg0, arg1); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
-	public void remove(Node arg0, Node arg1, Node arg2) {
+	@Override
+    public void remove(Node arg0, Node arg1, Node arg2) {
 		try { ((GraphSDB) graph).startBulkLoad(); super.remove(arg0, arg1, arg2); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
 
-	public void removeAll() {
+	@Override
+    public void removeAll() {
 		try { ((GraphSDB) graph).startBulkLoad(); super.removeAll(); }
 		finally { ((GraphSDB) graph).finishBulkLoad(); }
 	}
