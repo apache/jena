@@ -43,7 +43,7 @@ public abstract class LoaderTriplesNodes
     // Are we adding or removing?
     private Boolean removingTriples = null ;
     
-    boolean threading = true; // Do we want to thread?
+    boolean threading = false; // Do we want to thread?
     Thread commitThread = null ; // The loader thread
     final static PreparedTriple flushSignal = new PreparedTriple(); // Signal to thread to commit
     final static PreparedTriple finishSignal = new PreparedTriple(); // Signal to thread to finish
@@ -72,7 +72,7 @@ public abstract class LoaderTriplesNodes
         super(connection) ;
     }
     
-    public void startBulkLoad()
+    public void startBulkUpdate()
 	{
     	try
     	{
@@ -90,9 +90,9 @@ public abstract class LoaderTriplesNodes
 	    }
 	}
 
-	public void finishBulkLoad()
+	public void finishBulkUpdate()
 	{
-	    flushTriples() ;
+		flushTriples() ;
 	    try {
 	        if ( autoCommit )
 	            connection().getSqlConnection().setAutoCommit(autoCommit) ;
@@ -118,8 +118,7 @@ public abstract class LoaderTriplesNodes
     		insertNodeLoaderTable.close();
     		insertNodes.close();
     		insertTriples.close();
-    		if (deleteTriples != null)
-    			deleteTriples.close();
+    		deleteTriples.close();
     		if (clearTripleLoaderTable != null)
     			clearTripleLoaderTable.close();
     		if (clearNodeLoaderTable != null)
@@ -196,7 +195,7 @@ public abstract class LoaderTriplesNodes
 	/**
 	 * Flush remain triples in queue to database. If threading this blocks until flush is complete.
 	 */
-	public void flushTriples()
+	private void flushTriples()
 	{
 		if (threading)
 	    {
@@ -248,8 +247,8 @@ public abstract class LoaderTriplesNodes
 	    insertNodeLoaderTable = conn.prepareStatement(getInsertNodeLoaderTable());
 	    insertNodes = conn.prepareStatement(getInsertNodes());
 	    insertTriples = conn.prepareStatement(getInsertTriples());
-	    if (getDeleteTriples() != null)
-	    	deleteTriples = conn.prepareStatement(getDeleteTriples());
+	    deleteTriples = conn.prepareStatement(getDeleteTriples());
+	    // These may be null for RDBs which support ON COMMIT DELETE ROWS
 	    if (getClearTripleLoaderTable() != null)
 	    	clearTripleLoaderTable = conn.prepareStatement(getClearTripleLoaderTable());
 	    if (getClearNodeLoaderTable() != null)
@@ -296,6 +295,7 @@ public abstract class LoaderTriplesNodes
     		removingTriples = triple.forRemoval;
     	}
     	if (removingTriples == null) removingTriples = triple.forRemoval;
+    	
     	count++;
     	
     	if (!removingTriples)
@@ -305,17 +305,10 @@ public abstract class LoaderTriplesNodes
     		addToInsert(insertNodeLoaderTable, triple.object);
     	}
     	
-    	if (removingTriples && this.deleteTriples == null)
-    	{
-    		log.error("Can't bulk delete triple");
-    	}
-    	else
-    	{
-    		insertTripleLoaderTable.setLong(1, triple.subject.hash);
-    		insertTripleLoaderTable.setLong(2, triple.predicate.hash);
-    		insertTripleLoaderTable.setLong(3, triple.object.hash);
-    		insertTripleLoaderTable.addBatch();
-    	}
+    	insertTripleLoaderTable.setLong(1, triple.subject.hash);
+    	insertTripleLoaderTable.setLong(2, triple.predicate.hash);
+    	insertTripleLoaderTable.setLong(3, triple.object.hash);
+    	insertTripleLoaderTable.addBatch();
     	
     	if (count >= chunkSize)
     		commitTriples();
@@ -354,8 +347,11 @@ public abstract class LoaderTriplesNodes
         count = 0;
         seenNodes = new HashSet<PreparedNode>();
         
+        if (removingTriples == null) // Nothing happened
+        	return;
+        
         insertTripleLoaderTable.executeBatch();
-
+        
         if (!removingTriples)
         {
         	insertNodeLoaderTable.executeBatch();
@@ -364,13 +360,9 @@ public abstract class LoaderTriplesNodes
         	if (clearNodeLoaderTable != null)
         		clearNodeLoaderTable.execute() ;
         }
-        else if (deleteTriples != null)
-        {
-        	deleteTriples.execute() ;
-        }
         else
         {
-        	log.error("Can't bulk delete triples");
+        	deleteTriples.execute() ;
         }
         
         if (clearTripleLoaderTable != null)
@@ -391,8 +383,6 @@ public abstract class LoaderTriplesNodes
 
     
     // ---- Bulk loader
-    
-    
 
     /**
      * We use these so the preparation (especially hashing) happens away from
@@ -516,7 +506,7 @@ public abstract class LoaderTriplesNodes
             		{
 						log.error("Problem rolling back", e1);
 					}
-            		log.error("Error in thread: " + e.getMessage());
+            		log.error("Error in thread: " + e.getMessage(), e);
             		threadException.set(e);
             	}
             }

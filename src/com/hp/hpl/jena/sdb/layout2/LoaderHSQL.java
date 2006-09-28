@@ -67,12 +67,6 @@ public class LoaderHSQL extends LoaderLJ
 	{
 		return null;
 	}
-    
-    @Override
-    public String getDeleteTriples()
-    {
-    	return null;
-    }
 }
 
 /*

@@ -19,12 +19,11 @@ public class StoreUtils
     {
         Model model = FileManager.get().loadModel(filename) ;
         StoreLoader b = store.getLoader() ;
-        b.startBulkLoad() ;
+        b.startBulkUpdate() ;
         StmtIterator sIter = model.listStatements() ;
         for ( ; sIter.hasNext() ; )
             b.addTriple(sIter.nextStatement().asTriple()) ;
-        b.flushTriples() ;
-        b.finishBulkLoad() ;
+        b.finishBulkUpdate() ;
     }
 
 }

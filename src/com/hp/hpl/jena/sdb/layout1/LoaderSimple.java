@@ -28,8 +28,8 @@ public class LoaderSimple
         this.codec = codec ;
     }
 
-    public void startBulkLoad() {}
-    public void finishBulkLoad() {}
+    public void startBulkUpdate() {}
+    public void finishBulkUpdate() {}
     public void close() {}
     
     public void addTriple(Triple t )
@@ -75,9 +75,6 @@ public class LoaderSimple
             return ;
         }
     }
-
-    public void flushTriples()
-    {}
 
     public void setUseThreading(boolean useThreading)
     {}

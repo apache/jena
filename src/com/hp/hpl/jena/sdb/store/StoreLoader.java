@@ -10,11 +10,10 @@ import com.hp.hpl.jena.graph.Triple;
 
 public interface StoreLoader
 {
-    public void startBulkLoad() ;
+    public void startBulkUpdate() ;
 	public void addTriple(Triple triple);
     public void deleteTriple(Triple triple);
-	public void flushTriples();
-    public void finishBulkLoad() ;
+    public void finishBulkUpdate() ;
     public void close() ;
     
 	public void setChunkSize(int chunks);

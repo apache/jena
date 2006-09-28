@@ -31,7 +31,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
-public class GraphSDB extends GraphBase implements Graph , GraphListener
+public class GraphSDB extends GraphBase implements Graph
 {
     //TODO Rework this sometime now the infrastructure for Stores is more developed.
     
@@ -55,7 +55,6 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
         if ( reset )
             store.getTableFormatter().format() ;
         //readPrefixMapping() ;
-        getEventManager().register(this);
     }
     
     public Store getStore() { return store ; } 
@@ -143,54 +142,34 @@ public class GraphSDB extends GraphBase implements Graph , GraphListener
     }
     
     @Override
+    public GraphEventManager getEventManager()
+    {
+    	if (gem == null) gem = new EventManagerSDB( this );
+        return gem;
+    }
+    
+    @Override
     public void performAdd( Triple triple )
     {
-    	if (inBulkUpdate == 0) store.getLoader().startBulkLoad();
+    	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
         store.getLoader().addTriple(triple) ;
-        if (inBulkUpdate == 0) store.getLoader().finishBulkLoad();
+        if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();
     }
     
     @Override
     public void performDelete( Triple triple ) 
     {
-    	if (inBulkUpdate == 0) store.getLoader().startBulkLoad();
+    	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
         store.getLoader().deleteTriple(triple) ;
-        if (inBulkUpdate == 0) store.getLoader().finishBulkLoad();
+        if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();
     }
     
-    public void startBulkLoad()  { inBulkUpdate += 1 ; if (inBulkUpdate == 1) store.getLoader().startBulkLoad();}
-    public void finishBulkLoad() { inBulkUpdate -= 1 ; if (inBulkUpdate == 0) store.getLoader().finishBulkLoad();}
+    public void startBulkLoad()  { inBulkUpdate += 1 ; if (inBulkUpdate == 1) store.getLoader().startBulkUpdate();}
+    public void finishBulkLoad() { inBulkUpdate -= 1 ; if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();}
     
     @Override
     public TransactionHandler getTransactionHandler() { return store.getConnection().getTransactionHandler() ; }
-
-	public void notifyAddTriple(Graph arg0, Triple arg1) {}
-
-	public void notifyAddArray(Graph arg0, Triple[] arg1) {}
-
-	public void notifyAddList(Graph arg0, List arg1) {}
-
-	public void notifyAddIterator(Graph arg0, Iterator arg1) {}
-
-	public void notifyAddGraph(Graph arg0, Graph arg1) {}
-
-	public void notifyDeleteTriple(Graph arg0, Triple arg1) {}
-
-	public void notifyDeleteList(Graph arg0, List arg1) {}
-
-	public void notifyDeleteArray(Graph arg0, Triple[] arg1) {}
-
-	public void notifyDeleteIterator(Graph arg0, Iterator arg1) {}
-
-	public void notifyDeleteGraph(Graph arg0, Graph arg1) {}
-
-	public void notifyEvent(Graph arg0, Object arg1)
-    {
-		if (arg1.equals(GraphEvents.startRead) )
-			startBulkLoad() ;
-		if (arg1.equals(GraphEvents.finishRead) )
-            finishBulkLoad() ;
-	}
+    
 }
 
 /*

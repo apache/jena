@@ -54,12 +54,13 @@ public abstract class LoaderLJ extends LoaderTriplesNodes
 	
 	public String getDeleteTriples()
 	{
-		return
-			"DELETE FROM Triples USING" +
-			"	  Triples, NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
-			"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
-			"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
-			"	WHERE S.id = Triples.s AND P.id = Triples.p AND O.id = Triples.o";
+		return "DELETE FROM Triples WHERE " +
+		" EXISTS (" +
+		"SELECT s,p,o FROM " +
+		"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
+		"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
+		"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
+		" WHERE Triples.s = S.id AND Triples.p = P.id AND Triples.o = O.id)";
 	}
 	
 	public String getClearTripleLoaderTable()

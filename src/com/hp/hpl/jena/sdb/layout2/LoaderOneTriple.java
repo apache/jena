@@ -33,7 +33,7 @@ public class LoaderOneTriple
     
     public void close() {}
     
-    public void startBulkLoad() {}
+    public void startBulkUpdate() {}
 
     public void addTriple(Triple triple) { addTriple(connection(), triple) ; }
     
@@ -99,10 +99,7 @@ public class LoaderOneTriple
         catch (SQLException ex) { throw new SDBExceptionSQL("SQLException: "+ex.getMessage(), ex) ; }
     }
 
-
-    public void flushTriples() {}
-
-    public void finishBulkLoad() {}
+    public void finishBulkUpdate() {}
 
     public void setChunkSize(int chunks) {}
 
