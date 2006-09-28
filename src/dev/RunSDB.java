@@ -73,7 +73,6 @@ public class RunSDB
 
     static void runScript()
     {
-        String filename = "script.ttl" ;
         String[] a = { "script.rb" } ;
         org.jruby.Main.main(a) ;
     }
