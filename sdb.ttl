@@ -10,6 +10,7 @@ _:c rdf:type acmd:SDBConnection ;
     acmd:sdbPassword  "" ;
     acmd:sdbName      "SDB2" ;
     acmd:driver       "org.hsqldb.jdbcDriver" ;
+    #rdfs:label        "HSQL in-memory" ;
     .
 
 [] rdf:type acmd:Store ;

@@ -196,7 +196,7 @@ public class ModStore implements ArgModule
         if (cmdLine.contains(argDeclLayout))
         {
             String layoutName = cmdLine.getArg(argDeclLayout).getValue() ;
-            storeDesc.layout = LayoutType.create(layoutName) ;
+            storeDesc.layout = LayoutType.convert(layoutName) ;
 
             if ( storeDesc.layout == null )
             {

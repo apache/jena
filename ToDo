@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Creating models: both SDBFactory and StoreFacory do this.
+  SDBFactory should be the place!
+
 + Abstracting databases:
   1/ The Jena2 way of config files.
   2/ Attach to an SDBConnection

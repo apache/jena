@@ -21,5 +21,6 @@
 	<classpathentry sourcepath="arq-src.zip" path="lib/arq-extra.jar" kind="lib"/>
 	<classpathentry path="lib/jenatest.jar" kind="lib"/>
 	<classpathentry path="lib/wstx-asl-3.0.0.jar" kind="lib"/>
+	<classpathentry path="C:/home/afs/sys/jruby-0.9.0/lib/jruby.jar" kind="lib"/>
 	<classpathentry path="classes" kind="output"/>
 </classpath>
