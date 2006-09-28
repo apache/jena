@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 
 // EXPERIMENTAL - Move to ARQ?
 
-public class CommandAssembler extends AssemblerBase implements Assembler
+public class QueryCommandAssembler extends AssemblerBase implements Assembler
 {
 
     @Override

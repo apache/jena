@@ -26,6 +26,7 @@ public class SDBConnectionDesc
     public String password  = null ;
     public String driver    = null ;
     public String jdbcURL   = null ;
+    public String label     = null ;
     
     public String rdbType   = null ;    // ModelRDB specific
     
@@ -61,7 +62,10 @@ public class SDBConnectionDesc
         initJDBC() ;
         if ( driver != null )
             JDBC.loadDriver(driver) ;
-        return new SDBConnection(jdbcURL, user, password) ;
+        SDBConnection c = new SDBConnection(jdbcURL, user, password) ;
+        if ( label != null )
+            c.setLabel(label) ;
+        return c ;
     }
 
 }

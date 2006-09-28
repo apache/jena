@@ -17,8 +17,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.sdb.store.DatabaseType;
-import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 
 public class StoreDescAssembler extends AssemblerBase implements Assembler
@@ -28,16 +26,16 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        StoreDesc storeDesc = new StoreDesc() ; 
-        
         Resource c = GraphUtils.getResourceValue(root, AssemblerVocab.pConnection) ;
         if ( c == null )
             return null ;
-        storeDesc.connDesc = (SDBConnectionDesc)a.open(c) ;
+        SDBConnectionDesc sdbConnDesc = (SDBConnectionDesc)a.open(c) ;
         
-        storeDesc.dbType = DatabaseType.convert(storeDesc.connDesc.type) ;
         String layoutName = GraphUtils.getStringValue(root, AssemblerVocab.pLayout) ;
-        storeDesc.layout = LayoutType.create(layoutName) ; 
+        String dbType =  sdbConnDesc.type ;
+        
+        StoreDesc storeDesc = new StoreDesc(layoutName, dbType) ; 
+        storeDesc.connDesc = sdbConnDesc ;
 
         // MySQL specials
         String engineName = GraphUtils.getStringValue(root, AssemblerVocab.pMySQLEngine) ;

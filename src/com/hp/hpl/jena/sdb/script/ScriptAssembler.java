@@ -19,7 +19,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ScriptAssembler extends AssemblerBase implements Assembler
 {
-    // A script is a number of commands 
+    // A script is a number of command descriptions (CmdDesc)
     
     @Override
     public Object open(Assembler a, Resource root, Mode mode)

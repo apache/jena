@@ -79,7 +79,7 @@ public class SDBConnection
             sqlConnection = null ;
             if ( ! url.equals(JDBC.jdbcNone))
                 sqlConnection = DriverManager.getConnection(url, user, password) ;
-            label = url ;
+            setLabel(url) ;
         } catch (SQLException e)
         {
             //exception("SDBConnection",e ) ;
@@ -205,7 +205,7 @@ public class SDBConnection
     }
     
     @Override
-    public String toString() { return label ; }
+    public String toString() { return getLabel() ; }
 
     public boolean loggingSQLExceptions() { return thisLogSQLExceptions ;
     }
@@ -227,6 +227,16 @@ public class SDBConnection
     public void setLogSQLStatements(boolean thisLogSQLStatements)
     {
         this.thisLogSQLStatements = thisLogSQLStatements ;
+    }
+
+    public String getLabel()
+    {
+        return label ;
+    }
+
+    public void setLabel(String label)
+    {
+        this.label = label ;
     }
 
 }

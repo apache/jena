@@ -17,6 +17,8 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.util.FileManager;
 
+/** Java description a script : the assmbler build one of these */ 
+
 public class ScriptDesc
 {
     List<CmdDesc> steps = new ArrayList<CmdDesc>() ;

@@ -22,7 +22,7 @@ public enum LayoutType implements Named {
     LayoutTripleNodes  { public String getName() { return "TriplesNodes" ; } } , 
     ;
     
-    public static LayoutType create(String s)
+    public static LayoutType convert(String s)
     {
         if ( s.equalsIgnoreCase(LayoutRDB.getName()) ) return LayoutRDB ;
         

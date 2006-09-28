@@ -44,6 +44,13 @@ public class StoreDesc
         return worker(m) ;
     }
         
+    public StoreDesc(String layoutName, String dbTypeName)
+    {
+        layout = LayoutType.convert(layoutName) ;
+        dbType = DatabaseType.convert(dbTypeName) ;
+        
+    }
+    
     public LayoutType getLayout() { return layout ; }
     
     private static StoreDesc extract(Model m)

@@ -20,6 +20,8 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.util.FileManager;
 
+/** Java description of a command - class and arguments. The assmbler build one of these */
+
 public class CmdDesc
 {
     String classname = null ;

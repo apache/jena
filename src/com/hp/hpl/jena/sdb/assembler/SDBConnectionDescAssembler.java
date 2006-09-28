@@ -15,6 +15,7 @@ import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SDBConnectionDescAssembler extends AssemblerBase implements Assembler
 {
@@ -33,7 +34,8 @@ public class SDBConnectionDescAssembler extends AssemblerBase implements Assembl
         sDesc.driver    = GraphUtils.getStringValue(root, AssemblerVocab.pDriver) ;
         sDesc.jdbcURL   = GraphUtils.getStringValue(root, AssemblerVocab.pJDBC) ;
         sDesc.rdbType   = GraphUtils.getStringValue(root, AssemblerVocab.pRDBtype) ;
-
+        sDesc.label     = GraphUtils.getStringValue(root, RDFS.label) ;
+        
         if ( sDesc.jdbcURL == null && sDesc.user == null )
             sDesc.user = Access.getUser() ;
         if ( sDesc.jdbcURL == null && sDesc.password == null )
