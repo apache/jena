@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.14 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: SimpleEventManager.java,v 1.15 2006-09-28 10:08:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -33,7 +33,7 @@ public class SimpleEventManager implements GraphEventManager
     protected Graph graph;
     protected List  listeners;
     
-    SimpleEventManager( Graph graph ) 
+    public SimpleEventManager( Graph graph ) 
         { 
         this.graph = graph;
         this.listeners = new ArrayList(); 
