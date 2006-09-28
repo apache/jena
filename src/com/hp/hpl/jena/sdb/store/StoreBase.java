@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.store;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 
 public class StoreBase 
@@ -66,6 +67,12 @@ public class StoreBase
     
     public StoreCustomizer getCustomizer()           { return customizer ; }
     public void setCustomizer(StoreCustomizer customizer)       { this.customizer = customizer ; }
+    
+    /** Default implementation: get size of Triples table **/
+    public int getSize()
+    {
+    	return SQLUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
+    }
 }
 
 /*

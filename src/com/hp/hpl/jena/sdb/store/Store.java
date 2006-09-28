@@ -63,6 +63,9 @@ public interface Store
      */  
     void close() ;
     
+    /** Get the size of this store **/
+    int getSize() ;
+    
 //    /** Indicate whether a store is ready to use or
 //     * needs setting (typically, formatting)
 //     */ 

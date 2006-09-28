@@ -98,6 +98,20 @@ public class SQLUtils
             return tableNames ;
         } catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; } 
     }
+    
+    /** Get the size of a table (usually called 'Triples') **/
+    public static int getTableSize(Connection connection, String table)
+    {
+    	int size = -1;
+    	try {
+			ResultSet res = connection.createStatement().executeQuery("SELECT COUNT(*) AS size FROM " + table);
+			if (res.next())
+				size = res.getInt("size");
+			res.close();
+		} catch (SQLException e) { throw new SDBExceptionSQL(e) ; }
+
+    	return size;
+    }
 }
 
 /*

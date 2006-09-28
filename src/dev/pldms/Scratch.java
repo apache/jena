@@ -17,7 +17,7 @@ public class Scratch {
 	 */
 	public static void main(String[] args) {
 		
-		Model model = getPgSQL();
+		Model model = getMySQL();
 		
 		System.out.println("Model size: " + model.size());
 		

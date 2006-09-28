@@ -49,6 +49,9 @@ public class StoreRDB extends StoreBase
     }
     
     public ModelRDB getModel() { return model ; }
+    
+    @Override
+    public int getSize() { return (int) model.size(); }
 }
 
 /*

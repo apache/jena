@@ -170,6 +170,8 @@ public class GraphSDB extends GraphBase implements Graph
     @Override
     public TransactionHandler getTransactionHandler() { return store.getConnection().getTransactionHandler() ; }
     
+    @Override
+    public int graphBaseSize() { return store.getSize(); }
 }
 
 /*
