@@ -15,6 +15,7 @@ import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sdb.sql.*;
 import com.hp.hpl.jena.util.FileUtils;
@@ -49,6 +50,10 @@ public class StoreConfig extends SDBConnectionHolder
     private boolean caching = true ;
     TaggedString storage = null ;
     
+    
+    
+    private Resource rootType = ResourceFactory.createResource() ;
+    
     public StoreConfig(SDBConnection sdb)
     {   
         super(sdb) ;
@@ -61,13 +66,25 @@ public class StoreConfig extends SDBConnectionHolder
         return SQLUtils.getTableNames(connection().getSqlConnection()) ;
     }
     
-    static Property featureProperty = ResourceFactory.createProperty("http://") ;
     public boolean hasFeature(Feature feature)
     {
-        Model model = getModel() ;
-        Resource r = model.getResource(feature.getURI()) ;
-        return model.contains(r, featureProperty, r) ;
+        Resource root = getRoot() ;
+        Resource r    = root.getModel().getResource(feature.getURI()) ;
+        return root.hasProperty(ConfigVocab.featureProperty, r) ;
     }
+    public void setFeature(Feature feature)
+    {
+        Resource root = getRoot() ;
+        Resource r    = root.getModel().getResource(feature.getURI()) ;
+        root.addProperty(ConfigVocab.featureProperty, r) ;
+    }
+    
+    private Resource getRoot()
+    {
+        Model model = getModel() ;
+        return GraphUtils.getResourceByType(model, ConfigVocab.typeConfig) ;
+    }
+    
     
     public void removeModel() { removeModel(defaultTag) ; }
     public void removeModel(String tag)
