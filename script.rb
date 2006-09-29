@@ -1,7 +1,7 @@
 
 require 'java'
 
-#include_class('java.lang.String�) {|p,name| "J#{name}" }
+#include_class('java.lang.String') {|p,name| "J#{name}" }
 
 include_class 'com.hp.hpl.jena.sdb.store.Store'
 include_class 'com.hp.hpl.jena.sdb.SDBFactory'
@@ -17,6 +17,13 @@ include_class 'java.lang.System'
 # Then same here.
 
 store = StoreFactory.create("sdb.ttl")
+store.getTableFormatter().format()
+
+tables = store.getConfiguration().tables()
+tables.each { |x| puts x }
+System.exit(0)
+
+
 
 #c = SDBConnectionDesc.read("sdb.ttl")
 #c.label = "HSQL in-memory TEST"

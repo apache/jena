@@ -10,16 +10,12 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.sdb.sql.*;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -59,6 +55,20 @@ public class StoreConfig extends SDBConnectionHolder
         storage = new TaggedString(connection()) ;
     }
 
+    /** Get the real tables in the database, not what any configuration information may think */
+    public List<String> tables()
+    {
+        return SQLUtils.getTableNames(connection().getSqlConnection()) ;
+    }
+    
+    static Property featureProperty = ResourceFactory.createProperty("http://") ;
+    public boolean hasFeature(Feature feature)
+    {
+        Model model = getModel() ;
+        Resource r = model.getResource(feature.getURI()) ;
+        return model.contains(r, featureProperty, r) ;
+    }
+    
     public void removeModel() { removeModel(defaultTag) ; }
     public void removeModel(String tag)
     { 
