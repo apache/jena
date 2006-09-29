@@ -10,6 +10,7 @@ public class sdbscript
 {
     public static void main(String[] a)
     {
+        // Eventually, this will create the environment for the script (e.g. store from description).
         if ( a.length == 0 )
             a = new String[]{ "script.rb" } ;
         org.jruby.Main.main(a) ;
