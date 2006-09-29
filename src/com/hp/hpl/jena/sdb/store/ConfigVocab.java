@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 public class ConfigVocab
 {
-    // TODO Schemagen
+    // TODO Schemagen-ization
     private final static String namespace = "http://jena.hpl.hp.com/2006/sdb#" ;
     public String getURI() { return namespace ; }
     
