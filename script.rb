@@ -1,5 +1,6 @@
 
 require 'java'
+# require 'sdb.rb'
 
 #include_class('java.lang.String') {|p,name| "J#{name}" }
 
@@ -10,18 +11,19 @@ include_class 'com.hp.hpl.jena.sdb.store.StoreDesc'
 include_class 'com.hp.hpl.jena.sdb.store.StoreFactory'
 include_class 'com.hp.hpl.jena.sdb.util.StrUtils'
 include_class 'com.hp.hpl.jena.util.FileManager'
-include_class 'java.lang.System'
 
 # Higher level operations like the command line tools
-# Command line => enviroment and actions?
+# Command line => environment and actions?
 # Then same here.
 
 store = StoreFactory.create("sdb.ttl")
+## store.setFeature(Feature.)
 store.getTableFormatter().format()
-
+store.getConfiguration().reset() 
+puts "Connection : #{store.getConnection().getLabel()}"
 tables = store.getConfiguration().tables()
 tables.each { |x| puts x }
-System.exit(0)
+exit
 
 
 
@@ -41,15 +43,14 @@ model = SDBFactory.connectModel(store)
 FileManager.get().readModel(model,"D.ttl")
 model.write(System.out, "N3") 
 
-include_class 'com.hp.hpl.jena.sdb.util.StrUtils'
-include_class 'com.hp.hpl.jena.sdb.util.StrUtils'
 #config = store.getConfiguration() 
 #
 #config.reset() 
 #
 #config.setModel(FileManager.get().loadModel("D.ttl")) 
-#x = config.getTags() 
-#puts(StrUtils.strjoinNL(x)) 
-#      
+#x = config.getTags()
+#x.each { |x| puts x } 
+
+include_class 'java.lang.System'
 #config.getModel().write(System.out, "N3") 
-System.exit(0)
+exit(0)

@@ -12,7 +12,21 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.store.Store;
 
-/** Connect to existing database-backed graphs */
+/** Various operations to create or connect: SDBConnections, Stores, Models, Graphs. */
+
+// SDBConnection ==> ConnectionFactory?
+//   makeConnection(url/user/password)
+//   makeConnection(java.sql.connection)
+//   makeConnection(description)
+//   makeConnection("filename")
+// Store/Model/Graph
+//  connectStore == createStore (a Store is the the thing in the database)
+//     connectStore(SDBConnection, config=graph)
+//  createModel(Store) (description)
+//  createGraph
+
+// So may be Store reads remote config once.
+//  Store.disconnect/reconnect(SDBConnection)
 
 public class SDBFactory
 {
