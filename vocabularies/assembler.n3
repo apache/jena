@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.5 2006-01-13 14:31:42 chris-dollin Exp $
+# $Id: assembler.n3,v 1.6 2006-10-01 18:26:18 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -24,6 +24,15 @@
     dc:format        "RDF" ;
     dc:identifier    :
     .
+
+
+#
+# Put these in the right place, put the tests in.
+#
+
+ja:OntModelSpec rdfs:subClassOf ja:ReasonerFactory.
+ja:reasonerURL rdfs:range ja:ReasonerFactory.
+ja:ModelSource rdfs:subClassOf ja:Connectable.
 
 #
 # Alias for owl:imports
@@ -341,12 +350,6 @@ ja:schema a rdf:Property
     ; rdfs:range ja:Model
     .
 
-ja:OntModelSpec a rdfs:Class
-    ; rdfs:subClassOf ja:Object
-    ; rdfs:label "Assembler.OntModelSpec"
-    ; rdfs:comment "class of OntModelSpec objects for OntModel construction"
-    .
-
 #
 # rulesets
 #
@@ -463,11 +466,13 @@ ja:OntModel a rdfs:Class
     .
 
 ja:OntModelSpec a rdfs:Class
+    ; rdfs:subClassOf ja:Object
     ; rdfs:subClassOf [owl:onProperty ja:ontLanguage; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:documentManager; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:importSource; owl:maxCardinality 1]
     ; rdfs:subClassOf [owl:onProperty ja:reasonerURL; owl:maxcardinality 1]
     ; rdfs:label "Assembler.OntModelSpec"
+    ; rdfs:comment "class of OntModelSpec objects for OntModel construction"
     .
 
 ja:ontModelSpec a rdf:Property

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestBuiltinAssemblerGroup.java,v 1.3 2006-03-22 13:52:20 andy_seaborne Exp $
+ 	$Id: TestBuiltinAssemblerGroup.java,v 1.4 2006-10-01 18:26:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -37,6 +37,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertAssemblerClass( JA.FileManager, FileManagerAssembler.class );
         assertAssemblerClass( JA.DocumentManager, DocumentManagerAssembler.class );
         assertAssemblerClass( JA.UnionModel, UnionModelAssembler.class );
+        assertAssemblerClass( JA.ModelSource, ModelSourceAssembler.class );
         }
     
     public void testVariables()

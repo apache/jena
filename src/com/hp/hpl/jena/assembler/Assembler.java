@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Assembler.java,v 1.6 2006-03-22 13:53:31 andy_seaborne Exp $
+ 	$Id: Assembler.java,v 1.7 2006-10-01 18:26:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -75,6 +75,8 @@ public interface Assembler
     
     public static final Assembler ruleSet = new RuleSetAssembler();
     
+    public static final Assembler modelSource = new ModelSourceAssembler();
+    
     public static final Assembler locationMapper = new LocationMapperAssembler();
 
     public static final Assembler fileManager = new FileManagerAssembler();
@@ -86,6 +88,7 @@ public interface Assembler
         .implementWith( JA.MemoryModel, memoryModel )
         .implementWith( JA.InfModel, infModel )
         .implementWith( JA.ReasonerFactory, reasonerFactory )
+        .implementWith(  JA.ModelSource, modelSource )
         .implementWith( JA.Content, content )
         .implementWith( JA.ContentItem, content )
         .implementWith( JA.Connection, connection )
