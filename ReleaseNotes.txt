@@ -2,6 +2,13 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+Assembler:
+    o missing subclass declarations added to vocabulary. Bogus `domain`
+      replaced by correct `range`. FileManagerAssembler now by default
+      builds a FileManager with the standard locators. To test this,
+      made the existing standard locator classes have appropriate
+      .equals() and .hashCode() methods.
+
 RDF/XML output:
     o bug whereby a literal containing the sequence "]]>" generated illegal
       XML (because the "]]>" went through unchanged, and is illegal except
