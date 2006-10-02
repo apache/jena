@@ -17,10 +17,20 @@ public class LocatorClassLoader  implements Locator
     static Log log = LogFactory.getLog(LocatorClassLoader.class) ;
 
     ClassLoader classLoader = null ;
-    LocatorClassLoader(ClassLoader _classLoader)
+    public LocatorClassLoader(ClassLoader _classLoader)
     {
         classLoader =_classLoader ;
     }
+    
+    public boolean equals( Object other )
+    {
+        return 
+            other instanceof LocatorClassLoader 
+            && classLoader == ((LocatorClassLoader) other).classLoader;
+    }
+    
+    public int hashCode()
+        { return classLoader.hashCode(); }
     
     public InputStream open(String filenameOrURI)
     {

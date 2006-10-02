@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.14 2006-08-16 08:16:45 der Exp $
+  $Id: TestPackage.java,v 1.15 2006-10-02 13:46:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -33,6 +33,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestMonitors",       TestMonitors.suite()) ;
         addTest( "TestPrintUtil",       TestPrintUtil.suite()) ;
         addTest( TestIteratorCollection.suite() );
+        addTestSuite( TestLocators.class );
         addTestSuite( TestOneToManyMap.class );
     }
 

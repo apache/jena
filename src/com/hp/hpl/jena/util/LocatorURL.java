@@ -16,7 +16,7 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.10 2006-09-04 14:55:07 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.11 2006-10-02 13:46:29 chris-dollin Exp $
  */
 
 public class LocatorURL implements Locator
@@ -82,6 +82,16 @@ public class LocatorURL implements Locator
         }
     }
 
+    public boolean equals( Object other )
+    {
+        return other instanceof LocatorURL;
+    }
+
+    public int hashCode()
+    {
+        return LocatorURL.class.hashCode();
+    }
+    
     public String getName() { return "LocatorURL" ; } 
     
     private boolean acceptByScheme(String filenameOrURI)
