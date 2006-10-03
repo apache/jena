@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelSpecAssembler.java,v 1.5 2006-03-28 14:32:26 chris-dollin Exp $
+ 	$Id: OntModelSpecAssembler.java,v 1.6 2006-10-03 10:27:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -63,7 +63,7 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
 
     private ReasonerFactory getReasonerFactory( Assembler a, Resource root )
         {
-        Resource rf = getUniqueResource( root, JA.reasonerURL );
+        Resource rf = getUniqueResource( root, JA.reasonerFactory );
         return rf == null ? DEFAULT.getReasonerFactory() : (ReasonerFactory) a.open( rf );
         }
     

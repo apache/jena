@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: JA.java,v 1.8 2006-03-22 13:53:31 andy_seaborne Exp $
+ 	$Id: JA.java,v 1.9 2006-10-03 10:27:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -172,6 +172,8 @@ public class JA
     public static final Property dbClassProperty = property( "dbClassProperty" );
 
     public static final Property imports = property( "imports" );
+
+    public static final Property reasonerFactory = property( "reasonerFactory" );
 
     public static Model getSchema()
         { // inline packagename to avoid clash with /our/ FileManager.

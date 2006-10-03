@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerVocabulary.java,v 1.3 2006-10-02 07:35:12 chris-dollin Exp $
+ 	$Id: TestAssemblerVocabulary.java,v 1.4 2006-10-03 10:27:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -89,7 +89,7 @@ public class TestAssemblerVocabulary extends AssemblerTestBase
         assertSubclassOf( JA.NamedModel, JA.Model );
         assertSubclassOf( JA.RDBModel, JA.NamedModel );
         assertSubclassOf( JA.FileModel, JA.NamedModel );
-        assertSubclassOf( JA.OntModelSpec, JA.ReasonerFactory );
+        // assertSubclassOf( JA.OntModelSpec, JA.ReasonerFactory );
         assertSubclassOf( JA.ModelSource, JA.Connectable );
         }
     
@@ -102,7 +102,7 @@ public class TestAssemblerVocabulary extends AssemblerTestBase
     public void testOntModelProperties()
         {
         assertDomain( JA.OntModel, JA.ontModelSpec );
-        assertRange( JA.ReasonerFactory, JA.reasonerURL );
+        // assertRange( JA.ReasonerFactory, JA.reasonerURL );
         }
     }
 

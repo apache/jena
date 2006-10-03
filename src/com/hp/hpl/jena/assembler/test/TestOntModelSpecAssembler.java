@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelSpecAssembler.java,v 1.4 2006-04-29 10:59:30 chris-dollin Exp $
+ 	$Id: TestOntModelSpecAssembler.java,v 1.5 2006-10-03 10:27:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -83,7 +83,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
     public void testUseSpecifiedReasoner()
         {
         Assembler a = new OntModelSpecAssembler();
-        Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:reasonerURL R" );
+        Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:reasonerFactory R" );
         ReasonerFactory rf = new ReasonerFactory() 
             {
             public Reasoner create( Resource configuration )

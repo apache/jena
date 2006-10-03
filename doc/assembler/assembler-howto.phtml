@@ -427,9 +427,12 @@ for which models are constructed in the specified database.
 This value of this optional unique property is a DocumentManager specification.
 If absent, the default document manager is used.
 
-<li><code>ja:reasonerURL</code>:
-The value of this optional unique property is the URL of the ReasonerFactory
-to be used to construct this OntModelSpec's reasoner.
+<li><code>ja:reasonerFactory</code>:
+The value of this optional unique property is the ReasonerFactory resource
+which will be used to construct this OntModelSpec's reasoner. A 
+<code>reasonerFactory</code> specification is the same as an InfModel's
+<code>reasoner</code> specification (the different properties are required
+for technical reasons).
 </li>
 
 <li><code>ja:ontLanguage</code>:
