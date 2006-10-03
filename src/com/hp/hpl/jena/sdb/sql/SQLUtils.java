@@ -66,13 +66,6 @@ public class SQLUtils
     	if (!hasTable) { // Try lowercase
     		tableData = connection.getMetaData().getTables(null, null, table.toLowerCase(), types);
     		hasTable = tableData.next();
-    		if (hasTable)
-    		{
-    			for (int i = 1; i <= tableData.getMetaData().getColumnCount(); i++)
-    			{
-    				System.out.println(tableData.getMetaData().getColumnName(i) + " = " + tableData.getObject(i));
-    			}
-    		}
     		tableData.close();
     	}
     	if (!hasTable) { // Try uppercase
@@ -80,8 +73,6 @@ public class SQLUtils
     		hasTable = tableData.next();
     		tableData.close();
     	}
-    	
-    	System.out.println("Has table [" + table + "]? " + hasTable);
     	
     	return hasTable;
     }
