@@ -17,7 +17,7 @@ public class Pair<A, B>
     B b ;
     public Pair(A a, B b) { this.a = a; this.b = b ; }
     
-    public A getLeft() { return a ; }
+    public A getLeft()  { return a ; }
     public B getRight() { return b ; }
     
     public A car() { return a ; }
