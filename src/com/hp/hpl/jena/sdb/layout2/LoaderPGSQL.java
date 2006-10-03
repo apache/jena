@@ -67,6 +67,16 @@ public class LoaderPGSQL extends LoaderLJ
 	{
 		return null;
 	}
+    
+    @Override
+    public String getDeleteTriples()
+	{
+		return "DELETE FROM Triples USING " +
+		"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
+		"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
+		"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
+		" WHERE Triples.s = S.id AND Triples.p = P.id AND Triples.o = O.id";
+	}
 }
 
 /*

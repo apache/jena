@@ -106,6 +106,8 @@ public abstract class LoaderTriplesNodes
      */
     public void close()
     {
+    	if (!initialized) return;
+    	
     	try
     	{
     		if (threading && commitThread.isAlive())

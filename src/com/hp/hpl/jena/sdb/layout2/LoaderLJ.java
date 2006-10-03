@@ -52,6 +52,7 @@ public abstract class LoaderLJ extends LoaderTriplesNodes
 			"     WHERE Triples.s IS NULL OR Triples.p IS NULL OR Triples.o IS NULL";
 	}
 	
+	// This is slow (but mysql & postgres have faster variants)
 	public String getDeleteTriples()
 	{
 		return "DELETE FROM Triples WHERE " +
