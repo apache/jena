@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelSpecAssembler.java,v 1.5 2006-10-03 10:27:21 chris-dollin Exp $
+ 	$Id: TestOntModelSpecAssembler.java,v 1.6 2006-10-03 14:48:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -9,10 +9,12 @@ package com.hp.hpl.jena.assembler.test;
 import java.lang.reflect.Field;
 
 import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.assembler.assemblers.OntModelSpecAssembler;
+import com.hp.hpl.jena.assembler.assemblers.*;
+import com.hp.hpl.jena.assembler.exceptions.ReasonerClashException;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.CannotCreateException;
 
 import junit.framework.*;
@@ -56,7 +58,6 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         {
         Assembler a = new OntModelSpecAssembler();
         Object  oms = a.open( resource(  JA.getURI() + specName ) );
-        // Object  oms = a.create( resourceInModel( (  JA.getURI() + specName ) );
         assertInstanceOf( OntModelSpec.class, oms );
         assertSame( ontModelSpec, oms );
         }
@@ -84,20 +85,35 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         {
         Assembler a = new OntModelSpecAssembler();
         Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:reasonerFactory R" );
-        ReasonerFactory rf = new ReasonerFactory() 
-            {
-            public Reasoner create( Resource configuration )
-                { return null; }
-
-            public Model getCapabilities()
-                { return null; }
-
-            public String getURI()
-                { return null; }
-            };
+        ReasonerFactory rf = new FakeReasonerFactory();
         NamedObjectAssembler mock = new NamedObjectAssembler( resource( "R" ), rf );
         OntModelSpec om = (OntModelSpec) a.open( mock, root );
         assertSame( rf, om.getReasonerFactory() );
+        }
+    
+    public void testUseSpecifiedImpliedReasoner()
+        {
+        testUsedSpecifiedImpliedReasoner( OWLFBRuleReasonerFactory.URI );
+        testUsedSpecifiedImpliedReasoner( RDFSRuleReasonerFactory.URI );
+        }
+
+    private void testUsedSpecifiedImpliedReasoner( String R )
+        {
+        ReasonerFactory rf = ReasonerFactoryAssembler.getReasonerFactoryByURL( resource( "x" ), resource( R ) );
+        Assembler a = new OntModelSpecAssembler();
+        Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:reasonerURL " + R );
+        Assembler mock = new FixedObjectAssembler( "(should not be this string)" );
+        OntModelSpec om = (OntModelSpec) a.open( mock, root );
+        assertSame( rf, om.getReasonerFactory() );
+        }
+    
+    public void testDetectsClashingImpliedAndExplicitReasoners()
+        {
+        Assembler a = new OntModelSpecAssembler();
+        Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:reasonerURL R; x ja:reasonerFactory F" );
+        Assembler mock = new FixedObjectAssembler( "(should not be this string)" );
+        try { a.open( mock, root ); fail( "should detect reasoner clash" ); }
+        catch (ReasonerClashException e) { pass(); }
         }
     
     public void testUseSpecifiedLanguage()
@@ -131,6 +147,18 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         Resource root = resourceInModel( "x rdf:type ja:OntModelSpec; x ja:importSource source" );
         OntModelSpec om = (OntModelSpec) a.open( mock, root );
         assertSame( getter, om.getImportModelGetter() );
+        }
+
+    private static final class FakeReasonerFactory implements ReasonerFactory
+        {
+        public Reasoner create( Resource configuration )
+            { return null; }
+
+        public Model getCapabilities()
+            { return null; }
+
+        public String getURI()
+            { return null; }
         }
     }
 

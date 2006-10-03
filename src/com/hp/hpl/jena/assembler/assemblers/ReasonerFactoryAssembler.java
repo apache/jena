@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ReasonerFactoryAssembler.java,v 1.4 2006-03-22 13:53:20 andy_seaborne Exp $
+ 	$Id: ReasonerFactoryAssembler.java,v 1.5 2006-10-03 14:48:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -54,16 +54,24 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     
     protected static ReasonerFactory getReasonerFactory( Resource root )
         {
-        Resource r = getUniqueResource( root, JA.reasonerURL );
-        if (r == null)
-            return GenericRuleReasonerFactory.theInstance(); 
-        else
-            {
-            String url = r.getURI();
-            ReasonerFactory factory = ReasonerRegistry.theRegistry().getFactory( url );
-            if (factory == null) throw new UnknownReasonerException( root, r );
-            return factory;
-            }
+        Resource reasonerURL = getUniqueResource( root, JA.reasonerURL );
+        return reasonerURL == null
+            ? GenericRuleReasonerFactory.theInstance()
+            : getReasonerFactoryByURL( root, reasonerURL )
+            ;
+        }
+
+    /**
+        Answer a ReasonerFactory which delivers reasoners with the given
+        URL <ocde>reasonerURL</code>. If there is no such reasoner, throw
+        an <code>UnknownreasonerException</code>.
+    */
+    public static ReasonerFactory getReasonerFactoryByURL( Resource root, Resource reasonerURL )
+        {
+        String url = reasonerURL.getURI();
+        ReasonerFactory factory = ReasonerRegistry.theRegistry().getFactory( url );
+        if (factory == null) throw new UnknownReasonerException( root, reasonerURL );
+        return factory;
         }
     }
 
