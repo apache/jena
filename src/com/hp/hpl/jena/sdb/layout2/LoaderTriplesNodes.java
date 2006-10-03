@@ -43,7 +43,7 @@ public abstract class LoaderTriplesNodes
     // Are we adding or removing?
     private Boolean removingTriples = null ;
     
-    boolean threading = false; // Do we want to thread?
+    boolean threading = true; // Do we want to thread?
     Thread commitThread = null ; // The loader thread
     final static PreparedTriple flushSignal = new PreparedTriple(); // Signal to thread to commit
     final static PreparedTriple finishSignal = new PreparedTriple(); // Signal to thread to finish
@@ -264,6 +264,7 @@ public abstract class LoaderTriplesNodes
 	        threadException = new AtomicReference<Throwable>();
 	        threadFlushing = new AtomicBoolean();
 	        commitThread = new Thread(new Commiter());
+	        commitThread.setDaemon(true);
 	        commitThread.start();
 	        log.debug("Threading started");
 	    }

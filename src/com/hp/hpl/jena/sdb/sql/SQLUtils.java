@@ -55,23 +55,34 @@ public class SQLUtils
     /** Does this table exist? 
      * 
      * @throws SQLException */
-    public static boolean hasTable(Connection connection, String table) throws SQLException
+    public static boolean hasTable(Connection connection, String table, String... types) throws SQLException
     {
+    	if (types.length == 0) types = null;
     	// MySQL bug -- doesn't see temporary tables!
     	// Postgres likes lowercase -- I'll try all options
-    	ResultSet tableData = connection.getMetaData().getTables(null, null, table, null);
+    	ResultSet tableData = connection.getMetaData().getTables(null, null, table, types);
     	boolean hasTable = tableData.next();
     	tableData.close();
     	if (!hasTable) { // Try lowercase
-    		tableData = connection.getMetaData().getTables(null, null, table.toLowerCase(), null);
+    		tableData = connection.getMetaData().getTables(null, null, table.toLowerCase(), types);
     		hasTable = tableData.next();
+    		if (hasTable)
+    		{
+    			for (int i = 1; i <= tableData.getMetaData().getColumnCount(); i++)
+    			{
+    				System.out.println(tableData.getMetaData().getColumnName(i) + " = " + tableData.getObject(i));
+    			}
+    		}
     		tableData.close();
     	}
     	if (!hasTable) { // Try uppercase
-    		tableData = connection.getMetaData().getTables(null, null, table.toUpperCase(), null);
+    		tableData = connection.getMetaData().getTables(null, null, table.toUpperCase(), types);
     		hasTable = tableData.next();
     		tableData.close();
     	}
+    	
+    	System.out.println("Has table [" + table + "]? " + hasTable);
+    	
     	return hasTable;
     }
     
@@ -88,6 +99,7 @@ public class SQLUtils
             List<String> tableNames = new ArrayList<String>() ;
             
             ResultSet rs = connection.getMetaData().getTables(null, null, null, new String[]{tableTypeName});
+
             while(rs.next())
             {
                 String tableName = rs.getString("TABLE_NAME");

@@ -1,6 +1,9 @@
 package dev.pldms;
 
+import java.sql.SQLException;
+
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sdb.ModelSDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
@@ -14,8 +17,9 @@ public class Scratch {
 
 	/**
 	 * @param args
+	 * @throws SQLException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		
 		Model model = getMySQL();
 		
@@ -37,14 +41,11 @@ public class Scratch {
 		
 		System.out.println("Model size: " + model.size());
 		
-		model.read("file:testing/Data/data.ttl", "N3");
-		
-		model.removeAll(null, null, null);
-		
-		System.out.println("Model size: " + model.size());
+		System.out.println("FINISHED");
 		
 		model.close();
 		
+		System.out.println("CLOSED");
 	}
 	
 	public static Model getMySQL()
