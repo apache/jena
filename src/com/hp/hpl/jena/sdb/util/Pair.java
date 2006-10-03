@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.util;
 import static com.hp.hpl.jena.query.util.StringUtils.str ;
 
 import static com.hp.hpl.jena.query.util.Utils.eq;
-import static com.hp.hpl.jena.query.util.Utils.hashCode;
+import static com.hp.hpl.jena.query.util.Utils.hashCodeObject ;
 
 public class Pair<A, B>
 {
@@ -26,7 +26,7 @@ public class Pair<A, B>
     @Override
     public int hashCode()
     {
-        return hashCode(car()) ^ hashCode(cdr())<<1 ; 
+        return hashCodeObject(car()) ^ hashCodeObject(cdr())<<1 ; 
     }
 
     @Override

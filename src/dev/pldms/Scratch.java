@@ -3,7 +3,6 @@ package dev.pldms;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.ModelSDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
