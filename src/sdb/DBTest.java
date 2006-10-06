@@ -8,7 +8,12 @@ package sdb;
 
 import java.nio.charset.Charset;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.query.util.Utils;
 
@@ -42,13 +47,47 @@ public class DBTest extends CmdArgsDB
     {
     }
     
-    static final String tableName    = "FOO" ;
     
-    static final String blobType     = "VARBINARY" ;
-    static final String typeVarchar  = "VARCHAR(200)" ;
+    // Parametize via command line.
+    // xyz=abc
+    static final String kTempTableName     = "TempTable" ;
+    static final String kBinaryType        = "typeBinary" ;
+    static final String kBinaryCol         = "colBinary" ;
+
+    static final String kVarcharType    = "typeVarchar" ;
+    static final String kVarcharCol     = "colVarchar" ;
     
-    static final String colBinary    = "colBinary" ;
-    static final String colVarchar   = "colVarchar" ;
+    Params params = new Params() ;
+    {
+        params.put( kTempTableName,     "FOO") ;
+
+        params.put( kBinaryType,       "BLOB") ;
+        params.put( kBinaryCol,        "colBinary") ;
+        
+        params.put( kVarcharType,   "VARCHAR(200)") ;
+        params.put( kVarcharCol,    "colVarchar") ;
+    }
+    
+    static class Params implements Iterable<String>
+    {
+        Map<String, String> params = new HashMap<String, String>() ;
+
+        String get(String key) { return params.get(key.toLowerCase()) ; }
+        void put(String key, String value) { params.put(key.toLowerCase(), value) ; }
+        
+        public Iterator<String> iterator()
+        {
+            return params.keySet().iterator() ;
+        }
+    }
+    
+//    static final String tableName    = "FOO" ;
+//    
+//    static final String blobType     = "VARBINARY" ;
+//    static final String typeVarchar  = "VARCHAR(200)" ;
+//    
+//    static final String colBinary    = "colBinary" ;
+//    static final String colVarchar   = "colVarchar" ;
     
     static final String baseString   = "abcéíﬂabcαβγz" ; 
     static Charset csUTF8 = null ;
@@ -59,21 +98,46 @@ public class DBTest extends CmdArgsDB
     @Override
     protected void execCmd(List<String> args)
     {
+        setParams(args) ;
+        
+        if ( verbose )
+        {
+            for ( String k : params )
+                System.out.printf("%-20s = %-20s\n", k, params.get(k) );
+            System.out.println() ;
+        }
+        
         Connection jdbc = getModStore().getConnection().getSqlConnection() ;
-        testColBinary("Binary",  jdbc, blobType, colBinary) ;
-        testColText("Varchar", jdbc, typeVarchar, colVarchar) ;
-        //try { jdbc.close(); } catch (SQLException ex) {}
+        testColBinary("Binary",  jdbc, params.get(kBinaryType), params.get(kBinaryCol)) ;
+        if ( verbose )
+            System.out.println() ;
+        testColText("Varchar", jdbc, params.get(kVarcharType), params.get(kVarcharCol)) ;
+        if ( verbose )
+            System.out.println() ;
+        
+        execNoFail(jdbc, "DROP TABLE %s", params.get(kTempTableName)) ;
     }
     
-    private void testColBinary(String label, Connection jdbc, String colType, String colName)
+    private void setParams(List<String> args)
+    {
+        for ( String s : args )
+        {
+            String[] frags = s.split("=", 2) ;
+            if ( frags.length == 1)
+                throw new CmdException("Can't split '"+s+"'") ;
+            params.put(frags[0], frags[1] ) ;
+        }
+    }
+    
+    private  void testColBinary(String label, Connection jdbc, String colType, String colName)
     {
         try {
-            execNoFail(jdbc, "DROP TABLE %s", tableName) ;
-            exec(jdbc, "CREATE TABLE %s (%s %s)",  tableName, colName, colType) ;
+            execNoFail(jdbc, "DROP TABLE %s", params.get(kTempTableName)) ;
+            exec(jdbc, "CREATE TABLE %s (%s %s)",  params.get(kTempTableName), colName, colType) ;
 
             String testString = baseString ;
 
-            String $str = sqlFormat("INSERT INTO %s values (?)", tableName) ;
+            String $str = sqlFormat("INSERT INTO %s values (?)", params.get(kTempTableName)) ;
             if ( verbose )
                 System.out.println($str) ;
             
@@ -82,31 +146,27 @@ public class DBTest extends CmdArgsDB
             ps.execute() ;
             ps.close() ;
 
-            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colName, tableName ) ;
+            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colName, params.get(kTempTableName) ) ;
             rs.next() ;
             byte[] b = rs.getBytes(1) ;
             String s = new String(b, csUTF8) ;
             if ( ! testString.equals(s) )
-                System.err.printf("Failed '%s' test\n", label) ;
+                System.err.printf("*** Failed '%s' test\n", label) ;
             else
-                System.err.printf("Passed '%s' test\n", label) ;
+                System.err.printf("*** Passed '%s' test\n", label) ;
             rs.close() ;
-            execNoFail(jdbc, "DROP TABLE %s", tableName) ;
-        } catch (SQLException ex)
-        {
-            ex.printStackTrace(System.err) ;
-        }
+        } catch (SQLException ex) { ex.printStackTrace(System.err) ; }
     }
 
     private void testColText(String label, Connection jdbc, String colType, String colName)
     {
         try {
-            execNoFail(jdbc, "DROP TABLE %s", tableName) ;
-            exec(jdbc, "CREATE TABLE %s (%s %s)",  tableName, colName, colType) ;
+            execNoFail(jdbc, "DROP TABLE %s", params.get(kTempTableName)) ;
+            exec(jdbc, "CREATE TABLE %s (%s %s)",  params.get(kTempTableName), colName, colType) ;
 
             String testString = baseString ;
 
-            String $str = sqlFormat("INSERT INTO %s values (?)", tableName) ;
+            String $str = sqlFormat("INSERT INTO %s values (?)", params.get(kTempTableName)) ;
             if ( verbose )
                 System.out.println($str) ;
             
@@ -115,16 +175,15 @@ public class DBTest extends CmdArgsDB
             ps.execute() ;
             ps.close() ;
 
-            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colName, tableName ) ;
+            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colName, params.get(kTempTableName) ) ;
             rs.next() ;
             String s = rs.getString(1) ;
             
             if ( ! testString.equals(s) )
-                System.err.printf("Failed '%s' test\n", label) ;
+                System.err.printf("*** Failed '%s' test\n", label) ;
             else
-                System.err.printf("Passed '%s' test\n", label) ;
+                System.err.printf("*** Passed '%s' test\n", label) ;
             rs.close() ;
-            execNoFail(jdbc, "DROP TABLE %s", tableName) ;
         } catch (SQLException ex)
         {
             ex.printStackTrace(System.err) ;
