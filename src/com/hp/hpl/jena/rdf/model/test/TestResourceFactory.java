@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestResourceFactory.java,v 1.8 2006-09-05 12:15:11 andy_seaborne Exp $
+  $Id: TestResourceFactory.java,v 1.9 2006-10-06 09:33:08 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -61,6 +61,14 @@ public class TestResourceFactory extends TestCase {
         assertTrue(l.getDatatypeURI().equals(XSDDatatype.XSDinteger.getURI())) ;
         
     }
+    
+    public void testCreateTypedLiteralObject()
+    {
+        Literal l = ResourceFactory.createTypedLiteral(new Integer(22)) ;
+        assertEquals("22", l.getLexicalForm()) ;
+        assertEquals("", l.getLanguage()) ;
+        assertEquals(XSDDatatype.XSDint, l.getDatatype()) ;
+    }
 
     public void testCreateStatement() {
         Resource s = ResourceFactory.createResource();
@@ -110,6 +118,11 @@ public class TestResourceFactory extends TestCase {
         }
 
         public Literal createTypedLiteral(String string, RDFDatatype datatype)
+        {
+            return null ;
+        }
+
+        public Literal createTypedLiteral(Object value)
         {
             return null ;
         }
