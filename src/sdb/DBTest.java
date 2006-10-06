@@ -48,7 +48,7 @@ public class DBTest extends CmdArgsDB
     static final String typeVarchar  = "VARCHAR(200)" ;
     
     static final String colBinary    = "colBinary" ;
-    static final String colVarcahr   = "colVarchar" ;
+    static final String colVarchar   = "colVarchar" ;
     
     static final String baseString   = "abcéíﬂabcαβγz" ; 
     static Charset csUTF8 = null ;
@@ -59,39 +59,78 @@ public class DBTest extends CmdArgsDB
     @Override
     protected void execCmd(List<String> args)
     {
-        
+        Connection jdbc = getModStore().getConnection().getSqlConnection() ;
+        testColBinary("Binary",  jdbc, blobType, colBinary) ;
+        testColText("Varchar", jdbc, typeVarchar, colVarchar) ;
+        //try { jdbc.close(); } catch (SQLException ex) {}
+    }
+    
+    private void testColBinary(String label, Connection jdbc, String colType, String colName)
+    {
         try {
-            Connection jdbc = getModStore().getConnection().getSqlConnection() ;
             execNoFail(jdbc, "DROP TABLE %s", tableName) ;
-            exec(jdbc, "CREATE TABLE %s (%s %s)",  tableName, colBinary, blobType) ;
-            
+            exec(jdbc, "CREATE TABLE %s (%s %s)",  tableName, colName, colType) ;
+
             String testString = baseString ;
-            
+
             String $str = sqlFormat("INSERT INTO %s values (?)", tableName) ;
             if ( verbose )
                 System.out.println($str) ;
+            
             PreparedStatement ps = jdbc.prepareStatement($str) ;
             ps.setBytes(1, baseString.getBytes(csUTF8)) ;
             ps.execute() ;
             ps.close() ;
-            
-            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colBinary, tableName ) ;
+
+            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colName, tableName ) ;
             rs.next() ;
             byte[] b = rs.getBytes(1) ;
             String s = new String(b, csUTF8) ;
             if ( ! testString.equals(s) )
-                System.err.println("Failed binary test") ;
+                System.err.printf("Failed '%s' test\n", label) ;
             else
-                System.err.println("Passed binary test") ;
+                System.err.printf("Passed '%s' test\n", label) ;
+            rs.close() ;
             execNoFail(jdbc, "DROP TABLE %s", tableName) ;
         } catch (SQLException ex)
         {
             ex.printStackTrace(System.err) ;
         }
-        
-        
     }
-    
+
+    private void testColText(String label, Connection jdbc, String colType, String colName)
+    {
+        try {
+            execNoFail(jdbc, "DROP TABLE %s", tableName) ;
+            exec(jdbc, "CREATE TABLE %s (%s %s)",  tableName, colName, colType) ;
+
+            String testString = baseString ;
+
+            String $str = sqlFormat("INSERT INTO %s values (?)", tableName) ;
+            if ( verbose )
+                System.out.println($str) ;
+            
+            PreparedStatement ps = jdbc.prepareStatement($str) ;
+            ps.setString(1, testString) ;
+            ps.execute() ;
+            ps.close() ;
+
+            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colName, tableName ) ;
+            rs.next() ;
+            String s = rs.getString(1) ;
+            
+            if ( ! testString.equals(s) )
+                System.err.printf("Failed '%s' test\n", label) ;
+            else
+                System.err.printf("Passed '%s' test\n", label) ;
+            rs.close() ;
+            execNoFail(jdbc, "DROP TABLE %s", tableName) ;
+        } catch (SQLException ex)
+        {
+            ex.printStackTrace(System.err) ;
+        }
+    }
+
     private String sqlFormat(String sql, Object... args)
     {
         return String.format(sql, args) ;
