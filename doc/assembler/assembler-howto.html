@@ -357,16 +357,16 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="hide" id="1007B"><a href="javascript:exchange('1007')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connection a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass">.</div>
 <div class="show-property">ja:dbPasswordProperty a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
@@ -770,6 +770,12 @@ which will be used to construct this OntModelSpec's reasoner. A
 <code>reasonerFactory</code> specification is the same as an InfModel's
 <code>reasoner</code> specification (the different properties are required
 for technical reasons).
+</li>
+
+<li><code>ja:reasonerURL</code>: as a special case of <code>reasonerFactory</code>,
+a reasoner may be specified by giving its URL as the object of the optional
+unique <code>reasonerURL</code> property. It is not permitted to supply
+both a <code>reasonerURL</code> and <code>reasonerFactory</code> properties.
 </li>
 
 <li><code>ja:ontLanguage</code>:
