@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestListSubjectsEtc.java,v 1.3 2006-03-22 13:53:24 andy_seaborne Exp $
+  $Id: TestListSubjectsEtc.java,v 1.4 2006-10-06 14:38:02 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -41,6 +41,14 @@ public class TestListSubjectsEtc extends ModelTestBase
         it.next();
         try { it.remove(); fail( "listObjects should not support .remove()" ); }
         catch (UnsupportedOperationException e) { pass(); }
+        }
+    
+    public void PENDINGtestListSubjectsWorksAfterRemoveProperties()
+        {
+        Model m = modelWithStatements( "p1 before terminal; p2 before terminal" );
+        m.createResource( "eh:/p1" ).removeProperties();
+        assertIsoModels( modelWithStatements( "p2 before terminal" ), m );
+        assertEquals( resourceSet( "p2" ), m.listSubjects().toSet() );
         }
     }
 
