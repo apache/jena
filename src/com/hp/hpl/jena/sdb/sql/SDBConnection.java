@@ -77,12 +77,14 @@ public class SDBConnection
         try
         {
             sqlConnection = null ;
+            if ( log.isDebugEnabled() )
+                log.debug(String.format("Attempt to create SQL connection: %s %s %s\n", url, user, password)) ;
             if ( ! url.equals(JDBC.jdbcNone))
                 sqlConnection = DriverManager.getConnection(url, user, password) ;
             setLabel(url) ;
         } catch (SQLException e)
         {
-            //exception("SDBConnection",e ) ;
+            exception("SDBConnection",e ) ;
             throw new SDBException("SQL Exception while connecting to database: "+url+" : "+e.getMessage()) ;
         }
         transactionHandler = new TransactionHandlerSDB(this) ;
@@ -202,6 +204,16 @@ public class SDBConnection
     public Connection getSqlConnection()
     {
         return sqlConnection ;
+    }
+    
+    public void close()
+    {
+        try {
+            if ( sqlConnection != null && ! sqlConnection.isClosed() )
+                sqlConnection.close() ;
+        } catch (SQLException ex){
+            log.warn("Problems closing SQL connection", ex) ;
+        }
     }
     
     @Override

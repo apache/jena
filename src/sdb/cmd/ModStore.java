@@ -88,6 +88,7 @@ public class ModStore implements ArgModule
 
     StoreDesc storeDesc = null ;
     SDBConnection connection = null ;
+    boolean connectionAttempted = false ;
     Store store = null ;
     DatasetStore dataset = null ;
     ModelSDB model = null ;
@@ -299,8 +300,10 @@ public class ModStore implements ArgModule
     
     public SDBConnection getConnection()
     {
-        if ( ! isConnected() )
-            connection = SDBFactory.createConnection(storeDesc.connDesc) ;
+        if ( ! isConnected() && ! connectionAttempted )
+            try {
+                connection = SDBFactory.createConnection(storeDesc.connDesc) ;
+            } finally { connectionAttempted = true ; }
         return connection ;
     }
 

@@ -89,7 +89,7 @@ public class DBTest extends CmdArgsDB
 //    static final String colBinary    = "colBinary" ;
 //    static final String colVarchar   = "colVarchar" ;
     
-    static final String baseString   = "abcéíﬂabcαβγz" ; 
+    static final String baseString   = "abcéíﬂabcαβγאבגnmءآأxyz" ; 
     static Charset csUTF8 = null ;
     static {
         csUTF8 = Charset.forName("UTF-8") ;
@@ -135,7 +135,7 @@ public class DBTest extends CmdArgsDB
             execNoFail(jdbc, "DROP TABLE %s", params.get(kTempTableName)) ;
             exec(jdbc, "CREATE TABLE %s (%s %s)",  params.get(kTempTableName), colName, colType) ;
 
-            String testString = baseString ;
+            String testString = longString() ;
 
             String $str = sqlFormat("INSERT INTO %s values (?)", params.get(kTempTableName)) ;
             if ( verbose )
@@ -164,7 +164,7 @@ public class DBTest extends CmdArgsDB
             execNoFail(jdbc, "DROP TABLE %s", params.get(kTempTableName)) ;
             exec(jdbc, "CREATE TABLE %s (%s %s)",  params.get(kTempTableName), colName, colType) ;
 
-            String testString = baseString ;
+            String testString = longString() ;
 
             String $str = sqlFormat("INSERT INTO %s values (?)", params.get(kTempTableName)) ;
             if ( verbose )
@@ -224,7 +224,17 @@ public class DBTest extends CmdArgsDB
         return stmt.executeQuery(sql) ;
     }
     
-
+    private static String longString()
+    {
+        String value = baseString ;
+        for ( int i = 0 ; i < 0 ; i++ )
+        {
+            value = value+value ;
+            if ( value.length() > 3000 )
+                break ;
+        }
+        return value ;
+    }
 }
 
 /*

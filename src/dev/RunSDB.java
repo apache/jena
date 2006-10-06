@@ -66,8 +66,8 @@ public class RunSDB
    
     public static void run()
     {
-        String[] a = {/*"-v",*/ "--sdb=sdb.ttl", "--format=N3"} ; 
-        sdb.sdbdump.main(a) ;
+        String[] a = {"-v", "--sdb=tmp/sdb-oracle.ttl"} ; 
+        sdb.DBTest.main(a) ;
         System.exit(0) ;
     }
 

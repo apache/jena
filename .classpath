@@ -22,5 +22,6 @@
 	<classpathentry path="lib/jenatest.jar" kind="lib"/>
 	<classpathentry path="lib/wstx-asl-3.0.0.jar" kind="lib"/>
 	<classpathentry path="org.eclipse.jdt.USER_LIBRARY/JRuby" kind="con"/>
+	<classpathentry path="jdbc/ojdbc14.jar" kind="lib"/>
 	<classpathentry path="classes" kind="output"/>
 </classpath>

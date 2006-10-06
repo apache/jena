@@ -45,7 +45,7 @@ public enum DatabaseType implements Named{
         if ( databaseTypeName.equalsIgnoreCase("hsqldb") )        return HSQLDB ;
         if ( databaseTypeName.equalsIgnoreCase("hsql") )          return HSQLDB ;
         
-        LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into adatabase type") ;
+        LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
         throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 
     }
 }

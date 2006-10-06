@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.sdb.shared;
 
-
+//TODO Relate to DatabaseType
 public enum DBtype implements Named { 
     MySQL       { public String getName() { return "MySQL" ; } } ,
     PostgreSQL  { public String getName() { return "PostgreSQL" ; } } , 
     HSQL        { public String getName() { return "HSQL" ; } } ,
     Derby       { public String getName() { return "Derby" ; } } , 
     SQLserver   { public String getName() { return "SQLserver" ; } } , 
-    //Oracle      { public String getName() { return "Oracle" ; } } , 
-    //DB2         { public String getName() { return "DB2" ; } } ,
+    Oracle      { public String getName() { return "Oracle" ; } } , 
+    DB2         { public String getName() { return "DB2" ; } } ,
 }
 
 /*
