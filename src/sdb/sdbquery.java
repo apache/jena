@@ -11,7 +11,6 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 import arq.cmd.QueryCmdUtils;
-import arq.cmd.ResultsFormat;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModResultsOut;
@@ -130,10 +129,6 @@ public class sdbquery extends CmdArgsDB
             System.out.println(divider) ; 
         }
         
-        ResultsFormat fmt = ResultsFormat.FMT_TEXT ;
-        if ( !printResults )
-            fmt = ResultsFormat.FMT_NONE ;
-
         long totalTime = 0 ;
         try {
             for ( int i = 0 ; i < repeatCount ; i++ )
@@ -143,7 +138,7 @@ public class sdbquery extends CmdArgsDB
                 QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
-                QueryCmdUtils.executeQuery(query, qExec, fmt) ;
+                QueryCmdUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;
                 qExec.close() ;
                 long queryTime = getModTime().endTimer() ;
                 totalTime += queryTime ;

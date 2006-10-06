@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.sql;
 
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,6 +180,11 @@ public class RS
                 break ;
             case Types.FLOAT:
                 str = Float.toString(resultSet.getFloat(i)) ;
+                break ;
+            case Types.BLOB:
+                byte[] b2 = resultSet.getBytes(1) ;
+                try { str = new String(b2, 0, b2.length, "UTF-8") ; }
+                catch (UnsupportedEncodingException ex) { ex.printStackTrace(); }
                 break ;
             default:
                 str = resultSet.getString(i) ;

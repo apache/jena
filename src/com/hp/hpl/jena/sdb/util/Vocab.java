@@ -4,20 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.util;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
-import static com.hp.hpl.jena.sdb.util.Vocab.property ;
-import static com.hp.hpl.jena.sdb.util.Vocab.resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
-public class ConfigVocab
+public class Vocab
 {
-    private final static String namespace = "http://jena.hpl.hp.com/2006/sdb#" ;
-    public String getURI() { return namespace ; }
+    public static Resource type(String namespace, String localName)
+    { 
+        return ResourceFactory.createResource(namespace+localName) ;
+    }
     
-    public final static Resource typeConfig        = resource(namespace, "Config") ;
-    public final static Property featureProperty   = property(namespace, "feature") ;
+    public static Resource resource(String namespace, String localName)
+    {
+        return ResourceFactory.createResource(namespace+localName) ;
+    }
+
+    public static Property property(String namespace, String localName)
+    {
+        return ResourceFactory.createProperty(namespace+localName) ;
+    }
 }
 
 /*

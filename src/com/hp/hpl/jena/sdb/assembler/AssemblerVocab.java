@@ -6,10 +6,12 @@
 
 package com.hp.hpl.jena.sdb.assembler;
 
+import static com.hp.hpl.jena.sdb.util.Vocab.property;
+import static com.hp.hpl.jena.sdb.util.Vocab.type;
+
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 public class AssemblerVocab
 {
@@ -22,52 +24,52 @@ public class AssemblerVocab
     public static final Resource StoreAssemblerType             = type(NS, "Store") ;
     
     // ---- Commands
-    public static final Property pSteps         = ResourceFactory.createProperty(NS, "steps") ;
+    public static final Property pSteps         = property(NS, "steps") ;
     
-    public static final Property pMain          = ResourceFactory.createProperty(NS, "main") ;
-    public static final Property pClassname     = ResourceFactory.createProperty(NS, "classname") ;
+    public static final Property pMain          = property(NS, "main") ;
+    public static final Property pClassname     = property(NS, "classname") ;
 
-    public static final Property pArgs          = ResourceFactory.createProperty(NS, "args") ;
-    public static final Property pArgName       = ResourceFactory.createProperty(NS, "name") ;
-    public static final Property pArgValue      = ResourceFactory.createProperty(NS, "value") ;
+    public static final Property pArgs          = property(NS, "args") ;
+    public static final Property pArgName       = property(NS, "name") ;
+    public static final Property pArgValue      = property(NS, "value") ;
 
     // Other
-    public static final Property pQuery              = ResourceFactory.createProperty(NS, "query") ;
-    public static final Property pQueryFile          = ResourceFactory.createProperty(NS, "queryFile") ;
-    public static final Property pQueryString        = ResourceFactory.createProperty(NS, "queryString") ;
+    public static final Property pQuery              = property(NS, "query") ;
+    public static final Property pQueryFile          = property(NS, "queryFile") ;
+    public static final Property pQueryString        = property(NS, "queryString") ;
 
-    public static final Property pDataset            = ResourceFactory.createProperty(NS, "dataset") ;
-    public static final Property pGraphData          = ResourceFactory.createProperty(NS, "graph") ;
-    public static final Property pNamedGraphData     = ResourceFactory.createProperty(NS, "namedGraph") ;
+    public static final Property pDataset            = property(NS, "dataset") ;
+    public static final Property pGraphData          = property(NS, "graph") ;
+    public static final Property pNamedGraphData     = property(NS, "namedGraph") ;
     
-    public static final Property pOutputFormat       = ResourceFactory.createProperty(NS, "outputFormat") ;
-    public static final Property pCustomizerClass    = ResourceFactory.createProperty(NS, "customizer") ;
+    public static final Property pOutputFormat       = property(NS, "outputFormat") ;
+    public static final Property pCustomizerClass    = property(NS, "customizer") ;
 
     // renaming: sdbFoo => foo ?/
     
     // ---- Connection
-    public static final Property pDriver             = ResourceFactory.createProperty(NS, "driver") ;
-    public static final Property pSDBtype            = ResourceFactory.createProperty(NS, "sdbType") ;
-    public static final Property pSDBhost            = ResourceFactory.createProperty(NS, "sdbHost") ;
-    public static final Property pSDBargStr          = ResourceFactory.createProperty(NS, "sdbArgStr") ;
-    public static final Property pSDBname            = ResourceFactory.createProperty(NS, "sdbName") ;
-    public static final Property pSDBschema          = ResourceFactory.createProperty(NS, "sdbSchema") ;
+    public static final Property pDriver             = property(NS, "driver") ;
+    public static final Property pSDBtype            = property(NS, "sdbType") ;
+    public static final Property pSDBhost            = property(NS, "sdbHost") ;
+    public static final Property pSDBargStr          = property(NS, "sdbArgStr") ;
+    public static final Property pSDBname            = property(NS, "sdbName") ;
+    public static final Property pSDBschema          = property(NS, "sdbSchema") ;
     // ModeRDB graph name - on the connection
-    public static final Property pRDBtype           = ResourceFactory.createProperty(NS, "rdbType") ;
+    public static final Property pRDBtype           = property(NS, "rdbType") ;
     
     // The JDBC URL written out long form.  Overrides the above.
-    public static final Property pJDBC               = ResourceFactory.createProperty(NS, "jdbcURL") ;
-    public static final Property pSDBuser            = ResourceFactory.createProperty(NS, "sdbUser") ;
-    public static final Property pSDBpassword        = ResourceFactory.createProperty(NS, "sdbPassword") ;
+    public static final Property pJDBC               = property(NS, "jdbcURL") ;
+    public static final Property pSDBuser            = property(NS, "sdbUser") ;
+    public static final Property pSDBpassword        = property(NS, "sdbPassword") ;
     
     // ---- Store (uses pSDBtype) 
-    public static final Property pLayout            = ResourceFactory.createProperty(NS, "layout") ;
-    public static final Property pConnection        = ResourceFactory.createProperty(NS, "connection") ;
+    public static final Property pLayout            = property(NS, "layout") ;
+    public static final Property pConnection        = property(NS, "connection") ;
     
     // MySQL engine type
-    public static final Property pMySQLEngine       = ResourceFactory.createProperty(NS, "engine") ;
+    public static final Property pMySQLEngine       = property(NS, "engine") ;
     // ModeRDB graph name - on the layout
-    public static final Property pModelRDBname      = ResourceFactory.createProperty(NS, "rdbModelName") ;
+    public static final Property pModelRDBname      = property(NS, "rdbModelName") ;
     
     private static boolean initialized = false ; 
     
@@ -90,12 +92,6 @@ public class AssemblerVocab
         Assembler.general.implementWith(r, a) ;
         //**assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
     }
-    
-    private static Resource type(String namespace, String localName)
-    { return ResourceFactory.createResource(namespace+localName) ; }
-
-    private static Property property(String namespace, String localName)
-    { return ResourceFactory.createProperty(namespace+localName) ; }
 }
 
 /*
