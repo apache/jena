@@ -6,18 +6,18 @@
 
 package sdb;
 
-import java.nio.charset.Charset;
-import java.sql.*;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.sql.Connection;
 import java.util.List;
-import java.util.Map;
 
+import org.junit.runner.JUnitCore;
+import org.junit.runner.notification.RunListener;
+import sdb.cmd.CmdArgsDB;
+import sdb.test.Params;
+import sdb.test.TestI18N;
+import sdb.test.TextListenerCustom;
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.query.util.Utils;
-
-import sdb.cmd.CmdArgsDB;
 
 /** Run some DB tests to check setup */ 
 
@@ -45,61 +45,29 @@ public class DBTest extends CmdArgsDB
     @Override
     protected void processModulesAndArgs()
     {
+        @SuppressWarnings("unchecked")
+        List<String> args = getPositional() ;
+        setParams(args) ;
     }
-    
-    
-    // Parametize via command line.
-    // xyz=abc
-    static final String kTempTableName     = "TempTable" ;
-    static final String kBinaryType        = "typeBinary" ;
-    static final String kBinaryCol         = "colBinary" ;
-
-    static final String kVarcharType    = "typeVarchar" ;
-    static final String kVarcharCol     = "colVarchar" ;
     
     Params params = new Params() ;
     {
-        params.put( kTempTableName,     "FOO") ;
+        params.put( TestI18N.kTempTableName,     "FOO") ;
 
-        params.put( kBinaryType,       "BLOB") ;
-        params.put( kBinaryCol,        "colBinary") ;
+        params.put( TestI18N.kBinaryType,       "BLOB") ;
+        params.put( TestI18N.kBinaryCol,        "colBinary") ;
         
-        params.put( kVarcharType,   "VARCHAR(200)") ;
-        params.put( kVarcharCol,    "colVarchar") ;
+        params.put( TestI18N.kVarcharType,      "VARCHAR(200)") ;
+        params.put( TestI18N.kVarcharCol,        "colVarchar") ;
     }
     
-    static class Params implements Iterable<String>
-    {
-        Map<String, String> params = new HashMap<String, String>() ;
-
-        String get(String key) { return params.get(key.toLowerCase()) ; }
-        void put(String key, String value) { params.put(key.toLowerCase(), value) ; }
-        
-        public Iterator<String> iterator()
-        {
-            return params.keySet().iterator() ;
-        }
-    }
-    
-//    static final String tableName    = "FOO" ;
-//    
-//    static final String blobType     = "VARBINARY" ;
-//    static final String typeVarchar  = "VARCHAR(200)" ;
-//    
-//    static final String colBinary    = "colBinary" ;
-//    static final String colVarchar   = "colVarchar" ;
-    
-    static final String baseString   = "abcéíﬂabcαβγאבגnmءآأxyz" ; 
-    static Charset csUTF8 = null ;
-    static {
-        csUTF8 = Charset.forName("UTF-8") ;
-    }
+    // Hack
+    public static Connection connection ;
+    public static Params testParams ;
     
     @Override
     protected void execCmd(List<String> args)
     {
-        setParams(args) ;
-        
         if ( verbose )
         {
             for ( String k : params )
@@ -108,14 +76,18 @@ public class DBTest extends CmdArgsDB
         }
         
         Connection jdbc = getModStore().getConnection().getSqlConnection() ;
-        testColBinary("Binary",  jdbc, params.get(kBinaryType), params.get(kBinaryCol)) ;
-        if ( verbose )
-            System.out.println() ;
-        testColText("Varchar", jdbc, params.get(kVarcharType), params.get(kVarcharCol)) ;
-        if ( verbose )
-            System.out.println() ;
+        // Hack to pass to T
+        connection = jdbc ;
+        testParams = params ;
         
-        execNoFail(jdbc, "DROP TABLE %s", params.get(kTempTableName)) ;
+        JUnitCore x = new org.junit.runner.JUnitCore() ;
+        RunListener listener = new TextListenerCustom() ;
+        x.addListener(listener) ;
+        x.run(sdb.test.T.class) ;
+        // Better way of having parameters for a class than a @Parameterised test of one thing?
+//        Request request = Request.aClass(sdb.test.T.class) ;
+//        x.run(request) ;
+
     }
     
     private void setParams(List<String> args)
@@ -129,112 +101,6 @@ public class DBTest extends CmdArgsDB
         }
     }
     
-    private  void testColBinary(String label, Connection jdbc, String colType, String colName)
-    {
-        try {
-            execNoFail(jdbc, "DROP TABLE %s", params.get(kTempTableName)) ;
-            exec(jdbc, "CREATE TABLE %s (%s %s)",  params.get(kTempTableName), colName, colType) ;
-
-            String testString = longString() ;
-
-            String $str = sqlFormat("INSERT INTO %s values (?)", params.get(kTempTableName)) ;
-            if ( verbose )
-                System.out.println($str) ;
-            
-            PreparedStatement ps = jdbc.prepareStatement($str) ;
-            ps.setBytes(1, baseString.getBytes(csUTF8)) ;
-            ps.execute() ;
-            ps.close() ;
-
-            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colName, params.get(kTempTableName) ) ;
-            rs.next() ;
-            byte[] b = rs.getBytes(1) ;
-            String s = new String(b, csUTF8) ;
-            if ( ! testString.equals(s) )
-                System.err.printf("*** Failed '%s' test\n", label) ;
-            else
-                System.err.printf("*** Passed '%s' test\n", label) ;
-            rs.close() ;
-        } catch (SQLException ex) { ex.printStackTrace(System.err) ; }
-    }
-
-    private void testColText(String label, Connection jdbc, String colType, String colName)
-    {
-        try {
-            execNoFail(jdbc, "DROP TABLE %s", params.get(kTempTableName)) ;
-            exec(jdbc, "CREATE TABLE %s (%s %s)",  params.get(kTempTableName), colName, colType) ;
-
-            String testString = longString() ;
-
-            String $str = sqlFormat("INSERT INTO %s values (?)", params.get(kTempTableName)) ;
-            if ( verbose )
-                System.out.println($str) ;
-            
-            PreparedStatement ps = jdbc.prepareStatement($str) ;
-            ps.setString(1, testString) ;
-            ps.execute() ;
-            ps.close() ;
-
-            ResultSet rs = execQuery(jdbc, "SELECT %s FROM %s ", colName, params.get(kTempTableName) ) ;
-            rs.next() ;
-            String s = rs.getString(1) ;
-            
-            if ( ! testString.equals(s) )
-                System.err.printf("*** Failed '%s' test\n", label) ;
-            else
-                System.err.printf("*** Passed '%s' test\n", label) ;
-            rs.close() ;
-        } catch (SQLException ex)
-        {
-            ex.printStackTrace(System.err) ;
-        }
-    }
-
-    private String sqlFormat(String sql, Object... args)
-    {
-        return String.format(sql, args) ;
-    }
-    
-    private void execNoFail(Connection jdbc, String sql, Object... args)
-    {
-        try { exec(jdbc, sql, args) ;
-        } catch (SQLException ex) {}
-    }
-
-    private void exec(Connection jdbc, String sql, Object... args) throws SQLException
-    {
-        sql = sqlFormat(sql, args) ;
-        Statement stmt = null ;
-        try {
-            stmt = jdbc.createStatement() ;
-            if ( verbose )
-                System.out.println(sql) ;
-            stmt.execute(sql) ;
-        } finally {
-            if ( stmt != null ) stmt.close() ;
-        }
-    }
-    
-    private ResultSet execQuery(Connection jdbc, String sql, Object... args) throws SQLException
-    {
-        sql = sqlFormat(sql, args) ;
-        if ( verbose )
-            System.out.println(sql) ;
-        Statement stmt = jdbc.createStatement() ;
-        return stmt.executeQuery(sql) ;
-    }
-    
-    private static String longString()
-    {
-        String value = baseString ;
-        for ( int i = 0 ; i < 0 ; i++ )
-        {
-            value = value+value ;
-            if ( value.length() > 3000 )
-                break ;
-        }
-        return value ;
-    }
 }
 
 /*

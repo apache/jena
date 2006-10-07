@@ -29,8 +29,8 @@ public class RunSDB
         
         //runQuery() ;
         //runPrint() ;
-        runScript() ;
-        //run() ;
+        //runScript() ;
+        run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -66,7 +66,7 @@ public class RunSDB
    
     public static void run()
     {
-        String[] a = {"-v", "--sdb=tmp/sdb-oracle.ttl"} ; 
+        String[] a = {"-v", "--sdb=sdb.ttl", "typebinary=VARBINARY"} ; 
         sdb.DBTest.main(a) ;
         System.exit(0) ;
     }
