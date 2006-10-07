@@ -21,9 +21,17 @@ import sdb.DBTest;
 //@Suite.SuiteClasses({ TestI18N.class, })
 public class T extends TestI18N 
 {
-    public T(String name, Connection jdbc, Params params, boolean verbose)
+    static private final String asciiBase = "abc" ;
+    static private final String westernEuropeanBase = "éíﬂ" ;
+    static private final String greekBase = "αβγ" ;
+    static private final String hewbrewBase = "אבג" ;
+    static private final String arabicBase = "ءآأ";
+    static private final String symbolsBase = "☺☻♪♫" ;
+    // TODO : Add Chinese, Japanese and Korean as \ u escapes
+    
+    public T(String name, String baseString, Connection jdbc, Params params, boolean verbose)
     {
-        super(name, jdbc, params, verbose) ;
+        super(name, baseString, jdbc, params, verbose) ;
         
     }
 
@@ -31,7 +39,18 @@ public class T extends TestI18N
     public static Collection data()
     {
         List<Object[]> x = new ArrayList<Object[]>() ;
-        x.add(new Object[]{"STD test", DBTest.connection, DBTest.testParams, false}) ;
+        x.add(new Object[]{"ASCII", asciiBase, 
+                           DBTest.connection, DBTest.testParams, false}) ;
+        x.add(new Object[]{"Accented Latin", westernEuropeanBase,
+                           DBTest.connection, DBTest.testParams, false}) ;
+        x.add(new Object[]{"Greek", greekBase, 
+                           DBTest.connection, DBTest.testParams, false}) ;
+        x.add(new Object[]{"Arabic", arabicBase,
+                           DBTest.connection, DBTest.testParams, false}) ;
+        x.add(new Object[]{"Hewbrew", hewbrewBase,
+            DBTest.connection, DBTest.testParams, false}) ;
+        x.add(new Object[]{"Symbols", symbolsBase,
+                           DBTest.connection, DBTest.testParams, false}) ;
         return x ;
     }
 }   

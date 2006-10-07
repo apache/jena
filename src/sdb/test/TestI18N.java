@@ -19,17 +19,10 @@ import static org.junit.Assert.*;
 
 public class TestI18N extends TestDB 
 {
-    static final String asciiBase = "abc" ;
-    static final String westernEuropeanBase = "éíﬂ" ;
-    static final String greekBase = "αβγ" ;
-    static final String hewbrewBase = "אבג" ;
-    static final String arabicBase = "ءآأ";
-    static final String symbolsBase = "☺☻♪♫" ;
-    // TODO : Add Chinese, Japanese and Korean as \ u escapes
-
     private Params params ;
     private String tempTableName ;
-    private String testLabel ; 
+    private String testLabel ;
+    private String baseString ; 
     
     static public final String kTempTableName     = "TempTable" ;
     static public final String kBinaryType        = "typeBinary" ;
@@ -41,12 +34,14 @@ public class TestI18N extends TestDB
     static final Charset csUTF8 = Charset.forName("UTF-8") ;
 
 
-    public TestI18N(String testLabel, Connection jdbc, Params params, boolean verbose)
+    public TestI18N(String testLabel, String baseString, 
+                    Connection jdbc, Params params, boolean verbose)
     {
         super(jdbc, verbose) ;
         this.params = params ;
         tempTableName = params.get(kTempTableName) ;
         this.testLabel = testLabel ;
+        this.baseString = baseString ;
     }
 
     @Before
@@ -62,72 +57,21 @@ public class TestI18N extends TestDB
     // --------
     @Test
     public void text_ascii()
-    { runTextTest("ASCII/Text", asciiBase, params.get(kVarcharCol), params.get(kVarcharType)) ; }
+    { runTextTest(testLabel+"/Text", baseString, params.get(kVarcharCol), params.get(kVarcharType)) ; }
 
     @Test
     public void text_ascii_long()
-    { runTextTest("ASCII/Text/Long", longString(asciiBase, 200), params.get(kVarcharCol), params.get(kVarcharType)) ; }
+    { runTextTest(testLabel+"Text/Long", longString(baseString, 200), params.get(kVarcharCol), params.get(kVarcharType)) ; }
 
     @Test
     public void binary_ascii()
-    { runBytesTest("ASCII/Binary", asciiBase, params.get(kBinaryCol), params.get(kBinaryType)) ; }
+    { runBytesTest(testLabel+"/Binary", baseString, params.get(kBinaryCol), params.get(kBinaryType)) ; }
 
     @Test
     public void binary_ascii_long()
-    { runBytesTest("ASCII/Binary/Long", longString(asciiBase,1000), params.get(kBinaryCol), params.get(kBinaryType)) ; }
+    { runBytesTest(testLabel+"/Binary/Long", longString(baseString,1000), params.get(kBinaryCol), params.get(kBinaryType)) ; }
 
-    // --------
-    @Test
-    public void text_greek()
-    { runTextTest("Greek/Text", greekBase, params.get(kVarcharCol), params.get(kVarcharType)) ; }
 
-    @Test
-    public void text_greek_long()
-    { runTextTest("Greek/Text/Long", longString(greekBase, 200), params.get(kVarcharCol), params.get(kVarcharType)) ; }
-
-    @Test
-    public void binary_greek()
-    { runBytesTest("Greek/Binary", greekBase, params.get(kBinaryCol), params.get(kBinaryType)) ; }
-
-    @Test
-    public void binary_greek_long()
-    { runBytesTest("Greek/Binary/Long", longString(greekBase,1000), params.get(kBinaryCol), params.get(kBinaryType)) ; }
-
-    // --------
-    @Test
-    public void text_arabic()
-    { runTextTest("Arabic/Text", arabicBase, params.get(kVarcharCol), params.get(kVarcharType)) ; }
-
-    @Test
-    public void text_arabic_long()
-    { runTextTest("Arabic/Text/Long", longString(arabicBase, 200), params.get(kVarcharCol), params.get(kVarcharType)) ; }
-
-    @Test
-    public void binary_arabic()
-    { runBytesTest("Arabic/Binary", arabicBase, params.get(kBinaryCol), params.get(kBinaryType)) ; }
-
-    @Test
-    public void binary_arabic_long()
-    { runBytesTest("Arabic/Binary/Long", longString(arabicBase,1000), params.get(kBinaryCol), params.get(kBinaryType)) ; }
-    
-    // --------
-    @Test
-    public void text_symbols()
-    { runTextTest("Symbols/Text", symbolsBase, params.get(kVarcharCol), params.get(kVarcharType)) ; }
-
-    @Test
-    public void text_symbols_long()
-    { runTextTest("Symbols/Text/Long", longString(symbolsBase, 200), params.get(kVarcharCol), params.get(kVarcharType)) ; }
-
-    @Test
-    public void binary_symbols()
-    { runBytesTest("Symbols/Binary", symbolsBase, params.get(kBinaryCol), params.get(kBinaryType)) ; }
-
-    @Test
-    public void binary_symbols_long()
-    { runBytesTest("Symbols/Binary/Long", longString(symbolsBase,1000), params.get(kBinaryCol), params.get(kBinaryType)) ; }
-    
-    // --------
     
     private void runTextTest(String label, String testString, String colName, String colType)
     {
