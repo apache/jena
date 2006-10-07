@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.assembler;
 
-import static com.hp.hpl.jena.sdb.util.Vocab.property;
-import static com.hp.hpl.jena.sdb.util.Vocab.type;
+import com.hp.hpl.jena.sdb.util.Vocab ;
+
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -19,57 +19,57 @@ public class AssemblerVocab
     private static final String NS = "http://jena.hpl.hp.com/2006/01/acmd#" ;
     public static String getURI() { return NS ; } 
     
-    public static final Resource QueryAssemblerType             = type(NS, "Query") ;
-    public static final Resource SDBConnectionAssemblerType     = type(NS, "SDBConnection") ;
-    public static final Resource StoreAssemblerType             = type(NS, "Store") ;
+    public static final Resource QueryAssemblerType             = Vocab.type(NS, "Query") ;
+    public static final Resource SDBConnectionAssemblerType     = Vocab.type(NS, "SDBConnection") ;
+    public static final Resource StoreAssemblerType             = Vocab.type(NS, "Store") ;
     
     // ---- Commands
-    public static final Property pSteps         = property(NS, "steps") ;
+    public static final Property pSteps         = Vocab.property(NS, "steps") ;
     
-    public static final Property pMain          = property(NS, "main") ;
-    public static final Property pClassname     = property(NS, "classname") ;
+    public static final Property pMain          = Vocab.property(NS, "main") ;
+    public static final Property pClassname     = Vocab.property(NS, "classname") ;
 
-    public static final Property pArgs          = property(NS, "args") ;
-    public static final Property pArgName       = property(NS, "name") ;
-    public static final Property pArgValue      = property(NS, "value") ;
+    public static final Property pArgs          = Vocab.property(NS, "args") ;
+    public static final Property pArgName       = Vocab.property(NS, "name") ;
+    public static final Property pArgValue      = Vocab.property(NS, "value") ;
 
     // Other
-    public static final Property pQuery              = property(NS, "query") ;
-    public static final Property pQueryFile          = property(NS, "queryFile") ;
-    public static final Property pQueryString        = property(NS, "queryString") ;
+    public static final Property pQuery              = Vocab.property(NS, "query") ;
+    public static final Property pQueryFile          = Vocab.property(NS, "queryFile") ;
+    public static final Property pQueryString        = Vocab.property(NS, "queryString") ;
 
-    public static final Property pDataset            = property(NS, "dataset") ;
-    public static final Property pGraphData          = property(NS, "graph") ;
-    public static final Property pNamedGraphData     = property(NS, "namedGraph") ;
+    public static final Property pDataset            = Vocab.property(NS, "dataset") ;
+    public static final Property pGraphData          = Vocab.property(NS, "graph") ;
+    public static final Property pNamedGraphData     = Vocab.property(NS, "namedGraph") ;
     
-    public static final Property pOutputFormat       = property(NS, "outputFormat") ;
-    public static final Property pCustomizerClass    = property(NS, "customizer") ;
+    public static final Property pOutputFormat       = Vocab.property(NS, "outputFormat") ;
+    public static final Property pCustomizerClass    = Vocab.property(NS, "customizer") ;
 
     // renaming: sdbFoo => foo ?/
     
     // ---- Connection
-    public static final Property pDriver             = property(NS, "driver") ;
-    public static final Property pSDBtype            = property(NS, "sdbType") ;
-    public static final Property pSDBhost            = property(NS, "sdbHost") ;
-    public static final Property pSDBargStr          = property(NS, "sdbArgStr") ;
-    public static final Property pSDBname            = property(NS, "sdbName") ;
-    public static final Property pSDBschema          = property(NS, "sdbSchema") ;
+    public static final Property pDriver             = Vocab.property(NS, "driver") ;
+    public static final Property pSDBtype            = Vocab.property(NS, "sdbType") ;
+    public static final Property pSDBhost            = Vocab.property(NS, "sdbHost") ;
+    public static final Property pSDBargStr          = Vocab.property(NS, "sdbArgStr") ;
+    public static final Property pSDBname            = Vocab.property(NS, "sdbName") ;
+    public static final Property pSDBschema          = Vocab.property(NS, "sdbSchema") ;
     // ModeRDB graph name - on the connection
-    public static final Property pRDBtype           = property(NS, "rdbType") ;
+    public static final Property pRDBtype           = Vocab.property(NS, "rdbType") ;
     
     // The JDBC URL written out long form.  Overrides the above.
-    public static final Property pJDBC               = property(NS, "jdbcURL") ;
-    public static final Property pSDBuser            = property(NS, "sdbUser") ;
-    public static final Property pSDBpassword        = property(NS, "sdbPassword") ;
+    public static final Property pJDBC               = Vocab.property(NS, "jdbcURL") ;
+    public static final Property pSDBuser            = Vocab.property(NS, "sdbUser") ;
+    public static final Property pSDBpassword        = Vocab.property(NS, "sdbPassword") ;
     
     // ---- Store (uses pSDBtype) 
-    public static final Property pLayout            = property(NS, "layout") ;
-    public static final Property pConnection        = property(NS, "connection") ;
+    public static final Property pLayout            = Vocab.property(NS, "layout") ;
+    public static final Property pConnection        = Vocab.property(NS, "connection") ;
     
     // MySQL engine type
-    public static final Property pMySQLEngine       = property(NS, "engine") ;
+    public static final Property pMySQLEngine       = Vocab.property(NS, "engine") ;
     // ModeRDB graph name - on the layout
-    public static final Property pModelRDBname      = property(NS, "rdbModelName") ;
+    public static final Property pModelRDBname      = Vocab.property(NS, "rdbModelName") ;
     
     private static boolean initialized = false ; 
     
