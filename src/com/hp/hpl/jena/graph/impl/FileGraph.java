@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.30 2006-03-22 13:53:15 andy_seaborne Exp $
+  $Id: FileGraph.java,v 1.31 2006-10-07 11:45:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.impl;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.graph.TransactionHandler;
 import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.shared.*;
@@ -22,7 +23,7 @@ import java.io.*;
     
  	@author hedgehog
 */
-public class FileGraph extends GraphMem
+public class FileGraph extends GraphMemFaster
     {
     public interface NotifyOnClose
         {

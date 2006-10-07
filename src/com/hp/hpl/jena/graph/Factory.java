@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.24 2006-04-27 10:49:07 der Exp $
+  $Id: Factory.java,v 1.25 2006-10-07 11:45:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -23,11 +23,12 @@ public class Factory
     private Factory()
         { super(); }
 
-    public static final boolean faster =
-        JenaRuntime.getSystemProperty( "jena.faster", "yes" ).equals( "yes" );
+    public static final boolean faster = true;
+        // JenaRuntime.getSystemProperty( "jena.faster", "yes" ).equals( "yes" );
 
     public static final boolean newHashing = 
         JenaRuntime.getSystemProperty( "jena.hashing", "yes" ).equals( "yes" );
+    
     /**
         Answer a memory-based Graph with the Standard reification style.
     */
@@ -45,6 +46,16 @@ public class Factory
 
     public static Graph createGraphMem( ReificationStyle style )
         { return faster ? (Graph) new GraphMemFaster( style ) : new GraphMem( style ); }
+
+    public static Graph createGraphMemWithTransactionHandler( final TransactionHandler th )
+        {
+        Graph g = new GraphMem() 
+            {
+            public TransactionHandler getTransactionHandler() 
+                {  return th; }
+            };
+        return g;
+        }
     }
 
 

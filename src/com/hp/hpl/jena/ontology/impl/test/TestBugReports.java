@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.76 $
+ * Revision           $Revision: 1.77 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-07-03 10:33:51 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2006-10-07 11:45:11 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -31,7 +31,6 @@ import java.util.*;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.ontology.impl.OntClassImpl;
@@ -395,38 +394,22 @@ public class TestBugReports
      * transaction support in ontmodel.
      */
     public void test_ck_01() {
-        Graph g = new GraphMem() {
-            TransactionHandler m_t = new MockTransactionHandler();
-            public TransactionHandler getTransactionHandler() {
-                return m_t;
-            }
-        };
-        Model m0 = ModelFactory.createModelForGraph(g);
-        OntModel m1 = ModelFactory.createOntologyModel(OntModelSpec.OWL_LITE_MEM, m0);
+        MockTransactionHandler m_t = new MockTransactionHandler();
+        Graph g = Factory.createGraphMemWithTransactionHandler( m_t );
+        Model m0 = ModelFactory.createModelForGraph( g );
+        OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, m0 );
 
-        assertFalse(
-            "Transaction not started yet",
-            ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_inTransaction);
+        assertFalse( "should not initially be in a transaction", m_t.m_inTransaction );
         m1.begin();
-        assertTrue(
-            "Transaction started",
-            ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_inTransaction);
+        assertTrue( "should be in a transaction", m_t.m_inTransaction );
         m1.abort();
-        assertFalse(
-            "Transaction aborted",
-            ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_inTransaction);
-        assertTrue("Transaction aborted", ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_aborted);
+        assertFalse( "should not still be in transaction",  m_t.m_inTransaction );
+        assertTrue( "transaction should have been aborted", m_t.m_aborted );
         m1.begin();
-        assertTrue(
-            "Transaction started",
-            ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_inTransaction);
+        assertTrue( "should be in a (new) transaction", m_t.m_inTransaction );
         m1.commit();
-        assertFalse(
-            "Transaction committed",
-            ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_inTransaction);
-        assertTrue(
-            "Transaction committed",
-            ((MockTransactionHandler) m1.getGraph().getTransactionHandler()).m_committed);
+        assertFalse( "should not be in transaction post-commit", m_t.m_inTransaction );
+        assertTrue( "should be marked committed post-commit", m_t.m_committed );
     }
 
     /**
@@ -1685,7 +1668,7 @@ public class TestBugReports
     // Inner class definitions
     //==============================================================================
 
-    class MockTransactionHandler extends SimpleTransactionHandler {
+    static class MockTransactionHandler extends SimpleTransactionHandler {
         boolean m_inTransaction = false;
         boolean m_aborted = false;
         boolean m_committed = false;
