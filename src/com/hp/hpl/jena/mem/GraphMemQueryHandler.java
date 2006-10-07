@@ -1,7 +1,7 @@
 /*
 (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
 [See end of file]
-$Id: GraphMemQueryHandler.java,v 1.10 2006-03-22 13:52:19 andy_seaborne Exp $
+$Id: GraphMemQueryHandler.java,v 1.11 2006-10-07 12:00:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -14,11 +14,12 @@ package com.hp.hpl.jena.mem;
    <p>All the code has ended up in the new superclass GraphMemBaseQueryHandler,
    so see that for interesting details; this class may be removed at some point.
    
+   @deprecated use GraphMemBaseQueryHandler
  	@author hedgehog
 */
 public class GraphMemQueryHandler extends GraphMemBaseQueryHandler
 	{
-    GraphMemQueryHandler( GraphMem graph ) 
+    GraphMemQueryHandler( GraphMemBase graph ) 
 	    { super( graph ); }
 	}
 

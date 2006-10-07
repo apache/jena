@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.57 2006-05-22 15:24:38 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.58 2006-10-07 12:00:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -55,7 +55,7 @@ public class GraphMem extends GraphMemBase implements Graph
     
     public QueryHandler queryHandler()
         {
-        if (queryHandler == null) queryHandler = new GraphMemQueryHandler( this );
+        if (queryHandler == null) queryHandler = new GraphMemBaseQueryHandler( this );
         return queryHandler;
         }
         
