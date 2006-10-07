@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.28 2006-08-14 12:58:15 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.29 2006-10-07 11:48:47 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2006-08-14 12:58:15 $
+ * @version $Revision: 1.29 $ on $Date: 2006-10-07 11:48:47 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -359,7 +359,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     protected synchronized InfGraph getPreload() {
         // We only support this in HYBRID mode
         if (cachePreload && preload == null && mode == HYBRID) {
-            preload = new FBRuleInfGraph(this, rules, null, new GraphMem());
+            preload = new FBRuleInfGraph( this, rules, null, Factory.createDefaultGraph() );
             if (enableTGCCaching) ((FBRuleInfGraph)preload).setUseTGCCache();
             preload.prepare();
         }
