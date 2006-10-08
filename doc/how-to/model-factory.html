@@ -4,10 +4,11 @@
 <link href="../styles/doc.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<b>author</b>: Chris Dollin
-<br><b>version</b>: 0.1
 
 <h1>50 ways to make your models</h1>
+
+<b>author</b>: Chris Dollin
+<br><b>version</b>: 1.1, Jena 2.4+, October 2006
 
 <h1>introduction</h1>
 
@@ -18,11 +19,11 @@ Jena 2 <code>ModelFactory</code>, your one-stop shop for creating Jena models.
 which you will import anyway to do anything with models.
 
 <p>Most of <code>ModelFactory</code> methods have been around for a while now,
-but Jena 2.0 contains the first versions of the <code>ModelSpec</code>
-interface, which allows models to be created according to RDF descriptions
-that can be programmatically constructed or read in from external resources
-such as configuration files. This new interface will be subject to change as
-users (and ourselves) experiment with it.
+but Jena 2.5's ModelFactory contains methods that use <code>Assembler</code>
+API which appeared in Jena 2.4, which allows models to be created according 
+to RDF descriptions that can be programmatically constructed or read in from 
+external resources such as configuration files. This API replaces the old 
+<code>ModelSpec</code> API, which had proved unsatisfactory.
 
 <p>This note is an introduction, not an exhaustive description. As usual
 consult the Javadoc for details of the methods and classes to use.
@@ -255,42 +256,49 @@ in the class which provide for common uses; to name but three:
     with the full OWL Lite inference
 </ul>
 
-<h1>ModelSpecs</h1>
+<h1>creating models from Assembler descriptions</h1>
 
-A new <i style="color: red">and experimental</i> feature of Jena 2 is
-the use of <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpec.html"></a><code>ModelSpec</code></a> objects for creating Models described
-in RDF. This is described in the companion <a href="modelspec.html">
-ModelSpec howto</a> document. The <code>ModelFactory</code> methods that
-support this are
+A new feature of Jena since Jena 2.4 is the use of <i>assembler
+descriptions</i>, which replace the old ModelSpec system. The
+assembler system is documented in the
+<a href="../assembler/assembler-howto.html">assembler howto</a>.
+Access to the assembler system for model creation is provided
+by three ModelFactory methods:
 
 <ul>
-<li><code>createSpec(Model desc)</code>: creates a <code>ModelSpec</code>
-    object from the RDF description. These allow Models satisfying the
-    description to be created. [As it happens, ModelMaker is a subclass of
-    ModelSpec, as is OntModelSpec.]
+<li><code>assembleModelFrom( Model singleRoot )</code>: assemble
+    a Model from the single Model description in <code>singleRoot</code>.
+    If there is no such description, or more than one, an exception
+    is thrown. If a description has to be selected from more than
+    one available candidates, consider using the methods below.
 
-<li><code>createModel(ModelSpec desc)</code>: creates a Model fitting the
-    specification <code>desc</code>. For example, if <code>desc</code>
-    is an <code>OntModelSpec</code>, the resulting Model is an <code>OntModel</code>.
+<li><code>findAssemblerRoots( Model m )</code>: answer a Set
+    of all the Resources in <code>m</code> which are of type
+    <code>ja:Model</code>, ie descriptions of models to assemble.
+    (Note that this will include sub-descriptions of embedded
+    models if they are present.)
 
+<li><code>assembleModelFrom( Resource root )</code>: answer
+    a Model assembled according to the description hanging
+    from <code>root</code>. 
 </ul>
 
-The intention is to allow models to be created according to RDF supplied
-by configuration files, or convenient shorthand strings, or from remote
-URLs.
+<p>Assemblers can construct other things as well as models,
+and the Assembler system is user-extensible: see the howto
+for details.
 
 <h1>Hodgepodge</h1>
 
 Finally, <code>ModelFactory</code> contains a hodgepodge of methods
 for some special cases not conveniently dealt with elsewhere.
 
-<code>createModelForGraph(Graph g)</code> is used when an advanced
+<p><code>createModelForGraph(Graph g)</code> is used when an advanced
 user with access to the Jena SPI has constructed or obtained a <code>Graph</code>
 and wishes to present it as a model. This method wraps the graph up as
 a plain model. Alterations to the graph are visible in the model, and
 <i>vice versa</i>.
 
-<code>withHiddenStatements(Model)</code> returns a new Model in which
+<p><code>withHiddenStatements(Model)</code> returns a new Model in which
 any reification quadlets (see the reification howto) that may be hidden
 in the base model are exposed in the result. It may return the base model,
 if it does not hide quadlets. This is useful if you want to see all the
