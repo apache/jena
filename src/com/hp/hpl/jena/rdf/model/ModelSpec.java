@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpec.java,v 1.17 2006-03-22 13:53:12 andy_seaborne Exp $
+  $Id: ModelSpec.java,v 1.18 2006-10-08 17:29:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -10,6 +10,7 @@ package com.hp.hpl.jena.rdf.model;
     A ModelSpec allows Models to be created.
     
  	@author kers
+    @deprecated in favour of the Assembler system
 */
 public interface ModelSpec extends ModelSource
     {    

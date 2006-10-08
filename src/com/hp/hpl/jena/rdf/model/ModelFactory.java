@@ -1,14 +1,18 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.48 2006-09-18 07:14:35 der Exp $
+  $Id: ModelFactory.java,v 1.49 2006-10-08 17:29:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
+import java.util.Set;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.assembler.Assembler;
+import com.hp.hpl.jena.assembler.AssemblerHelp;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
@@ -76,6 +80,8 @@ public class ModelFactory extends ModelFactoryBase
     /**
         Answer a ModelSpec which can create models to the specifications in the RDF
         description. The root of the description is the unique resource of type ModelSpec.
+        
+        @deprecated superceeded by the Assembler system
     */
     public static ModelSpec createSpec( Model desc )
         { return ModelSpecFactory.createSpec( desc ); }
@@ -83,16 +89,52 @@ public class ModelFactory extends ModelFactoryBase
     /**
         Answer a ModelSpec which can create models to the specifcations in the RDF
         description rooted at the given root.
+        
+        @deprecated superceeded by the Assembler system
     */
     public static ModelSpec createSpec( Resource root, Model desc )
         { return ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), root ); }
 
     /**
         Answer a fresh Model created according to the ModelSpec argument.
+        
+        @deprecated superceeded by the Assembler system
     */
     public static Model createModel( ModelSpec desc )
         { return desc.createFreshModel(); }
+    
+    /**
+        Answer a Model constructed from the single resource in 
+        <code>singleRoot</code> of type <code>ja:Model</code>. 
+        See the Assembler howto (doc/assembler/assembler-howto.html) 
+        for documentation of Assembler descriptions. See also 
+        <code>findAssemblerRoots</code> to find the set of possible
+        roots in a description, and <code>assemblerModelFrom(Resource)</code>
+        for assembling a model from its single description. 
+    */
+    public static Model assembleModelFrom( Model singleRoot )
+        { return assembleModelFrom( AssemblerHelp.singleModelRoot( singleRoot ) ); }
 
+    /**
+        Answer a Set of resources present in <code>m</code> that are
+        explicitly or implicitly of type ja:Object, ie, suitable as roots for
+        <code>assemblerModelFrom</code>. Note that the resource
+        objects returned need <i>not</i> have <code>m</code> as 
+        their <code>getModel()</code> - they may be members of an
+        extended constructed model.
+    */
+    public static Set findAssemblerRoots( Model m )
+        { return AssemblerHelp.findAssemblerRoots( m ); }
+
+    /**
+        Answer a Model as described the the Assembler specification rooted
+        at the Resource <code>root</code> in its Model. <code>Resource</code>
+        must be of rdf:type <code>ja:Object</code>, where <code>ja</code>
+        is the prefix of Jena Assembler objects. 
+    */
+    public static Model assembleModelFrom( Resource root )
+        { return Assembler.general.openModel( root ); }
+    
     /**
         Answer a fresh Model created according to the given specification and based on
         any underlying model with the given name.
@@ -100,7 +142,8 @@ public class ModelFactory extends ModelFactoryBase
      	@param desc the ModelSpec which describes the kind of model to create
      	@param name the name of the base model in the underlying ModelMaker
      	@return a fresh model based over the named model
-     */
+        @deprecated superceeded by the Assembler system
+    */
     public static Model createModelOver( ModelSpec desc, String name )
         { return desc.createModelOver( name ); }
 
