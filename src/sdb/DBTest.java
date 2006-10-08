@@ -61,10 +61,6 @@ public class DBTest extends CmdArgsDB
         params.put( TestI18N.kVarcharCol,        "colVarchar") ;
     }
     
-    // Hack
-    public static Connection connection ;
-    public static Params testParams ;
-    
     @Override
     protected void execCmd(List<String> args)
     {
@@ -77,8 +73,9 @@ public class DBTest extends CmdArgsDB
         
         Connection jdbc = getModStore().getConnection().getSqlConnection() ;
         // Hack to pass to T
-        connection = jdbc ;
-        testParams = params ;
+        // What is the best/correct/intended way to pass external parameters to the test?  
+        sdb.test.T.set(jdbc, params) ;
+
         
         JUnitCore x = new org.junit.runner.JUnitCore() ;
         RunListener listener = new TextListenerCustom() ;

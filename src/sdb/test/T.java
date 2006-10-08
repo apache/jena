@@ -15,42 +15,62 @@ import java.util.List;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import sdb.DBTest;
 
 @RunWith(Parameterized.class)
 //@Suite.SuiteClasses({ TestI18N.class, })
 public class T extends TestI18N 
 {
-    static private final String asciiBase = "abc" ;
-    static private final String westernEuropeanBase = "éíﬂ" ;
-    static private final String greekBase = "αβγ" ;
-    static private final String hewbrewBase = "אבג" ;
-    static private final String arabicBase = "ءآأ";
-    static private final String symbolsBase = "☺☻♪♫" ;
+    static private final String asciiBase             = "abc" ;
+    static private final String westernEuropeanBase   = "éíﬂ" ;
+    static private final String greekBase             = "αβγ" ;
+    static private final String hewbrewBase           = "אבג" ;
+    static private final String arabicBase            = "ءآأ";
+    static private final String symbolsBase           = "☺☻♪♫" ;
     // TODO : Add Chinese, Japanese and Korean as \ u escapes
     
     public T(String name, String baseString, Connection jdbc, Params params, boolean verbose)
     {
         super(name, baseString, jdbc, params, verbose) ;
-        
     }
 
+    // A bizaar way of calling the contructor to make "tests".
+    // JUnit4 is class-based, unlike Junit3 where there was a "test" instance
+    // underneath the reflection code that found "testXXX" methods.
+    
+    // Could use @BeforeClass to pull the arguments from a helper. 
+    
+    static Connection test_jdbc = null ;
+    static Params test_params = null ;
+    
+    // Call this before setting this test class off
+    public static void set(Connection jdbc, Params params) 
+    {
+        test_jdbc = jdbc ;
+        test_params = params ;
+    }
+    
     @Parameters
     public static Collection data()
     {
         List<Object[]> x = new ArrayList<Object[]>() ;
-        x.add(new Object[]{"ASCII", asciiBase, 
-                           DBTest.connection, DBTest.testParams, false}) ;
-        x.add(new Object[]{"Accented Latin", westernEuropeanBase,
-                           DBTest.connection, DBTest.testParams, false}) ;
-        x.add(new Object[]{"Greek", greekBase, 
-                           DBTest.connection, DBTest.testParams, false}) ;
-        x.add(new Object[]{"Arabic", arabicBase,
-                           DBTest.connection, DBTest.testParams, false}) ;
-        x.add(new Object[]{"Hewbrew", hewbrewBase,
-            DBTest.connection, DBTest.testParams, false}) ;
-        x.add(new Object[]{"Symbols", symbolsBase,
-                           DBTest.connection, DBTest.testParams, false}) ;
+        x.add(new Object[]{
+            "ASCII", asciiBase,
+            test_jdbc, test_params, false}) ;
+        x.add(new Object[]{
+            "Accented Latin", westernEuropeanBase,
+            test_jdbc, test_params, false}) ;
+        x.add(new Object[]{
+            "Greek", greekBase,
+            test_jdbc, test_params, false}) ;
+        x.add(new Object[]{
+            "Arabic", arabicBase,
+            test_jdbc, test_params, false}) ;
+        x.add(new Object[]{
+            "Hewbrew", hewbrewBase,
+            test_jdbc, test_params, false}) ;
+        x.add(new Object[]{
+            "Symbols", symbolsBase,
+            test_jdbc, test_params, false}) ;
         return x ;
     }
 }   
