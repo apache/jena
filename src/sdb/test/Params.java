@@ -6,13 +6,13 @@
 
 package sdb.test;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Params implements Iterable<String>
 {
-    Map<String, String> params = new HashMap<String, String>() ;
+    Map<String, String> params = new TreeMap<String, String>() ;
 
     public String get(String key) { return params.get(key.toLowerCase()) ; }
     public void put(String key, String value) { params.put(key.toLowerCase(), value) ; }

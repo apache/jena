@@ -20,6 +20,8 @@ import org.junit.runners.Parameterized.Parameters;
 //@Suite.SuiteClasses({ TestI18N.class, })
 public class T extends TestI18N 
 {
+    static private final String emptyBase             = "" ;
+    static private final String whitespaceBase        = "   " ;
     static private final String asciiBase             = "abc" ;
     static private final String westernEuropeanBase   = "éíﬂ" ;
     static private final String greekBase             = "αβγ" ;
@@ -54,23 +56,29 @@ public class T extends TestI18N
     {
         List<Object[]> x = new ArrayList<Object[]>() ;
         x.add(new Object[]{
+            "Empty string", emptyBase,
+            test_jdbc, test_params, false}) ;
+        x.add(new Object[]{
+            "White space", whitespaceBase,
+            test_jdbc, test_params, false}) ;
+        x.add(new Object[]{
             "ASCII", asciiBase,
             test_jdbc, test_params, false}) ;
-        x.add(new Object[]{
-            "Accented Latin", westernEuropeanBase,
-            test_jdbc, test_params, false}) ;
-        x.add(new Object[]{
-            "Greek", greekBase,
-            test_jdbc, test_params, false}) ;
-        x.add(new Object[]{
-            "Arabic", arabicBase,
-            test_jdbc, test_params, false}) ;
-        x.add(new Object[]{
-            "Hewbrew", hewbrewBase,
-            test_jdbc, test_params, false}) ;
-        x.add(new Object[]{
-            "Symbols", symbolsBase,
-            test_jdbc, test_params, false}) ;
+//        x.add(new Object[]{
+//            "Accented Latin", westernEuropeanBase,
+//            test_jdbc, test_params, false}) ;
+//        x.add(new Object[]{
+//            "Greek", greekBase,
+//            test_jdbc, test_params, false}) ;
+//        x.add(new Object[]{
+//            "Arabic", arabicBase,
+//            test_jdbc, test_params, false}) ;
+//        x.add(new Object[]{
+//            "Hewbrew", hewbrewBase,
+//            test_jdbc, test_params, false}) ;
+//        x.add(new Object[]{
+//            "Symbols", symbolsBase,
+//            test_jdbc, test_params, false}) ;
         return x ;
     }
 }   

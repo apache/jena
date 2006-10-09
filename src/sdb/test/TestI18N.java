@@ -6,7 +6,7 @@
 
 package sdb.test;
 
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,7 +31,7 @@ public class TestI18N extends TestDB
     static public final String kVarcharType    = "typeVarchar" ;
     static public final String kVarcharCol     = "colVarchar" ;
 
-    static final Charset csUTF8 = Charset.forName("UTF-8") ;
+    //static Charset csUTF8 = Charset.forName("UTF-8") ;
 
 
     public TestI18N(String testLabel, String baseString, 
@@ -61,7 +61,7 @@ public class TestI18N extends TestDB
 
     @Test
     public void text_ascii_long()
-    { runTextTest(testLabel+"Text/Long", longString(baseString, 200), params.get(kVarcharCol), params.get(kVarcharType)) ; }
+    { runTextTest(testLabel+"Text/Long", longString(baseString, 198), params.get(kVarcharCol), params.get(kVarcharType)) ; }
 
     @Test
     public void binary_ascii()
@@ -70,11 +70,10 @@ public class TestI18N extends TestDB
     @Test
     public void binary_ascii_long()
     { runBytesTest(testLabel+"/Binary/Long", longString(baseString,1000), params.get(kBinaryCol), params.get(kBinaryType)) ; }
-
-
     
     private void runTextTest(String label, String testString, String colName, String colType)
     {
+        testString = ":"+testString+":" ;
         try {
             exec("CREATE TABLE %s (%s %s)",  tempTableName, colName, colType) ;
 
@@ -89,7 +88,9 @@ public class TestI18N extends TestDB
 
             ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
             rs.next() ;
+            // Null on empty strings (Oracle)
             String s = rs.getString(1) ;
+            //if ( s == null ) s = "" ;
             rs.close() ;
             assertEquals(testLabel+" : "+label, testString, s) ;
             //System.out.println("Passed: "+label) ;
@@ -99,6 +100,7 @@ public class TestI18N extends TestDB
 
     private void runBytesTest(String label, String testString, String colName, String colType)
     {
+        testString = ":"+testString+":" ;
         try {
             exec("CREATE TABLE %s (%s %s)",  tempTableName, colName, colType) ;
 
@@ -107,25 +109,32 @@ public class TestI18N extends TestDB
                 System.out.println($str) ;
             
             PreparedStatement ps = jdbc.prepareStatement($str) ;
-            ps.setBytes(1, testString.getBytes(csUTF8)) ;
+            ps.setBytes(1, stringToBytes(testString)) ;
             ps.execute() ;
             ps.close() ;
 
             ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
             rs.next() ;
-            byte[] b = rs.getBytes(1) ;
-            String s = new String(b, csUTF8) ;
-            
+            byte[]b = rs.getBytes(1) ;
+
+            // Null on empty strings (Oracle)
+            String s = "" ;
+//            if ( b != null )
+            s = bytesToString(b) ;
             rs.close() ;
             assertEquals(testLabel+" : "+label, testString, s) ;
             //System.out.println("Passed: "+label) ;
         } catch (SQLException ex)
         { fail("SQLException: "+ex.getMessage()) ; }
     }
+    
     private static String longString(String base,  int len)
     {
+        if ( base.length() == 0 )
+            return base ;
+        
         StringBuilder value = new StringBuilder() ; 
-        for ( int i = 0 ; i < 0 ; i++ )
+        for ( int i = 0 ; i < len ; i++ )
         {
             value.append(base) ;
             if ( value.length() > len )
@@ -136,6 +145,33 @@ public class TestI18N extends TestDB
             value = value.delete(len, value.length()) ;
         
         return value.toString() ;
+    }
+    
+    // String(byte[], Charset) and .getBytes(Charset) are Java6-isms.
+    
+    String bytesToString(byte[] b)
+    {
+        if ( b == null )
+            fail(testLabel+": bytesToString(null)") ;
+        
+        try { return new String(b, "UTF-8") ; }
+        catch (UnsupportedEncodingException ex)
+        {
+            ex.printStackTrace();
+            throw new RuntimeException("No UTF-8 - should not happen") ;
+        }
+    }
+    byte[] stringToBytes(String s)
+    {
+        if ( s == null )
+            fail(testLabel+": stringToByte(null)") ;
+        try { return s.getBytes("UTF-8") ; } 
+        catch (UnsupportedEncodingException ex)
+        {
+            ex.printStackTrace();
+            throw new RuntimeException("No UTF-8 - should not happen") ;
+        }
+        
     }
 }
 

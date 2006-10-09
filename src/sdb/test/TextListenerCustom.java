@@ -16,7 +16,8 @@ import org.junit.runner.notification.Failure;
 public class TextListenerCustom extends TextListener
 {
     private final PrintStream fWriter;
-
+    static final int maxStackTrace = 5 ;
+    
     public TextListenerCustom() {
         this(System.out);
     }
@@ -28,10 +29,12 @@ public class TextListenerCustom extends TextListener
     @Override
     protected void printFailureTrace(Failure failure) {
         //getWriter().print(failure.getTrace());
+        fWriter.println(failure.getMessage()) ;
+
         Throwable th = failure.getException() ;
-        if ( ! ( th instanceof org.junit.ComparisonFailure ) )
+        if ( ! ( th instanceof java.lang.AssertionError ) )
         {            
-            super.printFailureTrace(failure) ;
+            printFailureTrace(failure, 0, maxStackTrace) ;
             return ;
         }
          
@@ -39,14 +42,27 @@ public class TextListenerCustom extends TextListener
         // Rather than a full stacktrace, we print the first non-JUnit point.
         StackTraceElement[] stackTrace = th.getStackTrace() ;
         StackTraceElement el = null ;
-        for ( int i = 0 ; i < stackTrace.length ; i++ )
+        int start = 0 ;
+        for ( start = 0 ; start < stackTrace.length ; start++ )
         {
-            el = stackTrace[i] ;
+            el = stackTrace[start] ;
             if ( ! el.getClassName().equals("org.junit.Assert") )
                 break ;
         }
-        fWriter.println(failure.getMessage()) ;
-        fWriter.println("    "+el.toString()) ;
+        printFailureTrace(failure, start, start+maxStackTrace) ;
+    }
+
+    private void printFailureTrace(Failure failure, int start, int finish)
+    {
+        StackTraceElement[] stackTrace = failure.getException().getStackTrace() ;
+        if ( finish > stackTrace.length )
+            finish = stackTrace.length ;
+        
+        for ( int i = start ; i < finish  ; i++ )
+        {
+            StackTraceElement el = stackTrace[i] ;
+            fWriter.println("    "+el.toString()) ;
+        }
     }
 }
 
