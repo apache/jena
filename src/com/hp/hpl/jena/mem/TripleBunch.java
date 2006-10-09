@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TripleBunch.java,v 1.4 2006-03-22 13:52:19 andy_seaborne Exp $
+    $Id: TripleBunch.java,v 1.5 2006-10-09 13:34:30 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -13,12 +13,16 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public interface TripleBunch 
     {
+    public interface NotifyEmpty
+        { public void emptied(); }
+    
     public abstract boolean contains( Triple t );
     public abstract boolean containsBySameValueAs( Triple t );
     public abstract int size();
     public abstract void add( Triple t );
     public abstract void remove( Triple t );
     public abstract ExtendedIterator iterator();
+    public abstract ExtendedIterator iterator( NotifyEmpty container );
     public abstract void app( Domain d, StageElement next, MatchOrBind s );
     }
 /*

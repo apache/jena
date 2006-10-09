@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: SetBunch.java,v 1.4 2006-03-22 13:52:19 andy_seaborne Exp $
+    $Id: SetBunch.java,v 1.5 2006-10-09 13:34:30 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -54,6 +54,11 @@ public class SetBunch implements TripleBunch
     
     public void remove( Triple t )
         { elements.remove( t ); }
+    
+    public ExtendedIterator iterator( NotifyEmpty container )
+        {
+        return iterator();
+        }
     
     public ExtendedIterator iterator()
         { return WrappedIterator.create( elements.iterator() ); }        

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestListSubjectsEtc.java,v 1.4 2006-10-06 14:38:02 chris-dollin Exp $
+  $Id: TestListSubjectsEtc.java,v 1.5 2006-10-09 13:34:34 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -43,9 +43,18 @@ public class TestListSubjectsEtc extends ModelTestBase
         catch (UnsupportedOperationException e) { pass(); }
         }
     
-    public void PENDINGtestListSubjectsWorksAfterRemoveProperties()
+    public void testListSubjectsWorksAfterRemoveProperties()
         {
         Model m = modelWithStatements( "p1 before terminal; p2 before terminal" );
+        m.createResource( "eh:/p1" ).removeProperties();
+        assertIsoModels( modelWithStatements( "p2 before terminal" ), m );
+        assertEquals( resourceSet( "p2" ), m.listSubjects().toSet() );
+        }
+    
+    public void testListSubjectsWorksAfterRemovePropertiesWIthLots()
+        {
+        Model m = modelWithStatements( "p2 before terminal" );
+        for (int i = 0; i < 100; i += 1) modelAdd( m, "p1 hasValue " + i );
         m.createResource( "eh:/p1" ).removeProperties();
         assertIsoModels( modelWithStatements( "p2 before terminal" ), m );
         assertEquals( resourceSet( "p2" ), m.listSubjects().toSet() );

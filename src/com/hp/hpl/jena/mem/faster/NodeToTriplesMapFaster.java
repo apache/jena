@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.22 2006-10-09 10:46:26 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.23 2006-10-09 13:34:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -53,7 +53,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     public boolean remove( Triple t )
        { 
        Object o = getIndexField( t );
-       TripleBunch s = (TripleBunch) bunchMap.get( o );
+       TripleBunch s = bunchMap.get( o );
        if (s == null || !s.contains( t ))
            return false;
        else
@@ -72,8 +72,19 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     public Iterator iterator( Object o ) 
        {
        TripleBunch s = (TripleBunch) bunchMap.get( o );
-       return s == null ? NullIterator.instance : s.iterator();
+       return s == null ? NullIterator.instance : s.iterator( new NotifyMe( o ) );
        }
+    
+    public class NotifyMe implements TripleBunch.NotifyEmpty
+        {
+        protected final Object key;
+        
+        public NotifyMe( Object key )
+            { this.key = key; }
+        
+        public void emptied()
+            { bunchMap.remove( key ); }
+        }
     
     /**
         Answer true iff this NTM contains the concrete triple <code>t</code>.
@@ -97,11 +108,13 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     */
     public ExtendedIterator iterator( Node index, Node n2, Node n3 )
        {
-       TripleBunch s = (TripleBunch) bunchMap.get( index.getIndexingValue() );
+       Object indexValue = index.getIndexingValue();
+       TripleBunch s = (TripleBunch) bunchMap.get( indexValue );
+//       System.err.println( ">> ntmf::iterator: " + (s == null ? (Object) "None" : s.getClass()) );
        return s == null
            ? NullIterator.instance
            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
-               .filterKeep( s.iterator() )
+               .filterKeep( s.iterator( new NotifyMe( indexValue ) ) )
            ;
        }    
 

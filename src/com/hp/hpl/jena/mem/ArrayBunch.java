@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: ArrayBunch.java,v 1.9 2006-04-28 09:47:41 chris-dollin Exp $
+    $Id: ArrayBunch.java,v 1.10 2006-10-09 13:34:30 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -89,6 +89,11 @@ public class ArrayBunch implements TripleBunch
     
     public ExtendedIterator iterator()
         {
+        return iterator( new NotifyEmpty() { public void emptied() {} } );
+        }
+    
+    public ExtendedIterator iterator( final NotifyEmpty container )
+        {
         return new NiceIterator()
             {
             protected final int initialChanges = changes;
@@ -115,6 +120,7 @@ public class ArrayBunch implements TripleBunch
                 int last = --size;
                 e[i] = e[last];
                 e[last] = null;
+                if (size == 0) container.emptied();
                 }
             };
         }
