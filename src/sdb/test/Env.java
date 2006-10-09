@@ -10,6 +10,7 @@ import java.sql.Connection;
 
 public class Env
 {
+    // I want parameters that span test classes. 
     static Connection test_jdbc = null ;
     static Params test_params = null ;
     

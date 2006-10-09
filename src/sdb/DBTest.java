@@ -12,9 +12,11 @@ import java.util.List;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.notification.RunListener;
 import sdb.cmd.CmdArgsDB;
+import sdb.junit.TextListenerCustom;
 import sdb.test.Params;
 import sdb.test.ParamsVocab;
-import sdb.test.TextListenerCustom;
+import sdb.test.TestI18N;
+import sdb.test.TestStringBasic;
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.query.util.Utils;
@@ -52,13 +54,13 @@ public class DBTest extends CmdArgsDB
     
     Params params = new Params() ;
     {
-        params.put( ParamsVocab.TempTableName,     "FOO") ;
+        params.put( ParamsVocab.TempTableName,    "FOO") ;
 
         params.put( ParamsVocab.BinaryType,       "BLOB") ;
         params.put( ParamsVocab.BinaryCol,        "colBinary") ;
         
         params.put( ParamsVocab.VarcharType,      "VARCHAR(200)") ;
-        params.put( ParamsVocab.VarcharCol,        "colVarchar") ;
+        params.put( ParamsVocab.VarcharCol,       "colVarchar") ;
     }
     
     @Override
@@ -72,21 +74,24 @@ public class DBTest extends CmdArgsDB
         }
         
         Connection jdbc = getModStore().getConnection().getSqlConnection() ;
-        // Hack to pass to T
-        // What is the best/correct/intended way to pass external parameters to the test?  
+        // Hack to pass to calculated parameters to the test subsystem.
+
         sdb.test.Env.set(jdbc, params) ;
         
         JUnitCore x = new org.junit.runner.JUnitCore() ;
         RunListener listener = new TextListenerCustom() ;
         x.addListener(listener) ;
-        //x.run(sdb.test.T.class) ;
-        x.run(sdb.test.TestBasicDB.class) ;
+        
+        //x.run(sdb.test.AllTests.class) ;
+        System.out.println("String basic") ;
+        x.run(TestStringBasic.class) ;
+        
+        System.out.println("String I18N") ;
+        x.run(TestI18N.class) ;
 
         // Better way of having parameters for a class than a @Parameterised test of one thing?
 //        Request request = Request.aClass(sdb.test.T.class) ;
 //        x.run(request) ;
-        
-
     }
     
     private void setParams(List<String> args)

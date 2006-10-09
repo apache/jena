@@ -6,126 +6,80 @@
 
 package sdb.test;
 
-import java.io.UnsupportedEncodingException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-public class TestI18N extends TestDB 
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith(Parameterized.class)
+//@Suite.SuiteClasses({ TestI18N.class, })
+public class TestI18N extends TestStringBase 
 {
-    private Params params ;
-    private String tempTableName ;
-    private String testLabel ;
-    private String baseString ; 
+    static private final String emptyBase             = "" ;
+    static private final String whitespaceBase        = "   " ;
+    static private final String asciiBase             = "abc" ;
+    static private final String westernEuropeanBase   = "éíﬂ" ;
+    static private final String greekBase             = "αβγ" ;
+    static private final String hewbrewBase           = "אבג" ;
+    static private final String arabicBase            = "ءآأ";
+    static private final String symbolsBase           = "☺☻♪♫" ;
+    // TODO : Add Chinese, Japanese and Korean as \ u escapes
     
-
-    //static Charset csUTF8 = Charset.forName("UTF-8") ;
-
-
-    public TestI18N(String testLabel, String baseString, 
-                    Connection jdbc, Params params, boolean verbose)
+    public TestI18N(String name, String baseString)
     {
-        super(jdbc, verbose) ;
-        this.params = params ;
-        tempTableName = params.get(ParamsVocab.TempTableName) ;
-        this.testLabel = testLabel ;
-        this.baseString = baseString ;
-    }
-
-    @Before
-    public void before()
-    {
-        execNoFail("DROP TABLE %s", tempTableName) ;
+        super(name, baseString, Env.test_jdbc, Env.test_params, false) ;
     }
     
-    @After
-    public void after()
-    { }
+    // A bizaar way of calling the contructor to make "tests".
+    // JUnit4 is class-based, unlike Junit3 where there was a "test" instance
+    // underneath the reflection code that found "testXXX" methods.
     
-    // --------
-    @Test
-    public void text_ascii()
-    { runTextTest(testLabel+"/Text", baseString, params.get(ParamsVocab.VarcharCol), params.get(ParamsVocab.VarcharType)) ; }
-
-    @Test
-    public void text_ascii_long()
-    { runTextTest(testLabel+"Text/Long", longString(baseString, 198), params.get(ParamsVocab.VarcharCol), params.get(ParamsVocab.VarcharType)) ; }
-
-    @Test
-    public void binary_ascii()
-    { runBytesTest(testLabel+"/Binary", baseString, params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
-
-    @Test
-    public void binary_ascii_long()
-    { runBytesTest(testLabel+"/Binary/Long", longString(baseString,1000), params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
+    // Could use @BeforeClass to pull the arguments from a helper. 
     
-    private void runTextTest(String label, String testString, String colName, String colType)
+    //@RunWith(Suite.class)
+    //@SuiteClasses({ATest.class, BTest.class, CTest.class})
+    //    ==> @Parameterized
+    //public class MyTests() {
+    //   @BeforeClass public void setupDatabaseBeforeEverything() { ... }
+    //   @AfterClass public void teardownDatabaseAfterEverything() { ... }
+    //} 
+    
+    @BeforeClass
+    static public void check()
     {
-        testString = ":"+testString+":" ;
-        try {
-            exec("CREATE TABLE %s (%s %s)",  tempTableName, colName, colType) ;
-
-            String $str = sqlFormat("INSERT INTO %s values (?)", tempTableName) ;
-            if ( verbose )
-                System.out.println($str) ;
-            
-            PreparedStatement ps = jdbc.prepareStatement($str) ;
-            ps.setString(1, testString) ;
-            ps.execute() ;
-            ps.close() ;
-
-            ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
-            rs.next() ;
-            // Null on empty strings (Oracle)
-            String s = rs.getString(1) ;
-            boolean wasNull = rs.wasNull() ;
-            
-            //if ( s == null ) s = "" ;
-            rs.close() ;
-            assertEquals(testLabel+" : "+label, testString, s) ;
-            //System.out.println("Passed: "+label) ;
-        } catch (SQLException ex)
-        { fail("SQLException: "+ex.getMessage()) ; }
+        if ( Env.test_jdbc == null )
+            System.err.println("JDBC connection is null") ;
+        if ( Env.test_params == null )
+            System.err.println("Test parameters are null") ;
     }
-
-    private void runBytesTest(String label, String testString, String colName, String colType)
+    
+    @Parameters
+    public static Collection data()
     {
-        testString = ":"+testString+":" ;
-        try {
-            exec("CREATE TABLE %s (%s %s)",  tempTableName, colName, colType) ;
+        List<Object[]> x = new ArrayList<Object[]>() ;
+        
+        x.add(new Object[]{ "Empty string", emptyBase } ) ;
+        
+        x.add(new Object[]{ "White space", whitespaceBase } ) ;
+        
+        x.add(new Object[]{ "ASCII", asciiBase } ) ;
 
-            String $str = sqlFormat("INSERT INTO %s values (?)", tempTableName) ;
-            if ( verbose )
-                System.out.println($str) ;
+        x.add(new Object[]{ "Accented Latin", westernEuropeanBase } ) ;
+
+        x.add(new Object[]{ "Greek", greekBase } ) ; 
+
+        x.add(new Object[]{"Arabic", arabicBase } ) ;
+
+        x.add(new Object[]{ "Hewbrew", hewbrewBase } ) ;
+
+        x.add(new Object[]{ "Symbols", symbolsBase} ) ;
             
-            PreparedStatement ps = jdbc.prepareStatement($str) ;
-            ps.setBytes(1, stringToBytes(testString)) ;
-            ps.execute() ;
-            ps.close() ;
-
-            ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
-            rs.next() ;
-            byte[]b = rs.getBytes(1) ;
-            boolean wasNull = rs.wasNull() ;
-            if ( testString != null && wasNull )
-                fail(testLabel+": got an SQL null back") ;
-            
-
-            // Null on empty strings (Oracle?)
-            String s = "" ;
-//            if ( b != null )
-            s = bytesToString(b) ;
-            rs.close() ;
-            assertEquals(testLabel+" : "+label, testString, s) ;
-            //System.out.println("Passed: "+label) ;
-        } catch (SQLException ex)
-        { fail("SQLException: "+ex.getMessage()) ; }
+        return x ;
     }
     
     private static String longString(String base,  int len)
@@ -147,33 +101,8 @@ public class TestI18N extends TestDB
         return value.toString() ;
     }
     
-    // String(byte[], Charset) and .getBytes(Charset) are Java6-isms.
-    
-    String bytesToString(byte[] b)
-    {
-        if ( b == null )
-            fail(testLabel+": bytesToString(null)") ;
-        
-        try { return new String(b, "UTF-8") ; }
-        catch (UnsupportedEncodingException ex)
-        {
-            ex.printStackTrace();
-            throw new RuntimeException("No UTF-8 - should not happen") ;
-        }
-    }
-    byte[] stringToBytes(String s)
-    {
-        if ( s == null )
-            fail(testLabel+": stringToByte(null)") ;
-        try { return s.getBytes("UTF-8") ; } 
-        catch (UnsupportedEncodingException ex)
-        {
-            ex.printStackTrace();
-            throw new RuntimeException("No UTF-8 - should not happen") ;
-        }
-        
-    }
-}
+
+}   
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

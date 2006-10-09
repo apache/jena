@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package sdb.test;
+package sdb.junit;
 import java.io.PrintStream;
 
 import org.junit.internal.runners.TextListener;

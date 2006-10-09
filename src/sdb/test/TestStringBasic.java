@@ -6,60 +6,48 @@
 
 package sdb.test;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-public class TestDB
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith(Parameterized.class)
+public class TestStringBasic extends TestStringBase 
 {
-    protected Connection jdbc = null ;
-    boolean verbose = false ;
-    
+    static private final String emptyBase             = "" ;
+    static private final String whitespaceBase        = "   " ;
 
-    public TestDB(Connection jdbc, boolean verbose)
-    { 
-        this.jdbc = jdbc ;
-        this.verbose = verbose ;
-    }
-    
-    public void setVerbose(boolean newValue) { verbose = newValue ; }
-    protected void setConnection(Connection jdbc) { this.jdbc = jdbc ; }
-    
-    protected String sqlFormat(String sql, Object... args)
+    public TestStringBasic(String name, String baseString)
     {
-        return String.format(sql, args) ;
-    }
-    
-    protected void execNoFail(String sql, Object... args)
-    {
-        try { exec(sql, args) ;
-        } catch (SQLException ex) {}
+        super(name, baseString, Env.test_jdbc, Env.test_params, false) ;
     }
 
-    protected void exec(String sql, Object... args) throws SQLException
+    @BeforeClass
+    static public void check()
     {
-        sql = sqlFormat(sql, args) ;
-        Statement stmt = null ;
-        try {
-            stmt = jdbc.createStatement() ;
-            if ( verbose )
-                System.out.println(sql) ;
-            stmt.execute(sql) ;
-        } finally {
-            if ( stmt != null ) stmt.close() ;
-        }
+        if ( Env.test_jdbc == null )
+            System.err.println("JDBC connection is null") ;
+        if ( Env.test_params == null )
+            System.err.println("Test parameters are null") ;
     }
     
-    protected ResultSet execQuery(String sql, Object... args) throws SQLException
+    @Parameters
+    public static Collection data()
     {
-        sql = sqlFormat(sql, args) ;
-        if ( verbose )
-            System.out.println(sql) ;
-        Statement stmt = jdbc.createStatement() ;
-        return stmt.executeQuery(sql) ;
+        List<Object[]> x = new ArrayList<Object[]>() ;
+        
+        x.add(new Object[]{ "Empty string", emptyBase } ) ;
+        
+        x.add(new Object[]{ "White space", whitespaceBase } ) ;
+        
+        return x ;
     }
-}
+}   
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP
