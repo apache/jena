@@ -1,16 +1,18 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFasterGraphMem.java,v 1.2 2006-03-22 13:53:36 andy_seaborne Exp $
+ 	$Id: TestFasterGraphMem.java,v 1.3 2006-10-09 08:21:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
 
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class TestFasterGraphMem extends AbstractTestGraph
     {
@@ -21,7 +23,39 @@ public class TestFasterGraphMem extends AbstractTestGraph
         { return new TestSuite( TestFasterGraphMem.class ); }
     
     public Graph getGraph()
-        { return new GraphMemFaster(); }
+        { return new GraphMemFaster(); }   
+    
+    public void testRemoveAllDoesntUseFind()
+        {
+        Graph g = new GraphMemWithoutFind();
+        graphAdd( g, "x P y; a Q b" );
+        g.getBulkUpdateHandler().removeAll();
+        assertEquals( 0, g.size() );
+        }
+    
+    public void testSizeAfterRemove() 
+        {
+        Graph g = getGraphWith( "x p y" );
+        ExtendedIterator it = g.find( triple( "x ?? ??" ) );
+        it.removeNext();
+        assertEquals( 0, g.size() );        
+        }
+    
+    public void testContainsConcreteDoesntUseFind()
+        {
+        Graph g = new GraphMemWithoutFind();
+        graphAdd( g, "x P y; a Q b" );
+        assertTrue( g.contains( triple( "x P y" ) ) );
+        assertTrue( g.contains( triple( "a Q b" ) ) );
+        assertFalse( g.contains( triple( "a P y" ) ) );
+        assertFalse( g.contains( triple( "y R b" ) ) );
+        }    
+    
+    protected final class GraphMemWithoutFind extends GraphMemFaster
+        {
+        public ExtendedIterator graphBaseFind( TripleMatch t )
+            { throw new JenaException( "find is Not Allowed" ); }
+        }
     }
 
 

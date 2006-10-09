@@ -1,15 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.19 2006-10-08 15:52:04 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.20 2006-10-09 08:21:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.SimpleReifier;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
