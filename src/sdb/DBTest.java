@@ -99,7 +99,7 @@ public class DBTest extends CmdArgsDB
         for ( String s : args )
         {
             String[] frags = s.split("=", 2) ;
-            if ( frags.length == 1)
+            if ( frags.length != 2)
                 throw new CmdException("Can't split '"+s+"'") ;
             params.put(frags[0], frags[1] ) ;
         }
