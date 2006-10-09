@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.26 2006-10-09 10:46:28 chris-dollin Exp $
+  $Id: Factory.java,v 1.27 2006-10-09 14:16:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -22,8 +22,8 @@ public class Factory
     private Factory()
         { super(); }
 
-    public static final boolean faster = true;
-        // JenaRuntime.getSystemProperty( "jena.faster", "yes" ).equals( "yes" );
+    public static final boolean faster = 
+        JenaRuntime.getSystemProperty( "jena.faster", "yes" ).equals( "yes" );
 
     public static final boolean newHashing = 
         JenaRuntime.getSystemProperty( "jena.hashing", "yes" ).equals( "yes" );

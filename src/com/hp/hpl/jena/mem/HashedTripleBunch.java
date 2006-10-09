@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.14 2006-10-09 13:34:30 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.15 2006-10-09 14:16:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -10,8 +10,6 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.TripleBunch.NotifyEmpty;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class HashedTripleBunch extends HashCommon implements TripleBunch
@@ -31,7 +29,6 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
     protected int findSlotBySameValueAs( Triple key )
         {
         int index = initialIndexFor( key );
-        // int k = 1;
         while (true)
             {
             Object current = keys[index];
