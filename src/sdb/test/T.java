@@ -41,6 +41,14 @@ public class T extends TestI18N
     
     // Could use @BeforeClass to pull the arguments from a helper. 
     
+    //@RunWith(Suite.class)
+    //@SuiteClasses({ATest.class, BTest.class, CTest.class})
+    //    ==> @Parameterized
+    //public class MyTests() {
+    //   @BeforeClass public void setupDatabaseBeforeEverything() { ... }
+    //   @AfterClass public void teardownDatabaseAfterEverything() { ... }
+    //} 
+    
     static Connection test_jdbc = null ;
     static Params test_params = null ;
     
