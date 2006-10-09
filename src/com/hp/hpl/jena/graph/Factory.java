@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.25 2006-10-07 11:45:18 chris-dollin Exp $
+  $Id: Factory.java,v 1.26 2006-10-09 10:46:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,7 +19,6 @@ import com.hp.hpl.jena.shared.*;
 
 public class Factory
     {
-
     private Factory()
         { super(); }
 

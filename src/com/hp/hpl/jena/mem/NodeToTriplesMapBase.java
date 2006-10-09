@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.11 2006-03-22 13:52:19 andy_seaborne Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.12 2006-10-09 10:46:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -22,7 +22,7 @@ public abstract class NodeToTriplesMapBase
     /**
          The map from nodes to Bunch(Triple).
     */
-     public BunchMap map = 
+     public BunchMap bunchMap = 
          Factory.newHashing ? (BunchMap) new HashedBunchMap() : new WrappedHashMap();
 
     /**
@@ -65,7 +65,7 @@ public abstract class NodeToTriplesMapBase
         for eg listSubjects().
     */
     public final Iterator domain()
-        { return map.keyIterator(); }
+        { return bunchMap.keyIterator(); }
 
     protected final Object getIndexField( Triple t )
         { return indexField.getField( t ).getIndexingValue(); }
@@ -74,7 +74,7 @@ public abstract class NodeToTriplesMapBase
         Clear this NTM; it will contain no triples.
     */
     public void clear()
-        { map.clear(); size = 0; }
+        { bunchMap.clear(); size = 0; }
 
     public int size()
         { return size; }

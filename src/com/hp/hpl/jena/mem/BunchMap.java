@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: BunchMap.java,v 1.3 2006-03-22 13:52:19 andy_seaborne Exp $
+    $Id: BunchMap.java,v 1.4 2006-10-09 10:46:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 /**
     A pruned (and slightly stewed) version of Map, containing just those operations
-    required by NodeToTriplesMaps.
+    required by NodeToTriplesMaps. BunchMaps contain only TripleBunch's.
     
     @author kers
 */
@@ -21,17 +21,17 @@ public interface BunchMap
     public void clear();
 
     /**
-        Answer the value associated with <code>key</code>, or <code>null</code>
-        if there isn't one.
+        Answer the TripleBunch associated with <code>key</code>, or 
+        <code>null</code> if there isn't one.
     */
-    public Object get( Object key );
+    public TripleBunch get( Object key );
 
     /**
-        Associate <cpde>key</code> and <code>value</code>. Any existing
+        Associate <code>key</code> and <code>value</code>. Any existing
         association of <code>key</code> is lost. <code>get</code> on this key
         will now deliver this value.
     */
-    public void put( Object key, Object value );
+    public void put( Object key, TripleBunch value );
 
     /**
         Remove any association for <code>key</code>; <code>get</code> on this

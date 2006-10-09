@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.6 2006-03-22 13:52:19 andy_seaborne Exp $
+    $Id: HashedBunchMap.java,v 1.7 2006-10-09 10:46:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -15,12 +15,12 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 */
 public class HashedBunchMap extends HashCommon implements BunchMap
     {
-    protected Object [] values;
+    protected TripleBunch [] values;
     
     public HashedBunchMap()
         {
         super( 10 );
-        values = new Object[capacity];
+        values = new TripleBunch[capacity];
         }
     
     /**
@@ -30,13 +30,13 @@ public class HashedBunchMap extends HashCommon implements BunchMap
     public void clear()
         { for (int i = 0; i < capacity; i += 1) keys[i] = values[i] = null; }  
     
-    public Object get( Object key )
+    public TripleBunch get( Object key )
         {
         int slot = findSlot( key );
         return slot < 0 ? values[~slot] : null;
         }
 
-    public void put( Object key, Object value )
+    public void put( Object key, TripleBunch value )
         {
         int slot = findSlot( key );
         if (slot < 0)
@@ -52,11 +52,12 @@ public class HashedBunchMap extends HashCommon implements BunchMap
 
     protected void grow()
         {
-        Object [] oldContents = keys, oldValues = values;
+        Object [] oldContents = keys;
+        TripleBunch [] oldValues = values;
         final int oldCapacity = capacity;
         growCapacityAndThreshold();
         keys = new Object[capacity];
-        values = new Object[capacity];
+        values = new TripleBunch[capacity];
         for (int i = 0; i < oldCapacity; i += 1)
             {
             Object key = oldContents[i];

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: WrappedHashMap.java,v 1.3 2006-03-22 13:52:19 andy_seaborne Exp $
+    $Id: WrappedHashMap.java,v 1.4 2006-10-09 10:46:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -20,10 +20,10 @@ public class WrappedHashMap implements BunchMap
     public void clear()
         { map.clear(); }
 
-    public Object get( Object key )
-        { return map.get( key ); }
+    public TripleBunch get( Object key )
+        { return (TripleBunch) map.get( key ); }
 
-    public void put( Object key, Object value )
+    public void put( Object key, TripleBunch value )
         { map.put( key, value ); }
 
     public void remove( Object key )

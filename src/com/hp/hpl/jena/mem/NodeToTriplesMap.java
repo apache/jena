@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.41 2006-03-22 13:52:19 andy_seaborne Exp $
+  $Id: NodeToTriplesMap.java,v 1.42 2006-10-09 10:46:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -10,7 +10,6 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.*;
-import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -29,10 +28,24 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     public boolean add( Triple t ) 
         {
         Object o = getIndexField( t );
-        Set s = (Set) map.get( o );
-        if (s == null) map.put( o, s = CollectionFactory.createHashedSet() );
-        if (s.add( t )) { size += 1; return true; } else return false; 
+        OpenSetBunch s = (OpenSetBunch) bunchMap.get( o );
+        if (s == null) bunchMap.put( o, s = createSetBunch() );
+        if (s.baseSet().add( t )) { size += 1; return true; } else return false; 
         }
+
+    private static class OpenSetBunch extends SetBunch
+        {
+        private static final TripleBunch empty = new ArrayBunch();
+        
+        public OpenSetBunch()
+            { super( empty ); }
+        
+        public Set baseSet()
+            { return elements; }
+        }
+    
+    private OpenSetBunch createSetBunch()
+        { return new OpenSetBunch(); }
     
     /** 
      	@see com.hp.hpl.jena.mem.Temp#remove(com.hp.hpl.jena.graph.Triple)
@@ -40,22 +53,23 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     public boolean remove( Triple t )
         { 
         Object o = getIndexField( t );
-        Set s = (Set) map.get( o );
+        OpenSetBunch s = (OpenSetBunch) bunchMap.get( o );
         if (s == null)
             return false;
         else
             {
-            boolean result = s.remove( t );
+            Set base = s.baseSet();
+            boolean result = base.remove( t );
             if (result) size -= 1;
-            if (s.isEmpty()) map.remove( o );
+            if (base.isEmpty()) bunchMap.remove( o );
             return result;
         	} 
         }
     
     public Iterator iterator( Object o )
         {
-        Set s = (Set) map.get( o );
-        return s == null ? NullIterator.instance : s.iterator();
+        TripleBunch b = bunchMap.get( o );
+        return b == null ? NullIterator.instance : b.iterator();
         }
     
     /** 
@@ -63,7 +77,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     */
     public boolean contains( Triple t )
         { 
-        Set s = (Set) map.get( getIndexField( t ) );
+        TripleBunch s = bunchMap.get( getIndexField( t ) );
         return s == null ? false : s.contains( t );
         }
 
@@ -78,7 +92,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     
     protected boolean slowContains( Triple t )
         { 
-        Set s = (Set) map.get( getIndexField( t ) );
+        TripleBunch s = bunchMap.get( getIndexField( t ) );
         if (s == null)
             return false;
         else
@@ -105,7 +119,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
 
     public ExtendedIterator iterator( Node index, Node n2, Node n3 )
         {
-        Set s = (Set) map.get( index.getIndexingValue() );
+        TripleBunch s = bunchMap.get( index.getIndexingValue() );
         return s == null
             ? NullIterator.instance
             : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
@@ -113,18 +127,18 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             ;
         }
 
-    /** 
-     	@see com.hp.hpl.jena.mem.Temp#get(java.lang.Object)
-    */
-    protected Set get( Object y )
-        { return (Set) map.get( y ); }
-
     /**
         Answer an iterator over all the triples that are indexed by the item <code>y</code>.
         Note that <code>y</code> need not be a Node (because of indexing values).
     */
     public Iterator iteratorForIndexed( Object y )
         { return get( y ).iterator();  }
+    
+    /** 
+        @see com.hp.hpl.jena.mem.Temp#get(java.lang.Object)
+    */
+    private TripleBunch get( Object y )
+        { return bunchMap.get( y ); }
     }
 
 /*
