@@ -49,44 +49,34 @@ public class T extends TestI18N
     //   @AfterClass public void teardownDatabaseAfterEverything() { ... }
     //} 
     
-    static Connection test_jdbc = null ;
-    static Params test_params = null ;
-    
-    // Call this before setting this test class off
-    public static void set(Connection jdbc, Params params) 
-    {
-        test_jdbc = jdbc ;
-        test_params = params ;
-    }
-    
     @Parameters
     public static Collection data()
     {
         List<Object[]> x = new ArrayList<Object[]>() ;
         x.add(new Object[]{
             "Empty string", emptyBase,
-            test_jdbc, test_params, false}) ;
+            Env.test_jdbc, Env.test_params, false}) ;
         x.add(new Object[]{
             "White space", whitespaceBase,
-            test_jdbc, test_params, false}) ;
+            Env.test_jdbc, Env.test_params, false}) ;
         x.add(new Object[]{
             "ASCII", asciiBase,
-            test_jdbc, test_params, false}) ;
+            Env.test_jdbc, Env.test_params, false}) ;
 //        x.add(new Object[]{
 //            "Accented Latin", westernEuropeanBase,
-//            test_jdbc, test_params, false}) ;
+//            Env.test_jdbc, Env.test_params, false}) ;
 //        x.add(new Object[]{
 //            "Greek", greekBase,
-//            test_jdbc, test_params, false}) ;
+//            Env.test_jdbc, Env.test_params, false}) ;
 //        x.add(new Object[]{
 //            "Arabic", arabicBase,
-//            test_jdbc, test_params, false}) ;
+//            Env.test_jdbc, Env.test_params, false}) ;
 //        x.add(new Object[]{
 //            "Hewbrew", hewbrewBase,
-//            test_jdbc, test_params, false}) ;
+//            Env.test_jdbc, Env.test_params, false}) ;
 //        x.add(new Object[]{
 //            "Symbols", symbolsBase,
-//            test_jdbc, test_params, false}) ;
+//            Env.test_jdbc, Env.test_params, false}) ;
         return x ;
     }
 }   

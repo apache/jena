@@ -7,59 +7,17 @@
 package sdb.test;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-public class TestDB
+public class Env
 {
-    protected Connection jdbc = null ;
-    boolean verbose = false ;
+    static Connection test_jdbc = null ;
+    static Params test_params = null ;
     
-
-    public TestDB(Connection jdbc, boolean verbose)
-    { 
-        this.jdbc = jdbc ;
-        this.verbose = verbose ;
-    }
-    
-    public void setVerbose(boolean newValue) { verbose = newValue ; }
-    protected void setConnection(Connection jdbc) { this.jdbc = jdbc ; }
-    
-    protected String sqlFormat(String sql, Object... args)
+    public static void set(Connection jdbc, Params params) 
     {
-        return String.format(sql, args) ;
+        test_jdbc = jdbc ;
+        test_params = params ;
     }
-    
-    protected void execNoFail(String sql, Object... args)
-    {
-        try { exec(sql, args) ;
-        } catch (SQLException ex) {}
-    }
-
-    protected void exec(String sql, Object... args) throws SQLException
-    {
-        sql = sqlFormat(sql, args) ;
-        Statement stmt = null ;
-        try {
-            stmt = jdbc.createStatement() ;
-            if ( verbose )
-                System.out.println(sql) ;
-            stmt.execute(sql) ;
-        } finally {
-            if ( stmt != null ) stmt.close() ;
-        }
-    }
-    
-    protected ResultSet execQuery(String sql, Object... args) throws SQLException
-    {
-        sql = sqlFormat(sql, args) ;
-        if ( verbose )
-            System.out.println(sql) ;
-        Statement stmt = jdbc.createStatement() ;
-        return stmt.executeQuery(sql) ;
-    }
-    
     
 }
 

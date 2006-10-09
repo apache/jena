@@ -24,12 +24,6 @@ public class TestI18N extends TestDB
     private String testLabel ;
     private String baseString ; 
     
-    static public final String kTempTableName     = "TempTable" ;
-    static public final String kBinaryType        = "typeBinary" ;
-    static public final String kBinaryCol         = "colBinary" ;
-
-    static public final String kVarcharType    = "typeVarchar" ;
-    static public final String kVarcharCol     = "colVarchar" ;
 
     //static Charset csUTF8 = Charset.forName("UTF-8") ;
 
@@ -39,7 +33,7 @@ public class TestI18N extends TestDB
     {
         super(jdbc, verbose) ;
         this.params = params ;
-        tempTableName = params.get(kTempTableName) ;
+        tempTableName = params.get(ParamsVocab.TempTableName) ;
         this.testLabel = testLabel ;
         this.baseString = baseString ;
     }
@@ -57,19 +51,19 @@ public class TestI18N extends TestDB
     // --------
     @Test
     public void text_ascii()
-    { runTextTest(testLabel+"/Text", baseString, params.get(kVarcharCol), params.get(kVarcharType)) ; }
+    { runTextTest(testLabel+"/Text", baseString, params.get(ParamsVocab.VarcharCol), params.get(ParamsVocab.VarcharType)) ; }
 
     @Test
     public void text_ascii_long()
-    { runTextTest(testLabel+"Text/Long", longString(baseString, 198), params.get(kVarcharCol), params.get(kVarcharType)) ; }
+    { runTextTest(testLabel+"Text/Long", longString(baseString, 198), params.get(ParamsVocab.VarcharCol), params.get(ParamsVocab.VarcharType)) ; }
 
     @Test
     public void binary_ascii()
-    { runBytesTest(testLabel+"/Binary", baseString, params.get(kBinaryCol), params.get(kBinaryType)) ; }
+    { runBytesTest(testLabel+"/Binary", baseString, params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
 
     @Test
     public void binary_ascii_long()
-    { runBytesTest(testLabel+"/Binary/Long", longString(baseString,1000), params.get(kBinaryCol), params.get(kBinaryType)) ; }
+    { runBytesTest(testLabel+"/Binary/Long", longString(baseString,1000), params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
     
     private void runTextTest(String label, String testString, String colName, String colType)
     {
@@ -90,6 +84,8 @@ public class TestI18N extends TestDB
             rs.next() ;
             // Null on empty strings (Oracle)
             String s = rs.getString(1) ;
+            boolean wasNull = rs.wasNull() ;
+            
             //if ( s == null ) s = "" ;
             rs.close() ;
             assertEquals(testLabel+" : "+label, testString, s) ;
@@ -116,8 +112,12 @@ public class TestI18N extends TestDB
             ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
             rs.next() ;
             byte[]b = rs.getBytes(1) ;
+            boolean wasNull = rs.wasNull() ;
+            if ( testString != null && wasNull )
+                fail(testLabel+": got an SQL null back") ;
+            
 
-            // Null on empty strings (Oracle)
+            // Null on empty strings (Oracle?)
             String s = "" ;
 //            if ( b != null )
             s = bytesToString(b) ;
