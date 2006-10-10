@@ -67,8 +67,8 @@ public class RunSDB
     public static void run()
     {
         String[] a = {"-v", 
-                      "--sdb=sdb.ttl", "typeBinary=VARBINARY", 
-                      //"--sdb=tmp/sdb-oracle.ttl",
+                      //"--sdb=sdb.ttl", "typeBinary=VARBINARY", 
+                      "--sdb=tmp/sdb-oracle.ttl", "typevarchar=VARCHAR2(200)",
                       } ; 
         sdb.DBTest.main(a) ;
         System.exit(0) ;

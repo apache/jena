@@ -50,76 +50,97 @@ public class TestStringBase extends TestDB
     
     // --------
     @Test
-    public void text()
+    public void text() throws Exception
     { runTextTest(testLabel+"/Text", baseString, params.get(ParamsVocab.VarcharCol), params.get(ParamsVocab.VarcharType)) ; }
 
     @Test
-    public void binary()
+    public void binary() throws Exception
     { runBytesTest(testLabel+"/Binary", baseString, params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
 
 
-    private void runTextTest(String label, String testString, String colName, String colType)
+    private void runTextTest(String label, String testString, String colName, String colType) throws Exception
     {
-        testString = ":"+testString+":" ;
-        try {
-            exec("CREATE TABLE %s (%s %s)",  tempTableName, colName, colType) ;
+        //testString = ":"+testString+":" ;
+        if ( testString == null )
+            fail(label+": Test broken - null input") ; 
+        exec("CREATE TABLE %s (%s %s)",  tempTableName, colName, colType) ;
 
-            String $str = sqlFormat("INSERT INTO %s values (?)", tempTableName) ;
-            if ( verbose )
-                System.out.println($str) ;
-            
-            PreparedStatement ps = jdbc.prepareStatement($str) ;
-            ps.setString(1, testString) ;
-            ps.execute() ;
-            ps.close() ;
+        String $str = sqlFormat("INSERT INTO %s values (?)", tempTableName) ;
+        if ( verbose )
+            System.out.println($str) ;
 
-            ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
-            rs.next() ;
-            // Null on empty strings? (Oracle)
-            String s = rs.getString(1) ;
-            boolean wasNull = rs.wasNull() ;
-            if ( testString != null && wasNull )
-                fail(testLabel+" : Got null back") ;
-            
-            //if ( s == null ) s = "" ;
-            rs.close() ;
-            assertEquals(testLabel+" : "+label, testString, s) ;
-            //System.out.println("Passed: "+label) ;
-        } catch (SQLException ex)
-        { fail("SQLException: "+ex.getMessage()) ; }
+        PreparedStatement ps = jdbc.prepareStatement($str) ;
+        ps.setString(1, testString) ;
+        try { ps.execute() ; }  // Idiom for debugging - can breakpoint the throw
+        catch (SQLException ex)
+        { throw ex ; } 
+        ps.close() ;
+
+        ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
+        rs.next() ;
+        // In Oracle an emprty string is a NULL.  This is not ANSI compliant.
+        
+        String s = rs.getString(1) ;
+        if ( s == null )
+            s = "" ;
+//        boolean wasNull = rs.wasNull() ;
+//        if ( testString != null && wasNull )
+//            fail(testLabel+" : Got null back") ;
+
+        rs.close() ;
+        
+        if ( ! testString.equals(s) )   // Debug point
+        {
+            for ( int i = 0 ; i < s.length() ; i++ )
+            {
+                System.out.printf("%x:%x ", (int)testString.charAt(i), (int)s.charAt(i)) ;
+            }
+            System.out.println() ;
+            String $ = s ;              // Pointless
+        }
+                   
+        assertEquals(testLabel+" : "+label, testString, s) ;
+        //System.out.println("Passed: "+label) ;
     }
 
-    private void runBytesTest(String label, String testString, String colName, String colType)
+    private void runBytesTest(String label, String testString, String colName, String colType) throws Exception
     {
-        testString = ":"+testString+":" ;
-        try {
-            exec("CREATE TABLE %s (%s %s)",  tempTableName, colName, colType) ;
+        //testString = ":"+testString+":" ;
+        if ( testString == null )
+            fail(label+": Test broken - null input") ; 
 
-            String $str = sqlFormat("INSERT INTO %s values (?)", tempTableName) ;
-            if ( verbose )
-                System.out.println($str) ;
-            
-            PreparedStatement ps = jdbc.prepareStatement($str) ;
-            ps.setBytes(1, stringToBytes(testString)) ;
-            ps.execute() ;
-            ps.close() ;
+        exec("CREATE TABLE %s (%s %s)",  tempTableName, colName, colType) ;
 
-            ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
-            rs.next() ;
-            byte[]b = rs.getBytes(1) ;
-            boolean wasNull = rs.wasNull() ;
-            if ( testString != null && wasNull )
-                fail(testLabel+": got an SQL null back") ;
+        String $str = sqlFormat("INSERT INTO %s values (?)", tempTableName) ;
+        if ( verbose )
+            System.out.println($str) ;
 
-            // Null on empty strings (Oracle?)
-            String s = "" ;
-//            if ( b != null )
+        PreparedStatement ps = jdbc.prepareStatement($str) ;
+        ps.setBytes(1, stringToBytes(testString)) ;
+        try { ps.execute() ; }  // Idiom for debugging
+        catch (SQLException ex)
+        { throw ex ; } 
+        ps.close() ;
+
+        ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
+        rs.next() ;
+        byte[]b = rs.getBytes(1) ;
+        
+//        boolean wasNull = rs.wasNull() ;
+//        if ( testString != null && wasNull )
+//            fail(testLabel+": got an SQL null back") ;
+
+            // In Oracle, an empty binary is a NULL.  This is not ANSI compliant.
+        String s = "" ;
+        if ( b != null )
             s = bytesToString(b) ;
-            rs.close() ;
-            assertEquals(testLabel+" : "+label, testString, s) ;
-            //System.out.println("Passed: "+label) ;
-        } catch (SQLException ex)
-        { fail("SQLException: "+ex.getMessage()) ; }
+        rs.close() ;
+        if ( ! testString.equals(s) )   // Debug point
+        {
+            String $ = s ;              // Pointless
+        }
+        assertEquals(testLabel+" : "+label, testString, s) ;
+        //System.out.println("Passed: "+label) ;
     }
     
      // String(byte[], Charset) and .getBytes(Charset) are Java6-isms.

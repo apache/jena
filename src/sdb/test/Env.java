@@ -13,13 +13,14 @@ public class Env
     // I want parameters that span test classes. 
     static Connection test_jdbc = null ;
     static Params test_params = null ;
+    static boolean verbose = false ;
     
-    public static void set(Connection jdbc, Params params) 
+    public static void set(Connection jdbc, Params params, boolean verboseSetting) 
     {
         test_jdbc = jdbc ;
         test_params = params ;
+        verbose = verboseSetting ;
     }
-    
 }
 
 /*

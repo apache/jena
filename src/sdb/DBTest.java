@@ -16,7 +16,6 @@ import sdb.junit.TextListenerCustom;
 import sdb.test.Params;
 import sdb.test.ParamsVocab;
 import sdb.test.TestI18N;
-import sdb.test.TestStringBasic;
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.query.util.Utils;
@@ -76,15 +75,15 @@ public class DBTest extends CmdArgsDB
         Connection jdbc = getModStore().getConnection().getSqlConnection() ;
         // Hack to pass to calculated parameters to the test subsystem.
 
-        sdb.test.Env.set(jdbc, params) ;
+        sdb.test.Env.set(jdbc, params, false) ;
         
         JUnitCore x = new org.junit.runner.JUnitCore() ;
         RunListener listener = new TextListenerCustom() ;
         x.addListener(listener) ;
         
         //x.run(sdb.test.AllTests.class) ;
-        System.out.println("String basic") ;
-        x.run(TestStringBasic.class) ;
+        //System.out.println("String basic") ;
+        //x.run(TestStringBasic.class) ;
         
         System.out.println("String I18N") ;
         x.run(TestI18N.class) ;

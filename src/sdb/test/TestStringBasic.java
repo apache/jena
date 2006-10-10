@@ -24,7 +24,7 @@ public class TestStringBasic extends TestStringBase
 
     public TestStringBasic(String name, String baseString)
     {
-        super(name, baseString, Env.test_jdbc, Env.test_params, false) ;
+        super(name, baseString, Env.test_jdbc, Env.test_params, Env.verbose) ;
     }
 
     @BeforeClass

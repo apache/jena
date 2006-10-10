@@ -16,7 +16,7 @@ import org.junit.runner.notification.Failure;
 public class TextListenerCustom extends TextListener
 {
     private final PrintStream fWriter;
-    static final int maxStackTrace = 5 ;
+    static final int maxStackTrace = 10 ;
     
     public TextListenerCustom() {
         this(System.out);
