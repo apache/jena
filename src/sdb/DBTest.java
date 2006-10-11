@@ -16,6 +16,7 @@ import sdb.junit.TextListenerCustom;
 import sdb.test.Params;
 import sdb.test.ParamsVocab;
 import sdb.test.TestI18N;
+import sdb.test.TestStringBasic;
 import arq.cmd.CmdException;
 
 import com.hp.hpl.jena.query.util.Utils;
@@ -82,8 +83,8 @@ public class DBTest extends CmdArgsDB
         x.addListener(listener) ;
         
         //x.run(sdb.test.AllTests.class) ;
-        //System.out.println("String basic") ;
-        //x.run(TestStringBasic.class) ;
+        System.out.println("String basic") ;
+        x.run(TestStringBasic.class) ;
         
         System.out.println("String I18N") ;
         x.run(TestI18N.class) ;

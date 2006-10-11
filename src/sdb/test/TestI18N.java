@@ -63,17 +63,17 @@ public class TestI18N extends TestStringBase
     {
         List<Object[]> x = new ArrayList<Object[]>() ;
         
-//        x.add(new Object[]{ "ASCII", asciiBase } ) ;
-//
-//        x.add(new Object[]{ "Accented Latin", latinBase } ) ;
-//
+        x.add(new Object[]{ "ASCII", asciiBase } ) ;
+
+        x.add(new Object[]{ "Accented Latin", latinBase } ) ;
+
         x.add(new Object[]{ "Greek", greekBase } ) ; 
-//
-//        x.add(new Object[]{"Arabic", arabicBase } ) ;
-//
-//        x.add(new Object[]{ "Hewbrew", hewbrewBase } ) ;
-//
-//        x.add(new Object[]{ "Symbols", symbolsBase} ) ;
+
+        x.add(new Object[]{"Arabic", arabicBase } ) ;
+
+        x.add(new Object[]{ "Hewbrew", hewbrewBase } ) ;
+
+        x.add(new Object[]{ "Symbols", symbolsBase} ) ;
             
         return x ;
     }
