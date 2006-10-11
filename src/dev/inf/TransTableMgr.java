@@ -73,7 +73,7 @@ public class TransTableMgr
                 ResultSet rs = qExec.execSelect() ;
                 if ( false )
                 {
-                    ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(rs1) ;
+                    ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(rs) ;
                     ResultSetFormatter.out(rs1) ;
                     rs1.reset() ;
                     rs = rs1 ;
