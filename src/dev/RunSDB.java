@@ -76,8 +76,8 @@ public class RunSDB
 
     static void runScript()
     {
-        String[] a = { "script.rb" } ;
-        org.jruby.Main.main(a) ;
+        String[] a = { } ;
+        sdb.sdbscript.main(a) ;
     }
     
     static String getString(String filename)
