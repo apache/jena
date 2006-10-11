@@ -1,0 +1,22 @@
+
+<rdf:RDF
+xmlns:typ="http://example.org/types/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+            <typ:Query typ:queryID="q0" typ:limit="10" typ:allowCreate="false">
+              <typ:qTerm>
+               <typ:QueryTerm typ:termID="t0">
+                  <typ:queryType>artist</typ:queryType>
+                  <typ:name>artist1</typ:name>
+               </typ:QueryTerm>
+              </typ:qTerm>
+            </typ:Query>
+            <typ:Query typ:queryID="q1" typ:limit="10" typ:allowCreate="false">
+              <typ:qTerm>
+               <typ:QueryTerm typ:termID="t0">
+                  <typ:queryType>artist</typ:queryType>
+                  <typ:name>artist2</typ:name>
+               </typ:QueryTerm>
+              </typ:qTerm>
+            </typ:Query>
+      </rdf:RDF>

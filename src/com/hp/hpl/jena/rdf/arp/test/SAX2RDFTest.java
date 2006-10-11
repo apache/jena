@@ -41,8 +41,9 @@ public class SAX2RDFTest extends TestCase {
 	static final boolean is1_4_1 =
 		System.getProperty("java.version").startsWith("1.4.1");
 	static final private String all[] = {
-
-	"abbreviated/collection.rdf", "abbreviated/container.rdf",
+    "arp/dom/domtest.rdf",
+	//"abbreviated/collection.rdf", 
+	"abbreviated/container.rdf",
 			"abbreviated/cookup.rdf", "abbreviated/daml.rdf",
 			"abbreviated/namespaces.rdf", "abbreviated/reification.rdf",
 			"abbreviated/relative-uris.rdf", "arp/comments/test01.rdf",
@@ -1098,7 +1099,9 @@ public class SAX2RDFTest extends TestCase {
 			"wg/unionOf/premises003.rdf", "wg/unionOf/premises004.rdf",
 			"wg/unrecognised-xml-attributes/test001.rdf",
 			"wg/unrecognised-xml-attributes/test002.rdf",
-			"wg/xmlbase/error001.rdf", "wg/xmlbase/test001.rdf",
+			"arp/dom/domtest.rdf",
+			
+			//"wg/xmlbase/error001.rdf", "wg/xmlbase/test001.rdf",
 			"wg/xmlbase/test002.rdf", "wg/xmlbase/test003.rdf",
 			"wg/xmlbase/test004.rdf", "wg/xmlbase/test005.rdf",
 			"wg/xmlbase/test006.rdf", "wg/xmlbase/test007.rdf",
