@@ -53,9 +53,9 @@ public class TestStringBase extends TestDB
     public void text() throws Exception
     { runTextTest(testLabel+"/Text", baseString, params.get(ParamsVocab.VarcharCol), params.get(ParamsVocab.VarcharType)) ; }
 
-    @Test
-    public void binary() throws Exception
-    { runBytesTest(testLabel+"/Binary", baseString, params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
+//    @Test
+//    public void binary() throws Exception
+//    { runBytesTest(testLabel+"/Binary", baseString, params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
 
 
     private void runTextTest(String label, String testString, String colName, String colType) throws Exception
@@ -78,11 +78,14 @@ public class TestStringBase extends TestDB
 
         ResultSet rs = execQuery("SELECT %s FROM %s ", colName, tempTableName ) ;
         rs.next() ;
-        // In Oracle an emprty string is a NULL.  This is not ANSI compliant.
+        // In Oracle an empty string is a NULL.  This is not ANSI compliant.
         
         String s = rs.getString(1) ;
         if ( s == null )
             s = "" ;
+        byte[] b = rs.getBytes(1) ;
+        
+        
 //        boolean wasNull = rs.wasNull() ;
 //        if ( testString != null && wasNull )
 //            fail(testLabel+" : Got null back") ;
