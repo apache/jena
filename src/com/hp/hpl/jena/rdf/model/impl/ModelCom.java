@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.115 2006-09-05 12:15:40 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.116 2006-10-12 08:47:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -706,21 +706,16 @@ public class ModelCom
     }
     
     public RDFNode getRDFNode( Node n )
-        {   
-        return n.isURI() || n.isBlank()
-            ? (RDFNode) new ResourceImpl( n, this )
-            : (RDFNode) new LiteralImpl( n, this ); 
+        {   return asRDFNode( n ); }
+    
+    public Resource getResource( String uri )  
+        { return IteratorFactory.asResource(makeURI(uri),this); }
+    
+    public Property getProperty( String uri )  
+        {
+        if (uri == null) throw new InvalidPropertyURIException( null );
+        return IteratorFactory.asProperty( makeURI(uri), this );
         }
-    
-    public Resource getResource(String uri)  {
-        return IteratorFactory.asResource(makeURI(uri),this);
-    }
-    
-    public Property getProperty(String uri)  {
-        if ( uri == null )
-             throw new InvalidPropertyURIException( null );
-        return IteratorFactory.asProperty(makeURI(uri),this);
-    }
     
     public Property getProperty( String nameSpace,String localName )
         { return getProperty( nameSpace + localName ); }

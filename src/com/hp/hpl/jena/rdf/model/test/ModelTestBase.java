@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.36 2006-03-22 13:53:24 andy_seaborne Exp $
+  $Id: ModelTestBase.java,v 1.37 2006-10-12 08:47:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.CollectionFactory;
 
@@ -61,11 +60,11 @@ public class ModelTestBase extends GraphTestBase
         { return statement( aModel, fact ); }
          
      public static RDFNode rdfNode( Model m, String s )
-        { 
-        Node n = Node.create( m, s );    
-        return (RDFNode) ((ModelCom) m).getNodeAs( n, (n.isLiteral() ? Literal.class : Resource.class) );
-        }
+        { return m.asRDFNode( Node.create( m, s ) ); }
 
+     public static RDFNode rdfNode( Model m, String s, Class c )
+         { return rdfNode( m, s ).as(  c  );  }
+     
      protected static Resource resource()
          { return ResourceFactory.createResource(); }
          
@@ -79,16 +78,10 @@ public class ModelTestBase extends GraphTestBase
         { return property( aModel, s ); }
     
     public static Property property( Model m, String s )
-        { return (Property) rdfNode( m, s, Property.class ); }
+        { return (Property) rdfNode( m, s ).as( Property.class ); }
         
     public static Literal literal( Model m, String s )
-        { return (Literal) rdfNode( m, s, Literal.class ); }
-        
-    public static RDFNode rdfNode( Model m, String s, Class c )
-        {
-        Node n = Node.create( m, s );
-        return (RDFNode) ((ModelCom) m).getNodeAs( n, c );
-        }
+        { return (Literal) rdfNode( m, s ).as( Literal.class ); }
          
      /**
         Create an array of Statements parsed from a semi-separated string.
