@@ -6,14 +6,52 @@
 
 package sdb;
 
+import java.lang.reflect.Method;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class sdbscript
 {
+    private static Log log = LogFactory.getLog(sdbscript.class) ;
+    
     public static void main(String[] a)
     {
-        // Eventually, this will create the environment for the script (e.g. store from description).
+        // TODO Make engine independent (via sdb.ttl?)
         if ( a.length == 0 )
             a = new String[]{ "script.rb" } ;
-        //org.jruby.Main.main(a) ;
+
+        staticByReflection("org.jruby.Main", "main", a) ;
+    }
+    
+    private static void staticByReflection(String className, String methodName, String[] args)
+    {
+        // Reflection to invoke <class>.suite() and return a TestSuite.
+        Class cmd = null ;
+        try { cmd = Class.forName(className) ; }
+        catch (ClassNotFoundException ex)
+        {
+            log.fatal(String.format("Class not found: %s", className)) ;
+            return  ; 
+        }
+
+        Method method = null ;
+        try { method = cmd.getMethod(methodName, new Class[]{args.getClass()}) ; }
+        catch (NoSuchMethodException ex)
+        {
+            log.fatal(String.format("Class '%s' found but not the method '%s'",
+                                    className, methodName)) ;
+            return ;
+        }
+
+        try 
+        {
+            method.invoke(null, (Object)args) ;
+        } catch (Exception ex)
+        {
+            log.fatal(String.format("Exception invoking '%s.%s'",  className, methodName), ex) ;
+            return ;
+        }
     }
 }
 

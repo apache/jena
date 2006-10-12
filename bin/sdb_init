@@ -1,3 +1,5 @@
+#!/bin/bash  -- hint to emacs
+
 ## Source this file to set:
 ##  JVM_ARGS   :: arguments to the JVM
 ##  CP         :: Classpath
@@ -42,6 +44,12 @@ CP="${JDBC_CONNECTOR:-$JDBC}"
 
 ## ---- Always put the HSQLDB jar on the path
 CP="$CP$SEP$JDBC_HSQLDB"
+
+## ---- Add the script engine
+if [ "$SDBSCRIPT" != "" ]
+then
+    CP="$SDBSCRIPT$SEP$CP"
+fi
 
 ## ---- JVM Args e.g. -Xmx1024M
 JVM_ARGS=${JVM_ARGS:-}
