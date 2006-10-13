@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -120,7 +121,8 @@ public abstract class LoaderTriplesNodes
     		insertNodeLoaderTable.close();
     		insertNodes.close();
     		insertTriples.close();
-    		deleteTriples.close();
+    		if (deleteTriples != null)
+    			deleteTriples.close();
     		if (clearTripleLoaderTable != null)
     			clearTripleLoaderTable.close();
     		if (clearNodeLoaderTable != null)
@@ -249,7 +251,8 @@ public abstract class LoaderTriplesNodes
 	    insertNodeLoaderTable = conn.prepareStatement(getInsertNodeLoaderTable());
 	    insertNodes = conn.prepareStatement(getInsertNodes());
 	    insertTriples = conn.prepareStatement(getInsertTriples());
-	    deleteTriples = conn.prepareStatement(getDeleteTriples());
+	    if (getDeleteTriples() != null)
+	    	deleteTriples = conn.prepareStatement(getDeleteTriples());
 	    // These may be null for RDBs which support ON COMMIT DELETE ROWS
 	    if (getClearTripleLoaderTable() != null)
 	    	clearTripleLoaderTable = conn.prepareStatement(getClearTripleLoaderTable());
@@ -308,16 +311,52 @@ public abstract class LoaderTriplesNodes
     		addToInsert(insertNodeLoaderTable, triple.object);
     	}
     	
-    	insertTripleLoaderTable.setLong(1, triple.subject.hash);
-    	insertTripleLoaderTable.setLong(2, triple.predicate.hash);
-    	insertTripleLoaderTable.setLong(3, triple.object.hash);
-    	insertTripleLoaderTable.addBatch();
+    	if (removingTriples && deleteTriples == null) // want to remove, can't bulk
+    	{
+    		removeOneTriple(triple);
+    	}
+    	else
+    	{
+    		insertTripleLoaderTable.setLong(1, triple.subject.hash);
+    		insertTripleLoaderTable.setLong(2, triple.predicate.hash);
+    		insertTripleLoaderTable.setLong(3, triple.object.hash);
+    		insertTripleLoaderTable.addBatch();
+    	}
     	
     	if (count >= chunkSize)
     		commitTriples();
     }
+    
+    /**
+     * Remove one triple
+     * 
+     * For databases like HSQL which we can't simply bulk delete from easily.
+     * @throws SQLException 
+     */
+    private void removeOneTriple(PreparedTriple triple) throws SQLException
+    {
+    	int s,p,o;
+    	if ((s = getIdFromHash(triple.subject.hash)) == -1) return;
+    	if ((p = getIdFromHash(triple.predicate.hash)) == -1) return;
+    	if ((o = getIdFromHash(triple.object.hash)) == -1) return;
+    	
+    	connection().execUpdate("DELETE FROM Triples WHERE " +
+    			"s = '" + s + "' AND " +
+    			"p = '" + p + "' AND " +
+    			"o = '" + o + "'");
+    }
 
-    private void addToInsert(PreparedStatement s, PreparedNode node)
+	private int getIdFromHash(long hash) throws SQLException
+	{
+		int id = -1;
+		ResultSet result = connection().execQuery("SELECT id FROM Nodes WHERE hash = '" + hash +"'");
+		
+		if (result.next())
+			id = result.getInt(1);
+		return id;
+	}
+
+	private void addToInsert(PreparedStatement s, PreparedNode node)
         throws SQLException
     {
     	if (seenNodes.contains(node)) return; // Suppress dupes in batches
@@ -353,23 +392,22 @@ public abstract class LoaderTriplesNodes
         if (removingTriples == null) // Nothing happened
         	return;
         
-        insertTripleLoaderTable.executeBatch();
+        //insertTripleLoaderTable.executeBatch();
         
         if (!removingTriples)
         {
+        	insertTripleLoaderTable.executeBatch();
         	insertNodeLoaderTable.executeBatch();
         	insertNodes.execute();
         	insertTriples.execute();
-        	if (clearNodeLoaderTable != null)
-        		clearNodeLoaderTable.execute() ;
         }
-        else
+        else if (deleteTriples != null)
         {
+        	insertTripleLoaderTable.executeBatch();
         	deleteTriples.execute() ;
         }
-        
         if (clearTripleLoaderTable != null)
-        	clearTripleLoaderTable.execute();
+    		clearTripleLoaderTable.execute();
         removingTriples = null;
         if ( autoCommit )
             // Commit the transaction if started outside of a transaction 

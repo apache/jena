@@ -68,7 +68,8 @@ public class LoaderPGSQL extends LoaderLJ
 		return null;
 	}
     
-    @Override
+    /* This is slower than deleting one at a time */
+    /*@Override
     public String getDeleteTriples()
 	{
 		return "DELETE FROM Triples USING " +
@@ -76,7 +77,7 @@ public class LoaderPGSQL extends LoaderLJ
 		"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
 		"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
 		" WHERE Triples.s = S.id AND Triples.p = P.id AND Triples.o = O.id";
-	}
+	}*/
 }
 
 /*

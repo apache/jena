@@ -1,16 +1,22 @@
 package com.hp.hpl.jena.sdb.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sdb.ModelSDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
@@ -23,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 @RunWith(Parameterized.class)
 public class TestBulkUpdate {
 	
-	protected Model model;
+	protected ModelSDB model;
 	
 	@Parameters public static Collection models()
 	{
@@ -43,6 +49,8 @@ public class TestBulkUpdate {
 		SDBConnection sdb = SDBFactory.createConnection("jdbc:mysql://localhost/sdb_test", "jena", "swara");
 		
 		StoreTriplesNodesMySQL store = new StoreTriplesNodesMySQL(sdb);
+		
+		store.getTableFormatter().format();
 		
 		return SDBFactory.connectModel(store);
 	}
@@ -71,15 +79,17 @@ public class TestBulkUpdate {
 		return SDBFactory.connectModel(store);
 	}
 	
-	public TestBulkUpdate(Model model)
+	public TestBulkUpdate(ModelSDB model)
 	{
 		this.model = model;
 	}
 	
 	@Test public void loadOne()
 	{
+		model.removeAll(RDF.type, RDF.type, null);
 		long size = model.size();
 		model.add(RDF.type, RDF.type, "FOO");
+		assertTrue("It's in there", model.contains(RDF.type, RDF.type, "FOO"));
 		assertEquals("Added one triple", size + 1, model.size());
 		model.remove(RDF.type, RDF.type, model.createLiteral("FOO"));
 		assertEquals("Back to the start", size, model.size());
@@ -87,9 +97,9 @@ public class TestBulkUpdate {
 	
 	@Test public void loadFile()
 	{
-		long size = model.size();
-		
 		Model toLoadAndRemove = FileManager.get().loadModel("testing/Data/data.ttl");
+		
+		long size = model.size();
 		
 		model.add(toLoadAndRemove);
 		
@@ -97,9 +107,13 @@ public class TestBulkUpdate {
 		
 		model.add(RDF.type, RDF.type, RDF.type);
 		
+		assertTrue("Model contains <type,type,type>", model.contains(RDF.type, RDF.type, RDF.type));
+		
 		assertEquals("And another one", size + 14, model.size());
 		
 		model.remove(toLoadAndRemove);
+		
+		assertTrue("Model contains <type,type,type>", model.contains(RDF.type, RDF.type, RDF.type));
 		
 		assertEquals("Removed file", size + 1, model.size());
 		
@@ -122,6 +136,11 @@ public class TestBulkUpdate {
 		model.removeAll(RDF.nil, RDF.type, null);
 		
 		assertEquals("Wild card removed all", size, model.size());
+	}
+	
+	@Before public void format()
+	{
+		model.removeAll();
 	}
 	
 }
