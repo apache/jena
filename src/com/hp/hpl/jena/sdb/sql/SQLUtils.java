@@ -19,6 +19,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import com.hp.hpl.jena.query.core.Var;
+
 import org.apache.commons.logging.LogFactory;
 
 public class SQLUtils
@@ -33,6 +35,68 @@ public class SQLUtils
         s = s.replace("\\", "\\\\") ;
         s = s.replace("'", "\\'") ;
         return "'"+s+"'" ;
+    }
+
+    static public String unquote(String s)
+    {
+        if ( s.startsWith("'") )
+            s = s.substring(1,s.length()-1 ) ;
+        s = s.replace("\\\\", "\\") ;
+        s = s.replace("\\'", "'") ;
+        return s ;
+    }
+    
+    // TODO Manager better -- use universally.
+    // Consider quoted ID and/or encodings.
+    // Use of _ for upper/lowercase markers
+    
+    
+    /** Map a SPARQL variable to an SQL identifier.
+     * @param var 
+     * @return String   The SQL identifier
+     */
+    static public String varToSqlId(Var var)
+    { 
+        if ( sqlSafeChar(var.getName()) )
+            return var.getName() ; 
+        return quote(var.getName()) ;
+    }
+
+    /** Map an SQL identifier to a SPARQL variable
+     * @param sqlName   The SQL identifier 
+     * @return Var 
+     */
+    static public Var sqlIdToVar(String sqlName)
+    {
+        if ( sqlName.startsWith("'") )
+            return null ;
+        return new Var(sqlName) ;
+    }
+    
+    private static boolean sqlSafeChar(String str)
+    {
+        if ( ! isLowerCaseSqlChar(str.charAt(0)) )
+            return false ;
+        
+        for ( int i = 0 ; i < str.length() ; i++ )
+        {
+            char ch = str.charAt(i) ;
+            // Explicitly ASCII
+            // if not lowercase letter
+            if ( ! isLowerCaseSqlChar(ch) && ! isSqlDigit(ch) )
+                return false ;
+        }
+        return true ;
+    }
+
+    private static boolean isLowerCaseSqlChar(char ch)
+    {
+        return ch >= 'a' && ch <= 'z' ;
+    }
+    
+    private static boolean isSqlDigit(char ch)
+    {
+        return ch >= '0' && ch <= '9' ;
     }
 
     /** Turn the lexical form of an XSD date into what SQL believes in */
