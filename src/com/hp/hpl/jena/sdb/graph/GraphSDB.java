@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.query.Query;
@@ -55,6 +56,14 @@ public class GraphSDB extends GraphBase implements Graph
         if ( reset )
             store.getTableFormatter().format() ;
         //readPrefixMapping() ;
+    }
+    
+    /* We don't support value tests, hence handlesLiteralTyping is false */
+    public Capabilities getCapabilities()
+    { 
+    	if (capabilities == null) capabilities = new AllCapabilities()
+        	{ public boolean handlesLiteralTyping() { return false; } };
+        return capabilities;
     }
     
     public Store getStore() { return store ; } 
