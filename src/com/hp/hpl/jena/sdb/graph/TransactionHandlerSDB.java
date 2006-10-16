@@ -100,6 +100,7 @@ public class TransactionHandlerSDB implements TransactionHandler
         } 
         catch (SDBExceptionSQL e) { abortFinally() ; throw e ; } 
         catch (JenaException e)   { abortFinally() ; throw e ; }
+        catch (Throwable e) { abortFinally() ; throw new SDBException(e) ; } // Pass Graph tests.
     }
 }
 

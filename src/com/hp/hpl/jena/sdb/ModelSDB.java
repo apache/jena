@@ -49,9 +49,6 @@ public class ModelSDB extends ModelCom implements Model
     }
     
     public GraphSDB getGraphSDB() { return (GraphSDB)getGraph() ; }
-    
-    @Override
-    public void close() { getGraphSDB().getStore().close() ; }
 }
 
 /*
