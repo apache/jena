@@ -7,6 +7,10 @@
 package com.hp.hpl.jena.sdb.sql;
 
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.query.util.GraphUtils;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -57,6 +61,7 @@ public class SDBConnectionDesc
             jdbcURL = JDBC.makeURL(type, host, name, argStr, user, password) ;
     }
     
+    /** Create a new SDB connection from the description. */ 
     public SDBConnection createConnection()
     {
         initJDBC() ;
@@ -68,6 +73,19 @@ public class SDBConnectionDesc
         return c ;
     }
 
+    /** Create a new, plain JDBC SQL connection from the description. */ 
+    public Connection createSqlConnection()
+    {
+        initJDBC() ;
+        if ( driver != null )
+            JDBC.loadDriver(driver) ;
+        try {
+            return DriverManager.getConnection(jdbcURL, user, password) ;
+        } catch (SQLException e)
+        {
+            throw new SDBException("SQL Exception while connecting to database: "+jdbcURL+" : "+e.getMessage()) ;
+        }
+    }
 }
 
 /*

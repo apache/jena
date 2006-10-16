@@ -28,7 +28,7 @@ public class RunSDB
         //SDBConnection.logSQLStatements = true ;
         
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
         run() ;
         System.err.println("Nothing ran!") ;

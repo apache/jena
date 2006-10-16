@@ -43,10 +43,9 @@ public abstract class QueryCompilerMain implements QueryCompiler
                                        ExecutionContext execCxt)
     {
         String sqlStmt = asSQL(store, execCxt.getQuery(), block) ;
-        
         try {
+            // Odd : exitVariables and a project?
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
-            
             Set<Var> x = QC.exitVariables(block) ;
             try {
                 return getResultsBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;

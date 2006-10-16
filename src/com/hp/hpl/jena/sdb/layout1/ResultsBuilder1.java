@@ -38,7 +38,7 @@ public class ResultsBuilder1 implements ResultsBuilder
             {
                 try {
                     String s = rs.getString(v.getName()) ;
-                    // Same as rs.wasNull()
+                    // Same as rs.wasNull() for things that can return Java nulls.
                     if ( s == null )
                         continue ;
                     Node n = codec.decode(s) ;

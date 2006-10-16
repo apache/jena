@@ -43,12 +43,15 @@ public class ResultsBuilder2 implements ResultsBuilder
             for ( Var v : vars )
             {
                 String n = v.getName() ;
+                
                 if ( ! v.isNamedVar() )
                     // Skip bNodes and system variables
                     continue ;
 
                 try {
                     String lex = rs.getString(n+"$lex") ;   // chars
+                    // Same as rs.wasNull() for things that can return Java nulls.
+                    
                     // byte bytes[] = rs.getBytes(n+"$lex") ;      // bytes
                     // try {
                     //     String $ = new String(bytes, "UTF-8") ;

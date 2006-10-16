@@ -74,7 +74,10 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             
             out.print(c.cdr().asString()) ;
             out.print(" AS ") ;
+            // TODO Remap from SPARQL variable names to SQL variable names.
             out.print(c.car().getName()) ;
+            // And pass the map to the the results builder
+            // Better - no AS here and leave to the QueryCompilerMain.execSQL/result builder.
         }
         out.decIndent() ;
         out.println() ;

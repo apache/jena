@@ -33,8 +33,8 @@ public class QueryCompiler2 extends QueryCompilerMain
     }
     
     public QueryCompiler2(BlockCompiler blockCompiler,
-                             ResultsBuilder resultsBuilder,
-                             ConditionCompiler conditionCompiler)
+                          ResultsBuilder resultsBuilder,
+                          ConditionCompiler conditionCompiler)
     {
         if ( blockCompiler == null )
             blockCompiler = new BlockCompiler2() ;
@@ -59,9 +59,9 @@ public class QueryCompiler2 extends QueryCompilerMain
     { return ; }
 
     @Override
-        protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
+    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
     {
-        SqlNode n =  makeProject(sqlNode, projectVars) ;
+        SqlNode n = makeProject(sqlNode, projectVars) ;
         return n ;
     }
     
