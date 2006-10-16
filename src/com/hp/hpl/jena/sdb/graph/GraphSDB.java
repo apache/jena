@@ -59,10 +59,12 @@ public class GraphSDB extends GraphBase implements Graph
     }
     
     /* We don't support value tests, hence handlesLiteralTyping is false */
+    @Override
     public Capabilities getCapabilities()
     { 
-    	if (capabilities == null) capabilities = new AllCapabilities()
-        	{ public boolean handlesLiteralTyping() { return false; } };
+    	if (capabilities == null)
+            capabilities = new AllCapabilities()
+        	  { @Override public boolean handlesLiteralTyping() { return false; } };
         return capabilities;
     }
     
@@ -108,7 +110,7 @@ public class GraphSDB extends GraphBase implements Graph
         DataSourceGraph dsg = new DataSourceGraphImpl() ;
         dsg.setDefaultGraph(this) ;
         ExecutionContext execCxt = new ExecutionContext(new Context(),  new Query(), this, dsg) ;
-        QueryIterator qIter = store.getQueryCompiler().execSQL(getStore(), block, new BindingRoot(), execCxt) ;
+        QueryIterator qIter = store.getQueryCompiler().exec(getStore(), block, new BindingRoot(), execCxt) ;
         List<Triple> triples = new ArrayList<Triple>() ;
         
         for (; qIter.hasNext() ; )

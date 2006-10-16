@@ -11,15 +11,20 @@ import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface QueryCompiler
 {
+    public SqlNode compileQuery(Store store, Query query, Block block) ;
+    
+    // This should be elsewhere?
+    // Needed by PlanToSDB to test whether a FILTER is compilable.
     public ConditionCompiler getConditionCompiler() ;
     
-    public QueryIterator execSQL(Store store,
-                                 Block block,
-                                 Binding binding,
-                                 ExecutionContext execCxt) ;
+    public QueryIterator exec(Store store,
+                              Block block,
+                              Binding binding,
+                              ExecutionContext execCxt) ;
     
     // Convenient to have this.
     public String asSQL(Store store, Query query, Block block) ;

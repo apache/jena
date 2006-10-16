@@ -1,8 +1,17 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Creating models: both SDBFactory and StoreFacory do this.
++ Creating models: both SDBFactory and StoreFactory do this.
   SDBFactory should be the place!
+  
++ "Script" - factory for lots of things.
+
++ Query compilers should be single-instances (per block or per query?)
+  QueryCompiler.generateQC => an instance
+  Need to have a separate-but-related getConditionCompiler
+  for PlanToSDB.transformFilter which test to see if a filter is compilable.
+  Maybe allocate per query and have a reset()?
+  Or QueryCompiler.createCompileInstance which has the .exec().
 
 + Abstracting databases:
   1/ The Jena2 way of config files.

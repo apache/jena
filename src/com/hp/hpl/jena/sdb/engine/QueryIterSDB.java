@@ -33,7 +33,7 @@ public class QueryIterSDB extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding binding)
     {
         Block block2 = block.substitute(binding) ;
-        return store.getQueryCompiler().execSQL(store, block2, binding, super.getExecContext()) ;
+        return store.getQueryCompiler().exec(store, block2, binding, super.getExecContext()) ;
     }
 }
 

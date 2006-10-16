@@ -37,7 +37,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
 {
     private static Log log = LogFactory.getLog(QueryCompilerMain.class) ;
     
-    public final QueryIterator execSQL(Store store,
+    public final QueryIterator exec(Store store,
                                        Block block,
                                        Binding binding,
                                        ExecutionContext execCxt)
@@ -59,7 +59,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
     protected abstract ResultsBuilder getResultsBuilder() ;
     protected abstract BlockCompiler  getBlockCompiler() ;
     
-    public String asSQL(Store store, Query query, Block block)
+    public SqlNode compileQuery(Store store, Query query, Block block)
     {
         verbose ( QC.printBlock, block ) ; 
         CompileContext context = new CompileContext(store, query) ;
@@ -84,15 +84,21 @@ public abstract class QueryCompilerMain implements QueryCompiler
         sqlNode = finishCompile(context, block, sqlNode, projectVars) ;
         
         verbose ( QC.printAbstractSQL, sqlNode ) ;
+        
+        return sqlNode ;
+    }
 
+
+    public String asSQL(Store store, Query query, Block block)
+    {
+        SqlNode sqlNode = compileQuery(store, query, block) ;
         // ... SqlNode to SQL string
         String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
         verbose ( QC.printSQL, sqlStmt ) ; 
 
         return sqlStmt ;
-
     }
-
+    
     /** A chance for subclasses to analyse and alter the block to be compiled into SQL */
     protected Block modify(Block block) { return block ; }
 
