@@ -38,9 +38,9 @@ public abstract class QueryCompilerMain implements QueryCompiler
     private static Log log = LogFactory.getLog(QueryCompilerMain.class) ;
     
     public final QueryIterator exec(Store store,
-                                       Block block,
-                                       Binding binding,
-                                       ExecutionContext execCxt)
+                                    Block block,
+                                    Binding binding,
+                                    ExecutionContext execCxt)
     {
         String sqlStmt = asSQL(store, execCxt.getQuery(), block) ;
         try {

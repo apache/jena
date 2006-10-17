@@ -12,9 +12,12 @@ SDB ToDo list (and general notes)
 + Compile hooks
       Subclassing a BlockCompiler still need hooks.
 	BGP => BGP
-        startCompile can return a modifed block?
-        c.f. Customizer - a dynamically loaded piece of code.
+		==> modify (called before compilation starts)
+			Subclasses of QueryCompiler.
+	        c.f. Customizer - a dynamically loaded piece of code.
 	BGP => SQL (part of compilation)
+		In the BlockCompiler.
+		For now, only subclasses to provide extensions - not dynamic code.
     One feature may need both.
 
 + "Script" - factory for lots of things.
