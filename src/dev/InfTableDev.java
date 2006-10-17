@@ -17,6 +17,8 @@ import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
+import com.hp.hpl.jena.sdb.core.compiler.BlockCompilerFactory;
 import com.hp.hpl.jena.sdb.data.CustomizeProperty;
 import com.hp.hpl.jena.sdb.data.CustomizeType;
 import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
@@ -84,14 +86,24 @@ public class InfTableDev
             // This does the rewrite of rdf:type.
             sc = new CustomizeType() ;
             // and the SQL intercept for rdfs:subClassOf
-            qc = new QueryCompiler2(new BlockCompilerSubClass(), null, null) ;
+            qc = new QueryCompiler2(new BlockCompilerFactory(){
+                public BlockCompiler createBlockCompiler()
+                {
+                    return new BlockCompilerSubClass() ;
+                }
+            }) ;
         }
         else
         {
             // This does the rewrite of propertyies.
             sc = new CustomizeProperty() ;
             // and the SQL intercept for rdfs:subPropertyOf
-            qc = new QueryCompiler2(new BlockCompilerTrans(new TransSubPropertyTable()), null, null) ;
+            qc = new QueryCompiler2(new BlockCompilerFactory(){
+                public BlockCompiler createBlockCompiler()
+                { 
+                    return new BlockCompilerTrans(new TransSubPropertyTable()) ; 
+                }
+            }) ;
         }
         Store store2 = new StoreBase(store.getConnection(),
                                      store.getPlanTranslator(),

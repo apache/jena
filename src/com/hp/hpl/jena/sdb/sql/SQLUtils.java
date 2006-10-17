@@ -167,13 +167,13 @@ public class SQLUtils
     }
     
     /** Get the size of a table (usually called 'Triples') **/
-    public static int getTableSize(Connection connection, String table)
+    public static long getTableSize(Connection connection, String table)
     {
-    	int size = -1;
+    	long size = -1;
     	try {
 			ResultSet res = connection.createStatement().executeQuery("SELECT COUNT(*) AS size FROM " + table);
 			if (res.next())
-				size = res.getInt("size");
+				size = res.getLong("size");
 			res.close();
 		} catch (SQLException e) { throw new SDBExceptionSQL(e) ; }
 

@@ -29,25 +29,25 @@ public class QueryCompiler1 extends QueryCompilerMain
 {
     private static Log log = LogFactory.getLog(QueryCompiler1.class) ;
     
+    private TripleTableDesc tripleTableDesc ;
     private EncoderDecoder codec ;
-    private BlockCompiler blockCompiler ;
 
     public QueryCompiler1(EncoderDecoder codec, TripleTableDesc tripleTableDesc)
     {
         if ( tripleTableDesc == null )
             tripleTableDesc = new TripleTableDescSPO() ;
         this.codec = codec ;
-        blockCompiler = new BlockCompiler1(codec, tripleTableDesc) ;
+        this.tripleTableDesc = tripleTableDesc ;
     }
     
 
     public QueryCompiler1(EncoderDecoder codec)    { this(codec, null) ; }
 
     @Override
-    protected BlockCompiler  getBlockCompiler()    { return blockCompiler ; }
+    protected BlockCompiler  createBlockCompiler()    { return new BlockCompiler1(codec, tripleTableDesc) ; }
     
     @Override
-    protected ResultsBuilder getResultsBuilder()   { return new ResultsBuilder1(codec) ; }
+    protected ResultsBuilder createResultsBuilder()   { return new ResultsBuilder1(codec) ; }
 
 
     public ConditionCompiler getConditionCompiler()
@@ -56,8 +56,7 @@ public class QueryCompiler1 extends QueryCompilerMain
     }
 
     @Override
-    protected void startCompile(CompileContext context, Block block)
-    { return ; } 
+    protected void startCompile(CompileContext context, Block block) { return ; }
 
     @Override
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)

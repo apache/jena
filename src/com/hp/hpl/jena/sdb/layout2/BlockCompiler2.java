@@ -32,29 +32,23 @@ public class BlockCompiler2 extends BlockCompilerBasic
 {
     private static Log log = LogFactory.getLog(BlockCompiler2.class) ;
 
-    private static class Additional
-    {
-        Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
+    
+    Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
+
+    private int nodesAliasCount = 1 ;
+    private final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
+    private final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
+
+    // TODO Invent generators 
+    String allocNodeConstantAlias()      { return allocAlias(nodesConstantAliasBase) ; }
+    String allocNodeResultAlias()        { return allocAlias(nodesResultAliasBase) ; }
+    String allocAlias(String aliasBase)  { return  aliasBase+(nodesAliasCount++) ; }
         
-        private int nodesAliasCount = 1 ;
-        private final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
-        private final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
-
-        String allocNodeConstantAlias()      { return allocAlias(nodesConstantAliasBase) ; }
-        String allocNodeResultAlias()        { return allocAlias(nodesResultAliasBase) ; }
-        String allocAlias(String aliasBase)  { return  aliasBase+(nodesAliasCount++) ; }
-        
-    }
-
-    private Map<CompileContext, Additional> compileState = Collections.synchronizedMap(new HashMap<CompileContext, Additional>()) ;
-
     // TODO Move/merge with CompileContext
 
     @Override
     protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     {
-        // Initialize additional state
-        compileState.put(context, new Additional()) ;
         Collection<Node> constants = blockBGP.getConstants() ;
         addMoreConstants(constants) ;
         SqlNode sqlNode = insertConstantAccesses(context, constants) ;
@@ -62,6 +56,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
 
     }
 
+    // Hook for specialized engines.
     protected void addMoreConstants(Collection<Node> constants)
     {}
     
@@ -72,8 +67,6 @@ public class BlockCompiler2 extends BlockCompilerBasic
         sqlNode = addRestrictions(context, sqlNode, blockBGP.getConstraints()) ;
         Set<Var> projectVars = QC.exitVariables(blockBGP) ;
         sqlNode = extractResults(context, projectVars , sqlNode) ;
-        // Drop the constants mapping
-        compileState.remove(context) ;
         return sqlNode ;
     }
 
@@ -85,9 +78,6 @@ public class BlockCompiler2 extends BlockCompilerBasic
     
     private SqlNode insertConstantAccesses(CompileContext context, Collection<Node> constants)
     {
-        Additional state = compileState.get(context) ;
-        
-        Map<Node, SqlColumn> constantCols = state.constantCols ;
         SqlNode sqlNode = null ;
         for ( Node n : constants )
         {
@@ -96,7 +86,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
 
             // Access nodes table.
 
-            SqlTable nTable = new TableNodes(state.allocNodeConstantAlias()) ;
+            SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
             nTable.addNote("Const: "+FmtUtils.stringForNode(n, context.getPrefixMapping())) ; 
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
             // Record 
@@ -113,8 +103,6 @@ public class BlockCompiler2 extends BlockCompilerBasic
     private SqlNode extractResults(CompileContext context,
                                    Collection<Var>vars, SqlNode sqlNode)
     {
-        Additional state = compileState.get(context) ;
-
         // for each var and it's id column, make sure there is value column. 
         for ( Var v : vars )
         {
@@ -135,7 +123,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
 
             // Not in scope -- add a table to get it (share some code with addRestrictions?) 
             // Value table.
-            SqlTable nTable = new TableNodes(state.allocNodeResultAlias()) ;
+            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
             c2 = new SqlColumn(nTable, "id") ;                  // nTable.getColFor("id") ;
 
             nTable.setValueColumnForVar(v, c2) ;
@@ -154,8 +142,6 @@ public class BlockCompiler2 extends BlockCompilerBasic
                                     SqlNode sqlNode,
                                     List<SDBConstraint> constraints)
     {
-        Additional state = compileState.get(context) ;
-
         if ( constraints.size() == 0 )
             return sqlNode ;
 
@@ -177,7 +163,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
                 }
 
                 // Value table column
-                SqlTable nTable =   new TableNodes(state.allocNodeResultAlias()) ;
+                SqlTable nTable =   new TableNodes(allocNodeResultAlias()) ;
                 SqlColumn colId =   new SqlColumn(nTable, "id") ;
                 SqlColumn colLex =  new SqlColumn(nTable, "lex") ;
                 SqlColumn colType = new SqlColumn(nTable, "type") ;
@@ -197,10 +183,9 @@ public class BlockCompiler2 extends BlockCompilerBasic
     @Override
     protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
     {
-        SqlColumn colId = compileState.get(context).constantCols.get(node) ;
+        SqlColumn colId = constantCols.get(node) ;
         if ( colId == null )
         {
-            Map<Node, SqlColumn> x = compileState.get(context).constantCols ;
             log.warn("Failed to find id col for "+node) ;
             return ;
         }

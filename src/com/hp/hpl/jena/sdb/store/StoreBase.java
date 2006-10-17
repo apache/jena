@@ -69,7 +69,7 @@ public class StoreBase
     public void setCustomizer(StoreCustomizer customizer)       { this.customizer = customizer ; }
     
     /** Default implementation: get size of Triples table **/
-    public int getSize()
+    public long getSize()
     {
     	return SQLUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
     }

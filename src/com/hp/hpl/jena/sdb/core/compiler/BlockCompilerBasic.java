@@ -31,7 +31,7 @@ public abstract class BlockCompilerBasic implements BlockCompiler
     public SqlNode compile(BlockOptional blockOpt, CompileContext context)
     {
         SqlNode fixedNode = blockOpt.getLeft().compile(this, context) ;
-        SqlNode optNode = blockOpt.getRight().compile(this, context) ;
+        SqlNode optNode   = blockOpt.getRight().compile(this, context) ;
             
         if ( optNode.isProject() )
         {
@@ -47,6 +47,7 @@ public abstract class BlockCompilerBasic implements BlockCompiler
         SqlNode sqlNode = startBasicBlock(context, blockBGP) ;
             
         // Allow per store instance modification.
+        // MOVE to startCompile + base class for no-ops 
         blockBGP = context.getStore().getCustomizer().modify(blockBGP) ;
 
         for ( Triple triple : blockBGP.getTriples() )

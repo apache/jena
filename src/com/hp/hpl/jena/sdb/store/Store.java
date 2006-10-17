@@ -26,50 +26,45 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 public interface Store
 {
     /** Return the connection to the implementing database */
-    SDBConnection getConnection() ;
+    public SDBConnection getConnection() ;
     
     /** Return the processor that turns query Plans (from ARQ) to
      * something that goes to this store.  May still involve ARQ
      * i.e. be a partial translation to SQL, leaving work to be
      * done in the ARQ engine as well. 
      */ 
-    PlanTranslator   getPlanTranslator() ;
+    public PlanTranslator   getPlanTranslator() ;
     
     /** Return the processor that turns SPARQL queries into SQL expressions */
-    QueryCompiler    getQueryCompiler() ; 
+    public QueryCompiler    getQueryCompiler() ; 
     
-    // Change to a list of customizers
+    // c.f. modify()
     /** Return the store instance specific modification engine */
-    StoreCustomizer  getCustomizer() ;
+    public StoreCustomizer  getCustomizer() ;
     
     /** Set the store instance specific modification engine */
-    void setCustomizer(StoreCustomizer customizer) ;
+    public void             setCustomizer(StoreCustomizer customizer) ;
 
-    /** Get the SQL-from-realtional algebra generator */ 
-    SQLGenerator getSQLGenerator() ;
+    /** Get the SQL-from-relational algebra generator */ 
+    public SQLGenerator     getSQLGenerator() ;
     
     /** Return the processor that creates the database tables */
-    StoreFormatter   getTableFormatter() ;
+    public StoreFormatter   getTableFormatter() ;
     
     /** Return the (bulk) loader */
-    StoreLoader      getLoader() ;
+    public StoreLoader      getLoader() ;
     
     /** Return the configuration of this Store */
-    StoreConfig      getConfiguration() ;
+    public StoreConfig      getConfiguration() ;
     
     /** Stores should be closed explicitly. 
      *  Some stores may require specific finalization actions (e.g. embedded databases),
      *  and some stores may be able to release system resources.
      */  
-    void close() ;
+    public void  close() ;
     
     /** Get the size of this store **/
-    int getSize() ;
-    
-//    /** Indicate whether a store is ready to use or
-//     * needs setting (typically, formatting)
-//     */ 
-//    boolean isInitialized() ;
+    public long  getSize() ;
 }
 
 /*

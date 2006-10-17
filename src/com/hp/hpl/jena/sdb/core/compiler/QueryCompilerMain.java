@@ -48,7 +48,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
             Set<Var> x = QC.exitVariables(block) ;
             try {
-                return getResultsBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;
+                return createResultsBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;
             } finally { jdbcResultSet.close() ; }
         } catch (SQLException ex)
         {
@@ -56,8 +56,8 @@ public abstract class QueryCompilerMain implements QueryCompiler
         }
     }
 
-    protected abstract ResultsBuilder getResultsBuilder() ;
-    protected abstract BlockCompiler  getBlockCompiler() ;
+    protected abstract ResultsBuilder createResultsBuilder() ;
+    protected abstract BlockCompiler  createBlockCompiler() ;
     
     public SqlNode compileQuery(Store store, Query query, Block block)
     {
@@ -67,7 +67,6 @@ public abstract class QueryCompilerMain implements QueryCompiler
         // A chance for subclasses to change the block structure (including insert their own block types)
         // Remove?  Now we have customizers?
         
-        //store.getCustomizer().modify(??) ;
         block = modify(block) ;
 
         if ( block == null )
@@ -77,7 +76,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         
         startCompile(context, block) ;
         
-        SqlNode sqlNode = block.compile(getBlockCompiler() , context) ; 
+        SqlNode sqlNode = block.compile(createBlockCompiler() , context) ; 
 
         Set<Var> projectVars = QC.exitVariables(block) ;
         
@@ -87,7 +86,6 @@ public abstract class QueryCompilerMain implements QueryCompiler
         
         return sqlNode ;
     }
-
 
     public String asSQL(Store store, Query query, Block block)
     {
@@ -104,22 +102,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
 
     protected abstract void startCompile(CompileContext context, Block block) ;
     protected abstract SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars) ;
-//    
-//    
-//    public SqlNode compile(BlockOptional blockOpt, CompileContext context)
-//    {
-//        SqlNode fixedNode = blockOpt.getLeft().generateSQL(context, this) ;
-//        SqlNode optNode = blockOpt.getRight().generateSQL(context, this) ;
-//        
-//        if ( optNode.isProject() )
-//        {
-//            log.info("Projection from an optional{} block") ;
-//            optNode = optNode.getProject().getSubNode() ;
-//        }
-//        SqlNode sqlNode = QC.leftJoin(context, fixedNode, optNode) ;
-//        return sqlNode ;
-//    }
-    
+
     static private void verbose(boolean flag, Object thing)
     {
         if ( flag )

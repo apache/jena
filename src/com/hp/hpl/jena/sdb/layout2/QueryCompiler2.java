@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
+import com.hp.hpl.jena.sdb.core.compiler.BlockCompilerFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -23,46 +24,42 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 public class QueryCompiler2 extends QueryCompilerMain
 {
-    private BlockCompiler     blockCompiler ;
-    private ResultsBuilder    resultsBuilder ;
     private ConditionCompiler conditionCompiler ;
+    private BlockCompilerFactory blockCompilerFactory ;
     
     public QueryCompiler2()
     {
-        this(null, null, null) ;
+        this(null, null) ;
     }
-    
-    public QueryCompiler2(BlockCompiler blockCompiler,
-                          ResultsBuilder resultsBuilder,
-                          ConditionCompiler conditionCompiler)
-    {
-        if ( blockCompiler == null )
-            blockCompiler = new BlockCompiler2() ;
-        if ( resultsBuilder == null )
-            resultsBuilder = new ResultsBuilder2() ;
-        if ( conditionCompiler == null)
-            conditionCompiler = new ConditionCompiler2() ;
-        this.blockCompiler = blockCompiler ;
-        this.resultsBuilder = resultsBuilder ;
-        this.conditionCompiler = conditionCompiler ;
-    }
-    
-    @Override
-    protected BlockCompiler  getBlockCompiler()     { return blockCompiler ; }
-    @Override
-    protected ResultsBuilder getResultsBuilder()    { return resultsBuilder ; }
 
-    public ConditionCompiler getConditionCompiler() { return conditionCompiler ; }
+    public QueryCompiler2(BlockCompilerFactory blockCompilerFactory)
+    {
+        this(blockCompilerFactory, null) ;
+    }
+    
+    private QueryCompiler2(BlockCompilerFactory blockCompilerFactory, ConditionCompiler conditionCompiler)
+    {
+        this.conditionCompiler = conditionCompiler ;
+        if ( blockCompilerFactory == null )
+            blockCompilerFactory = new BlockCompiler2Factory() ;
+            
+        this.blockCompilerFactory = blockCompilerFactory ;
+    }
     
     @Override
-    protected void startCompile(CompileContext context, Block block)
-    { return ; }
+    protected BlockCompiler  createBlockCompiler()     { return blockCompilerFactory.createBlockCompiler() ; }
+    @Override
+    protected ResultsBuilder createResultsBuilder()    { return new ResultsBuilder2() ; }
+
+    public ConditionCompiler getConditionCompiler()    { return conditionCompiler ; }
+    
+    @Override
+    protected void startCompile(CompileContext context, Block block) { return ; }
 
     @Override
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
     {
-        SqlNode n = makeProject(sqlNode, projectVars) ;
-        return n ;
+        return makeProject(sqlNode, projectVars) ;
     }
     
     private SqlNode makeProject(SqlNode sqlNode, Set<Var> projectVars)
