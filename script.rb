@@ -4,11 +4,11 @@ require 'java'
 
 #include_class('java.lang.String') {|p,name| "J#{name}" }
 
-include_class 'com.hp.hpl.jena.sdb.store.Store'
+include_class 'java.lang.System'
+# rename as "Factory"
+#include_class('com.hp.hpl.jena.sdb.SDBFactory') {|p,name| name.sub(/^SDB/,'') }
 include_class 'com.hp.hpl.jena.sdb.SDBFactory'
-include_class 'com.hp.hpl.jena.sdb.sql.SDBConnectionDesc'
-include_class 'com.hp.hpl.jena.sdb.store.StoreDesc'
-include_class 'com.hp.hpl.jena.sdb.store.StoreFactory'
+
 include_class 'com.hp.hpl.jena.sdb.util.StrUtils'
 include_class 'com.hp.hpl.jena.util.FileManager'
 
@@ -16,15 +16,19 @@ include_class 'com.hp.hpl.jena.util.FileManager'
 # Command line => environment and actions?
 # Then same here.
 
-store = StoreFactory.create("sdb.ttl")
+store = SDBFactory.connectStore("sdb.ttl")
 ## store.setFeature(Feature.)
 store.getTableFormatter().format()
-store.getConfiguration().reset() 
-puts "Connection : #{store.getConnection().getLabel()}"
-tables = store.getConfiguration().tables()
-tables.each { |x| puts x }
-exit
+## store.getConfiguration().reset() 
+## puts "Connection : #{store.getConnection().getLabel()}"
+## tables = store.getConfiguration().tables()
+## tables.each { |x| puts x }
 
+model = SDBFactory.connectModel(store)
+model.read("file:D.ttl", "N3")
+model.write(System.out, "N3") 
+store.close() ;
+exit(0)
 
 
 #c = SDBConnectionDesc.read("sdb.ttl")

@@ -41,12 +41,12 @@ public class StoreFactory
     static { SDB.init() ; } 
 
     public static Store create(String filename)
-    { return create(StoreDesc.read(filename), null) ; }
+    { return create(null, StoreDesc.read(filename)) ; }
     
     public static Store create(StoreDesc desc)
-    { return create(desc, null) ; }
+    { return create(null, desc) ; }
     
-    public static Store create(StoreDesc desc, SDBConnection sdb)
+    public static Store create(SDBConnection sdb, StoreDesc desc)
     {
         Store store = _create(desc, sdb) ;
         if ( desc.customizerClass != null )
@@ -69,6 +69,11 @@ public class StoreFactory
     }
     
     public static Graph createGraph(Store store)
+    {
+        return createGraphSDB(store) ;
+    }
+
+    public static GraphSDB createGraphSDB(Store store)
     {
         return new GraphSDB(store) ;
     }

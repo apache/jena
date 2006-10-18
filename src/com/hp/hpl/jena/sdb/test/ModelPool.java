@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.hp.hpl.jena.sdb.ModelSDB;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
@@ -49,7 +49,7 @@ public class ModelPool {
 		stores = new HashMap<String, Store>();
 	}
 
-	public ModelSDB getMySQL() {
+	public Model getMySQL() {
 		Store store = stores.get("MYSQL");
 
 		if (store == null) {
@@ -65,12 +65,12 @@ public class ModelPool {
 			stores.put("MYSQL", store);
 		}
 		
-		ModelSDB model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectModel(store);
 		model.removeAll();
 		return model;
 	}
 
-	public ModelSDB getHSQL() {
+	public Model getHSQL() {
 		Store store = stores.get("HSQL");
 
 		if (store == null) {
@@ -86,12 +86,12 @@ public class ModelPool {
 			stores.put("HSQL", store);
 		}
 		
-		ModelSDB model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectModel(store);
 		model.removeAll();
 		return model;
 	}
 
-	public ModelSDB getPgSQL() {
+	public Model getPgSQL() {
 		Store store = stores.get("PGSQL");
 
 		if (store == null) {
@@ -107,7 +107,7 @@ public class ModelPool {
 			stores.put("PGSQL", store);
 		}
 		
-		ModelSDB model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectModel(store);
 		model.removeAll();
 		return model;
 	}

@@ -6,50 +6,71 @@
 
 package com.hp.hpl.jena.sdb;
 
-import com.hp.hpl.jena.sdb.graph.GraphSDB;
+import java.sql.Connection;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreDesc;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 
-/** Various operations to create or connect: SDBConnections, Stores, Models, Graphs. */
-
-// SDBConnection ==> ConnectionFactory?
-//   makeConnection(url/user/password)
-//   makeConnection(java.sql.connection)
-//   makeConnection(description)
-//   makeConnection("filename")
-// Store/Model/Graph
-//  connectStore == createStore (a Store is the the thing in the database)
-//     connectStore(SDBConnection, config=graph)
-//  createModel(Store) (description)
-//  createGraph
-
-// So may be Store reads remote config once.
-//  Store.disconnect/reconnect(SDBConnection)
+/** Various operations to create or connect: SDBConnections, Stores, Models, Graphs.
+ *  Convenience calls to other factories.
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 
 public class SDBFactory
 {
     public static SDBConnection createConnection(String jdbcURL, String user, String password)
-    {
-        return new SDBConnection(jdbcURL, user, password) ;
-    }
+    { return new SDBConnection(jdbcURL, user, password) ; }
     
     public static SDBConnection createConnection(SDBConnectionDesc desc)
+    { return SDBConnectionFactory.create(desc) ; }
+
+    public static SDBConnection createConnection(String configFile)
+    { return SDBConnectionFactory.create(configFile) ; }
+
+    public static Connection createSqlConnection(SDBConnectionDesc desc)
+    { return SDBConnectionFactory.createJDBC(desc) ; }
+
+    public static Connection createSqlConnection(String configFile)
+    { return SDBConnectionFactory.createJDBC(configFile) ; }
+    
+    public static Store connectStore(String configFile) 
+    { return StoreFactory.create(configFile) ; }
+    
+    public static Store connectStore(SDBConnection sdbConnection, StoreDesc desc) 
+    { return StoreFactory.create(sdbConnection, desc) ; }
+    
+    public static Store connectStore(Connection sqlConnection, StoreDesc desc) 
     {
-        return desc.createConnection() ;
+        SDBConnection sdb = SDBConnectionFactory.create(sqlConnection) ;
+        return StoreFactory.create(sdb, desc) ;
     }
     
-    public static GraphSDB connectGraph(Store store)
-    {
-        GraphSDB graphSDB = new GraphSDB(store) ;
-        return graphSDB ; 
-    }
+    public static Graph connectGraph(Store store)
+    { return StoreFactory.createGraph(store) ; }
 
-    public static ModelSDB connectModel(Store store)
-    { return new ModelSDB(store) ; }
+    public static Graph connectGraph(StoreDesc storeDesc)
+    { return StoreFactory.createGraph(storeDesc) ; }
+    
+    public static Graph connectGraph(String configFile)
+    { return StoreFactory.createGraph(configFile) ; }
+    
+    public static Model connectModel(Store store)
+    { return StoreFactory.createModel(store) ; }
 
-    public static ModelSDB modelForGraph(GraphSDB graph) { return new ModelSDB(graph) ; }
+    public static Model connectModel(StoreDesc storeDesc)
+    { return StoreFactory.createModel(storeDesc) ; }
+
+    public static Model connectModel(String configFile)
+    { return StoreFactory.createModel(configFile) ; }
+
+    //public static ModelSDB modelForGraph(GraphSDB graph) { return new ModelSDB(graph) ; }
     
 }
 

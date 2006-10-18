@@ -15,20 +15,16 @@ import arq.cmdline.ArgDecl;
 import arq.cmdline.ArgModule;
 import arq.cmdline.CmdArgModule;
 
-import com.hp.hpl.jena.sdb.ModelSDB;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.graph.GraphSDB;
 import com.hp.hpl.jena.sdb.shared.SDBNotFoundException;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sdb.store.LayoutType; 
+import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.shared.NotFoundException;
 
 /** construction of a store from a store description,
@@ -91,7 +87,7 @@ public class ModStore implements ArgModule
     boolean connectionAttempted = false ;
     Store store = null ;
     DatasetStore dataset = null ;
-    ModelSDB model = null ;
+    Model model = null ;
     
     public ModStore()
     {
@@ -259,7 +255,7 @@ public class ModStore implements ArgModule
     public Store getStore()
     { 
         if ( store == null )
-            store = StoreFactory.create(storeDesc, getConnection()) ;
+            store = StoreFactory.create(getConnection(), storeDesc) ;
         return store ; 
     }
 
@@ -283,16 +279,16 @@ public class ModStore implements ArgModule
         return dataset ;
     }
     
-    public ModelSDB getModel()
+    public Model getModel()
     {
         if ( model == null )
             model = SDBFactory.connectModel(getStore()) ;
         return model ;
     }
     
-    public GraphSDB getGraph()
+    public Graph getGraph()
     {
-        return getModel().getGraphSDB() ;
+        return getModel().getGraph() ;
     }
     
     public boolean isConnected() { return connection != null ; }
