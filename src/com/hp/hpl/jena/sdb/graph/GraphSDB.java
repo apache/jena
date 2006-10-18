@@ -173,8 +173,8 @@ public class GraphSDB extends GraphBase implements Graph
         if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();
     }
     
-    public void startBulkLoad()  { inBulkUpdate += 1 ; if (inBulkUpdate == 1) store.getLoader().startBulkUpdate();}
-    public void finishBulkLoad() { inBulkUpdate -= 1 ; if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();}
+    public void startBulkUpdate()  { inBulkUpdate += 1 ; if (inBulkUpdate == 1) store.getLoader().startBulkUpdate();}
+    public void finishBulkUpdate() { inBulkUpdate -= 1 ; if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();}
     
     @Override
     public TransactionHandler getTransactionHandler() { return store.getConnection().getTransactionHandler() ; }

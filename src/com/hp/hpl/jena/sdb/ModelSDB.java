@@ -40,11 +40,17 @@ public class ModelSDB extends ModelCom implements Model
     }
 
     // Beware of prefixes
+    /* This short circuits removeAll, which breaks the listener contract
+     * (removed triples won't be seen). Probably minor, however.
+     * Wrap in bulk update due to MySQL locking idiocy. Sigh.
+     */
     @Override
     public Model removeAll()
     { 
         Store s = getGraphSDB().getStore() ;
+        getGraphSDB().startBulkUpdate();
         s.getTableFormatter().truncate() ;
+        getGraphSDB().finishBulkUpdate();
         return this ;
     }
     

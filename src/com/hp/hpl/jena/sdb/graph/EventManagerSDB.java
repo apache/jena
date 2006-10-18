@@ -24,9 +24,9 @@ public class EventManagerSDB extends SimpleEventManager {
 	public void notifyEvent(Graph arg0, Object arg1)
     {
 		if (arg1.equals(GraphEvents.startRead) )
-			((GraphSDB) graph).startBulkLoad() ;
+			((GraphSDB) graph).startBulkUpdate() ;
 		if (arg1.equals(GraphEvents.finishRead) )
-            ((GraphSDB) graph).finishBulkLoad() ;
+            ((GraphSDB) graph).finishBulkUpdate() ;
 		super.notifyEvent(arg0, arg1) ;
 	}
 }
