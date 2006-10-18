@@ -1,0 +1,69 @@
+SDB ToDo list (and general notes)
+=================================
+
++ Indirection from SPARQL variables to SQL columns
+  ResultBuilder(1|2) to have both halves and be instance per block compile
+  
+
++ Xfer and backport dbtest to Jena
+  
++ Add query tests :
+  SELECT * {}
+  SELECT ?x {}
+  SELECT * { P[?x] OPTIONAL { P[!?x] OPTIONAL { OPTIONAL P[?x] } } }
+
++ Compile hooks
+      Subclassing a BlockCompiler still need hooks.
+      A subclass with hook points!
+	BGP => BGP
+		==> modify (called before compilation starts)
+			Subclasses of QueryCompiler.
+	        c.f. Customizer - a dynamically loaded piece of code.
+	        Combine into QueryCompilerCustoimizer.
+	BGP => SQL (part of compilation)
+		In the BlockCompiler.
+		For now, only subclasses to provide extensions - not dynamic code.
+		Subclass that handles hooks
+    One feature may need both.
+
++ Abstracting databases:
+  1/ The Jena2 way of config files.
+  3/ graph for an SDBConnection (or get from DB).
+    That is the unit of database if there are multiple stores per connection.
+    Or maybe a Store features?
+      A/ regex syntax
+      B/ Table exists code (Classes, Value tables etc).
+      C/ VARCHAR/TEXT/BLOB syntax
+        HSQLDB: VARCHAR unlimited
+        MySQL: TEXT
+        PosgreSQL:
+          http://www.postgresql.org/docs/8.1/interactive/datatype.html
+          TEXT, bytea
+    How about an internal representation of table
+    then have a syntax generator per connection/store?
+       Table name + (name, type [null?])
+
++ Proper order for BGPs.
+
++ more in .shared.
+
++ ValueTables
+  String value table
+    With no URIs, much shorter.
+    Full text indexing where available?
+
++ Use SQL COALESCE for OPTIONALs with shared variables
+
++ Subquery scoping enhancements
+
+SqlExpr::
+IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
+OR improve the generation of SQL output and leave the tree much as is.
+OR canonical tree SPJ
+
+== Next
+  ==> Performance testing framework
+
+c.f. SQLCache and returning prepared statements
+  Named parameters in INSERT for robustness.
+  Sequences, not autoIncrement
