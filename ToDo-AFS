@@ -3,7 +3,15 @@ SDB ToDo list (and general notes)
 
 + Indirection from SPARQL variables to SQL columns
   ResultBuilder(1|2) to have both halves and be instance per block compile
-  
+    Move makeProject into results builder.
+  BUT are AS labels case sensitive?  need quoting to be case insensitive?
+    
++ cmd: 
+  @ --load for sdb.sdbquery
+  @ Have the function of command have a execOn(Store) option so it can be constructed outside.
+    Better - have a collection of cmd utility classes that do the work of the commands 
+    that can be called directly from code.  Control block for verbose/time/general stuff.
+  @ Mapper of property, args ==> slot.
 
 + Xfer and backport dbtest to Jena
   

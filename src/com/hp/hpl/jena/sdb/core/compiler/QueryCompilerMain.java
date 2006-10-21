@@ -20,10 +20,11 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
-import com.hp.hpl.jena.sdb.store.ResultsBuilder;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
 
 /**
@@ -42,13 +43,30 @@ public abstract class QueryCompilerMain implements QueryCompiler
                                     Binding binding,
                                     ExecutionContext execCxt)
     {
-        String sqlStmt = asSQL(store, execCxt.getQuery(), block) ;
+        // A results builder (renamed?) should do mapping between SQL ids and SPARQL variables.
+        // Generator class : use widely.
+        
+        Set<Var> projectVars = QC.exitVariables(block) ;
+        SQLBridge bridge = createSQLBridge() ;
+        
+        SqlNode sqlNode = compileQuery(store, execCxt.getQuery(), block, bridge) ;
+        bridge.buildProject(sqlNode, projectVars) ;
+        
+        
+        verbose ( QC.printAbstractSQL, sqlNode ) ;
+
+        
+        String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ;
+        
+        // finishCompile pairs with resultBuilder so combine 
+        // ResultsBuilder.makeProject(SqlNode, Vars) => SqlNode
+        Scope scope = sqlNode.getIdScope() ;
+        
         try {
             // Odd : exitVariables and a project?
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
-            Set<Var> x = QC.exitVariables(block) ;
             try {
-                return createResultsBuilder().assembleResults(jdbcResultSet, binding, x, execCxt) ;
+                return bridge.assembleResults(jdbcResultSet, binding, projectVars, execCxt) ;
             } finally { jdbcResultSet.close() ; }
         } catch (SQLException ex)
         {
@@ -56,16 +74,22 @@ public abstract class QueryCompilerMain implements QueryCompiler
         }
     }
 
-    protected abstract ResultsBuilder createResultsBuilder() ;
+    protected abstract SQLBridge      createSQLBridge() ;
     protected abstract BlockCompiler  createBlockCompiler() ;
     
-    public SqlNode compileQuery(Store store, Query query, Block block)
+    public SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge)
     {
+        if ( bridge == null )
+            bridge = createSQLBridge() ;
+        
         verbose ( QC.printBlock, block ) ; 
         CompileContext context = new CompileContext(store, query) ;
 
-        // A chance for subclasses to change the block structure (including insert their own block types)
+        // A chance for subclasses to change the block structure
+        //  -- including insert their own block types)
+        //  -- ?? 
         // Remove?  Now we have customizers?
+        // No - make customizers a subclass of this engine. 
         
         block = modify(block) ;
 
@@ -81,22 +105,18 @@ public abstract class QueryCompilerMain implements QueryCompiler
         Set<Var> projectVars = QC.exitVariables(block) ;
         
         sqlNode = finishCompile(context, block, sqlNode, projectVars) ;
-        
-        verbose ( QC.printAbstractSQL, sqlNode ) ;
+        sqlNode = bridge.buildProject(sqlNode, projectVars) ;
         
         return sqlNode ;
     }
 
-    public String asSQL(Store store, Query query, Block block)
-    {
-        SqlNode sqlNode = compileQuery(store, query, block) ;
-        // ... SqlNode to SQL string
-        String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
-        verbose ( QC.printSQL, sqlStmt ) ; 
-
-        return sqlStmt ;
-    }
-    
+//    public String asSQL(Store store, Query query, Block block)
+//    {
+//        SqlNode sqlNode = compileQuery(store, query, block) ;
+//        String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
+//        return sqlStmt ;
+//    }
+//    
     /** A chance for subclasses to analyse and alter the block to be compiled into SQL */
     protected Block modify(Block block) { return block ; }
 

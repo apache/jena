@@ -62,7 +62,7 @@ public abstract class BlockCompilerBasic implements BlockCompiler
 
     public SqlNode compile(Triple triple, CompileContext context)
     {
-        String alias = context.allocTableAlias() ;
+        String alias = context.getGenTableAlias().next();
         SqlExprList conditions = new SqlExprList() ;
         
         SqlTable triples = accessTriplesTable(alias) ;

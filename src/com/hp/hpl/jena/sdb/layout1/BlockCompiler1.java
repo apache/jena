@@ -60,10 +60,6 @@ public class BlockCompiler1 extends BlockCompilerBasic
     {
         return new TableTriples1(tripleTableDesc.getTableName(), alias) ;
     }
-    
-
-    
-
 }
 
 /*

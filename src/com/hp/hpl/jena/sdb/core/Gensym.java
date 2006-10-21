@@ -4,28 +4,32 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-
-public interface QueryCompiler
+public class Gensym implements Generator
 {
-    public SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge) ;
+
+    private String base ;
+    private int count = 1 ;
+    private String lastAlloc = null ;
+
+    public Gensym(String base) { this(base, 1) ; }
+    public Gensym(String base, int startCount) { this.base = base ; this.count = startCount ; }
     
-    // This should be elsewhere?
-    // Needed by PlanToSDB to test whether a FILTER is compilable.
-    public ConditionCompiler getConditionCompiler() ;
+    public String next()
+    {
+        String x = base+(count++) ;
+        lastAlloc = x ;
+        return x ;
+    }
     
-    public QueryIterator exec(Store store,
-                              Block block,
-                              Binding binding,
-                              ExecutionContext execCxt) ;
- }
+    public String current()
+    {
+        if ( lastAlloc == null )
+            next() ;
+        return lastAlloc ;
+    }
+}
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

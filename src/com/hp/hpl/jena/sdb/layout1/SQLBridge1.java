@@ -18,12 +18,34 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.sdb.store.ResultsBuilder;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.util.Pair;
 
-public class ResultsBuilder1 implements ResultsBuilder
+public class SQLBridge1 implements SQLBridge
 {
     private EncoderDecoder codec ;
-    ResultsBuilder1(EncoderDecoder codec) { this.codec = codec ; }
+    SQLBridge1(EncoderDecoder codec) { this.codec = codec ; }
+    
+    public SqlNode buildProject(SqlNode sqlNode, Set<Var> projectVars)
+    {
+        for ( Var v : projectVars )
+        {
+            if ( ! v.isNamedVar() )
+                continue ;
+            // Value scope == IdScope for layout1
+            // CHECK
+            SqlColumn c = sqlNode.getIdScope().getColumnForVar(v) ;
+            if ( c != null )
+                sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
+//            else
+//                log.warn("Can't find column for var: "+v) ;
+                
+        }
+        return sqlNode ;
+    }
     
     public QueryIterator assembleResults(java.sql.ResultSet rs, Binding binding,
                                          Set<Var> vars, ExecutionContext execCxt)

@@ -15,9 +15,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.SDBConstants;
-import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 import com.hp.hpl.jena.sdb.core.compiler.BlockCompilerBasic;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
@@ -39,13 +37,9 @@ public class BlockCompiler2 extends BlockCompilerBasic
     private final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
     private final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
 
-    // TODO Invent generators 
-    String allocNodeConstantAlias()      { return allocAlias(nodesConstantAliasBase) ; }
-    String allocNodeResultAlias()        { return allocAlias(nodesResultAliasBase) ; }
-    String allocAlias(String aliasBase)  { return  aliasBase+(nodesAliasCount++) ; }
-        
-    // TODO Move/merge with CompileContext
-
+    Generator genNodeConstantAlias = new Gensym(nodesConstantAliasBase) ;
+    Generator genNodeResultAlias = new Gensym(nodesResultAliasBase) ;
+    
     @Override
     protected SqlNode startBasicBlock(CompileContext context, BlockBGP blockBGP)
     {
@@ -86,7 +80,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
 
             // Access nodes table.
 
-            SqlTable nTable = new TableNodes(allocNodeConstantAlias()) ;
+            SqlTable nTable = new TableNodes(genNodeConstantAlias.next()) ;
             nTable.addNote("Const: "+FmtUtils.stringForNode(n, context.getPrefixMapping())) ; 
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
             // Record 
@@ -123,7 +117,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
 
             // Not in scope -- add a table to get it (share some code with addRestrictions?) 
             // Value table.
-            SqlTable nTable = new TableNodes(allocNodeResultAlias()) ;
+            SqlTable nTable = new TableNodes(genNodeResultAlias.next()) ;
             c2 = new SqlColumn(nTable, "id") ;                  // nTable.getColFor("id") ;
 
             nTable.setValueColumnForVar(v, c2) ;
@@ -163,7 +157,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
                 }
 
                 // Value table column
-                SqlTable nTable =   new TableNodes(allocNodeResultAlias()) ;
+                SqlTable nTable =   new TableNodes(genNodeResultAlias.next()) ;
                 SqlColumn colId =   new SqlColumn(nTable, "id") ;
                 SqlColumn colLex =  new SqlColumn(nTable, "lex") ;
                 SqlColumn colType = new SqlColumn(nTable, "type") ;

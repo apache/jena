@@ -36,17 +36,13 @@ public class CompileContext extends StoreHolder
         return query.getPrefixMapping() ;
     }
 
-    int countTable = 1 ;    
     private static final String triplesTableAliasBase = "T"+SDBConstants.SQLmark ;
-
-    int allocCount = 1 ;
-    public String allocAlias(String root) { return root+(allocCount++) ; }
-
-    public String allocTableAlias() { return triplesTableAliasBase+(countTable++) ; }
-
-    int countJoin = 1 ;    
-    private String joinAliasBase = "J"+SDBConstants.SQLmark ;
-    public String allocJoinAlias() { return joinAliasBase+(countJoin++) ; }
+    private Generator genTableAlias = new Gensym(triplesTableAliasBase) ;
+    public Generator getGenTableAlias() { return genTableAlias ; }
+    
+    private static String joinAliasBase = "J"+SDBConstants.SQLmark ;
+    private Generator genJoinAlias = new Gensym(joinAliasBase) ;
+    public Generator getGenJoinAlias() { return genJoinAlias ; }
 }
 
 /*

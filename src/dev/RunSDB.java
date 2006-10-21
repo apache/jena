@@ -9,12 +9,20 @@ package dev;
 import java.io.IOException;
 
 import arq.cmd.CmdUtils;
+import arq.cmd.QueryCmdUtils;
+import arq.cmd.ResultsFormat;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
@@ -30,7 +38,7 @@ public class RunSDB
         //runQuery() ;
         runPrint() ;
         //runScript() ;
-        run() ;
+        //run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -58,7 +66,7 @@ public class RunSDB
     public static void runPrint()
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {/*"-v",*/ "--sql", "--sdb=sdb.ttl", "--query=Q.rq"} ;
+        String[] a = {"-v", "--sql", "--sdb=sdb.ttl", "--query=Q.rq"} ;
         //String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
@@ -66,11 +74,20 @@ public class RunSDB
    
     public static void run()
     {
-        String[] a = {"-v", 
-                      //"--sdb=sdb.ttl", "typeBinary=VARBINARY", 
-                      "--sdb=tmp/sdb-oracle.ttl", "typevarchar=VARCHAR2(200)",
-                      } ; 
-        sdb.DBTest.main(a) ;
+        SDB.init() ;
+        // Create store - assumed  to be 
+        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
+        store.getTableFormatter().format() ;
+
+        Model model = SDBFactory.connectModel(store) ;
+        model.read("file:D.ttl", "N3") ;
+        //model.write(System.out, "N3")  ;
+        
+        String qs = "SELECT ?s ?p ?S { ?s ?p ?S }" ;
+        Query query = QueryFactory.create(qs) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+        QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_TEXT) ;
+        qExec.close() ;
         System.exit(0) ;
     }
 

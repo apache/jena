@@ -14,13 +14,9 @@ import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
 import com.hp.hpl.jena.sdb.core.compiler.BlockCompilerFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
-import com.hp.hpl.jena.sdb.store.ResultsBuilder;
-import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
 
 public class QueryCompiler2 extends QueryCompilerMain
 {
@@ -49,52 +45,17 @@ public class QueryCompiler2 extends QueryCompilerMain
     @Override
     protected BlockCompiler  createBlockCompiler()     { return blockCompilerFactory.createBlockCompiler() ; }
     @Override
-    protected ResultsBuilder createResultsBuilder()    { return new ResultsBuilder2() ; }
+    protected SQLBridge createSQLBridge()              { return new SQLBridge2() ; }
 
     public ConditionCompiler getConditionCompiler()    { return conditionCompiler ; }
     
     @Override
-    protected void startCompile(CompileContext context, Block block) { return ; }
+    protected void startCompile(CompileContext context, Block block)
+    { return ; }
 
     @Override
     protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
-    {
-        return makeProject(sqlNode, projectVars) ;
-    }
-    
-    private SqlNode makeProject(SqlNode sqlNode, Set<Var> projectVars)
-    {
-        for ( Var v : projectVars )
-        {
-            // See if we have a value column already.
-            SqlColumn vCol = sqlNode.getValueScope().getColumnForVar(v) ;
-            if ( vCol == null )
-            {
-                // Should be a column mentioned in the SELECT which is not mentionedd in this block 
-                continue ;
-            }
-    
-            SqlTable table = vCol.getTable() ; 
-            Var vLex = new Var(v.getName()+"$lex") ;
-            SqlColumn cLex = new SqlColumn(table, "lex") ;
-    
-            Var vDatatype = new Var(v.getName()+"$datatype") ;
-            SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
-    
-            Var vLang = new Var(v.getName()+"$lang") ;
-            SqlColumn cLang = new SqlColumn(table, "lang") ;
-    
-            Var vType = new Var(v.getName()+"$type") ;
-            SqlColumn cType = new SqlColumn(table, "type") ;
-    
-            // Get the 3 parts of the RDF term and its internal type number.
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
-        }
-        return sqlNode ;
-    }
+    { return sqlNode ; } 
 }
 
 /*

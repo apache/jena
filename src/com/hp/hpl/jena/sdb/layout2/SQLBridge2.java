@@ -26,21 +26,64 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.sdb.store.ResultsBuilder;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.util.Pair;
 
-public class ResultsBuilder2 implements ResultsBuilder 
+public class SQLBridge2 implements SQLBridge 
 {
-    private static Log log = LogFactory.getLog(ResultsBuilder2.class) ;
+    private static Log log = LogFactory.getLog(SQLBridge2.class) ;
 
-    public QueryIterator assembleResults(ResultSet rs, Binding binding,
-                                         Set<Var> vars, ExecutionContext execCxt)
+    public SQLBridge2() {}
+    
+    public SqlNode buildProject(SqlNode sqlNode, Set<Var> projectVars)
+    {
+        
+        for ( Var v : projectVars )
+        {
+            // See if we have a value column already.
+            SqlColumn vCol = sqlNode.getValueScope().getColumnForVar(v) ;
+            if ( vCol == null )
+            {
+                // Should be a column mentioned in the SELECT which is not mentionedd in this block 
+                continue ;
+            }
+    
+            SqlTable table = vCol.getTable() ; 
+            Var vLex = new Var(v.getName()+"$lex") ;
+            SqlColumn cLex = new SqlColumn(table, "lex") ;
+    
+            Var vDatatype = new Var(v.getName()+"$datatype") ;
+            SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
+    
+            Var vLang = new Var(v.getName()+"$lang") ;
+            SqlColumn cLang = new SqlColumn(table, "lang") ;
+    
+            Var vType = new Var(v.getName()+"$type") ;
+            SqlColumn cType = new SqlColumn(table, "type") ;
+    
+            // Get the 3 parts of the RDF term and its internal type number.
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
+        }
+        return sqlNode ;
+    }
+
+    
+    public QueryIterator assembleResults(ResultSet rs, Binding binding, Set<Var> projectVars,
+                                         ExecutionContext execCxt)
         throws SQLException
     {
         List<Binding> results = new ArrayList<Binding>() ;
         while(rs.next())
         {
             Binding b = new BindingMap(binding) ;
-            for ( Var v : vars )
+            for ( Var v : projectVars )
             {
                 String n = v.getName() ;
                 

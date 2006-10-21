@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.engine1.*;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.PlanSDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -74,7 +75,9 @@ public class PrintSDB
             PlanSDB planSDB = (PlanSDB)planElt ;
             Block block = planSDB.getBlock() ;
             block = block.substitute(new BindingRoot());
-            String sqlStmt = store.getQueryCompiler().asSQL(store, query, block) ;
+            SqlNode sqlNode = store.getQueryCompiler().compileQuery(store, query, block, null) ;
+
+            String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
             out.println("[SQL --------") ;
             out.incIndent() ;
             out.print(sqlStmt) ;
@@ -105,7 +108,9 @@ public class PrintSDB
                 Block block = planSDB.getBlock() ;
                 block = block.substitute(new BindingRoot());
                 
-                String sqlStmt = store.getQueryCompiler().asSQL(store, query, block) ;
+                SqlNode sqlNode = store.getQueryCompiler().compileQuery(store, query, block, null) ;
+                String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
+
                 out.println(sqlStmt) ;
             }
         }

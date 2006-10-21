@@ -4,29 +4,12 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.core;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Set;
-
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-
-/** Convert from whatever results a particualr layout returns into
- *  an ARQ QueryIterator of Bindings.
- *  
- * @author Andy Seaborne
- * @version $Id$
- */  
-
-public interface ResultsBuilder
+public interface Generator
 {
-    QueryIterator assembleResults(ResultSet jdbcResultSet, Binding binding,
-                                  Set<Var> vars, ExecutionContext execCxt)
-        throws SQLException; 
+    public String next() ;
+    public String current() ;
 }
 
 /*

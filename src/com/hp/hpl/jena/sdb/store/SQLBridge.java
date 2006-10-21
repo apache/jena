@@ -6,26 +6,36 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.query.Query;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Set;
+
 import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public interface QueryCompiler
+/** Convert from whatever results a particular layout returns into
+ *  an ARQ QueryIterator of Bindings.  An SQLBridge object
+ *  is allocated for each query execution. 
+ *  
+ * @author Andy Seaborne
+ * @version $Id$
+ */  
+
+public interface SQLBridge
 {
-    public SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge) ;
+    // Add the extraction of the SQL elements that make up the RDF terms
     
-    // This should be elsewhere?
-    // Needed by PlanToSDB to test whether a FILTER is compilable.
-    public ConditionCompiler getConditionCompiler() ;
+    SqlNode buildProject(SqlNode sqlNode, Set<Var> projectVars);
     
-    public QueryIterator exec(Store store,
-                              Block block,
-                              Binding binding,
-                              ExecutionContext execCxt) ;
- }
+    QueryIterator assembleResults(ResultSet jdbcResultSet, 
+                                  Binding binding,
+                                  Set<Var> projectVars,
+                                  ExecutionContext execCxt)
+        throws SQLException; 
+}
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

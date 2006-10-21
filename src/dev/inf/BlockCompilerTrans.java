@@ -12,6 +12,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
@@ -22,6 +24,7 @@ public class BlockCompilerTrans extends BlockCompiler2
 {
     private TransTable transTable ;
     private String aliasBase ;
+    Generator gen = null ;
 
     public BlockCompilerTrans(TransTable transTable)
     {
@@ -32,6 +35,7 @@ public class BlockCompilerTrans extends BlockCompiler2
     {
         this.transTable = transTable ;   
         this.aliasBase = aliasBase ;
+        this.gen = new Gensym(aliasBase) ;
     }
     
     @Override
@@ -47,7 +51,7 @@ public class BlockCompilerTrans extends BlockCompiler2
         if ( ! triple.getPredicate().equals(transTable.getProperty()) )
             return super.compile(triple, context) ;
         
-        String alias = context.allocAlias(aliasBase) ;
+        String alias = gen.next() ;
         SqlExprList conditions = new SqlExprList() ;
         
         SqlTable transTripleTable = transTable.createSqlTable(alias) ;
