@@ -67,6 +67,8 @@ public class sdbsql extends CmdArgsDB
         
         for ( String x : positionalArg)
             execOneSQL(x) ;
+        
+        getModStore().getConnection().close() ;
     }
     
     private void execOneSQL(String sqlStmt)

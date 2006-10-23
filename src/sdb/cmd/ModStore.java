@@ -8,6 +8,7 @@ package sdb.cmd;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import arq.cmd.TerminationException;
@@ -26,6 +27,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.shared.NotFoundException;
+import com.hp.hpl.jena.util.FileManager;
 
 /** construction of a store from a store description,
  * possibly modified by command line arguments.
@@ -55,6 +57,12 @@ public class ModStore implements ArgModule
     
     protected final ArgDecl argDeclLayout       = new ArgDecl(true, "layout");
     protected final ArgDecl argDeclMySQLEngine  = new ArgDecl(true, "engine");
+
+    // Load some data - useful for in-memory stores.
+    // ModData?
+    protected final ArgDecl argDeclLoad         = new ArgDecl(true,  "load");
+    protected final ArgDecl argDeclFormat       = new ArgDecl(false, "format");
+
     
     protected String driverName = null;      // JDBC class name
     //protected String argDriverTypeName = null;  // Jena driver name
@@ -88,6 +96,8 @@ public class ModStore implements ArgModule
     Store store = null ;
     DatasetStore dataset = null ;
     Model model = null ;
+    List<String> loadFiles = null ;
+    boolean formatFirst = false ; 
     
     public ModStore()
     {
@@ -143,8 +153,19 @@ public class ModStore implements ArgModule
         cmdLine.add(argDeclMySQLEngine) ;
         if ( AddUsage )
             cmdLine.getUsage().addUsage("--engine=", "MySQL engine type") ;
+        
+        cmdLine.add(argDeclLoad) ;
+        if ( AddUsage )
+            cmdLine.getUsage().addUsage("--load=", "Datafile to load (permanent : for in-memory stores only) ") ;
+        
+        cmdLine.add(argDeclFormat) ;
+        if ( AddUsage )
+            cmdLine.getUsage().addUsage("--format", "Format first(permanent : for in-memory stores only) ") ;
+        
     }
     
+    
+    @SuppressWarnings("unchecked")
     public void processArgs(CmdArgModule cmdLine)
     {
         if (! cmdLine.contains(argDeclSDBdesc))
@@ -250,12 +271,21 @@ public class ModStore implements ArgModule
             System.err.println("Driver not found: "+driverName);
             throw new TerminationException(9);
         }
+        
+        // Data stuff
+        loadFiles = (List<String>)cmdLine.getValues(argDeclLoad) ;
+        formatFirst = cmdLine.contains(argDeclFormat) ;
     }
     
     public Store getStore()
     { 
         if ( store == null )
+        {
             store = StoreFactory.create(getConnection(), storeDesc) ;
+            if ( formatFirst )
+                getStore().getTableFormatter().format() ;
+        }
+            
         return store ; 
     }
 
@@ -274,7 +304,10 @@ public class ModStore implements ArgModule
     public DatasetStore getDataset()
     { 
         if ( dataset == null )
+        {
             dataset = new DatasetStore(getStore()) ;
+            initData(dataset.getDefaultModel()) ;
+        }
         
         return dataset ;
     }
@@ -282,8 +315,22 @@ public class ModStore implements ArgModule
     public Model getModel()
     {
         if ( model == null )
+        {
             model = SDBFactory.connectModel(getStore()) ;
+            initData(model) ;
+        }
         return model ;
+    }
+    
+    private void initData(Model model)
+    {
+        if ( loadFiles != null )
+        {
+            
+            for ( String s : loadFiles )
+                FileManager.get().readModel(model, s) ;
+        }
+        loadFiles = null ;
     }
     
     public Graph getGraph()

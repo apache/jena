@@ -52,11 +52,11 @@ public abstract class QueryCompilerMain implements QueryCompiler
         SqlNode sqlNode = compileQuery(store, execCxt.getQuery(), block, bridge) ;
         bridge.buildProject(sqlNode, projectVars) ;
         
-        
         verbose ( QC.printAbstractSQL, sqlNode ) ;
-
         
         String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ;
+        
+        verbose( QC.printSQL, sqlStmt ) ;
         
         // finishCompile pairs with resultBuilder so combine 
         // ResultsBuilder.makeProject(SqlNode, Vars) => SqlNode
