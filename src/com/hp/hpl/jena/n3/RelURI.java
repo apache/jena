@@ -6,31 +6,33 @@
 
 package com.hp.hpl.jena.n3;
 
+/*
+ * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
 import java.io.File;
 import java.io.IOException;
-
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileUtils; 
+import java.net.URI;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.LogFactory;
 
-// Apache URI code
-//import com.hp.hpl.jena.rdf.arp.URI ;
-//import com.hp.hpl.jena.rdf.arp.MalformedURIException; 
-//import com.hp.hpl.jena.rdf.arp.RelativeURIException;
-
-//java.net.URI code
-import java.net.URI ;
-import java.security.AccessControlException;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.cache.Cache;
 
 /** com.hp.hpl.jena.query.util.RelURI
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.6 2006-04-27 15:00:27 der Exp $
+ * @version $Id: RelURI.java,v 1.7 2006-10-24 12:23:16 andy_seaborne Exp $
  */
 
 public class RelURI
 {
+    static private String globalBase = null ;
+    
     public static class JenaURIException extends JenaException
     {
         public JenaURIException(String msg) { super(msg) ; }
@@ -40,8 +42,6 @@ public class RelURI
     {
         public RelativeURIException(String msg) { super(msg) ; }
     }
-    
-    static private String globalBase = null ;
     
     static class Fixup
     {
@@ -55,8 +55,8 @@ public class RelURI
             {
                 int i = str.lastIndexOf(' ') ;
                 originalPrefix = str.substring(0, i+1) ;  // Include matched space
-                safeForm =       str.replace(' ','_') ;
-                safePrefix =     safeForm.substring(0, i+1) ;
+                safeForm = str.replace(' ','_') ;
+                safePrefix = safeForm.substring(0, i+1) ;
             }
         }
         String getSafe() { return safeForm; }
@@ -70,8 +70,13 @@ public class RelURI
             return s ;
         }
     }
+        
+    static Cache baseCache = new Cache1() ;
+    static Pattern patternHttp = Pattern.compile("^http://[^/]*/[^/]+") ; 
+    static Pattern patternFile = Pattern.compile("^file:/*[^/]+/") ; 
     
-    /** Create resolve a URI against a base.
+    
+    /** Create resolve a URI agaisnt a base.
      *  Returns null if the result is not absolute. 
      * @param relStr
      * @param baseStr
@@ -79,8 +84,33 @@ public class RelURI
      * @throws JenaURIException       Unacceptable base URI string
      * @throws RelativeURIException   Base is relative or opaque
      */
+    
     static public String resolve(String relStr, String baseStr)
     {
+        // Special case (GNUClassPath workaround)
+        if ( relStr.equals(".") )
+        {
+            if ( baseStr.startsWith("http://") || baseStr.startsWith("file:/") )
+            {
+                if ( baseStr.endsWith("/") )
+                    return baseStr ;
+
+                if ( patternHttp.matcher(baseStr).find() )
+                {
+                    int j = baseStr.lastIndexOf("/") ;
+                    return baseStr.substring(0, j+1) ; 
+                }
+
+                if ( patternFile.matcher(baseStr).find())
+                {
+                    int j = baseStr.lastIndexOf("/") ;
+                    return baseStr.substring(0, j+1) ; 
+                }
+            }
+            // Can't shortcut - drop through anyway.
+        }
+        
+        
         Fixup b = new Fixup(baseStr) ;
         Fixup r = new Fixup(relStr) ;
         // "Adapt" URIs with spaces
@@ -101,27 +131,20 @@ public class RelURI
         if ( rel.isAbsolute() )
         {
             String s = rel.getScheme() ;
+            // Corner case : relStr is the strictly absolute URI with an incomplete 
+            // scheme specific part -- example: "file:x"
             if ( rel.getScheme().equals("file") )
                 return resolveFileURL(relStr) ;
-            // Corner case : relStr is the strictly absolute URI with an imcomplete 
-            // scheme spcific part -- example: "file:x"
-            if ( rel.getPath() != null && rel.getPath().startsWith("/") )
-                return relStr ;
-            // Drop through in this corner case.
+            return relStr ;
         }
-
         
         if ( baseStr == null )
         {
+            // Null base - relStr not absolute
             //return relStr ;
-            // Check absolute?
-            try {
-                URI u = new URI(relStr) ;
-                if ( ! u.isAbsolute() )
-                    throw new JenaURIException("Null base for relative URI resolution") ;
+            if ( rel.isAbsolute() )
                 return relStr ;
-            } catch (java.net.URISyntaxException ex)
-            { throw new JenaURIException("Illegal URI (base was null and URI is not absolute) "+relStr) ; }
+            throw new JenaURIException("Null base for relative URI resolution: "+relStr) ;
         }
         
         if ( baseStr.length() == 0 )
@@ -150,24 +173,30 @@ public class RelURI
             return baseStr ;
         
         // Cache this?  One slot cache.
-        URI base = null ;
-        try {
-            base = new URI(baseStr) ;
-        } catch (java.net.URISyntaxException ex)
-        { throw new JenaURIException("Illegal URI (base): "+baseStr) ; }
-
-        if ( ! base.isAbsolute() )
-            throw new RelativeURIException("Relative URI for base: "+baseStr) ; 
+        URI base = (URI)baseCache.get(baseStr) ;
         
-        if ( base.isOpaque() )
+        if ( base == null )
         {
-            // The case of file:A and #x
-            if ( base.getScheme().equals("file") && relStr.startsWith("#") )
-                return baseStr+relStr ;
+            try {
+                base = new URI(baseStr) ;
+            } catch (java.net.URISyntaxException ex)
+            { throw new JenaURIException("Illegal URI (base): "+baseStr) ; }
+
+            if ( ! base.isAbsolute() )
+                throw new RelativeURIException("Relative URI for base: "+baseStr) ; 
             
-            // tag: and urn: but also anOther:...
-            //return baseStr+relURI ;
-            throw new RelativeURIException("Can't resolve a relative URI against an opaque URI: rel="+relStr+" : base="+baseStr) ;
+            if ( base.isOpaque() )
+            {
+                // The case of file:A and #x
+                if ( base.getScheme().equals("file") && relStr.startsWith("#") )
+                    return baseStr+relStr ;
+                
+                // tag: and urn: but also anOther:...
+                //return baseStr+relURI ;
+                throw new RelativeURIException("Can't resolve a relative URI against an opaque URI: rel="+relStr+" : base="+baseStr) ;
+            }
+            
+            baseCache.put(baseStr, base) ;
         }
         
         if ( base.getPath().length() == 0 && !relStr.startsWith("/") )
@@ -190,7 +219,6 @@ public class RelURI
         // Finally, sort out file URLs
         // 1 - file:filename => file:///dir/filename
         // 2 - file:/ => file:///
-        
 
         // Fix for file names
         String s = abs.toString() ;
@@ -202,10 +230,16 @@ public class RelURI
 
     private static URI resolve(URI rel, URI base)
     {
-        URI abs = base.resolve(rel) ;
-        if ( ! abs.isAbsolute() )
-            return null ;
-        return abs ;
+        try {
+            URI abs = base.resolve(rel) ;
+            if ( ! abs.isAbsolute() )
+                return null ;
+            return abs ;
+        } catch (RuntimeException ex)
+        {
+            LogFactory.getLog(RelURI.class).warn("\nException in Java library: "+ex.getMessage()+"\nresolve("+rel.toString()+", "+base.toString()+")") ;
+            throw ex ;
+        }
     }
     
     /** Create resolve a URI against the global base.
@@ -283,11 +317,9 @@ public class RelURI
                     if ( f.isDirectory() && ! baseURI.endsWith("/") )
                         baseURI = baseURI+"/" ;
 
-                } catch (IOException ex) {
+                } catch (IOException ex)
+                {
                     LogFactory.getLog(RelURI.class).warn("IOException in chooseBase - ignored") ;
-                    return null ;
-                } catch (AccessControlException ex)  {
-                    LogFactory.getLog(RelURI.class).warn("Security exception in chooseBase - ignored") ;
                     return null ;
                 }
             }
@@ -356,6 +388,70 @@ public class RelURI
 
     }
 }
+
+class Cache1 implements Cache
+{
+    boolean isEnabled = true ;
+    Object cacheKey = null ;
+    Object cacheValue = null ;
+    
+    int numGet = 0 ;
+    int numPut = 0 ;
+    int numHits = 0 ;
+    
+    public Object get(Object key)
+    {
+        if ( ! isEnabled )
+            return null ;
+        
+        numGet ++ ;
+        
+        if ( cacheKey == null )
+            return null ;
+        
+        if ( cacheKey.equals(key) )
+        {
+            numHits ++ ;
+            return cacheValue ;
+        }
+        
+        return null ;
+    }
+
+    public void put(Object key, Object value)
+    {
+        if ( ! isEnabled )
+            return ;
+        numPut ++ ;
+        cacheKey = key ; 
+        cacheValue = value ;
+    }
+
+    public boolean getEnabled()
+    {
+        return isEnabled ;
+    }
+
+    public boolean setEnabled(boolean enabled)
+    {
+        boolean b = isEnabled ;
+        isEnabled = enabled ;
+        return b ;
+    }
+
+    public void clear()
+    {
+        cacheKey = null ;
+        cacheValue = null ;
+    }
+
+    public long getGets() { return numGet ; }
+
+    public long getPuts() { return numPut ; }
+
+    public long getHits() { return numHits ; }
+}
+
 
 /*
  * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
