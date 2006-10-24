@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.16 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.17 2006-10-24 15:49:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -102,8 +102,8 @@ public class TestNodeToTriplesMap extends GraphTestBase
     public void testOneIterator()
         {
         addTriples( ntS, "x P b; y P d; y P f" );
-        assertEquals( tripleSet( "x P b" ), iteratorToSet( ntS.iterator( x ) ) );
-        assertEquals( tripleSet( "y P d; y P f" ), iteratorToSet( ntS.iterator( y ) ) );
+        assertEquals( tripleSet( "x P b" ), iteratorToSet( ntS.iterator( x, null ) ) );
+        assertEquals( tripleSet( "y P d; y P f" ), iteratorToSet( ntS.iterator( y, null ) ) );
         }
     
     public void testRemove()

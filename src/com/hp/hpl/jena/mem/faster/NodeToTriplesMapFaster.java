@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.23 2006-10-09 13:34:36 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.24 2006-10-24 15:49:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
@@ -69,10 +70,11 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
         Answer an iterator over all the triples in this NTM which have index node
         <code>o</code>.
     */
-    public Iterator iterator( Object o ) 
+    public Iterator iterator( Object o, TripleBunch.NotifyEmpty container ) 
        {
+       // System.err.println( ">> BOINK" ); // if (true) throw new JenaException( "BOINK" );
        TripleBunch s = (TripleBunch) bunchMap.get( o );
-       return s == null ? NullIterator.instance : s.iterator( new NotifyMe( o ) );
+       return s == null ? NullIterator.instance : s.iterator( container );
        }
     
     public class NotifyMe implements TripleBunch.NotifyEmpty
@@ -82,8 +84,9 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
         public NotifyMe( Object key )
             { this.key = key; }
         
+        // TODO fix the way this interacts (badly) with iteration and CMEs.
         public void emptied()
-            { bunchMap.remove( key ); }
+            { /* System.err.println( ">> OOPS" ); */ bunchMap.remove( key ); }
         }
     
     /**

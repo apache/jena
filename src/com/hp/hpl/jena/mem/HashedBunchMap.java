@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.7 2006-10-09 10:46:10 chris-dollin Exp $
+    $Id: HashedBunchMap.java,v 1.8 2006-10-24 15:49:20 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -82,22 +82,42 @@ public class HashedBunchMap extends HashCommon implements BunchMap
     protected void moveAssociatedValues( int here, int scan )
         { values[here] = values[scan]; }
 
+    void showkeys()
+        {
+        if (false)
+            {
+            System.err.print( ">> KEYS:" );
+            for (int i = 0; i < capacity; i += 1)
+                if (keys[i] != null) System.err.print( " " + initialIndexFor( keys[i] ) + "@" + i + "::" + keys[i] );
+            System.err.println();
+            }
+        }
+    
     public Iterator keyIterator()
         {
+        showkeys();
         return new NiceIterator()
             {
-            int index = capacity - 1;
+            int index = 0;
             
             public boolean hasNext()
                 {
-                while (index >= 0 && keys[index] == null) index -= 1;
-                return index >= 0;
+                while (index < capacity && keys[index] == null) index += 1;
+                return index < capacity;
                 }
             
             public Object next()
                 {
                 if (hasNext() == false) noElements( "bunch map keys" );
-                return keys[index--];
+                return keys[index++];
+                }
+            
+            public void remove()
+                { 
+                size -= 1;
+                // System.err.println( ">> keyIterator::remove, size := " + size + ", removing " + keys[index + 1] );
+                removeFrom( index - 1 );
+                showkeys();
                 }
             };
         }

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: GraphMemBaseQueryHandler.java,v 1.3 2006-03-22 13:52:19 andy_seaborne Exp $
+    $Id: GraphMemBaseQueryHandler.java,v 1.4 2006-10-24 15:49:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -26,8 +26,8 @@ public class GraphMemBaseQueryHandler extends SimpleQueryHandler
     public GraphMemBaseQueryHandler( GraphMemBase graph )
         { super( graph ); this.store = graph.store; }
 
-    public ExtendedIterator objectsFor( Node p, Node o )
-        { return bothANY( p, o ) ? findObjects() : super.objectsFor( p, o ); }
+    public ExtendedIterator objectsFor( Node s, Node p )
+        { return bothANY( s, p ) ? findObjects() : super.objectsFor( s, p ); }
 
     public ExtendedIterator predicatesFor( Node s, Node o )
         { return bothANY( s, o ) ? findPredicates() : super.predicatesFor( s, o ); }

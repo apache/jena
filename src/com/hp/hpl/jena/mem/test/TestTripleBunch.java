@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestTripleBunch.java,v 1.5 2006-03-22 13:53:26 andy_seaborne Exp $
+    $Id: TestTripleBunch.java,v 1.6 2006-10-24 15:49:33 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem.test;
 
@@ -13,6 +13,7 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
     Test triple bunch implementations - NOT YET FINISHED
@@ -88,6 +89,37 @@ public abstract class TestTripleBunch extends GraphTestBase
         b.add( tripleXQY );
         b.add( triple( "a I b" ) );
         b.add( triple( "c J d" ) );
+        }
+    
+    public void testIterator()
+        {
+        TripleBunch b = getBunch();
+        b.add( triple( "a P b" ) );
+        b.add( triple( "c Q d" ) );
+        b.add( triple( "e R f" ) );
+        assertEquals( tripleSet( "a P b; c Q d; e R f" ), b.iterator().toSet() );
+        }
+    
+    public void testIteratorRemoveOneItem()
+        {
+        TripleBunch b = getBunch();
+        b.add( triple( "a P b" ) );
+        b.add( triple( "c Q d" ) );
+        b.add( triple( "e R f" ) );
+        ExtendedIterator it = b.iterator();
+        while (it.hasNext()) if (it.next().equals( triple( "c Q d") )) it.remove();
+        assertEquals( tripleSet( "a P b; e R f" ), b.iterator().toSet() );
+        }
+    
+    public void testIteratorRemoveAlltems()
+        {
+        TripleBunch b = getBunch();
+        b.add( triple( "a P b" ) );
+        b.add( triple( "c Q d" ) );
+        b.add( triple( "e R f" ) );
+        ExtendedIterator it = b.iterator();
+        while (it.hasNext()) it.removeNext();
+        assertEquals( tripleSet( "" ), b.iterator().toSet() );
         }
         
     protected List listOf( Triple x )

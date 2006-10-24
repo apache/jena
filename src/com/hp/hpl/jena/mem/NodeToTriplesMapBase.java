@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.12 2006-10-09 10:46:10 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.13 2006-10-24 15:49:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
+import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -51,7 +52,7 @@ public abstract class NodeToTriplesMapBase
     */
     public abstract boolean remove( Triple t );
 
-    public abstract Iterator iterator( Object o );
+    public abstract Iterator iterator( Object o, TripleBunch.NotifyEmpty container );
 
     /**
          Answer true iff this NTM contains the concrete triple <code>t</code>.
@@ -80,7 +81,7 @@ public abstract class NodeToTriplesMapBase
         { return size; }
 
     public void removedOneViaIterator()
-        { size -= 1; }
+        { size -= 1; /* System.err.println( ">> rOVI: size := " + size ); */ }
 
     public boolean isEmpty()
         { return size == 0; }
@@ -99,9 +100,13 @@ public abstract class NodeToTriplesMapBase
     public ExtendedIterator iterateAll()
         {
         final Iterator nodes = domain();
+        // System.err.println( "*>> NTM:iterateAll: nodes = " + IteratorCollection.iteratorToList( domain() ) );
         return new NiceIterator() 
             {
             private Iterator current = NullIterator.instance;
+            private NotifyMe emptier = new NotifyMe();
+            
+            private Object cn = "(none)";
 
             public Object next()
                 {
@@ -109,20 +114,30 @@ public abstract class NodeToTriplesMapBase
                 return current.next();
                 }
 
+            class NotifyMe implements TripleBunch.NotifyEmpty
+                {
+                public void emptied()
+                    { 
+                    // System.err.println( ">> exhausted iterator for " + cn ); 
+                    nodes.remove();
+                    }
+                }
+            
             public boolean hasNext()
                 {
                 while (true)
                     {
                     if (current.hasNext()) return true;
                     if (nodes.hasNext() == false) return false;
-                    current = iterator( nodes.next() );
+                    Object next = nodes.next();
+                    cn = next;
+                    // System.err.println( ">----> NTM:iterateAll:hasNext: node " + next );
+                    current = iterator( next, emptier );
                     }
                 }
 
             public void remove()
-                {
-                current.remove();
-                }
+                { current.remove(); }
             };
         }
     }
