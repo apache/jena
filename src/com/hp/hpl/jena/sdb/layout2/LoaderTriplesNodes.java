@@ -408,9 +408,10 @@ public abstract class LoaderTriplesNodes
         }
         if (clearTripleLoaderTable != null)
     		clearTripleLoaderTable.execute();
+        if (clearNodeLoaderTable != null)
+        	clearNodeLoaderTable.execute();
         removingTriples = null;
         if ( autoCommit )
-            // Commit the transaction if started outside of a transaction 
             connection().getSqlConnection().commit();
     }
 
