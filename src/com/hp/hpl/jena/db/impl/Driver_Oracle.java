@@ -7,9 +7,9 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringBufferInputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -122,7 +122,6 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	 *
 	 */
 	public int graphIdAlloc ( String graphName ) {
-		DBIDInt result = null;
 		int dbid = 0;
 		try {
 			String op = "insertGraph";
@@ -143,7 +142,6 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	 *
 	 */
 	public void graphIdDealloc ( int graphId ) {
-		DBIDInt result = null;
 		try {
 			String op = "deleteGraph";
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,GRAPH_TABLE);
@@ -192,12 +190,12 @@ import oracle.jdbc.OracleDatabaseMetaData;
 			throw new RDFRDBException("Index key length specified (" + INDEX_KEY_LENGTH +
 					") exceeds maximum sane length of 4000.");
 
-		objColType = "VARCHAR2(" + LONG_OBJECT_LENGTH + ")";
+		objColType = "NVARCHAR2(" + LONG_OBJECT_LENGTH + ")";
 		STRINGS_TRIMMED = false;
 		param[0] = objColType;
 		
 		// length of head column in literal tables 
-		String headColType = "VARCHAR2(" + INDEX_KEY_LENGTH + ")";
+		String headColType = "NVARCHAR2(" + INDEX_KEY_LENGTH + ")";
 		param[1] = headColType;
 		param[2] = TABLE_NAME_PREFIX;
 	}
@@ -277,8 +275,9 @@ import oracle.jdbc.OracleDatabaseMetaData;
 				int size = blob.getBufferSize();
 	
 				int length = -1;
-				InputStream instream = new StringBufferInputStream(lobj.tail);
-		
+//				InputStream instream = new StringBufferInputStream(lobj.tail);
+                InputStream instream = new ByteArrayInputStream(lobj.tail.getBytes("UTF-8"));
+                
 				//		Buffer to hold chunks of data to being written to the Blob.        
 				byte[] buffer = new byte[size];
 		
