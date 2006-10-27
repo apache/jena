@@ -32,17 +32,6 @@ public class QueryEngineSDB extends QueryEngine
     /** This operator is a hook for other query engines to reuse this framework but
      *  take responsibility for their own query pattern execution. 
      */
-//    protected PlanElement makePlanForQueryPattern(Plan plan)
-//    {
-//        return super.makePlanForQueryPattern(plan) ;
-//    }
-
-//    @Override
-//    protected  PlanElement queryPlanHook(Context context, PlanElement planElt)
-//    {
-//        return planElt ;
-//    }
-    
     @Override
     protected PlanElement queryPlanPatternHook(Context context, PlanElement planElt)
     {
