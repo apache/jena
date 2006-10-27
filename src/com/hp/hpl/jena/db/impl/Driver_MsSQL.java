@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Driver_MsSQL.java,v 1.2 2006-03-22 13:52:47 andy_seaborne Exp $
+ * $Id: Driver_MsSQL.java,v 1.3 2006-10-27 14:51:50 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.db.impl;
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.db.RDFRDBException;
  * for impact.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 
 public class Driver_MsSQL extends Driver_PostgreSQL  {
@@ -144,6 +144,33 @@ public class Driver_MsSQL extends Driver_PostgreSQL  {
             throw new RDFRDBException("Failed to get last inserted ID: " + e);
         }
         return result.getIntID();
+    }
+    
+    /**
+     * Return the parameters for table creation.
+     * 1) column type for subj, prop, obj.
+     * 2) column type for head.
+     * 3) table and index name prefix.
+     * @param param array to hold table creation parameters. 
+     */
+    protected void getTblParams ( String [] param ) {
+        String spoColType;
+        String headColType;
+        
+        if ( LONG_OBJECT_LENGTH > 4000 )
+            throw new RDFRDBException("Long object length specified (" + LONG_OBJECT_LENGTH +
+                    ") exceeds maximum sane length of 4000.");
+        if ( INDEX_KEY_LENGTH > 4000 )
+            throw new RDFRDBException("Index key length specified (" + INDEX_KEY_LENGTH +
+                    ") exceeds maximum sane length of 4000.");
+
+        spoColType = "NVARCHAR(" + LONG_OBJECT_LENGTH + ")";
+        STRINGS_TRIMMED = false;
+        param[0] = spoColType;
+        headColType = "NVARCHAR(" + INDEX_KEY_LENGTH + ")";
+        STRINGS_TRIMMED = false;
+        param[1] = headColType;
+        param[2] = TABLE_NAME_PREFIX;
     }
 
     // Suppressed. This was an attempt to force use of row level locking to
