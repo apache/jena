@@ -43,7 +43,7 @@ public class QueryCompiler1 extends QueryCompilerMain
     protected BlockCompiler  createBlockCompiler()    { return new BlockCompiler1(codec, tripleTableDesc) ; }
     
     @Override
-    protected SQLBridge createSQLBridge(Set<Var> projectVars)     { return new SQLBridge1(projectVars, codec) ; }
+    protected SQLBridge createSQLBridge()             { return new SQLBridge1(codec) ; }
 
 
     public ConditionCompiler getConditionCompiler()

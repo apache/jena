@@ -47,7 +47,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         // Generator class : use widely.
         
         Set<Var> projectVars = QC.exitVariables(block) ;
-        SQLBridge bridge = createSQLBridge(projectVars) ;
+        SQLBridge bridge = createSQLBridge() ;
         
         SqlNode sqlNode = compileQuery(store, execCxt.getQuery(), block, bridge) ;
         //bridge.buildProject(sqlNode, projectVars) ;
@@ -74,21 +74,17 @@ public abstract class QueryCompilerMain implements QueryCompiler
         }
     }
 
-    protected abstract SQLBridge      createSQLBridge(Set<Var> projectVars) ;
+    protected abstract SQLBridge      createSQLBridge() ;
     protected abstract BlockCompiler  createBlockCompiler() ;
     
     public SqlNode compileQuery(Store store, Query query, Block block)
     {
-        SQLBridge bridge = createSQLBridge(QC.exitVariables(block)) ;
+        SQLBridge bridge = createSQLBridge() ;
         return compileQuery(store, query, block, bridge) ;
     }
     
     protected SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge)
     {
-        if ( bridge == null )
-            // Use if called 
-            bridge = createSQLBridge(QC.exitVariables(block)) ;
-        
         verbose ( QC.printBlock, block ) ; 
         CompileContext context = new CompileContext(store, query) ;
 
@@ -112,7 +108,8 @@ public abstract class QueryCompilerMain implements QueryCompiler
         Set<Var> projectVars = QC.exitVariables(block) ;
         
         sqlNode = finishCompile(context, block, sqlNode, projectVars) ;
-        sqlNode = bridge.buildProject(sqlNode) ;
+        bridge.init(sqlNode, QC.exitVariables(block)) ;
+        sqlNode = bridge.buildProject() ;
         
         return sqlNode ;
     }

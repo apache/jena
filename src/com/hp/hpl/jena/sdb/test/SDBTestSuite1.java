@@ -45,7 +45,8 @@ public class SDBTestSuite1 extends TestSuite
             JDBC.loadDriverMySQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreSimpleMySQL(sdb),
-                                             SDBTest.testDirSDB+"manifest-sdb.ttl")) ;
+                                             SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                             "Schema 1 : ")) ;
         }
         
         if ( includeHSQL )
@@ -54,7 +55,9 @@ public class SDBTestSuite1 extends TestSuite
             SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb1", "sa", "") ;
             Store store = new StoreSimpleHSQL(sdb) ;
             store.getTableFormatter().format() ;
-            TestSuite ts = QueryTestSDBFactory.make(store, SDBTest.testDirSDB+"manifest-sdb.ttl") ; 
+            TestSuite ts = QueryTestSDBFactory.make(store,
+                                                    SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                                    "Schema 1 : ") ; 
             ts.setName(ts.getName()+"/HSQL-mem") ;
             addTest(ts) ;
         }
@@ -65,7 +68,8 @@ public class SDBTestSuite1 extends TestSuite
             Store store = new StoreSimpleHSQL(sdb) ;
             store.getTableFormatter().format() ;
             TestSuite ts = QueryTestSDBFactory.make(new StoreSimpleHSQL(sdb),
-                                                    SDBTest.testDirSDB+"/manifest-sdb.ttl") ; 
+                                                    SDBTest.testDirSDB+"/manifest-sdb.ttl",
+                                                    "Schema 1 : ") ; 
             ts.setName(ts.getName()+"/HSQL-file") ;
             addTest(ts) ;
         }

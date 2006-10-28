@@ -11,8 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.util.Pair;
 
 /** Convert from whatever results a particular layout returns into
  *  an ARQ QueryIterator of Bindings.  An SQLBridge object
@@ -25,18 +30,55 @@ import com.hp.hpl.jena.sdb.core.Gensym;
 public abstract class SQLBridgeBase implements SQLBridge
 {
     private Generator vargen = new Gensym("V") ;
-    
-    // SPARQL name -> SQL name : abstract this as common
     private Map<Var,String>names = new HashMap<Var,String>() ;
-    private Collection<Var> projectVars ;
     
-    protected SQLBridgeBase(Collection<Var> projectVars )
+    private Collection<Var> projectVars = null ;
+    private SqlNode sqlNodeOriginal = null ;
+    private SqlNode sqlNode = null ;                 // Subclass can mutate
+    private StringBuilder annotation = new StringBuilder() ;
+    
+    protected SQLBridgeBase() { }
+    
+    // Delayed constructor
+    public void init(SqlNode sqlNode, Collection<Var> projectVars)
     {
+        setProjectVars(projectVars) ;
+        setSqlNode(sqlNode) ;
+    }
+    
+    private void setSqlNode(SqlNode sNode)
+    { 
+        if ( sqlNodeOriginal != null )
+            throw new SDBException("SQLBridgeBase: SQL node already set") ;
+        this.sqlNodeOriginal = sNode ;
+        this.sqlNode = SqlProject.project(sNode) ;
+    }
+        
+    private void setProjectVars(Collection<Var> projectVars)
+    {
+        if ( this.projectVars != null )
+            throw new SDBException("SQLBridgeBase: Project vars already set") ;
         this.projectVars = projectVars ;
     }
     
+    protected SqlNode getSqlExprNode() { return sqlNodeOriginal ; }
+    protected SqlNode getProjectNode() { return sqlNode ; }
     
-    protected Collection<Var> getProject() { return projectVars ; } 
+    protected void addProject(Var v, SqlColumn col)
+    {
+        sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,  col)) ;
+        if ( annotation.length() > 0 )
+            annotation.append(" ") ;
+        annotation.append(String.format("%s=%s", v, getSqlName(v))) ; 
+    }
+    
+    protected void setAnnotation()
+    {
+        sqlNode.addNote(annotation.toString()) ;
+    }
+    
+    protected Collection<Var> getProject() { return projectVars ; }
+    
     protected String getSqlName(Var v)
     {
         String sqlVarName = names.get(v) ;

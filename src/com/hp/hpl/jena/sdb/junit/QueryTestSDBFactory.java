@@ -21,16 +21,18 @@ public class QueryTestSDBFactory extends TestFactory
 {
     FileManager fileManager = FileManager.get() ;
     Store store ;
+    private String testRootName ;
     
-    static public TestSuite make(Store store, String filename) 
+    static public TestSuite make(Store store, String filename, String testRootName) 
     {
-        QueryTestSDBFactory f = new QueryTestSDBFactory(store) ;
+        QueryTestSDBFactory f = new QueryTestSDBFactory(store, testRootName) ;
         return f.process(filename) ;
     }   
 
-    private QueryTestSDBFactory(Store store)
+    private QueryTestSDBFactory(Store store, String testRootName)
     {
         this.store = store ;
+        this.testRootName = testRootName ;
     }
     
     @Override
@@ -38,6 +40,9 @@ public class QueryTestSDBFactory extends TestFactory
     {
             // Defaults.
             Syntax querySyntax = TestUtils.getQuerySyntax(manifest)  ;
+            
+            if ( testRootName != null )
+                testName = testRootName+testName ;
             
             if ( querySyntax != null )
             {

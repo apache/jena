@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.layout2;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -28,27 +27,22 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
-import com.hp.hpl.jena.sdb.util.Pair;
 
 public class SQLBridge2 extends SQLBridgeBase 
 {
     private static Log log = LogFactory.getLog(SQLBridge2.class) ;
 
-    public SQLBridge2(Collection<Var> projectVars)
-    { 
-        super(projectVars) ;
-    }
+    //public SQLBridge2() { super() ; }
     
-    public SqlNode buildProject(SqlNode sqlNode)
+    public SqlNode buildProject()
     {
         StringBuilder annotation = new StringBuilder() ;
         for ( Var v : getProject() )
         {
             // See if we have a value column already.
-            SqlColumn vCol = sqlNode.getValueScope().getColumnForVar(v) ;
+            SqlColumn vCol = getSqlExprNode().getValueScope().getColumnForVar(v) ;
             if ( vCol == null )
             {
                 // Should be a column mentioned in the SELECT which is not mentioned in this block 
@@ -56,8 +50,8 @@ public class SQLBridge2 extends SQLBridgeBase
             }
     
             String sqlVarName = getSqlName(v) ;
-            
             SqlTable table = vCol.getTable() ; 
+
             Var vLex = new Var(sqlVarName+"$lex") ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
     
@@ -70,18 +64,20 @@ public class SQLBridge2 extends SQLBridgeBase
             Var vType = new Var(sqlVarName+"$type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
     
-            // Get the 3 parts of the RDF term and its internal type number.
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
+            addProject(vLex, cLex) ;
+            addProject(vDatatype, cDatatype) ;
+            addProject(vLang, cLang) ;
+            addProject(vType, cType) ;
             
-            if ( annotation.length() > 0 )
-                annotation.append(" ") ;
-            annotation.append(String.format("%s=%s", v, sqlVarName)) ; 
+//            // Get the 3 parts of the RDF term and its internal type number.
+//            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
+//            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
+//            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
+//            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
+            
         }
-        sqlNode.addNote(annotation.toString()) ; 
-        return sqlNode ;
+        setAnnotation() ; 
+        return getProjectNode() ;
     }
 
     

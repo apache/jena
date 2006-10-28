@@ -76,7 +76,7 @@ public class sdbtest extends CmdArgsDB
             System.out.println("Manifest: "+manifest) ;
         }
         TestSuite ts = new TestSuite() ;
-        ts.addTest(QueryTestSDBFactory.make(getModStore().getStore(), manifest)) ;
+        ts.addTest(QueryTestSDBFactory.make(getModStore().getStore(), manifest, null)) ;
         SimpleTestRunner.runAndReport(ts) ;
     }
 }

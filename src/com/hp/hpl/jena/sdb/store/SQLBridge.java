@@ -8,8 +8,10 @@ package com.hp.hpl.jena.sdb.store;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 
 import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -24,14 +26,13 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface SQLBridge
 {
-    // TODO Better: projectVars in constructor
-    // Add the extraction of the SQL elements that make up the RDF terms
+    public void init(SqlNode sqlNode, Collection<Var> projectVars) ;
     
-    SqlNode buildProject(SqlNode sqlNode);
+    public SqlNode buildProject();
     
-    QueryIterator assembleResults(ResultSet jdbcResultSet, 
-                                  Binding binding,
-                                  ExecutionContext execCxt)
+    public QueryIterator assembleResults(ResultSet jdbcResultSet, 
+                                         Binding binding,
+                                         ExecutionContext execCxt)
         throws SQLException; 
 }
 

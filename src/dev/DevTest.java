@@ -83,7 +83,7 @@ public class DevTest extends TestSuite
 
     private void loadManifest(String s)
     {
-        TestSuite ts = QueryTestSDBFactory.make(store, s) ; 
+        TestSuite ts = QueryTestSDBFactory.make(store, s, null) ; 
         ts.setName(ts.getName()+extraLabel) ;
         addTest(ts) ;
     }

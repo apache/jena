@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.layout1;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
@@ -20,21 +19,18 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
-import com.hp.hpl.jena.sdb.util.Pair;
 
 public class SQLBridge1 extends SQLBridgeBase
 {
     private EncoderDecoder codec ;
     
-    SQLBridge1(Collection<Var> projectVars, EncoderDecoder codec)
+    SQLBridge1(EncoderDecoder codec)
     { 
-        super(projectVars) ;
         this.codec = codec ;
     }
     
-    public SqlNode buildProject(SqlNode sqlNode)
+    public SqlNode buildProject()
     {
         for ( Var v : getProject() )
         {
@@ -42,15 +38,17 @@ public class SQLBridge1 extends SQLBridgeBase
                 continue ;
             // Value scope == IdScope for layout1
             // CHECK
-            SqlColumn c = sqlNode.getIdScope().getColumnForVar(v) ;
+            SqlColumn c = getSqlExprNode().getIdScope().getColumnForVar(v) ;
             if ( c == null )
 //              log.warn("Can't find column for var: "+v) ;
                 continue ;
             
             String sqlVarName = getSqlName(v) ;
-            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
+            addProject(new Var(sqlVarName), c) ;
+//             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
         }
-        return sqlNode ;
+        setAnnotation() ;
+        return getProjectNode() ;
     }
     
     public QueryIterator assembleResults(java.sql.ResultSet rs,
@@ -66,7 +64,8 @@ public class SQLBridge1 extends SQLBridgeBase
             for ( Var v : getProject() )
             {
                 try {
-                    String s = rs.getString(v.getName()) ;
+                    String sqlVarName = getSqlName(v) ;
+                    String s = rs.getString(sqlVarName) ; 
                     // Same as rs.wasNull() for things that can return Java nulls.
                     if ( s == null )
                         continue ;
