@@ -2,6 +2,11 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+Database backends:
+    o Changed MS SQL Server driver to use NVARCHAR instead of VARCHAR,
+      to fix i18n support.
+    o Fixed i18n bug in Oracle backend and also switched to NVARCHAR.
+    
 ModelFactory:
     o added methods to construct models using Assembler system. Updated
       ModelFactory howto to include them. Deprecated the ModelSpec
