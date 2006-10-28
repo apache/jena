@@ -15,12 +15,13 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface QueryCompiler
 {
-    public SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge) ;
-    
     // This should be elsewhere?
     // Needed by PlanToSDB to test whether a FILTER is compilable.
     public ConditionCompiler getConditionCompiler() ;
     
+    // Debugging route to compiler.
+    public SqlNode compileQuery(Store store, Query query, Block block) ;
+
     public QueryIterator exec(Store store,
                               Block block,
                               Binding binding,

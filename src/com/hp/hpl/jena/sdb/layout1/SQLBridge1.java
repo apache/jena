@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sdb.layout1;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.core.Binding;
@@ -21,34 +21,41 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class SQLBridge1 implements SQLBridge
+public class SQLBridge1 extends SQLBridgeBase
 {
     private EncoderDecoder codec ;
-    SQLBridge1(EncoderDecoder codec) { this.codec = codec ; }
     
-    public SqlNode buildProject(SqlNode sqlNode, Set<Var> projectVars)
+    SQLBridge1(Collection<Var> projectVars, EncoderDecoder codec)
+    { 
+        super(projectVars) ;
+        this.codec = codec ;
+    }
+    
+    public SqlNode buildProject(SqlNode sqlNode)
     {
-        for ( Var v : projectVars )
+        for ( Var v : getProject() )
         {
             if ( ! v.isNamedVar() )
                 continue ;
             // Value scope == IdScope for layout1
             // CHECK
             SqlColumn c = sqlNode.getIdScope().getColumnForVar(v) ;
-            if ( c != null )
-                sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
-//            else
-//                log.warn("Can't find column for var: "+v) ;
-                
+            if ( c == null )
+//              log.warn("Can't find column for var: "+v) ;
+                continue ;
+            
+            String sqlVarName = getSqlName(v) ;
+            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
         }
         return sqlNode ;
     }
     
-    public QueryIterator assembleResults(java.sql.ResultSet rs, Binding binding,
-                                         Set<Var> vars, ExecutionContext execCxt)
+    public QueryIterator assembleResults(java.sql.ResultSet rs,
+                                         Binding binding,
+                                         ExecutionContext execCxt)
         throws SQLException
     {
         List<Binding> results = new ArrayList<Binding>() ;
@@ -56,7 +63,7 @@ public class SQLBridge1 implements SQLBridge
         while(rs.next())
         {
             Binding b = new BindingMap(binding) ;
-            for ( Var v : vars )
+            for ( Var v : getProject() )
             {
                 try {
                     String s = rs.getString(v.getName()) ;

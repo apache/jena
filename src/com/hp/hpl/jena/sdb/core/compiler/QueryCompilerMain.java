@@ -47,10 +47,10 @@ public abstract class QueryCompilerMain implements QueryCompiler
         // Generator class : use widely.
         
         Set<Var> projectVars = QC.exitVariables(block) ;
-        SQLBridge bridge = createSQLBridge() ;
+        SQLBridge bridge = createSQLBridge(projectVars) ;
         
         SqlNode sqlNode = compileQuery(store, execCxt.getQuery(), block, bridge) ;
-        bridge.buildProject(sqlNode, projectVars) ;
+        //bridge.buildProject(sqlNode, projectVars) ;
         
         verbose ( QC.printAbstractSQL, sqlNode ) ;
         
@@ -66,7 +66,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
             // Odd : exitVariables and a project?
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
             try {
-                return bridge.assembleResults(jdbcResultSet, binding, projectVars, execCxt) ;
+                return bridge.assembleResults(jdbcResultSet, binding, execCxt) ;
             } finally { jdbcResultSet.close() ; }
         } catch (SQLException ex)
         {
@@ -74,13 +74,20 @@ public abstract class QueryCompilerMain implements QueryCompiler
         }
     }
 
-    protected abstract SQLBridge      createSQLBridge() ;
+    protected abstract SQLBridge      createSQLBridge(Set<Var> projectVars) ;
     protected abstract BlockCompiler  createBlockCompiler() ;
     
-    public SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge)
+    public SqlNode compileQuery(Store store, Query query, Block block)
+    {
+        SQLBridge bridge = createSQLBridge(QC.exitVariables(block)) ;
+        return compileQuery(store, query, block, bridge) ;
+    }
+    
+    protected SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge)
     {
         if ( bridge == null )
-            bridge = createSQLBridge() ;
+            // Use if called 
+            bridge = createSQLBridge(QC.exitVariables(block)) ;
         
         verbose ( QC.printBlock, block ) ; 
         CompileContext context = new CompileContext(store, query) ;
@@ -105,7 +112,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         Set<Var> projectVars = QC.exitVariables(block) ;
         
         sqlNode = finishCompile(context, block, sqlNode, projectVars) ;
-        sqlNode = bridge.buildProject(sqlNode, projectVars) ;
+        sqlNode = bridge.buildProject(sqlNode) ;
         
         return sqlNode ;
     }

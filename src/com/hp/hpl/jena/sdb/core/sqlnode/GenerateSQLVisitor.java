@@ -25,6 +25,8 @@ import static com.hp.hpl.jena.query.util.StringUtils.str ;
 // 2/ SqlRestrict can only occur in a few places (under project, SqlRestict-SqlTable) 
 //    and the generator only covers there
 
+// 3/ Use ensureNewline to make the annotations clearer/simpler
+
 public class GenerateSQLVisitor implements SqlNodeVisitor
 {
     private static Log log = LogFactory.getLog(GenerateSQLVisitor.class) ;
@@ -41,8 +43,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     
     public void visit(SqlProject sqlNode)
     {
-        annotate(sqlNode) ;
         out.println("SELECT ") ;
+        annotate(sqlNode, 10) ; 
+        out.ensureStartOfLine() ;
         out.incIndent() ;
         // SELECT vars
         String sep = "" ;
@@ -311,8 +314,11 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         level -- ;
     }
 
-    // return true if annotation was output and it runs to end-of-line  
     private boolean annotate(Annotations sqlNode)
+    { return annotate(sqlNode, annotationColumn) ; }
+
+    // return true if annotation was output and it runs to end-of-line  
+    private boolean annotate(Annotations sqlNode, int indentationColumn)
     {
         if ( ! outputAnnotations )
             return false ;
@@ -322,7 +328,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         {
             if ( !first ) out.println();
             first = false; 
-            out.pad(annotationColumn, true) ;
+            out.pad(indentationColumn, true) ;
             if ( commentSQLStyle )
             {
                 out.print("-- ") ; out.print(s) ;

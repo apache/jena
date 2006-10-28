@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
 
 /** Convert from whatever results a particular layout returns into
  *  an ARQ QueryIterator of Bindings.  An SQLBridge object
@@ -22,17 +22,31 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
  * @version $Id$
  */  
 
-public interface SQLBridge
+public abstract class SQLBridgeBase implements SQLBridge
 {
-    // TODO Better: projectVars in constructor
-    // Add the extraction of the SQL elements that make up the RDF terms
+    private Generator vargen = new Gensym("V") ;
     
-    SqlNode buildProject(SqlNode sqlNode);
+    // SPARQL name -> SQL name : abstract this as common
+    private Map<Var,String>names = new HashMap<Var,String>() ;
+    private Collection<Var> projectVars ;
     
-    QueryIterator assembleResults(ResultSet jdbcResultSet, 
-                                  Binding binding,
-                                  ExecutionContext execCxt)
-        throws SQLException; 
+    protected SQLBridgeBase(Collection<Var> projectVars )
+    {
+        this.projectVars = projectVars ;
+    }
+    
+    
+    protected Collection<Var> getProject() { return projectVars ; } 
+    protected String getSqlName(Var v)
+    {
+        String sqlVarName = names.get(v) ;
+        if ( sqlVarName == null )
+        {
+            sqlVarName = vargen.next() ;
+            names.put(v, sqlVarName) ;
+        }
+        return sqlVarName ;
+    }
 }
 
 /*

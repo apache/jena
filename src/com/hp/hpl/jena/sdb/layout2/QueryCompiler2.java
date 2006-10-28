@@ -45,7 +45,7 @@ public class QueryCompiler2 extends QueryCompilerMain
     @Override
     protected BlockCompiler  createBlockCompiler()     { return blockCompilerFactory.createBlockCompiler() ; }
     @Override
-    protected SQLBridge createSQLBridge()              { return new SQLBridge2() ; }
+    protected SQLBridge createSQLBridge(Set<Var> projectVars)   { return new SQLBridge2(projectVars) ; }
 
     public ConditionCompiler getConditionCompiler()    { return conditionCompiler ; }
     

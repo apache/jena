@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sdb.layout2;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,39 +30,44 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-public class SQLBridge2 implements SQLBridge 
+public class SQLBridge2 extends SQLBridgeBase 
 {
     private static Log log = LogFactory.getLog(SQLBridge2.class) ;
 
-    public SQLBridge2() {}
+    public SQLBridge2(Collection<Var> projectVars)
+    { 
+        super(projectVars) ;
+    }
     
-    public SqlNode buildProject(SqlNode sqlNode, Set<Var> projectVars)
+    public SqlNode buildProject(SqlNode sqlNode)
     {
-        
-        for ( Var v : projectVars )
+        StringBuilder annotation = new StringBuilder() ;
+        for ( Var v : getProject() )
         {
             // See if we have a value column already.
             SqlColumn vCol = sqlNode.getValueScope().getColumnForVar(v) ;
             if ( vCol == null )
             {
-                // Should be a column mentioned in the SELECT which is not mentionedd in this block 
+                // Should be a column mentioned in the SELECT which is not mentioned in this block 
                 continue ;
             }
     
+            String sqlVarName = getSqlName(v) ;
+            
             SqlTable table = vCol.getTable() ; 
-            Var vLex = new Var(v.getName()+"$lex") ;
+            Var vLex = new Var(sqlVarName+"$lex") ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
     
-            Var vDatatype = new Var(v.getName()+"$datatype") ;
+            Var vDatatype = new Var(sqlVarName+"$datatype") ;
             SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
     
-            Var vLang = new Var(v.getName()+"$lang") ;
+            Var vLang = new Var(sqlVarName+"$lang") ;
             SqlColumn cLang = new SqlColumn(table, "lang") ;
     
-            Var vType = new Var(v.getName()+"$type") ;
+            Var vType = new Var(sqlVarName+"$type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
     
             // Get the 3 parts of the RDF term and its internal type number.
@@ -70,29 +75,33 @@ public class SQLBridge2 implements SQLBridge
             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
+            
+            if ( annotation.length() > 0 )
+                annotation.append(" ") ;
+            annotation.append(String.format("%s=%s", v, sqlVarName)) ; 
         }
+        sqlNode.addNote(annotation.toString()) ; 
         return sqlNode ;
     }
 
     
-    public QueryIterator assembleResults(ResultSet rs, Binding binding, Set<Var> projectVars,
-                                         ExecutionContext execCxt)
+    public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
         throws SQLException
     {
         List<Binding> results = new ArrayList<Binding>() ;
         while(rs.next())
         {
             Binding b = new BindingMap(binding) ;
-            for ( Var v : projectVars )
+            for ( Var v : super.getProject() )
             {
-                String n = v.getName() ;
+                String sqlVarName = getSqlName(v) ;
                 
                 if ( ! v.isNamedVar() )
                     // Skip bNodes and system variables
                     continue ;
 
                 try {
-                    String lex = rs.getString(n+"$lex") ;   // chars
+                    String lex = rs.getString(sqlVarName+"$lex") ;   // chars
                     // Same as rs.wasNull() for things that can return Java nulls.
                     
                     // byte bytes[] = rs.getBytes(n+"$lex") ;      // bytes
@@ -102,12 +111,12 @@ public class SQLBridge2 implements SQLBridge
                     // } catch (Exception ex) {}
                     if ( lex == null )
                         continue ;
-                    int type = rs.getInt(n+"$type") ;
-                    String datatype =  rs.getString(n+"$datatype") ;
-                    String lang =  rs.getString(n+"$lang") ;
+                    int type = rs.getInt(sqlVarName+"$type") ;
+                    String datatype =  rs.getString(sqlVarName+"$datatype") ;
+                    String lang =  rs.getString(sqlVarName+"$lang") ;
                     ValueType vType = ValueType.lookup(type) ;
                     Node r = makeNode(lex, datatype, lang, vType) ;
-                    b.add(n, r) ;
+                    b.add(v.getName(), r) ;
                 } catch (SQLException ex)
                 { // Unknown variable?
                     //log.warn("Not reconstructed: "+n) ;

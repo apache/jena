@@ -98,7 +98,7 @@ public class StoreFactory
     {    
         if ( sdb == null ) 
             sdb = SDBFactory.createConnection(desc.connDesc) ;
-        
+
         if ( desc.layout == LayoutType.LayoutSimple )
         {
             switch (desc.dbType)

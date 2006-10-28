@@ -75,7 +75,7 @@ public class PrintSDB
             PlanSDB planSDB = (PlanSDB)planElt ;
             Block block = planSDB.getBlock() ;
             block = block.substitute(new BindingRoot());
-            SqlNode sqlNode = store.getQueryCompiler().compileQuery(store, query, block, null) ;
+            SqlNode sqlNode = store.getQueryCompiler().compileQuery(store, query, block) ;
 
             String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
             out.println("[SQL --------") ;
@@ -107,10 +107,8 @@ public class PrintSDB
                 PlanSDB planSDB = (PlanSDB)planElt ;
                 Block block = planSDB.getBlock() ;
                 block = block.substitute(new BindingRoot());
-                
-                SqlNode sqlNode = store.getQueryCompiler().compileQuery(store, query, block, null) ;
+                SqlNode sqlNode = store.getQueryCompiler().compileQuery(store, query, block) ;
                 String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
-
                 out.println(sqlStmt) ;
             }
         }

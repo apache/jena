@@ -6,16 +6,19 @@
 
 package com.hp.hpl.jena.sdb.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import junit.framework.JUnit4TestAdapter;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.* ;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.graph.PrefixMappingSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class TestPrefixMappingSDB
@@ -31,10 +34,13 @@ public class TestPrefixMappingSDB
     @BeforeClass
     public static void setUpClass()
     {
-        System.err.println("TestPrefixMappingSDB: Not working yet") ;
         JDBC.loadDriverHSQL() ;
         //SDB.init() ;
         sdb = SDBFactory.createConnection(hsql, "sa", "");
+        StoreDesc desc = new StoreDesc("Layout2", "HSQLDB") ;
+        Store store = SDBFactory.connectStore(sdb, desc) ;
+        store.getTableFormatter().format() ;
+        // Make a store and format it.
     }
 
     @AfterClass
@@ -77,7 +83,7 @@ public class TestPrefixMappingSDB
         PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
         pmap.setNsPrefix("ex", uri) ;
         
-        assertEquals(uri, pmap.getNsURIPrefix("http://example/")) ;
+        assertEquals("ex", pmap.getNsURIPrefix("http://example/")) ;
     }
         
     @Test public void prefix5()
@@ -106,7 +112,7 @@ public class TestPrefixMappingSDB
         PrefixMapping pmap = new PrefixMappingSDB(sdb) ;
         pmap.setNsPrefix("ex1", uri1) ;
         pmap.setNsPrefix("ex2", uri2) ;
-        assertEquals("ex2:foo", pmap.qnameFor("http://example.org/ns#foo")) ;
+        assertEquals("ex2:foo", pmap.qnameFor("http://example/ns#foo")) ;
     }        
 }
 
