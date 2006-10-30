@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.24 2006-10-24 15:49:30 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.25 2006-10-30 15:57:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -86,7 +86,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
         
         // TODO fix the way this interacts (badly) with iteration and CMEs.
         public void emptied()
-            { /* System.err.println( ">> OOPS" ); */ bunchMap.remove( key ); }
+            { if (false) throw new JenaException( "BOOM" ); /* System.err.println( ">> OOPS" ); */ bunchMap.remove( key ); }
         }
     
     /**

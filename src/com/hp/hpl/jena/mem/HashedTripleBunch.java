@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.15 2006-10-09 14:16:21 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.16 2006-10-30 15:57:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -78,7 +78,6 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
     public void remove( Triple t )
         {
         removeFrom( ~findSlot( t ) );
-        size -= 1;
         changes += 1;
         }
     
