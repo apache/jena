@@ -2,6 +2,7 @@ SDB ToDo list (and general notes)
 =================================
 
 + SPARQL variable <=> SQL syntax safely.
+  Don't need to use AS at all if use the R/T name.
 
 + cmd: 
   @ --load for sdb.sdbquery --format

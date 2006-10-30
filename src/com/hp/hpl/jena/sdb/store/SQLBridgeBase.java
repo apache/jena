@@ -30,7 +30,8 @@ import com.hp.hpl.jena.sdb.util.Pair;
 public abstract class SQLBridgeBase implements SQLBridge
 {
     private Generator vargen = new Gensym("V") ;
-    private Map<Var,String>names = new HashMap<Var,String>() ;
+    
+    private Map<Var,String>varLabels = new HashMap<Var,String>() ;
     
     private Collection<Var> projectVars = null ;
     private SqlNode sqlNodeOriginal = null ;
@@ -66,26 +67,47 @@ public abstract class SQLBridgeBase implements SQLBridge
     
     protected void addProject(Var v, SqlColumn col)
     {
+        // v is null if there is no renaming going on.
         sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,  col)) ;
-        if ( annotation.length() > 0 )
-            annotation.append(" ") ;
-        annotation.append(String.format("%s=%s", v, getSqlName(v))) ; 
+        if ( v != null )
+        {
+            if ( annotation.length() > 0 )
+                annotation.append(" ") ;
+            annotation.append(String.format("%s=%s", v, getSqlName(v))) ;
+        }
+    }
+    
+    protected void addProject(SqlColumn col)
+    { 
+        sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(null,  col)) ;
     }
     
     protected void setAnnotation()
     {
-        sqlNode.addNote(annotation.toString()) ;
+        if ( annotation.length() > 0 )
+            sqlNode.addNote(annotation.toString()) ;
     }
     
     protected Collection<Var> getProject() { return projectVars ; }
     
     protected String getSqlName(Var v)
     {
-        String sqlVarName = names.get(v) ;
+        if ( false && v.isNamedVar())
+        {
+            // Check is SQL safe and use the raw name if possible
+            return v.getName() ;
+        }
+        
+        return allocNewSqlName(v) ;
+    }
+    
+    private String allocNewSqlName(Var v)
+    {
+        String sqlVarName = varLabels.get(v) ;
         if ( sqlVarName == null )
         {
             sqlVarName = vargen.next() ;
-            names.put(v, sqlVarName) ;
+            varLabels.put(v, sqlVarName) ;
         }
         return sqlVarName ;
     }

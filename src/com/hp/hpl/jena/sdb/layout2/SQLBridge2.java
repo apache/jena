@@ -28,6 +28,7 @@ import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 
 public class SQLBridge2 extends SQLBridgeBase 
@@ -41,7 +42,9 @@ public class SQLBridge2 extends SQLBridgeBase
         StringBuilder annotation = new StringBuilder() ;
         for ( Var v : getProject() )
         {
-            // See if we have a value column already.
+            if ( ! v.isNamedVar() )
+                continue ;
+            
             SqlColumn vCol = getSqlExprNode().getValueScope().getColumnForVar(v) ;
             if ( vCol == null )
             {
@@ -49,8 +52,9 @@ public class SQLBridge2 extends SQLBridgeBase
                 continue ;
             }
     
+            SqlTable table = vCol.getTable() ;
+            
             String sqlVarName = getSqlName(v) ;
-            SqlTable table = vCol.getTable() ; 
 
             Var vLex = new Var(sqlVarName+"$lex") ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
@@ -69,11 +73,6 @@ public class SQLBridge2 extends SQLBridgeBase
             addProject(vLang, cLang) ;
             addProject(vType, cType) ;
             
-//            // Get the 3 parts of the RDF term and its internal type number.
-//            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLex,  cLex)) ; 
-//            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vDatatype, cDatatype)) ;
-//            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vLang, cLang)) ;
-//            sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(vType, cType)) ;
             
         }
         setAnnotation() ; 
@@ -84,32 +83,36 @@ public class SQLBridge2 extends SQLBridgeBase
     public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
         throws SQLException
     {
+        if ( false )
+            RS.printResultSet(rs) ;
+        
         List<Binding> results = new ArrayList<Binding>() ;
         while(rs.next())
         {
             Binding b = new BindingMap(binding) ;
             for ( Var v : super.getProject() )
             {
-                String sqlVarName = getSqlName(v) ;
+                String codename = super.getSqlName(v) ;
+                // Assumes col format.
                 
                 if ( ! v.isNamedVar() )
                     // Skip bNodes and system variables
                     continue ;
 
                 try {
-                    String lex = rs.getString(sqlVarName+"$lex") ;   // chars
+                    String lex = rs.getString(codename+"$lex") ;   // chars
                     // Same as rs.wasNull() for things that can return Java nulls.
                     
-                    // byte bytes[] = rs.getBytes(n+"$lex") ;      // bytes
+                    // byte bytes[] = rs.getBytes(codename+"$lex") ;      // bytes
                     // try {
                     //     String $ = new String(bytes, "UTF-8") ;
                     //     log.info("lex bytes : "+$+"("+$.length()+")") ;
                     // } catch (Exception ex) {}
                     if ( lex == null )
                         continue ;
-                    int type = rs.getInt(sqlVarName+"$type") ;
-                    String datatype =  rs.getString(sqlVarName+"$datatype") ;
-                    String lang =  rs.getString(sqlVarName+"$lang") ;
+                    int type = rs.getInt(codename+"$type") ;
+                    String datatype =  rs.getString(codename+"$datatype") ;
+                    String lang =  rs.getString(codename+"$lang") ;
                     ValueType vType = ValueType.lookup(type) ;
                     Node r = makeNode(lex, datatype, lang, vType) ;
                     b.add(v.getName(), r) ;

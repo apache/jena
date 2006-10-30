@@ -65,22 +65,32 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             if ( c.cdr() == null )
                 log.warn("Null SqlColumn for "+str(c.car())) ;    
 
+            Var aliasVar = c.car() ;
+            String splitMarker = SDBConstants.SQLmark ;
+            String p = null ;
+            
+            if ( aliasVar == null )
+            {
+                splitMarker = "." ;
+                p = c.cdr().asString() ;
+            } else {
+                p = aliasVar.getName() ;
+            }
             // Var name formatting. 
-            String p = c.car().getName() ;
-            String x[] = p.split("\\"+SDBConstants.SQLmark) ;
+            String x[] = p.split("\\"+splitMarker) ;
             p = x[0] ;
             if ( currentPrefix != null && ! p.equals(currentPrefix) )
             {
                 out.println() ;
             }
             currentPrefix = p ;
-            
             out.print(c.cdr().asString()) ;
-            out.print(" AS ") ;
-            // TODO Remap from SPARQL variable names to SQL variable names.
-            out.print(c.car().getName()) ;
-            // And pass the map to the the results builder
-            // Better - no AS here and leave to the QueryCompilerMain.execSQL/result builder.
+            
+            if ( aliasVar != null )
+            {
+                out.print(" AS ") ;
+                out.print(c.car().getName()) ;
+            }
         }
         out.decIndent() ;
         out.println() ;

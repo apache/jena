@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+# ?x and ?X are different SPARQL variables
+
+SELECT ?x ?X { ?x :p1 ?X }
