@@ -39,7 +39,7 @@ import oracle.jdbc.OracleDatabaseMetaData;
  */
    public class Driver_Oracle extends DriverRDB {
 
-//* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
+// <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
 	
 	public interface BLOB extends java.sql.Blob {
 		OutputStream getBinaryOutputStream();
@@ -68,7 +68,7 @@ import oracle.jdbc.OracleDatabaseMetaData;
 		
 		ID_SQL_TYPE = "INTEGER";
 		URI_COMPRESS = false;
-		LONG_OBJECT_LENGTH_MAX = INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 2000;
+		LONG_OBJECT_LENGTH_MAX = INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 1000;
 		LONG_OBJECT_LENGTH = 250;
 		TABLE_NAME_LENGTH_MAX =	30;
 		/* 30 is a guesstimate. setConnection should be called
