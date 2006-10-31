@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestHashCommon.java,v 1.2 2006-10-30 16:18:58 chris-dollin Exp $
+ 	$Id: TestHashCommon.java,v 1.3 2006-10-31 06:02:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -84,7 +84,7 @@ public class TestHashCommon extends ModelTestBase
         Item moved = (Item) h.removeFrom( 1 );
         assertSame( item0X, h.getItemForTestingAt( 0 ) );
         assertSame( item2Z, h.getItemForTestingAt( 1 ) );
-        // TODO assertSame( item2Z, moved );
+        assertSame( item2Z, moved );
         }
     }
 

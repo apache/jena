@@ -1,10 +1,14 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.7 2006-10-30 15:57:24 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.8 2006-10-31 06:02:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
+
+import java.util.Iterator;
+
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /**
     Shared stuff for our hashing implementations: does the base work for
@@ -126,9 +130,15 @@ public abstract class HashCommon
         It relies on linear probing but doesn't require a distinguished REMOVED
         value. Since we resize the table when it gets fullish, we don't worry [much]
         about the overhead of the linear probing.
+    <p>
+        Iterators running over the keys may miss elements that are moved from the
+        top of the table to the bottom because of Iterator::remove. removeFrom
+        returns such a moved key as its result, and null otherwise.
     */
     protected Object removeFrom( int here )
         {
+        final int original = here;
+        Object wrappedAround = null;
         size -= 1;
         while (true)
             {
@@ -139,15 +149,62 @@ public abstract class HashCommon
                 {
                 if (--scan < 0) scan += capacity;
                 Object key = keys[scan];
-                if (key == null) return null;
+                if (key == null) return wrappedAround;
                 int r = initialIndexFor( key );
                 if (!((scan <= r && r < here) || (r < here && here < scan) || (here < scan && scan <= r) )) break;
+                }
+            // System.err.println( ">> move from " + scan + " to " + here + " [original = " + original + "]" );
+            if (here <= original && scan > original) 
+                {
+                // System.err.println( "]] recording wrapped " );
+                wrappedAround = keys[scan];
                 }
             keys[here] = keys[scan];
             moveAssociatedValues( here, scan );
             here = scan;
             }
+        }    
+    
+    void showkeys()
+        {
+        if (false)
+            {
+            System.err.print( ">> KEYS:" );
+            for (int i = 0; i < capacity; i += 1)
+                if (keys[i] != null) System.err.print( " " + initialIndexFor( keys[i] ) + "@" + i + "::" + keys[i] );
+            System.err.println();
+            }
         }
+    
+    public Iterator keyIterator()
+        {
+        showkeys();
+        return new NiceIterator()
+            {
+            int index = 0;
+            
+            public boolean hasNext()
+                {
+                while (index < capacity && keys[index] == null) index += 1;
+                return index < capacity;
+                }
+            
+            public Object next()
+                {
+                if (hasNext() == false) noElements( "bunch map keys" );
+                return keys[index++];
+                }
+            
+            public void remove()
+                { 
+                size -= 1;
+                // System.err.println( ">> keyIterator::remove, size := " + size + ", removing " + keys[index + 1] );
+                removeFrom( index - 1 );
+                showkeys();
+                }
+            };
+        }
+
 
     /**
         When removeFrom removes a key, it calls this method to remove any
