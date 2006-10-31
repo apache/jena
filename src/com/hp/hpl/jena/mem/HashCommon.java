@@ -1,14 +1,14 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.8 2006-10-31 06:02:55 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.9 2006-10-31 09:10:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
-import java.util.Iterator;
+import java.util.*;
 
-import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     Shared stuff for our hashing implementations: does the base work for
@@ -60,6 +60,23 @@ public abstract class HashCommon
         }
 
     /**
+        When removeFrom [or remove] removes a key, it calls this method to 
+        remove any associated values, passing in the index of the key's slot. 
+        Subclasses override if they have any associated values.
+    */
+    protected void removeAssociatedValues( int here )
+        {}
+
+    /**
+        When removeFrom [or remove] moves a key, it calls this method to move 
+        any associated values, passing in the index of the slot <code>here</code>
+        to move to and the index of the slot <code>scan</code> to move from.
+        Subclasses override if they have any associated values.
+    */
+    protected void moveAssociatedValues( int here, int scan )
+        {}
+    
+    /**
         Answer the item at index <code>i</code> of <code>keys</code>. This
         method is for testing purposes <i>only</i>.
     */
@@ -96,6 +113,19 @@ public abstract class HashCommon
             if (--index < 0) index += capacity;
             }
         }   
+
+    /**
+        Remove the object <code>key</code> from this hash's keys if it
+        is present (if it's absent, do nothing). If a key is removed, the
+        <code>removeAssociatedValues</code> will be removed. If a key
+        is moved, the <code>moveAssociatedValues</code> method will
+        be called.
+    */
+    public void remove( Object key )
+        {
+        int slot = findSlot( key );
+        if (slot < 0) removeFrom( ~slot );
+        }
     
     /**
         Work out the capacity and threshold sizes for a new improved bigger
@@ -179,51 +209,80 @@ public abstract class HashCommon
     public Iterator keyIterator()
         {
         showkeys();
-        return new NiceIterator()
+        final List movedKeys = new ArrayList();
+        ExtendedIterator basic = new BasicKeyIterator( movedKeys );
+        ExtendedIterator leftovers = new MovedKeysIterator( movedKeys );
+        return basic.andThen( leftovers );
+        }
+    
+    /**
+        The MovedKeysIterator iterates over the elements of the <code>keys</code>
+        list. It's not sufficient to just use List::iterator, because the .remove
+        method must remove elements from the hash table itself.
+    <p>
+        Note that the list supplied on construction will be empty: it is filled before
+        the first call to <code>hasNext()</code>.
+    */
+    protected final class MovedKeysIterator extends NiceIterator
+        {
+        private final List keys;
+
+        protected int index = 0;
+
+        protected MovedKeysIterator( List keys )
+            { this.keys = keys; }
+
+        public boolean hasNext()
+            { return index < keys.size(); }
+
+        public Object next()
             {
-            int index = 0;
-            
-            public boolean hasNext()
-                {
-                while (index < capacity && keys[index] == null) index += 1;
-                return index < capacity;
-                }
-            
-            public Object next()
-                {
-                if (hasNext() == false) noElements( "bunch map keys" );
-                return keys[index++];
-                }
-            
-            public void remove()
-                { 
-                size -= 1;
-                // System.err.println( ">> keyIterator::remove, size := " + size + ", removing " + keys[index + 1] );
-                removeFrom( index - 1 );
-                showkeys();
-                }
-            };
+            if (hasNext() == false) noElements( "" );
+            return keys.get( index++ );
+            }
+
+        public void remove()
+            { HashCommon.this.remove( keys.get( index - 1 ) ); }
         }
 
-
     /**
-        When removeFrom removes a key, it calls this method to remove any
-        associated values, passing in the index of the key's slot. Subclasses 
-        override if they have any associated values.
+        The BasicKeyIterator iterates over the <code>keys</code> array.
+        If a .remove call moves an unprocessed key underneath the iterator's
+        index, that key value is added to the <code>movedKeys</code>
+        list supplied to the constructor.
     */
-    protected void removeAssociatedValues( int here )
-        {}
+    protected final class BasicKeyIterator extends NiceIterator
+        {
+        protected final List movedKeys;
 
-    /**
-        When removeFrom moves a key, it calls this method to move any
-        associated values, passing in the index of the slot <code>here</code>
-        to move to and the index of the slot <code>scan</code> to move from.
-        Subclasses override if they have any associated values.
-    */
-    protected void moveAssociatedValues( int here, int scan )
-        {}
+        int index = 0;
+
+        protected BasicKeyIterator( List movedKeys )
+            { this.movedKeys = movedKeys; }
+
+        public boolean hasNext()
+            {
+            while (index < capacity && keys[index] == null) index += 1;
+            return index < capacity;
+            }
+
+        public Object next()
+            {
+            if (hasNext() == false) noElements( "HashCommon keys" );
+            return keys[index++];
+            }
+
+        public void remove()
+            {
+            size -= 1;
+            // System.err.println( ">> keyIterator::remove, size := " + size +
+            // ", removing " + keys[index + 1] );
+            Object moved = removeFrom( index - 1 );
+            if (moved != null) movedKeys.add( moved );
+            showkeys();
+            }
+        }   
     }
-
 
 /*
  * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP

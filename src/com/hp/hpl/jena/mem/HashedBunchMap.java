@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: HashedBunchMap.java,v 1.9 2006-10-31 06:02:55 chris-dollin Exp $
+    $Id: HashedBunchMap.java,v 1.10 2006-10-31 09:10:17 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -64,12 +64,6 @@ public class HashedBunchMap extends HashCommon implements BunchMap
                 values[j] = oldValues[i];
                 }
             }
-        }
-
-    public void remove( Object key )
-        {
-        int slot = findSlot( key );
-        if (slot < 0) removeFrom( ~slot );
         }
 
     /**
