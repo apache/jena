@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashedTripleBunch.java,v 1.16 2006-10-30 15:57:24 chris-dollin Exp $
+ 	$Id: HashedTripleBunch.java,v 1.17 2006-10-31 13:11:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -13,9 +13,7 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class HashedTripleBunch extends HashCommon implements TripleBunch
-    {
-    protected int changes;
-    
+    {    
     public HashedTripleBunch( TripleBunch b )
         {
         super( nextSize( (int) (b.size() / loadFactor) ) );
@@ -82,51 +80,10 @@ public class HashedTripleBunch extends HashCommon implements TripleBunch
         }
     
     public ExtendedIterator iterator()
-        { return iterator( new NotifyEmpty() { public void emptied() {} } ); }
+        { return iterator( NotifyEmpty.ignore ); }
     
     public ExtendedIterator iterator( final NotifyEmpty container )
-        {
-        return new NiceIterator()
-            {
-            int index = capacity;
-            int lastIndex = -1;
-            final int initialChanges = changes;
-            Object toRemove = null;
-            Object current = null;
-                        
-            public boolean hasNext()
-                {
-                if (changes > initialChanges) throw new ConcurrentModificationException();
-                if (current == null)
-                    while (index > 0 && ((current = keys[--index]) == null)) {};
-                return current != null;
-                }
-            
-            public Object next()
-                {
-                if (changes > initialChanges) throw new ConcurrentModificationException();
-                if (current == null && hasNext() == false) noElements( "HashedTripleBunch iterator empty" );
-                Object answer = toRemove = current;
-                lastIndex = index;
-                current = null;
-                return answer;
-                }
-            
-            /**
-                Removing an element resets the iterator to continue from the removed
-                position, in case an element has been shuffled up into the vacated
-                position. 
-            */
-            public void remove()
-                {
-                if (keys[lastIndex] != toRemove) throw new ConcurrentModificationException();
-                HashedTripleBunch.this.removeFrom( lastIndex ); size -= 1;
-                current = keys[index = lastIndex];
-                lastIndex = -1; 
-                if (size == 0) container.emptied();
-                }
-            };
-        }
+        { return keyIterator( container ); }
     
     public void app( Domain d, StageElement next, MatchOrBind s )
         {

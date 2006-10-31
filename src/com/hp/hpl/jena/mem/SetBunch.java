@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: SetBunch.java,v 1.5 2006-10-09 13:34:30 chris-dollin Exp $
+    $Id: SetBunch.java,v 1.6 2006-10-31 13:11:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.Domain;
 import com.hp.hpl.jena.graph.query.StageElement;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -55,7 +54,7 @@ public class SetBunch implements TripleBunch
     public void remove( Triple t )
         { elements.remove( t ); }
     
-    public ExtendedIterator iterator( NotifyEmpty container )
+    public ExtendedIterator iterator( HashCommon.NotifyEmpty container )
         {
         return iterator();
         }

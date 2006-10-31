@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.13 2006-10-24 15:49:20 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.14 2006-10-31 13:11:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -52,7 +52,7 @@ public abstract class NodeToTriplesMapBase
     */
     public abstract boolean remove( Triple t );
 
-    public abstract Iterator iterator( Object o, TripleBunch.NotifyEmpty container );
+    public abstract Iterator iterator( Object o, HashCommon.NotifyEmpty container );
 
     /**
          Answer true iff this NTM contains the concrete triple <code>t</code>.
@@ -114,7 +114,7 @@ public abstract class NodeToTriplesMapBase
                 return current.next();
                 }
 
-            class NotifyMe implements TripleBunch.NotifyEmpty
+            class NotifyMe implements HashCommon.NotifyEmpty
                 {
                 public void emptied()
                     { 

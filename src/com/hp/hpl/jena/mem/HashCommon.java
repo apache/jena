@@ -1,13 +1,14 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: HashCommon.java,v 1.9 2006-10-31 09:10:17 chris-dollin Exp $
+ 	$Id: HashCommon.java,v 1.10 2006-10-31 13:11:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import java.util.*;
 
+import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -49,6 +50,12 @@ public abstract class HashCommon
     protected int size = 0;
     
     /**
+        A count of the number of changes applied to this Hash object, used for
+        detecting concurrent modifications.
+    */
+    protected int changes;
+    
+    /**
         Initialise this hashed thingy to have <code>initialCapacity</code> as its
         capacity and the corresponding threshold. All the key elements start out
         null.
@@ -58,6 +65,28 @@ public abstract class HashCommon
         keys = new Object[capacity = initialCapacity];
         threshold = (int) (capacity * loadFactor);
         }
+
+    /**
+        A hashed structure may become empty as a side-effect of a .remove on one
+        of its iterators: a container can request notification of this by passing
+        a <code>NotifyEmpty</code> object in when the iterator is constructed,
+        and its <code>emptied</code> method is called when the bunch
+        becomes empty.
+        @author kers
+    */
+    public static interface NotifyEmpty
+        {
+        /**
+             A NotifyEmpty instance that ignores the notification.
+        */
+        public static NotifyEmpty ignore = new NotifyEmpty() 
+            { public void emptied() { }};
+        
+        /**
+             Method to call to notify that the collection has become empty.
+        */
+        public void emptied(); 
+        }   
 
     /**
         When removeFrom [or remove] removes a key, it calls this method to 
@@ -205,13 +234,16 @@ public abstract class HashCommon
             System.err.println();
             }
         }
+
+    public ExtendedIterator keyIterator()
+        { return keyIterator( NotifyEmpty.ignore ); }
     
-    public Iterator keyIterator()
+    public ExtendedIterator keyIterator( final NotifyEmpty container )
         {
         showkeys();
         final List movedKeys = new ArrayList();
-        ExtendedIterator basic = new BasicKeyIterator( movedKeys );
-        ExtendedIterator leftovers = new MovedKeysIterator( movedKeys );
+        ExtendedIterator basic = new BasicKeyIterator( changes, container, movedKeys );
+        ExtendedIterator leftovers = new MovedKeysIterator( changes, container, movedKeys );
         return basic.andThen( leftovers );
         }
     
@@ -228,21 +260,35 @@ public abstract class HashCommon
         private final List keys;
 
         protected int index = 0;
+        final int initialChanges;
+        final NotifyEmpty container;
 
-        protected MovedKeysIterator( List keys )
-            { this.keys = keys; }
+        protected MovedKeysIterator( int initialChanges, NotifyEmpty container, List keys )
+            { 
+            this.keys = keys; 
+            this.initialChanges = initialChanges; 
+            this.container = container;
+            }
 
         public boolean hasNext()
-            { return index < keys.size(); }
+            { 
+            if (changes > initialChanges) throw new ConcurrentModificationException();
+            return index < keys.size(); 
+            }
 
         public Object next()
             {
+            if (changes > initialChanges) throw new ConcurrentModificationException();
             if (hasNext() == false) noElements( "" );
             return keys.get( index++ );
             }
 
         public void remove()
-            { HashCommon.this.remove( keys.get( index - 1 ) ); }
+            { 
+            if (changes > initialChanges) throw new ConcurrentModificationException();
+            HashCommon.this.remove( keys.get( index - 1 ) ); 
+            if (size == 0) container.emptied();
+            }
         }
 
     /**
@@ -256,32 +302,42 @@ public abstract class HashCommon
         protected final List movedKeys;
 
         int index = 0;
+        final int initialChanges;
+        final NotifyEmpty container;
 
-        protected BasicKeyIterator( List movedKeys )
-            { this.movedKeys = movedKeys; }
+        protected BasicKeyIterator( int initialChanges, NotifyEmpty container, List movedKeys )
+            { 
+            this.movedKeys = movedKeys; 
+            this.initialChanges = initialChanges;  
+            this.container = container;
+            }
 
         public boolean hasNext()
             {
+            if (changes > initialChanges) throw new ConcurrentModificationException();
             while (index < capacity && keys[index] == null) index += 1;
             return index < capacity;
             }
 
         public Object next()
             {
+            if (changes > initialChanges) throw new ConcurrentModificationException();
             if (hasNext() == false) noElements( "HashCommon keys" );
             return keys[index++];
             }
 
         public void remove()
             {
-            size -= 1;
+            if (changes > initialChanges) throw new ConcurrentModificationException();
             // System.err.println( ">> keyIterator::remove, size := " + size +
             // ", removing " + keys[index + 1] );
             Object moved = removeFrom( index - 1 );
             if (moved != null) movedKeys.add( moved );
+            if (size == 0) container.emptied();
+            if (size < 0) throw new BrokenException( "BROKEN" );
             showkeys();
             }
-        }   
+        }
     }
 
 /*

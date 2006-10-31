@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.25 2006-10-30 15:57:25 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.26 2006-10-31 13:11:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -70,14 +70,14 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
         Answer an iterator over all the triples in this NTM which have index node
         <code>o</code>.
     */
-    public Iterator iterator( Object o, TripleBunch.NotifyEmpty container ) 
+    public Iterator iterator( Object o, HashCommon.NotifyEmpty container ) 
        {
        // System.err.println( ">> BOINK" ); // if (true) throw new JenaException( "BOINK" );
        TripleBunch s = (TripleBunch) bunchMap.get( o );
        return s == null ? NullIterator.instance : s.iterator( container );
        }
     
-    public class NotifyMe implements TripleBunch.NotifyEmpty
+    public class NotifyMe implements HashCommon.NotifyEmpty
         {
         protected final Object key;
         

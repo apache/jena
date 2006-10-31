@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TripleBunch.java,v 1.6 2006-10-09 14:16:21 chris-dollin Exp $
+    $Id: TripleBunch.java,v 1.7 2006-10-31 13:11:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -20,17 +20,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 */
 public interface TripleBunch 
     {
-    /**
-        A TripleBunch may become empty as a side-effect of a .remove on one
-        of its iterators: a container can request notification of this by passing
-        a <code>NotifyEmpty</code> object in when the iterator is constructed,
-        and its <code>emptied</code> method is called when the bunch
-        becomes empty.
-        @author kers
-    */
-    public interface NotifyEmpty
-        { public void emptied(); }
-    
     /**
         Answer true iff this TripleBunch contains a triple .equals to <code>t</code>.
     */
@@ -73,7 +62,7 @@ public interface TripleBunch
         this iterator empties the bunch, the <code>emptied</code> method of
         <code>container</code> is invoked.
     */
-    public abstract ExtendedIterator iterator( NotifyEmpty container );
+    public abstract ExtendedIterator iterator( HashCommon.NotifyEmpty container );
     
     /**
          For every triple t in this bunch that matches <code>s<code>, invoke

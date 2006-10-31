@@ -1,10 +1,12 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestHashCommon.java,v 1.3 2006-10-31 06:02:57 chris-dollin Exp $
+ 	$Id: TestHashCommon.java,v 1.4 2006-10-31 13:11:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
+
+import java.util.*;
 
 import com.hp.hpl.jena.mem.HashCommon;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
@@ -31,6 +33,9 @@ public class TestHashCommon extends ModelTestBase
         
         public int top()
             { return capacity - 1; }
+
+        public int capacity()
+            { return capacity; }
         }
     
     static class Item
@@ -48,43 +53,107 @@ public class TestHashCommon extends ModelTestBase
         public String toString()
             { return s + "#" + n; }
         }    
+
+    public void testSanityCheckTestDataConstruction()
+        {
+        ProbeHashCommon h = probeWith( "1:2:x 4:7:y -1:5:z" );
+        assertEquals( new Item( 2, "x" ), h.getItemForTestingAt( 1 ) );
+        assertEquals( new Item( 7, "y" ), h.getItemForTestingAt( 4 ) );
+        assertEquals( new Item( 5, "z" ), h.getItemForTestingAt( h.top() ) );
+        }
+
+    public void testHashcodeUsedAsIndex()
+        {
+        ProbeHashCommon htb = new ProbeHashCommon( 10 );
+        int limit = htb.capacity();
+        for (int i = 0; i < limit; i += 1)
+            {
+            Item t = new Item( i, "s p o" );
+//            assertEquals( i, htb.)
+//            assertSame( t, htb.getItemForTestingAt( i ) );
+            }
+        }
     
     public void testRemoveNoMove()
         {
-        ProbeHashCommon h = new ProbeHashCommon( 10 );
-        h.set( 1, item1Y );
-        h.set( 2, item2Z );
+        ProbeHashCommon h = probeWith( "1:1:Y 2:2:Z" );
         Item moved = (Item) h.removeFrom( 2 );
         assertSame( null, moved );
-        assertSame( null, h.getItemForTestingAt( 0 ) );
-        assertSame( item1Y, h.getItemForTestingAt( 1 ) );
-        assertSame( null, h.getItemForTestingAt( 2 ) );
+        assertAlike( probeWith( "1:1:Y" ), h );
         }
-    
+
     public void testRemoveSimpleMove()
         {
-        ProbeHashCommon h = new ProbeHashCommon( 10 );
-        h.set( 0, item2X );
-        h.set( 1, item1Y );
-        h.set( 2, item2Z );
-        Item moved = (Item) h.removeFrom( 1 );
-        assertSame( null, moved );
-        assertSame( null, h.getItemForTestingAt( 0 ) );
-        assertSame( item2X, h.getItemForTestingAt( 1 ) );
-        assertSame( item2Z, h.getItemForTestingAt( 2 ) );
+        ProbeHashCommon h = probeWith( "0:2:X 1:1:Y 2:2:Z" );
+        assertSame( null, (Item) h.removeFrom( 1 ) );
+        assertAlike( probeWith( "1:2:X 2:2:Z"), h );
         }
     
     public void testRemoveCircularMove()
         {
-        ProbeHashCommon h = new ProbeHashCommon( 10 );
-        Item item0X = new Item( 0, "X" );
-        h.set( 0, item0X );
-        h.set( 1, new Item( 2, "Y" ) );
-        h.set( h.top(), item2Z );
+        ProbeHashCommon h = probeWith( "0:0:X 1:2:Y -1:2:Z" );
         Item moved = (Item) h.removeFrom( 1 );
-        assertSame( item0X, h.getItemForTestingAt( 0 ) );
-        assertSame( item2Z, h.getItemForTestingAt( 1 ) );
-        assertSame( item2Z, moved );
+        assertAlike( probeWith( "0:0:X 1:2:Z" ), h );
+        assertEquals( new Item( 2, "Z" ), moved );
+        }
+    
+    public void testKeyIterator()
+        {
+        ProbeHashCommon h = probeWith( "0:0:X" );
+        Set elements = h.keyIterator().toSet();
+        assertEquals( itemSet( "0:X" ), elements );
+        }
+
+    /**
+        Assert that the two probe HashCommon's are "alike", that is, that they
+        have key arrays of equal size and are element-by-element equal. 
+        Otherwise, fail (preferably with an appropriate message).
+    */
+    private void assertAlike( ProbeHashCommon desired, ProbeHashCommon got )
+        {
+        assertEquals( "capacities must be equal", desired.capacity(), got.capacity() );
+        for (int i = 0; i < desired.capacity(); i += 1)
+            assertEquals( desired.getItemForTestingAt( i ), got.getItemForTestingAt( i ) );
+        }
+    
+    /**
+        Answer a probe with the specified items. <code>items</code> is a
+        space-separated string of item descriptions. Each description is a
+        colon-separated sequence <code>index:hash:label</code>: the
+        item <code>(hash, label)</code> will be placed at <code>index</code>.
+        Negative index values are interpreted as indexs from the <i>end</code>
+        of the key array, by adding the probe's capacity to them. 
+    */
+    protected ProbeHashCommon probeWith( String items )
+        {
+        ProbeHashCommon result = new ProbeHashCommon( 10 );
+        StringTokenizer st = new StringTokenizer( items );
+        while (st.hasMoreTokens())
+            {
+            String item = st.nextToken();
+            StringTokenizer itemElements = new StringTokenizer( item, ":" );
+            int index = Integer.parseInt( itemElements.nextToken() );
+            int hash = Integer.parseInt( itemElements.nextToken() );
+            String w = itemElements.nextToken();
+            result.set( (index< 0 ? index + result.capacity() : index), new Item( hash, w ) );
+            }
+        return result;
+        }
+    
+    protected Set itemSet( String items )
+        {
+        Set result = new HashSet();
+        StringTokenizer st = new StringTokenizer( items );
+        while (st.hasMoreTokens()) addItem( result, st.nextToken() );
+        return result;
+        }
+
+    private void addItem( Set result, String item )
+        {
+        StringTokenizer itemElements = new StringTokenizer( item, ":" );
+        int hash = Integer.parseInt( itemElements.nextToken() );
+        String w = itemElements.nextToken();
+        result.add( new Item( hash, w ) );
         }
     }
 

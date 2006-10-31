@@ -1,14 +1,14 @@
 /*
     (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: WrappedHashMap.java,v 1.4 2006-10-09 10:46:10 chris-dollin Exp $
+    $Id: WrappedHashMap.java,v 1.5 2006-10-31 13:11:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.util.CollectionFactory;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     An implementation of BunchMap that delegates to a [Hashed]Map.
@@ -29,8 +29,8 @@ public class WrappedHashMap implements BunchMap
     public void remove( Object key )
         { map.remove( key ); }
 
-    public Iterator keyIterator()
-        { return map.keySet().iterator(); }
+    public ExtendedIterator keyIterator()
+        { return WrappedIterator.create( map.keySet().iterator() ); }
     }
 
 /*

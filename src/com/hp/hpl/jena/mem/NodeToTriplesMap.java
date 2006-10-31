@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.43 2006-10-24 15:49:20 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.44 2006-10-31 13:11:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -66,7 +66,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         	} 
         }
     
-    public Iterator iterator( Object o, TripleBunch.NotifyEmpty container )
+    public Iterator iterator( Object o, HashCommon.NotifyEmpty container )
         {
         TripleBunch b = bunchMap.get( o );
         return b == null ? NullIterator.instance : b.iterator();
