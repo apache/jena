@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *  </p>
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.29 2006-04-27 10:33:47 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.30 2006-11-02 18:31:43 andy_seaborne Exp $
  */
 
 
@@ -86,10 +86,11 @@ public class N3JenaWriter implements RDFWriter
 
     /**
      * Turtle writer.
-     * http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/
+     * http://www.dajobe.org/2004/01/turtle/
      */
     static public final String turtleWriter          = "TURTLE" ;
-
+    static public final String turtleWriterAlt1      = "Turtle" ;
+    static public final String turtleWriterAlt2      = "TTL" ;
     
     protected N3JenaWriterCommon writer = null ;
     

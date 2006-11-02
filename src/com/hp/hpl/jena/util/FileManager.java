@@ -53,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.35 2006-07-13 11:30:04 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.36 2006-11-02 18:31:45 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -355,7 +355,7 @@ public class FileManager
         if ( baseURI == null )
             baseURI = chooseBaseURI(filenameOrURI) ;
 
-        // Doen't call open() - we want to make the synatx guess based on the mapped URI.
+        // Doesn't call open() - we want to make the synatx guess based on the mapped URI.
         String mappedURI = mapURI(filenameOrURI) ;
 
         if ( log.isDebugEnabled() && ! mappedURI.equals(filenameOrURI) )
