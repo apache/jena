@@ -94,7 +94,7 @@ public class sdbquery extends CmdArgsDB
             }
         }
         
-        if ( verbose )
+        if ( isVerbose() )
         {
             // ModSDBAdmin - various printing options?
             //QueryCompilerBasicPattern.printBlock = true ;
@@ -117,12 +117,12 @@ public class sdbquery extends CmdArgsDB
             Query query = modQuery.getQuery() ;
             long javaTime = getModTime().endTimer() ;
             
-            if ( verbose )
+            if ( isVerbose() )
                 System.out.println("Class load time: "+getModTime().timeStr(javaTime)) ;
         }
         
         
-        if ( verbose )
+        if ( isVerbose() )
         {
             QC.printSQL = true ;
             modQuery.getQuery().serialize(System.out) ;

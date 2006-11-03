@@ -73,7 +73,7 @@ public class sdbsql extends CmdArgsDB
     
     private void execOneSQL(String sqlStmt)
     {
-        if ( verbose )
+        if ( isVerbose() )
         {
             System.out.print(sqlStmt) ;
             if ( ! sqlStmt.endsWith("\n") )
@@ -93,7 +93,7 @@ public class sdbsql extends CmdArgsDB
                 System.out.println("Executed with no errors or results") ;
             else
             { 
-                if ( quiet )
+                if ( isQuiet() )
                     RS.consume(rs) ;
                 else
                     RS.printResultSet(rs) ;

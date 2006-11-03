@@ -58,7 +58,7 @@ public class sdbmeta extends CmdArgsDB
             tag = getValue(argDeclTag) ;
         if (getNumPositional() == 0)
             cmdError("Subcommand required (get,tags,put,remove,reset)", true) ;
-        if ( verbose )
+        if ( isVerbose() )
         {
             SDBConnection.logSQLStatements = true ;
             SDBConnection.logSQLExceptions = true ;

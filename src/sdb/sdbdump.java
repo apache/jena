@@ -65,7 +65,7 @@ public class sdbdump extends CmdArgsDB
         String syntax = "N-TRIPLES" ;
         if ( contains(argDeclFormat) )
             syntax = getArg(argDeclFormat).getValue() ;
-        if ( debug )
+        if ( isDebug() )
             System.out.println("Debug: syntax is "+syntax) ;
         
         try {

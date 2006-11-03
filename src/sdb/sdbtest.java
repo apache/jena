@@ -68,7 +68,7 @@ public class sdbtest extends CmdArgsDB
     
     private void execOneManifest(String manifest)
     { 
-        if ( verbose )
+        if ( isVerbose() )
         {
             //SchemaBase.printBlock = true ;
             //SchemaBase.printAbstractSQL = true ;

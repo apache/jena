@@ -8,12 +8,12 @@ package sdb.cmd;
 
 import java.util.List;
 
-import arq.cmdline.CmdArgModule;
+import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 
-public abstract class CmdArgsDB extends CmdArgModule
+public abstract class CmdArgsDB extends CmdGeneral
 {
     static {
         //  Tune N3 output for result set output.

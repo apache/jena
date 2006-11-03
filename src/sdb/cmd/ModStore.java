@@ -12,9 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import arq.cmd.TerminationException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.ArgModule;
-import arq.cmdline.CmdArgModule;
+import arq.cmdline.*;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -35,7 +33,7 @@ import com.hp.hpl.jena.util.FileManager;
  * @version $Id: CmdStore.java,v 1.1 2006/04/22 19:51:12 andy_seaborne Exp $
  */ 
 
-public class ModStore implements ArgModule 
+public class ModStore extends ModBase
 {
     // -------- This ...
     protected final ArgDecl argDeclSDBdesc       = new ArgDecl(true, "sdb");
@@ -104,7 +102,7 @@ public class ModStore implements ArgModule
         SDBConnection.logSQLExceptions = true ;
     }
     
-    public void registerWith(CmdArgModule cmdLine)
+    public void registerWith(CmdGeneral cmdLine)
     {
         final boolean AddUsage = false ;
         

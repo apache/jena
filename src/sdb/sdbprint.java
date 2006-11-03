@@ -92,13 +92,13 @@ public class sdbprint extends CmdArgsDB
     private void compilePrint(Query query, QueryCompiler compiler)
     {
         
-        if ( ! quiet && ! printSQL )
+        if ( ! isQuiet() && ! printSQL )
         {
             divider() ;
             query.serialize(System.out, Syntax.syntaxARQ) ;
         }
         
-        if ( verbose )
+        if ( isVerbose() )
         {
             divider() ;
             query.serialize(System.out, Syntax.syntaxPrefix) ;
@@ -107,17 +107,17 @@ public class sdbprint extends CmdArgsDB
         Store store = getModStore().getStore() ;
         QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
 
-        if ( verbose )
+        if ( isVerbose() )
         {
             divider() ;
             PrintSDB.printPlan(store, query, qe) ;
         }
 
-          if ( verbose )
-          {
-              //QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
-              QC.printAbstractSQL = true ;
-          }
+        if ( isVerbose() )
+        {
+            //QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
+            QC.printAbstractSQL = true ;
+        }
 
         
         // Print all SDB things in the plan

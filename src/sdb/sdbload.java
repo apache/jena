@@ -79,7 +79,7 @@ public class sdbload extends CmdArgsDB
     {
         Monitor monitor = null ;
         
-        if ( verbose )
+        if ( isVerbose() )
         {
         	//System.out.println(TableUtils.dumpDB(getConnection().getSqlConnection()));
             System.out.println("Start load: "+filename) ;
@@ -103,7 +103,7 @@ public class sdbload extends CmdArgsDB
         {
             System.out.println("Added "+monitor.addCount+" triples") ; 
         
-            if ( getModTime().timingEnabled() && !quiet )
+            if ( getModTime().timingEnabled() && !isQuiet() )
                 System.out.printf("Loaded in %.3f seconds [%d triples/s]\n", 
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
         }

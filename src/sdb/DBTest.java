@@ -66,7 +66,7 @@ public class DBTest extends CmdArgsDB
     @Override
     protected void execCmd(List<String> args)
     {
-        if ( verbose )
+        if ( isVerbose() )
         {
             for ( String k : params )
                 System.out.printf("%-20s = %-20s\n", k, params.get(k) );
