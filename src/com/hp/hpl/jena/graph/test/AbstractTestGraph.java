@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.70 2006-07-12 13:22:43 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.71 2006-11-14 15:09:57 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -452,10 +452,11 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     
     public void testListSubjects()
         {
-        Graph g = graphWith( "x P y; y Q z" );
-        assertEquals( nodeSet( "x y" ), listSubjects( g ) );
+        Set emptySubjects = listSubjects( getGraphWith( "" ) );
+        Graph g = getGraphWith( "x P y; y Q z" );
+        assertEquals( nodeSet( "x y" ), remove( listSubjects( g ), emptySubjects ) );
         g.delete( triple( "x P y" ) );
-        assertEquals( nodeSet( "y" ), listSubjects( g ) );
+        assertEquals( nodeSet( "y" ), remove( listSubjects( g ), emptySubjects ) );
         }
 
     protected Set listSubjects( Graph g )
@@ -465,10 +466,11 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     
     public void testListPredicates()
         {
-        Graph g = graphWith( "x P y; y Q z" );
-        assertEquals( nodeSet( "P Q" ), listPredicates( g ) );
+        Set emptyPredicates = listPredicates( getGraphWith( "" ) );
+        Graph g = getGraphWith( "x P y; y Q z" );
+        assertEquals( nodeSet( "P Q" ), remove( listPredicates( g ), emptyPredicates ) );
         g.delete( triple( "x P y" ) );
-        assertEquals( nodeSet( "Q" ), listPredicates( g ) );
+        assertEquals( nodeSet( "Q" ), remove( listPredicates( g ), emptyPredicates ) );
         }
 
     protected Set listPredicates( Graph g )
@@ -478,17 +480,28 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     
     public void testListObjects()
         {
-        Graph g = graphWith( "x P y; y Q z" );
-        assertEquals( nodeSet( "y z" ), listObjects( g ) );
+        Set emptyObjects = listObjects( getGraphWith( "" ) );
+        Graph g = getGraphWith( "x P y; y Q z" );
+        assertEquals( nodeSet( "y z" ), remove( listObjects( g ), emptyObjects ) );
         g.delete( triple( "x P y" ) );
-        assertEquals( nodeSet( "z" ), listObjects( g ) );
+        assertEquals( nodeSet( "z" ), remove( listObjects( g ), emptyObjects ) );
         }
 
     protected Set listObjects( Graph g )
         {
         return iteratorToSet( g.queryHandler().objectsFor( Node.ANY, Node.ANY ) );
         }
-    
+
+    /**
+        Answer a set with all the elements of <code>A</code> except those
+        in <code>B</code>.
+    */
+    private Set remove( Set A, Set B )
+        {
+        Set result = new HashSet( A );
+        result.removeAll(  B  );        
+        return result;
+        }
     /**
          Ensure that triples removed by calling .remove() on the iterator returned by
          a find() will generate deletion notifications.

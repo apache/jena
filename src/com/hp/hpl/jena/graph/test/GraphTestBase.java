@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.31 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: GraphTestBase.java,v 1.32 2006-11-14 15:09:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -157,6 +157,7 @@ public class GraphTestBase extends JenaTestBase
     /**
         Answer a new memory-based graph with initial contents as described
         by <code>s</code> in the fashion of <code>graphAdd()</code>.
+        Not over-ridable; do not use for abstraction.
     */
     public static Graph graphWith( String s )
         { return graphAdd( newGraph(), s ); }
