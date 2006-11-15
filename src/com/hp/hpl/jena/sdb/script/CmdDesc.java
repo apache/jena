@@ -42,7 +42,7 @@ public class CmdDesc
         System.out.println(desc) ;
         try {
             String cmd = desc.getCmd() ;
-            Class c = Class.forName(cmd) ;
+            Class<?> c = Class.forName(cmd) ;
             Method m = c.getMethod("mainNoExit", new Class[]{String[].class}) ;
             m.invoke(null, new Object[]{desc.asStringArray()}) ;
         } catch (Exception ex) { ex.printStackTrace(System.err) ; }

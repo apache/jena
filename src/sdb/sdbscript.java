@@ -27,7 +27,7 @@ public class sdbscript
     private static void staticByReflection(String className, String methodName, String[] args)
     {
         // Reflection to invoke <class>.suite() and return a TestSuite.
-        Class cmd = null ;
+        Class<?> cmd = null ;
         try { cmd = Class.forName(className) ; }
         catch (ClassNotFoundException ex)
         {
