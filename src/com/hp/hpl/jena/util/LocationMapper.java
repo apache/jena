@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.17 2006-03-22 13:52:49 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.18 2006-11-15 15:14:01 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -237,6 +237,35 @@ public class LocationMapper
         return s_globalMapperPath ;
     }
     
+    public boolean equals(Object obj)
+    {
+        if ( ! ( obj instanceof LocationMapper ) )
+            return false ;
+        LocationMapper other = (LocationMapper)obj ;
+        
+        if ( altLocations.size() != other.altLocations.size() )
+            return false ;
+        
+        if ( altPrefixes.size() != other.altPrefixes.size() )
+            return false ;
+        
+        for ( Iterator iter = altLocations.keySet().iterator() ; iter.hasNext() ; )
+        {
+            String k = (String)iter.next() ;
+            String v = (String)altLocations.get(k) ;
+            if ( ! other.altLocations.get(k).equals(v) )
+                return false ;
+        }
+        for ( Iterator iter = altPrefixes.keySet().iterator() ; iter.hasNext() ; )
+        {
+            String k = (String)iter.next() ;
+            String v = (String)altPrefixes.get(k) ;
+            if ( ! other.altPrefixes.get(k).equals(v) )
+                return false ;
+        }
+        return true ;
+    }
+    
     public String toString()
     {
         String s = "" ;
@@ -250,10 +279,45 @@ public class LocationMapper
         for ( Iterator iter = altPrefixes.keySet().iterator() ; iter.hasNext() ; )
         {
             String k = (String)iter.next() ;
-            String v = (String)altLocations.get(k) ;
+            String v = (String)altPrefixes.get(k) ;
             s = s+"(Prefix:"+k+"=>"+v+") " ;
         }
         return s ;
+    }
+    
+    public Model toModel()
+    {
+        Model m = ModelFactory.createDefaultModel() ;
+        m.setNsPrefix("lmap", "http://jena.hpl.hp.com/2004/08/location-mapping#") ;
+        toModel(m) ;
+        return m ;
+    }
+    
+    public void toModel(Model model)
+    {
+        
+        for ( Iterator iter = altLocations.keySet().iterator() ; iter.hasNext() ; )
+        {
+            Resource r = model.createResource() ;
+            Resource e = model.createResource() ;
+            model.add(r, LocationMappingVocab.mapping, e) ;
+            
+            String k = (String)iter.next() ;
+            String v = (String)altLocations.get(k) ;
+            model.add(e, LocationMappingVocab.name, k) ;
+            model.add(e, LocationMappingVocab.altName, v) ;
+        }
+
+        for ( Iterator iter = altPrefixes.keySet().iterator() ; iter.hasNext() ; )
+        {
+            Resource r = model.createResource() ;
+            Resource e = model.createResource() ;
+            model.add(r, LocationMappingVocab.mapping, e) ;
+            String k = (String)iter.next() ;
+            String v = (String)altPrefixes.get(k) ;
+            model.add(e, LocationMappingVocab.prefix, k) ;
+            model.add(e, LocationMappingVocab.altPrefix, v) ;
+        }
     }
     
     public void processConfig(Model m)
