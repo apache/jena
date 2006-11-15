@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionAssembler.java,v 1.6 2006-04-27 10:49:07 der Exp $
+ 	$Id: ConnectionAssembler.java,v 1.7 2006-11-15 14:52:05 pldms Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.assembler.assemblers;
 import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.CannotLoadClassException;
+import com.hp.hpl.jena.assembler.exceptions.PropertyRequiredException;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
@@ -45,6 +46,10 @@ public class ConnectionAssembler extends AssemblerBase implements Assembler
         checkType( root, JA.Connection );
         String dbUser = getUser( root ), dbPassword = getPassword( root );
         String dbURL = getURL( root ), dbType = getType( root );
+        if (dbURL == null)
+        	throw new PropertyRequiredException(root, JA.property("dbURL"));
+        if (dbType == null)
+        	throw new PropertyRequiredException(root, JA.property("dbType"));
         loadClasses( root );
         return createConnection( dbURL, dbType, dbUser, dbPassword );
         }    

@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.61 $ on $Date: 2006-05-04 13:19:51 $
+* @version $Revision: 1.62 $ on $Date: 2006-11-15 14:52:12 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -871,14 +871,14 @@ public abstract class DriverRDB implements IRDBDriver {
 		} catch (Exception e1) {
 			// An exception might be an unformatted or corrupt
 			// db or a connection problem.
-			throw new RDFRDBException("Exception while checking db format - " + e1);
+			throw new RDFRDBException("Exception while checking db format - " + e1, e1);
 		}finally {
 			try {
 				if(alltables!=null) {
 					alltables.close();
 				}
 			}catch(SQLException e) {
-				throw new RDFRDBException("Exception while checking db format - " + e);
+				throw new RDFRDBException("Exception while checking db format - " + e, e);
 			}
 		}
 		return result;
