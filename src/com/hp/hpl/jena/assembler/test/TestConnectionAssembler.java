@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestConnectionAssembler.java,v 1.5 2006-03-22 13:52:20 andy_seaborne Exp $
+ 	$Id: TestConnectionAssembler.java,v 1.6 2006-11-16 14:44:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.ConnectionAssembler;
 import com.hp.hpl.jena.assembler.exceptions.CannotLoadClassException;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.shared.JenaException;
 
 public class TestConnectionAssembler extends AssemblerTestBase
     {
@@ -37,6 +38,20 @@ public class TestConnectionAssembler extends AssemblerTestBase
         assertDomain( JA.Connection, JA.dbPasswordProperty );
         assertDomain( JA.Connection, JA.dbTypeProperty );
         assertDomain( JA.Connection, JA.dbURLProperty );
+        }
+    
+    public void testConnectionDescriptionFailsOnMissingURL()
+        {
+        ConnectionDescription c = new ConnectionDescription( "eh:/subject", null, null, null, "myType" );
+        try { c.getConnection(); fail( "should trap null URL" ); }
+        catch (JenaException e) { assertTrue( e.getMessage().endsWith( "cannot be opened because no dbURL or dbType was specified" ) ); }
+        }
+    
+    public void testConnectionDescriptionFailsOnMissingType()
+        {
+        ConnectionDescription c = new ConnectionDescription( "eh:/subject", "URL", null, null, null );
+        try { c.getConnection(); fail( "should trap null type" ); }
+        catch (JenaException e) { assertTrue( e.getMessage().endsWith( "cannot be opened because no dbURL or dbType was specified" ) ); }
         }
     
     public void testConnectionInitDefaults()
@@ -124,8 +139,8 @@ public class TestConnectionAssembler extends AssemblerTestBase
     public void testOpenConnectionWIthLabels()
         {
         Resource root = resourceInModel( "x rdf:type ja:Connection; x ja:dbUser 'X'; x ja:dbPassword 'P'; x ja:dbURL U:RL; x ja:dbType 'T'" );
-        final ConnectionDescription fake = ConnectionDescription.create( "DD", "TT", "UU", "PP" );
-        CheckingConnectionAssembler x = new CheckingConnectionAssembler( fake, "U:RL X P T" );
+        final ConnectionDescription fake = ConnectionDescription.create( "eh:/x", "DD", "TT", "UU", "PP" );
+        CheckingConnectionAssembler x = new CheckingConnectionAssembler( fake, "eh:/x U:RL X P T" );
         assertSame( fake, x.open( root ) );
         assertTrue( "mock createConnection should have been called", x.called );
         }
@@ -182,6 +197,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
     private static final class CheckingConnectionAssembler extends ConnectionAssembler
         {
         private final ConnectionDescription result;
+        private final String expectSubject;
         private final String expectURL;
         private final String expectUser;
         private final String expectPassword;
@@ -193,6 +209,7 @@ public class TestConnectionAssembler extends AssemblerTestBase
             {
             super();
             StringTokenizer st = new StringTokenizer( expected );
+            expectSubject = st.nextToken();
             expectURL = st.nextToken();
             expectUser = st.nextToken();
             expectPassword = st.nextToken();
@@ -201,8 +218,9 @@ public class TestConnectionAssembler extends AssemblerTestBase
             }
 
         public ConnectionDescription createConnection
-            ( String url, String type, String user, String pass )
+            ( String subject, String url, String type, String user, String pass )
             {
+            assertEquals( expectSubject, subject );
             assertEquals( expectURL, url );
             assertEquals( expectUser, user );
             assertEquals( expectPassword, pass );

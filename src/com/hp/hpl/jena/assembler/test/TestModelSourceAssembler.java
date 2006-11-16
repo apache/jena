@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelSourceAssembler.java,v 1.5 2006-05-01 10:54:25 chris-dollin Exp $
+ 	$Id: TestModelSourceAssembler.java,v 1.6 2006-11-16 14:44:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -56,7 +56,7 @@ public class TestModelSourceAssembler extends AssemblerTestBase
     
     public void testRDBModelMakerSource()
         {
-        final ConnectionDescription c = new ConnectionDescription( "url", "user", "password", "type" );
+        final ConnectionDescription c = new ConnectionDescription( "eh:/subject", "url", "user", "password", "type" );
         final List history = new ArrayList();
         Assembler a = new ModelSourceAssembler() 
             {

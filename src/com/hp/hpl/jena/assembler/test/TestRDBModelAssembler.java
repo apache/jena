@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestRDBModelAssembler.java,v 1.6 2006-03-22 13:52:20 andy_seaborne Exp $
+ 	$Id: TestRDBModelAssembler.java,v 1.7 2006-11-16 14:44:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -32,7 +32,7 @@ public class TestRDBModelAssembler extends AssemblerTestBase
     public void testInvokesCreateModel()
         {
         Resource root = resourceInModel( "x rdf:type ja:RDBModel; x ja:modelName 'spoo'; x ja:connection C" );
-        final ConnectionDescription C = ConnectionDescription.create( "A", "B", "C", "D" );
+        final ConnectionDescription C = ConnectionDescription.create( "eh:/x", "A", "B", "C", "D" );
         final Model fake = ModelFactory.createDefaultModel();
         final Mode theMode = new Mode( true, true );
         Assembler a = new RDBModelAssembler()

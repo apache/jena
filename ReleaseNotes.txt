@@ -23,6 +23,10 @@ Assembler:
       made the existing standard locator classes have appropriate
       .equals() and .hashCode() methods.
 
+    o ConnectionAssembler now records subject resource in
+      ConnectionDescription. ConnectionDescription falls over
+      usefully if the URL or type is null when it's opened.
+
 RDF/XML output:
     o bug whereby a literal containing the sequence "]]>" generated illegal
       XML (because the "]]>" went through unchanged, and is illegal except

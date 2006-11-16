@@ -1,13 +1,14 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionDescription.java,v 1.2 2006-01-10 15:30:41 chris-dollin Exp $
+ 	$Id: ConnectionDescription.java,v 1.3 2006-11-16 14:44:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
     A ConnectionDescription holds the information required to construct an
@@ -17,6 +18,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 */
 public class ConnectionDescription
     {
+    public final String subject;
     public final String dbURL;
     public final String dbUser;
     public final String dbPassword;
@@ -31,9 +33,11 @@ public class ConnectionDescription
         @param dbUser the name of the user authorising the connection
         @param dbPassword the password of that user
         @param dbType the type of the database
+     * @param string 
     */
-    public ConnectionDescription( String dbURL, String dbUser, String dbPassword, String dbType )
+    public ConnectionDescription( String subject, String dbURL, String dbUser, String dbPassword, String dbType )
         {
+        this.subject = subject;
         this.dbURL = dbURL;
         this.dbUser = dbUser;
         this.dbPassword = dbPassword;
@@ -47,16 +51,20 @@ public class ConnectionDescription
     public IDBConnection getConnection()
         {
         if (connection == null) 
+            {
+            if (dbURL == null || dbType == null) 
+                throw new JenaException( "this connection " + this + " cannot be opened because no dbURL or dbType was specified" );
             connection = ModelFactory.createSimpleRDBConnection
                 ( dbURL, dbUser, dbPassword, dbType );
+            }
         return connection;
         }
     
     /**
         Answer a description containing the specified components.
     */
-    public static ConnectionDescription create( String dbURL, String dbUser, String dbPassword, String dbType )
-        { return new ConnectionDescription( dbURL, dbUser, dbPassword, dbType ); }
+    public static ConnectionDescription create( String subject, String dbURL, String dbUser, String dbPassword, String dbType )
+        { return new ConnectionDescription( subject, dbURL, dbUser, dbPassword, dbType ); }
     
     /**
         Answer a descriptive string for this connection object, including whether or
@@ -66,7 +74,8 @@ public class ConnectionDescription
     public String toString()
         { 
         return
-            "UrConnection("
+            "UrlConnection("
+            + " subject=" + subject
             + " url=" + dbURL
             + " type=" + dbType
             + " user=" + dbUser
