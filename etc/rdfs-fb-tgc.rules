@@ -2,7 +2,7 @@
 # RDFS rule set v0.1.
 # This variant is used in the case where the subclass and subproperty
 # lattices have been precomputed by a transitive graph closure cache.
-# $Id: rdfs-fb-tgc.rules,v 1.9 2006-07-07 10:08:16 der Exp $
+# $Id: rdfs-fb-tgc.rules,v 1.10 2006-11-16 14:23:31 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -27,11 +27,14 @@
 -> (rdf:rest       rdf:type  rdf:Property).
 -> (rdf:value      rdf:type  rdf:Property).
 -> (rdfs:member     rdf:type  rdf:Property).
-        
+               
 -> (rdfs:subPropertyOf rdfs:domain rdf:Property).
 -> (rdfs:subClassOf rdfs:domain rdfs:Class).
 -> (rdfs:domain rdfs:domain rdf:Property).
 -> (rdfs:range rdfs:domain rdf:Property).
+-> (rdf:type rdfs:domain rdfs:Resource).
+-> (rdfs:comment rdfs:domain rdfs:Resource).
+-> (rdfs:label rdfs:domain rdfs:Resource).
 -> (rdf:subject rdfs:domain rdf:Statement).
 -> (rdf:predicate rdfs:domain rdf:Statement).
 -> (rdf:object rdfs:domain rdf:Statement).
@@ -45,6 +48,10 @@
 -> (rdf:type rdfs:range rdfs:Class).
 -> (rdfs:comment rdfs:range rdfs:Literal).
 -> (rdfs:label rdfs:range rdfs:Literal).
+-> (rdf:subject rdfs:range rdfs:Resource).
+-> (rdf:predicate rdfs:range rdf:Property).
+-> (rdf:object rdfs:range rdfs:Resource).
+-> (rdf:first rdfs:range rdfs:Resource).
 -> (rdf:rest rdfs:range rdf:List).
 
 -> (rdf:Alt rdfs:subClassOf rdfs:Container).
