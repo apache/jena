@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 /** TestLocationMapper
  * 
  * @author Andy Seaborne
- * @version $Id: TestLocationMapper.java,v 1.7 2006-11-15 15:14:05 andy_seaborne Exp $
+ * @version $Id: TestLocationMapper.java,v 1.8 2006-11-16 09:40:13 andy_seaborne Exp $
  */
 
 public class TestLocationMapper extends TestCase
@@ -135,6 +135,7 @@ public class TestLocationMapper extends TestCase
         LocationMapper locMap1 = new LocationMapper(mapping) ;
         LocationMapper locMap2 = new LocationMapper(mapping) ;
         assertEquals(locMap1, locMap2) ;
+        assertEquals(locMap1.hashCode(), locMap2.hashCode()) ;
     }
 
     public void testLocationMapperEquals2()
@@ -151,6 +152,7 @@ public class TestLocationMapper extends TestCase
         LocationMapper locMap1 = new LocationMapper(mapping) ;
         LocationMapper locMap2 = new LocationMapper(locMap1.toModel()) ;
         assertEquals(locMap1, locMap2) ;
+        assertEquals(locMap1.hashCode(), locMap2.hashCode()) ;
     }
 
     public void testLocationMapperToModel2()
