@@ -28,20 +28,20 @@
    [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ] ,
    .
 
-## -- Example 1
+## -- Example 2
 
 # This is exactly the same graph using the ; syntax of N3
 # Multiple statements with the same subject - and we used the same predicate.
 
-[]	lm:mapping [ lm:name "file:foo.n3" ; lm:altName "file:etc/foo.n3" ] ;
-	lm:mapping [ lm:prefix "file:etc/" ; lm:altPrefix "file:ETC/" ] ;
-	lm:mapping [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ] ;
-	.
+## []	lm:mapping [ lm:name "file:foo.n3" ; lm:altName "file:etc/foo.n3" ] ;
+## 	lm:mapping [ lm:prefix "file:etc/" ; lm:altPrefix "file:ETC/" ] ;
+## 	lm:mapping [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ] ;
+## 	.
 
-## -- Example 1
+## -- Example 3
 
 # Different graph - same effect.  The fact there are different subjects is immaterial.
 
-[]	lm:mapping [ lm:name "file:foo.n3" ; lm:altName "file:etc/foo.n3" ] .
-[]	lm:mapping [ lm:prefix "file:etc/" ; lm:altPrefix "file:ETC/" ] .
-[]	lm:mapping [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ] .
+## []	lm:mapping [ lm:name "file:foo.n3" ; lm:altName "file:etc/foo.n3" ] .
+## []	lm:mapping [ lm:prefix "file:etc/" ; lm:altPrefix "file:ETC/" ] .
+## []	lm:mapping [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ] .
