@@ -170,4 +170,20 @@
     <result>rdfs/result20-nodirect.rdf</result>
   </Test>
 
+  <Test rdf:about="test21">
+    <description>RDFS reasoner - owl full axioms for domain  on empty model</description>
+    <tbox>rdfs/empty.rdf</tbox>
+    <data>rdfs/empty.rdf</data>
+    <query>rdfs/query21.nt</query>
+    <result>rdfs/result21.rdf</result>
+  </Test>
+
+  <Test rdf:about="test22">
+    <description>RDFS reasoner - owl full axioms for range on empty model</description>
+    <tbox>rdfs/empty.rdf</tbox>
+    <data>rdfs/empty.rdf</data>
+    <query>rdfs/query22.nt</query>
+    <result>rdfs/result22.rdf</result>
+  </Test>
+
 </rdf:RDF>

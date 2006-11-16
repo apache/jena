@@ -1,0 +1,3 @@
+# List (*, rdfs:domain, *)
+####################################
+<var:x> <http://www.w3.org/2000/01/rdf-schema#domain> <var:y> .

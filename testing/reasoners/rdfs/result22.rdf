@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns="&eg;">
+
+  <rdf:Description rdf:about="&rdfs;subPropertyOf"> <rdfs:range rdf:resource="&rdf;Property" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdfs;subClassOf"> <rdfs:range rdf:resource="&rdfs;Class" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdfs;domain"> <rdfs:range rdf:resource="&rdfs;Class" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdfs;range"> <rdfs:range rdf:resource="&rdfs;Class" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdf;type"> <rdfs:range rdf:resource="&rdfs;Class" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdfs;comment"> <rdfs:range rdf:resource="&rdfs;Literal" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdfs;label"> <rdfs:range rdf:resource="&rdfs;Literal" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdf;subject"> <rdfs:range rdf:resource="&rdfs;Resource" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdf;predicate"> <rdfs:range rdf:resource="&rdf;Property" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdf;object"> <rdfs:range rdf:resource="&rdfs;Resource" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdf;first"> <rdfs:range rdf:resource="&rdfs;Resource" /> </rdf:Description>
+  <rdf:Description rdf:about="&rdf;rest"> <rdfs:range rdf:resource="&rdf;List" /> </rdf:Description>
+
+
+</rdf:RDF>
