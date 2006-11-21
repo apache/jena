@@ -22,6 +22,16 @@ public class TestMERelativize extends TestMoreExamples {
         IRI rel = ((TestMoreExamples)parent.testAt(2)).getIRI();
         return base.relativize(rel, TestCreator.RelativizeFlags);
     }
+    
+    public void runTest() {
+    	if (!"true".equals(att.get("same"))) {
+    		super.runTest();
+    	} else {
+    		assertEquals(computeIRI(),
+    				((TestMoreExamples)parent.testAt(1)).getIRI());
+    	}
+    	
+    }
 }
 
 

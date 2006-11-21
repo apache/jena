@@ -763,21 +763,21 @@
 </Relativize>
 </Resolve>
 <Resolve>
-<IRI iri='http://www.example.org/a/b/c/d/'>
-<getRawHost value='www.example.org'/>
+<IRI iri='http://www.example.org./a/b/c/d/'>
+<getRawHost value='www.example.org.'/>
 <getRawPath value='/a/b/c/d/'/>
 <getPort value='-1'/>
 <getRawQuery nullValue='true'/>
 <getScheme value='http'/>
 <getRawUserinfo nullValue='true'/>
 <getRawFragment nullValue='true'/>
-<getASCIIHost value='www.example.org'/>
+<getASCIIHost value='www.example.org.'/>
 <isRootless value='false'/>
-<toString value='http://www.example.org/a/b/c/d/'/>
-<toDisplayString value='‪http://www.example.org/a/b/c/d/‬'/>
+<toString value='http://www.example.org./a/b/c/d/'/>
+<toDisplayString value='‪http://www.example.org./a/b/c/d/‬'/>
 <isAbsolute value='true'/>
 <isRelative value='false'/>
-<toASCIIString value='http://www.example.org/a/b/c/d/'/>
+<toASCIIString value='http://www.example.org./a/b/c/d/'/>
 <violations>
 </violations>
 </IRI>
@@ -838,21 +838,21 @@
 </violations>
 </Relativize>
 </Resolve>
-<IRI iri='http://ex.org/../../c/d/z?x=a'>
-<getRawHost value='ex.org'/>
+<IRI iri='http://ex.org./../../c/d/z?x=a'>
+<getRawHost value='ex.org.'/>
 <getRawPath value='/../../c/d/z'/>
 <getPort value='-1'/>
 <getRawQuery value='x=a'/>
 <getScheme value='http'/>
 <getRawUserinfo nullValue='true'/>
 <getRawFragment nullValue='true'/>
-<getASCIIHost value='ex.org'/>
+<getASCIIHost value='ex.org.'/>
 <isRootless value='false'/>
-<toString value='http://ex.org/../../c/d/z?x=a'/>
-<toDisplayString value='‪http://ex.org/../../c/d/z?x=a‬'/>
+<toString value='http://ex.org./../../c/d/z?x=a'/>
+<toDisplayString value='‪http://ex.org./../../c/d/z?x=a‬'/>
 <isAbsolute value='true'/>
 <isRelative value='false'/>
-<toASCIIString value='http://ex.org/../../c/d/z?x=a'/>
+<toASCIIString value='http://ex.org./../../c/d/z?x=a'/>
 <violations>
 <violation>NON_INITIAL_DOT_SEGMENT</violation>
 </violations>

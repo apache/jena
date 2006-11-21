@@ -12,8 +12,8 @@
 <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/X#bar'/>
 <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/e/f/g/'/>
 <uri base='http://www.example.org/a/b/c/d/' relative='../../c/d/z?x=a'/>
-<uri base='http://www.example.org/a/b/c/d/' relative='http://ex.org/../../c/d/z?x=a'/>
-<uri absolute='http://ex.org/../../c/d/z?x=a'/>
+<uri base='http://www.example.org./a/b/c/d/' relative='http://ex.org/../../c/d/z?x=a'/>
+<uri absolute='http://ex.org./../../c/d/z?x=a'/>
 
 <uri base='http://www.example.org/a/b/c/d/' relative='http://ex.org/c/./d/z?x=a'/>
 

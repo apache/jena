@@ -25,7 +25,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.iri.ViolationCodes;
+import com.hp.hpl.jena.iri.impl.AbsIRIImpl;
 import com.hp.hpl.jena.iri.impl.PatternCompiler;
 
 public class TestMoreExamples extends TestCase implements
@@ -168,9 +170,22 @@ public class TestMoreExamples extends TestCase implements
         methods.put(name,attr2map(attrs));
     }
 
+    private long getViolations() {
+    	long result = 0l;
+    	Iterator it = ((AbsIRIImpl)iri).allViolations();
+        while (it.hasNext()) {
+           result |= (1l<<((Violation)it.next()).getViolationCode());
+                  
+        }
+        return result;
+    }
     public void runTest() {
 //        System.err.println("runTest"+cnt + " " + getName());
        iri = getIRI();
+       
+       
+       assertEquals("violations",violations,getViolations());
+       
        Iterator it = methods.entrySet().iterator();
        while (it.hasNext()) {
            Map.Entry ent = (Map.Entry)it.next();
