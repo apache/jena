@@ -11,6 +11,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXParseException;
 
@@ -25,6 +27,9 @@ import com.hp.hpl.jena.shared.JenaException;
  * 
  */
 public class DOM2Model extends SAX2Model {
+	
+	 static Log logger = LogFactory.getLog(DOM2Model.class) ;
+	   
     /**
      * Create a new DOM2Model.
      * 
@@ -133,7 +138,10 @@ public class DOM2Model extends SAX2Model {
             idTransform.transform(input, output);
         }
         catch (FatalParsingErrorException e) {
-            // ignore this.
+            // Old code ignored this,
+        	// given difficult bug report, don't be silent.
+        	logger.error("Unexpected exception in DOM2Model", e) ;
+            
         } 
         catch (RuntimeException rte) {
             throw rte;
