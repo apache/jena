@@ -5,14 +5,10 @@
 
 package com.hp.hpl.jena.iri.impl;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.ArrayList;
 
-import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.ViolationCodes;
 
 public class ComponentPattern implements ViolationCodes {

@@ -5,11 +5,8 @@
 
 package com.hp.hpl.jena.iri.test;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,14 +16,16 @@ import java.util.Stack;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import junit.framework.*;
-
-import com.hp.hpl.jena.iri.*;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.ViolationCodes;
 import com.hp.hpl.jena.iri.impl.PatternCompiler;
 
 public class TestMoreExamples extends TestCase implements
@@ -223,10 +222,9 @@ public class TestMoreExamples extends TestCase implements
        return result;
     }
     public static TestSuite suite() {
-        TestSuite r;
         try {
             return 
-             r = suitex();
+             suitex();
             
         } catch (SAXException e) {
             e.printStackTrace();

@@ -7,7 +7,6 @@ package com.hp.hpl.jena.iri.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.util.AbstractSet;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;

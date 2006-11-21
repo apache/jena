@@ -5,7 +5,8 @@
 
 package com.hp.hpl.jena.iri.test;
 
-import junit.framework.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.xml.sax.Attributes;
 

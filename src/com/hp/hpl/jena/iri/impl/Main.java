@@ -8,7 +8,6 @@ package com.hp.hpl.jena.iri.impl;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
@@ -52,7 +51,7 @@ public class Main {
                             help();
                             return;
                         }
-                        m.invoke(this, new String[] { args[i + 1] });
+                        m.invoke(this, (Object[])new String[] { args[i + 1] });
                         i++;
 
                     }

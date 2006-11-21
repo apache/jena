@@ -12,16 +12,15 @@
 
 package com.hp.hpl.jena.iri;
 
+import com.hp.hpl.jena.iri.impl.Force;
+import com.hp.hpl.jena.iri.impl.SchemeSpecification;
+import com.hp.hpl.jena.iri.impl.Specification;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo;
-
-import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.InSpec;
+import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromAlso;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromSpec_iri;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromSpec_other;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromSpec_scheme;
-import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromAlso;
-import com.hp.hpl.jena.iri.impl.Specification;
-import com.hp.hpl.jena.iri.impl.SchemeSpecification;
-import com.hp.hpl.jena.iri.impl.Force;
+import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.InSpec;
  
 /**
  * Detailed description of problems detected.
