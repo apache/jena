@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.13 2006-03-22 13:52:47 andy_seaborne Exp $
+  $Id: DBQueryStage.java,v 1.14 2006-11-21 16:24:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -31,11 +31,12 @@ public class DBQueryStage extends Stage
     protected Graph graph;
     protected DBQuery compiled;
             
-	public DBQueryStage( GraphRDB graph, SpecializedGraph sg, 
-					List varList, List dbPat, ExpressionSet constraints )
+	public DBQueryStage
+        ( GraphRDB graph, SpecializedGraph sg, List varList, List dbPat, ExpressionSet constraints )
 		{
 		this.graph = graph;
-		this.compiled = compile (sg, varList, dbPat, constraints);
+		this.compiled = compile ( sg, varList, dbPat, constraints );
+        // System.err.println( ">> " + this.compiled.stmt.toString().replaceAll( " AND ", "\n  AND " ) );
 		}
 
 	protected DBQuery compile( SpecializedGraph sg, List varList, List dbPat, ExpressionSet constraints )
@@ -50,85 +51,101 @@ public class DBQueryStage extends Stage
                  
     private static final DBQueryStageCompiler compiler = new DBQueryStageCompiler();
         
-	protected void run(Pipe source, Pipe sink) {
-		PreparedStatement ps = null;
-		Domain current;
-		Domain useme;
-		IDBConnection conn;
+	protected void run( Pipe source, Pipe sink )
+        {
+        PreparedStatement ps = null;
+        try
+            {
+            if (!compiled.isEmpty) ps = getPreparedStatement();
 
-		ResultSet rs =null;
-		
-		try {
-			if ( !compiled.isEmpty ) try {
-				conn = compiled.driver.getConnection();
-				ps = conn.getConnection().prepareStatement(compiled.stmt);
-			 } catch (Exception e) {
-				 throw new JenaException("Query prepare failed: " + e);
-			 }
-	
-			if ( ps != null) while (source.hasNext()) {
-				current = source.get();
-				setArgs(current, ps);
-	// System.out.println(compiled.stmt);
-				ResultSetIterator it = null;
-				try {
-					it = new ResultSetIterator();
-					ps.execute();
-					rs= ps.getResultSet();
-					it.reset(rs, ps);
-					while (it.hasNext()) {
-						useme = current.copy();
-						List row = (List) it.next();
-						for(int i=0;i<compiled.resList.length;i++) {
-							int j = compiled.resList[i];
-							String o = (String) row.get(i);
-							Node n = compiled.driver.RDBStringToNode(o);
-							useme.setElement(j,n);
-						}
-						sink.put(useme);
-					}
-				} catch (Exception e) {
-					throw new JenaException("Query execute failed: " + e);
-				} finally {
-					if (it != null) it.close();
-				}
-			}
-		}finally {
-			if (rs != null)
-				try {
-					rs.close();
-				} catch (SQLException e1) {
-					throw new RDFRDBException("Failed to get last inserted ID: " + e1);
-				}
-				if ( ps != null ) try {
-					ps.close();
-			} catch (Exception e) {
-				throw new JenaException("Close on prepared stmt failed: " + e);
-			}
-			if ( sink != null) {
-				sink.close();
+            if (ps != null) 
+                while (source.hasNext())
+                    extendSourceBinding( source.get(), sink, ps );
+            }
+        finally
+            {
+            if (ps != null) closePreparedStatement( ps );
+            if (sink != null) sink.close();
+            }
+        }
 
-			}
-		}
-	}
+    private void extendSourceBinding( Domain current, Pipe sink, PreparedStatement ps )
+        {
+        ResultSet rs = null;
+        ResultSetIterator it = null;
+        setArgs( current, ps );
+        // System.out.println( ">> " + compiled.stmt.toString().replaceAll( " AND ", "\n  AND " ) );
+        try
+            {
+            it = new ResultSetIterator();
+            ps.execute();
+            rs = ps.getResultSet();
+            it.reset( rs, ps );
+            while (it.hasNext())
+                {
+                Domain useme = current.copy();
+                List row = (List) it.next();
+                for (int i = 0; i < compiled.resList.length; i++)
+                    {
+                    int j = compiled.resList[i];
+                    String o = (String) row.get( i );
+                    Node n = compiled.driver.RDBStringToNode( o );
+                    useme.setElement( j, n );
+                    }
+                sink.put( useme );
+                }
+            }
+        catch (Exception e)
+            { throw new JenaException( "Query execute failed: " + e ); }
+        finally
+            { 
+            if (it != null) it.close(); 
+            if (rs != null) closeResultSet( rs );
+            }
+        }
+
+    private void closePreparedStatement( PreparedStatement ps )
+        {
+        try { ps.close(); }
+        catch (Exception e)
+            { throw new JenaException( "Close on prepared stmt failed: " + e ); }
+        }
+
+    private void closeResultSet( ResultSet rs )
+        {
+        try { rs.close(); }
+        catch (SQLException e)
+            { throw new RDFRDBException( "Failed to get last inserted ID: "  + e ); }
+        }
+
+    private PreparedStatement getPreparedStatement()
+        {
+        try
+            {
+            IDBConnection conn = compiled.driver.getConnection();
+            return conn.getConnection().prepareStatement( compiled.stmt );
+            }
+        catch (Exception e)
+            { throw new JenaException( "Query prepare failed: " + e ); }
+        }
     	
-    protected void setArgs ( Domain args, PreparedStatement ps ) {
-    	int i, ix;
-    	String val;
-    	Node arg;
-    	try {
-    		for ( i=0;i<compiled.argCnt;i++) {
-    			ix = ((Integer)compiled.argIndex.get(i)).intValue();
-    			arg = (Node) args.get(ix);
-    			if ( arg == null ) throw new JenaException("Null query argument");
-    			val = compiled.driver.nodeToRDBString(arg,false);
-    			ps.setString(i+1, val);	
-    		}
-		} catch (SQLException e) {
-			throw new JenaException( "Bad query argument", e );
-		}
+    protected void setArgs( Domain args, PreparedStatement ps )
+        {
+        try
+            {
+            for (int i = 0; i < compiled.argCnt; i++)
+                {
+                int ix = ((Integer) compiled.argIndex.get( i )).intValue();
+                Node arg = (Node) args.get( ix );
+                if (arg == null) throw new JenaException( "Null query argument" );
+                String val = compiled.driver.nodeToRDBString( arg, false );
+                ps.setString( i + 1, val );
+                }
+            }
+        catch (SQLException e)
+            { throw new JenaException( "Bad query argument", e ); }
 
-    }
+        }
 
     public Pipe deliver( final Pipe result )
         {
