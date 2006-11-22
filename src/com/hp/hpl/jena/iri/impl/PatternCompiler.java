@@ -296,7 +296,7 @@ public class PatternCompiler implements ViolationCodes {
             "([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])") };
 
     static VarPattern regname[] = {
-        new VarPattern("(@{label}\\.)*@{label}"),
+        new VarPattern("(@{label}\\.)*@{label}\\.?"),
         new VarPattern("[^]*", NOT_DNS_NAME), 
     };
 //        new VarPattern("(@{unreserved}|@{pctEncodedHost}|@{subDelims}|@{unwise})*",
