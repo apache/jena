@@ -14,7 +14,7 @@ import com.hp.hpl.jena.iri.impl.Main;
 /**
  * An IRI.
  * The IRI may or may not conform to a variety of standards,
- * {@link IRIConformanceLevels}. Methods allow:
+ * {@link IRIFactory}. Methods allow:
  * <ul>
  * <li>
  *  accessing the

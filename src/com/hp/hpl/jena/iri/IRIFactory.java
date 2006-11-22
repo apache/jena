@@ -63,7 +63,7 @@ import com.hp.hpl.jena.iri.impl.IRIFactoryImpl;
   <ul>
   <li>{@link #allowUnwiseCharacters()}
   <li>{@link #setEncoding(String)}
-  <li>{@link #setSameSchemeRelativeReferences()}
+  <li>{@link #setSameSchemeRelativeReferences(String)}
   </ul>
   <li>Any scheme specific initialization
   <ul>
