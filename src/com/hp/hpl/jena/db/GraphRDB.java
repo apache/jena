@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -179,7 +179,9 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * (May be null, if non-null should be a superset of the properties 
 	 * obtained by calling ModelRDB.getDefaultModelProperties ).
 	 * @param reificationBehaviour specifies how this graph should handle reified triples.
-	 * The options are OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING (strongly recommended), OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS (included only for full compatability with all the options for in-memory Graphs), 
+	 * The options are OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING 
+     * (strongly recommended), OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS 
+     * (included only for full compatability with all the options for in-memory Graphs), 
 	 * OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS (included only for compatability with older jena1-style usage).
 	 *
 	 * @param isNew is true if the graph doesn't already exist and 

@@ -85,8 +85,13 @@ public class DBPattern  {
 	}
 	
 	public boolean hasSource() { return !source.isEmpty(); }
+    
+    /**
+        Answer true iff this pattern [currently] is associated with exactly one source.
+    */
 	public boolean isSingleSource() { return isSingleSource; }
-	public SpecializedGraph singleSource() { return (SpecializedGraph) source.get(0); }
+	
+    public SpecializedGraph singleSource() { return (SpecializedGraph) source.get(0); }
 
 	protected void addFreeVars ( List varList ) {
 		if (freeVarCnt > 0) {

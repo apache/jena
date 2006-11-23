@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.19 2006-11-21 16:24:44 chris-dollin Exp $
+  $Id: DBQueryHandler.java,v 1.20 2006-11-23 18:01:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -29,17 +29,21 @@ public class DBQueryHandler extends SimpleQueryHandler {
 	// e.g., "(ur1 pred1 ?v1) (uri1 pred2 ?v2)" is an implicit join on uri1
 
 	/** make an instance, remember the graph */
-	public DBQueryHandler ( GraphRDB graph ) {
-		super(graph);
-		this.graph = graph;
-		if ( graph.reificationBehavior() == GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING ) {
-			queryFullReif = queryOnlyReif = queryOnlyStmt = false;
-		} else {
-			queryFullReif = queryOnlyReif = false;
-			queryOnlyStmt = true;
-		}
-		doFastpath = true;
-	}
+	public DBQueryHandler( GraphRDB graph )
+        {
+        super( graph );
+        this.graph = graph;
+        if (graph.reificationBehavior() == GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING)
+            {
+            queryFullReif = queryOnlyReif = queryOnlyStmt = false;
+            }
+        else
+            {
+            queryFullReif = queryOnlyReif = false;
+            queryOnlyStmt = true;
+            }
+        doFastpath = true;
+        }
 
 	public void setDoFastpath ( boolean val ) { doFastpath = val; }
 	public boolean getDoFastpath () { return doFastpath; }
@@ -57,13 +61,12 @@ public class DBQueryHandler extends SimpleQueryHandler {
 
     private Stage patternStageWithFullpath( Mapping varMap, ExpressionSet constraints, Triple[] givenTriples )
         {
-        int stageCnt = 0;
+        int stageCount = 0;
         int i;
         final Stage[] stages = new Stage[givenTriples.length];
         List patternsToDo = new ArrayList();
         for (i = 0; i < givenTriples.length; i++) patternsToDo.add( new Integer( i ) );
-        DBPattern[] source = new DBPattern[givenTriples.length];
-        loadDBPatterns( varMap, givenTriples, source );
+        DBPattern[] source = createDBPatterns( varMap, givenTriples );
     //
         while (patternsToDo.size() > 0)
             {
@@ -73,13 +76,13 @@ public class DBQueryHandler extends SimpleQueryHandler {
             List varList = new ArrayList(); // list of VarDesc
             ExpressionSet evalCons = new ExpressionSet(); // constraints
                                                             // to eval
-            List qryPat = new ArrayList(); // list of DBPattern
-            qryPat.add( src );
+            List queryPatterns = new ArrayList(); // list of DBPattern
+            queryPatterns.add( src );
             boolean doQuery = false;
-            boolean didJoin = false;
             // fastpath is only supported for patterns over one table.
             if (src.isSingleSource())
                 {
+                boolean didJoin = false;
                 // see if other patterns can join with it.
                 src.addFreeVars( varList );
                 boolean foundJoin;
@@ -91,7 +94,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
                         DBPattern unstaged = source[((Integer) patternsToDo.get( i )).intValue()];
                         if (unstaged.joinsWith( src, varList, queryOnlyStmt, queryOnlyReif, doImplicitJoin ))
                             {
-                            qryPat.add( unstaged );
+                            queryPatterns.add( unstaged );
                             patternsToDo.remove( i );
                             unstaged.addFreeVars( varList );
                             unstaged.isStaged = true;
@@ -135,15 +138,15 @@ public class DBQueryHandler extends SimpleQueryHandler {
             // hack to handle the case when no graphs match the pattern
             if (doQuery)
                 {
-                stages[stageCnt] = new DBQueryStage( graph,  src.hasSource() ? src.singleSource() : null,  varList, qryPat, evalCons );
+                stages[stageCount] = new DBQueryStage( graph,  src.hasSource() ? src.singleSource() : null,  varList, queryPatterns, evalCons );
                 }
             else
                 {
-                stages[stageCnt] = super.patternStage( varMap, constraints, new Triple[] { src.pattern } );
+                stages[stageCount] = super.patternStage( varMap, constraints, new Triple[] { src.pattern } );
                 }
-            stageCnt++;
+            stageCount += 1;
             }
-        return createDBStage( stages, stageCnt );
+        return createDBStage( stages, stageCount );
         }
 
     /**
@@ -205,35 +208,45 @@ public class DBQueryHandler extends SimpleQueryHandler {
         return src;
         }
 
-    private void loadDBPatterns( Mapping varMap, Triple[] givenTriples, DBPattern[] source )
+    /**
+        Answer an array of database pattern objects, each associated with
+        the specialised graphs that might contain the triples it's trying to
+        match.
+    */
+    private DBPattern[] createDBPatterns( Mapping varMap, Triple[] givenTriples )
         {
-        int i;
+        DBPattern[] source = new DBPattern[givenTriples.length];
         int reifBehavior = graph.reificationBehavior();
-        for (i = 0; i < givenTriples.length; i++)
+        for (int i = 0; i < givenTriples.length; i++)
             {
-            Triple pat = givenTriples[i];
-            DBPattern src = new DBPattern( pat, varMap );
-            Iterator it = graph.getSpecializedGraphs();
-            // find graphs that could match this pattern
-            while (it.hasNext())
-                {
-                SpecializedGraph sg = (SpecializedGraph) it.next();
-                char sub = sg.subsumes( pat, reifBehavior );
-                if (sub == SpecializedGraph.noTriplesForPattern) continue;
-                src.sourceAdd( sg, sub );
-                if (sub == SpecializedGraph.allTriplesForPattern)
-                    {
-                    break;
-                    }
-                }
-            /*
-             * if (!src.hasSource()) throw new RDFRDBException( "Pattern is
-             * not bound by any specialized graph: " + pat);
-             */
+            DBPattern src = new DBPattern( givenTriples[i], varMap );
+            associateWithSources( src, givenTriples[i], reifBehavior );
             source[i] = src;
+            }
+        return source;
+        }
+
+    /**
+        Associate the database pattern <code>src</code> with the sources
+        which might contain triples it would match.
+    */
+    private void associateWithSources( DBPattern src, Triple pat, int reifBehavior )
+        {
+        Iterator it = graph.getSpecializedGraphs();
+        while (it.hasNext())
+            {
+            SpecializedGraph sg = (SpecializedGraph) it.next();
+            char sub = sg.subsumes( pat, reifBehavior );
+            if (sub != SpecializedGraph.noTriplesForPattern) src.sourceAdd( sg, sub );
+            if (sub == SpecializedGraph.allTriplesForPattern) break;
             }
         }
 
+    /**
+        Create and answer a Stage which pluhs together the first
+        <code>numStages</code> elements of the <code>stages</code>
+        array.
+    */
     private Stage createDBStage( final Stage[] stages, final int numStages )
         {
         return new Stage() 
@@ -266,8 +279,9 @@ public class DBQueryHandler extends SimpleQueryHandler {
 	}
 
 	public void setQueryOnlyReified ( boolean opt ) {
+        // System.err.println( ">> setQueryOnlyReified: style of graph is " + graph.getReifier().getStyle() );
 		if ( graph.reificationBehavior() != GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING )
-			throw new JenaException("Reified statements cannot be queried for this model's reification style");
+			throw new JenaException( "Reified statements cannot be queried for this model's reification style: " + graph.getReifier().getStyle() );
 		if ( (opt == true) && (queryOnlyStmt==true) )
 			throw new JenaException("QueryOnlyAsserted and QueryOnlyReif cannot both be true");
 		queryOnlyReif = opt;
@@ -298,12 +312,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
 				Expression l = e.getArg(0);
 				if ( l.isVariable() && vx.var.getName().equals(l.getName()) ) {
 					String f = e.getFun();
-					if ( f.equals(ExpressionFunctionURIs.J_startsWith) ||
-					     f.equals(ExpressionFunctionURIs.J_startsWithInsensitive) ||
-					     f.equals(ExpressionFunctionURIs.J_contains) ||
-					     f.equals(ExpressionFunctionURIs.J_containsInsensitive) ||
-					     f.equals(ExpressionFunctionURIs.J_EndsWith) ||
-					     f.equals(ExpressionFunctionURIs.J_endsWithInsensitive) ) {
+					if ( dbPartiallyHandlesExpression( f ) ) {
 						evalCons.add(e);
 						// for now, constraints must be reevaluated outside the
 						// db engine since the db engine may not fully evaluate
@@ -316,6 +325,20 @@ public class DBQueryHandler extends SimpleQueryHandler {
 		}
 		return res;			
 	}
+
+    /**
+        Answer true if the database makes at least a partial attempt to evaluate
+        this constraint.
+   */
+    private boolean dbPartiallyHandlesExpression( String f )
+        {
+        return f.equals(ExpressionFunctionURIs.J_startsWith) ||
+             f.equals(ExpressionFunctionURIs.J_startsWithInsensitive) ||
+             f.equals(ExpressionFunctionURIs.J_contains) ||
+             f.equals(ExpressionFunctionURIs.J_containsInsensitive) ||
+             f.equals(ExpressionFunctionURIs.J_EndsWith) ||
+             f.equals(ExpressionFunctionURIs.J_endsWithInsensitive);
+        }
 }
 
 /*

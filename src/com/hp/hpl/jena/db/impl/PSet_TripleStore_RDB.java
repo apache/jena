@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.55 2006-03-22 13:52:47 andy_seaborne Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.56 2006-11-23 18:01:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.55 $ on $Date: 2006-03-22 13:52:47 $
+* @version $Revision: 1.56 $ on $Date: 2006-11-23 18:01:18 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -867,6 +867,7 @@ if ( hack != 0 ) {
 		 * @see com.hp.hpl.jena.graphRDB.IPSet#removeStatementsFromDB()
 		 */
 		public void removeStatementsFromDB(IDBID graphID) {
+            // TODO optimise in the case where 
 			String gid = graphID.getID().toString();
 			
 			try {
