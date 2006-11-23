@@ -26,13 +26,11 @@ import com.hp.hpl.jena.util.cache.Cache;
 /** com.hp.hpl.jena.query.util.RelURI
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.7 2006-10-24 12:23:16 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.8 2006-11-23 16:15:50 andy_seaborne Exp $
  */
 
 public class RelURI
 {
-    static private String globalBase = null ;
-    
     public static class JenaURIException extends JenaException
     {
         public JenaURIException(String msg) { super(msg) ; }
@@ -42,6 +40,11 @@ public class RelURI
     {
         public RelativeURIException(String msg) { super(msg) ; }
     }
+    
+    // -- Start of copy from ARQ
+    static private String globalBase = null ;
+    // Spaces are replcaed by this
+    static final String spaceEncoding = "_%20_" ;
     
     static class Fixup
     {
@@ -55,8 +58,9 @@ public class RelURI
             {
                 int i = str.lastIndexOf(' ') ;
                 originalPrefix = str.substring(0, i+1) ;  // Include matched space
-                safeForm = str.replace(' ','_') ;
-                safePrefix = safeForm.substring(0, i+1) ;
+                safeForm = str.replace(" ",spaceEncoding) ;
+                i = safeForm.lastIndexOf(spaceEncoding) ;
+                safePrefix = safeForm.substring(0, i+spaceEncoding.length()) ;
             }
         }
         String getSafe() { return safeForm; }
@@ -64,8 +68,10 @@ public class RelURI
         {
             if ( originalPrefix != null )
             {
-                if ( s.startsWith(safePrefix) )
-                    s = originalPrefix+s.substring(safePrefix.length()) ;
+                //if ( s.startsWith(safePrefix) )
+                if ( s.contains(safePrefix) )
+                    s = s.replace(safePrefix, originalPrefix) ;
+                    //s = originalPrefix+s.substring(safePrefix.length()) ;
             }
             return s ;
         }
@@ -385,8 +391,9 @@ public class RelURI
         {
             return null ;
         }
-
     }
+    // -- End of copy from ARQ
+
 }
 
 class Cache1 implements Cache
