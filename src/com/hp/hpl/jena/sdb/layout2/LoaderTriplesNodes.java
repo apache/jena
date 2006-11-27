@@ -114,7 +114,7 @@ public abstract class LoaderTriplesNodes
     		if (threading && commitThread.isAlive())
     		{
     			queue.put(finishSignal);
-    			while (commitThread.isAlive()) Thread.sleep(10);
+    			commitThread.join();
     		}
 
     		insertTripleLoaderTable.close();
@@ -208,7 +208,7 @@ public abstract class LoaderTriplesNodes
 	    	threadFlushing.set(true);
 	    	try {
 				queue.put(flushSignal);
-				while (threadFlushing.get()) Thread.sleep(10);
+				while (threadFlushing.get()) Thread.yield();
 	    	}
 	    	catch (InterruptedException e)
 	    	{
