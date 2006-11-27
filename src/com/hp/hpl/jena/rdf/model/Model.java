@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.65 2006-09-05 12:15:43 andy_seaborne Exp $
+  $Id: Model.java,v 1.66 2006-11-27 21:56:03 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.65 $Date: 2006/07/17 13:06:44 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.66 $Date: 2006/09/05 12:15:43 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -369,6 +369,7 @@ public interface Model
     Model add( Model m, boolean suppressReifications );
 
 	/** Add the RDF statements from an XML document.
+	 * Uses content negotiation to request appropriate mime types.
 	 *
 	 * <p>See {@link Model} for a description of how to traverse a firewall.</p>
 	 * @return this model
@@ -1014,5 +1015,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.65 2006-09-05 12:15:43 andy_seaborne Exp $
+ * $Id: Model.java,v 1.66 2006-11-27 21:56:03 jeremy_carroll Exp $
  */

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -82,6 +83,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 
     /**
      * Reads from url, using url as base, adding triples to model. 
+     * Uses content negotiation to ask for application/rdf+xml, if available.
      * 
      * @param m
      *            A model to add triples to.
@@ -91,6 +93,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     public void read(Model m, String url) throws JenaException {
         try {
             URLConnection conn = new URL(url).openConnection();
+			conn.setRequestProperty("accept", "application/rdf+xml, application/xml; q=0.8, text/xml; q=0.7, application/rss+xml; q=0.3, */*; q=0.2");
             String encoding = conn.getContentEncoding();
             if (encoding == null)
                 read(m, conn.getInputStream(), url);
@@ -104,15 +107,31 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         }
     }
 
+//    static public void main(String [] a){
+//    	String url = 
+//    		"http://www.bbc.co.uk/portuguese/index.xml";
+////    		"http://jena.sourceforge.net/test/mime/test1";
+//    	try {
+//			URLConnection conn = new URL(url).openConnection();
+//			conn.setRequestProperty("accept", "application/rdf+xml, application/xml, text/xml, */*; q=0.5");
+//			System.err.println(conn.getContentType());
+//		} catch (MalformedURLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//        
+//    }
     /**
      * Converts an ARP literal into a Jena Literal.
      * 
      * @param lit
      *            The ARP literal.
      * @return The Jena Literal.
-     * @deprecated Should never have been public.
      */
-    static public Literal translate(ALiteral lit) {
+    static private Literal translate(ALiteral lit) {
         return new LiteralImpl(lit.toString(), lit.getLang(), lit
                 .isWellFormedXML(), null);
     }
@@ -161,9 +180,8 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @throws JenaException
      *             If r is anonymous, or similarly ill-formed.
      * @return The Jena property.
-     * @deprecated Should never have been public.
      */
-    static public Property translatePred(AResource r) throws JenaException {
+    static private Property translatePred(AResource r) throws JenaException {
         return new PropertyImpl(r.getURI());
     }
 
@@ -447,22 +465,22 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     }
 
 
-    /**
-     * @deprecated Use {@link ParseException#errorCodeName(int)}
-     */
-    static public String errorCodeName(int errNo) {
-        return ParseException.errorCodeName(errNo);
-    }
-
-
-
-
-    /**
-     * @deprecated Use {@link ParseException#errorCode(String)}
-     */
-    static public int errorCode(String upper) {
-        return ParseException.errorCode(upper);
-    }
+//    /**
+//     * @deprecated Use {@link ParseException#errorCodeName(int)}
+//     */
+//    static public String errorCodeName(int errNo) {
+//        return ParseException.errorCodeName(errNo);
+//    }
+//
+//
+//
+//
+//    /**
+//     * @deprecated Use {@link ParseException#errorCode(String)}
+//     */
+//    static public int errorCode(String upper) {
+//        return ParseException.errorCode(upper);
+//    }
     /**
      * Supported proprties: error-mode (String) default, lax, strict,
      * strict-ignore, strict-warning, strict-error, strict-fatal embedding
