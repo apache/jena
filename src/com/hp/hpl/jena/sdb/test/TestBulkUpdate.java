@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 @RunWith(Parameterized.class)
 public class TestBulkUpdate {
 	
-	protected ModelSDB model;
+	protected Model model;
 	
 	@Parameters public static Collection models()
 	{
@@ -40,7 +40,7 @@ public class TestBulkUpdate {
 		return models;
 	}
 	
-	public TestBulkUpdate(ModelSDB model)
+	public TestBulkUpdate(Model model)
 	{
 		this.model = model;
 	}
