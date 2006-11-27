@@ -20,7 +20,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.ModelSDB;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDF;
 
