@@ -7,13 +7,16 @@
 package jena.util;
 import jena.cmdline.* ;
 import com.hp.hpl.jena.db.* ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.ModelMaker;
 //import com.hp.hpl.jena.rdf.model.* ;
 import java.util.* ;
  
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.2 2006-03-22 13:53:39 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.3 2006-11-28 11:41:23 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd
@@ -184,34 +187,49 @@ public abstract class DBcmd
     {
         if ( dbModel == null )
         {
-            try 
+            Model m = makeModel() ;
+            if ( m instanceof ModelRDB )
+                dbModel = (ModelRDB)m ;
+            else
             {
-                
+                System.out.println("Model maker didn't return a ModleRDB: ("+m.getClass()+")") ;
+                System.exit(9) ;
+            }
+        }
+        return dbModel ;   
+    }
+
+    private Model makeModel()
+    {
+        try 
+        {
+            ModelMaker maker = ModelFactory.createModelRDBMaker(getConnection());
+
+            Model model = null ;
             if ( argModelName == null )
-                dbModel = ModelRDB.open(getConnection()) ;
+                model = maker.openModel() ;
             else
                 try {
-                    dbModel = ModelRDB.open(getConnection(), argModelName) ;
+                    model = maker.openModel(argModelName) ;
+
                 } catch (com.hp.hpl.jena.shared.DoesNotExistException ex)
                 {
                     System.out.println("No model '"+argModelName+"' in that database") ;
                     System.exit(9) ;
                 }
-            }
-            catch (com.hp.hpl.jena.db.RDFRDBException dbEx)
-            {
-                Throwable t = dbEx.getCause() ;
-                if ( t == null )
-                    t = dbEx ;
-                System.out.println("Failed to connect to the database: "+t.getMessage()) ;
-                System.exit(9) ;
-            }
+            return model ;
         }
-        
-        return dbModel ;   
+        catch (com.hp.hpl.jena.db.RDFRDBException dbEx)
+        {
+            Throwable t = dbEx.getCause() ;
+            if ( t == null )
+                t = dbEx ;
+            System.out.println("Failed to connect to the database: "+t.getMessage()) ;
+            System.exit(9) ;
+            return null ;
+        }
     }
-
-
+        
     protected IDBConnection getConnection()
     {
         if ( jdbcConnection == null )
