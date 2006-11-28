@@ -50,7 +50,7 @@ public abstract class LoaderTriplesNodes
     final static PreparedTriple finishSignal = new PreparedTriple(); // Signal to thread to finish
     ArrayBlockingQueue<PreparedTriple> queue ; // Pipeline to loader thread
     AtomicReference<Throwable> threadException ; // Placeholder for problems thrown in the thread
-    AtomicBoolean threadFlushing ; // We spin lock on this when flushing (not ideal, but works)
+    Object threadFlushing = new Object(); // We lock on this when flushing
     
     int count;
     int chunkSize = 20000;
@@ -205,10 +205,11 @@ public abstract class LoaderTriplesNodes
 	    {
 			if (!commitThread.isAlive()) throw new SDBException("Thread has died");
 	    	// finish up threaded load
-	    	threadFlushing.set(true);
 	    	try {
-				queue.put(flushSignal);
-				while (threadFlushing.get()) Thread.yield();
+	    		synchronized (threadFlushing) {
+	    			queue.put(flushSignal);
+	    			threadFlushing.wait();
+	    		}
 	    	}
 	    	catch (InterruptedException e)
 	    	{
@@ -526,7 +527,7 @@ public abstract class LoaderTriplesNodes
             		if (triple == flushSignal)
             		{
             			commitTriples(); // force commit
-            			threadFlushing.set(false);
+            			synchronized (threadFlushing) { threadFlushing.notify(); } 
             		}
             		else if (triple == finishSignal)
             		{
