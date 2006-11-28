@@ -8,7 +8,6 @@ package com.hp.hpl.jena.util;
 import java.io.*;
 
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.Charset ;
 
 import org.apache.commons.logging.LogFactory;
@@ -127,41 +126,57 @@ public class FileUtils
         // Pragmatically, a path of "/c:/foo", or "/foo" works everywhere.
         // but not "//c:/foo" or "///c:/foo" 
         // else IKVM thinks its a network path on Windows.
+        
+        // If it's a a file: we apply %-decoding.
+        // If there is no scheme name, we don't.
 
         if ( !isFile(filenameOrURI) )
             return null ;
-
+        // No scheme of file:
         String fn = filenameOrURI ;
 
-        // Looks like an absolute file name ....
-        if ( fn.startsWith("file:///") )
-        {
-            fn = fn.substring("file://".length()) ;
+        if ( ! fn.startsWith("file:") )
             return fn ;
-        }
         
-        if ( fn.startsWith("file://localhost/") )
+        // file:
+        // Convert absolute file names
+        if ( fn.startsWith("file:///") )
+            fn = fn.substring("file://".length()) ;
+        else if ( fn.startsWith("file://localhost/") )
             // NB Leaves the leading slash on. 
-            return fn.substring("file://localhost".length()) ;
-        
-        if ( fn.startsWith("file:") )
+            fn = fn.substring("file://localhost".length()) ;
+        else
+            // Just trim off the file:
             fn = fn.substring("file:".length()) ;
 
-        if ( fn.indexOf("%") > -1 ) 
+        return decode(fn) ;
+    }
+    
+    private static String decode(String s)
+    {
+        if ( s.indexOf('%') < 0 ) 
+            return s ;
+        int len = s.length();
+        StringBuffer sbuff = new StringBuffer(len) ;
+
+        // Just decode % escapes.
+        // Not http://www.daml.org/2001/03/daml+oil
+        for ( int i =0 ; i < len ; i++ )
         {
-            try {
-                fn = URLDecoder.decode(fn,"UTF-8") ;
-            } catch (Exception ex) {}
+            char c = s.charAt(i);
+            switch (c)
+            {
+                case '%':
+                    int codepoint = Integer.parseInt(s.substring(i+1,i+3),16) ;
+                    char ch = (char)codepoint ;
+                    sbuff.append(ch) ;
+                    i = i+2 ;
+                    break ;
+                default:
+                    sbuff.append(c);
+            }
         }
-        
-//        if ( fn.indexOf("%20") > -1 )
-//            fn = fn.replaceAll("%20", " ") ;
-//        
-//        if ( fn.indexOf("%43") > -1 )
-//            fn = fn.replaceAll("%43", "#") ;
-        
-        
-        return fn ;
+        return sbuff.toString();
     }
     
     /** Check whether 'name' is possibly a file reference  
@@ -187,8 +202,6 @@ public class FileUtils
             return true ;
         
         return false ;
-
-        //return name.startsWith("file:") || ! isURI(name) ;
     }
     
     /** Check whether a name is an absolute URI (has a scheme name)
@@ -198,16 +211,12 @@ public class FileUtils
      */
     public static boolean isURI(String name)
     {
-        // Java 1.4+
-//        if ( name.matches("[^/:]*:.*") )
-//            return true ;
-        
         return (getScheme(name) != null) ;
     }
 
     public static String getScheme(String uri)
     {
-        // Nicer in Java 1.4
+        // Find "[^/:]*:.*"
         for ( int i = 0 ; i < uri.length() ; i++ )
         {
             char ch = uri.charAt(i) ;

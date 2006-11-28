@@ -19,7 +19,7 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.11 2006-10-02 13:46:29 chris-dollin Exp $
+ * @version $Id: LocatorFile.java,v 1.12 2006-11-28 13:53:31 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
@@ -105,6 +105,8 @@ public class LocatorFile implements Locator
     
     public InputStream open(String filenameOrURI)
     {
+        // Worry about %20.
+        // toFile calls FileUtils.toFilename(filenameOrURI) ;
         File f = toFile(filenameOrURI) ;
 
         try {

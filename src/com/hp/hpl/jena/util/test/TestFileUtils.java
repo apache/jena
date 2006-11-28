@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestFileUtils.java,v 1.7 2006-03-22 13:53:13 andy_seaborne Exp $
+  $Id: TestFileUtils.java,v 1.8 2006-11-28 13:53:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -117,6 +117,16 @@ public class TestFileUtils extends TestCase
     public void testTranslateFilename9()
     { checkToFilename("file://file", "//file") ; }
 
+    // Don't tranlate:
+    public void testTranslateFilename10()
+    { checkToFilename("Dir/File%20With Enc%21", "Dir/File%20With Enc%21") ; }
+
+    public void testTranslateFilename11()
+    { checkToFilename("Dir/File+With+Plus", "Dir/File+With+Plus") ; }
+    
+    public void testTranslateFilename12()
+    { checkToFilename("file:Dir/File+With+Plus", "Dir/File+With+Plus") ; }
+    
     void isFilename(String fn)
     { assertTrue("Should be a file name : "+fn, FileUtils.isFile(fn)) ; }
     void isNotFilename(String fn)
