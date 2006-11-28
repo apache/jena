@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.8 2006-11-27 21:56:05 jeremy_carroll Exp $
+  $Id: TestModelRead.java,v 1.9 2006-11-28 15:47:12 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -90,10 +90,12 @@ public class TestModelRead extends ModelTestBase
     
     public void testContentNegotiation() {
 		Model m = ModelFactory.createDefaultModel();
+//		Model m2 = ModelFactory.createDefaultModel();
 
 		try {
 			m.read("http://jena.sourceforge.net/test/mime/test1");
 		    assertEquals(m.size(),1);
+//		    m2.read("http://xmlns.com/foaf/0.1/");
 		} catch (JenaException jx) {
 			if (jx.getCause() instanceof NoRouteToHostException
 					|| jx.getCause() instanceof UnknownHostException
