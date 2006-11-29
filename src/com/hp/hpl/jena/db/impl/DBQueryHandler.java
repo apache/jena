@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.20 2006-11-23 18:01:18 chris-dollin Exp $
+  $Id: DBQueryHandler.java,v 1.21 2006-11-29 09:50:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,7 +19,9 @@ import com.hp.hpl.jena.shared.JenaException;
 import java.util.*;
 
 public class DBQueryHandler extends SimpleQueryHandler {
-	/** the Graph this handler is working for */
+	
+
+    /** the Graph this handler is working for */
 	private GraphRDB graph;
 	boolean queryOnlyStmt;  // if true, query only asserted stmt (ignore reification)
 	boolean queryOnlyReif;  // if true, query only reified stmt (ignore asserted)
@@ -45,20 +47,51 @@ public class DBQueryHandler extends SimpleQueryHandler {
         doFastpath = true;
         }
 
-	public void setDoFastpath ( boolean val ) { doFastpath = val; }
-	public boolean getDoFastpath () { return doFastpath; }
-	public void setDoImplicitJoin ( boolean val ) { doImplicitJoin = val; }
+	public void setDoFastpath ( boolean val ) 
+        { doFastpath = val; }
+    
+	public boolean getDoFastpath () 
+        { return doFastpath; }
+	
+    public void setDoImplicitJoin ( boolean val ) 
+        { doImplicitJoin = val; }
 
+    /**
+        Answer a Stage that covers the given triple patterns. This may be a
+        default stage if pastpath is disabled, or a composite database stage
+        if fastpath is enabled. If we're lucky there will be a single database
+        stage if the entire triple pattern can be translated into a single SQL
+        statement.
+    */
 	public Stage patternStage( Mapping varMap, ExpressionSet constraints, Triple[] givenTriples ) 
         {
-        if (doFastpath == false || (givenTriples.length == 1 && !constraints.isComplex()))
-            {
-            return super.patternStage( varMap, constraints, givenTriples );
-            }
-        else
-            return patternStageWithFullpath( varMap, constraints, givenTriples );
+        return avoidFastpath( constraints, givenTriples )
+            ? super.patternStage( varMap, constraints, givenTriples )
+            : patternStageWithFullpath( varMap, constraints, givenTriples )
+            ;
         }
 
+    /**
+     	Answer true iff we should avoid the fastpath code and instead fall back
+        on the default implementation in SimpleQueryHandler. Cases:
+        <ul>
+            <li>doFastPath is false [obviously]
+            <li>givenTriples is empty [establishes a useful invariant]
+            <li>there's just one givenTriple and the constrains are not Complex
+        </ul>
+    */
+    private boolean avoidFastpath( ExpressionSet constraints, Triple[] givenTriples )
+        {
+        return 
+            doFastpath == false
+            || givenTriples.length == 0
+            || (givenTriples.length == 1 && !constraints.isComplex())
+            ;
+        }
+
+    /**
+        <code>givenTriples</code> is not empty.
+    */
     private Stage patternStageWithFullpath( Mapping varMap, ExpressionSet constraints, Triple[] givenTriples )
         {
         int stageCount = 0;
@@ -136,76 +169,53 @@ public class DBQueryHandler extends SimpleQueryHandler {
             else if (!src.hasSource()) 
                 doQuery = true;
             // hack to handle the case when no graphs match the pattern
-            if (doQuery)
-                {
-                stages[stageCount] = new DBQueryStage( graph,  src.hasSource() ? src.singleSource() : null,  varList, queryPatterns, evalCons );
-                }
-            else
-                {
-                stages[stageCount] = super.patternStage( varMap, constraints, new Triple[] { src.pattern } );
-                }
-            stageCount += 1;
+            Stage newStage = doQuery
+                ? new DBQueryStage( graph,  src.hasSource() ? src.singleSource() : null,  varList, queryPatterns, evalCons )
+                : super.patternStage( varMap, constraints, new Triple[] { src.pattern } )
+                ;
+            stages[stageCount++] = newStage;
             }
-        return createDBStage( stages, stageCount );
+        return stageCount == 1 ? stages[0] : new StageSequence( stageCount, stages );
         }
 
     /**
          find the minimum cost pattern ... but always choose a connected
          pattern over a disconnected pattern (to avoid cross-products).
-         if no min cost pattern, take one at random.
-         
-     	@param varMap
-     	@param patternsToDo
-     	@param source
-     	@return
+         There will always be a minimal cost pattern (because <code>sources</code>
+         is never empty).
     */
-    private DBPattern findCheapPattern( Mapping varMap, List patternsToDo, DBPattern[] source )
+    private DBPattern findCheapPattern( Mapping varMap, List patternsToDo, DBPattern[] sources )
         {
-        int i;
-        int minCost;
-        int minConnCost;
-        int cost;
-        DBPattern src;
-        DBPattern minSrc;
-        boolean isConnected;
-        minCost = minConnCost = DBPattern.costMax;
-        isConnected = false;
-        DBPattern unstaged = null;
-        minSrc = null;
-        int minIx = -1;
-        for (i = 0; i < patternsToDo.size(); i++)
+        DBPattern cheapSource = null;
+        boolean haveConnectedPattern = false;
+        int minCost = DBPattern.costMax, minConnCost = DBPattern.costMax;
+        int selectedPatternIndex = -1;
+        for (int i = 0; i < patternsToDo.size(); i++)
             {
-            unstaged = source[((Integer) patternsToDo.get( i )).intValue()];
-            cost = unstaged.cost( varMap );
+            DBPattern unstaged = sources[((Integer) patternsToDo.get( i )).intValue()];
+            int cost = unstaged.cost( varMap );
             if (unstaged.isConnected)
                 {
                 if (cost < minConnCost)
                     {
-                    minSrc = unstaged;
+                    cheapSource = unstaged;
                     minConnCost = cost;
-                    isConnected = true;
-                    minIx = i;
+                    haveConnectedPattern = true;
+                    selectedPatternIndex = i;
                     }
                 }
-            else if ((cost < minCost) && !isConnected)
+            else if (haveConnectedPattern == false && cost < minCost)
                 {
                 minCost = cost;
-                minSrc = unstaged;
-                minIx = i;
+                cheapSource = unstaged;
+                selectedPatternIndex = i;
                 }
             }
-        if (minSrc == null)
-            {
-            src = unstaged;
-            minIx = i - 1;
-            }
-        else
-            {
-            src = minSrc;
-            }
-        src.isStaged = true;
-        patternsToDo.remove( minIx );
-        return src;
+        if (cheapSource == null) 
+            throw new JenaException( "impossible: no cheapest pattern among sources" );
+        cheapSource.isStaged = true;
+        patternsToDo.remove( selectedPatternIndex );
+        return cheapSource;
         }
 
     /**
@@ -240,30 +250,6 @@ public class DBQueryHandler extends SimpleQueryHandler {
             if (sub != SpecializedGraph.noTriplesForPattern) src.sourceAdd( sg, sub );
             if (sub == SpecializedGraph.allTriplesForPattern) break;
             }
-        }
-
-    /**
-        Create and answer a Stage which pluhs together the first
-        <code>numStages</code> elements of the <code>stages</code>
-        array.
-    */
-    private Stage createDBStage( final Stage[] stages, final int numStages )
-        {
-        return new Stage() 
-            {
-            public Stage connectFrom( Stage s )
-                {
-                for (int i = 0; i < numStages; i += 1)
-                    {
-                    stages[i].connectFrom( s );
-                    s = stages[i];
-                    }
-                return super.connectFrom( s );
-                }
-
-            public Pipe deliver( Pipe L )
-                { return stages[numStages - 1].deliver( L );  }
-            };
         }
 	
 	// getters/setters for query handler options
@@ -338,6 +324,32 @@ public class DBQueryHandler extends SimpleQueryHandler {
              f.equals(ExpressionFunctionURIs.J_containsInsensitive) ||
              f.equals(ExpressionFunctionURIs.J_EndsWith) ||
              f.equals(ExpressionFunctionURIs.J_endsWithInsensitive);
+        }
+    
+    protected static final class StageSequence extends Stage
+        {
+        private final int numStages;
+    
+        private final Stage[] stages;
+    
+        protected StageSequence( int numStages, Stage[] stages )
+            {
+            this.numStages = numStages;
+            this.stages = stages;
+            }
+    
+        public Stage connectFrom( Stage s )
+            {
+            for (int i = 0; i < numStages; i += 1)
+                {
+                stages[i].connectFrom( s );
+                s = stages[i];
+                }
+            return super.connectFrom( s );
+            }
+    
+        public Pipe deliver( Pipe L )
+            { return stages[numStages - 1].deliver( L );  }
         }
 }
 

@@ -6,8 +6,9 @@
 package com.hp.hpl.jena.graph;
 
 /**
-    A Node_ANY (there should be only one) is a meta-node that is used to stand
-    for any other node in a query.
+    The Highlander Node_NULL exists for the database code (as a Node that
+    coresponds to a null in database tables for the reification code).
+    
     @author kers
 */
 
