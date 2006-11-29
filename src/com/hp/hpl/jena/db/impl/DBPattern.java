@@ -128,28 +128,49 @@ public class DBPattern  {
 		}
 		var.setListing(i);
 	}
-	
-	public boolean joinsWith ( DBPattern jsrc, List varList, boolean onlyStmt, boolean onlyReif, boolean implJoin ) {
-		// currently, we can only join over the same table.
-		// and, in general, we can't join if the pattern has a predicate variable.
-		// but, if we are only querying asserted stmts and the pattern is
-		// over asserted stmts, we can do the join.
-		if ( jsrc.isSingleSource() && source.contains(jsrc.source.get(0)) && 
-			( !(P instanceof Free) || (onlyStmt && isStmt) ) ) {
-			// jsrc has same source. look for a join variables
-			if ( (S instanceof Free) && (findVar(varList,((Free)S).var()) >= 0) )
-					return true;
-			if ( (O instanceof Free) && (findVar(varList,((Free)O).var()) >= 0) )
-					return true;
-			if ( onlyStmt && isStmt && (P instanceof Free) &&
-					(findVar(varList,((Free)P).var()) >= 0) )
-						return true;
-			if ( implJoin && (S instanceof Fixed) && (jsrc.S instanceof Fixed)
-					&& S.match((Domain)null,jsrc.S.asNodeMatch((Domain)null)   ) )
-				return true;
-		}
-		return false;
-	}
+
+    /**
+        currently, we can only join over the same table, and, in general, we 
+        can't join if the pattern has a predicate variable -- but, if we are only 
+        querying asserted stmts and the pattern is over asserted stmts, we can 
+        do the join.
+    */
+	public boolean joinsWith
+        ( DBPattern other, List varList, boolean onlyStmt, boolean onlyReif, boolean implicitJoin )
+        {
+        boolean includesSource = other.isSingleSource() && source.contains( other.source.get( 0 ) );
+        boolean newSourceTest = source.containsAll( other.source );
+        // if (includesSource != newSourceTest) System.err.println( ">> old source test: " + includesSource + ", but new source test: " + newSourceTest );
+        if (includesSource && (!(P instanceof Free) || (onlyStmt && isStmt)))
+            { // other has same source. See if there's a join variable.
+            return 
+                appearsIn( S, varList ) 
+                || appearsIn( O, varList )
+                || (onlyStmt && isStmt && appearsIn( P, varList )) 
+                || (implicitJoin && shareFixedSubject( other )) 
+                ;
+            }
+        return false;
+        }
+
+    private boolean shareFixedSubject( DBPattern other )
+        { // Yukk.
+        boolean originalDefinition = 
+            S instanceof Fixed
+            && other.S instanceof Fixed
+            && S.match( (Domain) null, other.S.asNodeMatch( (Domain) null ) )
+            ;
+        return 
+            originalDefinition;
+        }
+
+    /**
+     	Answer true iff <code>e</code> is a free variable that appears in
+        <code>varList</code>.
+    
+    */
+    private boolean appearsIn( Element e, List varList )
+        { return e instanceof Free && findVar( varList, ((Free) e).var() ) >= 0; }
 	
     
 	/**

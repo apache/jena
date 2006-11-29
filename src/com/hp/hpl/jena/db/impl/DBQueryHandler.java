@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.21 2006-11-29 09:50:15 chris-dollin Exp $
+  $Id: DBQueryHandler.java,v 1.22 2006-11-29 15:08:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -94,9 +94,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
     */
     private Stage patternStageWithFullpath( Mapping varMap, ExpressionSet constraints, Triple[] givenTriples )
         {
-        int stageCount = 0;
         int i;
-        final Stage[] stages = new Stage[givenTriples.length];
+        List stages = new ArrayList();
         List patternsToDo = new ArrayList();
         for (i = 0; i < givenTriples.length; i++) patternsToDo.add( new Integer( i ) );
         DBPattern[] source = createDBPatterns( varMap, givenTriples );
@@ -111,37 +110,18 @@ public class DBQueryHandler extends SimpleQueryHandler {
                                                             // to eval
             List queryPatterns = new ArrayList(); // list of DBPattern
             queryPatterns.add( src );
-            boolean doQuery = false;
+            boolean pushQueryIntoSQL = false;
             // fastpath is only supported for patterns over one table.
             if (src.isSingleSource())
                 {
-                boolean didJoin = false;
-                // see if other patterns can join with it.
                 src.addFreeVars( varList );
-                boolean foundJoin;
-                do
-                    {
-                    foundJoin = false;
-                    for (i = 0; i < patternsToDo.size(); i++)
-                        {
-                        DBPattern unstaged = source[((Integer) patternsToDo.get( i )).intValue()];
-                        if (unstaged.joinsWith( src, varList, queryOnlyStmt, queryOnlyReif, doImplicitJoin ))
-                            {
-                            queryPatterns.add( unstaged );
-                            patternsToDo.remove( i );
-                            unstaged.addFreeVars( varList );
-                            unstaged.isStaged = true;
-                            foundJoin = didJoin = true;
-                            }
-                        }
-                    }
-                while (foundJoin && patternsToDo.size() > 0);
+                boolean didJoin = attemptJoiningOthers( patternsToDo, source, src, varList, queryPatterns );
                 // push down query if (1) there is a join OR if
                 // (2) there is no join but there is a constraint to 
                 // eval on a single pattern.
                 // see if any constraints can be pushed down
                 if (didJoin) 
-                    doQuery = true;
+                    pushQueryIntoSQL = true;
                 else
                     {
                     for (i = 0; i < varList.size(); i++)
@@ -151,11 +131,11 @@ public class DBQueryHandler extends SimpleQueryHandler {
                         // if so, push down constraint.
                         /*/ UNCOMMENT THE LINES BELOW TO ENABLE CONSTRAINT EVALUATION WITHIN THE DB. */
                         if ((vx.isArgVar == false) && findConstraints( constraints, evalCons, vx )) 
-                            doQuery = true;
+                            pushQueryIntoSQL = true;
                         /* UNCOMMENT THE LINES ABOVE TO ENABLE CONSTRAINT EVALUATION WITHIN THE DB. */
                         }
                     }
-                if (doQuery)
+                if (pushQueryIntoSQL)
                     {
                     // add result vars to reslist for query
                     for (i = 0; i < varList.size(); i++)
@@ -167,15 +147,49 @@ public class DBQueryHandler extends SimpleQueryHandler {
 
                 }
             else if (!src.hasSource()) 
-                doQuery = true;
+                pushQueryIntoSQL = true;
             // hack to handle the case when no graphs match the pattern
-            Stage newStage = doQuery
+            Stage newStage = pushQueryIntoSQL
                 ? new DBQueryStage( graph,  src.hasSource() ? src.singleSource() : null,  varList, queryPatterns, evalCons )
                 : super.patternStage( varMap, constraints, new Triple[] { src.pattern } )
                 ;
-            stages[stageCount++] = newStage;
+            // stages[stageCount++] = newStage;
+            stages.add( newStage );
             }
-        return stageCount == 1 ? stages[0] : new StageSequence( stageCount, stages );
+        return stages.size() == 1 ? (Stage) stages.get(0) : new StageSequence( stages );
+        }
+
+    /**
+     	@param patternsToDo
+     	@param source
+     	@param src
+     	@param varList
+     	@param queryPatterns
+     	@return
+    */
+    private boolean attemptJoiningOthers( List patternsToDo, DBPattern[] source, DBPattern src, List varList, List queryPatterns )
+        {
+        boolean didJoin = false;
+        // see if other patterns can join with it.
+        while (true)
+            {
+            boolean foundJoin = false;
+            for (int i = 0; i < patternsToDo.size(); i++)
+                {
+                DBPattern candidate = source[((Integer) patternsToDo.get( i )).intValue()];
+                if (candidate.joinsWith( src, varList, queryOnlyStmt, queryOnlyReif, doImplicitJoin ))
+                    {
+                    queryPatterns.add( candidate );
+                    patternsToDo.remove( i );
+                    candidate.addFreeVars( varList );
+                    candidate.isStaged = true;
+                    foundJoin = didJoin = true;
+                    }
+                }
+            if (foundJoin == false || patternsToDo.size() == 0) break;
+            }
+        // while (foundJoin && patternsToDo.size() > 0);
+        return didJoin;
         }
 
     /**
@@ -250,6 +264,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
             if (sub != SpecializedGraph.noTriplesForPattern) src.sourceAdd( sg, sub );
             if (sub == SpecializedGraph.allTriplesForPattern) break;
             }
+//        if (src.source.size() == 0) 
+//            { System.err.println( ">> how strange: the triple " + pat + " has no sources in this " + graph.getReifier().getStyle() + " graph" ); }
         }
 	
 	// getters/setters for query handler options
@@ -332,10 +348,10 @@ public class DBQueryHandler extends SimpleQueryHandler {
     
         private final Stage[] stages;
     
-        protected StageSequence( int numStages, Stage[] stages )
+        protected StageSequence( List stages )
             {
-            this.numStages = numStages;
-            this.stages = stages;
+            this.numStages = stages.size();
+            this.stages = (Stage []) stages.toArray( new Stage[this.numStages] );
             }
     
         public Stage connectFrom( Stage s )
