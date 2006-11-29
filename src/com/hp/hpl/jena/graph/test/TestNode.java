@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.43 2006-08-23 13:19:07 andy_seaborne Exp $
+  $Id: TestNode.java,v 1.44 2006-11-29 11:39:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -81,6 +81,14 @@ public class TestNode extends GraphTestBase
         assertFalse( "ANY nodes aren't variables", Node.ANY.isVariable() );
         assertFalse( "ANY nodes aren't blank", Node.ANY.isBlank() );
         assertFalse( "ANY nodes aren't blank", Node.ANY.isBlank() );
+        }
+    
+    public void testNodeVariableConstructor()
+        {
+        assertEquals( Node.createVariable( "hello" ), new Node_Variable( "hello" ) );
+        assertEquals( Node.createVariable( "world" ), new Node_Variable( "world" ) );
+        assertDiffer( Node.createVariable( "hello" ), new Node_Variable( "world" ) );
+        assertEquals( "myName", new Node_Variable( "myName" ).getName() );
         }
         
     /**
