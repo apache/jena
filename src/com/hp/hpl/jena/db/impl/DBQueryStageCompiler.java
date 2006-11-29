@@ -34,24 +34,22 @@ public final class DBQueryStageCompiler
         to compile an array of triples, compile each triple and form the corresponding
         array of Patterns. *preserve the order*. 
     */  
-    public static DBQuery compile( DBQueryStageCompiler compiler, DBQueryHandler qh, SpecializedGraph sg,
+    public static DBQuery compile
+        ( DBQueryStageCompiler compiler, DBQueryHandler qh, SpecializedGraph sg,
     		List varList, List dbPat, ExpressionSet constraints )
         {
-        DBQuery query = new DBQuery(sg,varList,qh.queryOnlyStmt,
-        		qh.queryOnlyReif,qh.queryFullReif);
-        int j;
+        DBQuery query = new DBQuery( sg,varList,qh.queryOnlyStmt, qh.queryOnlyReif,qh.queryFullReif );
         if ( qh.getQueryOnlyReified() && !qh.getQueryFullReified() )
         	throw new JenaException("Fastpath currently requires QueryFullReified to be true if QueryOnlyReified is also true");
-        if ( !query.isEmpty ) {
-        	for (int i = 0; i < dbPat.size(); i += 1) {
-				compilePattern (compiler, query, (DBPattern) dbPat.get(i));
-        	}
-			compileConstraints (compiler, query, constraints);
-			compileQuery (compiler, query);
-        }
+        if (!query.isEmpty) 
+            {
+        	for (int i = 0; i < dbPat.size(); i += 1) compilePattern ( compiler, query, (DBPattern) dbPat.get(i) );
+            compileConstraints( compiler, query, constraints );
+			compileQuery( compiler, query );
+            }
         if (logger.isDebugEnabled()) logger.debug( "generated SQL: " + query.stmt );
         return query;
-    }
+        }
        
     
 	/**

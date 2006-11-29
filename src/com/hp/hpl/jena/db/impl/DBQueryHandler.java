@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.22 2006-11-29 15:08:46 chris-dollin Exp $
+  $Id: DBQueryHandler.java,v 1.23 2006-11-29 16:23:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -182,7 +182,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
                     queryPatterns.add( candidate );
                     patternsToDo.remove( i );
                     candidate.addFreeVars( varList );
-                    candidate.isStaged = true;
+                    candidate.setBusy();
                     foundJoin = didJoin = true;
                     }
                 }
@@ -208,7 +208,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
             {
             DBPattern unstaged = sources[((Integer) patternsToDo.get( i )).intValue()];
             int cost = unstaged.cost( varMap );
-            if (unstaged.isConnected)
+            if (unstaged.isConnected())
                 {
                 if (cost < minConnCost)
                     {
@@ -227,7 +227,7 @@ public class DBQueryHandler extends SimpleQueryHandler {
             }
         if (cheapSource == null) 
             throw new JenaException( "impossible: no cheapest pattern among sources" );
-        cheapSource.isStaged = true;
+        cheapSource.setBusy();
         patternsToDo.remove( selectedPatternIndex );
         return cheapSource;
         }
@@ -239,15 +239,18 @@ public class DBQueryHandler extends SimpleQueryHandler {
     */
     private DBPattern[] createDBPatterns( Mapping varMap, Triple[] givenTriples )
         {
-        DBPattern[] source = new DBPattern[givenTriples.length];
+        DBPattern[] sources = new DBPattern[givenTriples.length];
         int reifBehavior = graph.reificationBehavior();
-        for (int i = 0; i < givenTriples.length; i++)
-            {
-            DBPattern src = new DBPattern( givenTriples[i], varMap );
-            associateWithSources( src, givenTriples[i], reifBehavior );
-            source[i] = src;
-            }
-        return source;
+        for (int i = 0; i < givenTriples.length; i += 1)
+            sources[i] = createInitialPattern( varMap, reifBehavior, givenTriples[i] );
+        return sources;
+        }
+
+    private DBPattern createInitialPattern( Mapping varMap, int reifBehavior, Triple triple )
+        {
+        DBPattern src = new DBPattern( triple, varMap );
+        associateWithSources( src, triple, reifBehavior );
+        return src;
         }
 
     /**
@@ -264,10 +267,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
             if (sub != SpecializedGraph.noTriplesForPattern) src.sourceAdd( sg, sub );
             if (sub == SpecializedGraph.allTriplesForPattern) break;
             }
-//        if (src.source.size() == 0) 
-//            { System.err.println( ">> how strange: the triple " + pat + " has no sources in this " + graph.getReifier().getStyle() + " graph" ); }
         }
-	
+    
 	// getters/setters for query handler options
 
 	public void setQueryOnlyAsserted ( boolean opt ) {

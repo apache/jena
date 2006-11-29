@@ -18,37 +18,50 @@ import com.hp.hpl.jena.graph.query.Element;
 import com.hp.hpl.jena.graph.query.Fixed;
 import com.hp.hpl.jena.graph.query.Mapping;
 import com.hp.hpl.jena.graph.query.Query;
+import com.hp.hpl.jena.shared.BrokenException;
 
-
-public class DBPattern  {
-	Triple pattern;
-	Element S;
-	Element P;
-	Element O;
-	int Scost, Pcost, Ocost;
-	boolean isStaged;
-	boolean isConnected;  // pattern can be joined to previously staged pattern for this query.
-	boolean isSingleSource;  // pattern has just one data source (specialized graph)
-	boolean isStmt;  // pattern is over only asserted statement tables (no reified)
-	boolean isReif;  // pattern is over only reified statement tables (no asserted)
-	List source; // specialized graphs with triples for this pattern
-	char subsumed;
+public class DBPattern  
+    {
+    final Triple pattern;
+    final Element S;
+    final Element P;
+    final Element O;
+	
+    private int Scost, Pcost, Ocost;
+	
+    private boolean isBusy;
+    
+	private boolean isConnected;  // pattern can be joined to previously staged pattern for this query.
+	
+    private boolean isStmt;  // pattern is over only asserted statement tables (no reified)
+	private boolean isReif;  // pattern is over only reified statement tables (no asserted)
+    
+	private List sources; // specialized graphs with triples for this pattern
+	
+    private char subsumed;
 	
 	public DBPattern ( Triple pat, Mapping varMap ) {
 		pattern = pat;
-		source = new ArrayList();
-		isStaged = false;
+		sources = new ArrayList();
+		isBusy = false;
 		isConnected = false;
-		isSingleSource = false;
 		isStmt = isReif = false;
-		S = nodeToElement(pattern.getSubject(), varMap);
-		P = nodeToElement(pattern.getPredicate(), varMap);
-		O = nodeToElement(pattern.getObject(), varMap);
+		S = nodeToElement( pattern.getSubject(), varMap );
+		P = nodeToElement( pattern.getPredicate(), varMap );
+		O = nodeToElement( pattern.getObject(), varMap );
 		Scost = elementCost(S);
 		Pcost = elementCost(P);
 		Ocost = elementCost(O);
 	}
-	
+
+    public void setBusy()
+        { // pro tem, in case the old `isStaged` actually still meant something
+        if (isBusy) throw new BrokenException( "a DBPattern can be made busy at most once" );
+        isBusy = true;
+        }
+    
+    public boolean isConnected()
+        { return isConnected; }
 	/**
 		this nodeToElement is pretty much identical to that of
 		graph.query.patternstagecompiler.compile.
@@ -68,30 +81,33 @@ public class DBPattern  {
 		}
 
 	
-	public void sourceAdd ( SpecializedGraph sg, char sub ) {
-		if ( source.isEmpty() ) {
-			subsumed = sub;
-			isSingleSource = true;
-			if ( sg instanceof SpecializedGraphReifier_RDB ) isReif = true;
-			else isStmt = true;
-		} else {
-			if ( subsumed != sub )
-				throw new RDFRDBException("Specialized graphs incorrectly subsume pattern");			
-			isSingleSource = false;
-			if ( sg instanceof SpecializedGraphReifier_RDB ) isStmt = false;
-			else isReif = false;
-		}
-		source.add(sg);
-	}
+	public void sourceAdd( SpecializedGraph sg, char sub )
+        {
+        if (sources.isEmpty())
+            {
+            subsumed = sub;
+            if (sg instanceof SpecializedGraphReifier_RDB) isReif = true;
+            else isStmt = true;
+            }
+        else
+            {
+            if (subsumed != sub) throw new RDFRDBException( "Specialized graphs incorrectly subsume pattern" );
+            if (sg instanceof SpecializedGraphReifier_RDB) isStmt = false;
+            else isReif = false;
+            }
+        sources.add( sg );
+        }
 	
-	public boolean hasSource() { return !source.isEmpty(); }
+	public boolean hasSource() 
+        { return sources.size() > 0; }
     
     /**
         Answer true iff this pattern [currently] is associated with exactly one source.
     */
-	public boolean isSingleSource() { return isSingleSource; }
+	public boolean isSingleSource() 
+        { return sources.size() == 1; }
 	
-    public SpecializedGraph singleSource() { return (SpecializedGraph) source.get(0); }
+    public SpecializedGraph singleSource() { return (SpecializedGraph) sources.get(0); }
 
 	protected void addFreeVars ( List varList ) {
 		if (freeVarCnt > 0) {
@@ -105,11 +121,9 @@ public class DBPattern  {
 	}
 	
 	private int findVar ( List varList, Node_Variable var ) {
-		int i;
-		for ( i=0; i<varList.size(); i++ ) {
+		for (int i = 0; i < varList.size(); i += 1 ) {
 			Node_Variable v = ((VarDesc) varList.get(i)).var;
-			if ( var.equals(v) )
-				return i;
+			if (var.equals( v )) return i;
 		}
 		return -1;		
 	}
@@ -138,8 +152,8 @@ public class DBPattern  {
 	public boolean joinsWith
         ( DBPattern other, List varList, boolean onlyStmt, boolean onlyReif, boolean implicitJoin )
         {
-        boolean includesSource = other.isSingleSource() && source.contains( other.source.get( 0 ) );
-        boolean newSourceTest = source.containsAll( other.source );
+        boolean includesSource = other.isSingleSource() && sources.contains( other.sources.get( 0 ) );
+        boolean newSourceTest = sources.containsAll( other.sources );
         // if (includesSource != newSourceTest) System.err.println( ">> old source test: " + includesSource + ", but new source test: " + newSourceTest );
         if (includesSource && (!(P instanceof Free) || (onlyStmt && isStmt)))
             { // other has same source. See if there's a join variable.
@@ -167,12 +181,10 @@ public class DBPattern  {
     /**
      	Answer true iff <code>e</code> is a free variable that appears in
         <code>varList</code>.
-    
     */
     private boolean appearsIn( Element e, List varList )
         { return e instanceof Free && findVar( varList, ((Free) e).var() ) >= 0; }
 	
-    
 	/**
 	 * Return the relative cost of evaluating the pattern with the current.
 	 * @return the relative cost.
@@ -199,12 +211,11 @@ public class DBPattern  {
 	private int freeVarCnt = 0;
 	
 	protected boolean isArgCheck ( Free v, Mapping map ) {
-		int ix;
-		ix = map.lookUp(v.var());
+		int ix = map.lookUp( v.var() );
 		if ( ix >= 0 ) {
-			v.setIsArg(ix);
+			v.setIsArg( ix );
 			isConnected = true;
-			freeVarCnt--;
+			freeVarCnt -= 1;
 			return true;
 		} else
 			return false;
@@ -257,7 +268,6 @@ public class DBPattern  {
 	private int costCalc() {
 		return Scost+Pcost+Ocost;
 	}
-
 }
 
 /*
