@@ -7,10 +7,7 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +36,7 @@ import oracle.jdbc.OracleDatabaseMetaData;
  */
    public class Driver_Oracle extends DriverRDB {
 
-// <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
+//* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
 	
 	public interface BLOB extends java.sql.Blob {
 		OutputStream getBinaryOutputStream();
@@ -243,9 +240,11 @@ import oracle.jdbc.OracleDatabaseMetaData;
 			int argi = 1;
 			boolean save = m_dbcon.getConnection().getAutoCommit();
 			
-			String opname = (lobj.tail.length() > 0) ? "insertLongObjectEmptyTail" : "insertLongObject";    			
+            // Change in Jena 2.5 - insertLongObjectNoTail (was insertLongObject)
+            // Remove these comments after testing and release of 2.5.
+			String opname = (lobj.tail.length() > 0) ? "insertLongObjectEmptyTail" : "insertLongObjectNoTail";    			
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, table);
-			int dbid = 0; // init only needed to satisy java compiler
+			int dbid = 0; // init only needed to satisfy java compiler
 			if ( PRE_ALLOCATE_ID ) {
 				dbid = getInsertID(table);
 				ps.setInt(argi++,dbid);
@@ -275,9 +274,9 @@ import oracle.jdbc.OracleDatabaseMetaData;
 				int size = blob.getBufferSize();
 	
 				int length = -1;
-//				InputStream instream = new StringBufferInputStream(lobj.tail);
+				//InputStream instream = new StringBufferInputStream(lobj.tail);
                 InputStream instream = new ByteArrayInputStream(lobj.tail.getBytes("UTF-8"));
-                
+		
 				//		Buffer to hold chunks of data to being written to the Blob.        
 				byte[] buffer = new byte[size];
 		

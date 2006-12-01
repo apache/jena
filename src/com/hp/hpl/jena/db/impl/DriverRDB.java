@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.62 $ on $Date: 2006-11-15 14:52:12 $
+* @version $Revision: 1.63 $ on $Date: 2006-12-01 16:54:56 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -219,7 +219,7 @@ public abstract class DriverRDB implements IRDBDriver {
    /** Database layout version */
    protected String LAYOUT_VERSION = "2.0";
    
-   protected static Log logger = LogFactory.getLog( PSet_ReifStore_RDB.class );
+   protected static Log logger = LogFactory.getLog( DriverRDB.class );
     
 // =======================================================================
 //	Instance variables
@@ -445,13 +445,17 @@ public abstract class DriverRDB implements IRDBDriver {
 				// The following call constructs a new set of database
 				// properties and
 				// adds them to the m_sysProperties specialized graph.
-				m_dbProps = new DBPropDatabase(m_sysProperties, m_dbcon
-						.getDatabaseType(), VERSION, LAYOUT_VERSION, String
-						.valueOf(LONG_OBJECT_LENGTH), String
-						.valueOf(INDEX_KEY_LENGTH), String.valueOf(IS_XACT_DB),
-						String.valueOf(URI_COMPRESS), String
-								.valueOf(URI_COMPRESS_LENGTH),
-						TABLE_NAME_PREFIX);
+                
+                // Ugh: m_dbcon.getDatabaseType(), not this.getDatabaseType()
+				m_dbProps = new DBPropDatabase(m_sysProperties,
+                                               m_dbcon.getDatabaseType(),
+                                               VERSION, LAYOUT_VERSION,
+                                               String.valueOf(LONG_OBJECT_LENGTH),
+                                               String.valueOf(INDEX_KEY_LENGTH),
+                                               String.valueOf(IS_XACT_DB),
+                                               String.valueOf(URI_COMPRESS), 
+                                               String.valueOf(URI_COMPRESS_LENGTH),
+                                               TABLE_NAME_PREFIX);
 
 				// Now we also need to construct the parameters that will be the
 				// default settings for any graph added to this database
@@ -850,16 +854,23 @@ public abstract class DriverRDB implements IRDBDriver {
 		boolean[] found = new boolean[SYSTEM_TABLE_CNT];
 		int i = 0;
 		for (i = 0; i < SYSTEM_TABLE_CNT; i++) found[i] = false;
-		ResultSet alltables = null;
+		//ResultSet alltables = null;
 		try {
 			// check that all required system tables exist
-			alltables = getAllTables();
-			while (alltables.next()) {
-				String tblName = alltables.getString("TABLE_NAME");
-				for (i = 0; i < SYSTEM_TABLE_CNT; i++)
-					if (SYSTEM_TABLE_NAME[i].equals(tblName))
-						found[i] = true;
+//			alltables = getAllTables();
+//			while (alltables.next()) {
+//				String tblName = alltables.getString("TABLE_NAME");
+//				for (i = 0; i < SYSTEM_TABLE_CNT; i++)
+//					if (SYSTEM_TABLE_NAME[i].equals(tblName))
+//						found[i] = true;
+            for ( Iterator iter = getAllTables().iterator() ; iter.hasNext(); )
+            {
+                String tblName = (String)iter.next();
+                for (i = 0; i < SYSTEM_TABLE_CNT; i++)
+                    if (SYSTEM_TABLE_NAME[i].equals(tblName))
+                        found[i] = true;
 			}
+            
 			for (i = 0; i < SYSTEM_TABLE_CNT; i++) {
 				if (!found[i]) {
 					// mutex table is not required
@@ -872,15 +883,16 @@ public abstract class DriverRDB implements IRDBDriver {
 			// An exception might be an unformatted or corrupt
 			// db or a connection problem.
 			throw new RDFRDBException("Exception while checking db format - " + e1, e1);
-		}finally {
-			try {
-				if(alltables!=null) {
-					alltables.close();
-				}
-			}catch(SQLException e) {
-				throw new RDFRDBException("Exception while checking db format - " + e, e);
-			}
 		}
+//        finally {
+//			try {
+//				if(alltables!=null) {
+//					alltables.close();
+//				}
+//			}catch(SQLException e) {
+//				throw new RDFRDBException("Exception while checking db format - " + e);
+//			}
+//		}
 		return result;
 	}
 	
@@ -1008,49 +1020,46 @@ public abstract class DriverRDB implements IRDBDriver {
 			"Exception when checking for database lock - \n"
 			+ e);
 		}
-		ResultSet alltables=null;
+		//ResultSet alltables=null;
 		try {
-			alltables = getAllTables();
-			List tablesPresent = new ArrayList(10);
-			while (alltables.next()) {
-				tablesPresent.add(alltables.getString("TABLE_NAME"));
-			}
-			Iterator it = tablesPresent.iterator();
-			while (it.hasNext()) {
-				String tblName = (String) it.next();
-				if ( tblName.equals(MUTEX_TABLE) && (dropMutex == false) )
-					continue;
-				m_sql.runSQLGroup("dropTable", tblName);
-			}
-			if (PRE_ALLOCATE_ID) {
-				clearSequences();
-			}
+            List tablesPresent = getAllTables() ; 
+            Iterator it = tablesPresent.iterator();            
+            // Do the MUTEX clean after all other tables.
+            while (it.hasNext()) {
+                String tblName = (String) it.next();
+                if ( tblName.equals(MUTEX_TABLE) )
+                    continue;
+                m_sql.runSQLGroup("dropTable", tblName);
+            }
+            
+            // Mutex to be removed as well?
+            if ( dropMutex && tablesPresent.contains(MUTEX_TABLE) )
+                m_sql.runSQLGroup("dropTable", MUTEX_TABLE);
+
+            if (PRE_ALLOCATE_ID)
+                clearSequences();
+            
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal error in driver while cleaning database\n"
 					+ "(" + e1 + ").\n"
 					+ "Database may be corrupted. Try cleanDB() again.");
 		}
-		finally {
-			try {
-				if(alltables!=null) {
-					alltables.close();
-				}
-				}catch(SQLException e) {
-					throw new RDFRDBException("Exception while checking db format - " + e);
-				}
-			}
-
 		m_sysProperties = null;
 		if ( prefixCache != null ) prefixCache.clear();
 		prefixCache = null;
 	}	
 
-	private ResultSet getAllTables() {
+	protected List getAllTables() {
 		try {
 			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
 			String[] tableTypes = { "TABLE" };
 			String prefixMatch = stringToDBname(TABLE_NAME_PREFIX + "%");
-			return dbmd.getTables(null, null, prefixMatch, tableTypes);
+			ResultSet rs = dbmd.getTables(null, null, prefixMatch, tableTypes);
+            List tables = new ArrayList() ;
+            while(rs.next())
+                tables.add(rs.getString("TABLE_NAME"));
+            rs.close() ;
+            return tables ; 
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver - " + e1);
 		}
@@ -1120,8 +1129,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			ps = m_sql.getPreparedSQLStatement(opname, TABLE_NAME_PREFIX);
 		    rs = ps.executeQuery();
 		    while (rs.next()) results.add( rs.getString(1) );
-		    rs.close();
-		    // m_sql.returnPreparedSQLStatement(ps);
+            //rs.close();   //Removed after jena 2.4. 
 		} catch (Exception e) {
 			logger.error("Unable to select Jena sequences: ", e);
 		} finally {
@@ -1618,6 +1626,9 @@ public abstract class DriverRDB implements IRDBDriver {
 			boolean litIsLong = objectIsLong(encodeLen,lval);		
 			if ( litIsLong ) {
 				int	dbid;
+                
+                //System.err.println("Long literal("+lval.length()+" => "+encodeLen+")") ;
+                
 				// belongs in literal table
 				DBIDInt lid = getLiteralID(litNode,addIfLong);
 				if ( lid == null ) return res;
@@ -2028,23 +2039,56 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
 		PreparedStatement ps = null;
+
+        // Because the long object bound has been reset to less than the actual table allocation.
+//        if ( lobj.tail == null || lobj.tail.equals("") )
+//            System.err.println("Unexpected : empty tail") ;
+        
+        
 		try {
 			int argi = 1;
-			String opname = "insertLongObject";           			
+			String opname = "insertLongObject";
+            // If not pre-allocated , 1-Head / 2-Hash / 3-Tail
+            // If pre-allocated , 1-Id, / 2-Head / 3-Hash [/ 4-Tail]
 			ps = m_sql.getPreparedSQLStatement(opname, table);
-			int dbid = 0; // init only needed to satisy java compiler
+			int dbid = 0; // init only needed to satisfy java compiler
 			if ( PRE_ALLOCATE_ID ) {
 				dbid = getInsertID(table);
 				ps.setInt(argi++,dbid);
 			} 
 			 ps.setString(argi++, lobj.head);
-			 if ( lobj.tail.length() > 0 ) {
-			 	ps.setLong(argi++, lobj.hash);
-			 	ps.setString(argi++, lobj.tail);
-			 } else {
-			 	ps.setNull(argi++,java.sql.Types.BIGINT);
-				ps.setNull(argi++,java.sql.Types.VARCHAR);     
-			 }
+             
+             // Do the tail - this can be a large text-holding column, or a binary column
+             // depending on the database.
+             
+             setLongObjectHashAndTail(ps, argi, lobj) ;
+             argi += 2 ;        // Hash and tail.
+
+             // Old, inline code - to go.
+//             boolean largeIsText = true ;
+//             if ( largeIsText )
+//             {
+//    			 if ( lobj.tail.length() > 0 ) {
+//    			 	ps.setLong(argi++, lobj.hash);
+//    			 	ps.setString(argi++, lobj.tail);
+//    			 } else {
+//    			 	ps.setNull(argi++,java.sql.Types.BIGINT);
+//    				ps.setNull(argi++,java.sql.Types.VARCHAR);     
+//    			 }
+//             }
+//             else
+//             {
+//                 ps.setLong(argi++, lobj.hash);
+//                 // Caveat - does not work for old drivers, notable Oracle.
+//                 // In that case, need the Oracle-specific blob handling driver
+//                 // but better is to upgrade to a newer JDBC driver (work as far back as Oracle 9i)
+//                 byte[] b = lobj.tail.getBytes("UTF-8") ;
+//                 ps.setBytes(argi++, b) ;
+//             }
+             
+             // Why does this old code encode the length?
+             
+             
 /*			if (isBlob || (len == 0) ) {
 				// First convert the literal to a UTF-16 encoded byte array
 				// (this wouldn't be needed for jdbc 2.0 drivers but not all db's have them)
@@ -2069,9 +2113,9 @@ public abstract class DriverRDB implements IRDBDriver {
 			} 
 */            
 			ps.executeUpdate();
-			//m_sql.returnPreparedSQLStatement(ps,opname);
 			if ( !PRE_ALLOCATE_ID ) dbid = getInsertID(table);
 			return wrapDBID(new Integer(dbid));
+            
 		} catch (Exception e1) {
 			/* DEBUG */ System.out.println("Problem on long object (l=" + lobj.head + ") " + e1 );
 			// System.out.println("ID is: " + id);
@@ -2081,6 +2125,47 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 	}
 	
+    // Different ways of inserting the tail value
+    // 1/ As a text field, using .setString and letting JDBC encode the characters
+    // 2/ As a binary field, using a BLOB of UTF-8 encoded bytes
+    
+    protected void setLongObjectHashAndTail(PreparedStatement ps, int argi, RDBLongObject lobj)
+    throws SQLException
+    {
+        setLongObjectHashAndTail_Text(ps, argi, lobj) ;
+    }
+    
+    protected void setLongObjectHashAndTail_Text(PreparedStatement ps, int argi, RDBLongObject lobj)
+    throws SQLException
+    {
+        if ( lobj.tail.length() > 0 ) {
+            ps.setLong(argi++, lobj.hash);
+            ps.setString(argi++, lobj.tail);
+        } else {
+            ps.setNull(argi++,java.sql.Types.BIGINT);
+            ps.setNull(argi++,java.sql.Types.VARCHAR);     
+        }
+
+    }
+    
+    protected void setLongObjectHashAndTail_Binary(PreparedStatement ps, int argi, RDBLongObject lobj)
+    throws SQLException
+    {
+        ps.setLong(argi++, lobj.hash);
+        // Caveat - does not work for old drivers, notable Oracle.
+        // In that case, need the Oracle-specific blob handling driver
+        // but better is to upgrade to a newer JDBC driver (work as far back as Oracle 9i)
+        byte[] b = null ;
+        try { b = lobj.tail.getBytes("UTF-8") ; }
+        catch (UnsupportedEncodingException ex)
+        {
+            // Can't happen - UTF-8 is required by Java.
+            throw new RDFRDBException("No UTF-8 encoding (setLongObjectHashAndTail_Binary)") ;
+        }
+        System.out.println("bytes in : "+b.length) ;
+        ps.setBytes(argi++, b) ;
+    }
+    
 	/**
 	 * Return the prefix string that has the given prefix id.
 	 * @param prefixID - the dbid of the prefix.
@@ -2165,27 +2250,61 @@ public abstract class DriverRDB implements IRDBDriver {
 			if (rs.next()) {
                 res = new RDBLongObject();
 				res.head = rs.getString(1);
-                Object obj = rs.getObject(2) ;
-                if ( obj == null )
+                
+                // --------
+                // ALTERNATIVE - WORK IN PROGRESS
+                // Temp - tmpStr, not res.tail.
+                switch (rs.getMetaData().getColumnType(2))
                 {
-                    res.tail = null ;
-                    return res ;
+                    case Types.VARCHAR:
+                    case Types.LONGVARCHAR:
+                    case Types.CHAR:
+                        res.tail = rs.getString(2) ;
+                        if ( res.tail == null )
+                            res.tail = "" ;
+                        break ;
+                    case Types.BLOB:
+                    case Types.LONGVARBINARY:
+                        byte[] b2 = rs.getBytes(2) ;
+                        if ( b2 == null )
+                            // The meaning of "" is mixed in SQL. 
+                            // Should not happen - we never store empty strings it the tail
+                            res.tail = "" ;
+                        else
+                            try
+                            { res.tail = new String(b2, 0, b2.length, "UTF-8") ; }
+                            catch (UnsupportedEncodingException ex)
+                            { ex.printStackTrace(); }
+                        break;
+                    default:
+                        logger.fatal("Long object is of unexpected SQL type: "+rs.getMetaData().getColumnType(2)) ;
+                        throw new RDFRDBException("Long object is of unexpected SQL type: "+rs.getMetaData().getColumnType(2));
                 }
-                if ( obj instanceof String )
-                    res.tail = (String)obj ;
-                else if ( obj instanceof byte[] )
-                {
-                    try
-                    {
-                        res.tail = new String((byte[])obj, "UTF-8") ;
-                    } catch (UnsupportedEncodingException ex)
-                    {
-                        ex.printStackTrace();
-                    }
-                }
-                else
-                    throw new RDFRDBException("Long object is of unexpected class: "+obj.getClass());
-                // OLD code (remove after 2.4) res.tail = rs.getString(2);			
+                // --------
+                
+                
+//                Object obj = rs.getObject(2) ;
+//                if ( obj == null )
+//                {
+//                    res.tail = null ;
+//                    return res ;
+//                }
+//                if ( obj instanceof String )
+//                    res.tail = (String)obj ;
+//                else if ( obj instanceof byte[] )
+//                {
+//                    try
+//                    {
+//                        res.tail = new String((byte[])obj, "UTF-8") ;
+//                    } catch (UnsupportedEncodingException ex)
+//                    {
+//                        ex.printStackTrace();
+//                    }
+//                }
+//                // Oracle BLOB is a non-standard type.
+//                else
+//                    throw new RDFRDBException("Long object is of unexpected class: "+obj.getClass());
+//                // OLD code (remove after 2.4) res.tail = rs.getString(2);
 			}
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
