@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BufferPipe.java,v 1.9 2006-03-22 13:52:50 andy_seaborne Exp $
+  $Id: BufferPipe.java,v 1.10 2006-12-01 16:24:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -71,8 +71,13 @@ public class BufferPipe implements Pipe
                     {
                     Finished end = (Finished) pending;
                     RuntimeException cause = end.getCause();
-                    if (cause == null) open = false;
-                    else throw cause;
+                    if (cause == null) 
+                        open = false;
+                    else 
+                        {
+                        PatternStageBase.log.debug( "BufferPipe has recieved and rethrown an exception", cause );
+                        throw cause;
+                        }
                     }
                 return open;
                 }

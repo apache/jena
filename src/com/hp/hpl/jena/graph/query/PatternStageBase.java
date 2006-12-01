@@ -1,9 +1,11 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.10 2006-03-22 13:52:50 andy_seaborne Exp $
+    $Id: PatternStageBase.java,v 1.11 2006-12-01 16:24:40 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
+
+import org.apache.commons.logging.*;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
@@ -37,11 +39,18 @@ public abstract class PatternStageBase extends Stage
         this.classified = QueryTriple.classify( factory, map, triples );
         this.guards = new GuardArranger( triples ).makeGuards( map, constraints );
         }
+
+    static Log log = LogFactory.getLog( PatternStageBase.class );
     
     protected void run( Pipe source, Pipe sink, StageElement se )
         {
         try { while (stillOpen && source.hasNext()) se.run( source.get() ); }
-        catch (Exception e) { sink.close( e ); return; }
+        catch (Exception e) 
+            {
+            log.debug( "PatternStageBase has caught and forwarded an exception", e );
+            sink.close( e ); 
+            return; 
+            }
         sink.close();
         }
 
