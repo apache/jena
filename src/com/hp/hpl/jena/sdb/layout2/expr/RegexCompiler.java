@@ -25,12 +25,12 @@ public class RegexCompiler extends ConditionCompilerBase
 {
     // --- regex : testing a term (in a variable)
     private static ExprPattern regex1 = new ExprPattern("regex(?a1, ?a2)",
-                                                        new Var[]{ new Var("a1") , new Var("a2") },
+                                                        new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
                                                         new Action[]{ new ActionMatchVar() ,
                                                                       new ActionMatchString()}) ;
     
     private static ExprPattern regex1_i = new ExprPattern("regex(?a1, ?a2, 'i')",
-                                                          new Var[]{ new Var("a1") , new Var("a2") },
+                                                          new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
                                                           new Action[]{ new ActionMatchVar() ,
                                                                         new ActionMatchString()}) ;
         
@@ -41,7 +41,7 @@ public class RegexCompiler extends ConditionCompilerBase
         
         if ( ( rMap = regex1.match(expr) ) != null )
         {
-            Object $ = rMap.get(new Var("a1")) ;
+            Object $ = rMap.get(Var.alloc("a1")) ;
             
             
             Var var = rMap.get("a1").getNodeVar().getAsVar() ;
@@ -50,8 +50,8 @@ public class RegexCompiler extends ConditionCompilerBase
         }
         if ( ( rMap = regex1_i.match(expr) ) != null )
         {
-            Var var = rMap.get(new Var("a1")).getNodeVar().getAsVar() ;
-            String pattern = rMap.get(new Var("a2")).getConstant().getString() ;
+            Var var = rMap.get(Var.alloc("a1")).getNodeVar().getAsVar() ;
+            String pattern = rMap.get(Var.alloc("a2")).getConstant().getString() ;
             return new RegexSqlGen(expr, regex1_i, pattern, "i", true) ;
         }
         return null ;
@@ -91,8 +91,8 @@ class RegexSqlGen extends SDBConstraint
         if ( rMap == null )
             throw new SDBException("Couldn't compile after all: "+getExpr()) ;
         
-        Var var = rMap.get(new Var("a1")).getNodeVar().getAsVar() ;
-        String pattern = rMap.get(new Var("a2")).getConstant().getString() ;
+        Var var = rMap.get(Var.alloc("a1")).getNodeVar().getAsVar() ;
+        String pattern = rMap.get(Var.alloc("a2")).getConstant().getString() ;
         
         SqlColumn vCol = scope.getColumnForVar(var) ;
 

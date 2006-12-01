@@ -21,7 +21,7 @@ public class MapResult extends HashMap<Var, Expr>
     
     // Otherwise, Java6 will call .get(Object)
     // Why? Isn't this a bug?
-    public Expr get(String varName) { return super.get(new Var(varName)) ; }
+    public Expr get(String varName) { return super.get(Var.alloc(varName)) ; }
 }
 
 /*

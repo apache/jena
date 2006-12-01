@@ -56,16 +56,16 @@ public class SQLBridge2 extends SQLBridgeBase
             
             String sqlVarName = getSqlName(v) ;
 
-            Var vLex = new Var(sqlVarName+"$lex") ;
+            Var vLex = Var.alloc(sqlVarName+"$lex") ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
     
-            Var vDatatype = new Var(sqlVarName+"$datatype") ;
+            Var vDatatype = Var.alloc(sqlVarName+"$datatype") ;
             SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
     
-            Var vLang = new Var(sqlVarName+"$lang") ;
+            Var vLang = Var.alloc(sqlVarName+"$lang") ;
             SqlColumn cLang = new SqlColumn(table, "lang") ;
     
-            Var vType = new Var(sqlVarName+"$type") ;
+            Var vType = Var.alloc(sqlVarName+"$type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
     
             addProject(vLex, cLex) ;

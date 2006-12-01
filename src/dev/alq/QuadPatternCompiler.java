@@ -4,48 +4,52 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.data;
+package dev.alq;
 
-import com.hp.hpl.jena.graph.Node;
+import static com.hp.hpl.jena.query.engine2.AlgebraCompilerQuad.defaultGraph;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.VarAlloc;
+import com.hp.hpl.jena.query.engine2.op.Quad;
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
-import com.hp.hpl.jena.sdb.store.StoreCustomizer;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.layout2.BlockCompiler2;
 
-/** Rewrite a query based on sub/super class for rdf:type */
+/** Highly experimental - will become an interface
+ * For now, its layout specific.
+ *
+ */
 
-public class CustomizeType implements StoreCustomizer
+public class QuadPatternCompiler
 {
-    static final Node RDF_type = RDF.type.asNode() ;
-    static final Node RDFS_subClassOf = RDFS.subClassOf.asNode() ;
-
-    // s rdf:type t ==> s rdf:type ?v . ?v rdfs:subClassOf t
-    // Assumes that   t rdfs:subClassOf t
-    // This may get rewritten later in the process to special SQL (e.g. a subclass table)   
+    private static Log log = LogFactory.getLog(QuadPatternCompiler.class) ;
     
-    public BlockBGP modify(BlockBGP block)
+    public static SqlNode compile(CompileContext context, List<Quad> quads)
     {
-        block = block.copy() ;
-        // This does not invalidate the SELECT variables.
-        for ( int i = 0 ; i < block.getTriples().size() ; i++ )
+        BlockCompiler2 bc = new BlockCompiler2() ;
+        
+        BlockBGP blk = new BlockBGP() ;
+        for ( Quad quad : quads )
         {
-            Triple t = block.getTriples().get(i) ;
-            if ( t.getPredicate().equals(RDF_type) )
+            if ( ! quad.getGraph().equals(defaultGraph) )
             {
-                Node v = VarAlloc.getVarAllocator().allocVar() ;
-                // Assumes that <type> rdfs:subClassOf <type> 
-                Triple t1 = new Triple(t.getSubject(), RDF_type, v) ;
-                Triple t2 = new Triple(v, RDFS_subClassOf, t.getObject()) ;
-                // replace t by t1 and t2
-                block.getTriples().set(i, t1) ;
-                block.getTriples().add(i+1, t2) ;
-                // Skip the indexer over the extra triple.
-                i++ ;
+                log.fatal("Non-default graph") ;
+                throw new SDBException("Non-default graph") ;
             }
+            Triple triple = quad.getTriple() ;
+            blk.add(triple) ;
         }
-        return block ;
+        // BAD hack - exit vars per Op tree.
+        blk.setProjectVars(QC.exitVariables(blk)) ;
+        
+        return bc.compile(blk, context) ;
     }
 }
 

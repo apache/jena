@@ -24,21 +24,21 @@ import com.hp.hpl.jena.sdb.store.ConditionCompilerBase;
 public class StringExprCompiler extends ConditionCompilerBase
 {
     private static ExprPattern equalsString1 = new ExprPattern("?a1 = ?a2",
-                                                               new Var[]{ new Var("a1") , new Var("a2") },
+                                                               new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
                                                                new Action[]{ new ActionMatchVar() ,
                                                                              new ActionMatchString()}) ;
     // As equalsString1 but reverse the arguments.
     private static ExprPattern equalsString2 = new ExprPattern("?a2 = ?a1",
-                                                               new Var[]{ new Var("a1") , new Var("a2") },
+                                                               new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
                                                                new Action[]{ new ActionMatchVar() ,
                                                                              new ActionMatchString()}) ;
 //    private static ExprPattern equalsString3 = new ExprPattern("str(?a1) = ?a2",
-//                                                               new Var[]{ new Var("a1") , new Var("a2") },
+//                                                               new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
 //                                                               new Action[]{ new ActionMatchVar() ,
 //                                                                             new ActionMatchString()}) ;
 ////  As equalsString3 but reverse the arguments.
 //    private static ExprPattern equalsString4 = new ExprPattern("?a1 = str(?a2)",
-//                                                               new Var[]{ new Var("a1") , new Var("a2") },
+//                                                               new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
 //                                                               new Action[]{ new ActionMatchString() ,
 //                                                                             new ActionMatchVar() }) ;
 

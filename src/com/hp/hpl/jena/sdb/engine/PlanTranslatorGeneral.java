@@ -72,7 +72,7 @@ public class PlanTranslatorGeneral implements PlanTranslator
             for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
             {
                 String vn = (String)iter.next() ;
-                planSDB.getBlock().addProjectVar(new Var(vn)) ;
+                planSDB.getBlock().addProjectVar(Var.alloc(vn)) ;
             }
         }
         return planSDB ;

@@ -32,7 +32,7 @@ public class CustomizeProperty implements StoreCustomizer
             // Test to see if it's a propeerty we wish to 
             if ( t.getPredicate() != null )
             {
-                Node v = VarAlloc.getVarAllocator().allocVarNode() ;
+                Node v = VarAlloc.getVarAllocator().allocVar();
                 Node property = t.getPredicate() ;
                 // Assumes that <type> rdfs:subClassOf <type> 
                 Triple t1 = new Triple(t.getSubject(), v, t.getObject()) ;

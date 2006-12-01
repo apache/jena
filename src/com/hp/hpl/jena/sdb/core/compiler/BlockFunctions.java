@@ -48,7 +48,7 @@ public class BlockFunctions
         {
             if ( definedVars != null )
             {
-                Var v = new Var(node) ;
+                Var v = Var.alloc(node) ;
                 if ( ! definedVars.contains(v) )
                     definedVars.add(v) ;
             }
@@ -124,7 +124,7 @@ public class BlockFunctions
     {
         if ( node.isVariable() )
         {
-            Var v = new Var(node) ;
+            Var v = Var.alloc(node) ;
             varsSeen.add(v) ;
         }
     }

@@ -44,7 +44,7 @@ public class SQLBridge1 extends SQLBridgeBase
                 continue ;
             
             String sqlVarName = getSqlName(v) ;
-            addProject(new Var(sqlVarName), c) ;
+            addProject(Var.alloc(sqlVarName), c) ;
 //             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
         }
         setAnnotation() ;

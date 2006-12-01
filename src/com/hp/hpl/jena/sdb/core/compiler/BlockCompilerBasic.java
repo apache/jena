@@ -95,7 +95,7 @@ public abstract class BlockCompilerBasic implements BlockCompiler
             return ;
         }
         
-        Var var = new Var(node) ;
+        Var var = Var.alloc(node) ;
         if ( table.getIdScope().hasColumnForVar(var) )
         {
             SqlColumn otherCol = table.getIdScope().getColumnForVar(var) ;

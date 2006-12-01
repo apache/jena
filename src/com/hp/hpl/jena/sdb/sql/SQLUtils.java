@@ -70,7 +70,7 @@ public class SQLUtils
     {
         if ( sqlName.startsWith("'") )
             return null ;
-        return new Var(sqlName) ;
+        return Var.alloc(sqlName) ;
     }
     
     private static boolean sqlSafeChar(String str)

@@ -20,12 +20,16 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
+
+import dev.alq.Q4;
 
 public class RunSDB
 {
@@ -35,7 +39,8 @@ public class RunSDB
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
         
-        runQuery() ;
+        runQuad() ;
+        //runQuery() ;
         //runPrint() ;
         //runScript() ;
         //run() ;
@@ -43,6 +48,19 @@ public class RunSDB
         System.exit(0) ;
     }
 
+    public static void runQuad()
+    {
+        
+        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
+        store.getTableFormatter().format() ;
+        Query query = QueryFactory.read("Q.rq") ;
+        Q4 engine = new Q4(store, query) ;
+        SqlNode sqlNode = engine.kick() ;
+        System.out.println(sqlNode.toString()) ;
+        System.out.println(new GenerateSQL().generateSQL(sqlNode)) ;
+        System.exit(0) ;
+    }
+    
     public static void runQuery()
     {
         String DB="sdb2" ;

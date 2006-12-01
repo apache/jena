@@ -1,61 +1,75 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.engine;
+package dev.alq;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.engine1.*;
+import com.hp.hpl.jena.query.core.Element;
+import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine1.QueryEngine;
+import com.hp.hpl.jena.query.engine2.AlgebraCompilerQuad;
+import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.Store;
 
-public class QueryEngineSDB extends QueryEngine
+/** Highly experimental quad engine */
+
+public class Q4 extends QueryEngine
 {
-    private static Log log = LogFactory.getLog(QueryEngineSDB.class) ; 
+    private static Log log = LogFactory.getLog(Q4.class) ; 
     Store store ;
     
-    public QueryEngineSDB(Store store, Query q)
+    public Q4(Store store, Query q)
     {
         super(q) ;
         this.store = store ;
     }
-
     
-    // -------- Hooks into the usual query engine
-    
-    /** This operator is a hook for other query engines to reuse this framework but
-     *  take responsibility for their own query pattern execution. 
-     */
     @Override
-    protected PlanElement queryPlanPatternHook(Context context, PlanElement planElt)
+    protected PlanElement makePlanForQueryPattern(Context context, Element queryPatternElement)
     {
-        PlanElement e = store.getPlanTranslator().queryPlanTranslate(context, getQuery(), store, planElt) ;
-        return e ;
+        Op op =  SDBCompiler.compile(context, queryPatternElement) ;
+        
+        // Quad tree. Now what?
+        return null ;
     }
     
-//    public Block toBlock()
-//    {
-//        // try to get the block for this query, 
-//        // assuming that the query is completely an SQL-optimized query
-//        PlanElement pElt = super.getPlanPattern() ;
-//        
-//        PlanSDB pBlock = PlanSDB.getPlanSDB(pElt) ;
-//        if ( pBlock == null )
-//        {
-//            log.warn("Can't get the top block") ;
-//            return null ;
-//        }
-//        return pBlock.getBlock() ;
-//    }
+    public SqlNode kick()
+    {
+        Element queryPatternElement = query.getQueryPattern() ;
+        Op op = SDBCompiler.compile(context, queryPatternElement) ;
+        CompileContext cxt = new CompileContext(store, query) ;
+        return new QuadToSDB(cxt).compile(op) ;
+    }
+}
+
+// Temporary - access to a protected while we think about the correct overall
+// design of the algebra compiler (which is just for SDB).   
+class SDBCompiler extends AlgebraCompilerQuad
+{
+    static Op compile(Context context, Element queryPatternElement) 
+    { return new SDBCompiler(context).compileFixedElement(queryPatternElement) ; }
+    
+    public SDBCompiler(Context context)
+    {
+        super(context) ;
+    }
+    public Op dwim(Element queryPatternElement)
+    {
+        return super.compileFixedElement(queryPatternElement) ;
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
