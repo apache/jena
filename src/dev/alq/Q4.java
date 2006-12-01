@@ -17,12 +17,13 @@ import com.hp.hpl.jena.query.engine2.AlgebraCompilerQuad;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.Store;
 
 /** Highly experimental quad engine */
 
-public class Q4 extends QueryEngine
+public class Q4 extends QueryEngine implements QueryEngineSDB
 {
     private static Log log = LogFactory.getLog(Q4.class) ; 
     Store store ;
@@ -42,13 +43,21 @@ public class Q4 extends QueryEngine
         return null ;
     }
     
-    public SqlNode kick()
+    public SqlNode toSqlNode()
     {
         Element queryPatternElement = query.getQueryPattern() ;
         Op op = SDBCompiler.compile(context, queryPatternElement) ;
         CompileContext cxt = new CompileContext(store, query) ;
-        return new QuadToSDB(cxt).compile(op) ;
+        return QuadToSDB.compile(op, cxt) ;
     }
+
+    public String asSQL()
+    {
+        SqlNode sqlNode = toSqlNode() ;
+        return new GenerateSQL().generateSQL(sqlNode) ;
+    }
+    
+    
 }
 
 // Temporary - access to a protected while we think about the correct overall

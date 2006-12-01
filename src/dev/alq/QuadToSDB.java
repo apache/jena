@@ -17,77 +17,90 @@ import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public class QuadToSDB implements OpVisitor
+public class QuadToSDB 
 {
     private static Log log = LogFactory.getLog(QuadToSDB.class) ; 
-    
-    SqlNode result = null ;
 
     private CompileContext context ;
+
+    public static SqlNode compile(Op op, CompileContext context)
+    {
+        return new QuadToSDB(context).compile(op) ;
+    }
+
     
-    public QuadToSDB(CompileContext context)
+    private QuadToSDB(CompileContext context)
     { this.context = context ; }
-    
-    public SqlNode compile(Op op)
+
+    private SqlNode compile(Op op)
     {
-        return process(op) ;
+        return new QuadVisitor().process(op) ;
     }
     
-    private SqlNode process(Op op)
+
+    class QuadVisitor implements OpVisitor
     {
-        QuadToSDB q = new QuadToSDB(context) ;
-        op.visit(q) ;
-        return q.result ;
-    }
-    
-    public void visit(OpBGP opBGP)
-    { broken("OpBGP should not appear") ; }
+        // The result slot.   
+        SqlNode result = null ;
 
- 
-    public void visit(OpQuadPattern quadPattern)
-    {
-        @SuppressWarnings("unchecked")
-        List<Quad>quads = (List<Quad>)quadPattern.getQuads() ;
-        SqlNode node = QuadPatternCompiler.compile(context, quads) ;
-        result = node ;
-    }
+        private SqlNode process(Op op)
+        {
+            QuadVisitor q = new QuadVisitor() ;
+            op.visit(q) ;
+            return q.result ;
+        }
 
-    public void visit(OpJoin opJoin)
-    {
-        SqlNode left = process(opJoin.getLeft()) ;
-        SqlNode right = process(opJoin.getRight()) ;
-        result = QC.innerJoin(context, left, right) ;
-    }
+        public void visit(OpBGP opBGP)
+        { broken("OpBGP should not appear") ; }
 
-    public void visit(OpLeftJoin opLeftJoin)
-    {
-        SqlNode left = process(opLeftJoin.getLeft()) ;
-        SqlNode right = process(opLeftJoin.getRight()) ;
-        result = QC.leftJoin(context, left, right) ;
-    }
 
-    public void visit(OpUnion opUnion)
-    {}
+        public void visit(OpQuadPattern quadPattern)
+        {
+            @SuppressWarnings("unchecked")
+            List<Quad>quads = (List<Quad>)quadPattern.getQuads() ;
+            SqlNode node = QuadPatternCompiler.compile(context, quads) ;
+            result = node ;
+        }
 
-    public void visit(OpFilter opFilter)
-    {}
+        public void visit(OpJoin opJoin)
+        {
+            SqlNode left = process(opJoin.getLeft()) ;
+            SqlNode right = process(opJoin.getRight()) ;
+            result = QC.innerJoin(context, left, right) ;
+        }
 
-    public void visit(OpGraph opGraph)
-    {}
+        public void visit(OpLeftJoin opLeftJoin)
+        {
+            if ( opLeftJoin.getExpr() != null )
+                log.warn("LeftJoin has condition [ignored at the moment]") ;
+            SqlNode left = process(opLeftJoin.getLeft()) ;
+            SqlNode right = process(opLeftJoin.getRight()) ;
+            result = QC.leftJoin(context, left, right) ;
+        }
 
-    public void visit(Table table)
-    {}
+        public void visit(OpUnion opUnion)
+        {}
 
-    public void visit(OpPlanElement element)
-    {}
+        public void visit(OpFilter opFilter)
+        {}
 
-    public void visit(OpDatasetNames dsNames)
-    {}
+        public void visit(OpGraph opGraph)
+        {}
 
-    private void broken(String msg)
-    { 
-        log.fatal(msg) ;
-        System.exit(99) ;
+        public void visit(Table table)
+        {}
+
+        public void visit(OpPlanElement element)
+        {}
+
+        public void visit(OpDatasetNames dsNames)
+        {}
+
+        private void broken(String msg)
+        { 
+            log.fatal(msg) ;
+            System.exit(99) ;
+        }
     }
 }
 

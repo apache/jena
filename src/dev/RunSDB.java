@@ -20,7 +20,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -50,14 +49,15 @@ public class RunSDB
 
     public static void runQuad()
     {
-        
         Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
         store.getTableFormatter().format() ;
         Query query = QueryFactory.read("Q.rq") ;
+        query.serialize(System.out) ;
         Q4 engine = new Q4(store, query) ;
-        SqlNode sqlNode = engine.kick() ;
-        System.out.println(sqlNode.toString()) ;
-        System.out.println(new GenerateSQL().generateSQL(sqlNode)) ;
+        SqlNode sqlNode = engine.toSqlNode() ;
+        String sqlString = engine.asSQL() ;
+        //System.out.println(sqlNode.toString()) ;
+        System.out.println(sqlString) ;
         System.exit(0) ;
     }
     
