@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# You wil need to edit this script to fix:
+# You will need to edit this script to fix:
 # - User/password for the databases you wish to test
 # - Location of JDBC driver files (via environment variable JDBC)
 
@@ -11,10 +11,20 @@ else
     export S=":"
 fi
 
+#Where you keep your JDBC drivers
+JDBCDIR="$HOME/jlib/JDBC"
+
+if [ ! -e "lib/jena.jar" ]
+then
+    echo "No jena.jar"
+    exit 1
+    fi
+
+
 case $1 in
 
 hsqldb|hsql)
-echo HSQLDB
+echo "HSQLDB (file-backed)"
 DEFS="-Djena.db.url=jdbc:hsqldb:file:jenatest"
 ## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://localhost/jenatest"
 ## DEFS="-Djena.db.url=jdbc:hsqldb:http://localhost:88/jenatest
@@ -24,7 +34,7 @@ DEFS=" $DEFS  -Djena.db.type=HSQL"
 DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
 ## HSQL does not support full transaction isolation.
 DEFS=" $DEFS  -Djena.db.concurrent=false"
-JDBC=${JDBC:-$HOME/jlib/hsqldb.jar}
+JDBC=${JDBC:-$JDBCDIR/HSQL/hsqldb.jar}
 ;;
 
 hsqldb-mem|hsql-mem)
@@ -35,7 +45,7 @@ DEFS=" $DEFS  -Djena.db.password="
 DEFS=" $DEFS  -Djena.db.type=HSQL"
 DEFS=" $DEFS  -Djena.db.driver=org.hsqldb.jdbcDriver"
 DEFS=" $DEFS  -Djena.db.concurrent=false"
-JDBC=${JDBC:-$HOME/jlib/hsqldb.jar}
+JDBC=${JDBC:-$JDBCDIR/HSQL/hsqldb.jar}
 ;;
 
 derby)
@@ -49,7 +59,7 @@ DEFS=" $DEFS  -Djena.db.type=Derby"
 DEFS=" $DEFS  -Djena.db.driver=org.apache.derby.jdbc.EmbeddedDriver"
 # No row level locking
 DEFS=" $DEFS  -Djena.db.concurrent=false"
-JDBC="${JDBC:-$HOME/jlib/db-derby-10.1.2.1-bin/lib/derby.jar}"
+JDBC="${JDBC:-$JDBCDIR/db-derby-10.1.2.1-bin/lib/derby.jar}"
 ;;
 
 postgres|postgresql) 
@@ -59,7 +69,7 @@ DEFS=" $DEFS  -Djena.db.user=test"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=PostgreSQL"
 DEFS=" $DEFS  -Djena.db.driver=org.postgresql.Driver"
-JDBC="${JDBC:-$HOME/jlib/hsqldb.jar}"
+JDBC="${JDBC:-$JDBCDIR/PostgreSQL/postgresql-8.1-407.jdbc3.jar}"
 ;;
 
 mysql) 
@@ -69,7 +79,10 @@ DEFS=" $DEFS  -Djena.db.user=user"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MySQL"
 DEFS=" $DEFS  -Djena.db.driver=com.mysql.jdbc.Driver" 
-JDBC="${JDBC:-$HOME/jlib/mysql-connector-java-3.1.12-bin.jar}"
+
+## Lock up
+## JDBC="${JDBC:-$JDBCDIR/MySQL/mysql-connector-java-5.0.0-beta-bin.jar}"
+JDBC="${JDBC:-$JDBCDIR/MySQL/mysql-connector-java-3.1.12-bin.jar}"
 ;;
 
 # MS SQL Server, jTDS driver, local
@@ -94,7 +107,7 @@ DEFS=" $DEFS  -Djena.db.password=6aXjen%4"
 DEFS=" $DEFS  -Djena.db.type=MsSQL"
 DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
 DEFS=" $DEFS  -Djena.db.concurrent=false"
-JDBC="${JDBC:-$HOME/jlib/sqljdbc.jar}"
+JDBC="${JDBC:-$JDBCDIR/MS-SQL/sqljdbc.jar}"
 ;;
 
 # MS SQL Server, Microsoft driver, local
@@ -106,7 +119,7 @@ DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MsSQL"
 DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
 DEFS=" $DEFS  -Djena.db.concurrent=false"
-JDBC="${JDBC:-$HOME/jlib/sqljdbc.jar}"
+JDBC="${JDBC:-$JDBCDIR/MS-SQL/sqljdbc.jar}"
 ;;
 
 mssqle)
@@ -117,7 +130,7 @@ DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MsSQL"
 DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
 ## DEFS=" $DEFS  -Djena.db.concurrent=false"
-JDBC="${JDBC:-$HOME/jlib/sqljdbc.jar}"
+JDBC="${JDBC:-$JDBCDIR/MS-SQL/sqljdbc.jar}"
 ;;
 
 *) echo "you must specify a database type [postgres, mysql, mssql, mssqle, hsqldb, derby]"; exit ;;

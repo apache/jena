@@ -7,16 +7,15 @@
 package jena.util;
 import jena.cmdline.* ;
 import com.hp.hpl.jena.db.* ;
+import com.hp.hpl.jena.enhanced.BuiltinPersonalities;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.ModelMaker;
 //import com.hp.hpl.jena.rdf.model.* ;
 import java.util.* ;
  
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.3 2006-11-28 11:41:23 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.4 2006-12-01 16:55:31 andy_seaborne Exp $
  */ 
  
 public abstract class DBcmd
@@ -199,25 +198,18 @@ public abstract class DBcmd
         return dbModel ;   
     }
 
-    private Model makeModel()
+    private ModelRDB makeModel()
     {
         try 
         {
-            ModelMaker maker = ModelFactory.createModelRDBMaker(getConnection());
-
-            Model model = null ;
-            if ( argModelName == null )
-                model = maker.openModel() ;
-            else
-                try {
-                    model = maker.openModel(argModelName) ;
-
-                } catch (com.hp.hpl.jena.shared.DoesNotExistException ex)
-                {
-                    System.out.println("No model '"+argModelName+"' in that database") ;
-                    System.exit(9) ;
-                }
-            return model ;
+            // Want a ModelRDB and not the default reificiation mode.
+            if ( argModelName != null && argModelName.equals("DEFAULT") )
+                argModelName = null ;
+            GraphRDB graph = new GraphRDB(getConnection(),
+                                          argModelName, null, 
+                                          GraphRDB.OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS,
+                                          false);
+            return new ModelRDB(BuiltinPersonalities.model, graph);
         }
         catch (com.hp.hpl.jena.db.RDFRDBException dbEx)
         {
