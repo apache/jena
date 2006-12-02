@@ -56,7 +56,7 @@ public class BlockCompilerTrans extends BlockCompiler2
         
         SqlTable transTripleTable = transTable.createSqlTable(alias) ;
         
-        transTripleTable.addNote("Trans: "+FmtUtils.stringForTriple(triple, context.getQuery().getPrefixMapping())) ;
+        transTripleTable.addNote("Trans: "+FmtUtils.stringForTriple(triple, context.getPrefixMapping())) ;
         
         processSlot(context, transTripleTable, conditions, triple.getSubject(), transTable.getColLeft()) ; 
         processSlot(context, transTripleTable, conditions, triple.getObject(), transTable.getColRight()) ;
