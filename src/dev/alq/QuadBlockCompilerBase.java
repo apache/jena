@@ -9,23 +9,39 @@ package dev.alq;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.engine2.op.Quad;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-/** Highly experimental - will become an interface
- * For now, its layout specific.
- *
- */
-
-public class QuadPatternCompiler
+public abstract
+class QuadBlockCompilerBase implements QuadBlockCompiler
 {
-    private static Log log = LogFactory.getLog(QuadPatternCompiler.class) ;
-    
-    public static SqlNode compile(CompileContext context, QuadBlock quads)
+    private static Log log = LogFactory.getLog(QuadBlockCompilerBase.class) ;
+    protected CompileContext context ;
+
+    public QuadBlockCompilerBase(CompileContext context)
+    { this.context = context ; }
+
+    final
+    public SqlNode compile(QuadBlock quads)
     {
-        QuadBlockCompiler qbc = new QuadBlockCompiler2(context) ;
-        return qbc.compile(quads) ;
+        SqlNode sqlNode = start(quads);
+        
+        for ( Quad quad : quads )
+        {
+            SqlNode sNode = compile(quad) ;
+            if ( sNode != null )
+                sqlNode = QC.innerJoin(context, sqlNode, sNode) ;
+        }
+        sqlNode = finish(sqlNode, quads);
+        return sqlNode ;
     }
+        
+    protected abstract SqlNode compile(Quad quad) ;
+
+    protected abstract SqlNode start(QuadBlock quads) ;
+    protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
 }
 
 /*

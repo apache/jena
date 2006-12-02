@@ -6,26 +6,11 @@
 
 package dev.alq;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-/** Highly experimental - will become an interface
- * For now, its layout specific.
- *
- */
-
-public class QuadPatternCompiler
+public interface QuadBlockCompiler
 {
-    private static Log log = LogFactory.getLog(QuadPatternCompiler.class) ;
-    
-    public static SqlNode compile(CompileContext context, QuadBlock quads)
-    {
-        QuadBlockCompiler qbc = new QuadBlockCompiler2(context) ;
-        return qbc.compile(quads) ;
-    }
+    SqlNode compile(QuadBlock quads) ;
 }
 
 /*

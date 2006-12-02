@@ -6,26 +6,38 @@
 
 package dev.alq;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.Iterator;
+import java.util.List;
 
-import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.engine2.op.OpQuadPattern;
+import com.hp.hpl.jena.query.engine2.op.Quad;
 
-/** Highly experimental - will become an interface
- * For now, its layout specific.
- *
- */
-
-public class QuadPatternCompiler
+public class QuadBlock implements Iterable<Quad>
 {
-    private static Log log = LogFactory.getLog(QuadPatternCompiler.class) ;
+    List<Quad> quads ;
+    Node graphNode ;
     
-    public static SqlNode compile(CompileContext context, QuadBlock quads)
+//    public QuadBlock(List<Quad> quads)
+//    { this.quads = quads ; }
+
+    
+    public QuadBlock(OpQuadPattern quadPattern)
     {
-        QuadBlockCompiler qbc = new QuadBlockCompiler2(context) ;
-        return qbc.compile(quads) ;
+        @SuppressWarnings("unchecked")
+        // Needs two steps to avoid a warning.
+        List<Quad>q = (List<Quad>)quadPattern.getQuads() ;
+        quads = q ;
+        graphNode = quadPattern.getGraphNode() ;
     }
+    
+    public Iterator<Quad> iterator()
+    {
+        return quads.iterator() ;
+    }
+    
+    public Node getGraphNode() { return graphNode ; }
+    
 }
 
 /*

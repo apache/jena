@@ -6,8 +6,6 @@
 
 package dev.alq;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -16,6 +14,8 @@ import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
 
 public class QuadToSDB 
 {
@@ -34,7 +34,9 @@ public class QuadToSDB
 
     private SqlNode compile(Op op)
     {
-        return new QuadVisitor().process(op) ;
+        SQLBridge sb = new SQLBridge2() ;
+        SqlNode n = new QuadVisitor().process(op) ;
+        return n ; 
     }
     
 
@@ -56,9 +58,8 @@ public class QuadToSDB
 
         public void visit(OpQuadPattern quadPattern)
         {
-            @SuppressWarnings("unchecked")
-            List<Quad>quads = (List<Quad>)quadPattern.getQuads() ;
-            SqlNode node = QuadPatternCompiler.compile(context, quads) ;
+            QuadBlock qBlk = new QuadBlock(quadPattern) ;
+            SqlNode node = QuadPatternCompiler.compile(context, qBlk) ;
             result = node ;
         }
 
