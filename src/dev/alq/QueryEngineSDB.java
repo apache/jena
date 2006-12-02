@@ -11,8 +11,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface QueryEngineSDB //extends QueryExecution
 {
-    public SqlNode toSqlNode() ;
-    public String asSQL() ;
 }
 
 /*
