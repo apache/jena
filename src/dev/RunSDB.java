@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -28,7 +29,7 @@ import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
-import dev.alq.Q4;
+import dev.alq.QueryEngineQuad;
 
 public class RunSDB
 {
@@ -53,10 +54,12 @@ public class RunSDB
         store.getTableFormatter().format() ;
         Query query = QueryFactory.read("Q.rq") ;
         query.serialize(System.out) ;
-        Q4 engine = new Q4(store, query) ;
+        System.out.println("----------------") ;
+        QueryEngineQuad engine = new QueryEngineQuad(store, query) ;
         SqlNode sqlNode = engine.toSqlNode() ;
-        String sqlString = engine.asSQL() ;
-        //System.out.println(sqlNode.toString()) ;
+//        System.out.println(sqlNode.toString()) ;
+//        System.out.println("----------------") ;
+        String sqlString = GenerateSQL.toSQL(sqlNode) ;
         System.out.println(sqlString) ;
         System.exit(0) ;
     }

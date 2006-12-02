@@ -39,7 +39,6 @@ public class SQLBridge2 extends SQLBridgeBase
     
     public SqlNode buildProject()
     {
-        StringBuilder annotation = new StringBuilder() ;
         for ( Var v : getProject() )
         {
             if ( ! v.isNamedVar() )
@@ -54,26 +53,35 @@ public class SQLBridge2 extends SQLBridgeBase
     
             SqlTable table = vCol.getTable() ;
             
-            String sqlVarName = getSqlName(v) ;
+            String sqlVarName = table.getAliasName() ; //getSqlName(v) ;
 
-            Var vLex = Var.alloc(sqlVarName+"$lex") ;
+//            Var vLex = Var.alloc(sqlVarName+"$lex") ;
+//            SqlColumn cLex = new SqlColumn(table, "lex") ;
+//    
+//            Var vDatatype = Var.alloc(sqlVarName+"$datatype") ;
+//            SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
+//    
+//            Var vLang = Var.alloc(sqlVarName+"$lang") ;
+//            SqlColumn cLang = new SqlColumn(table, "lang") ;
+//    
+//            Var vType = Var.alloc(sqlVarName+"$type") ;
+//            SqlColumn cType = new SqlColumn(table, "type") ;
+//    
+//            // Don't really need to do this renaming if we record Rn to variable.
+//            addProject(vLex, cLex) ;
+//            addProject(vDatatype, cDatatype) ;
+//            addProject(vLang, cLang) ;
+//            addProject(vType, cType) ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
-    
-            Var vDatatype = Var.alloc(sqlVarName+"$datatype") ;
             SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
-    
-            Var vLang = Var.alloc(sqlVarName+"$lang") ;
             SqlColumn cLang = new SqlColumn(table, "lang") ;
-    
-            Var vType = Var.alloc(sqlVarName+"$type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
-    
-            addProject(vLex, cLex) ;
-            addProject(vDatatype, cDatatype) ;
-            addProject(vLang, cLang) ;
-            addProject(vType, cType) ;
-            
-            
+
+            addProject(cLex) ;
+            addProject(cDatatype) ;
+            addProject(cLang) ;
+            addProject(cType) ;
+            addAnnotation(sqlVarName+"="+v.toString()) ;
         }
         setAnnotation() ; 
         return getProjectNode() ;

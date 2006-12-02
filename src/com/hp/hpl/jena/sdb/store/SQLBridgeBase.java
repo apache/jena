@@ -69,12 +69,6 @@ public abstract class SQLBridgeBase implements SQLBridge
     {
         // v is null if there is no renaming going on.
         sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,  col)) ;
-        if ( v != null )
-        {
-            if ( annotation.length() > 0 )
-                annotation.append(" ") ;
-            annotation.append(String.format("%s=%s", v, getSqlName(v))) ;
-        }
     }
     
     protected void addProject(SqlColumn col)
@@ -82,10 +76,17 @@ public abstract class SQLBridgeBase implements SQLBridge
         sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(null,  col)) ;
     }
     
+    protected void addAnnotation(String note)
+    {
+        if ( annotation.length() > 0 )
+            annotation.append(" ") ;
+        annotation.append(note) ;
+    }
+    
     protected void setAnnotation()
     {
         if ( annotation.length() > 0 )
-            sqlNode.addNote(annotation.toString()) ;
+            getProjectNode().addNote(annotation.toString()) ;
     }
     
     protected Collection<Var> getProject() { return projectVars ; }

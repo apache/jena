@@ -66,7 +66,7 @@ public abstract class BlockCompilerBasic implements BlockCompiler
         SqlExprList conditions = new SqlExprList() ;
         
         SqlTable triples = accessTriplesTable(alias) ;
-        triples.addNote(FmtUtils.stringForTriple(triple, context.getQuery().getPrefixMapping())) ;
+        triples.addNote(FmtUtils.stringForTriple(triple, context.getPrefixMapping())) ;
         
         processSlot(context, triples, conditions, triple.getSubject(),   TableTriples.subjectCol) ; 
         processSlot(context, triples, conditions, triple.getPredicate(), TableTriples.predicateCol) ;

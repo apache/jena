@@ -45,19 +45,27 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
                 if ( ! first ) out.print(" ") ;
                 first = false ;
                 
-                String a = "<null>" ;
+                String a = null ;
                 String b = "<null>" ;
                 if ( c.car() != null )
                     a = stringForNode(c.car().asNode()) ;
                 if ( c.cdr() != null )
                     b = c.cdr().asString() ;
                 
-                // Var name formatting. 
-                String x[] = a.split("\\"+SDBConstants.SQLmark) ;
-                if ( currentPrefix != null && ! x[0].equals(currentPrefix) )
-                    out.println() ;
-                currentPrefix = x[0] ;
-                out.print(a+"/"+b) ;
+                if ( a == null )
+                {
+                    out.print(b) ;
+                    currentPrefix = null ;
+                }
+                else
+                {
+                    // Var name formatting. 
+                    String x[] = a.split("\\"+SDBConstants.SQLmark) ;
+                    if ( currentPrefix != null && ! x[0].equals(currentPrefix) )
+                        out.println() ;
+                    currentPrefix = x[0] ;
+                    out.print(a+"/"+b) ;
+                }
             }
             out.decIndent() ;
             out.println() ; 

@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreHolder;
@@ -22,18 +21,18 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class CompileContext extends StoreHolder
 {
-    Query query ;
+    PrefixMapping prefixMapping ;
     
-    public CompileContext(Store store, Query query)
-    { super(store) ; this.query = query ; }
+    public CompileContext(Store store, PrefixMapping prefixMapping)
+    { super(store) ; this.prefixMapping = prefixMapping ; }
     
     public Store getStore()            { return store() ; }
-    public Query getQuery()            { return query ; }
+
     public PrefixMapping getPrefixMapping()
     { 
-        if ( query == null )
+        if ( prefixMapping == null )
             return SDB.getGlobalPrefixMapping() ; 
-        return query.getPrefixMapping() ;
+        return prefixMapping ;
     }
 
     private static final String triplesTableAliasBase = "T"+SDBConstants.SQLmark ;

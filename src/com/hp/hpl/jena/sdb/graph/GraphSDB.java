@@ -84,7 +84,7 @@ public class GraphSDB extends GraphBase implements Graph
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
         // Fake a query.
-        CompileContext cxt = new CompileContext(getStore(), new Query()) ;
+        CompileContext cxt = new CompileContext(getStore(), new Query().getPrefixMapping()) ;
         List<Node>vars = new ArrayList<Node>() ;
         
         Node s = m.getMatchSubject() ;

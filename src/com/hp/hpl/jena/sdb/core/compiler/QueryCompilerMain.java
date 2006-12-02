@@ -20,7 +20,6 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Block;
 import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.QueryCompiler;
@@ -60,7 +59,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         
         // finishCompile pairs with resultBuilder so combine 
         // ResultsBuilder.makeProject(SqlNode, Vars) => SqlNode
-        Scope scope = sqlNode.getIdScope() ;
+        //Scope scope = sqlNode.getIdScope() ;
         
         try {
             // Odd : exitVariables and a project?
@@ -86,7 +85,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
     protected SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge)
     {
         verbose ( QC.printBlock, block ) ; 
-        CompileContext context = new CompileContext(store, query) ;
+        CompileContext context = new CompileContext(store, query.getPrefixMapping()) ;
 
         // A chance for subclasses to change the block structure
         //  -- including insert their own block types)

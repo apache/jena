@@ -11,6 +11,9 @@ import com.hp.hpl.jena.sdb.store.SQLGenerator;
 
 public class GenerateSQL implements SQLGenerator 
 {
+    public static String toSQL(SqlNode sqlNode)
+    { return new GenerateSQL().generateSQL(sqlNode) ; }
+    
     public String generateSQL(SqlNode sqlNode)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;

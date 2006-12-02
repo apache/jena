@@ -29,8 +29,6 @@ import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 public class BlockCompiler2 extends BlockCompilerBasic
 {
     private static Log log = LogFactory.getLog(BlockCompiler2.class) ;
-
-    
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
 
     private int nodesAliasCount = 1 ;

@@ -40,12 +40,11 @@ public class SQLBridge1 extends SQLBridgeBase
             // CHECK
             SqlColumn c = getSqlExprNode().getIdScope().getColumnForVar(v) ;
             if ( c == null )
-//              log.warn("Can't find column for var: "+v) ;
                 continue ;
             
             String sqlVarName = getSqlName(v) ;
             addProject(Var.alloc(sqlVarName), c) ;
-//             sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(v,c)) ;
+            addAnnotation(sqlVarName+"="+v.toString()) ;
         }
         setAnnotation() ;
         return getProjectNode() ;

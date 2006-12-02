@@ -44,7 +44,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     public void visit(SqlProject sqlNode)
     {
         out.println("SELECT ") ;
-        annotate(sqlNode, 10) ; 
+        annotate(sqlNode) ; 
         out.ensureStartOfLine() ;
         out.incIndent() ;
         // SELECT vars
@@ -88,8 +88,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             
             if ( aliasVar != null )
             {
+                String varLabel = c.car().getName() ;
                 out.print(" AS ") ;
-                out.print(c.car().getName()) ;
+                out.print(varLabel) ;
             }
         }
         out.decIndent() ;
