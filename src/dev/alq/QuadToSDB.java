@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 
+// TODO Old - remove sometime when all copied to TransformSDB
 public class QuadToSDB 
 {
     private static Log log = LogFactory.getLog(QuadToSDB.class) ; 
