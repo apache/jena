@@ -53,34 +53,27 @@ public class SQLBridge2 extends SQLBridgeBase
     
             SqlTable table = vCol.getTable() ;
             
-            String sqlVarName = table.getAliasName() ; //getSqlName(v) ;
-
-//            Var vLex = Var.alloc(sqlVarName+"$lex") ;
-//            SqlColumn cLex = new SqlColumn(table, "lex") ;
-//    
-//            Var vDatatype = Var.alloc(sqlVarName+"$datatype") ;
-//            SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
-//    
-//            Var vLang = Var.alloc(sqlVarName+"$lang") ;
-//            SqlColumn cLang = new SqlColumn(table, "lang") ;
-//    
-//            Var vType = Var.alloc(sqlVarName+"$type") ;
-//            SqlColumn cType = new SqlColumn(table, "type") ;
-//    
-//            // Don't really need to do this renaming if we record Rn to variable.
-//            addProject(vLex, cLex) ;
-//            addProject(vDatatype, cDatatype) ;
-//            addProject(vLang, cLang) ;
-//            addProject(vType, cType) ;
+            String sqlVarName = allocSqlName(v) ;
+            
+            // Need to allocate aliases because other wise we need to access
+            // "table.column" as a label and "." is illegal in a label
+            Var vLex = Var.alloc(sqlVarName+"$lex") ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
+    
+            Var vDatatype = Var.alloc(sqlVarName+"$datatype") ;
             SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
+    
+            Var vLang = Var.alloc(sqlVarName+"$lang") ;
             SqlColumn cLang = new SqlColumn(table, "lang") ;
+    
+            Var vType = Var.alloc(sqlVarName+"$type") ;
             SqlColumn cType = new SqlColumn(table, "type") ;
-
-            addProject(cLex) ;
-            addProject(cDatatype) ;
-            addProject(cLang) ;
-            addProject(cType) ;
+    
+            // Don't really need to do this renaming if we record Rn to variable.
+            addProject(vLex, cLex) ;
+            addProject(vDatatype, cDatatype) ;
+            addProject(vLang, cLang) ;
+            addProject(vType, cType) ;
             addAnnotation(sqlVarName+"="+v.toString()) ;
         }
         setAnnotation() ; 
@@ -100,13 +93,11 @@ public class SQLBridge2 extends SQLBridgeBase
             Binding b = new BindingMap(binding) ;
             for ( Var v : super.getProject() )
             {
-                String codename = super.getSqlName(v) ;
-                // Assumes col format.
-                
                 if ( ! v.isNamedVar() )
                     // Skip bNodes and system variables
                     continue ;
 
+                String codename = super.getSqlName(v) ;
                 try {
                     String lex = rs.getString(codename+"$lex") ;   // chars
                     // Same as rs.wasNull() for things that can return Java nulls.

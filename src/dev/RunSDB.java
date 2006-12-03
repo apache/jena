@@ -14,10 +14,12 @@ import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine1.QueryEngine;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
@@ -55,17 +57,17 @@ public class RunSDB
         Query query = QueryFactory.read("Q.rq") ;
         query.serialize(System.out) ;
         System.out.println("----------------") ;
-        QueryEngineQuadSDB engine = new QueryEngineQuadSDB(store, query) ;
+        QueryEngine engine = new QueryEngineQuadSDB(store, query) ;
 
-        DatasetStore ds = new DatasetStore(store) ;
-        engine.setDataset(ds) ;
+        // Noise.
+        engine.setDataset(new DatasetStore(store)) ;
         
         PlanElement elt = engine.getPlan() ; //.getPlanPattern() ;
         System.out.print(elt.toString()) ;
         System.out.println("----------------") ;
 
         ResultSet rs = engine.execSelect() ;
-        ResultSetFormatter.out(rs) ;
+        ResultSetFormatter.out(rs, query.getPrefixMapping()) ;
 
         
 //        Op op = engine.getOp() ;

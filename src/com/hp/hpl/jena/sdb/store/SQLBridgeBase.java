@@ -31,7 +31,9 @@ public abstract class SQLBridgeBase implements SQLBridge
 {
     private Generator vargen = new Gensym("V") ;
     
-    private Map<Var,String>varLabels = new HashMap<Var,String>() ;
+    // Always need to allocate a label for a column 
+    // because can't access by table.column
+    private Map<Var, String>varLabels = new HashMap<Var, String>() ;
     
     private Collection<Var> projectVars = null ;
     private SqlNode sqlNodeOriginal = null ;
@@ -91,18 +93,7 @@ public abstract class SQLBridgeBase implements SQLBridge
     
     protected Collection<Var> getProject() { return projectVars ; }
     
-    protected String getSqlName(Var v)
-    {
-        if ( false && v.isNamedVar())
-        {
-            // Check is SQL safe and use the raw name if possible
-            return v.getName() ;
-        }
-        
-        return allocNewSqlName(v) ;
-    }
-    
-    private String allocNewSqlName(Var v)
+    protected String allocSqlName(Var v)
     {
         String sqlVarName = varLabels.get(v) ;
         if ( sqlVarName == null )
@@ -112,6 +103,9 @@ public abstract class SQLBridgeBase implements SQLBridge
         }
         return sqlVarName ;
     }
+    
+    protected String getSqlName(Var v) { return varLabels.get(v) ; }
+    
 }
 
 /*

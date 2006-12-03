@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.query.engine2.Algebra;
 import com.hp.hpl.jena.query.engine2.Table;
 import com.hp.hpl.jena.query.engine2.TableFactory;
 import com.hp.hpl.jena.query.engine2.op.Evaluator;
@@ -39,7 +40,7 @@ public class OpSQL extends OpExtBase
         return TableFactory.create(new QueryIterSDB(execCxt.getQuery(),
                                                     store, 
                                                     this, 
-                                                    null, execCxt)) ;
+                                                    Algebra.makeRoot(execCxt), execCxt)) ;
     }
 
     @Override

@@ -43,7 +43,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     
     public void visit(SqlProject sqlNode)
     {
-        out.println("SELECT ") ;
+        out.print("SELECT ") ;
         annotate(sqlNode) ; 
         out.ensureStartOfLine() ;
         out.incIndent() ;

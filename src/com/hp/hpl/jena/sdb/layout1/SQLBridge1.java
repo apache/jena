@@ -42,7 +42,7 @@ public class SQLBridge1 extends SQLBridgeBase
             if ( c == null )
                 continue ;
             
-            String sqlVarName = getSqlName(v) ;
+            String sqlVarName = allocSqlName(v) ;
             addProject(Var.alloc(sqlVarName), c) ;
             addAnnotation(sqlVarName+"="+v.toString()) ;
         }
