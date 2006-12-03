@@ -6,17 +6,23 @@
 
 package dev.alq;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Element;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.QueryEngineQuad;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.Transform;
 import com.hp.hpl.jena.query.engine2.op.Transformer;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
 
 /** Highly experimental quad engine */
@@ -62,6 +68,17 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
         // nothing to do.
         // Currently, QueryIterSDB does the "right thing" 
         return opSQL ;
+    }
+    
+    /** For debugging and inspectation.  Assumes whole query has been converted */ 
+    public SqlNode getSqlNode()
+    {
+        Op op = makeOpForQueryPattern(getContext(), query.getQueryPattern()) ;
+        OpSQL opSQL = (OpSQL)op ;
+        List<Var> projectVars = QP.projectVars(getQuery()) ;
+        SQLBridge bridge = new SQLBridge2() ;
+        SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge, store) ;
+        return sqlNode ;
     }
 }
 

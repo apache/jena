@@ -14,20 +14,23 @@ import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.QueryEngine;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
 import dev.alq.QueryEngineQuadSDB;
+import dev.alq.TransformSDB;
 
 public class RunSDB
 {
@@ -50,26 +53,50 @@ public class RunSDB
     {
 //        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
 //        store.getTableFormatter().format() ;
-        Store store = SDBFactory.connectStore("Store/sdb-mysql-innodb.ttl") ;
+        String divider = "----------------" ;
+        boolean execute = false ;
+        boolean useHSQL = true ;
+        
+        Store store = null ;
+        if ( useHSQL )
+        {
+            store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
+            store.getTableFormatter().format() ;
+            // TODO Temporary workaround
+            if ( execute && store instanceof StoreBaseHSQL )
+                TransformSDB.doLeftJoin = false ;
+        }
+        else
+            store = SDBFactory.connectStore("Store/sdb-mysql-innodb.ttl") ;
+        
         Model model = SDBFactory.connectModel(store) ;
-        model.removeAll() ;
-        model.read("file:D.ttl", "N3") ;
-
         Query query = QueryFactory.read("Q.rq") ;
         query.serialize(System.out) ;
-        System.out.println("----------------") ;
-        QueryEngine engine = new QueryEngineQuadSDB(store, query) ;
-
-        // Noise.
-        engine.setDataset(new DatasetStore(store)) ;
+        System.out.println(divider) ;
+        QueryEngineQuadSDB engine = new QueryEngineQuadSDB(store, query) ;
         
-        PlanElement elt = engine.getPlan() ; //.getPlanPattern() ;
-        System.out.println(elt.toString()) ;
-        System.out.println("----------------") ;
+        if ( ! execute )
+        {
+            query.setResultVars() ;
+            SqlNode sqlNode = engine.getSqlNode() ;
+            System.out.println(sqlNode.toString()) ;
+            System.out.println(divider) ;
+            String sqlString = GenerateSQL.toSQL(sqlNode) ;
+            System.out.println(sqlString) ;
+        }
+        else   
+        {
+            PlanElement elt = engine.getPlan() ; //.getPlanPattern() ;
+            System.out.println(elt.toString()) ;
+            System.out.println(divider) ;
 
-        ResultSet rs = engine.execSelect() ;
-        ResultSetFormatter.out(rs, query.getPrefixMapping()) ;
-
+            model.removeAll() ;
+            model.read("file:D.ttl", "N3") ;
+            // Noise.
+            engine.setDataset(new DatasetStore(store)) ;
+            ResultSet rs = engine.execSelect() ;
+            ResultSetFormatter.out(rs, query.getPrefixMapping()) ;
+        }
         
 //        Op op = engine.getOp() ;
 //        System.out.print(op.toString()) ;

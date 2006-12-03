@@ -19,7 +19,8 @@ public class TransformSDB extends TransformCopy
     private Store store ;
     private Query query ;
     private CompileContext context ;
-
+    static public boolean doLeftJoin = true ;
+    
     public TransformSDB(Store store, Query query, CompileContext context) 
     {
         this.store = store ;
@@ -53,6 +54,10 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpLeftJoin opJoin, Op left, Op right)
     {
+        if ( ! doLeftJoin )
+            return super.transform(opJoin, left, right) ;
+        
+        // TODO See if this store is capable of performing complex join expressions
         if ( ! isOpSQL(left) || ! isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
         

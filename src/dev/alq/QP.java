@@ -9,6 +9,8 @@ package dev.alq;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Element;
 import com.hp.hpl.jena.query.core.Var;
@@ -34,6 +36,8 @@ public class QP
         List<Var> vars = new ArrayList<Var>() ;
         @SuppressWarnings("unchecked")
         List<String> list = (List<String>)query.getResultVars() ;
+        if ( list.size() == 0 )
+            LogFactory.getLog(QP.class).warn("No project variables") ;
         for ( String vn  : list )
             vars.add(Var.alloc(vn)) ;
         return vars ;
