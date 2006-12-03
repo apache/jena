@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sdb.store.Store;
 public class QueryEngineSDB extends QueryEngine
 {
     private static Log log = LogFactory.getLog(QueryEngineSDB.class) ; 
-    Store store ;
+    private Store store ;
     
     public QueryEngineSDB(Store store, Query q)
     {

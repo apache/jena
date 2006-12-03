@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sdb.store.Store;
 public class QueryEngineQuadSDB extends QueryEngineQuad
 {
     private static Log log = LogFactory.getLog(QueryEngineQuadSDB.class) ; 
-    Store store ;
+    private Store store ;
     
     public QueryEngineQuadSDB(Store store, Query q)
     {
@@ -52,7 +52,16 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
         Op op = super.makeOpForQueryPattern(context, queryPatternElement) ;
         CompileContext c = new CompileContext(store, getQuery().getPrefixMapping()) ;
         Transform t = new TransformSDB(store, getQuery(), c) ;
-        return Transformer.transform(t, op) ;
+        op = Transformer.transform(t, op) ;
+        
+        if ( ! ( op instanceof OpSQL ) )
+            return op ;
+        
+        OpSQL opSQL = (OpSQL)op ;
+        // Currently, all variables out of a BGP/QuadP are returned
+        // nothing to do.
+        // Currently, QueryIterSDB does the "right thing" 
+        return opSQL ;
     }
 }
 

@@ -51,6 +51,7 @@ public class QueryIterSDB extends QueryIterRepeatApply
     public QueryIterator exec(Store store, Element element, Binding binding, ExecutionContext execCxt)
     {
         // REMOVE
+        // All BGPs put all their named variables into the output so no real work to do here. 
         List<Var> projectVars = QP.projectVars(execCxt.getQuery()) ;
         
         // XXX Store.createBridge

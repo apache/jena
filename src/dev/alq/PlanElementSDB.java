@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.engine1.plan.PlanElementExternalBase;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.store.Store;
 
+// Not currently used.
 /** Wrap an OpSQL node so that it execute in plan/engine1 framework */
 
 public class PlanElementSDB  
