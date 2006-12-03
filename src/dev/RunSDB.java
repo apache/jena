@@ -16,12 +16,11 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -29,7 +28,7 @@ import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
-import dev.alq.QueryEngineQuad;
+import dev.alq.QueryEngineQuadSDB;
 
 public class RunSDB
 {
@@ -55,12 +54,17 @@ public class RunSDB
         Query query = QueryFactory.read("Q.rq") ;
         query.serialize(System.out) ;
         System.out.println("----------------") ;
-        QueryEngineQuad engine = new QueryEngineQuad(store, query) ;
-        SqlNode sqlNode = engine.toSqlNode() ;
-//        System.out.println(sqlNode.toString()) ;
-//        System.out.println("----------------") ;
-        String sqlString = GenerateSQL.toSQL(sqlNode) ;
-        System.out.println(sqlString) ;
+        QueryEngineQuadSDB engine = new QueryEngineQuadSDB(store, query) ;
+        
+        PlanElement elt = engine.getPlanPattern() ;
+        System.out.print(elt.toString()) ;
+        
+//        Op op = engine.getOp() ;
+//        System.out.print(op.toString()) ;
+        
+//        OpSQL opSQL = (OpSQL)op ;
+//        String sqlString = opSQL.toSQL() ;
+//        System.out.println(sqlString) ;
         System.exit(0) ;
     }
     

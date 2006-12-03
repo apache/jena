@@ -6,57 +6,54 @@
 
 package dev.alq;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Element;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine2.AlgebraCompilerQuad;
+import com.hp.hpl.jena.query.engine2.QueryEngineQuad;
 import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.engine2.op.Transform;
+import com.hp.hpl.jena.query.engine2.op.Transformer;
 import com.hp.hpl.jena.query.util.Context;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.store.Store;
 
-public class QP 
+/** Highly experimental quad engine */
+
+public class QueryEngineQuadSDB extends QueryEngineQuad
 {
-    public static SqlNode toSqlTopNode(SqlNode sqlNode, List<Var> projectVars,
-                                       SQLBridge bridge, Store store)
+    private static Log log = LogFactory.getLog(QueryEngineQuadSDB.class) ; 
+    Store store ;
+    
+    public QueryEngineQuadSDB(Store store, Query q)
     {
-        bridge.init(sqlNode, projectVars) ;
-        sqlNode = bridge.buildProject() ;
-        return sqlNode ;
+        super(q) ;
+        this.store = store ;
     }
     
-    public static List<Var> projectVars(Query query)
-    {
-        List<Var> vars = new ArrayList<Var>() ;
-        @SuppressWarnings("unchecked")
-        List<String> list = (List<String>)query.getResultVars() ;
-        for ( String vn  : list )
-            vars.add(Var.alloc(vn)) ;
-        return vars ;
-    }
+//    @Override
+//    protected PlanElement makePlanForQueryPattern(Context context, Element queryPatternElement)
+//    {
+//        if ( queryPatternElement == null )
+//            return null ;
+//        
+//        Op op = makeOpForQueryPattern(context, queryPatternElement) ;
+//        // May be imcomplete translation    
+//        return new PlanElementSDB(query, store, (OpSQL)op) ;
+//    }
     
-    
-    //  Temporary - access to a protected while we think about the correct overall
-    //  design of the algebra compiler (which is just for SDB).   
-    private static class SDBCompiler extends AlgebraCompilerQuad
+    @Override
+    protected Op makeOpForQueryPattern(Context context, Element queryPatternElement)
     {
-        static Op compile(Context context, Element queryPatternElement) 
-        { return new SDBCompiler(context).compileFixedElement(queryPatternElement) ; }
-
-        public SDBCompiler(Context context)
-        {
-            super(context) ;
-        }
-        public Op dwim(Element queryPatternElement)
-        {
-            return super.compileFixedElement(queryPatternElement) ;
-        }
+        if ( queryPatternElement == null )
+            return null ;
+        
+        Op op = super.makeOpForQueryPattern(context, queryPatternElement) ;
+        CompileContext c = new CompileContext(store, getQuery().getPrefixMapping()) ;
+        Transform t = new TransformSDB(store, getQuery(), c) ;
+        return Transformer.transform(t, op) ;
     }
-
 }
 
 /*

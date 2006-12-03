@@ -6,46 +6,67 @@
 
 package dev.alq;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Element;
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.QueryEngine;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.engine2.op.*;
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
 
-/** Highly experimental quad engine */
-
-public class QueryEngineQuad extends QueryEngine
+public class TransformSDB extends TransformCopy
 {
-    private static Log log = LogFactory.getLog(QueryEngineQuad.class) ; 
-    Store store ;
-    
-    public QueryEngineQuad(Store store, Query q)
+    private Store store ;
+    private Query query ;
+    private CompileContext context ;
+
+    public TransformSDB(Store store, Query query, CompileContext context) 
     {
-        super(q) ;
         this.store = store ;
+        this.query = query ;
+        this.context = context ;
     }
     
+    // Simple example: quads only
+    public void visit(OpBGP opBGP)
+    { throw new SDBException("OpBGP should not appear") ; }
+
     @Override
-    protected PlanElement makePlanForQueryPattern(Context context, Element queryPatternElement)
+    public Op transform(OpQuadPattern quadPattern)
     {
-        // Later substitution?
-        // Check for partials?
-        return new PlanElementSDB(context, query, store) ;
+        QuadBlock qBlk = new QuadBlock(quadPattern) ;
+        CompileContext context = new CompileContext(store, query.getPrefixMapping()) ;
+        SqlNode node = QuadPatternCompiler.compile(context, qBlk) ;
+        return new OpSQL(store, node) ; 
+    }
+
+    @Override
+    public Op transform(OpJoin opJoin, Op left, Op right)
+    {
+        if ( ! isOpSQL(left) || ! isOpSQL(right) )
+            return super.transform(opJoin, left, right) ;
+        
+        SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
+        SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
+        return new OpSQL(store, QC.innerJoin(context, sqlLeft, sqlRight)) ;
+    }
+
+    @Override
+    public Op transform(OpLeftJoin opJoin, Op left, Op right)
+    {
+        if ( ! isOpSQL(left) || ! isOpSQL(right) )
+            return super.transform(opJoin, left, right) ;
+        
+        SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
+        SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
+        return new OpSQL(store, QC.leftJoin(context, sqlLeft, sqlRight)) ;
     }
     
-    public SqlNode toSqlNode()
+    private boolean isOpSQL(Op x)
     {
-        // store.createBridge() ;
-        SQLBridge bridge = new SQLBridge2() ;
-        return QP.toSqlNode(query.getQueryPattern(), query, bridge, store, query.getPrefixMapping(), getContext()) ;
+        return x instanceof OpSQL ;
     }
+    
 }
 
 /*

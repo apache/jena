@@ -7,10 +7,12 @@
 package dev.alq;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Element;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterRepeatApply;
@@ -23,15 +25,19 @@ import com.hp.hpl.jena.sdb.store.Store;
 
 public class QueryIterSDB extends QueryIterRepeatApply
 {
+    // Alternative - no QueryIterSDB, have TableSDB instead. 
+    // PlanElementSDB wraps this table.
     private Store store ;
     private Query query ;
+    private OpSQL opSQL ;
     
-    public QueryIterSDB(Query query, Store store,
+    public QueryIterSDB(Query query, Store store, OpSQL opSQL,
                         QueryIterator input, ExecutionContext execCxt)
     {
         super(input, execCxt) ;
         this.store = store ;
         this.query = query ;
+        this.opSQL = opSQL ;
     }
     
     @Override
@@ -42,14 +48,15 @@ public class QueryIterSDB extends QueryIterRepeatApply
         return exec(store, query.getQueryPattern(), binding, getExecContext()) ;
     }
     
-    // TODO To QC
-    public static QueryIterator exec(Store store, Element element, Binding binding, ExecutionContext execCxt)
+    public QueryIterator exec(Store store, Element element, Binding binding, ExecutionContext execCxt)
     {
-        SQLBridge bridge = new SQLBridge2() ;
-        SqlNode sqlNode = QP.toSqlNode(element, execCxt.getQuery(), bridge, store, execCxt.getQuery().getPrefixMapping(), execCxt.getContext()) ;
-        String sqlStmt = GenerateSQL.toSQL(sqlNode) ;
+        // REMOVE
+        List<Var> projectVars = QP.projectVars(execCxt.getQuery()) ;
         
-        // QueryCompilerMain for verbose control
+        // XXX Store.createBridge
+        SQLBridge bridge = new SQLBridge2() ;
+        SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge, store) ;
+        String sqlStmt = GenerateSQL.toSQL(sqlNode) ;
         try {
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
             try {
@@ -60,8 +67,6 @@ public class QueryIterSDB extends QueryIterRepeatApply
             throw new SDBExceptionSQL("SQLException in executing SQL statement", ex) ;
         }
     }
-    
-
 }
 
 /*

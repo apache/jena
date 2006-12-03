@@ -4,6 +4,7 @@ PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?x ?X
 {
-    ?x :p ?X
-    OPTIONAL { ?x :q ?v }
+##     ?x :p ?X
+##     OPTIONAL { ?x :q ?v }
+    { ?x :p ?X } UNION { ?x :q ?X }
 }

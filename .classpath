@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="lib/concurrent.jar"/>
 	<classpathentry kind="lib" path="lib/icu4j_3_4.jar"/>
 	<classpathentry kind="lib" path="lib/iri.jar"/>
-	<classpathentry kind="lib" path="lib/jena.jar" sourcepath="/Jena2/src"/>
+	<classpathentry kind="lib" path="lib/jena.jar"/>
 	<classpathentry kind="lib" path="lib/json.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.12.jar"/>
 	<classpathentry kind="lib" path="lib/stax-api-1.0.jar"/>
@@ -15,13 +15,13 @@
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="jdbc/hsqldb.jar"/>
 	<classpathentry kind="lib" path="jdbc/mysql-connector-java-5.0.0-beta-bin.jar"/>
-	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/junit-4.1.jar" sourcepath="C:/home/afs/jlib/junit4.1/junit-4.1-src.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JRuby"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDBC-Oracle"/>
+	<classpathentry kind="lib" path="lib/arq.jar"/>
+	<classpathentry kind="lib" path="lib/arq-extra.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

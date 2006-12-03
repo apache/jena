@@ -11,9 +11,10 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternalBase;
-import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.store.Store;
+
+/** Wrap an OpSQL node so that it execute in plan/engine1 framework */
 
 public class PlanElementSDB  
     extends PlanElementExternalBase 
@@ -21,20 +22,20 @@ public class PlanElementSDB
 {
     private Store store ;
     private Query query ;
+    private OpSQL opSQL ;
     
-    public PlanElementSDB(Context context, Query query, Store store)
-    {   
+    public PlanElementSDB(Query query, Store store, OpSQL opSQL)
+    {
         super() ;
         this.store = store ;
         this.query = query ;
-        
-        // Need to check how much we can process.
-        // Leave the rest to reference engine?
+        this.opSQL = opSQL ;
     }
 
     public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
     {
-        return new QueryIterSDB(query, store, input, execCxt ) ;
+        // See QueryIterSDB for discussion 
+        return new QueryIterSDB(query, store, opSQL, input, execCxt ) ;
     }
     
     @Override
@@ -42,7 +43,7 @@ public class PlanElementSDB
     {
         out.println("[PlanElementSDB") ;
         out.incIndent() ;
-        //???
+        opSQL.output(out) ;
         out.decIndent() ;
         out.print("]") ;
     }

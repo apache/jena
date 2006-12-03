@@ -6,57 +6,62 @@
 
 package dev.alq;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Element;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine2.AlgebraCompilerQuad;
-import com.hp.hpl.jena.query.engine2.op.Op;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.query.engine2.Table;
+import com.hp.hpl.jena.query.engine2.TableFactory;
+import com.hp.hpl.jena.query.engine2.op.Evaluator;
+import com.hp.hpl.jena.query.engine2.op.OpExtBase;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
 
-public class QP 
+public class OpSQL extends OpExtBase
 {
-    public static SqlNode toSqlTopNode(SqlNode sqlNode, List<Var> projectVars,
-                                       SQLBridge bridge, Store store)
+    private SqlNode sqlNode ;
+    private Store store ;
+    List<Var> projectVars = null ;
+    
+    public OpSQL(Store store, SqlNode sqlNode)
     {
-        bridge.init(sqlNode, projectVars) ;
-        sqlNode = bridge.buildProject() ;
+        this.store = store ;
+        this.sqlNode = sqlNode ;
+    }
+
+    public void setProjectVars(List<Var> projectVars) { this.projectVars = projectVars ; }
+    
+    public Table eval(Evaluator evaluator)
+    {
+        ExecutionContext execCxt = evaluator.getExecContext() ;
+        return TableFactory.create(new QueryIterSDB(execCxt.getQuery(),
+                                                    store, 
+                                                    this, 
+                                                    null, execCxt)) ;
+    }
+
+    @Override
+    public void output(IndentedWriter out)
+    {
+        out.println("(OpSQL --------") ;
+        out.incIndent() ;
+        sqlNode.output(out) ;
+        out.decIndent() ;
+        out.ensureStartOfLine() ;
+        out.print("--------)") ;
+    }
+    
+    public String toSQL()
+    {
+        return GenerateSQL.toSQL(sqlNode) ;
+    }
+
+    public SqlNode getSqlNode()
+    {
         return sqlNode ;
     }
-    
-    public static List<Var> projectVars(Query query)
-    {
-        List<Var> vars = new ArrayList<Var>() ;
-        @SuppressWarnings("unchecked")
-        List<String> list = (List<String>)query.getResultVars() ;
-        for ( String vn  : list )
-            vars.add(Var.alloc(vn)) ;
-        return vars ;
-    }
-    
-    
-    //  Temporary - access to a protected while we think about the correct overall
-    //  design of the algebra compiler (which is just for SDB).   
-    private static class SDBCompiler extends AlgebraCompilerQuad
-    {
-        static Op compile(Context context, Element queryPatternElement) 
-        { return new SDBCompiler(context).compileFixedElement(queryPatternElement) ; }
-
-        public SDBCompiler(Context context)
-        {
-            super(context) ;
-        }
-        public Op dwim(Element queryPatternElement)
-        {
-            return super.compileFixedElement(queryPatternElement) ;
-        }
-    }
-
 }
 
 /*
