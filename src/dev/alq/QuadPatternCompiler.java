@@ -6,6 +6,9 @@
 
 package dev.alq;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -21,10 +24,22 @@ public class QuadPatternCompiler
 {
     private static Log log = LogFactory.getLog(QuadPatternCompiler.class) ;
     
+    static Map<CompileContext,QuadBlockCompiler> gen = new HashMap<CompileContext, QuadBlockCompiler>() ;
+    
     public static SqlNode compile(CompileContext context, QuadBlock quads)
     {
-        QuadBlockCompiler qbc = new QuadBlockCompiler2(context) ;
+        // TODO Make part of QueryCompiler.
+        // Then QuadBlockCompiler2 
+        QuadBlockCompiler qbc = get(context) ;
         return qbc.compile(quads) ;
+    }
+    
+    private static QuadBlockCompiler get(CompileContext context)
+    {
+        QuadBlockCompiler qbc = gen.get(context) ;
+        if ( qbc == null )
+            gen.put(context, new QuadBlockCompiler2(context) ) ;
+        return gen.get(context) ;
     }
 }
 

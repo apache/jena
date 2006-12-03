@@ -29,6 +29,16 @@ public class Gensym implements Generator
             next() ;
         return lastAlloc ;
     }
+    
+    private String read()
+    {
+        if ( lastAlloc == null )
+            return "<>" ; 
+        return lastAlloc ;
+    }
+    
+    @Override
+    public String toString() { return "gensym/"+read() ; }
 }
 
 /*

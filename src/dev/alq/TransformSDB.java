@@ -35,7 +35,6 @@ public class TransformSDB extends TransformCopy
     public Op transform(OpQuadPattern quadPattern)
     {
         QuadBlock qBlk = new QuadBlock(quadPattern) ;
-        CompileContext context = new CompileContext(store, query.getPrefixMapping()) ;
         SqlNode node = QuadPatternCompiler.compile(context, qBlk) ;
         return new OpSQL(store, node) ; 
     }

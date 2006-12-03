@@ -19,7 +19,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
@@ -49,9 +48,11 @@ public class RunSDB
 
     public static void runQuad()
     {
-        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
-        store.getTableFormatter().format() ;
+//        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
+//        store.getTableFormatter().format() ;
+        Store store = SDBFactory.connectStore("Store/sdb-mysql-innodb.ttl") ;
         Model model = SDBFactory.connectModel(store) ;
+        model.removeAll() ;
         model.read("file:D.ttl", "N3") ;
 
         Query query = QueryFactory.read("Q.rq") ;
@@ -63,7 +64,7 @@ public class RunSDB
         engine.setDataset(new DatasetStore(store)) ;
         
         PlanElement elt = engine.getPlan() ; //.getPlanPattern() ;
-        System.out.print(elt.toString()) ;
+        System.out.println(elt.toString()) ;
         System.out.println("----------------") ;
 
         ResultSet rs = engine.execSelect() ;

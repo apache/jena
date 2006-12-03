@@ -247,12 +247,19 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
     
     private static void classify(QuadBlock quadBlock, Collection<Node> constants, Collection<Var>vars)
     {
-        for ( Quad q : quadBlock )
+        for ( Quad quad : quadBlock )
         {
-            acc(constants, vars, q.getGraph()) ;
-            acc(constants, vars, q.getSubject()) ;
-            acc(constants, vars, q.getPredicate()) ;
-            acc(constants, vars, q.getObject()) ;
+            if ( ! quad.getGraph().equals(defaultGraph) )
+            {
+                log.fatal("Non-default graph") ;
+                throw new SDBException("Non-default graph") ;
+            }
+            if ( false )
+                // Not quadding currently.
+                acc(constants, vars, quad.getGraph()) ;
+            acc(constants, vars, quad.getSubject()) ;
+            acc(constants, vars, quad.getPredicate()) ;
+            acc(constants, vars, quad.getObject()) ;
         }
     }
 

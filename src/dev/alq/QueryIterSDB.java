@@ -19,6 +19,7 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
+import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -58,8 +59,13 @@ public class QueryIterSDB extends QueryIterRepeatApply
         SQLBridge bridge = new SQLBridge2() ;
         SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge, store) ;
         String sqlStmt = GenerateSQL.toSQL(sqlNode) ;
+        if ( true )
+            System.out.println(sqlStmt) ;
         try {
             java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
+            if ( false )
+                // Destructive
+                RS.printResultSet(jdbcResultSet) ;
             try {
                 return bridge.assembleResults(jdbcResultSet, binding, execCxt) ;
             } finally { jdbcResultSet.close() ; }
