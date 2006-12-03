@@ -97,6 +97,9 @@ public class QuadToSDB
         public void visit(OpDatasetNames dsNames)
         {}
 
+        public void visit(OpExt opExt)
+        {}
+
         private void broken(String msg)
         { 
             log.fatal(msg) ;
