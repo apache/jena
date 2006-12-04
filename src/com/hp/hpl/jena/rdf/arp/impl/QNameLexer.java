@@ -42,16 +42,14 @@ abstract public class QNameLexer implements Names, ARPErrorNumbers {
     abstract String getUri();
     abstract String getQName();
     
-    // TODO reconsider this message
     private int rdf(Taint taintMe,String wanted, int fl) throws SAXParseException {
         if ((fl &select)== fl
           && wanted.equals(getLocalName())) {
             if (isInRdfns(taintMe))
                 return fl;
+            if (getQName().toLowerCase().startsWith("rdf:"))
             frame.warning(taintMe,WARN_NOT_RDF_NAMESPACE,getQName() + " is not special. " +
-                    (getQName().toLowerCase().startsWith("rdf:")?
-                        ("The namespace binding of the RDF namespace is incorrect. It should be <"+rdfns+"> not <"+getUri()+">"):
-                        ("Maybe it should be rdf:"+getLocalName())));
+                    "The namespace binding of the RDF namespace is incorrect. It should be <"+rdfns+"> not <"+getUri()+">");
         }
         return 0;
     }
