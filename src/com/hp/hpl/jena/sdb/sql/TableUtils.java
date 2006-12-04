@@ -6,12 +6,18 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
+import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.*;
-import java.util.*;
-
-import static  com.hp.hpl.jena.sdb.util.StrUtils.strjoin ;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class TableUtils

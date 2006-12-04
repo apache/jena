@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.*;
+import com.hp.hpl.jena.sdb.store.StoreBase;
 
 /** Store class for the simple layout (i.e. one triple table)
  * 

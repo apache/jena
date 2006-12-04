@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sdb.junit;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.query.DataFormat;
 import com.hp.hpl.jena.query.Syntax;

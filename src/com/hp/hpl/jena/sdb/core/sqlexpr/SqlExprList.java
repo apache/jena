@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import java.util.ArrayList ;
+import java.util.ArrayList;
 
 public class SqlExprList extends ArrayList<SqlExpr>
 {

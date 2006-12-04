@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.util.Context;
 

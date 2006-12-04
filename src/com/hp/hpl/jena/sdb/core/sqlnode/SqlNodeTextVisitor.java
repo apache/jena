@@ -6,9 +6,10 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import static com.hp.hpl.jena.query.util.FmtUtils.stringForNode;
+
 import java.util.Collection;
 
-import static com.hp.hpl.jena.query.util.FmtUtils.* ;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.Annotations;

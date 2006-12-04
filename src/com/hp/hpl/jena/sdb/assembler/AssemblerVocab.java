@@ -6,12 +6,10 @@
 
 package com.hp.hpl.jena.sdb.assembler;
 
-import com.hp.hpl.jena.sdb.util.Vocab ;
-
-
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sdb.util.Vocab;
 
 public class AssemblerVocab
 {

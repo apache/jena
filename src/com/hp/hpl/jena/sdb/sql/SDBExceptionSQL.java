@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.sql;
 
 import java.sql.SQLException;
+
 import com.hp.hpl.jena.sdb.SDBException;
 
 /** Wrapper SQLException 

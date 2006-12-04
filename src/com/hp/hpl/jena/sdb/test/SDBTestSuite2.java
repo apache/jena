@@ -6,6 +6,10 @@
 
 package com.hp.hpl.jena.sdb.test;
 
+import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.AllTests;
+
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
@@ -14,10 +18,6 @@ import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
-
-import junit.framework.TestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.AllTests;
 
 @RunWith(AllTests.class)
 public class SDBTestSuite2 extends TestSuite

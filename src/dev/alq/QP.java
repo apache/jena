@@ -22,13 +22,12 @@ import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class QP 
 {
-    public static SqlNode toSqlTopNode(SqlNode sqlNode, List<Var> projectVars,
-                                       SQLBridge bridge, Store store)
+    public static SqlNode toSqlTopNode(SqlNode sqlNode, 
+                                       List<Var> projectVars,
+                                       SQLBridge bridge)
     {
         bridge.init(sqlNode, projectVars) ;
         sqlNode = bridge.buildProject() ;
@@ -66,13 +65,10 @@ public class QP
     }
 
 
-    public static Op convert(Op op, Query query, Store store)
+    public static Op convert(Op op, CompileContext context)
     {
-        PrefixMapping pm = null ;
-        if ( query != null )
-            pm = query.getPrefixMapping() ;
-        CompileContext c = new CompileContext(store, query.getPrefixMapping()) ;
-        Transform t = new TransformSDB(store, c) ;
+        // TODO store.createQueryCompiler(c) ;
+        Transform t = new TransformSDB(context) ;
         op = Transformer.transform(t, op) ;
         return op ;
     }

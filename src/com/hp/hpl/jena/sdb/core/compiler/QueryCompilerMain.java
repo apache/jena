@@ -85,7 +85,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
     protected SqlNode compileQuery(Store store, Query query, Block block, SQLBridge bridge)
     {
         verbose ( QC.printBlock, block ) ; 
-        CompileContext context = new CompileContext(store, query.getPrefixMapping()) ;
+        CompileContext context = new CompileContext(store, query) ;
 
         // A chance for subclasses to change the block structure
         //  -- including insert their own block types)

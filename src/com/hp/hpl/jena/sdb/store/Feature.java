@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.query.util.Named ;
+import com.hp.hpl.jena.query.util.Named;
 
 public enum Feature implements Named
 {

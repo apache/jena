@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 import arq.cmd.TerminationException;
-import arq.cmdline.*;
+import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdArgModule;
+import arq.cmdline.CmdGeneral;
+import arq.cmdline.ModBase;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;

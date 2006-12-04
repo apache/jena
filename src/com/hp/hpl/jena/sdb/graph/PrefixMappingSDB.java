@@ -6,10 +6,12 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.quote;
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
+import static java.lang.String.format;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import static java.lang.String.format ; 
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,10 +19,6 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-
-import static com.hp.hpl.jena.sdb.sql.SQLUtils.quote ;
-import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr ;
-
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 

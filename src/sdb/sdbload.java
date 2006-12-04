@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
-
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.graph.Graph;

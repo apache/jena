@@ -8,8 +8,11 @@ package com.hp.hpl.jena.sdb.engine;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.*;
-import com.hp.hpl.jena.query.engine1.plan.* ;
+import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine1.plan.PlanElement1;
+import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
+import com.hp.hpl.jena.query.engine1.plan.PlanElementExternalBase;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.IndentedWriter;

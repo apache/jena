@@ -14,12 +14,11 @@ import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
@@ -54,7 +53,7 @@ public class RunSDB
 //        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
 //        store.getTableFormatter().format() ;
         String divider = "----------------" ;
-        boolean execute = true ;
+        boolean execute = false ;
         boolean useHSQL = true ;
         
         if ( ! execute )
@@ -81,16 +80,22 @@ public class RunSDB
         if ( ! execute )
         {
             query.setResultVars() ;
-            SqlNode sqlNode = engine.getSqlNode() ;
-            System.out.println(sqlNode.toString()) ;
+            
+            Op op = engine.getOp() ;
+            System.out.println(op.toString(query.getPrefixMapping())) ;
             System.out.println(divider) ;
-            String sqlString = GenerateSQL.toSQL(sqlNode) ;
-            System.out.println(sqlString) ;
+            
+            // TODO need to find and print as SQL. 
+//            SqlNode sqlNode = engine.getSqlNode() ;
+//            System.out.println(sqlNode.toString()) ;
+//            System.out.println(divider) ;
+//            String sqlString = GenerateSQL.toSQL(sqlNode) ;
+//            System.out.println(sqlString) ;
         }
         else   
         {
             PlanElement elt = engine.getPlan() ; //.getPlanPattern() ;
-            System.out.println(elt.toString()) ;
+            System.out.println(elt.toString(query.getPrefixMapping())) ;
             System.out.println(divider) ;
 
             model.removeAll() ;

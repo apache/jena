@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sdb.store;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.util.Named;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.query.util.Named ;
 
 /** Symbolic names for databases supported
  *  (can still add new databases without needing

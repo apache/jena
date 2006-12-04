@@ -6,7 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.* ;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Map2<S,T>
 {

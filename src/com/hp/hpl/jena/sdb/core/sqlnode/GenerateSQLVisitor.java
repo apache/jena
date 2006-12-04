@@ -6,15 +6,19 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import static com.hp.hpl.jena.query.util.StringUtils.str;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.sdb.core.*;
-import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.core.Annotations;
+import com.hp.hpl.jena.sdb.core.JoinType;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.util.Pair;
-import static com.hp.hpl.jena.query.util.StringUtils.str ;
 
 // This is not a general purpose SQL writer - it needs only work with the SQL node trees
 // that the schemas generate.  In particular:

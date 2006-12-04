@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.xerces.util.XMLChar;
+
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.CollectionFactory;
-
-import java.util.*;
-
-import org.apache.xerces.util.XMLChar;
 
 /**
  * Implemention of PrefixMapping that separates out storage of the (string,string)

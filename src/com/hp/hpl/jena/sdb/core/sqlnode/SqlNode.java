@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import com.hp.hpl.jena.query.util.Printable;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.query.util.Printable;
 
 public interface SqlNode extends Printable, Annotations
 {

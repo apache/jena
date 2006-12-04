@@ -79,7 +79,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
             // Access nodes table.
 
             SqlTable nTable = new TableNodes(genNodeConstantAlias.next()) ;
-            nTable.addNote("Const: "+FmtUtils.stringForNode(n, context.getPrefixMapping())) ; 
+            nTable.addNote("Const: "+FmtUtils.stringForNode(n)) ; 
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
             // Record 
             constantCols.put(n, new SqlColumn(nTable, "id")) ;
@@ -182,7 +182,7 @@ public class BlockCompiler2 extends BlockCompilerBasic
             return ;
         }
         SqlExpr c = new S_Equal(thisCol, colId) ;
-        c.addNote("Const condition: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
+        c.addNote("Const condition: "+FmtUtils.stringForNode(node)) ;
         conditions.add(c) ;
         return ; 
     }

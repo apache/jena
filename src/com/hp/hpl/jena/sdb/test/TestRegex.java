@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sdb.test;
 
-import com.hp.hpl.jena.sdb.util.RegexUtils;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import com.hp.hpl.jena.sdb.util.RegexUtils;
 
 public class TestRegex
 {

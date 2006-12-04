@@ -13,15 +13,17 @@ import com.hp.hpl.jena.query.engine2.op.Quad;
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 public abstract
 class QuadBlockCompilerBase implements QuadBlockCompiler
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerBase.class) ;
     protected CompileContext context ;
+    protected PrefixMapping prefixMapping ;     // used for annotations
 
     public QuadBlockCompilerBase(CompileContext context)
-    { this.context = context ; }
+    { this.context = context ; prefixMapping = context.getPrefixMapping() ; }
 
     final
     public SqlNode compile(QuadBlock quads)

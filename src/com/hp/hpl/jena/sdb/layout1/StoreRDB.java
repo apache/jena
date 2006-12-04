@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.*;
+import com.hp.hpl.jena.sdb.store.StoreBase;
 
 /** Store class for the Jena2 databse layout : query-only,
  *  not update via this route (use ModelRDB as normal). 

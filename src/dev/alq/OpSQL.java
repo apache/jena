@@ -20,21 +20,21 @@ import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpExtBase;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.Store;
 
 public class OpSQL extends OpExtBase
 {
     private SqlNode sqlNode ;
     private Op originalOp ;
-    private Store store ;
     private List<Var> projectVars = null ;
+    private CompileContext context ;
     
-    public OpSQL(Store store, SqlNode sqlNode, Op original)
+    public OpSQL(SqlNode sqlNode, Op original, CompileContext context)
     {
         // Only needed for the SqlNode to SQL translation.
-        this.store = store ;
+        this.context = context ;
         this.sqlNode = sqlNode ;
         this.originalOp = original ;
     }
@@ -44,11 +44,10 @@ public class OpSQL extends OpExtBase
     public Table eval(Evaluator evaluator)
     {
         ExecutionContext execCxt = evaluator.getExecContext() ;
-        return TableFactory.create(new QueryIterSDB(execCxt.getQuery(),
-                                                    store, 
-                                                    this, 
-                                                    Algebra.makeRoot(execCxt), execCxt)) ;
+        return TableFactory.create(new QueryIterSDB(this, Algebra.makeRoot(execCxt),
+                                                    context, execCxt) ) ;
     }
+
 
     @Override
     public void output(IndentedWriter out)
@@ -60,7 +59,7 @@ public class OpSQL extends OpExtBase
         out.ensureStartOfLine() ;
         out.print("--------)") ;
     }
-    
+
     public String toSQL()
     {
         return GenerateSQL.toSQL(sqlNode) ;
@@ -74,7 +73,7 @@ public class OpSQL extends OpExtBase
     public SqlNode substitute(Binding binding)
     {
         Op op = OpSubstitute.substitute(binding, originalOp) ;
-        op = QP.convert(op, null, store) ;
+        op = QP.convert(op, context) ;
         if ( ! ( op instanceof OpSQL ) )
             throw new SDBException("OpSQL can not be substituted and reformed") ;
         OpSQL opSQL = (OpSQL)op ;

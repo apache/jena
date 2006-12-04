@@ -14,6 +14,9 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
@@ -27,6 +30,9 @@ import com.hp.hpl.jena.sdb.layout2.TableTriples;
 public abstract class BlockCompilerBasic implements BlockCompiler
 {
     private static Log log = LogFactory.getLog(BlockCompilerBasic.class) ;
+    
+    private static final String triplesTableAliasBase   = "T"+SDBConstants.SQLmark ;
+    Generator genTableAlias = new Gensym(triplesTableAliasBase) ;
     
     public SqlNode compile(BlockOptional blockOpt, CompileContext context)
     {
@@ -62,7 +68,7 @@ public abstract class BlockCompilerBasic implements BlockCompiler
 
     public SqlNode compile(Triple triple, CompileContext context)
     {
-        String alias = context.getGenTableAlias().next();
+        String alias = genTableAlias.next();
         SqlExprList conditions = new SqlExprList() ;
         
         SqlTable triples = accessTriplesTable(alias) ;

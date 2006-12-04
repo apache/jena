@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
-import java.sql.SQLException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public  interface SQLCommand
 {

@@ -4,20 +4,52 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package dev.alq;
 
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.util.Vocab;
+import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
 
-
-public class ConfigVocab
+public class QueryCompiler2 extends QueryCompilerMain 
 {
-    private final static String namespace = "http://jena.hpl.hp.com/2006/sdb#" ;
-    public String getURI() { return namespace ; }
+    public QueryCompiler2(CompileContext context)
+    { 
+        super(context) ; 
+    }
+
+    @Override
+    public SqlNode compile(Op op)
+    {
+        op = QP.convert(op, context) ;
+        throw new SDBException("QueryCompiler2.compile") ;
+//        if ( ! ( op instanceof OpSQL ) )
+//            return null  ;
+//        
+//        return null ;
+    }
+
+    @Override
+    protected SQLBridge createBridge()
+    { return new SQLBridge2() ; }
     
-    public final static Resource typeConfig        = Vocab.resource(namespace, "Config") ;
-    public final static Property featureProperty   = Vocab.property(namespace, "feature") ;
+//    public SqlNode compile(Op op)
+//    { return null ; }
+//
+//
+//    public QueryIterator compileExec(Op op, ExecutionContext execCxt)
+//    {
+//        SqlNode sqlNode = compile(op) ;
+//        return exec(sqlNode, execCxt) ;
+//    }
+//
+//    public ConditionCompiler getConditionCompiler()
+//    {
+//        return null ;
+//    }
+
 }
 
 /*

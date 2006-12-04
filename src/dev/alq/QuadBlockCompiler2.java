@@ -33,9 +33,12 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
 {
     private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
-    private final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
-    private final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
+    
+    private static final String triplesTableAliasBase   = "T"+SDBConstants.SQLmark ;
+    private static final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
+    private static final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
 
+    Generator genTableAlias = new Gensym(triplesTableAliasBase) ;
     Generator genNodeConstantAlias = new Gensym(nodesConstantAliasBase) ;
     Generator genNodeResultAlias = new Gensym(nodesResultAliasBase) ;
 
@@ -48,7 +51,7 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
     @Override
     protected SqlNode compile(Quad quad)
     {
-        String alias = context.getGenTableAlias().next();
+        String alias = genTableAlias.next();
         SqlExprList conditions = new SqlExprList() ;
         
         if ( ! quad.getGraph().equals(defaultGraph) )
@@ -58,7 +61,7 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
         }
         
         SqlTable triples = accessTriplesTable(alias) ;
-        triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), context.getPrefixMapping())) ;
+        triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), prefixMapping)) ;
         
         //processSlot(context, triples, conditions, quad.getGraph(),   TableTriples.subjectGraph) ; 
         processSlot(context, triples, conditions, quad.getSubject(),   TableTriples.subjectCol) ; 
@@ -133,7 +136,7 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
 
             // Access nodes table.
             SqlTable nTable = new TableNodes(genNodeConstantAlias.next()) ;
-            nTable.addNote("Const: "+FmtUtils.stringForNode(n, context.getPrefixMapping())) ; 
+            nTable.addNote("Const: "+FmtUtils.stringForNode(n, prefixMapping)) ; 
             SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
             // Record 
             constantCols.put(n, new SqlColumn(nTable, "id")) ;
@@ -234,7 +237,7 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
             return ;
         }
         SqlExpr c = new S_Equal(thisCol, colId) ;
-        c.addNote("Const condition: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
+        c.addNote("Const condition: "+FmtUtils.stringForNode(node, prefixMapping)) ;
         conditions.add(c) ;
         return ; 
     }

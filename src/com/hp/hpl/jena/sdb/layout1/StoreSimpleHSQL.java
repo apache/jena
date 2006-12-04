@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.*;
+import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
 /** Store class for the simple layout (i.e. one triple table)
  * 

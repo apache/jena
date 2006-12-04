@@ -6,14 +6,13 @@
 
 package dev.alq;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternalBase;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 
 // Not currently used.
 /** Wrap an OpSQL node so that it execute in plan/engine1 framework */
@@ -22,22 +21,20 @@ public class PlanElementSDB
     extends PlanElementExternalBase 
     implements PlanElementExternal
 {
-    private Store store ;
-    private Query query ;
     private OpSQL opSQL ;
+    private CompileContext context ;
     
-    public PlanElementSDB(Query query, Store store, OpSQL opSQL)
+    public PlanElementSDB(OpSQL opSQL, CompileContext context)
     {
         super() ;
-        this.store = store ;
-        this.query = query ;
         this.opSQL = opSQL ;
+        this.context = context ;
     }
 
     public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
     {
         // See QueryIterSDB for discussion 
-        return new QueryIterSDB(query, store, opSQL, input, execCxt ) ;
+        return new QueryIterSDB(opSQL, input, context, execCxt ) ;
     }
     
     @Override

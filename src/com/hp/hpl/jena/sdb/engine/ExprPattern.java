@@ -10,7 +10,10 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.ExprUtils;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.exprmatch.*;
+import com.hp.hpl.jena.sdb.exprmatch.Action;
+import com.hp.hpl.jena.sdb.exprmatch.ExprMatcher;
+import com.hp.hpl.jena.sdb.exprmatch.MapAction;
+import com.hp.hpl.jena.sdb.exprmatch.MapResult;
 
 public class ExprPattern
 {

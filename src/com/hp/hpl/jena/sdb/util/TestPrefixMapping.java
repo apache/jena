@@ -6,11 +6,12 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import junit.framework.TestSuite;
+
 import com.hp.hpl.jena.assembler.JA;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
 import com.hp.hpl.jena.vocabulary.*;
-import junit.framework.*;
 
 /**
     Tests PrefixMappingImpl by subclassing AbstractTestPrefixMapping, qv.

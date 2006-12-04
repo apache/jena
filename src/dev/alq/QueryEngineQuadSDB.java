@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.QueryEngineQuad;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
@@ -51,9 +52,9 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
     {
         if ( queryPatternElement == null )
             return null ;
-        
+        CompileContext c = new CompileContext(store, query) ;
         Op op = super.makeOpForQueryPattern(context, queryPatternElement) ;
-        op = QP.convert(op, getQuery(), store) ;
+        op = QP.convert(op, c) ;
         
         if ( ! ( op instanceof OpSQL ) )
             return op ;
@@ -70,7 +71,7 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
         OpSQL opSQL = (OpSQL)op ;
         List<Var> projectVars = QP.projectVars(getQuery()) ;
         SQLBridge bridge = new SQLBridge2() ;
-        SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge, store) ;
+        SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge) ;
         return sqlNode ;
     }
 }

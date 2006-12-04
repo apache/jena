@@ -9,35 +9,32 @@ package dev.alq;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.Element;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterRepeatApply;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
-import com.hp.hpl.jena.sdb.store.Store;
 
 public class QueryIterSDB extends QueryIterRepeatApply
 {
     // Alternative - no QueryIterSDB, have TableSDB instead. 
     // PlanElementSDB wraps this table.
-    private Store store ;
-    private Query query ;
     private OpSQL opSQL ;
+    private CompileContext context ;
     
-    public QueryIterSDB(Query query, Store store, OpSQL opSQL,
-                        QueryIterator input, ExecutionContext execCxt)
+    public QueryIterSDB(OpSQL opSQL, QueryIterator input, 
+                        CompileContext context, 
+                        ExecutionContext execCxt)
     {
         super(input, execCxt) ;
-        this.store = store ;
-        this.query = query ;
+        this.context = context ;
         this.opSQL = opSQL ;
     }
     
@@ -47,10 +44,10 @@ public class QueryIterSDB extends QueryIterRepeatApply
         //TODO SUBSTITUTE binding
         // Maybe OpSQL also needs the original tree.
         //return store.getQueryCompiler().exec(store, block2, binding, super.getExecContext()) ;
-        return exec(store, query.getQueryPattern(), binding, getExecContext()) ;
+        return exec(context, binding, getExecContext()) ;
     }
     
-    public QueryIterator exec(Store store, Element element, Binding binding, ExecutionContext execCxt)
+    public QueryIterator exec(CompileContext context,Binding binding, ExecutionContext execCxt)
     {
         // REMOVE
         // All BGPs put all their named variables into the output so no real work to do here. 
@@ -58,12 +55,12 @@ public class QueryIterSDB extends QueryIterRepeatApply
         
         // XXX Store.createBridge
         SQLBridge bridge = new SQLBridge2() ;
-        SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge, store) ;
+        SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge) ;
         String sqlStmt = GenerateSQL.toSQL(sqlNode) ;
         if ( true )
             System.out.println(sqlStmt) ;
         try {
-            java.sql.ResultSet jdbcResultSet = store.getConnection().execQuery(sqlStmt) ;
+            java.sql.ResultSet jdbcResultSet = context.getStore().getConnection().execQuery(sqlStmt) ;
             if ( false )
                 // Destructive
                 RS.printResultSet(jdbcResultSet) ;

@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.script;
 
+import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
-import arq.cmd.QueryCmdUtils ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 

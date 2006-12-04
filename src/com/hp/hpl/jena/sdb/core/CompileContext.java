@@ -6,14 +6,14 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.SDB;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreHolder;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 
 /** A collection of things to track during query compilation
- * from SPARQL to SQL.
+ * and execution from SPARQL to SQL.
  * 
  * @author Andy Seaborne
  * @version $Id: CompileContext.java,v 1.14 2006/04/17 11:55:35 andy_seaborne Exp $
@@ -21,27 +21,29 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class CompileContext extends StoreHolder
 {
-    PrefixMapping prefixMapping ;
-    
-    public CompileContext(Store store, PrefixMapping prefixMapping)
-    { super(store) ; this.prefixMapping = prefixMapping ; }
-    
-    public Store getStore()            { return store() ; }
+    // TODO better name? this is a runtime thign as well.  SDBContext??
+    private PrefixMapping prefixMapping ;
+    private Query query ;
 
-    public PrefixMapping getPrefixMapping()
+    // Move into compiler tree?Look for others 
+//    private static final String triplesTableAliasBase = "T"+SDBConstants.SQLmark ;
+//    private Generator genTableAlias = new Gensym(triplesTableAliasBase) ;
+//    public Generator getGenTableAlias() { return genTableAlias ; }
+    
+//    private static String joinAliasBase = "J"+SDBConstants.SQLmark ;
+//    private Generator genJoinAlias = new Gensym(joinAliasBase) ;
+//    public Generator getGenJoinAlias() { return genJoinAlias ; }
+    
+    public CompileContext(Store store, Query query)
     { 
-        if ( prefixMapping == null )
-            return SDB.getGlobalPrefixMapping() ; 
-        return prefixMapping ;
+        super(store) ;
+        this.query = query ;
+        this.prefixMapping = query.getPrefixMapping() ;
     }
-
-    private static final String triplesTableAliasBase = "T"+SDBConstants.SQLmark ;
-    private Generator genTableAlias = new Gensym(triplesTableAliasBase) ;
-    public Generator getGenTableAlias() { return genTableAlias ; }
     
-    private static String joinAliasBase = "J"+SDBConstants.SQLmark ;
-    private Generator genJoinAlias = new Gensym(joinAliasBase) ;
-    public Generator getGenJoinAlias() { return genJoinAlias ; }
+    public PrefixMapping getPrefixMapping()             { return prefixMapping ; }
+    public Query getQuery()             { return query ; }
+    public Store getStore()             { return store() ; }
 }
 
 /*

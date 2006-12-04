@@ -50,7 +50,7 @@ public class BlockCompiler1 extends BlockCompilerBasic
     {
           String str = codec.encode(node) ;
           SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-          c.addNote("Const: "+FmtUtils.stringForNode(node, context.getPrefixMapping())) ;
+          c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
           conditions.add(c) ;
           return ;
     }

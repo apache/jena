@@ -10,7 +10,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.engine1.*;
+import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine1.QueryEngine;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.store.Store;
 
