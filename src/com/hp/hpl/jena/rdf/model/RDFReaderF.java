@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderF.java,v 1.7 2006-03-22 13:53:12 andy_seaborne Exp $
+ * $Id: RDFReaderF.java,v 1.8 2006-12-04 15:03:51 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -49,7 +49,7 @@ package com.hp.hpl.jena.rdf.model;
  *with a name of the form com.hp.hpl.jena.readers.<lang> to the class
  *name.</p>
  * @author bwm
- * @version $Version$ $Date: 2006-03-22 13:53:12 $
+ * @version $Version$ $Date: 2006-12-04 15:03:51 $
  */
 
 public interface RDFReaderF {
@@ -73,6 +73,6 @@ public interface RDFReaderF {
  * @return the old class name for this language
  */    
     public String setReaderClassName(String lang, String className);
- //* @deprecated Replaced by setReader
+ 
 }
 
