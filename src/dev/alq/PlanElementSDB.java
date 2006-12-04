@@ -11,6 +11,7 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
 import com.hp.hpl.jena.query.engine1.plan.PlanElementExternalBase;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -48,6 +49,17 @@ public class PlanElementSDB
         out.decIndent() ;
         out.print("]") ;
     }
+    
+    @Override
+    public void output(IndentedWriter out, SerializationContext sContext)
+    {
+        out.println("[PlanElementSDB") ;
+        out.incIndent() ;
+        opSQL.output(out) ;
+        out.decIndent() ;
+        out.print("]") ;
+    }
+
 }
 
 /*

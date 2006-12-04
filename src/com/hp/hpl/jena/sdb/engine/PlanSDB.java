@@ -10,6 +10,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.*;
 import com.hp.hpl.jena.query.engine1.plan.* ;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.Block;
@@ -39,7 +40,7 @@ public class PlanSDB
     }
 
     @Override
-    public void output(IndentedWriter out)
+    public void output(IndentedWriter out, SerializationContext sCxt)
     {
         out.println("[PlanSDB") ;
         out.incIndent() ;
