@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.9 2006-11-28 15:47:12 jeremy_carroll Exp $
+  $Id: TestModelRead.java,v 1.10 2006-12-04 15:30:47 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.regression.testReaderInterface;
+import com.hp.hpl.jena.shared.ConfigException;
 import com.hp.hpl.jena.shared.JenaException;
 
 import junit.framework.TestSuite;
@@ -41,6 +42,16 @@ public class TestModelRead extends ModelTestBase
         assertTrue( m.isEmpty() );
         }
     
+    public void testGRDDLConfigMessage() {
+    	Model m = ModelFactory.createDefaultModel();
+    	try {
+    		m.read("http://www.w3.org/","GRDDL");
+    		// ok.
+    	}
+    	catch (ConfigException e) {
+    		// expected.
+    	}
+    }
     public void testLoadsSimpleModel()
         {
         Model expected = ModelFactory.createDefaultModel();

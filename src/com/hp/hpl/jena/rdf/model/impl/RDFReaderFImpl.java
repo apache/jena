@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderFImpl.java,v 1.15 2006-12-04 15:03:44 jeremy_carroll Exp $
+ * $Id: RDFReaderFImpl.java,v 1.16 2006-12-04 15:30:45 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -38,11 +38,13 @@ import com.hp.hpl.jena.JenaRuntime ;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.15 $ $Date: 2006-12-04 15:03:44 $
+ * @version $Revision: 1.16 $ $Date: 2006-12-04 15:30:45 $
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
 
-    protected static Properties langToClassName = null;
+    private static final String GRDDLREADER = "com.hp.hpl.jena.grddl.GRDDLReader";
+
+	protected static Properties langToClassName = null;
 
     // predefined languages - these should probably go in a properties file
 
@@ -52,7 +54,8 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
                                               "N-TRIPLES",
                                               "N3",
                                               "TURTLE",
-                                              "TTL"};
+                                              "TTL",
+                                              "GRDDL"};
     // default readers for each language
 
     protected static final String DEFAULTREADERS[] = {
@@ -62,7 +65,8 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         "com.hp.hpl.jena.n3.N3JenaReader",
         "com.hp.hpl.jena.n3.TurtleJenaReader",
-        "com.hp.hpl.jena.n3.TurtleJenaReader"
+        "com.hp.hpl.jena.n3.TurtleJenaReader",
+        GRDDLREADER
     };
 
     protected static final String DEFAULTLANG = LANGS[0];
@@ -102,6 +106,10 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         try {
           return (RDFReader) Class.forName(className)
                                   .newInstance();
+        } catch (ClassNotFoundException e) {
+        	if (className.equals(GRDDLREADER))
+                throw new ConfigException("The GRDDL reader must be downloaded separately from Sourceforge, and included on the classpath.",e);
+        	throw new ConfigException("Reader not found on classpath",e);
         } catch (Exception e) {
             throw new JenaException(e);
         }
