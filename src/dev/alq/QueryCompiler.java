@@ -6,22 +6,22 @@
 
 package dev.alq;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.Store;
+//import com.hp.hpl.jena.query.Query;
+//import com.hp.hpl.jena.query.core.Binding;
+//import com.hp.hpl.jena.query.engine.QueryIterator;
+//import com.hp.hpl.jena.query.engine1.ExecutionContext;
+//import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+//import com.hp.hpl.jena.sdb.store.Store;
 
 public interface QueryCompiler
 {
-    // Debugging route to compiler.
-    public SqlNode compileQuery(Store store, Query query) ;
-
-    public QueryIterator exec(Store store,
-                              Query query,
-                              Binding binding,
-                              ExecutionContext execCxt) ;
+//    // Debugging route to compiler.
+//    public SqlNode compileQuery(Store store, Query query) ;
+//
+//    public QueryIterator exec(Store store,
+//                              Query query,
+//                              Binding binding,
+//                              ExecutionContext execCxt) ;
 }
 
 /*

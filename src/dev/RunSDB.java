@@ -57,6 +57,9 @@ public class RunSDB
         boolean execute = false ;
         boolean useHSQL = true ;
         
+        if ( ! execute )
+            useHSQL = true ;        // Avoid neeing a connection to the DB
+        
         Store store = null ;
         if ( useHSQL )
         {

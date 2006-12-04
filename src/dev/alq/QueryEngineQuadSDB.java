@@ -16,10 +16,7 @@ import com.hp.hpl.jena.query.core.Element;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.QueryEngineQuad;
 import com.hp.hpl.jena.query.engine2.op.Op;
-import com.hp.hpl.jena.query.engine2.op.Transform;
-import com.hp.hpl.jena.query.engine2.op.Transformer;
 import com.hp.hpl.jena.query.util.Context;
-import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.layout2.SQLBridge2;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
@@ -56,9 +53,7 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
             return null ;
         
         Op op = super.makeOpForQueryPattern(context, queryPatternElement) ;
-        CompileContext c = new CompileContext(store, getQuery().getPrefixMapping()) ;
-        Transform t = new TransformSDB(store, getQuery(), c) ;
-        op = Transformer.transform(t, op) ;
+        op = QP.convert(op, getQuery(), store) ;
         
         if ( ! ( op instanceof OpSQL ) )
             return op ;

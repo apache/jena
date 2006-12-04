@@ -6,7 +6,6 @@
 
 package dev.alq;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.CompileContext;
@@ -17,14 +16,12 @@ import com.hp.hpl.jena.sdb.store.Store;
 public class TransformSDB extends TransformCopy
 {
     private Store store ;
-    private Query query ;
     private CompileContext context ;
     static public boolean doLeftJoin = true ;
     
-    public TransformSDB(Store store, Query query, CompileContext context) 
+    public TransformSDB(Store store, CompileContext context) 
     {
         this.store = store ;
-        this.query = query ;
         this.context = context ;
     }
     
@@ -37,7 +34,7 @@ public class TransformSDB extends TransformCopy
     {
         QuadBlock qBlk = new QuadBlock(quadPattern) ;
         SqlNode node = QuadPatternCompiler.compile(context, qBlk) ;
-        return new OpSQL(store, node) ; 
+        return new OpSQL(store, node, quadPattern) ; 
     }
 
     @Override
@@ -48,7 +45,7 @@ public class TransformSDB extends TransformCopy
         
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
-        return new OpSQL(store, QC.innerJoin(context, sqlLeft, sqlRight)) ;
+        return new OpSQL(store, QC.innerJoin(context, sqlLeft, sqlRight), opJoin) ;
     }
 
     @Override
@@ -63,7 +60,7 @@ public class TransformSDB extends TransformCopy
         
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
-        return new OpSQL(store, QC.leftJoin(context, sqlLeft, sqlRight)) ;
+        return new OpSQL(store, QC.leftJoin(context, sqlLeft, sqlRight), opJoin) ;
     }
     
     private boolean isOpSQL(Op x)

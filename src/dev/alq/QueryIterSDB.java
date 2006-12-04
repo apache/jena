@@ -45,6 +45,7 @@ public class QueryIterSDB extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding binding)
     {
         //TODO SUBSTITUTE binding
+        // Maybe OpSQL also needs the original tree.
         //return store.getQueryCompiler().exec(store, block2, binding, super.getExecContext()) ;
         return exec(store, query.getQueryPattern(), binding, getExecContext()) ;
     }

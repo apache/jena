@@ -16,10 +16,14 @@ import com.hp.hpl.jena.query.core.Element;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.AlgebraCompilerQuad;
 import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.engine2.op.Transform;
+import com.hp.hpl.jena.query.engine2.op.Transformer;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class QP 
 {
@@ -59,6 +63,18 @@ public class QP
         {
             return super.compileFixedElement(queryPatternElement) ;
         }
+    }
+
+
+    public static Op convert(Op op, Query query, Store store)
+    {
+        PrefixMapping pm = null ;
+        if ( query != null )
+            pm = query.getPrefixMapping() ;
+        CompileContext c = new CompileContext(store, query.getPrefixMapping()) ;
+        Transform t = new TransformSDB(store, c) ;
+        op = Transformer.transform(t, op) ;
+        return op ;
     }
 
 }

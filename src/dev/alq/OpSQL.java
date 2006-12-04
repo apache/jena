@@ -8,14 +8,18 @@ package dev.alq;
 
 import java.util.List;
 
+import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine2.Algebra;
+import com.hp.hpl.jena.query.engine2.OpSubstitute;
 import com.hp.hpl.jena.query.engine2.Table;
 import com.hp.hpl.jena.query.engine2.TableFactory;
 import com.hp.hpl.jena.query.engine2.op.Evaluator;
+import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpExtBase;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -23,13 +27,16 @@ import com.hp.hpl.jena.sdb.store.Store;
 public class OpSQL extends OpExtBase
 {
     private SqlNode sqlNode ;
+    private Op originalOp ;
     private Store store ;
-    List<Var> projectVars = null ;
+    private List<Var> projectVars = null ;
     
-    public OpSQL(Store store, SqlNode sqlNode)
+    public OpSQL(Store store, SqlNode sqlNode, Op original)
     {
+        // Only needed for the SqlNode to SQL translation.
         this.store = store ;
         this.sqlNode = sqlNode ;
+        this.originalOp = original ;
     }
 
     public void setProjectVars(List<Var> projectVars) { this.projectVars = projectVars ; }
@@ -62,6 +69,16 @@ public class OpSQL extends OpExtBase
     public SqlNode getSqlNode()
     {
         return sqlNode ;
+    }
+    
+    public SqlNode substitute(Binding binding)
+    {
+        Op op = OpSubstitute.substitute(binding, originalOp) ;
+        op = QP.convert(op, null, store) ;
+        if ( ! ( op instanceof OpSQL ) )
+            throw new SDBException("OpSQL can not be substituted and reformed") ;
+        OpSQL opSQL = (OpSQL)op ;
+        return opSQL.getSqlNode() ;
     }
 }
 
