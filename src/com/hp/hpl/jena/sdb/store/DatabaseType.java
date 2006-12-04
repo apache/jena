@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.store;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.shared.Named;
+import com.hp.hpl.jena.query.util.Named ;
 
 /** Symbolic names for databases supported
  *  (can still add new databases without needing
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.sdb.shared.Named;
  * @version $Id: DatabaseType.java,v 1.4 2006/05/07 19:19:24 andy_seaborne Exp $
  */
 
-public enum DatabaseType implements Named{
+public enum DatabaseType implements Named {
     // These should be compatible with the DBnames that Jena uses for ModelRDB
     MySQL5     { public String getName() { return "MySQL5" ; } } ,
     MySQL41    { public String getName() { return "MySQL41" ; } } ,

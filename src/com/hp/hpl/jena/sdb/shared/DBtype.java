@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.shared;
 
+import com.hp.hpl.jena.query.util.Named ;
+
 //TODO Relate to DatabaseType
 public enum DBtype implements Named { 
     MySQL       { public String getName() { return "MySQL" ; } } ,
