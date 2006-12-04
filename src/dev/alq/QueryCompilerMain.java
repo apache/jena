@@ -11,18 +11,34 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.ConditionCompiler;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreHolder;
 
-public interface QueryCompiler
+public abstract class QueryCompilerMain extends StoreHolder implements QueryCompiler 
 {
-    public ConditionCompiler getConditionCompiler() ;
+    public QueryCompilerMain(Store store) { super(store) ; }
     
-    public SqlNode compile(Op op) ;
+    // Remove all these store things?
+    
+    public abstract SqlNode compile(Op op) ;
 
-    public QueryIterator exec(SqlNode sqlNode, 
-                              ExecutionContext execCxt) ;
-    
-    // Compile and execute 
-    public QueryIterator compileExec(Op op,  ExecutionContext execCxt) ;
+    public QueryIterator exec(SqlNode sqlNode, ExecutionContext execCxt)
+    {
+        
+        return null ;
+    }
+
+    public QueryIterator compileExec(Op op, ExecutionContext execCxt)
+    {
+        SqlNode sqlNode = compile(op) ;
+        return exec(sqlNode, execCxt) ;
+    }
+
+    public ConditionCompiler getConditionCompiler()
+    {
+        return null ;
+    }
+
 }
 
 /*

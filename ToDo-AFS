@@ -1,9 +1,6 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ SPARQL variable <=> SQL syntax safely.
-  Don't need to use AS at all if use the R/T name.
-
 + cmd: 
   @ --load for sdb.sdbquery --format
      Done - but should be ModData/ModInit/ModSetup
@@ -17,23 +14,11 @@ SDB ToDo list (and general notes)
   SELECT ?x {}
   SELECT * { P[?x] OPTIONAL { P[!?x] OPTIONAL { OPTIONAL P[?x] } } }
 
-+ Compile hooks
-      Subclassing a BlockCompiler still need hooks.
-      A subclass with hook points!
-	BGP => BGP
-		==> modify (called before compilation starts)
-			Subclasses of QueryCompiler.
-	        c.f. Customizer - a dynamically loaded piece of code.
-	        Combine into QueryCompilerCustoimizer.
-	BGP => SQL (part of compilation)
-		In the BlockCompiler.
-		For now, only subclasses to provide extensions - not dynamic code.
-		Subclass that handles hooks
-    One feature may need both.
++ Remove blocks.
 
 + Abstracting databases:
   1/ The Jena2 way of config files.
-  3/ graph for an SDBConnection (or get from DB).
+  2/ graph for an SDBConnection (or get from DB).
     That is the unit of database if there are multiple stores per connection.
     Or maybe a Store features?
       A/ regex syntax

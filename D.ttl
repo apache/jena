@@ -10,7 +10,9 @@
 :C2 rdfs:subClassOf :C3 .
 :C2 rdfs:subClassOf :C4 .
 
-:x :p :z1 .
+:x1 :p :z1 .
+:x2 :p :z1 .
+
 :x :p2 :z2 .
 
 :p rdfs:subPropertyOf :q .

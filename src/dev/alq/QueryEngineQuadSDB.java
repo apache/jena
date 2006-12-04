@@ -59,9 +59,7 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
             return op ;
         
         OpSQL opSQL = (OpSQL)op ;
-        // Currently, all variables out of a BGP/QuadP are returned
-        // nothing to do.
-        // Currently, QueryIterSDB does the "right thing" 
+        // This is wrapped by a PlanElementOp in QueryEngineQuad.
         return opSQL ;
     }
     

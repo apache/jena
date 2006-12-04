@@ -6,7 +6,10 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -15,7 +18,6 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine1.QueryEngineUtils;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
-
 import com.hp.hpl.jena.sdb.core.CompileContext;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.SDBConstraint;
@@ -108,7 +110,7 @@ public class BlockBGP extends BlockBase
         for ( Triple t : triples )
         {
             out.println() ;
-            out.print(FmtUtils.stringForTriple(t, null)) ;
+            out.print(FmtUtils.stringForTriple(t)) ;
         }
         
         if ( constraints.size() > 0 )

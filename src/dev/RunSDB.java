@@ -54,7 +54,7 @@ public class RunSDB
 //        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
 //        store.getTableFormatter().format() ;
         String divider = "----------------" ;
-        boolean execute = false ;
+        boolean execute = true ;
         boolean useHSQL = true ;
         
         if ( ! execute )
