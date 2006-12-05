@@ -1,6 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Remove blocks.
+
 + cmd: 
   @ --load for sdb.sdbquery --format
      Done - but should be ModData/ModInit/ModSetup
@@ -13,8 +15,6 @@ SDB ToDo list (and general notes)
   SELECT * {}
   SELECT ?x {}
   SELECT * { P[?x] OPTIONAL { P[!?x] OPTIONAL { OPTIONAL P[?x] } } }
-
-+ Remove blocks.
 
 + Abstracting databases:
   1/ The Jena2 way of config files.

@@ -50,7 +50,9 @@ public class TransformSDB extends TransformCopy
     {
         if ( ! doLeftJoin )
             return super.transform(opJoin, left, right) ;
-        
+        // TODO See if we need coalesce
+        // also requires better scope tracking?
+        // may need scope from this (named) join   
         // TODO See if this store is capable of performing complex join expressions
         if ( ! isOpSQL(left) || ! isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
