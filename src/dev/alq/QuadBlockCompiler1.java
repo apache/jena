@@ -6,47 +6,60 @@
 
 package dev.alq;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.layout1.CodecSimple;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.layout1.EncoderDecoder;
+import com.hp.hpl.jena.sdb.layout1.TableTriples1;
+import com.hp.hpl.jena.sdb.layout1.TripleTableDesc;
 import com.hp.hpl.jena.sdb.layout1.TripleTableDescSPO;
 
-/** Highly experimental - will become an interface
- * For now, its layout specific.
- *
- */
-
-public class QuadPatternCompiler
+public class QuadBlockCompiler1 extends QuadBlockCompilerTriple
 {
-    private static Log log = LogFactory.getLog(QuadPatternCompiler.class) ;
-    
-    static Map<CompileContext,QuadBlockCompiler> gen = new HashMap<CompileContext, QuadBlockCompiler>() ;
-    
-    public static SqlNode compile(CompileContext context, QuadBlock quads)
+    private EncoderDecoder codec ;
+    private TripleTableDesc tripleTableDesc ;
+
+    public QuadBlockCompiler1(CompileContext context, EncoderDecoder codec, TripleTableDesc tripleTableDesc)
     {
-        // TODO Make part of QueryCompiler.
-        // Then QuadBlockCompiler2 
-        QuadBlockCompiler qbc = get(context) ;
-        return qbc.compile(quads) ;
+        super(context) ;
+        if ( tripleTableDesc == null )
+            tripleTableDesc = new TripleTableDescSPO() ;
+        this.codec = codec ;
+        this.tripleTableDesc = tripleTableDesc ;
     }
     
-    private static QuadBlockCompiler get(CompileContext context)
+
+    public QuadBlockCompiler1(CompileContext context, EncoderDecoder codec)
+    { this(context, codec, null) ; }
+    
+    
+    @Override
+    protected SqlNode start(QuadBlock quads)
+    { return null ; }
+
+    @Override
+    protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
+    { return sqlNode ; }
+
+    @Override
+    protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
     {
-        QuadBlockCompiler qbc = gen.get(context) ;
-        if ( qbc == null )
-            // From store ....
-            gen.put(context, new QuadBlockCompiler1(context, 
-                                                    new CodecSimple(),
-                                                    new TripleTableDescSPO()
-                                                    ) ) ;
-        return gen.get(context) ;
+          String str = codec.encode(node) ;
+          SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
+          c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+          conditions.add(c) ;
+          return ;
     }
+    
+    @Override
+    protected SqlTable accessTriplesTable(String alias)
+    {
+        return new TableTriples1(tripleTableDesc.getTableName(), alias) ;
+    }
+
 }
 
 /*

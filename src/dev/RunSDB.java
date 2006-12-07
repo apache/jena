@@ -19,6 +19,8 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
@@ -28,6 +30,7 @@ import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
+import dev.alq.OpSQL;
 import dev.alq.QueryEngineQuadSDB;
 import dev.alq.TransformSDB;
 
@@ -85,12 +88,14 @@ public class RunSDB
             System.out.println(op.toString(query.getPrefixMapping())) ;
             System.out.println(divider) ;
             
-            // TODO need to find and print as SQL. 
-//            SqlNode sqlNode = engine.getSqlNode() ;
-//            System.out.println(sqlNode.toString()) ;
-//            System.out.println(divider) ;
-//            String sqlString = GenerateSQL.toSQL(sqlNode) ;
-//            System.out.println(sqlString) ;
+            try {
+                OpSQL opSQL = (OpSQL)op ;
+                  SqlNode sqlNode = opSQL.getSqlNode() ;
+                  System.out.println(sqlNode.toString()) ;
+                  System.out.println(divider) ;
+                  String sqlString = GenerateSQL.toSQL(sqlNode) ;
+                  System.out.println(sqlString) ;
+            } catch (ClassCastException ex) {}
         }
         else   
         {

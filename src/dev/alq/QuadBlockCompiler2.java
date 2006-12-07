@@ -29,16 +29,14 @@ import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
 
-public class QuadBlockCompiler2 extends QuadBlockCompilerBase
+public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 {
     private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
     
-    private static final String triplesTableAliasBase   = "T"+SDBConstants.SQLmark ;
     private static final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
     private static final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
 
-    Generator genTableAlias = new Gensym(triplesTableAliasBase) ;
     Generator genNodeConstantAlias = new Gensym(nodesConstantAliasBase) ;
     Generator genNodeResultAlias = new Gensym(nodesResultAliasBase) ;
 
@@ -47,32 +45,6 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
     
     public QuadBlockCompiler2(CompileContext context)
     { super(context) ; }
-
-    @Override
-    protected SqlNode compile(Quad quad)
-    {
-        String alias = genTableAlias.next();
-        SqlExprList conditions = new SqlExprList() ;
-        
-        if ( ! quad.getGraph().equals(defaultGraph) )
-        {
-            log.fatal("Non-default graph") ;
-            throw new SDBException("Non-default graph") ;
-        }
-        
-        SqlTable triples = accessTriplesTable(alias) ;
-        triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), prefixMapping)) ;
-        
-        //processSlot(context, triples, conditions, quad.getGraph(),   TableTriples.subjectGraph) ; 
-        processSlot(context, triples, conditions, quad.getSubject(),   TableTriples.subjectCol) ; 
-        processSlot(context, triples, conditions, quad.getPredicate(), TableTriples.predicateCol) ;
-        processSlot(context, triples, conditions, quad.getObject(),    TableTriples.objectCol) ;
-        
-        if ( conditions.size() == 0 )
-            return triples ;
-        
-        return SqlRestrict.restrict(triples, conditions) ;
-    }
 
     @Override
     protected SqlNode start(QuadBlock quads)
@@ -87,29 +59,30 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
     protected void addMoreConstants(Collection<Node> constants)
     {}
 
-    protected void processSlot(CompileContext context,
-                               SqlTable table, SqlExprList conditions,
-                               Node node, String colName)
-    {
-        SqlColumn thisCol = new SqlColumn(table, colName) ;
-        if ( ! node.isVariable() )
-        {
-            // Is this constant already loaded?
-            constantSlot(context, node, thisCol, conditions) ;
-            return ;
-        }
-        
-        Var var = Var.alloc(node) ;
-        if ( table.getIdScope().hasColumnForVar(var) )
-        {
-            SqlColumn otherCol = table.getIdScope().getColumnForVar(var) ;
-            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-            conditions.add(c) ;
-            c.addNote("processVar: "+node) ;
-            return ;
-        }
-        table.setIdColumnForVar(var, thisCol) ;
-    }
+//    @Override
+//    protected void processSlot(CompileContext context,
+//                               SqlTable table, SqlExprList conditions,
+//                               Node node, String colName)
+//    {
+//        SqlColumn thisCol = new SqlColumn(table, colName) ;
+//        if ( ! node.isVariable() )
+//        {
+//            // Is this constant already loaded?
+//            constantSlot(context, node, thisCol, conditions) ;
+//            return ;
+//        }
+//        
+//        Var var = Var.alloc(node) ;
+//        if ( table.getIdScope().hasColumnForVar(var) )
+//        {
+//            SqlColumn otherCol = table.getIdScope().getColumnForVar(var) ;
+//            SqlExpr c = new S_Equal(otherCol, thisCol) ;
+//            conditions.add(c) ;
+//            c.addNote("processVar: "+node) ;
+//            return ;
+//        }
+//        table.setIdColumnForVar(var, thisCol) ;
+//    }
 
     
     @Override
@@ -227,7 +200,8 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
     }
 
     // -------- Slot compilation
-    //@Override
+    
+    @Override
     protected void constantSlot(CompileContext context, Node node, SqlColumn thisCol, SqlExprList conditions)
     {
         SqlColumn colId = constantCols.get(node) ;
@@ -242,7 +216,7 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerBase
         return ; 
     }
 
-    //@Override
+    @Override
     protected SqlTable accessTriplesTable(String alias)
     {
         return new TableTriples(alias) ;
