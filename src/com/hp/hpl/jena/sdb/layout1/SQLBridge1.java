@@ -25,7 +25,7 @@ public class SQLBridge1 extends SQLBridgeBase
 {
     private EncoderDecoder codec ;
     
-    SQLBridge1(EncoderDecoder codec)
+    public SQLBridge1(EncoderDecoder codec)
     { 
         this.codec = codec ;
     }

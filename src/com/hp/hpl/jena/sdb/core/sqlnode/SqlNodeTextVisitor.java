@@ -143,7 +143,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
                 out.ensureStartOfLine() ;
             first = false ;
             out.pad(annotationColumn, true ) ;
-            out.print("-- ") ;
+            out.print(" -- ") ;
             out.print(s) ;
         }
     }

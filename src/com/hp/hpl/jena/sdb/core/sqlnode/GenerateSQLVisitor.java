@@ -346,9 +346,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             out.pad(indentationColumn, true) ;
             if ( commentSQLStyle )
             {
-                out.print("-- ") ; out.print(s) ;
+                out.print(" -- ") ; out.print(s) ;
             }else{
-                out.print("/* ") ; out.print(s) ; out.print(" */") ;
+                out.print(" /* ") ; out.print(s) ; out.print(" */") ;
             }
         }
         return !commentSQLStyle || !first ;  

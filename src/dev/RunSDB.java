@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
-import dev.alq.OpSQL;
 import dev.alq.QueryEngineQuadSDB;
 import dev.alq.TransformSDB;
 
@@ -89,12 +88,11 @@ public class RunSDB
             System.out.println(divider) ;
             
             try {
-                OpSQL opSQL = (OpSQL)op ;
-                  SqlNode sqlNode = opSQL.getSqlNode() ;
-                  System.out.println(sqlNode.toString()) ;
-                  System.out.println(divider) ;
-                  String sqlString = GenerateSQL.toSQL(sqlNode) ;
-                  System.out.println(sqlString) ;
+                SqlNode sqlNode = engine.getSqlNode() ;
+                System.out.println(sqlNode.toString()) ;
+                System.out.println(divider) ;
+                String sqlString = GenerateSQL.toSQL(sqlNode) ;
+                System.out.println(sqlString) ;
             } catch (ClassCastException ex) {}
         }
         else   
