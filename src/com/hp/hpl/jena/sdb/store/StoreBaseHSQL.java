@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.util.HSQLUtils;
+import com.hp.hpl.jena.sdb.util.StoreUtils;
 
 
 
@@ -36,14 +37,13 @@ public class StoreBaseHSQL extends StoreBase
 
     public static void close(Store store)
     {
-        if ( store instanceof StoreBaseHSQL)
+        if ( StoreUtils.isHSQL(store) )
             ((StoreBaseHSQL)store).close() ;
     }
     
-    
     public static void checkpoint(Store store)
     {
-        if ( store instanceof StoreBaseHSQL)
+        if ( StoreUtils.isHSQL(store) )
             ((StoreBaseHSQL)store).checkpoint() ;
     }
     
@@ -52,6 +52,7 @@ public class StoreBaseHSQL extends StoreBase
         if ( currentlyOpen ) 
             HSQLUtils.checkpoint(getConnection()) ;
     }
+    
 }
 
 /*

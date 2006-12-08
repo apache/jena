@@ -9,12 +9,15 @@ package com.hp.hpl.jena.sdb.util;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
 import com.hp.hpl.jena.util.FileManager;
 
 public class StoreUtils
 {
-
+    public static boolean isHSQL(Store store)
+    { return ( store instanceof StoreBaseHSQL ) ; }
+    
     public static void load(Store store, String filename)
     {
         Model model = FileManager.get().loadModel(filename) ;

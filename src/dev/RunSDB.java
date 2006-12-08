@@ -16,13 +16,11 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.core.compiler.TransformSDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.util.FileManager;
@@ -36,9 +34,11 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLStatements = true ;
+        //run("Q.rq", "D.ttl") ;
         
-        runQuad() ;
-        //runQuery() ;
+        
+        //runQuad() ;
+        runQuery() ;
         //runPrint() ;
         //runScript() ;
         //run() ;
@@ -62,9 +62,6 @@ public class RunSDB
         {
             store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
             store.getTableFormatter().format() ;
-            // TODO Temporary workaround
-            if ( execute && store instanceof StoreBaseHSQL )
-                TransformSDB.doLeftJoin = false ;
         }
         else
         {
@@ -102,25 +99,37 @@ public class RunSDB
     
     public static void runQuery()
     {
-        String DB="sdb2" ;
-//        String a[] = {"--dbtype=mySQL",
-//            "--dbHost=localhost", "--dbName=SDB2",
-//            "--schema=schema2",
-//            "-v",
-//        } ;
+        String queryFile = "Q.rq" ;
+        String dataFile = "D.ttl" ;
+        System.out.println("*** Reference") ;
+        runInMem(queryFile, dataFile) ;
+        System.out.println("*** SDB") ;
+        runQuery(queryFile, dataFile) ;
+    }
         
+     public static void runQuery(String queryFile, String dataFile)
+     {
         //String a[] = {"-v", "--time","--sdb=Store/sdb-hsqldb-file.ttl", "--query=Q.rq" } ;
-        String a[] = {"--format", "--load=D.ttl","--sdb=sdb.ttl", "--query=Q.rq" } ;
+        String a[] = {"--format", "--load="+dataFile,"--sdb=sdb.ttl", "--query="+queryFile } ;
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
+        
         sdb.sdbquery.main(a) ;
-        System.exit(0) ;
+     }
+
+     public static void runInMem(String queryFile, String dataFile)
+     {
+        // Run with normal engine
+        Query query = QueryFactory.read(queryFile) ;
+        Model model = FileManager.get().loadModel(dataFile) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+        QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
     }
     
     public static void runPrint()
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {"-v", "--sql", "--sdb=sdb.ttl", "--query=Q.rq"} ;
+        String[] a = {"--sql", "--sdb=sdb.ttl", "--query=Q.rq"} ;
         //String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;

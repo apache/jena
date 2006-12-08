@@ -59,32 +59,6 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
     protected void addMoreConstants(Collection<Node> constants)
     {}
 
-//    @Override
-//    protected void processSlot(SDBRequest request,
-//                               SqlTable table, SqlExprList conditions,
-//                               Node node, String colName)
-//    {
-//        SqlColumn thisCol = new SqlColumn(table, colName) ;
-//        if ( ! node.isVariable() )
-//        {
-//            // Is this constant already loaded?
-//            constantSlot(request, node, thisCol, conditions) ;
-//            return ;
-//        }
-//        
-//        Var var = Var.alloc(node) ;
-//        if ( table.getIdScope().hasColumnForVar(var) )
-//        {
-//            SqlColumn otherCol = table.getIdScope().getColumnForVar(var) ;
-//            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-//            conditions.add(c) ;
-//            c.addNote("processVar: "+node) ;
-//            return ;
-//        }
-//        table.setIdColumnForVar(var, thisCol) ;
-//    }
-
-    
     @Override
     protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
     {

@@ -16,12 +16,13 @@ public class TransformSDB extends TransformCopy
 {
     private SDBRequest request ;
     private QuadBlockCompiler quadBlockCompiler ;
-    static public boolean doLeftJoin = true ;
+    //private boolean doLeftJoin = true ;
     
     public TransformSDB(SDBRequest request, QuadBlockCompiler quadBlockCompiler) 
     {
         this.request = request ;
         this.quadBlockCompiler = quadBlockCompiler ;
+        
     }
     
     // Simple example: quads only
@@ -50,7 +51,7 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpLeftJoin opJoin, Op left, Op right)
     {
-        if ( ! doLeftJoin )
+        if ( ! request.LeftJoinTranslation )
             return super.transform(opJoin, left, right) ;
         // TODO See if we need coalesce
         // also requires better scope tracking?

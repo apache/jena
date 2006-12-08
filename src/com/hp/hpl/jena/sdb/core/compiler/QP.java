@@ -25,17 +25,16 @@ import com.hp.hpl.jena.sdb.store.SQLBridge;
 
 public class QP 
 {
+    public static boolean PrintSQL = false ;
+    
     public static QueryIterator exec(OpSQL opSQL, SDBRequest request, Binding binding, ExecutionContext execCxt)
     {
-        List<Var> projectVars = QP.projectVars(execCxt.getQuery()) ;
         SQLBridge bridge = request.getStore().getSQLBridgeFactory().create() ;
-        
-        SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge) ;
-        
-        // Shpoudl this be request.getStore().getSqlGenerator?
-        String sqlStmt = request.getStore().getSQLGenerator().generateSQL(sqlNode) ;
-        if ( true )
+        String sqlStmt = toSqlString(opSQL, request, bridge, execCxt) ;
+    
+        if ( PrintSQL )
             System.out.println(sqlStmt) ;
+        
         try {
             java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmt) ;
             if ( false )
@@ -58,6 +57,18 @@ public class QP
         bridge.init(sqlNode, projectVars) ;
         sqlNode = bridge.buildProject() ;
         return sqlNode ;
+    }
+    
+    public static String toSqlString(OpSQL opSQL, SDBRequest request, 
+                                     SQLBridge bridge, ExecutionContext execCxt)
+    {
+        if ( bridge == null )
+            // Direct call to produce SQL strings for printing 
+            bridge = request.getStore().getSQLBridgeFactory().create() ;
+        List<Var> projectVars = QP.projectVars(request.getQuery()) ;
+        SqlNode sqlNode = QP.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge) ;
+        String sqlStmt = request.getStore().getSQLGenerator().generateSQL(sqlNode) ;
+        return sqlStmt ; 
     }
     
     public static List<Var> projectVars(Query query)

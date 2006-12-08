@@ -9,6 +9,9 @@ package com.hp.hpl.jena.sdb.util;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.engine2.op.OpExt;
+import com.hp.hpl.jena.query.engine2.op.OpVisitorBase;
+import com.hp.hpl.jena.sdb.core.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
@@ -42,12 +45,40 @@ public class PrintSDB
         System.out.println(op.toString(pmap)) ;
     }
     
+    public static void printSQL(Op op)
+    {
+        op.visit(new PrintSQL()) ;
+        
+    }
+    
     public static void printSQL(SqlNode sqlNode)
     {
         System.out.println(sqlNode.toString()) ;
         System.out.println(divider) ;
         String sqlString = GenerateSQL.toSQL(sqlNode) ;
         System.out.println(sqlString) ;
+    }
+ 
+    static class PrintSQL extends OpVisitorBase
+    {
+        boolean first = true ;
+        PrintSQL()
+        {}
+        
+        @Override
+        public void visit(OpExt op)
+        {
+            if ( ! ( op instanceof OpSQL ) )
+            {
+                super.visit(op) ;
+                return ;
+            }
+            OpSQL opSQL = (OpSQL)op ;
+            if ( ! first )
+                System.out.println(divider) ;
+            System.out.println(opSQL.toSQL()) ;
+            first = false ;
+        }
     }
     
 }

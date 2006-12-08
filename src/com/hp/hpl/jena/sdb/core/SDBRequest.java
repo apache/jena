@@ -21,12 +21,12 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class SDBRequest extends StoreHolder
 {
-    // TODO better name? this is a runtime thign as well.  SDBContext??
-    
-    // SDBRequest
-    
     private PrefixMapping prefixMapping ;
     private Query query ;
+    
+    // See TransformSDB
+    public boolean LeftJoinTranslation = true ;
+    
 
     public SDBRequest(Store store, Query query)
     { 

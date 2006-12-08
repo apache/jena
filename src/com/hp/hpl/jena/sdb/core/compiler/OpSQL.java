@@ -19,7 +19,6 @@ import com.hp.hpl.jena.query.engine2.op.OpWriter;
 import com.hp.hpl.jena.query.engine2.table.TableSimple;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public class OpSQL extends OpExtBase
@@ -50,7 +49,7 @@ public class OpSQL extends OpExtBase
         return new TableSimple(qIter) ;
     }
 
-    public Op getOriginal() { return originalOp ; }
+    //public Op getOriginal() { return originalOp ; }
 
     @Override
     public void output(IndentedWriter out)
@@ -67,7 +66,7 @@ public class OpSQL extends OpExtBase
 
     public String toSQL()
     {
-        return GenerateSQL.toSQL(sqlNode) ;
+       return QP.toSqlString(this, request, null, null) ;
     }
 
     public SqlNode getSqlNode()

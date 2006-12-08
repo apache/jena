@@ -14,7 +14,7 @@ import arq.cmdline.ModQueryIn;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -90,7 +90,6 @@ public class sdbprint extends CmdArgsDB
     
     private void compilePrint(Store store, Query query)
     {
-        
         if ( ! isQuiet() && ! printSQL )
         {
             divider() ;
@@ -104,34 +103,19 @@ public class sdbprint extends CmdArgsDB
         }
 
         QueryEngineQuadSDB qe = new QueryEngineQuadSDB(store, query) ;
+        Op op = qe.getOp() ;
 
         if ( isVerbose() )
         {
             divider() ;
-            PrintSDB.print(qe.getOp()) ;
+            PrintSDB.print(op) ;
         }
 
-        if ( isVerbose() )
+        if ( printSQL )
         {
-            //QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
-            //QC.printAbstractSQL = true ;
+            divider() ;
+            PrintSDB.printSQL(op) ;
         }
-
-        
-        // Print all SDB things in the plan
-        
-        IndentedWriter w = new IndentedWriter(System.out) ;
-        
-//        if ( printSQL )
-//        {
-//            divider() ;
-//            PrintSDB.printBlocks(store, query, qe) ;
-//        }
-//        else
-//        {
-//            divider() ;
-//            PrintSDB.printSQL(store, query, qe) ;
-//        }
     }
 
     

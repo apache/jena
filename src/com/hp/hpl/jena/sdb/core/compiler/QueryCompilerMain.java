@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 
 public abstract class QueryCompilerMain implements QueryCompiler 
 {
-    // Do we need this class ?
+    // Do we need this class?
     private List<Var> projectVars ;
     protected SDBRequest request ;
     

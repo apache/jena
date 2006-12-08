@@ -22,6 +22,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sdb.core.compiler.QP;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
@@ -98,14 +99,16 @@ public class sdbquery extends CmdArgsDB
         
         if ( isVerbose() )
         {
-            // ModSDBAdmin - various printing options?
+            QP.PrintSQL = true ;
+            modQuery.getQuery().serialize(System.out) ;
+            System.out.println(divider) ; 
         }
-
+        
         // Force setup
         getModStore().getStore() ;
         if ( getModTime().timingEnabled() )
         {
-            // Setup costs : fluish classes into memory and establish connection
+            // Setup costs : flush classes into memory and establish connection
             getModTime().startTimer() ;
             getModStore().getStore() ;
             long connectTime =  getModTime().endTimer() ;
@@ -119,12 +122,6 @@ public class sdbquery extends CmdArgsDB
                 System.out.println("Class load time: "+getModTime().timeStr(javaTime)) ;
         }
         
-        
-        if ( isVerbose() )
-        {
-            modQuery.getQuery().serialize(System.out) ;
-            System.out.println(divider) ; 
-        }
         
         long totalTime = 0 ;
         try {
