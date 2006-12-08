@@ -4,14 +4,17 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package dev.inf;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 
-public interface ExprCompile
+
+public class QueryCompilerSubClass extends QueryCompilerTrans
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    public QueryCompilerSubClass(SDBRequest request)
+    {
+        super(request, new TransSubClassTable(), "SC") ;
+    }
 }
 
 /*

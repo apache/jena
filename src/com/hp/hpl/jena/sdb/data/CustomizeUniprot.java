@@ -8,35 +8,37 @@ package com.hp.hpl.jena.sdb.data;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
-import com.hp.hpl.jena.sdb.store.StoreCustomizer;
+//import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+//import com.hp.hpl.jena.sdb.store.StoreCustomizer;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-public class CustomizeUniprot implements StoreCustomizer
+public class CustomizeUniprot //implements StoreCustomizer
 {
     static final String uniprotNS = "urn:lsid:uniprot.org:ontology:" ;
     static final Node protein = Node.createURI(uniprotNS+"Protein") ;
     static Triple typeProtein = new Triple(Node.ANY, RDF.type.asNode(), protein) ;
     
-    public BlockBGP modify(BlockBGP block)
-    {
-        block = block.copy() ;
-        
-        // Put   ?x rdf:type :Protein   at the end.
-        for ( int i = 0 ; i < block.getTriples().size() ; i++ )
-        {
-            Triple t = block.getTriples().get(i) ;
-            if ( i != block.getTriples().size()-1 &&
-                 t.getSubject().isVariable() &&
-                 t.getPredicate().equals(RDF.type.asNode()) &&
-                 t.getObject().equals(protein) )
-            {
-                block.getTriples().remove(i) ;
-                block.getTriples().add(t) ;
-            }
-        }
-        return block ;
-    }
+    // TODO Convert or delete
+    
+//    public BlockBGP modify(BlockBGP block)
+//    {
+//        block = block.copy() ;
+//        
+//        // Put   ?x rdf:type :Protein   at the end.
+//        for ( int i = 0 ; i < block.getTriples().size() ; i++ )
+//        {
+//            Triple t = block.getTriples().get(i) ;
+//            if ( i != block.getTriples().size()-1 &&
+//                 t.getSubject().isVariable() &&
+//                 t.getPredicate().equals(RDF.type.asNode()) &&
+//                 t.getObject().equals(protein) )
+//            {
+//                block.getTriples().remove(i) ;
+//                block.getTriples().add(t) ;
+//            }
+//        }
+//        return block ;
+//    }
 
 }
 

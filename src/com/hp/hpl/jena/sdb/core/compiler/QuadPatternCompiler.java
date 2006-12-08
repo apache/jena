@@ -4,50 +4,49 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.assembler;
+package com.hp.hpl.jena.sdb.core.compiler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.util.GraphUtils;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.layout1.CodecSimple;
+import com.hp.hpl.jena.sdb.layout1.QuadBlockCompiler1;
+import com.hp.hpl.jena.sdb.layout1.TripleTableDescSPO;
 
-public class StoreDescAssembler extends AssemblerBase implements Assembler
+/** Highly experimental - will become an interface
+ * For now, its layout specific.
+ *
+ */
+
+public class QuadPatternCompiler
 {
-    private static Log log = LogFactory.getLog(StoreDescAssembler.class) ;
+    private static Log log = LogFactory.getLog(QuadPatternCompiler.class) ;
     
-    @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    static Map<SDBRequest,QuadBlockCompiler> gen = new HashMap<SDBRequest, QuadBlockCompiler>() ;
+    
+    public static SqlNode compile(SDBRequest request, QuadBlock quads)
     {
-        Resource c = GraphUtils.getResourceValue(root, AssemblerVocab.pConnection) ;
-        if ( c == null )
-            return null ;
-        SDBConnectionDesc sdbConnDesc = (SDBConnectionDesc)a.open(c) ;
-        
-        String layoutName = GraphUtils.getStringValue(root, AssemblerVocab.pLayout) ;
-        String dbType =  sdbConnDesc.type ;
-        
-        StoreDesc storeDesc = new StoreDesc(layoutName, dbType) ; 
-        storeDesc.connDesc = sdbConnDesc ;
-
-        // MySQL specials
-        String engineName = GraphUtils.getStringValue(root, AssemblerVocab.pMySQLEngine) ;
-        storeDesc.engineType = null ;
-        if ( engineName != null )
-            try { storeDesc.engineType= MySQLEngineType.convert(engineName) ; }
-            catch (SDBException ex) {}
-            
-        // ModelRDB special
-        storeDesc.rdbModelName = GraphUtils.getStringValue(root, AssemblerVocab.pModelRDBname) ;
-        
-        return storeDesc ;
+        // TODO Make part of QueryCompiler.
+        // Then QuadBlockCompiler2 
+        QuadBlockCompiler qbc = get(request) ;
+        return qbc.compile(quads) ;
+    }
+    
+    private static QuadBlockCompiler get(SDBRequest request)
+    {
+        QuadBlockCompiler qbc = gen.get(request) ;
+        if ( qbc == null )
+            // From store ....
+            gen.put(request, new QuadBlockCompiler1(request, 
+                                                    new CodecSimple(),
+                                                    new TripleTableDescSPO()
+                                                    ) ) ;
+        return gen.get(request) ;
     }
 }
 

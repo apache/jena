@@ -4,14 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 
-public interface ExprCompile
+public interface ConditionCompiler
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    public SDBConstraint recognize(PlanFilter planFilter) ;
 }
 
 /*

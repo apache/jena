@@ -6,12 +6,14 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
+
 
 public class QueryEngineFactorySDB implements QueryEngineFactory
 {
@@ -25,7 +27,7 @@ public class QueryEngineFactorySDB implements QueryEngineFactory
     public QueryExecution create(Query query, Dataset dataset)
     {
         Store store = ((DatasetStore)dataset).getStore();
-        QueryEngineSDB qe = new QueryEngineSDB(store , query) ;
+        QueryEngineQuadSDB qe = new QueryEngineQuadSDB(store , query, ARQ.getContext()) ;
         qe.setDataset(dataset) ;
         return qe ;
     }

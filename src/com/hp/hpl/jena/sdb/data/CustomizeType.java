@@ -7,46 +7,48 @@
 package com.hp.hpl.jena.sdb.data;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.VarAlloc;
-import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
-import com.hp.hpl.jena.sdb.store.StoreCustomizer;
+//import com.hp.hpl.jena.graph.Triple;
+//import com.hp.hpl.jena.query.core.VarAlloc;
+//import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+//import com.hp.hpl.jena.sdb.store.StoreCustomizer;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /** Rewrite a query based on sub/super class for rdf:type */
 
-public class CustomizeType implements StoreCustomizer
+public class CustomizeType //implements StoreCustomizer
 {
     static final Node RDF_type = RDF.type.asNode() ;
     static final Node RDFS_subClassOf = RDFS.subClassOf.asNode() ;
 
+    // TODO Convert to Op transform
+    
     // s rdf:type t ==> s rdf:type ?v . ?v rdfs:subClassOf t
     // Assumes that   t rdfs:subClassOf t
     // This may get rewritten later in the process to special SQL (e.g. a subclass table)   
     
-    public BlockBGP modify(BlockBGP block)
-    {
-        block = block.copy() ;
-        // This does not invalidate the SELECT variables.
-        for ( int i = 0 ; i < block.getTriples().size() ; i++ )
-        {
-            Triple t = block.getTriples().get(i) ;
-            if ( t.getPredicate().equals(RDF_type) )
-            {
-                Node v = VarAlloc.getVarAllocator().allocVar() ;
-                // Assumes that <type> rdfs:subClassOf <type> 
-                Triple t1 = new Triple(t.getSubject(), RDF_type, v) ;
-                Triple t2 = new Triple(v, RDFS_subClassOf, t.getObject()) ;
-                // replace t by t1 and t2
-                block.getTriples().set(i, t1) ;
-                block.getTriples().add(i+1, t2) ;
-                // Skip the indexer over the extra triple.
-                i++ ;
-            }
-        }
-        return block ;
-    }
+//    public BlockBGP modify(BlockBGP block)
+//    {
+//        block = block.copy() ;
+//        // This does not invalidate the SELECT variables.
+//        for ( int i = 0 ; i < block.getTriples().size() ; i++ )
+//        {
+//            Triple t = block.getTriples().get(i) ;
+//            if ( t.getPredicate().equals(RDF_type) )
+//            {
+//                Node v = VarAlloc.getVarAllocator().allocVar() ;
+//                // Assumes that <type> rdfs:subClassOf <type> 
+//                Triple t1 = new Triple(t.getSubject(), RDF_type, v) ;
+//                Triple t2 = new Triple(v, RDFS_subClassOf, t.getObject()) ;
+//                // replace t by t1 and t2
+//                block.getTriples().set(i, t1) ;
+//                block.getTriples().add(i+1, t2) ;
+//                // Skip the indexer over the extra triple.
+//                i++ ;
+//            }
+//        }
+//        return block ;
+//    }
 }
 
 /*

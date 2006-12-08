@@ -7,10 +7,10 @@
 package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLMySQL;
-import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBase;
+
 
 
 public class StoreTriplesNodesMySQL extends StoreBase
@@ -23,13 +23,12 @@ public class StoreTriplesNodesMySQL extends StoreBase
     public StoreTriplesNodesMySQL(SDBConnection connection, MySQLEngineType tableType)
     {
         super(connection,
-              new PlanTranslatorGeneral(true, true),
-              new LoaderMySQL(connection),
               new FmtLayout2MySQL(connection, 
-                                        (tableType!=null)? tableType : MySQLEngineType.InnoDB),
-              new QueryCompiler2(),
-              new GenerateSQLMySQL() ,
-              null) ;
+                                  (tableType!=null)? tableType : MySQLEngineType.InnoDB),
+              new LoaderMySQL(connection),
+              new QueryCompilerFactory2(),
+              new SQLBridgeFactory2(),
+              new GenerateSQLMySQL()) ;
     }
 }
 

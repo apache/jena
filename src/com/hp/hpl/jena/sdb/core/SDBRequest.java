@@ -1,21 +1,47 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreHolder;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
-public interface ExprCompile
+
+/** A collection of things to track during query compilation
+ * and execution from SPARQL to SQL.
+ * 
+ * @author Andy Seaborne
+ * @version $Id: SDBRequest.java,v 1.14 2006/04/17 11:55:35 andy_seaborne Exp $
+ */
+
+public class SDBRequest extends StoreHolder
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    // TODO better name? this is a runtime thign as well.  SDBContext??
+    
+    // SDBRequest
+    
+    private PrefixMapping prefixMapping ;
+    private Query query ;
+
+    public SDBRequest(Store store, Query query)
+    { 
+        super(store) ;
+        this.query = query ;
+        this.prefixMapping = query.getPrefixMapping() ;
+    }
+    
+    public PrefixMapping getPrefixMapping()     { return prefixMapping ; }
+    public Query getQuery()                     { return query ; }
+    public Store getStore()                     { return store() ; }
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

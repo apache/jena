@@ -7,10 +7,10 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBase;
+
 
 /** Store class for the simple layout (i.e. one triple table)
  * 
@@ -22,23 +22,22 @@ public class StoreSimpleMySQL extends StoreBase
 {
     public StoreSimpleMySQL(SDBConnection connection)
     {
-        this(connection, MySQLEngineType.InnoDB, new CodecSimple()) ;
+        this(connection, MySQLEngineType.InnoDB) ;
     }
     
     public StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType)
     {
-        this(connection, engineType, new CodecSimple()) ;
+        this(connection, engineType, new CodecSimple(), new TripleTableDescSPO()) ;
     }
 
-    public StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType, CodecSimple codec)
+    private StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType, CodecSimple codec, TripleTableDesc tripleTableDesc)
     {
         super(connection,
-              new PlanTranslatorGeneral(true, false),
-              new LoaderSimple(connection, codec), 
               new FormatterSimpleMySQL(connection, engineType),
-              new QueryCompiler1(codec), 
-              new GenerateSQL() ,
-              null) ;
+              new LoaderSimple(connection, codec), 
+              new QueryCompilerFactory1(codec, tripleTableDesc), 
+              new SQLBridgeFactory1(codec),
+              new GenerateSQL()) ;
     }
 }
 

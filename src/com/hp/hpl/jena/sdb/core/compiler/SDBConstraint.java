@@ -4,14 +4,38 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.compiler;
 
+import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 
-public interface ExprCompile
+public abstract class SDBConstraint
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    private boolean completeConstraint ;
+    private Expr expr ;
+    
+    public SDBConstraint(Expr expr, boolean completeConstraint)
+    { 
+        this.expr = expr ; 
+        this.completeConstraint = completeConstraint ;
+    }
+    
+    abstract public SDBConstraint substitute(Binding binding) ;
+    
+    public boolean isComplete() { return completeConstraint ; }
+    
+    @Override
+    public String toString() { return "[PlanSDBConstraint "+expr+"]" ; }
+
+    public Expr getExpr()
+    {
+        return expr ;
+    }
+
+    public abstract SqlExpr compile(Scope scope) ;
+    
 }
 
 /*

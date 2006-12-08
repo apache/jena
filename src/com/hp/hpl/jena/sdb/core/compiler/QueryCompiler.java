@@ -4,14 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.query.engine2.op.Op;
 
-public interface ExprCompile
+public interface QueryCompiler
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    public ConditionCompiler getConditionCompiler() ;
+    public Op compile(Op op) ;
 }
 
 /*

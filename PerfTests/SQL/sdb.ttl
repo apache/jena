@@ -13,5 +13,4 @@ _:c a acmd:SDBConnection ;
     acmd:layout     "layout2" ;
     acmd:connection _:c ;
     acmd:engine     "InnoDB" ;
-##    acmd:customizer <java:com.hp.hpl.jena.sdb.data.CustomizeUniprot> ;
     .

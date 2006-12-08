@@ -12,7 +12,6 @@ import sdb.cmd.CmdArgsDB;
 
 import com.hp.hpl.jena.query.junit.SimpleTestRunner;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
  
  /** Run a test suite
@@ -72,7 +71,6 @@ public class sdbtest extends CmdArgsDB
         {
             //SchemaBase.printBlock = true ;
             //SchemaBase.printAbstractSQL = true ;
-            QC.printSQL = true ;
             System.out.println("Manifest: "+manifest) ;
         }
         TestSuite ts = new TestSuite() ;

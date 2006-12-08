@@ -6,73 +6,68 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 
+
 public class StoreBase 
     extends SDBConnectionHolder
     implements Store
 {
-    protected PlanTranslator planTranslator ;
-    protected StoreLoader loader ;
     protected StoreFormatter formatter ;
-    protected QueryCompiler compiler ;
+    protected StoreLoader loader ;
+    protected QueryCompilerFactory compilerF ;
+    protected SQLBridgeFactory sqlBridgeF ;
     protected SQLGenerator sqlGenerator ;
-    protected StoreCustomizer customizer ;
     protected StoreConfig configuration ;
     
     public StoreBase(SDBConnection connection, 
-                     PlanTranslator planTranslator,
-                     StoreLoader loader ,
                      StoreFormatter formatter ,
-                     QueryCompiler compiler ,
-                     SQLGenerator sqlGenerator ,
-                     StoreCustomizer customizer)
+                     StoreLoader loader ,
+                     QueryCompilerFactory compilerF ,
+                     SQLBridgeFactory sqlBridgeF,
+                     SQLGenerator sqlGenerator)
     {
         super(connection) ;
-        this.loader = loader ;
         this.formatter = formatter ;
-        this.compiler = compiler ;
-        this.planTranslator = planTranslator ;
+        this.loader = loader ;
+        this.compilerF = compilerF ;
+        this.sqlBridgeF = sqlBridgeF ;
         if ( sqlGenerator == null )
             sqlGenerator = new GenerateSQL() ;
         this.sqlGenerator = sqlGenerator ;
-        if ( customizer == null )
-            customizer = new StoreCustomizerBase() ;
-        setCustomizer(customizer) ;
+        
         configuration = new StoreConfig(connection()) ;
     }
     
-    public SDBConnection   getConnection()           {  return connection() ; }
+    public SDBConnection   getConnection()                      {  return connection() ; }
     
-    public PlanTranslator  getPlanTranslator()       { return planTranslator ; }
-    
-    public QueryCompiler   getQueryCompiler()        { return compiler ; }
+    public QueryCompilerFactory   getQueryCompilerFactory()     { return compilerF ; }
 
-    public SQLGenerator    getSQLGenerator()         { return sqlGenerator ; }
+    public SQLBridgeFactory getSQLBridgeFactory()               { return sqlBridgeF ; }
 
-    public StoreFormatter  getTableFormatter()       { return formatter ; }
+    public SQLGenerator    getSQLGenerator()                    { return sqlGenerator ; }
 
-    public StoreLoader     getLoader()               { return loader ; }
+    public StoreFormatter  getTableFormatter()                  { return formatter ; }
 
-    public StoreConfig     getConfiguration()        { return configuration ; }
+    public StoreLoader     getLoader()                          { return loader ; }
+
+    public StoreConfig     getConfiguration()                   { return configuration ; }
 
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL
     public void close()                              { }
-
-    
-    public StoreCustomizer getCustomizer()           { return customizer ; }
-    public void setCustomizer(StoreCustomizer customizer)       { this.customizer = customizer ; }
     
     /** Default implementation: get size of Triples table **/
     public long getSize()
     {
     	return SQLUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
     }
+
 }
 
 /*

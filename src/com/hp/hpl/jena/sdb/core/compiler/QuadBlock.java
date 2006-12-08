@@ -4,14 +4,40 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import java.util.Iterator;
+import java.util.List;
 
-public interface ExprCompile
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.engine2.op.OpQuadPattern;
+import com.hp.hpl.jena.query.engine2.op.Quad;
+
+public class QuadBlock implements Iterable<Quad>
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    List<Quad> quads ;
+    Node graphNode ;
+    
+//    public QuadBlock(List<Quad> quads)
+//    { this.quads = quads ; }
+
+    
+    public QuadBlock(OpQuadPattern quadPattern)
+    {
+        @SuppressWarnings("unchecked")
+        // Needs two steps to avoid a warning.
+        List<Quad>q = (List<Quad>)quadPattern.getQuads() ;
+        quads = q ;
+        graphNode = quadPattern.getGraphNode() ;
+    }
+    
+    public Iterator<Quad> iterator()
+    {
+        return quads.iterator() ;
+    }
+    
+    public Node getGraphNode() { return graphNode ; }
+    
 }
 
 /*

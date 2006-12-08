@@ -4,14 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public interface ExprCompile
+public interface QuadBlockCompiler
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    SqlNode compile(QuadBlock quads) ;
 }
 
 /*

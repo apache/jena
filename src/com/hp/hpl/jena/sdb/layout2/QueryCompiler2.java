@@ -6,56 +6,21 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import java.util.Set;
-
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
-import com.hp.hpl.jena.sdb.core.compiler.BlockCompilerFactory;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.ConditionCompiler;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
 
-public class QueryCompiler2 extends QueryCompilerMain
+
+public class QueryCompiler2 extends QueryCompilerMain 
 {
-    private ConditionCompiler conditionCompiler ;
-    private BlockCompilerFactory blockCompilerFactory ;
-    
-    public QueryCompiler2()
-    {
-        this(null, null) ;
-    }
-
-    public QueryCompiler2(BlockCompilerFactory blockCompilerFactory)
-    {
-        this(blockCompilerFactory, null) ;
-    }
-    
-    private QueryCompiler2(BlockCompilerFactory blockCompilerFactory, ConditionCompiler conditionCompiler)
-    {
-        this.conditionCompiler = conditionCompiler ;
-        if ( blockCompilerFactory == null )
-            blockCompilerFactory = new BlockCompiler2Factory() ;
-            
-        this.blockCompilerFactory = blockCompilerFactory ;
+    public QueryCompiler2(SDBRequest request)
+    { 
+        super(request) ; 
     }
     
     @Override
-    protected BlockCompiler  createBlockCompiler()     { return blockCompilerFactory.createBlockCompiler() ; }
-    @Override
-    protected SQLBridge createSQLBridge()              { return new SQLBridge2() ; }
-
-    public ConditionCompiler getConditionCompiler()    { return conditionCompiler ; }
-    
-    @Override
-    protected void startCompile(CompileContext context, Block block)
-    { return ; }
-
-    @Override
-    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
-    { return sqlNode ; } 
+    protected QuadBlockCompiler createQuadBlockCompiler()
+    { return new QuadBlockCompiler2(request) ; }
 }
 
 /*

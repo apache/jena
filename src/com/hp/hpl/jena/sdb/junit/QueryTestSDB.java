@@ -14,13 +14,14 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.query.resultset.RSCompare;
 import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 import com.hp.hpl.jena.shared.Command;
 import com.hp.hpl.jena.util.FileManager;
+
 
 
 public class QueryTestSDB extends TestCase
@@ -123,7 +124,7 @@ public class QueryTestSDB extends TestCase
         
         // ---- Second, execute in DB
 
-        QueryEngineSDB qExec2 = new QueryEngineSDB(store, query) ;
+        QueryEngineQuadSDB qExec2 = new QueryEngineQuadSDB(store, query, null) ;
         qExec2.setDataset(new DatasetStore(store)) ; // Not used
         
         ResultSet rs = null;

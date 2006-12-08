@@ -4,14 +4,21 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.compiler;
 
+import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 
-public interface ExprCompile
+public abstract class ConditionCompilerBase implements ConditionCompiler
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    final
+    public SDBConstraint recognize(PlanFilter planFilter)
+    {
+        return recognize(planFilter.getExpr()) ;
+    }
+
+    abstract 
+    protected SDBConstraint recognize(Expr expr) ;
 }
 
 /*

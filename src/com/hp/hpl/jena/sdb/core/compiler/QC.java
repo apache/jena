@@ -8,15 +8,11 @@ package com.hp.hpl.jena.sdb.core.compiler;
 
 import static com.hp.hpl.jena.sdb.core.JoinType.INNER;
 import static com.hp.hpl.jena.sdb.core.JoinType.LEFT;
-
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.CompileContext;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
@@ -25,25 +21,18 @@ import com.hp.hpl.jena.sdb.core.sqlnode.*;
 
 public class QC
 {
-    // Tracing control (because the compiler process can be a long way
-    // from the originating request)
-    // 
-    public static String  printDivider      = null ;
-    public static boolean printBlock        = false ;
-    public static boolean printAbstractSQL  = false ;
-    public static boolean printSQL          = false ;
-
+    // TODO Combine with QP
     
     private static Log log = LogFactory.getLog(QC.class) ;
     
-    public static SqlNode innerJoin(CompileContext context, SqlNode left, SqlNode right)
+    public static SqlNode innerJoin(SDBRequest request, SqlNode left, SqlNode right)
     {
-        return join(context, left, right, INNER) ; 
+        return join(request, left, right, INNER) ; 
     }
 
-    public static SqlNode leftJoin(CompileContext context, SqlNode left, SqlNode right)
+    public static SqlNode leftJoin(SDBRequest request, SqlNode left, SqlNode right)
     {
-        return join(context, left, right, LEFT) ; 
+        return join(request, left, right, LEFT) ; 
     }
 
     
@@ -58,7 +47,7 @@ public class QC
         return "<unknown>" ;
     }
     
-    public static SqlNode join(CompileContext context, SqlNode left, SqlNode right, JoinType joinType)
+    public static SqlNode join(SDBRequest request, SqlNode left, SqlNode right, JoinType joinType)
     {
         if ( left == null )
             return right ; 
@@ -98,19 +87,19 @@ public class QC
         return subNode ;
     }
     
-    public static Set<Var> exitVariables(Block block)
-    {
-        Set<Var> x = block.getProjectVars() ;
-        if ( x == null )
-        {
-            if ( block.isCompletePattern() )
-                log.warn("Null for projection variables - but it's a single block") ;
-            x = block.getDefinedVars() ;
-        }
-        if ( x == null )
-            log.warn("Null for defined variables") ;
-        return x ; 
-    }
+//    public static Set<Var> exitVariables(Block block)
+//    {
+//        Set<Var> x = block.getProjectVars() ;
+//        if ( x == null )
+//        {
+//            if ( block.isCompletePattern() )
+//                log.warn("Null for projection variables - but it's a single block") ;
+//            x = block.getDefinedVars() ;
+//        }
+//        if ( x == null )
+//            log.warn("Null for defined variables") ;
+//        return x ; 
+//    }
 }
 
 /*

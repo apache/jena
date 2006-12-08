@@ -4,14 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.layout1;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompiler;
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerFactory;
 
-public interface ExprCompile
+
+public class QueryCompilerFactory1 implements QueryCompilerFactory
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    private EncoderDecoder codec ;
+    private TripleTableDesc tripleTableDesc ;
+
+    public QueryCompilerFactory1(EncoderDecoder codec, TripleTableDesc desc)
+    {
+        this.codec = codec ;
+        this.tripleTableDesc = desc ;
+    }
+
+    public QueryCompiler createQueryCompiler(SDBRequest request)
+    {
+        return new QueryCompiler1(request, codec, tripleTableDesc) ;
+    }
 }
 
 /*

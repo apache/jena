@@ -7,44 +7,48 @@
 package com.hp.hpl.jena.sdb.data;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.VarAlloc;
-import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
-import com.hp.hpl.jena.sdb.store.StoreCustomizer;
+//import com.hp.hpl.jena.graph.Triple;
+//import com.hp.hpl.jena.query.core.VarAlloc;
+//import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+//import com.hp.hpl.jena.sdb.store.StoreCustomizer;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /** Rewrite a query based on sub/super property */
 
-public class CustomizeProperty implements StoreCustomizer
+
+
+public class CustomizeProperty //implements StoreCustomizer
 {
+    // TODO Convert to Op tree processings 
+    
     static final Node RDFS_subPropertyOf = RDFS.subPropertyOf.asNode() ;
 
     // s p o ==> s ?p o . ?p subPropertyOf p
     // Assumes  p subPropertyOf p
     // This may get rewritten later in the process to special SQL (e.g. a subproperty table)   
     
-    public BlockBGP modify(BlockBGP block)
-    {
-        block = block.copy() ;
-        for ( int i = 0 ; i < block.getTriples().size() ; i++ )
-        {
-            Triple t = block.getTriples().get(i) ;
-            // Test to see if it's a propeerty we wish to 
-            if ( t.getPredicate() != null )
-            {
-                Node v = VarAlloc.getVarAllocator().allocVar();
-                Node property = t.getPredicate() ;
-                // Assumes that <type> rdfs:subClassOf <type> 
-                Triple t1 = new Triple(t.getSubject(), v, t.getObject()) ;
-                Triple t2 = new Triple(v, RDFS_subPropertyOf, t.getPredicate()) ;
-                block.getTriples().set(i, t1) ;
-                block.getTriples().add(i+1, t2) ;
-                // Skip the indexer over the extra triple.
-                i++ ;
-            }
-        }
-        return block ;
-    }
+//    public BlockBGP modify(BlockBGP block)
+//    {
+//        block = block.copy() ;
+//        for ( int i = 0 ; i < block.getTriples().size() ; i++ )
+//        {
+//            Triple t = block.getTriples().get(i) ;
+//            // Test to see if it's a property we wish to do something with 
+//            if ( t.getPredicate() != null )
+//            {
+//                Node v = VarAlloc.getVarAllocator().allocVar();
+//                Node property = t.getPredicate() ;
+//                // Assumes that <type> rdfs:subClassOf <type> 
+//                Triple t1 = new Triple(t.getSubject(), v, t.getObject()) ;
+//                Triple t2 = new Triple(v, RDFS_subPropertyOf, t.getPredicate()) ;
+//                block.getTriples().set(i, t1) ;
+//                block.getTriples().add(i+1, t2) ;
+//                // Skip the indexer over the extra triple.
+//                i++ ;
+//            }
+//        }
+//        return block ;
+//    }
     
 }
 

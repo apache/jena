@@ -13,25 +13,21 @@ import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.compiler.TransformSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
 
-import dev.alq.QueryEngineQuadSDB;
-import dev.alq.TransformSDB;
 
 public class RunSDB
 {
@@ -54,8 +50,8 @@ public class RunSDB
     {
 //        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
 //        store.getTableFormatter().format() ;
-        String divider = "----------------" ;
-        boolean execute = false ;
+        
+        boolean execute = true ;
         boolean useHSQL = true ;
         
         if ( ! execute )
@@ -71,50 +67,36 @@ public class RunSDB
                 TransformSDB.doLeftJoin = false ;
         }
         else
+        {
             store = SDBFactory.connectStore("Store/sdb-mysql-innodb.ttl") ;
+            store.getTableFormatter().truncate() ;
+        }
         
         Model model = SDBFactory.connectModel(store) ;
         Query query = QueryFactory.read("Q.rq") ;
         query.serialize(System.out) ;
-        System.out.println(divider) ;
-        QueryEngineQuadSDB engine = new QueryEngineQuadSDB(store, query) ;
+        System.out.println(PrintSDB.divider) ;
+        QueryEngineQuadSDB engine = new QueryEngineQuadSDB(store, query, null) ;
         
-        if ( ! execute )
+        if ( true )
         {
-            query.setResultVars() ;
+            //query.setResultVars() ;
             
-            Op op = engine.getOp() ;
-            System.out.println(op.toString(query.getPrefixMapping())) ;
-            System.out.println(divider) ;
-            
+            PrintSDB.print(engine.getOp()) ;
+            System.out.println(PrintSDB.divider) ;
             try {
-                SqlNode sqlNode = engine.getSqlNode() ;
-                System.out.println(sqlNode.toString()) ;
-                System.out.println(divider) ;
-                String sqlString = GenerateSQL.toSQL(sqlNode) ;
-                System.out.println(sqlString) ;
+                PrintSDB.printSQL(engine.getSqlNode()) ;
             } catch (ClassCastException ex) {}
         }
-        else   
-        {
-            PlanElement elt = engine.getPlan() ; //.getPlanPattern() ;
-            System.out.println(elt.toString(query.getPrefixMapping())) ;
-            System.out.println(divider) ;
 
-            model.removeAll() ;
+        if ( execute )
+        {
             model.read("file:D.ttl", "N3") ;
             // Noise.
             engine.setDataset(new DatasetStore(store)) ;
             ResultSet rs = engine.execSelect() ;
             ResultSetFormatter.out(rs, query.getPrefixMapping()) ;
         }
-        
-//        Op op = engine.getOp() ;
-//        System.out.print(op.toString()) ;
-        
-//        OpSQL opSQL = (OpSQL)op ;
-//        String sqlString = opSQL.toSQL() ;
-//        System.out.println(sqlString) ;
         System.exit(0) ;
     }
     
@@ -129,10 +111,6 @@ public class RunSDB
         
         //String a[] = {"-v", "--time","--sdb=Store/sdb-hsqldb-file.ttl", "--query=Q.rq" } ;
         String a[] = {"--format", "--load=D.ttl","--sdb=sdb.ttl", "--query=Q.rq" } ;
-        QC.printBlock = true ;
-        QC.printAbstractSQL = true ;
-        QC.printSQL = true ;
-        
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
         sdb.sdbquery.main(a) ;

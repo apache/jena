@@ -12,8 +12,6 @@ import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
-import com.hp.hpl.jena.sdb.engine.SDBConstraint;
-import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 
 /**
  * ConditionCompiler that does nothing, refusing to recognize any conditions  

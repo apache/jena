@@ -4,51 +4,44 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.assembler;
+package com.hp.hpl.jena.sdb.core;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.assembler.Assembler;
-import com.hp.hpl.jena.assembler.Mode;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.util.GraphUtils;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.util.ExprUtils;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
+import com.hp.hpl.jena.sdb.exprmatch.Action;
+import com.hp.hpl.jena.sdb.exprmatch.ExprMatcher;
+import com.hp.hpl.jena.sdb.exprmatch.MapAction;
+import com.hp.hpl.jena.sdb.exprmatch.MapResult;
 
-public class StoreDescAssembler extends AssemblerBase implements Assembler
+public class ExprPattern
 {
-    private static Log log = LogFactory.getLog(StoreDescAssembler.class) ;
+    Expr pattern ;
+    MapAction mapAction;
     
-    @Override
-    public Object open(Assembler a, Resource root, Mode mode)
+    
+    public ExprPattern(String pattern ,
+                       Var[] vars,
+                       Action[] actions)
     {
-        Resource c = GraphUtils.getResourceValue(root, AssemblerVocab.pConnection) ;
-        if ( c == null )
-            return null ;
-        SDBConnectionDesc sdbConnDesc = (SDBConnectionDesc)a.open(c) ;
-        
-        String layoutName = GraphUtils.getStringValue(root, AssemblerVocab.pLayout) ;
-        String dbType =  sdbConnDesc.type ;
-        
-        StoreDesc storeDesc = new StoreDesc(layoutName, dbType) ; 
-        storeDesc.connDesc = sdbConnDesc ;
-
-        // MySQL specials
-        String engineName = GraphUtils.getStringValue(root, AssemblerVocab.pMySQLEngine) ;
-        storeDesc.engineType = null ;
-        if ( engineName != null )
-            try { storeDesc.engineType= MySQLEngineType.convert(engineName) ; }
-            catch (SDBException ex) {}
-            
-        // ModelRDB special
-        storeDesc.rdbModelName = GraphUtils.getStringValue(root, AssemblerVocab.pModelRDBname) ;
-        
-        return storeDesc ;
+        this.pattern = ExprUtils.parse(pattern) ;
+        if ( vars.length != actions.length )
+            throw new SDBException("Variable and action arrays are different lengths") ;  
+        mapAction = new MapAction() ;
+        for ( int i = 0 ; i < vars.length ; i++ )
+        {
+            Var var = vars[i] ;
+            Action a = actions[i] ;
+            mapAction.put(var, a) ;
+        }
     }
+    
+    public MapResult match(Expr expression)
+    {
+        return ExprMatcher.match(expression, pattern, mapAction) ;
+    }
+    
 }
 
 /*

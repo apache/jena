@@ -11,10 +11,10 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.engine.SDBConstraint;
+import com.hp.hpl.jena.sdb.core.compiler.ConditionCompiler;
+import com.hp.hpl.jena.sdb.core.compiler.SDBConstraint;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sdb.layout2.expr.StringExprCompiler;
-import com.hp.hpl.jena.sdb.store.ConditionCompiler;
 
 class ConditionCompiler2 implements ConditionCompiler
 {

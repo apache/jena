@@ -14,7 +14,6 @@ import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.util.Loader;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sdb.SDB;
@@ -49,12 +48,6 @@ public class StoreFactory
     public static Store create(SDBConnection sdb, StoreDesc desc)
     {
         Store store = _create(desc, sdb) ;
-        if ( desc.customizerClass != null )
-        {
-            StoreCustomizer customizer = 
-                (StoreCustomizer)Loader.loadAndInstantiate(desc.customizerClass, StoreCustomizer.class) ;
-            store.setCustomizer(customizer) ;
-        }
         return store ;
     }
     

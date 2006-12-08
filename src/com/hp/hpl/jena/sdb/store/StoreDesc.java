@@ -29,7 +29,6 @@ public class StoreDesc
     public SDBConnectionDesc connDesc  = null ;
     public DatabaseType dbType         = null ;
     public LayoutType layout           = null ;
-    public String customizerClass      = null ;
     
     // ModelRDB
     public String rdbModelName         = null ;     // ModelRDB specific

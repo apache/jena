@@ -10,16 +10,16 @@ import com.hp.hpl.jena.query.core.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.ExprPattern;
 import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.compiler.ConditionCompilerBase;
+import com.hp.hpl.jena.sdb.core.compiler.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.engine.ExprPattern;
-import com.hp.hpl.jena.sdb.engine.SDBConstraint;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
 import com.hp.hpl.jena.sdb.layout2.ValueType;
-import com.hp.hpl.jena.sdb.store.ConditionCompilerBase;
 
 public class RegexCompiler extends ConditionCompilerBase
 {

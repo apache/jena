@@ -5,10 +5,9 @@
  */
 
 package com.hp.hpl.jena.sdb.layout1;
-
-import com.hp.hpl.jena.sdb.engine.PlanTranslatorGeneral;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
+
 
 /** Store class for the simple layout (i.e. one triple table)
  * 
@@ -18,18 +17,20 @@ import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
 public class StoreSimpleHSQL extends StoreBaseHSQL
 {
+    
+    
     public StoreSimpleHSQL(SDBConnection sdb)
     {
-        this(sdb, new CodecSimple()) ;
+        this(sdb, new CodecSimple(), new TripleTableDescSPO()) ;
     }
     
-    public StoreSimpleHSQL(SDBConnection sdb, EncoderDecoder codec)
+    private StoreSimpleHSQL(SDBConnection sdb, EncoderDecoder codec, TripleTableDesc tripleTableDesc)
     {
         super(sdb, 
-              new PlanTranslatorGeneral(false, false),
-              new LoaderSimple(sdb, codec),
               new FormatterSimpleHSQL(sdb) ,
-              new QueryCompiler1(codec), null) ;
+              new LoaderSimple(sdb, codec),
+              new QueryCompilerFactory1(codec, tripleTableDesc),
+              new SQLBridgeFactory1(codec) ) ;
     }
 }
 

@@ -7,112 +7,49 @@
 package com.hp.hpl.jena.sdb.util;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.BindingRoot;
-import com.hp.hpl.jena.query.engine1.*;
-import com.hp.hpl.jena.query.engine1.plan.PlanElementExternal;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.sdb.core.Block;
+import com.hp.hpl.jena.query.core.ARQConstants;
+import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.engine.PlanSDB;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.shared.PrefixMapping;
+
 
 
 /** Print utilities */
 
 public class PrintSDB
 {
-    public static void printPlan(Store store, Query query, QueryEngine queryEngine)
+    public static String divider = "----------------" ;
+    
+    public static void print(Store store, Query query, QueryEngineQuadSDB queryEngine)
     {
         if ( queryEngine == null )
-            queryEngine = new QueryEngineSDB(store, query) ;
-        PlanElement plan = queryEngine.getPlan() ;
-        PlanFormatter.out(System.out, plan) ;
-    }
-    
-    /** Print plan with SQL parts */
-    public static void printBlocks(Store store, Query query, QueryEngineSDB queryEngine)
-    {
-        if ( queryEngine == null )
-            queryEngine = new QueryEngineSDB(store, query) ;
-        IndentedWriter w = new IndentedWriter(System.out) ;
-        PlanVisitor fmt = new PrintSDBBlocks(w, store, query) ;
-        PlanWalker.walk(queryEngine.getPlan(), fmt) ;
-        w.flush();
+            queryEngine = new QueryEngineQuadSDB(store, query) ;
+        Op op = queryEngine.getOp() ;
+        System.out.println(op.toString(query.getPrefixMapping())) ;
     }
 
-    /** Print just the SQL parts */
-    public static void printSQL(Store store, Query query, QueryEngineSDB queryEngine)
-    {
-        if ( queryEngine == null )
-            queryEngine = new QueryEngineSDB(store, query) ;
-        IndentedWriter w = new IndentedWriter(System.out) ;
-        PlanFormatterVisitor fmt = new PrintPlanSQL(w, store, query) ;
-        fmt.startVisit() ;
-        queryEngine.getPlan().visit(fmt) ;
-        fmt.finishVisit() ;
-    }
+    public static void print(Op op)
+    { print(op, null) ; }
 
     
-    // Print SQL bits
-    static class PrintPlanSQL extends PlanFormatterVisitor
+    public static void print(Op op, PrefixMapping pmap)
     {
-        private Store store ;
-        private Query query ;
-        
-        public PrintPlanSQL(IndentedWriter w, Store store, Query query)
-        { super(w, (PrefixMapping)null) ; this.store = store ; this.query = query ; }
-
-        @Override
-        public void visit(PlanElementExternal planElt)
-        {
-            if ( ! ( planElt instanceof PlanSDB ) )
-            {
-                super.visit(planElt) ; 
-                return ;
-            }
-            PlanSDB planSDB = (PlanSDB)planElt ;
-            Block block = planSDB.getBlock() ;
-            block = block.substitute(BindingRoot.create());
-            SqlNode sqlNode = store.getQueryCompiler().compileQuery(store, query, block) ;
-
-            String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
-            out.println("[SQL --------") ;
-            out.incIndent() ;
-            out.print(sqlStmt) ;
-            out.decIndent() ;
-            out.println();
-            out.print("-------- ]") ;
-        }
+        if ( pmap == null )
+            pmap = ARQConstants.getGlobalPrefixMap() ;
+        System.out.println(op.toString(pmap)) ;
     }
     
-    // Find SQL-ish blocks.
-    static class PrintSDBBlocks extends PlanVisitorBase
+    public static void printSQL(SqlNode sqlNode)
     {
-        private Store store ;
-        private Query query ;
-        private IndentedWriter out ;
-        private String separator = null ;
-
-        PrintSDBBlocks(IndentedWriter w, Store store, Query query)
-        { this.out = w ; this.store = store ; this.query = query ; }
-        
-        @Override
-        public void visit(PlanElementExternal planElt)
-        {
-            if ( planElt instanceof PlanSDB )
-            {
-                // Mimic what the QueryIterSDB/QueryCompilerBasicPattern does.
-                PlanSDB planSDB = (PlanSDB)planElt ;
-                Block block = planSDB.getBlock() ;
-                block = block.substitute(BindingRoot.create());
-                SqlNode sqlNode = store.getQueryCompiler().compileQuery(store, query, block) ;
-                String sqlStmt = store.getSQLGenerator().generateSQL(sqlNode) ; 
-                out.println(sqlStmt) ;
-            }
-        }
+        System.out.println(sqlNode.toString()) ;
+        System.out.println(divider) ;
+        String sqlString = GenerateSQL.toSQL(sqlNode) ;
+        System.out.println(sqlString) ;
     }
+    
 }
 
 /*

@@ -16,14 +16,13 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.LayoutType;
-import com.hp.hpl.jena.sdb.store.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
+
 
 /**
  * Compile and print the SQL for a SPARQL query.
@@ -79,7 +78,7 @@ public class sdbprint extends CmdArgsDB
         Query query = modQuery.getQuery() ;
         Store store = getModStore().getStore() ; 
 
-        compilePrint(query, store.getQueryCompiler()) ;
+        compilePrint(store, query) ;
   }
 
     boolean needDivider = false ;
@@ -89,7 +88,7 @@ public class sdbprint extends CmdArgsDB
         needDivider = true ;
     }
     
-    private void compilePrint(Query query, QueryCompiler compiler)
+    private void compilePrint(Store store, Query query)
     {
         
         if ( ! isQuiet() && ! printSQL )
@@ -104,19 +103,18 @@ public class sdbprint extends CmdArgsDB
             query.serialize(System.out, Syntax.syntaxPrefix) ;
         }
 
-        Store store = getModStore().getStore() ;
-        QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
+        QueryEngineQuadSDB qe = new QueryEngineQuadSDB(store, query) ;
 
         if ( isVerbose() )
         {
             divider() ;
-            PrintSDB.printPlan(store, query, qe) ;
+            PrintSDB.print(qe.getOp()) ;
         }
 
         if ( isVerbose() )
         {
             //QueryCompilerBasicPattern.printBlock = false ;  // Done earlier.
-            QC.printAbstractSQL = true ;
+            //QC.printAbstractSQL = true ;
         }
 
         
@@ -124,16 +122,16 @@ public class sdbprint extends CmdArgsDB
         
         IndentedWriter w = new IndentedWriter(System.out) ;
         
-        if ( printSQL )
-        {
-            divider() ;
-            PrintSDB.printBlocks(store, query, qe) ;
-        }
-        else
-        {
-            divider() ;
-            PrintSDB.printSQL(store, query, qe) ;
-        }
+//        if ( printSQL )
+//        {
+//            divider() ;
+//            PrintSDB.printBlocks(store, query, qe) ;
+//        }
+//        else
+//        {
+//            divider() ;
+//            PrintSDB.printSQL(store, query, qe) ;
+//        }
     }
 
     

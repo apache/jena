@@ -22,8 +22,10 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
+import com.hp.hpl.jena.sdb.util.PrintSDB;
+
  
  /** Query an SDB model.
   * 
@@ -97,10 +99,6 @@ public class sdbquery extends CmdArgsDB
         if ( isVerbose() )
         {
             // ModSDBAdmin - various printing options?
-            //QueryCompilerBasicPattern.printBlock = true ;
-            //QueryCompilerBasicPattern.printAbstractSQL = true ;
-            QC.printSQL = true ;
-            QC.printDivider = divider ;
         }
 
         // Force setup
@@ -124,7 +122,6 @@ public class sdbquery extends CmdArgsDB
         
         if ( isVerbose() )
         {
-            QC.printSQL = true ;
             modQuery.getQuery().serialize(System.out) ;
             System.out.println(divider) ; 
         }
@@ -136,6 +133,10 @@ public class sdbquery extends CmdArgsDB
                 getModTime().startTimer() ;
                 Query query = modQuery.getQuery() ;
                 QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
+                
+                if ( isVerbose() )
+                    PrintSDB.print(((QueryEngineQuadSDB)qExec).getOp()) ;
+                
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
                 QueryCmdUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;

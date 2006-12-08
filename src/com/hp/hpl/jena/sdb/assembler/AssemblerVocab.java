@@ -41,7 +41,7 @@ public class AssemblerVocab
     public static final Property pNamedGraphData     = Vocab.property(NS, "namedGraph") ;
     
     public static final Property pOutputFormat       = Vocab.property(NS, "outputFormat") ;
-    public static final Property pCustomizerClass    = Vocab.property(NS, "customizer") ;
+    //public static final Property pCustomizerClass    = Vocab.property(NS, "customizer") ;
 
     // renaming: sdbFoo => foo ?/
     

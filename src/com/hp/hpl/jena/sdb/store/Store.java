@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+
 
 /** A Store is one RDF dataset instance - it is the unit of query.
  *  The Store class is the SDB specific mechanisms need to implement
@@ -28,23 +30,12 @@ public interface Store
     /** Return the connection to the implementing database */
     public SDBConnection getConnection() ;
     
-    /** Return the processor that turns query Plans (from ARQ) to
-     * something that goes to this store.  May still involve ARQ
-     * i.e. be a partial translation to SQL, leaving work to be
-     * done in the ARQ engine as well. 
-     */ 
-    public PlanTranslator   getPlanTranslator() ;
+    /** Return the producer of processors that turn SPARQL queries into SQL expressions */
+    public QueryCompilerFactory    getQueryCompilerFactory() ; 
     
-    /** Return the processor that turns SPARQL queries into SQL expressions */
-    public QueryCompiler    getQueryCompiler() ; 
+    /** Factory for SQL bridges for this store */ 
+    public SQLBridgeFactory getSQLBridgeFactory() ;
     
-    // c.f. modify()
-    /** Return the store instance specific modification engine */
-    public StoreCustomizer  getCustomizer() ;
-    
-    /** Set the store instance specific modification engine */
-    public void             setCustomizer(StoreCustomizer customizer) ;
-
     /** Get the SQL-from-relational algebra generator */ 
     public SQLGenerator     getSQLGenerator() ;
     

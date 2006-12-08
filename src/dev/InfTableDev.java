@@ -13,21 +13,19 @@ import java.sql.SQLException;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
-import com.hp.hpl.jena.sdb.core.compiler.BlockCompilerFactory;
-import com.hp.hpl.jena.sdb.data.CustomizeProperty;
-import com.hp.hpl.jena.sdb.data.CustomizeType;
-import com.hp.hpl.jena.sdb.layout2.QueryCompiler2;
 import com.hp.hpl.jena.sdb.sql.RS;
-import com.hp.hpl.jena.sdb.store.*;
-import com.hp.hpl.jena.sdb.util.PrintSDB;
+import com.hp.hpl.jena.sdb.store.DatasetStore;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreDesc;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 
-import dev.inf.*;
+import dev.inf.TransSubClassTable;
+import dev.inf.TransSubPropertyTable;
+import dev.inf.TransTable;
+import dev.inf.TransTableMgr;
 
 public class InfTableDev
 {
@@ -65,7 +63,7 @@ public class InfTableDev
                 dumpTable(store, new TransSubClassTable()) ;
                 dumpTable(store, new TransSubPropertyTable()) ;
             }
-            play(store) ;
+            // DO SOMETHING
         } catch (Exception ex) 
         { ex.printStackTrace(System.err) ; }
         finally { store.close() ; }
@@ -73,82 +71,6 @@ public class InfTableDev
         System.exit(0) ;
     }
     
-    private static void play(Store store)
-    {
-        if ( true )
-            execQuery(store, prefixes+"\n"+"SELECT * { ?subject ?predicate ?object} ORDER BY ?subject ?predicate ?object") ;
-        
-        StoreCustomizer sc = null ;
-        QueryCompiler qc = null ;
-        
-        if ( true )
-        {
-            // This does the rewrite of rdf:type.
-            sc = new CustomizeType() ;
-            // and the SQL intercept for rdfs:subClassOf
-            qc = new QueryCompiler2(new BlockCompilerFactory(){
-                public BlockCompiler createBlockCompiler()
-                {
-                    return new BlockCompilerSubClass() ;
-                }
-            }) ;
-        }
-        else
-        {
-            // This does the rewrite of propertyies.
-            sc = new CustomizeProperty() ;
-            // and the SQL intercept for rdfs:subPropertyOf
-            qc = new QueryCompiler2(new BlockCompilerFactory(){
-                public BlockCompiler createBlockCompiler()
-                { 
-                    return new BlockCompilerTrans(new TransSubPropertyTable()) ; 
-                }
-            }) ;
-        }
-        Store store2 = new StoreBase(store.getConnection(),
-                                     store.getPlanTranslator(),
-                                     store.getLoader(),
-                                     store.getTableFormatter(),
-                                     qc,
-                                     store.getSQLGenerator() ,
-                                     sc) ;
-        play2(store2) ;
-    }
-        
-    private static void play2(Store store2)
-    {
-        if ( false )
-            SDB.init() ;    // Check called - this should not be needed.
-        
-        
-        Query query = QueryFactory.read("Q.rq") ;
-        query.serialize(System.out) ;
-        
-        QueryExecution qExec = null ; 
-        
-        qExec = QueryExecutionFactory.create(query, new DatasetStore(store2)) ;
-        //qExec = new QueryEngineSDB(store2, query) ;
-        
-        
-        if ( false )
-        {
-            PrintSDB.printBlocks(store2, query, null) ;
-            divider() ;
-        }
-        //store2.getConnection().setLogSQLQueries(true) ;
-        
-        try {
-            ResultSet rs1 = qExec.execSelect() ;
-            ResultSetRewindable rs = ResultSetFactory.makeRewindable(rs1) ;
-            ResultSetFormatter.out(rs) ;
-            rs.reset() ;
-        } finally { qExec.close(); }
-        
-        store2.getConnection().setLogSQLQueries(false) ;
-        if ( false )
-            // No explicit rdf:type.
-            execQuery(store2, "SELECT * { ?subject ?predicate ?object}") ;
-    }
 
 
 

@@ -6,9 +6,11 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.util.HSQLUtils;
+
 
 
 public class StoreBaseHSQL extends StoreBase
@@ -16,13 +18,12 @@ public class StoreBaseHSQL extends StoreBase
     protected boolean currentlyOpen = true ;
     
     public StoreBaseHSQL(SDBConnection connection, 
-                         PlanTranslator planTranslator,
-                         StoreLoader loader,
                          StoreFormatter formatter,
-                         QueryCompiler compiler,
-                         StoreCustomizer customizer)
+                         StoreLoader loader,
+                         QueryCompilerFactory compilerF,
+                         SQLBridgeFactory sqlBridgeF)
     {
-        super(connection, planTranslator, loader, formatter, compiler, new GenerateSQL(), customizer) ;
+        super(connection, formatter, loader, compilerF, sqlBridgeF, new GenerateSQL()) ;
     }
 
     @Override 

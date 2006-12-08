@@ -18,20 +18,16 @@ import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.BindingRoot;
-import com.hp.hpl.jena.query.core.DataSourceGraph;
-import com.hp.hpl.jena.query.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.util.Context;
-import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
 
 
 public class GraphSDB extends GraphBase implements Graph
@@ -86,31 +82,39 @@ public class GraphSDB extends GraphBase implements Graph
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
         // Fake a query.
-        CompileContext cxt = new CompileContext(getStore(), new Query()) ;
-        List<Node>vars = new ArrayList<Node>() ;
+        SDBRequest cxt = new SDBRequest(getStore(), new Query()) ;
         
         Node s = m.getMatchSubject() ;
-        if ( s == null ) s = Node.createVariable("s") ;
+        if ( s == null ) s = Var.alloc("s") ;
         
         Node p = m.getMatchPredicate() ;
-        if ( p == null ) p = Node.createVariable("p") ; 
+        if ( p == null ) p = Var.alloc("p") ; 
         
         Node o = m.getMatchObject() ;
-        if ( o == null ) o = Node.createVariable("o") ;
+        if ( o == null ) o = Var.alloc("o") ;
         
         Triple triple = new Triple(s, p ,o) ;
         
-        if ( s.isVariable() ) vars.add(s) ;
-        if ( p.isVariable() ) vars.add(p) ;
-        if ( o.isVariable() ) vars.add(o) ;
-        
-        BlockBGP block = new BlockBGP() ;
-        block.add(triple) ;
+        Query q = new Query() ;
+        if ( s.isVariable() ) q.addResultVar(s) ;
+        if ( p.isVariable() ) q.addResultVar(p) ;
+        if ( o.isVariable() ) q.addResultVar(o) ;
 
+        ElementBasicGraphPattern el = new ElementBasicGraphPattern() ;
+        el.addTriple(new Triple(s,p,o)) ;
+        q.setQueryPattern(el) ;
+        
         DataSourceGraph dsg = new DataSourceGraphImpl() ;
         dsg.setDefaultGraph(this) ;
-        ExecutionContext execCxt = new ExecutionContext(new Context(),  new Query(), this, dsg) ;
-        QueryIterator qIter = store.getQueryCompiler().exec(getStore(), block, BindingRoot.create(), execCxt) ;
+        
+//        if ( true )
+//            throw new SDBNotImplemented("GraphSDB: QueryEngineQuadSDB is not a graph-level engine yet.") ;
+        QueryEngineQuadSDB qe = new QueryEngineQuadSDB(getStore(), q, null) ;
+        qe.setDataset(new DataSourceImpl(dsg)) ;
+        
+        //System.out.println( ((QueryEngineQuadSDB)qe).getOp().toString());
+        
+        QueryIterator qIter = qe.exec() ;
         List<Triple> triples = new ArrayList<Triple>() ;
         
         for (; qIter.hasNext() ; )
@@ -131,6 +135,7 @@ public class GraphSDB extends GraphBase implements Graph
             triples.add(resultTriple) ;
         }
         qIter.close() ;
+        qe.close() ;
         return new GraphIterator(triples.iterator()) ;
     }
 

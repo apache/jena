@@ -4,14 +4,20 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 
-public interface ExprCompile
+/** Convert from whatever results a particular layout returns into
+ *  an ARQ QueryIterator of Bindings.  An SQLBridge object
+ *  is allocated for each query execution. 
+ *  
+ * @author Andy Seaborne
+ * @version $Id$
+ */  
+
+public interface SQLBridgeFactory
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+    public SQLBridge create() ;
 }
 
 /*

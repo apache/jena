@@ -4,14 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
-public interface ExprCompile
+public class SQLBridgeFactory2 implements SQLBridgeFactory
 {
-    SqlExpr compile(Expr expr, ExprPattern pattern, Scope scope) ;
+
+    public SQLBridge create()
+    {
+        return new SQLBridge2() ;
+    }
+
 }
 
 /*

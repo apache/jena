@@ -6,58 +6,27 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.Block;
-import com.hp.hpl.jena.sdb.core.CompileContext;
-import com.hp.hpl.jena.sdb.core.compiler.BlockCompiler;
-import com.hp.hpl.jena.sdb.core.compiler.ConditionCompilerNone;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.ConditionCompiler;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
 
-public class QueryCompiler1 extends QueryCompilerMain
+
+public class QueryCompiler1 extends QueryCompilerMain 
 {
-    private static Log log = LogFactory.getLog(QueryCompiler1.class) ;
-    
+    private EncoderDecoder codec = null ;
     private TripleTableDesc tripleTableDesc ;
-    private EncoderDecoder codec ;
-
-    public QueryCompiler1(EncoderDecoder codec, TripleTableDesc tripleTableDesc)
-    {
-        if ( tripleTableDesc == null )
-            tripleTableDesc = new TripleTableDescSPO() ;
+    
+    
+    public QueryCompiler1(SDBRequest request, EncoderDecoder codec, TripleTableDesc tripleTableDesc)
+    { 
+        super(request) ; 
         this.codec = codec ;
         this.tripleTableDesc = tripleTableDesc ;
     }
     
-
-    public QueryCompiler1(EncoderDecoder codec)       { this(codec, null) ; }
-
     @Override
-    protected BlockCompiler  createBlockCompiler()    { return new BlockCompiler1(codec, tripleTableDesc) ; }
-    
-    @Override
-    protected SQLBridge createSQLBridge()             { return new SQLBridge1(codec) ; }
-
-
-    public ConditionCompiler getConditionCompiler()
-    {
-        return ConditionCompilerNone.get() ;
-    }
-
-    @Override
-    protected void startCompile(CompileContext context, Block block)
-    { return ; }
-
-    @Override
-    protected SqlNode finishCompile(CompileContext context, Block block, SqlNode sqlNode, Set<Var> projectVars)
-    { return sqlNode ; }
+    protected QuadBlockCompiler createQuadBlockCompiler()
+    { return new QuadBlockCompiler1(request, codec, tripleTableDesc) ; }
 }
 
 /*
