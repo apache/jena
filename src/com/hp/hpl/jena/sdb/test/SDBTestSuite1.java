@@ -22,8 +22,8 @@ import com.hp.hpl.jena.sdb.store.Store;
 @RunWith(AllTests.class)
 public class SDBTestSuite1 extends TestSuite
 {
-    static boolean includeMySQL = true ;
-    static boolean includeHSQL = false ;
+    public static boolean includeMySQL = true ;
+    public static boolean includeHSQL = false ;
     
     // JUnit3 to JUnit4 adapter
 //    public static junit.framework.Test suite() { 

@@ -9,13 +9,13 @@ package com.hp.hpl.jena.sdb.core.compiler;
 import java.util.List;
 
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine2.Evaluator;
 import com.hp.hpl.jena.query.engine2.Table;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpExtBase;
-import com.hp.hpl.jena.query.engine2.op.OpWriter;
 import com.hp.hpl.jena.query.engine2.table.TableSimple;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -54,19 +54,19 @@ public class OpSQL extends OpExtBase
     @Override
     public void output(IndentedWriter out)
     {
-        out.print(OpWriter.startMarker) ;
+        out.print(Plan.startMarker) ;
         out.println("OpSQL --------") ;
         out.incIndent() ;
         sqlNode.output(out) ;
         out.decIndent() ;
         out.ensureStartOfLine() ;
         out.print("--------") ;
-        out.print(OpWriter.finishMarker) ;
+        out.print(Plan.finishMarker) ;
     }
 
     public String toSQL()
     {
-       return QP.toSqlString(this, request, null, null) ;
+       return QP.toSqlString(this, request, null) ;
     }
 
     public SqlNode getSqlNode()

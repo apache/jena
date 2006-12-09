@@ -8,11 +8,14 @@ package dev;
 
 import java.io.IOException;
 
+import junit.framework.TestSuite;
+
 import arq.cmd.CmdUtils;
 import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.junit.SimpleTestRunner;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -22,6 +25,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
@@ -33,8 +37,9 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
+        run() ;
         //SDBConnection.logSQLStatements = true ;
-        //run("Q.rq", "D.ttl") ;
+        //runQuery("Q.rq", "D.ttl") ;
         
         
         //runQuad() ;
@@ -101,6 +106,10 @@ public class RunSDB
     {
         String queryFile = "Q.rq" ;
         String dataFile = "D.ttl" ;
+        
+        queryFile = "testing/Expressions/regex-opt-2.rq" ;
+        dataFile  = "testing/Expressions/data.ttl" ;
+        
         System.out.println("*** Reference") ;
         runInMem(queryFile, dataFile) ;
         System.out.println("*** SDB") ;
@@ -113,7 +122,6 @@ public class RunSDB
         String a[] = {"--format", "--load="+dataFile,"--sdb=sdb.ttl", "--query="+queryFile } ;
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
-        
         sdb.sdbquery.main(a) ;
      }
 
@@ -138,20 +146,12 @@ public class RunSDB
     public static void run()
     {
         SDB.init() ;
-        // Create store - assumed  to be 
-        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
-        store.getTableFormatter().format() ;
-
-        Model model = SDBFactory.connectModel(store) ;
-        model.read("file:D.ttl", "N3") ;
-        //model.write(System.out, "N3")  ;
-        
-        String qs = "SELECT ?s ?p ?S { ?s ?p ?S }" ;
-        Query query = QueryFactory.create(qs) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-        QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_TEXT) ;
-        qExec.close() ;
+        SDBTestSuite1.includeMySQL = true ;
+        SDBTestSuite1.includeHSQL = false ;
+        TestSuite ts = SDBTestSuite1.suite() ;
+        SimpleTestRunner.runAndReport(ts) ;
         System.exit(0) ;
+        
     }
 
     static void runScript()

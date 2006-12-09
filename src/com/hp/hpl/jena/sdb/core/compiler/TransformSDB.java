@@ -59,6 +59,9 @@ public class TransformSDB extends TransformCopy
         // TODO See if this store is capable of performing complex join expressions
         if ( ! isOpSQL(left) || ! isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
+        // Condition in the left join.  Punt for now. 
+        if ( opJoin.getExpr() != null )
+            return super.transform(opJoin, left, right) ;
         
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
@@ -67,7 +70,7 @@ public class TransformSDB extends TransformCopy
     
     private boolean isOpSQL(Op x)
     {
-        return x instanceof OpSQL ;
+        return ( x instanceof OpSQL ) ;
     }
     
 }

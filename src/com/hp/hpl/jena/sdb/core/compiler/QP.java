@@ -30,7 +30,7 @@ public class QP
     public static QueryIterator exec(OpSQL opSQL, SDBRequest request, Binding binding, ExecutionContext execCxt)
     {
         SQLBridge bridge = request.getStore().getSQLBridgeFactory().create() ;
-        String sqlStmt = toSqlString(opSQL, request, bridge, execCxt) ;
+        String sqlStmt = toSqlString(opSQL, request, bridge) ;
     
         if ( PrintSQL )
             System.out.println(sqlStmt) ;
@@ -59,8 +59,9 @@ public class QP
         return sqlNode ;
     }
     
-    public static String toSqlString(OpSQL opSQL, SDBRequest request, 
-                                     SQLBridge bridge, ExecutionContext execCxt)
+    public static String toSqlString(OpSQL opSQL, 
+                                     SDBRequest request, 
+                                     SQLBridge bridge)
     {
         if ( bridge == null )
             // Direct call to produce SQL strings for printing 
