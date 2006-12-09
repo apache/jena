@@ -9,7 +9,7 @@ import junit.framework.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TurtleTestSuite.java,v 1.1 2006-12-09 20:39:46 andy_seaborne Exp $
+ * @version 	$Id: TurtleTestSuite.java,v 1.2 2006-12-09 20:49:25 andy_seaborne Exp $
  */
 public class TurtleTestSuite extends TestSuite
 {
@@ -20,9 +20,9 @@ public class TurtleTestSuite extends TestSuite
 	private TurtleTestSuite()
 	{
 		super("Turtle") ;
-		addTest(new TurtleInternalTests()) ;
-        addTest(TurtleTestFactory.make("testing/Turtle/manifest.ttl")) ;
         addTestSuite(TestTurtleReader.class) ;
+        addTest(new TurtleInternalTests()) ;
+        addTest(TurtleTestFactory.make("testing/Turtle/manifest.ttl")) ;
 //		addTest(new N3ExternalTests()) ;
 //		addTest(new N3JenaReaderTests()) ;
 //		addTest(new N3JenaWriterTests()) ;

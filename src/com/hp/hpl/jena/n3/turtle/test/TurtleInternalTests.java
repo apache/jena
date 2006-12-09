@@ -14,7 +14,7 @@ import com.hp.hpl.jena.query.junit.TestUtils;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TurtleInternalTests.java,v 1.1 2006-12-09 20:39:46 andy_seaborne Exp $
+ * @version 	$Id: TurtleInternalTests.java,v 1.2 2006-12-09 20:49:25 andy_seaborne Exp $
  */
 public class TurtleInternalTests extends TestSuite
 {
@@ -26,7 +26,7 @@ public class TurtleInternalTests extends TestSuite
 	static public final String QUOTE3 = "\"\"\"" ;
 	static public boolean VERBOSE = false ;
 	
-	TurtleInternalTests()
+	public TurtleInternalTests()
 	{
 		super("Turtle Parser Syntactic tests") ;
 		
