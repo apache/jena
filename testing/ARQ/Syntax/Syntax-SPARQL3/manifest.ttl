@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Syntax tests 3" ;
+    rdfs:comment "Syntax tests Syntax-SPARQL3" ;
     mf:entries
     ( 
       [  mf:name    "syn-01.rq" ;
@@ -123,6 +123,54 @@
       [  mf:name    "syn-bad-21.rq" ;
          rdf:type   mfx:TestBadSyntax ;
          mf:action  <syn-bad-21.rq> ; 
+      ]
+      [  mf:name    "syn-bad-22.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-22.rq> ; 
+      ]
+      [  mf:name    "syn-bad-23.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-23.rq> ; 
+      ]
+      [  mf:name    "syn-bad-24.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-24.rq> ; 
+      ]
+      [  mf:name    "syn-bad-25.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-25.rq> ; 
+      ]
+      [  mf:name    "syn-bad-26.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-26.rq> ; 
+      ]
+      [  mf:name    "syn-bad-27.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-27.rq> ; 
+      ]
+      [  mf:name    "syn-bad-28.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-28.rq> ; 
+      ]
+      [  mf:name    "syn-bad-29.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-29.rq> ; 
+      ]
+      [  mf:name    "syn-bad-30.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-30.rq> ; 
+      ]
+      [  mf:name    "syn-bad-31.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-31.rq> ; 
+      ]
+      [  mf:name    "syn-bad-32.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-32.rq> ; 
+      ]
+      [  mf:name    "syn-bad-33.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-33.rq> ; 
       ]
       [  mf:name    "bnode-dot.rq" ;
          rdf:type   mfx:TestBadSyntax ;

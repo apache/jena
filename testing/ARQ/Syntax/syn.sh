@@ -7,7 +7,7 @@ source syn-func.sh
     cd Syntax-SPARQL   
     clean 
     source ../syn-sparql.sh  
-    createManifest 1
+    createManifest "Syntax-SPARQL"
 )
 
 # DAWG extended
@@ -15,7 +15,7 @@ source syn-func.sh
     cd Syntax-SPARQL2  
     clean 
     source ../syn-sparql2.sh  
-    createManifest 2
+    createManifest "Syntax-SPARQL2"
 )
 
 # Development
@@ -23,7 +23,7 @@ source syn-func.sh
     cd Syntax-SPARQL3
     clean
     source ../syn-dev.sh
-    createManifest 3
+    createManifest "Syntax-SPARQL3"
  )
 
 # ARQ
@@ -31,6 +31,6 @@ source syn-func.sh
     cd Syntax-ARQ
     clean 
     source ../syn-arq.sh 
-    createManifest 4
+    createManifest "Syntax-ARQ"
 )
 

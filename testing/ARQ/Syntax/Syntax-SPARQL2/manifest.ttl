@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Syntax tests 2" ;
+    rdfs:comment "Syntax tests Syntax-SPARQL2" ;
     mf:entries
     ( 
       [  mf:name    "syntax-general-01.rq" ;
@@ -63,10 +63,6 @@
       [  mf:name    "syntax-general-14.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-general-14.rq> ; 
-      ]
-      [  mf:name    "syntax-general-15.rq" ;
-         rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-general-15.rq> ; 
       ]
       [  mf:name    "syntax-keywords-01.rq" ;
          rdf:type   mfx:TestSyntax ;
@@ -156,9 +152,17 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-form-construct04.rq> ; 
       ]
+      [  mf:name    "syntax-form-construct05.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-form-construct05.rq> ; 
+      ]
       [  mf:name    "syntax-form-construct06.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-form-construct06.rq> ; 
+      ]
+      [  mf:name    "syntax-form-construct07.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-form-construct07.rq> ; 
       ]
       [  mf:name    "syntax-form-describe01.rq" ;
          rdf:type   mfx:TestSyntax ;
@@ -204,10 +208,6 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-graph-05.rq> ; 
       ]
-      [  mf:name    "syntax-graph-06.rq" ;
-         rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-graph-06.rq> ; 
-      ]
       [  mf:name    "syntax-esc-01.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-esc-01.rq> ; 
@@ -223,5 +223,9 @@
       [  mf:name    "syntax-esc-04.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-esc-04.rq> ; 
+      ]
+      [  mf:name    "syntax-esc-05.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-esc-05.rq> ; 
       ]
     ) .

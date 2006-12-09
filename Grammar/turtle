@@ -1,0 +1,22 @@
+#!/bin/bash
+# Parser builder
+
+CLASS=TurtleParser
+DIR="../src/com/hp/hpl/jena/n3/turtle/parser"
+FILE=turtle.jj
+
+echo "---- Process grammar ----"
+## No it's now!  echo "Warning about UNICODE_INPUT is ignorable"
+javacc -OUTPUT_DIRECTORY=$DIR "$FILE"
+RC=$?
+[ "$RC" = 0 ] || return
+echo "---- Create text form ----"
+jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+
+echo "---- Fixing Java warnings ---- "
+
+F="$DIR/${CLASS}TokenManager.java"
+
+    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' < $F > F
+    mv F $F
+    rm -f F

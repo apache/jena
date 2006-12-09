@@ -1,4 +1,3 @@
-# Broken , can't trail
-PREFIX :   <http://example/ns#>
-SELECT * WHERE
-{ :s  :p :o , }
+# CONSTRUCT and DOTs
+CONSTRUCT { ?s ?p ?o ?s ?p ?o }
+WHERE { }

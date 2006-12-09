@@ -9,11 +9,24 @@
     mf:entries
     ( 
       [  mf:name    "Sort 1" ;
-         # This is not an effective test anymore?
          mf:action
             [ qt:query  <sort-1.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <sort-result-1.srx>
+      ]
+
+      [  mf:name    "Sort 2" ;
+         mf:action
+            [ qt:query  <sort-2.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <sort-result-2.srx>
+      ]
+
+      [  mf:name    "Sort 3" ;
+         mf:action
+            [ qt:query  <sort-3.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <sort-result-3.srx>
       ]
 
       [  mf:name    "Order 1" ;
@@ -29,6 +42,18 @@
         mf:result  <order-result-2.srx>
       ]
       [  mf:name    "Order 3" ;
+         mf:action
+            [ qt:query  <order-3.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <order-result-3.srx>
+      ]
+      [  mf:name    "Order 4" ;
+         mf:action
+            [ qt:query  <order-3.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <order-result-3.srx>
+      ]
+      [  mf:name    "Order 5" ;
          mf:action
             [ qt:query  <order-3.rq> ;
               qt:data   <data-2.ttl> ] ;

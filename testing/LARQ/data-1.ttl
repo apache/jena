@@ -1,0 +1,19 @@
+# Data for LARQ example 1
+
+@prefix  :         <http://example/> .
+@prefix  xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix  dc:         <http://purl.org/dc/elements/1.1/> .
+@prefix  rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+
+:doc1 dc:title "Document 1" ;
+    rdfs:label "A general label" 
+    .
+
+:doc2 dc:title "Document 2" ;
+    rdfs:label "A general label"
+    .
+
+:doc3 dc:title "Without the keyword" ;
+    rdfs:label "Label with the work document in it" ;
+    .

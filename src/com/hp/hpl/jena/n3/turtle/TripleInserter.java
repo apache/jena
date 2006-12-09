@@ -1,31 +1,32 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.n3;
+package com.hp.hpl.jena.n3.turtle;
 
-/**
- * @author		Andy Seaborne
- * @version 	$Id: TurtleJenaReader.java,v 1.5 2006-03-22 13:53:26 andy_seaborne Exp $
- */
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 
 
-
-public class TurtleJenaReader extends N3JenaReader
+public class TripleInserter implements TripleHandler
 {
-	public TurtleJenaReader()
-    {
-	    super() ;
-        super.converter.allowPropertySymbols = false ;
-        super.converter.allowKeywordA = true ;
-    }
-	
+    Graph graph = null ;
+    public TripleInserter(Graph graph) { this.graph = graph ; }
+    
+    public void triple(int line, int col, Triple triple) { graph.add(triple) ; }
+
+    public void startFormula(int line, int col)
+    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
+
+    public void endFormula(int line, int col)
+    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

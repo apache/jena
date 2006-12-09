@@ -1,0 +1,29 @@
+# cwm: Tests/rdf-test-01.n3 => Tests/rdf-result-01.nt
+    
+    <http://never.net/a1>     <file:///base/rdf-test-01.n3#b> "string" .
+    
+    <http://never.net/>     <file:///base/rdf-test-01.n3#b> "string" .
+    
+    <http://never.net/a2>     <file:///base/rdf-test-01.n3#b> "v1" .
+    
+    <http://never.net/a2>     <file:///base/rdf-test-01.n3#b> "v2" .
+    
+    <http://never.net/a2>     <file:///base/rdf-test-01.n3#b1> "v3" .
+    
+    <http://never.net/a2>     <file:///base/rdf-test-01.n3#b1> "v4" .
+    
+    <http://never.net/a2>     <file:///base/rdf-test-01.n3#b2> "a" .
+    
+    <http://never.net/a2>     <file:///base/rdf-test-01.n3#b2> "b" .
+    
+    <http://never.net/a2>     <file:///base/rdf-test-01.n3#b3> "a" .
+    
+    <http://never.net/a2>     <file:///base/rdf-test-01.n3#b3> "b" .
+    
+    <http://never.net/a3>     <file:///base/rdf-test-01.n3#p1>  "z1" .
+
+    <http://never.net/a3>     <file:///base/rdf-test-01.n3#p2>  "z2" .
+
+    <http://never.net/a3>     <file:///base/rdf-test-01.n3#p>   "z1" .
+
+    <http://never.net/a3>     <file:///base/rdf-test-01.n3#p>   "z2" .

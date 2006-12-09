@@ -1,4 +1,4 @@
-# SPARQL query to tist the URIs in a dataset
+# SPARQL query to test the URIs in a dataset
 PREFIX : <.>
 
 

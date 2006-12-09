@@ -1,0 +1,8 @@
+PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
+
+SELECT ?label
+   {
+     ?x foaf:mbox ?mbox .
+     OPTIONAL { ?x foaf:nick  ?label  }
+     OPTIONAL { ?x foaf:name  ?label }
+   }

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="mbox"/>
+    <variable name="name"/>
+  </head>
+  <results ordered="false" distinct="false">
+    <result>
+      <binding name="mbox">
+        <uri>mailto:eve@example.net</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="mbox">
+        <uri>mailto:bert@example.net</uri>
+      </binding>
+      <binding name="name">
+        <literal>Bert</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="mbox">
+        <uri>mailto:alice@example.net</uri>
+      </binding>
+      <binding name="name">
+        <literal>Alice</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

@@ -45,7 +45,6 @@
          mf:result  <results-seq-06.ttl>
        ]
 
-
        [  mf:name    "Modifier OFFSET" ;
           mf:action
              [ qt:query  <q-seq-07.rq> ;
@@ -73,4 +72,23 @@
                qt:data   <data-1.ttl> ] ;
          mf:result  <results-seq-10.ttl>
        ]
+
+        ## These next two use 1.0 > 1e0 > 1 
+        ## which may not be stable.
+
+       [  mf:name    "Modifier ORDER BY [duplicates after projection]" ;
+          mf:action
+             [ qt:query  <q-seq-11.rq> ;
+               qt:data   <data-2.ttl> ] ;
+         mf:result  <results-seq-11.srx>
+       ]
+
+       [  mf:name    "Modifier ORDER BY [duplicates due to blank nodes]" ;
+          mf:action
+             [ qt:query  <q-seq-12.rq> ;
+               qt:data   <data-2.ttl> ] ;
+         mf:result  <results-seq-12.srx>
+       ]
+
+
     ).

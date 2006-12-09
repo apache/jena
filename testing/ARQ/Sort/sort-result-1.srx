@@ -16,9 +16,6 @@
       <binding name="index">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
       </binding>
-      <binding name="v">
-        <unbound/>
-      </binding>
     </result>
     <result>
       <binding name="x">
@@ -58,6 +55,17 @@
         <bnode>b5</bnode>
       </binding>
       <binding name="index">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">7</literal>
+      </binding>
+      <binding name="v">
+        <literal>abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <bnode>b6</bnode>
+      </binding>
+      <binding name="index">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">5</literal>
       </binding>
       <binding name="v">
@@ -66,24 +74,13 @@
     </result>
     <result>
       <binding name="x">
-        <bnode>b6</bnode>
+        <bnode>b7</bnode>
       </binding>
       <binding name="index">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">6</literal>
       </binding>
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">9999</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="x">
-        <bnode>b7</bnode>
-      </binding>
-      <binding name="index">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">7</literal>
-      </binding>
-      <binding name="v">
-        <literal>abc</literal>
       </binding>
     </result>
     <result>

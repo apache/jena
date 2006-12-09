@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Syntax tests 4" ;
+    rdfs:comment "Syntax tests Syntax-ARQ" ;
     mf:entries
     ( 
       [  mf:name    "syntax-reif-arq-01.arq" ;

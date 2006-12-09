@@ -1,0 +1,26 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type    mf:Manifest ;
+    rdfs:label  "OPTIONAL (additional)" ;
+    mf:entries
+    (
+     [  mf:name    "One optional clause (alt)" ;
+        rdfs:comment
+            "One optional clause (alt)" ;
+        mf:action
+            [ qt:query  <q-opt-01-alt.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-01.srx>
+      ]
+     [  mf:name    "Two optional clauses (alt)" ;
+        rdfs:comment
+            "Two optional clauses (alt)" ;
+        mf:action
+            [ qt:query  <q-opt-02-alt.arq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-02.srx>
+      ]
+   ).

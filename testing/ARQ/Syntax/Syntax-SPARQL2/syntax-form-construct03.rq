@@ -1,5 +1,1 @@
-PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-CONSTRUCT { [] rdf:subject ?s ;
-               rdf:predicate ?p ;
-               rdf:object ?o }
-WHERE {?s ?p ?o}
+CONSTRUCT { ?s <p1> <o> . ?s <p2> ?o } WHERE {?s ?p ?o}

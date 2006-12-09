@@ -2,8 +2,6 @@ PREFIX : <http://example.org/#>
 
 SELECT *
 { :x :p _:a .
-  # Note that "isBlank" refers to the value of
-  # variable _:a not _:a itself.
-  FILTER ( ! isBlank(_:a) )
+  FILTER ( false )
 }
 

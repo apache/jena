@@ -66,18 +66,32 @@
             ] ;
         mf:result  <graph-08-result.n3> ;
       ]
-
-    [  mf:name    "graph-09" ;
-       # BNodes don't name graphs
+     [  mf:name    "graph-09" ;
         mf:action
             [ qt:query  <graph-09.rq> ;
+              qt:data   <dft.n3> ;
+              qt:graphData  <a.n3> ;
+              qt:graphData  <b.n3> ;
+            ] ;
+        mf:result  <graph-09-result.srx> ;
+      ]
+     [  mf:name    "graph-10" ;
+        mf:action
+            [ qt:query  <graph-10.rq> ;
+              qt:data   <dft.n3> ;
+              qt:graphData  <a.n3> ;
+              qt:graphData  <b.n3> ;
+            ] ;
+        mf:result  <graph-10-result.srx> ;
+      ]
+    [  mf:name    "graph-11" ;
+       # BNodes don't name graphs
+        mf:action
+            [ qt:query  <graph-11.rq> ;
               qt:graphData  <c.n3> ;
               qt:graphData  <d.n3> ;
             ] ;
-        mf:result  <graph-09-result.n3> ;
+        mf:result  <graph-11-result.n3> ;
       ]
-
-
-
     # End of tests
    ).

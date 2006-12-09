@@ -1,0 +1,15 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Turtle tests" ;
+    mfx:include (
+        # The RDF core tests for N-triples
+        <NTriples/manifest.ttl> 
+        # The tests from dajobe
+        <RaptorTurtle/manifest-good.ttl>
+        <RaptorTurtle/manifest-bad.ttl>
+    ).

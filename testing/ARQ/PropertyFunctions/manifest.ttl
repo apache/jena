@@ -64,6 +64,36 @@
               qt:data   <data-2.ttl> ] ;
         mf:result  <container-results-4.srx>
       ]
+      [  mf:name    "Function Property - container 5" ;
+         mf:action
+            [ qt:query  <container-5.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <container-results-5.srx>
+      ]
+      [  mf:name    "Function Property - container 6" ;
+         mf:action
+            [ qt:query  <container-6.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <container-results-6.srx>
+      ]
+
+      [  mf:name    "Function Property - container 7" ;
+         mf:action
+            [ qt:query  <container-7.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <container-results-7.srx>
+      ]
+
+      [  mf:name    "Function Property - container 8" ;
+         mf:action
+            [ qt:query  <container-8.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <container-results-8.srx>
+      ]
+
+
+
+
       [  mf:name    "Function Property - sequence 1" ;
          mf:action
             [ qt:query  <seq-1.rq> ;
@@ -112,5 +142,35 @@
             [ qt:query  <splitIRI-7.rq> ;
               qt:data   <data-3.ttl> ] ;
         mf:result  <splitIRI-results-7.srx>
+      ]
+      [ mf:name    "Function Property - Assign 1" ;
+        mf:action
+            [ qt:query  <assign-1.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <assign-results-1.srx>
+      ]
+      [ mf:name    "Function Property - Assign 2" ;
+        mf:action
+            [ qt:query  <assign-2.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <assign-results-2.srx>
+      ]
+      [ mf:name    "Function Property - Assign 3" ;
+        mf:action
+            [ qt:query  <assign-3.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <assign-results-3.srx>
+      ]
+      [ mf:name    "Function Property - Assign 4" ;
+        mf:action
+            [ qt:query  <assign-4.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <assign-results-4.srx>
+      ]
+      [ mf:name    "Function Property - Assign 5" ;
+        mf:action
+            [ qt:query  <assign-5.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <assign-results-5.srx>
       ]
     ) .

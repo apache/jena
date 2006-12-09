@@ -19,18 +19,18 @@
               qt:data   <data-1.ttl> ] ;
         mf:result  <result-expr-2.ttl>
       ]
-      [  mf:name    "Expr 3 - isBlank of an anon variable" ;
+      [  mf:name    "Expr 3 - Triple pattern and FILTER true" ;
          mf:action
             [ qt:query  <q-expr-3.rq> ;
               qt:data   <data-1.ttl> ] ;
-        mf:result  <result-expr-3.ttl>
+        mf:result  <result-expr-3.srx>
       ]
 
-      [  mf:name    "Expr 4 - ! isBlank of an anon variable" ;
+      [  mf:name    "Expr 4 - Triple pattern and FILTER false" ;
          mf:action
             [ qt:query  <q-expr-4.rq> ;
               qt:data   <data-1.ttl> ] ;
-        mf:result  <result-expr-4.ttl>
+        mf:result  <result-expr-4.srx>
       ]
 
 	  # Strings and non-strings.

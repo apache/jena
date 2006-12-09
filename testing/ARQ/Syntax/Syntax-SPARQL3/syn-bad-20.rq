@@ -1,2 +1,4 @@
-PREFIX : <http://example.org/ns#>
-SELECT * WHERE { :x [] :q }
+# Broken ;
+PREFIX :   <http://example/ns#>
+SELECT * WHERE
+{ :s :p ; FILTER(?x) }

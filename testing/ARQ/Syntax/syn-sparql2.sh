@@ -25,9 +25,10 @@ N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
 SELECT * WHERE { <a><b>_:x }
 EOF
 
-N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
-SELECT * WHERE { <a><b>_:x FILTER(_:x < 3) }
-EOF
+## # Syntactic blank node in a filter - in the bad syntax area.
+## N=$((N+1)) ; testBad $(fname "syntax-general-" $N) <<EOF
+## SELECT * WHERE { <a><b>_:x FILTER(_:x < 3) }
+## EOF
 
 # Signed numbers
 
@@ -74,13 +75,13 @@ EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
 # Legal, if unusual, IRIs
-BASE </http://example/page.html>
+BASE <http://example/page.html>
 SELECT * WHERE { <a> <b> <#x> }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-general-" $N) <<EOF
 # Legal, if unusual, IRIs
-BASE </http://example/page.html?query>
+BASE <http://example/page.html?query>
 SELECT * WHERE { <a> <b> <&param=value> }
 EOF
 
@@ -216,6 +217,14 @@ EOF
 N=0
 
 N=$((N+1)) ; testGood $(fname "syntax-form-construct" $N) <<EOF
+CONSTRUCT { ?s ?p ?o . } WHERE {?s ?p ?o}
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-form-construct" $N) <<EOF
+CONSTRUCT { ?s ?p ?o } WHERE {?s ?p ?o}
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-form-construct" $N) <<EOF
 CONSTRUCT { ?s <p1> <o> . ?s <p2> ?o } WHERE {?s ?p ?o}
 EOF
 
@@ -238,11 +247,6 @@ CONSTRUCT { [] rdf:subject ?s ;
                rdf:object ?o . }
 WHERE {?s ?p ?o}
 EOF
-
-## N=$((N+1)) ; testGood $(fname "syntax-form-construct" $N) <<EOF
-## CONSTRUCT {} WHERE {}
-## EOF
-N=$((N+1))
 
 N=$((N+1)) ; testGood $(fname "syntax-form-construct" $N) <<EOF
 CONSTRUCT {} WHERE {}
@@ -308,14 +312,15 @@ WHERE
 }
 EOF
 
-N=$((N+1)) ; testGood $(fname "syntax-graph-" $N) <<EOF
-PREFIX : <http://example.org/>
-SELECT *
-WHERE
-{
-  GRAPH [] { } 
-}
-EOF
+# Now bad.
+## N=$((N+1)) ; testGood $(fname "syntax-graph-" $N) <<EOF
+## PREFIX : <http://example.org/>
+## SELECT *
+## WHERE
+## {
+##   GRAPH [] { } 
+## }
+## EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-graph-" $N) <<EOF
 PREFIX : <http://example.org/>
@@ -351,7 +356,7 @@ SELECT *
 WHERE
 {
   :x :p :z
-  GRAPH ?g { :x :b ?a . GRAPH [] { :x :p ?x } }
+  GRAPH ?g { :x :b ?a . GRAPH ?g2 { :x :p ?x } }
 }
 EOF
 
@@ -378,6 +383,14 @@ EOF
 N=$((N+1)) ; testGood $(fname "syntax-esc-" $N) <<EOF
 PREFIX : <http://example/> 
 SELECT *
+WHERE { <\u0078> :\u0070 ?xx\u0078 }
+EOF
+
+N=$((N+1)) ; testGood $(fname "syntax-esc-" $N) <<EOF
+PREFIX : <http://example/> 
+SELECT *
+# Comments can contain \ u
+# <\u0078> :\u0070 ?xx\u0078
 WHERE { <\u0078> :\u0070 ?xx\u0078 }
 EOF
 

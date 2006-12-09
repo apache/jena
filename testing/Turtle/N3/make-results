@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#DIR="Tests/"
+DIR=""
+
+if [ $# -eq 0 ]
+then
+    FILES="${DIR}rdf-test-*.n3"
+else
+    FILES="$@"
+    fi
+
+for x in $FILES
+do
+  #echo $x
+    B="$(basename $x .n3)"
+    # Test 08 is the literals test - it is more liberal than cwm
+    # Test 19/20 are the named lists test - it is more liberal than cwm
+    case "$B" in 
+	"rdf-test-08" | "rdf-test-19" | "rdf-test-20" )
+	echo "    # Skipping $x"
+	continue ;;
+    esac
+
+    N="${B#rdf-test-}"
+    R="${DIR}rdf-result-$N.nt"
+
+    if [ -s "$R" ]
+    then
+	echo "    # $R exists"
+	continue
+	fi
+    
+    echo "( # $x => $R"
+    echo "   echo \"# cwm: $x => $R\""
+    echo "   cwm --ntriples $x | sed -e 's!file:/[^>]*/!file:///base/!g'"
+    echo ") 2>/dev/null > $R"
+    echo
+    done

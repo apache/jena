@@ -5,7 +5,7 @@
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
 
 <>  rdf:type mf:Manifest ;
-    rdfs:comment "Syntax tests 1" ;
+    rdfs:comment "Syntax tests Syntax-SPARQL" ;
     mf:entries
     ( 
       [  mf:name    "syntax-basic-01.rq" ;
@@ -188,6 +188,14 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-struct-12.rq> ; 
       ]
+      [  mf:name    "syntax-struct-13.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-struct-13.rq> ; 
+      ]
+      [  mf:name    "syntax-struct-14.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-struct-14.rq> ; 
+      ]
       [  mf:name    "syntax-lists-01.rq" ;
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-lists-01.rq> ; 
@@ -288,17 +296,25 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syntax-order-06.rq> ; 
       ]
-      [  mf:name    "syntax-limit-offset-07.rq" ;
+      [  mf:name    "syntax-order-07.rq" ;
          rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-limit-offset-07.rq> ; 
+         mf:action  <syntax-order-07.rq> ; 
       ]
-      [  mf:name    "syntax-limit-offset-08.rq" ;
+      [  mf:name    "syntax-limit-offset-01.rq" ;
          rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-limit-offset-08.rq> ; 
+         mf:action  <syntax-limit-offset-01.rq> ; 
       ]
-      [  mf:name    "syntax-limit-offset-09.rq" ;
+      [  mf:name    "syntax-limit-offset-02.rq" ;
          rdf:type   mfx:TestSyntax ;
-         mf:action  <syntax-limit-offset-09.rq> ; 
+         mf:action  <syntax-limit-offset-02.rq> ; 
+      ]
+      [  mf:name    "syntax-limit-offset-03.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-limit-offset-03.rq> ; 
+      ]
+      [  mf:name    "syntax-limit-offset-04.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-limit-offset-04.rq> ; 
       ]
       [  mf:name    "syntax-pat-01.rq" ;
          rdf:type   mfx:TestSyntax ;

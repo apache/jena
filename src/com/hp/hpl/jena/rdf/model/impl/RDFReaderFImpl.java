@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderFImpl.java,v 1.16 2006-12-04 15:30:45 jeremy_carroll Exp $
+ * $Id: RDFReaderFImpl.java,v 1.17 2006-12-09 20:40:07 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -38,11 +38,13 @@ import com.hp.hpl.jena.JenaRuntime ;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.16 $ $Date: 2006-12-04 15:30:45 $
+ * @version $Revision: 1.17 $ $Date: 2006-12-09 20:40:07 $
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
 
     private static final String GRDDLREADER = "com.hp.hpl.jena.grddl.GRDDLReader";
+    //private static final String TURTLEREADER = "com.hp.hpl.jena.n3.turtle.TurtleReader" ;
+    private static final String TURTLEREADER = "com.hp.hpl.jena.n3.N3TurtleJenaReader" ;
 
 	protected static Properties langToClassName = null;
 
@@ -54,7 +56,9 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
                                               "N-TRIPLES",
                                               "N3",
                                               "TURTLE",
+                                              "Turtle",
                                               "TTL",
+                                              "AFS",
                                               "GRDDL"};
     // default readers for each language
 
@@ -64,8 +68,10 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         "com.hp.hpl.jena.n3.N3JenaReader",
-        "com.hp.hpl.jena.n3.TurtleJenaReader",
-        "com.hp.hpl.jena.n3.TurtleJenaReader",
+        TURTLEREADER,
+        TURTLEREADER,
+        TURTLEREADER,
+        "com.hp.hpl.jena.n3.turtle.TurtleReader",   // Testing :-)
         GRDDLREADER
     };
 

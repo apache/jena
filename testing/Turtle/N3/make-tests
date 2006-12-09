@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#DIR="Tests/"
+DIR=""
+
+for x in ${DIR/}rdf-test-*.n3
+do
+    B="$(basename $x .n3)"
+    N="${B#rdf-test-}"
+    R="${DIR}rdf-result-$N.nt"
+    echo "<$x>    <$R> ."
+    done

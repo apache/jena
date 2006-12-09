@@ -1,17 +1,15 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.38 2006-03-22 13:53:40 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.39 2006-12-09 20:40:13 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.test;
 
-import java.lang.reflect.Method;
-
-import com.hp.hpl.jena.assembler.test.*;
-
-import junit.framework.TestSuite;
 import junit.framework.Test;
+import junit.framework.TestSuite;
+
+import com.hp.hpl.jena.assembler.test.TestAssemblerPackage;
 
 /**
  * All developers should edit this file to add their tests.
@@ -28,17 +26,18 @@ public class TestPackage extends TestSuite {
 
     /** Creates new TestPackage */
     private TestPackage() {
-        super("jena");
+        super("Jena");
         addTest("Enhanced", com.hp.hpl.jena.enhanced.test.TestPackage.suite());
         addTest("Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
         addTest( com.hp.hpl.jena.mem.test.TestMemPackage.suite() );
         addTest("Model", com.hp.hpl.jena.rdf.model.test.TestPackage.suite());
         addTest("N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
+        addTest("Turtle", com.hp.hpl.jena.n3.turtle.test.TurtleTestSuite.suite()) ;
         addTest("RDQL", com.hp.hpl.jena.rdql.test.RDQLTestSuite.suite());
         
         // Avoid a compile time dependency on ARQ. 
         {
-            TestSuite arqSuite = getARQsuite() ;
+            TestSuite arqSuite = TestPackageARQ.suite() ;
             if ( arqSuite != null )
                 addTest("ARQ", arqSuite) ;
             else
@@ -65,43 +64,9 @@ public class TestPackage extends TestSuite {
 
     }
 
-    public static TestSuite getARQsuite()
-        {
-        return suiteByReflection( "com.hp.hpl.jena.query.test.ARQTestSuite" );
-        }
-
     private void addTest(String name, TestSuite tc) {
         tc.setName(name);
         addTest(tc);
-    }
-    
-    private static TestSuite suiteByReflection(String className)
-    {
-        // Reflection to invoke <class>.suite() and return a TestSuite.
-        Class cmd = null ;
-        try { cmd = Class.forName(className) ; }
-        catch (ClassNotFoundException ex)
-        {
-            return null ; 
-        }
-        
-        Method method = null ;
-        try { method = cmd.getMethod("suite", new Class[]{}) ; }
-        catch (NoSuchMethodException ex)
-        {
-            System.err.println("'suite' not found but the class '"+className+"' was") ;
-            return null ;
-        }
-        
-        try 
-        {
-            return (TestSuite)method.invoke(null, new Object[]{}) ;
-        } catch (Exception ex)
-        {
-            System.err.println("Failed to invoke static method 'suite'"+ex.getMessage()) ;
-            ex.printStackTrace(System.err) ;
-        }
-        return null ;
     }
 }
 

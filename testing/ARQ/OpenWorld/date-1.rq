@@ -5,6 +5,4 @@ SELECT *
 {
     ?x :r ?v .
     FILTER ( ?v = "2006-08-23"^^xsd:date )
-
 }
-ORDER BY ?x

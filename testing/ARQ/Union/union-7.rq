@@ -1,0 +1,11 @@
+PREFIX : <http://example/>
+PREFIX dir: <.>
+
+SELECT *
+{
+    { ?x :p ?v }
+    UNION 
+    {
+       GRAPH ?g { ?y :q ?w}
+    }
+}

@@ -1,38 +1,41 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-// To do:
-//   Better detection of illegal characters in qnames (? and = for example) 
+package com.hp.hpl.jena.n3.turtle.test;
 
-package com.hp.hpl.jena.n3;
+import com.hp.hpl.jena.n3.turtle.TurtleParseException;
+import com.hp.hpl.jena.n3.turtle.TurtleReader;
+import com.hp.hpl.jena.rdf.model.*;
 
-
-/** Turtle writer.  It is actually an appropriately configured   
- *
- * @author		Andy Seaborne
- * @version 	$Id: TurtleJenaWriter.java,v 1.6 2006-04-27 10:33:47 andy_seaborne Exp $
- */
+import junit.framework.TestCase;
 
 
-
-public class TurtleJenaWriter extends N3JenaWriter
+public class TestBadSyntax extends TestCase
 {
-    public TurtleJenaWriter()
+    String uri ;
+    public TestBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    
+    public void runTest()
     {
-        super() ;
-        
-        if ( writer.getPropValue("usePropertySymbols") == null )
-            writer.useWellKnownPropertySymbols = false ;
-        writer.allowTripleQuotedStrings = false ;
-        writer.allowDoubles = false ;
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader t = new TurtleReader() ;
+        try {
+            t.read(model, uri) ;
+            fail("Bad syntax test succeed in parsing the file") ;
+        } catch (TurtleParseException ex)
+        {
+            return ;    
+        }
+
     }
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
