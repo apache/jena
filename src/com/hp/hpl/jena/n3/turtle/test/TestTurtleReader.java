@@ -11,10 +11,17 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 
 public class TestTurtleReader extends TestCase
 {
+    
+    public static TestSuite suite()
+    {
+        return new TestSuite(TestTurtleReader.class, "Basic Turtle tests") ;
+    }
+    
     public void test0()
     {
         RDFReader r = ModelFactory.createDefaultModel().getReader("Turtle") ;
@@ -27,8 +34,13 @@ public class TestTurtleReader extends TestCase
         m.read("file:testing/Turtle/simple.ttl", "TTL") ;
         assertFalse(m.isEmpty()) ;
     }
-                         
-
+       
+    public void test2()
+    {
+        Model m = ModelFactory.createDefaultModel() ;
+        m.read("file:testing/Turtle/i18n.ttl", "TTL") ;
+        assertFalse(m.isEmpty()) ;
+    }
 }
 
 /*

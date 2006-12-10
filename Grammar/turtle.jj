@@ -13,10 +13,11 @@ options
   // Use \ u escapes in streams AND use a reader for the query
   // => get both raw and escaped unicode
 
-//   JAVA_UNICODE_ESCAPE   = true;
-//   UNICODE_INPUT         = false ;
-
    JAVA_UNICODE_ESCAPE   = true ;
+    // We use a UTF-8 encoded stream anyway so the setting of
+    // this is not important.
+    // and it does not make any difference to the code generated!
+    // One a warning is issued if true.
    UNICODE_INPUT         = false ;
 
   STATIC                = false ;
@@ -434,14 +435,14 @@ TOKEN :
   < LPAREN:    "(" >
 | < RPAREN:    ")" >
 
-| <NIL:        <LPAREN> (<WS>)* <RPAREN> >
+| <NIL:        <LPAREN> (<WS>|<SINGLE_LINE_COMMENT>)* <RPAREN> >
 
 | < LBRACE:    "{" >
 | < RBRACE:    "}" >
 
 | < LBRACKET:  "[" >
 | < RBRACKET:  "]" >
-| < ANON:      <LBRACKET> (<WS>)* <RBRACKET> >
+| < ANON:      <LBRACKET> (<WS>|<SINGLE_LINE_COMMENT>)* <RBRACKET> >
 
 | < SEMICOLON: ";" >
 | < COMMA:     "," >

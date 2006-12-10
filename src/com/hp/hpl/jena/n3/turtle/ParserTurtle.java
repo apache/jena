@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.n3.turtle;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 
 
 import com.hp.hpl.jena.graph.Graph;
@@ -15,6 +14,7 @@ import com.hp.hpl.jena.n3.turtle.parser.ParseException;
 import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError;
 import com.hp.hpl.jena.n3.turtle.parser.TurtleParser;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.FileUtils;
 
 
 public class ParserTurtle
@@ -34,14 +34,17 @@ public class ParserTurtle
     
     public void parse(Graph graph, String baseURI, InputStream in)
     {
+        Reader reader = FileUtils.asUTF8(in) ;
+        parse(graph, baseURI, reader) ;
+    }
+    
+    public void parse(Graph graph, String baseURI, Reader reader)
+    {
+        // Nasty things happen if the reader is not UTF-8.
         try {
-            TurtleParser parser = new TurtleParser(in) ;
+            TurtleParser parser = new TurtleParser(reader) ;
             parser.setTripleHandler(new TripleInserter(graph)) ;
             parser.setBaseURI(baseURI) ;
-            
-            // Set emit handler.
-            //parser.setGraph(graph) ; 
-            
             parser.parse() ;
         }
         catch (ParseException ex)
@@ -59,6 +62,8 @@ public class ParserTurtle
             throw new TurtleParseException(th.getMessage(), th) ;
         }
     }
+    
+    
 }
 
 /*

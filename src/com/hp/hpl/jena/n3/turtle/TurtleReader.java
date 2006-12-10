@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.BadURIException;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.FileUtils;
 
 
 public class TurtleReader implements RDFReader
@@ -57,11 +58,11 @@ public class TurtleReader implements RDFReader
         }
     }
     
-    public void read(Model model, Reader r, String base, String sourceName) 
+    public void read(Model model, Reader reader, String base, String sourceName) 
     {
-        System.err.println("Call to Turtle reader / Reader") ;
+        //System.err.println("Call to Turtle reader / Reader") ;
+        readWorker(model, reader, base, sourceName) ;
     }
-    
 
     public void read(Model model, InputStream in, String base) 
     {
@@ -71,10 +72,16 @@ public class TurtleReader implements RDFReader
     
     public void read(Model model, InputStream in, String base, String sourceName) 
     {
+        Reader reader = FileUtils.asUTF8(in) ;
+        readWorker(model, reader, base, sourceName) ;
+    }
+    
+    private void readWorker(Model model, Reader reader, String base, String sourceName)
+    {
         try {
             model.notifyEvent( GraphEvents.startRead ) ;
             ParserTurtle p =  new ParserTurtle() ;
-            p.parse(model.getGraph(), base, in) ;
+            p.parse(model.getGraph(), base, reader) ;
             // Finish done in finally block
         }
         catch (JenaException e)
@@ -92,7 +99,6 @@ public class TurtleReader implements RDFReader
         {
             model.notifyEvent( GraphEvents.finishRead );
         }
-
     }
     
     public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
