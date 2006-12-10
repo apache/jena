@@ -202,7 +202,7 @@ Node VarOrTerm() : {Node n = null ; }
 Node Formula() : {Token t ; }
 {
     t = <LBRACE> { startFormula(t.beginLine, t.beginColumn) ; }
-    // Need to sort his out and merge with Statement above
+    // Need to sort this out and merge with Statement above
     TriplesSameSubject()
     ( <DOT> (TriplesSameSubject())? )*
     t = <RBRACE> { endFormula(t.beginLine, t.beginColumn) ; }
