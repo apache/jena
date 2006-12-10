@@ -25,8 +25,6 @@ public class SDBTestSuite2 extends TestSuite
     static boolean includeMySQL = true ;
     static boolean includeHSQL = false ;
     
-    static final String testDirSDB = "testing/" ;
-    
     static public TestSuite suite() {
         return new SDBTestSuite2();
     }
@@ -44,7 +42,7 @@ public class SDBTestSuite2 extends TestSuite
             JDBC.loadDriverMySQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2",  Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreTriplesNodesMySQL(sdb),
-                                             testDirSDB+"manifest-sdb.ttl",
+                                             SDBTest.testDirSDB+"manifest-sdb.ttl",
                                              "Schema 2 : ")) ;
         }
         
@@ -56,7 +54,7 @@ public class SDBTestSuite2 extends TestSuite
             Store store = new StoreTriplesNodesHSQL(sdb) ;
             store.getTableFormatter().format() ;
             TestSuite ts = QueryTestSDBFactory.make(store,
-                                                    testDirSDB+"/manifest-sdb.ttl",
+                                                    SDBTest.testDirSDB+"/manifest-sdb.ttl",
                                                     "Schema 2 : ") ; 
             ts.setName(ts.getName()+"/HSQL-mem") ;
             addTest(ts) ;
