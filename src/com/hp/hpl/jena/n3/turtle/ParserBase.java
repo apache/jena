@@ -11,10 +11,9 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.* ;
-import com.hp.hpl.jena.query.util.JenaURIException;
-import com.hp.hpl.jena.query.util.LabelToNodeMap;
-import com.hp.hpl.jena.query.util.RelURI;
 
+import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.n3.RelURI.JenaURIException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -49,7 +48,7 @@ public class ParserBase
     public    PrefixMapping getPrefixMapping() { return pmap ; }
     
     // label => bNode for construct templates patterns
-    LabelToNodeMap bNodeLabels = new LabelToNodeMap(false) ;
+    LabelToNodeMap bNodeLabels = new LabelToNodeMap() ;
     
     TripleHandler handler = null ; 
     public void setTripleHandler(TripleHandler h) { handler = h ; }
@@ -78,24 +77,18 @@ public class ParserBase
         return Integer.parseInt(lexicalForm) ;
     }
     
-    protected Node makeNodeInteger(boolean positive, String lexicalForm)
+    protected Node makeNodeInteger(String lexicalForm)
     {
-        if ( !positive )
-            lexicalForm = "-"+lexicalForm ;
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
     }
     
-    protected Node makeNodeDouble(boolean positive, String lexicalForm)
+    protected Node makeNodeDouble(String lexicalForm)
     {
-        if ( !positive )
-            lexicalForm = "-"+lexicalForm ;
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
     }
     
-    protected Node makeNodeDecimal(boolean positive, String lexicalForm)
+    protected Node makeNodeDecimal(String lexicalForm)
     {
-        if ( !positive )
-            lexicalForm = "-"+lexicalForm ;
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
     }
 
@@ -155,13 +148,11 @@ public class ParserBase
     protected Node createVariable(String s, int line, int column)
     {
         s = s.substring(1) ; // Drop the marker
-        s = unescapeCodePoint(s, line, column) ;
         return Node.createVariable(s) ;
     }
     
     protected Node createURIfromQName(String s, int line, int column)
     {
-        s = unescapeCodePoint(s, line, column) ;
         s = fixupQName(s, line, column) ;
         return Node.createURI(s) ;
     }
@@ -170,7 +161,6 @@ public class ParserBase
     protected Node createNodeFromURI(String s, int line, int column)
     {
         s = stripQuotes(s) ;
-        s = unescapeCodePoint(s, line, column) ;
         String uriStr = s ;     // Mutated
         
         try {
@@ -193,7 +183,6 @@ public class ParserBase
     // Labelled bNode.
     protected Node createBNode(String label, int line, int column)
     { 
-        label = unescapeCodePoint(label, line, column) ;
         return bNodeLabels.asNode(label) ;
     }
         
@@ -225,11 +214,11 @@ public class ParserBase
     public static String unescapeStr(String s)
     { return unescape(s, '\\', false, 1, 1) ; }
 
-    public static String unescapeCodePoint(String s)
-    { return unescape(s, '\\', true, 1, 1) ; }
-
-    protected String unescapeCodePoint(String s, int line, int column)
-    { return unescape(s, '\\', true, line, column) ; }
+//    public static String unescapeCodePoint(String s)
+//    { return unescape(s, '\\', true, 1, 1) ; }
+//
+//    protected String unescapeCodePoint(String s, int line, int column)
+//    { return unescape(s, '\\', true, line, column) ; }
 
     
     protected String unescapeStr(String s, int line, int column)

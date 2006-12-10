@@ -39,14 +39,11 @@ NON-TERMINALS
 	Formula	:=	<LBRACE> TriplesSameSubject ( <DOT> ( TriplesSameSubject )? )* <RBRACE>
 // >>>>> SPARQL extract
 	Var	:=	( <VAR1> | <VAR2> )
-// <<<<< SPARQL extract
 	GraphTerm	:=	IRIref
 		|	RDFLiteral
-		|	( <MINUS> | <PLUS> )? NumericLiteral
+		|	NumericLiteral
 		|	BlankNode
 		|	<NIL>
-// >>>>> SPARQL extract
-// <<<<< SPARQL extract
 // ---- Basic terms
 	NumericLiteral	:=	<INTEGER>
 		|	<DECIMAL>

@@ -58,19 +58,17 @@ public interface TurtleParserConstants {
   int QMARK = 52;
   int TILDE = 53;
   int COLON = 54;
-  int PLUS = 55;
-  int MINUS = 56;
-  int STAR = 57;
-  int SLASH = 58;
-  int RSLASH = 59;
-  int DATATYPE = 60;
-  int AT = 61;
-  int NCCHAR1p = 62;
-  int NCCHAR1 = 63;
-  int NCCHAR = 64;
-  int NCNAME_PREFIX = 65;
-  int NCNAME = 66;
-  int VARNAME = 67;
+  int STAR = 55;
+  int SLASH = 56;
+  int RSLASH = 57;
+  int DATATYPE = 58;
+  int AT = 59;
+  int NCCHAR1p = 60;
+  int NCCHAR1 = 61;
+  int NCCHAR = 62;
+  int NCNAME_PREFIX = 63;
+  int NCNAME = 64;
+  int VARNAME = 65;
 
   int DEFAULT = 0;
 
@@ -130,8 +128,6 @@ public interface TurtleParserConstants {
     "\"?\"",
     "\"~\"",
     "\":\"",
-    "\"+\"",
-    "\"-\"",
     "\"*\"",
     "\"/\"",
     "\"\\\\\"",

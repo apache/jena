@@ -63,12 +63,6 @@ void Directive() : { Token t ; Node n ; }
       setPrefix(s, n.getURI()) ; }
 }
 
-// int Integer() : {Token t ;}
-// {
-//     t = <INTEGER> 
-//     { return makePositiveInteger(t.image) ; }
-// }
-
 // -------- PATH
 TOKEN: 
 {
@@ -223,16 +217,14 @@ Node Var() : { Token t ;}
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
 }
 
-// <<<<< SPARQL extract
 Node GraphTerm() : { Node n ; }
 {
   n = IRIref()          { return n ; }
 | 
   n = RDFLiteral()      { return n ; }
 |
-  { boolean positive  = true ; }  
-  (<MINUS>{positive=false;}|<PLUS>)? 
-  n = NumericLiteral(positive)  { return n ; }
+  // Cleaner sign handling in Turtle.
+  n = NumericLiteral()  { return n ; }
 // |
 //   n = BooleanLiteral()  { return n ; }
 |
@@ -241,15 +233,13 @@ Node GraphTerm() : { Node n ; }
 //  <LPAREN> <RPAREN>     { return nRDFnil ; }
   <NIL>  { return nRDFnil ; }
 }
-// >>>>> SPARQL extract
-// <<<<< SPARQL extract
 // ---- Basic terms
 
-Node NumericLiteral(boolean positive) : { Token t ; }
+Node NumericLiteral() : { Token t ; }
 {
-  t = <INTEGER> { return makeNodeInteger(positive, t.image) ; }
-| t = <DECIMAL> { return makeNodeDecimal(positive, t.image) ; }
-| t = <DOUBLE> { return makeNodeDouble(positive, t.image) ; }
+  t = <INTEGER> { return makeNodeInteger(t.image) ; }
+| t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
+| t = <DOUBLE> { return makeNodeDouble(t.image) ; }
 }
 
 // >>>>> SPARQL extract
@@ -360,15 +350,17 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN :
 {
-   < INTEGER: /*(["-","+"])?*/ <DIGITS> >
+   < INTEGER: (["-","+"])? <DIGITS> >
 |
-   < DECIMAL: /*(["-","+"])?*/ (<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+ >
+   < DECIMAL: (["-","+"])? (<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+ >
       // Required exponent.
 |  < DOUBLE:
-      //(["+","-"])?
-      (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
-      | "." (["0"-"9"])+ (<EXPONENT>)
-      | (["0"-"9"])+ <EXPONENT>
+      (["+","-"])?
+      ( 
+        (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
+        | "." (["0"-"9"])+ (<EXPONENT>)
+        | (["0"-"9"])+ <EXPONENT>
+      )
       >
    // Optional exponent.
 // |  < DOUBLE:
@@ -468,8 +460,8 @@ TOKEN :
 | < TILDE:   "~" >
 | < COLON:   ":" >
 
-| < PLUS:    "+" >
-| < MINUS:   "-" >
+// | < PLUS:    "+" >
+// | < MINUS:   "-" >
 | < STAR:    "*" >
 | < SLASH:   "/" >
 | < RSLASH:   "\\" >
