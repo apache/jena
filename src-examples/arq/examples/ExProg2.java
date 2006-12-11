@@ -26,7 +26,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 /** Example : Build a query with a filter programmatically 
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg2.java,v 1.2 2006-08-18 11:55:06 andy_seaborne Exp $
+ * @version $Id: ExProg2.java,v 1.3 2006-12-11 09:47:10 andy_seaborne Exp $
  */
 
 public class ExProg2
@@ -44,8 +44,8 @@ public class ExProg2
         
         ElementGroup elg = new ElementGroup() ;
         
-        Node varTitle = Node.createVariable("title") ;
-        Node varX = Node.createVariable("x") ;
+        Var varTitle = Var.alloc("title") ;
+        Var varX = Var.alloc("x") ;
         
         Triple t1 = new Triple(varX, DC.title.asNode(),  varTitle) ;
         elg.addElementTriplePattern(new ElementTriplePattern(t1)) ;

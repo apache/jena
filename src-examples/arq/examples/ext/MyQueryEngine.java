@@ -68,9 +68,9 @@ class ExTransform extends TransformCopy
     { 
         // Reverse the order of the triples in every block of triples.
         PlanBlockTriples pbt = new PlanBlockTriples(planElt.getContext()) ;
-        for ( Iterator iter = planElt.getSubElements().listIterator() ; iter.hasNext(); )
+        for ( Iterator iter = planElt.triples() ; iter.hasNext(); )
         {
-            pbt.getSubElements().add(0, iter.next()) ;
+            pbt.getPattern().add(0, iter.next()) ;
         }
         return pbt ;
     }

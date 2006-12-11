@@ -15,11 +15,14 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.query.core.ElementBasicGraphPattern;
+import com.hp.hpl.jena.query.core.ElementFilter;
+import com.hp.hpl.jena.query.core.ElementGroup;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine1.compiler.QueryPatternCompiler;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
 import com.hp.hpl.jena.query.expr.E_Regex;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.expr.NodeVar;
@@ -56,7 +59,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *  indexing or external structure.
  *  
  * @author Andy Seaborne
- * @version $Id: labelSearch.java,v 1.1 2006-08-18 11:55:08 andy_seaborne Exp $
+ * @version $Id: labelSearch.java,v 1.2 2006-12-11 09:47:12 andy_seaborne Exp $
  */ 
 
 public class labelSearch implements PropertyFunction
@@ -82,8 +85,9 @@ public class labelSearch implements PropertyFunction
     {
         log.debug("labelSearch.exec") ;
         
-        // No real need to check the pattern arguments because the 
-        // replacement but we illustrate testing here.
+        // No real need to check the pattern arguments because
+        // the replacement triple pattern and regex will cope
+        // but we illustrate testing here.
 
         Node nodeVar = argSubject.getArg() ;
         String pattern = NodeUtils.stringLiteral(argObject.getArg()) ;
@@ -93,31 +97,32 @@ public class labelSearch implements PropertyFunction
             return new QueryIterNullIterator(execCxt) ;
         }
         
-        Node var2 = createNewVar() ;   // Hidden variable
+        Var var2 = createNewVar() ;   // Hidden variable
         
-        // Triple patterns for   ? rdfs:label ?hiddenVar
+        // Triple patterns for   ?x rdfs:label ?hiddenVar
         ElementBasicGraphPattern elementBGP = new ElementBasicGraphPattern();
         Triple t = new Triple(nodeVar, RDFS.label.asNode(), var2) ;
         elementBGP.addTriple(t) ;
-
+        
         // Regular expression for  regex(?hiddenVar, "pattern", "i") 
-        Expr regex = new E_Regex(new NodeVar(var2.getName()), pattern, "i") ; 
-        elementBGP.addConstraint(regex) ;
+        Expr regex = new E_Regex(new NodeVar(var2.getName()), pattern, "i") ;
         
-        // Turn into a query execute plan ... 
-        PlanElement planBGP = PlanBasicGraphPattern.make(execCxt.getContext(), elementBGP);
-        
-        // System.out.print(planBGP.toString()) ;   // See what is generated
-        return planBGP.build(input, execCxt) ;
+        ElementGroup elementGroup = new ElementGroup() ;
+        elementGroup.addElement(elementBGP) ;
+        elementGroup.addElement(new ElementFilter(regex)) ;
+        // Compile it.
+        PlanElement planlet = QueryPatternCompiler.makePlan(execCxt.getContext(), elementGroup) ;
+        return planlet.build(input, execCxt) ;
     }
 
     static int hiddenVariableCount = 0 ; 
 
     // Create a new, hidden, variable.
-    private static Node createNewVar()
+    private static Var createNewVar()
     {
         hiddenVariableCount ++ ;
-        return Node.createVariable("-search-"+hiddenVariableCount) ;
+        String varName = "-search-"+hiddenVariableCount ;
+        return Var.alloc(varName) ;
     }
 }
 
