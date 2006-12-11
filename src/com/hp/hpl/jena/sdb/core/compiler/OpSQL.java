@@ -41,7 +41,7 @@ public class OpSQL extends OpExtBase
     public Table eval(Evaluator evaluator)
     {
         ExecutionContext execCxt = evaluator.getExecContext() ;
-        QueryIterator qIter = QP.exec(this,
+        QueryIterator qIter = QC.exec(this,
                                       request,
                                       //BindingRoot.create(),
                                       null,
@@ -66,7 +66,7 @@ public class OpSQL extends OpExtBase
 
     public String toSQL()
     {
-       return QP.toSqlString(this, request, null) ;
+       return QC.toSqlString(this, request, null) ;
     }
 
     public SqlNode getSqlNode()

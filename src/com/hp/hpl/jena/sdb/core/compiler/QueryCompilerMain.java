@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.Transform;
 import com.hp.hpl.jena.query.engine2.op.Transformer;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 
 
@@ -24,7 +25,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
     public QueryCompilerMain(SDBRequest request)
     { 
         this.request = request ;
-        projectVars = QP.projectVars(request.getQuery()) ;
+        projectVars = QC.projectVars(request.getQuery()) ;
     }
     
     public Op compile(Op op)

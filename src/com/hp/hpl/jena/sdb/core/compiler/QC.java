@@ -8,16 +8,29 @@ package com.hp.hpl.jena.sdb.core.compiler;
 
 import static com.hp.hpl.jena.sdb.core.JoinType.INNER;
 import static com.hp.hpl.jena.sdb.core.JoinType.LEFT;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine1.ExecutionContext;
+
 import com.hp.hpl.jena.sdb.core.JoinType;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
+import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
 
 public class QC
 {
@@ -85,6 +98,65 @@ public class QC
         conditions.addAll(restrict.getConditions()) ;
         subNode.addNotes(restrict.getNotes()) ;
         return subNode ;
+    }
+    
+    public static boolean PrintSQL = false ;
+    
+    public static QueryIterator exec(OpSQL opSQL, SDBRequest request, Binding binding, ExecutionContext execCxt)
+    {
+        SQLBridge bridge = request.getStore().getSQLBridgeFactory().create() ;
+        String sqlStmt = toSqlString(opSQL, request, bridge) ;
+    
+        if ( PrintSQL )
+            System.out.println(sqlStmt) ;
+        
+        try {
+            java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmt) ;
+            if ( false )
+                // Destructive
+                RS.printResultSet(jdbcResultSet) ;
+            try {
+                return bridge.assembleResults(jdbcResultSet, binding, execCxt) ;
+            } finally { jdbcResultSet.close() ; }
+        } catch (SQLException ex)
+        {
+            throw new SDBExceptionSQL("SQLException in executing SQL statement", ex) ;
+        }
+    }
+
+    
+    public static SqlNode toSqlTopNode(SqlNode sqlNode, 
+                                       List<Var> projectVars,
+                                       SQLBridge bridge)
+    {
+        bridge.init(sqlNode, projectVars) ;
+        sqlNode = bridge.buildProject() ;
+        return sqlNode ;
+    }
+    
+    public static String toSqlString(OpSQL opSQL, 
+                                     SDBRequest request, 
+                                     SQLBridge bridge)
+    {
+        if ( bridge == null )
+            // Direct call to produce SQL strings for printing 
+            bridge = request.getStore().getSQLBridgeFactory().create() ;
+        List<Var> projectVars = QC.projectVars(request.getQuery()) ;
+        SqlNode sqlNode = QC.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge) ;
+        String sqlStmt = request.getStore().getSQLGenerator().generateSQL(sqlNode) ;
+        return sqlStmt ; 
+    }
+    
+    public static List<Var> projectVars(Query query)
+    {
+        List<Var> vars = new ArrayList<Var>() ;
+        @SuppressWarnings("unchecked")
+        List<String> list = (List<String>)query.getResultVars() ;
+        if ( list.size() == 0 )
+            LogFactory.getLog(QC.class).warn("No project variables") ;
+        for ( String vn  : list )
+            vars.add(Var.alloc(vn)) ;
+        return vars ;
     }
     
 //    public static Set<Var> exitVariables(Block block)
