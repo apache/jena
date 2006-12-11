@@ -13,7 +13,7 @@ import java.util.List;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;

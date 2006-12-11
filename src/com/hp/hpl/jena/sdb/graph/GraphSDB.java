@@ -19,6 +19,7 @@ import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.*;
+import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;

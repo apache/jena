@@ -1,7 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Remove blocks.
++ Scoping on SqlNodes
+  Value tests: casting vs tables
 
 + cmd: 
   @ --load for sdb.sdbquery --format

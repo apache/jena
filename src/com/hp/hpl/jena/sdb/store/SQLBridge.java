@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
@@ -32,7 +32,7 @@ public interface SQLBridge
     
     public QueryIterator assembleResults(ResultSet jdbcResultSet, 
                                          Binding binding,
-                                         ExecutionContext execCxt)
+                                         ExecutionContext execCtl)
         throws SQLException; 
 }
 

@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.BindingMap;
+import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.BindingMap;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;

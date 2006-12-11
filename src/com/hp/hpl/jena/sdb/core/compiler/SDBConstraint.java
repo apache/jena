@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
-import com.hp.hpl.jena.query.core.Binding;
+import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
