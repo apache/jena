@@ -7,48 +7,66 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.sql.DatabaseMetaData;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
 import java.util.Iterator;
-import java.util.List;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
 
+/* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE IMPORT STATEMENTS)  -------
+import oracle.jdbc.OracleResultSet;
+import oracle.sql.BLOB;
+import oracle.jdbc.OracleDatabaseMetaData;
+
+/*--------------------------------------------------------------------*/
+
 /**
- * @author hkuno based on code by Dave Reynolds. 
- * Modified for later, more standard, Oracle drivers by Andy Seaborne (Dec 2006)
- * 
- *  See alo Driver_Oracle_LOB for code that uses native
- *  Oracle blobs more directly.  That needs uncommenting
- *  some code sections and recompiling against Oracle
- *  Java libraries.   
+ * @author hkuno based on code by Dave Reynolds
+ *
+ * Extends DriverRDB with Oracle-specific parameters.
+ * Note: To use this class with Oracle:
+ *       1. Uncomment the import statements above.
+ *       2. Comment out the interface stubs below.
+ *       3. Uncomment the try block in setConnection below.
+ *
  */
+   public class Driver_Oracle_LOB extends DriverRDB {
 
-public class Driver_Oracle extends DriverRDB {
-
-	public Driver_Oracle( ){
+//* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
+	
+	public interface BLOB extends java.sql.Blob {
+		OutputStream getBinaryOutputStream();
+		int getBufferSize();
+		boolean isOpen();
+		void close();
+	}
+	
+	private interface OracleResultSet extends ResultSet {
+			BLOB getBLOB(int i);		
+	}
+	/*--------------------------------------------------------------------*/
+	
+	/** The name of the database type this driver supports */
+	
+	/** 
+	 * Constructor
+	 */
+	public Driver_Oracle_LOB( ){
 		super();
 
 		String myPackageName = this.getClass().getPackage().getName();
 		
 		DATABASE_TYPE = "Oracle";
-        // Must aline to driver.  But the EngineType is set from the driver.  
-        // See also PSet_TripleStore_RDB.storeTripleAR which tests specifically for "Oracle".
-        
 		DRIVER_NAME = "oracle.jdbc.driver.OracleDriver";
 		
 		ID_SQL_TYPE = "INTEGER";
 		URI_COMPRESS = false;
-//		LONG_OBJECT_LENGTH_MAX = INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 2000;
-//		LONG_OBJECT_LENGTH = 250;
-        
-      LONG_OBJECT_LENGTH_MAX = INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 250;
-      LONG_OBJECT_LENGTH = 250;
-        
+		LONG_OBJECT_LENGTH_MAX = INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 1000;
+		LONG_OBJECT_LENGTH = 250;
 		TABLE_NAME_LENGTH_MAX =	30;
 		/* 30 is a guesstimate. setConnection should be called
 		 * immediately to get the correct value. */
@@ -63,6 +81,7 @@ public class Driver_Oracle extends DriverRDB {
 		m_lsetClassName = myPackageName + ".SpecializedGraph_TripleStore_RDB";						
 		m_lsetReifierClassName = myPackageName + ".SpecializedGraphReifier_RDB";	
 		
+		
 		QUOTE_CHAR = '\'';
 		
 		DB_NAMES_TO_UPPER = true;
@@ -74,10 +93,9 @@ public class Driver_Oracle extends DriverRDB {
 	 */
 	public void setConnection( IDBConnection dbcon ) {
 		m_dbcon = dbcon;
-        
-        
+/* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE TRY BLOCK)  -------
 		try {
-			DatabaseMetaData dmd = dbcon.getConnection().getMetaData();
+			OracleDatabaseMetaData dmd = (OracleDatabaseMetaData)dbcon.getConnection().getMetaData();
 			if (dmd == null)
 				throw new RDFRDBException("Oracle database metadata not available.");
 			TABLE_NAME_LENGTH_MAX =	dmd.getMaxTableNameLength();
@@ -85,8 +103,10 @@ public class Driver_Oracle extends DriverRDB {
 		} catch ( SQLException e ) {
 			throw new RDFRDBException("Problem accessing Oracle database metadata.");
 		}	  
-
-        try {   		
+/*--------------------------------------------------------------------*/		
+		try {   		
+			// Properties defaultSQL = SQLCache.loadSQLFile(DEFAULT_SQL_FILE, null, ID_SQL_TYPE);
+			// m_sql = new SQLCache(SQL_FILE, defaultSQL, dbcon, ID_SQL_TYPE);
 			m_sql = new SQLCache(SQL_FILE, null, dbcon, ID_SQL_TYPE);
 		} catch (Exception e) {
             e.printStackTrace( System.err );
@@ -99,7 +119,6 @@ public class Driver_Oracle extends DriverRDB {
 	 *
 	 */
 	public int graphIdAlloc ( String graphName ) {
-		DBIDInt result = null;
 		int dbid = 0;
 		try {
 			String op = "insertGraph";
@@ -120,7 +139,6 @@ public class Driver_Oracle extends DriverRDB {
 	 *
 	 */
 	public void graphIdDealloc ( int graphId ) {
-		DBIDInt result = null;
 		try {
 			String op = "deleteGraph";
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,GRAPH_TABLE);
@@ -211,91 +229,153 @@ public class Driver_Oracle extends DriverRDB {
 		return res;
 	}
 	
-//	/**
-//	 * Insert a long object into the database.  
-//	 * This assumes the object is not already in the database.
-//	 * @return the db index of the added literal 
-//	 */
-
-//    // Try to use standard blob handling
-//    
-//	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
-//        // Assumes tail is in the prepared statement
-//	    return super.addRDBLongObject(lobj, table) ;
-//	}
-
-//	/**
-//	 * Retrieve LongObject from database.
-//	 */
-//	protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
-//	    return super.IDtoLongObject(dbid, table) ;
-//	}
-
-    protected void setLongObjectHashAndTail(PreparedStatement ps, int argi, RDBLongObject lobj)
-    throws SQLException
-    {
-        int paramCount = ps.getParameterMetaData().getParameterCount() ;
-        // In Jena 2.4 and before, using Oracle specific BLOB code, this is 3.
-        // In Jena 2.5 it is 4 because of a change to the SQL statement in etc/oracle.sql
-        // Check this here.
-        if ( paramCount != 4)
-        {
-            logger.warn("Warning: Driver_Oracle: Mismatch in prepared statement paramter count: Expected "+4+" : Got: "+paramCount) ;   
-            logger.warn("Maybe running with an old (pre Jena2.5) etc/oracle.sql file?") ;
-        }
-        
-        super.setLongObjectHashAndTail_Binary(ps, argi, lobj) ;
-    }
-    
 	/**
-	 * Drop all Jena-related sequences from database, if necessary.
-	 * Override in subclass if sequences must be explicitly deleted.
+	 * Insert a long object into the database.  
+	 * This assumes the object is not already in the database.
+	 * @return the db index of the added literal 
 	 */
-	public void clearSequences() {
-	    Iterator seqIt = getSequences().iterator();
-	    while (seqIt.hasNext()) {
-	        removeSequence((String)seqIt.next());
-	    }
+	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
+		DBIDInt longObjID = null;
+		try {
+			int argi = 1;
+			boolean save = m_dbcon.getConnection().getAutoCommit();
+			
+            // Change in Jena 2.5 - insertLongObjectNoTail (was insertLongObject)
+            // Remove these comments after testing and release of 2.5.
+			String opname = (lobj.tail.length() > 0) ? "insertLongObjectEmptyTail" : "insertLongObjectNoTail";    			
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, table);
+			int dbid = 0; // init only needed to satisfy java compiler
+			if ( PRE_ALLOCATE_ID ) {
+				dbid = getInsertID(table);
+				ps.setInt(argi++,dbid);
+				longObjID = wrapDBID(new Integer(dbid));
+			} 
+			 ps.setString(argi++, lobj.head);
+			 if ( lobj.tail.length() > 0 ) {
+				ps.setLong(argi++, lobj.hash);
+			 } else {
+				ps.setNull(argi++,java.sql.Types.BIGINT);    
+			 }
+			ps.executeUpdate();
+			m_sql.returnPreparedSQLStatement(ps);
+			
+			if ( lobj.tail.length() > 0) {
+				if (! xactOp(xactIsActive)) {
+				  m_dbcon.getConnection().setAutoCommit(false);				
+				}
+				opname = "getEmptyBLOB";
+				String cmd = m_sql.getSQLStatement(opname, table, longObjID.getID().toString());
+				Statement lobStmt = m_sql.getConnection().createStatement();
+				ResultSet lrs = lobStmt.executeQuery(cmd);
+				lrs.next();
+		
+				BLOB blob = ((OracleResultSet) lrs).getBLOB(1);
+				OutputStream outstream = blob.getBinaryOutputStream();
+				int size = blob.getBufferSize();
+	
+				int length = -1;
+				//InputStream instream = new StringBufferInputStream(lobj.tail);
+                InputStream instream = new ByteArrayInputStream(lobj.tail.getBytes("UTF-8"));
+		
+				//		Buffer to hold chunks of data to being written to the Blob.        
+				byte[] buffer = new byte[size];
+		
+				while ((length = instream.read(buffer)) != -1)
+					outstream.write(buffer,0,length);
+		
+				if (blob.isOpen())
+				blob.close();
+				instream.close();
+				outstream.close();
+				lobStmt.close();
+				if (! xactOp(xactIsActive)) {
+			  		m_dbcon.getConnection().setAutoCommit(save);				
+				}
+			}
+
+			if ( !PRE_ALLOCATE_ID ) {
+				dbid = getInsertID(table); 
+				longObjID = wrapDBID(new Integer(dbid));
+			}
+		} catch (Exception e1) {
+			/* DEBUG */ System.out.println("Problem on long object (l=" + lobj.head + ") " + e1 );
+			// System.out.println("ID is: " + id);
+			throw new RDFRDBException("Failed to add long object ", e1);
+		}
+		return longObjID;
 	}
+	
 
-    /** Oracle implementation of getConnection().getMetaData() can see all tables if run sufficiently priviledge.
-     * 
-     */
-	protected List getAllTables() {
-	    try {
-//	        DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
-//	        String[] tableTypes = { "TABLE" };
-//	        String prefixMatch = stringToDBname(TABLE_NAME_PREFIX + "%");
-//	        ResultSet rs = dbmd.getTables(null, dbmd.getUserName(), prefixMatch, tableTypes);
 
-            // This way (Oracle specific) see only the tables we own and access.
-            String sql = "SELECT TNAME AS TABLE_NAME FROM tab WHERE TNAME LIKE '"+TABLE_NAME_PREFIX+"%'" ;
-            ResultSet rs = m_dbcon.getConnection().createStatement().executeQuery(sql) ;
-
-	        List tables = new ArrayList() ;
-	        while(rs.next())
-	            tables.add(rs.getString("TABLE_NAME"));
-	        rs.close() ;
-	        return tables ;
-	    } catch (SQLException e1) {
-	        throw new RDFRDBException("Internal SQL error in driver - " + e1);
-	    }
+/**
+ * Retrieve LongObject from database.
+ */
+protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
+	RDBLongObject	res = null;
+	try {
+				String opName = "getLongObject";
+				PreparedStatement ps = m_sql.getPreparedSQLStatement(opName, table); 
+				ps.setInt(1,dbid);
+				OracleResultSet rs = (OracleResultSet) ps.executeQuery();
+				if (rs.next()) {
+				   res = new RDBLongObject();
+				   res.head = rs.getString(1);
+				   BLOB blob = rs.getBLOB(2);
+					
+				   if (blob != null) {
+					int len =  (int)blob.length();
+					byte[] data = blob.getBytes(1,len);
+					res.tail = new String(data, "UTF-8");
+				   } else {
+				   	res.tail = "";
+				   }
+				}
+				rs.close();
+				m_sql.returnPreparedSQLStatement(ps);
+			
+	} catch (SQLException e1) {
+		// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
+		throw new RDFRDBException("Failed to retrieve long object (SQL Exception): ", e1);
+	} catch (UnsupportedEncodingException e2) {
+		throw new RDFRDBException("Failed to retrieve long object (UnsupportedEncoding): ", e2);
 	}
-
-
-	public String genSQLStringMatchLHS_IC(String var) {
-	    return "UPPER(" + var + ")";
+	return res;	
+}
+	
+/**
+ * Drop all Jena-related sequences from database, if necessary.
+ * Override in subclass if sequences must be explicitly deleted.
+ */
+public void clearSequences() {
+	Iterator seqIt = getSequences().iterator();
+	while (seqIt.hasNext()) {
+		removeSequence((String)seqIt.next());
 	}
+}
+	
+public String genSQLStringMatchLHS_IC(String var) {
+	return "UPPER(" + var + ")";
+}
 
-	public String genSQLStringMatchRHS_IC(String strToMatch) {
-	    return "UPPER(" + strToMatch + ")";
-	}
+public String genSQLStringMatchRHS_IC(String strToMatch) {
+	return "UPPER(" + strToMatch + ")";
+}
 
-	public String stringMatchEscapeChar() { return "\\"; }
+public String stringMatchEscapeChar() { return "\\"; }
 
-	public String genSQLStringMatchEscape() {
-	    return " " + genSQLEscapeKW() + " '" + stringMatchEscapeChar() + "'";
-	}
+public String genSQLStringMatchEscape() {
+	return " " + genSQLEscapeKW() + " '" + stringMatchEscapeChar() + "'";
+}
+	
+
+
+
+
+	
+	
+	
+
+		
 }
 
 /*

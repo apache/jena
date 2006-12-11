@@ -20,14 +20,15 @@ then
     exit 1
     fi
 
+TESTHOST=${TESTHOST:-localhost}
 
 case $1 in
 
 hsqldb|hsql)
 echo "HSQLDB (file-backed)"
 DEFS="-Djena.db.url=jdbc:hsqldb:file:jenatest"
-## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://localhost/jenatest"
-## DEFS="-Djena.db.url=jdbc:hsqldb:http://localhost:88/jenatest
+## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://$TESTHOST/jenatest"
+## DEFS="-Djena.db.url=jdbc:hsqldb:http://$TESTHOST:88/jenatest
 DEFS=" $DEFS  -Djena.db.user=sa"
 DEFS=" $DEFS  -Djena.db.password="
 DEFS=" $DEFS  -Djena.db.type=HSQL"
@@ -51,8 +52,8 @@ JDBC=${JDBC:-$JDBCDIR/HSQL/hsqldb.jar}
 derby)
 echo "Apache Derby (embedded)"
 DEFS="-Djena.db.url=jdbc:derby:tmp/jenatest;create=true"
-## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://localhost/jenatest"
-## DEFS="-Djena.db.url=jdbc:hsqldb:http://localhost:88/jenatest
+## DEFS="-Djena.db.url=jdbc:hsqldb:hsql://$TESTHOST/jenatest"
+## DEFS="-Djena.db.url=jdbc:hsqldb:http://$TESTHOST:88/jenatest
 DEFS=" $DEFS  -Djena.db.user="
 DEFS=" $DEFS  -Djena.db.password="
 DEFS=" $DEFS  -Djena.db.type=Derby"
@@ -64,8 +65,8 @@ JDBC="${JDBC:-$JDBCDIR/db-derby-10.1.2.1-bin/lib/derby.jar}"
 
 postgres|postgresql) 
 echo PostgreSQL
-DEFS="-Djena.db.url=jdbc:postgresql://localhost/jenatest"
-DEFS=" $DEFS  -Djena.db.user=test"
+DEFS="-Djena.db.url=jdbc:postgresql://$TESTHOST/jenatest"
+DEFS=" $DEFS  -Djena.db.user=user"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=PostgreSQL"
 DEFS=" $DEFS  -Djena.db.driver=org.postgresql.Driver"
@@ -74,13 +75,12 @@ JDBC="${JDBC:-$JDBCDIR/PostgreSQL/postgresql-8.1-407.jdbc3.jar}"
 
 mysql) 
 echo MySQL
-DEFS="-Djena.db.url=jdbc:mysql://localhost/jenatest"
+DEFS="-Djena.db.url=jdbc:mysql://$TESTHOST/jenatest"
 DEFS=" $DEFS  -Djena.db.user=user"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MySQL"
 DEFS=" $DEFS  -Djena.db.driver=com.mysql.jdbc.Driver" 
-
-## Lock up
+## Lock up problems.
 ## JDBC="${JDBC:-$JDBCDIR/MySQL/mysql-connector-java-5.0.0-beta-bin.jar}"
 JDBC="${JDBC:-$JDBCDIR/MySQL/mysql-connector-java-3.1.12-bin.jar}"
 ;;
@@ -88,7 +88,7 @@ JDBC="${JDBC:-$JDBCDIR/MySQL/mysql-connector-java-3.1.12-bin.jar}"
 # MS SQL Server, jTDS driver, local
 mssqlTdsLocal)
 echo "MS SQL Server with TDS driver"
-DEFS="-Djena.db.url=jdbc:jtds:sqlserver://localhost/jenatest"
+DEFS="-Djena.db.url=jdbc:jtds:sqlserver://$TESTHOST/jenatest"
 DEFS=" $DEFS  -Djena.db.user=user"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MsSQL"
@@ -113,7 +113,7 @@ JDBC="${JDBC:-$JDBCDIR/MS-SQL/sqljdbc.jar}"
 # MS SQL Server, Microsoft driver, local
 mssqlMsLocal)
 echo "MS SQL Server / Microsoft driver / Local"
-DEFS="-Djena.db.url=jdbc:sqlserver://localhost;databaseName=Test"
+DEFS="-Djena.db.url=jdbc:sqlserver://${TESTHOST};databaseName=Test"
 DEFS=" $DEFS  -Djena.db.user=user"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MsSQL"
@@ -124,12 +124,14 @@ JDBC="${JDBC:-$JDBCDIR/MS-SQL/sqljdbc.jar}"
 
 mssqle)
 echo "MS SQL Server express"
-DEFS="-Djena.db.url=jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=jenatest"
+DEFS="-Djena.db.url=jdbc:sqlserver://${TESTHOST}\\SQLEXPRESS;databaseName=jenatest"
 DEFS=" $DEFS  -Djena.db.user=user"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MsSQL"
 DEFS=" $DEFS  -Djena.db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver"
-## DEFS=" $DEFS  -Djena.db.concurrent=false"
+## SQL express's handling on transaction isolation
+## and the jena test are at odds.
+DEFS=" $DEFS  -Djena.db.concurrent=false"
 JDBC="${JDBC:-$JDBCDIR/MS-SQL/sqljdbc.jar}"
 ;;
 

@@ -159,13 +159,13 @@ SELECT COUNT(*) FROM ${a} WHERE (GraphID = ?)
 #-------------------------------------------------------------------
 # Insert a long object with no tail
 insertLongObject
-INSERT INTO ${a} (ID, Head, ChkSum) VALUES (?, ?, ?)
+INSERT INTO ${a} (ID, Head, ChkSum, Tail) VALUES (?, ?, ?, ?)
 
 #-------------------------------------------------------------------
 # Retrieve BLOB
-getEmptyBLOB
-SELECT Tail FROM ${a} WHERE (ID =  ${b}) FOR UPDATE
-
+# getEmptyBLOB
+# SELECT Tail FROM ${a} WHERE (ID =  ${b}) FOR UPDATE
+#
 #-------------------------------------------------------------------
 # Get the ID of the object that was just inserted
 getInsertID

@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.63 $ on $Date: 2006-12-01 16:54:56 $
+* @version $Revision: 1.64 $ on $Date: 2006-12-11 18:11:42 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1624,6 +1624,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			String ld = litLangTypeToRDBString(lang,dtype);
 			int encodeLen = RDBCodeLiteral.length() + 2 + ld.length() + EOS_LEN;
 			boolean litIsLong = objectIsLong(encodeLen,lval);		
+            
 			if ( litIsLong ) {
 				int	dbid;
                 
@@ -2040,7 +2041,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
 		PreparedStatement ps = null;
 
-        // Because the long object bound has been reset to less than the actual table allocation.
+//        // Because the long object bound has been reset to less than the actual table allocation.
 //        if ( lobj.tail == null || lobj.tail.equals("") )
 //            System.err.println("Unexpected : empty tail") ;
         
@@ -2086,32 +2087,6 @@ public abstract class DriverRDB implements IRDBDriver {
 //                 ps.setBytes(argi++, b) ;
 //             }
              
-             // Why does this old code encode the length?
-             
-             
-/*			if (isBlob || (len == 0) ) {
-				// First convert the literal to a UTF-16 encoded byte array
-				// (this wouldn't be needed for jdbc 2.0 drivers but not all db's have them)
-				byte[] temp = lit.getBytes("UTF-8");
-				int lenb = temp.length;
-				//System.out.println("utf-16 len = " + lenb);
-				byte[] litData = new byte[lenb + 4];
-				litData[0] = (byte)(lenb & 0xff);
-				litData[1] = (byte)((lenb >> 8) & 0xff);
-				litData[2] = (byte)((lenb >> 16) & 0xff);
-				litData[3] = (byte)((lenb >> 24) & 0xff);
-				System.arraycopy(temp, 0, litData, 4, lenb);
-                
-				// Oracle has its own way to insert Blobs
-				if (isBlob && m_driver.getDatabaseType().equalsIgnoreCase("Oracle")) {
-					//TODO fix to use Blob
-					// For now, we do not support Blobs under Oracle
-					throw new RDFRDBException("Oracle driver does not currently support large literals.");
-				} else {
-					ps.setBinaryStream(argi++, new ByteArrayInputStream(litData), litData.length);
-				}
-			} 
-*/            
 			ps.executeUpdate();
 			if ( !PRE_ALLOCATE_ID ) dbid = getInsertID(table);
 			return wrapDBID(new Integer(dbid));
@@ -2151,10 +2126,11 @@ public abstract class DriverRDB implements IRDBDriver {
     protected void setLongObjectHashAndTail_Binary(PreparedStatement ps, int argi, RDBLongObject lobj)
     throws SQLException
     {
-        ps.setLong(argi++, lobj.hash);
-        // Caveat - does not work for old drivers, notable Oracle.
-        // In that case, need the Oracle-specific blob handling driver
-        // but better is to upgrade to a newer JDBC driver (work as far back as Oracle 9i)
+        if ( lobj.tail.length() > 0 )
+            ps.setLong(argi++, lobj.hash);
+        else
+            ps.setNull(argi++,java.sql.Types.BIGINT);
+        
         byte[] b = null ;
         try { b = lobj.tail.getBytes("UTF-8") ; }
         catch (UnsupportedEncodingException ex)
@@ -2162,7 +2138,7 @@ public abstract class DriverRDB implements IRDBDriver {
             // Can't happen - UTF-8 is required by Java.
             throw new RDFRDBException("No UTF-8 encoding (setLongObjectHashAndTail_Binary)") ;
         }
-        System.out.println("bytes in : "+b.length) ;
+        //System.out.println("bytes in : "+b.length) ;
         ps.setBytes(argi++, b) ;
     }
     
@@ -2237,7 +2213,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		return res;
 	}
 
-	// Long term - look at moving to getBlob() (assuming drivers are better behaved these days) 
+	// Get whatever is strong under a long id. 
 	protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
 		RDBLongObject	res = null;
 		ResultSet rs=null;

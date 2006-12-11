@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.29 2006-05-04 13:19:50 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.30 2006-12-11 18:11:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -483,20 +483,26 @@ public class TestConnection extends TestCase {
         	int i = 0;
         	for ( i=0; i<100; i++ )
         		try {
-        			if ( !testCount(cnt) ) {
-        				Thread.yield();
-        				Thread.sleep(1000);
-        			}
+                    //System.err.println(cnt+"/"+count) ;
+        			if ( testCount(cnt) )
+                        break ;
+        			Thread.yield();
+        			Thread.sleep(1000);
         		} catch ( Exception e ) {
         			throw new RuntimeException("waitOnCount interrupted" + e);       			
         		}
-        	assertTrue(testCount(cnt));
+        	if ( ! testCount(cnt) )
+            {
+                System.err.println() ;
+                System.err.println("Expected="+cnt+" Actual="+count) ;
+                assertTrue("waitOnCount", false) ;
+            }
         }
 
     }
     
 	syncOnCount s;
-    String msg = "" ;
+    volatile String msg = "" ;
     
     public void testConcurrentThread() {
         
@@ -509,7 +515,17 @@ public class TestConnection extends TestCase {
 			}
 
 			public void run() {
-			    IDBConnection conn = makeAndCleanTestConnection();         
+			    IDBConnection conn = makeAndCleanTestConnection();
+//                try {
+//                    // 0, 1, 2, 4, 8
+//                    System.err.println("Connection.TRANSACTION_NONE = "+Connection.TRANSACTION_NONE) ;
+//                    System.err.println("Connection.TRANSACTION_READ_UNCOMMITTED = "+Connection.TRANSACTION_READ_UNCOMMITTED) ;
+//                    System.err.println("Connection.TRANSACTION_READ_COMMITTED = "+Connection.TRANSACTION_READ_COMMITTED) ;
+//                    System.err.println("Connection.TRANSACTION_REPEATABLE_READ = "+Connection.TRANSACTION_REPEATABLE_READ) ;
+//                    System.err.println("Connection.TRANSACTION_SERIALIZABLE = "+Connection.TRANSACTION_SERIALIZABLE) ;
+//                    System.err.println("Level: "+conn.getConnection().getTransactionIsolation()) ;
+//                } catch (Exception e) {}
+                
 			    try {
 			        ModelRDB foo = ModelRDB.createModel(conn, "foo");
 			        s.incCount(); // count is now 1
@@ -557,6 +573,7 @@ public class TestConnection extends TestCase {
 			public void run() {
 			    s.waitOnCount(1);
 			    IDBConnection conn = makeTestConnection();
+
 			    try {
 			        ModelRDB foo = ModelRDB.open(conn, "foo");
 			        foo.begin();

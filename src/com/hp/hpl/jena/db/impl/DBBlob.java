@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBBlob.java,v 1.7 2006-03-22 13:52:47 andy_seaborne Exp $
+  $Id: DBBlob.java,v 1.8 2006-12-11 18:11:43 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -18,6 +18,8 @@ import com.hp.hpl.jena.db.RDFRDBException;
  */
 public abstract class DBBlob implements IDBBlob {
 
+    // NOT CURRENTLY USED (Jena 2.4)
+    
 	/** the real blob */
 	protected Object m_blob;
 	
