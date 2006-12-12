@@ -114,7 +114,7 @@ public class SQLBridge2 extends SQLBridgeBase
                     String lang =  rs.getString(codename+"$lang") ;
                     ValueType vType = ValueType.lookup(type) ;
                     Node r = makeNode(lex, datatype, lang, vType) ;
-                    b.add(v.getName(), r) ;
+                    b.add(v, r) ;
                 } catch (SQLException ex)
                 { // Unknown variable?
                     //log.warn("Not reconstructed: "+n) ;

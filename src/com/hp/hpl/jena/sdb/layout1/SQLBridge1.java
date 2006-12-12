@@ -69,7 +69,7 @@ public class SQLBridge1 extends SQLBridgeBase
                     if ( s == null )
                         continue ;
                     Node n = codec.decode(s) ;
-                    b.add(v.getName(), n) ;
+                    b.add(v, n) ;
                     // Ignore any access error (variable requested not in results)
                 } catch (SQLException ex) {}
             }

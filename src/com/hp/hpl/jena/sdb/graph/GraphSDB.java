@@ -86,20 +86,35 @@ public class GraphSDB extends GraphBase implements Graph
         SDBRequest cxt = new SDBRequest(getStore(), new Query()) ;
         
         Node s = m.getMatchSubject() ;
-        if ( s == null ) s = Var.alloc("s") ;
+        Var sVar = null ;
+        if ( s == null )
+        {
+            sVar = Var.alloc("s") ;
+            s = sVar ;
+        }
         
         Node p = m.getMatchPredicate() ;
-        if ( p == null ) p = Var.alloc("p") ; 
+        Var pVar = null ;
+        if ( p == null )
+        {
+            pVar = Var.alloc("p") ;
+            p = pVar ;
+        }
         
         Node o = m.getMatchObject() ;
-        if ( o == null ) o = Var.alloc("o") ;
+        Var oVar = null ;
+        if ( o == null )
+        {
+            oVar = Var.alloc("o") ;
+            o = oVar ;
+        }
         
         Triple triple = new Triple(s, p ,o) ;
         
         Query q = new Query() ;
-        if ( s.isVariable() ) q.addResultVar(s) ;
-        if ( p.isVariable() ) q.addResultVar(p) ;
-        if ( o.isVariable() ) q.addResultVar(o) ;
+        if ( sVar != null ) q.addResultVar(sVar) ;
+        if ( pVar != null ) q.addResultVar(pVar) ;
+        if ( oVar != null ) q.addResultVar(oVar) ;
 
         ElementBasicGraphPattern el = new ElementBasicGraphPattern() ;
         el.addTriple(new Triple(s,p,o)) ;
@@ -124,12 +139,12 @@ public class GraphSDB extends GraphBase implements Graph
             Node sResult = s ;
             Node pResult = p ;
             Node oResult = o ;
-            if ( sResult.isVariable() )
-                sResult = b.get("s") ;
-            if ( pResult.isVariable() )
-                pResult = b.get("p") ;
-            if ( oResult.isVariable() )
-                oResult = b.get("o") ;
+            if ( sVar != null )
+                sResult = b.get(sVar) ;
+            if ( pVar != null )
+                pResult = b.get(pVar) ;
+            if ( oVar != null )
+                oResult = b.get(oVar) ;
             Triple resultTriple = new Triple(sResult, pResult, oResult) ;
             if ( log.isDebugEnabled() )
                 log.debug("  "+resultTriple) ;

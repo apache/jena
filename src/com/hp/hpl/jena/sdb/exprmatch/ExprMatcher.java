@@ -154,7 +154,7 @@ class MatchVisitor implements ExprVisitor
     
     public void visit(NodeVar patternVar)
     {
-        Var vn = patternVar.getAsVar() ;
+        Var vn = patternVar.asVar() ;
         Action a = aMap.get(vn) ; 
         if ( a == null )
             a = defaultAction ;
