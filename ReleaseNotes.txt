@@ -2,10 +2,16 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+Trutle support
+    o New Turtle parser (uses javacc, not antlr). Accessed for files with extension ".ttl"
+      and language names "TTL", "TURTLE", "Turtle"
+
 Database backends:
     o Changed MS SQL Server driver to use NVARCHAR instead of VARCHAR,
       to fix i18n support.
     o Fixed i18n bug in Oracle backend and also switched to NVARCHAR.
+    o No requirement to compile Jena for Oracle use.  The Oracle driver 
+      now works in the standard Jena distribution.
     
 ModelFactory:
     o added methods to construct models using Assembler system. Updated
