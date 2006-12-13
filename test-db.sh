@@ -80,9 +80,7 @@ DEFS=" $DEFS  -Djena.db.user=user"
 DEFS=" $DEFS  -Djena.db.password=password"
 DEFS=" $DEFS  -Djena.db.type=MySQL"
 DEFS=" $DEFS  -Djena.db.driver=com.mysql.jdbc.Driver" 
-## Lock up problems.
-## JDBC="${JDBC:-$JDBCDIR/MySQL/mysql-connector-java-5.0.0-beta-bin.jar}"
-JDBC="${JDBC:-$JDBCDIR/MySQL/mysql-connector-java-3.1.12-bin.jar}"
+JDBC="${JDBC:-$JDBCDIR/MySQL/mysql-connector-java-5.0.4-bin.jar}"
 ;;
 
 # MS SQL Server, jTDS driver, local

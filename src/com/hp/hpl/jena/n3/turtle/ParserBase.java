@@ -138,6 +138,11 @@ public class ParserBase
         return s.substring(1,s.length()-1)  ;
     }
     
+    protected String stripQuotes3(String s)
+    {
+        return s.substring(3,s.length()-3)  ;
+    }
+    
     protected String stripChars(String s, int n)
     {
         return s.substring(n, s.length())  ;

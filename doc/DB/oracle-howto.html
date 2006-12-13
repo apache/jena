@@ -27,8 +27,9 @@ Jena.</p>
 <a href="http://www.oracle.com/technology/products/database/xe/index.html">
 Oracle XE</a>, as well as the full commercial versions, on both WindowsXP and 
 Linux.</p>
-<p>Jena2 can be run with both thin and thick JDBC drivers.</p>
-<p>Currently, some configuration is necessary to work with all driver choices.</p>
+<p>Jena2 has been tested with the 10.2.0.x JDBC drivers which work for Oracle9i 
+for 9.2.0.x, Oracle10g (10.2.0.x and 10.1.0.x).</p>
+<p>Jena2 no longer requires specific Oracle configuration.</p>
 <font SIZE="2">
 
 <h2>Connecting Your Jena Program to Oracle</h2>
@@ -39,14 +40,6 @@ in how the models are created. Creating a memory model can be done with a single
 Jena call. Creating a database model, or opening a previously created one, 
 requires several steps as as follows.</p>
 
-<p><b>Important</b></p>
-<ul>
-  <li>Edit the source file <font face="Courier New" size="2">com.hp.hpl.jena.db.impl.Driver_Oracle.java</font>.</li>
-  <li>Uncomment the Oracle import commands at the top of the file:<br>&nbsp<font face="Courier New" size="2">import oracle.jdbc.OracleResultSet;</font><br>&nbsp<font face="Courier New" size="2">import oracle.sql.BLOB;</font></li>
-  <li>Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
-  </li>
-  <li>Recompile Jena.</li>
-</ul>
 <p>Persistent models are <a href="creating-db-models.html">created</a> in the 
 same way for any database system: </p>
 <blockquote>
@@ -64,7 +57,7 @@ same way for any database system: </p>
 
 <pre class="box">String className = <font face="Courier New">&quot;oracle.jdbc.driver.OracleDriver&quot;</font>;   // path of driver class
 Class.forName (className);                              // Load the Driver
-String DB_URL =     <font face="Courier New">&quot;jdbc:oracle:oci:@&quot;</font>;                // URL of database 
+String DB_URL =     <font face="Courier New">&quot;jdbc:oracle:thin:@....&quot;</font>;                // URL of database 
 String DB_USER =   &quot;????&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         // database user id
 String DB_PASSWD = &quot;????&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;          // database password
 String DB =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font face="Courier New">&quot;Oracle&quot;</font>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         // database type
@@ -83,20 +76,6 @@ conn.close();</pre>
 <p></p>
 
 <h2>Notes</h2>
-
-<ol>
-  <li>We encountered problems with BLOBs when using the Oracle 9 and the thin driver to access an Oracle database running on the Linux 
-operating system, so we recommend use of the oci driver when using Linux.
-
-  </li>
-  <li>Under Linux and Oracle 9, in running the database TestPackage, we 
-  get a Java warning that an SQLException was thrown when a thread attempts a 
-  next operation on a database iterator over a closed database connection. This 
-  appears to be a timing problem involving interaction with a finalize routine. 
-  The test returns the correct result. The warning does not occur under WindowsXP.</li>
-  </ol>
-
-<p>Oracle 10, including Oracle 10 XE, does not present these issues.</p>
 
 </body>
 </html>

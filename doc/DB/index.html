@@ -67,8 +67,8 @@ the Jena2 and Jena1 designs.</p>
 
 
 <p>The following table lists the database engines and JDBC drivers 
-that are known to work with Jena. Older newer versions may work but 
-have not been tested; new versions generally work. Please report further 
+that are known to work with Jena. Older newer versions usually work but 
+wil need testing; newer versions generally work. Please report further 
 configurations to <a href="mailto:jena-dev@groups.yahoo.com">
 jena-dev@groups.yahoo.com</a>.</p>
 <p>See the database-specific <i>how-to</i> documents for more 
@@ -77,11 +77,6 @@ details on using these databases for Jena applications (<a href="hsql-howto.html
   <a href="postgresql-howto.html">PostgreSQL</a>,
   <a href="mssql-howto.html">MS SQL Server</a>).
   </p>
-<p>The Jena Version column records the last known test. It is expected that all 
-later versions of Jena will work but this may not have been tested, or this 
-document may not have been updated.
-  </p>
-<p></p>
 
 
 
@@ -97,7 +92,7 @@ document may not have been updated.
     </tr>
     <tr>
       <td style="text-align: left">MySQL 4.1.11<br>MySQL 5.0.18</td>
-      <td style="text-align: left">JDBC driver versions: 3.0, 3.1</td>
+      <td style="text-align: left">JDBC driver versions: 3.0, 3.1, 5.0</td>
     </tr>
     <tr>
       <td style="text-align: left">PostgreSQL 7.3<br>PostgreSQL 8.0</td>
@@ -109,14 +104,10 @@ document may not have been updated.
     </tr>
     <tr>
       <td style="text-align: left">Oracle 10 XE</td>
-      <td style="text-align: left">Oracle ojdbc14 driver (thin driver)</td>
+      <td style="text-align: left">Oracle ojdbc14 driver (thin driver) 10.2.0.2</td>
     </tr>
     <tr>
-      <td style="text-align: left">Oracle 9.2</td>
-      <td style="text-align: left">Oracle thick and thin drivers</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">Microsoft SQL Server Express SP1</td>
+      <td style="text-align: left">Microsoft SQL Server 2005 Express SP1</td>
       <td style="text-align: left">Microsoft SQL Server 2005 JDBC Driver</td>
     </tr>
     <tr>
@@ -132,7 +123,7 @@ document may not have been updated.
   <h3>MySQL Notes</h3>
 <ul>
   <li>The 5.0.0-beta driver does not work reliably (bug to do with concurrency 
-  in the JDBC driver)</li>
+  in the JDBC driver). This was fixed in 5.0 production drivers.</li>
   <li>Drivers from the 3.1 series work with Jena 2.4 and later.</li>
 </ul>
 

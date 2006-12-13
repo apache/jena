@@ -273,15 +273,14 @@ String Langtag() : { Token t ; }
 
 // <<<<< SPARQL extract
 
-String String() : { Token t ; }
+String String() : { Token t ;  String lex ; }
 {
-  ( t = <STRING_LITERAL1>
-  | t = <STRING_LITERAL2>
-  | t = <STRING_LITERAL_LONG1>
-  | t = <STRING_LITERAL_LONG2>
+  ( t = <STRING_LITERAL1> { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL2> { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
+  | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
-    { String lex = stripQuotes(t.image) ; 
-      lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
+    { lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       return lex ;
     }
 }

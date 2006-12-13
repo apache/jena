@@ -577,26 +577,29 @@ public class TurtleParser extends ParserBase implements TurtleParserConstants {
 
 // <<<<< SPARQL extract
   final public String String() throws ParseException {
-                    Token t ;
+                    Token t ;  String lex ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STRING_LITERAL1:
       t = jj_consume_token(STRING_LITERAL1);
+                            lex = stripQuotes(t.image) ;
       break;
     case STRING_LITERAL2:
       t = jj_consume_token(STRING_LITERAL2);
+                            lex = stripQuotes(t.image) ;
       break;
     case STRING_LITERAL_LONG1:
       t = jj_consume_token(STRING_LITERAL_LONG1);
+                                 lex = stripQuotes3(t.image) ;
       break;
     case STRING_LITERAL_LONG2:
       t = jj_consume_token(STRING_LITERAL_LONG2);
+                                 lex = stripQuotes3(t.image) ;
       break;
     default:
       jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-      String lex = stripQuotes(t.image) ;
       lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
       {if (true) return lex ;}
     throw new Error("Missing return statement in function");

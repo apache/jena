@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import com.hp.hpl.jena.graph.GraphEvents;
+import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.BadURIException;
 import com.hp.hpl.jena.shared.JenaException;
@@ -79,6 +80,13 @@ public class TurtleReader implements RDFReader
     private void readWorker(Model model, Reader reader, String base, String sourceName)
     {
         try {
+            if ( base == null )
+                base = sourceName ;
+            else if ( base.equals("") )
+                ;
+                
+            base = RelURI.resolve(base) ;
+            
             model.notifyEvent( GraphEvents.startRead ) ;
             ParserTurtle p =  new ParserTurtle() ;
             p.parse(model.getGraph(), base, reader) ;
