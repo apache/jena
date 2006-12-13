@@ -8,7 +8,7 @@ SELECT *
 ##    FILTER(?x = :x1 )
     OPTIONAL
     { ?z :q ?v
-      FILTER(?v = :w1)
+      FILTER(?z = :z1)
     }
 ##    { ?x :p ?X } UNION { ?x :q ?X }
 }
