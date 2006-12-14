@@ -351,7 +351,9 @@ TOKEN :
 {
    < INTEGER: (["-","+"])? <DIGITS> >
 |
-   < DECIMAL: (["-","+"])? (<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+ >
+   < DECIMAL: (["-","+"])? 
+              ((<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+)
+   >
       // Required exponent.
 |  < DOUBLE:
       (["+","-"])?
