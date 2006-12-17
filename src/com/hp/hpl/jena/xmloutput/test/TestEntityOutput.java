@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestEntityOutput.java,v 1.7 2006-09-20 13:56:28 chris-dollin Exp $
+ 	$Id: TestEntityOutput.java,v 1.8 2006-12-17 19:24:03 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -84,7 +84,8 @@ public class TestEntityOutput extends ModelTestBase
         m.setNsPrefix( bad, "goo:spoo" );
         m.setNsPrefix( "eh", "eh:/" );
         String s = checkedModelToString( m );
-        assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) );
+        //assertTrue( s.toString().contains( "<!DOCTYPE rdf:RDF [" ) ); // java5-ism
+        assertTrue( s.toString().indexOf( "<!DOCTYPE rdf:RDF [" ) >= 0 );
         assertMismatches( "<!ENTITY " + bad + " ", s );
         assertMismatches( "rdf:resource=\"&" + bad + ";noo\"", s );
         }

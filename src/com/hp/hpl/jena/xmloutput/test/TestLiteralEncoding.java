@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestLiteralEncoding.java,v 1.3 2006-09-12 10:21:18 chris-dollin Exp $
+ 	$Id: TestLiteralEncoding.java,v 1.4 2006-12-17 19:24:03 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -95,8 +95,10 @@ public class TestLiteralEncoding extends ModelTestBase
         Model m2 = modelWithStatements( "" );
         m2.read( new StringReader( s.toString() ), null, "RDF/XML" );
         assertIsoModels( m, m2 );
-        assertTrue( s.toString().contains( "]]&gt;" ) );
-        assertFalse( s.toString().contains( "]]>" ) );
+        //assertTrue( s.toString().contains( "]]&gt;" ) );  // Java 1.5-ism
+        //assertFalse( s.toString().contains( "]]>" ) );
+        assertTrue( s.toString().indexOf( "]]&gt;" ) >= 0 );
+        assertFalse( s.toString().indexOf( "]]>" ) >= 0 );
         }
     }
 
