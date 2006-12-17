@@ -1,11 +1,13 @@
 @prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
 @prefix :           <http://example/> .
 
-##    1.  (Lowest) no value assigned to the variable or expression in this solution.
+##    1.  (Lowest) no value assigned to the variable 
+##         or expression in this solution.
 ##    2. Blank nodes
 ##    3. IRIs
 ##    4. RDF literals
-##    5. A plain literal before an RDF literal with type xsd:string of  the same lexical form.
+##    5. A plain literal before an RDF literal
+##       with type xsd:string of  the same lexical form.
 
 []  :p <http://example/iri1> ;
     :i 3 .

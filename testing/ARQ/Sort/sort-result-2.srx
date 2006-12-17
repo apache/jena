@@ -18,7 +18,7 @@
     </result>
     <result>
       <binding name="x">
-        <uri>http://example/x7</uri>
+        <uri>http://example/x9</uri>
       </binding>
       <binding name="v">
         <bnode>b1</bnode>
@@ -34,10 +34,34 @@
     </result>
     <result>
       <binding name="x">
-        <uri>http://example/x8</uri>
+        <uri>http://example/x10</uri>
       </binding>
       <binding name="v">
         <uri>http://example/xyz</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/z2</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">01</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/z3</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/z1</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
       </binding>
     </result>
     <result>
@@ -46,14 +70,6 @@
       </binding>
       <binding name="v">
         <literal>abc</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="x">
-        <uri>http://example/x1</uri>
-      </binding>
-      <binding name="v">
-        <literal>xyz</literal>
       </binding>
     </result>
     <result>
@@ -74,7 +90,39 @@
     </result>
     <result>
       <binding name="x">
-        <uri>http://example/x3</uri>
+        <uri>http://example/y6</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://example/unknown">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y5</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y4</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x1</uri>
+      </binding>
+      <binding name="v">
+        <literal>xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x5</uri>
       </binding>
       <binding name="v">
         <literal xml:lang="EN">xyz</literal>
@@ -90,15 +138,23 @@
     </result>
     <result>
       <binding name="x">
-        <uri>http://example/y6</uri>
+        <uri>http://example/x3</uri>
       </binding>
       <binding name="v">
-        <literal datatype="http://example/unknown">abc</literal>
+        <literal xml:lang="FR">xyz</literal>
       </binding>
     </result>
     <result>
       <binding name="x">
-        <uri>http://example/x6</uri>
+        <uri>http://example/x4</uri>
+      </binding>
+      <binding name="v">
+        <literal xml:lang="fr">xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x8</uri>
       </binding>
       <binding name="v">
         <literal datatype="http://example/unknown">xyz</literal>
@@ -106,15 +162,7 @@
     </result>
     <result>
       <binding name="x">
-        <uri>http://example/y5</uri>
-      </binding>
-      <binding name="v">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">abc</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="x">
-        <uri>http://example/x5</uri>
+        <uri>http://example/x7</uri>
       </binding>
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">xyz</literal>
@@ -122,15 +170,7 @@
     </result>
     <result>
       <binding name="x">
-        <uri>http://example/y4</uri>
-      </binding>
-      <binding name="v">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="x">
-        <uri>http://example/x4</uri>
+        <uri>http://example/x6</uri>
       </binding>
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#string">xyz</literal>
