@@ -13,7 +13,7 @@ package com.hp.hpl.jena.shared.uuid;
  *  (java.util.BitSet does not allow getting the pattern as a long) 
  *  
  * @author Andy Seaborne
- * @version $Id: Bits.java,v 1.1 2006-09-11 10:53:01 andy_seaborne Exp $
+ * @version $Id: Bits.java,v 1.2 2006-12-17 19:17:08 andy_seaborne Exp $
  */ 
 public final class Bits
 {
@@ -21,7 +21,7 @@ public final class Bits
     // JIT can inline these class statics.
     // Methods like XXX$ do no checking.
     public static final boolean CHECK = false ;
-    private static int LongLen = Long.SIZE ;
+    private static int LongLen = 64 ; // Long.SIZE  - java 5 and later
     
     /** Extract the value packed into bits start (inclusive) and finish (exclusive),
      *  the value is returned the low part of the returned long.
