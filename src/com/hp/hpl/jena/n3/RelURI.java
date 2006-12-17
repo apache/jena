@@ -23,10 +23,10 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.cache.Cache;
 
-/** com.hp.hpl.jena.query.util.RelURI
+/** RelURI copied to Jena
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.8 2006-11-23 16:15:50 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.9 2006-12-17 19:25:12 andy_seaborne Exp $
  */
 
 public class RelURI
@@ -41,42 +41,8 @@ public class RelURI
         public RelativeURIException(String msg) { super(msg) ; }
     }
     
-    // -- Start of copy from ARQ
     static private String globalBase = null ;
-    // Spaces are replcaed by this
-    static final String spaceEncoding = "_%20_" ;
     
-    static class Fixup
-    {
-        String originalPrefix = null ;
-        String safePrefix = null ;
-        String safeForm = null ;
-        Fixup(String str)
-        {
-            safeForm = str ;
-            if ( str != null && str.indexOf(' ') >= 0 )
-            {
-                int i = str.lastIndexOf(' ') ;
-                originalPrefix = str.substring(0, i+1) ;  // Include matched space
-                safeForm = str.replace(" ",spaceEncoding) ;
-                i = safeForm.lastIndexOf(spaceEncoding) ;
-                safePrefix = safeForm.substring(0, i+spaceEncoding.length()) ;
-            }
-        }
-        String getSafe() { return safeForm; }
-        String reverse(String s)
-        {
-            if ( originalPrefix != null )
-            {
-                //if ( s.startsWith(safePrefix) )
-                if ( s.contains(safePrefix) )
-                    s = s.replace(safePrefix, originalPrefix) ;
-                    //s = originalPrefix+s.substring(safePrefix.length()) ;
-            }
-            return s ;
-        }
-    }
-        
     static Cache baseCache = new Cache1() ;
     static Pattern patternHttp = Pattern.compile("^http://[^/]*/[^/]+") ; 
     static Pattern patternFile = Pattern.compile("^file:/*[^/]+/") ; 
@@ -116,13 +82,28 @@ public class RelURI
             // Can't shortcut - drop through anyway.
         }
         
-        
-        Fixup b = new Fixup(baseStr) ;
-        Fixup r = new Fixup(relStr) ;
+        // Encode spaces (for filenames)
+        baseStr = encode(baseStr) ;
+        relStr = encode(relStr) ;
         // "Adapt" URIs with spaces
-        String s = _resolve(r.getSafe(), b.getSafe()) ;
-        s = b.reverse(s) ;
-        s = r.reverse(s) ;  // relStr may be absolute
+        String s = _resolve(relStr, baseStr) ;
+        s = decode(s) ;
+        return s ;
+        
+    }
+    
+    static private String encode(String s)
+    {
+        if ( s == null ) return s ;
+        //s = s.replace("_", "__") ;
+        //s = s.replace(" ", "_20") ;
+        return s ;
+    }
+    
+    static private String decode(String s)
+    {
+        //s = s.replace("_20", " ") ;
+        //s = s.replace("__", "_") ;
         return s ;
         
     }
@@ -391,8 +372,8 @@ public class RelURI
         {
             return null ;
         }
+
     }
-    // -- End of copy from ARQ
 
 }
 
