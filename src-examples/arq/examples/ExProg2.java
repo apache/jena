@@ -26,7 +26,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 /** Example : Build a query with a filter programmatically 
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg2.java,v 1.3 2006-12-11 09:47:10 andy_seaborne Exp $
+ * @version $Id: ExProg2.java,v 1.4 2006-12-18 09:48:30 andy_seaborne Exp $
  */
 
 public class ExProg2
@@ -48,7 +48,7 @@ public class ExProg2
         Var varX = Var.alloc("x") ;
         
         Triple t1 = new Triple(varX, DC.title.asNode(),  varTitle) ;
-        elg.addElementTriplePattern(new ElementTriplePattern(t1)) ;
+        elg.addTriplePattern(t1) ;
         
         // Adds a filter.  Need to wrap variable in a NodeVar.
         Expr expr = new E_Regex(new NodeVar(varTitle), "sparql", "i") ;

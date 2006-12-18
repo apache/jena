@@ -16,7 +16,7 @@ import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
  * Example factory for an extension query engine 
  * 
  * @author Andy Seaborne
- * @version $Id: MyEngineFactory.java,v 1.2 2006-12-11 09:47:11 andy_seaborne Exp $
+ * @version $Id: MyEngineFactory.java,v 1.3 2006-12-18 09:48:32 andy_seaborne Exp $
  */
 
 public class MyEngineFactory implements QueryEngineFactory 

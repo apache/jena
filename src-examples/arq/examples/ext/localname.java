@@ -12,9 +12,10 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.Binding;
-import com.hp.hpl.jena.query.core.Binding1;
-import com.hp.hpl.jena.query.core.BindingMap;
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.Binding1;
+import com.hp.hpl.jena.query.engine.BindingMap;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterNullIterator;
@@ -48,7 +49,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * 
  * 
  * @author Andy Seaborne
- * @version $Id: localname.java,v 1.2 2006-12-11 09:47:12 andy_seaborne Exp $
+ * @version $Id: localname.java,v 1.3 2006-12-18 09:48:32 andy_seaborne Exp $
  */ 
 
 public class localname extends PFuncSimple
@@ -59,7 +60,7 @@ public class localname extends PFuncSimple
         if ( ! nodeURI.isVariable() )
             return execFixedSubject(nodeURI, nodeLocalname, binding, execCxt) ;
         else
-            return execAllNodes(nodeURI, nodeLocalname, binding, execCxt) ;
+            return execAllNodes(Var.alloc(nodeURI), nodeLocalname, binding, execCxt) ;
     }
 
     // Subject is bound : still two cases: object bound (do a check) and object unbound (assign the local name)
@@ -84,7 +85,7 @@ public class localname extends PFuncSimple
         }
         
         // Object unbound variable - assign the localname to it.
-        Binding b = new Binding1(binding, nodeLocalname.getName(), localname) ;
+        Binding b = new Binding1(binding, Var.alloc(nodeLocalname), localname) ;
         
         // Return an iterator.
         return new QueryIterSingleton(b) ;
@@ -94,7 +95,7 @@ public class localname extends PFuncSimple
     // Still two cases: object bound (filter by localname) and object unbound (generate all localnames for all URIs)
     // Warning - will scan the entire graph (there is no localname index) but this example code. 
 
-    private QueryIterator execAllNodes(Node subjVar, Node nodeLocalname,  Binding input, ExecutionContext execCxt)
+    private QueryIterator execAllNodes(Var subjVar, Node nodeLocalname,  Binding input, ExecutionContext execCxt)
     {
         if ( ! nodeLocalname.isVariable() )
         {
@@ -121,7 +122,7 @@ public class localname extends PFuncSimple
         return new QueryIterPlainWrapper(bindings.iterator(), execCxt) ;
     }
 
-    private void slot(Set bindings, Binding input, Node node, Node subjVar, Node nodeLocalname)
+    private void slot(Set bindings, Binding input, Node node, Var subjVar, Node nodeLocalname)
     {
         if ( ! node.isURI() ) return ;
         Node localname = Node.createLiteral(node.getLocalName()) ;
@@ -130,8 +131,8 @@ public class localname extends PFuncSimple
             // Object is an unbound variable.
             Binding b = new BindingMap(input) ;
             // Bind a pair for subject and object variables
-            b.add(subjVar.getName(), node) ;
-            b.add(nodeLocalname.getName(), localname) ;
+            b.add(Var.alloc(subjVar), node) ;
+            b.add(Var.alloc(nodeLocalname), localname) ;
             bindings.add(b) ;
             return ;
         }
@@ -140,7 +141,7 @@ public class localname extends PFuncSimple
         if ( ! nodeLocalname.sameValueAs(localname) )
             return ;
         // Bind subject to this node.
-        Binding b = new Binding1(input, subjVar.getName(), node) ; 
+        Binding b = new Binding1(input, subjVar, node) ; 
         bindings.add(b) ;
     }
 

@@ -20,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * finds which doicuments have DC titles
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene2.java,v 1.1 2006-12-11 09:47:10 andy_seaborne Exp $
+ * @version $Id: ExLucene2.java,v 1.2 2006-12-18 09:48:30 andy_seaborne Exp $
  */
 
 public class ExLucene2

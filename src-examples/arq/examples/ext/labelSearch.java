@@ -59,7 +59,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *  indexing or external structure.
  *  
  * @author Andy Seaborne
- * @version $Id: labelSearch.java,v 1.2 2006-12-11 09:47:12 andy_seaborne Exp $
+ * @version $Id: labelSearch.java,v 1.3 2006-12-18 09:48:32 andy_seaborne Exp $
  */ 
 
 public class labelSearch implements PropertyFunction
