@@ -16,6 +16,8 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine1.QueryEngine;
 import com.hp.hpl.jena.query.engine1.plan.Transformer;
+import com.hp.hpl.jena.query.engine2.QueryEngineQuad;
+import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sdb.SDBException;
@@ -26,7 +28,21 @@ public class CheckQuery {
 	
 	public static void main(String... args)
 	{
-        throw new SDBException("Not converted to Op compilation") ;
+        Query query = QueryFactory.create("SELECT * WHERE {{ ?a <b> ?c , <d> .  FILTER (?a < 10) .} UNION { <a> <b> <e> }}");
+        QueryEngineQuad qe = new QueryEngineQuad(query);
+        Op op = qe.getOp() ;
+        
+        PlanScorer pv = new PlanScorer();
+        pv.addScorer(new TripleScorer(TripleScorer.UNBOUND, TripleScorer.UNBOUND, TripleScorer.UNBOUND, 1000));
+        pv.addScorer(new TripleScorer(null, null, TripleScorer.UNBOUND, 100));
+        pv.addScorer(new TripleScorer(null, TripleScorer.UNBOUND, null, 100));
+        pv.addScorer(new TripleScorer(TripleScorer.UNBOUND, null, null, 100));
+        //pv.score(qe.getPlan());
+        log.info("Score is: " + pv.getScore(qe.getPlan()));
+        
+        
+        
+        
 //		Query query = QueryFactory.create("SELECT * WHERE {{ ?a <b> ?c , <d> .  FILTER (?a < 10) .} UNION { <a> <b> <e> }}");
 //		QueryEngine qe = new QueryEngine(query);
 //		PlanScorer pv = new PlanScorer();
