@@ -4,62 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-
-public class Scope2 implements Scope
+public class SqlNodeVisitorBase implements SqlNodeVisitor
 {
-    Scope left ; 
-    Scope right ;
-    
-    public Scope2(Scope left, Scope right) { this.left = left ; this.right = right ; } 
-    
-    public boolean hasColumnForVar(Var var)
-    { 
-        if ( left != null && left.hasColumnForVar(var) )
-            return true ;
-        if ( right != null && right.hasColumnForVar(var) )
-            return true ;
-        return false ;
-    }
-        
-    public Set<Var> getVars()
-    {
-        // Better - implement Iterable 
-        Set<Var> acc = new LinkedHashSet<Var>() ;
-        if ( left != null ) acc.addAll(left.getVars()) ;
-        if ( right != null ) acc.addAll(right.getVars()) ;
-        return acc ;
-    }
-    
-    public SqlColumn getColumnForVar(Var var)
-    { 
-        SqlColumn c = null ;
-        
-        if ( left != null )
-            c = left.getColumnForVar(var) ;
-        
-        if ( c != null )
-            return c ;
-        
-        if ( right != null )
-            c = right.getColumnForVar(var) ;
-        if ( c != null )
-            return c ;
-        
-        return null ;
-    }
-    
-    @Override
-    public String toString()
-    {
-        return left.toString() + " " + right.toString(); 
-    }
+    public void visit(SqlProject sqlProject)
+    {}
+
+    public void visit(SqlRestrict sqlRestrict)
+    {}
+
+    public void visit(SqlTable sqlTable)
+    {}
+
+    public void visit(SqlJoinInner sqlJoin)
+    {}
+
+    public void visit(SqlJoinLeftOuter sqlJoin)
+    {}
 }
 
 /*

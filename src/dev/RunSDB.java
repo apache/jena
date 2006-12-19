@@ -37,14 +37,14 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        run() ;
+        //run() ;
         //SDBConnection.logSQLStatements = true ;
         //runQuery("Q.rq", "D.ttl") ;
         
         
         //runQuad() ;
-        runQuery() ;
-        //runPrint() ;
+        //runQuery() ;
+        runPrint() ;
         //runScript() ;
         //run() ;
         System.err.println("Nothing ran!") ;
@@ -87,7 +87,7 @@ public class RunSDB
             PrintSDB.print(engine.getOp()) ;
             System.out.println(PrintSDB.divider) ;
             try {
-                PrintSDB.printSQL(engine.getSqlNode()) ;
+                PrintSDB.print(engine.getSqlNode()) ;
             } catch (ClassCastException ex) {}
         }
 
@@ -137,7 +137,7 @@ public class RunSDB
     public static void runPrint()
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {"--sql", "--sdb=sdb.ttl", "--query=Q.rq"} ;
+        String[] a = {/*"-print=op",*/ "--sdb=sdb.ttl", "--query=Q.rq"} ;
         //String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
@@ -151,7 +151,6 @@ public class RunSDB
         TestSuite ts = SDBTestSuite1.suite() ;
         SimpleTestRunner.runAndReport(ts) ;
         System.exit(0) ;
-        
     }
 
     static void runScript()

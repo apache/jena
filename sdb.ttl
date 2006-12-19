@@ -5,19 +5,31 @@
 @prefix sdb:      <http://jena.hpl.hp.com/2006/sdb#> .
 
 _:c rdf:type acmd:SDBConnection ;
-    acmd:sdbType      "hsqldb" ;
-    acmd:sdbHost      "mem" ;
-    acmd:sdbUser      "sa" ;
-    acmd:sdbPassword  "" ;
-    acmd:sdbName      "SDB2" ;
-    acmd:driver       "org.hsqldb.jdbcDriver" ;
-    #rdfs:label        "HSQL in-memory" ;
+    acmd:sdbType        "postgresql" ;
+    acmd:sdbHost        "sweb-sdb-1.hpl.hp.com" ;
+    acmd:sdbName        "sdb2" ;        # Lowercase
+    acmd:driver         "org.postgresql.Driver" ;
     .
 
 [] rdf:type acmd:Store ;
-    acmd:layout     "layout2" ;
-    acmd:connection _:c ;
-    ##Maybe features have arguments.
-    sdb:feature     [ a sdb:FeatureTransitive ] ;
-    .
+    acmd:layout         "layout2" ;
+    acmd:connection     _:c ;
+.
+
+## _:c rdf:type acmd:SDBConnection ;
+##     acmd:sdbType      "hsqldb" ;
+##     acmd:sdbHost      "mem" ;
+##     acmd:sdbUser      "sa" ;
+##     acmd:sdbPassword  "" ;
+##     acmd:sdbName      "SDB2" ;
+##     acmd:driver       "org.hsqldb.jdbcDriver" ;
+##     #rdfs:label        "HSQL in-memory" ;
+##     .
+## 
+## [] rdf:type acmd:Store ;
+##     acmd:layout     "layout2" ;
+##     acmd:connection _:c ;
+##     ##Maybe features have arguments.
+##     sdb:feature     [ a sdb:FeatureTransitive ] ;
+##     .
 

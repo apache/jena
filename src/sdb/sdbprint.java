@@ -9,6 +9,7 @@ package sdb;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
+import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
 
@@ -16,6 +17,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sdb.core.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.LayoutType;
@@ -37,9 +39,18 @@ public class sdbprint extends CmdArgsDB
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
     
     ModQueryIn modQuery = new ModQueryIn() ;
-    ArgDecl argDeclSQL = new ArgDecl(ArgDecl.NoValue, "sql") ;
+    ArgDecl argDeclPrintSQL     = new ArgDecl(ArgDecl.NoValue, "sql") ;
+    ArgDecl argDeclPrint = new ArgDecl(ArgDecl.HasValue, "print") ;
+
+    boolean printQuery = false ;
+
+    boolean printPrefix = false ;
+
+    boolean printOp = false ;
+
+    boolean printSqlNode = false ;
+
     boolean printSQL = false ;
-    
     public static void main (String [] argv)
     {
         new sdbprint(argv).mainAndExit() ;
@@ -50,9 +61,11 @@ public class sdbprint extends CmdArgsDB
         super(args);
         super.addModule(modQuery) ;
         super.getUsage().startCategory("SQL") ;
-        super.add(argDeclSQL, "--sql", "Print SQL only") ;
+        super.add(argDeclPrintSQL, "--sql", "Print SQL") ;
+        super.add(argDeclPrint, "--print=", "Print any of query, prefix, op, sqlnode, SQL") ;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void processModulesAndArgs()
     {
@@ -69,7 +82,19 @@ public class sdbprint extends CmdArgsDB
         if ( storeDesc.layout == null )
             storeDesc.layout = layoutDefault ;
         
-        printSQL = contains(argDeclSQL) ;
+        printSQL = contains(argDeclPrintSQL) ;
+        @SuppressWarnings("unchecked")
+        List<String> strList = (List<String>)getValues(argDeclPrint) ;
+        for ( String arg : strList )
+        {
+            if ( arg.equalsIgnoreCase("query"))         { printQuery = true ; }
+            else if ( arg.equalsIgnoreCase("prefix"))   { printPrefix = true ; }
+            else if ( arg.equalsIgnoreCase("Op"))       { printOp = true ; }
+            else if ( arg.equalsIgnoreCase("SqlNode"))  { printSqlNode = true ; }
+            else if ( arg.equalsIgnoreCase("sql"))      { printSQL = true ; }
+            else
+                throw new CmdException("Not a recognized print form: "+arg) ;
+        }
     }
 
     @Override
@@ -90,13 +115,22 @@ public class sdbprint extends CmdArgsDB
     
     private void compilePrint(Store store, Query query)
     {
-        if ( ! isQuiet() && ! printSQL )
+        if ( isVerbose() )
+        {
+            //printQuery = true ;
+            printPrefix = true ;
+            printOp = true ;
+            //printSqlNode = true ;
+            printSQL = true ;
+        }
+        
+        if ( printQuery )
         {
             divider() ;
             query.serialize(System.out, Syntax.syntaxARQ) ;
         }
         
-        if ( isVerbose() )
+        if ( printPrefix )
         {
             divider() ;
             query.serialize(System.out, Syntax.syntaxPrefix) ;
@@ -105,12 +139,19 @@ public class sdbprint extends CmdArgsDB
         QueryEngineQuadSDB qe = new QueryEngineQuadSDB(store, query) ;
         Op op = qe.getOp() ;
 
-        if ( isVerbose() )
+        if ( printOp )
         {
             divider() ;
             PrintSDB.print(op) ;
+            // No newline.
         }
 
+        if ( printSqlNode && op instanceof OpSQL )
+        {
+            divider() ;
+            PrintSDB.print(((OpSQL)op).getSqlNode()) ;
+        }
+        
         if ( printSQL )
         {
             divider() ;

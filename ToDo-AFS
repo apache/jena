@@ -4,6 +4,8 @@ SDB ToDo list (and general notes)
 + Scoping on SqlNodes
   Value tests: casting vs tables
 
++ Hash constants
+
 + cmd: 
   @ --load for sdb.sdbquery --format
      Done - but should be ModData/ModInit/ModSetup

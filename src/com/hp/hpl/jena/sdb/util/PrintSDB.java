@@ -12,7 +12,6 @@ import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpExt;
 import com.hp.hpl.jena.query.engine2.op.OpVisitorBase;
 import com.hp.hpl.jena.sdb.core.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -42,7 +41,7 @@ public class PrintSDB
     {
         if ( pmap == null )
             pmap = ARQConstants.getGlobalPrefixMap() ;
-        System.out.println(op.toString(pmap)) ;
+        System.out.print(op.toString(pmap)) ;
     }
     
     public static void printSQL(Op op)
@@ -51,12 +50,12 @@ public class PrintSDB
         
     }
     
-    public static void printSQL(SqlNode sqlNode)
+    public static void print(SqlNode sqlNode)
     {
         System.out.println(sqlNode.toString()) ;
         System.out.println(divider) ;
-        String sqlString = GenerateSQL.toSQL(sqlNode) ;
-        System.out.println(sqlString) ;
+        //String sqlString = GenerateSQL.toSQL(sqlNode) ;
+        //System.out.println(sqlString) ;
     }
  
     static class PrintSQL extends OpVisitorBase

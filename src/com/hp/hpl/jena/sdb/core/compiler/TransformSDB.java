@@ -6,14 +6,23 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
+import java.util.Collection;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.util.SetUtils;
 
 
 public class TransformSDB extends TransformCopy
 {
+    private static Log log = LogFactory.getLog(TransformSDB.class) ;
     private SDBRequest request ;
     private QuadBlockCompiler quadBlockCompiler ;
     //private boolean doLeftJoin = true ;
@@ -53,18 +62,33 @@ public class TransformSDB extends TransformCopy
     {
         if ( ! request.LeftJoinTranslation )
             return super.transform(opJoin, left, right) ;
-        // TODO See if we need coalesce
-        // also requires better scope tracking?
-        // may need scope from this (named) join   
-        // TODO See if this store is capable of performing complex join expressions
+        
         if ( ! isOpSQL(left) || ! isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
+
         // Condition in the left join.  Punt for now. 
         if ( opJoin.getExpr() != null )
             return super.transform(opJoin, left, right) ;
         
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
+        
+        // Check for coalesce.
+        // How to get the full scope of the LHS?
+        Collection<Var> vars = sqlRight.getIdScope().getVars() ;
+
+        // Could be more efficient by combining the VarUsage with this transform walk.
+        // Or even make the tree once with variables and scopes.
+        Set<Var> optDefsLeft = VarFinder.optDefined(opJoin.getLeft()) ;
+        
+        // Anything optional in both sides, we need a "coalesce"
+        if ( SetUtils.intersectionP(optDefsLeft, sqlRight.getIdScope().getVars()) ) 
+        {
+            Set<Var> x = SetUtils.intersection(optDefsLeft, sqlRight.getIdScope().getVars()) ;
+            log.warn("Coalesce required: "+x) ;
+            return super.transform(opJoin, left, right) ;
+        }
+        
         return new OpSQL(QC.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;
     }
     

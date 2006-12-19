@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
 
@@ -35,7 +35,7 @@ public class ScopeBase implements Scope
         return false ;
     }
         
-    public Collection<Var> getVars()
+    public Set<Var> getVars()
     {
         return frame.keySet() ;
     }

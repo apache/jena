@@ -4,63 +4,49 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.util;
 
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-
-public class Scope2 implements Scope
+public class SetUtils
 {
-    Scope left ; 
-    Scope right ;
-    
-    public Scope2(Scope left, Scope right) { this.left = left ; this.right = right ; } 
-    
-    public boolean hasColumnForVar(Var var)
-    { 
-        if ( left != null && left.hasColumnForVar(var) )
-            return true ;
-        if ( right != null && right.hasColumnForVar(var) )
-            return true ;
+    public static <T> Set<T> intersection(Set<T> setLeft, Set<T> setRight)
+    {
+        Set<T> results = new HashSet<T>(setLeft) ;
+        results.retainAll(setRight) ;
+        return results ;
+    }
+
+    public static <T> boolean intersectionP(Set<T> s1, Set<T> s2)
+    {
+        for( T elt : s1 )
+        {
+            if ( s2.contains(elt) ) 
+                return true ;
+        }
         return false ;
     }
-        
-    public Set<Var> getVars()
+
+    public static <T> Set union(Set<T> s1, Set<T> s2)
     {
-        // Better - implement Iterable 
-        Set<Var> acc = new LinkedHashSet<Var>() ;
-        if ( left != null ) acc.addAll(left.getVars()) ;
-        if ( right != null ) acc.addAll(right.getVars()) ;
-        return acc ;
+        Set<T> s3 = new HashSet<T>(s1) ;
+        s3.addAll(s2) ;
+        return s3 ;
     }
-    
-    public SqlColumn getColumnForVar(Var var)
-    { 
-        SqlColumn c = null ;
-        
-        if ( left != null )
-            c = left.getColumnForVar(var) ;
-        
-        if ( c != null )
-            return c ;
-        
-        if ( right != null )
-            c = right.getColumnForVar(var) ;
-        if ( c != null )
-            return c ;
-        
-        return null ;
-    }
-    
-    @Override
-    public String toString()
+
+
+    /** Return is s1 \ s2 */
+
+    public static <T> Set difference(Set<T> s1, Set<T> s2)
     {
-        return left.toString() + " " + right.toString(); 
+        Set<T> s3 = new HashSet<T>(s1) ;
+        s3.removeAll(s2) ;
+        return s3 ;
     }
+
 }
+
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP

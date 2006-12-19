@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.Collection;
+import java.util.Set;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 public interface Scope
 {
     public boolean          hasColumnForVar(Var var) ;
-    public Collection<Var>  getVars() ;
+    public Set<Var>         getVars() ;
     public SqlColumn        getColumnForVar(Var var) ;     
 }
 
