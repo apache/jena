@@ -16,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.op.Quad;
-import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
@@ -29,25 +28,24 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 
-public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
+public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 {
-    private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
-    Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
+    // Slot typing.
+    // Result handling.
     
-    private static final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
+    private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
+    
     private static final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
-
-    Generator genNodeConstantAlias = new Gensym(nodesConstantAliasBase) ;
-    Generator genNodeResultAlias = new Gensym(nodesResultAliasBase) ;
+    private Generator genNodeResultAlias = new Gensym(nodesResultAliasBase) ;
 
     List<Node> constants = new ArrayList<Node>() ;
-    List<Var> vars = new ArrayList<Var>() ;
+    List<Var>  vars = new ArrayList<Var>() ;
     
     public QuadBlockCompiler2(SDBRequest request)
     { super(request) ; }
 
     @Override
-    protected SqlNode start(QuadBlock quads)
+    final protected SqlNode start(QuadBlock quads)
     {
         classify(quads, constants, vars) ;
         addMoreConstants(constants) ;
@@ -60,7 +58,7 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
     {}
 
     @Override
-    protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
+    final protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
     {
         //sqlNode = addRestrictions(request, sqlNode, getConstraints()) ;
         
@@ -73,26 +71,9 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
         return sqlNode ;
 
     }
-    private SqlNode insertConstantAccesses(SDBRequest request, Collection<Node> constants)
-    {
-        SqlNode sqlNode = null ;
-        for ( Node n : constants )
-        {
-            long hash = NodeLayout2.hash(n);
-            SqlConstant hashValue = new SqlConstant(hash) ;
-
-            // Access nodes table.
-            SqlTable nTable = new TableNodes(genNodeConstantAlias.next()) ;
-            nTable.addNote("Const: "+FmtUtils.stringForNode(n, prefixMapping)) ; 
-            SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
-            // Record 
-            constantCols.put(n, new SqlColumn(nTable, "id")) ;
-            SqlExpr c = new S_Equal(cHash, hashValue) ;
-            sqlNode = QC.innerJoin(request, sqlNode, nTable) ;
-            sqlNode = SqlRestrict.restrict(sqlNode, c)  ;
-        }
-        return sqlNode ;
-    }
+    
+    protected abstract 
+    SqlNode insertConstantAccesses(SDBRequest request, Collection<Node> constants) ;
 
     private SqlNode extractResults(SDBRequest request,
                                    Collection<Var>vars, SqlNode sqlNode)
@@ -173,25 +154,8 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
         return sqlNode ;
     }
 
-    // -------- Slot compilation
-    
     @Override
-    protected void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions)
-    {
-        SqlColumn colId = constantCols.get(node) ;
-        if ( colId == null )
-        {
-            log.warn("Failed to find id col for "+node) ;
-            return ;
-        }
-        SqlExpr c = new S_Equal(thisCol, colId) ;
-        c.addNote("Const condition: "+FmtUtils.stringForNode(node, prefixMapping)) ;
-        conditions.add(c) ;
-        return ; 
-    }
-
-    @Override
-    protected SqlTable accessTriplesTable(String alias)
+    final protected SqlTable accessTriplesTable(String alias)
     {
         return new TableTriples(alias) ;
     }
@@ -229,7 +193,7 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
         }
         if ( node.isVariable() )
         {
-            log.warn("Node_varable but not a Var; bodged") ;
+            log.warn("Node_Varable but not a Var; bodged") ;
             vars.add(Var.alloc(node)) ;
             return ;
         }

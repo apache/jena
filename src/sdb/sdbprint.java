@@ -115,6 +115,9 @@ public class sdbprint extends CmdArgsDB
     
     private void compilePrint(Store store, Query query)
     {
+        if ( !printQuery && ! printPrefix && ! printOp && ! printSqlNode && ! printSQL )
+            printSqlNode = true ;
+        
         if ( isVerbose() )
         {
             //printQuery = true ;

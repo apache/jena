@@ -106,7 +106,7 @@ public class LoaderOneTriple
     public int getChunkSize() { return 1 ; }
 
     public void setUseThreading(boolean useThreading)
-    { throw new UnsupportedOperationException("LoaderOneTriple.setUseThreading") ; }    {}
+    { throw new UnsupportedOperationException("LoaderOneTriple.setUseThreading") ; }
 
     public boolean getUseThreading()
     { return false ; }

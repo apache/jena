@@ -89,8 +89,6 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
         table.setIdColumnForVar(var, thisCol) ;
     }
 
-
-
     protected abstract void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions) ;
 
     protected abstract SqlTable accessTriplesTable(String alias) ;

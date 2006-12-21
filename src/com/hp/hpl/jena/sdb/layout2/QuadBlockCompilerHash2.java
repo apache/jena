@@ -6,21 +6,44 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import java.util.Collection;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.query.util.FmtUtils;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 
-public class QueryCompiler2 extends QueryCompilerMain 
+public class QuadBlockCompilerHash2 extends QuadBlockCompiler2
 {
-    public QueryCompiler2(SDBRequest request)
-    { 
-        super(request) ; 
+    private static Log log = LogFactory.getLog(QuadBlockCompilerHash2.class) ;
+    
+    public QuadBlockCompilerHash2(SDBRequest request)
+    { super(request) ; }
+
+    @Override
+    protected void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions)
+    {
+        long hash = NodeLayout2.hash(node) ;
+        SqlExpr c = new S_Equal(thisCol, new SqlConstant(hash)) ;
+        c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+        conditions.add(c) ;
+        return ;
+    }
+
+    @Override
+    protected SqlNode insertConstantAccesses(SDBRequest request, Collection<Node> constants)
+    {
+        return null ;
     }
     
-    @Override
-    protected QuadBlockCompiler createQuadBlockCompiler()
-    { return new QuadBlockCompilerHash2(request) ; }
+ 
 }
 
 /*
