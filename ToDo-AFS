@@ -1,10 +1,16 @@
 SDB ToDo list (and general notes)
 =================================
++ Derby:
+    Does not accept $ - need to use _ for separator.
+      Make it settable per store.
+    Loader is OneTriple loader for present.
+  
 
 + Scoping on SqlNodes
   Value tests: casting vs tables
 
 + Hash constants
+   need separate formatters and loaders.
 
 + cmd: 
   @ --load for sdb.sdbquery --format
