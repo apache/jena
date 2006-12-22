@@ -25,6 +25,8 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.rdf.model.AnonId;
+
+import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
@@ -57,16 +59,16 @@ public class SQLBridge2 extends SQLBridgeBase
             
             // Need to allocate aliases because other wise we need to access
             // "table.column" as a label and "." is illegal in a label
-            Var vLex = Var.alloc(sqlVarName+"$lex") ;
+            Var vLex = Var.alloc(SDBConstants.gen(sqlVarName,"lex")) ;
             SqlColumn cLex = new SqlColumn(table, "lex") ;
     
-            Var vDatatype = Var.alloc(sqlVarName+"$datatype") ;
+            Var vDatatype = Var.alloc(SDBConstants.gen(sqlVarName,"datatype")) ;
             SqlColumn cDatatype = new SqlColumn(table, "datatype") ;
     
-            Var vLang = Var.alloc(sqlVarName+"$lang") ;
+            Var vLang = Var.alloc(SDBConstants.gen(sqlVarName,"lang")) ;
             SqlColumn cLang = new SqlColumn(table, "lang") ;
     
-            Var vType = Var.alloc(sqlVarName+"$type") ;
+            Var vType = Var.alloc(SDBConstants.gen(sqlVarName,"type")) ;
             SqlColumn cType = new SqlColumn(table, "type") ;
     
             // Don't really need to do this renaming if we record Rn to variable.
@@ -99,7 +101,7 @@ public class SQLBridge2 extends SQLBridgeBase
 
                 String codename = super.getSqlName(v) ;
                 try {
-                    String lex = rs.getString(codename+"$lex") ;   // chars
+                    String lex = rs.getString(SDBConstants.gen(codename,"lex")) ;   // chars
                     // Same as rs.wasNull() for things that can return Java nulls.
                     
                     // byte bytes[] = rs.getBytes(codename+"$lex") ;      // bytes
@@ -109,9 +111,9 @@ public class SQLBridge2 extends SQLBridgeBase
                     // } catch (Exception ex) {}
                     if ( lex == null )
                         continue ;
-                    int type = rs.getInt(codename+"$type") ;
-                    String datatype =  rs.getString(codename+"$datatype") ;
-                    String lang =  rs.getString(codename+"$lang") ;
+                    int type = rs.getInt(SDBConstants.gen(codename,"type")) ;
+                    String datatype =  rs.getString(SDBConstants.gen(codename,"datatype")) ;
+                    String lang =  rs.getString(SDBConstants.gen(codename,"lang")) ;
                     ValueType vType = ValueType.lookup(type) ;
                     Node r = makeNode(lex, datatype, lang, vType) ;
                     b.add(v, r) ;

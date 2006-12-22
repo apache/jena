@@ -187,13 +187,13 @@ public class LoaderOneTriple
         long hash = NodeLayout2.hash(lex,lang,datatype,typeId);
         
         String sqlStmt = strjoinNL(
-                "INSERT INTO "+TableNodes.tableName+"(hash,lex,lang,datatype,type,vInt,vDouble,vDateTime) VALUES",
+                "INSERT INTO "+TableNodes.tableName+"(hash,lex,lang,datatype,type) VALUES",
                 "  ("+hash+", ",
                 "   "+SQLUtils.quote(lex)+", ",
                 "   "+SQLUtils.quote(lang)+", ",
                 "   "+SQLUtils.quote(datatype)+", ",
-                "   "+typeId+", ",
-                "   "+valInt+", "+valDouble+", "+valDateTime+")") ;
+                "   "+typeId, 
+                ")" ) ;
         conn.execUpdate(sqlStmt) ;
     }
 }

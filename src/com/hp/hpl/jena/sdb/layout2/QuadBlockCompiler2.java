@@ -35,7 +35,7 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
     
     private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
     
-    private static final String nodesResultAliasBase    = "R"+SDBConstants.SQLmark ;
+    private static final String nodesResultAliasBase = SDBConstants.gen("R") ;
     private Generator genNodeResultAlias = new Gensym(nodesResultAliasBase) ;
 
     List<Node> constants = new ArrayList<Node>() ;

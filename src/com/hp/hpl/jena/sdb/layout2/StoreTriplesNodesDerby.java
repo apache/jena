@@ -6,21 +6,23 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.*;
 
-
-public class QueryCompiler2 extends QueryCompilerMain 
+public class StoreTriplesNodesDerby extends StoreBase
 {
-    public QueryCompiler2(SDBRequest request)
-    { 
-        super(request) ; 
+
+    public StoreTriplesNodesDerby(SDBConnection connection)
+    {
+        super(connection,
+              new FmtLayout2Derby(connection) ,
+              new LoaderOneTriple(connection),
+              new QueryCompilerFactory2(), 
+              new SQLBridgeFactory2(),
+              new GenerateSQL()) ;
+        //throw new SDBNotImplemented("StoreTriplesNodesDerby") ;
     }
-    
-    @Override
-    protected QuadBlockCompiler createQuadBlockCompiler()
-    { return new QuadBlockCompilerIndex2(request) ; }
 }
 
 /*

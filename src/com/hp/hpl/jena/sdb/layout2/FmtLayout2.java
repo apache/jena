@@ -53,6 +53,7 @@ public abstract class FmtLayout2
     }
     
     abstract protected void dropTable(String tableName) ;
+
 //    /** Drop whether it exists or not -- better to override*/
 //    protected void dropTable(String tableName)
 //    {

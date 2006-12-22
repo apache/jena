@@ -33,7 +33,7 @@ public class QuadBlockCompilerIndex2 extends QuadBlockCompiler2
     private static Log log = LogFactory.getLog(QuadBlockCompilerIndex2.class) ;
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
     
-    private static final String nodesConstantAliasBase  = "N"+SDBConstants.SQLmark ;
+    private static final String nodesConstantAliasBase  = SDBConstants.gen("N") ;
     private Generator genNodeConstantAlias = new Gensym(nodesConstantAliasBase) ;
 
     public QuadBlockCompilerIndex2(SDBRequest request)

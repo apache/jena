@@ -106,11 +106,7 @@ public class FmtLayout2HSQL extends FmtLayout2
     @Override
     protected void dropTable(String tableName)
     {
-        try { 
-            if ( SQLUtils.hasTable(connection().getSqlConnection(), tableName) )
-                connection().exec("DROP TABLE "+tableName) ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
+        SQLUtils.dropTable(connection(), tableName) ;
     }
 
 }

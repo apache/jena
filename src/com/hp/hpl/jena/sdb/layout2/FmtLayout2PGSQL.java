@@ -39,7 +39,7 @@ public class FmtLayout2PGSQL extends FmtLayout2
                     )) ;
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
             connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
-            //connection().execAny("CREATE INDEX Pred "+TableNameTriples+.tableName+" (p);") ;
+            connection().exec("CREATE INDEX Pred "+TableTriples.tableName+" (p);") ;
             
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
@@ -88,11 +88,7 @@ public class FmtLayout2PGSQL extends FmtLayout2
     @Override
     protected void dropTable(String tableName)
     {
-        try {
-            if (SQLUtils.hasTable(connection().getSqlConnection(), TableTriples.tableName))
-                connection().exec("DROP TABLE "+tableName) ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
+        SQLUtils.dropTable(connection(), tableName) ;
     }
 }
 
