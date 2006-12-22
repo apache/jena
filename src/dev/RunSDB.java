@@ -37,7 +37,7 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        //run() ;
+        run() ;
         //SDBConnection.logSQLStatements = true ;
         //runQuery("Q.rq", "D.ttl") ;
         
@@ -144,6 +144,15 @@ public class RunSDB
     }
    
     public static void run()
+    {
+//        String[] a = {"--sdb=Store/sdb-derby.ttl", "D.ttl"} ;
+//        sdb.sdbload.main(a) ;
+        String[] a = {"--sdb=Store/sdb-derby.ttl", "SELECT * { ?s ?p ?o}"} ;
+        sdb.sdbquery.main(a) ;
+        System.exit(0) ;
+    }
+
+    public static void runTest()
     {
         SDB.init() ;
         SDBTestSuite1.includeMySQL = true ;
