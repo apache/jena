@@ -27,6 +27,7 @@ public enum DatabaseType implements Named {
     Oracle10   { public String getName() { return "Oracle10" ; } } ,
     SQLServer  { public String getName() { return "MSSQLServer" ; } } ,
     HSQLDB     { public String getName() { return "HSQLDB" ; } } ,
+    Derby     { public String getName() { return "Derby" ; } } ,
     ;
     
     private DatabaseType() {}
@@ -44,6 +45,9 @@ public enum DatabaseType implements Named {
         
         if ( databaseTypeName.equalsIgnoreCase("hsqldb") )        return HSQLDB ;
         if ( databaseTypeName.equalsIgnoreCase("hsql") )          return HSQLDB ;
+        
+        if ( databaseTypeName.equalsIgnoreCase("Derby") )          return Derby ;
+        if ( databaseTypeName.equalsIgnoreCase("JavaDB") )         return Derby ;
         
         LogFactory.getLog(DatabaseType.class).warn("Can't turn '"+databaseTypeName+"' into a database type") ;
         throw new SDBException("Can't turn '"+databaseTypeName+"' into a database type") ; 

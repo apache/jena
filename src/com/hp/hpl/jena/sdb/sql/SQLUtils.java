@@ -179,6 +179,15 @@ public class SQLUtils
 
     	return size;
     }
+    
+    public static void dropTable(SDBConnection connection, String tableName)
+    {
+        try {
+            if (SQLUtils.hasTable(connection.getSqlConnection(), tableName))
+                connection.exec("DROP TABLE "+tableName) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
+    }
 }
 
 /*

@@ -61,7 +61,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
                 else
                 {
                     // Var name formatting. 
-                    String x[] = a.split("\\"+SDBConstants.SQLmark) ;
+                    String x[] = a.split("\\"+SDBConstants.getSQLmark()) ;
                     if ( currentPrefix != null && ! x[0].equals(currentPrefix) )
                         out.println() ;
                     currentPrefix = x[0] ;

@@ -32,7 +32,7 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerTriple.class) ;
     
-    private static final String triplesTableAliasBase   = "T"+SDBConstants.SQLmark ;
+    private static final String triplesTableAliasBase   = SDBConstants.gen("T") ;
     Generator genTableAlias = new Gensym(triplesTableAliasBase) ;
 
     public QuadBlockCompilerTriple(SDBRequest request)

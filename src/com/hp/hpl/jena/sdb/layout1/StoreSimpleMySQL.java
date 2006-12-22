@@ -30,7 +30,8 @@ public class StoreSimpleMySQL extends StoreBase
         this(connection, engineType, new CodecSimple(), new TripleTableDescSPO()) ;
     }
 
-    private StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType, CodecSimple codec, TripleTableDesc tripleTableDesc)
+    private StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType, 
+                             EncoderDecoder codec, TripleTableDesc tripleTableDesc)
     {
         super(connection,
               new FormatterSimpleMySQL(connection, engineType),

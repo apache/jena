@@ -70,7 +70,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
                 log.warn("Null SqlColumn for "+str(c.car())) ;    
 
             Var aliasVar = c.car() ;
-            String splitMarker = SDBConstants.SQLmark ;
+            String splitMarker = SDBConstants.getSQLmark() ;
             String p = null ;
             
             if ( aliasVar == null )
@@ -150,7 +150,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             if ( j.getJoinType() != JoinType.INNER )
                 log.warn("Unexpected: restrict on join type "+ j.getJoinType() ) ;
             
-            SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), j.getAliasName()+SDBConstants.SQLmark) ;
+            //SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), SDBConstants.gen(j.getAliasName())) ;
+            SqlJoin j2 = SqlJoin.create(j.getJoinType(), j.getLeft(), j.getRight(), j.getAliasName()) ;
             j2.getConditions().addAll(j.getConditions()) ;
             j2.getConditions().addAll(sqlNode.getConditions()) ;
             j2.visit(this) ;

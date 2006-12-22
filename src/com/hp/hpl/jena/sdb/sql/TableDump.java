@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class TableUtils
+public class TableDump
 {
 
     /** Extract the schema

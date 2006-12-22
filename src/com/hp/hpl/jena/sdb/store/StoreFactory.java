@@ -21,8 +21,10 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
 import com.hp.hpl.jena.sdb.layout1.StoreRDB;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesDerby;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesPGSQL;
@@ -105,6 +107,8 @@ public class StoreFactory
                     throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
                 case HSQLDB:
                     return new StoreSimpleHSQL(sdb) ;
+                case Derby:
+                    return new StoreSimpleDerby(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;
@@ -125,6 +129,8 @@ public class StoreFactory
                     throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
                 case HSQLDB:
                     return new StoreTriplesNodesHSQL(sdb) ;
+                case Derby:
+                    return new StoreTriplesNodesDerby(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;

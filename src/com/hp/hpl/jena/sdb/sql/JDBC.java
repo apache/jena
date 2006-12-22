@@ -62,7 +62,7 @@ public class JDBC
         if ( password == null )
             password = Access.getPassword() ;
         
-        if ( type.equalsIgnoreCase("mysql") || type.equalsIgnoreCase("postgresql") )
+        if ( type.equals("mysql") || type.equals("postgresql") || type.equals("pgsql") )
         {
             String s = String.format("jdbc:%s://%s/%s", type, host, dbName) ;
             if ( argStr != null && ! argStr.equals("") )
@@ -85,6 +85,14 @@ public class JDBC
         		s = s+ "?"+ argStr ;
         	return s ;
         }
+        
+        if ( type.equals("derby") )
+        {
+            //jdbc:derby:sdb2;create=true
+            String s = String.format("jdbc:%s:%s;create=true", type, dbName) ;
+            return s ;
+        }
+        
         
         if ( type.equalsIgnoreCase("none") )
             return jdbcNone ;
