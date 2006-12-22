@@ -6,14 +6,12 @@
 ## Layout 1 (simple form)
 
 _:c rdf:type acmd:SDBConnection ;
-    acmd:sdbType    "MySQL" ;
-    acmd:sdbHost    "localhost" ;
-    acmd:sdbName    "SDB1" ;
-    acmd:driver     "com.mysql.jdbc.Driver" ;
+    acmd:sdbType        "derby" ;
+    acmd:sdbName        "DB.SDB1" ;
+    acmd:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
     .
 
 [] rdf:type acmd:Store ;
-    acmd:layout     "layout1" ;
-    acmd:connection _:c ;
-    acmd:engine     "InnoDB" ;
+    acmd:layout         "layout1" ;
+    acmd:connection     _:c ;
     .

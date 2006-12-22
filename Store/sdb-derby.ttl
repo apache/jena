@@ -1,8 +1,7 @@
 @prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
 @prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
-@prefix sdb:      <http://jena.hpl.hp.com/2006/sdb#> .
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 _:c rdf:type acmd:SDBConnection ;
     acmd:sdbType        "derby" ;
