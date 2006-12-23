@@ -17,4 +17,4 @@
 
 :p rdfs:subPropertyOf :q .
 
-:z1 :q :w1 .
+:z1 :q "lit1"@en .

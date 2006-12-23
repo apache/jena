@@ -1,10 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 + Derby:
-    Does not accept $ - need to use _ for separator.
-      Make it settable per store.
     Loader is OneTriple loader for present.
-  
+    Easy win - hash version?  
 
 + Scoping on SqlNodes
   Value tests: casting vs tables
