@@ -9,19 +9,7 @@ package com.hp.hpl.jena.sdb.core;
 
 public class SDBConstants
 {
-    private static final String SQLmark = "_" ;
-    // Need per store gen(first, last) =>
-    
-    /** Separator used in SQL name generation.
-     *  Not used as a leading character. 
-     */ 
-    public static String getSQLmark() { return SQLmark ; }
-    
-    public static String gen(String first, String last)
-    { return first+SQLmark+last ; }
-    
-    public static String gen(String first)
-    { return first+SQLmark ; }
+
 }
 
 /*

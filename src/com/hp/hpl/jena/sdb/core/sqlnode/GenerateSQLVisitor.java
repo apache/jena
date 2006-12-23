@@ -12,12 +12,13 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;
-import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 // This is not a general purpose SQL writer - it needs only work with the SQL node trees
@@ -70,7 +71,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
                 log.warn("Null SqlColumn for "+str(c.car())) ;    
 
             Var aliasVar = c.car() ;
-            String splitMarker = SDBConstants.getSQLmark() ;
+            String splitMarker = SQLUtils.getSQLmark() ;
             String p = null ;
             
             if ( aliasVar == null )

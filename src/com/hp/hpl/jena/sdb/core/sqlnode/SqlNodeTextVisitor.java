@@ -12,10 +12,11 @@ import java.util.Collection;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+
 import com.hp.hpl.jena.sdb.core.Annotations;
-import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 
@@ -61,7 +62,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
                 else
                 {
                     // Var name formatting. 
-                    String x[] = a.split("\\"+SDBConstants.getSQLmark()) ;
+                    String x[] = a.split("\\"+SQLUtils.getSQLmark()) ;
                     if ( currentPrefix != null && ! x[0].equals(currentPrefix) )
                         out.println() ;
                     currentPrefix = x[0] ;

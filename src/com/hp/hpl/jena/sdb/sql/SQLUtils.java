@@ -8,20 +8,13 @@ package com.hp.hpl.jena.sdb.sql;
 
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.query.core.Var;
 
 public class SQLUtils
 {
@@ -30,48 +23,88 @@ public class SQLUtils
         return strjoinNL(str) ;
     }
     
-    static public String quote(String s)
+    // TODO Check SQL-92/2003 
+    // for what the quoting characters and escape mechanisms 
+    // are for:
+    //   Strings
+    //   Identifiers with strange chars
+    // Per-store-iation?
+    
+    // Standard:
+    //   String quote is single quote
+    //   Identifier quote is " 
+    //     but MySQL uses `
+    // MySQL has "ANSI quotes" mode => "
+    //   Variables: _ (not $ strictly)
+    
+    static private String strQuoteChar = "'" ;
+    
+    static public String quoteStr(String s)
     {
         s = s.replace("\\", "\\\\") ;
         s = s.replace("'", "\\'") ;
-        return "'"+s+"'" ;
+        return strQuoteChar+s+strQuoteChar ;
     }
 
-    static public String unquote(String s)
+    static public String unquoteStr(String s)
     {
-        if ( s.startsWith("'") )
+        if ( s.startsWith(strQuoteChar) )
             s = s.substring(1,s.length()-1 ) ;
         s = s.replace("\\\\", "\\") ;
         s = s.replace("\\'", "'") ;
         return s ;
     }
     
-    // TODO Manager better -- use universally.
-    // Consider quoted ID and/or encodings.
-    // Use of _ for upper/lowercase markers
+    static private String identifierQuoteChar = "\"" ;
+    static private String identifierQuoteChar2 = "\"\"" ;
     
-    
-    /** Map a SPARQL variable to an SQL identifier.
-     * @param var 
-     * @return String   The SQL identifier
-     */
-    static public String varToSqlId(Var var)
-    { 
-        if ( sqlSafeChar(var.getName()) )
-            return var.getName() ; 
-        return quote(var.getName()) ;
-    }
-
-    /** Map an SQL identifier to a SPARQL variable
-     * @param sqlName   The SQL identifier 
-     * @return Var 
-     */
-    static public Var sqlIdToVar(String sqlName)
+    static public String quoteIdentifier(String name)
     {
-        if ( sqlName.startsWith("'") )
-            return null ;
-        return Var.alloc(sqlName) ;
+        if ( sqlSafeChar(name) )
+            return name ;
+        // Check SQL-92
+        name = name.replace(identifierQuoteChar, identifierQuoteChar2) ;
+        return identifierQuoteChar+name+identifierQuoteChar ;
     }
+    
+    
+    
+    private static final String SQLmark = "_" ;
+    
+    // TODO Need per store gen(first, last) =>
+    
+    /** Separator used in SQL name generation.
+     *  Not used as a leading character. 
+     */ 
+    public static String getSQLmark() { return SQLmark ; }
+    
+    public static String gen(String first, String last)
+    { return first+SQLmark+last ; }
+    
+    public static String gen(String first)
+    { return first+SQLmark ; }
+    
+    // Not needed - we don't use the SPARQL name to generate the SQL name
+    // anymore but instead allocate a plain name and remember the mapping (Dec 2006)
+//    /** Map a SPARQL variable to an SQL identifier.
+//     * @param var 
+//     * @return String   The SQL identifier
+//     */
+//    static public String varToSqlId(Var var)
+//    { 
+//        return quoteIdentifier(var.getName()) ;
+//    }
+//
+//    /** Map an SQL identifier to a SPARQL variable
+//     * @param sqlName   The SQL identifier 
+//     * @return Var 
+//     */
+//    static public Var sqlIdToVar(String sqlName)
+//    {
+//        if ( sqlName.startsWith("'") )
+//            return null ;
+//        return Var.alloc(sqlName) ;
+//    }
     
     private static boolean sqlSafeChar(String str)
     {
@@ -114,79 +147,6 @@ public class SQLUtils
             LogFactory.getLog(SQLUtils.class).warn("Failed to convert "+lex, e) ;
             return "0000-00-00 00:00:00" ;
         }
-    }
-    
-    /** Does this table exist? 
-     * 
-     * @throws SQLException */
-    public static boolean hasTable(Connection connection, String table, String... types) throws SQLException
-    {
-    	if (types.length == 0) types = null;
-    	// MySQL bug -- doesn't see temporary tables!
-    	// Postgres likes lowercase -- I'll try all options
-    	ResultSet tableData = connection.getMetaData().getTables(null, null, table, types);
-    	boolean hasTable = tableData.next();
-    	tableData.close();
-    	if (!hasTable) { // Try lowercase
-    		tableData = connection.getMetaData().getTables(null, null, table.toLowerCase(), types);
-    		hasTable = tableData.next();
-    		tableData.close();
-    	}
-    	if (!hasTable) { // Try uppercase
-    		tableData = connection.getMetaData().getTables(null, null, table.toUpperCase(), types);
-    		hasTable = tableData.next();
-    		tableData.close();
-    	}
-    	
-    	return hasTable;
-    }
-    
-    /** Get the names of the application tables */
-    public static List<String> getTableNames(Connection connection)
-    {
-        return getTableNames(connection, "TABLE") ;
-    }
-    
-    /** Get the names of the tables of a particular type*/
-    public static List<String> getTableNames(Connection connection, String tableTypeName)
-    {
-        try {
-            List<String> tableNames = new ArrayList<String>() ;
-            
-            ResultSet rs = connection.getMetaData().getTables(null, null, null, new String[]{tableTypeName});
-
-            while(rs.next())
-            {
-                String tableName = rs.getString("TABLE_NAME");
-    //            String tableType = rs.getString("TABLE_TYPE");
-    //            if ( tableType.equalsIgnoreCase("TABLE") )
-                    tableNames.add(tableName) ;
-            }
-            return tableNames ;
-        } catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; } 
-    }
-    
-    /** Get the size of a table (usually called 'Triples') **/
-    public static long getTableSize(Connection connection, String table)
-    {
-    	long size = -1;
-    	try {
-			ResultSet res = connection.createStatement().executeQuery("SELECT COUNT(*) AS size FROM " + table);
-			if (res.next())
-				size = res.getLong("size");
-			res.close();
-		} catch (SQLException e) { throw new SDBExceptionSQL(e) ; }
-
-    	return size;
-    }
-    
-    public static void dropTable(SDBConnection connection, String tableName)
-    {
-        try {
-            if (SQLUtils.hasTable(connection.getSqlConnection(), tableName))
-                connection.exec("DROP TABLE "+tableName) ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
     }
 }
 

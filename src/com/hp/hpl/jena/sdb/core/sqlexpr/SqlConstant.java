@@ -13,7 +13,7 @@ public class SqlConstant extends SqlExprBase
     private String str ;
     
     // Form already encoded for this schema
-    public SqlConstant(String str) { this.str = SQLUtils.quote(str) ; }
+    public SqlConstant(String str) { this.str = SQLUtils.quoteStr(str) ; }
     public SqlConstant(long number) { this.str = Long.toString(number) ; }
     
     public String  asSqlString()

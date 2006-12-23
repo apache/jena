@@ -4,28 +4,11 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2;
+package com.hp.hpl.jena.sdb.sql;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashDerby;
-import com.hp.hpl.jena.sdb.layout2.hash.LoaderOneTripleHash;
-import com.hp.hpl.jena.sdb.layout2.hash.QueryCompilerFactory2Hash;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.*;
-
-public class StoreTriplesNodesDerby extends StoreBase
+public class SQL
 {
 
-    public StoreTriplesNodesDerby(SDBConnection connection)
-    {
-        super(connection,
-              new FmtLayout2HashDerby(connection) ,
-              new LoaderOneTripleHash(connection),
-              new QueryCompilerFactory2Hash(), 
-              new SQLBridgeFactory2(),
-              new GenerateSQL()) ;
-        //throw new SDBNotImplemented("StoreTriplesNodesDerby") ;
-    }
 }
 
 /*

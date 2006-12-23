@@ -111,7 +111,7 @@ public class FormatterSimpleDerby
     
     protected void dropTable(String tableName)
     {
-        SQLUtils.dropTable(connection(), tableName) ;
+        TableUtils.dropTable(connection(), tableName) ;
     }
 }
 

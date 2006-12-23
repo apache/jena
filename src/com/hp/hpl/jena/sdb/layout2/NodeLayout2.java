@@ -83,16 +83,12 @@ public class NodeLayout2
         else if ( n.isBlank() )    lexForm = n.getBlankNodeLabel() ;
         else throw new SDBException("Attempt to hash a variable") ;
                          
-        String datatypeStr = null ;
+        String datatypeStr = "" ;
         if ( n.isLiteral() )
             datatypeStr = n.getLiteralDatatypeURI() ;
-        if ( datatypeStr == null )
-            datatypeStr = "" ;
-        String langStr = null ;
+        String langStr = "" ;
         if ( n.isLiteral() )
             langStr = n.getLiteralLanguage() ;
-        if ( langStr == null )
-            langStr = "" ;
         ValueType vType = ValueType.lookup(n) ;
 
         return hash(lexForm,langStr,datatypeStr,vType.getTypeId());

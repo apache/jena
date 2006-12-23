@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 /** Interface to setting up the bulk loader environment.
  * 
@@ -30,7 +30,7 @@ public class LoaderPGSQL extends LoaderLJ
         Connection conn = connection().getSqlConnection();
         Statement s = conn.createStatement();
 
-        if (!SQLUtils.hasTable(conn, "NNode"))
+        if (!TableUtils.hasTable(conn, "NNode"))
         	s.execute(sqlStr(
         			"CREATE TEMPORARY TABLE NNode",
                     "(",
@@ -45,7 +45,7 @@ public class LoaderPGSQL extends LoaderLJ
                     ") ON COMMIT DELETE ROWS"
         	));
         
-        if (!SQLUtils.hasTable(conn, "NTrip"))
+        if (!TableUtils.hasTable(conn, "NTrip"))
         	s.execute(sqlStr(
         			"CREATE TEMPORARY TABLE NTrip",
         			"(",

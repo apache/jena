@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 
 public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
@@ -35,7 +36,7 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
     
     private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
     
-    private static final String nodesResultAliasBase = SDBConstants.gen("R") ;
+    private static final String nodesResultAliasBase = SQLUtils.gen("R") ;
     private Generator genNodeResultAlias = new Gensym(nodesResultAliasBase) ;
 
     List<Node> constants = new ArrayList<Node>() ;
@@ -72,6 +73,9 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 
     }
     
+    protected abstract
+    SqlColumn getNodeMatchCol(SqlTable nodeTable) ;
+    
     protected abstract 
     SqlNode insertConstantAccesses(SDBRequest request, Collection<Node> constants) ;
 
@@ -99,7 +103,7 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
             // Not in scope -- add a table to get it (share some code with addRestrictions?) 
             // Value table.
             SqlTable nTable = new TableNodes(genNodeResultAlias.next()) ;
-            c2 = new SqlColumn(nTable, "id") ;                  // nTable.getColFor("id") ;
+            c2 = getNodeMatchCol(nTable) ; // "id" or "hash"
 
             nTable.setValueColumnForVar(v, c2) ;
             // Condition for value: triple table column = node table id 

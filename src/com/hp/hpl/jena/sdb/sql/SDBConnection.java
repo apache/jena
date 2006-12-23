@@ -183,7 +183,7 @@ public class SDBConnection
     /** Get the names of the application tables */
     public List<String> getTableNames()
     {
-        return SQLUtils.getTableNames(getSqlConnection()) ;
+        return TableUtils.getTableNames(getSqlConnection()) ;
     }
     
     

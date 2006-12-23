@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 
 public class FmtLayout2Derby extends FmtLayout2
@@ -88,7 +88,7 @@ public class FmtLayout2Derby extends FmtLayout2
     @Override
     protected void dropTable(String tableName)
     {
-        SQLUtils.dropTable(connection(), tableName) ;
+        TableUtils.dropTable(connection(), tableName) ;
     }
 }
 

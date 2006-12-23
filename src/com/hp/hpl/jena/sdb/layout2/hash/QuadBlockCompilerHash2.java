@@ -4,27 +4,52 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2;
+package com.hp.hpl.jena.sdb.layout2.hash;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashDerby;
-import com.hp.hpl.jena.sdb.layout2.hash.LoaderOneTripleHash;
-import com.hp.hpl.jena.sdb.layout2.hash.QueryCompilerFactory2Hash;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.*;
+import java.util.Collection;
 
-public class StoreTriplesNodesDerby extends StoreBase
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.query.util.FmtUtils;
+
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
+import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
+
+
+public class QuadBlockCompilerHash2 extends QuadBlockCompiler2
 {
+    private static Log log = LogFactory.getLog(QuadBlockCompilerHash2.class) ;
+    
+    public QuadBlockCompilerHash2(SDBRequest request)
+    { super(request) ; }
 
-    public StoreTriplesNodesDerby(SDBConnection connection)
+    @Override
+    protected void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions)
     {
-        super(connection,
-              new FmtLayout2HashDerby(connection) ,
-              new LoaderOneTripleHash(connection),
-              new QueryCompilerFactory2Hash(), 
-              new SQLBridgeFactory2(),
-              new GenerateSQL()) ;
-        //throw new SDBNotImplemented("StoreTriplesNodesDerby") ;
+        long hash = NodeLayout2.hash(node) ;
+        SqlExpr c = new S_Equal(thisCol, new SqlConstant(hash)) ;
+        c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+        conditions.add(c) ;
+        return ;
+    }
+
+    @Override
+    protected SqlNode insertConstantAccesses(SDBRequest request, Collection<Node> constants)
+    {
+        return null ;
+    }
+    
+    @Override
+    protected SqlColumn getNodeMatchCol(SqlTable nodeTable)
+    {
+        return new SqlColumn(nodeTable, "hash") ;
     }
 }
 

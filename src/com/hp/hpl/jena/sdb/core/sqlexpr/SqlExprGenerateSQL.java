@@ -54,7 +54,7 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
         if ( patternLike != null )
         {
             out.print(" LIKE ") ;
-            out.print(SQLUtils.quote(patternLike)) ;
+            out.print(SQLUtils.quoteStr(patternLike)) ;
             return ;
         }
         
@@ -62,7 +62,7 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
         out.print(" ") ; out.print(RegexOperator) ; out.print(" ") ;
         if ( regex.flags != null && ! regex.flags.equals("i") )
             out.print("BINARY ") ;
-        out.print(SQLUtils.quote(regex.getPattern())) ;
+        out.print(SQLUtils.quoteStr(regex.getPattern())) ;
     }
     
 }

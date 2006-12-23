@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 
 
@@ -65,7 +65,7 @@ public class StoreBase
     /** Default implementation: get size of Triples table **/
     public long getSize()
     {
-    	return SQLUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
+    	return TableUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
     }
 
 }

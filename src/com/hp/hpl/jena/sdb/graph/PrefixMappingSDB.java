@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
-import static com.hp.hpl.jena.sdb.sql.SQLUtils.quote;
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.quoteStr;
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 import static java.lang.String.format;
 
@@ -125,7 +125,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
         try {
             String sqlStmt = sqlStr(
                 "SELECT uri FROM "+prefixTableName,
-                "   WHERE prefix = "+quote(prefix)
+                "   WHERE prefix = "+quoteStr(prefix)
                 ) ;
             ResultSet rs = connection.execQuery(sqlStmt) ;
             String uri = null ;
@@ -153,7 +153,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
 
             String sqlStmt = sqlStr(
                 "INSERT INTO "+prefixTableName,
-                "   VALUES ("+quote(prefix)+", "+quote(uri)+")"
+                "   VALUES ("+quoteStr(prefix)+", "+quoteStr(uri)+")"
                 ) ;
             connection.execUpdate(sqlStmt) ;
         } catch (SQLException ex)
@@ -165,7 +165,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
         try {
             String sqlStmt = sqlStr(
                  "DELETE FROM "+prefixTableName+" WHERE",
-                 "   prefix = "+quote(prefix) //+" AND uri = "+quote(uri)
+                 "   prefix = "+quoteStr(prefix) //+" AND uri = "+quote(uri)
                  ) ;
             connection.execUpdate(sqlStmt) ;
         } catch (SQLException ex)

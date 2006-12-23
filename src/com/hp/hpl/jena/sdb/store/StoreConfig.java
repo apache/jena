@@ -69,7 +69,7 @@ public class StoreConfig extends SDBConnectionHolder
     /** Get the real tables in the database, not what any configuration information may think */
     public List<String> tables()
     {
-        return SQLUtils.getTableNames(connection().getSqlConnection()) ;
+        return TableUtils.getTableNames(connection().getSqlConnection()) ;
     }
     
     public boolean hasFeature(Feature feature)
@@ -212,7 +212,7 @@ class TaggedString extends SDBConnectionHolder
                                                 ")") ;
         try
         { 
-            if ( SQLUtils.hasTable(connection().getSqlConnection(), stringTableName) )
+            if ( TableUtils.hasTable(connection().getSqlConnection(), stringTableName) )
                 connection().execUpdate(sqlStmt1);
             connection().execUpdate(sqlStmt2);
         } catch (SQLException ex)
@@ -249,7 +249,7 @@ class TaggedString extends SDBConnectionHolder
     void remove(String tag)
     {
         try {
-            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quote(tag)) ;
+            connection().exec("DELETE FROM "+stringTableName+" WHERE "+columnName+"="+SQLUtils.quoteStr(tag)) ;
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }
@@ -260,7 +260,7 @@ class TaggedString extends SDBConnectionHolder
         remove(tag) ;
         value = encode(value) ;
         try {
-            connection().exec("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quote(tag)+", "+SQLUtils.quote(value)+")") ;
+            connection().exec("INSERT INTO "+stringTableName+" VALUES ("+SQLUtils.quoteStr(tag)+", "+SQLUtils.quoteStr(value)+")") ;
         }
         catch (SQLException ex)
         { throw new SDBExceptionSQL("set", ex) ; }
@@ -274,7 +274,7 @@ class TaggedString extends SDBConnectionHolder
             final String sqlStmt = SQLUtils.sqlStr(
                "SELECT "+columnData,
                "FROM "+stringTableName,
-               "WHERE "+columnName+" = "+SQLUtils.quote(tag)) ;
+               "WHERE "+columnName+" = "+SQLUtils.quoteStr(tag)) ;
             ResultSet rs = connection().execQuery(sqlStmt) ;
             if ( rs.next() )
             {

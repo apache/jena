@@ -19,13 +19,13 @@ import com.hp.hpl.jena.query.util.FmtUtils;
 
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 
 public class QuadBlockCompilerIndex2 extends QuadBlockCompiler2
@@ -33,7 +33,7 @@ public class QuadBlockCompilerIndex2 extends QuadBlockCompiler2
     private static Log log = LogFactory.getLog(QuadBlockCompilerIndex2.class) ;
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
     
-    private static final String nodesConstantAliasBase  = SDBConstants.gen("N") ;
+    private static final String nodesConstantAliasBase  = SQLUtils.gen("N") ;
     private Generator genNodeConstantAlias = new Gensym(nodesConstantAliasBase) ;
 
     public QuadBlockCompilerIndex2(SDBRequest request)
@@ -76,6 +76,12 @@ public class QuadBlockCompilerIndex2 extends QuadBlockCompiler2
         c.addNote("Const condition: "+FmtUtils.stringForNode(node, prefixMapping)) ;
         conditions.add(c) ;
         return ; 
+    }
+
+    @Override
+    protected SqlColumn getNodeMatchCol(SqlTable nodeTable)
+    {
+        return new SqlColumn(nodeTable, "id") ;
     }
 }
 

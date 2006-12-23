@@ -12,15 +12,17 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.AnonId;
+
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.sdb.layout2.LoaderOneTriple;
+
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.ValueType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StrUtils;
@@ -104,7 +106,7 @@ public class TransTableMgr
     static private void writePairsTable(final Store outputStore, final TransTable transTable, TransGraph<Integer> transEngine)
     {
         try {
-            if ( SQLUtils.hasTable(outputStore.getConnection().getSqlConnection(), transTable.getTableName()) )
+            if ( TableUtils.hasTable(outputStore.getConnection().getSqlConnection(), transTable.getTableName()) )
                 sql(outputStore, String.format("DROP TABLE %s ;\n", transTable.getTableName())) ;
             else
                 System.out.printf("-- Table not present\n" ) ;
@@ -159,7 +161,8 @@ public class TransTableMgr
 
     private static int node2id(SDBConnection sdb, Node n) throws Exception
     {
-        return LoaderOneTriple.getIndex(sdb, n) ;
+        throw new SDBException("node2id currently broken") ;
+        //return LoaderOneTripleIndex.getIndex(sdb, n) ;
     }
     
     private static Node makeNode(String lex, String datatype, String lang, ValueType vType)
