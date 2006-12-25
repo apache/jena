@@ -6,17 +6,26 @@
 
 package dev;
 
-import java.io.IOException;
+import java.util.List;
 
 import junit.framework.TestSuite;
-
 import arq.cmd.CmdUtils;
 import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.junit.SimpleTestRunner;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.core.ElementBasicGraphPattern;
+import com.hp.hpl.jena.query.core.ElementGroup;
+import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.QueryExecutionGraph;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.junit.SimpleTestRunner;
+import com.hp.hpl.jena.query.util.PlainGraphMem;
+
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
@@ -27,8 +36,6 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
 
 
 public class RunSDB
@@ -44,7 +51,7 @@ public class RunSDB
         
         //runQuad() ;
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
         //run() ;
         System.err.println("Nothing ran!") ;
@@ -138,17 +145,37 @@ public class RunSDB
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
         String[] a = {/*"-print=op",*/ "--sdb=sdb.ttl", "--query=Q.rq"} ;
-        //String[] a = {"--sdb=sdb.ttl","--sql" , "--query=PerfTests/UniProt/ex4.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }
    
     public static void run()
     {
-//        String[] a = {"--sdb=Store/sdb-derby.ttl", "D.ttl"} ;
-//        sdb.sdbload.main(a) ;
-        String[] a = {"--sdb=Store/sdb-derby.ttl", "SELECT * { ?s ?p ?o}"} ;
-        sdb.sdbquery.main(a) ;
+        Graph graph = new PlainGraphMem() ;
+        {
+            String queryString = "SELECT * { ?s <http://example/p> ?o ; <http://example/q> ?z ;} " ;
+            Query q = QueryFactory.create(queryString) ;
+            
+            List<?> triples = 
+                ((ElementBasicGraphPattern)
+                    ((ElementGroup)q.getQueryPattern()).getElements().get(0))
+                    .getTriples() ;
+            graph.getBulkUpdateHandler().add(triples) ;
+        }
+        
+        String qPattern = "SELECT * { ?a <http://example/p> ?c } " ;
+        Query query = QueryFactory.create(qPattern) ;
+        // Need QueryExecutionFactory.createGraphQuery()
+        QueryExecutionGraph qExec = 
+            QueryExecutionGraphFactory.create(query, graph) ;
+        
+        QueryIterator qiter = qExec.exec() ;
+        for ( ; qiter.hasNext() ; )
+        {
+            Binding b = qiter.nextBinding() ;
+            System.out.println(b) ; 
+        }
+        qExec.close() ;
         System.exit(0) ;
     }
 
@@ -168,17 +195,6 @@ public class RunSDB
         sdb.sdbscript.main(a) ;
     }
     
-    static String getString(String filename)
-    {
-        try { return FileUtils.readWholeFileAsUTF8("Q.rq") ; }
-        catch (IOException ex)
-        { 
-            System.err.println("Failed to read "+filename) ;
-            System.err.println(ex.getMessage()) ;
-            return null ;
-        }
-    }
-
     public static void runConf()
     {
         JDBC.loadDriverHSQL() ;
