@@ -11,6 +11,8 @@ import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpExt;
 import com.hp.hpl.jena.query.engine2.op.OpVisitorBase;
+import com.hp.hpl.jena.query.engine2.op.OpWalker;
+
 import com.hp.hpl.jena.sdb.core.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
@@ -46,8 +48,7 @@ public class PrintSDB
     
     public static void printSQL(Op op)
     {
-        op.visit(new PrintSQL()) ;
-        
+        OpWalker.walk(op, new PrintSQL()) ;
     }
     
     public static void print(SqlNode sqlNode)

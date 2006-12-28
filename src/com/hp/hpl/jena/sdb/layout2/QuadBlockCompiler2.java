@@ -8,26 +8,31 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import static com.hp.hpl.jena.query.engine2.AlgebraCompilerQuad.defaultGraph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.op.Quad;
+
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.core.compiler.QuadBlockCompilerTriple;
 import com.hp.hpl.jena.sdb.core.compiler.SDBConstraint;
-import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
-
 
 public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 {
@@ -36,8 +41,7 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
     
     private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
     
-    private static final String nodesResultAliasBase = SQLUtils.gen("R") ;
-    private Generator genNodeResultAlias = new Gensym(nodesResultAliasBase) ;
+    private Generator genNodeResultAlias = Gensym.create(Aliases.NodesResultAliasBase) ;
 
     List<Node> constants = new ArrayList<Node>() ;
     List<Var>  vars = new ArrayList<Var>() ;

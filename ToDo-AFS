@@ -1,5 +1,16 @@
 SDB ToDo list (and general notes)
 =================================
+
++ Coalesce needs to redefine scopes on the way through.
+    And allocate a name for the coalesce'd var.
+  Values - Coalesce or do outside?
+    Outside ie DELAY (and use IS NOT NULL)
+  pass-through vars do not not need renaming but use of SELECT may force it.
+
++ ??Delay values until (1) filter or (2) projection
+  Currently done in the QuadBlock.
+  Or will the SQL optimizer work this out?
+
 + Derby:
     Loader is OneTriple loader for present.
     Easy win - hash version?  
@@ -13,34 +24,25 @@ SDB ToDo list (and general notes)
 + cmd: 
   @ --load for sdb.sdbquery --format
      Done - but should be ModData/ModInit/ModSetup
-  @ Have the function of command have a execOn(Store) option so it can be constructed outside.
-    Better - have a collection of cmd utility classes that do the work of the commands 
-    that can be called directly from code.  Control block for verbose/time/general stuff.
-  @ Mapper of property, args ==> slot.
-
 + Add query tests :
   SELECT * {}
   SELECT ?x {}
   SELECT * { P[?x] OPTIONAL { P[!?x] OPTIONAL { OPTIONAL P[?x] } } }
 
 + Abstracting databases:
-  1/ The Jena2 way of config files.
-  2/ graph for an SDBConnection (or get from DB).
+  Graph for an SDBConnection (or get from DB).
     That is the unit of database if there are multiple stores per connection.
     Or maybe a Store features?
       A/ regex syntax
       B/ Table exists code (Classes, Value tables etc).
-      C/ VARCHAR/TEXT/BLOB syntax
+
++ Abstract columns types then simple templating.
+        VARCHAR/TEXT/BLOB syntax
         HSQLDB: VARCHAR unlimited
         MySQL: TEXT
         PosgreSQL:
           http://www.postgresql.org/docs/8.1/interactive/datatype.html
           TEXT, bytea
-    How about an internal representation of table
-    then have a syntax generator per connection/store?
-       Table name + (name, type [null?])
-
-+ Proper order for BGPs.
 
 + more in .shared.
 
@@ -48,6 +50,8 @@ SDB ToDo list (and general notes)
   String value table
     With no URIs, much shorter.
     Full text indexing where available?
+
++ Graph pattern tables
 
 + Use SQL COALESCE for OPTIONALs with shared variables
 

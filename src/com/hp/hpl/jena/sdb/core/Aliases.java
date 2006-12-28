@@ -4,27 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlnode;
+package com.hp.hpl.jena.sdb.core;
 
-public class SqlNodeVisitorBase implements SqlNodeVisitor
+public class Aliases
 {
-    public void visit(SqlProject sqlProject)
-    {}
-
-    public void visit(SqlRestrict sqlRestrict)
-    {}
-
-    public void visit(SqlTable sqlTable)
-    {}
-
-    public void visit(SqlJoinInner sqlJoin)
-    {}
-
-    public void visit(SqlJoinLeftOuter sqlJoin)
-    {}
-
-    public void visit(SqlCoalesce sqlCoalesce)
-    {}
+    public static final String NodesConstantAliasBase   = "N" ;
+    public static final String TriplesTableBase         = "T" ;
+    public static final String CoalesceAliasBase        = "M" ;
+    public static final String NodesResultAliasBase     = "R" ;
+    public static final String VarBase                  = "V" ;
 }
 
 /*

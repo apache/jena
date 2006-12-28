@@ -15,7 +15,11 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.Aliases;
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlCoalesce;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.util.SetUtils;
 
@@ -27,11 +31,12 @@ public class TransformSDB extends TransformCopy
     private QuadBlockCompiler quadBlockCompiler ;
     //private boolean doLeftJoin = true ;
     
+    private Generator genCoalesceAlias = Gensym.create(Aliases.CoalesceAliasBase) ;
+    
     public TransformSDB(SDBRequest request, QuadBlockCompiler quadBlockCompiler) 
     {
         this.request = request ;
         this.quadBlockCompiler = quadBlockCompiler ;
-        
     }
     
     // Simple example: quads only
@@ -82,11 +87,19 @@ public class TransformSDB extends TransformCopy
         Set<Var> optDefsLeft = VarFinder.optDefined(opJoin.getLeft()) ;
         
         // Anything optional in both sides, we need a "coalesce"
-        if ( SetUtils.intersectionP(optDefsLeft, sqlRight.getIdScope().getVars()) ) 
+        Set<Var> x = SetUtils.intersection(optDefsLeft, sqlRight.getIdScope().getVars()) ;
+        if ( x.size() > 0  ) 
         {
-            Set<Var> x = SetUtils.intersection(optDefsLeft, sqlRight.getIdScope().getVars()) ;
             log.warn("Coalesce required: "+x) ;
-            return super.transform(opJoin, left, right) ;
+            
+//            for ( Var v : x )
+//            {
+//                SqlColumn leftCol = sqlLeft.getIdScope().getColumnForVar(v) ;
+//                SqlColumn rightCol = sqlRight.getIdScope().getColumnForVar(v) ;
+//                log.warn(leftCol+" / "+rightCol) ;
+//            }
+            return new OpSQL(SqlCoalesce.merge(genCoalesceAlias.next(), sqlLeft, sqlRight, x), opJoin, request) ;
+            //return super.transform(opJoin, left, right) ;
         }
         
         return new OpSQL(QC.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;

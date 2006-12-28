@@ -12,6 +12,7 @@ import static com.hp.hpl.jena.sdb.core.JoinType.LEFT;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,20 +35,22 @@ import com.hp.hpl.jena.sdb.store.SQLBridge;
 
 public class QC
 {
-    // TODO Combine with QP
-    
     private static Log log = LogFactory.getLog(QC.class) ;
     
     public static SqlNode innerJoin(SDBRequest request, SqlNode left, SqlNode right)
     {
-        return join(request, left, right, INNER) ; 
+        return join(request, INNER, left, right, null) ; 
     }
 
     public static SqlNode leftJoin(SDBRequest request, SqlNode left, SqlNode right)
     {
-        return join(request, left, right, LEFT) ; 
+        return join(request, LEFT, left, right, null) ; 
     }
 
+    public static SqlNode leftJoinCoalesc(SDBRequest request, SqlNode left, SqlNode right, Set<Var> coalesceVars)
+    {
+        return join(request, LEFT, left, right, coalesceVars) ; 
+    }
     
     private static String sqlNodeName(SqlNode sNode)
     {
@@ -60,7 +63,12 @@ public class QC
         return "<unknown>" ;
     }
     
-    public static SqlNode join(SDBRequest request, SqlNode left, SqlNode right, JoinType joinType)
+    // Join/LeftJoin two subexpressions, calculating the join conditions in the process
+    // If a coalesce (LeftJoin) then don't equate left and right vars of the same name.
+    private static SqlNode join(SDBRequest request, 
+                                JoinType joinType, 
+                                SqlNode left, SqlNode right,
+                                Set<Var> coalesceVars)
     {
         if ( left == null )
             return right ; 
@@ -68,17 +76,23 @@ public class QC
         SqlExprList conditions = new SqlExprList() ;
         
         if ( joinType == JoinType.INNER )
+            // If it's a LeftJoin, leave the left filter on the LHS.
             left = removeRestrict(left, conditions) ;
         
         right = removeRestrict(right, conditions) ;
         
         for ( Var v : left.getIdScope().getVars() )
         {
-            if ( right.getIdScope().hasColumnForVar(v) ) 
+            if ( right.getIdScope().hasColumnForVar(v) )
             {
-                SqlExpr c = new S_Equal(left.getIdScope().getColumnForVar(v), right.getIdScope().getColumnForVar(v)) ;
-                conditions.add(c) ;
-                c.addNote("Join var: "+v) ; 
+                if (coalesceVars == null || ! coalesceVars.contains(v) )
+                {
+                    SqlExpr c = new S_Equal(left.getIdScope().getColumnForVar(v), right.getIdScope().getColumnForVar(v)) ;
+                    conditions.add(c) ;
+                    c.addNote("Join var: "+v) ; 
+                }
+                else
+                    log.warn("Skip coalesce var") ;
             }
         }
         

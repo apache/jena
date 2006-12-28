@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
+
 public class Gensym implements Generator
 {
 
@@ -13,6 +15,9 @@ public class Gensym implements Generator
     private int count = 1 ;
     private String lastAlloc = null ;
 
+    public static Gensym create(String base) 
+    { return new Gensym(SQLUtils.gen(base)) ; }
+    
     public Gensym(String base) { this(base, 1) ; }
     public Gensym(String base, int startCount) { this.base = base ; this.count = startCount ; }
     

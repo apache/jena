@@ -116,7 +116,7 @@ public class sdbprint extends CmdArgsDB
     private void compilePrint(Store store, Query query)
     {
         if ( !printQuery && ! printPrefix && ! printOp && ! printSqlNode && ! printSQL )
-            printSqlNode = true ;
+            printOp = true ;
         
         if ( isVerbose() )
         {
@@ -149,10 +149,16 @@ public class sdbprint extends CmdArgsDB
             // No newline.
         }
 
-        if ( printSqlNode && op instanceof OpSQL )
+        if ( printSqlNode )
         {
-            divider() ;
-            PrintSDB.print(((OpSQL)op).getSqlNode()) ;
+            if ( op instanceof OpSQL )
+            {
+                // Fix - print all SqlNode stuff by walk.
+                divider() ;
+                PrintSDB.print(((OpSQL)op).getSqlNode()) ;
+            }
+            else
+                System.err.println("Top node is not an OpSQL") ;
         }
         
         if ( printSQL )

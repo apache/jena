@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.query.util.FmtUtils;
 
+import com.hp.hpl.jena.sdb.core.Aliases;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -25,17 +26,14 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 
 public class QuadBlockCompilerIndex2 extends QuadBlockCompiler2
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerIndex2.class) ;
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
+    private Generator genNodeConstantAlias = Gensym.create(Aliases.NodesConstantAliasBase) ;
     
-    private static final String nodesConstantAliasBase  = SQLUtils.gen("N") ;
-    private Generator genNodeConstantAlias = new Gensym(nodesConstantAliasBase) ;
-
     public QuadBlockCompilerIndex2(SDBRequest request)
     { super(request) ; }
 

@@ -90,6 +90,39 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         finish() ;
     }
 
+    public void visit(SqlCoalesce sqlNode)
+    {
+        out.print(DelimOpen) ;
+        out.print("Coalesce") ;
+        
+        // ---- Special version of start() 
+        if ( sqlNode.getAliasName() != null )
+        {
+            out.print("/") ;
+            out.print(sqlNode.getAliasName()) ;
+        }
+        
+        for ( Var v : sqlNode.getCoalesceVars()  )
+        {
+            out.print(" ") ;
+            out.print(v.toString()) ;
+            SqlColumn leftCol = sqlNode.getLeft().getIdScope().getColumnForVar(v) ;
+            SqlColumn rightCol = sqlNode.getRight().getIdScope().getColumnForVar(v) ;
+            out.print("["+leftCol+"/"+rightCol+"]") ;
+        }
+        addAnnotations(sqlNode) ;
+        out.println() ;
+        out.incIndent() ;
+        // ---- Special version of start() 
+
+        
+        sqlNode.getLeft().visit(this) ;
+        out.println() ;
+        sqlNode.getRight().visit(this) ;
+        outputConditionList(sqlNode.getConditions()) ;
+        finish() ;
+    }
+    
     public void visit(SqlTable sqlNode)
     {
 //        if ( ! sqlNode.hasOneNote() )

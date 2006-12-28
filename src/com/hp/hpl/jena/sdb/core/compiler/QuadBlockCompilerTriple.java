@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.engine2.op.Quad;
 import com.hp.hpl.jena.query.util.FmtUtils;
 
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.Aliases;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -28,15 +29,13 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
-import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerTriple.class) ;
     
-    private static final String triplesTableAliasBase   = SQLUtils.gen("T") ;
-    Generator genTableAlias = new Gensym(triplesTableAliasBase) ;
-
+    protected Generator genTableAlias = Gensym.create(Aliases.TriplesTableBase) ;
+    
     public QuadBlockCompilerTriple(SDBRequest request)
     { super(request) ; }
 

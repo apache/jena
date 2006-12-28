@@ -6,9 +6,12 @@
 
 package dev;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.TestSuite;
+import org.apache.commons.logging.LogFactory;
 import arq.cmd.CmdUtils;
 import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
@@ -22,9 +25,13 @@ import com.hp.hpl.jena.query.core.ElementBasicGraphPattern;
 import com.hp.hpl.jena.query.core.ElementGroup;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.QueryExecutionGraph;
+import com.hp.hpl.jena.query.engine.QueryExecutionGraphFactory;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.junit.SimpleTestRunner;
+import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.PlainGraphMem;
+import com.hp.hpl.jena.query.util.Symbol;
+import com.hp.hpl.jena.query.util.Utils;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -44,14 +51,14 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        run() ;
+        //run() ;
         //SDBConnection.logSQLStatements = true ;
         //runQuery("Q.rq", "D.ttl") ;
         
         
         //runQuad() ;
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
         //run() ;
         System.err.println("Nothing ran!") ;
@@ -144,12 +151,52 @@ public class RunSDB
     public static void runPrint()
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {/*"-print=op",*/ "--sdb=sdb.ttl", "--query=Q.rq"} ;
+        String[] a = {"-print=op", "--sdb=sdb.ttl", "--query=Q.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }
    
+    @SuppressWarnings("unchecked")
     public static void run()
+    {
+        Foo foo = new Foo(new Context()) ;
+        foo.put(new Symbol("foo"), new ArrayList<Object>()) ;
+        foo.put(new Symbol("foo"), new StringSymbolMap()) ;
+        
+        // Works better to give a real name rather than Map<String, Symbol>
+        
+        StringSymbolMap x = (StringSymbolMap)foo.feature(new Symbol("foo"), StringSymbolMap.class) ;
+        //foo.feature(new Symbol("foo")) ;
+        System.out.println("Done") ;
+        System.exit(0) ;
+    }
+    
+    static class StringSymbolMap extends HashMap<String, Symbol> {}
+    
+    static class Foo extends Context
+    {
+        public Foo(Context context) { super(context) ; }
+        
+        @SuppressWarnings("unchecked")
+        public Object feature(Symbol symbol, Class requiredClass)
+        {
+            Object obj = get(symbol) ;
+            if ( requiredClass != null && ! requiredClass.isAssignableFrom(obj.getClass()) )
+            {
+                LogFactory.getLog(Foo.class).warn("Symbol '"+symbol+"' found of class "+Utils.className(obj)+", not class "+Utils.classShortName(requiredClass)) ;
+                return null ;
+            }
+            return  obj ;
+//            } catch (ClassCastException ex)
+//            {
+//                LogFactory.getLog(Foo.class).warn("Object of wrong type for '"+symbol+
+//                                                  " : "+ex.getMessage()) ;
+//                return null ;
+//            }
+        }
+    }
+    
+    public static void runPatternPattern()
     {
         Graph graph = new PlainGraphMem() ;
         {

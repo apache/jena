@@ -124,6 +124,39 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         out.decIndent() ;
     }
 
+    public void visit(SqlCoalesce sqlNode)
+    {
+        annotate(sqlNode) ;
+        out.print("( SELECT") ;
+        
+        boolean first = true ;
+        // Rough draft code.
+        for ( Var v : sqlNode.getCoalesceVars() )
+        {
+            if ( ! first )
+                out.print(",") ;
+            // id
+            out.print(" COALESCE(") ;
+            out.print(sqlNode.getLeft().getIdScope().getColumnForVar(v).toString()) ;
+            out.print(", ") ;
+            out.print(sqlNode.getRight().getIdScope().getColumnForVar(v).toString()) ;
+            out.print(") AS ??") ;
+            first = false ;
+        }
+        // And other vars we want.
+        out.print(" ") ;
+        out.println("FROM") ;
+        
+        out.incIndent() ;
+        out.print("(") ;
+        
+        visitJoin(sqlNode, sqlNode.getJoinType().sqlOperator()) ;
+        //throw new SDBNotImplemented("Write SqlCoalesce") ;
+        
+        out.print(") AS "+sqlNode.getAliasName()) ;
+        out.decIndent() ;
+    }
+    
     public void visit(SqlRestrict sqlNode)
     {
         annotate(sqlNode) ;

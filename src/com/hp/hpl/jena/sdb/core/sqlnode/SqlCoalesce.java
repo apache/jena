@@ -6,25 +6,41 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-public class SqlNodeVisitorBase implements SqlNodeVisitor
+import java.util.Set;
+
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.query.core.Var;
+
+import com.hp.hpl.jena.sdb.core.JoinType;
+
+public class SqlCoalesce extends SqlJoin
 {
-    public void visit(SqlProject sqlProject)
-    {}
+    Set<Var> coalesceVars ;
+    
+    public static SqlCoalesce merge(String alias, SqlNode left, SqlNode right, Set<Var>coalesceVars) 
+    {
+        if ( ! left.isLeftJoin() )
+            LogFactory.getLog(SqlCoalesce.class).warn("Left side is not a LeftJoin") ;
+        
+        return new SqlCoalesce(alias, left, right, coalesceVars) ;
+    }
+    
+    private SqlCoalesce(String alias, SqlNode left, SqlNode right, Set<Var> coalesceVars)
+    { 
+        super(JoinType.LEFT, right, left, alias) ;
+        this.coalesceVars = coalesceVars ;
+    }
+    
+    public Set<Var> getCoalesceVars() { return coalesceVars ; }
+    
+    @Override
+    public boolean      isCoalesce()  { return true ; }
+    @Override
+    public SqlCoalesce  getCoalesce() { return this ; }
 
-    public void visit(SqlRestrict sqlRestrict)
-    {}
-
-    public void visit(SqlTable sqlTable)
-    {}
-
-    public void visit(SqlJoinInner sqlJoin)
-    {}
-
-    public void visit(SqlJoinLeftOuter sqlJoin)
-    {}
-
-    public void visit(SqlCoalesce sqlCoalesce)
-    {}
+    public void visit(SqlNodeVisitor visitor)
+    { visitor.visit(this) ; }
 }
 
 /*

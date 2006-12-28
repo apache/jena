@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.Aliases;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -29,7 +30,7 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 public abstract class SQLBridgeBase implements SQLBridge
 {
-    private Generator vargen = new Gensym("V") ;
+    private Generator vargen = new Gensym(Aliases.VarBase) ;
     
     // Always need to allocate a label for a column 
     // because can't access by table.column

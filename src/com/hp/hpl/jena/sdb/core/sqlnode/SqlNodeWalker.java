@@ -34,7 +34,7 @@ public class SqlNodeWalker
             sqlNode.visit(visitor) ;
             sqlNode.getSubNode().visit(this) ;
         }
-    
+        
         public void visit(SqlTable sqlNode)
         {
             sqlNode.visit(visitor) ;
@@ -48,6 +48,13 @@ public class SqlNodeWalker
         }
     
         public void visit(SqlJoinLeftOuter sqlNode)
+        {
+            sqlNode.visit(visitor) ;
+            sqlNode.getLeft().visit(this) ;
+            sqlNode.getRight().visit(this) ;
+        }
+
+        public void visit(SqlCoalesce sqlNode)
         {
             sqlNode.visit(visitor) ;
             sqlNode.getLeft().visit(this) ;

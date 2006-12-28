@@ -14,6 +14,7 @@ public interface SqlNodeVisitor
     public void visit(SqlTable          sqlTable) ;
     public void visit(SqlJoinInner      sqlJoin) ;
     public void visit(SqlJoinLeftOuter  sqlJoin) ;
+    public void visit(SqlCoalesce       sqlCoalesce) ;
 }
 
 /*

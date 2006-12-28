@@ -30,6 +30,9 @@ public interface SqlNode extends Printable, Annotations
     
     public boolean        isTable() ;
     public SqlTable       getTable() ;
+
+    public boolean        isCoalesce() ;
+    public SqlCoalesce    getCoalesce() ;
     
     public Scope getIdScope() ;
     public Scope getValueScope() ;
@@ -45,6 +48,7 @@ public interface SqlNode extends Printable, Annotations
 //    public boolean usesColumn(SqlColumn c) ;  // Does this subtree mentioned a column?
     
     public void visit(SqlNodeVisitor visitor) ;
+
 }
 
 /*
