@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ { opt ... } JOIN { opt ... } needs a JoinCondition involving nulls.
+  Or punting.
+
 + Coalesce needs to redefine scopes on the way through.
     And allocate a name for the coalesce'd var.
   Values - Coalesce or do outside?
@@ -53,8 +56,6 @@ SDB ToDo list (and general notes)
 
 + Graph pattern tables
 
-+ Use SQL COALESCE for OPTIONALs with shared variables
-
 + Subquery scoping enhancements
 
 SqlExpr::
@@ -64,7 +65,3 @@ OR canonical tree SPJ
 
 == Next
   ==> Performance testing framework
-
-c.f. SQLCache and returning prepared statements
-  Named parameters in INSERT for robustness.
-  Sequences, not autoIncrement

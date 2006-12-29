@@ -16,10 +16,20 @@ import com.hp.hpl.jena.sdb.core.JoinType;
 
 public class SqlCoalesce extends SqlJoin
 {
+    /* A COALESCE is a special kind of LeftJoin where some
+     * variables from the left andf right sides are not equated across
+     * the join but instead merged by a test for "first non NULL".  
+     * That's COALESCE in many databases.
+     */
+    
     Set<Var> coalesceVars ;
     
     public static SqlCoalesce merge(String alias, SqlNode left, SqlNode right, Set<Var>coalesceVars) 
     {
+        // This is not actually true!
+        // But at the moment, it is a restriction so we test for it for now and 
+        // remove the test when the new cde arrices as the rest of the class and 
+        // it's usage then needs to be checked. 
         if ( ! left.isLeftJoin() )
             LogFactory.getLog(SqlCoalesce.class).warn("Left side is not a LeftJoin") ;
         
@@ -30,6 +40,7 @@ public class SqlCoalesce extends SqlJoin
     { 
         super(JoinType.LEFT, right, left, alias) ;
         this.coalesceVars = coalesceVars ;
+        //addNote() ;
     }
     
     public Set<Var> getCoalesceVars() { return coalesceVars ; }
