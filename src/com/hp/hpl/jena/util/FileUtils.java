@@ -12,6 +12,7 @@ import java.nio.charset.Charset ;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.WrappedIOException;
 import com.hp.hpl.jena.JenaRuntime ;
@@ -149,16 +150,17 @@ public class FileUtils
             // Just trim off the file:
             fn = fn.substring("file:".length()) ;
 
-        return decode(fn) ;
+        return decodeFileName(fn) ;
     }
     
-    private static String decode(String s)
+    public static String decodeFileName(String s)
     {
         if ( s.indexOf('%') < 0 ) 
             return s ;
         int len = s.length();
         StringBuffer sbuff = new StringBuffer(len) ;
 
+        // This is URIRef.decode()? Is that code used?
         // Just decode % escapes.
         // Not http://www.daml.org/2001/03/daml+oil
         for ( int i =0 ; i < len ; i++ )
@@ -171,6 +173,38 @@ public class FileUtils
                     char ch = (char)codepoint ;
                     sbuff.append(ch) ;
                     i = i+2 ;
+                    break ;
+                default:
+                    sbuff.append(c);
+            }
+        }
+        return sbuff.toString();
+    }
+    
+    
+    /** Turn a plain filename into a "file:" URL */
+    public static String toURL(String filename)
+    {
+        if ( filename.startsWith("file:") )
+            return filename ;
+        filename = encodeFileName(filename) ;
+        return RelURI.resolveFileURL(filename) ;
+    }
+    
+    public static String encodeFileName(String s)
+    {
+        int len = s.length();
+        StringBuffer sbuff = new StringBuffer(len) ;
+
+        // Convert a few charcaters that occur in filenames into a safe form.
+        for ( int i = 0 ; i < len ; i++ )
+        {
+            char c = s.charAt(i);
+            switch (c)
+            {
+                case ' ': case '~':
+                    sbuff.append('%') ;
+                    sbuff.append(Integer.toHexString(c).toUpperCase()) ;
                     break ;
                 default:
                     sbuff.append(c);
