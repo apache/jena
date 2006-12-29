@@ -124,39 +124,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         out.decIndent() ;
     }
 
-    public void visit(SqlCoalesce sqlNode)
-    {
-        annotate(sqlNode) ;
-        out.print("( SELECT") ;
-        
-        boolean first = true ;
-        // Rough draft code.
-        for ( Var v : sqlNode.getCoalesceVars() )
-        {
-            if ( ! first )
-                out.print(",") ;
-            // id
-            out.print(" COALESCE(") ;
-            out.print(sqlNode.getLeft().getIdScope().getColumnForVar(v).toString()) ;
-            out.print(", ") ;
-            out.print(sqlNode.getRight().getIdScope().getColumnForVar(v).toString()) ;
-            out.print(") AS ??") ;
-            first = false ;
-        }
-        // And other vars we want.
-        out.print(" ") ;
-        out.println("FROM") ;
-        
-        out.incIndent() ;
-        out.print("(") ;
-        
-        visitJoin(sqlNode, sqlNode.getJoinType().sqlOperator()) ;
-        //throw new SDBNotImplemented("Write SqlCoalesce") ;
-        
-        out.print(") AS "+sqlNode.getAliasName()) ;
-        out.decIndent() ;
-    }
-    
     public void visit(SqlRestrict sqlNode)
     {
         annotate(sqlNode) ;
@@ -247,6 +214,49 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
     public void visit(SqlJoinInner join)     { visitJoin(join, join.getJoinType().sqlOperator()) ; }
     public void visit(SqlJoinLeftOuter join) { visitJoin(join, join.getJoinType().sqlOperator()) ; }
+
+    public void visit(SqlCoalesce sqlNode)
+    {
+        annotate(sqlNode) ;
+        out.print("( SELECT") ;
+        
+        boolean first = true ;
+        // Rough draft code.
+        for ( Var v : sqlNode.getCoalesceVars() )
+        {
+            if ( ! first )
+                out.print(",") ;
+            SqlColumn col = sqlNode.getIdScope().getColumnForVar(v) ;
+            SqlColumn leftCol = sqlNode.getLeft().getIdScope().getColumnForVar(v) ;
+            SqlColumn rightCol = sqlNode.getRight().getIdScope().getColumnForVar(v) ;
+            out.print(" COALESCE(") ;
+            out.print(leftCol.toString()) ;
+            out.print(", ") ;
+            out.print(rightCol.toString()) ;
+            out.print(") AS "+col.getColumnName()) ;
+            
+            if ( col.equals(col) )
+            
+            first = false ;
+        }
+        // And other vars we want.
+        //out.print(" ") ;
+        
+        out.incIndent() ;
+        out.println();
+        out.println("FROM") ;
+        out.print("(") ;
+        
+        visitJoin(sqlNode, sqlNode.getJoinType().sqlOperator()) ;
+        out.ensureStartOfLine() ;
+        out.print(")") ;
+        out.decIndent() ;
+        out.ensureStartOfLine() ;
+        //throw new SDBNotImplemented("Write SqlCoalesce") ;
+        
+        out.print(") AS "+sqlNode.getAliasName()) ;
+        out.decIndent() ;
+    }
 
     protected void visitJoin(SqlJoin join, String joinOperator)
     {

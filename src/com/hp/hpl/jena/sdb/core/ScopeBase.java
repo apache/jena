@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,11 +21,12 @@ public class ScopeBase implements Scope
     Map<Var, SqlColumn> frame = new HashMap<Var, SqlColumn>() ;
     Scope parent = null ;
     
-    public ScopeBase() {}
-//    public ScopeBase(Scope parent)
-//    { 
-//        this.parent = parent ;
-//    }
+    public ScopeBase() { parent = null ; }
+    
+    public ScopeBase(Scope parent)
+    { 
+        this.parent = parent ;
+    }
     
     public boolean hasColumnForVar(Var var)
     { 
@@ -37,7 +39,13 @@ public class ScopeBase implements Scope
         
     public Set<Var> getVars()
     {
-        return frame.keySet() ;
+        if ( parent == null )
+            return frame.keySet() ;
+        
+        Set<Var> x = new HashSet<Var>() ;
+        x.addAll(frame.keySet()) ;
+        x.addAll(parent.getVars()) ;
+        return x ;
     }
     
     public SqlColumn getColumnForVar(Var var)
@@ -51,7 +59,8 @@ public class ScopeBase implements Scope
         
     public void setColumnForVar(Var var, SqlColumn column)
     { 
-        if ( hasColumnForVar(var) )
+        // Only check the frame.
+        if ( frame.containsKey(var) )
         {
             LogFactory.getLog(Scope.class).warn("Already has an alias: "+var+" => "+getColumnForVar(var)) ;
             return ;
@@ -70,6 +79,8 @@ public class ScopeBase implements Scope
             str = str + sep + v + ":"+c ;
             sep = " " ;
         }
+        if ( parent != null )
+            str = str + "=>" + parent.toString() ;
         return str ;
     }
 }

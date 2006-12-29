@@ -76,6 +76,32 @@ public class SqlTable extends SqlNodeBase
             valueScope = new ScopeBase() ;
         valueScope.setColumnForVar(var, thisCol) ;
     }
+    
+    @Override
+    public int hashCode()
+    {
+        int h = tableName.hashCode() ;
+        if ( getAliasName() != null )
+            h = h ^ getAliasName().hashCode() << 1 ;
+        return h ;
+    }
+    
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof SqlTable ) ) 
+            return false ;
+        SqlTable table = (SqlTable)other ;
+        
+        if ( ! tableName.equals(table.tableName) )
+            return false ;
+
+        if ( getAliasName() == null && table.getAliasName() == null )
+            return true ;
+        if ( getAliasName() == null || table.getAliasName() == null )
+            return false ;
+        return getAliasName().equals(table.getAliasName()) ;
+    }
 
 }
 

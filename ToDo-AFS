@@ -1,13 +1,14 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ { opt ... } JOIN { opt ... } needs a JoinCondition involving nulls.
++ { opt ... } JOIN { opt ... } may need a JoinCondition involving nulls.
   Or punting.
 
-+ Coalesce needs to redefine scopes on the way through.
-    And allocate a name for the coalesce'd var.
-  Values - Coalesce or do outside?
-    Outside ie DELAY (and use IS NOT NULL)
++ Values: delay access nodes table until needed
+  Filters
+  Project
+
++ Coalesce : 
   pass-through vars do not not need renaming but use of SELECT may force it.
 
 + ??Delay values until (1) filter or (2) projection

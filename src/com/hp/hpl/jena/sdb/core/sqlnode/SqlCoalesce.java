@@ -12,7 +12,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.Var;
 
-import com.hp.hpl.jena.sdb.core.JoinType;
+import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 public class SqlCoalesce extends SqlJoin
 {
@@ -23,6 +24,9 @@ public class SqlCoalesce extends SqlJoin
      */
     
     Set<Var> coalesceVars ;
+    ScopeBase idScope ;
+    ScopeBase valueScope ;
+    Generator genvar = Gensym.create("VC") ; //new Gensym("VC") ;
     
     public static SqlCoalesce merge(String alias, SqlNode left, SqlNode right, Set<Var>coalesceVars) 
     {
@@ -40,16 +44,33 @@ public class SqlCoalesce extends SqlJoin
     { 
         super(JoinType.LEFT, right, left, alias) ;
         this.coalesceVars = coalesceVars ;
-        //addNote() ;
+        idScope = new ScopeBase(super.getIdScope()) ;
+        valueScope = new ScopeBase(super.getValueScope()) ;
+        SqlTable table = new SqlTable("Coalesce", alias) ;
+        
+        for ( Var v : coalesceVars )
+        {
+            String sqlColName = genvar.next() ;
+            SqlColumn col = new SqlColumn(table, sqlColName) ;
+            idScope.setColumnForVar(v, col) ;
+            // TODO Value
+        }
+        
     }
     
-    public Set<Var> getCoalesceVars() { return coalesceVars ; }
+    public Set<Var> getCoalesceVars()   { return coalesceVars ; }
     
     @Override
-    public boolean      isCoalesce()  { return true ; }
+    public boolean      isCoalesce()    { return true ; }
     @Override
-    public SqlCoalesce  getCoalesce() { return this ; }
+    public SqlCoalesce  getCoalesce()   { return this ; }
 
+    @Override
+    public Scope getIdScope()           { return idScope ; }
+    
+    @Override
+    public Scope getValueScope()        { return valueScope ; }
+    
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
 }

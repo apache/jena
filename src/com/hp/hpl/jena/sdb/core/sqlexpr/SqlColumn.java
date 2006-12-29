@@ -20,6 +20,23 @@ public class SqlColumn extends SqlExprBase
 
     public String getFullColumnName() { return getTable().getAliasName()+"."+columnName ; }
     
+    @Override
+    public int hashCode()
+    {
+        return table.hashCode() ^ columnName.hashCode() << 1 ;
+    }
+    
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( ! ( other instanceof SqlColumn ) ) 
+            return false ;
+        SqlColumn col = (SqlColumn)other ;
+        
+        return table.equals(col.getTable()) && columnName.equals(col.getColumnName()) ;
+    }
+    
+    
     public String asString() { return getFullColumnName() ; }
     
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
