@@ -9,16 +9,16 @@ package com.hp.hpl.jena.sdb.core.compiler;
 import java.util.List;
 
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine2.op.Op;
-import com.hp.hpl.jena.query.engine2.op.Transform;
-import com.hp.hpl.jena.query.engine2.op.Transformer;
+import com.hp.hpl.jena.query.engine2.op.*;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
 
 
 public abstract class QueryCompilerMain implements QueryCompiler 
 {
-    // Do we need this class?
+    // Do we need this as a class?
     private List<Var> projectVars ;
     protected SDBRequest request ;
     
@@ -32,6 +32,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
     {
         Transform t = new TransformSDB(request, createQuadBlockCompiler()) ;
         op = Transformer.transform(t, op) ;
+        OpWalker.walk(op, new SqlNodesFinisher()) ;
         return op ;
     }
 
@@ -40,6 +41,29 @@ public abstract class QueryCompilerMain implements QueryCompiler
     public ConditionCompiler getConditionCompiler()
     {
         return null ;
+    }
+    
+    private class SqlNodesFinisher extends OpVisitorBase
+    {
+        @Override
+        public void visit(OpExt op)
+        {
+            if ( ! ( op instanceof OpSQL ) )
+            {
+                super.visit(op) ;
+                return ;
+            }
+            OpSQL opSQL = (OpSQL)op ;
+            
+            SqlNode sqlNode = opSQL.getSqlNode() ;
+            
+            SQLBridge bridge =  request.getStore().getSQLBridgeFactory().create(request) ;
+            sqlNode = QC.toSqlTopNode(sqlNode, projectVars, bridge) ;
+            opSQL.setBridge(bridge) ;
+            opSQL.resetSqlNode(sqlNode) ;
+            // Insert value stuff.  Change opSQL
+            // Do the project bridge.
+        }
     }
 }
 

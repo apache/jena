@@ -22,12 +22,14 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.op.Quad;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.Aliases;
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.core.compiler.QuadBlockCompilerTriple;
 import com.hp.hpl.jena.sdb.core.compiler.SDBConstraint;
-import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -64,62 +66,10 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 
     @Override
     final protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
-    {
-        //sqlNode = addRestrictions(request, sqlNode, getConstraints()) ;
-        
-        // TODO Work out the value tests and project vars needed.
-        // Currently, every block setting a variable will get its result.
-        // Intersection of variables in this quad block and the output needed.
-        
-        List<Var> projectVars = vars ;
-        sqlNode = extractResults(request, projectVars , sqlNode) ;
-        return sqlNode ;
-
-    }
-    
-    protected abstract
-    SqlColumn getNodeMatchCol(SqlTable nodeTable) ;
+    { return sqlNode ; }
     
     protected abstract 
     SqlNode insertConstantAccesses(SDBRequest request, Collection<Node> constants) ;
-
-    private SqlNode extractResults(SDBRequest request,
-                                   Collection<Var>vars, SqlNode sqlNode)
-    {
-        // for each var and it's id column, make sure there is value column. 
-        for ( Var v : vars )
-        {
-            SqlColumn c1 = sqlNode.getIdScope().getColumnForVar(v) ;
-            if ( c1 == null )
-            {
-                // Debug.
-                Scope scope = sqlNode.getIdScope() ;
-                // Variable not actually in results.
-                continue ;
-            }
-
-            // Already in scope from a condition?
-            SqlColumn c2 = sqlNode.getValueScope().getColumnForVar(v) ;
-            if ( c2 != null )
-                // Already there
-                continue ;
-
-            // Not in scope -- add a table to get it (share some code with addRestrictions?) 
-            // Value table.
-            SqlTable nTable = new TableNodes(genNodeResultAlias.next()) ;
-            c2 = getNodeMatchCol(nTable) ; // "id" or "hash"
-
-            nTable.setValueColumnForVar(v, c2) ;
-            // Condition for value: triple table column = node table id 
-            nTable.addNote("Var: "+v) ;
-
-
-            SqlExpr cond = new S_Equal(c1, c2) ;
-            SqlNode n = QC.innerJoin(request, sqlNode, nTable) ;
-            sqlNode = SqlRestrict.restrict(n, cond) ;
-        }
-        return sqlNode ;
-    }
 
     private SqlNode addRestrictions(SDBRequest request,
                                     SqlNode sqlNode,

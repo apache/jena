@@ -118,9 +118,8 @@ public class QC
     
     public static QueryIterator exec(OpSQL opSQL, SDBRequest request, Binding binding, ExecutionContext execCxt)
     {
-        SQLBridge bridge = request.getStore().getSQLBridgeFactory().create() ;
-        String sqlStmt = toSqlString(opSQL, request, bridge) ;
-    
+        String sqlStmt = toSqlString(opSQL, request) ;
+        
         if ( PrintSQL )
             System.out.println(sqlStmt) ;
         
@@ -130,7 +129,7 @@ public class QC
                 // Destructive
                 RS.printResultSet(jdbcResultSet) ;
             try {
-                return bridge.assembleResults(jdbcResultSet, binding, execCxt) ;
+                return opSQL.getBridge().assembleResults(jdbcResultSet, binding, execCxt) ;
             } finally { jdbcResultSet.close() ; }
         } catch (SQLException ex)
         {
@@ -144,19 +143,15 @@ public class QC
                                        SQLBridge bridge)
     {
         bridge.init(sqlNode, projectVars) ;
-        sqlNode = bridge.buildProject() ;
-        return sqlNode ;
+        bridge.buildValues() ;
+        bridge.buildProject() ;
+        return bridge.getSqlNode() ;
     }
     
     public static String toSqlString(OpSQL opSQL, 
-                                     SDBRequest request, 
-                                     SQLBridge bridge)
+                                     SDBRequest request)
     {
-        if ( bridge == null )
-            // Direct call to produce SQL strings for printing 
-            bridge = request.getStore().getSQLBridgeFactory().create() ;
-        List<Var> projectVars = QC.projectVars(request.getQuery()) ;
-        SqlNode sqlNode = QC.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge) ;
+        SqlNode sqlNode = opSQL.getSqlNode() ;
         String sqlStmt = request.getStore().getSQLGenerator().generateSQL(sqlNode) ;
         return sqlStmt ; 
     }

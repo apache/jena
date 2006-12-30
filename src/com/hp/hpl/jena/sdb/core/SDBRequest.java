@@ -26,7 +26,6 @@ public class SDBRequest extends StoreHolder
     
     // See TransformSDB
     public boolean LeftJoinTranslation = true ;
-    
 
     public SDBRequest(Store store, Query query)
     { 

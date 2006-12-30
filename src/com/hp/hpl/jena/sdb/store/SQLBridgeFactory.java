@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+
 
 /** Convert from whatever results a particular layout returns into
  *  an ARQ QueryIterator of Bindings.  An SQLBridge object
@@ -17,7 +19,7 @@ package com.hp.hpl.jena.sdb.store;
 
 public interface SQLBridgeFactory
 {
-    public SQLBridge create() ;
+    public SQLBridge create(SDBRequest request) ;
 }
 
 /*

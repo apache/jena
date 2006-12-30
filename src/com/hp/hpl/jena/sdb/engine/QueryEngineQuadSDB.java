@@ -89,11 +89,11 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
     /** For debugging and inspectation.  Assumes whole query has been converted */ 
     public SqlNode getSqlNode()
     {
+        SDBRequest request = new SDBRequest(store, query) ;
         Op op = getPatternOp() ;
-        
         OpSQL opSQL = (OpSQL)op ;
         List<Var> projectVars = QC.projectVars(getQuery()) ;
-        SQLBridge bridge = store.getSQLBridgeFactory().create() ;
+        SQLBridge bridge = store.getSQLBridgeFactory().create(request) ;
         SqlNode sqlNode = QC.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge) ;
         return sqlNode ;
     }

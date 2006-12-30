@@ -17,7 +17,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.sdb.core.compiler.OpSQL;
+
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.LayoutType;
@@ -93,7 +93,7 @@ public class sdbprint extends CmdArgsDB
             else if ( arg.equalsIgnoreCase("SqlNode"))  { printSqlNode = true ; }
             else if ( arg.equalsIgnoreCase("sql"))      { printSQL = true ; }
             else
-                throw new CmdException("Not a recognized print form: "+arg) ;
+                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, prefix, op, sqlNode, sql") ;
         }
     }
 
@@ -151,14 +151,9 @@ public class sdbprint extends CmdArgsDB
 
         if ( printSqlNode )
         {
-            if ( op instanceof OpSQL )
-            {
-                // Fix - print all SqlNode stuff by walk.
-                divider() ;
-                PrintSDB.print(((OpSQL)op).getSqlNode()) ;
-            }
-            else
-                System.err.println("Top node is not an OpSQL") ;
+            divider() ;
+            // before 
+            PrintSDB.printSqlNodes(op) ;
         }
         
         if ( printSQL )

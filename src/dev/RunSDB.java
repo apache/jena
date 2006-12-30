@@ -100,9 +100,7 @@ public class RunSDB
             
             PrintSDB.print(engine.getOp()) ;
             System.out.println(PrintSDB.divider) ;
-            try {
-                PrintSDB.print(engine.getSqlNode()) ;
-            } catch (ClassCastException ex) {}
+            PrintSDB.printSqlNodes(engine.getOp()) ;
         }
 
         if ( execute )

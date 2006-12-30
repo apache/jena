@@ -75,12 +75,6 @@ public class QuadBlockCompilerIndex2 extends QuadBlockCompiler2
         conditions.add(c) ;
         return ; 
     }
-
-    @Override
-    protected SqlColumn getNodeMatchCol(SqlTable nodeTable)
-    {
-        return new SqlColumn(nodeTable, "id") ;
-    }
 }
 
 /*

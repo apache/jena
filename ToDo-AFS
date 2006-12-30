@@ -2,25 +2,27 @@ SDB ToDo list (and general notes)
 =================================
 
 + { opt ... } JOIN { opt ... } may need a JoinCondition involving nulls.
-  Or punting.
+  Or detech/punt.
+  { opt ... } JOIN { fixed } puts the "best" on the right (left may be null).
+  Or detech/punt.
+  
++ Values
+	Isolate QC2.insertValueGetter
+  + choosing the "best" col (not an optional)
 
-+ Values: delay access nodes table until needed
-  Filters
-  Project
++ Conditions: reactivate condition compilation.
+
++ Ugly Store.getNodeKeyColName()
 
 + Coalesce : 
   pass-through vars do not not need renaming but use of SELECT may force it.
 
-+ ??Delay values until (1) filter or (2) projection
-  Currently done in the QuadBlock.
-  Or will the SQL optimizer work this out?
-
 + Derby:
     Loader is OneTriple loader for present.
-    Easy win - hash version?  
+    ** hash version
 
 + Scoping on SqlNodes
-  Value tests: casting vs tables
+  need to record fixed and optional status => getScope returns a record of some kind.
 
 + Hash constants
    need separate formatters and loaders.
@@ -28,11 +30,14 @@ SDB ToDo list (and general notes)
 + cmd: 
   @ --load for sdb.sdbquery --format
      Done - but should be ModData/ModInit/ModSetup
+     
 + Add query tests :
   SELECT * {}
   SELECT ?x {}
   SELECT * { P[?x] OPTIONAL { P[!?x] OPTIONAL { OPTIONAL P[?x] } } }
-
+  { opt ... } JOIN { opt ... } 
+  { opt ... } JOIN { fixed } 
+  
 + Abstracting databases:
   Graph for an SDBConnection (or get from DB).
     That is the unit of database if there are multiple stores per connection.

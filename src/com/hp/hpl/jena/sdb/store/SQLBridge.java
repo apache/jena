@@ -28,7 +28,9 @@ public interface SQLBridge
 {
     public void init(SqlNode sqlNode, Collection<Var> projectVars) ;
     
-    public SqlNode buildProject();
+    public void buildValues() ;
+    public void buildProject() ;
+    public SqlNode getSqlNode() ;
     
     public QueryIterator assembleResults(ResultSet jdbcResultSet, 
                                          Binding binding,

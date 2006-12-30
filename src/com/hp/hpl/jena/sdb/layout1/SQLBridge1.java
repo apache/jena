@@ -11,26 +11,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.BindingMap;
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
+
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 
 public class SQLBridge1 extends SQLBridgeBase
 {
     private EncoderDecoder codec ;
     
-    public SQLBridge1(EncoderDecoder codec)
+    public SQLBridge1(SDBRequest request, EncoderDecoder codec)
     { 
+        super(request) ;
         this.codec = codec ;
     }
     
-    public SqlNode buildProject()
+    public void buildValues()
+    { }
+
+    public void buildProject()
     {
         for ( Var v : getProject() )
         {
@@ -47,7 +53,6 @@ public class SQLBridge1 extends SQLBridgeBase
             addAnnotation(sqlVarName+"="+v.toString()) ;
         }
         setAnnotation() ;
-        return getProjectNode() ;
     }
     
     public QueryIterator assembleResults(java.sql.ResultSet rs,

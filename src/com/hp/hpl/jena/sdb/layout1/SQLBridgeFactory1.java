@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
@@ -19,9 +20,9 @@ public class SQLBridgeFactory1 implements SQLBridgeFactory
         this.codec = codec ;
     }
     
-    public SQLBridge create()
+    public SQLBridge create(SDBRequest request)
     {
-        return new SQLBridge1(codec) ;
+        return new SQLBridge1(request, codec) ;
     }
 
 }

@@ -6,9 +6,6 @@
 
 package com.hp.hpl.jena.sdb.core.compiler;
 
-import java.util.List;
-
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
@@ -18,14 +15,17 @@ import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpExtBase;
 import com.hp.hpl.jena.query.engine2.table.TableSimple;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.store.SQLBridge;
 
 public class OpSQL extends OpExtBase
 {
     private SqlNode sqlNode ;
     private Op originalOp ;
-    private List<Var> projectVars = null ;
+    private SQLBridge bridge = null ; 
+    //private List<Var> projectVars = null ;
     private SDBRequest request ;
     
     public OpSQL(SqlNode sqlNode, Op original, SDBRequest request)
@@ -36,15 +36,14 @@ public class OpSQL extends OpExtBase
         this.originalOp = original ;
     }
 
-    public void setProjectVars(List<Var> projectVars) { this.projectVars = projectVars ; }
+    //public void setProjectVars(List<Var> projectVars) { this.projectVars = projectVars ; }
     
     public Table eval(Evaluator evaluator)
     {
         ExecutionContext execCxt = evaluator.getExecContext() ;
         QueryIterator qIter = QC.exec(this,
                                       request,
-                                      //BindingRoot.create(),
-                                      null,
+                                      null, //BindingRoot.create(),
                                       execCxt) ;
         return new TableSimple(qIter) ;
     }
@@ -66,13 +65,20 @@ public class OpSQL extends OpExtBase
 
     public String toSQL()
     {
-       return QC.toSqlString(this, request, null) ;
+       return QC.toSqlString(this, request) ;
     }
 
     public SqlNode getSqlNode()
     {
         return sqlNode ;
     }
+
+    public void resetSqlNode(SqlNode sqlNode2)
+    { sqlNode = sqlNode2 ; }
+
+    public SQLBridge getBridge()            { return bridge ; }
+
+    public void setBridge(SQLBridge bridge) { this.bridge = bridge ; }
 }
 
 /*

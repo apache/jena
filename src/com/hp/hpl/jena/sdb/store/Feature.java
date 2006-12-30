@@ -19,7 +19,11 @@ public enum Feature implements Named
     // A database layout that uses a single triple table, with entries being SPARQL-syntax RDF-terms
     LayoutSimple       { public String getName() { return "Layout1" ; } } ,   
     // The Triple table/Node table layout 
-    LayoutTripleNodes  { public String getName() { return "TriplesNodes" ; } } , 
+    LayoutTripleNodes  { public String getName() { return "TriplesNodes" ; } } ,
+    
+    // Layout2
+    // Name of the column that identifies nodes ("id" or "hash") 
+    Layout2_NodeKeyColName { public String getName() { return "NodeKeyColName" ; } } ,
     ;
     
     public /*abstract*/ String getURI() { return "" ; } 

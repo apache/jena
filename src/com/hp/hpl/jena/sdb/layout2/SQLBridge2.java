@@ -27,8 +27,13 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 
+import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.compiler.QC;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
@@ -37,25 +42,33 @@ import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 public class SQLBridge2 extends SQLBridgeBase 
 {
     private static Log log = LogFactory.getLog(SQLBridge2.class) ;
+    private Generator genNodeResultAlias = Gensym.create(Aliases.NodesResultAliasBase) ;
 
-    //public SQLBridge2() { super() ; }
+    public SQLBridge2(SDBRequest request) { super(request) ; }
     
-    public SqlNode buildProject()
+    public void buildValues()
+    {
+        SqlNode sqlNode = getSqlNode() ;
+        for ( Var v : getProject() )
+            sqlNode = insertValueGetter(request, sqlNode, v) ;
+        setSqlNode(sqlNode) ;
+    }
+    
+    public void buildProject()
     {
         for ( Var v : getProject() )
         {
             if ( ! v.isNamedVar() )
                 continue ;
             
-            SqlColumn vCol = getSqlExprNode().getValueScope().getColumnForVar(v) ;
+            SqlColumn vCol = getSqlNode().getValueScope().getColumnForVar(v) ;
             if ( vCol == null )
             {
-                // Should be a column mentioned in the SELECT which is not mentioned in this block 
+                // Should be a column mentioned in the SELECT which is not mentioned in this block
                 continue ;
             }
     
             SqlTable table = vCol.getTable() ;
-            
             String sqlVarName = allocSqlName(v) ;
             
             // Need to allocate aliases because other wise we need to access
@@ -72,7 +85,6 @@ public class SQLBridge2 extends SQLBridgeBase
             Var vType = Var.alloc(SQLUtils.gen(sqlVarName,"type")) ;
             SqlColumn cType = new SqlColumn(table, "type") ;
     
-            // Don't really need to do this renaming if we record Rn to variable.
             addProject(vLex, cLex) ;
             addProject(vDatatype, cDatatype) ;
             addProject(vLang, cLang) ;
@@ -80,9 +92,41 @@ public class SQLBridge2 extends SQLBridgeBase
             addAnnotation(sqlVarName+"="+v.toString()) ;
         }
         setAnnotation() ; 
-        return getProjectNode() ;
     }
+    
+    private SqlNode insertValueGetter(SDBRequest request, SqlNode sqlNode, Var var)
+    {
+        // hash version!
+        SqlColumn c1 = sqlNode.getIdScope().getColumnForVar(var) ;
+        if ( c1 == null )
+        {
+            // Debug.
+            Scope scope = sqlNode.getIdScope() ;
+            // Variable not actually in results.
+            return sqlNode ;
+        }
 
+        // Already in scope from a condition?
+        SqlColumn c2 = sqlNode.getValueScope().getColumnForVar(var) ;
+        if ( c2 != null )
+            // Already there
+            return sqlNode ;
+
+        // Not in scope -- add a table to get it
+        // Value table.
+        SqlTable nTable = new TableNodes(genNodeResultAlias.next()) ;
+        String nodeKeyColName = request.getStore().getNodeKeyColName() ;
+        c2 = new SqlColumn(nTable, nodeKeyColName) ;
+
+        nTable.setValueColumnForVar(var, c2) ;
+        // Condition for value: triple table column = node table id/hash 
+        nTable.addNote("Var: "+var) ;
+
+        SqlExpr cond = new S_Equal(c1, c2) ;
+        SqlNode n = QC.leftJoin(request, sqlNode, nTable) ;
+        SqlNode sqlNode2 = SqlRestrict.restrict(n, cond) ;
+        return sqlNode2 ;
+    }
     
     public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
         throws SQLException

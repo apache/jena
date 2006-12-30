@@ -7,7 +7,6 @@
 _:c rdf:type acmd:SDBConnection ;
     acmd:sdbType        "derby" ;
     acmd:sdbName        "DB.SDB2" ;
-    ## Java6 - it says it's not needed but did not work without.
     acmd:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
     .
 

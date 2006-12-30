@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.Aliases;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
@@ -40,23 +41,27 @@ public abstract class SQLBridgeBase implements SQLBridge
     private SqlNode sqlNodeOriginal = null ;
     private SqlNode sqlNode = null ;                 // Subclass can mutate
     private StringBuilder annotation = new StringBuilder() ;
+    protected final SDBRequest request ;
     
-    protected SQLBridgeBase() { }
+    protected SQLBridgeBase(SDBRequest request) { this.request = request ; }
     
     // Delayed constructor
     public void init(SqlNode sqlNode, Collection<Var> projectVars)
     {
+        if ( this.sqlNodeOriginal != null )
+            throw new SDBException("SQLBridgeBase: already initialized") ;
+        this.sqlNodeOriginal = sqlNode ;
         setProjectVars(projectVars) ;
         setSqlNode(sqlNode) ;
     }
     
-    private void setSqlNode(SqlNode sNode)
-    { 
-        if ( sqlNodeOriginal != null )
-            throw new SDBException("SQLBridgeBase: SQL node already set") ;
-        this.sqlNodeOriginal = sNode ;
-        this.sqlNode = SqlProject.project(sNode) ;
-    }
+//    private void setSqlNode(SqlNode sNode)
+//    { 
+//        if ( sqlNodeOriginal != null )
+//            throw new SDBException("SQLBridgeBase: SQL node already set") ;
+//        this.sqlNodeOriginal = sNode ;
+//        this.sqlNode = SqlProject.project(sNode) ;
+//    }
         
     private void setProjectVars(Collection<Var> projectVars)
     {
@@ -66,7 +71,12 @@ public abstract class SQLBridgeBase implements SQLBridge
     }
     
     protected SqlNode getSqlExprNode() { return sqlNodeOriginal ; }
-    protected SqlNode getProjectNode() { return sqlNode ; }
+    public SqlNode getSqlNode() { return sqlNode ; }
+    protected void setSqlNode(SqlNode sqlNode2) {  sqlNode = sqlNode2 ; }
+    
+    // ---- value support
+    
+    // ---- project support
     
     protected void addProject(Var v, SqlColumn col)
     {
@@ -89,7 +99,7 @@ public abstract class SQLBridgeBase implements SQLBridge
     protected void setAnnotation()
     {
         if ( annotation.length() > 0 )
-            getProjectNode().addNote(annotation.toString()) ;
+            getSqlNode().addNote(annotation.toString()) ;
     }
     
     protected Collection<Var> getProject() { return projectVars ; }

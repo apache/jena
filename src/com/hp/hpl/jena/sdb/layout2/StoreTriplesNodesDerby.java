@@ -26,6 +26,9 @@ public class StoreTriplesNodesDerby extends StoreBase
               new GenerateSQL()) ;
         //throw new SDBNotImplemented("StoreTriplesNodesDerby") ;
     }
+    
+    @Override
+    public String getNodeKeyColName() { return TableNodes.colHash ; }
 }
 
 /*

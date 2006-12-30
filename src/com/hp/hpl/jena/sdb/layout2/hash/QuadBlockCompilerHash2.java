@@ -18,7 +18,6 @@ import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
 
@@ -44,12 +43,6 @@ public class QuadBlockCompilerHash2 extends QuadBlockCompiler2
     protected SqlNode insertConstantAccesses(SDBRequest request, Collection<Node> constants)
     {
         return null ;
-    }
-    
-    @Override
-    protected SqlColumn getNodeMatchCol(SqlTable nodeTable)
-    {
-        return new SqlColumn(nodeTable, "hash") ;
     }
 }
 

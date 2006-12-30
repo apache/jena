@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.engine2.op.Op;
@@ -14,10 +16,8 @@ import com.hp.hpl.jena.query.engine2.op.OpVisitorBase;
 import com.hp.hpl.jena.query.engine2.op.OpWalker;
 
 import com.hp.hpl.jena.sdb.core.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.shared.PrefixMapping;
 
 
 
@@ -51,14 +51,34 @@ public class PrintSDB
         OpWalker.walk(op, new PrintSQL()) ;
     }
     
-    public static void print(SqlNode sqlNode)
+    public static void printSqlNodes(Op op)
     {
-        System.out.println(sqlNode.toString()) ;
-        System.out.println(divider) ;
-        //String sqlString = GenerateSQL.toSQL(sqlNode) ;
-        //System.out.println(sqlString) ;
+        OpWalker.walk(op, new PrintSqlNodes()) ;
     }
- 
+
+    static class PrintSqlNodes extends OpVisitorBase
+    {
+        boolean first = true ;
+        PrintSqlNodes()
+        {}
+        
+        @Override
+        public void visit(OpExt op)
+        {
+            if ( ! ( op instanceof OpSQL ) )
+            {
+                super.visit(op) ;
+                return ;
+            }
+            OpSQL opSQL = (OpSQL)op ;
+            if ( ! first )
+                System.out.println(divider) ;
+            System.out.println(opSQL.toString()) ;
+            first = false ;
+        }
+    }
+
+    
     static class PrintSQL extends OpVisitorBase
     {
         boolean first = true ;

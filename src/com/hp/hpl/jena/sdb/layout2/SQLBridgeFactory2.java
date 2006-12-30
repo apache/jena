@@ -6,17 +6,16 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
 public class SQLBridgeFactory2 implements SQLBridgeFactory
 {
-
-    public SQLBridge create()
+    public SQLBridge create(SDBRequest request)
     {
-        return new SQLBridge2() ;
+        return new SQLBridge2(request) ;
     }
-
 }
 
 /*

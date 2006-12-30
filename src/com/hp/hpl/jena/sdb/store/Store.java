@@ -56,6 +56,9 @@ public interface Store
     
     /** Get the size of this store **/
     public long  getSize() ;
+
+    // temp hack for Layout2.
+    public String getNodeKeyColName() ;
 }
 
 /*

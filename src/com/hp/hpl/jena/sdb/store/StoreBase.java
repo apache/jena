@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
@@ -67,6 +68,9 @@ public class StoreBase
     {
     	return TableUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
     }
+    
+    //  temp hack for Layout2.
+    public String getNodeKeyColName() { return TableNodes.colId ; }
 
 }
 
