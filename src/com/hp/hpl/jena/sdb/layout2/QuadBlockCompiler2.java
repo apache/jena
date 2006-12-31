@@ -26,15 +26,15 @@ import com.hp.hpl.jena.sdb.core.Aliases;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.compiler.QC;
-import com.hp.hpl.jena.sdb.core.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.core.compiler.QuadBlockCompilerTriple;
-import com.hp.hpl.jena.sdb.core.compiler.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.engine.compiler.QC;
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompilerTriple;
+import com.hp.hpl.jena.sdb.engine.compiler.SDBConstraint;
 
 public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 {

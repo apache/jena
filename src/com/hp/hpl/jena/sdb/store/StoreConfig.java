@@ -72,19 +72,6 @@ public class StoreConfig extends SDBConnectionHolder
         return TableUtils.getTableNames(connection().getSqlConnection()) ;
     }
     
-    public boolean hasFeature(Feature feature)
-    {
-        Resource root = getRoot() ;
-        Resource r    = root.getModel().getResource(feature.getURI()) ;
-        return root.hasProperty(ConfigVocab.featureProperty, r) ;
-    }
-    public void setFeature(Feature feature)
-    {
-        Resource root = getRoot() ;
-        Resource r    = root.getModel().getResource(feature.getURI()) ;
-        root.addProperty(ConfigVocab.featureProperty, r) ;
-    }
-    
     private Resource getRoot()
     {
         Model model = getModel() ;

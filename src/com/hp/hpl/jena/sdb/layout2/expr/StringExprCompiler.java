@@ -12,16 +12,16 @@ import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.ExprPattern;
 import com.hp.hpl.jena.sdb.core.Scope;
-import com.hp.hpl.jena.sdb.core.compiler.ConditionCompilerBase;
-import com.hp.hpl.jena.sdb.core.compiler.SDBConstraint;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.engine.compiler.ConditionCompiler;
+import com.hp.hpl.jena.sdb.engine.compiler.SDBConstraint;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchString;
 import com.hp.hpl.jena.sdb.exprmatch.ActionMatchVar;
 import com.hp.hpl.jena.sdb.exprmatch.MapResult;
 import com.hp.hpl.jena.sdb.layout2.ValueType;
 
-public class StringExprCompiler extends ConditionCompilerBase
+public class StringExprCompiler implements ConditionCompiler
 {
     private static ExprPattern equalsString1 = new ExprPattern("?a1 = ?a2",
                                                                new Var[]{ Var.alloc("a1") , Var.alloc("a2") },
@@ -43,8 +43,6 @@ public class StringExprCompiler extends ConditionCompilerBase
 //                                                                             new ActionMatchVar() }) ;
 
 
-    
-    @Override
     public SDBConstraint recognize(Expr expr)
     {
         MapResult rMap = null ;

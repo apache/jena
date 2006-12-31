@@ -9,10 +9,10 @@ package com.hp.hpl.jena.sdb.layout2;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.sdb.core.compiler.ConditionCompiler;
-import com.hp.hpl.jena.sdb.core.compiler.SDBConstraint;
+
+import com.hp.hpl.jena.sdb.engine.compiler.ConditionCompiler;
+import com.hp.hpl.jena.sdb.engine.compiler.SDBConstraint;
 import com.hp.hpl.jena.sdb.layout2.expr.RegexCompiler;
 import com.hp.hpl.jena.sdb.layout2.expr.StringExprCompiler;
 
@@ -27,13 +27,11 @@ class ConditionCompiler2 implements ConditionCompiler
         new StringExprCompiler() ,
     } ;
 
-    public SDBConstraint recognize(PlanFilter planFilter)
+    public SDBConstraint recognize(Expr expr)
     {
-        Expr expr = planFilter.getExpr() ;
-        
         for ( int i = 0 ; i < reg.length ; i++ )
         {
-            SDBConstraint c = reg[i].recognize(planFilter) ; 
+            SDBConstraint c = reg[i].recognize(expr) ; 
             if (  c != null )
                 return c ;
         }

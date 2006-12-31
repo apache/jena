@@ -15,8 +15,8 @@ import com.hp.hpl.jena.query.engine2.op.OpExt;
 import com.hp.hpl.jena.query.engine2.op.OpVisitorBase;
 import com.hp.hpl.jena.query.engine2.op.OpWalker;
 
-import com.hp.hpl.jena.sdb.core.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
+import com.hp.hpl.jena.sdb.engine.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.store.Store;
 
 

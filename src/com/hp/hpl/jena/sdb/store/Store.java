@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 

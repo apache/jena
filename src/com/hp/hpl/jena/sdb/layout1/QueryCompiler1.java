@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.core.compiler.QueryCompilerMain;
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerMain;
 
 
 public class QueryCompiler1 extends QueryCompilerMain 

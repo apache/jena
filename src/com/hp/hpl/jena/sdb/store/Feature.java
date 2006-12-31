@@ -8,25 +8,31 @@ package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.query.util.Named;
 
-public enum Feature implements Named
+public enum Feature //implements Named
 {
-    // What about layout and DBType?  Aren't these "features"?
-    
-    // Some placeholders
-    
-    // The Jena2 database layout
-    LayoutRDB          { public String getName() { return "RDB" ; } } ,          
-    // A database layout that uses a single triple table, with entries being SPARQL-syntax RDF-terms
-    LayoutSimple       { public String getName() { return "Layout1" ; } } ,   
-    // The Triple table/Node table layout 
-    LayoutTripleNodes  { public String getName() { return "TriplesNodes" ; } } ,
-    
-    // Layout2
-    // Name of the column that identifies nodes ("id" or "hash") 
-    Layout2_NodeKeyColName { public String getName() { return "NodeKeyColName" ; } } ,
+//    // What about layout and DBType?  Aren't these "features"?
+//    
+//    // Some placeholders
+//    
+//    // The Jena2 database layout
+//    LayoutRDB          { public String getName() { return "RDB" ; } } ,          
+//    // A database layout that uses a single triple table, with entries being SPARQL-syntax RDF-terms
+//    LayoutSimple       { public String getName() { return "Layout1" ; } } ,   
+//    // The Triple table/Node table layout 
+//    LayoutTripleNodes  { public String getName() { return "TriplesNodes" ; } } ,
+//    
+//    // Layout2
+//    // Name of the column that identifies nodes ("id" or "hash") 
+//    Layout2_NodeKeyColName { public String getName() { return "NodeKeyColName" ; } } ,
+//    ;
+//
     ;
-    
-    public /*abstract*/ String getURI() { return "" ; } 
+//    public /*abstract*/ String getURI() { return "" ; }
+//
+//    public String getName()
+//    {
+//        return null ;
+//    } 
 }
 
 /*

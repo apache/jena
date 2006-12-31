@@ -3,7 +3,6 @@ SDB ToDo list (and general notes)
 
 + Features:
   In desc file for now.
-  
 
 + { opt ... } JOIN { opt ... } may need a JoinCondition involving nulls.
   Or detech/punt.
@@ -15,6 +14,7 @@ SDB ToDo list (and general notes)
   + choosing the "best" col (not an optional)
 
 + Conditions: reactivate condition compilation.
+  Need value access
 
 + Ugly Store.getNodeKeyColName()
 
