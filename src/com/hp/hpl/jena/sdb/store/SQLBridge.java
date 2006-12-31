@@ -8,17 +8,16 @@ package com.hp.hpl.jena.sdb.store;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 
 import com.hp.hpl.jena.query.engine.Binding;
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
+
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 /** Convert from whatever results a particular layout returns into
  *  an ARQ QueryIterator of Bindings.  An SQLBridge object
- *  is allocated for each query execution. 
+ *  is allocated for each SQL query execution. 
  *  
  * @author Andy Seaborne
  * @version $Id$
@@ -26,12 +25,10 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface SQLBridge
 {
-    public void init(SqlNode sqlNode, Collection<Var> projectVars) ;
-    
-    public void buildValues() ;
-    public void buildProject() ;
+    /** Get the (possibly altered) SqlNode */
     public SqlNode getSqlNode() ;
     
+    /** Process a JDBC result set */
     public QueryIterator assembleResults(ResultSet jdbcResultSet, 
                                          Binding binding,
                                          ExecutionContext execCtl)

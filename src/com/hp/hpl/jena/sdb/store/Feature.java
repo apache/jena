@@ -10,7 +10,7 @@ import com.hp.hpl.jena.query.util.Named;
 
 public enum Feature implements Named
 {
-    // What about layout and DBType?  Anen't these "features"?
+    // What about layout and DBType?  Aren't these "features"?
     
     // Some placeholders
     

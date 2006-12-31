@@ -1,6 +1,10 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Features:
+  In desc file for now.
+  
+
 + { opt ... } JOIN { opt ... } may need a JoinCondition involving nulls.
   Or detech/punt.
   { opt ... } JOIN { fixed } puts the "best" on the right (left may be null).

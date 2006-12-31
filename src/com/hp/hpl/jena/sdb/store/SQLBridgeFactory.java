@@ -6,7 +6,12 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import java.util.List;
+
+import com.hp.hpl.jena.query.core.Var;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 
 /** Convert from whatever results a particular layout returns into
@@ -19,7 +24,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 
 public interface SQLBridgeFactory
 {
-    public SQLBridge create(SDBRequest request) ;
+    public SQLBridge create(SDBRequest request, SqlNode sqlNode, List<Var> projectVars) ;
 }
 
 /*

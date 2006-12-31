@@ -6,23 +6,17 @@
 
 package com.hp.hpl.jena.sdb.engine;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.QueryEngineQuad;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Context;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.core.compiler.QC;
 import com.hp.hpl.jena.sdb.core.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 
@@ -54,17 +48,8 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
     
     public SDBRequest getRequest()      { return request ; }     
     
-//    @Override
-//    protected PlanElement makePlanForQueryPattern(Context request, Element queryPatternElement)
-//    {
-//        if ( queryPatternElement == null )
-//            return null ;
-//        
-//        Op op = makeOpForQueryPattern(request, queryPatternElement) ;
-//        // May be incomplete translation    
-//        return new PlanElementSDB(query, store, (OpSQL)op) ;
-//    }
-    
+//  @Override
+//  protected Op createOp()
     
     @Override
     protected Op createPatternOp()
@@ -82,21 +67,6 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
         return opSQL ;
     }
     
-//    @Override
-//    protected Op createOp()
-
-    
-    /** For debugging and inspectation.  Assumes whole query has been converted */ 
-    public SqlNode getSqlNode()
-    {
-        SDBRequest request = new SDBRequest(store, query) ;
-        Op op = getPatternOp() ;
-        OpSQL opSQL = (OpSQL)op ;
-        List<Var> projectVars = QC.projectVars(getQuery()) ;
-        SQLBridge bridge = store.getSQLBridgeFactory().create(request) ;
-        SqlNode sqlNode = QC.toSqlTopNode(opSQL.getSqlNode(), projectVars, bridge) ;
-        return sqlNode ;
-    }
 }
 
 /*

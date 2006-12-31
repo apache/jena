@@ -7,7 +7,12 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 
+import java.util.List;
+
+import com.hp.hpl.jena.query.core.Var;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
@@ -20,11 +25,10 @@ public class SQLBridgeFactory1 implements SQLBridgeFactory
         this.codec = codec ;
     }
     
-    public SQLBridge create(SDBRequest request)
+    public SQLBridge create(SDBRequest request, SqlNode sqlNode, List<Var> projectVars)
     {
-        return new SQLBridge1(request, codec) ;
+        return new SQLBridge1(request, sqlNode, projectVars, codec) ;
     }
-
 }
 
 /*

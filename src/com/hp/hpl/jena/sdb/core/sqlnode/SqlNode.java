@@ -35,17 +35,7 @@ public interface SqlNode extends Printable, Annotations
     public SqlCoalesce    getCoalesce() ;
     
     public Scope getIdScope() ;
-    public Scope getValueScope() ;
-    
-    // Scope
-//    public boolean        hasColumnForVar(Var var) ;
-//    public SqlColumn      getColumnForVar(Var var) ;       // Get the col for this var - or null. 
-
-    //public SqlColumn      getValColumnForVar(Var var, ValueSpace vSpace) ;
-    //public void           setColumnForVar(Var var, SqlColumn) ; 
-    
-    
-//    public boolean usesColumn(SqlColumn c) ;  // Does this subtree mentioned a column?
+    public Scope getNodeScope() ;
     
     public void visit(SqlNodeVisitor visitor) ;
 

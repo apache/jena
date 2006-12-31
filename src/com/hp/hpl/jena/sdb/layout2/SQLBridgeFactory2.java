@@ -6,15 +6,20 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import java.util.List;
+
+import com.hp.hpl.jena.query.core.Var;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
 public class SQLBridgeFactory2 implements SQLBridgeFactory
 {
-    public SQLBridge create(SDBRequest request)
+    public SQLBridge create(SDBRequest request, SqlNode sqlNode, List<Var> projectVars)
     {
-        return new SQLBridge2(request) ;
+        return new SQLBridge2(request, sqlNode, projectVars) ;
     }
 }
 

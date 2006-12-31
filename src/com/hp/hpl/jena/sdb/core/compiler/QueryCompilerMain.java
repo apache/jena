@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
+import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
 
 public abstract class QueryCompilerMain implements QueryCompiler 
@@ -57,8 +58,11 @@ public abstract class QueryCompilerMain implements QueryCompiler
             
             SqlNode sqlNode = opSQL.getSqlNode() ;
             
-            SQLBridge bridge =  request.getStore().getSQLBridgeFactory().create(request) ;
-            sqlNode = QC.toSqlTopNode(sqlNode, projectVars, bridge) ;
+            SQLBridgeFactory f = request.getStore().getSQLBridgeFactory() ;
+            
+            SQLBridge bridge = f.create(request, sqlNode, projectVars) ;
+            sqlNode = bridge.getSqlNode() ;
+            
             opSQL.setBridge(bridge) ;
             opSQL.resetSqlNode(sqlNode) ;
             // Insert value stuff.  Change opSQL

@@ -43,26 +43,20 @@ public abstract class SQLBridgeBase implements SQLBridge
     private StringBuilder annotation = new StringBuilder() ;
     protected final SDBRequest request ;
     
-    protected SQLBridgeBase(SDBRequest request) { this.request = request ; }
-    
-    // Delayed constructor
-    public void init(SqlNode sqlNode, Collection<Var> projectVars)
+    protected SQLBridgeBase(SDBRequest request, SqlNode sqlNode, Collection<Var> projectVars)
     {
-        if ( this.sqlNodeOriginal != null )
-            throw new SDBException("SQLBridgeBase: already initialized") ;
+        this.request = request ;
         this.sqlNodeOriginal = sqlNode ;
-        setProjectVars(projectVars) ;
-        setSqlNode(sqlNode) ;
+        this.projectVars = projectVars ;
+        this.sqlNode = sqlNode ;
+        
+        buildValues() ;
+        buildProject() ;
     }
     
-//    private void setSqlNode(SqlNode sNode)
-//    { 
-//        if ( sqlNodeOriginal != null )
-//            throw new SDBException("SQLBridgeBase: SQL node already set") ;
-//        this.sqlNodeOriginal = sNode ;
-//        this.sqlNode = SqlProject.project(sNode) ;
-//    }
-        
+    protected abstract void buildValues() ;
+    protected abstract void buildProject() ;
+
     private void setProjectVars(Collection<Var> projectVars)
     {
         if ( this.projectVars != null )
@@ -70,10 +64,11 @@ public abstract class SQLBridgeBase implements SQLBridge
         this.projectVars = projectVars ;
     }
     
-    protected SqlNode getSqlExprNode() { return sqlNodeOriginal ; }
-    public SqlNode getSqlNode() { return sqlNode ; }
+    protected SqlNode getSqlExprNode()          { return sqlNodeOriginal ; }
+    public    SqlNode getSqlNode()              { return sqlNode ; }
     protected void setSqlNode(SqlNode sqlNode2) {  sqlNode = sqlNode2 ; }
-    
+    protected Collection<Var> getProject()      { return projectVars ; }
+
     // ---- value support
     
     // ---- project support
@@ -89,6 +84,8 @@ public abstract class SQLBridgeBase implements SQLBridge
         sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(null,  col)) ;
     }
     
+    // ---- annotation support : move else where?
+    
     protected void addAnnotation(String note)
     {
         if ( annotation.length() > 0 )
@@ -102,7 +99,7 @@ public abstract class SQLBridgeBase implements SQLBridge
             getSqlNode().addNote(annotation.toString()) ;
     }
     
-    protected Collection<Var> getProject() { return projectVars ; }
+    // ---- Var allocation
     
     protected String allocSqlName(Var v)
     {

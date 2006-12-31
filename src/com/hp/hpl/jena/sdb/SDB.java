@@ -19,6 +19,9 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class SDB
 {
+    /** SDB namespace */
+    public final static String namespace = "http://jena.hpl.hp.com/2006/sdb#" ;
+    
     static boolean initialized = false ;
     static public void init()
     {
@@ -47,14 +50,13 @@ public class SDB
     /** The namespace of the XML results format */ 
     private static final String srxPrefix = "http://www.w3.org/2005/sparql-results#" ;
     
- 
-    
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
         globalPrefixMap.setNsPrefix("rdf",  rdfPrefix) ;
         globalPrefixMap.setNsPrefix("rdfs", rdfsPrefix) ;
         globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;
         globalPrefixMap.setNsPrefix("owl" , owlPrefix) ;
+        globalPrefixMap.setNsPrefix("sdb" , namespace) ;
     }
     public static PrefixMapping getGlobalPrefixMapping() { return globalPrefixMap ; }
     

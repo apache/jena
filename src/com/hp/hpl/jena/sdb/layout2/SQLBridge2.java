@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.layout2;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -44,9 +45,11 @@ public class SQLBridge2 extends SQLBridgeBase
     private static Log log = LogFactory.getLog(SQLBridge2.class) ;
     private Generator genNodeResultAlias = Gensym.create(Aliases.NodesResultAliasBase) ;
 
-    public SQLBridge2(SDBRequest request) { super(request) ; }
+    public SQLBridge2(SDBRequest request, SqlNode sqlNode, Collection<Var> projectVars)
+    { super(request, sqlNode, projectVars) ; }
     
-    public void buildValues()
+    @Override
+    protected void buildValues()
     {
         SqlNode sqlNode = getSqlNode() ;
         for ( Var v : getProject() )
@@ -54,14 +57,15 @@ public class SQLBridge2 extends SQLBridgeBase
         setSqlNode(sqlNode) ;
     }
     
-    public void buildProject()
+    @Override
+    protected void buildProject()
     {
         for ( Var v : getProject() )
         {
             if ( ! v.isNamedVar() )
                 continue ;
             
-            SqlColumn vCol = getSqlNode().getValueScope().getColumnForVar(v) ;
+            SqlColumn vCol = getSqlNode().getNodeScope().getColumnForVar(v) ;
             if ( vCol == null )
             {
                 // Should be a column mentioned in the SELECT which is not mentioned in this block
@@ -96,7 +100,6 @@ public class SQLBridge2 extends SQLBridgeBase
     
     private SqlNode insertValueGetter(SDBRequest request, SqlNode sqlNode, Var var)
     {
-        // hash version!
         SqlColumn c1 = sqlNode.getIdScope().getColumnForVar(var) ;
         if ( c1 == null )
         {
@@ -106,14 +109,13 @@ public class SQLBridge2 extends SQLBridgeBase
             return sqlNode ;
         }
 
-        // Already in scope from a condition?
-        SqlColumn c2 = sqlNode.getValueScope().getColumnForVar(var) ;
+        // Already in scope (from a condition)?
+        SqlColumn c2 = sqlNode.getNodeScope().getColumnForVar(var) ;
         if ( c2 != null )
             // Already there
             return sqlNode ;
 
         // Not in scope -- add a table to get it
-        // Value table.
         SqlTable nTable = new TableNodes(genNodeResultAlias.next()) ;
         String nodeKeyColName = request.getStore().getNodeKeyColName() ;
         c2 = new SqlColumn(nTable, nodeKeyColName) ;

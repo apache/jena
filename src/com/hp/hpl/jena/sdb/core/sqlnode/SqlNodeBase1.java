@@ -15,7 +15,7 @@ public abstract class SqlNodeBase1 extends SqlNodeBase
     protected SqlNodeBase1(String aliasName, SqlNode sqlNode) { super(aliasName) ; this.sqlNode = sqlNode ; }
     
     public Scope getIdScope()     { return sqlNode.getIdScope() ; }
-    public Scope getValueScope()  { return sqlNode.getValueScope() ; }
+    public Scope getNodeScope()  { return sqlNode.getNodeScope() ; }
     
     public SqlNode getSubNode() { return sqlNode ; } 
 }

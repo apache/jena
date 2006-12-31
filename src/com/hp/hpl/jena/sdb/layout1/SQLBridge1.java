@@ -21,22 +21,25 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 
 public class SQLBridge1 extends SQLBridgeBase
 {
     private EncoderDecoder codec ;
     
-    public SQLBridge1(SDBRequest request, EncoderDecoder codec)
+    public SQLBridge1(SDBRequest request, SqlNode sqlNode, List<Var> projectVars, EncoderDecoder codec)
     { 
-        super(request) ;
+        super(request, sqlNode, projectVars) ;
         this.codec = codec ;
     }
     
-    public void buildValues()
+    @Override
+    protected void buildValues()
     { }
 
-    public void buildProject()
+    @Override
+    protected void buildProject()
     {
         for ( Var v : getProject() )
         {

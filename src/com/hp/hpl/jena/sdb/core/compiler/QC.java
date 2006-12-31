@@ -31,7 +31,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
 
 public class QC
 {
@@ -137,17 +136,6 @@ public class QC
         }
     }
 
-    
-    public static SqlNode toSqlTopNode(SqlNode sqlNode, 
-                                       List<Var> projectVars,
-                                       SQLBridge bridge)
-    {
-        bridge.init(sqlNode, projectVars) ;
-        bridge.buildValues() ;
-        bridge.buildProject() ;
-        return bridge.getSqlNode() ;
-    }
-    
     public static String toSqlString(OpSQL opSQL, 
                                      SDBRequest request)
     {
@@ -167,20 +155,6 @@ public class QC
             vars.add(Var.alloc(vn)) ;
         return vars ;
     }
-    
-//    public static Set<Var> exitVariables(Block block)
-//    {
-//        Set<Var> x = block.getProjectVars() ;
-//        if ( x == null )
-//        {
-//            if ( block.isCompletePattern() )
-//                log.warn("Null for projection variables - but it's a single block") ;
-//            x = block.getDefinedVars() ;
-//        }
-//        if ( x == null )
-//            log.warn("Null for defined variables") ;
-//        return x ; 
-//    }
 }
 
 /*

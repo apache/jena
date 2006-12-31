@@ -25,7 +25,7 @@ public class SqlCoalesce extends SqlJoin
     
     Set<Var> coalesceVars ;
     ScopeBase idScope ;
-    ScopeBase valueScope ;
+    ScopeBase nodeScope ;
     Generator genvar = Gensym.create("VC") ; //new Gensym("VC") ;
     
     public static SqlCoalesce merge(String alias, SqlNode left, SqlNode right, Set<Var>coalesceVars) 
@@ -45,7 +45,7 @@ public class SqlCoalesce extends SqlJoin
         super(JoinType.LEFT, right, left, alias) ;
         this.coalesceVars = coalesceVars ;
         idScope = new ScopeBase(super.getIdScope()) ;
-        valueScope = new ScopeBase(super.getValueScope()) ;
+        nodeScope = new ScopeBase(super.getNodeScope()) ;
         SqlTable table = new SqlTable("Coalesce", alias) ;
         
         for ( Var v : coalesceVars )
@@ -69,7 +69,7 @@ public class SqlCoalesce extends SqlJoin
     public Scope getIdScope()           { return idScope ; }
     
     @Override
-    public Scope getValueScope()        { return valueScope ; }
+    public Scope getNodeScope()         { return nodeScope ; }
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }

@@ -106,7 +106,7 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
                 sqlNode = QC.innerJoin(request, sqlNode, nTable) ;
             }
 
-            SqlExpr sqlExpr = c.compile(sqlNode.getValueScope()) ;
+            SqlExpr sqlExpr = c.compile(sqlNode.getNodeScope()) ;
             sqlNode = SqlRestrict.restrict(sqlNode, sqlExpr) ;
         }
         return sqlNode ;

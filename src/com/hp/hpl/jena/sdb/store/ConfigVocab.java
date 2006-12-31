@@ -8,16 +8,15 @@ package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.util.Vocab;
 
 
 public class ConfigVocab
 {
-    private final static String namespace = "http://jena.hpl.hp.com/2006/sdb#" ;
-    public String getURI() { return namespace ; }
-    
-    public final static Resource typeConfig        = Vocab.resource(namespace, "Config") ;
-    public final static Property featureProperty   = Vocab.property(namespace, "feature") ;
+    public final static Resource typeConfig        = Vocab.resource(SDB.namespace, "Config") ;
+    public final static Property featureProperty   = Vocab.property(SDB.namespace, "feature") ;
 }
 
 /*
