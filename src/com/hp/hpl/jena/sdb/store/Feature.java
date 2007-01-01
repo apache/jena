@@ -6,10 +6,69 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.query.util.Named;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-public enum Feature //implements Named
+import com.hp.hpl.jena.query.util.*;
+
+/** A Feature is a name/value pair */
+
+public class Feature extends PrintableBase implements Named, Printable 
 {
+    public static class Name extends Symbol
+    {
+        public Name(Symbol other)       { super(other) ; }
+        public Name(String nameStr)     { super(nameStr) ; }
+    }
+
+    Name name ;
+    Object value ;
+    private Log log = LogFactory.getLog(Feature.class) ;
+    
+    private Feature(Name name) { this.name = name ; }
+    
+    public Feature(Name name, String value)
+    { this(name) ; this.value = value ; }
+    
+    public Feature(Name name, long value)
+    { this(name) ; this.value = value ; }
+
+    public Object getAsObject()         { return value ; }
+    
+    public String getAsString()
+    {
+        if ( value instanceof String )
+            return (String)value ;
+        log.warn("Not a string: "+this) ;
+        return null ;
+    }
+    
+    public long getAsInteger()
+    {
+        if ( value instanceof Long )
+            return (Long)value ;
+        log.warn("Not a long: "+this) ;
+        return -1 ;
+    }
+
+    // Interface Named
+    public String getName()
+    {
+        return toString() ;
+    }
+
+    // Printable
+    public void output(IndentedWriter out)
+    {
+        out.print(toString()) ;
+    }
+    
+    @Override
+    public String toString() { return name+"="+value ; }
+}
+
+//public enum Feature //implements Named
+//{
 //    // What about layout and DBType?  Aren't these "features"?
 //    
 //    // Some placeholders
@@ -26,14 +85,14 @@ public enum Feature //implements Named
 //    Layout2_NodeKeyColName { public String getName() { return "NodeKeyColName" ; } } ,
 //    ;
 //
-    ;
+
 //    public /*abstract*/ String getURI() { return "" ; }
 //
 //    public String getName()
 //    {
 //        return null ;
-//    } 
-}
+//    }
+//    }
 
 /*
  * (c) Copyright 2006 Hewlett-Packard Development Company, LP
