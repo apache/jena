@@ -21,7 +21,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JRuby"/>
 	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/arq-extra.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDBC-Derby"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDBC"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
