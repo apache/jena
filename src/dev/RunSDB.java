@@ -53,12 +53,12 @@ public class RunSDB
         SDBConnection.logSQLExceptions = true ;
         //run() ;
         //SDBConnection.logSQLStatements = true ;
-        //runQuery("Q.rq", "D.ttl") ;
+        runQuery("Q.rq") ;
         
         
         //runQuad() ;
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
         //run() ;
         System.err.println("Nothing ran!") ;
@@ -137,6 +137,15 @@ public class RunSDB
         sdb.sdbquery.main(a) ;
      }
 
+     public static void runQuery(String queryFile)
+     {
+        //String a[] = {"-v", "--time","--sdb=Store/sdb-hsqldb-file.ttl", "--query=Q.rq" } ;
+        String a[] = {"--sdb=sdb.ttl", "--query="+queryFile } ;
+//        SDBConnection.logSQLStatements = false ;
+//        SDBConnection.logSQLExceptions = true ;
+        sdb.sdbquery.main(a) ;
+     }
+     
      public static void runInMem(String queryFile, String dataFile)
      {
         // Run with normal engine

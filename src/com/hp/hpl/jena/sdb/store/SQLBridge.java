@@ -25,6 +25,9 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface SQLBridge
 {
+    /** Actually build the bridge */
+    public void build() ;
+    
     /** Get the (possibly altered) SqlNode */
     public SqlNode getSqlNode() ;
     

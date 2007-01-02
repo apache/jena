@@ -49,7 +49,11 @@ public abstract class SQLBridgeBase implements SQLBridge
         this.sqlNodeOriginal = sqlNode ;
         this.projectVars = projectVars ;
         this.sqlNode = sqlNode ;
-        
+    }
+    
+    public final
+    void build()
+    {
         buildValues() ;
         buildProject() ;
     }

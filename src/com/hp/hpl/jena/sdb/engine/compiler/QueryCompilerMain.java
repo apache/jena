@@ -62,6 +62,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
             SQLBridgeFactory f = request.getStore().getSQLBridgeFactory() ;
             
             SQLBridge bridge = f.create(request, sqlNode, projectVars) ;
+            bridge.build();
             sqlNode = bridge.getSqlNode() ;
             
             opSQL.setBridge(bridge) ;

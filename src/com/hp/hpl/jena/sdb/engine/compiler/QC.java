@@ -163,13 +163,16 @@ public class QC
         
         // Add the ORDER BY variables
         List<SortCondition> orderConditions = (List<SortCondition>)query.getOrderBy() ;
-        for ( SortCondition sc : orderConditions )
+        if ( orderConditions != null )
         {
-            List<Var> x = (List<Var>)sc.getExpression().getVarsMentioned() ;
-            for ( Var v :  x )
+            for ( SortCondition sc : orderConditions )
             {
-                if ( ! vars.contains(v) )
-                    vars.add(v) ;
+                List<Var> x = (List<Var>)sc.getExpression().getVarsMentioned() ;
+                for ( Var v :  x )
+                {
+                    if ( ! vars.contains(v) )
+                        vars.add(v) ;
+                }
             }
         }
         return vars ;
