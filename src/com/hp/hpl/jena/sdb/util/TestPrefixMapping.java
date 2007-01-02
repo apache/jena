@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
   $Id: TestPrefixMapping.java,v 1.1 2006/04/28 18:06:27 andy_seaborne Exp $
 */
@@ -59,7 +59,7 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping
 
 
 /*
-    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
