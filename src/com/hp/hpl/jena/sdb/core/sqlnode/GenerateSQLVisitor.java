@@ -239,7 +239,21 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             
             first = false ;
         }
+        
         // And other vars we want.
+        
+//        for ( Var v : sqlNode.getIdScope().getVars() )
+//        {
+//            if ( sqlNode.getCoalesceVars().contains(v) )
+//                continue ;
+//            if ( ! first )
+//                out.print(",") ;
+//            
+//            // Need generated names.
+//            SqlColumn col = sqlNode.getIdScope().getColumnForVar(v) ;
+//            out.print(") AS "+col.getColumnName()) ;
+//        }
+        
         //out.print(" ") ;
         
         out.incIndent() ;

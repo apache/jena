@@ -56,6 +56,18 @@ public class SqlCoalesce extends SqlJoin
             // TODO Value
         }
         
+        // Aliases.
+//        // Also do the variables that pass through but get renamed.
+//        for ( Var v : idScope.getVars() )
+//        {
+//            if ( coalesceVars.contains(v) ) 
+//                continue ;
+//            String sqlColName = genvar.next() ;
+//            SqlColumn col = new SqlColumn(table, sqlColName) ;
+//            idScope.setColumnForVar(v, col) ;
+//            // TODO Value
+//        }
+        
     }
     
     public Set<Var> getCoalesceVars()   { return coalesceVars ; }

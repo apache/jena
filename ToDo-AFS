@@ -21,10 +21,6 @@ SDB ToDo list (and general notes)
 + Coalesce : 
   pass-through vars do not not need renaming but use of SELECT may force it.
 
-+ Derby:
-    Loader is OneTriple loader for present.
-    ** hash version
-
 + Scoping on SqlNodes
   need to record fixed and optional status => getScope returns a record of some kind.
 
