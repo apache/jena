@@ -5,13 +5,13 @@
  * Web site           http://jena.sourceforge.net
  * Created            13 Aug 2004 15:35
  * Filename           $RCSfile: OntDocManagerVocab.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:53:30 $
+ * Last modified on   $Date: 2007-01-02 11:49:32 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -99,7 +99,7 @@ public class OntDocManagerVocab {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

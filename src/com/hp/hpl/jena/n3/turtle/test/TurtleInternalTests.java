@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.query.junit.TestUtils;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TurtleInternalTests.java,v 1.2 2006-12-09 20:49:25 andy_seaborne Exp $
+ * @version 	$Id: TurtleInternalTests.java,v 1.3 2007-01-02 11:49:52 andy_seaborne Exp $
  */
 public class TurtleInternalTests extends TestSuite
 {
@@ -261,7 +261,7 @@ public class TurtleInternalTests extends TestSuite
 }
 
 /*
- *  (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

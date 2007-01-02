@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.94 $
+ * Revision           $Revision: 1.95 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-07-03 10:33:45 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2007-01-02 11:49:47 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.94 2006-07-03 10:33:45 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.95 2007-01-02 11:49:47 andy_seaborne Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2993,7 +2993,7 @@ public class OntModelImpl
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

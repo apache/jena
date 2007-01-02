@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  30-Mar-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.44 2006-03-22 13:52:20 andy_seaborne Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.45 2007-01-02 11:51:00 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.44 $ on $Date: 2006-03-22 13:52:20 $
+ * @version $Revision: 1.45 $ on $Date: 2007-01-02 11:51:00 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -443,7 +443,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

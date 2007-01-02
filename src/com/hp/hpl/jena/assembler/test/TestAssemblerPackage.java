@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerPackage.java,v 1.4 2006-01-11 10:40:38 chris-dollin Exp $
+ 	$Id: TestAssemblerPackage.java,v 1.5 2007-01-02 11:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -23,7 +23,7 @@ public class TestAssemblerPackage extends TestCase
 
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NoSpecificTypeException.java,v 1.1 2006-01-09 14:36:42 chris-dollin Exp $
+ 	$Id: NoSpecificTypeException.java,v 1.2 2007-01-02 11:49:34 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -42,7 +42,7 @@ public class NoSpecificTypeException extends AssemblerException
 
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

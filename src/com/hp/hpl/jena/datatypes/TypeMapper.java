@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  07-Dec-02
  * 
- * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TypeMapper.java,v 1.8 2006-03-22 13:52:23 andy_seaborne Exp $
+ * $Id: TypeMapper.java,v 1.9 2007-01-02 11:53:45 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that is used to represent them.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2006-03-22 13:52:23 $
+ * @version $Revision: 1.9 $ on $Date: 2007-01-02 11:53:45 $
  */
 public class TypeMapper {
 
@@ -147,7 +147,7 @@ public class TypeMapper {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

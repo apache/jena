@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestImportManager.java,v 1.7 2006-01-12 16:50:34 chris-dollin Exp $
+ 	$Id: TestImportManager.java,v 1.8 2007-01-02 11:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -129,7 +129,7 @@ public class TestImportManager extends AssemblerTestBase
 
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

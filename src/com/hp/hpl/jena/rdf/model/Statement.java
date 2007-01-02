@@ -1,7 +1,7 @@
 /*
-	(c) Copyright 2000-2004, 2005, 2006 Hewlett-Packard Development Company, LP
+	(c) Copyright 2000-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.14 2006-07-18 14:08:30 chris-dollin Exp $
+	$Id: Statement.java,v 1.15 2007-01-02 11:48:35 andy_seaborne Exp $
 */
 
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.*;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2006-07-18 14:08:30 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2007-01-02 11:48:35 $
  */
 
 public interface Statement extends FrontsTriple
@@ -411,7 +411,7 @@ public interface Statement extends FrontsTriple
     void removeReification();
 }
 /*
-	  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+	  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 	  All rights reserved.
 	 
 	 Redistribution and use in source and binary forms, with or without

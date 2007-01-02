@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based on earlier code by der)
-* @version $Revision: 1.6 $ on $Date: 2006-03-22 13:53:10 $
+* @version $Revision: 1.7 $ on $Date: 2007-01-02 11:51:39 $
 */
 
 public interface IDBConnection {
@@ -227,7 +227,7 @@ public interface IDBConnection {
 }
 
 /*
- *  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

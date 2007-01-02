@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  16-Jun-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.17 2006-03-22 13:52:20 andy_seaborne Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.18 2007-01-02 11:50:58 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * data scanning hook. Implements datatype range validation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2006-03-22 13:52:20 $
+ * @version $Revision: 1.18 $ on $Date: 2007-01-02 11:50:58 $
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
     
@@ -209,7 +209,7 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

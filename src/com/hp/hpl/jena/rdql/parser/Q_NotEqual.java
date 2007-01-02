@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdql.*;
 
 /** 
  * @author Automatically generated class: Operator: NotEqual
- * @version $Id: Q_NotEqual.java,v 1.9 2006-03-22 13:52:21 andy_seaborne Exp $
+ * @version $Id: Q_NotEqual.java,v 1.10 2007-01-02 11:49:57 andy_seaborne Exp $
  */
 
 public class Q_NotEqual extends ExprNode implements Expr, ExprBoolean
@@ -112,7 +112,7 @@ public class Q_NotEqual extends ExprNode implements Expr, ExprBoolean
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

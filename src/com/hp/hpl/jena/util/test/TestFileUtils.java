@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestFileUtils.java,v 1.8 2006-11-28 13:53:25 andy_seaborne Exp $
+  $Id: TestFileUtils.java,v 1.9 2007-01-02 11:53:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -143,7 +143,7 @@ public class TestFileUtils extends TestCase
 
 
 /*
-    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

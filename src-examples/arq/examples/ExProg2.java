@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 /** Example : Build a query with a filter programmatically 
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg2.java,v 1.4 2006-12-18 09:48:30 andy_seaborne Exp $
+ * @version $Id: ExProg2.java,v 1.5 2007-01-02 11:52:30 andy_seaborne Exp $
  */
 
 public class ExProg2
@@ -122,7 +122,7 @@ public class ExProg2
 
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

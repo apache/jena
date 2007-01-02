@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ModelGraphInterface.java,v 1.4 2006-03-22 13:53:12 andy_seaborne Exp $
+  $Id: ModelGraphInterface.java,v 1.5 2007-01-02 11:48:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -43,7 +43,7 @@ public interface ModelGraphInterface
     }
 
 /*
-    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

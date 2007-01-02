@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.7 2006-05-01 10:54:06 chris-dollin Exp $
+ 	$Id: AssemblerGroup.java,v 1.8 2007-01-02 11:52:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -79,7 +79,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
 
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

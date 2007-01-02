@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.15 2006-01-16 15:19:45 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.16 2007-01-02 11:49:41 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -182,7 +182,7 @@ public class NiceIterator implements ExtendedIterator
     }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

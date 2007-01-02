@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Feb-03
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.16 2006-03-22 13:53:23 andy_seaborne Exp $
+ * $Id: XSDBaseNumericType.java,v 1.17 2007-01-02 11:48:24 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2006-03-22 13:53:23 $
+ * @version $Revision: 1.17 $ on $Date: 2007-01-02 11:48:24 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 

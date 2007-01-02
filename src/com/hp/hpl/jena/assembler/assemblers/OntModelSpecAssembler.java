@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelSpecAssembler.java,v 1.7 2006-10-03 14:48:51 chris-dollin Exp $
+ 	$Id: OntModelSpecAssembler.java,v 1.8 2007-01-02 11:52:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -102,7 +102,7 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
 
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

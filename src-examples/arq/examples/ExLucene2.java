@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * finds which doicuments have DC titles
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene2.java,v 1.2 2006-12-18 09:48:30 andy_seaborne Exp $
+ * @version $Id: ExLucene2.java,v 1.3 2007-01-02 11:52:30 andy_seaborne Exp $
  */
 
 public class ExLucene2
@@ -57,7 +57,7 @@ public class ExLucene2
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

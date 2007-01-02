@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.10 2006-12-04 15:30:47 jeremy_carroll Exp $
+  $Id: TestModelRead.java,v 1.11 2007-01-02 11:48:26 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -123,7 +123,7 @@ public class TestModelRead extends ModelTestBase
 
 
 /*
- * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP All
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP All
  * rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

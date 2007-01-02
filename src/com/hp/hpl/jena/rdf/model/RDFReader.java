@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReader.java,v 1.10 2006-03-22 13:53:12 andy_seaborne Exp $
+ * $Id: RDFReader.java,v 1.11 2007-01-02 11:48:34 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,7 +36,7 @@ import java.io.InputStream;
  * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
  *
  * @author bwm
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public interface RDFReader {
 

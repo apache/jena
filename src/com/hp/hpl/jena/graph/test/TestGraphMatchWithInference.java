@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMatchWithInference.java,v 1.3 2006-03-22 13:52:22 andy_seaborne Exp $
+  $Id: TestGraphMatchWithInference.java,v 1.4 2007-01-02 11:50:08 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -44,7 +44,7 @@ public class TestGraphMatchWithInference extends GraphTestBase
     }
 
 /*
-    (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -7,7 +7,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: juuid.java,v 1.1 2006-12-18 18:27:25 andy_seaborne Exp $
+ * @version  $Id: juuid.java,v 1.2 2007-01-02 11:51:15 andy_seaborne Exp $
  */
 
 package jena;
@@ -164,7 +164,7 @@ public class juuid extends CmdGeneral
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

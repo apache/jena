@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ImportManager.java,v 1.5 2006-01-13 10:55:34 chris-dollin Exp $
+ 	$Id: ImportManager.java,v 1.6 2007-01-02 11:52:47 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -101,7 +101,7 @@ public class ImportManager
 
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

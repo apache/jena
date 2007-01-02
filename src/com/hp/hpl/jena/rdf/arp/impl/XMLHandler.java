@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * (c) Copyright 2003, Plugged In Software 
@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.26 2006-09-27 20:18:23 chris-dollin Exp $
+ * $Id: XMLHandler.java,v 1.27 2007-01-02 11:51:26 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */

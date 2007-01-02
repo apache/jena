@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -9,7 +9,7 @@ import junit.framework.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: DevTestSuite.java,v 1.1 2006-12-09 20:39:46 andy_seaborne Exp $
+ * @version 	$Id: DevTestSuite.java,v 1.2 2007-01-02 11:49:52 andy_seaborne Exp $
  */
 public class DevTestSuite extends TestSuite
 {
@@ -26,7 +26,7 @@ public class DevTestSuite extends TestSuite
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

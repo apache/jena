@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.34 2006-03-22 13:52:17 andy_seaborne Exp $
+    $Id: WGTestSuite.java,v 1.35 2007-01-02 11:49:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -1017,7 +1017,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     }
 }
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.Node;
 /** Map from _:* form to bNodes
  * 
  * @author Andy Seaborne
- * @version $Id: LabelToNodeMap.java,v 1.1 2006-12-10 17:10:26 andy_seaborne Exp $
+ * @version $Id: LabelToNodeMap.java,v 1.2 2007-01-02 11:51:51 andy_seaborne Exp $
  */
 
 public class LabelToNodeMap
@@ -47,7 +47,7 @@ public class LabelToNodeMap
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

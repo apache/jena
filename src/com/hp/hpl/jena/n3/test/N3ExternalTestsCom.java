@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.FileUtils;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.13 2006-03-22 13:53:34 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.14 2007-01-02 11:49:16 andy_seaborne Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
@@ -92,7 +92,7 @@ public abstract class N3ExternalTestsCom extends TestSuite
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

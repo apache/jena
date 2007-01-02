@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  03-May-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.8 2006-03-22 13:53:06 andy_seaborne Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.9 2007-01-02 11:52:33 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2006-03-22 13:53:06 $
+ * @version $Revision: 1.9 $ on $Date: 2007-01-02 11:52:33 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -367,7 +367,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

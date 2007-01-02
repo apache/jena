@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Triple;
 
 /**
  * @author Andy Seaborne
- * @version $Id: TripleHandlerNull.java,v 1.1 2006-12-09 20:39:55 andy_seaborne Exp $
+ * @version $Id: TripleHandlerNull.java,v 1.2 2007-01-02 11:51:51 andy_seaborne Exp $
  */
 public class TripleHandlerNull implements TripleHandler
 {
@@ -20,7 +20,7 @@ public class TripleHandlerNull implements TripleHandler
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

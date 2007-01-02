@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Jun-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.22 2006-04-24 11:28:14 der Exp $
+ * $Id: TestGenericRules.java,v 1.23 2007-01-02 11:50:31 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2006-04-24 11:28:14 $
+ * @version $Revision: 1.23 $ on $Date: 2007-01-02 11:50:31 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -419,7 +419,7 @@ public class TestGenericRules extends TestCase {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

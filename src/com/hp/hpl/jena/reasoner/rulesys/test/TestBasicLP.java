@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Jul-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.14 2006-03-22 13:53:01 andy_seaborne Exp $
+ * $Id: TestBasicLP.java,v 1.15 2007-01-02 11:50:29 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -29,7 +29,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2006-03-22 13:53:01 $
+ * @version $Revision: 1.15 $ on $Date: 2007-01-02 11:50:29 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1337,7 +1337,7 @@ public class TestBasicLP  extends TestCase {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

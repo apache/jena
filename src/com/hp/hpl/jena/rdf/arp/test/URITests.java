@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright 2000-2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c)     Copyright 2000-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: URITests.java,v 1.14 2006-03-22 13:52:17 andy_seaborne Exp $
+ *  $Id: URITests.java,v 1.15 2007-01-02 11:49:14 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -108,7 +108,7 @@ public class URITests
 }
 
 /*
-    (c) Copyright 2000-2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2000-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

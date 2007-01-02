@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
  * Example factory for an extension query engine 
  * 
  * @author Andy Seaborne
- * @version $Id: MyEngineFactory.java,v 1.3 2006-12-18 09:48:32 andy_seaborne Exp $
+ * @version $Id: MyEngineFactory.java,v 1.4 2007-01-02 11:53:35 andy_seaborne Exp $
  */
 
 public class MyEngineFactory implements QueryEngineFactory 
@@ -49,7 +49,7 @@ public class MyEngineFactory implements QueryEngineFactory
 }
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

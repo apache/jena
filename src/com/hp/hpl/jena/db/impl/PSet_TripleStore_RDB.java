@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.56 2006-11-23 18:01:18 chris-dollin Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.57 2007-01-02 11:50:42 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.56 $ on $Date: 2006-11-23 18:01:18 $
+* @version $Revision: 1.57 $ on $Date: 2007-01-02 11:50:42 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -885,7 +885,7 @@ if ( hack != 0 ) {
 }
 
 /*
- *  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

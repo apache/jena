@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.vocabulary.DC;
  * then execute a SPARQL query with a Lucene search in it.
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene3.java,v 1.2 2006-12-18 09:48:30 andy_seaborne Exp $
+ * @version $Id: ExLucene3.java,v 1.3 2007-01-02 11:52:30 andy_seaborne Exp $
  */
 
 public class ExLucene3
@@ -83,7 +83,7 @@ public class ExLucene3
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

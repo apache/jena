@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestInfModel.java,v 1.2 2006-03-22 13:53:14 andy_seaborne Exp $
+ * $Id: TestInfModel.java,v 1.3 2007-01-02 11:50:50 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
  * particular reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 
 public class TestInfModel extends TestCase {
@@ -77,7 +77,7 @@ public class TestInfModel extends TestCase {
 
 
 /*
-    (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

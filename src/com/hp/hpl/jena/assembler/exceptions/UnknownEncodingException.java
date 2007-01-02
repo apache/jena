@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: UnknownEncodingException.java,v 1.3 2006-01-06 11:48:51 chris-dollin Exp $
+ 	$Id: UnknownEncodingException.java,v 1.4 2007-01-02 11:49:34 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.exceptions;
@@ -39,7 +39,7 @@ public class UnknownEncodingException extends AssemblerException
 
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

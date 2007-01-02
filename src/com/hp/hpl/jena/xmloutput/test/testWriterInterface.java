@@ -1,8 +1,8 @@
 /*
-    (c)      Copyright 2001, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c)      Copyright 2001, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterInterface.java,v 1.14 2006-03-22 13:53:14 andy_seaborne Exp $
+    $Id: testWriterInterface.java,v 1.15 2007-01-02 11:49:08 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.xmloutput.impl.Basic;
 /**
  *
  * @author  bwm, jjc
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class testWriterInterface extends ModelTestBase {
     private String lang;
@@ -110,7 +110,7 @@ public class testWriterInterface extends ModelTestBase {
 
 }
 /*
- *  (c)   Copyright 2001,2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c)   Copyright 2001,2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *    All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -135,5 +135,5 @@ public class testWriterInterface extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterInterface.java,v 1.14 2006-03-22 13:53:14 andy_seaborne Exp $
+ * $Id: testWriterInterface.java,v 1.15 2007-01-02 11:49:08 andy_seaborne Exp $
  */

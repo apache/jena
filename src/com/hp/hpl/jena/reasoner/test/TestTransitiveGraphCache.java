@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  25-Nov-2004
  * 
- * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTransitiveGraphCache.java,v 1.16 2006-03-22 13:53:14 andy_seaborne Exp $
+ * $Id: TestTransitiveGraphCache.java,v 1.17 2007-01-02 11:50:50 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
  * off the main unit test paths.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 
 public class TestTransitiveGraphCache extends TestCase {
@@ -548,7 +548,7 @@ public class TestTransitiveGraphCache extends TestCase {
 
 
 /*
-    (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

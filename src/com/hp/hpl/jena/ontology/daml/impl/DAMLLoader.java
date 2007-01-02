@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:23 $
+ * Last modified on   $Date: 2007-01-02 11:51:46 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * some of the behaviours of the DAML model, such as processing imports.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.10 2006-03-22 13:52:23 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.11 2007-01-02 11:51:46 andy_seaborne Exp $
  */
 public class DAMLLoader
 {
@@ -289,7 +289,7 @@ public class DAMLLoader
 }
 
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

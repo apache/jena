@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-Dec-02
  * 
- * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseDatatype.java,v 1.13 2006-03-22 13:52:23 andy_seaborne Exp $
+ * $Id: BaseDatatype.java,v 1.14 2007-01-02 11:53:45 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * can inherit.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2006-03-22 13:52:23 $
+ * @version $Revision: 1.14 $ on $Date: 2007-01-02 11:53:45 $
  */
 public class BaseDatatype implements RDFDatatype {
     
@@ -202,7 +202,7 @@ public class BaseDatatype implements RDFDatatype {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

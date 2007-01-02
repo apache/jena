@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -10,7 +10,7 @@ import java.util.* ;
 /** A command line argument that has been foundspecification.
  *
  * @author  Andy Seaborne
- * @version $Id: Arg.java,v 1.7 2006-03-22 13:53:37 andy_seaborne Exp $
+ * @version $Id: Arg.java,v 1.8 2007-01-02 11:52:22 andy_seaborne Exp $
  */
 public class Arg
 {
@@ -43,7 +43,7 @@ public class Arg
         
 }
 /*
- *  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

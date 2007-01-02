@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.31 2006-10-07 11:45:19 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.32 2007-01-02 11:48:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -207,7 +207,7 @@ public class FileGraph extends GraphMemFaster
     }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

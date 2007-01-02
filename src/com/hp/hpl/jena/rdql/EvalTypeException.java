@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 /** Specific exception for a type mismatch in the expression evaluation.
  * @author		Andy Seaborne
- * @version 	$Id: EvalTypeException.java,v 1.7 2006-03-22 13:53:13 andy_seaborne Exp $
+ * @version 	$Id: EvalTypeException.java,v 1.8 2007-01-02 11:52:27 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -17,7 +17,7 @@ public class EvalTypeException extends EvalFailureException
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

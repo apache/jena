@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestTripleField.java,v 1.4 2006-03-22 13:52:22 andy_seaborne Exp $
+ 	$Id: TestTripleField.java,v 1.5 2007-01-02 11:50:09 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -79,7 +79,7 @@ public class TestTripleField extends GraphTestBase
 
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web site           http://jena.sourceforge.net
  * Created            08-Sep-2005
  * Filename           $RCSfile: DIGInconsistentKBException.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:52:53 $
+ * Last modified on   $Date: 2007-01-02 11:49:27 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -34,7 +34,7 @@ package com.hp.hpl.jena.reasoner.dig;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGInconsistentKBException.java,v 1.2 2006-03-22 13:52:53 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGInconsistentKBException.java,v 1.3 2007-01-02 11:49:27 andy_seaborne Exp $)
  */
 public class DIGInconsistentKBException
     extends DIGErrorResponseException
@@ -71,7 +71,7 @@ public class DIGInconsistentKBException
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 package com.hp.hpl.jena.util.tuple;
@@ -8,7 +8,7 @@ package com.hp.hpl.jena.util.tuple;
  * The unit found in a line of a tuple.
  * Can be a string (quoted, possibly with the datatype, or unquoted) or a URI.
  * @author   Andy Seaborne
- * @version  $Id: TupleItem.java,v 1.5 2006-03-22 13:53:09 andy_seaborne Exp $
+ * @version  $Id: TupleItem.java,v 1.6 2007-01-02 11:54:07 andy_seaborne Exp $
  */
 public class TupleItem
 {

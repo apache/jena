@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 * when the threshold limit is exceeded.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.6 $ on $Date: 2006-03-22 13:52:47 $
+* @version $Revision: 1.7 $ on $Date: 2007-01-02 11:50:44 $
 */
 
 public class SimpleCache implements ICache {
@@ -96,7 +96,7 @@ public class SimpleCache implements ICache {
     }
 }
 /*
- *  (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -13,7 +13,7 @@ import junit.framework.TestSuite;
 /** This class provides an indiret way to get the ARQ test suite.
  *   This is done to remove a Jena compile-time dependency on ARQ. 
  * @author Andy Seaborne
- * @version $Id: TestPackageARQ.java,v 1.1 2006-12-09 20:40:13 andy_seaborne Exp $
+ * @version $Id: TestPackageARQ.java,v 1.2 2007-01-02 11:53:31 andy_seaborne Exp $
  */ 
 
 public class TestPackageARQ extends TestSuite
@@ -54,7 +54,7 @@ public class TestPackageARQ extends TestSuite
 }
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

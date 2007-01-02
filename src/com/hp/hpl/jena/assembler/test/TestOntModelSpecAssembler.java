@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelSpecAssembler.java,v 1.6 2006-10-03 14:48:42 chris-dollin Exp $
+ 	$Id: TestOntModelSpecAssembler.java,v 1.7 2007-01-02 11:52:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -164,7 +164,7 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
 
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2006-03-22 13:53:23 $
+ * Last modified on   $Date: 2007-01-02 11:51:58 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.15 2006-03-22 13:53:23 andy_seaborne Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.16 2007-01-02 11:51:58 andy_seaborne Exp $
  */
 public class TestDAMLClass
     extends DAMLTestBase
@@ -414,7 +414,7 @@ public class TestDAMLClass
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

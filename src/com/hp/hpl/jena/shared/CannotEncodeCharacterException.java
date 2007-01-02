@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: CannotEncodeCharacterException.java,v 1.1 2006-09-12 10:40:52 chris-dollin Exp $
+ 	$Id: CannotEncodeCharacterException.java,v 1.2 2007-01-02 11:48:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;

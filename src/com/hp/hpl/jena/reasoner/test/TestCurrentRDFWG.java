@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  25-Jul-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestCurrentRDFWG.java,v 1.10 2006-03-22 13:53:14 andy_seaborne Exp $
+ * $Id: TestCurrentRDFWG.java,v 1.11 2007-01-02 11:50:50 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  * Test the default RDFS reasoner against the current set of working group tests
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2006-03-22 13:53:14 $
+ * @version $Revision: 1.11 $ on $Date: 2007-01-02 11:50:50 $
  */
 public class TestCurrentRDFWG extends ReasonerTestBase {
     
@@ -156,7 +156,7 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

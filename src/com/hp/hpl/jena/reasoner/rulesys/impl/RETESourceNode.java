@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  10-Jun-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETESourceNode.java,v 1.6 2006-03-22 13:52:24 andy_seaborne Exp $
+ * $Id: RETESourceNode.java,v 1.7 2007-01-02 11:48:40 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -13,7 +13,7 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * Interface for all non-terminal nodes in the network.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2006-03-22 13:52:24 $
+ * @version $Revision: 1.7 $ on $Date: 2007-01-02 11:48:40 $
  */
 public interface RETESourceNode extends RETENode {
     
@@ -26,7 +26,7 @@ public interface RETESourceNode extends RETENode {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

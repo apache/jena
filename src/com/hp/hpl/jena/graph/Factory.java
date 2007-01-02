@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.27 2006-10-09 14:16:16 chris-dollin Exp $
+  $Id: Factory.java,v 1.28 2007-01-02 11:49:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -59,7 +59,7 @@ public class Factory
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

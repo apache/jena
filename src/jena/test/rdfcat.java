@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: rdfcat.java,v 1.1 2006-01-17 09:20:25 chris-dollin Exp $
+ 	$Id: rdfcat.java,v 1.2 2007-01-02 11:52:45 andy_seaborne Exp $
 */
 
 package jena.test;
@@ -49,7 +49,7 @@ public class rdfcat extends TestCase
 
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

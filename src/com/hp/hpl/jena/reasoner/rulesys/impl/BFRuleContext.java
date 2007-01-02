@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  15-Apr-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.16 2006-07-14 12:26:46 der Exp $
+ * $Id: BFRuleContext.java,v 1.17 2007-01-02 11:48:41 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2006-07-14 12:26:46 $
+ * @version $Revision: 1.17 $ on $Date: 2007-01-02 11:48:41 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -229,7 +229,7 @@ public class BFRuleContext implements RuleContext {
 }
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

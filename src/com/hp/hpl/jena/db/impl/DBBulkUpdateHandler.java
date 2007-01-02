@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.21 2006-04-21 14:18:43 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.22 2007-01-02 11:50:44 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.db.*;
     handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.21 $
+ 	@version $Revision: 1.22 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -165,7 +165,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 
 
 /*
-    (c) Copyright 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-Jun-2003
  * 
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.32 2006-03-22 13:53:01 andy_seaborne Exp $
+ * $Id: DebugOWL.java,v 1.33 2007-01-02 11:50:30 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2006-03-22 13:53:01 $
+ * @version $Revision: 1.33 $ on $Date: 2007-01-02 11:50:30 $
  */
 public class DebugOWL {
 
@@ -381,7 +381,7 @@ public class DebugOWL {
 
 
 /*
-    (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

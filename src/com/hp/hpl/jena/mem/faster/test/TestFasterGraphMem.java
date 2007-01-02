@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFasterGraphMem.java,v 1.3 2006-10-09 08:21:04 chris-dollin Exp $
+ 	$Id: TestFasterGraphMem.java,v 1.4 2007-01-02 11:53:21 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -60,7 +60,7 @@ public class TestFasterGraphMem extends AbstractTestGraph
 
 
 /*
- * (c) Copyright 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

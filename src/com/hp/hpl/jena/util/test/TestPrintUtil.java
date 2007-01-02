@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2006, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestPrintUtil.java,v 1.1 2006-08-16 08:16:45 der Exp $
+ * $Id: TestPrintUtil.java,v 1.2 2007-01-02 11:53:25 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util.test;
@@ -58,7 +58,7 @@ public class TestPrintUtil extends TestCase
 
 
 /*
-    (c) Copyright 2006 Hewlett-Packard Development Company, LP
+    (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

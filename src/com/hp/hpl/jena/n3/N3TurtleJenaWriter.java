@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -12,7 +12,7 @@ package com.hp.hpl.jena.n3;
 /** Turtle writer.  It is actually an appropriately configured   
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3TurtleJenaWriter.java,v 1.1 2006-12-09 20:40:09 andy_seaborne Exp $
+ * @version 	$Id: N3TurtleJenaWriter.java,v 1.2 2007-01-02 11:48:32 andy_seaborne Exp $
  */
 
 
@@ -31,7 +31,7 @@ public class N3TurtleJenaWriter extends N3JenaWriter
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

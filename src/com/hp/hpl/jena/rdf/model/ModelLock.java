@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -56,7 +56,7 @@
  * that does some checking.
  *
  * @author      Andy Seaborne
- * @version     $Id: ModelLock.java,v 1.6 2006-03-22 13:53:12 andy_seaborne Exp $
+ * @version     $Id: ModelLock.java,v 1.7 2007-01-02 11:48:34 andy_seaborne Exp $
  */
 
 
@@ -79,7 +79,7 @@ public interface ModelLock extends Lock
 
 
 /*
- *  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

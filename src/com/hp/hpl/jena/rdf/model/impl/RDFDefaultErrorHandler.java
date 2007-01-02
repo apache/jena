@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2001-2004, 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2001-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RDFDefaultErrorHandler.java,v 1.11 2006-03-22 13:52:30 andy_seaborne Exp $
+  $Id: RDFDefaultErrorHandler.java,v 1.12 2007-01-02 11:48:30 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
  * The default error handler for I/O.
  * This uses log4j as its utility.
  * @author  jjc,bwm
- * @version $Revision: 1.11 $ $Date: 2006-03-22 13:52:30 $
+ * @version $Revision: 1.12 $ $Date: 2007-01-02 11:48:30 $
  */
 public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 
@@ -48,7 +48,7 @@ public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
     }
 }
 /*
- *  (c) Copyright 2001-2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,5 +73,5 @@ public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFDefaultErrorHandler.java,v 1.11 2006-03-22 13:52:30 andy_seaborne Exp $
+ * $Id: RDFDefaultErrorHandler.java,v 1.12 2007-01-02 11:48:30 andy_seaborne Exp $
  */

@@ -1,7 +1,7 @@
 /*
- 	(c) Copyright 2006 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ConnectionAssembler.java,v 1.8 2006-11-16 14:44:47 chris-dollin Exp $
+ 	$Id: ConnectionAssembler.java,v 1.9 2007-01-02 11:52:55 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -111,7 +111,7 @@ public class ConnectionAssembler extends AssemblerBase implements Assembler
 
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

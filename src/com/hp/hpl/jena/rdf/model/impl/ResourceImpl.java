@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.38 2006-09-05 12:15:40 andy_seaborne Exp $
+  $Id: ResourceImpl.java,v 1.39 2007-01-02 11:48:30 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.38 $' Date='$Date: 2006-09-05 12:15:40 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.39 $' Date='$Date: 2007-01-02 11:48:30 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -277,7 +277,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         { return (ModelCom) getGraph(); }
 }
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
