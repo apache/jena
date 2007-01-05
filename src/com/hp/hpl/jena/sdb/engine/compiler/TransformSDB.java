@@ -93,16 +93,16 @@ public class TransformSDB extends TransformCopy
         Set<Var> x = SetUtils.intersection(optDefsLeft, sqlRight.getIdScope().getVars()) ;
         if ( x.size() > 0  ) 
         {
-            log.warn("Coalesce required: "+x) ;
+            log.fatal("Coalesce required: "+x) ;
+            // Need to do this and, at the same time, build the coalesce lists. 
+            SqlNode sqlNode = QC.leftJoinCoalesce(request, sqlLeft, sqlRight, x) ;
             
-//            for ( Var v : x )
-//            {
-//                SqlColumn leftCol = sqlLeft.getIdScope().getColumnForVar(v) ;
-//                SqlColumn rightCol = sqlRight.getIdScope().getColumnForVar(v) ;
-//                log.warn(leftCol+" / "+rightCol) ;
-//            }
-            return new OpSQL(SqlCoalesce.merge(genCoalesceAlias.next(), sqlLeft, sqlRight, x), opJoin, request) ;
-            //return super.transform(opJoin, left, right) ;
+            
+            // DOES NOT DO QC.leftJoin => no conditions between left and right.
+            //return new OpSQL(SqlCoalesce.create(genCoalesceAlias.next(), sqlNode, x), opJoin, request) ;
+            
+            // Punt
+            return super.transform(opJoin, left, right) ;
         }
         
         return new OpSQL(QC.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;

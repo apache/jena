@@ -64,13 +64,13 @@ public class SQLBridge2 extends SQLBridgeBase
         {
             if ( ! v.isNamedVar() )
                 continue ;
-            
-            SqlColumn vCol = getSqlNode().getNodeScope().getColumnForVar(v) ;
-            if ( vCol == null )
+            ScopeEntry e = getSqlNode().getNodeScope().getColumnForVar(v) ;
+            if ( e == null )
             {
                 // Should be a column mentioned in the SELECT which is not mentioned in this block
                 continue ;
             }
+            SqlColumn vCol = e.getColumn() ; 
     
             SqlTable table = vCol.getTable() ;
             String sqlVarName = allocSqlName(v) ;
@@ -100,25 +100,26 @@ public class SQLBridge2 extends SQLBridgeBase
     
     private SqlNode insertValueGetter(SDBRequest request, SqlNode sqlNode, Var var)
     {
-        SqlColumn c1 = sqlNode.getIdScope().getColumnForVar(var) ;
-        if ( c1 == null )
+        ScopeEntry e1 = sqlNode.getIdScope().getColumnForVar(var) ;
+        if ( e1 == null )
         {
             // Debug.
             Scope scope = sqlNode.getIdScope() ;
             // Variable not actually in results.
             return sqlNode ;
         }
-
+        
         // Already in scope (from a condition)?
-        SqlColumn c2 = sqlNode.getNodeScope().getColumnForVar(var) ;
-        if ( c2 != null )
+        ScopeEntry e2 = sqlNode.getNodeScope().getColumnForVar(var) ;
+        if ( e2 != null )
             // Already there
             return sqlNode ;
-
+        
+        SqlColumn c1 = e1.getColumn() ;
         // Not in scope -- add a table to get it
         SqlTable nTable = new TableNodes(genNodeResultAlias.next()) ;
         String nodeKeyColName = request.getStore().getNodeKeyColName() ;
-        c2 = new SqlColumn(nTable, nodeKeyColName) ;
+        SqlColumn c2 = new SqlColumn(nTable, nodeKeyColName) ;
 
         nTable.setValueColumnForVar(var, c2) ;
         // Condition for value: triple table column = node table id/hash 

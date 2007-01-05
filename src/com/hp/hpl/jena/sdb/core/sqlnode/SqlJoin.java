@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.Scope2;
+import com.hp.hpl.jena.sdb.core.ScopeOptional;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 
@@ -47,8 +48,18 @@ public abstract class SqlJoin extends SqlNodeBase
         this.joinType = joinType ;
         this.left = left ;
         this.right = right ;
-        idScope = new Scope2(left.getIdScope(), right.getIdScope()) ;
-        nodeScope = new Scope2(left.getNodeScope(), right.getNodeScope()) ;
+        
+        if ( joinType == JoinType.LEFT )
+        {
+            // If a left join, the RHS may be null. 
+            idScope = new Scope2(left.getIdScope(), new ScopeOptional(right.getIdScope())) ;
+            nodeScope = new Scope2(left.getNodeScope(),  new ScopeOptional(right.getNodeScope())) ;
+        }
+        else
+        {
+            idScope = new Scope2(left.getIdScope(), right.getIdScope()) ;
+            nodeScope = new Scope2(left.getNodeScope(), right.getNodeScope()) ;
+        }
     } 
     
     public SqlNode   getLeft()   { return left ; }

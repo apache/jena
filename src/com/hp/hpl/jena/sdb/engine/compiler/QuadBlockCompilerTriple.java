@@ -17,10 +17,7 @@ import com.hp.hpl.jena.query.engine2.op.Quad;
 import com.hp.hpl.jena.query.util.FmtUtils;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.Aliases;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
@@ -81,7 +78,8 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
         Var var = Var.alloc(node) ;
         if ( table.getIdScope().hasColumnForVar(var) )
         {
-            SqlColumn otherCol = table.getIdScope().getColumnForVar(var) ;
+            ScopeEntry e = table.getIdScope().getColumnForVar(var) ;
+            SqlColumn otherCol = e.getColumn() ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;
             c.addNote("processVar: "+node) ;

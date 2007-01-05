@@ -26,8 +26,6 @@ public class ValScope
         this.var = var ;
         this.valType = valType ;
     }
-    
-
 }
 
 /*

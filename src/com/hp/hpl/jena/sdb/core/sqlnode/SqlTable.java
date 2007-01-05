@@ -39,21 +39,9 @@ public class SqlTable extends SqlNodeBase
 
     public String getTableName()  { return tableName ; }
     
-//    public void setColumnForVar(Var var, SqlColumn col)
-//    {
-//        if ( !col.getTable().getTableName().equals(getTableName()) )
-//            throw new SDBException("Attempt to set column in wrong table: Table="+this.getTableName()+" Column: "+col.getFullColumnName()) ;
-//        cols.put(var, col) ;
-//    }
-    
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
 
-//    public Scope getScope()
-//    {
-//        return scope ;
-//    }
-    
     public Scope getIdScope() { return idScope ; }
 
     public Scope getNodeScope()

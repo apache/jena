@@ -152,7 +152,6 @@ public class sdbprint extends CmdArgsDB
         if ( printSqlNode )
         {
             divider() ;
-            // before 
             PrintSDB.printSqlNodes(op) ;
         }
         

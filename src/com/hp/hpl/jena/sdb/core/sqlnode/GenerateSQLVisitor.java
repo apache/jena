@@ -226,9 +226,12 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         {
             if ( ! first )
                 out.print(",") ;
-            SqlColumn col = sqlNode.getIdScope().getColumnForVar(v) ;
-            SqlColumn leftCol = sqlNode.getLeft().getIdScope().getColumnForVar(v) ;
-            SqlColumn rightCol = sqlNode.getRight().getIdScope().getColumnForVar(v) ;
+            SqlColumn col = sqlNode.getIdScope().getColumnForVar(v).getColumn() ;
+//            SqlColumn leftCol = sqlNode.getLeft().getIdScope().getColumnForVar(v).getColumn() ;
+//            SqlColumn rightCol = sqlNode.getRight().getIdScope().getColumnForVar(v).getColumn() ;
+            String leftCol = "left("+v+")" ;
+            String rightCol = "right("+v+")" ;
+            
             out.print(" COALESCE(") ;
             out.print(leftCol.toString()) ;
             out.print(", ") ;
@@ -256,20 +259,16 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         
         //out.print(" ") ;
         
-        out.incIndent() ;
         out.println();
+
+        out.incIndent() ;       // INC
         out.println("FROM") ;
-        out.print("(") ;
-        
-        visitJoin(sqlNode, sqlNode.getJoinType().sqlOperator()) ;
-        out.ensureStartOfLine() ;
-        out.print(")") ;
-        out.decIndent() ;
+        //visitJoin(sqlNode, sqlNode.getJoinType().sqlOperator()) ;
+        out.println("join expressions for coalesce'd thing") ; 
+        out.decIndent() ;       // DEC
         out.ensureStartOfLine() ;
         //throw new SDBNotImplemented("Write SqlCoalesce") ;
-        
         out.print(") AS "+sqlNode.getAliasName()) ;
-        out.decIndent() ;
     }
 
     protected void visitJoin(SqlJoin join, String joinOperator)

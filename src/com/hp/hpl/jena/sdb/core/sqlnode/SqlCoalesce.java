@@ -15,7 +15,7 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-public class SqlCoalesce extends SqlJoin
+public class SqlCoalesce extends SqlNodeBase1
 {
     /* A COALESCE is a special kind of LeftJoin where some
      * variables from the left andf right sides are not equated across
@@ -28,24 +28,27 @@ public class SqlCoalesce extends SqlJoin
     ScopeBase nodeScope ;
     Generator genvar = Gensym.create("VC") ; //new Gensym("VC") ;
     
-    public static SqlCoalesce merge(String alias, SqlNode left, SqlNode right, Set<Var>coalesceVars) 
+    public static SqlCoalesce create(String alias, SqlJoin sqlNode, Set<Var>coalesceVars) 
     {
         // This is not actually true!
         // But at the moment, it is a restriction so we test for it for now and 
         // remove the test when the new cde arrices as the rest of the class and 
         // it's usage then needs to be checked. 
-        if ( ! left.isLeftJoin() )
-            LogFactory.getLog(SqlCoalesce.class).warn("Left side is not a LeftJoin") ;
+        if ( ! sqlNode.isLeftJoin() )
+            LogFactory.getLog(SqlCoalesce.class).warn("SqlCoalesce node is not a LeftJoin") ;
         
-        return new SqlCoalesce(alias, left, right, coalesceVars) ;
+        return new SqlCoalesce(alias, sqlNode, coalesceVars) ;
     }
     
-    private SqlCoalesce(String alias, SqlNode left, SqlNode right, Set<Var> coalesceVars)
+    private SqlCoalesce(String alias, SqlJoin sqlNode, Set<Var> coalesceVars)
     { 
-        super(JoinType.LEFT, right, left, alias) ;
+        super(alias, sqlNode) ;
         this.coalesceVars = coalesceVars ;
+        this.toString() ;
+        // Override the scopes.
         idScope = new ScopeBase(super.getIdScope()) ;
         nodeScope = new ScopeBase(super.getNodeScope()) ;
+        // TODO "Column generator" would be neater.
         SqlTable table = new SqlTable("Coalesce", alias) ;
         
         for ( Var v : coalesceVars )

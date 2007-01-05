@@ -53,12 +53,12 @@ public class RunSDB
         SDBConnection.logSQLExceptions = true ;
         //run() ;
         //SDBConnection.logSQLStatements = true ;
-        runQuery("Q.rq") ;
+        //runQuery("Q.rq") ;
         
         
         //runQuad() ;
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
         //run() ;
         System.err.println("Nothing ran!") ;

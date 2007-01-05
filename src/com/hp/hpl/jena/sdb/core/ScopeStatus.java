@@ -1,24 +1,26 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.Set;
+import com.hp.hpl.jena.query.util.Named;
 
-import com.hp.hpl.jena.query.core.Var;
-
-public interface Scope
+public enum ScopeStatus implements Named 
 {
-    public boolean          hasColumnForVar(Var var) ;
-    public Set<Var>         getVars() ;
-    public ScopeEntry       getColumnForVar(Var var) ;
+    FIXED       { public String getName() { return "Fixed" ; } } , 
+    OPTIONAL    { public String getName() { return "Optional" ; } } ,
+    UNKNOWN     { public String getName() { return "Unknown" ; } } ,
+        ;
+    
+    @Override
+    public String toString() { return getName() ; } 
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

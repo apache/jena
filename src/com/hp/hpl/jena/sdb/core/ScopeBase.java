@@ -48,15 +48,18 @@ public class ScopeBase implements Scope
         return x ;
     }
     
-    public SqlColumn getColumnForVar(Var var)
+    public ScopeEntry getColumnForVar(Var var)
     { 
         if ( frame.containsKey(var) )
-            return frame.get(var) ;
+        {
+            ScopeEntry e = new ScopeEntry(var, frame.get(var)) ;
+            return e ;
+        }
         if ( parent != null )
             return parent.getColumnForVar(var) ;
         return null ;
     }
-        
+
     public void setColumnForVar(Var var, SqlColumn column)
     { 
         // Only check the frame.

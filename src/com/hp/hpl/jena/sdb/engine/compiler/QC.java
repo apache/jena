@@ -25,6 +25,7 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
@@ -45,7 +46,7 @@ public class QC
         return join(request, LEFT, left, right, null) ; 
     }
 
-    public static SqlNode leftJoinCoalesc(SDBRequest request, SqlNode left, SqlNode right, Set<Var> coalesceVars)
+    public static SqlNode leftJoinCoalesce(SDBRequest request, SqlNode left, SqlNode right, Set<Var> coalesceVars)
     {
         return join(request, LEFT, left, right, coalesceVars) ; 
     }
@@ -66,7 +67,7 @@ public class QC
     private static SqlNode join(SDBRequest request, 
                                 JoinType joinType, 
                                 SqlNode left, SqlNode right,
-                                Set<Var> coalesceVars)
+                                Set<Var> ignoreVars)
     {
         if ( left == null )
             return right ; 
@@ -77,15 +78,22 @@ public class QC
             // If it's a LeftJoin, leave the left filter on the LHS.
             left = removeRestrict(left, conditions) ;
         
+        if ( joinType == JoinType.LEFT )
+            // Make RHS scope optionals 
+            ;
+        
         right = removeRestrict(right, conditions) ;
         
         for ( Var v : left.getIdScope().getVars() )
         {
             if ( right.getIdScope().hasColumnForVar(v) )
             {
-                if (coalesceVars == null || ! coalesceVars.contains(v) )
+                if (ignoreVars == null || ! ignoreVars.contains(v) )
                 {
-                    SqlExpr c = new S_Equal(left.getIdScope().getColumnForVar(v), right.getIdScope().getColumnForVar(v)) ;
+                    SqlColumn leftCol = left.getIdScope().getColumnForVar(v).getColumn() ;
+                    SqlColumn rightCol = right.getIdScope().getColumnForVar(v).getColumn() ;
+                    
+                    SqlExpr c = new S_Equal(leftCol, rightCol) ;
                     conditions.add(c) ;
                     c.addNote("Join var: "+v) ; 
                 }

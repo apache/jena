@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
@@ -47,10 +48,10 @@ public class SQLBridge1 extends SQLBridgeBase
                 continue ;
             // Value scope == IdScope for layout1
             // CHECK
-            SqlColumn c = getSqlExprNode().getIdScope().getColumnForVar(v) ;
-            if ( c == null )
+            ScopeEntry e = getSqlExprNode().getIdScope().getColumnForVar(v) ; 
+            if ( e == null )
                 continue ;
-            
+            SqlColumn c = e.getColumn() ;
             String sqlVarName = allocSqlName(v) ;
             addProject(Var.alloc(sqlVarName), c) ;
             addAnnotation(sqlVarName+"="+v.toString()) ;

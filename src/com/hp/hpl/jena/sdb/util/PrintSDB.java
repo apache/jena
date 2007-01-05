@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpExt;
 import com.hp.hpl.jena.query.engine2.op.OpVisitorBase;
 import com.hp.hpl.jena.query.engine2.op.OpWalker;
+import com.hp.hpl.jena.query.util.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.engine.compiler.OpSQL;
@@ -59,8 +60,12 @@ public class PrintSDB
     static class PrintSqlNodes extends OpVisitorBase
     {
         boolean first = true ;
+        private IndentedWriter out ;
+        PrintSqlNodes(IndentedWriter out)
+        { this.out = out ; }
+
         PrintSqlNodes()
-        {}
+        { this.out = new IndentedWriter(System.out) ; }
         
         @Override
         public void visit(OpExt op)
@@ -72,8 +77,10 @@ public class PrintSDB
             }
             OpSQL opSQL = (OpSQL)op ;
             if ( ! first )
-                System.out.println(divider) ;
-            System.out.println(opSQL.toString()) ;
+                out.println(divider) ;
+            opSQL.output(out) ;
+            out.ensureStartOfLine() ;
+            out.flush();
             first = false ;
         }
     }
@@ -82,8 +89,12 @@ public class PrintSDB
     static class PrintSQL extends OpVisitorBase
     {
         boolean first = true ;
+        private IndentedWriter out ;
+        PrintSQL(IndentedWriter out)
+        { this.out = out ; }
+
         PrintSQL()
-        {}
+        { this.out = new IndentedWriter(System.out) ; }
         
         @Override
         public void visit(OpExt op)
@@ -94,9 +105,14 @@ public class PrintSDB
                 return ;
             }
             OpSQL opSQL = (OpSQL)op ;
+            
+            
             if ( ! first )
-                System.out.println(divider) ;
-            System.out.println(opSQL.toSQL()) ;
+                out.println(divider) ;
+            out.print(opSQL.toSQL()) ;
+            out.ensureStartOfLine() ;
+            out.flush();
+
             first = false ;
         }
     }

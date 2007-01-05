@@ -22,10 +22,7 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.op.Quad;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.Aliases;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -86,14 +83,15 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
             for ( Var v : vars )
             {
                 // For Variables used in this SQL constraint, make sure the value is available.  
-
-                SqlColumn tripleTableCol = sqlNode.getIdScope().getColumnForVar(v) ;   // tripleTableCol
-                if ( tripleTableCol == null )
+                ScopeEntry e = sqlNode.getIdScope().getColumnForVar(v) ;  // tripleTableCol
+                
+                if ( e == null )
                 {
                     // Not in scope.
                     log.info("Var not in scope for value of expression: "+v) ;
                     continue ;
                 }
+                SqlColumn tripleTableCol = e.getColumn() ;    
 
                 // Value table column
                 SqlTable nTable =   new TableNodes(genNodeResultAlias.next()) ;

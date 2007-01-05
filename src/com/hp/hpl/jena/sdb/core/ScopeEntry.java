@@ -1,24 +1,54 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.core;
 
-import java.util.Set;
-
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
-public interface Scope
+public class ScopeEntry
 {
-    public boolean          hasColumnForVar(Var var) ;
-    public Set<Var>         getVars() ;
-    public ScopeEntry       getColumnForVar(Var var) ;
+    Var var;
+    SqlColumn column;
+    ScopeStatus status ;
+    
+    public ScopeEntry(Var var, SqlColumn column)
+    { this(var, column, ScopeStatus.FIXED) ; }
+
+    private ScopeEntry(Var var, SqlColumn column, ScopeStatus status)
+    {
+        this.var = var ; 
+        this.column = column ;
+        this.status = status ;
+    }
+
+    public SqlColumn getColumn()
+    {
+        return column ;
+    }
+
+    public ScopeStatus getStatus()
+    {
+        return status ;
+    }
+
+    public void setStatus(ScopeStatus newStatus)
+    {
+        status = newStatus ;
+    }
+
+
+    public Var getVar()
+    {
+        return var ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

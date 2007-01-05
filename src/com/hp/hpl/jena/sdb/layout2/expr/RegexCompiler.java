@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout2.expr;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.expr.Expr;
@@ -95,7 +97,13 @@ class RegexSqlGen extends SDBConstraint
         Var var = rMap.get(Var.alloc("a1")).getNodeVar().asVar() ;
         String pattern = rMap.get(Var.alloc("a2")).getConstant().getString() ;
         
-        SqlColumn vCol = scope.getColumnForVar(var) ;
+        if ( ! scope.hasColumnForVar(var) )
+        {
+            LogFactory.getLog(this.getClass()).fatal("Variable '"+var+"' not in scope") ;
+            return null ;
+        }
+          
+        SqlColumn vCol = scope.getColumnForVar(var).getColumn() ;
 
         // Ensure it's the lex column
         SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;

@@ -10,14 +10,19 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 public class Scope2 implements Scope
 {
     Scope left ; 
     Scope right ;
+    //ScopeStatus scopeStatus ;
     
-    public Scope2(Scope left, Scope right) { this.left = left ; this.right = right ; } 
+    public Scope2(Scope left, Scope right)
+    { 
+        this.left = left ; 
+        this.right = right ;
+        //this.scopeStatus = status ;
+    }
     
     public boolean hasColumnForVar(Var var)
     { 
@@ -37,9 +42,9 @@ public class Scope2 implements Scope
         return acc ;
     }
     
-    public SqlColumn getColumnForVar(Var var)
+    public ScopeEntry getColumnForVar(Var var)
     { 
-        SqlColumn c = null ;
+        ScopeEntry c = null ;
         
         if ( left != null )
             c = left.getColumnForVar(var) ;

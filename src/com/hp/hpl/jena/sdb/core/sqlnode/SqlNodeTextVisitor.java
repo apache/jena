@@ -118,15 +118,22 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
             if ( ! first ) out.print(" ") ;
             first = false ;
             out.print(v.toString()) ;
-            SqlColumn leftCol = sqlNode.getLeft().getIdScope().getColumnForVar(v) ;
-            SqlColumn rightCol = sqlNode.getRight().getIdScope().getColumnForVar(v) ;
+            out.println("SqlCoalesce UNFINISHED") ;
+            String leftCol = "??" ;
+            String rightCol = "??" ;
+//            SqlColumn leftCol = sqlNode.getLeft().getIdScope().getColumnForVar(v).getColumn() ;
+//            SqlColumn rightCol = sqlNode.getRight().getIdScope().getColumnForVar(v).getColumn() ;
             out.print("["+leftCol+"/"+rightCol+"]") ;
         }
+        out.ensureStartOfLine() ;
         
-        sqlNode.getLeft().visit(this) ;
-        out.println() ;
-        sqlNode.getRight().visit(this) ;
-        outputConditionList(sqlNode.getConditions()) ;
+        // Unlikely to be right
+        sqlNode.getSubNode().visit(this) ;
+        
+//        sqlNode.getLeft().visit(this) ;
+//        out.println() ;
+//        sqlNode.getRight().visit(this) ;
+//        outputConditionList(sqlNode.getConditions()) ;
         finish() ;
     }
 
@@ -137,9 +144,15 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         depth ++ ;
         out.ensureStartOfLine() ;
         start(sqlJoin, sqlJoin.getJoinType().printName(), sqlJoin.getAliasName()) ;
-        sqlJoin.getLeft().visit(this) ;
+        if ( sqlJoin.getLeft() == null )
+            out.println("<null>") ;
+        else
+            sqlJoin.getLeft().visit(this) ;
         out.println() ;
-        sqlJoin.getRight().visit(this) ;
+        if ( sqlJoin.getRight() == null )
+            out.println("<null>") ;
+        else
+            sqlJoin.getRight().visit(this) ;
         outputConditionList(sqlJoin.getConditions()) ;
         finish() ;
         depth -- ;

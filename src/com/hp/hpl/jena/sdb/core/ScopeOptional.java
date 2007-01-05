@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -10,15 +10,37 @@ import java.util.Set;
 
 import com.hp.hpl.jena.query.core.Var;
 
-public interface Scope
+public class ScopeOptional implements Scope
 {
-    public boolean          hasColumnForVar(Var var) ;
-    public Set<Var>         getVars() ;
-    public ScopeEntry       getColumnForVar(Var var) ;
+    private Scope scope ;
+    private ScopeStatus scopeStatus = ScopeStatus.OPTIONAL ;
+
+    public ScopeOptional(Scope subScope)
+    { this.scope = subScope ; }
+    
+    public ScopeEntry getColumnForVar(Var var)
+    {
+        ScopeEntry e = scope.getColumnForVar(var) ;
+        if ( e == null )
+            return null ;
+        e.setStatus(scopeStatus) ;
+        return e ;
+    }
+
+    public Set<Var> getVars()
+    {
+        return scope.getVars() ;
+    }
+
+    public boolean hasColumnForVar(Var var)
+    {
+        return scope.hasColumnForVar(var) ;
+    }
+
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

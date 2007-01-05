@@ -57,8 +57,7 @@ public class SqlNodeWalker
         public void visit(SqlCoalesce sqlNode)
         {
             sqlNode.visit(visitor) ;
-            sqlNode.getLeft().visit(this) ;
-            sqlNode.getRight().visit(this) ;
+            sqlNode.getSubNode().visit(this) ;
         }
     }
 }
