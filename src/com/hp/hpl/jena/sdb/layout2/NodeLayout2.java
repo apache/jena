@@ -96,6 +96,10 @@ public class NodeLayout2
     
     public static long hash(String lex, String lang, String datatype, int type)
     {
+        if ( datatype == null )
+            datatype = "" ;
+        if ( lang == null )
+            lang = "" ;
         String toHash = lex + "|" + lang + "|" + datatype;
         MessageDigest digest;
         try

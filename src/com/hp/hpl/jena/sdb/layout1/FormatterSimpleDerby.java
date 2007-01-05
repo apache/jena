@@ -38,7 +38,7 @@ public class FormatterSimpleDerby
     public void truncate()
     {
         try { 
-            connection().exec("TRUNCATE TABLE Triples") ;
+            connection().exec("DELETE FROM Triples") ;
         } catch (SQLException ex)
         {
             log.warn("Exception truncating tables") ;

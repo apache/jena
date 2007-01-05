@@ -6,12 +6,14 @@
 
 package com.hp.hpl.jena.sdb.test;
 
+import arq.cmd.CmdUtils;
 import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -22,7 +24,8 @@ import com.hp.hpl.jena.sdb.store.Store;
 @RunWith(AllTests.class)
 public class SDBTestSuite1 extends TestSuite
 {
-    public static boolean includeMySQL = true ;
+    public static boolean includeDerby = true ;
+    public static boolean includeMySQL = false ;
     public static boolean includeHSQL = false ;
     
     // JUnit3 to JUnit4 adapter
@@ -32,6 +35,7 @@ public class SDBTestSuite1 extends TestSuite
     
     // Is there a better way to dynamically build a set of tests?
     static public TestSuite suite() {
+        CmdUtils.setLog4j() ;
         return new SDBTestSuite1();
     }
 
@@ -40,6 +44,16 @@ public class SDBTestSuite1 extends TestSuite
         super("SDB - Schema 1") ;
         if ( true ) SDBConnection.logSQLExceptions = true ;
         
+        if ( includeDerby )
+        {
+            JDBC.loadDriverDerby() ;
+            String url = JDBC.makeURL("derby", "localhost", "DB.test1") ;
+            SDBConnection sdb = new SDBConnection(url, null, null) ;
+            addTest(QueryTestSDBFactory.make(new StoreSimpleDerby(sdb),
+                                             SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                             "Schema 1 : ")) ;
+        }
+
         if ( includeMySQL )
         {
             JDBC.loadDriverMySQL() ;

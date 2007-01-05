@@ -34,6 +34,7 @@ public class JDBC
     static public void loadDriverHSQL()  { loadDriver(driver.get(DBtype.HSQL)) ; }
     static public void loadDriverMySQL() { loadDriver(driver.get(DBtype.MySQL)) ; }
     static public void loadDriverPGSQL() { loadDriver(driver.get(DBtype.PostgreSQL)); }
+    static public void loadDriverDerby() { loadDriver(driver.get(DBtype.Derby)); }
     static public void loadDriver(String className) { loadClass(className) ; }
     
 //    static public void loadClass(String className)
@@ -47,7 +48,7 @@ public class JDBC
     }
 
     public static String makeURL(String type, String host, String dbName)
-    { return makeURL(type, host, null, dbName, null, null) ; }
+    { return makeURL(type, host, dbName, null, null) ; }
 
     public static String makeURL(String type, String host, String dbName, String user, String password)
     { return makeURL(type, host, dbName, null, user, password) ; }

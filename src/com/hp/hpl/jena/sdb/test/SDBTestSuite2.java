@@ -13,6 +13,7 @@ import org.junit.runners.AllTests;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesDerby;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -22,7 +23,8 @@ import com.hp.hpl.jena.sdb.store.Store;
 @RunWith(AllTests.class)
 public class SDBTestSuite2 extends TestSuite
 {
-    static boolean includeMySQL = true ;
+    static boolean includeDerby = true ;
+    static boolean includeMySQL = false ;
     static boolean includeHSQL = false ;
     
     static public TestSuite suite() {
@@ -36,6 +38,15 @@ public class SDBTestSuite2 extends TestSuite
         if ( true ) SDBConnection.logSQLExceptions = true ;
         if ( false ) QueryTestSDB.VERBOSE = true ;
         
+        if ( includeDerby )
+        {
+            JDBC.loadDriverDerby() ;
+            String url = JDBC.makeURL("derby", "localhost", "DB.test2") ;
+            SDBConnection sdb = new SDBConnection(url, null, null) ;
+            addTest(QueryTestSDBFactory.make(new StoreTriplesNodesDerby(sdb),
+                                             SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                             "Schema 2 : ")) ;
+        }
         
         if ( includeMySQL )
         {
