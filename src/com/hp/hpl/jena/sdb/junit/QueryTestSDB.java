@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.query.resultset.RSCompare;
 import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
@@ -21,8 +22,6 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 import com.hp.hpl.jena.shared.Command;
 import com.hp.hpl.jena.util.FileManager;
-
-
 
 public class QueryTestSDB extends TestCase
 {
@@ -118,7 +117,9 @@ public class QueryTestSDB extends TestCase
         ARQ.getContext().set(ARQ.graphNoSameValueAs, oldValue) ;
         
         // ---- First, execute in-memory.
-        QueryExecution qExec1 = QueryExecutionFactory.create(query, ds) ;
+        //QueryExecution qExec1 = QueryExecutionFactory.create(query, ds) ;
+        QueryExecution qExec1 = new QueryEngineRef(query) ;
+        ((QueryEngineRef)qExec1).setDataset(ds) ;
         ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
         qExec1.close() ;
         
