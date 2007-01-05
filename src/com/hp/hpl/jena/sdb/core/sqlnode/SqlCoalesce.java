@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
@@ -14,8 +15,9 @@ import com.hp.hpl.jena.query.core.Var;
 
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.util.SetUtils;
 
-public class SqlCoalesce extends SqlNodeBase1
+public class SqlCoalesce extends SqlNodeBase
 {
     /* A COALESCE is a special kind of LeftJoin where some
      * variables from the left andf right sides are not equated across
@@ -23,68 +25,83 @@ public class SqlCoalesce extends SqlNodeBase1
      * That's COALESCE in many databases.
      */
     
+    SqlJoin join ;
     Set<Var> coalesceVars ;
+    Set<Var> nonCoalesceVars = new HashSet<Var>() ;
     ScopeBase idScope ;
     ScopeBase nodeScope ;
     Generator genvar = Gensym.create("VC") ; //new Gensym("VC") ;
     
-    public static SqlCoalesce create(String alias, SqlJoin sqlNode, Set<Var>coalesceVars) 
+    public static SqlCoalesce create(String alias, SqlJoin join, Set<Var>coalesceVars) 
     {
         // This is not actually true!
         // But at the moment, it is a restriction so we test for it for now and 
         // remove the test when the new cde arrices as the rest of the class and 
         // it's usage then needs to be checked. 
-        if ( ! sqlNode.isLeftJoin() )
+        if ( ! join.isLeftJoin() )
             LogFactory.getLog(SqlCoalesce.class).warn("SqlCoalesce node is not a LeftJoin") ;
         
-        return new SqlCoalesce(alias, sqlNode, coalesceVars) ;
+        return new SqlCoalesce(alias, join, coalesceVars) ;
     }
     
-    private SqlCoalesce(String alias, SqlJoin sqlNode, Set<Var> coalesceVars)
+    private SqlCoalesce(String alias, SqlJoin join, Set<Var> coalesceVars)
     { 
-        super(alias, sqlNode) ;
+        super(alias) ;
+        this.join = join ;
         this.coalesceVars = coalesceVars ;
-        this.toString() ;
-        // Override the scopes.
-        idScope = new ScopeBase(super.getIdScope()) ;
-        nodeScope = new ScopeBase(super.getNodeScope()) ;
+        Annotation1 annotation = new Annotation1(true) ;
+        idScope = new ScopeBase() ;
+        nodeScope = new ScopeBase() ;
+        
         // TODO "Column generator" would be neater.
         SqlTable table = new SqlTable("Coalesce", alias) ;
+        
+        nonCoalesceVars = SetUtils.difference(join.getIdScope().getVars(),
+                                              coalesceVars) ;
+
+        if ( join.getNodeScope().getVars().size() != 0 )
+            LogFactory.getLog(SqlCoalesce.class).warn("NodeScope is not empty") ;
         
         for ( Var v : coalesceVars )
         {
             String sqlColName = genvar.next() ;
             SqlColumn col = new SqlColumn(table, sqlColName) ;
             idScope.setColumnForVar(v, col) ;
+            annotation.addAnnotation(v+" as "+col) ;
             // TODO Value
         }
         
         // Aliases.
-//        // Also do the variables that pass through but get renamed.
-//        for ( Var v : idScope.getVars() )
-//        {
-//            if ( coalesceVars.contains(v) ) 
-//                continue ;
-//            String sqlColName = genvar.next() ;
-//            SqlColumn col = new SqlColumn(table, sqlColName) ;
-//            idScope.setColumnForVar(v, col) ;
-//            // TODO Value
-//        }
-        
+        // Not coalesce variables.
+        for ( Var v : nonCoalesceVars )
+        {
+            if ( coalesceVars.contains(v) )
+            {
+                LogFactory.getLog(SqlCoalesce.class).warn("Variable in coalesce and non-coalesce sets: "+v) ;
+                continue ;
+            }
+            String sqlColName = genvar.next() ;
+            SqlColumn col = new SqlColumn(table, sqlColName) ;
+            idScope.setColumnForVar(v, col) ;
+            annotation.addAnnotation(v+" as "+col) ;
+            // TODO Value
+        }
+        annotation.setAnnotation(this) ;
     }
     
-    public Set<Var> getCoalesceVars()   { return coalesceVars ; }
+    public Set<Var> getCoalesceVars()       { return coalesceVars ; }
+    public Set<Var> getNonCoalesceVars()    { return nonCoalesceVars ; }
     
     @Override
     public boolean      isCoalesce()    { return true ; }
     @Override
-    public SqlCoalesce  getCoalesce()   { return this ; }
+    public SqlCoalesce  asCoalesce()    { return this ; }
 
-    @Override
     public Scope getIdScope()           { return idScope ; }
     
-    @Override
     public Scope getNodeScope()         { return nodeScope ; }
+    
+    public SqlJoin getJoinNode()        { return join ; }
     
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }

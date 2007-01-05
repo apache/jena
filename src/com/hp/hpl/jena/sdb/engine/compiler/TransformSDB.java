@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sdb.core.Aliases;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlCoalesce;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.util.SetUtils;
 
@@ -93,16 +92,13 @@ public class TransformSDB extends TransformCopy
         Set<Var> x = SetUtils.intersection(optDefsLeft, sqlRight.getIdScope().getVars()) ;
         if ( x.size() > 0  ) 
         {
-            log.fatal("Coalesce required: "+x) ;
             // Need to do this and, at the same time, build the coalesce lists. 
-            SqlNode sqlNode = QC.leftJoinCoalesce(request, sqlLeft, sqlRight, x) ;
-            
-            
-            // DOES NOT DO QC.leftJoin => no conditions between left and right.
-            //return new OpSQL(SqlCoalesce.create(genCoalesceAlias.next(), sqlNode, x), opJoin, request) ;
+            SqlNode sqlNode = QC.leftJoinCoalesce(request, genCoalesceAlias.next(),
+                                                  sqlLeft, sqlRight, x) ;
+            return new OpSQL(sqlNode, opJoin, request) ;
             
             // Punt
-            return super.transform(opJoin, left, right) ;
+            //return super.transform(opJoin, left, right) ;
         }
         
         return new OpSQL(QC.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;

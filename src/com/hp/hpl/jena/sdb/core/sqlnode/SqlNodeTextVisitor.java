@@ -113,27 +113,30 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         start(sqlNode, "Coalesce", sqlNode.getAliasName()) ;
 
         boolean first = true ;
+        SqlJoin join = sqlNode.getJoinNode() ;
+        
         for ( Var v : sqlNode.getCoalesceVars()  )
         {
             if ( ! first ) out.print(" ") ;
             first = false ;
+            SqlColumn col = sqlNode.getIdScope().getColumnForVar(v).getColumn() ;
             out.print(v.toString()) ;
-            out.println("SqlCoalesce UNFINISHED") ;
-            String leftCol = "??" ;
-            String rightCol = "??" ;
-//            SqlColumn leftCol = sqlNode.getLeft().getIdScope().getColumnForVar(v).getColumn() ;
-//            SqlColumn rightCol = sqlNode.getRight().getIdScope().getColumnForVar(v).getColumn() ;
+            SqlColumn leftCol = join.getLeft().getIdScope().getColumnForVar(v).getColumn() ;
+            SqlColumn rightCol = join.getRight().getIdScope().getColumnForVar(v).getColumn() ;
             out.print("["+leftCol+"/"+rightCol+"]") ;
         }
+        for ( Var v : sqlNode.getNonCoalesceVars()  )
+        {
+            if ( ! first ) out.print(" ") ;
+            first = false ;
+            out.print(v.toString()) ;
+            // and where is came from.
+            SqlColumn col = join.getIdScope().getColumnForVar(v).getColumn() ;
+            out.print("["+col+"]") ;
+        }
+        
         out.ensureStartOfLine() ;
-        
-        // Unlikely to be right
-        sqlNode.getSubNode().visit(this) ;
-        
-//        sqlNode.getLeft().visit(this) ;
-//        out.println() ;
-//        sqlNode.getRight().visit(this) ;
-//        outputConditionList(sqlNode.getConditions()) ;
+        visitJoin(sqlNode.getJoinNode()) ;
         finish() ;
     }
 

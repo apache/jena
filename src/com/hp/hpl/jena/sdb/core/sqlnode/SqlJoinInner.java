@@ -19,6 +19,12 @@ public class SqlJoinInner extends SqlJoin
         super(JoinType.INNER, left, right, alias) ;
     }
     
+    @Override 
+    public boolean   isInnerJoin()        { return true ; }
+
+    @Override 
+    public SqlJoinInner   asInnerJoin()         { return this ; }
+    
     public void visit(SqlNodeVisitor visitor) { visitor.visit(this) ; }
 }
 

@@ -19,7 +19,7 @@ public class SqlProject extends SqlNodeBase1
     {
         SqlProject p = null ;
         if ( sqlNode.isProject() )
-            p = sqlNode.getProject() ;
+            p = sqlNode.asProject() ;
         else
             p = new SqlProject(sqlNode) ;
         if ( col != null )
@@ -43,7 +43,7 @@ public class SqlProject extends SqlNodeBase1
     @Override
     public boolean isProject() { return true ; }
     @Override
-    public SqlProject getProject() { return this ; }
+    public SqlProject asProject() { return this ; }
     
     @Override 
     public boolean usesColumn(SqlColumn c) { return cols.contains(c) ; }

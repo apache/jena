@@ -12,28 +12,29 @@ import com.hp.hpl.jena.sdb.core.Scope;
 
 public interface SqlNode extends Printable, Annotations
 {
-    public String         getAliasName() ;
+    public String               getAliasName() ;
     
-    public boolean        isJoin() ;
-    public boolean        isInnerJoin() ;
-    public boolean        isLeftJoin() ;
-//    public boolean        isRightJoin() ;
-//    public boolean        isOuterJoin() ;
+    public boolean              isJoin() ;
+    public boolean              isInnerJoin() ;
+    public boolean              isLeftJoin() ;
+//    public boolean              isRightJoin() ;
+//    public boolean              isOuterJoin() ;
     
-    public SqlJoin        getJoin() ;
-    
-    public boolean        isRestrict() ;                // isSelect is confusing
-    public SqlRestrict    getRestrict() ;
-    
-    public boolean        isProject() ;
-    public SqlProject     getProject() ;
-    
-    public boolean        isTable() ;
-    public SqlTable       getTable() ;
+    public SqlJoin              asJoin() ;
+    public SqlJoinLeftOuter     asLeftJoin() ;
+    public SqlJoinInner         asInnerJoin() ;
 
-    public boolean        isCoalesce() ;
-    public SqlCoalesce    getCoalesce() ;
+    public boolean              isCoalesce() ;
+    public SqlCoalesce          asCoalesce() ;
+    public boolean              isRestrict() ;                // isSelect is confusing
+    public SqlRestrict          asRestrict() ;
     
+    public boolean              isProject() ;
+    public SqlProject           asProject() ;
+    
+    public boolean              isTable() ;
+    public SqlTable             asTable() ;
+
     public Scope getIdScope() ;
     public Scope getNodeScope() ;
     

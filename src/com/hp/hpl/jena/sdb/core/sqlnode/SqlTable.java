@@ -32,7 +32,7 @@ public class SqlTable extends SqlNodeBase
     @Override
     public boolean isTable() { return true ; }
     @Override
-    public SqlTable getTable() { return this ; }
+    public SqlTable asTable() { return this ; }
     
     @Override
     public boolean usesColumn(SqlColumn c) { return c.getTable() == this ; }

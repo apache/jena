@@ -38,40 +38,44 @@ public class QC
     
     public static SqlNode innerJoin(SDBRequest request, SqlNode left, SqlNode right)
     {
+        if ( left == null )
+            return right ; 
         return join(request, INNER, left, right, null) ; 
     }
 
     public static SqlNode leftJoin(SDBRequest request, SqlNode left, SqlNode right)
     {
+        if ( left == null )
+            return right ; 
         return join(request, LEFT, left, right, null) ; 
     }
 
-    public static SqlNode leftJoinCoalesce(SDBRequest request, SqlNode left, SqlNode right, Set<Var> coalesceVars)
+    public static SqlNode leftJoinCoalesce(SDBRequest request, String alias, SqlNode left, SqlNode right, Set<Var> coalesceVars)
     {
-        return join(request, LEFT, left, right, coalesceVars) ; 
+        SqlJoin sqlJoin = join(request, LEFT, left, right, coalesceVars) ;
+        return SqlCoalesce.create(alias, sqlJoin, coalesceVars) ;
     }
     
-    private static String sqlNodeName(SqlNode sNode)
-    {
-        if ( sNode == null ) return "<null>" ;
-        if ( sNode instanceof SqlProject )       return "Project" ;
-        if ( sNode instanceof SqlRestrict )      return "Restrict/"+sqlNodeName(sNode.getRestrict().getSubNode()) ;
-        if ( sNode instanceof SqlTable )         return "Table" ;
-        if ( sNode instanceof SqlJoinInner )     return "JoinInner" ;
-        if ( sNode instanceof SqlJoinLeftOuter ) return "Joinleft" ;
-        return "<unknown>" ;
-    }
+//    private static String sqlNodeName(SqlNode sNode)
+//    {
+//        if ( sNode == null )            return "<null>" ;
+//        if ( sNode.isProject() )        return "Project" ;
+//        if ( sNode.isRestrict() )       return "Restrict/"+sqlNodeName(sNode.asRestrict().getSubNode()) ;
+//        if ( sNode.isTable() )          return "Table" ;
+//        if ( sNode.isInnerJoin() )      return "JoinInner" ;
+//        if ( sNode.isLeftJoin() )       return "Joinleft" ;
+//        if ( sNode.isCoalesce() )       return "Coalesce" ;
+//        return "<unknown>" ;
+//    }
     
     // Join/LeftJoin two subexpressions, calculating the join conditions in the process
     // If a coalesce (LeftJoin) then don't equate left and right vars of the same name.
-    private static SqlNode join(SDBRequest request, 
+    // An SqlCoalesce is a special case of LeftJoin where ignoreVars!=null
+    private static SqlJoin join(SDBRequest request, 
                                 JoinType joinType, 
                                 SqlNode left, SqlNode right,
                                 Set<Var> ignoreVars)
     {
-        if ( left == null )
-            return right ; 
-
         SqlExprList conditions = new SqlExprList() ;
         
         if ( joinType == JoinType.INNER )
@@ -88,7 +92,7 @@ public class QC
         {
             if ( right.getIdScope().hasColumnForVar(v) )
             {
-                if (ignoreVars == null || ! ignoreVars.contains(v) )
+                if ( ignoreVars == null || ! ignoreVars.contains(v) )
                 {
                     SqlColumn leftCol = left.getIdScope().getColumnForVar(v).getColumn() ;
                     SqlColumn rightCol = right.getIdScope().getColumnForVar(v).getColumn() ;
@@ -97,13 +101,12 @@ public class QC
                     conditions.add(c) ;
                     c.addNote("Join var: "+v) ; 
                 }
-                else
-                    log.warn("Skip coalesce var") ;
             }
         }
         
         SqlJoin join = SqlJoin.create(joinType, left, right, null) ;
-        return SqlRestrict.restrict(join, conditions) ;
+        join.addConditions(conditions) ;
+        return join ;
     }
     
     private static SqlNode removeRestrict(SqlNode sqlNode, SqlExprList conditions)
@@ -111,7 +114,7 @@ public class QC
         if ( ! sqlNode.isRestrict() ) 
             return sqlNode ;
         
-        SqlRestrict restrict = sqlNode.getRestrict() ;
+        SqlRestrict restrict = sqlNode.asRestrict() ;
         SqlNode subNode = restrict.getSubNode() ;
         if ( ! subNode.isTable() && ! subNode.isInnerJoin() )
             return sqlNode ;

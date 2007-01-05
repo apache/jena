@@ -5,6 +5,7 @@ PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?x ?z ?w ?foo
 {
     ?x :p ?z . 
+    ?x :p ?z . 
     OPTIONAL { ?z :q1 ?w }
     OPTIONAL { ?z :q2 ?w }
 

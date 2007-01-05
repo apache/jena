@@ -22,14 +22,14 @@ public class SqlRestrict extends SqlNodeBase1
         
         if ( sqlNode.isJoin() )
         {
-            sqlNode.getJoin().addCondition(condition) ;
+            sqlNode.asJoin().addCondition(condition) ;
             return sqlNode ;
         }
         
         if ( sqlNode.isRestrict() )
         {
             // Already a restriction - add to the restrictions already in place
-            sqlNode.getRestrict().conditions.add(condition) ;
+            sqlNode.asRestrict().conditions.add(condition) ;
             return sqlNode ;
         }
         
@@ -43,14 +43,14 @@ public class SqlRestrict extends SqlNodeBase1
         
         if ( sqlNode.isJoin() )
         {
-            sqlNode.getJoin().addConditions(restrictions);
+            sqlNode.asJoin().addConditions(restrictions);
             return sqlNode ;
         }
         
         if ( sqlNode.isRestrict() )
         {
             // Already a restriction - add to the restrictions already in place
-            sqlNode.getRestrict().conditions.addAll(restrictions) ;
+            sqlNode.asRestrict().conditions.addAll(restrictions) ;
             return sqlNode ;
         }
         
@@ -84,7 +84,7 @@ public class SqlRestrict extends SqlNodeBase1
     @Override
     public boolean isRestrict() { return true ; }
     @Override
-    public SqlRestrict getRestrict() { return this ; }
+    public SqlRestrict asRestrict() { return this ; }
 
     public SqlExprList getConditions() { return conditions ; }
 

@@ -1,55 +1,50 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.util;
+package com.hp.hpl.jena.sdb.core;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public class SetUtils
+/** Collect some notes into a single annoation.
+ * 
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+public class Annotation1
 {
-    public static <T> Set<T> intersection(Set<T> setLeft, Set<T> setRight)
+    private StringBuilder annotation = new StringBuilder() ;
+    private String separator ;
+
+    public Annotation1(String separator)
+    { this.separator = separator ; }
+
+    public Annotation1()
+    { this(" ") ; }
+        
+    public Annotation1(boolean withCommas)
+    { this(withCommas? ", " : " ") ; }
+    
+    public void addAnnotation(String note)
     {
-        Set<T> results = new HashSet<T>(setLeft) ;
-        results.retainAll(setRight) ;
-        return results ;
+        if ( annotation.length() > 0 )
+            annotation.append(separator) ;
+        annotation.append(note) ;
     }
-
-    public static <T> boolean intersectionP(Set<T> s1, Set<T> s2)
+    
+    public void setAnnotation(SqlNode node)
     {
-        for( T elt : s1 )
-        {
-            if ( s2.contains(elt) ) 
-                return true ;
-        }
-        return false ;
+        if ( annotation.length() > 0 )
+            node.addNote(annotation.toString()) ;
     }
-
-    public static <T> Set<T> union(Set<T> s1, Set<T> s2)
-    {
-        Set<T> s3 = new HashSet<T>(s1) ;
-        s3.addAll(s2) ;
-        return s3 ;
-    }
-
-
-    /** Return is s1 \ s2 */
-
-    public static <T> Set<T> difference(Set<T> s1, Set<T> s2)
-    {
-        Set<T> s3 = new HashSet<T>(s1) ;
-        s3.removeAll(s2) ;
-        return s3 ;
-    }
+    
 
 }
 
-
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

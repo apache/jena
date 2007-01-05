@@ -68,16 +68,16 @@ public abstract class SqlJoin extends SqlNodeBase
     public JoinType  getJoinType() { return joinType ; }
     
     @Override 
-    public boolean   isJoin()             { return true ; }
+    public boolean   isJoin()           { return true ; }
+
+//    @Override 
+//    public boolean   isInnerJoin()      { return joinType == JoinType.INNER ; }
+//
+//    @Override 
+//    public boolean   isLeftJoin()       { return joinType == JoinType.LEFT ; }
 
     @Override 
-    public boolean   isInnerJoin()        { return joinType == JoinType.INNER ; }
-
-    @Override 
-    public boolean   isLeftJoin()         { return joinType == JoinType.LEFT ; }
-
-    @Override 
-    public SqlJoin   getJoin()            { return this ; }
+    public SqlJoin   asJoin()           { return this ; }
     
     public SqlExprList getConditions() { return conditions ; }
     public void addCondition(SqlExpr e) { conditions.add(e) ; }

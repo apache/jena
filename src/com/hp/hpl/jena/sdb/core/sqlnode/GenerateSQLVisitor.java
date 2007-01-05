@@ -107,7 +107,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         // Project-restrict : can combine 
         if ( sqlNode2.isRestrict() )
         {
-            SqlRestrict r = sqlNode.getSubNode().getRestrict() ;
+            SqlRestrict r = sqlNode.getSubNode().asRestrict() ;
             // Special Project-Restrict-Node case.
             out.incIndent() ; 
             r.getSubNode().visit(this);
@@ -135,9 +135,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
         
         SqlNode node2 = sqlNode.getSubNode() ;
-        if ( node2.isJoin() && ! node2.getJoin().getJoinType().equals(JoinType.INNER) )
+        if ( node2.isJoin() && ! node2.asJoin().getJoinType().equals(JoinType.INNER) )
         {
-            log.warn("restrict/"+node2.getJoin().getJoinType()+" not supported") ;
+            log.warn("restrict/"+node2.asJoin().getJoinType()+" not supported") ;
             return ;
         }
             
@@ -147,7 +147,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             // Push condition into the inner join ON clause
             // Avoid mutating the Join - create a new one and merge the conditions.
             // (As we do not use the old join, we could reuse it alias)
-            SqlJoin j = node2.getJoin() ;
+            SqlJoin j = node2.asJoin() ;
             if ( j.getJoinType() != JoinType.INNER )
                 log.warn("Unexpected: restrict on join type "+ j.getJoinType() ) ;
             
@@ -166,9 +166,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             //out.incIndent() ;
             out.println("SELECT *") ;
             out.print("FROM ") ;
-            out.print(node2.getTable().getTableName()) ;
+            out.print(node2.asTable().getTableName()) ;
             out.print(" AS ") ;
-            out.println(node2.getTable().getAliasName()) ;
+            out.println(node2.asTable().getAliasName()) ;
             genWHERE(sqlNode.getConditions()) ;
             //out.println() ;
             //out.decIndent() ;
@@ -217,58 +217,47 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
     public void visit(SqlCoalesce sqlNode)
     {
-        annotate(sqlNode) ;
-        out.print("( SELECT") ;
+        out.print("SELECT ") ;
         
         boolean first = true ;
+        SqlJoin join = sqlNode.getJoinNode() ;
         // Rough draft code.
         for ( Var v : sqlNode.getCoalesceVars() )
         {
             if ( ! first )
-                out.print(",") ;
+                out.print(", ") ;
             SqlColumn col = sqlNode.getIdScope().getColumnForVar(v).getColumn() ;
-//            SqlColumn leftCol = sqlNode.getLeft().getIdScope().getColumnForVar(v).getColumn() ;
-//            SqlColumn rightCol = sqlNode.getRight().getIdScope().getColumnForVar(v).getColumn() ;
-            String leftCol = "left("+v+")" ;
-            String rightCol = "right("+v+")" ;
+            SqlColumn leftCol = join.getLeft().getIdScope().getColumnForVar(v).getColumn() ;
+            SqlColumn rightCol = join.getRight().getIdScope().getColumnForVar(v).getColumn() ;
             
-            out.print(" COALESCE(") ;
+            out.print("COALESCE(") ;
             out.print(leftCol.toString()) ;
             out.print(", ") ;
             out.print(rightCol.toString()) ;
             out.print(") AS "+col.getColumnName()) ;
-            
-            if ( col.equals(col) )
-            
             first = false ;
         }
         
         // And other vars we want.
         
-//        for ( Var v : sqlNode.getIdScope().getVars() )
-//        {
-//            if ( sqlNode.getCoalesceVars().contains(v) )
-//                continue ;
-//            if ( ! first )
-//                out.print(",") ;
-//            
-//            // Need generated names.
-//            SqlColumn col = sqlNode.getIdScope().getColumnForVar(v) ;
-//            out.print(") AS "+col.getColumnName()) ;
-//        }
-        
-        //out.print(" ") ;
-        
-        out.println();
+        for ( Var v : sqlNode.getNonCoalesceVars() )
+        {
+            if ( ! first )
+                out.print(", ") ;
+            first = false ;
+            
+            // Need generated names.
+            SqlColumn col = sqlNode.getIdScope().getColumnForVar(v).getColumn() ;
+            SqlColumn col2 = join.getIdScope().getColumnForVar(v).getColumn() ;
+            out.print(col2+" AS "+col.getColumnName()) ;
+        }
+        out.ensureStartOfLine() ;
 
         out.incIndent() ;       // INC
         out.println("FROM") ;
-        //visitJoin(sqlNode, sqlNode.getJoinType().sqlOperator()) ;
-        out.println("join expressions for coalesce'd thing") ; 
-        out.decIndent() ;       // DEC
+        join.visit(this) ;
         out.ensureStartOfLine() ;
-        //throw new SDBNotImplemented("Write SqlCoalesce") ;
-        out.print(") AS "+sqlNode.getAliasName()) ;
+        // Alias and annotations handled by outputNode
     }
 
     protected void visitJoin(SqlJoin join, String joinOperator)
@@ -280,7 +269,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         
         // can we linerarise the format? (drop the () and indentation)
         if ( left.isJoin() &&
-             left.getJoin().getJoinType() == join.getJoinType() )
+             left.asJoin().getJoinType() == join.getJoinType() && 
+             left.getAliasName() == null ) 
             outputNode(left, false) ;
         else
         {
@@ -370,19 +360,15 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         if ( mayNeedBrackets )
         {
             out.decIndent() ;
-            out.println() ;
+            out.ensureStartOfLine() ;
             out.print(")") ;
         }
-            
-            
             // Every derived table (SELECT ...) must have an alias.
             // Is there a more principled way to do this? .isDerived?
 //            if ( sqlNode.isRestrict() || sqlNode.isProject())
 //                out.print(" AS "+sqlNode.getAliasName()) ;
         if ( sqlNode.getAliasName() != null )
             out.print(" AS "+sqlNode.getAliasName()) ;
-            
-        
         annotate(sqlNode) ;
         level -- ;
     }

@@ -12,10 +12,7 @@ import java.util.Map;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.Aliases;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
@@ -36,11 +33,10 @@ public abstract class SQLBridgeBase implements SQLBridge
     // Always need to allocate a label for a column 
     // because can't access by table.column
     private Map<Var, String>varLabels = new HashMap<Var, String>() ;
-    
+    private Annotation1 annotation = new Annotation1() ;
     private Collection<Var> projectVars = null ;
     private SqlNode sqlNodeOriginal = null ;
     private SqlNode sqlNode = null ;                 // Subclass can mutate
-    private StringBuilder annotation = new StringBuilder() ;
     protected final SDBRequest request ;
     
     protected SQLBridgeBase(SDBRequest request, SqlNode sqlNode, Collection<Var> projectVars)
@@ -88,20 +84,17 @@ public abstract class SQLBridgeBase implements SQLBridge
         sqlNode = SqlProject.project(sqlNode, new Pair<Var, SqlColumn>(null,  col)) ;
     }
     
-    // ---- annotation support : move else where?
-    
-    protected void addAnnotation(String note)
+    protected void addAnnotation(String string)
     {
-        if ( annotation.length() > 0 )
-            annotation.append(" ") ;
-        annotation.append(note) ;
+        annotation.addAnnotation(string) ;
     }
-    
+
     protected void setAnnotation()
     {
-        if ( annotation.length() > 0 )
-            getSqlNode().addNote(annotation.toString()) ;
+        annotation.setAnnotation(sqlNode) ;
     }
+
+
     
     // ---- Var allocation
     

@@ -19,8 +19,9 @@ public enum JoinType
     { 
         @Override public String sqlOperator() { return "LEFT OUTER JOIN" ; }
         @Override public String printName()   { return "Join/left outer" ; }
-    } ;
+    }
     
+    ;
     abstract public String sqlOperator() ;
     abstract public String printName() ;
     
