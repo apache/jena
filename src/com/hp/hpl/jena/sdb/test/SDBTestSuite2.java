@@ -41,7 +41,7 @@ public class SDBTestSuite2 extends TestSuite
         if ( includeDerby )
         {
             JDBC.loadDriverDerby() ;
-            String url = JDBC.makeURL("derby", "localhost", "DB.test2") ;
+            String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
             SDBConnection sdb = new SDBConnection(url, null, null) ;
             addTest(QueryTestSDBFactory.make(new StoreTriplesNodesDerby(sdb),
                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
