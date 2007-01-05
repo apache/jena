@@ -12,6 +12,7 @@ SDB ToDo list (and general notes)
 + Values
 	Isolate QC2.insertValueGetter
   + choosing the "best" col (not an optional)
+    Happens naturally most of the time because of left-first search
 
 + Conditions: reactivate condition compilation.
   Need value access
