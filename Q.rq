@@ -2,10 +2,13 @@ PREFIX  :     <http://example/>
 PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?x ?z ?w1 ?w2
+SELECT *
 {
-    { ?x :p :z2 . OPTIONAL { :z2 :q1 ?w1 } }
-    { ?x :p :z2 . OPTIONAL { :z2 :q2 ?w2 } }
+   { ?x :p ?z OPTIONAL { ?z :q1 ?w } }
+   ?x :p ?w 
+
+##     { ?x :p :z2 . OPTIONAL { :z2 :q1 ?w1 } }
+##     { ?x :p :z2 . OPTIONAL { :z2 :q2 ?w2 } }
 
 
 ##     OPTIONAL { ?z :q1 ?w . ?z :q3 ?r}

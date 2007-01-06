@@ -65,7 +65,6 @@ public class sdbprint extends CmdArgsDB
         super.add(argDeclPrint, "--print=", "Print any of query, prefix, op, sqlnode, SQL") ;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void processModulesAndArgs()
     {
