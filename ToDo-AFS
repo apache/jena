@@ -1,31 +1,19 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Precedence output for SqlExpr // SqlExprGenerateSQL
++ Test for special case structures (testing/Structure)
+  WorkSpace area?
+
++ Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
 
 + Features:
   In desc file for now.
 
-+ { opt ... } JOIN { opt ... } may need a JoinCondition involving nulls.
-  Or detech/punt.
-  { opt ... } JOIN { fixed } puts the "best" on the right (left may be null).
-  Or detech/punt.
-  
-+ Values
-	Isolate QC2.insertValueGetter
-  + choosing the "best" col (not an optional)
-    Happens naturally most of the time because of left-first search
-
-+ Conditions: reactivate condition compilation.
++ Values and conditions : reactivate condition compilation.
   Need value access
+  Isolate QC2.insertValueGetter
 
 + Ugly Store.getNodeKeyColName()
-
-+ Coalesce : 
-  pass-through vars do not not need renaming but use of SELECT may force it.
-
-+ Scoping on SqlNodes
-  need to record fixed and optional status => getScope returns a record of some kind.
 
 + Hash constants
    need separate formatters and loaders.
@@ -51,10 +39,7 @@ SDB ToDo list (and general notes)
 + Abstract columns types then simple templating.
         VARCHAR/TEXT/BLOB syntax
         HSQLDB: VARCHAR unlimited
-        MySQL: TEXT
-        PosgreSQL:
-          http://www.postgresql.org/docs/8.1/interactive/datatype.html
-          TEXT, bytea
+        MySQL: TEXT // PosgreSQL: TEXT, bytea
 
 + more in .shared.
 
@@ -64,8 +49,6 @@ SDB ToDo list (and general notes)
     Full text indexing where available?
 
 + Graph pattern tables
-
-+ Subquery scoping enhancements
 
 SqlExpr::
 IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
