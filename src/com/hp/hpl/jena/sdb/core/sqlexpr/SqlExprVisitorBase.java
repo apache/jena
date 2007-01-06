@@ -13,11 +13,15 @@ public class SqlExprVisitorBase implements SqlExprVisitor
 
     public void visit(SqlConstant constant)  {}
 
+    public void visit(SqlFunction1 expr)     {}
+
     public void visit(SqlExpr1 expr)         {}
 
     public void visit(SqlExpr2 expr)         {}
 
     public void visit(S_Regex regex)         {}
+
+    public void visit(S_IsNull isNull)       {}
 
 }
 

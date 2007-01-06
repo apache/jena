@@ -43,19 +43,31 @@ public class Scope2 implements Scope
     }
     
     public ScopeEntry getColumnForVar(Var var)
-    { 
-        ScopeEntry c = null ;
+    {
+        // Return a fixed ScopeEntry in preference to an optional one.
+        ScopeEntry c1 = null ;
         
         if ( left != null )
-            c = left.getColumnForVar(var) ;
+            c1 = left.getColumnForVar(var) ;
         
-        if ( c != null )
-            return c ;
+        if ( c1 != null && c1.getStatus() == ScopeStatus.FIXED )
+            return c1 ;
+        
+        // Got no Scope or one that's optional.
+        ScopeEntry c2 = null ;
         
         if ( right != null )
-            c = right.getColumnForVar(var) ;
-        if ( c != null )
-            return c ;
+            c2 = right.getColumnForVar(var) ;
+        if ( c2 != null && c2.getStatus() == ScopeStatus.FIXED )
+            return c2 ;
+        
+        // No fixed out - return an optional if present.
+        
+        if ( c1 != null )
+            return c1 ;
+        if ( c2 != null )
+            return c2 ;
+        
         
         return null ;
     }

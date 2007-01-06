@@ -6,20 +6,23 @@
 
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
+/** Function call of one expression */
 
-public interface SqlExprVisitor
+public class SqlFunction1 extends SqlExprBase
 {
-    public void visit(SqlColumn column) ;
+    public SqlExpr expr ;
+    public String funcSymbol ;
     
-    public void visit(SqlConstant constant) ;
+    public SqlFunction1(SqlExpr expr, String symbol)
+    {
+        this.expr = expr ;
+        this.funcSymbol = symbol ;
+    }
     
-    public void visit(SqlFunction1 expr) ;
-
-    public void visit(SqlExpr2 expr) ;
-
-    public void visit(SqlExpr1 expr1) ;
-
-    public void visit(S_Regex regex) ;
+    public SqlExpr getExpr() { return expr ; }
+    public String  getFuncSymbol() { return funcSymbol ; }
+    
+    public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*

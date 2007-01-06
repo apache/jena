@@ -24,12 +24,17 @@ public class SqlExprWalker
         
         public void visit(SqlConstant constant) { constant.visit(visitor) ; }
         
-        public void visit(SqlExpr1 expr)
+        public void visit(SqlFunction1 expr)
         {
             expr.getExpr().visit(this) ;
             expr.visit(visitor) ;
         }
     
+        public void visit(SqlExpr1 expr)
+        {
+            expr.getExpr().visit(this) ;
+            expr.visit(visitor) ;
+        }
         public void visit(SqlExpr2 expr)
         {
             expr.getLeft().visit(this) ;

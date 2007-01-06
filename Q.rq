@@ -7,6 +7,9 @@ SELECT *
    { ?x :p ?z OPTIONAL { ?z :q1 ?w } }
    ?x :p ?w 
 
+# Same if reversed.
+
+
 ##     { ?x :p :z2 . OPTIONAL { :z2 :q1 ?w1 } }
 ##     { ?x :p :z2 . OPTIONAL { :z2 :q2 ?w2 } }
 

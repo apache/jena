@@ -15,6 +15,10 @@ public interface SqlExpr extends Annotations
     public abstract void visit(SqlExprVisitor visitor) ;
     public String asSQL() ;
     public Collection<SqlColumn> getColumnsNeeded() ;
+    
+    // What we really want is "getPrecedence()"
+    public boolean isColumn() ;
+    public boolean isConstant() ;
 }
 
 /*

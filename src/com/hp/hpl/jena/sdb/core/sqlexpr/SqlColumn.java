@@ -36,6 +36,8 @@ public class SqlColumn extends SqlExprBase
         return table.equals(col.getTable()) && columnName.equals(col.getColumnName()) ;
     }
     
+    @Override
+    public boolean isColumn()   { return true ; }
     
     public String asString() { return getFullColumnName() ; }
     

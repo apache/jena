@@ -19,6 +19,9 @@ public class SqlConstant extends SqlExprBase
     public String  asSqlString()
     { return str ; }
     
+    @Override
+    public boolean isConstant() { return true ; }
+    
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }
 

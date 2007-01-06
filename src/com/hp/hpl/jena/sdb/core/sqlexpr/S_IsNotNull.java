@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -7,23 +7,15 @@
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
 
-public interface SqlExprVisitor
+
+public class S_IsNotNull extends SqlExpr1
 {
-    public void visit(SqlColumn column) ;
-    
-    public void visit(SqlConstant constant) ;
-    
-    public void visit(SqlFunction1 expr) ;
-
-    public void visit(SqlExpr2 expr) ;
-
-    public void visit(SqlExpr1 expr1) ;
-
-    public void visit(S_Regex regex) ;
+    public S_IsNotNull(SqlExpr expr)
+    { super(expr, "IS NOT NULL") ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

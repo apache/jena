@@ -12,6 +12,46 @@ import com.hp.hpl.jena.sdb.util.RegexUtils;
 
 public class SqlExprGenerateSQL implements SqlExprVisitor
 {
+    /* Precedence (from MySQL)
+     * :=
+||, OR, XOR
+&&, AND
+NOT
+BETWEEN, CASE, WHEN, THEN, ELSE
+=, <=>, >=, >, <=, <, <>, !=, IS, LIKE, REGEXP, IN
+|
+&
+<<, >>
+-, +
+*, /, DIV, %, MOD
+^
+- (unary minus), ~ (unary bit inversion)
+!
+BINARY, COLLATE
+     */
+    /* Decreasing : PostgreSQL
+Operator/Element    Associativity   Description
+.   left    table/column name separator
+::  left    PostgreSQL-style typecast
+[ ] left    array element selection
+-   right   unary minus
+^   left    exponentiation
+* / %   left    multiplication, division, modulo
++ - left    addition, subtraction
+IS      IS TRUE, IS FALSE, IS UNKNOWN, IS NULL
+ISNULL      test for null
+NOTNULL     test for not null
+(any other) left    all other native and user-defined operators
+IN      set membership
+BETWEEN     range containment
+OVERLAPS        time interval overlap
+LIKE ILIKE SIMILAR      string pattern matching
+< >     less than, greater than
+=   right   equality, assignment
+NOT right   logical negation
+AND left    logical conjunction
+OR  left    logical disjunction
+*/    
     private IndentedWriter out ;
 
     SqlExprGenerateSQL(IndentedWriter out)
@@ -23,28 +63,34 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
     
     public void visit(SqlConstant constant) { out.print(constant.asSqlString()) ; }
     
-    public void visit(SqlExpr1 expr)
+    public void visit(SqlFunction1 expr)
     {
         out.print(expr.getFuncSymbol()) ;
         out.print("(") ;
-        expr.visit(this) ;
+        expr.getExpr().visit(this) ;
         out.print(")") ;
+    }
+
+    public void visit(SqlExpr1 expr)
+    {
+        printExpr(expr.getExpr()) ;
+        out.print(" ") ;
+        out.print(expr.getExprSymbol()) ;
     }
 
     public void visit(SqlExpr2 expr)
     {
-        expr.getLeft().visit(this) ;
+        printExpr(expr.getLeft()) ;
         out.print(" ") ;
         out.print(expr.getOpSymbol()) ;
         out.print(" ") ;
-        expr.getRight().visit(this) ;
+        printExpr(expr.getRight()) ;
     }
 
     public String RegexOperator = "REGEXP" ; 
     
     public void visit(S_Regex regex)
     {
-        // Err ... need to choose bewteen regex and LIKE
         // TODO Make per-store dependent for syntax and case sensitiveity reasons.
         // including "binary" for MySQL
         regex.getExpr().visit(this) ;
@@ -64,6 +110,17 @@ public class SqlExprGenerateSQL implements SqlExprVisitor
             out.print("BINARY ") ;
         out.print(SQLUtils.quoteStr(regex.getPattern())) ;
     }
+    
+    private void printExpr(SqlExpr expr)
+    {
+        boolean atomic = expr.isColumn() || expr.isConstant() ;
+        if ( ! atomic )
+            out.print("( ") ;
+        expr.visit(this) ;
+        if ( ! atomic )
+            out.print(" )") ;
+    }
+    
     
 }
 

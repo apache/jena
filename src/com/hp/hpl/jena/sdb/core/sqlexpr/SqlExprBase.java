@@ -38,6 +38,9 @@ public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
         return acc ;
     }
     
+    public boolean isColumn()   { return false ; }
+    public boolean isConstant() { return false ; }
+
 }
 
 /*

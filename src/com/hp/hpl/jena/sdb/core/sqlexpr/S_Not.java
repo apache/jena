@@ -7,21 +7,12 @@
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
 
-public class SqlExpr1 extends SqlExprBase
+
+public class S_Not extends SqlFunction1
 {
-    public SqlExpr expr ;
-    public String funcSymbol ;
     
-    public SqlExpr1(SqlExpr expr, String symbol)
-    {
-        this.expr = expr ;
-        this.funcSymbol = symbol ;
-    }
-    
-    public SqlExpr getExpr() { return expr ; }
-    public String  getFuncSymbol() { return funcSymbol ; }
-    
-    public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
+    public S_Not(SqlExpr expr)
+    { super(expr, "NOT") ; }
 }
 
 /*

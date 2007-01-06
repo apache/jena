@@ -1,6 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Precedence output for SqlExpr // SqlExprGenerateSQL
+
 + Features:
   In desc file for now.
 

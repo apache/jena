@@ -24,10 +24,8 @@ import com.hp.hpl.jena.query.engine1.ExecutionContext;
 
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
+import com.hp.hpl.jena.sdb.core.ScopeEntry;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.*;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -94,10 +92,24 @@ public class QC
             {
                 if ( ignoreVars == null || ! ignoreVars.contains(v) )
                 {
-                    SqlColumn leftCol = left.getIdScope().getColumnForVar(v).getColumn() ;
-                    SqlColumn rightCol = right.getIdScope().getColumnForVar(v).getColumn() ;
+                    ScopeEntry sLeft = left.getIdScope().getColumnForVar(v) ;
+                    ScopeEntry sRight = right.getIdScope().getColumnForVar(v) ;
                     
-                    SqlExpr c = new S_Equal(leftCol, rightCol) ;
+                    SqlColumn leftCol = sLeft.getColumn() ;
+                    SqlColumn rightCol = sRight.getColumn() ;
+                    
+                    SqlExpr c = null ;
+                    
+                    if ( sLeft.isOptional() )
+                        c = makeOr(c, new S_IsNull(leftCol)) ;
+                    
+                    if ( c != null )
+                        c.asSQL() ;
+
+                    if ( sRight.isOptional() && joinType == JoinType.INNER )
+                        c = makeOr(c, new S_IsNull(rightCol)) ;
+                    
+                    c = makeOr(c, new S_Equal(leftCol, rightCol)) ;
                     conditions.add(c) ;
                     c.addNote("Join var: "+v) ; 
                 }
@@ -109,6 +121,22 @@ public class QC
         return join ;
     }
     
+    private static SqlExpr makeOr(SqlExpr c, SqlExpr expr)
+    {
+        if ( c == null )
+            return expr ;
+       
+        return new S_Or(c, expr) ;
+    }
+
+    private static SqlExpr makeAnd(SqlExpr c, SqlExpr expr)
+    {
+        if ( c == null )
+            return expr ;
+       
+        return new S_And(c, expr) ;
+    }
+
     private static SqlNode removeRestrict(SqlNode sqlNode, SqlExprList conditions)
     {
         if ( ! sqlNode.isRestrict() ) 

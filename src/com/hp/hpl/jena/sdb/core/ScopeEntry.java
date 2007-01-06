@@ -40,7 +40,12 @@ public class ScopeEntry
         status = newStatus ;
     }
 
-
+    public boolean isOptional()     { return hasStatus(ScopeStatus.OPTIONAL) ; }
+    public boolean isFixed()        { return hasStatus(ScopeStatus.FIXED) ; }
+    
+    public boolean hasStatus(ScopeStatus testStatus2)
+    { return status == testStatus2 ; }
+    
     public Var getVar()
     {
         return var ;
