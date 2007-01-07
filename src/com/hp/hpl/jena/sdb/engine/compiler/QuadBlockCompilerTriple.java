@@ -78,7 +78,7 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
         Var var = Var.alloc(node) ;
         if ( table.getIdScope().hasColumnForVar(var) )
         {
-            ScopeEntry e = table.getIdScope().getColumnForVar(var) ;
+            ScopeEntry e = table.getIdScope().findScopeForVar(var) ;
             SqlColumn otherCol = e.getColumn() ;
             SqlExpr c = new S_Equal(otherCol, thisCol) ;
             conditions.add(c) ;

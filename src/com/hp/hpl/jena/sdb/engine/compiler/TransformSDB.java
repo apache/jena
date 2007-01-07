@@ -6,7 +6,10 @@
 
 package com.hp.hpl.jena.sdb.engine.compiler;
 
-import java.util.Collection;
+import static com.hp.hpl.jena.sdb.util.SetUtils.convert;
+import static com.hp.hpl.jena.sdb.util.SetUtils.filter;
+import static com.hp.hpl.jena.sdb.util.SetUtils.intersection;
+
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -18,12 +21,8 @@ import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.expr.Expr;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.Aliases;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.util.SetUtils;
 
 
 public class TransformSDB extends TransformCopy
@@ -80,27 +79,42 @@ public class TransformSDB extends TransformCopy
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
         
-        // Check for coalesce.
-        // How to get the full scope of the LHS?
-        Collection<Var> vars = sqlRight.getIdScope().getVars() ;
-
-        // Could be more efficient by combining the VarUsage with this transform walk.
-        // Or even make the tree once with variables and scopes.
-        Set<Var> optDefsLeft = VarFinder.optDefined(opJoin.getLeft()) ;
-        
-        // Anything optional in both sides, we need a "coalesce"
-        Set<Var> x = SetUtils.intersection(optDefsLeft, sqlRight.getIdScope().getVars()) ;
-        if ( x.size() > 0  ) 
+        if ( true )
         {
-            // Need to do this and, at the same time, build the coalesce lists. 
-            SqlNode sqlNode = QC.leftJoinCoalesce(request, genCoalesceAlias.next(),
-                                                  sqlLeft, sqlRight, x) ;
-            return new OpSQL(sqlNode, opJoin, request) ;
+            // Check for coalesce.
+    
+            // --- Algorithm -- inspried by http://jga.sourceforge.net/
+            // Except we want it working on Sets. 
             
-            // Punt
-            //return super.transform(opJoin, left, right) ;
+            Set<ScopeEntry> scopes = sqlLeft.getIdScope().findScopes() ;
+            Set<ScopeEntry> scopes2 = filter(scopes, ScopeEntry.OptionalFilter) ;
+            Set<Var> leftOptVars = convert(scopes2, ScopeEntry.ToVar) ;            // Vars from left optionals.
+            
+            if ( true )
+            {
+                Set<Var> optDefsLeft = VarFinder.optDefined(opJoin.getLeft()) ;
+                if ( ! optDefsLeft.equals(leftOptVars) )
+                {
+                    log.warn("Different coalesce algorithms give different answers") ;
+                    log.warn("VarFinder = "+optDefsLeft) ;
+                    log.warn("leftOptVars = "+leftOptVars) ;
+                }
+            }
+            
+            Set<Var> rightOptVars = sqlRight.getIdScope().getVars() ;
+            Set<Var> coalesceVars = intersection(leftOptVars, rightOptVars) ;
+            
+            if ( coalesceVars.size() > 0  ) 
+            {
+                // Need to do this and, at the same time, build the coalesce lists. 
+                SqlNode sqlNode = QC.leftJoinCoalesce(request, genCoalesceAlias.next(),
+                                                      sqlLeft, sqlRight, coalesceVars) ;
+                return new OpSQL(sqlNode, opJoin, request) ;
+                
+                // Punt
+                //return super.transform(opJoin, left, right) ;
+            }
         }
-        
         return new OpSQL(QC.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;
     }
     
@@ -136,7 +150,6 @@ public class TransformSDB extends TransformCopy
     {
         return ( x instanceof OpSQL ) ;
     }
-    
 }
 
 /*

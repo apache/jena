@@ -39,16 +39,27 @@ public class ScopeBase implements Scope
         
     public Set<Var> getVars()
     {
-        if ( parent == null )
-            return frame.keySet() ;
-        
         Set<Var> x = new HashSet<Var>() ;
         x.addAll(frame.keySet()) ;
-        x.addAll(parent.getVars()) ;
+        if ( parent != null )
+            x.addAll(parent.getVars()) ;
         return x ;
     }
     
-    public ScopeEntry getColumnForVar(Var var)
+    public Set<ScopeEntry> findScopes()
+    {
+        Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;
+        for ( Var v : frame.keySet() )
+        {
+            ScopeEntry e = findScopeForVar(v) ;
+            x.add(e) ;
+        }
+        if ( parent != null )
+            x.addAll(parent.findScopes()) ;
+        return x ;
+    }
+    
+    public ScopeEntry findScopeForVar(Var var)
     { 
         if ( frame.containsKey(var) )
         {
@@ -56,7 +67,7 @@ public class ScopeBase implements Scope
             return e ;
         }
         if ( parent != null )
-            return parent.getColumnForVar(var) ;
+            return parent.findScopeForVar(var) ;
         return null ;
     }
 
@@ -65,7 +76,7 @@ public class ScopeBase implements Scope
         // Only check the frame.
         if ( frame.containsKey(var) )
         {
-            LogFactory.getLog(Scope.class).warn("Already has an alias: "+var+" => "+getColumnForVar(var)) ;
+            LogFactory.getLog(Scope.class).warn("Already has an alias: "+var+" => "+findScopeForVar(var)) ;
             return ;
         }
         frame.put(var, column) ;

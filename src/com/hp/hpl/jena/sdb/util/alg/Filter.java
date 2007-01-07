@@ -4,49 +4,9 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.util.alg;
 
-import java.util.Set;
-
-import com.hp.hpl.jena.query.core.Var;
-
-import com.hp.hpl.jena.sdb.util.SetUtils;
-
-public class ScopeOptional implements Scope
-{
-    private Scope scope ;
-    private ScopeStatus scopeStatus = ScopeStatus.OPTIONAL ;
-
-    public ScopeOptional(Scope subScope)
-    { this.scope = subScope ; }
-    
-    public ScopeEntry findScopeForVar(Var var)
-    {
-        ScopeEntry e = scope.findScopeForVar(var) ;
-        if ( e == null )
-            return null ;
-        e.setStatus(scopeStatus) ;
-        return e ;
-    }
-
-    public Set<Var> getVars()
-    {
-        return scope.getVars() ;
-    }
-
-    public Set<ScopeEntry> findScopes()
-    {
-        Set<ScopeEntry> x = scope.findScopes() ;
-        SetUtils.apply(x, ScopeEntry.SetOpt) ;
-        return x ;
-    }
-    
-    public boolean hasColumnForVar(Var var)
-    {
-        return scope.hasColumnForVar(var) ;
-    }
-
-}
+public interface Filter <T> { boolean accept(T item) ; }
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP

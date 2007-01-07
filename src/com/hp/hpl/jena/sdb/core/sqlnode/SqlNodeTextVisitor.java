@@ -119,10 +119,10 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         {
             if ( ! first ) out.print(" ") ;
             first = false ;
-            SqlColumn col = sqlNode.getIdScope().getColumnForVar(v).getColumn() ;
+            SqlColumn col = sqlNode.getIdScope().findScopeForVar(v).getColumn() ;
             out.print(v.toString()) ;
-            SqlColumn leftCol = join.getLeft().getIdScope().getColumnForVar(v).getColumn() ;
-            SqlColumn rightCol = join.getRight().getIdScope().getColumnForVar(v).getColumn() ;
+            SqlColumn leftCol = join.getLeft().getIdScope().findScopeForVar(v).getColumn() ;
+            SqlColumn rightCol = join.getRight().getIdScope().findScopeForVar(v).getColumn() ;
             out.print("["+leftCol+"/"+rightCol+"]") ;
         }
         for ( Var v : sqlNode.getNonCoalesceVars()  )
@@ -131,7 +131,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
             first = false ;
             out.print(v.toString()) ;
             // and where is came from.
-            SqlColumn col = join.getIdScope().getColumnForVar(v).getColumn() ;
+            SqlColumn col = join.getIdScope().findScopeForVar(v).getColumn() ;
             out.print("["+col+"]") ;
         }
         

@@ -90,37 +90,39 @@ public class QC
         {
             if ( right.getIdScope().hasColumnForVar(v) )
             {
-                if ( ignoreVars == null || ! ignoreVars.contains(v) )
-                {
-                    ScopeEntry sLeft = left.getIdScope().getColumnForVar(v) ;
-                    ScopeEntry sRight = right.getIdScope().getColumnForVar(v) ;
-                    
-                    SqlColumn leftCol = sLeft.getColumn() ;
-                    SqlColumn rightCol = sRight.getColumn() ;
-                    
-                    SqlExpr c = null ;
-                    
-                    // SPARQL join condition is join if "undef or same"
-                    // Soft null handling : need to insert "IsNull OR"
-                    // if the column can be a null.
-                    // The order of the OR conditions matters.
-                    
-                    if ( sLeft.isOptional() )
-                        c = makeOr(c, new S_IsNull(leftCol)) ;
-                    
-                    if ( sRight.isOptional() )
-                        c = makeOr(c, new S_IsNull(rightCol)) ;
-                    
-                    c = makeOr(c, new S_Equal(leftCol, rightCol)) ;
-                    conditions.add(c) ;
-                    c.addNote("Join var: "+v) ; 
-                }
+                ScopeEntry sLeft = left.getIdScope().findScopeForVar(v) ;
+                ScopeEntry sRight = right.getIdScope().findScopeForVar(v) ;
+                
+                SqlExpr c = joinCondition(joinType, sLeft, sRight) ;
+                conditions.add(c) ;
+                c.addNote("Join var: "+v) ; 
             }
         }
         
         SqlJoin join = SqlJoin.create(joinType, left, right, null) ;
         join.addConditions(conditions) ;
         return join ;
+    }
+    
+    private static SqlExpr joinCondition(JoinType joinType, ScopeEntry sLeft, ScopeEntry sRight)
+    {
+        SqlExpr c = null ;
+        SqlColumn leftCol = sLeft.getColumn() ;
+        SqlColumn rightCol = sRight.getColumn() ;
+        
+        // SPARQL join condition is join if "undef or same"
+        // Soft null handling : need to insert "IsNull OR"
+        // if the column can be a null.
+        // The order of the OR conditions matters.
+        
+        if ( sLeft.isOptional() )
+            c = makeOr(c, new S_IsNull(leftCol)) ;
+        
+        if ( sRight.isOptional() )
+            c = makeOr(c, new S_IsNull(rightCol)) ;
+        
+        c = makeOr(c, new S_Equal(leftCol, rightCol)) ;
+        return c ;
     }
     
     private static SqlExpr makeOr(SqlExpr c, SqlExpr expr)

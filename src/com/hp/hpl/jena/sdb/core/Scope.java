@@ -14,7 +14,9 @@ public interface Scope
 {
     public boolean          hasColumnForVar(Var var) ;
     public Set<Var>         getVars() ;
-    public ScopeEntry       getColumnForVar(Var var) ;
+    public Set<ScopeEntry>  findScopes() ;
+    public ScopeEntry       findScopeForVar(Var var) ;
+    
 }
 
 /*

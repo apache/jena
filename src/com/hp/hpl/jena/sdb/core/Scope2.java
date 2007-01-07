@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -42,13 +43,25 @@ public class Scope2 implements Scope
         return acc ;
     }
     
-    public ScopeEntry getColumnForVar(Var var)
+    public Set<ScopeEntry> findScopes()
+    {
+        Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;
+        for ( Var v : getVars() )
+        {
+            ScopeEntry e = findScopeForVar(v) ;
+            x.add(e) ;
+        }
+        return x ;
+    }
+    
+    public ScopeEntry findScopeForVar(Var var)
     {
         // Return a fixed ScopeEntry in preference to an optional one.
+        // Return a more rightward optional (c.f. coalesce) if both optional
         ScopeEntry c1 = null ;
         
         if ( left != null )
-            c1 = left.getColumnForVar(var) ;
+            c1 = left.findScopeForVar(var) ;
         
         if ( c1 != null && c1.getStatus() == ScopeStatus.FIXED )
             return c1 ;
@@ -57,16 +70,17 @@ public class Scope2 implements Scope
         ScopeEntry c2 = null ;
         
         if ( right != null )
-            c2 = right.getColumnForVar(var) ;
+            c2 = right.findScopeForVar(var) ;
         if ( c2 != null && c2.getStatus() == ScopeStatus.FIXED )
             return c2 ;
         
         // No fixed out - return an optional if present.
+        // Prefer the rigth to the left 
         
-        if ( c1 != null )
-            return c1 ;
         if ( c2 != null )
             return c2 ;
+        if ( c1 != null )
+            return c1 ;
         
         
         return null ;

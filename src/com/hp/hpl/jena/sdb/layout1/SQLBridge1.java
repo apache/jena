@@ -48,7 +48,7 @@ public class SQLBridge1 extends SQLBridgeBase
                 continue ;
             // Value scope == IdScope for layout1
             // CHECK
-            ScopeEntry e = getSqlExprNode().getIdScope().getColumnForVar(v) ; 
+            ScopeEntry e = getSqlExprNode().getIdScope().findScopeForVar(v) ; 
             if ( e == null )
                 continue ;
             SqlColumn c = e.getColumn() ;

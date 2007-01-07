@@ -8,12 +8,34 @@ package com.hp.hpl.jena.sdb.core;
 
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.util.alg.Action;
+import com.hp.hpl.jena.sdb.util.alg.Filter;
+import com.hp.hpl.jena.sdb.util.alg.Transform;
 
 public class ScopeEntry
 {
     Var var;
     SqlColumn column;
     ScopeStatus status ;
+    
+    public static Filter<ScopeEntry> OptionalFilter = new Filter<ScopeEntry>()
+    {
+        public boolean accept(ScopeEntry item)
+        { return item.getStatus() == ScopeStatus.OPTIONAL ; }
+    } ;
+    
+    public static Transform<ScopeEntry, Var> ToVar = new Transform<ScopeEntry, Var>()
+    {
+        public Var convert(ScopeEntry item)
+        { return item.getVar() ; } 
+    } ;
+    
+    public static Action<ScopeEntry> SetOpt = new Action<ScopeEntry>()
+    {
+        public void apply(ScopeEntry item)
+        { item.setStatus(ScopeStatus.OPTIONAL) ; } 
+    } ;
+
     
     public ScopeEntry(Var var, SqlColumn column)
     { this(var, column, ScopeStatus.FIXED) ; }
@@ -50,6 +72,9 @@ public class ScopeEntry
     {
         return var ;
     }
+    
+    @Override
+    public String toString() { return "("+var+", "+column+"/"+status.name()+")" ; }
 }
 
 /*

@@ -95,7 +95,7 @@ class StringEqualsSqlGen extends SDBConstraint
             return null ;
         }
           
-        SqlColumn vCol = scope.getColumnForVar(var).getColumn() ;
+        SqlColumn vCol = scope.findScopeForVar(var).getColumn() ;
         SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;
         SqlColumn vTypeCol = new SqlColumn(vCol.getTable(), "type") ;
         

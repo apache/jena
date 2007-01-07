@@ -103,7 +103,7 @@ class RegexSqlGen extends SDBConstraint
             return null ;
         }
           
-        SqlColumn vCol = scope.getColumnForVar(var).getColumn() ;
+        SqlColumn vCol = scope.findScopeForVar(var).getColumn() ;
 
         // Ensure it's the lex column
         SqlColumn lexCol = new SqlColumn(vCol.getTable(), "lex") ;

@@ -64,7 +64,7 @@ public class SQLBridge2 extends SQLBridgeBase
         {
             if ( ! v.isNamedVar() )
                 continue ;
-            ScopeEntry e = getSqlNode().getNodeScope().getColumnForVar(v) ;
+            ScopeEntry e = getSqlNode().getNodeScope().findScopeForVar(v) ;
             if ( e == null )
             {
                 // Should be a column mentioned in the SELECT which is not mentioned in this block
@@ -100,7 +100,7 @@ public class SQLBridge2 extends SQLBridgeBase
     
     private SqlNode insertValueGetter(SDBRequest request, SqlNode sqlNode, Var var)
     {
-        ScopeEntry e1 = sqlNode.getIdScope().getColumnForVar(var) ;
+        ScopeEntry e1 = sqlNode.getIdScope().findScopeForVar(var) ;
         if ( e1 == null )
         {
             // Debug.
@@ -110,7 +110,7 @@ public class SQLBridge2 extends SQLBridgeBase
         }
         
         // Already in scope (from a condition)?
-        ScopeEntry e2 = sqlNode.getNodeScope().getColumnForVar(var) ;
+        ScopeEntry e2 = sqlNode.getNodeScope().findScopeForVar(var) ;
         if ( e2 != null )
             // Already there
             return sqlNode ;

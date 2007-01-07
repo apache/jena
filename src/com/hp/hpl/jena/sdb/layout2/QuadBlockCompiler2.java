@@ -83,7 +83,7 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
             for ( Var v : vars )
             {
                 // For Variables used in this SQL constraint, make sure the value is available.  
-                ScopeEntry e = sqlNode.getIdScope().getColumnForVar(v) ;  // tripleTableCol
+                ScopeEntry e = sqlNode.getIdScope().findScopeForVar(v) ;  // tripleTableCol
                 
                 if ( e == null )
                 {

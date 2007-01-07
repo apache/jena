@@ -13,10 +13,10 @@ import com.hp.hpl.jena.query.core.Var;
 
 public class ScopeNull implements Scope 
 {
-    public boolean      hasColumnForVar(Var var)    { return false ; }
-    public ScopeEntry   getColumnForVar(Var var)    { return null ; }
-    public Set<Var>     getVars()                   { return Collections.emptySet()  ; }
-    public void setStatus(ScopeStatus status)       {}
+    public boolean          hasColumnForVar(Var var)    { return false ; }
+    public ScopeEntry       findScopeForVar(Var var)     { return null ; }
+    public Set<Var>         getVars()                   { return Collections.emptySet()  ; }
+    public Set<ScopeEntry>  findScopes()                 { return Collections.emptySet()  ; }
 }
 
 /*

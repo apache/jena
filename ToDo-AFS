@@ -3,14 +3,15 @@ SDB ToDo list (and general notes)
 
 + Closing Derby properly? "sdbdump --format N3" breaks the DB
 
-+ tests for ORDER BY
++ tests for ORDER BY and other integrations
 
 + Test for special case structures (testing/Structure)
   WorkSpace area?
-  
 
 + Need for coalesce code (TransformSDB, SqlCoalesce) if we pick the
-  righermost column by scope (if optional)?
+  righermost column by scope (if optional)? No - but fully test.
+  Including where second optional, guarded by ?w has card(2) new var
+  Still need a join condition across coalesce vars.
 
 + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
 
