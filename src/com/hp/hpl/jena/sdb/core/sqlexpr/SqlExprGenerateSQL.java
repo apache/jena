@@ -51,13 +51,12 @@ LIKE ILIKE SIMILAR      string pattern matching
 NOT right   logical negation
 AND left    logical conjunction
 OR  left    logical disjunction
-*/    
+*/
+    
     private IndentedWriter out ;
 
     SqlExprGenerateSQL(IndentedWriter out)
-    {
-        this.out = out ;
-    }
+    { this.out = out ; }
 
     public void visit(SqlColumn column)     { out.print(column.asString()) ; }
     
