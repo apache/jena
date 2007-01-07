@@ -1,8 +1,16 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Closing Derby properly? "sdbdump --format N3" breaks the DB
+
++ tests for ORDER BY
+
 + Test for special case structures (testing/Structure)
   WorkSpace area?
+  
+
++ Need for coalesce code (TransformSDB, SqlCoalesce) if we pick the
+  righermost column by scope (if optional)?
 
 + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
 

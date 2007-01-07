@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 public class GenerateSQLVisitor implements SqlNodeVisitor
 {
+    // Annotate should ensureEndofLine ?
     private static Log log = LogFactory.getLog(GenerateSQLVisitor.class) ;
     
     private IndentedWriter out ;
@@ -168,7 +169,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             out.print("FROM ") ;
             out.print(node2.asTable().getTableName()) ;
             out.print(" AS ") ;
-            out.println(node2.asTable().getAliasName()) ;
+            out.print(node2.asTable().getAliasName()) ;
+            annotate(node2.asTable()) ;
+            out.ensureStartOfLine() ;
             genWHERE(sqlNode.getConditions()) ;
             //out.println() ;
             //out.decIndent() ;

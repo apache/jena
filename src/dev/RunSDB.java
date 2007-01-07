@@ -53,7 +53,10 @@ public class RunSDB
         SDBConnection.logSQLExceptions = true ;
         //run() ;
         //SDBConnection.logSQLStatements = true ;
+        
+        runInMem("Q.rq", "D.ttl") ;
         //runQuery("Q.rq", "D.ttl") ;
+        runQuery("Q.rq") ;
         
         
         //runQuad() ;

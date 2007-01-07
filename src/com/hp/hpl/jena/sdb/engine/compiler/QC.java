@@ -100,13 +100,15 @@ public class QC
                     
                     SqlExpr c = null ;
                     
+                    // SPARQL join condition is join if "undef or same"
+                    // Soft null handling : need to insert "IsNull OR"
+                    // if the column can be a null.
+                    // The order of the OR conditions matters.
+                    
                     if ( sLeft.isOptional() )
                         c = makeOr(c, new S_IsNull(leftCol)) ;
                     
-                    if ( c != null )
-                        c.asSQL() ;
-
-                    if ( sRight.isOptional() && joinType == JoinType.INNER )
+                    if ( sRight.isOptional() )
                         c = makeOr(c, new S_IsNull(rightCol)) ;
                     
                     c = makeOr(c, new S_Equal(leftCol, rightCol)) ;
@@ -206,7 +208,7 @@ public class QC
         {
             for ( SortCondition sc : orderConditions )
             {
-                List<Var> x = (List<Var>)sc.getExpression().getVarsMentioned() ;
+                Set<Var> x = (Set<Var>)sc.getExpression().getVarsMentioned() ;
                 for ( Var v :  x )
                 {
                     if ( ! vars.contains(v) )
