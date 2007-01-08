@@ -9,35 +9,59 @@ package com.hp.hpl.jena.sdb.util;
 import java.util.List;
 import java.util.ArrayList ;
 
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Printable;
 import com.hp.hpl.jena.sdb.util.alg.Action;
 import com.hp.hpl.jena.sdb.util.alg.Filter;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
 
 public class ListUtils
 {
-    public static <T> void apply(List<T> s, Action<T> action)
+    public static <T extends Printable> void print(final IndentedWriter out, List<T> list)
     {
-        for ( T item : s )
+        Action<T> printAction = new Action<T>() {
+            boolean first = true ;
+            public void apply(Printable item)
+            {
+                if ( ! first )
+                    out.print(" ") ;
+                first = false ;
+                item.output(out) ;
+            }
+        } ;
+        apply(list, printAction) ;
+    }
+    
+    public static <T> void apply(List<T> list, Action<T> action)
+    {
+        for ( T item : list )
             action.apply(item) ;
     }
     
-    public static <T> List<T> filter(List<T> s, Filter<T> f)
+    public static <T> List<T> filter(List<T> list, Filter<T> f)
     {
         List<T> x = new ArrayList<T>() ;
-        for ( T item : s )
+        for ( T item : list )
             if ( f.accept(item) )
                 x.add(item) ;
         return x ;
     }
     
     
-    public static <T, R> List<R> convert(List<T> s, Transform<T, R> converter)
+    public static <T, R> List<R> convert(List<T> list, Transform<T, R> converter)
     {
         List<R> x = new ArrayList<R>() ;
-        for ( T item : s )
+        for ( T item : list)
             x.add(converter.convert(item) ) ;
         return x ;
     }
+    
+    private static Action<Printable> printAction = new Action<Printable>() {
+        public void apply(Printable item)
+        {
+            
+        }
+    } ;
 }
 
 /*

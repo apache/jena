@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.rdf.model.Property;
+//import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
 import com.hp.hpl.jena.sdb.SDB;
@@ -15,8 +15,10 @@ import com.hp.hpl.jena.sdb.util.Vocab;
 
 public class ConfigVocab
 {
-    public final static Resource typeConfig        = Vocab.resource(SDB.namespace, "Config") ;
-    public final static Property featureProperty   = Vocab.property(SDB.namespace, "feature") ;
+    public final static Resource typeConfig             = Vocab.resource(SDB.namespace, "Config") ;
+//    public final static Property featureProperty        = Vocab.property(SDB.namespace, "feature") ;
+//    public final static Property featureNameProperty    = Vocab.property(SDB.namespace, "name") ;
+//    public final static Property featureValueProperty   = Vocab.property(SDB.namespace, "value") ;
 }
 
 /*

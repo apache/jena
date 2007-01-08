@@ -257,6 +257,7 @@ public abstract class PrefixMappingImplAlt implements PrefixMapping
 //
     protected final boolean equalsByMap( PrefixMapping other )
     { 
+        if ( this == other ) return true ;
         checkNotNull(other) ;
         return getNsPrefixMap().equals( other.getNsPrefixMap() );
     }

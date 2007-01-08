@@ -118,11 +118,17 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             return ;
         }
         
-        // Not a project-restrict.
-        // Generate expression for the FROM
-        out.incIndent() ;
-        sqlNode.getSubNode().visit(this) ;
-        out.decIndent() ;
+        boolean needBrackets = false ;
+        if ( sqlNode2.isCoalesce() )
+            needBrackets = true ;
+        
+        outputNode(sqlNode2, needBrackets) ;
+
+//        // Not a project-restrict.
+//        // Generate expression for the FROM
+//        out.incIndent() ;
+//        sqlNode.getSubNode().visit(this) ;
+//        out.decIndent() ;
     }
 
     public void visit(SqlRestrict sqlNode)

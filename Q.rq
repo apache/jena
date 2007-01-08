@@ -6,7 +6,6 @@ SELECT ?z ?w ?v
 {
    ?x :p ?z 
    OPTIONAL { ?z :q1 ?w }
-#   OPTIONAL { ?z :q2 ?w }
    OPTIONAL { ?z :q2 ?w . :x :r ?v }
 
 # Same if reversed.
@@ -19,5 +18,6 @@ SELECT ?z ?w ?v
 ##     OPTIONAL { ?z :q1 ?w . ?z :q3 ?r}
 ##     OPTIONAL { ?z :q2 ?w . ?z :q3 ?r}
 #    OPTIONAL { ?z :q3 ?w }
-} ORDER BY ?z
+}
+ORDER BY ?z
 

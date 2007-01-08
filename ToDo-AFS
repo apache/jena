@@ -5,27 +5,22 @@ SDB ToDo list (and general notes)
 
 + tests for ORDER BY and other integrations
 
++ Generating SQL:
+  + If SqlCoalesce is top node under FROM, don't need the aliasing (layout1 only)
+  + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
+
 + Test for special case structures (testing/Structure)
   WorkSpace area?
 
-+ Need for coalesce code (TransformSDB, SqlCoalesce) if we pick the
-  righermost column by scope (if optional)? No - but fully test.
-  Including where second optional, guarded by ?w has card(2) new var
-  Still need a join condition across coalesce vars.
-
-+ Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
-
 + Features:
   In desc file for now.
+  Features are params to layout
 
 + Values and conditions : reactivate condition compilation.
   Need value access
   Isolate QC2.insertValueGetter
 
 + Ugly Store.getNodeKeyColName()
-
-+ Hash constants
-   need separate formatters and loaders.
 
 + cmd: 
   @ --load for sdb.sdbquery --format

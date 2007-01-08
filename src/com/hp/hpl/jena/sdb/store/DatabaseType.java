@@ -20,14 +20,13 @@ import com.hp.hpl.jena.sdb.SDBException;
  */
 
 public enum DatabaseType implements Named {
-    // These should be compatible with the DBnames that Jena uses for ModelRDB
     MySQL5     { public String getName() { return "MySQL5" ; } } ,
     MySQL41    { public String getName() { return "MySQL41" ; } } ,
     PostgreSQL { public String getName() { return "PostgreSQL" ; } } ,
     Oracle10   { public String getName() { return "Oracle10" ; } } ,
     SQLServer  { public String getName() { return "MSSQLServer" ; } } ,
     HSQLDB     { public String getName() { return "HSQLDB" ; } } ,
-    Derby     { public String getName() { return "Derby" ; } } ,
+    Derby      { public String getName() { return "Derby" ; } } ,
     ;
     
     private DatabaseType() {}

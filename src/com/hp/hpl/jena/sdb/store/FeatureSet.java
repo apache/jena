@@ -1,52 +1,60 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlexpr;
+package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Printable;
+import com.hp.hpl.jena.query.util.PrintableBase;
+import com.hp.hpl.jena.sdb.util.ListUtils;
 
-public class SqlColumn extends SqlExprBase
+/** A set of features (order retained */
+
+public class FeatureSet extends PrintableBase implements Printable, Iterable<Feature>
 {
-    SqlTable  table ;
-    String columnName ;
-    public SqlColumn(SqlTable sqlNode, String colName) { this.table = sqlNode ; this.columnName = colName ; }
-
-    public String getColumnName() { return columnName ; }
-    public SqlTable getTable()  { return table ;  }
-
-    public String getFullColumnName() { return getTable().getAliasName()+"."+columnName ; }
+    List <Feature> features = new ArrayList<Feature>() ;
     
-    @Override
-    public int hashCode()
-    {
-        return table.hashCode() ^ columnName.hashCode() << 1 ;
+    public FeatureSet() {}
+    public void addFeature(Feature feature)
+    { 
+        if ( features.contains(feature) )
+            return ;
+        features.add(feature) ;
     }
     
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof SqlColumn ) ) 
-            return false ;
-        SqlColumn col = (SqlColumn)other ;
-        
-        return table.equals(col.getTable()) && columnName.equals(col.getColumnName()) ;
+    public boolean hasFeature(Feature feature) { return features.contains(feature) ; } 
+
+    public Feature getFeature(String name)
+    { 
+        for ( Feature f : features )
+            if ( f.getName().equals(name) ) 
+                return f ;
+        return null ;
     }
+
+    public boolean hasFeature(String name) { return getFeature(name) != null ; }
     
-    @Override
-    public boolean isColumn()   { return true ; }
-    
-    public String asString() { return getFullColumnName() ; }
-    
-    public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
+    public List <Feature> getFeatures() { return features ; }
+
+    public Iterator<Feature> iterator()
+    { return features.iterator() ; }
+
+    public void output(IndentedWriter out)
+    {
+        ListUtils.print(out, features) ;
+    }
 }
 
+
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

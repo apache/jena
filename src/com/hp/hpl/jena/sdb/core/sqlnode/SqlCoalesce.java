@@ -53,14 +53,15 @@ public class SqlCoalesce extends SqlNodeBase
         idScope = new ScopeBase() ;
         nodeScope = new ScopeBase() ;
         
-        // TODO "Column generator" would be neater.
+        // TODO A "Column generator" would be neater.
         SqlTable table = new SqlTable("Coalesce", alias) ;
         
         nonCoalesceVars = SetUtils.difference(join.getIdScope().getVars(),
                                               coalesceVars) ;
 
-        if ( join.getNodeScope().getVars().size() != 0 )
-            LogFactory.getLog(SqlCoalesce.class).warn("NodeScope is not empty") ;
+        // In layout1, NodeScope is the same as IdScope
+//        if ( join.getNodeScope().getVars().size() != 0 )
+//            LogFactory.getLog(SqlCoalesce.class).warn("NodeScope is not empty") ;
         
         for ( Var v : coalesceVars )
         {

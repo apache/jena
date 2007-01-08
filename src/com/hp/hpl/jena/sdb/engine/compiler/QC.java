@@ -68,22 +68,20 @@ public class QC
     
     // Join/LeftJoin two subexpressions, calculating the join conditions in the process
     // If a coalesce (LeftJoin) then don't equate left and right vars of the same name.
-    // An SqlCoalesce is a special case of LeftJoin where ignoreVars!=null
+    // A SqlCoalesce is a special case of LeftJoin where ignoreVars!=null
+    
     private static SqlJoin join(SDBRequest request, 
                                 JoinType joinType, 
                                 SqlNode left, SqlNode right,
                                 Set<Var> ignoreVars)
     {
         SqlExprList conditions = new SqlExprList() ;
-        
-        if ( joinType == JoinType.INNER )
-            // If it's a LeftJoin, leave the left filter on the LHS.
+
+        if ( joinType == INNER )
+            // Put any left filter into the join conditions.
+            // Does not apply to LEFT because the LHS filter does not apply to the right in the same way. 
             left = removeRestrict(left, conditions) ;
-        
-        if ( joinType == JoinType.LEFT )
-            // Make RHS scope optionals 
-            ;
-        
+
         right = removeRestrict(right, conditions) ;
         
         for ( Var v : left.getIdScope().getVars() )

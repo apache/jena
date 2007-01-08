@@ -51,10 +51,23 @@ public class Feature extends PrintableBase implements Named, Printable
         return -1 ;
     }
 
+    @Override
+    public int hashCode()
+    { return name.hashCode() | value.hashCode() ; }
+    
+    @Override
+    public boolean equals(Object other)
+    {
+        if ( this == other ) return true ;
+        if ( ! ( other instanceof Feature ) ) return false ;
+        Feature f = (Feature)other ;
+        return f.name.equals(name) && f.value.equals(value) ;
+    }
+    
     // Interface Named
     public String getName()
     {
-        return toString() ;
+        return name.getSymbol() ; 
     }
 
     // Printable

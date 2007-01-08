@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.assembler;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,6 +19,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
+import com.hp.hpl.jena.sdb.store.Feature;
+import com.hp.hpl.jena.sdb.store.FeatureSet;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 
 public class StoreDescAssembler extends AssemblerBase implements Assembler
@@ -31,10 +35,22 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
             return null ;
         SDBConnectionDesc sdbConnDesc = (SDBConnectionDesc)a.open(c) ;
         
+        // Subversions?  Parameters?
         String layoutName = GraphUtils.getStringValue(root, AssemblerVocab.pLayout) ;
         String dbType =  sdbConnDesc.type ;
         
-        StoreDesc storeDesc = new StoreDesc(layoutName, dbType) ; 
+        @SuppressWarnings("unchecked")
+        List<Resource> x = GraphUtils.multiValue(root, AssemblerVocab.featureProperty) ;
+        FeatureSet fSet = new FeatureSet() ;
+        for ( Resource r : x )
+        {
+            String n = GraphUtils.getStringValue(r, AssemblerVocab.featureNameProperty) ;
+            String v = GraphUtils.getStringValue(r, AssemblerVocab.featureValueProperty) ;
+            Feature f = new Feature(new Feature.Name(n), v) ;
+            fSet.addFeature(f) ;
+        }
+        
+        StoreDesc storeDesc = new StoreDesc(layoutName, dbType, fSet) ; 
         storeDesc.connDesc = sdbConnDesc ;
 
         // MySQL specials

@@ -115,25 +115,48 @@ public class StoreFactory
             }
         }
 
+        boolean hashVariant = true ;
+        if ( desc.featureSet.hasFeature("layout") )
+        {
+            log.warn("Feature 'layout' seen - currently hardwired") ;
+            if ( desc.featureSet.getFeature("layout").getAsString().equals("index") )
+                hashVariant = false ;
+        }
+            
+        // Hard wiring.
+        hashVariant = ( desc.dbType == DatabaseType.Derby ) ;
+        
         if ( desc.layout == LayoutType.LayoutTripleNodes )
         {
-            switch (desc.dbType)
+            if ( hashVariant )
             {
-                case MySQL5:
-                    return new StoreTriplesNodesMySQL(sdb, desc.engineType) ;
-                case PostgreSQL:
-                	return new StoreTriplesNodesPGSQL(sdb) ;
-                case MySQL41:
-                case Oracle10:
-                case SQLServer:
-                    throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
-                case HSQLDB:
-                    return new StoreTriplesNodesHSQL(sdb) ;
-                case Derby:
-                    return new StoreTriplesNodesDerby(sdb) ;
-                default:
-                    throw new SDBException(format("Unknown DB type: %s [layout=%s]",
-                                                  desc.dbType.getName(), desc.layout.getName())) ;
+                switch (desc.dbType)
+                {
+                    case Derby:
+                        return new StoreTriplesNodesDerby(sdb) ;
+                    default:
+                        throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
+                                                      desc.dbType.getName(), desc.layout.getName())) ;
+                }
+            }
+            else
+            {
+                switch (desc.dbType)
+                {
+                    case MySQL5:
+                        return new StoreTriplesNodesMySQL(sdb, desc.engineType) ;
+                    case PostgreSQL:
+                        return new StoreTriplesNodesPGSQL(sdb) ;
+                    case MySQL41:
+                    case Oracle10:
+                    case SQLServer:
+                        throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
+                    case HSQLDB:
+                        return new StoreTriplesNodesHSQL(sdb) ;
+                    default:
+                        throw new SDBException(format("Unknown DB type: %s [layout=%s, index variant]",
+                                                      desc.dbType.getName(), desc.layout.getName())) ;
+                }
             }
         }
         

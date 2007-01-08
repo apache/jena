@@ -1,52 +1,20 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core.sqlexpr;
+package com.hp.hpl.jena.sdb.util.alg;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-
-
-public class SqlColumn extends SqlExprBase
+public class Alg
 {
-    SqlTable  table ;
-    String columnName ;
-    public SqlColumn(SqlTable sqlNode, String colName) { this.table = sqlNode ; this.columnName = colName ; }
-
-    public String getColumnName() { return columnName ; }
-    public SqlTable getTable()  { return table ;  }
-
-    public String getFullColumnName() { return getTable().getAliasName()+"."+columnName ; }
-    
-    @Override
-    public int hashCode()
-    {
-        return table.hashCode() ^ columnName.hashCode() << 1 ;
-    }
-    
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof SqlColumn ) ) 
-            return false ;
-        SqlColumn col = (SqlColumn)other ;
+    public static Filter RemoveNulls = new Filter(){
+        public boolean accept(Object item) { return item != null ; } } ; 
         
-        return table.equals(col.getTable()) && columnName.equals(col.getColumnName()) ;
-    }
-    
-    @Override
-    public boolean isColumn()   { return true ; }
-    
-    public String asString() { return getFullColumnName() ; }
-    
-    public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

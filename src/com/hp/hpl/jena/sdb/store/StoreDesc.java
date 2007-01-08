@@ -29,6 +29,7 @@ public class StoreDesc
     public SDBConnectionDesc connDesc  = null ;
     public DatabaseType dbType         = null ;
     public LayoutType layout           = null ;
+    public FeatureSet featureSet       = null ;
     
     // ModelRDB
     public String rdbModelName         = null ;     // ModelRDB specific
@@ -36,6 +37,7 @@ public class StoreDesc
 
     // MySQL
     public MySQLEngineType engineType  = null ;     // MySQL specific
+
     
     public static StoreDesc read(String filename)
     {
@@ -43,11 +45,13 @@ public class StoreDesc
         return worker(m) ;
     }
         
-    public StoreDesc(String layoutName, String dbTypeName)
+    public StoreDesc(String layoutName, String dbTypeName, FeatureSet featureSet)
     {
         layout = LayoutType.convert(layoutName) ;
         dbType = DatabaseType.convert(dbTypeName) ;
-        
+        if ( featureSet == null )
+            featureSet = new FeatureSet() ;
+        this.featureSet = featureSet ;
     }
     
     public LayoutType getLayout() { return layout ; }

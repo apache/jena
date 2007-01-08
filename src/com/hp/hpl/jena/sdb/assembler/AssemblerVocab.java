@@ -61,8 +61,13 @@ public class AssemblerVocab
     public static final Property pSDBpassword        = Vocab.property(NS, "sdbPassword") ;
     
     // ---- Store (uses pSDBtype) 
-    public static final Property pLayout            = Vocab.property(NS, "layout") ;
-    public static final Property pConnection        = Vocab.property(NS, "connection") ;
+    public static final Property pLayout             = Vocab.property(NS, "layout") ;
+    public static final Property pConnection         = Vocab.property(NS, "connection") ;
+    
+    public final static Property featureProperty      = Vocab.property(NS, "feature") ;
+    public final static Property featureNameProperty  = Vocab.property(NS, "name") ;
+    public final static Property featureValueProperty = Vocab.property(NS, "value") ;
+
     
     // MySQL engine type
     public static final Property pMySQLEngine       = Vocab.property(NS, "engine") ;

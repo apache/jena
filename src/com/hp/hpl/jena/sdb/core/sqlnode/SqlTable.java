@@ -77,6 +77,8 @@ public class SqlTable extends SqlNodeBase
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
+
         if ( ! ( other instanceof SqlTable ) ) 
             return false ;
         SqlTable table = (SqlTable)other ;

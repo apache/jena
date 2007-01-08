@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.core;
 import java.util.Set;
 
 import com.hp.hpl.jena.query.core.Var;
-
 import com.hp.hpl.jena.sdb.util.SetUtils;
 
 public class ScopeOptional implements Scope
@@ -46,6 +45,11 @@ public class ScopeOptional implements Scope
         return scope.hasColumnForVar(var) ;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Opt("+scope.toString()+")" ;
+    }
 }
 
 /*

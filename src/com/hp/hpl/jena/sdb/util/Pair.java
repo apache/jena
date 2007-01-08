@@ -31,6 +31,8 @@ public class Pair<A, B>
     @Override
     public boolean equals(Object other)
     {
+        if ( this == other ) return true ;
+
         // If it's a pair of a different <A,B> then .equals
         // Pair<A,B>(null,null) is equal to Pair<C,D>(null ,null)
         // Type erasure makes this hard to check otherwise.

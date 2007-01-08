@@ -17,6 +17,8 @@ public class ScopeNull implements Scope
     public ScopeEntry       findScopeForVar(Var var)     { return null ; }
     public Set<Var>         getVars()                   { return Collections.emptySet()  ; }
     public Set<ScopeEntry>  findScopes()                 { return Collections.emptySet()  ; }
+    
+    @Override public String toString() { return "ScopeNull" ; } 
 }
 
 /*

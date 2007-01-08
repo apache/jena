@@ -37,7 +37,7 @@ public class TestPrefixMappingSDB
         JDBC.loadDriverHSQL() ;
         //SDB.init() ;
         sdb = SDBFactory.createConnection(hsql, "sa", "");
-        StoreDesc desc = new StoreDesc("Layout2", "HSQLDB") ;
+        StoreDesc desc = new StoreDesc("Layout2", "HSQLDB", null) ;
         Store store = SDBFactory.connectStore(sdb, desc) ;
         store.getTableFormatter().format() ;
         // Make a store and format it.
