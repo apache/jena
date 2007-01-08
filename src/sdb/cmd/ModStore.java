@@ -60,10 +60,9 @@ public class ModStore extends ModBase
     protected final ArgDecl argDeclMySQLEngine  = new ArgDecl(true, "engine");
 
     // Load some data - useful for in-memory stores.
-    // ModData?
+    // ModData extends ModStore? 
     protected final ArgDecl argDeclLoad         = new ArgDecl(true,  "load");
     protected final ArgDecl argDeclFormat       = new ArgDecl(false, "format");
-
     
     protected String driverName = null;      // JDBC class name
     //protected String argDriverTypeName = null;  // Jena driver name

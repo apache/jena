@@ -30,9 +30,9 @@ import com.hp.hpl.jena.query.util.Utils;
  
 public class sdbdump extends CmdArgsDB
 {
-    public static final String usage = "sdbdump --sdb <SPEC> [--format syntax]" ;
+    public static final String usage = "sdbdump --sdb <SPEC> [--out syntax]" ;
 
-    static ArgDecl argDeclFormat = new ArgDecl(true, "format","fmt") ;
+    static ArgDecl argDeclFormat = new ArgDecl(true, "out") ;
 
     public static void main (String [] argv)
     {
@@ -49,7 +49,7 @@ public class sdbdump extends CmdArgsDB
     protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
-    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> [--format syntax]" ; }
+    protected String getSummary()  { return Utils.className(this)+" --sdb <SPEC> [--out syntax]" ; }
 
     @Override
     protected void processModulesAndArgs()

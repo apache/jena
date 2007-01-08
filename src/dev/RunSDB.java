@@ -6,12 +6,9 @@
 
 package dev;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import junit.framework.TestSuite;
-import org.apache.commons.logging.LogFactory;
 import arq.cmd.CmdUtils;
 import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
@@ -28,10 +25,7 @@ import com.hp.hpl.jena.query.engine.QueryExecutionGraph;
 import com.hp.hpl.jena.query.engine.QueryExecutionGraphFactory;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.junit.SimpleTestRunner;
-import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.PlainGraphMem;
-import com.hp.hpl.jena.query.util.Symbol;
-import com.hp.hpl.jena.query.util.Utils;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -54,16 +48,16 @@ public class RunSDB
         //run() ;
         //SDBConnection.logSQLStatements = true ;
         
-        runInMem("Q.rq", "D.ttl") ;
+        //runInMem("Q.rq", "D.ttl") ;
         //runQuery("Q.rq", "D.ttl") ;
-        runQuery("Q.rq") ;
-        
+        //runQuery("Q.rq") ;
         
         //runQuad() ;
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
-        //run() ;
+        
+        run() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -166,46 +160,6 @@ public class RunSDB
         System.exit(0) ;
     }
    
-    @SuppressWarnings("unchecked")
-    public static void run()
-    {
-        Foo foo = new Foo(new Context()) ;
-        foo.put(new Symbol("foo"), new ArrayList<Object>()) ;
-        foo.put(new Symbol("foo"), new StringSymbolMap()) ;
-        
-        // Works better to give a real name rather than Map<String, Symbol>
-        
-        StringSymbolMap x = (StringSymbolMap)foo.feature(new Symbol("foo"), StringSymbolMap.class) ;
-        //foo.feature(new Symbol("foo")) ;
-        System.out.println("Done") ;
-        System.exit(0) ;
-    }
-    
-    static class StringSymbolMap extends HashMap<String, Symbol> {}
-    
-    static class Foo extends Context
-    {
-        public Foo(Context context) { super(context) ; }
-        
-        @SuppressWarnings("unchecked")
-        public Object feature(Symbol symbol, Class requiredClass)
-        {
-            Object obj = get(symbol) ;
-            if ( requiredClass != null && ! requiredClass.isAssignableFrom(obj.getClass()) )
-            {
-                LogFactory.getLog(Foo.class).warn("Symbol '"+symbol+"' found of class "+Utils.className(obj)+", not class "+Utils.classShortName(requiredClass)) ;
-                return null ;
-            }
-            return  obj ;
-//            } catch (ClassCastException ex)
-//            {
-//                LogFactory.getLog(Foo.class).warn("Object of wrong type for '"+symbol+
-//                                                  " : "+ex.getMessage()) ;
-//                return null ;
-//            }
-        }
-    }
-    
     public static void runPatternPattern()
     {
         Graph graph = new PlainGraphMem() ;
@@ -281,6 +235,12 @@ public class RunSDB
         m2.write(System.out, "N-TRIPLES") ;
         m2.write(System.out, "N3") ;
         System.exit(0) ;
+    }
+    
+    public static void run()
+    {
+        String[] a = new String[]{"--sdb=sdb.ttl", "--format=N3"} ;
+        sdb.sdbdump.main(a) ;
     }
 }
 
