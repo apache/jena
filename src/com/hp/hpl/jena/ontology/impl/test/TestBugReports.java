@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.78 $
+ * Revision           $Revision: 1.79 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:55 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 17:01:35 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1590,7 +1590,7 @@ public class TestBugReports
     /**
      * Bug report by mongolito_404 - closed models used in imports raise an exception
      */
-    public void xxtest_mongolito_01() {
+    public void test_mongolito_01() {
         String SOURCEA=
             "<rdf:RDF" +
             "    xmlns:rdf          ='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
@@ -1604,15 +1604,19 @@ public class TestBugReports
 
         OntDocumentManager.getInstance().addAltEntry( "http://example.com/b", "file:testing/ontology/bugs/test_dk_01.xml" );
 
-        OntModel a = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
-        a.read( new StringReader( SOURCEA ), null );
+        OntModel a0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        a0.read( new StringReader( SOURCEA ), null );
+        long a0count = a0.size();
 
+        // key step - close a model which is now in the ODM cache
         OntDocumentManager.getInstance().getModel( "http://example.com/b" ).close();
-        a = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
 
         // this line threw an exception before the bug was fixed
-        a.read( new StringReader( SOURCEA ), null );
+        OntModel a1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        a1.read( new StringReader( SOURCEA ), null );
 
+        // for completeness, check that we have read the same contents
+        assertEquals( "Models should be same size", a0count, a1.size() );
     }
 
 

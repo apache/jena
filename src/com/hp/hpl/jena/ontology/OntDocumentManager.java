@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.55 $
+ * Revision           $Revision: 1.56 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:48 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 17:01:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.55 2007-01-02 11:48:48 andy_seaborne Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.56 2007-01-08 17:01:18 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -497,7 +497,15 @@ public class OntDocumentManager
      * @see #getOntology
      */
     public Model getModel( String uri ) {
-        return getFileManager().getFromCache( uri );
+        Model m = getFileManager().getFromCache( uri );
+
+        // if a previously cached model has been closed, we ignore it
+        if (m != null && m.isClosed()) {
+            getFileManager().removeCacheModel( uri );
+            m = null;
+        }
+
+        return m;
     }
 
 
@@ -1111,31 +1119,32 @@ public class OntDocumentManager
      * @param importURI
      * @return
      */
-    private Model fetchLoadedImportModel( OntModelSpec spec, String importURI )
-        {
-        ModelReader loader = new ModelReader()
-                {
-                public Model readModel( Model toRead, String URL )
-                    {
-                    read( toRead, URL, true );
-                    return toRead;
-                    }
-                };
-        return spec.getImportModelGetter().getModel( importURI, loader );
-//        Model in;
-//        // create a sub ontology model and load it from the source
-//        // note that we do this to ensure we recursively load imports
-//        ModelMaker maker = spec.getImportModelMaker();
-//        boolean loaded = maker.hasModel( importURI );
-//
-//        in = maker.openModel( importURI );
-//
-//        // if the graph was already in existence, we don't need to read the contents (we assume)!
-//        if (!loaded) {
-//            read( in, importURI, true );
-//        }
-//        return in;
+    private Model fetchLoadedImportModel( OntModelSpec spec, String importURI ) {
+        // workaround - default model maker can apparently create models that are closed
+        // TODO: this really suggests a bug in ModelMaker, kers to investigate
+        ModelMaker maker = spec.getImportModelMaker();
+        if (maker.hasModel( importURI )) {
+            Model m = maker.getModel( importURI );
+            if (!m.isClosed()) {
+                return m;
+            }
+            else {
+                // we don't want to hang on to closed models
+                maker.removeModel( importURI );
+            }
         }
+
+        // otherwise, we use the model maker to get the model anew
+        Model m = spec.getImportModelGetter()
+                   .getModel( importURI, new ModelReader() {
+                                            public Model readModel( Model toRead, String URL ) {
+                                               read( toRead, URL, true );
+                                               return toRead;
+                                            }
+                                         } );
+
+        return m;
+    }
 
 
     /**
