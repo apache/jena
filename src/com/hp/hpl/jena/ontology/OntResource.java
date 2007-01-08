@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.37 $
+ * Revision           $Revision: 1.38 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:48 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 15:38:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.37 2007-01-02 11:48:48 andy_seaborne Exp $
+ * @version CVS $Id: OntResource.java,v 1.38 2007-01-08 15:38:28 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -606,15 +606,19 @@ public interface OntResource
 
 
     /**
-     * <p>Answer the value of a given RDF property for this resource, or null
-     * if it doesn't have one.  If there is more than one RDF
+     * <p>Answer the value of a given RDF property for this  resource, or null
+     * if it doesn't have one.  The value is returned as an RDFNode, from which
+     * the concrete data value can be extracted for literals. If the value is
+     * a resource, it will present the {@link OntResource} facet.
+     * If there is more than one RDF
      * statement with the given property for the current value, it is not defined
      * which of the values will be returned.</p>
      *
      * @param property An RDF property
-     * @return An RDFNode or null.
+     * @return An RDFNode whose value is the value, or one of the values, of the
+     *         given property. If the property is not defined the method returns null.
      */
-    public RDFNode getPropertyValue( Property property );
+   public RDFNode getPropertyValue( Property property );
 
 
     /**

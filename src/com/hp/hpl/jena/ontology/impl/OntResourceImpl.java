@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.63 $
+ * Revision           $Revision: 1.64 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:49:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 15:38:22 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -32,7 +32,6 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
 import com.hp.hpl.jena.util.ResourceUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -51,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.63 2007-01-02 11:49:47 andy_seaborne Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.64 2007-01-08 15:38:22 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -322,7 +321,7 @@ public class OntResourceImpl
     public ExtendedIterator listSeeAlso() {
         checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
         return WrappedIterator.create( listProperties( getProfile().SEE_ALSO() ) )
-               .mapWith( new ObjectMapper() );
+               .mapWith( new ObjectAsOntResourceMapper() );
     }
 
     /**
@@ -384,7 +383,7 @@ public class OntResourceImpl
     public ExtendedIterator listIsDefinedBy() {
         checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
         return WrappedIterator.create( listProperties( getProfile().IS_DEFINED_BY() ) )
-               .mapWith( new ObjectMapper() );
+               .mapWith( new ObjectAsOntResourceMapper() );
     }
 
     /**
@@ -923,23 +922,25 @@ public class OntResourceImpl
 
 
     /**
-     * <p>Answer the value of a given RDF property for this DAML value, or null
+     * <p>Answer the value of a given RDF property for this ontology resource, or null
      * if it doesn't have one.  The value is returned as an RDFNode, from which
-     * the value can be extracted for literals.  If there is more than one RDF
+     * the concrete data value can be extracted for literals. If the value is
+     * a resource, it will present the {@link OntResource} facet.
+     * If there is more than one RDF
      * statement with the given property for the current value, it is not defined
      * which of the values will be returned.</p>
      *
      * @param property An RDF property
      * @return An RDFNode whose value is the value, or one of the values, of the
-     *         given property. If the property is not defined, or an error occurs,
-     *         returns null.
+     *         given property. If the property is not defined the method returns null.
      */
     public RDFNode getPropertyValue( Property property ) {
-        try {
-            return getRequiredProperty( property ).getObject();
-        }
-        catch (PropertyNotFoundException ignore) {
+        RDFNode obj = getRequiredProperty( property ).getObject();
+        if (obj == null) {
             return null;
+        }
+        else {
+            return asOntResource( obj );
         }
     }
 
@@ -953,7 +954,7 @@ public class OntResourceImpl
      * @return An Iterator over the values of the property
      */
     public NodeIterator listPropertyValues( Property property ) {
-        return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectMapper() ), null );
+        return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectAsOntResourceMapper() ), null );
     }
 
     /**
@@ -979,8 +980,12 @@ public class OntResourceImpl
         Property first = getProfile().FIRST();
 
         // collect statements mentioning this object
-        for (StmtIterator i = listProperties();  i.hasNext();  stmts.add( i.next() ) );
-        for (StmtIterator i = getModel().listStatements( null, null, this ); i.hasNext(); stmts.add( i.next() ) );
+        for (StmtIterator i = listProperties();  i.hasNext(); ) {
+            stmts.add( i.next() );
+        }
+        for (StmtIterator i = getModel().listStatements( null, null, this ); i.hasNext(); ) {
+            stmts.add( i.next() );
+        }
 
         // check for lists
         for (Iterator i = stmts.iterator(); i.hasNext(); ) {
@@ -1012,7 +1017,9 @@ public class OntResourceImpl
         stmts.removeAll( skip );
 
         // and then remove the remainder
-        for (Iterator i = stmts.iterator();  i.hasNext();  ((Statement) i.next()).remove() );
+        for (Iterator i = stmts.iterator();  i.hasNext(); ) {
+            ((Statement) i.next()).remove();
+        }
     }
 
 
@@ -1470,7 +1477,9 @@ public class OntResourceImpl
 
         // collect a list of the candidates
         List s = new ArrayList();
-        for( ; j.hasNext();  s.add( j.next() ) );
+        for( ; j.hasNext(); ) {
+            s.add( j.next() );
+        }
 
         // we need to keep this node out of the iterator for now, else it will spoil the maximal
         // generator compression (since all the (e.g.) sub-classes will be sub-classes of this node
@@ -1531,6 +1540,12 @@ public class OntResourceImpl
         checkProfile( prop, name );
         getModel().remove( this, prop, value );
     }
+
+    /** Answer the given node presenting the OntResource facet if it can */
+    private static RDFNode asOntResource( RDFNode n ) {
+        return n.isResource() ? n.as( OntResource.class ) : n;
+    }
+
 
     //==============================================================================
     // Inner class definitions
@@ -1599,8 +1614,21 @@ public class OntResourceImpl
     protected static class ObjectMapper
         implements Map1
     {
-        public ObjectMapper() {}
         public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getObject() : x; }
+    }
+
+    /** Implementation of Map1 that returns the object of a statement as an ont resource */
+    protected static class ObjectAsOntResourceMapper
+        extends ObjectMapper
+    {
+        public Object map1( Object x ) {
+            if (x instanceof Statement) {
+                return asOntResource( ((Statement) x).getObject() );
+            }
+            else {
+                return x;
+            }
+        }
     }
 
     /** Filter for matching language tags on literals */

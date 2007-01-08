@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:55 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 15:38:27 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -27,6 +27,8 @@ package com.hp.hpl.jena.ontology.impl.test;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -40,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.16 2007-01-02 11:51:55 andy_seaborne Exp $
+ * @version CVS $Id: TestResource.java,v 1.17 2007-01-08 15:38:27 ian_dickinson Exp $
  */
 public class TestResource
     extends OntTestBase
@@ -604,6 +606,36 @@ public class TestResource
                     OntResource or = m.createOntResource( "http://foo/bar" );
                     OntModel m0 = or.getOntModel();
                     assertEquals( m, m0 );
+                }
+            },
+            new OntTestCase( "OntResource.getPropertyValue - object prop", true, true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntResource a = m.createOntResource( "http://foo/bar#a" );
+                    Resource b = m.createResource( "http://foo/bar#b" );
+                    OntProperty p = m.createOntProperty( "http://foo/bar#p" );
+                    m.add( a, p, b );
+                    Object bb = a.getPropertyValue( p );
+                    assertEquals( b, bb );
+                    assertTrue( "Return value should be an OntResource", bb instanceof OntResource );
+                }
+            },
+            new OntTestCase( "OntResource.listPropertyValues - object prop", true, true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntResource a = m.createOntResource( "http://foo/bar#a" );
+                    Resource b = m.createResource( "http://foo/bar#b" );
+                    OntProperty p = m.createOntProperty( "http://foo/bar#p" );
+                    Literal l = m.createTypedLiteral( false );
+                    m.add( a, p, b );
+                    m.add( a, p, l );
+                    NodeIterator ni = a.listPropertyValues( p );
+
+                    while (ni.hasNext()) {
+                        RDFNode n = ni.nextNode();
+                        if (n.isResource()) {
+                            assertEquals( b, n );
+                            assertTrue( "Return value should be an OntResource", n instanceof OntResource );
+                        }
+                    }
                 }
             },
 
