@@ -11,13 +11,7 @@ package com.hp.hpl.jena.db.impl;
 
 //=======================================================================
 // Imports
-import java.sql.*;
-import java.util.*;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.shared.*;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.ArrayList;
 
 //=======================================================================
 /**
@@ -32,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.3 $ on $Date: 2007-01-02 11:50:42 $
+* @version $Revision: 1.4 $ on $Date: 2007-01-08 18:25:59 $
 */
 
 public class ResultSetNodeIterator extends ResultSetIterator {

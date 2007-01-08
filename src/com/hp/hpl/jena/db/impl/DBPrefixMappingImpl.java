@@ -1,17 +1,16 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.14 2007-01-02 11:50:43 andy_seaborne Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.15 2007-01-08 18:25:59 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
-import java.util.*;
-
-import javax.sql.XAConnection;
 
 /**
  *  Implementation of prefix mapping specific to databases.
@@ -21,7 +20,7 @@ import javax.sql.XAConnection;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.14 $
+ 	@version $Revision: 1.15 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
