@@ -7,11 +7,11 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:15 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:42:00 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -72,7 +72,10 @@ import jena.cmdline.*;
  * <p>If the <code>include</code> option is set, the input files are scanned
  * for <code>rdfs:seeAlso</code> and <code>owl:imports</code> statements, and
  * the objects of these statements are read as well.  By default, <code>include</code>
- * is off.</p>
+ * is off. If <code>include</code> is turned on, the normal behaviour is for
+ * the including statements (e.g <code>owl:imports</code> to be filtered
+ * from the output models. To leave such statements in place, use the <code>--nofilter</code>
+ * option.</p>
  * <p>rdfcat uses the Jena {@link com.hp.hpl.jena.util.FileManager FileManager}
  * to resolve input URI's to locations. This allows, for example, <code>http:</code>
  * URI's to be re-directed to local <code>file:</code> locations, to avoid a
@@ -94,7 +97,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.11 2007-01-02 11:51:15 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.12 2007-01-08 14:42:00 ian_dickinson Exp $)
  */
 public class rdfcat
 {
@@ -143,6 +146,13 @@ public class rdfcat
                     setInclude( false );
             }} );
 
+    /** Argument to leave import/seeAlso statements in place in flattened models */
+    public final ArgDecl NOFILTER = new ArgDecl( false, "nofilter",
+            new ArgHandler() {
+                public void action( String arg, String val ) throws IllegalArgumentException {
+                    setRemoveIncludeStatements( false );
+            }} );
+
     /** Argument to show usage */
     public final ArgDecl HELP = new ArgDecl( false, "help",
             new ArgHandler() {
@@ -169,6 +179,7 @@ public class rdfcat
                                                          .add( OUT_LANG )
                                                          .add( INCLUDE )
                                                          .add( NOINCLUDE )
+                                                         .add( NOFILTER )
                                                          .add( HELP )
                                                          .add( USAGE );
 
@@ -186,6 +197,9 @@ public class rdfcat
 
     /** List of URL's that have been loaded already, occurs check */
     protected Set m_seen = new HashSet();
+
+    /** Flag to control whether import/include statements are filtered from merged models */
+    protected boolean m_removeIncludeStatements = true;
 
 
     // Constructors
@@ -265,22 +279,28 @@ public class rdfcat
         m_include = incl;
     }
 
+    /** Set the flag to leave owl:imports and rdfs:seeAlso statements in place, rather than filter them */
+    protected void setRemoveIncludeStatements( boolean f ) {
+        m_removeIncludeStatements = f;
+    }
+
     /* Take the string as an input file or URI, and
      * try to read using the current default input syntax.
      */
     protected void readInput( String inputName ) {
         List queue = new ArrayList();
-        queue.add( inputName );
+        queue.add( new IncludeQueueEntry( inputName, null ) );
 
         while (!queue.isEmpty()) {
-            String in = (String) queue.remove( 0 );
+            IncludeQueueEntry entry = (IncludeQueueEntry) queue.remove( 0 );
+            String in = entry.m_includeURI;
 
             if (!m_seen.contains( in )) {
                 m_seen.add( in );
                 Model inModel = ModelFactory.createDefaultModel();
 
                 // check for stdin
-                if (inputName.equals( "-" )) {
+                if (in.equals( "-" )) {
                     inModel.read( System.in, null, m_inputFormat );
                 }
                 else {
@@ -297,6 +317,11 @@ public class rdfcat
                 // merge the models
                 m_model.add( inModel );
                 m_model.setNsPrefixes( inModel );
+
+                // do we remove the include statement?
+                if (m_removeIncludeStatements && entry.m_includeStmt != null) {
+                    m_model.remove( entry.m_includeStmt );
+                }
             }
         }
     }
@@ -313,13 +338,15 @@ public class rdfcat
         // first collect any rdfs:seeAlso statements
         StmtIterator i = inModel.listStatements( null, RDFS.seeAlso, (RDFNode) null );
         while (i.hasNext()) {
-            queue.add( getURL( i.nextStatement().getObject() ));
+            Statement s = i.nextStatement();
+            queue.add( new IncludeQueueEntry( getURL( s.getObject() ), s ) );
         }
 
         // then any owl:imports
         i = inModel.listStatements( null, OWL.imports, (RDFNode) null );
         while (i.hasNext()) {
-            queue.add( getURL( i.nextStatement().getResource() ) );
+            Statement s = i.nextStatement();
+            queue.add( new IncludeQueueEntry( getURL( s.getResource() ), s ) );
         }
     }
 
@@ -330,12 +357,13 @@ public class rdfcat
         System.err.println( "         -n  expect subsequent inputs in N3 syntax" );
         System.err.println( "         -x  expect subsequent inputs in RDF/XML syntax" );
         System.err.println( "         -t  expect subsequent inputs in N-TRIPLE syntax" );
-        System.err.println( "         -[no]include  include rdfs:seeAlso and owl;imports" );
+        System.err.println( "         -[no]include  include rdfs:seeAlso and owl:imports" );
         System.err.println( "input can be filename, URL, or - for stdin" );
         System.err.println( "Recognised aliases for -n are: -n3 -ttl or -N3" );
         System.err.println( "Recognised aliases for -x are: -xml -rdf or -rdfxml" );
         System.err.println( "Recognised aliases for -t are: -ntriple" );
         System.err.println( "Output format aliases: x, xml or rdf for RDF/XML, n, n3 or ttl for N3, t or ntriple for N-TRIPLE" );
+        System.err.println( "See the Javadoc for jena.rdfcat for additional details." );
 
 
         System.exit(0);
@@ -369,6 +397,24 @@ public class rdfcat
                 System.err.println( "Unrecognised argument: " + argStr );
                 usage();
             }
+        }
+
+        /** Hook to test whether this argument should be processed further
+         */
+        public boolean ignoreArgument( String argStr ) {
+            return !argStr.startsWith("-") || argStr.length() == 1;
+        }
+
+    }
+
+    /** Queue entry that contains both a URI to be included, and a statement that may be removed */
+    protected class IncludeQueueEntry
+    {
+        protected String m_includeURI;
+        protected Statement m_includeStmt;
+        protected IncludeQueueEntry( String includeURI, Statement includeStmt ) {
+            m_includeURI = includeURI;
+            m_includeStmt = includeStmt;
         }
     }
 }
