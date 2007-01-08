@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:40:30 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -34,12 +34,13 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * <p>Obsolete. In Jena 1, this class was used to load
  * DAML ontologies from either input readers or named files, and map the DAML resources
- * to their corresponding DAML abstractions.  Using the new polymorphism support in 
+ * to their corresponding DAML abstractions.  Using the new polymorphism support in
  * Jena 2, this is no longer necessary.  DAMLLoader is kept as the means of controlling
  * some of the behaviours of the DAML model, such as processing imports.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.11 2007-01-02 11:51:46 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.12 2007-01-08 14:40:30 ian_dickinson Exp $
+ * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
 public class DAMLLoader
 {

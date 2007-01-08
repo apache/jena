@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            3 August 2001
  * Filename           $RCSfile: VocabularyManager.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:40:30 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -35,7 +35,8 @@ import com.hp.hpl.jena.rdf.model.impl.*;
  * with managing the different versions of the namespace.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: VocabularyManager.java,v 1.9 2007-01-02 11:51:47 andy_seaborne Exp $
+ * @version CVS info: $Id: VocabularyManager.java,v 1.10 2007-01-08 14:40:30 ian_dickinson Exp $
+ * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
 public class VocabularyManager
 {

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:40:30 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,7 +44,8 @@ import org.apache.commons.logging.LogFactory;
  * of a DAML datatype. The instance is a resource whose <code>rdf:value</code> is a typed literal.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.16 2007-01-02 11:51:47 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.17 2007-01-08 14:40:30 ian_dickinson Exp $
+ * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
 public class DAMLDataInstanceImpl
     extends DAMLInstanceImpl
@@ -59,19 +60,19 @@ public class DAMLDataInstanceImpl
 
     /**
      * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new DAMLDataInstanceImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLDataInstance" );
-            } 
+            }
         }
-            
+
         public boolean canWrap( Node node, EnhGraph eg ) {
             return eg.asGraph().contains( node, RDF.type.asNode(), Node.ANY );
         }
@@ -88,7 +89,7 @@ public class DAMLDataInstanceImpl
      * <p>
      * Construct a DAML data instance represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -114,19 +115,19 @@ public class DAMLDataInstanceImpl
             if (rType.isAnon()) {
                 continue;
             }
-            
+
             RDFDatatype dt = TypeMapper.getInstance().getTypeByName( rType.getURI() );
-            
+
             if (dt != null) {
                 // found a candidate datatype
                 if (i instanceof ClosableIterator) {
                     ((ClosableIterator) i).close();
                 }
-                
+
                 return dt;
             }
         }
-        
+
         return null;
     }
 
@@ -141,7 +142,7 @@ public class DAMLDataInstanceImpl
     public Object getValue() {
         if (hasProperty( RDF.value )) {
             RDFDatatype dType = getDatatype();
-            
+
             if (dType == null) {
                 LogFactory.getLog( getClass() ).warn( "No RDFDatatype defined for DAML data instance " + this );
             }
@@ -149,7 +150,7 @@ public class DAMLDataInstanceImpl
                 return dType.parse( getRequiredProperty( RDF.value ).getString() );
             }
         }
-        
+
         return null;
     }
 
@@ -157,7 +158,7 @@ public class DAMLDataInstanceImpl
     /**
      * <p>Set the value of this instance to the given Java value, which will be
      * serialised into the RDF graph by the datatype's translator.</p>
-     * 
+     *
      * @param value The value to be encoded as a typed literal
      */
     public void setValue( Object value ) {

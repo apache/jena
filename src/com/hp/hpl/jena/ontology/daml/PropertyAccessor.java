@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: PropertyAccessor.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:50:20 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:40:52 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -30,7 +30,8 @@ import com.hp.hpl.jena.rdf.model.*;
  * <p>Encapsulates the standard methods of modifying a property on a DAML value.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyAccessor.java,v 1.8 2007-01-02 11:50:20 andy_seaborne Exp $
+ * @version CVS info: $Id: PropertyAccessor.java,v 1.9 2007-01-08 14:40:52 ian_dickinson Exp $
+ * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
 public interface PropertyAccessor
 {
@@ -63,7 +64,7 @@ public interface PropertyAccessor
      * RDF model.</p>
      * <p><strong>Note:</strong> In Jena 1, this method took a paramter <code>closed</code>,
      * to control whether the transitive closure of the class and property hierarchies was
-     * considered.  Computing these entailments is now handled by the reaoner attached to the 
+     * considered.  Computing these entailments is now handled by the reaoner attached to the
      * DAML or Ontology model, and is not controlled by a method parameter at the API level.
      * Accordingly, this parameter has been removed.  See the documentation for details on
      * controlling the operation of the reasoners.</p>

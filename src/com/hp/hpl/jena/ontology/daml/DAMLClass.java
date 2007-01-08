@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClass.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:50:19 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:40:52 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -33,7 +33,8 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClass.java,v 1.13 2007-01-02 11:50:19 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLClass.java,v 1.14 2007-01-08 14:40:52 ian_dickinson Exp $
+ * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
 public interface DAMLClass
     extends DAMLCommon, OntClass
@@ -138,12 +139,12 @@ public interface DAMLClass
      * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
      * this iterator includes <em>inferred</em> sub-classes is determined
      * not by a flag at the API level, but by the construction of the DAML
-     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory} 
+     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory}
      * for details. The boolean parameter
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
-     * 
+     *
      * @param closed If true, return all available values; otherwise, return
      * only local (direct) sub-classes. See note for details.
      * @return An iterator over this class's sub-classes.
@@ -170,12 +171,12 @@ public interface DAMLClass
      * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
      * this iterator includes <em>inferred</em> super-classes is determined
      * not by a flag at the API level, but by the construction of the DAML
-     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory} 
+     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory}
      * for details. The boolean parameter
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
-     * 
+     *
      * @param closed If true, return all available values; otherwise, return
      * only local (direct) super-classes. See note for details.
      * @return an iterator over this class's super-classes.
@@ -234,10 +235,10 @@ public interface DAMLClass
      * instances of this class: i&#046;e&#046; the properties that have this class,
      * or optionally one of its super-classes, as domain.</p>
      * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
-     * this iterator includes the defined properties for <em>inferred</em> 
+     * this iterator includes the defined properties for <em>inferred</em>
      * super-classes is determined
      * not by a flag at the API level, but by the construction of the DAML
-     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory} 
+     * model itself.  See {@linkplain com.hp.hpl.jena.rdf.model.ModelFactory the model factory}
      * for details. The boolean parameter
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
@@ -248,8 +249,8 @@ public interface DAMLClass
      * @return An iteration of the properties that have this class as domain
      */
     public ExtendedIterator getDefinedProperties( boolean closed );
-    
-    
+
+
     /**
      * <p>Answer true if this class is an enumeration (i&#046;e&#046; has a property
      * <code>daml:oneOf</code> with a list of values).  This is not an exclusive property, a class

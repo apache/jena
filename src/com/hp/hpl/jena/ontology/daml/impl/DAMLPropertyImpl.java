@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLPropertyImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:40:30 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,8 @@ import com.hp.hpl.jena.vocabulary.*;
  * as a sub-class of Property), so uniqueness is modelled here as an attribute of a DAMLProperty.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.11 2007-01-02 11:51:47 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.12 2007-01-08 14:40:30 ian_dickinson Exp $
+ * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
 public class DAMLPropertyImpl
     extends OntPropertyImpl
@@ -58,19 +59,19 @@ public class DAMLPropertyImpl
 
     /**
      * A factory for generating DAMLProperty facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new DAMLPropertyImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLProperty" );
-            } 
+            }
         }
-            
+
         public boolean canWrap( Node node, EnhGraph eg ) {
             return hasType( node, eg, DAML_OIL.Property ) ||
                    hasType( node, eg, DAML_OIL.DatatypeProperty ) ||
@@ -84,7 +85,7 @@ public class DAMLPropertyImpl
 
     /** Vocabulary */
     private DAMLVocabulary m_vocabulary = VocabularyManager.getDefaultVocabulary();
-    
+
     /** Property accessor for domain */
     private PropertyAccessor m_propDomain = new PropertyAccessorImpl( getVocabulary().domain(), this );
 
@@ -99,8 +100,8 @@ public class DAMLPropertyImpl
 
     /** DAMLCommon delegate */
     private DAMLCommon m_common = null;
-    
-    
+
+
     // Constructors
     //////////////////////////////////
 
@@ -108,7 +109,7 @@ public class DAMLPropertyImpl
      * <p>
      * Construct a DAML property represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -132,7 +133,7 @@ public class DAMLPropertyImpl
     public LiteralAccessor prop_comment()                        { return m_common.prop_comment(); }
     public PropertyAccessor prop_equivalentTo()                  { return m_common.prop_equivalentTo(); }
     public PropertyAccessor prop_type()                          { return m_common.prop_type(); }
-    
+
     /**
      * <p>Answer an iterator over all of the DAML objects that are equivalent to this
      * class, which will be the union of <code>daml:equivalentTo</code> and
@@ -165,7 +166,7 @@ public class DAMLPropertyImpl
         s.add( this );
         for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
         s.remove( this );
-        
+
         return WrappedIterator.create( s.iterator() );
     }
 
@@ -286,7 +287,7 @@ public class DAMLPropertyImpl
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
-     * 
+     *
      * @param closed If true, return all available values; otherwise, return
      * only local (direct) super-properties. See note for details.
      * @return An iterator over this property's super-properties.
@@ -315,7 +316,7 @@ public class DAMLPropertyImpl
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
-     * 
+     *
      * @param closed If true, return all available values; otherwise, return
      * only local (direct) sub-properties. See note for details.
      * @return An iterator over this property's sub-properties.
@@ -352,7 +353,7 @@ public class DAMLPropertyImpl
         return WrappedIterator.create( listPropertyValues( getProfile().RANGE() ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
-     
+
 
 
     // Internal implementation methods

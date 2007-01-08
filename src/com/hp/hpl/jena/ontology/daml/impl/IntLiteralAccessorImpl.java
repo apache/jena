@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: IntLiteralAccessorImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:40:30 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -35,7 +35,8 @@ import com.hp.hpl.jena.ontology.daml.*;
  * see {@link PropertyAccessor}, and the literal is known to encapsulate an integer value.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: IntLiteralAccessorImpl.java,v 1.10 2007-01-02 11:51:47 andy_seaborne Exp $
+ * @version CVS info: $Id: IntLiteralAccessorImpl.java,v 1.11 2007-01-08 14:40:30 ian_dickinson Exp $
+ * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
 public class IntLiteralAccessorImpl
     extends LiteralAccessorImpl
@@ -104,7 +105,7 @@ public class IntLiteralAccessorImpl
     /**
      * <p>Answer true if the encapsulated property has the given value as one of its
      * values.</p>
-     * 
+     *
      * @param value An int value to test for
      * @return True if the RDF model contains a statement giving a value for
      *         the encapsulated property matching the given value.

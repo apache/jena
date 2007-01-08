@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:50:19 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-08 14:40:52 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,8 @@ import java.util.*;
  * information from all loaded ontologies.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.14 2007-01-02 11:50:19 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.15 2007-01-08 14:40:52 ian_dickinson Exp $
+ * @deprecated The DAML API is scheduled to be removed from Jena 2.6 onwards. Please use the DAML profile in the main ontology API
  */
 public interface DAMLModel
     extends OntModel
@@ -54,13 +55,13 @@ public interface DAMLModel
     //////////////////////////////////
 
     /**
-     * <p>Create an (optionally anonymous) Ontology (big-'O') element, 
-     * which holds meta-information for the ontology (small-'o').  
+     * <p>Create an (optionally anonymous) Ontology (big-'O') element,
+     * which holds meta-information for the ontology (small-'o').
      * <b>N.B.</b> This does not create a new
      * ontology, it simply makes an entry in the current model.</p>
      *
-     * @param uri The URI for the new Ontology, or null to create an anonymous 
-     *            Ontology. Ideally provide the URL in which the Ontology is 
+     * @param uri The URI for the new Ontology, or null to create an anonymous
+     *            Ontology. Ideally provide the URL in which the Ontology is
      *            stored.
      *            Conventionally, in the RDF/XML serialization, we have
      *            <pre>
@@ -109,7 +110,7 @@ public interface DAMLModel
      * @return A new DAMLDataInstance object.
      */
     public DAMLDataInstance createDAMLDataInstance( Object value );
-        
+
 
     /**
      * <p>Create an (optionally anonymous) DAML class.</p>
@@ -145,9 +146,9 @@ public interface DAMLModel
 
 
     /**
-     * <p>Create an (optionally anonymous) DAML datatype property. A datatype property has 
+     * <p>Create an (optionally anonymous) DAML datatype property. A datatype property has
      * concrete data literals
-     * in its range, whereas an object property has ontology individuals (instances)  
+     * in its range, whereas an object property has ontology individuals (instances)
      * in the range.</p>
      *
      * @param uri The URI for the new datatype property. May not be null.
@@ -249,21 +250,21 @@ public interface DAMLModel
      * @return The class resource with the given URI, or null
      */
     public DAMLClass getDAMLClass( String uri );
-    
+
     /**
      * <p>Answer a resource from the current model with the given uri, viewed as a DAML Property.</p>
      * @param uri The uri of the resource to fetch
      * @return The property resource with the given URI, or null
      */
     public DAMLProperty getDAMLProperty( String uri );
-    
+
     /**
      * <p>Answer a resource from the current model with the given uri, viewed as a DAML Instance.</p>
      * @param uri The uri of the resource to fetch
      * @return The instance resource with the given URI, or null
      */
     public DAMLInstance getDAMLInstance( String uri );
-    
+
     /**
      * <p>Answer an iterator over all DAML classes that are presently in the model.</p>
      *
