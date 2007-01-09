@@ -26,7 +26,7 @@
        [  mf:name    "Structure - 6" ;
           mf:action [ qt:query <struct-06.rq> ; qt:data <data.ttl> ] ;
        ]
-##        [  mf:name    "Structure - 10" ;
-##           mf:action [ qt:query <struct-10.rq> ; qt:data <data.ttl> ] ;
-##        ]
+       [  mf:name    "Structure - 10" ;
+          mf:action [ qt:query <struct-10.rq> ; qt:data <data.ttl> ] ;
+       ]
     ).
