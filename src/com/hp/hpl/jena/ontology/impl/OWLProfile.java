@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:49:48 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-09 11:45:41 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.33 2007-01-02 11:49:48 andy_seaborne Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.34 2007-01-09 11:45:41 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -251,16 +251,21 @@ public class OWLProfile
                                         }
         },
         {  OntClass.class,              new SupportsCheck() {
-                                            public boolean doCheck( Node n, EnhGraph g ) {
-                                                return g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), RDFS.Datatype.asNode() ) ||
+                                            public boolean doCheck( Node n, EnhGraph eg ) {
+                                                Graph g = eg.asGraph();
+                                                Node rdfTypeNode = RDF.type.asNode();
+                                                return g.contains( n, rdfTypeNode, OWL.Class.asNode() ) ||
+                                                       g.contains( n, rdfTypeNode, OWL.Restriction.asNode() ) ||
+                                                       g.contains( n, rdfTypeNode, RDFS.Class.asNode() ) ||
+                                                       g.contains( n, rdfTypeNode, RDFS.Datatype.asNode() ) ||
                                                        // These are common cases that we should support
                                                        n.equals( OWL.Thing.asNode() ) ||
                                                        n.equals( OWL.Nothing.asNode() ) ||
-                                                       g.asGraph().contains( Node.ANY, RDFS.domain.asNode(), n ) ||
-                                                       g.asGraph().contains( Node.ANY, RDFS.range.asNode(), n )
+                                                       g.contains( Node.ANY, RDFS.domain.asNode(), n ) ||
+                                                       g.contains( Node.ANY, RDFS.range.asNode(), n ) ||
+                                                       g.contains( n, OWL.intersectionOf.asNode(), Node.ANY ) ||
+                                                       g.contains( n, OWL.unionOf.asNode(), Node.ANY ) ||
+                                                       g.contains( n, OWL.complementOf.asNode(), Node.ANY )
                                                        ;
                                             }
                                         }
