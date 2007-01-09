@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.95 $
+ * Revision           $Revision: 1.96 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:49:47 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-09 17:05:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.95 2007-01-02 11:49:47 andy_seaborne Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.96 2007-01-09 17:05:44 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -127,7 +127,7 @@ public class OntModelImpl
      *              ontology model to be constructed.
      */
     public OntModelImpl( OntModelSpec spec, Model model ) {
-        this( spec, makeBaseModel( spec, model ), false );
+        this( spec, makeBaseModel( spec, model ), true );
     }
 
     /**
@@ -135,17 +135,16 @@ public class OntModelImpl
      * produced using the baseModelMaker.
     */
     public OntModelImpl( OntModelSpec spec ) {
-        this( spec, spec.createBaseModel(), false );
+        this( spec, spec.createBaseModel(), true );
     }
 
     /**
      *
      * @param spec the specification for the OntModel
      * @param model the base model [must be non-null]
-     * @param overloadingTrick because otherwise this looks like  the public
-     *     OntModelImpl(spec, model)
+     * @param withImports If true, we load the imports as sub-models
      */
-    private OntModelImpl( OntModelSpec spec, Model model, boolean overloadingTrick )  {
+    private OntModelImpl( OntModelSpec spec, Model model, boolean withImports )  {
         // we haven't built the full graph yet, so we pass a vestigial form up to the super constructor
         super( generateGraph( spec, model.getGraph() ), BuiltinPersonalities.model );
         m_spec = spec;
@@ -164,13 +163,13 @@ public class OntModelImpl
             withDefaultMappings( getDocumentManager().getDeclaredPrefixMapping() );
         }
 
-        // load the imports closure, according to the policies in my document manager
-        getDocumentManager().loadImports( this );
+        if (withImports) {
+            loadImports();
+        }
 
         // force the inference engine, if we have one, to see the new graph data
         rebind();
     }
-
 
 
     // External signature methods
@@ -1844,6 +1843,20 @@ public class OntModelImpl
 
 
     /**
+     * <p>Determine which models this model imports (by looking for, for example,
+     * <code>owl:imports</code> statements, and load each of those models as an
+     * import. A check is made to determine if a model has already been imported,
+     * if so, the import is ignored. Thus this method is safe against circular
+     * sets of import statements. Note that actual implementation is delegated to
+     * the associated {@link OntDocumentManager}.
+     */
+    public void loadImports() {
+        // load the imports closure, according to the policies in my document manager
+        getDocumentManager().loadImports( this );
+    }
+
+
+    /**
      * <p>
      * Answer true if this model has had the given URI document imported into it. This is
      * important to know since an import only occurs once, and we also want to be able to
@@ -2027,7 +2040,7 @@ public class OntModelImpl
     public Model read( Reader reader, String base ) {
         super.read( reader, base );
 
-        getDocumentManager().loadImports( this );
+        loadImports();
         rebind();
         return this;
     }
@@ -2041,7 +2054,7 @@ public class OntModelImpl
     public Model read(InputStream reader, String base) {
         super.read( reader, base );
 
-        getDocumentManager().loadImports( this );
+        loadImports();
         rebind();
         return this;
     }
@@ -2078,8 +2091,7 @@ public class OntModelImpl
         // cache this model against the public uri (if caching enabled)
         getDocumentManager().addModel( uri, this );
 
-        // now load the imported documents
-        getDocumentManager().loadImports( this );
+        loadImports();
         rebind();
         return this;
     }
@@ -2095,7 +2107,7 @@ public class OntModelImpl
     public Model read(Reader reader, String base, String syntax) {
         super.read( reader, base, syntax );
 
-        getDocumentManager().loadImports( this );
+        loadImports();
         rebind();
         return this;
     }
@@ -2111,7 +2123,7 @@ public class OntModelImpl
     public Model read(InputStream reader, String base, String syntax) {
         super.read( reader, base, syntax );
 
-        getDocumentManager().loadImports( this );
+        loadImports();
         rebind();
         return this;
     }
@@ -2137,18 +2149,88 @@ public class OntModelImpl
      * the iterator will be non-null but will not have any values.</p>
      * @return An iterator, each value of which will be an <code>OntModel</code>
      * representing an imported ontology.
+     * @deprecated This method has been re-named to <code>listSubModels</code>,
+     * but note that to obtain the same behaviour as <code>listImportedModels</code>
+     * from Jena 2.4 and earlier, callers should invoke {@link #listSubModels(boolean)}
+     * with parameter <code>true</code>.
+     * @see #listSubModels()
+     * @see #listSubModels(boolean)
      */
     public ExtendedIterator listImportedModels() {
+        return listSubModels( true );
+    }
+
+
+    /**
+     * <p>Answer an iterator over the ontology models that are sub-models of
+     * this model. Sub-models are used, for example, to represent composite
+     * documents such as the imports of a model. So if ontology A imports
+     * ontologies B and C, each of B and C will be available as one of
+     * the sub-models of the model containing A. This method replaces the
+     * older {@link #listImportedModels}. Note that to fully replicate
+     * the behaviour of <code>listImportedModels</code>, the
+     * <code>withImports</code> flag must be set to true. Each model
+     * returned by this method will have been wrapped as an ontology model using the same
+     * {@link OntModelSpec} as this model.  If this model has no sub-models,
+     * the returned iterator will be non-null but will not have any values.</p>
+     *
+     * @param withImports If true, each sub-model returned by this method
+     * will also include its import models. So if model A imports D, and D
+     * imports D, when called with <code>withImports</code> set to true, the
+     * return value for <code>modelA.listSubModels(true)</code> will be an
+     * iterator, whose only value is a model for D, and that model will contain
+     * a sub-model representing the import of E. If <code>withImports</code>
+     * is false, E will not be included as a sub-model of D.
+     * @return An iterator, each value of which will be an <code>OntModel</code>
+     * representing a sub-model of this ontology.
+     */
+    public ExtendedIterator listSubModels( final boolean withImports ) {
         ExtendedIterator i = WrappedIterator.create( getSubGraphs().iterator() );
 
         return i.mapWith( new Map1() {
-                    public Object map1(Object o) {
-                        Graph g = (Graph) o;
-                        Model temp = ModelFactory.createModelForGraph( g );
-                        return ModelFactory.createOntologyModel( m_spec, temp );
+                    public Object map1( Object o ) {
+                        Model base = ModelFactory.createModelForGraph( (Graph) o );
+                        OntModel om = new OntModelImpl( m_spec, base, withImports );
+                        return om;
                     }} );
     }
 
+
+    /**
+     * <p>Answer an iterator over the ontology models that are sub-models of
+     * this model. Sub-models are used, for example, to represent composite
+     * documents such as the imports of a model. So if ontology A imports
+     * ontologies B and C, each of B and C will be available as one of
+     * the sub-models of the model containing A.
+     * <strong>Important note on behaviour change:</strong> please see
+     * the comment on {@link #listSubModels(boolean)} for explanation
+     * of the <code>withImports</code> flag. This zero-argument form
+     * of <code>listSubModels</code> sets <code>withImports</code> to
+     * false, so the returned models will not themselves contain imports.
+     * This behaviour differs from the zero-argument method
+     * {@link #listImportedModels()} in Jena 2.4 an earlier.</p>
+     * @return An iterator, each value of which will be an <code>OntModel</code>
+     * representing a sub-model of this ontology.
+     * @see #listSubModels(boolean)
+     */
+    public ExtendedIterator listSubModels() {
+        return listSubModels( false );
+    }
+
+
+    /**
+     * <p>Answer the number of sub-models of this model, not including the
+     * base model.</p>
+     * @return The number of sub-models, &ge; zero.
+     */
+    public int countSubModels() {
+        int count = 0;
+        for (Iterator i = getSubGraphs().iterator(); i.hasNext(); ) {
+            count++;
+            i.next();
+        }
+        return count;
+    }
 
     /**
      * <p>Answer an <code>OntModel</code> representing the imported ontology

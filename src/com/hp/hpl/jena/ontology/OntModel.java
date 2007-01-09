@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.51 $
+ * Revision           $Revision: 1.52 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:50 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-09 17:06:14 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.51 2007-01-02 11:48:50 andy_seaborne Exp $
+ * @version CVS $Id: OntModel.java,v 1.52 2007-01-09 17:06:14 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1157,6 +1157,16 @@ public interface OntModel
     public OntResource createOntResource( String uri );
 
     /**
+     * <p>Determine which models this model imports (by looking for, for example,
+     * <code>owl:imports</code> statements, and load each of those models as an
+     * import. A check is made to determine if a model has already been imported,
+     * if so, the import is ignored. Thus this method is safe against circular
+     * sets of import statements. Note that actual implementation is delegated to
+     * the associated {@link OntDocumentManager}.
+     */
+    public void loadImports();
+
+    /**
      * <p>
      * Answer a list of the imported URI's in this ontology model. Detection of <code>imports</code>
      * statments will be according to the local language profile.  Note that, in order to allow this
@@ -1180,8 +1190,8 @@ public interface OntModel
      * thus side-stepping the any attached reasoner.
      * </p>
      * @param closure If true, the set of uri's returned will include not only those directly
-     * imported by this model, but those imported by the model's imports transitively.
-     * @return The imported ontology URI's as a list. Note that since the underlying graph is
+     * imported by this model, but those imported by the model's imports, and so on transitively.
+     * @return A set of imported ontology URIs. Note that since the underlying graph is
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
@@ -1275,9 +1285,67 @@ public interface OntModel
      * the iterator will be non-null but will not have any values.</p>
      * @return An iterator, each value of which will be an <code>OntModel</code>
      * representing an imported ontology.
+     * @deprecated This method has been re-named to <code>listSubModels</code>,
+     * but note that to obtain the same behaviour as <code>listImportedModels</code>
+     * from Jena 2.4 and earlier, callers should invoke {@link #listSubModels(boolean)}
+     * with parameter <code>true</code>.
+     * @see #listSubModels()
+     * @see #listSubModels(boolean)
      */
     public ExtendedIterator listImportedModels();
 
+
+    /**
+     * <p>Answer an iterator over the ontology models that are sub-models of
+     * this model. Sub-models are used, for example, to represent composite
+     * documents such as the imports of a model. So if ontology A imports
+     * ontologies B and C, each of B and C will be available as one of
+     * the sub-models of the model containing A. This method replaces the
+     * older {@link #listImportedModels}. Note that to fully replicate
+     * the behaviour of <code>listImportedModels</code>, the
+     * <code>withImports</code> flag must be set to true. Each model
+     * returned by this method will have been wrapped as an ontology model using the same
+     * {@link OntModelSpec} as this model.  If this model has no sub-models,
+     * the returned iterator will be non-null but will not have any values.</p>
+     *
+     * @param withImports If true, each sub-model returned by this method
+     * will also include its import models. So if model A imports D, and D
+     * imports D, when called with <code>withImports</code> set to true, the
+     * return value for <code>modelA.listSubModels(true)</code> will be an
+     * iterator, whose only value is a model for D, and that model will contain
+     * a sub-model representing the import of E. If <code>withImports</code>
+     * is false, E will not be included as a sub-model of D.
+     * @return An iterator, each value of which will be an <code>OntModel</code>
+     * representing a sub-model of this ontology.
+     */
+    public ExtendedIterator listSubModels( boolean withImports );
+
+
+    /**
+     * <p>Answer an iterator over the ontology models that are sub-models of
+     * this model. Sub-models are used, for example, to represent composite
+     * documents such as the imports of a model. So if ontology A imports
+     * ontologies B and C, each of B and C will be available as one of
+     * the sub-models of the model containing A.
+     * <strong>Important note on behaviour change:</strong> please see
+     * the comment on {@link #listSubModels(boolean)} for explanation
+     * of the <code>withImports</code> flag. This zero-argument form
+     * of <code>listSubModels</code> sets <code>withImports</code> to
+     * false, so the returned models will not themselves contain imports.
+     * This behaviour differs from the zero-argument method
+     * {@link #listImportedModels()} in Jena 2.4 an earlier.</p>
+     * @return An iterator, each value of which will be an <code>OntModel</code>
+     * representing a sub-model of this ontology.
+     * @see #listSubModels(boolean)
+     */
+    public ExtendedIterator listSubModels();
+
+    /**
+     * <p>Answer the number of sub-models of this model, not including the
+     * base model.</p>
+     * @return The number of sub-models, &ge; zero.
+     */
+    public int countSubModels();
 
     /**
      * <p>Answer an <code>OntModel</code> representing the imported ontology

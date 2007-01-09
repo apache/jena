@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:55 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-09 17:06:22 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.23 2007-01-02 11:51:55 andy_seaborne Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.24 2007-01-09 17:06:22 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase
@@ -548,6 +548,68 @@ public class TestOntModel
         assertEquals( "Wrong number of sub-model imports", 2, nImports );
     }
 
+    public void testListSubModels0() {
+        OntModel m = ModelFactory.createOntologyModel();
+        m.read( "file:testing/ontology/testImport6/a.owl" );
+        assertEquals( "Marker count not correct", 4, TestOntDocumentManager.countMarkers( m ) );
+
+        List importModels = new ArrayList();
+        for (Iterator j = m.listSubModels(); j.hasNext(); ) {
+            importModels.add( j.next() );
+        }
+
+        assertEquals( "n import models should be ", 3, importModels.size() );
+
+        boolean isOntModel = true;
+        int nImports = 0;
+
+        for (Iterator i = importModels.iterator(); i.hasNext(); ) {
+            Object x = i.next();
+            if (!(x instanceof OntModel)) {
+                isOntModel = false;
+            }
+            else {
+                // count the number of imports of each sub-model
+                nImports += ((OntModel) x).countSubModels();
+            }
+        }
+
+        assertTrue( "All import models should be OntModels", isOntModel );
+
+        // listSubModels' default behaviour is *not* to include imports of sub-models
+        assertEquals( "Wrong number of sub-model imports", 0, nImports );
+    }
+
+    public void testListSubModels1() {
+        OntModel m = ModelFactory.createOntologyModel();
+        m.read( "file:testing/ontology/testImport6/a.owl" );
+        assertEquals( "Marker count not correct", 4, TestOntDocumentManager.countMarkers( m ) );
+
+        List importModels = new ArrayList();
+        for (Iterator j = m.listSubModels( true ); j.hasNext(); ) {
+            importModels.add( j.next() );
+        }
+
+        assertEquals( "n import models should be ", 3, importModels.size() );
+
+        boolean isOntModel = true;
+        int nImports = 0;
+
+        for (Iterator i = importModels.iterator(); i.hasNext(); ) {
+            Object x = i.next();
+            if (!(x instanceof OntModel)) {
+                isOntModel = false;
+            }
+            else {
+                // count the number of imports of each sub-model
+                nImports += ((OntModel) x).countSubModels();
+            }
+        }
+
+        assertTrue( "All import models should be OntModels", isOntModel );
+        assertEquals( "Wrong number of sub-model imports", 2, nImports );
+    }
+
     public void testGetImportedModel() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport6/a.owl" );
@@ -743,6 +805,53 @@ public class TestOntModel
         TestUtil.assertIteratorValues( this, m.listHierarchyRootClasses(),
                                        new Object[] {a,c} );
     }
+
+    /* Auto-loading of imports is off by default */
+    public void testLoadImports0() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        Resource a = m.getResource( "file:testing/ontology/testImport3/a.owl" );
+        Resource b = m.getResource( "file:testing/ontology/testImport3/b.owl" );
+        m.add( a, m.getProfile().IMPORTS(), b );
+
+        // not dymamically imported by default
+        assertEquals( "Marker count not correct", 0, TestOntDocumentManager.countMarkers( m ) );
+
+        assertFalse( "c should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
+        assertFalse( "b should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+
+        m.loadImports();
+
+        assertEquals( "Marker count not correct", 2, TestOntDocumentManager.countMarkers( m ) );
+
+        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
+        assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+    }
+
+
+    /* Auto-loading of imports = on */
+    public void testLoadImports1() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        Resource a = m.getResource( "file:testing/ontology/testImport3/a.owl" );
+        Resource b = m.getResource( "file:testing/ontology/testImport3/b.owl" );
+
+        m.setDynamicImports( true );
+        m.add( a, m.getProfile().IMPORTS(), b );
+
+        assertEquals( "Marker count not correct", 2, TestOntDocumentManager.countMarkers( m ) );
+
+        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
+        assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+
+        // this should have no effect
+        m.loadImports();
+
+        assertEquals( "Marker count not correct", 2, TestOntDocumentManager.countMarkers( m ) );
+
+        assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
+        assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
+    }
+
+
 
 
     // Internal implementation methods
