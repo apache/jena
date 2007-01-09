@@ -54,7 +54,7 @@ public class RunSDB
         
         //runQuad() ;
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
         
         //run() ;
