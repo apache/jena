@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.50 2007-01-02 11:48:35 andy_seaborne Exp $
+  $Id: ModelFactory.java,v 1.51 2007-01-09 16:48:41 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -80,7 +80,7 @@ public class ModelFactory extends ModelFactoryBase
     /**
         Answer a ModelSpec which can create models to the specifications in the RDF
         description. The root of the description is the unique resource of type ModelSpec.
-        
+
         @deprecated superceeded by the Assembler system
     */
     public static ModelSpec createSpec( Model desc )
@@ -89,7 +89,7 @@ public class ModelFactory extends ModelFactoryBase
     /**
         Answer a ModelSpec which can create models to the specifcations in the RDF
         description rooted at the given root.
-        
+
         @deprecated superceeded by the Assembler system
     */
     public static ModelSpec createSpec( Resource root, Model desc )
@@ -97,20 +97,20 @@ public class ModelFactory extends ModelFactoryBase
 
     /**
         Answer a fresh Model created according to the ModelSpec argument.
-        
+
         @deprecated superceeded by the Assembler system
     */
     public static Model createModel( ModelSpec desc )
         { return desc.createFreshModel(); }
-    
+
     /**
-        Answer a Model constructed from the single resource in 
-        <code>singleRoot</code> of type <code>ja:Model</code>. 
-        See the Assembler howto (doc/assembler/assembler-howto.html) 
-        for documentation of Assembler descriptions. See also 
+        Answer a Model constructed from the single resource in
+        <code>singleRoot</code> of type <code>ja:Model</code>.
+        See the Assembler howto (doc/assembler/assembler-howto.html)
+        for documentation of Assembler descriptions. See also
         <code>findAssemblerRoots</code> to find the set of possible
         roots in a description, and <code>assemblerModelFrom(Resource)</code>
-        for assembling a model from its single description. 
+        for assembling a model from its single description.
     */
     public static Model assembleModelFrom( Model singleRoot )
         { return assembleModelFrom( AssemblerHelp.singleModelRoot( singleRoot ) ); }
@@ -119,7 +119,7 @@ public class ModelFactory extends ModelFactoryBase
         Answer a Set of resources present in <code>m</code> that are
         explicitly or implicitly of type ja:Object, ie, suitable as roots for
         <code>assemblerModelFrom</code>. Note that the resource
-        objects returned need <i>not</i> have <code>m</code> as 
+        objects returned need <i>not</i> have <code>m</code> as
         their <code>getModel()</code> - they may be members of an
         extended constructed model.
     */
@@ -130,11 +130,11 @@ public class ModelFactory extends ModelFactoryBase
         Answer a Model as described the the Assembler specification rooted
         at the Resource <code>root</code> in its Model. <code>Resource</code>
         must be of rdf:type <code>ja:Object</code>, where <code>ja</code>
-        is the prefix of Jena Assembler objects. 
+        is the prefix of Jena Assembler objects.
     */
     public static Model assembleModelFrom( Resource root )
         { return Assembler.general.openModel( root ); }
-    
+
     /**
         Answer a fresh Model created according to the given specification and based on
         any underlying model with the given name.
@@ -347,7 +347,7 @@ public class ModelFactory extends ModelFactoryBase
          InfGraph graph = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
          return new InfModelImpl( graph );
     }
-    
+
     /**
      * Build an inference model from an InfGraph. Graphs and InfGraphs
      * are internal implementation level objects rather than normal user
@@ -455,6 +455,8 @@ public class ModelFactory extends ModelFactoryBase
      * API in Jena is not assured beyond Jena version 2.</p>
      *
      * @return A model for in-memory processing of DAML objects.
+     * @deprecated The legacy DAML API is deprecated and scheduled for removal in Jena 2.6. Please
+     * use the main ontology API with a DAML profile instead.
      */
     public static DAMLModel createDAMLModel() {
         return new DAMLModelImpl( OntModelSpec.getDefaultSpec( ProfileRegistry.DAML_LANG ), null );
@@ -464,8 +466,8 @@ public class ModelFactory extends ModelFactoryBase
          Answer a new model that is the dynamic union of two other models. By
          <i>dynamic union</i>, we mean that changes to either <code>m1</code>
          or <code>m2</code> will be reflected in the result model, and
-         <i>vice versa</i>: specifically, additions to and removals from the union 
-         will be implemented as operations on <code>m1</code> 
+         <i>vice versa</i>: specifically, additions to and removals from the union
+         will be implemented as operations on <code>m1</code>
          <strong>only</strong>. See also the behaviour of OntModel
          and the MultiUnion class.
      <p>
