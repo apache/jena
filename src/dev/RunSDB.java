@@ -202,7 +202,11 @@ public class RunSDB
             SimpleTestRunner.runAndReport(ts) ;
             System.exit(0) ;
         }
-        String[] a = { "--sdb=sdb.ttl", "--dbName=DB/test2", "testing/Algebra/manifest.ttl" } ;
+        String[] a = { "--sdb=sdb.ttl", "--dbName=DB/test2", 
+            "testing/Algebra/manifest.ttl",
+            "testing/Structure/manifest.ttl"
+            } ;
+
         sdb.sdbtest.main(a) ;
         System.exit(0) ;
     }
