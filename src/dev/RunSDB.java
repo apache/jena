@@ -57,7 +57,8 @@ public class RunSDB
         //runPrint() ;
         //runScript() ;
         
-        run() ;
+        //run() ;
+        runTest() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -192,11 +193,17 @@ public class RunSDB
 
     public static void runTest()
     {
-        SDB.init() ;
-        SDBTestSuite1.includeMySQL = true ;
-        SDBTestSuite1.includeHSQL = false ;
-        TestSuite ts = SDBTestSuite1.suite() ;
-        SimpleTestRunner.runAndReport(ts) ;
+        if ( false )
+        {
+            SDB.init() ;
+            SDBTestSuite1.includeMySQL = true ;
+            SDBTestSuite1.includeHSQL = false ;
+            TestSuite ts = SDBTestSuite1.suite() ;
+            SimpleTestRunner.runAndReport(ts) ;
+            System.exit(0) ;
+        }
+        String[] a = { "--sdb=sdb.ttl", "--dbName=DB/test2", "testing/Algebra/manifest.ttl" } ;
+        sdb.sdbtest.main(a) ;
         System.exit(0) ;
     }
 

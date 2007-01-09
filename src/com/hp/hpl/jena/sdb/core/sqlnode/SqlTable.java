@@ -53,8 +53,6 @@ public class SqlTable extends SqlNodeBase
     
     public void setIdColumnForVar(Var var, SqlColumn thisCol)
     {
-        if ( idScope == null )
-            idScope = new ScopeBase() ;
         idScope.setColumnForVar(var, thisCol) ;
     }
     

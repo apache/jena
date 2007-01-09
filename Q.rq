@@ -1,23 +1,11 @@
-PREFIX  :     <http://example/>
-PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  :       <http://example/>
+PREFIX  ex:     <http://example/ns#>
 
-SELECT ?z ?w ?v
+# Optional var in RHS.
+
+SELECT *
 {
-   ?x :p ?z 
-   OPTIONAL { ?z :q1 ?w }
-   OPTIONAL { ?z :q2 ?w . :x :r ?v }
-
-# Same if reversed.
-
-
-##     { ?x :p :z2 . OPTIONAL { :z2 :q1 ?w1 } }
-##     { ?x :p :z2 . OPTIONAL { :z2 :q2 ?w2 } }
-
-
-##     OPTIONAL { ?z :q1 ?w . ?z :q3 ?r}
-##     OPTIONAL { ?z :q2 ?w . ?z :q3 ?r}
-#    OPTIONAL { ?z :q3 ?w }
+   { ?x :p ?z OPTIONAL { ?z :q1 ?w } }
+   ?x :p ?w 
 }
-ORDER BY ?z
-

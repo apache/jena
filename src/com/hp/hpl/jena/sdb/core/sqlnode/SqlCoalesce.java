@@ -28,8 +28,8 @@ public class SqlCoalesce extends SqlNodeBase
     SqlJoin join ;
     Set<Var> coalesceVars ;
     Set<Var> nonCoalesceVars = new HashSet<Var>() ;
-    ScopeBase idScope ;
-    ScopeBase nodeScope ;
+    ScopeRename idScope ;
+    ScopeRename nodeScope ;
     Generator genvar = new Gensym("VC") ;
     
     public static SqlCoalesce create(String alias, SqlJoin join, Set<Var>coalesceVars) 
@@ -50,8 +50,14 @@ public class SqlCoalesce extends SqlNodeBase
         this.join = join ;
         this.coalesceVars = coalesceVars ;
         Annotation1 annotation = new Annotation1(true) ;
-        idScope = new ScopeBase() ;
-        nodeScope = new ScopeBase() ;
+        
+        // ScopeCoalesce needed
+        // Scope is:
+        // new ScopeRename(oldScope, renames) ;
+        // And ScopeBase ==> ScopeTable.
+        
+        idScope = new ScopeRename(join.getIdScope()) ;
+        nodeScope = new ScopeRename(join.getNodeScope()) ;
         
         // TODO A "Column generator" would be neater.
         SqlTable table = new SqlTable("Coalesce", alias) ;
@@ -67,7 +73,7 @@ public class SqlCoalesce extends SqlNodeBase
         {
             String sqlColName = genvar.next() ;
             SqlColumn col = new SqlColumn(table, sqlColName) ;
-            idScope.setColumnForVar(v, col) ;
+            idScope.setAlias(v, col) ;
             annotation.addAnnotation(v+" as "+col) ;
             // TODO Value
         }
@@ -83,7 +89,7 @@ public class SqlCoalesce extends SqlNodeBase
             }
             String sqlColName = genvar.next() ;
             SqlColumn col = new SqlColumn(table, sqlColName) ;
-            idScope.setColumnForVar(v, col) ;
+            idScope.setAlias(v, col) ;
             annotation.addAnnotation(v+" as "+col) ;
             // TODO Value
         }

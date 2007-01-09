@@ -18,15 +18,15 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 public class ScopeBase implements Scope
 {
-    Map<Var, SqlColumn> frame = new HashMap<Var, SqlColumn>() ;
-    Scope parent = null ;
+    private Map<Var, SqlColumn> frame = new HashMap<Var, SqlColumn>() ;
+    private Scope parent = null ;
     
     public ScopeBase() { parent = null ; }
     
-    public ScopeBase(Scope parent)
-    { 
-        this.parent = parent ;
-    }
+//    public ScopeBase(Scope parent)
+//    { 
+//        this.parent = parent ;
+//    }
     
     public boolean hasColumnForVar(Var var)
     { 

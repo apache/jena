@@ -47,6 +47,13 @@ public class ScopeEntry
         this.status = status ;
     }
 
+    public void reset(Var var, SqlColumn column, ScopeStatus status)
+    {
+        this.var = var ; 
+        this.column = column ;
+        this.status = status ;
+    }
+    
     public SqlColumn getColumn()
     {
         return column ;

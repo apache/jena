@@ -1,7 +1,10 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Closing Derby properly? "sdbdump --format N3" breaks the DB
++ Features: more general config setting?
+  Or really use properties?
+
++ Check that arg decls not reused
 
 + tests for ORDER BY and other integrations
 
