@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.96 $
+ * Revision           $Revision: 1.97 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-09 17:05:44 $
+ * Last modified on   $Date: 2007-01-10 17:06:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.96 2007-01-09 17:05:44 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.97 2007-01-10 17:06:55 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2085,8 +2085,22 @@ public class OntModelImpl
         }
         addLoadedImport( uri );
 
-        String sourceURL = getDocumentManager().doAltURLMapping( uri );
-        super.read( sourceURL, base, syntax );
+        OntDocumentManager odm = getDocumentManager();
+
+        String sourceURL = odm.doAltURLMapping( uri );
+
+        // invoke the read hook from the ODM
+        String source = odm.getReadHook().beforeRead( this, sourceURL, odm );
+        if (source == null) {
+            s_log.debug( "ReadHook returned null, so skipping input: " + sourceURL );
+        }
+        else {
+            // now we can actually do the read
+            super.read( source, base, syntax );
+        }
+
+        // the post read hook
+        odm.getReadHook().afterRead( this, source, odm );
 
         // cache this model against the public uri (if caching enabled)
         getDocumentManager().addModel( uri, this );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.56 $
+ * Revision           $Revision: 1.57 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-08 17:01:18 $
+ * Last modified on   $Date: 2007-01-10 17:06:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.56 2007-01-08 17:01:18 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.57 2007-01-10 17:06:46 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -153,6 +153,9 @@ public class OntDocumentManager
 
     /** Optional handler for failed read */
     protected ReadFailureHandler m_rfHandler;
+
+    /** Read hook that can intercept the process of reading a file or URL */
+    protected ReadHook m_readHook = new DefaultReadHook();
 
 
     // Constructors
@@ -257,6 +260,30 @@ public class OntDocumentManager
         return m_fileMgr;
     }
 
+
+    /**
+     * Replace the existing ReadHook with the given value. The previous read
+     * hook is returned.
+     * @param hook The new read hook
+     * @return The old read hook
+     * @exception IllegalArgumentException if the new read hook is null
+     */
+    public ReadHook setReadHook( ReadHook hook ) {
+        if (hook == null) {
+            throw new IllegalArgumentException( "ReadHook cannot be null" );
+        }
+        ReadHook rh = m_readHook;
+        m_readHook = hook;
+        return rh;
+    }
+
+    /**
+     * Answer the current ReadHook for this document manager instance
+     * @return The read hook
+     */
+    public ReadHook getReadHook() {
+        return m_readHook;
+    }
 
     /**
      * <p>Set the file manager used by this ODM instance to <strong>a
@@ -678,7 +705,7 @@ public class OntDocumentManager
             read( m, uri, true );
 
             // cache this model for future re-use
-            getFileManager().addCacheModel( uri, m );
+            addModel( uri, m );
             return m;
         }
     }
@@ -1160,7 +1187,18 @@ public class OntDocumentManager
     protected boolean read( Model model, String uri, boolean warn ) {
         boolean success = false;
         try {
-            getFileManager().readModel( model, uri );
+            // invoke the pre-read hook
+            String source = m_readHook.beforeRead( model, uri, this );
+            if (source == null) {
+                log.debug( "Read hook returned null source, so will be skipped: " + uri );
+            }
+            else {
+                // do the actual read
+                getFileManager().readModel( model, uri );
+            }
+
+            // now the post-read hook
+            m_readHook.afterRead( model, source, this );
             success = true;
         }
         catch (Exception e) {
@@ -1207,6 +1245,56 @@ public class OntDocumentManager
         public void handleFailedRead( String url, Model model, Exception e );
     }
 
+    /**
+     * Interface denoting a handler class that can intervene in the process of
+     * reading a source document into a model.
+     */
+    public static interface ReadHook
+    {
+        /**
+         * <p>Behaviour that is invoked <strong>before</strong> the contents of the
+         * given source (URI or filename) are read into the given model. The return
+         * value from this method denotes a revised string to use in place of the
+         * supplied source string. Handlers are permitted to make state changes
+         * to the model and the ODM, but carefully!</p>
+         *
+         * @param model The model that is going to receive the contents of the source
+         * @param source The identity of the source, as a file name or URI
+         * @param odm The Ont Document Manager invoking this handler
+         * @return The revised name of the source (or the same string if no
+         * change to the source is required). Note that if this method returns
+         * <code>null</code>, the source <strong>will not be subsequently read.</strong>
+         */
+        public String beforeRead( Model model, String source, OntDocumentManager odm );
+
+        /**
+         * <p>Behaviour that is invoked <strong>just after</strong> the contents of the
+         * given source (URI or filename) have been read into the given model.
+         * Handlers are permitted to make state changes
+         * to the model and the ODM, but carefully!</p>
+         *
+         * @param model The model that is going to receive the contents of the source
+         * @param source The identity of the source, as a file name or URI
+         * @param odm The Ont Document Manager invoking this handler
+         */
+        public void afterRead( Model model, String source, OntDocumentManager odm );
+    }
+
+    /**
+     * The default implementation of {@link ReadHook} makes no changes.
+     */
+    public static class DefaultReadHook
+        implements ReadHook
+    {
+        public void afterRead( Model model, String source, OntDocumentManager odm ) {
+            // do nothing
+        }
+
+        public String beforeRead( Model model, String source, OntDocumentManager odm ) {
+            return source;
+        }
+
+    }
 }
 
 
