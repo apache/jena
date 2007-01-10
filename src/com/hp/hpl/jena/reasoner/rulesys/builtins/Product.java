@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Product.java,v 1.8 2007-01-02 11:48:44 andy_seaborne Exp $
+ * $Id: Product.java,v 1.9 2007-01-10 17:07:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  *  Bind the third arg to the product of the first two args.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2007-01-02 11:48:44 $
+ * @version $Revision: 1.9 $ on $Date: 2007-01-10 17:07:45 $
  */
 public class Product extends BaseBuiltin {
 
@@ -63,8 +63,7 @@ public class Product extends BaseBuiltin {
                 } else {
                     sum = Util.makeLongNode(nv1.longValue() * nv2.longValue());
                 }
-                env.bind(args[2], sum);
-                return true;
+                return env.bind(args[2], sum);
             }
         }
         // Doesn't (yet) handle partially bound cases

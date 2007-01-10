@@ -1,38 +1,38 @@
 /******************************************************************
- * File:        Max.java
+ * File:        Regexp.java
  * Created by:  Dave Reynolds
- * Created on:  22-Sep-2003
+ * Created on:  10 Jan 2007
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Max.java,v 1.11 2007-01-10 17:07:45 der Exp $
+ * $Id: Regex.java,v 1.1 2007-01-10 17:07:45 der Exp $
  *****************************************************************/
+
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.graph.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-/**
- *  Bind the third arg to the max of the first two args.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2007-01-10 17:07:45 $
- */
-public class Max extends BaseBuiltin {
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
+import com.hp.hpl.jena.reasoner.rulesys.BuiltinException;
+import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
+
+public class Regex extends BaseBuiltin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "max";
+        return "regex";
     }
     
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
     public int getArgLength() {
-        return 3;
+        return 0;
     }
 
     /**
@@ -46,34 +46,39 @@ public class Max extends BaseBuiltin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
-        checkArgs(length, context);
-        BindingEnvironment env = context.getEnv();
-        Node n1 = getArg(0, args, context);
-        Node n2 = getArg(1, args, context);
-        if (n1.isLiteral() && n2.isLiteral()) {
-            Object v1 = n1.getLiteralValue();
-            Object v2 = n2.getLiteralValue();
-            Node res = null;
-            if (v1 instanceof Number && v2 instanceof Number) {
-                Number nv1 = (Number)v1;
-                Number nv2 = (Number)v2;
-                if (v1 instanceof Float || v1 instanceof Double 
-                ||  v2 instanceof Float || v2 instanceof Double) {
-                    res = (nv1.doubleValue() > nv2.doubleValue()) ? n1 : n2;
-                } else {
-                    res = (nv1.longValue() > nv2.longValue()) ? n1 : n2;
-                }
-                return env.bind(args[2], res);
+        if (length < 2) 
+            throw new BuiltinException(this, context, "Must have at least 2 arguments to " + getName());
+        String text = getString( getArg(0, args, context), context );
+        String pattern = getString( getArg(1, args, context), context );
+        Matcher m = Pattern.compile(pattern).matcher(text);
+        if ( ! m.matches()) return false;
+        if (length > 2) {
+            // bind any capture groups
+            BindingEnvironment env = context.getEnv();
+            for (int i = 0; i < Math.min(length-2, m.groupCount()); i++) {
+                Node match = Node.createLiteral( m.group(i+1) );
+                if ( !env.bind(args[i+2], match) ) return false;
             }
         }
-        // Doesn't (yet) handle partially bound cases
-        return false;
+        return true;
     }
     
+    /**
+     * Return the lexical form of a literal node, error for other node types
+     */
+    protected String getString(Node n, RuleContext context) {
+        if (n.isLiteral()) {
+            return n.getLiteralLexicalForm();
+        } else {
+            throw new BuiltinException(this, context, getName() + " takes only literal arguments");
+        }
+    }
+
 }
 
+
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

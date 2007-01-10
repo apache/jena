@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BuiltinRegistry.java,v 1.23 2007-01-02 11:50:58 andy_seaborne Exp $
+ * $Id: BuiltinRegistry.java,v 1.24 2007-01-10 17:07:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.
  * 
- * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.23 $ on $Date: 2007-01-02 11:50:58 $ */
+ * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.24 $ on $Date: 2007-01-10 17:07:46 $ */
 public class BuiltinRegistry {
 
     /** The single global static registry */
@@ -77,6 +77,10 @@ public class BuiltinRegistry {
         theRegistry.register(new TableAll());
         
         theRegistry.register(new Hide());
+        
+        theRegistry.register(new StrConcat());
+        theRegistry.register(new UriConcat());
+        theRegistry.register(new Regex());
         
         // Special purposes support functions for OWL
         theRegistry.register(new AssertDisjointPairs());

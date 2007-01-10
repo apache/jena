@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.47 2007-01-02 11:50:30 andy_seaborne Exp $
+ * $Id: TestFBRules.java,v 1.48 2007-01-10 17:07:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.47 $ on $Date: 2007-01-02 11:50:30 $
+ * @version $Revision: 1.48 $ on $Date: 2007-01-10 17:07:48 $
  */
 public class TestFBRules extends TestCase {
     
@@ -55,6 +55,8 @@ public class TestFBRules extends TestCase {
     protected Node t = Node.createURI("t");
     protected Node u = Node.createURI("u");
     protected Node v = Node.createURI("v");
+    protected Node w = Node.createURI("w");
+    protected Node x = Node.createURI("x");
     protected Node a = Node.createURI("a");
     protected Node b = Node.createURI("b");
     protected Node c = Node.createURI("c");
@@ -149,9 +151,7 @@ public class TestFBRules extends TestCase {
         Resource R1 = data.createResource(PrintUtil.egNS + "R1");
         Resource D = data.createResource(PrintUtil.egNS + "D");
         Property p = data.createProperty(PrintUtil.egNS, "p");
-        Property prop = data.createProperty(PrintUtil.egNS, "prop");
         Property propbar = data.createProperty(PrintUtil.egNS, "propbar");
-        Property propfunc = data.createProperty(PrintUtil.egNS, "propfunc");
         Property rbr = data.createProperty(ReasonerVocabulary.RBNamespace, "restriction");
         R1.addProperty(RDF.type, OWL.Restriction)
           .addProperty(OWL.onProperty, p)
@@ -161,7 +161,6 @@ public class TestFBRules extends TestCase {
         InfGraph infgraph = reasoner.bind(data.getGraph());
         Model infModel = ModelFactory.createModelForGraph(infgraph);
         Resource foo = infModel.createResource(PrintUtil.egNS + "foo");
-        Resource bar = infModel.createResource(PrintUtil.egNS + "bar");
         
         RDFNode flit = infModel.getResource(R1.getURI()).getRequiredProperty(rbr).getObject();
         assertNotNull(flit);
@@ -732,6 +731,8 @@ public class TestFBRules extends TestCase {
         "[r2: (?x p ?a), (?x q ?b), product(?a, ?b, ?c) -> (?x t ?c)]" +
         "[r3: (?x p ?a), (?x q ?b), difference(?b, ?a, ?c) -> (?x u ?c)]" +
         "[r4: (?x p ?a), (?x q ?b), quotient(?b, ?a, ?c) -> (?x v ?c)]" +
+        "[r4: (?x p ?a), (?x q ?b), min(?b, ?a, ?c) -> (?x r ?c)]" +
+        "[r4: (?x p ?a), (?x q ?b), max(?b, ?a, ?c) -> (?x x ?c)]" +
                        "";
         ruleList = Rule.parseRules(rules);
         data = Factory.createGraphMem();
@@ -747,8 +748,10 @@ public class TestFBRules extends TestCase {
                 new Triple(n1, t, Util.makeIntNode(15)),
                 new Triple(n1, u, Util.makeIntNode(2)),
                 new Triple(n1, v, Util.makeIntNode(1)),
+                new Triple(n1, r, Util.makeIntNode(3)),
+                new Triple(n1, x, Util.makeIntNode(5)),
             });
-         
+                 
         // Note type checking   
         rules =  
         "[r1: (?x p ?y), isLiteral(?y) -> (?x s 'literal')]" +
@@ -852,6 +855,76 @@ public class TestFBRules extends TestCase {
             });
     }
          
+    /**
+     * Check string manipulation builtins, new at 2.5.
+     */
+    public void testStringBuiltins() {
+        String rules =  
+            "[r1: (?x p ?y) strConcat(?y, rdf:type, 'foo', ?z) -> (?x q ?z) ] \n" + 
+            "[r1: (?x p ?y) strConcat(?z) -> (?x q ?z) ] \n" + 
+            "[r2: (?x p ?y) uriConcat('http://jena.hpl.hp.com/test#', ?y, ?z) -> (?x q ?z) ]";
+        List ruleList = Rule.parseRules(rules);
+        Graph data = Factory.createGraphMem();
+        data.add(new Triple(n1, p, Node.createLiteral("test")) );
+        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
+            new Triple[] {
+            new Triple(n1, q, Node.createLiteral("testhttp://www.w3.org/1999/02/22-rdf-syntax-ns#typefoo")),
+            new Triple(n1, q, Node.createLiteral("")),
+            new Triple(n1, q, Node.createURI("http://jena.hpl.hp.com/test#test")),
+            });
+        
+        rules =  
+            "[r1: (?x p ?y) regex(?y, '(.*)\\\\s(.*) (f.*)') -> (?x q 'ok') ] \n" +
+            "[r2: (?x p ?y) regex(?y, '(.*)\\\\s(.*) (f.*)', ?m1, ?m2, ?m3) -> (?x r ?m2) ] \n" +
+            "";
+        ruleList = Rule.parseRules(rules);
+        data = Factory.createGraphMem();
+        data.add(new Triple(n1, p, Node.createLiteral("foo bar foo")) );
+        data.add(new Triple(n2, p, Node.createLiteral("foo bar baz")) );
+        infgraph = createReasoner(ruleList).bind(data);
+        TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
+                new Triple[] {
+                new Triple(n1, q, Node.createLiteral("ok")),
+                });
+        TestUtil.assertIteratorValues(this, infgraph.find(null, r, null),
+                new Triple[] {
+                new Triple(n1, r, Node.createLiteral("bar")),
+                });
+    }
+    
+    /**
+     * More extensive check of arithmetic which checks that binding to an 
+     * expected answer also works
+     */
+    public void testArithmetic() {
+        doTestArithmetic("sum", 3, 5, 8);
+        doTestArithmetic("difference", 5, 3, 2);
+        doTestArithmetic("product", 3, 5, 15);
+        doTestArithmetic("quotient", 12, 3, 4);
+        doTestArithmetic("min", 3, 5, 3);
+        doTestArithmetic("max", 3, 5, 5);
+    }
+    
+    /**
+     * Internals of testArithmetic which sets up a rule
+     * and executes it with expected and illegal answers.
+     */
+    private void doTestArithmetic(String op, int arg1, int arg2, int expected) {
+        String rules =  
+            "[r1: (?x p ?a), (?x q ?b), (?x r ?c) " + op + "(?a, ?b, ?c) -> (?x s ?c)]\n " +
+            "[r2: (?x p ?a), (?x q ?b), (?x t ?c) " + op + "(?a, ?b, ?c) -> (?x u ?c)]";
+        List ruleList = Rule.parseRules(rules);
+        Graph data = Factory.createGraphMem();
+        data.add(new Triple(n1, p, Util.makeIntNode(arg1)) );
+        data.add(new Triple(n1, q, Util.makeIntNode(arg2)) );
+        data.add(new Triple(n1, r, Util.makeIntNode(expected)) );
+        data.add(new Triple(n1, t, Util.makeIntNode(expected+1)) );
+        InfGraph infgraph = createReasoner(ruleList).bind(data);
+        assertTrue( infgraph.contains(n1, s, Util.makeIntNode(expected)));     
+        assertFalse( infgraph.contains(n1, u, Node.ANY) );        
+    }
     
     /**
      * Helper - returns the single object value for an s/p pair, asserts an error
@@ -884,20 +957,20 @@ public class TestFBRules extends TestCase {
             int count = 0;
             for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
                 Object t = i.next();
-    //            System.out.println(" - " + PrintUtil.print(t));
+//                System.out.println(" - " + PrintUtil.print(t));
                 count++;
             }
-    //        listFBGraph("direct databind case", (FBRuleInfGraph)infgraph);
+//            listFBGraph("direct databind case", (FBRuleInfGraph)infgraph);
             assertEquals(5, count);
             
             infgraph = reasoner.bindSchema(data).bind(Factory.createGraphMem());
             count = 0;
             for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
                 Object t = i.next();
-    //            System.out.println(" - " + PrintUtil.print(t));
+//                System.out.println(" - " + PrintUtil.print(t));
                 count++;
             }
-    //        listFBGraph("bindSchema case", (FBRuleInfGraph)infgraph);
+//            listFBGraph("bindSchema case", (FBRuleInfGraph)infgraph);
             assertEquals(5, count);
         } finally {
             JenaParameters.enableFilteringOfHiddenInfNodes = prior;

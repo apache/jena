@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Quotient.java,v 1.4 2007-01-02 11:48:44 andy_seaborne Exp $
+ * $Id: Quotient.java,v 1.5 2007-01-10 17:07:45 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  * an integer.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2007-01-02 11:48:44 $
+ * @version $Revision: 1.5 $ on $Date: 2007-01-10 17:07:45 $
  */
 public class Quotient extends BaseBuiltin {
 
@@ -69,8 +69,7 @@ public class Quotient extends BaseBuiltin {
                 } else {
                     sum = Util.makeLongNode(nv1.longValue() / nv2.longValue());
                 }
-                env.bind(args[2], sum);
-                return true;
+                return env.bind(args[2], sum);
             }
         }
         // Doesn't (yet) handle partially bound cases

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: Min.java,v 1.10 2007-01-02 11:48:46 andy_seaborne Exp $
+ * $Id: Min.java,v 1.11 2007-01-10 17:07:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  *  Bind the third arg to the min of the first two args.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2007-01-02 11:48:46 $
+ * @version $Revision: 1.11 $ on $Date: 2007-01-10 17:07:45 $
  */
 public class Min extends BaseBuiltin {
 
@@ -64,8 +64,7 @@ public class Min extends BaseBuiltin {
                 } else {
                     res = (nv1.longValue() > nv2.longValue()) ? n2 : n1;
                 }
-                env.bind(args[2], res);
-                return true;
+                return env.bind(args[2], res);
             }
         }
         // Doesn't (yet) handle partially bound cases

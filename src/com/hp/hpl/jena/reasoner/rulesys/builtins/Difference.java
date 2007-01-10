@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Difference.java,v 1.4 2007-01-02 11:48:45 andy_seaborne Exp $
+ * $Id: Difference.java,v 1.5 2007-01-10 17:07:45 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * first and second aguments.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 
 public class Difference extends BaseBuiltin {
@@ -66,8 +66,7 @@ public class Difference extends BaseBuiltin {
                 } else {
                     sum = Util.makeLongNode(nv1.longValue() - nv2.longValue());
                 }
-                env.bind(args[2], sum);
-                return true;
+                return env.bind(args[2], sum);
             }
         }
         // Doesn't (yet) handle partially bound cases

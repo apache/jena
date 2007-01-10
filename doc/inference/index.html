@@ -1654,13 +1654,43 @@ floating point or XSDDateTime).</div>
         difference(?a, ?b, ?c)<br>
         min(?a, ?b, ?c)<br>
         max(?a, ?b, ?c)<br>
-        product(?a, ?b, ?c)</p>
+        product(?a, ?b, ?c)<br>
+        quotient(?a, ?b, ?c)</p>
       </td>
     <td width="59%"> 
-      <div align="left">Sets c to be (a+b), (a+1) (a-b), min(a,b), max(a,b) or (a*b). Note that these 
+      <div align="left">Sets c to be (a+b), (a+1) (a-b), min(a,b), max(a,b), (a*b), (a/b). Note that these 
         do not run backwards, if in <code>sum</code> a and c are bound and b is 
         unbound then the test will fail rather than bind b to (c-a). This could 
         be fixed.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%"> 
+      <p>strConcat(?a1, .. ?an, ?t)<br>
+        uriConcat(?a1, .. ?an, ?t)</p>
+      </td>
+    <td width="59%"> 
+      <div align="left">Concatenates the lexical form of all the arguments except
+      the last, then binds the last argument to a plain literal (strConcat) or a 
+      URI node (uriConcat) with that lexical form. In both cases if an argument
+      node is a URI node the URI will be used as the lexical form.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%"> 
+      <p>regex(?t, ?p)<br>regex(?t, ?p, ?m1, .. ?mn)</p>
+      </td>
+    <td width="59%"> 
+      <div align="left">Matches the lexical form of a literal (?t) against
+      a regular expression pattern given by another literal (?p).
+      If the match succeeds, and if there are any additional arguments then
+      it will bind the first n capture groups to the arguments ?m1 to ?mn.
+      The regular expression pattern syntax is that provided by java.util.regex.
+      Note that the capture groups are numbered from 1 and the first capture group
+      will be bound to ?m1, we ignore the implicit capature group 0 which corresponds to
+      the entire matched string. So for example
+      <pre>regexp('foo bar', '(.*) (.*)', ?m1, ?m2)</pre>
+      will bind <code>m1</code> to <code>"foo"</code> and <code>m2</code> to <code>"bar"</code>.</div>
     </td>
   </tr>
   <tr> 
@@ -1920,7 +1950,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.31 2006-07-24 10:04:33 der Exp $</i>
+  Last modification: $Id: index.html,v 1.32 2007-01-10 17:07:49 der Exp $</i>
 </p>
 </body>
 </html>

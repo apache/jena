@@ -1,38 +1,35 @@
 /******************************************************************
- * File:        Max.java
+ * File:        UriConcat.java
  * Created by:  Dave Reynolds
- * Created on:  22-Sep-2003
+ * Created on:  10 Jan 2007
  * 
- * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Max.java,v 1.11 2007-01-10 17:07:45 der Exp $
+ * $Id: UriConcat.java,v 1.1 2007-01-10 17:07:45 der Exp $
  *****************************************************************/
+
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.reasoner.rulesys.BuiltinException;
+import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
 
 /**
- *  Bind the third arg to the max of the first two args.
+ * Builtin which concatenates a set of strings to generate a new URI. 
+ * It binds the last argument to a URI whose spelling is 
+ * the concatenation of the lexical form of all the preceeding arguments.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2007-01-10 17:07:45 $
+ * @version $Revision: 1.1 $
  */
-public class Max extends BaseBuiltin {
+public class UriConcat extends StrConcat {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "max";
-    }
-    
-    /**
-     * Return the expected number of arguments for this functor or 0 if the number is flexible.
-     */
-    public int getArgLength() {
-        return 3;
+        return "uriConcat";
     }
 
     /**
@@ -46,34 +43,20 @@ public class Max extends BaseBuiltin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
-        checkArgs(length, context);
-        BindingEnvironment env = context.getEnv();
-        Node n1 = getArg(0, args, context);
-        Node n2 = getArg(1, args, context);
-        if (n1.isLiteral() && n2.isLiteral()) {
-            Object v1 = n1.getLiteralValue();
-            Object v2 = n2.getLiteralValue();
-            Node res = null;
-            if (v1 instanceof Number && v2 instanceof Number) {
-                Number nv1 = (Number)v1;
-                Number nv2 = (Number)v2;
-                if (v1 instanceof Float || v1 instanceof Double 
-                ||  v2 instanceof Float || v2 instanceof Double) {
-                    res = (nv1.doubleValue() > nv2.doubleValue()) ? n1 : n2;
-                } else {
-                    res = (nv1.longValue() > nv2.longValue()) ? n1 : n2;
-                }
-                return env.bind(args[2], res);
-            }
+        if (length < 1) 
+            throw new BuiltinException(this, context, "Must have at least 1 argument to " + getName());
+        StringBuffer buff = new StringBuffer();
+        for (int i = 0; i < length-1; i++) {
+            buff.append( lex(getArg(i, args, context), context) );
         }
-        // Doesn't (yet) handle partially bound cases
-        return false;
+        Node result = Node.createURI( buff.toString() );
+        return context.getEnv().bind(args[length-1], result);
     }
-    
 }
 
+
 /*
-    (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+    (c) Copyright 2007 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
