@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.12 2007-01-02 11:51:22 andy_seaborne Exp $
+ * * $Id: ParserSupport.java,v 1.13 2007-01-11 11:33:07 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -72,7 +72,7 @@ public class ParserSupport
 	 */
 	protected void checkIdSymbol(Taint taintMe, AbsXMLContext ctxt, String str)
 		throws SAXParseException {
-		if (!arp.ignoring(WARN_REDEFINITION_OF_ID)) {
+		if (arp.idsUsed != null) {
 			IRI uri = ctxt.uri;
             Map idsUsedForBase = (Map) idsUsed().get(uri);
 			if (idsUsedForBase == null) {
@@ -90,6 +90,13 @@ public class ParserSupport
 					"Previous definition of '" + str + "'.");
 			} else {
 				idsUsedForBase.put(str, arp.location());
+				arp.idsUsedCount++;
+				if (arp.idsUsedCount > 20000) {
+					arp.idsUsed = null;
+				arp.warning(taintMe,
+						WARN_BIG_FILE,
+						"Input is large. Switching off checking for illegal reuse of rdf:ID's.");
+				}
 			}
 		}
 

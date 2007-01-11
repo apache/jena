@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.27 2007-01-02 11:51:26 andy_seaborne Exp $
+ * $Id: XMLHandler.java,v 1.28 2007-01-11 11:33:06 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -77,6 +77,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     boolean encodingProblems = false;
 
     protected Map idsUsed = new HashMap();
+    protected int idsUsedCount = 0;
 
     public void triple(ANode s, ANode p, ANode o) {
         StatementHandler stmt;
@@ -384,7 +385,11 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     public void initParse(String base, String lang) throws SAXParseException {
         nodeIdUserData = new HashMap();
-        idsUsed = new HashMap();
+        idsUsed = 
+        	ignoring(WARN_REDEFINITION_OF_ID)?
+        			null:
+        	        new HashMap();
+        idsUsedCount = 0;
         if (options.getEmbedding())
             frame = new LookingForRDF(this, initialContext(base, lang));
         else

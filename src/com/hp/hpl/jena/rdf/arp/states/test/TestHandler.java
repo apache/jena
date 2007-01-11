@@ -44,6 +44,7 @@ class TestHandler extends XMLHandler {
         scope = 0;
         this.failOnWarning = failOnWarning_;
         idsUsed = new HashMap();
+        idsUsedCount = 0;
     }
 
     public String info() {
