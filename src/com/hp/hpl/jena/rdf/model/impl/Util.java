@@ -39,7 +39,7 @@ import com.hp.hpl.jena.shared.*;
 /** Some utility functions.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2007-01-02 11:48:30 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2007-01-11 11:09:49 $'
  */
 public class Util extends Object {
 
@@ -86,7 +86,8 @@ public class Util extends Object {
     public static boolean notNameChar( char ch )
         { return !XMLChar.isNCName( ch ); }
 
-    protected static Pattern standardEntities = Pattern.compile( "&|<|>|\t|\n|\r|\'|\"" );
+    protected static Pattern standardEntities = 
+    	   Pattern.compile( "&|<|>|\t|\n|\r|\'|\"" );
     
     public static String substituteStandardEntities( String s )
         {
@@ -104,7 +105,7 @@ public class Util extends Object {
             return s;
         }
     
-    protected static Pattern elementContentEntities = Pattern.compile( "<|>|&|[\0-\37&&[^\n\r\t]]" );
+    protected static Pattern elementContentEntities = Pattern.compile( "<|>|&|[\0-\37&&[^\n\r\t]]|\uFFFF|\uFFFE" );
     /**
         Answer <code>s</code> modified to replace &lt;, &gt;, and &amp; by
         their corresponding entity references. 

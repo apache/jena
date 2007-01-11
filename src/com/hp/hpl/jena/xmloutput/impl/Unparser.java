@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.41 2007-01-02 11:51:42 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.42 2007-01-11 11:09:39 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -82,7 +82,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * An Unparser will output a model in the abbreviated syntax. *
  * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.41 $' Date='$Date:
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.42 $' Date='$Date:
  *          2005/07/13 15:33:51 $'
  * 
  */
@@ -1304,7 +1304,9 @@ class Unparser {
                     char buf[] = str.toCharArray();
                     for (int i = 0; i < buf.length; i++) {
                         // See http://www.w3.org/TR/REC-xml#AVNormalize
-                        if (buf[i] <= ' ')
+                        if (buf[i] <= ' ' 
+                        	|| buf[i] == 0xFFFF
+                        	|| buf[i] == 0xFFFE)
                             return false;
                     }
                     return !wantReification(s);

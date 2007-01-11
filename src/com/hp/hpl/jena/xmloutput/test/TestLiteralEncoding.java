@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: TestLiteralEncoding.java,v 1.5 2007-01-02 11:49:09 andy_seaborne Exp $
+ 	$Id: TestLiteralEncoding.java,v 1.6 2007-01-11 11:09:51 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -9,9 +9,11 @@ package com.hp.hpl.jena.xmloutput.test;
 import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.shared.CannotEncodeCharacterException;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
      Tests to ensure that certain literals are either encoded properly or reported
@@ -65,19 +67,42 @@ public class TestLiteralEncoding extends ModelTestBase
         assertEquals( "", Util.substituteStandardEntities( "" ) );
         }
     
-    public void testLexicalEncodingException()
+    public void testLexicalEncodingException(String lang)
         {
         for (char ch = 0; ch < 32; ch += 1) 
             if (ch != '\n' && ch != '\t' && ch != '\r')
-                testThrowsBadCharacterException( ch );
+                testThrowsBadCharacterException( ch, lang );
+        testThrowsBadCharacterException( (char)0xFFFF, lang );
+        testThrowsBadCharacterException( (char)0xFFFE, lang );
+        
         }
-
-    private void testThrowsBadCharacterException( char badChar )
+    
+    
+    public void testBasicLexicalEncodingException()
+    {
+    	testLexicalEncodingException("RDF/XML");
+    }
+    
+    // TODO: add test for bad char in property attribute.
+    public void testPrettyLexicalEncodingException()
+    {
+    	testLexicalEncodingException("RDF/XML-ABBREV");
+    }
+    private void testThrowsBadCharacterException( char badChar, String lang )
         {
         String badString = "" + badChar;
+
+        Model m = ModelFactory.createDefaultModel();
+        m.createResource().addProperty(RDF.value, badString);
+        Writer w = new Writer(){
+			public void close() throws IOException {}
+			public void flush() throws IOException {}
+			public void write(char[] arg0, int arg1, int arg2) throws IOException {}
+        };
         try 
             { 
-            Util.substituteEntitiesInElementContent( badString ); 
+        	m.write(w,lang);
+//            Util.substituteEntitiesInElementContent( badString ); 
             fail( "should trap bad character: (char)" + (int) badChar ); 
             }
         catch (CannotEncodeCharacterException e) 
