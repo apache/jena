@@ -12,6 +12,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import junit.framework.JUnit4TestAdapter;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +34,17 @@ public class TestBulkUpdate {
 	{
 		Collection<Object[]> models = new ArrayList<Object[]>();
 		
-		models.add(new Object[] { ModelPool.get().getMySQL() } );
-		models.add(new Object[] { ModelPool.get().getHSQL() });
-		models.add(new Object[] { ModelPool.get().getPgSQL() });
+		//models.add(new Object[] { ModelPool.get().getMySQL() } );
+		//models.add(new Object[] { ModelPool.get().getHSQL() });
+		//models.add(new Object[] { ModelPool.get().getPgSQL() });
+		models.add(new Object[] { ModelPool.get().getDerby() });
 		
 		return models;
 	}
+	
+	public static junit.framework.Test suite() {
+		return new JUnit4TestAdapter(TestBulkUpdate.class);
+	} 
 	
 	public TestBulkUpdate(Model model)
 	{

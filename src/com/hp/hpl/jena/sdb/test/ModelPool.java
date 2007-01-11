@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesPGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesDerby;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -112,6 +113,25 @@ public class ModelPool {
 		return model;
 	}
 	
+	public Model getDerby() {
+		Store store = stores.get("Derby");
+		
+		if (store == null) {
+			JDBC.loadDriverDerby() ;
+			String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
+			SDBConnection sdb = new SDBConnection(url, null, null) ;
+        
+			store = new StoreTriplesNodesDerby(sdb);
+			
+			store.getTableFormatter().format();
+			
+			stores.put("Derby", store);
+		}
+        
+        Model model = SDBFactory.connectModel(store);
+        model.removeAll();
+        return model;
+	}
 }
 
 /*

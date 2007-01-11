@@ -81,7 +81,7 @@ public abstract class LoaderTriplesNodes
 	    }
 	    catch (SQLException ex)
 	    {
-	    	log.error("Failure while starting bulk load: " + ex.getMessage());
+	    	log.error("Failure while starting bulk load: " + ex.getMessage(), ex);
 	    	throw new SDBExceptionSQL("Failed to start up bulk loader", ex);
 	    }
 	}
@@ -329,7 +329,7 @@ public abstract class LoaderTriplesNodes
      * For databases like HSQL which we can't simply bulk delete from easily.
      * @throws SQLException 
      */
-    private void removeOneTriple(PreparedTriple triple) throws SQLException
+    protected void removeOneTriple(PreparedTriple triple) throws SQLException
     {
     	int s,p,o;
     	if ((s = getIdFromHash(triple.subject.hash)) == -1) return;
@@ -349,6 +349,7 @@ public abstract class LoaderTriplesNodes
 		
 		if (result.next())
 			id = result.getInt(1);
+		result.close();
 		return id;
 	}
 
@@ -427,24 +428,24 @@ public abstract class LoaderTriplesNodes
      * the db load thread
      */
 
-    static class PreparedTriple
+    public static class PreparedTriple
     {
-        PreparedNode subject;
-        PreparedNode predicate;
-        PreparedNode object;
+        public PreparedNode subject;
+        public PreparedNode predicate;
+        public PreparedNode object;
         boolean forRemoval;
     }
 
-    static class PreparedNode
+    public static class PreparedNode
     {
-        long hash;
-        String lex;
-        String lang;
-        String datatype;
-        int typeId;
-        Integer valInt;
-        Double valDouble;
-        Timestamp valDateTime;
+        public long hash;
+        public String lex;
+        public String lang;
+        public String datatype;
+        public int typeId;
+        public Integer valInt;
+        public Double valDouble;
+        public Timestamp valDateTime;
         
         PreparedNode(Node node)
         {

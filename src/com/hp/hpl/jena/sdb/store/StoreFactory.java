@@ -24,10 +24,10 @@ import com.hp.hpl.jena.sdb.layout1.StoreRDB;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesDerby;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesPGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesDerby;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** 
