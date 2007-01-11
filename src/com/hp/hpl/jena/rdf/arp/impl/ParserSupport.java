@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.13 2007-01-11 11:33:07 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.14 2007-01-11 11:48:15 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -91,7 +91,7 @@ public class ParserSupport
 			} else {
 				idsUsedForBase.put(str, arp.location());
 				arp.idsUsedCount++;
-				if (arp.idsUsedCount > 20000) {
+				if (arp.idsUsedCount > 10000) {
 					arp.idsUsed = null;
 				arp.warning(taintMe,
 						WARN_BIG_FILE,

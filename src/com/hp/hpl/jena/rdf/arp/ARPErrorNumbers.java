@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.31 2007-01-11 11:33:14 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.32 2007-01-11 11:48:24 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -409,7 +409,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
         public int WARN_RELATIVE_URI = 136;
         
         /**
-         * After 20000 rdf:ID attributes have been
+         * After 10000 rdf:ID attributes have been
          * read, ARP no longer checks for
          * {@link #WARN_REDEFINITION_OF_ID}.
          * This warning is to inform the user that
