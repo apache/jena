@@ -2,7 +2,15 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
-Trutle support
+PropertyImpl.getOrdinal() [internal]
+    o now computed on demand rather than on construction. Also log-on-too-big
+      replaced by throw-an-exception. I doubt very very much that this will
+      ever matter. There was no TestPropertyImpl code, but there is now. It
+      should be extended to cover the "illegal URI detection", or perhaps we
+      should remove that since it's RDF/XML-specific and checked by the XML
+      output code anyway?
+
+Turtle support
     o New Turtle parser (uses javacc, not antlr). Accessed for files with extension ".ttl"
       and language names "TTL", "TURTLE", "Turtle"
 
