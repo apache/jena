@@ -15,6 +15,7 @@ import com.hp.hpl.jena.query.util.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;
+import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -315,8 +316,10 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         out.print("( ") ;
         
         String sep = " AND " ;
+        
         boolean first = true ;
         boolean lastAnnotated = false ;
+            
         for ( SqlExpr c : conditions )
         {
             if ( ! first )
@@ -325,7 +328,14 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
                     out.println();
                 out.print(sep) ;
             }
+            boolean needsParens = ! ( c instanceof S_Equal ) ;
+            
+            // TODO Interact with SqlExpr precedence printing
+            if ( needsParens ) 
+                out.print("( ") ;
             out.print(c.asSQL()) ;
+            if ( needsParens ) 
+                out.print(" )") ;
             if ( ! allOnOneLine )
                 lastAnnotated = annotate(c) ;
             first = false ;
