@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
