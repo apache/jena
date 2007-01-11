@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import com.hp.hpl.jena.sdb.layout2.index.QueryCompilerFactoryIndex;
 import com.hp.hpl.jena.sdb.layout2.index.FmtLayout2HSQL;
 import com.hp.hpl.jena.sdb.layout2.index.LoaderHSQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
@@ -27,7 +28,7 @@ public class StoreTriplesNodesHSQL extends StoreBaseHSQL
         super(connection,
               new FmtLayout2HSQL(connection),
               new LoaderHSQL(connection),
-              new QueryCompilerFactory2(),
+              new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2()
         );
     }

@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLMySQL;
+import com.hp.hpl.jena.sdb.layout2.index.QueryCompilerFactoryIndex;
 import com.hp.hpl.jena.sdb.layout2.index.FmtLayout2MySQL;
 import com.hp.hpl.jena.sdb.layout2.index.LoaderMySQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
@@ -28,7 +29,7 @@ public class StoreTriplesNodesMySQL extends StoreBase
               new FmtLayout2MySQL(connection, 
                                   (tableType!=null)? tableType : MySQLEngineType.InnoDB),
               new LoaderMySQL(connection),
-              new QueryCompilerFactory2(),
+              new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2(),
               new GenerateSQLMySQL()) ;
     }

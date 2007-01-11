@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.layout2.index.QueryCompilerFactoryIndex;
 import com.hp.hpl.jena.sdb.layout2.index.FmtLayout2PGSQL;
 import com.hp.hpl.jena.sdb.layout2.index.LoaderPGSQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
@@ -27,7 +28,7 @@ public class StoreTriplesNodesPGSQL extends StoreBase
         super(connection,
               new FmtLayout2PGSQL(connection),
               new LoaderPGSQL(connection),
-              new QueryCompilerFactory2(),
+              new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;
     }
