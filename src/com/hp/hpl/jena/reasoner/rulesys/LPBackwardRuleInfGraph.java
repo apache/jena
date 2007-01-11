@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.11 2007-01-02 11:50:58 andy_seaborne Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.12 2007-01-11 17:17:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2007-01-02 11:50:58 $
+ * @version $Revision: 1.12 $ on $Date: 2007-01-11 17:17:57 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -127,6 +127,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * the changed data. 
      */
     public synchronized void rebind() {
+        version++;
         engine.checkSafeToUpdate();
         isPrepared = false;
     }
@@ -135,6 +136,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * Flush out all cached results. Future queries have to start from scratch.
      */
     public synchronized void reset() {
+        version++;
         engine.checkSafeToUpdate();
         engine.reset();
     }
@@ -186,6 +188,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * the new data item, recursively adding any generated triples.
      */
     public synchronized void performAdd(Triple t) {
+        version++;
         engine.checkSafeToUpdate();
         fdata.getGraph().add(t);
         isPrepared = false;
@@ -195,6 +198,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
     public synchronized void performDelete(Triple t) {
+        version++;
         engine.checkSafeToUpdate();
         fdata.getGraph().delete(t);
         isPrepared = false;

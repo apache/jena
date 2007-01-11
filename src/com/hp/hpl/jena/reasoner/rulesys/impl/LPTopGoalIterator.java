@@ -5,12 +5,13 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.11 2007-01-02 11:48:41 andy_seaborne Exp $
+ * $Id: LPTopGoalIterator.java,v 1.12 2007-01-11 17:18:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import java.util.NoSuchElementException;
 
+import com.hp.hpl.jena.reasoner.rulesys.BackwardRuleInfGraphI;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
 import java.util.*;
@@ -21,15 +22,18 @@ import java.util.*;
  * inference graph if the iterator hits the end of the result set.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2007-01-02 11:48:41 $
+ * @version $Revision: 1.12 $ on $Date: 2007-01-11 17:18:57 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
     Object lookAhead;
 
-    /** The parent backward chaining engine */
+    /** The parent backward chaining engine - nulled on close */
     LPInterpreter interpreter;
 
+    /** The parent InfGraph -- retained on close to allow CME detection */
+    BackwardRuleInfGraphI infgraph;
+    
     /** The set of choice points that the top level interpter is waiting for */
     protected Set choicePoints = new HashSet();
 
@@ -45,11 +49,16 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
     /** True if the iteration has started */
     boolean started = false;
 
+    /** Version stamp of the graph when we start */
+    protected int initialVersion;
+    
     /**
      * Constructor. Wraps a top level goal state as an iterator
      */
     public LPTopGoalIterator(LPInterpreter engine) {
         this.interpreter = engine;
+        infgraph = engine.getEngine().getInfGraph();
+        initialVersion = infgraph.getVersion();
 //        engine.setState(this);
         engine.setTopInterpreter(this);
     }
@@ -59,10 +68,9 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
      * lookahead buffer.
      */
     private synchronized void moveForward() {
-        if (interpreter == null || interpreter.getEngine() == null) {
-            throw new ConcurrentModificationException("Call to closed iterator");
-        }
-        synchronized (interpreter.getEngine()) {
+        checkClosed();
+        LPBRuleEngine lpEngine = interpreter.getEngine();
+        synchronized (lpEngine) {
             // LogFactory.getLog( getClass() ).debug( "Entering moveForward sync block on " + interpreter.getEngine() );
 
             started = true;
@@ -76,7 +84,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
                 } else {
                     // Some options open, continue pumping
                     nextToRun = null;
-                    interpreter.getEngine().pump(this);
+                    lpEngine.pump(this);
                     if (nextToRun == null) {
                         // Reached final closure
                         close();
@@ -170,6 +178,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
      * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
+        checkCME();
         if (!started) moveForward();
         return (lookAhead != null);
     }
@@ -178,6 +187,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
      * @see java.util.Iterator#next()
      */
     public Object next() {
+        checkCME();
         if (!started) moveForward();
         if (lookAhead == null) {
             throw new NoSuchElementException("Overran end of LP result set");
@@ -185,6 +195,25 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
         Object result = lookAhead;
         moveForward();
         return result;
+    }
+    
+    /**
+     * Check that the iterator has either cleanly closed or
+     * the version stamp is still valid
+     */
+    private void checkCME() {
+        if (initialVersion != infgraph.getVersion()) {
+            throw new ConcurrentModificationException();
+        }
+    }
+    
+    /**
+     * Check if the iterator has been closed and so we can't move forward safely
+     */
+    private void checkClosed() {
+        if (interpreter == null || interpreter.getEngine() == null) {
+            throw new ConcurrentModificationException("Due to closed iterator");
+        }
     }
 
     /**

@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.44 2007-01-02 11:52:18 andy_seaborne Exp $
+ * $Id: BaseInfGraph.java,v 1.45 2007-01-11 17:18:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.44 $ on $Date: 2007-01-02 11:52:18 $
+ * @version $Revision: 1.45 $ on $Date: 2007-01-11 17:18:43 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -36,6 +36,9 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /** Flag to record if the preparation call has been made and so the graph is ready for queries */
     protected boolean isPrepared = false;
 
+    /** version count */
+    protected volatile int version = 0;
+    
     /**
          Inference graphs share the prefix-mapping of their underlying raw graph.
      	@see com.hp.hpl.jena.graph.Graph#getPrefixMapping()
@@ -209,6 +212,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * the changed data.
      */
     public void rebind() {
+        version++;
         isPrepared = false;
     }
 
@@ -219,6 +223,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
      */
     public void reset() {
+        version++;
     }
 
     /**
@@ -406,10 +411,19 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     }
 
     /**
+     * Return a version stamp for this graph which can be
+     * used to fast-fail concurrent modification exceptions.
+     */
+    public int getVersion() {
+        return version;
+    }
+    
+    /**
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
     public synchronized void performAdd(Triple t) {
+        version++;
         if (!isPrepared) prepare();
         fdata.getGraph().add(t);
     }
@@ -418,6 +432,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * Removes the triple t (if possible) from the set belonging to this graph.
      */
     public void performDelete(Triple t) {
+        version++;
         if (!isPrepared) prepare();
         fdata.getGraph().delete(t);
     }

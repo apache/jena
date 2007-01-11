@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.46 2007-01-11 15:49:38 der Exp $
+ * $Id: TestBugs.java,v 1.47 2007-01-11 17:18:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.46 $ on $Date: 2007-01-11 15:49:38 $
+ * @version $Revision: 1.47 $ on $Date: 2007-01-11 17:18:16 $
  */
 public class TestBugs extends TestCase {
 
@@ -842,17 +842,13 @@ public class TestBugs extends TestCase {
     }
     
     // debug assistant
-    private void tempList(Model m, Resource s, Property p, RDFNode o) {
-        System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));
-        for (StmtIterator i = m.listStatements(s, p, o); i.hasNext(); ) {
-            System.out.println(" - " + i.next());
-        }
-    }   
+//    private void tempList(Model m, Resource s, Property p, RDFNode o) {
+//        System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));
+//        for (StmtIterator i = m.listStatements(s, p, o); i.hasNext(); ) {
+//            System.out.println(" - " + i.next());
+//        }
+//    }   
     
-    public static void main(String[] args) {
-        TestBugs test = new TestBugs("test");
-//        test.hiddenTestDeleteBug();
-    } 
 }
 
 /*

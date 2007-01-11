@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.45 2007-01-02 11:51:00 andy_seaborne Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.46 2007-01-11 17:17:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.45 $ on $Date: 2007-01-02 11:51:00 $
+ * @version $Revision: 1.46 $ on $Date: 2007-01-11 17:17:59 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -150,6 +150,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * the changed data. 
      */
     public void rebind() {
+        version++;
         isPrepared = false;
     }
 
@@ -268,6 +269,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * the new data item, recursively adding any generated triples.
      */
     public synchronized void performAdd(Triple t) {
+        version++;
         fdata.getGraph().add(t);
         if (isPrepared) {
             engine.add(t);
@@ -289,6 +291,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
     public void performDelete(Triple t) {
+        version++;
         if (fdata != null) {
             Graph data = fdata.getGraph();
             if (data != null) {

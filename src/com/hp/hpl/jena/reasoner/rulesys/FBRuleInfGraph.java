@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.62 2007-01-02 11:51:00 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.63 2007-01-11 17:17:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.62 $ on $Date: 2007-01-02 11:51:00 $
+ * @version $Revision: 1.63 $ on $Date: 2007-01-11 17:17:53 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -471,6 +471,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * the changed data. 
      */
     public void rebind() {
+        version++;
         if (bEngine != null) bEngine.reset();
         isPrepared = false;
     }
@@ -580,6 +581,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Flush out all cached results. Future queries have to start from scratch.
      */
     public void reset() {
+        version++;
         bEngine.reset();
         isPrepared = false;
     }
@@ -589,6 +591,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * the new data item, recursively adding any generated triples.
      */
     public synchronized void performAdd(Triple t) {
+        version++;
         fdata.getGraph().add(t);
         if (useTGCCaching) {
             if (transitiveEngine.add(t)) isPrepared = false;
@@ -619,6 +622,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
     public void performDelete(Triple t) {
+        version++;
         boolean removeIsFromBase = fdata.getGraph().contains(t);
         fdata.getGraph().delete(t);
         if (useTGCCaching) {
