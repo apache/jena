@@ -54,7 +54,7 @@ public class RunSDB
         
         //runQuad() ;
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
         
         //run() ;
@@ -156,7 +156,7 @@ public class RunSDB
     public static void runPrint()
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {"--print=sql", "--sdb=sdb1.ttl", "--query=Q.rq"} ;
+        String[] a = {"--print=sql", "--print=op", "--sdb=sdb1.ttl", "--query=Q.rq"} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }

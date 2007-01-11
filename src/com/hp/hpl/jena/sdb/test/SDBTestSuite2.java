@@ -35,8 +35,8 @@ public class SDBTestSuite2 extends TestSuite
     {
         super("SDB - Schema 2") ;
         
-        if ( true ) SDBConnection.logSQLExceptions = true ;
-        if ( false ) QueryTestSDB.VERBOSE = true ;
+        if ( true )     SDBConnection.logSQLExceptions = true ;
+        if ( false )    QueryTestSDB.VERBOSE = true ;
         
         if ( includeDerby )
         {
@@ -51,12 +51,11 @@ public class SDBTestSuite2 extends TestSuite
         if ( includeMySQL )
         {
             JDBC.loadDriverMySQL() ;
-            SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2",  Access.getUser(), Access.getPassword()) ;
+            SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2", Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreTriplesNodesMySQL(sdb),
                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
                                              "Schema 2 : ")) ;
         }
-        
         
         if ( includeHSQL )
         {

@@ -16,10 +16,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine1.plan.PlanFilter;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.expr.Expr;
-
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -124,6 +122,17 @@ public class TransformSDB extends TransformCopy
         return super.transform(opFilter, op) ;
     }
     
+    @Override
+    public Op transform(OpTable opTable)
+    {
+//        // Is this a boring empty pattern?
+//        // This only occurs when there are no patterns in a group.
+//        if ( opTable.getTable() instanceof TableUnit )
+//            return new OpSQL(null, opTable, request) ;
+//        
+        return super.transform(opTable) ;
+    }
+    
     private boolean translateConstraints = false ;
     
     private SDBConstraint transformFilter(OpFilter opFilter)
@@ -138,11 +147,10 @@ public class TransformSDB extends TransformCopy
         return psc ;
     }
 
-    private Set<Var> getVarsInFilter(PlanFilter filter)
+    private Set<Var> getVarsInFilter(Expr expr)
     {
-        Set s = filter.getExpr().getVarsMentioned() ;
         @SuppressWarnings("unchecked")
-        Set<Var> vars = (Set<Var>)filter.getExpr().getVarsMentioned() ;
+        Set<Var> vars = (Set<Var>)expr.getVarsMentioned() ;
         return vars ;
     }
     

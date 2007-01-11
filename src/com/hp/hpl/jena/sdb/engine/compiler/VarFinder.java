@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.sdb.engine.compiler;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine2.Table;
 import com.hp.hpl.jena.query.engine2.op.*;
 
 public class VarFinder
@@ -22,7 +23,7 @@ public class VarFinder
         return VarUsageVisitor.apply(op).optDefines ;
     }
     
-    private static class VarUsageVisitor implements OpVisitor
+    private static class VarUsageVisitor extends OpVisitorBase
     {
         static VarUsageVisitor apply(Op op)
         {
@@ -35,6 +36,7 @@ public class VarFinder
         Set<Var> defines = new HashSet<Var>() ;
         Set<Var> optDefines = new HashSet<Var>() ;
 
+        @Override
         public void visit(OpQuadPattern quadPattern)
         {
             slot(quadPattern.getGraphNode()) ;
@@ -49,6 +51,7 @@ public class VarFinder
             }
         }
 
+        @Override
         public void visit(OpBGP opBGP)
         {
             @SuppressWarnings("unchecked")
@@ -67,6 +70,7 @@ public class VarFinder
                 defines.add(Var.alloc(node)) ;
         }
         
+        @Override
         public void visit(OpJoin opJoin)
         {
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opJoin.getLeft()) ;
@@ -77,6 +81,7 @@ public class VarFinder
             optDefines.addAll(rightUsage.optDefines) ;
         }
 
+        @Override
         public void visit(OpLeftJoin opLeftJoin)
         {
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opLeftJoin.getLeft()) ;
@@ -92,6 +97,7 @@ public class VarFinder
             optDefines.removeAll(leftUsage.defines) ;
         }
 
+        @Override
         public void visit(OpUnion opUnion)
         {
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opUnion.getLeft()) ;
@@ -104,44 +110,21 @@ public class VarFinder
             optDefines.addAll(rightUsage.optDefines) ;
         }
 
-        public void visit(OpFilter opFilter)
-        {}
-
+        @Override
         public void visit(OpGraph opGraph)
         {
             slot(opGraph.getNode()) ;
         }
-
-        public void visit(OpDatasetNames dsNames)
-        {}
-
-        public void visit(Table table)
-        {}
-
-        public void visit(OpExt opExt)
-        {}
-
-        public void visit(OpOrder opOrder)
-        {}
-
-        public void visit(OpProject opProject)
-        {}
-
-        public void visit(OpDistinct opDistinct)
-        {}
-
-        public void visit(OpSlice opSlice)
-        {}
-        
     }
     
-    private static class Defines implements OpVisitor
+    private static class Defines extends OpVisitorBase
     {
         private Var var ;
         boolean result = false ;
         
         Defines(Var var) { this.var = var ; }
         
+        @Override
         @SuppressWarnings("unchecked")
         public void visit(OpQuadPattern quadPattern)
         {
@@ -156,6 +139,7 @@ public class VarFinder
             }
         }
 
+        @Override
         public void visit(OpBGP opBGP)
         {
             @SuppressWarnings("unchecked")
@@ -167,43 +151,6 @@ public class VarFinder
                 if ( triple.getObject().equals(var) )     { result = true ; return ; }
             }
         }
-
-        public void visit(OpJoin opJoin)
-        {}
-
-        public void visit(OpLeftJoin opLeftJoin)
-        {}
-
-        public void visit(OpUnion opUnion)
-        {}
-
-        public void visit(OpFilter opFilter)
-        {}
-
-        public void visit(OpGraph opGraph)
-        {}
-
-        public void visit(OpDatasetNames dsNames)
-        {}
-
-        public void visit(Table table)
-        {}
-
-        public void visit(OpExt opExt)
-        {}
-
-        public void visit(OpOrder opOrder)
-        {}
-
-        public void visit(OpProject opProject)
-        {}
-
-        public void visit(OpDistinct opDistinct)
-        {}
-
-        public void visit(OpSlice opSlice)
-        {}
-        
     }
 }
 
