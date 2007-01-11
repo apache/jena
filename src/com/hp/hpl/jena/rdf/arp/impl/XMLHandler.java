@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.28 2007-01-11 11:33:06 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.29 2007-01-11 11:52:45 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -410,6 +410,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         }
         // endRDF();
         endBnodeScope();
+        idsUsed = null;
     }
 
     void endBnodeScope() {
