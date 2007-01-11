@@ -9,7 +9,11 @@
     mfx:include (
         <General/manifest.ttl>
         <BasicPatterns/manifest.ttl>
+
         <Optionals1/manifest.ttl>
         <Integration/manifest.ttl>
         <Expressions/manifest.ttl>
+
+        <Algebra/manifest.ttl>
+        <Structure/manifest.ttl>
     ) .

@@ -8,13 +8,19 @@
     rdfs:label "Basic Patterns" ;
     mf:entries
     ( 
-       [  mf:name    "Basic - 1" ;
+       [  mf:name    "Basic - Empty pattern, all variables" ;
+          mf:action [ qt:query <basic-empty-1.rq> ; qt:data <../Data/data.ttl> ] ;
+       ]
+       [  mf:name    "Basic - Empty pattern -name variable" ;
+          mf:action [ qt:query <basic-empty-2.rq> ; qt:data <../Data/data.ttl> ] ;
+       ]
+       [  mf:name    "Basic - 1 - Single triple pattern" ;
           mf:action [ qt:query <basic-1.rq> ; qt:data <../Data/data.ttl> ] ;
        ]
-       [  mf:name    "Basic - 2" ;
+       [  mf:name    "Basic - 2 - Two triple patterns, common subject pair, object-subject path" ;
           mf:action [ qt:query <basic-2.rq> ; qt:data <../Data/data.ttl> ] ;
        ]
-       [  mf:name    "Basic - 3" ;
+       [  mf:name    "Basic - 3 - Three triple patterns, common subject " ;
           mf:action [ qt:query <basic-3.rq> ; qt:data <../Data/data.ttl> ] ;
        ]
        [  mf:name    "Triple - 1" ;

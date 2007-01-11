@@ -4,17 +4,14 @@ SDB ToDo list (and general notes)
 + Features: more general config setting?
   Or really use properties?
 
-+ Check that arg decls not reused
-
 + tests for ORDER BY and other integrations
 
 + Generating SQL:
-  + If SqlCoalesce is top node under FROM, don't need the aliasing (layout1 only)
   + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
-
-+ Test for special case structures (testing/Structure)
-  WorkSpace area?
-
+  + SELECT/one table ==> move constraints out (it's just SPJ)
+    Put in a SqlNode optimizer stage, just before generation
+      IJ-R-T => IJ(r)-T is done specially 
+    
 + Features:
   In desc file for now.
   Features are params to layout
@@ -30,11 +27,7 @@ SDB ToDo list (and general notes)
      Done - but should be ModData/ModInit/ModSetup
      
 + Add query tests :
-  SELECT * {}
-  SELECT ?x {}
-  SELECT * { P[?x] OPTIONAL { P[!?x] OPTIONAL { OPTIONAL P[?x] } } }
-  { opt ... } JOIN { opt ... } 
-  { opt ... } JOIN { fixed } 
+  /Structure/ { opt ... } JOIN { opt ... } 
   
 + Abstracting databases:
   Graph for an SDBConnection (or get from DB).
@@ -43,13 +36,6 @@ SDB ToDo list (and general notes)
       A/ regex syntax
       B/ Table exists code (Classes, Value tables etc).
 
-+ Abstract columns types then simple templating.
-        VARCHAR/TEXT/BLOB syntax
-        HSQLDB: VARCHAR unlimited
-        MySQL: TEXT // PosgreSQL: TEXT, bytea
-
-+ more in .shared.
-
 + ValueTables
   String value table
     With no URIs, much shorter.
@@ -57,10 +43,6 @@ SDB ToDo list (and general notes)
 
 + Graph pattern tables
 
-SqlExpr::
-IJ-R-T => IJ(r)-T is done specially - make a special stage (RA optimizer?)
-OR improve the generation of SQL output and leave the tree much as is.
-OR canonical tree SPJ
++ Abstract columns types then simple templating.
+        VARCHAR/TEXT/BLOB abstract syntax
 
-== Next
-  ==> Performance testing framework
