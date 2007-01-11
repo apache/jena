@@ -37,11 +37,40 @@
         <delete dir="${build.dir}"/>
     </target>
 
-    <target name="build" depends="init, compile, jar"/>
+    <target name="build" depends="init, compile, jar,default-javac-flags"/>
 
     <target name="compile">
-        <javac srcdir="${src.dir}" destdir="${build.dir}" debug="true" classpathref="classpath"/>
+        <javac 
+        	srcdir="${src.dir}" 
+        	destdir="${build.dir}"
+ 	       debug="${java.debug}"
+ 	       debuglevel="${java.debuglevel}"
+ 	       deprecation="${java.deprecation}"
+ 	       optimize="${java.optimize}"
+ 	       source="${java.source}"
+ 	       target="${java.target}" 
+        	classpathref="classpath"/>
     </target>
+	  <target name="optimise-javac-flags"
+	    description="Set the javac flags that will produce an optmised jar with no debug symbols" >
+	    <property name="java.debug"       value="false"/>
+	    <property name="java.debuglevel"  value=""/>
+	    <property name="java.deprecation" value="false"/>
+	    <property name="java.optimize"    value="true"/>
+	    <property name="java.source"      value="1.4"/>
+	    <property name="java.target"      value="1.4"/>
+	  </target>
+
+	  <target name="default-javac-flags"
+	    description="Set the javac flags that will produce an debug jar with no compiler optimisation and all debug symbols" >
+	    <!-- Note that in ant, if these flags are already set setting them again has no effect -->
+	    <property name="java.debug"       value="true"/>
+	    <property name="java.debuglevel"  value="source,lines,vars"/>
+	    <property name="java.deprecation" value="false"/>
+	    <property name="java.optimize"    value="false"/>
+	    <property name="java.source"      value="1.4"/>
+	    <property name="java.target"      value="1.4"/>
+	  </target>
 
     <target name="jar">
         <jar jarfile="${lib.dir}/iri.jar" basedir="${build.dir}">
