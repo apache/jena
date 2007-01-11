@@ -135,6 +135,7 @@ OntModel
       will have this behaviour.
 
 Reasoners
+   o Fixed a ConcurrentModificationException bug in TransitiveReasoner
    o added simple string hanlding builtins regexp, strConcat, uriConcat
    o fixed bug with arithmetic builtins which caused matching against an 
      already bound but incorrect solution to pass.

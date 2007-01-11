@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.45 2007-01-02 11:50:30 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.46 2007-01-11 15:49:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.45 $ on $Date: 2007-01-02 11:50:30 $
+ * @version $Revision: 1.46 $ on $Date: 2007-01-11 15:49:38 $
  */
 public class TestBugs extends TestCase {
 
@@ -54,8 +54,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testFactRules" ));
-//        suite.addTest(new TestBugs( "testFactChainRules" ));
+//        suite.addTest(new TestBugs( "testCMEInTrans" ));
 //        return suite;
     }  
 
@@ -819,7 +818,16 @@ public class TestBugs extends TestCase {
         assertTrue( infModel.contains(a, q, b) );
         assertTrue( ! myFlag.fired );
     }
-
+    
+    /**
+     * Test case for a reported CME bug in the transitive reasoner
+     */
+    public void testCMEInTrans() {
+        OntModel model =
+            ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF);
+        model.read("file:testing/reasoners/bugs/tgcCMEbug.owl");
+    }
+    
     /**
      * Builtin which just records whether it has been called.
      * Used in implementing testGroundClosure.
