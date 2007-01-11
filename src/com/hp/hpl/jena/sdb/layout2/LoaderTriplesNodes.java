@@ -329,29 +329,9 @@ public abstract class LoaderTriplesNodes
      * For databases like HSQL which we can't simply bulk delete from easily.
      * @throws SQLException 
      */
-    protected void removeOneTriple(PreparedTriple triple) throws SQLException
-    {
-    	int s,p,o;
-    	if ((s = getIdFromHash(triple.subject.hash)) == -1) return;
-    	if ((p = getIdFromHash(triple.predicate.hash)) == -1) return;
-    	if ((o = getIdFromHash(triple.object.hash)) == -1) return;
+    protected void removeOneTriple(PreparedTriple triple) throws SQLException {
     	
-    	connection().execUpdate("DELETE FROM Triples WHERE " +
-    			"s = '" + s + "' AND " +
-    			"p = '" + p + "' AND " +
-    			"o = '" + o + "'");
     }
-
-	private int getIdFromHash(long hash) throws SQLException
-	{
-		int id = -1;
-		ResultSet result = connection().execQuery("SELECT id FROM Nodes WHERE hash = '" + hash +"'");
-		
-		if (result.next())
-			id = result.getInt(1);
-		result.close();
-		return id;
-	}
 
 	private void addToInsert(PreparedStatement s, PreparedNode node)
         throws SQLException

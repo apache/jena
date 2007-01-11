@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
+import com.hp.hpl.jena.sdb.layout2.index.FmtLayout2HSQL;
+import com.hp.hpl.jena.sdb.layout2.index.LoaderHSQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;

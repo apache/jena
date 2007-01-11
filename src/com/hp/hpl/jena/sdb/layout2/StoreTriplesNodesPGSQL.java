@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.layout2.index.FmtLayout2PGSQL;
+import com.hp.hpl.jena.sdb.layout2.index.LoaderPGSQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBase;
