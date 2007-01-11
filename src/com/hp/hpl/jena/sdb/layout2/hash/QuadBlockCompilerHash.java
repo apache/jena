@@ -6,16 +6,43 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
+import java.util.Collection;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.query.util.FmtUtils;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.sdb.core.sqlexpr.*;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
+import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
 
 
-public class QueryCompilerFactory2Hash implements QueryCompilerFactory
+public class QuadBlockCompilerHash extends QuadBlockCompiler2
 {
-    public QueryCompiler createQueryCompiler(SDBRequest request)
+    private static Log log = LogFactory.getLog(QuadBlockCompilerHash.class) ;
+    
+    public QuadBlockCompilerHash(SDBRequest request)
+    { super(request) ; }
+
+    @Override
+    protected void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions)
     {
-        return new QueryCompiler2Hash(request) ;
+        long hash = NodeLayout2.hash(node) ;
+        SqlExpr c = new S_Equal(thisCol, new SqlConstant(hash)) ;
+        c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+        conditions.add(c) ;
+        return ;
+    }
+
+    @Override
+    protected SqlNode insertConstantAccesses(SDBRequest request, Collection<Node> constants)
+    {
+        return null ;
     }
 }
 

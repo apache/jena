@@ -118,7 +118,7 @@ public class SQLBridge2 extends SQLBridgeBase
         SqlColumn c1 = e1.getColumn() ;
         // Not in scope -- add a table to get it
         SqlTable nTable = new TableNodes(genNodeResultAlias.next()) ;
-        String nodeKeyColName = request.getStore().getNodeKeyColName() ;
+        String nodeKeyColName = request.getStore().getNodeKeyColName() ;    // Yuk.
         SqlColumn c2 = new SqlColumn(nTable, nodeKeyColName) ;
 
         nTable.setValueColumnForVar(var, c2) ;

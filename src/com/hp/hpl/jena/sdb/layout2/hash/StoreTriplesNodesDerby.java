@@ -21,7 +21,7 @@ public class StoreTriplesNodesDerby extends StoreBase
               new FmtLayout2HashDerby(connection) ,
               //new LoaderOneTripleHash(connection),
               new LoaderDerby(connection),
-              new QueryCompilerFactory2Hash(), 
+              new QueryCompilerFactoryHash(), 
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;
         //throw new SDBNotImplemented("StoreTriplesNodesDerby") ;

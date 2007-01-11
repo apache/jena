@@ -18,10 +18,10 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.layout2.QuadBlockCompilerIndex2;
+import com.hp.hpl.jena.sdb.layout2.index.QuadBlockCompilerIndex;
 
 
-public class QueryCompilerTrans extends QuadBlockCompilerIndex2
+public class QueryCompilerTrans extends QuadBlockCompilerIndex
 {
     private TransTable transTable ;
     private String aliasBase ;

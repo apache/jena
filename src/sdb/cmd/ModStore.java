@@ -137,7 +137,7 @@ public class ModStore extends ModBase
         if ( AddUsage )
             cmdLine.getUsage().addUsage("--dbArgs=", "Additional arguments for JDBC URL") ;
 
-        cmdLine.add(argDeclDbArgs);
+        cmdLine.add(argDeclDbType);
         if ( AddUsage )
             cmdLine.getUsage().addUsage("--dbType=", "Database type") ;
 

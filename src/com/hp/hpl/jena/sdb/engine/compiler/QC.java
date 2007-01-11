@@ -10,7 +10,8 @@ import static com.hp.hpl.jena.sdb.core.JoinType.INNER;
 import static com.hp.hpl.jena.sdb.core.JoinType.LEFT;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,14 +22,19 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-
+import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.core.sqlnode.*;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlCoalesce;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlJoin;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sdb.util.ListUtils;
+import com.hp.hpl.jena.sdb.util.alg.Transform;
 
 public class QC
 {
@@ -192,15 +198,14 @@ public class QC
     @SuppressWarnings("unchecked")
     public static List<Var> queryOutVars(Query query)
     {
-        //Class : VarList LinkedHashSet<Var>
-        List<Var> vars = new ArrayList<Var>() ;
+        // If part query, need all variables. 
         
         // Project variables
-        List<String> list = (List<String>)query.getResultVars() ;
-        if ( list.size() == 0 )
+        List<Var> vars = ListUtils.convert((List<String>)query.getResultVars(), StringToVar) ;
+        
+        if ( vars.size() == 0 )
+            // SELECT * {}
             LogFactory.getLog(QC.class).warn("No project variables") ;
-        for ( String vn  : list )
-            vars.add(Var.alloc(vn)) ;
         
         // Add the ORDER BY variables
         List<SortCondition> orderConditions = (List<SortCondition>)query.getOrderBy() ;
@@ -218,6 +223,19 @@ public class QC
         }
         return vars ;
     }
+    
+    
+    public static boolean isOpSQL(Op x)
+    {
+        return ( x instanceof OpSQL ) ;
+    }
+
+    
+    private static Transform<String, Var> StringToVar = new Transform<String, Var>(){
+        public Var convert(String varName)
+        {
+            return Var.alloc(varName) ;
+        }} ;
 }
 
 /*

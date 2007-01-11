@@ -4,19 +4,23 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2;
+package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerMain;
 
 
-public class QueryCompilerFactory2 implements QueryCompilerFactory
+public class QueryCompilerHash extends QueryCompilerMain 
 {
-    public QueryCompiler createQueryCompiler(SDBRequest request)
-    {
-        return new QueryCompiler2(request) ;
+    public QueryCompilerHash(SDBRequest request)
+    { 
+        super(request) ; 
     }
+    
+    @Override
+    protected QuadBlockCompiler createQuadBlockCompiler()
+    { return new QuadBlockCompilerHash(request) ; }
 }
 
 /*

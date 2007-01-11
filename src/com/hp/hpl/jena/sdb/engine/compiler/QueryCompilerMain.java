@@ -6,9 +6,12 @@
 
 package com.hp.hpl.jena.sdb.engine.compiler;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine2.OpVars;
 import com.hp.hpl.jena.query.engine2.op.*;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -20,21 +23,29 @@ import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 public abstract class QueryCompilerMain implements QueryCompiler 
 {
     // Do we need this as a class?
-    private List<Var> projectVars ;
     protected SDBRequest request ;
     
     
     public QueryCompilerMain(SDBRequest request)
     { 
         this.request = request ;
-        projectVars = QC.queryOutVars(request.getQuery()) ;
     }
     
     public Op compile(Op op)
     {
         Transform t = new TransformSDB(request, createQuadBlockCompiler()) ;
         op = Transformer.transform(t, op) ;
-        OpWalker.walk(op, new SqlNodesFinisher()) ;
+        // If it's the whole query, then we only need the  
+        
+        // Find the first non-modifier.
+        Op patternOp = op ;
+        while ( patternOp instanceof OpModifier )
+            patternOp = ((OpModifier)patternOp).getSubOp() ;
+        
+        boolean patternIsOneSQLStatement = QC.isOpSQL(patternOp) ;
+        
+            
+        OpWalker.walk(op, new SqlNodesFinisher(patternIsOneSQLStatement)) ;
         return op ;
     }
 
@@ -47,6 +58,11 @@ public abstract class QueryCompilerMain implements QueryCompiler
     
     private class SqlNodesFinisher extends OpVisitorBase
     {
+        
+        private boolean justProjectVars ;
+        SqlNodesFinisher(boolean justProjectVars)
+        { this.justProjectVars = justProjectVars ; }
+        
         @Override
         public void visit(OpExt op)
         {
@@ -55,8 +71,20 @@ public abstract class QueryCompilerMain implements QueryCompiler
                 super.visit(op) ;
                 return ;
             }
-            OpSQL opSQL = (OpSQL)op ;
             
+            OpSQL opSQL = (OpSQL)op ;
+
+            List<Var> projectVars = null ;
+            
+            if ( justProjectVars )
+                projectVars = QC.queryOutVars(request.getQuery()) ;
+            else
+            {
+                @SuppressWarnings("unchecked")
+                Collection<Var> tmp = (Collection<Var>)OpVars.patternVars(opSQL.getOriginal()) ;
+                projectVars = new ArrayList<Var>(tmp) ;
+            }
+                    
             SqlNode sqlNode = opSQL.getSqlNode() ;
             
             SQLBridgeFactory f = request.getStore().getSQLBridgeFactory() ;
@@ -67,8 +95,6 @@ public abstract class QueryCompilerMain implements QueryCompiler
             
             opSQL.setBridge(bridge) ;
             opSQL.resetSqlNode(sqlNode) ;
-            // Insert value stuff.  Change opSQL
-            // Do the project bridge.
         }
     }
 }

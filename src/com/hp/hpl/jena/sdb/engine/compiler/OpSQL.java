@@ -45,7 +45,7 @@ public class OpSQL extends OpExtBase
         return new TableSimple(qIter) ;
     }
 
-    //public Op getOriginal() { return originalOp ; }
+    public Op getOriginal() { return originalOp ; }
 
     @Override
     public void output(IndentedWriter out)

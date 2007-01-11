@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,15 +26,18 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.engine.compiler.QC;
+import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
+import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
+import com.hp.hpl.jena.sdb.layout2.TableNodes;
 
 
-public class QuadBlockCompilerIndex2 extends QuadBlockCompiler2
+public class QuadBlockCompilerIndex extends QuadBlockCompiler2
 {
-    private static Log log = LogFactory.getLog(QuadBlockCompilerIndex2.class) ;
+    private static Log log = LogFactory.getLog(QuadBlockCompilerIndex.class) ;
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
     private Generator genNodeConstantAlias = Gensym.create(Aliases.NodesConstantAliasBase) ;
     
-    public QuadBlockCompilerIndex2(SDBRequest request)
+    public QuadBlockCompilerIndex(SDBRequest request)
     { super(request) ; }
 
     @Override

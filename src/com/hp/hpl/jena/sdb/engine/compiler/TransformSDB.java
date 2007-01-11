@@ -53,7 +53,7 @@ public class TransformSDB extends TransformCopy
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)
     {
-        if ( ! isOpSQL(left) || ! isOpSQL(right) )
+        if ( ! QC.isOpSQL(left) || ! QC.isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
         
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
@@ -67,7 +67,7 @@ public class TransformSDB extends TransformCopy
         if ( ! request.LeftJoinTranslation )
             return super.transform(opJoin, left, right) ;
         
-        if ( ! isOpSQL(left) || ! isOpSQL(right) )
+        if ( ! QC.isOpSQL(left) || ! QC.isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
 
         // Condition in the left join.  Punt for now. 
@@ -152,11 +152,6 @@ public class TransformSDB extends TransformCopy
         @SuppressWarnings("unchecked")
         Set<Var> vars = (Set<Var>)expr.getVarsMentioned() ;
         return vars ;
-    }
-    
-    private boolean isOpSQL(Op x)
-    {
-        return ( x instanceof OpSQL ) ;
     }
 }
 
