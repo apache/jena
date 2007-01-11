@@ -1211,6 +1211,7 @@ class B = cardinality(P,1)</pre>
   <li><a href="#RULEconfiguration">GenericRuleReasoner configuration</a></li>
   <li><a href="#RULEbuiltins">Builtin primitives</a></li>
   <li><a href="#RULEexamples">Example</a></li>
+  <li><a href="#RDFSPlusRules">Combining RDFS/OWL with custom rules</a></li>
   <li><a href="#RULEnotes">Notes</a></li>
   <li><a href="#RULEextensions">Extensions</a></li>
 </ol>
@@ -1852,6 +1853,68 @@ while (i.hasNext()) {
 			[ (?A ?P ?C) <- (?A ?P ?B), (?B ?P ?C) ] 
 ] </pre>
 <p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+
+<h2><a name="RDFSPlusRules"></a>Combining RDFS/OWL with custom rules</h2>
+<p>Sometimes one wishes to write generic inference rules but combine them
+ with some RDFS or OWL infernece. With the current Jena architecture limited forms of this 
+ is possible but you need to be aware of the limitations.</p>
+<p>There are two ways of achieving this sort of configuration within Jena (not
+ counting using an external engine that already supports such a combination).</p>
+<p>Firstly, it is possible to cascade reasoners, i.e. to construct one InfModel
+ using another InfModel as the base data. The strength of this appoach is that
+ the two inference processes are separate and so can be of different sorts. For
+ example one could create a GenericRuleReasoner whose base model is an external
+ OWL reasoner. The chief weakness of the approach is that it is "layered" - the
+ outer InfModel can see the results of the inner InfModel but not vice versa.
+ For some applications that layering is fine and it is clear which way the
+ inference should be layered, for some it is not. A second possible weakness
+ is performance. A query to an InfModel is generally expensive and involves lots
+ of queries to the data. The outer InfModel in our layered case will 
+ typically issue a lot of queries to the inner model, each of which may
+ trigger more inferenece. If the inner model caches all of its inferences
+ (e.g. a forward rule engine) then there may not be very much redundancy there but
+ if not then performance can suffer dramatically. </p>
+<p>Secondly, one can create a single GenericRuleReasoner whose rules combine
+ rules for RDFS or OWL and custom rules. At first glance this looks like it
+ gets round the layering limitation. However, the default Jena RDFS and OWL 
+ rulesets use the Hybrid rule engine. The hybrid engine is itself layered, forward rules 
+ do not see the results of any backward rules. Thus layering is still present though you 
+ have finer grain control - all your inferences you want the RDFS/OWL rules to see
+ should be forward, all the inferences which need all of the results of the RDFS/OWL rules
+ should be backward. Note that the RDFS and OWL rulesets assume certain settings
+ for the GenericRuleReasoner so a typical configuration is:</p>
+<pre>
+  Model data = FileManager.get().loadModel("file:data.n3");
+  
+  List rules = Rule.rulesFromURL("myrules.rules");
+  
+  GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+  reasoner.setOWLTranslation(true);               // not needed in RDFS case
+  reasoner.setTransitiveClosureCaching(true);
+  
+  InfModel inf = ModelFactory.createInfModel(reasoner, data);
+</pre>
+<p>Where the <code>myrules.rules</code> file will use <code>@include</code> to include 
+ one of the RDFS or OWL rule sets.</p>
+<p>One  useful variant on this option, at least in simple cases, is
+ to manually include a pure (non-hybrid) ruleset for the RDFS/OWL fragment
+ you want so that there is no layering problem. [The reason the default
+ rulesets use the hybrid mode is a performance tradeoff - trying to
+ balance the better performance of forward reasoning with the cost of
+ computing all possible answers when an application might only want a few.]</p>
+<p>
+ A simple example of this is that the <em>interesting</em> bits of RDFS
+ can be captured by enabled TranstiveClosureCaching and including just the
+ four core rules:</p>
+<pre>
+[rdfs2:  (?x ?p ?y), (?p rdfs:domain ?c) -> (?x rdf:type ?c)] 
+[rdfs3:  (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)] 
+[rdfs6:  (?a ?p ?b), (?p rdfs:subPropertyOf ?q) -> (?a ?q ?b)] 
+[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)] 
+</pre>
+ 
+<p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
+
 <h2><a name="RULEnotes"></a>Notes</h2>
 <p>One final aspect of the general rule engine to mention is that of validation 
   rules. We described earlier how reasoners can implement a <code>validate</code> 
@@ -1932,13 +1995,8 @@ while (i.hasNext()) {
   continue work on the Jena reasoning support. The key activities on the drawing 
   board are:</p>
 <ul>
-  <li>Build a plug-in adapter for at least one external reasoner, preferably one 
-    which complements the existing capabilities.</li>
   <li>Develop a custom equality reasoner which can handle the &quot;owl:sameAs&quot; 
     and related processing more efficiently that the plain rules engine.</li>
-  <li>Tune the rule set and processing model for the OWL reasoner (support the 
-    direct/indirect distinction, improve the datatype handling, improve the validation 
-    rules, possibly introduce a distinct taxonomy construction phase).</li>
   <li>Tune the RETE engine to perform better with highly non-ground patterns.</li>
   <li>Tune the LP engine to further reduce memory usage (in particular explore 
     subsumption tabling rather than the current variant tabling).</li>
@@ -1950,7 +2008,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.32 2007-01-10 17:07:49 der Exp $</i>
+  Last modification: $Id: index.html,v 1.33 2007-01-11 14:21:09 der Exp $</i>
 </p>
 </body>
 </html>
