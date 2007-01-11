@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.97 $
+ * Revision           $Revision: 1.98 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-10 17:06:55 $
+ * Last modified on   $Date: 2007-01-11 19:55:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.97 2007-01-10 17:06:55 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.98 2007-01-11 19:55:25 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2092,7 +2092,8 @@ public class OntModelImpl
         // invoke the read hook from the ODM
         String source = odm.getReadHook().beforeRead( this, sourceURL, odm );
         if (source == null) {
-            s_log.debug( "ReadHook returned null, so skipping input: " + sourceURL );
+            s_log.warn( "ReadHook returned null, so skipping assuming previous value: " + sourceURL );
+            source = sourceURL;
         }
         else {
             // now we can actually do the read

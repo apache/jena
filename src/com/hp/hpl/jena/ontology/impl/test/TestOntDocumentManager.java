@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-10 17:06:54 $
+ * Last modified on   $Date: 2007-01-11 19:55:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.ontology.impl.test;
 // Imports
 ///////////////
 import java.io.StringReader;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.22 2007-01-10 17:06:54 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.23 2007-01-11 19:55:14 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -111,6 +112,19 @@ public class TestOntDocumentManager
     public void setUp() {
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
+
+        // forget any cached models in the model spec
+        // TODO remove this once we rationalise modelmakers in the OntModel code
+        Set modelNames = new HashSet();
+        ModelMaker memMaker = OntModelSpec.OWL_MEM.getModelMaker();
+        for (Iterator i = memMaker.listModels(); i.hasNext(); ) {
+            modelNames.add( i.next() );
+        }
+        for (Iterator i = modelNames.iterator(); i.hasNext(); ) {
+
+            String mn = (String) i.next();
+            memMaker.removeModel( mn );
+        }
     }
 
     public void testConstruct0() {
@@ -535,7 +549,7 @@ public class TestOntDocumentManager
     }
 
 
-    public void xxtestReadHook1() {
+    public void testReadHook1() {
         TestReadHook rh = new TestReadHook( true );
         OntDocumentManager o1 = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
         o1.setReadHook( rh );
@@ -548,9 +562,8 @@ public class TestOntDocumentManager
         OntModel m = ModelFactory.createOntologyModel( spec );
         m.read( new StringReader( source ), "http://example.com/foo#", "N3" );
 
-        assertEquals( "Wrong number of calls to before load hook", 0, rh.m_before );
+        assertEquals( "Wrong number of calls to before load hook", 1, rh.m_before );
         assertEquals( "Wrong number of calls to after load hook", 1, rh.m_after );
-        assertEquals( 2, m.size() );
     }
 
 
@@ -640,24 +653,24 @@ public class TestOntDocumentManager
     {
         private int m_before = 0;
         private int m_after = 0;
-        private boolean m_rejecting = false;
+        private boolean m_renaming = false;
 
-        TestReadHook( boolean rejecting ) {
-            m_rejecting = rejecting;
+        TestReadHook( boolean renaming ) {
+            m_renaming = renaming;
         }
 
         public void afterRead( Model model, String source, OntDocumentManager odm ) {
             m_after++;
-//            System.err.println(" after = " + source + ", count = " + m_after );
         }
 
         public String beforeRead( Model model, String source, OntDocumentManager odm ) {
-            if (m_rejecting) {
-//                System.err.println(" before(R) = " + source );
-                return null;
+            if (m_renaming) {
+                // local rewrite of the source file, which could be used e.g. to
+                // get the source from a .jar file
+                m_before++;
+                return "file:testing/ontology/testImport3/c.owl";
             }
             else {
-//                System.err.println(" before(non-R) = " + source );
                 m_before++;
                 return source;
             }

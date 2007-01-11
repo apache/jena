@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.57 $
+ * Revision           $Revision: 1.58 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-10 17:06:46 $
+ * Last modified on   $Date: 2007-01-11 19:55:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.57 2007-01-10 17:06:46 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.58 2007-01-11 19:55:51 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -1190,11 +1190,12 @@ public class OntDocumentManager
             // invoke the pre-read hook
             String source = m_readHook.beforeRead( model, uri, this );
             if (source == null) {
-                log.debug( "Read hook returned null source, so will be skipped: " + uri );
+                log.warn( "Read hook returned null source, so assuming old value: " + uri );
+                source = uri;
             }
             else {
                 // do the actual read
-                getFileManager().readModel( model, uri );
+                getFileManager().readModel( model, source );
             }
 
             // now the post-read hook
