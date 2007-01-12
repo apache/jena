@@ -402,6 +402,29 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
     abstract public URL toURL() throws MalformedURLException;
     
     /**
+     * Resolves an IRI against this one.
+     * This method is an alias for
+     * {@link IRIFactory#create(IRI)}.
+     * @see IRIFactory#construct(IRI)
+     * @param relative 
+     * @return The resolution of relative against this.
+     */
+    final public IRI resolve(IRI relative) {
+    	return create(relative);
+    }
+
+    /**
+     * Resolves an IRI against this one.
+     * This method is an alias for
+     * {@link IRIFactory#create(String)}.
+     * @see IRIFactory#construct(String)
+     * @param relative 
+     * @return The resolution of relative against this.
+     */
+    final public IRI resolve(String relative) {
+    	return create(relative);
+    }
+    /**
      * To be defined - 
      * return result does not violate any minting conditions.
      * @param useDns  If true, do DNS look ups to normalize hostname.

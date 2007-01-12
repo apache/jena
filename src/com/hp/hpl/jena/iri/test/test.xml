@@ -4465,6 +4465,160 @@
 </violations>
 </IRI>
 <Resolve>
+<IRI iri='urn:x-hp:eg/hasMotherBoard'>
+<getRawHost nullValue='true'/>
+<getRawPath value='x-hp:eg/hasMotherBoard'/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme value='urn'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment nullValue='true'/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='true'/>
+<toString value='urn:x-hp:eg/hasMotherBoard'/>
+<toDisplayString value='‪urn:x-hp:eg/hasMotherBoard‬'/>
+<isAbsolute value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='urn:x-hp:eg/hasMotherBoard'/>
+<violations>
+<violation>SCHEME_PATTERN_MATCH_FAILED</violation>
+</violations>
+</IRI>
+<IRI iri='#'>
+<getRawHost nullValue='true'/>
+<getRawPath value=''/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment value=''/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='false'/>
+<toString value='#'/>
+<toDisplayString value='‪#‬'/>
+<isAbsolute value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='#'/>
+<violations>
+</violations>
+</IRI>
+<Result>
+<getRawHost nullValue='true'/>
+<getRawPath value='x-hp:eg/hasMotherBoard'/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme value='urn'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment value=''/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='true'/>
+<toString value='urn:x-hp:eg/hasMotherBoard#'/>
+<toDisplayString value='‪urn:x-hp:eg/hasMotherBoard#‬'/>
+<isAbsolute value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='urn:x-hp:eg/hasMotherBoard#'/>
+<violations>
+<violation>SCHEME_PATTERN_MATCH_FAILED</violation>
+</violations>
+</Result>
+<Relativize>
+<getRawHost nullValue='true'/>
+<getRawPath value='x-hp:eg/hasMotherBoard'/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme value='urn'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment value=''/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='true'/>
+<toString value='urn:x-hp:eg/hasMotherBoard#'/>
+<toDisplayString value='‪urn:x-hp:eg/hasMotherBoard#‬'/>
+<isAbsolute value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='urn:x-hp:eg/hasMotherBoard#'/>
+<violations>
+<violation>SCHEME_PATTERN_MATCH_FAILED</violation>
+</violations>
+</Relativize>
+</Resolve>
+<Resolve>
+<IRI iri='base:x'>
+<getRawHost nullValue='true'/>
+<getRawPath value='x'/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme value='base'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment nullValue='true'/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='true'/>
+<toString value='base:x'/>
+<toDisplayString value='‪base:x‬'/>
+<isAbsolute value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='base:x'/>
+<violations>
+<violation>UNREGISTERED_IANA_SCHEME</violation>
+</violations>
+</IRI>
+<IRI iri='#'>
+<getRawHost nullValue='true'/>
+<getRawPath value=''/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme nullValue='true'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment value=''/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='false'/>
+<toString value='#'/>
+<toDisplayString value='‪#‬'/>
+<isAbsolute value='false'/>
+<isRelative value='true'/>
+<toASCIIString value='#'/>
+<violations>
+</violations>
+</IRI>
+<Result>
+<getRawHost nullValue='true'/>
+<getRawPath value='x'/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme value='base'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment value=''/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='true'/>
+<toString value='base:x#'/>
+<toDisplayString value='‪base:x#‬'/>
+<isAbsolute value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='base:x#'/>
+<violations>
+<violation>UNREGISTERED_IANA_SCHEME</violation>
+</violations>
+</Result>
+<Relativize>
+<getRawHost nullValue='true'/>
+<getRawPath value='x'/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme value='base'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment value=''/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='true'/>
+<toString value='base:x#'/>
+<toDisplayString value='‪base:x#‬'/>
+<isAbsolute value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='base:x#'/>
+<violations>
+<violation>UNREGISTERED_IANA_SCHEME</violation>
+</violations>
+</Relativize>
+</Resolve>
+<Resolve>
 <IRI iri='file:///C:/Documents and Settings/jjchplb/Local Settings/Temp/test-load-with-41.rdf'>
 <getRawHost value=''/>
 <getRawPath value='/C:/Documents and Settings/jjchplb/Local Settings/Temp/test-load-with-41.rdf'/>

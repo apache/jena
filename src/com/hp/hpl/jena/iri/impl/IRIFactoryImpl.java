@@ -292,26 +292,36 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
             if (scheme.startsWith("x-")) {
                 p = noScheme();
             } else {
-                p = new NoScheme() {
+            	if (nonIETFScheme==null)
+            		nonIETFScheme = new NoScheme() {
                   void usedBy(Parser pp) {
                       pp.recordError(SCHEME,UNREGISTERED_NONIETF_SCHEME_TREE);
                   }
                 };
+                p = nonIETFScheme;
             }
         } else if (Specification.schemes.containsKey(scheme)) {
             SchemeSpecification spec = (SchemeSpecification)Specification.schemes.get(scheme);
             p = new NoScheme(spec.port);
         } else{
-            p= new NoScheme() {
-                void usedBy(Parser pp) {
-                    pp.recordError(SCHEME,UNREGISTERED_IANA_SCHEME);
-                }
-              };
+        	if (unregisteredScheme==null){
+        		unregisteredScheme = new NoScheme() {
+        	        void usedBy(Parser pp) {
+        	            pp.recordError(SCHEME,UNREGISTERED_IANA_SCHEME);
+        	        }
+        	      };
+        	}
+            p= unregisteredScheme;
         }
         p.usedBy(parser);
-        schemes.put(scheme,p);
+//        System.err.println("Scheme: "+scheme);
+        if (schemes.size() < 1000)
+          schemes.put(scheme,p);
         return p;
     }
+    
+    private NoScheme unregisteredScheme=null;
+    private NoScheme nonIETFScheme=null;
 
     public SchemeSpecificPart noScheme() {
         return noScheme;

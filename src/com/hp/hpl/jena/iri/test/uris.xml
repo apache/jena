@@ -202,6 +202,8 @@
 <uri absolute='urn:x-hp:eg/'/>
 <uri absolute='urn:x-hp:eg/hasGraphics'/>
 <uri absolute='urn:x-hp:eg/hasMotherBoard'/>
+<uri base='urn:x-hp:eg/hasMotherBoard'  relative='#'/>
+<uri base='base:x'  relative='#'/>
 <uri base='file:///C:/Documents and Settings/jjchplb/Local Settings/Temp/test-load-with-41.rdf' relative=''/>
 <uri base='file:///C:/Documents and Settings/jjchplb/Local Settings/Temp/test-load-with-41.rdf' relative='eh:/a'/>
 <uri base='file:///C:/eclipse/workspace/jena2/' relative='#'/>

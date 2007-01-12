@@ -1,4 +1,7 @@
 
+This is a list of changes to the Jena code base
+motivated by the new IRI code.
+================================================
 
     public void testBadProperty1() throws IOException {
         checkPropURI("http:/a.b/", null, null, BadPropURI);

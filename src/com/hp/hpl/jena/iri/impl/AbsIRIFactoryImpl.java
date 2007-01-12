@@ -28,6 +28,7 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
 //                AbsIRIImpl.NO_EXCEPTIONS)
                 );
     }
+    
 
     public IRI construct(String s) throws IRIException {
       return throwAnyErrors(create(s));
