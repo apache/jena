@@ -2,6 +2,22 @@ Release Notes
 =============
 ==== Post Jena 2.4
 
+Single-Element Unions [hence, OntModels]
+    o If a union graph contains a single element, both find and queryHandler
+      delegate directly to that single element. This means that find does
+      not need to remember all the found elements to discard duplicates,
+      and query gets to use any specialised code for that single graph
+      (rather than the general nested-finds that a full union needs).
+      In particular, if that single graph is a database graph, it will
+      be able to use fastpath.
+
+      A specific use of this is an OntModel with no imports in a database.
+      (If it has imports, then this optimisation cannot apply.)
+
+      In case something breaks as a result, the optimisation can be
+      disabled by setting the system property jena.union.optimise to
+      anything other than "yes".
+
 Reification with Inference Models
     o A partial fix to a reported bug with reification on inference models.
       Previously the built-in inference models had the reifier of their
