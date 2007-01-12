@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: RDFException.java,v 1.15 2007-01-02 11:48:34 andy_seaborne Exp $
+    $Id: RDFException.java,v 1.16 2007-01-12 15:18:53 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -14,7 +14,8 @@ import com.hp.hpl.jena.shared.*;
  * but instead uses particular Jena exceptions. Those exceptions presently
  * subclass RDFException and set the magic numbers, but This Will Change.
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2007-01-02 11:48:34 $
+ * @deprecated
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.16 $ $Date: 2007-01-12 15:18:53 $
  */
 public class RDFException extends JenaException {
     
@@ -236,7 +237,7 @@ public class RDFException extends JenaException {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFException.java,v 1.15 2007-01-02 11:48:34 andy_seaborne Exp $
+ * $Id: RDFException.java,v 1.16 2007-01-12 15:18:53 chris-dollin Exp $
  *
  * Created on 26 July 2000, 07:00
  */
