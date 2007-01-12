@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.23 2007-01-02 11:48:52 andy_seaborne Exp $
+ * $Id: RDFSReasoner.java,v 1.24 2007-01-12 14:14:00 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2007-01-02 11:48:52 $
+ * @version $Revision: 1.24 $ on $Date: 2007-01-12 14:14:00 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -130,7 +130,6 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
         sPc.setCaching(true);
         return new RDFSReasoner(ftbox, sCc, sPc, scanProperties);
     }
-    
      
     /**
      * Attach the reasoner to a set of RDF ddata to process.
@@ -142,7 +141,7 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
      * @throws ReasonerException if the data is ill-formed according to the
      * constraints imposed by this reasoner.
      */
-    public InfGraph bind(Graph data) throws ReasonerException {
+    public InfGraph bind( Graph data ) throws ReasonerException {
         return new RDFSInfGraph(this, data);
     }   
     

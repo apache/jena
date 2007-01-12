@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.23 2007-01-12 10:42:30 chris-dollin Exp $
+ * $Id: FBRuleReasoner.java,v 1.24 2007-01-12 14:13:51 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2007-01-12 10:42:30 $
+ * @version $Revision: 1.24 $ on $Date: 2007-01-12 14:13:51 $
  */
 public class FBRuleReasoner implements RuleReasoner {
     
@@ -209,11 +209,11 @@ public class FBRuleReasoner implements RuleReasoner {
      */
     public InfGraph bind( Graph data ) throws ReasonerException {
         ReificationStyle style = data.getReifier().getStyle();
-        Graph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph)schemaGraph; 
+        Graph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph) schemaGraph; 
         FBRuleInfGraph graph = new FBRuleInfGraph( this, rules, schemaArg, style );
-        graph.setDerivationLogging(recordDerivations);
-        graph.setTraceOn(traceOn);
-        graph.rebind(data);
+        graph.setDerivationLogging( recordDerivations );
+        graph.setTraceOn( traceOn );
+        graph.rebind( data );
         return graph;
     }
     

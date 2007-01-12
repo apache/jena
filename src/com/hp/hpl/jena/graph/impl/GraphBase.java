@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.45 2007-01-12 10:42:40 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.46 2007-01-12 14:14:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -338,8 +338,18 @@ public abstract class GraphBase implements GraphWithPerform
 	*/
 	public final int size() 
         { checkOpen();
-        return graphBaseSize() + reifierSize(); }
+        int baseSize = graphBaseSize();
+        int reifierSize = reifierSize();
+//        String className = leafName( this.getClass().getName() );
+//        System.err.println( ">> GB(" + className + ")::size = " + baseSize + "(base) + " + reifierSize + "(reifier)" );
+        return baseSize + reifierSize; }
     
+    private String leafName( String name )
+        {
+        int dot = name.lastIndexOf( '.' );
+        return name.substring( dot + 1 );
+        }
+
     /**
          Answer the number of visible reification quads. Subclasses will not normally
          need to override this, since it just invokes the reifier's size() method, and

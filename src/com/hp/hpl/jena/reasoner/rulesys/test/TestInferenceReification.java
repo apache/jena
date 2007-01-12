@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReification.java,v 1.3 2007-01-12 10:42:37 chris-dollin Exp $
+ * $Id: TestInferenceReification.java,v 1.1 2007-01-12 14:14:20 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -23,12 +23,12 @@ import com.hp.hpl.jena.util.PrintUtil;
 
 import junit.framework.TestSuite;
 
-public class TestReification extends AbstractTestReifier {
-    
+public class TestInferenceReification extends AbstractTestReifier 
+    {
     /**
      * Boilerplate for junit
      */ 
-    public TestReification( String name ) {
+    public TestInferenceReification( String name ) {
         super( name ); 
     }
     
@@ -37,7 +37,7 @@ public class TestReification extends AbstractTestReifier {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestReification.class ); 
+        return new TestSuite( TestInferenceReification.class ); 
     }  
     
     public Graph getGraph()
@@ -54,10 +54,51 @@ public class TestReification extends AbstractTestReifier {
         String rules =  
             "[r1: (?x eh:p ?o) -> (?o rdf:type rdf:Statement) (?o rdf:subject ?x)" +
             "                         (?o rdf:predicate eh:q) (?o rdf:object 42)]";
-        Model m = makeInfModel(rules, "r1 p r" );
-        TestUtil.assertIteratorLength(m.listReifiedStatements(), 1);
+        Model m = makeInfModel( rules, "r1 p r", ReificationStyle.Standard );
+        TestUtil.assertIteratorLength( m.listReifiedStatements(), 1 );
     }
+    
+    public void testBindFixesStyle()
+        {
+        testBindCopiesStyle( ruleBaseReasoner() );
+        testBindCopiesStyle( ReasonerRegistry.getRDFSReasoner() );
+        testBindCopiesStyle( ReasonerRegistry.getTransitiveReasoner() );
+        testBindCopiesStyle( ReasonerRegistry.getOWLMicroReasoner() );
+        testBindCopiesStyle( ReasonerRegistry.getOWLMiniReasoner() );
+        testBindCopiesStyle( ReasonerRegistry.getOWLReasoner() );
+        testBindCopiesStyle( ReasonerRegistry.getRDFSSimpleReasoner() );
+        }
 
+    private void testBindCopiesStyle( Reasoner r )
+        {
+        testCopiesStyle( r, ReificationStyle.Minimal );
+        testCopiesStyle( r, ReificationStyle.Standard );
+        testCopiesStyle( r, ReificationStyle.Convenient );
+        }
+
+    private void testCopiesStyle( Reasoner r, ReificationStyle style )
+        {
+        assertEquals( style, r.bind( graphWith( "", style ) ).getReifier().getStyle() );
+        }
+
+    private Reasoner ruleBaseReasoner()
+        { return new FBRuleReasoner( Rule.parseRules( "" ) ); }
+    
+    public void testRetainsStyle()
+        {
+        testRetainsStyle( ReificationStyle.Standard );
+        testRetainsStyle( ReificationStyle.Convenient );
+        testRetainsStyle( ReificationStyle.Minimal );
+        }
+
+    private void testRetainsStyle( ReificationStyle style )
+        {
+        BasicForwardRuleInfGraph g = (BasicForwardRuleInfGraph) getGraph( style );
+        assertEquals( style, g.getReifier().getStyle() );
+        assertEquals( style, g.getRawGraph().getReifier().getStyle() );
+        assertEquals( style, g.getDeductionsGraph().getReifier().getStyle() );
+        }
+    
     public void testConstructingModelDoesntForcePreparation()
         {
         Model m = makeInfModel( "", "" );
@@ -83,11 +124,14 @@ public class TestReification extends AbstractTestReifier {
      */    
     private InfGraph makeInfGraph(String rules, String data, ReificationStyle style ) {
         PrintUtil.registerPrefix("eh", "eh:/");
-        Graph base = graphWith( data );
+        Graph base = graphWith( data, style );
         List ruleList = Rule.parseRules(rules);
-        return new FBRuleReasoner(ruleList).bind(base);
+        return new FBRuleReasoner(ruleList).bind( base );
     }
     
+    private Graph graphWith( String data, ReificationStyle style )
+        { return graphAdd( Factory.createDefaultGraph( style ), data ); }
+
     /**
      * Internal helper: create a Model which wraps an InfGraph with given rule set and base data.
      * The base data is encoded in kers-special RDF syntax.

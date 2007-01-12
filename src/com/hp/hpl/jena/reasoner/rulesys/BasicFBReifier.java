@@ -1,34 +1,33 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: BasicFBReifier.java,v 1.2 2007-01-12 10:42:30 chris-dollin Exp $
+ 	$Id: BasicFBReifier.java,v 1.3 2007-01-12 14:13:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.SimpleReifier;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class BasicFBReifier implements Reifier
     {
-    protected final GetReifier other;
+    protected final GetReifier deductions;
     protected final Graph parent;
-    protected final Reifier self;
+    protected final Reifier base;
     
-    public BasicFBReifier( BasicForwardRuleInfGraph parent, GetReifier other, ReificationStyle style )
+    public BasicFBReifier( BasicForwardRuleInfGraph parent, Reifier base, GetReifier deductions, ReificationStyle style )
         {
-        this.other = other;
+        this.deductions = deductions;
         this.parent = parent;
-        this.self = new SimpleReifier( parent, style );
+        this.base = base;
         }
     
     interface GetReifier
         { Reifier getReifier(); }
 
     public ExtendedIterator allNodes()
-        { return self.allNodes().andThen( other.getReifier().allNodes() ); }
+        { return base.allNodes().andThen( deductions.getReifier().allNodes() ); }
 
     public ExtendedIterator allNodes( Triple t )
         {
@@ -36,29 +35,31 @@ public class BasicFBReifier implements Reifier
         }
 
     public void close()
-        { self.close(); }
+        { base.close(); }
 
     public ExtendedIterator find( TripleMatch m )
-        { return self.find( m ).andThen( other.getReifier().find( m ) ); }
+        { return base.find( m ).andThen( deductions.getReifier().find( m ) ); }
 
     public ExtendedIterator findEither( TripleMatch m, boolean showHidden )
         { 
         return 
-            self.findEither(  m, showHidden )
-            .andThen( other.getReifier().findEither(  m, showHidden ) ); 
+            base.findEither(  m, showHidden )
+            .andThen( deductions.getReifier().findEither(  m, showHidden ) ); 
         }
 
     public ExtendedIterator findExposed( TripleMatch m )
-        { return self.findExposed( m ).andThen( other.getReifier().findExposed( m ) );  }
+        { return base.findExposed( m ).andThen( deductions.getReifier().findExposed( m ) );  }
 
     public Graph getParentGraph()
         { return parent; }
 
     public ReificationStyle getStyle()
-        { return self.getStyle(); }
+        { return base.getStyle(); }
 
     public boolean handledAdd( Triple t )
-        { return self.handledAdd( t ); }
+        {
+        return base.handledAdd( t ); 
+        }
 
     public boolean handledRemove( Triple t )
         {
@@ -66,18 +67,18 @@ public class BasicFBReifier implements Reifier
         }
 
     public boolean hasTriple( Node n )
-        { return self.hasTriple( n ) || other.getReifier().hasTriple( n ); }
+        { return base.hasTriple( n ) || deductions.getReifier().hasTriple( n ); }
 
     public boolean hasTriple( Triple t )
-        { return self.hasTriple( t ) || other.getReifier().hasTriple( t ); }
+        { return base.hasTriple( t ) || deductions.getReifier().hasTriple( t ); }
 
     public Node reifyAs( Node n, Triple t )
-        { return self.reifyAs( n, t ); }
+        { return base.reifyAs( n, t ); }
 
     public void remove( Node n, Triple t )
         { 
-        self.remove( n, t );
-        other.getReifier().remove( n, t );
+        base.remove( n, t );
+        // deductions.getReifier().remove( n, t );
         }
 
     public void remove( Triple t )
@@ -86,12 +87,12 @@ public class BasicFBReifier implements Reifier
         }
 
     public int size()
-        { return self.size() + other.getReifier().size(); }
+        { return /* base.size() + */ deductions.getReifier().size(); }
 
     public Triple getTriple( Node n )
         {
-        Triple a = self.getTriple( n );
-        Triple b = other.getReifier().getTriple( n );
+        Triple a = base.getTriple( n );
+        Triple b = deductions.getReifier().getTriple( n );
         if (a != null && b != null) throw new JenaException( "TODO: have multiple answers for getTrple, viz " + a + " and " + b );
         return a == null ? b : a;
         }

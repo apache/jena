@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.47 2007-01-12 10:42:30 chris-dollin Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.48 2007-01-12 14:13:48 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.47 $ on $Date: 2007-01-12 10:42:30 $
+ * @version $Revision: 1.48 $ on $Date: 2007-01-12 14:13:48 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -290,7 +290,10 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         if (!isPrepared) {
             prepare();
         }
-        return fdata.getGraph().size() + fdeductions.getGraph().size();
+        int baseSize = fdata.getGraph().size();
+        int dedSize = fdeductions.getGraph().size();
+        // System.err.println( ">> BasicForwardRuleInfGraph::size = " + baseSize + "(base) + " + dedSize + "(deductions)" );
+        return baseSize + dedSize;
     }
     
     /** 
@@ -355,7 +358,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * by subclasses that need special purpose graph implementations here. 
      */
     protected Graph createDeductionsGraph() {
-        return Factory.createGraphMem();
+        return Factory.createGraphMem( style );
     }
     
     /**
@@ -451,11 +454,11 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     
     public Reifier constructReifier()
         { 
-        BasicFBReifier.GetReifier getReifier = new BasicFBReifier.GetReifier()
+        BasicFBReifier.GetReifier deductionsReifier = new BasicFBReifier.GetReifier()
             {
             public Reifier getReifier() { return getDeductionsGraph().getReifier(); }
             };
-        return new BasicFBReifier( this, getReifier, style ); 
+        return new BasicFBReifier( this, getRawGraph().getReifier(), deductionsReifier, style ); 
         }
             
 }
