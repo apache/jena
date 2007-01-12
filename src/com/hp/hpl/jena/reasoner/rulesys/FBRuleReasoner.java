@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.22 2007-01-02 11:50:58 andy_seaborne Exp $
+ * $Id: FBRuleReasoner.java,v 1.23 2007-01-12 10:42:30 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.shared.WrappedIOException;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2007-01-02 11:50:58 $
+ * @version $Revision: 1.23 $ on $Date: 2007-01-12 10:42:30 $
  */
 public class FBRuleReasoner implements RuleReasoner {
     
@@ -207,9 +207,10 @@ public class FBRuleReasoner implements RuleReasoner {
      * @throws ReasonerException if the data is ill-formed according to the
      * constraints imposed by this reasoner.
      */
-    public InfGraph bind(Graph data) throws ReasonerException {
+    public InfGraph bind( Graph data ) throws ReasonerException {
+        ReificationStyle style = data.getReifier().getStyle();
         Graph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph)schemaGraph; 
-        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, schemaArg);
+        FBRuleInfGraph graph = new FBRuleInfGraph( this, rules, schemaArg, style );
         graph.setDerivationLogging(recordDerivations);
         graph.setTraceOn(traceOn);
         graph.rebind(data);

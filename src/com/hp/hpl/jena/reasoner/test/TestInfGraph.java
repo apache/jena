@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestInfGraph.java,v 1.6 2007-01-02 11:50:50 andy_seaborne Exp $
+  $Id: TestInfGraph.java,v 1.7 2007-01-12 10:42:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.test;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.reasoner.InfGraph;
+import com.hp.hpl.jena.reasoner.rulesys.BasicFBReifier;
 
 /**
      Needs extending; relys on knowing that the only InfGraph currently used is
@@ -45,7 +46,7 @@ public class TestInfGraph extends AbstractTestGraph
     public void testInfReification()
         {
         InfGraph ig = getInfGraph();
-        assertSame( ig.getReifier(), ig.getRawGraph().getReifier() );
+        assertInstanceOf( BasicFBReifier.class, ig.getReifier() );
         }
     
     /**

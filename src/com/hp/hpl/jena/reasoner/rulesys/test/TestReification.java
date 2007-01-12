@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2007, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReification.java,v 1.2 2007-01-11 15:31:36 chris-dollin Exp $
+ * $Id: TestReification.java,v 1.3 2007-01-12 10:42:37 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -58,6 +58,12 @@ public class TestReification extends AbstractTestReifier {
         TestUtil.assertIteratorLength(m.listReifiedStatements(), 1);
     }
 
+    public void testConstructingModelDoesntForcePreparation()
+        {
+        Model m = makeInfModel( "", "" );
+        if (((BaseInfGraph) m.getGraph()).isPrepared()) fail();
+        }
+    
     /**
      * Case 1: Rules complete an exisiting partially reified statement.
      */
@@ -77,7 +83,7 @@ public class TestReification extends AbstractTestReifier {
      */    
     private InfGraph makeInfGraph(String rules, String data, ReificationStyle style ) {
         PrintUtil.registerPrefix("eh", "eh:/");
-        Graph base = graphWith(data);
+        Graph base = graphWith( data );
         List ruleList = Rule.parseRules(rules);
         return new FBRuleReasoner(ruleList).bind(base);
     }

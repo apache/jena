@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.45 2007-01-11 17:18:43 der Exp $
+ * $Id: BaseInfGraph.java,v 1.46 2007-01-12 10:42:34 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.45 $ on $Date: 2007-01-11 17:18:43 $
+ * @version $Revision: 1.46 $ on $Date: 2007-01-12 10:42:34 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -51,9 +51,9 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         be too simplistic - they won't see quads flying past.
         TODO write a test case that reveals this.
      	@see com.hp.hpl.jena.graph.Graph#getReifier()
-    */
-    public Reifier getReifier()
-        { return getRawGraph().getReifier(); }
+    */    
+    public Reifier constructReifier()
+        {  return getRawGraph().getReifier(); }
 
     /**
      * Constructor
@@ -62,9 +62,15 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * can be used to extract all entailments from the data.
      */
     public BaseInfGraph(Graph data, Reasoner reasoner) {
-        this.fdata = new FGraph(data);
-        this.reasoner = reasoner;
+       this( data, reasoner, ReificationStyle.Minimal ); // should pick style from data? TODO
     }
+
+    public BaseInfGraph( Graph data, Reasoner reasoner, ReificationStyle style )
+        {
+        super( style );
+        this.fdata = new FGraph( data );
+        this.reasoner = reasoner;
+        }
 
     /**
         Answer the InfCapabilities of this InfGraph.
@@ -451,6 +457,13 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     public InfGraph cloneWithPremises(Graph premises) {
         return getReasoner().bindSchema(getSchemaGraph()).bind(new Union(getRawGraph(), premises));
     }
+
+    /**
+         Answer true iff this graph has been through the <code>prepare()</code> step.
+         For testing purposes.
+    */
+    public boolean isPrepared()
+        { return isPrepared;  }
 
 }
 

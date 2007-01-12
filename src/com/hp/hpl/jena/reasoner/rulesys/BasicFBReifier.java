@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: BasicFBReifier.java,v 1.1 2007-01-11 15:23:54 chris-dollin Exp $
+ 	$Id: BasicFBReifier.java,v 1.2 2007-01-12 10:42:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys;
@@ -13,19 +13,22 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class BasicFBReifier implements Reifier
     {
-    protected final Reifier other;
+    protected final GetReifier other;
     protected final Graph parent;
     protected final Reifier self;
     
-    public BasicFBReifier( BasicForwardRuleInfGraph parent, Reifier other, ReificationStyle style )
+    public BasicFBReifier( BasicForwardRuleInfGraph parent, GetReifier other, ReificationStyle style )
         {
         this.other = other;
         this.parent = parent;
         this.self = new SimpleReifier( parent, style );
         }
+    
+    interface GetReifier
+        { Reifier getReifier(); }
 
     public ExtendedIterator allNodes()
-        { return self.allNodes().andThen( other.allNodes() ); }
+        { return self.allNodes().andThen( other.getReifier().allNodes() ); }
 
     public ExtendedIterator allNodes( Triple t )
         {
@@ -33,23 +36,20 @@ public class BasicFBReifier implements Reifier
         }
 
     public void close()
-        {
-        self.close();
-        other.close();
-        }
+        { self.close(); }
 
     public ExtendedIterator find( TripleMatch m )
-        { return self.find( m ).andThen( other.find( m ) ); }
+        { return self.find( m ).andThen( other.getReifier().find( m ) ); }
 
     public ExtendedIterator findEither( TripleMatch m, boolean showHidden )
         { 
         return 
             self.findEither(  m, showHidden )
-            .andThen( other.findEither(  m, showHidden ) ); 
+            .andThen( other.getReifier().findEither(  m, showHidden ) ); 
         }
 
     public ExtendedIterator findExposed( TripleMatch m )
-        { return self.findExposed( m ).andThen( other.findExposed( m ) );  }
+        { return self.findExposed( m ).andThen( other.getReifier().findExposed( m ) );  }
 
     public Graph getParentGraph()
         { return parent; }
@@ -66,10 +66,10 @@ public class BasicFBReifier implements Reifier
         }
 
     public boolean hasTriple( Node n )
-        { return self.hasTriple( n ) || other.hasTriple( n ); }
+        { return self.hasTriple( n ) || other.getReifier().hasTriple( n ); }
 
     public boolean hasTriple( Triple t )
-        { return self.hasTriple( t ) || other.hasTriple( t ); }
+        { return self.hasTriple( t ) || other.getReifier().hasTriple( t ); }
 
     public Node reifyAs( Node n, Triple t )
         { return self.reifyAs( n, t ); }
@@ -77,7 +77,7 @@ public class BasicFBReifier implements Reifier
     public void remove( Node n, Triple t )
         { 
         self.remove( n, t );
-        other.remove( n, t );
+        other.getReifier().remove( n, t );
         }
 
     public void remove( Triple t )
@@ -86,12 +86,12 @@ public class BasicFBReifier implements Reifier
         }
 
     public int size()
-        { return self.size() + other.size(); }
+        { return self.size() + other.getReifier().size(); }
 
     public Triple getTriple( Node n )
         {
         Triple a = self.getTriple( n );
-        Triple b = other.getTriple( n );
+        Triple b = other.getReifier().getTriple( n );
         if (a != null && b != null) throw new JenaException( "TODO: have multiple answers for getTrple, viz " + a + " and " + b );
         return a == null ? b : a;
         }

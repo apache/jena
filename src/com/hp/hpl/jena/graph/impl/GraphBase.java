@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.44 2007-01-12 09:46:13 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.45 2007-01-12 10:42:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -65,8 +65,10 @@ public abstract class GraphBase implements GraphWithPerform
          Close this graph. Subgraphs may extend to discard resources.
     */
     public void close() 
-        { closed = true;
-        if (reifier != null) reifier.close(); }
+        { 
+        closed = true;
+        if (reifier != null) reifier.close(); 
+        }
     
     public boolean isClosed()
         { return closed; }
