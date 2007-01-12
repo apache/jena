@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: BasicFBReifier.java,v 1.3 2007-01-12 14:13:45 chris-dollin Exp $
+ 	$Id: BasicFBReifier.java,v 1.4 2007-01-12 14:26:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.reasoner.rulesys;
@@ -30,9 +30,7 @@ public class BasicFBReifier implements Reifier
         { return base.allNodes().andThen( deductions.getReifier().allNodes() ); }
 
     public ExtendedIterator allNodes( Triple t )
-        {
-        throw new JenaException( "not implemented" );
-        }
+        { return base.allNodes( t ).andThen( deductions.getReifier().allNodes() );  }
 
     public void close()
         { base.close(); }
@@ -57,14 +55,10 @@ public class BasicFBReifier implements Reifier
         { return base.getStyle(); }
 
     public boolean handledAdd( Triple t )
-        {
-        return base.handledAdd( t ); 
-        }
+        { return base.handledAdd( t ); }
 
     public boolean handledRemove( Triple t )
-        {
-        throw new JenaException( "not implemented" );
-        }
+        { return base.handledRemove( t ); }
 
     public boolean hasTriple( Node n )
         { return base.hasTriple( n ) || deductions.getReifier().hasTriple( n ); }
@@ -76,18 +70,13 @@ public class BasicFBReifier implements Reifier
         { return base.reifyAs( n, t ); }
 
     public void remove( Node n, Triple t )
-        { 
-        base.remove( n, t );
-        // deductions.getReifier().remove( n, t );
-        }
+        { base.remove( n, t ); }
 
     public void remove( Triple t )
-        {
-        throw new JenaException( "not implemented" );
-        }
+        { base.remove(  t  ); }
 
     public int size()
-        { return /* base.size() + */ deductions.getReifier().size(); }
+        { return deductions.getReifier().size(); }
 
     public Triple getTriple( Node n )
         {
@@ -96,6 +85,5 @@ public class BasicFBReifier implements Reifier
         if (a != null && b != null) throw new JenaException( "TODO: have multiple answers for getTrple, viz " + a + " and " + b );
         return a == null ? b : a;
         }
-
     }
 
