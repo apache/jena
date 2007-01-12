@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.43 2007-01-02 11:48:28 andy_seaborne Exp $
+  $Id: GraphBase.java,v 1.44 2007-01-12 09:46:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -307,13 +307,21 @@ public abstract class GraphBase implements GraphWithPerform
     /**
          Answer this graph's reifier. The reifier may be lazily constructed, and it
          must be the same reifier on each call. The default implementation is a
-         SimpleReifier.
+         SimpleReifier. Generally DO NOT override this method: override
+         <code>constructReifier</code> instead.
     */
 	public Reifier getReifier() 
         {
-		if (reifier == null) reifier = new SimpleReifier( this, style );
+		if (reifier == null) reifier = constructReifier();
 		return reifier;
 	    }
+
+    /**
+         Answer a reifier approperiate to this graph. Subclasses override if
+         they need non-SimpleReifiers.
+    */
+    protected Reifier constructReifier()
+        { return new SimpleReifier( this, style ); }
     
     /**
          The cache variable for the allocated Reifier.
