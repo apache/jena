@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:52:36 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-01-12 15:01:24 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -44,10 +44,9 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.18 2007-01-02 11:52:36 andy_seaborne Exp $
+ * @version CVS $Id: Polyadic.java,v 1.19 2007-01-12 15:01:24 chris-dollin Exp $
  */
-public abstract class Polyadic
-    extends CompositionBase
+public abstract class Polyadic extends CompositionBase
 {
     // Constants
     //////////////////////////////////

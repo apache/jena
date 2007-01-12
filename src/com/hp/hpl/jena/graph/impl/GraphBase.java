@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.46 2007-01-12 14:14:46 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.47 2007-01-12 15:01:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -82,8 +82,8 @@ public abstract class GraphBase implements GraphWithPerform
 
 	/**
 		Answer a QueryHandler bound to this graph. The default implementation
-        returns the same SimpleQueryHandler each time ti is called; sub-classes
-        may override if they need specialed query handlers.
+        returns the same SimpleQueryHandler each time it is called; sub-classes
+        may override if they need specialised query handlers.
 	*/
 	public QueryHandler queryHandler() 
         { 
