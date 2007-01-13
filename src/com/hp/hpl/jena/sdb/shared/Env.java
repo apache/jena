@@ -48,14 +48,6 @@ public class Env
     
     public static
     FileManager fileManager() { return fileManager ; }
-    
-    public static
-    String subst(String str)
-    {
-        // Rather crude.  Untested.
-       str = str.replaceAll("(^\\$|[^\\\\]\\$)SDBROOT", sysBase) ;
-       return str ;
-    }
 }
 
 /*

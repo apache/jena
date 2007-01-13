@@ -1,0 +1,9 @@
+PREFIX : <http://example/>
+
+SELECT ?z
+WHERE 
+{
+   :x :p ?z  .
+   ?z :p1 ?w .
+}
+ORDER BY ?w

@@ -16,4 +16,12 @@
           mf:action
             [ qt:query <integrate-2.rq> ; qt:data <data.ttl> ] ;
        ]
+       [  mf:name    "Partially optimized - 3" ;
+          mf:action
+            [ qt:query <integrate-3.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name    "Partially optimized - 4" ;
+          mf:action
+            [ qt:query <integrate-4.rq> ; qt:data <data.ttl> ] ;
+       ]
     ).

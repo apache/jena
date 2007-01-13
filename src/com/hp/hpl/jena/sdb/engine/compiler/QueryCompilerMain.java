@@ -43,7 +43,6 @@ public abstract class QueryCompilerMain implements QueryCompiler
             patternOp = ((OpModifier)patternOp).getSubOp() ;
         
         boolean patternIsOneSQLStatement = QC.isOpSQL(patternOp) ;
-        
             
         OpWalker.walk(op, new SqlNodesFinisher(patternIsOneSQLStatement)) ;
         return op ;
@@ -80,6 +79,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
                 projectVars = QC.queryOutVars(request.getQuery()) ;
             else
             {
+                // All variables.
                 @SuppressWarnings("unchecked")
                 Collection<Var> tmp = (Collection<Var>)OpVars.patternVars(opSQL.getOriginal()) ;
                 projectVars = new ArrayList<Var>(tmp) ;
