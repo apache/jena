@@ -3,6 +3,7 @@ SDB ToDo list (and general notes)
 
 + Features: more general config setting?
   Or really use properties?
+  layout; layout/index; layout/hash for now.
 
 + tests for ORDER BY and other integrations
 

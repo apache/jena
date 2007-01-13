@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.util.FileManager;
 
-/** construction of a store from a store description,
+/** Construction of a store from a store description,
  * possibly modified by command line arguments.
  * @author Andy Seaborne
  * @version $Id: CmdStore.java,v 1.1 2006/04/22 19:51:12 andy_seaborne Exp $

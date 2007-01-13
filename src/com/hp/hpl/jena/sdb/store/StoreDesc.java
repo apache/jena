@@ -16,9 +16,10 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.sdb.shared.Env;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.util.FileManager;
+
 
 public class StoreDesc
 {
@@ -41,7 +42,8 @@ public class StoreDesc
     
     public static StoreDesc read(String filename)
     {
-        Model m = FileManager.get().loadModel(filename) ;
+        //Model m = FileManager.get().loadModel(filename) ;
+        Model m = Env.fileManager().loadModel(filename) ;
         return worker(m) ;
     }
         

@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sdb.store.StoreConfig;
  
 public class sdbinfo extends CmdArgsDB
 {
-    static ArgDecl argDeclFormat = new ArgDecl(true, "format","fmt") ;
+    static ArgDecl argDeclSyntax = new ArgDecl(true, "out") ;
     String format = "N3" ; 
 
 
@@ -44,7 +44,7 @@ public class sdbinfo extends CmdArgsDB
     protected sdbinfo(String[] args)
     {
         super(args);
-        add(argDeclFormat) ;
+        add(argDeclSyntax) ;
     }
 
     @Override
@@ -56,8 +56,8 @@ public class sdbinfo extends CmdArgsDB
     @Override
     protected void processModulesAndArgs()
     {
-        if ( contains(argDeclFormat) )
-            format = getValue(argDeclFormat) ;
+        if ( contains(argDeclSyntax) )
+            format = getValue(argDeclSyntax) ;
         if ( getNumPositional() > 0 )
             cmdError("No positional arguments allowed", true) ;
     }

@@ -32,7 +32,7 @@ public class sdbdump extends CmdArgsDB
 {
     public static final String usage = "sdbdump --sdb <SPEC> [--out syntax]" ;
 
-    static ArgDecl argDeclFormat = new ArgDecl(true, "out") ;
+    static ArgDecl argDeclSyntax = new ArgDecl(true, "out") ;
 
     public static void main (String [] argv)
     {
@@ -42,7 +42,7 @@ public class sdbdump extends CmdArgsDB
     protected sdbdump(String[] args)
     {
         super(args);
-        add(argDeclFormat) ;
+        add(argDeclSyntax) ;
     }
     
     @Override
@@ -63,8 +63,8 @@ public class sdbdump extends CmdArgsDB
     {
         // This is a streamable syntax.
         String syntax = "N-TRIPLES" ;
-        if ( contains(argDeclFormat) )
-            syntax = getArg(argDeclFormat).getValue() ;
+        if ( contains(argDeclSyntax) )
+            syntax = getArg(argDeclSyntax).getValue() ;
         if ( isDebug() )
             System.out.println("Debug: syntax is "+syntax) ;
         

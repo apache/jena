@@ -1,4 +1,5 @@
 #!/bin/bash  -- hint to emacs
+# Source this file, not execute it.
 
 ## Source this file to set:
 ##  JVM_ARGS   :: arguments to the JVM

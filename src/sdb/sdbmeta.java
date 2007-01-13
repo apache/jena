@@ -12,25 +12,24 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
-import sdb.cmd.ModStore;
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 
-import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.util.Utils;
+
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.util.FileManager;
 
 public class sdbmeta extends CmdArgsDB
 {
-    static ArgDecl argDeclFormat = new ArgDecl(true, "format","fmt") ;
+    static ArgDecl argDeclSyntax = new ArgDecl(true, "out") ;
     static ArgDecl argDeclTag = new ArgDecl(true, "tag", "name") ;
     String tag = StoreConfig.defaultTag ;
-    
-    ModStore modStore = new ModStore();
     
     // subcommands via first positional argument
     
@@ -44,16 +43,15 @@ public class sdbmeta extends CmdArgsDB
     protected sdbmeta(String[] argv)
     {
         super(argv) ;
-        addModule(modStore) ;
-        super.add(argDeclFormat) ;
+        super.add(argDeclSyntax) ;
         super.add(argDeclTag) ;
     }
 
     @Override
     protected void processModulesAndArgs()
     {
-        if ( contains(argDeclFormat))
-            format = getValue(argDeclFormat) ;
+        if ( contains(argDeclSyntax))
+            format = getValue(argDeclSyntax) ;
         if ( contains(argDeclTag) )
             tag = getValue(argDeclTag) ;
         if (getNumPositional() == 0)
@@ -63,7 +61,6 @@ public class sdbmeta extends CmdArgsDB
             SDBConnection.logSQLStatements = true ;
             SDBConnection.logSQLExceptions = true ;
         }
-        
     }
 
     @Override
@@ -79,7 +76,7 @@ public class sdbmeta extends CmdArgsDB
         String subCmd = positionalArgs.remove(0) ;
         
         // Avoid needing fully built store.
-        StoreConfig conf = new StoreConfig(modStore.getConnection()) ;
+        StoreConfig conf = new StoreConfig(getModStore().getConnection()) ;
         
         if ( subCmd.equalsIgnoreCase("get") )
             execGet(conf, tag) ;
