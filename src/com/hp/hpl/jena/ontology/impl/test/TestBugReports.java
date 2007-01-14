@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.80 $
+ * Revision           $Revision: 1.81 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-09 11:46:37 $
+ * Last modified on   $Date: 2007-01-14 18:31:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -31,6 +31,8 @@ import java.util.*;
 import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
+import com.hp.hpl.jena.mem.faster.GraphMemFasterQueryHandler;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.ontology.impl.OntClassImpl;
@@ -1569,6 +1571,14 @@ public class TestBugReports
         r.addSubClass( g );
 
         TestUtil.assertIteratorValues( this, r.listSubClasses( true ), new Object[] {a} );
+    }
+
+    public void test_kers_02() {
+        OntModel A = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM  );
+        Model B = ModelFactory.createDefaultModel();
+        assertTrue( A.getGraph().queryHandler() instanceof SimpleQueryHandler );
+        assertTrue( B.getGraph().queryHandler() instanceof GraphMemFasterQueryHandler );
+        assertTrue( A.getBaseModel().getGraph().queryHandler() instanceof GraphMemFasterQueryHandler );
     }
 
     /**
