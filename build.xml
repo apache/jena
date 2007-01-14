@@ -36,6 +36,7 @@
 
     <target name="clean" depends="clean.javadoc">
         <delete dir="${build.dir}"/>
+        <delete dir="${dist.root}"/>
     </target>
 
     <target name="build" depends="init, compile, jar"/>
@@ -90,15 +91,19 @@
     <target name="dist" depends="init, build, jar, javadoc">
         <mkdir dir="${dist.root}"/>
         <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${dist.dir}/lib"/>
         <copy todir="${dist.dir}" file="dependencies.txt"/>
         <copy todir="${dist.dir}" file="Jena-IRI-changes.txt"/>
-        <copy todir="${dist.dir}" file="build.xml"/>
+    	<copy todir="${dist.dir}" file="RELEASE_NOTES.txt"/>
+    	<copy todir="${dist.dir}" file="build.xml"/>
         <copy todir="${dist.dir}/src">
             <fileset dir="${src.dir}" includes="**"/>
         </copy>
         <copy todir="${dist.dir}/doc">
             <fileset dir="${doc.dir}" includes="**"/>
         </copy>
+    	<copy todir="${dist.dir}/lib" file="${lib.dir}/iri.jar"/>
+    	        
         <zip zipfile="${zipfile}">
             <fileset dir="${dist.root}" includes="${dist.name}/**"/>
         </zip>
