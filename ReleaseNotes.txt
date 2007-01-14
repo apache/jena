@@ -54,9 +54,9 @@ Database backends:
     o Changed MS SQL Server driver to use NVARCHAR instead of VARCHAR,
       to fix i18n support.
     o Fixed i18n bug in Oracle backend and also switched to NVARCHAR.
-    o No requirement to compile Jena for Oracle use.  The Oracle driver 
+    o No requirement to compile Jena for Oracle use.  The Oracle driver
       now works in the standard Jena distribution.
-    
+
 ModelFactory:
     o added methods to construct models using Assembler system. Updated
       ModelFactory howto to include them. Deprecated the ModelSpec
@@ -65,7 +65,7 @@ ModelFactory:
 ModelSpec:
     o deprecated the ModelSpec class. Modified the ModelSpec docs to
       say it's deprecated.
-    
+
 Assembler:
     o missing subclass declarations added to vocabulary. Bogus `domain`
       replaced by correct `range`. FileManagerAssembler now by default
@@ -81,12 +81,12 @@ RDF/XML output:
     o bug whereby a literal containing the sequence "]]>" generated illegal
       XML (because the "]]>" went through unchanged, and is illegal except
       as CDATA end) fixed by converting any ">" in element content into
-      "&gt;". 
-      
+      "&gt;".
+
     o unencodable characters (any control character except \n, \t, \r) now
       throw exceptions. We may allow a new parameter setting to switch this
       off later.
-      
+
     o the entity-conversion code has been rewritten using Java regex's to
       avoid multiple conversions.
 
@@ -98,13 +98,13 @@ RDF/XML output:
 
 Untyped literal operations deprecated (char, boolean, long, float, double, Object)
      These operations do not work on typed literals.  They converted their arguments
-     to plain strings and parsed strings to retrive values.  
+     to plain strings and parsed strings to retrive values.
      They are a ghost from pre-datatyping RDF.
      ** The forms on RDFNode, String, String+lang, and XML literals remain.
      ** Forms taking a typed literal or a lexical form and RDF datatype added (or already exist).
      Model:      .add, .listStatements, .listSubjectsWithProperty
      Resource:   .hasProperty, .addProperty
-	
+
 JAR file changes:
     Added:    arq-extra.jar
     Changed:  wstx-asl-2.8.jar ==> wstx-asl-3.0.0.jar
@@ -121,7 +121,7 @@ EnhNodes/UnsupportedPolymorhismException/QualifiedRestriction
 
     o Attempting to .as() an EnhNode with no EnhGraph no longer generates
       a NullPointerException, instead giving an explicit
-      UnsupportedPolymorphism exception. 
+      UnsupportedPolymorphism exception.
 
     o Attempting to canAs an EnhNode with no existing implementation
       of the required type and no EnhGraph returns false.
@@ -146,34 +146,60 @@ ResourceImpl
 
 Statement
     o the method getWellFormed has been deprecated in favour of a new
-      method hasWellFormedXML(), paralleling Literal's newish 
+      method hasWellFormedXML(), paralleling Literal's newish
       isWellFormedXML().
 
 Model
     o Model has acquired a new method isClosed(), true iff the model has
       been .close()d
-      
+
     o Graph ditto
-    
-    o The built-in Graph and Model implementations have been modified to 
+
+    o The built-in Graph and Model implementations have been modified to
       implement this method.
 
-Typed literals      
+Typed literals
     o Fixed bug in serialization of xsd:duration types.
-    o Added getBigSeconds to XSDDuration to avoid rounding errors in 
+    o Added getBigSeconds to XSDDuration to avoid rounding errors in
       use of getSeconds.
-      
+
 OntModel
     o the prefix mapping of an OntModel will not offer as a default URI
-      the default URI of any non-base component.
-      
-    o this change is implemented via Polyadic and hence any MultiUnion
-      will have this behaviour.
+      the default URI of any non-base component. This change is
+      implemented via Polyadic and hence any MultiUnion will have this
+      behaviour.
+
+    o added some extra checks so that importing a previously closed model
+      URI no longer causes ClosedException (SF bug 1474220)
+
+    o aliased method 'listImportedModels' to 'listSubModels' (the preferred
+      name), and introduced a Boolean flag to allow the listed sub-models to
+      be presented without their own import sub-models if required
+
+OntDocumentManager
+    o added a 'load hook' so that custom behaviours can be executed just
+      before and/or just after a URI is read in to the contents of an
+      OntModel or one of its sub-models
+
+BooleanClassDescription (UnionClass, IntersectionClass, etc)
+    o canAs() checking in the language profile is now more liberal
+      for OntClass resources, to prevent partially-formed class
+      descriptions triggering a ConversionException (SF bug 1608765)
+
+Legacy DAML API
+    o This entire API has been deprecated, and will be removed in Jena 2.6.
+      Ontology users are encouraged to work with OWL rather than DAML+OIL,
+      however the DAML+OIL profile for OntModel will continue to work
+      and be supported. The deprecated API is in the package:
+           com.hp.hpl.jena.ontology.daml
+      and was originally provided to ease transition of existing code
+      from Jena 1 to Jena 2. This transitional capability is no longer
+      supported.
 
 Reasoners
    o Fixed a ConcurrentModificationException bug in TransitiveReasoner
    o added simple string hanlding builtins regexp, strConcat, uriConcat
-   o fixed bug with arithmetic builtins which caused matching against an 
+   o fixed bug with arithmetic builtins which caused matching against an
      already bound but incorrect solution to pass.
    o fixed bug in backward reasoner which caused to try redundant solutions
      to purely grounded calls. This may improve efficiency in some cases.
@@ -181,7 +207,7 @@ Reasoners
    o fixed bug in parsing of typed literals to handle user defined prefixes
      (thanks to Steve Cranefield for the fix)
    o removed MAX_VARS limit from the old forward rule engine
-   
+
 ==== Jena 2.4
 
 JAR file changes:
@@ -190,11 +216,11 @@ JAR file changes:
               iri.jar
     Removed:  stax-1.1.1-dev.jar
               jakarta-oro-2.0.8.jar
-              
+
 
 N3/Turtle:
     o The syntax form 2.3 is now treated as an XSD decimal, not an XSD double
-      This is inline with chnages to N3 and Turtle specifications and 
+      This is inline with chnages to N3 and Turtle specifications and
       compatible with SPARQL.
 
 General
@@ -202,9 +228,9 @@ General
 
 Model
     o Model[Con] has acquired a new method, remove(S, P, O),
-	  which removes the triple (S, P, O) from the model. None
-	  of S, P, O can be null. O is of type RDFNode (no overloading
-	  for primitive types etc).
+      which removes the triple (S, P, O) from the model. None
+      of S, P, O can be null. O is of type RDFNode (no overloading
+      for primitive types etc).
 
 ExtendedIterator [hence NiceIterator and ResultSetIterator]
     o added toSet() and toList(), which bundle the [remaining]
@@ -281,7 +307,7 @@ OntDocumentManager
       the OntModelSpec's ModelGetter. Since the default ModelGetter just wraps
       the spec's ModelMaker, this doesn't change the usual behaviour, but it
       allows the OntModelSpec to use weak Getters.
-      
+
 Jar changes:
     o stax-1.1.1-dev.jar ==> stax-1.1.2-dev.jar
     o new iri.jar required
@@ -527,9 +553,9 @@ Ontology API
       has been deprecated, and will be removed in a future version of Jena.
 
 Command line utilities
-	o New utility jena.rdfcat, which can merge any number of individual rdf
-	  documents together into one model, and perform syntax translation (e.g.
-	  RDF/XML to N3).
+    o New utility jena.rdfcat, which can merge any number of individual rdf
+      documents together into one model, and perform syntax translation (e.g.
+      RDF/XML to N3).
     o New query utilities for SPARQL
 
 ModelLock
@@ -867,9 +893,9 @@ Post Jena 2.1 change list [up to 2.2beta]
 Jena 2.1 - Main changes from Jena 2.0
   Installation
       The names of some jars have changed be sure to update your classpath.
-	  The name of the xerces jars are now: xercesImpl.jar and xml-apis.jar
-	  We also require Jakarta commons logging: commons-logging.jar
-	  See readme.html for the full list of jars.
+      The name of the xerces jars are now: xercesImpl.jar and xml-apis.jar
+      We also require Jakarta commons logging: commons-logging.jar
+      See readme.html for the full list of jars.
 
   OWL Syntax Checker
       Major update from alpha version (Jena 2.0), to production
