@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
     <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
     <!--
-      CVS: $Id: index.html,v 1.22 2006-04-11 09:53:47 andy_seaborne Exp $
+      CVS: $Id: index.html,v 1.23 2007-01-14 21:27:09 ian_dickinson Exp $
      (c) Copyright 2003, 2004, 2005, 2006 Hewlett-Packard Development Company LP
     -->
   </head>
@@ -154,7 +154,7 @@
     </h3>
     <p>
       There are various different ontology languages available for representing ontology
-      information on the semantic web. The most expressive of these languages is OWL, 
+      information on the semantic web. The most expressive of these languages is OWL,
       which has three flavours of differing complexity: OWL Full, OWL DL and OWL Lite. A
       simpler language is RDF Schema, usually abbreviated RDFS. Finally, some legacy data
       is still around in DAML+OIL encoding, a precursor language to OWL. The Jena Ontology
@@ -162,28 +162,28 @@
       developer, independent of which ontology language is being processes.
     </p>
     <p>
-      The Jena Ontology API 
-      is language-neutral: the Java class names do not mention the underlying language, 
-      e.g: <code>OntClass</code> and <code>ObjectProperty</code>). 
-      To represent the differences between the various representations, 
-      each of the ontology languages has a <em>profile</em>, which lists the permitted constructs 
-      and the URI's of the classes and properties. Thus in the DAML profile, the URI for object 
-      property is <code>daml:ObjectProperty</code>, in the OWL profile is it <code>owl:ObjectProperty</code> 
+      The Jena Ontology API
+      is language-neutral: the Java class names do not mention the underlying language,
+      e.g: <code>OntClass</code> and <code>ObjectProperty</code>).
+      To represent the differences between the various representations,
+      each of the ontology languages has a <em>profile</em>, which lists the permitted constructs
+      and the URI's of the classes and properties. Thus in the DAML profile, the URI for object
+      property is <code>daml:ObjectProperty</code>, in the OWL profile is it <code>owl:ObjectProperty</code>
       and in the RDFS profile it is <code>null</code> since RDFS does not define object properties.
     </p>
     <p>
-      The profile is bound to an ontology model, which is an extended version of Jena's 
+      The profile is bound to an ontology model, which is an extended version of Jena's
       <a href="../javadoc/com/hp/hpl/jena/rdf/model/Model.html"><code>Model</code></a>
-      class. 
-      The general Model allows access to the statements in a collection of RDF data. 
+      class.
+      The general Model allows access to the statements in a collection of RDF data.
       <a href="../javadoc/com/hp/hpl/jena/ontology/OntModel.html"><code>OntModel</code></a>
-      extends 
-      this by adding support for the kinds of objects expected to be in an ontology: classes (in 
-      a class hierarchy), properties (in a property hierarchy) and individuals. The properties 
-      defined in the ontology language map to accessor methods. For example, an <code>OntClass</code> 
-      has a method to list its super-classes, which corresponds to the values of the <code>subClassOf</code> 
-      property. This point is worth emphasizing: no information is stored in the <code>OntClass</code> object itself. 
-      When the OntClass <code>listSuperClasses()</code> method is called, the information is retrieved 
+      extends
+      this by adding support for the kinds of objects expected to be in an ontology: classes (in
+      a class hierarchy), properties (in a property hierarchy) and individuals. The properties
+      defined in the ontology language map to accessor methods. For example, an <code>OntClass</code>
+      has a method to list its super-classes, which corresponds to the values of the <code>subClassOf</code>
+      property. This point is worth emphasizing: no information is stored in the <code>OntClass</code> object itself.
+      When the OntClass <code>listSuperClasses()</code> method is called, the information is retrieved
       from the underlying RDF statements. Similarly adding a subclass to an <code>OntClass</code> asserts an additional RDF statement into the model.
     </p>
     <p>
@@ -272,10 +272,10 @@ Restriction rest = (Restriction) cls.as( Restriction.class );</pre>
   The simplest way to create an ontology model is as follows: </p>
     <pre>
 OntModel m = ModelFactory.createOntologyModel();</pre>
-<p>This will create an ontology model with the <em>default</em> settings. At the 
+<p>This will create an ontology model with the <em>default</em> settings. At the
 present time, these defaults are: OWL language, in-memory storage, and RDFS
 inference (which principally means entailments from the sub-class and sub-property
-hierarchy). To create a model that performs no reasoning at all, developers 
+hierarchy). To create a model that performs no reasoning at all, developers
 should specify a particular model spec, which is explained in more detail below.
 Put simply, an OWL model that performs no reasoning at all can be created with:</p>
     <pre>
@@ -374,7 +374,7 @@ OntModelSpec.OWL_MEM_MICRO_RULE_INF</pre>
   storage model, and no reasoner. The second adds a rule-based reasoner that will
   add the entailments from the source data using a subset of the semantic rules of OWL.
   This will include entailments from subclass and sub-property hierarchies, and
-  domain and range constraints. 
+  domain and range constraints.
   For details of reasoner capabilities, see the <a href="../inference/index.html">inference
   documentation</a> and the Javadoc for <a href="../javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html">OntModelSpec</a>,
   which contains a complete listing of pre-defined model specs and their reasoners.
@@ -444,7 +444,7 @@ read( InputStream reader, String base, String Lang )</pre>
 
 <p> We see that each imported ontology document is held in a separate graph structure.
   This is important: if we did not do this, once the imports had been processed
-  it would be impossible to know where a statement came from. 
+  it would be impossible to know where a statement came from.
   When this structure is built by the ontology model (processing
   the imports is handled automatically by the document manager), the original
   or base graph has a distinguished role. It is this graph that is updated when
@@ -457,16 +457,16 @@ read( InputStream reader, String base, String Lang )</pre>
       The ontology document manager
     </h3>
     <p>
-      Each ontology model has an associated document manager that assists with 
-      the processing and handling of ontology documents. For convenience, 
-      there is one global document manager that is used by default by ontology 
-      models. This shared instance is accessible via 
-      <code>OntDocumentManager.getInstance()</code>. In many cases, 
-      it will be sufficient to simply change the settings on the global 
-      document manager to suit a given application's needs. However, for 
-      more fine-grain control, separate document managers may be constructed 
-      and passed to the ontology model when it is created through the model factory. 
-      This is achieved by creating (or adapting) an ontology specification object, 
+      Each ontology model has an associated document manager that assists with
+      the processing and handling of ontology documents. For convenience,
+      there is one global document manager that is used by default by ontology
+      models. This shared instance is accessible via
+      <code>OntDocumentManager.getInstance()</code>. In many cases,
+      it will be sufficient to simply change the settings on the global
+      document manager to suit a given application's needs. However, for
+      more fine-grain control, separate document managers may be constructed
+      and passed to the ontology model when it is created through the model factory.
+      This is achieved by creating (or adapting) an ontology specification object,
       and setting the document manager attribute, for example:
     </p>
     <pre>
@@ -777,16 +777,35 @@ m.read( "http://www.xfront.com/owl/ontologies/camera/" );</pre>
         </td>
       </tr>
     </table>
+        <p>For example: <code>addSameAs(&nbsp;Resource&nbsp;r&nbsp;)</code>,
+        or <code>isSameAs(&nbsp;Resource&nbsp;r&nbsp;)</code>. For full details
+        of the individual methods, please consult the Javadoc.</p>
     <p>
-      For example: <code>addSameAs(&nbsp;Resource&nbsp;r&nbsp;)</code>, or <code>isSameAs(&nbsp;Resource&nbsp;r&nbsp;)</code>. For full details of the individual methods, please consult the Javadoc.
-    </p>
-    <p>
-      <code>OntResource</code> defines some other general utility methods. For example, to find out how many values a resource has for a given property, we can call <code>getCardinality(&nbsp;Property&nbsp;p&nbsp;)</code>. To delete the resource from the ontology altogether, we can call <code>remove()</code>. The effect of this is to remove every statement that mentions this resource as a subject or object of a statement. To get or set the value of a given property, use <code>addPropertyValue(&nbsp;Property&nbsp;p,&nbsp;RDFNode&nbsp;value&nbsp;)</code> or <code>getPropertyValue(&nbsp;Property&nbsp;p&nbsp;)</code>. Similarly the values of a named property can be listed or removed.
-    </p>
-    <p>
-      Finally, <code>OntResource</code> provides methods for listing, getting and setting the RDF types of a resource. The rdf:type property is one for which many entailment rules are defined in the semantic models of the various ontology languages. Therefore, the values that <code>listRDFTypes()</code> returns is more than usually dependent on the actual reasoner bound to the ontology model. For example, suppose we have class A, class B which is a subclass of A, and resource x whose asserted <code>rdf:type</code> is B. With no reasoner, listing x's RDF types will return only B. If the reasoner is able to calculate the closure of the subclass hierarchy (and most can), X's RDF types would also include A. Furthermore, complete reasoners might also infer that x has type <code>owl:Thing</code> and <code>rdf:Resource</code>.
-    </p>
-    <p>
+      <code>OntResource</code> defines some other general utility
+        methods. For example, to find out how many values a resource has for a
+        given property, we can call <code>getCardinality(&nbsp;Property&nbsp;p&nbsp;)</code>.
+        To delete the resource from the ontology altogether, we can call <code>remove()</code>.
+        The effect of this is to remove every statement that mentions this
+        resource as a subject or object of a statement. </p>
+      <p>To get or set the value
+        of a given property, use <code>getPropertyValue(&nbsp;Property&nbsp;p&nbsp;)</code>
+        or <code>setPropertyValue(&nbsp;Property&nbsp;p,&nbsp;RDFNode&nbsp;value&nbsp;)</code>.
+        Continuing the naming pattern,
+        the values of a named property can be listed (with <code>listPropertyValues</code>),
+        removed (with <code>removeProperty</code>) or added (with <code>addProperty</code>). </p>
+        <p>Finally, <code>OntResource</code> provides methods for listing,
+        getting and setting the RDF types of a resource. The <code>rdf:type</code> property
+        is one for which many entailment rules are defined in the semantic
+        models of the various ontology languages. Therefore, the values that <code>listRDFTypes()</code>
+        returns is more than usually dependent on the actual reasoner bound to
+        the ontology model. For example, suppose we have class A, class B which
+        is a subclass of A, and resource x whose asserted <code>rdf:type</code>
+        is B. With no reasoner, listing x's RDF types will return only B. If the
+        reasoner is able to calculate the closure of the subclass hierarchy (and
+        most can), X's RDF types would also include A. Furthermore, complete
+        reasoners might also infer that x has type <code>owl:Thing</code> and <code>rdf:Resource</code>.
+        </p>
+        <p>
       For some tasks, getting a complete list of the RDF types of a resource is exactly what is needed. For other tasks, this is not the case. An ontology editor, for example, might want to distinguish in its display between inferred and asserted types. In the above example, only <code>x&nbsp;rdf:type&nbsp;B</code> is asserted, everything else is inferred. One way to make this distinction is to make use of the base model (see Figure 4). Getting the x resource from the base model and listing the type properties there would return only the asserted values.
     </p>
     <p id="direct_relationships">
@@ -1453,7 +1472,7 @@ Individual inst = m.createIndividual( Ns + "foo", c );</pre>
       Ontology meta-data
     </h2>
 
-<p> In OWL and DAML+OIL, meta-data about the ontology itself is attached 
+<p> In OWL and DAML+OIL, meta-data about the ontology itself is attached
   as properties to an
   individual of class <code>owl:Ontology</code> or <code>daml:Ontology</code> as appropriate.
   By convention, the URI of this individual is the URI of the ontology document itself. In the XML serialisation, this
@@ -1468,7 +1487,7 @@ Individual inst = m.createIndividual( Ns + "foo", c );</pre>
   may be stated in the document through an <code>xml:base</code> declaration
   in the XML preamble, or can be specified when reading the document via
   Jena's Model API.</p>
-  
+
 <p>Various meta-data statements are typically attached to this object, to indicate
   attributes of the ontology as a whole. The Java object Ontology represents this
   special instance, and uses the standard add, set, get, list, test and delete
@@ -1535,7 +1554,7 @@ Individual inst = m.createIndividual( Ns + "foo", c );</pre>
       In addition to these attributes, the Ontology element typically contains standard meta-data properties, such as comment, label and version info.
     </p>
 <p>
-  In the Java API, the ontology's metadata properties can be accessed through 
+  In the Java API, the ontology's metadata properties can be accessed through
   the
   <a href="../javadoc/com/hp/hpl/jena/ontology/Ontology.html"><code>Ontology</code></a>
   interface.  Suppose we wish to know the list of URI's that the ontology imports.
@@ -1559,15 +1578,15 @@ has been read in to the model (for example by including the imports of a documen
 well be more than one <code>Ontology</code> resource in the model.
 </p>
     <p>
-      A common practice is also to use the Ontology element to attach Dublin Core 
-      metadata to the ontology document. Jena provides a copy of the Dublin Core 
-      vocabulary, in <code>com.hp.hpl.jena.vocabulary.DC</code>. To attach a statement saying 
+      A common practice is also to use the Ontology element to attach Dublin Core
+      metadata to the ontology document. Jena provides a copy of the Dublin Core
+      vocabulary, in <code>com.hp.hpl.jena.vocabulary.DC</code>. To attach a statement saying
       that the ontology was authored by John Smith, we can say:
     </p>
     <pre>
 Ontology ont = m.getOntology( baseURI );
 ont.addProperty( DC.creator, "John Smith" );</pre>
-<p>It is also possible to programatically add imports and other meta-data to a 
+<p>It is also possible to programatically add imports and other meta-data to a
 model, for example:</p>
 <pre>
 String base = ....; // the base URI of the ontology
@@ -1580,7 +1599,7 @@ ont.addImport( m.createResource( "http://example.com/import2" ) );</pre>
 <p>Note that under default conditions, simply adding (or removing) an <code>owl:imports</code>
 statement to a model will not cause the corresponding document to be imported (or removed).
 However, by calling <code>OntModel.setDynamicImports(true)</code>, the model will start
-noticing the addition or removal of <code>owl:imports</code> statements. The same holds 
+noticing the addition or removal of <code>owl:imports</code> statements. The same holds
 for <code>daml:imports</code> in DAML ont models.</p>
 
 <h2 id="inferenceIntro"> Ontology inference: overview</h2>
@@ -1605,7 +1624,7 @@ for <code>daml:imports</code> in DAML ont models.</p>
   see the <a href="../inference/index.html">reasoner documentation</a>. This section
   of of the ontology API documentation is intended to serve as only a brief guide
   and overview.</p>
-<p>The reasoner attached to an ontology model, if any, is specified by the 
+<p>The reasoner attached to an ontology model, if any, is specified by the
 <a href="../javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html"><code>OntModelSpec</code></a>.
   The methods <code>setReasoner</code> and <code>setReasonerFactory</code> are
   used to specify a reasoner. The setReasoner variant is intended for use on a
@@ -1685,13 +1704,24 @@ for <code>daml:imports</code> in DAML ont models.</p>
   debugging) when we may want to write the entire model, virtual triples included.
   The easiest way to achieve this is to construct a temporary plain model, containing
   the contents of the ontology model:</p>
-<pre>OntModel om = ...<br><br>// write all of om contents to stderr for debugging
+<pre>OntModel om = ...
+
+// write all of om contents to stderr for debugging
 Model plain = ModelFactory.createModelForGraph( om.getGraph() );
 plain.write( System.err, &quot;RDF/XML-ABBREV&quot; );</pre>
 <p>See also the note on <a href="common-problems.html#aBox-tBox">combining a-box and t-box
   data</a> using the OntModel.</p>
-  
+
     <h2 id="legacyDAML">Working with DAML+OIL ontologies</h2>
+    <p><strong>Jena 2.5 update</strong> With effect from release 2.5 of Jena,
+    the legacy DAML+OIL API will be deprecated, and it is scheduled to be
+    removed from Jena in time for the 2.6 release. The effect of this is
+    that users of DAML+OIL using the legacy API (i.e. the classes in
+    <code>com.hp.hpl.jena.ontology.daml</code>) should move their projects
+    either to work with OWL, or at least to work with the DAML+OIL profile
+    of the standard <code>OntModel</code>. The DAML+OIL <code>OntModel</code>
+    profile will continue to be supported for the currently forseen future.
+    <br /><em>End of Jena 2.5 update</em>.</p>
 <p>Generally speaking, it is recommended that developers who want to work on Semantic
   Web applications should use RDFS, or <a href="http://www.w3.org/2004/OWL/">OWL</a>,
   as their ontology language. OWL has had the benefit of a more rigorous design
@@ -1699,7 +1729,7 @@ plain.write( System.err, &quot;RDF/XML-ABBREV&quot; );</pre>
   in building inference engines. Nevertheless, there remains some legacy
   ontology data on the Semantic Web today encoded in <a href="http://www.daml.org">DAML+OIL</a>,
   the precursor to OWL. Jena 2 currently fully supports ontology processing in
-  DAML+OIL as well as OWL and RDFS. However, support for DAML+OIL may be 
+  DAML+OIL as well as OWL and RDFS. However, support for DAML+OIL may be
   reduced or removed in future releases of Jena.</p>
 <p>For new Jena users, and those who have the opportunity to adapt their existing
   code, the new ontology API (as described in the bulk of this document) is the
@@ -1709,9 +1739,10 @@ plain.write( System.err, &quot;RDF/XML-ABBREV&quot; );</pre>
 <p>For existing Jena 1.x users migrating to Jena 2, we have also provided a re-implementation
   of the Jena 1 DAML API in Jena 2. This provides abstractions such as DAMLModel,
   DAMLClass, DAMLProperty and so forth. <strong>Note</strong> that we recommend
-  the use of this legacy API <em>only</em> for porting Jena 1 code. Future versions
-  of Jena beyond the 2.x release series may not include the legacy DAML API, though
-  we have no current plans to stop supporting it. Note that the port of the legacy
+  the use of this legacy API <em>only</em> for porting Jena 1 code (see Jena 2.5
+  note, above). Future versions
+  of Jena beyond the 2.6 release <strong>will not include the legacy DAML API</strong>.
+  Note that the port of the legacy
   API is essentially a set of convenience wrappers onto the new architecture,
   so there should be little or no computational advantage to using the DAML API
   over the generic ontology API.</p>

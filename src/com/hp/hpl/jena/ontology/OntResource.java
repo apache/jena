@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.38 $
+ * Revision           $Revision: 1.39 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-08 15:38:28 $
+ * Last modified on   $Date: 2007-01-14 21:27:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.38 2007-01-08 15:38:28 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.39 2007-01-14 21:27:11 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -631,6 +631,14 @@ public interface OntResource
     public NodeIterator listPropertyValues( Property property );
 
     /**
+     * <p>Remove the specific property-value pair from this resource.</p>
+     *
+     * @param property The property to be removed
+     * @param value The specific value of the property to be removed
+     */
+    public void removeProperty( Property property, RDFNode value );
+
+    /**
      * <p>Removes this resource from the ontology by deleting any statements that refer to it,
      * as either statement-subject or statement-object.
      * If this resource is a property, this method will <strong>not</strong> remove statements
@@ -648,14 +656,6 @@ public interface OntResource
      */
     public void remove();
 
-
-    /**
-     * <p>Remove the specific property-value pair from this resource.</p>
-     *
-     * @param property The property to be removed
-     * @param value The specific value of the property to be removed
-     */
-    public void removeProperty( Property property, RDFNode value );
 
 
     // Conversion methods
