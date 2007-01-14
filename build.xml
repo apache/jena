@@ -25,12 +25,12 @@
       <fileset dir="${jena.home}/lib" includes="*jar"/>
     </path>
 
-    <target name="init">
+    <target name="init" depends="clean, default-javac-flags">
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${javadoc.dir}"/>
     </target>
 
-    <target name="clean.javadoc" depends="init">
+    <target name="clean.javadoc" >
         <delete><fileset dir="${javadoc.dir}" includes="**"/></delete>
     </target>
 
@@ -38,7 +38,7 @@
         <delete dir="${build.dir}"/>
     </target>
 
-    <target name="build" depends="init, default-javac-flags, compile, jar"/>
+    <target name="build" depends="init, compile, jar"/>
 
     <target name="compile">
         <javac 
@@ -78,7 +78,7 @@
 	</jar>
     </target>
 
-    <target name="javadoc" depends="init, clean.javadoc">
+    <target name="javadoc" depends="init">
         <javadoc
             sourcepath="${src.dir}"
             destdir="${javadoc.dir}"
