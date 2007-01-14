@@ -84,8 +84,9 @@ public class TurtleReader implements RDFReader
                 base = sourceName ;
             else if ( base.equals("") )
                 ;
-                
-            base = RelURI.resolve(base) ;
+            
+            if ( base != null )
+                base = RelURI.resolve(base) ;
             
             model.notifyEvent( GraphEvents.startRead ) ;
             ParserTurtle p =  new ParserTurtle() ;
