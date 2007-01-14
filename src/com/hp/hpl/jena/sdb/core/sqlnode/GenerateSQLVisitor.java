@@ -22,8 +22,13 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-// This is not a general purpose SQL writer - it needs only work with the SQL node trees
-// that the schemas generate.  In particular:
+// This is not a general purpose SQL writer - it needs only work with the
+// SQL node trees that the SDB compiler generate.
+// 
+// It just writes out the tree - it does not optimize it in anyway (that
+// happens before this stage). 
+
+// In particular:
 
 // 1/ Many conditions are already pushed into joins - a join node
 //    is actually restrict(join)
