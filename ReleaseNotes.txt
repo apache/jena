@@ -105,6 +105,10 @@ RDF/XML Input:
       have been seen. A warning is issued about this change when
       reading a large file.
       
+IRI:
+     Release synchronized with an IRI release (iri 0.3).
+     Minor bug fixes.
+      
 Untyped literal operations deprecated (char, boolean, long, float, double, Object)
      These operations do not work on typed literals.  They converted their arguments
      to plain strings and parsed strings to retrive values.
