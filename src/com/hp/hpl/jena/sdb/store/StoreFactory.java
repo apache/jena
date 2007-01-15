@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexPGSQL;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesDerby;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** 
@@ -131,7 +131,7 @@ public class StoreFactory
             switch (desc.dbType)
             {
                 case Derby:
-                    return new StoreTriplesNodesDerby(sdb) ;
+                    return new StoreTriplesNodesHashDerby(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;

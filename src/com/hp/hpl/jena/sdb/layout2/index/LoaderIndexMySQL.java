@@ -20,9 +20,9 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
  * @version $Id: LoaderMySQL.java,v 1.1 2006/04/21 12:40:20 andy_seaborne Exp $
  */
 
-public class LoaderMySQL extends LoaderLJ
+public class LoaderIndexMySQL extends LoaderIndexLJ
 {
-    public LoaderMySQL(SDBConnection connection) { super(connection) ; }
+    public LoaderIndexMySQL(SDBConnection connection) { super(connection) ; }
     
     public void createLoaderTable() throws SQLException
     {

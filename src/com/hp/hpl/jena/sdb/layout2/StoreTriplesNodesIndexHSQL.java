@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.sdb.layout2.index.QueryCompilerFactoryIndex;
 import com.hp.hpl.jena.sdb.layout2.index.FmtLayout2IndexHSQL;
-import com.hp.hpl.jena.sdb.layout2.index.LoaderHSQL;
+import com.hp.hpl.jena.sdb.layout2.index.LoaderIndexHSQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
@@ -27,7 +27,7 @@ public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
         // HSQL can't handle complex RHS of a left join so no optional spotting. 
         super(connection,
               new FmtLayout2IndexHSQL(connection),
-              new LoaderHSQL(connection),
+              new LoaderIndexHSQL(connection),
               new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2()
         );

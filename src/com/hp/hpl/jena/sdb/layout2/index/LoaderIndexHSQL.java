@@ -4,31 +4,70 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2.index;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.*;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 
-public class StoreTriplesNodesDerby extends StoreBase
+/** Interface to setting up the bulk loader environment.
+ * 
+ * @author Andy Seaborne
+ * @version $Id: LoaderHSQL.java,v 1.1 2006/04/21 16:53:32 andy_seaborne Exp $
+ */
+
+public class LoaderIndexHSQL extends LoaderIndexLJ
 {
-
-    public StoreTriplesNodesDerby(SDBConnection connection)
+    public LoaderIndexHSQL(SDBConnection connection) { super(connection) ; }
+    
+    public void createLoaderTable() throws SQLException
     {
-        super(connection,
-              new FmtLayout2HashDerby(connection) ,
-              //new LoaderOneTripleHash(connection),
-              new LoaderDerby(connection),
-              new QueryCompilerFactoryHash(), 
-              new SQLBridgeFactory2(),
-              new GenerateSQL()) ;
-        //throw new SDBNotImplemented("StoreTriplesNodesDerby") ;
+        Connection conn = connection().getSqlConnection();
+        Statement s = conn.createStatement();
+
+        if (!TableUtils.hasTable(conn, "NNode"))
+        	s.execute(sqlStr(
+        			"CREATE TEMPORARY TABLE NNode",
+                    "(",
+                    "  hash BIGINT NOT NULL ,",
+                    "  lex VARCHAR NOT NULL ,",
+                    "  lang VARCHAR(10) NOT NULL ,",
+                    "  datatype VARCHAR("+ TableNodes.UriLength+ ") NOT NULL ,",
+                    "  type int NOT NULL ,",
+                    "  vInt int,",
+                    "  vDouble double,",
+                    "  vDateTime datetime",
+                    ") ON COMMIT DELETE ROWS"
+        	));
+        
+        if (!TableUtils.hasTable(conn, "NTrip"))
+        	s.execute(sqlStr(
+        			"CREATE TEMPORARY TABLE NTrip",
+        			"(",
+        			"  s BIGINT NOT NULL,",
+        			"  p BIGINT NOT NULL,",
+        			"  o BIGINT NOT NULL",
+        			") ON COMMIT DELETE ROWS;"
+        	));
     }
     
     @Override
-    public String getNodeKeyColName() { return TableNodes.colHash ; }
+    public String getClearTripleLoaderTable()
+	{
+		return null;
+	}
+	
+    @Override
+	public String getClearNodeLoaderTable()
+	{
+		return null;
+	}
 }
 
 /*

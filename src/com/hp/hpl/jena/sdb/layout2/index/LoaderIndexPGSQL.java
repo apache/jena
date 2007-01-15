@@ -22,9 +22,9 @@ import com.hp.hpl.jena.sdb.sql.TableUtils;
  * @version $Id: LoaderHSQL.java,v 1.1 2006/04/21 16:53:32 andy_seaborne Exp $
  */
 
-public class LoaderPGSQL extends LoaderLJ
+public class LoaderIndexPGSQL extends LoaderIndexLJ
 {
-    public LoaderPGSQL(SDBConnection connection) { super(connection) ; }
+    public LoaderIndexPGSQL(SDBConnection connection) { super(connection) ; }
     
     public void createLoaderTable() throws SQLException
     {

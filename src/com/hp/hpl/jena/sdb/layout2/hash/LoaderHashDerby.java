@@ -21,9 +21,9 @@ import com.hp.hpl.jena.sdb.sql.TableUtils;
  * @version $Id: LoaderHSQL.java,v 1.1 2006/04/21 16:53:32 andy_seaborne Exp $
  */
 
-public class LoaderDerby extends LoaderLJ
+public class LoaderHashDerby extends LoaderHashLJ
 {
-    public LoaderDerby(SDBConnection connection) { super(connection) ; }
+    public LoaderHashDerby(SDBConnection connection) { super(connection) ; }
     
     public void createLoaderTable() throws SQLException
     {
