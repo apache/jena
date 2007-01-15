@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.67 2007-01-02 11:48:34 andy_seaborne Exp $
+  $Id: Model.java,v 1.68 2007-01-15 12:41:14 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.67 $Date: 2006/11/27 21:56:03 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.68 $Date: 2007/01/02 11:48:34 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -554,7 +554,9 @@ public interface Model
      * represented by <code>null</code>, is "RDF/XML".</p>
      * @param out The output stream to which the RDF is written
      * @param base The base uri to use when writing relative URI's. <code>null</code>
-     * means use only absolute URI's.
+     * means use only absolute URI's. This is used for relative
+     * URIs that would be resolved against the document retrieval URL.
+     * For some values of <code>lang</code>, this value may be included in the output. 
      * @param lang The language in which the RDF should be written
      * @return This model
      */
@@ -1015,5 +1017,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.67 2007-01-02 11:48:34 andy_seaborne Exp $
+ * $Id: Model.java,v 1.68 2007-01-15 12:41:14 jeremy_carroll Exp $
  */

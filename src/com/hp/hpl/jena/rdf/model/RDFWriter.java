@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriter.java,v 1.11 2007-01-02 11:48:35 andy_seaborne Exp $
+ * $Id: RDFWriter.java,v 1.12 2007-01-15 12:41:14 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,7 +36,7 @@ import java.io.OutputStream;
  * to some RDF serializaion language.  RDF/XML, n-triple and n3 are
  * examples of serialization languages.</p>
  * @author bwm
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public interface RDFWriter {
 
@@ -67,7 +67,9 @@ public interface RDFWriter {
  * @param out The OutputStream to which the serialization should be sent.
  * @param model The model to be written.
  * @param base the base URI for relative URI calculations.  <code>
-   null</code> means use only absolute URI's.
+   null</code> means use only absolute URI's. This is used for relative
+   URIs that would be resolved against the document retrieval URL.
+   Particular writers may include this value in the output. 
  */    
     public void write(Model model, OutputStream out, String base);
     
