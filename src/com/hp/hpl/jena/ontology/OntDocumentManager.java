@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.58 $
+ * Revision           $Revision: 1.59 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-11 19:55:51 $
+ * Last modified on   $Date: 2007-01-15 10:36:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.58 2007-01-11 19:55:51 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.59 2007-01-15 10:36:25 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -1282,7 +1282,7 @@ public class OntDocumentManager
     }
 
     /**
-     * The default implementation of {@link ReadHook} makes no changes.
+     * The default implementation of {@link OntDocumentManager.ReadHook} makes no changes.
      */
     public static class DefaultReadHook
         implements ReadHook
