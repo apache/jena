@@ -21,17 +21,22 @@ include_class 'arq.cmd.QueryCmdUtils'
 # Higher level operations like the command line tools
 # Command line => environment and actions?
 # Then same here.
+#   Or a SDB sript library.
+
+## --------
+store = SDBFactory.connectStore("sdb.ttl")
+puts "Connection : #{store.getConnection().getLabel()}"
+tables = store.getConfiguration().tables()
+tables.each { |x| puts x }
+## --------
+
+## --------
 
 dataset = SDBFactory.connectDataset("sdb.ttl")
-
-## puts "Connection : #{store.getConnection().getLabel()}"
-## tables = store.getConfiguration().tables()
-## tables.each { |x| puts x }
-
 ## model = dataset.getDefaultModel()
 ## model.write(System.out, "N3") 
 
-# 
+## --------
 query = QueryFactory.create("SELECT * { ?s ?p ?o}")
 qExec = QueryExecutionFactory.create(query, dataset)
 
