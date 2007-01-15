@@ -83,9 +83,9 @@ RDF/XML output:
       as CDATA end) fixed by converting any ">" in element content into
       "&gt;".
 
-    o unencodable characters (any control character except \n, \t, \r) now
-      throw exceptions. We may allow a new parameter setting to switch this
-      off later.
+    o unencodable characters (any control character except \n, \t, \r, also
+      \uFFFF and \uFFFE) now throw exceptions. We may allow a new parameter 
+      setting to switch this off later.
 
     o the entity-conversion code has been rewritten using Java regex's to
       avoid multiple conversions.
@@ -96,6 +96,15 @@ RDF/XML output:
       the URIs of the mapping are written to use the entity invocation
       instead.
 
+RDF/XML Input:
+    o When reading from a URL, content negotiation is now used
+      prefering: RDF/XML, then XML, over other content types.
+    o An over-eager and confusing warning was suppressed.
+    o Behaviour on very large files has been modified. For such files, checks
+      for illegal reuse of rdf:ID are not made after the first 10000
+      have been seen. A warning is issued about this change when
+      reading a large file.
+      
 Untyped literal operations deprecated (char, boolean, long, float, double, Object)
      These operations do not work on typed literals.  They converted their arguments
      to plain strings and parsed strings to retrive values.
