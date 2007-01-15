@@ -1,0 +1,86 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Function" ;
+    # Without the dubious list/conatiner functions
+    mf:entries
+    ( 
+      [  mf:name    "Lang 1" ;
+         mf:action
+            [ qt:query  <q-lang-1.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <lang-1-results.srx>
+      ]
+      [  mf:name    "Lang 2" ;
+         mf:action
+            [ qt:query  <q-lang-2.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <lang-2-results.srx>
+      ]
+
+      [  mf:name    "sha1sum 1" ;
+         mf:action
+            [ qt:query  <func-sha1sum-1.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <sha1sum-1-results.srx>
+      ]
+
+      [  mf:name    "sha1sum 2" ;
+         mf:action
+            [ qt:query  <func-sha1sum-2.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <sha1sum-2-results.srx>
+      ]
+
+      [  mf:name    "substring - 1" ;
+         mf:action
+            [ qt:query  <substring-1.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-1.srx>
+      ]
+
+      [  mf:name    "substring - 2" ;
+         mf:action
+            [ qt:query  <substring-2.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-2.srx>
+      ]
+
+      [  mf:name    "substring - 3" ;
+         mf:action
+            [ qt:query  <substring-3.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-3.srx>
+      ]
+
+      [  mf:name    "strlen - 1" ;
+         mf:action
+            [ qt:query  <strlen-1.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <strlen-1.srj>
+      ]
+
+      [  mf:name    "strlen - 2" ;
+         mf:action
+            [ qt:query  <strlen-2.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <strlen-2.srj>
+      ]
+
+      [ mf:name     "Localname - 1" ;
+        mf:action
+            [ qt:query  <localname-1.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <localname-1.srj>
+      ]
+
+      [ mf:name     "Namespace - 1" ;
+        mf:action
+            [ qt:query  <namespace-1.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <namespace-1.srj>
+      ]
+    ).

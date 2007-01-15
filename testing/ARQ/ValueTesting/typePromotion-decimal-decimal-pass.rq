@@ -1,5 +1,5 @@
 # Positive test: product of type promotion within the xsd:decimal type tree.
-# $Id: typePromotion-decimal-decimal-pass.rq,v 1.4 2006-12-09 20:39:23 andy_seaborne Exp $
+# $Id: typePromotion-decimal-decimal-pass.rq,v 1.5 2007-01-15 16:13:06 andy_seaborne Exp $
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

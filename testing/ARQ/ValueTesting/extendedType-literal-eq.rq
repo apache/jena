@@ -1,5 +1,5 @@
 # Test FILTER match on extended type.
-# $Id: extendedType-literal-eq.rq,v 1.4 2006-12-09 20:39:23 andy_seaborne Exp $
+# $Id: extendedType-literal-eq.rq,v 1.5 2007-01-15 16:13:07 andy_seaborne Exp $
 
 PREFIX loc: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/extendedType-0#>
 PREFIX air: <http://www.daml.org/2001/10/html/airport-ont#>

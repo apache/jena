@@ -1,5 +1,5 @@
 # Opaque types can not be tested for != .
-# $Id: extendedType-ne-fail-result.n3,v 1.4 2006-12-09 20:39:23 andy_seaborne Exp $
+# $Id: extendedType-ne-fail-result.n3,v 1.5 2007-01-15 16:13:14 andy_seaborne Exp $
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
