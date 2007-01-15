@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.10 2006-01-24 15:49:46 chris-dollin Exp $
+# $Id: contributions.n3,v 1.11 2007-01-15 11:27:24 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -9,15 +9,6 @@
 @prefix dc:     <http://purl.org/dc/elements/1.1/> .
 
 @prefix ct:     <http://jena.hplb.hpl.hp.com/contrib#> .
-
-[]
-    dc:creator "Chris Dollin"
-    ; dc:name "ModelJEB"
-    ; dc:description "persistent models using Berkely DB JE"
-    ; ct:link "http://sourceforge.net/project/showfiles.php?group_id=40417"
-    ; ct:linkTitle "jena files page"
-    ; ct:licence "as per Jena"
-    .
 
 []
     dc:creator "Chris Dollin"
@@ -65,7 +56,7 @@
     .
 
 []
-    dc:creator "Reto Bachmann-Gmür / wymiwyg.org"
+    dc:creator "Reto Bachmann-Gmuer / wymiwyg.org"
     ; dc:name "WYMIWYG KnoBot"
     ; dc:description "A fully Jena based semantic CMS. Implements URIQA. File-based persistence."
     ; ct:link "http://sourceforge.net/project/showfiles.php?group_id=83223"

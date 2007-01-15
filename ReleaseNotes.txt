@@ -2,6 +2,12 @@ Release Notes
 =============
 ==== Jena 2.5
 
+ModelJEB is no longer supported
+    o The ModelJEB BDB storage for graphs is no longer supported. (It
+      has been unofficially unsupported for quite a while without
+      complaint.) It's job -- cheap-and-cheerful persistent models -- has
+      been taken over by HSQLDB.
+
 RDFException has been deprecated
     o It has been obsolete [because of the JenaException revisions] for
       yonks. No-one should be using it (other than some internal uses
