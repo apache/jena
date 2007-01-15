@@ -104,6 +104,19 @@ to false write the declaration to an OutputStream before calling
 </td>
 <td>true, "true", false, "false" or "default"</td>
 </tr>
+
+<tr BGCOLOR="white" CLASS="TableRowColor">
+   <td>showDoctypeDeclaration</td>
+   <td>If true, an XML Doctype declaration is included in the output.
+       This declaration includes a !ENTITY declaration for each
+       prefix mapping in the model, and any attribute value that
+       starts with the URI of that mapping is written as starting
+       with the corresponding entity invocation. Warning:
+       <i>experimental</i>.</td>
+   <td>String or Boolean</td>
+   <td>true, false, "true", "false"</td>
+   </tr>
+
   <tr BGCOLOR="white" CLASS="TableRowColor">
  <td>tab</td>
  <td>The number of spaces with which to indent XML child elements.</td>
@@ -198,9 +211,9 @@ This is a list of
   </td><td>Resource[]</td><td></td>
 </tr>
 </table>
- * @param propName One of "xmlBase", "LongId", "allowBadURIs",
+ * @param propName One of "xmlBase", "longId", "allowBadURIs",
  * "relativeURIs","showXMLDeclaration", "tab", "attributeQuoteChar",
- * "blockRules", "prettyTypes"
+ * "blockRules", "prettyTypes", "showDoctypeDeclaration", "width"
  * @param propValue A String, Boolean, Integer, Resource[] as appropriate.
  * @return the old value for this property, or <code>null</code>
  * if no value was set.
