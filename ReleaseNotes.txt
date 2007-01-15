@@ -1,6 +1,6 @@
 Release Notes
 =============
-==== Post Jena 2.4
+==== Jena 2.5
 
 RDFException has been deprecated
     o It has been obsolete [because of the JenaException revisions] for
