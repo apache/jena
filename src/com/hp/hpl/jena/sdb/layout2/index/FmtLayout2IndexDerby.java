@@ -19,11 +19,11 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 
-public class FmtLayout2PGSQL extends FmtLayout2
+public class FmtLayout2IndexDerby extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FormatterTriplesNodesPGSQL.class) ;
+    //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
     
-    public FmtLayout2PGSQL(SDBConnection connection)
+    public FmtLayout2IndexDerby(SDBConnection connection)
     { 
         super(connection) ;
     }
@@ -35,15 +35,15 @@ public class FmtLayout2PGSQL extends FmtLayout2
         try { 
             connection().exec(sqlStr(
                                  "CREATE TABLE "+TableTriples.tableName+" (",
-                                 "    s integer NOT NULL,",
-                                 "    p integer NOT NULL,",
-                                 "    o integer NOT NULL,",
+                                 "    s int NOT NULL,",
+                                 "    p int NOT NULL,",
+                                 "    o int NOT NULL,",
                                  "    PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
-            connection().exec("CREATE INDEX Pred "+TableTriples.tableName+" (p);") ;
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p)") ;
+            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p)") ;
             
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
@@ -55,12 +55,12 @@ public class FmtLayout2PGSQL extends FmtLayout2
         dropTable(TableNodes.tableName) ;
         try { 
             connection().exec(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
-                                       "   id SERIAL,",
-                                       "   hash BIGINT NOT NULL,",
-                                       "   lex TEXT NOT NULL,",
-                                       "   lang varchar NOT NULL default '',",
-                                       "   datatype varchar("+TableNodes.UriLength+") NOT NULL default '',",
-                                       "   type integer NOT NULL default '0',",
+                                       "   id int generated always as identity ,",
+                                       "   hash BIGINT NOT NULL ,",
+                                       "   lex CLOB NOT NULL ,",
+                                       "   lang LONG VARCHAR NOT NULL ,",
+                                       "   datatype varchar("+TableNodes.UriLength+") NOT NULL ,",
+                                       "   type integer NOT NULL ,",
                                        "   PRIMARY KEY (id)",
                                        ")"
                     )) ;

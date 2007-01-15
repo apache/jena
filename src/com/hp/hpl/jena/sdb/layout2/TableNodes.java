@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 public class TableNodes extends SqlTable
 {
+    // TODO This table is different in Hash and Index versions
     private static Log log = LogFactory.getLog(TableNodes.class) ;
     
     public static final String tableName       = "Nodes" ;

@@ -4,9 +4,9 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesPGSQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexHSQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.util.FileManager;
@@ -53,7 +53,7 @@ public class Scratch {
 		
 		SDBConnection sdb = SDBFactory.createConnection("jdbc:mysql://localhost/sdb_test", "jena", "swara");
 		
-		StoreTriplesNodesMySQL store = new StoreTriplesNodesMySQL(sdb);
+		StoreTriplesNodesIndexMySQL store = new StoreTriplesNodesIndexMySQL(sdb);
 		
 		return SDBFactory.connectModel(store);
 	}
@@ -64,7 +64,7 @@ public class Scratch {
 		
 		SDBConnection sdb = SDBFactory.createConnection("jdbc:hsqldb:mem:aname", "sa", "");
 		
-		StoreTriplesNodesHSQL store = new StoreTriplesNodesHSQL(sdb);
+		StoreTriplesNodesIndexHSQL store = new StoreTriplesNodesIndexHSQL(sdb);
 		
 		store.getTableFormatter().format();
 		
@@ -77,7 +77,7 @@ public class Scratch {
 		
 		SDBConnection sdb = SDBFactory.createConnection("jdbc:postgresql://localhost/sdb_test", "jena", "swara");
 		
-		StoreTriplesNodesPGSQL store = new StoreTriplesNodesPGSQL(sdb);
+		StoreTriplesNodesIndexPGSQL store = new StoreTriplesNodesIndexPGSQL(sdb);
 		
 		return SDBFactory.connectModel(store);
 	}

@@ -19,7 +19,8 @@ public enum LayoutType implements Named {
     // A database layout that uses a single triple table, with entries being SPARQL-syntax RDF-terms
     LayoutSimple       { public String getName() { return "Layout1" ; } } ,   
     // The Triple table/Node table layout 
-    LayoutTripleNodes  { public String getName() { return "TriplesNodes" ; } } , 
+    LayoutTripleNodesIndex  { public String getName() { return "TriplesNodes(index)" ; } } , 
+    LayoutTripleNodesHash   { public String getName() { return "TriplesNodes(hash)" ; } } , 
     ;
     
     public static LayoutType convert(String s)
@@ -29,8 +30,13 @@ public enum LayoutType implements Named {
         if ( s.equalsIgnoreCase(LayoutSimple.getName()) ) return LayoutSimple ;
         if ( s.equalsIgnoreCase("layout1") ) return LayoutSimple ;
         
-        if ( s.equalsIgnoreCase(LayoutTripleNodes.getName()) ) return LayoutTripleNodes ;
-        if ( s.equalsIgnoreCase("layout2") ) return LayoutTripleNodes ;
+        if ( s.equalsIgnoreCase("layout2") ) return LayoutTripleNodesHash ;
+        if ( s.equalsIgnoreCase("layout2/hash") ) return LayoutTripleNodesHash ;
+        
+        if ( s.equalsIgnoreCase(LayoutTripleNodesIndex.getName()) ) return LayoutTripleNodesIndex ;
+        if ( s.equalsIgnoreCase("layout2/index") ) return LayoutTripleNodesIndex ;
+        
+        
         return null ;
     }
 }

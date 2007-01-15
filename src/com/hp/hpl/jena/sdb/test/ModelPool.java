@@ -11,9 +11,9 @@ import java.util.Map;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesPGSQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexHSQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesDerby;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -59,7 +59,7 @@ public class ModelPool {
 			SDBConnection sdb = SDBFactory.createConnection(
 					"jdbc:mysql://localhost/sdb_test", "jena", "swara");
 
-			store = new StoreTriplesNodesMySQL(sdb);
+			store = new StoreTriplesNodesIndexMySQL(sdb);
 
 			store.getTableFormatter().format();
 
@@ -80,7 +80,7 @@ public class ModelPool {
 			SDBConnection sdb = SDBFactory.createConnection(
 					"jdbc:hsqldb:mem:aname", "sa", "");
 
-			store = new StoreTriplesNodesHSQL(sdb);
+			store = new StoreTriplesNodesIndexHSQL(sdb);
 
 			store.getTableFormatter().format();
 
@@ -101,7 +101,7 @@ public class ModelPool {
 			SDBConnection sdb = SDBFactory.createConnection(
 					"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
 
-			store = new StoreTriplesNodesPGSQL(sdb);
+			store = new StoreTriplesNodesIndexPGSQL(sdb);
 
 			store.getTableFormatter().format();
 			

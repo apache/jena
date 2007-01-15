@@ -24,9 +24,9 @@ import com.hp.hpl.jena.sdb.layout1.StoreRDB;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesPGSQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexHSQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesDerby;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
@@ -115,48 +115,46 @@ public class StoreFactory
             }
         }
 
-        boolean hashVariant = true ;
-        if ( desc.featureSet.hasFeature("layout") )
-        {
-            log.warn("Feature 'layout' seen - currently hardwired") ;
-            if ( desc.featureSet.getFeature("layout").getAsString().equals("index") )
-                hashVariant = false ;
-        }
-            
-        // Hard wiring.
-        hashVariant = ( desc.dbType == DatabaseType.Derby ) ;
+//        boolean hashVariant = true ;
+//        if ( desc.featureSet.hasFeature("layout") )
+//        {
+//            log.warn("Feature 'layout' seen - currently hardwired") ;
+//            if ( desc.featureSet.getFeature("layout").getAsString().equals("index") )
+//                hashVariant = false ;
+//        }
+//            
+//        // Hard wiring.
+//        hashVariant = ( desc.dbType == DatabaseType.Derby ) ;
         
-        if ( desc.layout == LayoutType.LayoutTripleNodes )
+        if ( desc.layout == LayoutType.LayoutTripleNodesHash )
         {
-            if ( hashVariant )
+            switch (desc.dbType)
             {
-                switch (desc.dbType)
-                {
-                    case Derby:
-                        return new StoreTriplesNodesDerby(sdb) ;
-                    default:
-                        throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
-                                                      desc.dbType.getName(), desc.layout.getName())) ;
-                }
+                case Derby:
+                    return new StoreTriplesNodesDerby(sdb) ;
+                default:
+                    throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
+                                                  desc.dbType.getName(), desc.layout.getName())) ;
             }
-            else
+        }
+        
+        if ( desc.layout == LayoutType.LayoutTripleNodesIndex )
+        {
+            switch (desc.dbType)
             {
-                switch (desc.dbType)
-                {
-                    case MySQL5:
-                        return new StoreTriplesNodesMySQL(sdb, desc.engineType) ;
-                    case PostgreSQL:
-                        return new StoreTriplesNodesPGSQL(sdb) ;
-                    case MySQL41:
-                    case Oracle10:
-                    case SQLServer:
-                        throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
-                    case HSQLDB:
-                        return new StoreTriplesNodesHSQL(sdb) ;
-                    default:
-                        throw new SDBException(format("Unknown DB type: %s [layout=%s, index variant]",
-                                                      desc.dbType.getName(), desc.layout.getName())) ;
-                }
+                case MySQL5:
+                    return new StoreTriplesNodesIndexMySQL(sdb, desc.engineType) ;
+                case PostgreSQL:
+                    return new StoreTriplesNodesIndexPGSQL(sdb) ;
+                case MySQL41:
+                case Oracle10:
+                case SQLServer:
+                    throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
+                case HSQLDB:
+                    return new StoreTriplesNodesIndexHSQL(sdb) ;
+                default:
+                    throw new SDBException(format("Unknown DB type: %s [layout=%s, index variant]",
+                                                  desc.dbType.getName(), desc.layout.getName())) ;
             }
         }
         

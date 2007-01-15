@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sdb.util.PrintSDB;
 
 public class sdbprint extends CmdArgsDB
 {
-    LayoutType layoutDefault = LayoutType.LayoutTripleNodes ;
+    LayoutType layoutDefault = LayoutType.LayoutTripleNodesHash ;
 
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
     

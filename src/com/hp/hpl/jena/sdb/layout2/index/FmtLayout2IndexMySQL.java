@@ -23,12 +23,12 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 
-public class FmtLayout2MySQL extends FmtLayout2
+public class FmtLayout2IndexMySQL extends FmtLayout2
 {
-    static private Log log = LogFactory.getLog(FmtLayout2MySQL.class) ;
+    static private Log log = LogFactory.getLog(FmtLayout2IndexMySQL.class) ;
     private MySQLEngineType engineType ;
     
-    public FmtLayout2MySQL(SDBConnection connection, MySQLEngineType tableType)
+    public FmtLayout2IndexMySQL(SDBConnection connection, MySQLEngineType tableType)
     { 
         super(connection) ;
         engineType = tableType ;

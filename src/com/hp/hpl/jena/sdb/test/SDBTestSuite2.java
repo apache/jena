@@ -13,8 +13,8 @@ import org.junit.runners.AllTests;
 import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesHSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesMySQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexHSQL;
+import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesDerby;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -52,7 +52,7 @@ public class SDBTestSuite2 extends TestSuite
         {
             JDBC.loadDriverMySQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2", Access.getUser(), Access.getPassword()) ;
-            addTest(QueryTestSDBFactory.make(new StoreTriplesNodesMySQL(sdb),
+            addTest(QueryTestSDBFactory.make(new StoreTriplesNodesIndexMySQL(sdb),
                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
                                              "Schema 2 : ")) ;
         }
@@ -61,7 +61,7 @@ public class SDBTestSuite2 extends TestSuite
         {
             JDBC.loadDriverHSQL() ;
             SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
-            Store store = new StoreTriplesNodesHSQL(sdb) ;
+            Store store = new StoreTriplesNodesIndexHSQL(sdb) ;
             store.getTableFormatter().format() ;
             TestSuite ts = QueryTestSDBFactory.make(store,
                                                     SDBTest.testDirSDB+"/manifest-sdb.ttl",
