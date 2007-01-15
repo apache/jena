@@ -103,7 +103,7 @@ public class sdbprint extends CmdArgsDB
         Store store = getModStore().getStore() ; 
 
         compilePrint(store, query) ;
-  }
+    }
 
     boolean needDivider = false ;
     private void divider()
