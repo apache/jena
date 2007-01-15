@@ -9,8 +9,6 @@ SDB ToDo list (and general notes)
   Or really use properties?
   layout; layout/index; layout/hash for now.
 
-+ tests for ORDER BY and other integrations
-
 + Generating SQL:
   + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
   + SELECT/one table ==> move constraints out (it's just SPJ)
