@@ -27,6 +27,9 @@ public class DatasetStore implements Dataset
     Model model ;
     List<String> names = new ArrayList<String>() ;  // Just to fix things up.
 
+    public static DatasetStore create(Store store)
+    { return new DatasetStore(store) ; }
+    
     public DatasetStore(Store store)
     {
         this.store = store ; 

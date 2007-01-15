@@ -32,9 +32,8 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
+import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
@@ -45,6 +44,7 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
+        runCode() ;
         //run() ;
         //SDBConnection.logSQLStatements = true ;
         
@@ -253,6 +253,35 @@ public class RunSDB
         String[] a = new String[]{"--sdb=sdb.ttl", "--format=N3"} ;
         sdb.sdbdump.main(a) ;
     }
+    
+    public static void runCode()
+    {
+        // Need to work on this!
+        // Global command context = store.
+        // By-passes processModulesAndArgs
+        
+        SDB.init() ;
+
+        StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash ,
+                                       DatabaseType.Derby ) ;
+        desc.connDesc = new SDBConnectionDesc() ;
+        JDBC.loadDriverDerby() ;
+        String jdbcURL = JDBC.makeURL("derby", "localhost", "DB/SDB2") ;
+        SDBConnection conn = new SDBConnection(jdbcURL, "user", "password") ;
+        Store store = SDBFactory.connectStore(conn, desc) ;
+
+        
+//
+//        Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
+//        
+//        Dataset dataset = new DatasetStore(store) ;
+//        
+//        QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
+//        QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
+        
+        System.exit(0) ;
+    }
+    
 }
 
 /*

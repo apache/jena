@@ -10,9 +10,13 @@ import java.sql.Connection;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
+
+import com.hp.hpl.jena.query.Dataset;
+
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
+import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
@@ -51,6 +55,12 @@ public class SDBFactory
         SDBConnection sdb = SDBConnectionFactory.create(sqlConnection) ;
         return StoreFactory.create(sdb, desc) ;
     }
+    
+    public static Dataset connectDataset(SDBConnection sdbConnection, StoreDesc desc)
+    { return DatasetStore.create(connectStore(sdbConnection, desc)) ; }
+    
+    public static Dataset connectDataset(String configFile)
+    { return DatasetStore.create(connectStore(configFile)) ; }
     
     public static Graph connectGraph(Store store)
     { return StoreFactory.createGraph(store) ; }

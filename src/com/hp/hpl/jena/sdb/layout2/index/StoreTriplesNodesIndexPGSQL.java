@@ -4,34 +4,31 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2;
+package com.hp.hpl.jena.sdb.layout2.index;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLMySQL;
-import com.hp.hpl.jena.sdb.layout2.index.QueryCompilerFactoryIndex;
-import com.hp.hpl.jena.sdb.layout2.index.FmtLayout2IndexMySQL;
-import com.hp.hpl.jena.sdb.layout2.index.LoaderIndexMySQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBase;
 
 
 
-public class StoreTriplesNodesIndexMySQL extends StoreBase
+public class StoreTriplesNodesIndexPGSQL extends StoreBase
 {
-    public StoreTriplesNodesIndexMySQL(SDBConnection connection)
+    public StoreTriplesNodesIndexPGSQL(SDBConnection connection)
     {
         this(connection, null) ;
     }
     
-    public StoreTriplesNodesIndexMySQL(SDBConnection connection, MySQLEngineType tableType)
+    public StoreTriplesNodesIndexPGSQL(SDBConnection connection, MySQLEngineType tableType)
     {
         super(connection,
-              new FmtLayout2IndexMySQL(connection, 
-                                  (tableType!=null)? tableType : MySQLEngineType.InnoDB),
-              new LoaderIndexMySQL(connection),
+              new FmtLayout2IndexPGSQL(connection),
+              new LoaderIndexPGSQL(connection),
               new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2(),
-              new GenerateSQLMySQL()) ;
+              new GenerateSQL()) ;
     }
 }
 

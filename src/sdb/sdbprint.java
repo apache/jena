@@ -56,7 +56,7 @@ public class sdbprint extends CmdArgsDB
         new sdbprint(argv).mainAndExit() ;
     }
     
-    protected sdbprint(String[] args)
+    public sdbprint(String[] args)
     {
         super(args);
         super.addModule(modQuery) ;
@@ -73,7 +73,7 @@ public class sdbprint extends CmdArgsDB
         StoreDesc storeDesc = getModStore().getStoreDesc() ;
         if ( storeDesc.layout != LayoutType.LayoutRDB )
         {
-            // Only fake the conenction if not ModelRDB
+            // Only fake the connection if not ModelRDB
             // else we need a live conenction (currently)
             storeDesc.connDesc.jdbcURL = JDBC.jdbcNone ;
             storeDesc.connDesc.type = "none" ;

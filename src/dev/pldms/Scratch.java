@@ -4,9 +4,9 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexHSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexMySQL;
-import com.hp.hpl.jena.sdb.layout2.StoreTriplesNodesIndexPGSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.util.FileManager;

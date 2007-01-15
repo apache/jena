@@ -98,7 +98,7 @@ public class ModStore extends ModBase
     Model model = null ;
     List<String> loadFiles = null ;
     boolean formatFirst = false ; 
-    
+
     public ModStore()
     {
         SDBConnection.logSQLExceptions = true ;
@@ -289,6 +289,8 @@ public class ModStore extends ModBase
         return store ; 
     }
 
+    public boolean hasStore() { return store != null ; }
+    
     public StoreDesc getStoreDesc()
     {
         return storeDesc ;
@@ -339,8 +341,6 @@ public class ModStore extends ModBase
     }
     
     public boolean isConnected() { return connection != null ; }
-    public boolean hasStore() { return store != null ; }
-    
     public SDBConnection getConnection()
     {
         if ( ! isConnected() && ! connectionAttempted )

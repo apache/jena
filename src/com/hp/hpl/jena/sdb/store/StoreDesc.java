@@ -47,14 +47,29 @@ public class StoreDesc
         return worker(m) ;
     }
         
+    public StoreDesc(String layoutName, String dbTypeName)
+    {
+        this(layoutName, dbTypeName, null) ;
+    }
+    
     public StoreDesc(String layoutName, String dbTypeName, FeatureSet featureSet)
     {
-        layout = LayoutType.convert(layoutName) ;
-        dbType = DatabaseType.convert(dbTypeName) ;
+        this(LayoutType.convert(layoutName), DatabaseType.convert(dbTypeName), featureSet) ;
+    }
+    
+    public StoreDesc(LayoutType layout, DatabaseType dbType)
+    { this(layout, dbType, null ) ; }
+
+
+    public StoreDesc(LayoutType layout, DatabaseType dbType, FeatureSet featureSet)
+    {
+        this.layout = layout ;
+        this.dbType = dbType ;
         if ( featureSet == null )
             featureSet = new FeatureSet() ;
         this.featureSet = featureSet ;
     }
+    
     
     public LayoutType getLayout() { return layout ; }
     

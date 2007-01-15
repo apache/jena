@@ -4,11 +4,9 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2;
+package com.hp.hpl.jena.sdb.layout2.index;
 
-import com.hp.hpl.jena.sdb.layout2.index.QueryCompilerFactoryIndex;
-import com.hp.hpl.jena.sdb.layout2.index.FmtLayout2IndexHSQL;
-import com.hp.hpl.jena.sdb.layout2.index.LoaderIndexHSQL;
+import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
