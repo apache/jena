@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- $Id: TestXMLFeatures.java,v 1.53 2007-01-16 18:45:35 jeremy_carroll Exp $
+ $Id: TestXMLFeatures.java,v 1.54 2007-01-16 21:36:48 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.xmloutput.impl.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.53 $ $Date: 2007-01-16 18:45:35 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.54 $ $Date: 2007-01-16 21:36:48 $
  */
 
 public class TestXMLFeatures extends XMLOutputTestBase {
@@ -110,12 +110,18 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 				"testing/wg/rdfms-syntax-incomplete/test001.rdf"), "");
 		RDFDefaultErrorHandler.silent = true;
 		Model m1 = null;
+		SimpleLogger old = null;
 		try {
+			old = BaseXMLWriter.setLogger(new SimpleLogger(){
+				public void warn(String s) {}
+				public void warn(String s, Exception e) {}
+			});
 			m.write(new FileWriter(fileName), lang);
 			m1 = createMemModel();
 			m1.read(new FileInputStream(fileName), "");
 		} finally {
 			RDFDefaultErrorHandler.silent = false;
+			BaseXMLWriter.setLogger(old);
 		}
 		assertTrue("Use of FileWriter", m.isIsomorphicWith(m1));
 		f.delete();
@@ -688,5 +694,5 @@ public class TestXMLFeatures extends XMLOutputTestBase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestXMLFeatures.java,v 1.53 2007-01-16 18:45:35 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.54 2007-01-16 21:36:48 jeremy_carroll Exp $
  */
