@@ -20,10 +20,7 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.graph.GraphSDB;
-import com.hp.hpl.jena.sdb.layout1.StoreRDB;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
-import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
+import com.hp.hpl.jena.sdb.layout1.*;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
@@ -105,6 +102,7 @@ public class StoreFactory
                 case MySQL5:
                     return new StoreSimpleMySQL(sdb, desc.engineType) ;
                 case PostgreSQL:
+                    return new StoreSimplePGSQL(sdb) ;
                 case MySQL41:
                 case Oracle10:
                 case SQLServer:
@@ -119,17 +117,6 @@ public class StoreFactory
             }
         }
 
-//        boolean hashVariant = true ;
-//        if ( desc.featureSet.hasFeature("layout") )
-//        {
-//            log.warn("Feature 'layout' seen - currently hardwired") ;
-//            if ( desc.featureSet.getFeature("layout").getAsString().equals("index") )
-//                hashVariant = false ;
-//        }
-//            
-//        // Hard wiring.
-//        hashVariant = ( desc.dbType == DatabaseType.Derby ) ;
-        
         if ( desc.layout == LayoutType.LayoutTripleNodesHash )
         {
             switch (desc.dbType)
