@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNamespace.java,v 1.12 2007-01-02 11:48:26 andy_seaborne Exp $
+  $Id: TestNamespace.java,v 1.13 2007-01-16 18:34:32 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -59,7 +59,7 @@ public class TestNamespace extends ModelTestBase
         File f =  File.createTempFile( "hedgehog", ".rdf" );
         m.add( statement( m, "http://spoo.net/S http://spoo.net/P http://spoo.net/O" ) );
         m.add( statement( m, "http://spoo.net/S ftp://net.fred.org/P http://spoo.net/O" ) );
-        m.write( new FileWriter( f ) );
+        m.write( new FileOutputStream( f ) );
     /* */
         Model m2 = ModelFactory.createDefaultModel();
         m2.read( "file:" + f.getAbsolutePath() );
