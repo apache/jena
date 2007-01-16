@@ -129,6 +129,10 @@ public class StoreFactory
                     return new StoreTriplesNodesHashPGSQL(sdb) ;
                 case HSQLDB:
                     return new StoreTriplesNodesHashHSQL(sdb) ;
+                case MySQL41:
+                case Oracle10:
+                case SQLServer:
+                    throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;
@@ -145,12 +149,12 @@ public class StoreFactory
                     return new StoreTriplesNodesIndexMySQL(sdb, desc.engineType) ;
                 case PostgreSQL:
                     return new StoreTriplesNodesIndexPGSQL(sdb) ;
+                case HSQLDB:
+                    return new StoreTriplesNodesIndexHSQL(sdb) ;
                 case MySQL41:
                 case Oracle10:
                 case SQLServer:
                     throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
-                case HSQLDB:
-                    return new StoreTriplesNodesIndexHSQL(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, index variant]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;
