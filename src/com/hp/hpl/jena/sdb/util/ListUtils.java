@@ -17,19 +17,9 @@ import com.hp.hpl.jena.sdb.util.alg.Transform;
 
 public class ListUtils
 {
-    public static <T extends Printable> void print(final IndentedWriter out, List<T> list)
+    public static <T extends Printable> void print(IndentedWriter out, List<T> list)
     {
-        Action<T> printAction = new Action<T>() {
-            boolean first = true ;
-            public void apply(Printable item)
-            {
-                if ( ! first )
-                    out.print(" ") ;
-                first = false ;
-                item.output(out) ;
-            }
-        } ;
-        apply(list, printAction) ;
+        apply(list, new PrintAction<T>(out)) ;
     }
     
     public static <T> void apply(List<T> list, Action<T> action)
@@ -56,12 +46,22 @@ public class ListUtils
         return x ;
     }
     
-    private static Action<Printable> printAction = new Action<Printable>() {
+    
+    private static class PrintAction <T extends Printable> implements Action<T> 
+    {
+        boolean first = true ;
+        IndentedWriter out ; 
+        PrintAction(IndentedWriter out) { this.out = out ; }
+        
         public void apply(Printable item)
         {
-            
+            if ( ! first )
+                out.print(" ") ;
+            first = false ;
+            item.output(out) ;
         }
-    } ;
+
+    } ; 
 }
 
 /*
