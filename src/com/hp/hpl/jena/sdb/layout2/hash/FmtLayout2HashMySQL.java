@@ -4,27 +4,39 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.index;
+package com.hp.hpl.jena.sdb.layout2.hash;
 
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
+import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.sql.TableUtils;
 
-public class FmtLayout2IndexDerby extends FmtLayout2
+
+public class FmtLayout2HashMySQL extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
+    static private Log log = LogFactory.getLog(FmtLayout2HashMySQL.class) ;
+    private MySQLEngineType engineType ;
     
-    public FmtLayout2IndexDerby(SDBConnection connection)
+    public FmtLayout2HashMySQL(SDBConnection connection, MySQLEngineType tableType)
     { 
         super(connection) ;
+        engineType = tableType ;
+        if ( engineType == null )
+        {
+            log.fatal("Engine type is null") ;
+            throw new SDBException("Engine type is null") ;
+        }
     }
 
     @Override
@@ -34,18 +46,19 @@ public class FmtLayout2IndexDerby extends FmtLayout2
         try { 
             connection().exec(sqlStr(
                                  "CREATE TABLE "+TableTriples.tableName+" (",
-                                 "    s int NOT NULL,",
-                                 "    p int NOT NULL,",
-                                 "    o int NOT NULL,",
+                                 "    s BIGINT  NOT NULL ,",
+                                 "    p BIGINT  NOT NULL ,",
+                                 "    o BIGINT  NOT NULL ,",
                                  "    PRIMARY KEY (s, p, o)",
-                                 ")"                
+                                 ") ENGINE="+engineType.getEngineName()                
                     )) ;
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p)") ;
-            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p)") ;
-            
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s,o)") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o,p)") ;
+            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
+        {
+            throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
+        }
     }
 
     @Override
@@ -53,17 +66,17 @@ public class FmtLayout2IndexDerby extends FmtLayout2
     {
         dropTable(TableNodes.tableName) ;
         try { 
+            // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
             connection().exec(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
-                                       "   id int generated always as identity ,",
-                                       "   hash BIGINT NOT NULL ,",
-                                       "   lex CLOB NOT NULL ,",
-                                       "   lang LONG VARCHAR NOT NULL ,",
-                                       "   datatype varchar("+TableNodes.UriLength+") NOT NULL ,",
-                                       "   type integer NOT NULL ,",
-                                       "   PRIMARY KEY (id)",
-                                       ")"
+                                 "   hash BIGINT NOT NULL DEFAULT 0,",
+                                 "   lex TEXT BINARY CHARACTER SET utf8 ,",
+                                 "   lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
+                                 "   datatype VARCHAR("+TableNodes.UriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
+                                 "   type int unsigned NOT NULL default '0',",
+                                 "   PRIMARY KEY Id  (id)",
+                                 ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8;"  
                     )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
+            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.tableName+" (hash)") ;
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
@@ -76,11 +89,11 @@ public class FmtLayout2IndexDerby extends FmtLayout2
         dropTable(TablePrefixes.tableName) ;
         try { 
             connection().exec(sqlStr(
-                                      "CREATE TABLE "+TablePrefixes.tableName+" (",
-                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
-                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
-                                      "    PRIMARY KEY  (prefix)",
-                                      ")"            
+                                 "CREATE TABLE "+TablePrefixes.tableName+" (",
+                                 "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") BINARY NOT NULL ,",
+                                 "    uri VARCHAR("+TablePrefixes.uriColWidth+") BINARY NOT NULL ,", 
+                                 "    PRIMARY KEY  (prefix)",
+                                 ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8"            
                     )) ;
         } catch (SQLException ex)
         {
@@ -89,10 +102,24 @@ public class FmtLayout2IndexDerby extends FmtLayout2
     }
     
     @Override
+    protected void truncateTable(String tableName)
+    { 
+        try { 
+            // MySQL note: DELETE FROM is transactional, TRUNCATE is not
+            connection().exec("TRUNCATE "+tableName) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException : Can't truncate table: "+tableName, ex) ; }
+    }
+    
+    @Override
     protected void dropTable(String tableName)
     {
-        TableUtils.dropTable(connection(), tableName) ;
+        try { 
+            connection().exec("DROP TABLE IF EXISTS "+tableName) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException : Can't drop table: "+tableName, ex) ; }
     }
+
 }
 
 /*

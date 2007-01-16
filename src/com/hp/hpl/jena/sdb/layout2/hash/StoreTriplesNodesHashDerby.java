@@ -10,9 +10,8 @@ import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.*;
 
-public class StoreTriplesNodesHashDerby extends StoreBase
+public class StoreTriplesNodesHashDerby extends StoreBaseHash
 {
 
     public StoreTriplesNodesHashDerby(SDBConnection connection)
@@ -24,7 +23,6 @@ public class StoreTriplesNodesHashDerby extends StoreBase
               new QueryCompilerFactoryHash(), 
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;
-        //throw new SDBNotImplemented("StoreTriplesNodesDerby") ;
     }
     
     @Override

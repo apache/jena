@@ -8,20 +8,11 @@ package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreBase;
 
-
-
-public class StoreTriplesNodesIndexPGSQL extends StoreBase
+public class StoreTriplesNodesIndexPGSQL extends StoreBaseIndex
 {
     public StoreTriplesNodesIndexPGSQL(SDBConnection connection)
-    {
-        this(connection, null) ;
-    }
-    
-    public StoreTriplesNodesIndexPGSQL(SDBConnection connection, MySQLEngineType tableType)
     {
         super(connection,
               new FmtLayout2IndexPGSQL(connection),

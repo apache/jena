@@ -4,36 +4,31 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.index;
+package com.hp.hpl.jena.sdb.layout2.hash;
 
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLMySQL;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
 
-
-public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
+public class StoreTriplesNodesHashMySQL extends StoreBaseHash
 {
-    public StoreTriplesNodesIndexHSQL(SDBConnection connection)
+    public StoreTriplesNodesHashMySQL(SDBConnection connection)
     {
         this(connection, null) ;
     }
     
-    public StoreTriplesNodesIndexHSQL(SDBConnection connection, MySQLEngineType tableType)
+    public StoreTriplesNodesHashMySQL(SDBConnection connection, MySQLEngineType tableType)
     {
-        // HSQL can't handle complex RHS of a left join so no optional spotting. 
         super(connection,
-              new FmtLayout2IndexHSQL(connection),
-              new LoaderIndexHSQL(connection),
-              new QueryCompilerFactoryIndex(),
-              new SQLBridgeFactory2()
-        );
+              new FmtLayout2HashMySQL(connection, 
+                                  (tableType!=null)? tableType : MySQLEngineType.InnoDB),
+              new LoaderOneTripleHash(connection),
+              new QueryCompilerFactoryHash(),
+              new SQLBridgeFactory2(),
+              new GenerateSQLMySQL()) ;
     }
-    
-    @Override
-    public String getNodeKeyColName() { return TableNodes.colId ; }
 }
 
 /*

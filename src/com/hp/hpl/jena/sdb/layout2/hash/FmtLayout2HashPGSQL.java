@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.index;
+package com.hp.hpl.jena.sdb.layout2.hash;
 
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
@@ -18,11 +18,12 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 
-public class FmtLayout2IndexDerby extends FmtLayout2
+
+public class FmtLayout2HashPGSQL extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
+    //static private Log log = LogFactory.getLog(FormatterTriplesNodesPGSQL.class) ;
     
-    public FmtLayout2IndexDerby(SDBConnection connection)
+    public FmtLayout2HashPGSQL(SDBConnection connection)
     { 
         super(connection) ;
     }
@@ -34,15 +35,15 @@ public class FmtLayout2IndexDerby extends FmtLayout2
         try { 
             connection().exec(sqlStr(
                                  "CREATE TABLE "+TableTriples.tableName+" (",
-                                 "    s int NOT NULL,",
-                                 "    p int NOT NULL,",
-                                 "    o int NOT NULL,",
+                                 "    s BIGINT NOT NULL,",
+                                 "    p BIGINT NOT NULL,",
+                                 "    o BIGINT NOT NULL,",
                                  "    PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p)") ;
-            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p)") ;
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
+            connection().exec("CREATE INDEX Pred "+TableTriples.tableName+" (p);") ;
             
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
@@ -54,12 +55,11 @@ public class FmtLayout2IndexDerby extends FmtLayout2
         dropTable(TableNodes.tableName) ;
         try { 
             connection().exec(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
-                                       "   id int generated always as identity ,",
-                                       "   hash BIGINT NOT NULL ,",
-                                       "   lex CLOB NOT NULL ,",
-                                       "   lang LONG VARCHAR NOT NULL ,",
-                                       "   datatype varchar("+TableNodes.UriLength+") NOT NULL ,",
-                                       "   type integer NOT NULL ,",
+                                       "   hash BIGINT NOT NULL,",
+                                       "   lex TEXT NOT NULL,",
+                                       "   lang varchar NOT NULL default '',",
+                                       "   datatype varchar("+TableNodes.UriLength+") NOT NULL default '',",
+                                       "   type integer NOT NULL default '0',",
                                        "   PRIMARY KEY (id)",
                                        ")"
                     )) ;

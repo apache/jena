@@ -4,25 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.index;
+package com.hp.hpl.jena.sdb.layout2.hash;
 
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.sql.TableUtils;
+import com.hp.hpl.jena.sdb.sql.*;
 
-public class FmtLayout2IndexDerby extends FmtLayout2
+
+public class FmtLayout2HashHSQL extends FmtLayout2
 {
-    //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
+    static private Log log = LogFactory.getLog(FmtLayout2HashHSQL.class) ;
+    private MySQLEngineType engineType ;
     
-    public FmtLayout2IndexDerby(SDBConnection connection)
+    public FmtLayout2HashHSQL(SDBConnection connection)
     { 
         super(connection) ;
     }
@@ -34,18 +37,19 @@ public class FmtLayout2IndexDerby extends FmtLayout2
         try { 
             connection().exec(sqlStr(
                                  "CREATE TABLE "+TableTriples.tableName+" (",
-                                 "    s int NOT NULL,",
-                                 "    p int NOT NULL,",
-                                 "    o int NOT NULL,",
+                                 "    s BIGINT NOT NULL ,",
+                                 "    p BIGINT NOT NULL ,",
+                                 "    o BIGINT NOT NULL ,",
                                  "    PRIMARY KEY (s, p, o)",
-                                 ")"                
+                                 ")"               
                     )) ;
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p)") ;
-            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p)") ;
-            
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s,o)") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o,p)") ;
+            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
+        {
+            throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
+        }
     }
 
     @Override
@@ -53,17 +57,17 @@ public class FmtLayout2IndexDerby extends FmtLayout2
     {
         dropTable(TableNodes.tableName) ;
         try { 
-            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
-                                       "   id int generated always as identity ,",
-                                       "   hash BIGINT NOT NULL ,",
-                                       "   lex CLOB NOT NULL ,",
-                                       "   lang LONG VARCHAR NOT NULL ,",
-                                       "   datatype varchar("+TableNodes.UriLength+") NOT NULL ,",
-                                       "   type integer NOT NULL ,",
-                                       "   PRIMARY KEY (id)",
-                                       ")"
-                    )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
+            connection().exec(sqlStr (
+                     "CREATE TABLE "+TableNodes.tableName+" (",
+                     "   hash BIGINT NOT NULL ,",
+                     "   lex VARCHAR NOT NULL ,",
+                     "   lang VARCHAR(10) default '' NOT NULL ,",
+                     "   datatype VARCHAR default '' NOT NULL ,",
+                     "   type int default 0 NOT NULL ,",
+                     "   PRIMARY KEY (id)",
+                     ")"  
+                )) ;
+            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.tableName+" (hash)") ;
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
@@ -76,11 +80,11 @@ public class FmtLayout2IndexDerby extends FmtLayout2
         dropTable(TablePrefixes.tableName) ;
         try { 
             connection().exec(sqlStr(
-                                      "CREATE TABLE "+TablePrefixes.tableName+" (",
-                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
-                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
-                                      "    PRIMARY KEY  (prefix)",
-                                      ")"            
+                                 "CREATE TABLE "+TablePrefixes.tableName+" (",
+                                 "    prefix  VARCHAR NOT NULL,",
+                                 "    uri     VARCHAR NOT NULL,", 
+                                 "    PRIMARY KEY  (prefix)",
+                                 ")"            
                     )) ;
         } catch (SQLException ex)
         {
@@ -89,10 +93,21 @@ public class FmtLayout2IndexDerby extends FmtLayout2
     }
     
     @Override
+    protected void truncateTable(String tableName)
+    { 
+        try { 
+            if ( TableUtils.hasTable(connection().getSqlConnection(), tableName) )
+                connection().exec("DELETE FROM "+tableName) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException : Can't truncate table: "+tableName, ex) ; }
+    }
+    
+    @Override
     protected void dropTable(String tableName)
     {
         TableUtils.dropTable(connection(), tableName) ;
     }
+
 }
 
 /*

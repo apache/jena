@@ -6,34 +6,23 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
-
-
-public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
+public class StoreTriplesNodesIndexDerby extends StoreBaseIndex
 {
-    public StoreTriplesNodesIndexHSQL(SDBConnection connection)
+
+    public StoreTriplesNodesIndexDerby(SDBConnection connection)
     {
-        this(connection, null) ;
-    }
-    
-    public StoreTriplesNodesIndexHSQL(SDBConnection connection, MySQLEngineType tableType)
-    {
-        // HSQL can't handle complex RHS of a left join so no optional spotting. 
         super(connection,
-              new FmtLayout2IndexHSQL(connection),
-              new LoaderIndexHSQL(connection),
-              new QueryCompilerFactoryIndex(),
-              new SQLBridgeFactory2()
-        );
+              new FmtLayout2IndexDerby(connection) ,
+              new LoaderOneTripleIndex(connection),
+              //new LoaderIndexDerby(connection),
+              new QueryCompilerFactoryIndex(), 
+              new SQLBridgeFactory2(),
+              new GenerateSQL()) ;
     }
-    
-    @Override
-    public String getNodeKeyColName() { return TableNodes.colId ; }
 }
 
 /*

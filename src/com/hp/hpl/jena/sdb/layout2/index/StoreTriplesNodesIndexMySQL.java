@@ -10,11 +10,8 @@ import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLMySQL;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreBase;
 
-
-
-public class StoreTriplesNodesIndexMySQL extends StoreBase
+public class StoreTriplesNodesIndexMySQL extends StoreBaseIndex
 {
     public StoreTriplesNodesIndexMySQL(SDBConnection connection)
     {

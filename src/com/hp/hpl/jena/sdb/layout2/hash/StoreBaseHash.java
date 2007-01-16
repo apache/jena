@@ -1,43 +1,29 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.index;
+package com.hp.hpl.jena.sdb.layout2.hash;
 
-import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
+import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
-import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
+import com.hp.hpl.jena.sdb.store.*;
 
-
-
-public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
+public class StoreBaseHash extends StoreBase
 {
-    public StoreTriplesNodesIndexHSQL(SDBConnection connection)
+    public StoreBaseHash(SDBConnection connection, StoreFormatter formatter, StoreLoader loader, QueryCompilerFactory compilerF, SQLBridgeFactory sqlBridgeF, SQLGenerator sqlGenerator)
     {
-        this(connection, null) ;
+        super(connection, formatter, loader, compilerF, sqlBridgeF, sqlGenerator) ;
     }
-    
-    public StoreTriplesNodesIndexHSQL(SDBConnection connection, MySQLEngineType tableType)
-    {
-        // HSQL can't handle complex RHS of a left join so no optional spotting. 
-        super(connection,
-              new FmtLayout2IndexHSQL(connection),
-              new LoaderIndexHSQL(connection),
-              new QueryCompilerFactoryIndex(),
-              new SQLBridgeFactory2()
-        );
-    }
-    
+
     @Override
-    public String getNodeKeyColName() { return TableNodes.colId ; }
+    public String getNodeKeyColName() { return TableNodes.colHash ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

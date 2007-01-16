@@ -25,6 +25,10 @@ import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
@@ -132,6 +136,12 @@ public class StoreFactory
             {
                 case Derby:
                     return new StoreTriplesNodesHashDerby(sdb) ;
+                case MySQL5:
+                    return new StoreTriplesNodesHashMySQL(sdb, desc.engineType) ;
+                case PostgreSQL:
+                    return new StoreTriplesNodesHashPGSQL(sdb) ;
+                case HSQLDB:
+                    return new StoreTriplesNodesHashHSQL(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;
@@ -142,6 +152,8 @@ public class StoreFactory
         {
             switch (desc.dbType)
             {
+                case Derby:
+                    return new StoreTriplesNodesIndexDerby(sdb) ;
                 case MySQL5:
                     return new StoreTriplesNodesIndexMySQL(sdb, desc.engineType) ;
                 case PostgreSQL:
