@@ -55,7 +55,10 @@ public class SDBFactory
         SDBConnection sdb = SDBConnectionFactory.create(sqlConnection) ;
         return StoreFactory.create(sdb, desc) ;
     }
-    
+
+    public static Dataset connectDataset(Store store)
+    { return DatasetStore.create(store) ; }
+
     public static Dataset connectDataset(SDBConnection sdbConnection, StoreDesc desc)
     { return DatasetStore.create(connectStore(sdbConnection, desc)) ; }
     

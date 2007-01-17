@@ -17,7 +17,6 @@ public class sdbscript
     
     public static void main(String[] a)
     {
-        // TODO Make engine independent (via sdb.ttl?)
         if ( a.length == 0 )
             a = new String[]{ "script.rb" } ;
 
@@ -26,7 +25,6 @@ public class sdbscript
     
     private static void staticByReflection(String className, String methodName, String[] args)
     {
-        // Reflection to invoke <class>.suite() and return a TestSuite.
         Class<?> cmd = null ;
         try { cmd = Class.forName(className) ; }
         catch (ClassNotFoundException ex)

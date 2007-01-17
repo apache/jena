@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.util.alg;
 public class Alg
 {
     public static Filter RemoveNulls = new Filter(){
-        public boolean accept(Object item) { return item != null ; } } ; 
+        public boolean accept(Object item) { return item != null ; } } ;
         
 }
 
