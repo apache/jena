@@ -16,7 +16,7 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.13 2007-01-17 10:39:53 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.14 2007-01-17 10:44:25 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
