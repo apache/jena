@@ -1,35 +1,21 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.util;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-
-public class StoreTriplesNodesHashDerby extends StoreBaseHash
+public class DerbyUtils
 {
-
-    public StoreTriplesNodesHashDerby(SDBConnection connection)
+    public static void setDerbyPageCacheSize(int pages)
     {
-        super(connection,
-              new FmtLayout2HashDerby(connection) ,
-              new LoaderHashDerby(connection),
-              new QueryCompilerFactoryHash(), 
-              new SQLBridgeFactory2(),
-              new GenerateSQL()) ;
+        System.setProperty("derby.storage.pageCacheSize", Integer.toString(pages)) ;
     }
-    
-    @Override
-    public String getNodeKeyColName() { return TableNodes.colHash ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

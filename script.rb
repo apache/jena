@@ -37,7 +37,6 @@ class SDB
     @dataset = SDBFactory.connectDataset(store)
   end
   
-  # No! Store is already there
   def format
     f = store.getTableFormatter() ; 
     f.format() ;
@@ -46,7 +45,6 @@ class SDB
   def load(file)
     model = SDBFactory.connectModel(store)
     FileManager.get().readModel(model, file)
-    #    Add something to allow multiple files?
   end
   
   
@@ -64,11 +62,11 @@ end
 
 
 sdb = SDB.fromDesc("sdb.ttl")
-sdb.format
-sdb.load("D.ttl")
+#sdb.format
+#sdb.load("D.ttl")
 sdb.query_print("SELECT * { ?s ?p ?o}")
 
-sdb.tables.each { |name| puts name }
+# sdb.tables.each { |name| puts name }
 
 # Higher level operations like the command line tools
 # Command line => environment and actions?

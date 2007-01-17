@@ -10,6 +10,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
+import com.hp.hpl.jena.sdb.util.DerbyUtils;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.vocabulary.OWL;
@@ -30,6 +31,10 @@ public class SDB
         // + DatasetStore
         // Commands call AssemblerVocab.init() ;
         if ( initialized ) return ;
+        
+        // Default is 1000 4Kpages.
+        DerbyUtils.setDerbyPageCacheSize(10000) ;
+        
         AssemblerVocab.init() ;
         QueryEngineRegistry.get().add(new QueryEngineFactorySDB()) ;
         initialized = true ;
