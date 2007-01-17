@@ -11,9 +11,12 @@ package com.hp.hpl.jena.db.test;
 public class Data
 {
     // This file is binary.
-    public static final String strLong = "This is a huge string that repeats. αβγδε �?בגדה ابةتث";
+    // � is UTF8 ef bf bd = OxFFFD = Unicode Character 'REPLACEMENT CHARACTER'
+    public static final String strLong = "This is a huge string that repeats. αβγδε � בגדה ابةتث";
 //    public static final String strLong = "This is a huge string that repeats. Some padding again. ";
-    public static final String strUTF = "αβγδε �?בגדה ابةتث" ;
+    public static final String strUTF = "αβγδε � בגדה ابةتث" ;
+    // Charactser that may catch databases out (particularly the quotes) 
+    public static final String strSpecial = "'\"%?*" ;
 }
 
 /*

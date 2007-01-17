@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.21 2007-01-02 11:50:15 andy_seaborne Exp $
+  $Id: TestBasicOperations.java,v 1.22 2007-01-17 17:31:05 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -254,6 +254,15 @@ public class TestBasicOperations extends TestCase {
         Property p = model.createProperty("test#predicate");
         Literal l = model.createLiteral(str);
 
+        addRemove(model.createStatement(s, p, l));
+    }
+    
+    public void testAddRemoveLiteralSpecials()
+    {
+        String str = Data.strSpecial ;
+        Resource s = model.createResource("test#subject");
+        Property p = model.createProperty("test#predicate");
+        Literal l = model.createLiteral(str);
         addRemove(model.createStatement(s, p, l));
     }
     
