@@ -7,6 +7,7 @@
 <>  rdf:type mf:Manifest ;
     rdfs:label "ARQ - Scripts" ;
     mfx:include (
+
     	## Syntax tests are in <Syntax/manifest-syntax.ttl>
     	## but called by a different test suite for separate
     	## testing runs
@@ -15,9 +16,8 @@
         <BasicPatterns/manifest.n3>
 
         <Optional/manifest.ttl>
-        <Optional/manifest-ext.ttl>
         <Union/manifest.ttl>
-        <Unsaid/manifest.ttl>
+##        <Unsaid/manifest.ttl>
 
         <Select/manifest.ttl>
         <Construct/manifest.ttl>
@@ -49,10 +49,13 @@
         <Planning/manifest.ttl>
 
         <General/manifest.ttl>
-        <Extensions/manifest.ttl>
+##         <Extensions/manifest.ttl>
 
         <Distinct/manifest.ttl>
         <Sort/manifest.ttl>
         <Examples/manifest.ttl>
+
+## Specials
+        <../../WorkSpace/Algebra/manifest.ttl>
     ) .
 

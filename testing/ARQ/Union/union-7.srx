@@ -5,10 +5,9 @@
     xmlns="http://www.w3.org/2005/sparql-results#" >
   <head>
     <variable name="x"/>
-    <variable name="v"/>
     <variable name="y"/>
+    <variable name="v"/>
     <variable name="w"/>
-    <variable name="g"/>
   </head>
   <results ordered="false" distinct="false">
     <result>
@@ -50,9 +49,6 @@
       <binding name="w">
         <uri>http://example/v2</uri>
       </binding>
-      <binding name="g">
-        <uri>file:///C:/home/afs/Projects/ARQ/testing/ARQ/Union/data-1.ttl</uri>
-      </binding>
     </result>
     <result>
       <binding name="y">
@@ -61,9 +57,6 @@
       <binding name="w">
         <uri>http://example/v1</uri>
       </binding>
-      <binding name="g">
-        <uri>file:///C:/home/afs/Projects/ARQ/testing/ARQ/Union/data-1.ttl</uri>
-      </binding>
     </result>
     <result>
       <binding name="y">
@@ -71,9 +64,6 @@
       </binding>
       <binding name="w">
         <uri>http://example/z</uri>
-      </binding>
-      <binding name="g">
-        <uri>file:///C:/home/afs/Projects/ARQ/testing/ARQ/Union/data-1.ttl</uri>
       </binding>
     </result>
   </results>

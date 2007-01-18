@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.123 2007-01-18 12:01:11 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.124 2007-01-18 15:07:53 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -18,7 +18,7 @@
 
   <!-- Output file names and locations -->
   <property name="dist.name"       value="${Name}-${version}"/>
-  <property name="dist.zip.name"   value="${name}-${version}.zip"/>
+  <property name="dist.zip.name"   value="${Name}-${version}.zip"/>
   <property name="web.site"        value="http://jena.sourceforge.net/" />
   <property name="jarfile"         value="${name}.jar"/>
   <property name="arq.jarfile"     value="arq.jar"/>
