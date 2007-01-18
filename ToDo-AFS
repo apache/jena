@@ -1,9 +1,7 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Be able to string commands together without exiting.
-  Same store.  Extract the "action" part of command.
-  Caching ModStore?  CmdExecCxt?
++ Value-based hashing
 
 + Features: more general config setting?
   Or really use properties?
@@ -24,6 +22,8 @@ SDB ToDo list (and general notes)
   Isolate QC2.insertValueGetter
 
 + Ugly Store.getNodeKeyColName()
+
++ Script library
 
 + cmd: 
   @ --load for sdb.sdbquery --format
