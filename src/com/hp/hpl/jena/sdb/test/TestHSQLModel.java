@@ -17,7 +17,7 @@ public class TestHSQLModel extends AbstractTestModel {
 
 	@Override
 	public Model getModel() {
-		return ModelPool.get().getHSQL();
+		return ModelPool.get().getIndexHSQL();
 	}
 
 }

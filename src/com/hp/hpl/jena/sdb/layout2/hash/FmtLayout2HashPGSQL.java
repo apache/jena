@@ -43,7 +43,7 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
                     )) ;
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
             connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
-            connection().exec("CREATE INDEX Pred "+TableTriples.tableName+" (p);") ;
+            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p);") ;
             
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
@@ -60,7 +60,7 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
                                        "   lang varchar NOT NULL default '',",
                                        "   datatype varchar("+TableNodes.UriLength+") NOT NULL default '',",
                                        "   type integer NOT NULL default '0',",
-                                       "   PRIMARY KEY (id)",
+                                       "   PRIMARY KEY (hash)",
                                        ")"
                     )) ;
             connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");

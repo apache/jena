@@ -14,7 +14,7 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="jdbc/hsqldb.jar"/>
-	<classpathentry kind="lib" path="lib/junit-4.1.jar" sourcepath="C:/home/afs/jlib/junit4.1/junit-4.1-src.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jenatest.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>

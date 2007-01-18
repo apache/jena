@@ -64,7 +64,7 @@ public class FmtLayout2HashHSQL extends FmtLayout2
                      "   lang VARCHAR(10) default '' NOT NULL ,",
                      "   datatype VARCHAR default '' NOT NULL ,",
                      "   type int default 0 NOT NULL ,",
-                     "   PRIMARY KEY (id)",
+                     "   PRIMARY KEY (hash)",
                      ")"  
                 )) ;
             connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.tableName+" (hash)") ;

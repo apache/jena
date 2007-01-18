@@ -17,7 +17,7 @@ public class TestMySQLModel extends AbstractTestModel {
 
 	@Override
 	public Model getModel() {
-		return ModelPool.get().getMySQL();
+		return ModelPool.get().getIndexMySQL();
 	}
 
 }

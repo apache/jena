@@ -43,7 +43,7 @@ public class FmtLayout2IndexPGSQL extends FmtLayout2
                     )) ;
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
             connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
-            connection().exec("CREATE INDEX Pred "+TableTriples.tableName+" (p);") ;
+            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p);") ;
             
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }

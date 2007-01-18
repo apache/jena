@@ -18,7 +18,7 @@ public class TestMySQLGraph extends AbstractTestGraph {
 	@Override
 	public Graph getGraph()
 	{
-		return ModelPool.get().getMySQL().getGraph() ;
+		return ModelPool.get().getIndexMySQL().getGraph() ;
 	}
 }
 

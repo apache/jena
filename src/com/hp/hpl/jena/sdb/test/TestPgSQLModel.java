@@ -17,7 +17,7 @@ public class TestPgSQLModel extends AbstractTestModel {
 
 	@Override
 	public Model getModel() {
-		return ModelPool.get().getPgSQL();
+		return ModelPool.get().getIndexPgSQL();
 	}
 
 }

@@ -16,7 +16,7 @@ public class StoreTriplesNodesHashPGSQL extends StoreBaseHash
     {
         super(connection,
               new FmtLayout2HashPGSQL(connection),
-              new LoaderOneTripleHash(connection),
+              new LoaderHashPGSQL(connection),
               new QueryCompilerFactoryHash(),
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;

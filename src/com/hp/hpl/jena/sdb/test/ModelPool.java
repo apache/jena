@@ -12,6 +12,10 @@ import java.util.Map;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
@@ -33,6 +37,10 @@ public class ModelPool {
 
 	protected ModelPool() {
 		stores = new HashMap<String, Store>();
+		JDBC.loadDriverDerby();
+		JDBC.loadDriverHSQL();
+		JDBC.loadDriverMySQL();
+		JDBC.loadDriverPGSQL();
 	}
 
 	public static ModelPool get() {
@@ -49,9 +57,9 @@ public class ModelPool {
 		}
 		stores = new HashMap<String, Store>();
 	}
-
-	public Model getMySQL() {
-		Store store = stores.get("MYSQL");
+	
+	public Model getIndexMySQL() {
+		Store store = stores.get("MYSQLINDEX");
 
 		if (store == null) {
 			JDBC.loadDriverMySQL();
@@ -63,16 +71,37 @@ public class ModelPool {
 
 			store.getTableFormatter().format();
 
-			stores.put("MYSQL", store);
+			stores.put("MYSQLINDEX", store);
 		}
 		
 		Model model = SDBFactory.connectModel(store);
 		model.removeAll();
 		return model;
 	}
+	
+	public Model getHashMySQL() {
+		Store store = stores.get("MYSQLHASH");
 
-	public Model getHSQL() {
-		Store store = stores.get("HSQL");
+		if (store == null) {
+			JDBC.loadDriverMySQL();
+
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:mysql://localhost/sdb_test", "jena", "swara");
+
+			store = new StoreTriplesNodesHashMySQL(sdb);
+
+			store.getTableFormatter().format();
+
+			stores.put("MYSQLHASH", store);
+		}
+		
+		Model model = SDBFactory.connectModel(store);
+		model.removeAll();
+		return model;
+	}
+	
+	public Model getIndexHSQL() {
+		Store store = stores.get("HSQLINDEX");
 
 		if (store == null) {
 			JDBC.loadDriverHSQL();
@@ -84,16 +113,37 @@ public class ModelPool {
 
 			store.getTableFormatter().format();
 
-			stores.put("HSQL", store);
+			stores.put("HSQLINDEX", store);
 		}
 		
 		Model model = SDBFactory.connectModel(store);
 		model.removeAll();
 		return model;
 	}
+	
+	public Model getHashHSQL() {
+		Store store = stores.get("HSQLHASH");
 
-	public Model getPgSQL() {
-		Store store = stores.get("PGSQL");
+		if (store == null) {
+			JDBC.loadDriverHSQL();
+
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:hsqldb:mem:aname", "sa", "");
+
+			store = new StoreTriplesNodesHashHSQL(sdb);
+
+			store.getTableFormatter().format();
+
+			stores.put("HSQLHASH", store);
+		}
+		
+		Model model = SDBFactory.connectModel(store);
+		model.removeAll();
+		return model;
+	}
+	
+	public Model getIndexPgSQL() {
+		Store store = stores.get("PGSQLINDEX");
 
 		if (store == null) {
 			JDBC.loadDriverPGSQL();
@@ -105,7 +155,7 @@ public class ModelPool {
 
 			store.getTableFormatter().format();
 			
-			stores.put("PGSQL", store);
+			stores.put("PGSQLINDEX", store);
 		}
 		
 		Model model = SDBFactory.connectModel(store);
@@ -113,8 +163,29 @@ public class ModelPool {
 		return model;
 	}
 	
-	public Model getDerby() {
-		Store store = stores.get("Derby");
+	public Model getHashPgSQL() {
+		Store store = stores.get("PGSQLHASH");
+
+		if (store == null) {
+			JDBC.loadDriverPGSQL();
+
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
+
+			store = new StoreTriplesNodesHashPGSQL(sdb);
+
+			store.getTableFormatter().format();
+			
+			stores.put("PGSQLHASH", store);
+		}
+		
+		Model model = SDBFactory.connectModel(store);
+		model.removeAll();
+		return model;
+	}
+	
+	public Model getHashDerby() {
+		Store store = stores.get("DERBYHASH");
 		
 		if (store == null) {
 			JDBC.loadDriverDerby() ;
@@ -125,7 +196,27 @@ public class ModelPool {
 			
 			store.getTableFormatter().format();
 			
-			stores.put("Derby", store);
+			stores.put("DERBYHASH", store);
+		}
+        
+        Model model = SDBFactory.connectModel(store);
+        model.removeAll();
+        return model;
+	}
+	
+	public Model getIndexDerby() {
+		Store store = stores.get("DERBYINDEX");
+		
+		if (store == null) {
+			JDBC.loadDriverDerby() ;
+			String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
+			SDBConnection sdb = new SDBConnection(url, null, null) ;
+        
+			store = new StoreTriplesNodesIndexDerby(sdb);
+			
+			store.getTableFormatter().format();
+			
+			stores.put("DERBYINDEX", store);
 		}
         
         Model model = SDBFactory.connectModel(store);

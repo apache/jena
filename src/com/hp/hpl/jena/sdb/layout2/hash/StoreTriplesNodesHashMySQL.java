@@ -24,7 +24,7 @@ public class StoreTriplesNodesHashMySQL extends StoreBaseHash
         super(connection,
               new FmtLayout2HashMySQL(connection, 
                                   (tableType!=null)? tableType : MySQLEngineType.InnoDB),
-              new LoaderOneTripleHash(connection),
+              new LoaderHashMySQL(connection),
               new QueryCompilerFactoryHash(),
               new SQLBridgeFactory2(),
               new GenerateSQLMySQL()) ;

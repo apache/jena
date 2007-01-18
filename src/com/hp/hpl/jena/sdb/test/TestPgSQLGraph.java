@@ -18,7 +18,7 @@ public class TestPgSQLGraph extends AbstractTestGraph {
 	@Override
 	public Graph getGraph()
 	{
-		return ModelPool.get().getPgSQL().getGraph();
+		return ModelPool.get().getIndexPgSQL().getGraph();
 	}
 }
 

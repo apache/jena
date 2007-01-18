@@ -18,7 +18,7 @@ public class TestHSQLGraph extends AbstractTestGraph {
 	@Override
 	public Graph getGraph()
 	{
-		return ModelPool.get().getHSQL().getGraph();
+		return ModelPool.get().getIndexHSQL().getGraph();
 	}
 }
 
