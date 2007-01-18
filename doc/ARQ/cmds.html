@@ -53,7 +53,7 @@ set the query language.</p>
     <li><a id="arq.rdql" name="arq.rdql"><code>arq.rdql</code></a> : wrapper for RDQL queries</li>
 </ul>
 
-<p>Just running <code>arq.query</code> with no arguments prints the usage message.
+<p>Running <code>arq.query --help </code>prints the usage message.
 The main arguments are:</p>
 <ul>
 	<li><code>--query FILE</code> : The file with the query to execute</li>
@@ -61,6 +61,10 @@ The main arguments are:</p>
     default graph.</li>
 	<li><code>--namedgraph FILE</code> : The data to query. It will be included 
     as a named graph.</li>
+    <li><code>--desc</code>: <a href="http://jena.sourceforge.net/assembler/">
+    Jena Assembler description</a> of the dataset to be queried, augmented with 
+    vocabulary for datasets, not just graphs. See <code>etc/</code> for 
+    examples.</li>
     <li><code>--service URL</code> : Remote service location</li>
 </ul>
 

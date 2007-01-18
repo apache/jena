@@ -30,6 +30,7 @@
   application-written functions and provides a <a href="library.html#functions">function library</a>. 
   Applications can <a href="writing_functions.html">write and register their own 
   functions</a>.</p>
+	<p>Property functions provide </p>
 
   <h2><a id="valueFunctions" name="valueFunctions">Functions</a></h2>
 
@@ -62,9 +63,9 @@
 
   <p>The <kbd>jfn:now</kbd> returns the time the query started.</p>
 
-  <h2><a id="propertyFunctions" name="propertyFunctions">Property Functions</a></h2>
+  <h2><a id="propertyFunctions" name="propertyFunctions">Property functions</a></h2>
 
-  <p>Function properties, sometimes called "magic properties", are
+  <p>Property functions, sometimes called "magic properties", are
   properties that cause triple matching to happen by executing some
   piece of code, determined by the property URI, and not by the
   usual graph matching. They can be used to give certain kinds of
@@ -78,11 +79,11 @@
 
   <p>One common case is for access to collections (RDF lists) or
   containers (rdf:Bag, rdf:Seq, rdf:Alt).</p>
-  <pre class="box">PREFIX list: &lt;http://jena.hpl.hp.com/ARQ/list#&gt;<br /><br />SELECT ?member<br />{ ?x :p ?list .<br /> ?list list:member ?member .<br />}<br /></pre>
+  <pre class="box">PREFIX list: &lt;http://jena.hpl.hp.com/ARQ/list#&gt;<br /><br />SELECT ?member<br />{ ?x :p ?list .		# Some way to find the list<br /> ?list list:member ?member .<br />}<br /></pre>
 
   <p>which can also be written:</p><pre class="box">PREFIX list: &lt;http://jena.hpl.hp.com/ARQ/list#&gt;<br /><br />SELECT ?member<br />{ ?x :p [ list:member ?member ] }<br /></pre>
 
-  <p>Likewise, RDF containers:</p><pre class="box">PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;<br /><br />SELECT ?member<br />{ ?x :p ?bag .<br /> ?bag rdfs:member ?member .<br />}<br /></pre><p>
+  <p>Likewise, RDF containers:</p><pre class="box">PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;<br /><br />SELECT ?member<br />{ ?x :p ?bag .		# Some way to find the bag<br /> ?bag rdfs:member ?member .<br />}<br /></pre><p>
   Property functions can also take lists in the subject or object slot.</p>
   <p>Code for properties can be dynamically loaded or
   pre-registered. For example, <code>splitIRI</code> will take an IRI and assign 
@@ -97,8 +98,8 @@ PREFIX apf: &lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;<br /><br />SEL
 
   <p>or on a per instance basis:</p><pre class="box"> QueryExecution qExec = . . . ;<br /> qExec.getContext().setFalse(ARQ.enablePropertyFunctions) ;<br /></pre>
 
-  <p>The function properties in the ARQ distribution are described
-  on the <a href="library.html#fprops">library page</a>.</p>
+  <p>The property functions in the ARQ distribution are described
+  on the <a href="library.html#propFunc">library page</a>.</p>
 
   <h2><a id="describeHandlers" name="describeHandlers">DESCRIBE
   handlers</a></h2>
@@ -107,7 +108,7 @@ PREFIX apf: &lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;<br /><br />SEL
   define an exact form of RDF to return.  Instead, it allows the
   server or query processor to return what it considers to be an
   appropriate description of the resources located. This
-  description will be specific to the domain, data modeling or
+  description will be specific to the domain, data modelling or
   application.</p>
 
   <p>ARQ comes with one built-in handler which calculates the blank
