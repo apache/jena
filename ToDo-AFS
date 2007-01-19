@@ -27,6 +27,8 @@ SDB ToDo list (and general notes)
 
 + Ugly Store.getNodeKeyColName()
 
++ Term tests : check there is a test for ' quotes
+
 + Script library
 
 + cmd: 
