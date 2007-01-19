@@ -9,7 +9,7 @@ package com.hp.hpl.jena.n3;
  *  N3 to RDF
  *   
  * @author		Andy Seaborne
- * @version 	$Id: N3Exception.java,v 1.9 2007-01-02 11:48:32 andy_seaborne Exp $
+ * @version 	$Id: N3Exception.java,v 1.10 2007-01-19 11:26:37 andy_seaborne Exp $
  */
 
 import com.hp.hpl.jena.shared.*;
@@ -17,8 +17,6 @@ import com.hp.hpl.jena.shared.*;
 public class N3Exception extends SyntaxError
 {
     public N3Exception(String message) { super( message ) ; }
-    
-    public String getMessage() { return message ; }
 }
 
 

@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.34 2007-01-02 11:48:32 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.35 2007-01-19 11:26:37 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -190,17 +190,17 @@ public class N3toRDF implements N3ParserEventHandler
 			{
 				case N3Parser.ARROW_R :
                     if ( ! allowPropertySymbols )
-                        error("Line "+line+": N3toRDF: Propertry symbol '=>' not allowed") ;
+                        error("Line "+line+": N3toRDF: Property symbol '=>' not allowed") ;
 					propStr = LOG_IMPLIES ;
 					break;
 				case N3Parser.ARROW_MEANS :
                     if ( ! allowPropertySymbols )
-                        error("Line "+line+": N3toRDF: Propertry symbol '<=>' not allowed") ;
+                        error("Line "+line+": N3toRDF: Property symbol '<=>' not allowed") ;
 					propStr = LOG_MEANS ;
 					break;
 				case N3Parser.ARROW_L :
                     if ( ! allowPropertySymbols )
-                        error("Line "+line+": N3toRDF: Propertry symbol '<=' not allowed") ;
+                        error("Line "+line+": N3toRDF: Property symbol '<=' not allowed") ;
 					// Need to reverse subject and object
 					propStr = LOG_IMPLIES ;
 					AST tmp = obj; obj = subj; subj = tmp;
@@ -209,12 +209,12 @@ public class N3toRDF implements N3ParserEventHandler
 					//propStr = NS_DAML + "equivalentTo";
 					//propStr = damlVocab.equivalentTo().getURI() ;
                     if ( ! allowPropertySymbols )
-                        error("Line "+line+": N3toRDF: Propertry symbol '=' not allowed") ;
+                        error("Line "+line+": N3toRDF: Property symbol '=' not allowed") ;
                     pNode = OWL.sameAs ;
 					break;
 				case N3Parser.KW_A :
                     if ( ! allowKeywordA )
-                        error("Line "+line+": N3toRDF: Propertry symbol 'a' not allowed") ;
+                        error("Line "+line+": N3toRDF: Property symbol 'a' not allowed") ;
                     pNode = RDF.type ;
 					break ;
 				case N3Parser.QNAME:
