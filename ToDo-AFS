@@ -1,7 +1,11 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Prepared statement query cache?
+  When will it be beneficial - GraphSDB?
+
 + Value-based hashing
+  String version - and have fixed choice of xsd:string or plain string for terms.
 
 + Features: more general config setting?
   Or really use properties?

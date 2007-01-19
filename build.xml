@@ -59,8 +59,8 @@
 	<property name="java.debuglevel"  value="source,lines,vars"/>
 	<property name="java.deprecation" value="off"/>
 	<property name="java.optimize"    value="true"/>
-	<property name="java.source"      value="1.6"/>
-	<property name="java.target"      value="1.6"/>
+	<property name="java.source"      value="1.5"/>
+	<property name="java.target"      value="1.5"/>
     </target>
 
     <target name="javac-flags" depends="default-javac-flags"/>

@@ -15,14 +15,14 @@ import com.hp.hpl.jena.sdb.util.alg.Transform;
 
 public class SetUtils
 {
-    public static <T> Set<T> intersection(Set<T> setLeft, Set<T> setRight)
+    public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight)
     {
         Set<T> results = new HashSet<T>(setLeft) ;
         results.retainAll(setRight) ;
         return results ;
     }
 
-    public static <T> boolean intersectionP(Set<T> s1, Set<T> s2)
+    public static <T> boolean intersectionP(Set<? extends T> s1, Set<? extends T> s2)
     {
         for( T elt : s1 )
         {
@@ -32,7 +32,7 @@ public class SetUtils
         return false ;
     }
 
-    public static <T> Set<T> union(Set<T> s1, Set<T> s2)
+    public static <T> Set<T> union(Set<? extends T> s1, Set<? extends T> s2)
     {
         Set<T> s3 = new HashSet<T>(s1) ;
         s3.addAll(s2) ;
@@ -42,20 +42,20 @@ public class SetUtils
 
     /** Return is s1 \ s2 */
 
-    public static <T> Set<T> difference(Set<T> s1, Set<T> s2)
+    public static <T> Set<T> difference(Set<? extends T> s1, Set<? extends T> s2)
     {
         Set<T> s3 = new HashSet<T>(s1) ;
         s3.removeAll(s2) ;
         return s3 ;
     }
     
-    public static <T> void apply(Set<T> s, Action<T> action)
+    public static <T> void apply(Set<? extends T> s, Action<T> action)
     {
         for ( T item : s )
             action.apply(item) ;
     }
     
-    public static <T> Set<T> filter(Set<T> s, Filter<T> f)
+    public static <T> Set<T> filter(Set<? extends T> s, Filter<T> f)
     {
         Set<T> x = new HashSet<T>() ;
         for ( T item : s )
@@ -65,7 +65,7 @@ public class SetUtils
     }
     
     
-    public static <T, R> Set<R> convert(Set<T> s, Transform<T, R> converter)
+    public static <T, R> Set<R> convert(Set<? extends T> s, Transform<T, R> converter)
     {
         Set<R> x = new HashSet<R>() ;
         for ( T item : s )

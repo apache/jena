@@ -18,18 +18,18 @@ import com.hp.hpl.jena.sdb.util.alg.Transform;
 
 public class ListUtils
 {
-    public static <T extends Printable> void print(IndentedWriter out, List<T> list)
+    public static <T extends Printable> void print(IndentedWriter out, List<? extends T> list)
     {
         apply(list, new PrintAction<T>(out)) ;
     }
     
-    public static <T> void apply(List<T> list, Action<T> action)
+    public static <T> void apply(List<? extends T> list, Action<T> action)
     {
         for ( T item : list )
             action.apply(item) ;
     }
     
-    public static <T> List<T> filter(List<T> list, Filter<T> f)
+    public static <T> List<T> filter(List<? extends T> list, Filter<T> f)
     {
         List<T> x = new ArrayList<T>() ;
         for ( T item : list )
@@ -38,7 +38,7 @@ public class ListUtils
         return x ;
     }
     
-    public static <T, R> List<R> convert(List<T> list, Transform<T, R> converter)
+    public static <T, R> List<R> convert(List<? extends T> list, Transform<T, R> converter)
     {
         List<R> x = new ArrayList<R>() ;
         for ( T item : list)
