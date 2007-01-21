@@ -6,6 +6,7 @@ SDB ToDo list (and general notes)
 
 + Value-based hashing
   String version - and have fixed choice of xsd:string or plain string for terms.
+  Partial alterntaive: condition is "T.o = hash1 OR T.o = hash2"
 
 + Features: more general config setting?
   Or really use properties?
