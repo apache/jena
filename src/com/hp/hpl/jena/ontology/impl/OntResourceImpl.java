@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.64 $
+ * Revision           $Revision: 1.65 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-08 15:38:22 $
+ * Last modified on   $Date: 2007-01-21 16:26:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.64 2007-01-08 15:38:22 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.65 2007-01-21 16:26:28 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -935,12 +935,12 @@ public class OntResourceImpl
      *         given property. If the property is not defined the method returns null.
      */
     public RDFNode getPropertyValue( Property property ) {
-        RDFNode obj = getRequiredProperty( property ).getObject();
-        if (obj == null) {
+        Statement s = getProperty( property );
+        if (s == null) {
             return null;
         }
         else {
-            return asOntResource( obj );
+            return asOntResource( s.getObject() );
         }
     }
 

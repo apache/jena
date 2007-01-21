@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-08 15:38:27 $
+ * Last modified on   $Date: 2007-01-21 16:26:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.17 2007-01-08 15:38:27 ian_dickinson Exp $
+ * @version CVS $Id: TestResource.java,v 1.18 2007-01-21 16:26:30 ian_dickinson Exp $
  */
 public class TestResource
     extends OntTestBase
@@ -617,6 +617,17 @@ public class TestResource
                     Object bb = a.getPropertyValue( p );
                     assertEquals( b, bb );
                     assertTrue( "Return value should be an OntResource", bb instanceof OntResource );
+                }
+            },
+            new OntTestCase( "OntResource.getPropertyValue - missing prop", true, true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntResource a = m.createOntResource( "http://foo/bar#a" );
+                    Resource b = m.createResource( "http://foo/bar#b" );
+                    OntProperty p = m.createOntProperty( "http://foo/bar#p" );
+                    OntProperty q = m.createOntProperty( "http://foo/bar#q" );
+                    m.add( a, p, b );
+                    Object bb = a.getPropertyValue( q );
+                    assertNull( bb );
                 }
             },
             new OntTestCase( "OntResource.listPropertyValues - object prop", true, true, true, true ) {
