@@ -67,7 +67,7 @@ IDBConnection conn = new DBConnection ( DB_URL, DB_USER, DB_PASSWD, DB );
 ModelMaker maker = ModelFactory.createModelRDBMaker(conn) ;
 
 // create or open the default model
-Model model = maker.createModel();
+Model model = maker.createDefaultModel();
 
 // Close the database connection
 conn.close();</pre>
