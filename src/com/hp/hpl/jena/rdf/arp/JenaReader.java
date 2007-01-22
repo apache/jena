@@ -461,8 +461,16 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
     }
 
     private Object setArpProperty(String str, Object v) {
-        return setArpProperty(arpf.getOptions(), str, v, errorHandler);
+        return setArpProperty(getOptions(), str, v, errorHandler);
     }
+
+	public ARPOptions getOptions() {
+		return arpf.getOptions();
+	}
+
+	public void setOptionsWith(ARPOptions opts) {
+		arpf.setOptionsWith(opts);
+	}
 
 
 //    /**
