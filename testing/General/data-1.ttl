@@ -11,6 +11,8 @@
 :x :p4    "string"@en-us .
 
 :x :p5    "STRING" .
+:x :p6    "double \" quote" .
+:x :p7    "single ' quote" .
 
 :x :p10    123 .
 

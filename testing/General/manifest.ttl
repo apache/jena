@@ -23,6 +23,12 @@
        [  mf:name   "Term-5" ;
           mf:action [ qt:query <term-5.rq> ; qt:data <data-1.ttl> ] ;
        ]
+       [  mf:name   "Term-6" ;
+          mf:action [ qt:query <term-6.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-7" ;
+          mf:action [ qt:query <term-7.rq> ; qt:data <data-1.ttl> ] ;
+       ]
 
        [  mf:name   "Vars-1" ;
           mf:action [ qt:query <vars-1.rq> ; qt:data <data-1.ttl> ] ;

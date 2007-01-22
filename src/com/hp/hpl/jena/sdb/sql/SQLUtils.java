@@ -37,12 +37,16 @@ public class SQLUtils
     // MySQL has "ANSI quotes" mode => "
     //   Variables: _ (not $ strictly)
     
+    // Standard SQL quoting is to double up '
     static private String strQuoteChar = "'" ;
+    static private String strQuoteCharEsc = strQuoteChar+strQuoteChar ;
+    
+    static private String[] strChar =       { strQuoteChar } ;
+    static private String[] strCharEsc =    { strQuoteCharEsc } ;
     
     static public String quoteStr(String s)
     {
-        s = s.replace("\\", "\\\\") ;
-        s = s.replace("'", "\\'") ;
+        s = map(s, strChar, strCharEsc) ;
         return strQuoteChar+s+strQuoteChar ;
     }
 
@@ -50,9 +54,15 @@ public class SQLUtils
     {
         if ( s.startsWith(strQuoteChar) )
             s = s.substring(1,s.length()-1 ) ;
-        s = s.replace("\\\\", "\\") ;
-        s = s.replace("\\'", "'") ;
+        s = map(s, strCharEsc, strChar) ;
         return s ;
+    }
+    
+    static private String map(String str, String[] fromArray, String[] toArray)
+    {
+        for ( int i = 0 ; i < fromArray.length ; i++ )
+            str = str.replace(fromArray[i], toArray[i]) ;
+        return str ;
     }
     
     static private String identifierQuoteChar = "\"" ;
