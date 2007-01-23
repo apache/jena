@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.124 2007-01-18 15:07:53 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.125 2007-01-23 13:01:06 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -10,7 +10,7 @@
 
   <!-- Release version labels -->
   <property name="version-major"   value="2"/>
-  <property name="version-minor"   value="5"/>
+  <property name="version-minor"   value="5.1"/>
   <!-- e.g. -beta1, or empty string for stable releases -->
   <property name="version-status"  value=""/>
 
