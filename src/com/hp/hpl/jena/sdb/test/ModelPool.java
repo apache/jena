@@ -209,7 +209,7 @@ public class ModelPool {
 		
 		if (store == null) {
 			JDBC.loadDriverDerby() ;
-			String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
+			String url = JDBC.makeURL("derby", "localhost", "DB/test3") ;
 			SDBConnection sdb = new SDBConnection(url, null, null) ;
         
 			store = new StoreTriplesNodesIndexDerby(sdb);

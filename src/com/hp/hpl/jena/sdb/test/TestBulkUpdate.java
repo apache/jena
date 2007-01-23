@@ -37,7 +37,7 @@ public class TestBulkUpdate {
 		//models.add(new Object[] { ModelPool.get().getIndexMySQL() } );
 		//models.add(new Object[] { ModelPool.get().getIndexHSQL() });
 		//models.add(new Object[] { ModelPool.get().getIndexPgSQL() });
-		models.add(new Object[] { ModelPool.get().getIndexDerby() });
+		//models.add(new Object[] { ModelPool.get().getIndexDerby() });
 		//models.add(new Object[] { ModelPool.get().getHashMySQL() } );
 		//models.add(new Object[] { ModelPool.get().getHashHSQL() });
 		//models.add(new Object[] { ModelPool.get().getHashPgSQL() });
@@ -70,11 +70,13 @@ public class TestBulkUpdate {
 	{
 		Model toLoadAndRemove = FileManager.get().loadModel("testing/Data/data.ttl");
 		
+		long added = toLoadAndRemove.size();
+		
 		long size = model.size();
 		
 		model.add(toLoadAndRemove);
 		
-		assertEquals("Added all", size + 13, model.size());
+		assertEquals("Added all", size + added, model.size());
 		
 		model.add(RDF.type, RDF.type, RDF.type);
 		
@@ -107,6 +109,16 @@ public class TestBulkUpdate {
 		model.removeAll(RDF.nil, RDF.type, null);
 		
 		assertEquals("Wild card removed all", size, model.size());
+	}
+	
+	@Test public void dupeSuppressed()
+	{
+		long size = model.size();
+		
+		model.add(RDF.nil, RDF.type, RDF.first);
+		model.add(RDF.nil, RDF.type, RDF.first);
+		
+		assertTrue("Model added only one item", model.size() == 1);
 	}
 	
 	@Before public void format()

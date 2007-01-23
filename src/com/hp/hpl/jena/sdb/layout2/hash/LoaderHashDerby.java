@@ -11,7 +11,6 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 
@@ -22,19 +21,22 @@ import com.hp.hpl.jena.sdb.sql.TableUtils;
  */
 
 public class LoaderHashDerby extends LoaderHashLJ
-{
-    public LoaderHashDerby(SDBConnection connection) { super(connection) ; }
+{	
+    public LoaderHashDerby(SDBConnection connection) { 
+		super(connection) ;
+	}
     
+    /* TODO: Derby's temporary tables are limited. Use a generated table name and clear up afterwards */ 
     public void createLoaderTable() throws SQLException
     {
-        Connection conn = connection().getSqlConnection();
+    	Connection conn = connection().getSqlConnection();
         Statement s = conn.createStatement();
 
         if (!TableUtils.hasTable(conn, "NNode"))
         	s.execute(sqlStr(
         			"CREATE TABLE NNode",
-                    "(",
-                    "  hash BIGINT NOT NULL ,",
+        			"(",
+        			"  hash BIGINT NOT NULL ,",
                     "  lex CLOB NOT NULL ,",
                     "  lang LONG VARCHAR NOT NULL ,",
                     "  datatype LONG VARCHAR NOT NULL ,",
@@ -55,30 +57,6 @@ public class LoaderHashDerby extends LoaderHashLJ
         			")"
         	));
     }
-    
-    /*
-    @Override
-    public String getClearTripleLoaderTable()
-	{
-		return null;
-	}
-	
-    @Override
-	public String getClearNodeLoaderTable()
-	{
-		return null;
-	}
-    */
-    /* This is slower than deleting one at a time */
-    /*@Override
-    public String getDeleteTriples()
-	{
-		return "DELETE FROM Triples USING " +
-		"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
-		"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
-		"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
-		" WHERE Triples.s = S.id AND Triples.p = P.id AND Triples.o = O.id";
-	}*/
 }
 
 /*
