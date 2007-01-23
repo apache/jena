@@ -12,6 +12,5 @@ _:c rdf:type acmd:SDBConnection ;
 
 [] rdf:type acmd:Store ;
     acmd:layout         "layout2" ;
-#    acmd:feature        [ acmd:name "layout" ; acmd:value "hash" ] ;
     acmd:connection     _:c ;
 .
