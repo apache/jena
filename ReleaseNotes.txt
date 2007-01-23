@@ -1,5 +1,11 @@
 Release Notes
 =============
+
+==== Jena 2.5.1
+
+Fix for test.bat not setting the classpath correctly.
+Fix for PropertyNotFoundException from OntResourceImpl.getPropertyValue, not a null return.
+
 ==== Jena 2.5
 
 ModelJEB is no longer supported
