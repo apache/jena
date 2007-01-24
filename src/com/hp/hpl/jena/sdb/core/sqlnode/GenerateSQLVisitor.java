@@ -28,16 +28,6 @@ import com.hp.hpl.jena.sdb.util.Pair;
 // It just writes out the tree - it does not optimize it in anyway (that
 // happens before this stage). 
 
-// In particular:
-
-// 1/ Many conditions are already pushed into joins - a join node
-//    is actually restrict(join)
-
-// 2/ SqlRestrict can only occur in a few places (under project, SqlRestict-SqlTable) 
-//    and the generator only covers there
-
-// 3/ Use ensureNewline to make the annotations clearer/simpler
-
 public class GenerateSQLVisitor implements SqlNodeVisitor
 {
     // Annotate should ensureEndofLine ?
@@ -127,8 +117,9 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         boolean needBrackets = false ;
         if ( sqlNode2.isCoalesce() )
             needBrackets = true ;
-        
+        out.incIndent() ; 
         outputNode(sqlNode2, needBrackets) ;
+        out.decIndent() ; 
 
 //        // Not a project-restrict.
 //        // Generate expression for the FROM
@@ -280,11 +271,10 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         SqlNode left = join.getLeft() ;
         SqlNode right = join.getRight() ;
         
-        // ---- Find join conditions
-        
-        // can we linerarise the format? (drop the () and indentation)
+        // can we linearise the format? (drop the () and indentation)
         if ( left.isJoin() &&
-             left.asJoin().getJoinType() == join.getJoinType() && 
+            // assume left join is same precedence and left-associative with inner join
+             //left.asJoin().getJoinType() == join.getJoinType() && 
              left.getAliasName() == null ) 
             outputNode(left, false) ;
         else
