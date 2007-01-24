@@ -26,21 +26,21 @@ public abstract class LoaderIndexLJ extends LoaderTriplesNodes
 	
 	public String getInsertTripleLoaderTable()
 	{
-		return "INSERT INTO NTrip VALUES (?,?,?);";
+		return "INSERT INTO " + getTripleLoader() + " VALUES (?,?,?)";
 	}
 	
 	public String getInsertNodeLoaderTable()
 	{
-		return "INSERT INTO NNode VALUES (?,?,?,?,?,?,?,?);";
+		return "INSERT INTO " + getNodeLoader() + " VALUES (?,?,?,?,?,?,?,?)";
 	}
 	
 	public String getInsertNodes()
 	{
 		return 
 			"INSERT INTO Nodes (hash, lex, lang, datatype, type)" +
-			"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type" +
-			"	FROM NNode LEFT JOIN Nodes ON " +
-			"		(NNode.hash=Nodes.hash)" +
+			"	SELECT " + getNodeLoader() + ".hash, " + getNodeLoader() + ".lex, " + getNodeLoader() + ".lang, " + getNodeLoader() + ".datatype, " + getNodeLoader() + ".type" +
+			"	FROM " + getNodeLoader() + " LEFT JOIN Nodes ON " +
+			"		(" + getNodeLoader() + ".hash=Nodes.hash)" +
 			"WHERE Nodes.id IS NULL";
 	}
 	
@@ -49,9 +49,9 @@ public abstract class LoaderIndexLJ extends LoaderTriplesNodes
 		return
 			"INSERT INTO Triples" +
 			"	SELECT DISTINCT S.id, P.id, O.id FROM" +
-			"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
-			"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
-			"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
+			"	  " + getTripleLoader() + " JOIN Nodes AS S ON (" + getTripleLoader() + ".s=S.hash)" +
+			"     JOIN Nodes AS P ON (" + getTripleLoader() + ".p=P.hash)" +
+			"     JOIN Nodes AS O ON (" + getTripleLoader() + ".o=O.hash)" +
 			"     LEFT JOIN Triples ON (S.id=Triples.s AND P.id=Triples.p AND O.id=Triples.o)" +
 			"     WHERE Triples.s IS NULL OR Triples.p IS NULL OR Triples.o IS NULL";
 	}
@@ -72,12 +72,12 @@ public abstract class LoaderIndexLJ extends LoaderTriplesNodes
 	
 	public String getClearTripleLoaderTable()
 	{
-		return "DELETE FROM NTrip;";
+		return "DELETE FROM " + getTripleLoader();
 	}
 	
 	public String getClearNodeLoaderTable()
 	{
-		return "DELETE FROM NNode;";
+		return "DELETE FROM " + getNodeLoader();
 	}
 	
 	@Override
@@ -89,15 +89,15 @@ public abstract class LoaderIndexLJ extends LoaderTriplesNodes
     	if ((o = getIdFromHash(triple.object.hash)) == -1) return;
     	
     	connection().execUpdate("DELETE FROM Triples WHERE " +
-    			"s = '" + s + "' AND " +
-    			"p = '" + p + "' AND " +
-    			"o = '" + o + "'");
+    			"s = " + s + " AND " +
+    			"p = " + p + " AND " +
+    			"o = " + o);
     }
 
 	private int getIdFromHash(long hash) throws SQLException
 	{
 		int id = -1;
-		ResultSet result = connection().execQuery("SELECT id FROM Nodes WHERE hash = '" + hash +"'");
+		ResultSet result = connection().execQuery("SELECT id FROM Nodes WHERE hash = " + hash);
 		
 		if (result.next())
 			id = result.getInt(1);

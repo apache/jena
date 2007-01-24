@@ -4,29 +4,59 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2.index;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 
-public class StoreTriplesNodesHashDerby extends StoreBaseHash
-{
+/** Interface to setting up the bulk loader environment.
+ * 
+ * @author Andy Seaborne
+ * @version $Id: LoaderHSQL.java,v 1.1 2006/04/21 16:53:32 andy_seaborne Exp $
+ */
 
-    public StoreTriplesNodesHashDerby(SDBConnection connection)
-    {
-        super(connection,
-              new FmtLayout2HashDerby(connection) ,
-              new LoaderOneTripleHash(connection) ,
-              //new LoaderHashDerby(connection),
-              new QueryCompilerFactoryHash(), 
-              new SQLBridgeFactory2(),
-              new GenerateSQL()) ;
-    }
+public class LoaderIndexDerby extends LoaderIndexLJ
+{	
+    public LoaderIndexDerby(SDBConnection connection) { 
+		super(connection) ;
+	}
     
-    @Override
-    public String getNodeKeyColName() { return TableNodes.colHash ; }
+    /* TODO: Derby's temporary tables are limited. Use a generated table name and clear up afterwards */ 
+    public void createLoaderTable() throws SQLException
+    {
+    	Connection conn = connection().getSqlConnection();
+        Statement s = conn.createStatement();
+
+        if (!TableUtils.hasTable(conn, getNodeLoader()))
+        	s.execute(sqlStr(
+        			"CREATE TABLE " + getNodeLoader(),
+        			"(",
+        			"  hash BIGINT NOT NULL ,",
+                    "  lex CLOB NOT NULL ,",
+                    "  lang LONG VARCHAR NOT NULL ,",
+                    "  datatype LONG VARCHAR NOT NULL ,",
+                    "  type int NOT NULL ,",
+                    "  vInt int,",
+                    "  vDouble double precision,",
+                    "  vDateTime timestamp",
+                    ")"
+        	));
+        
+        if (!TableUtils.hasTable(conn, getTripleLoader()))
+        	s.execute(sqlStr(
+        			"CREATE TABLE " + getTripleLoader(),
+        			"(",
+        			"  s BIGINT NOT NULL,",
+        			"  p BIGINT NOT NULL,",
+        			"  o BIGINT NOT NULL",
+        			")"
+        	));
+    }
 }
 
 /*

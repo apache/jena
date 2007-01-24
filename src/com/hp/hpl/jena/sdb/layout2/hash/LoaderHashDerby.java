@@ -32,9 +32,9 @@ public class LoaderHashDerby extends LoaderHashLJ
     	Connection conn = connection().getSqlConnection();
         Statement s = conn.createStatement();
 
-        if (!TableUtils.hasTable(conn, "NNode"))
+        if (!TableUtils.hasTable(conn, getNodeLoader()))
         	s.execute(sqlStr(
-        			"CREATE TABLE NNode",
+        			"CREATE TABLE " + getNodeLoader(),
         			"(",
         			"  hash BIGINT NOT NULL ,",
                     "  lex CLOB NOT NULL ,",
@@ -47,9 +47,9 @@ public class LoaderHashDerby extends LoaderHashLJ
                     ")"
         	));
         
-        if (!TableUtils.hasTable(conn, "NTrip"))
+        if (!TableUtils.hasTable(conn, getTripleLoader()))
         	s.execute(sqlStr(
-        			"CREATE TABLE NTrip",
+        			"CREATE TABLE " + getTripleLoader(),
         			"(",
         			"  s BIGINT NOT NULL,",
         			"  p BIGINT NOT NULL,",

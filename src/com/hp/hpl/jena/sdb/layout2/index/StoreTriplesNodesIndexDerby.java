@@ -17,8 +17,8 @@ public class StoreTriplesNodesIndexDerby extends StoreBaseIndex
     {
         super(connection,
               new FmtLayout2IndexDerby(connection) ,
-              new LoaderOneTripleIndex(connection),
-              //new LoaderIndexDerby(connection),
+              //new LoaderOneTripleIndex(connection),
+              new LoaderIndexDerby(connection),
               new QueryCompilerFactoryIndex(), 
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;

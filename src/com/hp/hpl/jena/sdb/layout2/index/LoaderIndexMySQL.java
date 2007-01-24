@@ -28,7 +28,7 @@ public class LoaderIndexMySQL extends LoaderIndexLJ
     {
         Statement s = connection().getSqlConnection().createStatement();
         s.execute(sqlStr(
-        		"CREATE TEMPORARY TABLE IF NOT EXISTS NNode",
+        		"CREATE TEMPORARY TABLE IF NOT EXISTS " + getNodeLoader(),
         		"(",
         		"  hash BIGINT NOT NULL,",
         		"  lex TEXT BINARY CHARACTER SET utf8 NOT NULL,",
@@ -41,7 +41,7 @@ public class LoaderIndexMySQL extends LoaderIndexLJ
         		") ENGINE=MYISAM DEFAULT CHARSET=utf8;"
         ));
         s.execute(sqlStr(
-        		"CREATE TEMPORARY TABLE IF NOT EXISTS NTrip",
+        		"CREATE TEMPORARY TABLE IF NOT EXISTS " + getTripleLoader(),
         		"(",
         		"  s BIGINT NOT NULL,",
         		"  p BIGINT NOT NULL,",
@@ -55,8 +55,8 @@ public class LoaderIndexMySQL extends LoaderIndexLJ
 	{
 		return 
 			"INSERT IGNORE INTO Nodes (hash, lex, lang, datatype, type)" +
-			"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type" +
-			"	FROM NNode";
+			"	SELECT " + getNodeLoader() + ".hash, " + getNodeLoader() + ".lex, " + getNodeLoader() + ".lang, " + getNodeLoader() + ".datatype, " + getNodeLoader() + ".type" +
+			"	FROM " + getNodeLoader();
 	}
 	
     @Override
@@ -65,30 +65,30 @@ public class LoaderIndexMySQL extends LoaderIndexLJ
 		return
 			"INSERT IGNORE INTO Triples" +
 			"	SELECT S.id, P.id, O.id FROM" +
-			"	  NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
-			"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
-			"     JOIN Nodes AS O ON (NTrip.o=O.hash)";
+			"	  " + getTripleLoader() + " JOIN Nodes AS S ON (" + getTripleLoader() + ".s=S.hash)" +
+			"     JOIN Nodes AS P ON (" + getTripleLoader() + ".p=P.hash)" +
+			"     JOIN Nodes AS O ON (" + getTripleLoader() + ".o=O.hash)";
 	}
 	
 	@Override
     public String getClearTripleLoaderTable()
 	{
-		return "TRUNCATE NTrip;";
+		return "TRUNCATE " + getTripleLoader();
 	}
 	
 	@Override
     public String getClearNodeLoaderTable()
 	{
-		return "TRUNCATE NNode;";
+		return "TRUNCATE " + getNodeLoader();
 	}
 	
 	@Override
 	public String getDeleteTriples()
 	{
 		return "DELETE FROM Triples USING " +
-		"	  Triples, NTrip JOIN Nodes AS S ON (NTrip.s=S.hash)" +
-		"     JOIN Nodes AS P ON (NTrip.p=P.hash)" +
-		"     JOIN Nodes AS O ON (NTrip.o=O.hash)" +
+		"	  Triples, " + getTripleLoader() + " JOIN Nodes AS S ON (" + getTripleLoader() + ".s=S.hash)" +
+		"     JOIN Nodes AS P ON (" + getTripleLoader() + ".p=P.hash)" +
+		"     JOIN Nodes AS O ON (" + getTripleLoader() + ".o=O.hash)" +
 		" WHERE Triples.s = S.id AND Triples.p = P.id AND Triples.o = O.id";
 	}
 }

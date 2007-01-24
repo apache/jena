@@ -31,9 +31,9 @@ public class LoaderHashPGSQL extends LoaderHashLJ
         Connection conn = connection().getSqlConnection();
         Statement s = conn.createStatement();
 
-        if (!TableUtils.hasTable(conn, "NNode"))
+        if (!TableUtils.hasTable(conn, getNodeLoader()))
         	s.execute(sqlStr(
-        			"CREATE TEMPORARY TABLE NNode",
+        			"CREATE TEMPORARY TABLE " + getNodeLoader(),
                     "(",
                     "  hash BIGINT NOT NULL ,",
                     "  lex TEXT NOT NULL ,",
@@ -46,9 +46,9 @@ public class LoaderHashPGSQL extends LoaderHashLJ
                     ") ON COMMIT DELETE ROWS"
         	));
         
-        if (!TableUtils.hasTable(conn, "NTrip"))
+        if (!TableUtils.hasTable(conn, getTripleLoader()))
         	s.execute(sqlStr(
-        			"CREATE TEMPORARY TABLE NTrip",
+        			"CREATE TEMPORARY TABLE " + getTripleLoader(),
         			"(",
         			"  s BIGINT NOT NULL,",
         			"  p BIGINT NOT NULL,",

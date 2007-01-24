@@ -25,21 +25,21 @@ public abstract class LoaderHashLJ extends LoaderTriplesNodes
 	
 	public String getInsertTripleLoaderTable()
 	{
-		return "INSERT INTO NTrip VALUES (?,?,?)";
+		return "INSERT INTO " + getTripleLoader() + " VALUES (?,?,?)";
 	}
 	
 	public String getInsertNodeLoaderTable()
 	{
-		return "INSERT INTO NNode VALUES (?,?,?,?,?,?,?,?)";
+		return "INSERT INTO " + getNodeLoader() + " VALUES (?,?,?,?,?,?,?,?)";
 	}
 	
 	public String getInsertNodes()
 	{
 		return 
 			"INSERT INTO Nodes (hash, lex, lang, datatype, type)" +
-			"	SELECT NNode.hash, NNode.lex, NNode.lang, NNode.datatype, NNode.type" +
-			"	FROM NNode LEFT JOIN Nodes ON " +
-			"		(NNode.hash=Nodes.hash)" +
+			"	SELECT " + getNodeLoader() + ".hash, " + getNodeLoader() + ".lex, " + getNodeLoader() + ".lang, " + getNodeLoader() + ".datatype, " + getNodeLoader() + ".type" +
+			"	FROM " + getNodeLoader() + " LEFT JOIN Nodes ON " +
+			"		(" + getNodeLoader() + ".hash=Nodes.hash)" +
 			"WHERE Nodes.hash IS NULL";
 	}
 	
@@ -47,8 +47,8 @@ public abstract class LoaderHashLJ extends LoaderTriplesNodes
 	{
 		return
 			"INSERT INTO Triples" +
-			"	SELECT DISTINCT NTrip.s, NTrip.p, NTrip.o FROM" +
-			"     NTrip LEFT JOIN Triples ON (NTrip.s=Triples.s AND NTrip.p=Triples.p AND NTrip.o=Triples.o)" +
+			"	SELECT DISTINCT " + getTripleLoader() + ".s, " + getTripleLoader() + ".p, " + getTripleLoader() + ".o FROM" +
+			"     " + getTripleLoader() + " LEFT JOIN Triples ON (" + getTripleLoader() + ".s=Triples.s AND " + getTripleLoader() + ".p=Triples.p AND " + getTripleLoader() + ".o=Triples.o)" +
 			"     WHERE Triples.s IS NULL OR Triples.p IS NULL OR Triples.o IS NULL";
 	}
 	
@@ -68,12 +68,12 @@ public abstract class LoaderHashLJ extends LoaderTriplesNodes
 	
 	public String getClearTripleLoaderTable()
 	{
-		return "DELETE FROM NTrip";
+		return "DELETE FROM " + getTripleLoader();
 	}
 	
 	public String getClearNodeLoaderTable()
 	{
-		return "DELETE FROM NNode";
+		return "DELETE FROM " + getNodeLoader();
 	}
 	
 	@Override

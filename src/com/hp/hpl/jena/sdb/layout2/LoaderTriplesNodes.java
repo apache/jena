@@ -61,12 +61,23 @@ public abstract class LoaderTriplesNodes
     protected PreparedStatement clearTripleLoaderTable;
     protected PreparedStatement clearNodeLoaderTable;
     
-    private Set<PreparedNode> seenNodes; // Contains nodes seen in a chunk, to suppress dupes
+    protected Set<PreparedNode> seenNodes; // Contains nodes seen in a chunk, to suppress dupes
+    
+    // Node and Triple loader table names
+    
+    protected String newNodeTableName;
+    protected String newTripleTableName;
     
     public LoaderTriplesNodes(SDBConnection connection)
     {
         super(connection) ;
+        newNodeTableName = "NNode" + hashCode();
+        newTripleTableName = "NTrip" + hashCode();
     }
+    
+    protected String getNodeLoader() { return newNodeTableName; }
+    
+    protected String getTripleLoader() { return newTripleTableName; }
     
     public void startBulkUpdate()
 	{
