@@ -21,6 +21,9 @@ public class QueryIterOptionalIndex extends QueryIterStream
 
     public QueryIterOptionalIndex(QueryIterator input, Op op, ExecutionContext context)
     {
+        // Put op and input into stream?
+        //protected QueryIterator nextStage(Op op2, Binding binding)
+        
         super(context) ;
         super.setInput(input) ;
         this.op = op ;
@@ -28,6 +31,9 @@ public class QueryIterOptionalIndex extends QueryIterStream
 
     protected QueryIterator nextStage(Binding binding)
     {
+        // Can lead to repeated substitutions, all the way down.
+        // But depth if uncommon (except in artifical queries designed to test the algebra!)
+        
         Op op2 = QC.substitute(op, binding) ;
         QueryIterator cIter = QC.compile(op2, super.getExecContext()) ;
         cIter = new QueryIterDefaulting(cIter, binding, getExecContext()) ;
