@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.15 2007-01-02 11:50:42 andy_seaborne Exp $
+  $Id: DBQueryStage.java,v 1.16 2007-01-25 13:22:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -36,7 +36,7 @@ public class DBQueryStage extends Stage
 		{
 		this.graph = graph;
 		this.compiled = compile ( sg, varList, dbPat, constraints );
-        // System.err.println( ">> " + this.compiled.stmt.toString().replaceAll( " AND ", "\n  AND " ) );
+        // System.err.println( " " + this.compiled.stmt.toString().replaceAll( " AND ", "\n  AND " ).replaceAll( " Where ", "\n Where " ).replaceAll( " From ", "\n From " ) );
 		}
 
 	protected DBQuery compile( SpecializedGraph sg, List varList, List dbPat, ExpressionSet constraints )
