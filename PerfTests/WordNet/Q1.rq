@@ -4,5 +4,5 @@ SELECT ?theSyn
 WHERE   {
     ?theSyn wn20schema:containsWordSense ?theWordSense .
     ?theWordSense wn20schema:word ?theWord .
-    ?theWord wn20schema:lexicalForm "Equador"@en-US .
+    ?theWord wn20schema:lexicalForm "Equador laurel"@en-US .
 }
