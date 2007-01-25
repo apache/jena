@@ -4,17 +4,18 @@
  * [See end of file]
  */
 
-package engine3;
+package engine3.iterators;
 
-import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 
-public abstract class QueryIterFilter extends  com.hp.hpl.jena.query.engine1.iterator.QueryIterFilter
+public class QueryIterSingleton extends com.hp.hpl.jena.query.engine1.iterator.QueryIterSingleton
 {
-    public QueryIterFilter(QueryIterator e, ExecutionContext context)
+    public QueryIterSingleton(Binding binding, ExecutionContext execCxt)
     {
-        super(e, context) ;
+        super(binding, execCxt) ;
     }
+
 }
 
 /*

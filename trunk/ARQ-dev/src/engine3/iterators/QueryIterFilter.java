@@ -1,42 +1,24 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package engine3;
+package engine3.iterators;
 
-import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine2.op.Op;
 
-
-public class QueryIterOptionalIndex extends QueryIterStream
+public abstract class QueryIterFilter extends  com.hp.hpl.jena.query.engine1.iterator.QueryIterFilter
 {
-    private Op op ;
-
-    public QueryIterOptionalIndex(Op op, ExecutionContext context)
+    public QueryIterFilter(QueryIterator e, ExecutionContext context)
     {
-        super(context) ;
-        this.op = op ;
-    }
-
-    protected QueryIterator nextStage(Binding binding)
-    {
-        // Same for Op
-        //QueryIterator cIter = cElt.build(new QueryIterSingleton(binding, getExecContext()), getExecContext()) ;
-
-//        cIter = new QueryIterDefaulting(cIter, binding, getExecContext()) ;
-//        return cIter ;
-        return null ;
-        
+        super(e, context) ;
     }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,33 +1,42 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package engine3;
+package engine3.iterators;
 
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine2.OpSubstitute;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterDefaulting;
 import com.hp.hpl.jena.query.engine2.op.Op;
 
-public class QC
+import engine3.QC;
+
+
+public class QueryIterOptionalIndex extends QueryIterStream
 {
-    public static Op substitute(Op op, Binding binding)
+    private Op op ;
+
+    public QueryIterOptionalIndex(QueryIterator input, Op op, ExecutionContext context)
     {
-        return OpSubstitute.substitute(binding, op) ;
+        super(context) ;
+        super.setInput(input) ;
+        this.op = op ;
     }
-    
-    public static QueryIterator compile(Op op, ExecutionContext execCxt)
+
+    protected QueryIterator nextStage(Binding binding)
     {
-        return OpCompiler.compile(op, execCxt) ;
+        Op op2 = QC.substitute(op, binding) ;
+        QueryIterator cIter = QC.compile(op2, super.getExecContext()) ;
+        cIter = new QueryIterDefaulting(cIter, binding, getExecContext()) ;
+        return cIter ;
     }
-    
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

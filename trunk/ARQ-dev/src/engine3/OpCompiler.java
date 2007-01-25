@@ -8,15 +8,18 @@ package engine3;
 
 import java.util.Stack;
 
+import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.ElementBasicGraphPattern;
 import com.hp.hpl.jena.query.engine.Binding0;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
-import com.hp.hpl.jena.query.engine2.Algebra;
 import com.hp.hpl.jena.query.engine2.op.*;
+
+import engine3.iterators.QueryIterFilterExpr;
+import engine3.iterators.QueryIterOptionalIndex;
+import engine3.iterators.QueryIterSingleton;
 
 public class OpCompiler
 {
@@ -80,10 +83,20 @@ public class OpCompiler
             QueryIterator left = compile(opLeftJoin.getLeft(), popOrRoot()) ;
             // Do an indexed substitute into the right if possible
             boolean canDoLinear = false ; 
-            QueryIterator right = null ;
-            
+
             if ( canDoLinear )
-                right = new QueryIterOptionalIndex(opLeftJoin.getRight(), execCxt) ;
+            {
+                QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), execCxt) ;
+                push(qIter) ;
+            }
+            // Do by sub-evaluation
+            
+            QueryIterator right = compile(opLeftJoin.getRight(), popOrRoot()) ;
+            // return an iterator that does the optional here.
+            QueryIterator qIter = null ;
+            if ( true )
+                throw new ARQNotImplemented("Exhaustive optional evaluation") ;
+            push(qIter) ;
             
         }
         
