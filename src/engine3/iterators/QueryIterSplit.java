@@ -4,40 +4,54 @@
  * [See end of file]
  */
 
-package dev;
+package engine3.iterators;
 
-import arq.cmd.QueryCmdUtils;
-import arq.cmd.ResultsFormat;
+import java.util.Iterator;
+import java.util.List;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.core.DataSourceImpl;
-import com.hp.hpl.jena.query.engine.QueryEngineBase;
-import com.hp.hpl.jena.query.engine2.QueryEngineRef;
+import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterConcat;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.engine2.OpSubstitute;
+import com.hp.hpl.jena.query.engine2.op.Op;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileManager;
+import engine3.QC;
 
-import engine3.QueryEngineX;
+/** Execute each sub stage agains the input.
+ *  Streamed SPARQL Union.
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 
-public class Run
+public class QueryIterSplit extends QueryIterStream 
 {
-    public static void main(String[] argv)
+    // Merge back with QueryIterUnion
+    List subOps  ;
+    public QueryIterSplit(QueryIterator input,
+                          List subOps,
+                          ExecutionContext context)
     {
-        QueryEngineRef.register() ;
-        String qs1 = "PREFIX : <http://example/>\n" ;
-        String qs = qs1+"SELECT * {  ?s :q ?o   filter(true)  }" ;
-        Model data = FileManager.get().loadModel("D.ttl") ;
-
-        Query query = QueryFactory.create(qs) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, data) ;
-        System.out.print(((QueryEngineBase)qExec).getPlan()) ;
-        QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
-        
-        QueryEngineX qe = new QueryEngineX(query) ;
-        qe.setDataset(new DataSourceImpl(data)) ;
-        QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
-        
+        super(input, context) ;
+        this.subOps = subOps ;
     }
+
+    protected QueryIterator nextStage(Binding binding)
+    {
+        QueryIterConcat unionQIter = new QueryIterConcat(getExecContext()) ;
+        for ( Iterator iter = subOps.listIterator() ; iter.hasNext() ; )
+        {
+            Op subOp = (Op)iter.next() ;
+            subOp = OpSubstitute.substitute(binding, subOp) ;
+            QueryIterator parent = new QueryIterSingleton(binding, getExecContext()) ;
+            QueryIterator qIter = QC.compile(subOp, parent, getExecContext()) ;
+            unionQIter.add(qIter) ;
+        }
+        
+        return unionQIter ;
+    }
+
 }
 
 /*

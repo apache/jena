@@ -6,6 +6,8 @@
 
 package engine3;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
@@ -19,9 +21,7 @@ import com.hp.hpl.jena.query.engine1.iterator.*;
 import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
 import com.hp.hpl.jena.query.engine2.op.*;
 
-import engine3.iterators.QueryIterFilterExpr;
-import engine3.iterators.QueryIterLeftJoin;
-import engine3.iterators.QueryIterOptionalIndex;
+import engine3.iterators.*;
 import engine3.iterators.QueryIterSingleton;
 
 public class OpCompiler
@@ -58,10 +58,12 @@ public class OpCompiler
             if ( input == null )
                 input = root() ;
             push(input) ;
+            int x = stack.size() ; 
             op.visit(this) ;
+            int y = stack.size() ;
+            if ( x != y )
+                System.out.println("Possible stack misalignment") ;
             QueryIterator qIter = pop() ;
-//            if ( previous != null )
-//                qIter.setInput(previous) ;
             return qIter ;
         }
         
@@ -72,7 +74,7 @@ public class OpCompiler
             
             // Turn into a real PlanBasicGraphPattern (with property function sorting out)
             PlanElement planElt = PlanBasicGraphPattern.make(execCxt.getContext(), bgp) ;
-            QueryIterator start = popOrRoot() ;
+            QueryIterator start = pop() ;
             QueryIterator qIter = planElt.build(start, execCxt) ;
             push(qIter) ;
         }
@@ -83,7 +85,7 @@ public class OpCompiler
 
         public void visit(OpJoin opJoin)
         {
-            QueryIterator start = popOrRoot() ;
+            QueryIterator start = pop() ;
             
             QueryIterator left = compile(opJoin.getLeft(), start) ;
             // Pass left into right for streamed evaluation
@@ -94,7 +96,7 @@ public class OpCompiler
         
         public void visit(OpLeftJoin opLeftJoin)
         {
-            QueryIterator left = compile(opLeftJoin.getLeft(), popOrRoot()) ;
+            QueryIterator left = compile(opLeftJoin.getLeft(), pop()) ;
             // Do an indexed substitute into the right if possible
             boolean canDoLinear = true ; 
 
@@ -119,22 +121,20 @@ public class OpCompiler
         
         public void visit(OpUnion opUnion)
         {
-            QueryIterator qIter = popOrRoot() ;
+            QueryIterator qIter = pop() ;
             
-            QueryIterConcat cat = new QueryIterConcat(execCxt) ;
-            QueryIterator qIterLeft = compile(opUnion.getLeft(), qIter) ;
-            cat.add(qIterLeft) ;
+            List x = new ArrayList() ;
+            x.add(opUnion.getLeft()) ;
             
+            // Merge a casaded union
             while (opUnion.getRight() instanceof OpUnion)
             {
                 Op opUnionNext = (OpUnion)opUnion.getRight() ;
-                QueryIterator qIterLeftN = compile(opUnion.getLeft(), qIter) ;
-                cat.add(qIterLeftN) ;
+                x.add(opUnionNext) ;
             }
-            
-            QueryIterator qIterRight = compile(opUnion.getRight(), qIter) ;
-            cat.add(qIterRight) ;
-            push(cat) ;
+            x.add(opUnion.getRight()) ;
+            QueryIterator cIter = new QueryIterSplit(qIter, x, execCxt) ;
+            push(cIter) ;
         }
 
         public void visit(OpFilter opFilter)
@@ -148,8 +148,10 @@ public class OpCompiler
             if ( sub instanceof OpQuadPattern )
             {}
             
-            QueryIterator qIter = compile(sub) ;
+            QueryIterator start = pop() ;
+            QueryIterator qIter = compile(sub, start) ;
             qIter = new QueryIterFilterExpr(qIter, opFilter.getExpr(), execCxt) ;
+            push(qIter) ;
         }
 
         public void visit(OpGraph opGraph)
@@ -166,27 +168,28 @@ public class OpCompiler
 
         public void visit(OpOrder opOrder)
         { 
-            QueryIterator qIter = popOrRoot() ;
+            QueryIterator qIter = pop() ;
             qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt) ;
             push(qIter) ;
         }
 
         public void visit(OpProject opProject)
         {
-            QueryIterator q = popOrRoot() ;
-            push(new QueryIterProject(q, opProject.getVars(), execCxt)) ;
+            QueryIterator q = pop() ;
+            q = new QueryIterProject(q, opProject.getVars(), execCxt) ;
+            push(q) ;
         }
 
         public void visit(OpDistinct opDistinct)
         {
-            QueryIterator qIter = popOrRoot() ;
+            QueryIterator qIter = pop() ;
             qIter = BindingImmutable.create(opDistinct.getVars(), qIter, execCxt) ;
             push(new QueryIterDistinct(qIter, execCxt)) ;
         }
 
         public void visit(OpSlice opSlice)
         { 
-            QueryIterator qIter = popOrRoot() ;
+            QueryIterator qIter = pop() ;
             qIter = new QueryIterLimitOffset(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
             push(qIter) ;
         }
@@ -206,16 +209,10 @@ public class OpCompiler
 //        }
         
         private void push(QueryIterator qIter)  { stack.push(qIter) ; }
-        private QueryIterator pop()            { return (QueryIterator)stack.pop() ; }
-        
-        private QueryIterator popOrRoot()
+        private QueryIterator pop()
         { 
-            
             if ( stack.size() == 0 )
-            {
-                System.out.println("Warning: popOrRoot: empty stack - making root") ;
-                return root() ;
-            }
+                System.out.println("Warning: pop: empty stack") ;
             return (QueryIterator)stack.pop() ;
         }
         

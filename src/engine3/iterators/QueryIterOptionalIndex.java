@@ -21,11 +21,7 @@ public class QueryIterOptionalIndex extends QueryIterStream
 
     public QueryIterOptionalIndex(QueryIterator input, Op op, ExecutionContext context)
     {
-        // Put op and input into stream?
-        //protected QueryIterator nextStage(Op op2, Binding binding)
-        
-        super(context) ;
-        super.setInput(input) ;
+        super(input, context) ;
         this.op = op ;
     }
 
