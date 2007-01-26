@@ -1,52 +1,34 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package dev;
 
-import arq.cmd.QueryCmdUtils;
-import arq.cmd.ResultsFormat;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.core.DataSourceImpl;
-import com.hp.hpl.jena.query.engine.QueryEngineBase;
-import com.hp.hpl.jena.query.engine2.QueryEngineRef;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.query.expr.E_Function;
+import com.hp.hpl.jena.query.expr.NodeValue;
+import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
 
 import engine3.QueryEngineX;
 
-public class Run
+public class TestEngine3 extends TestCase
 {
-    public static void main(String[] argv)
+    public static TestSuite suite()
     {
-        String qs1 = "PREFIX : <http://example/>\n" ;
-        String qs = qs1+"SELECT ?s {  ?s :q ?o   filter(true)  }" ;
-        Model data = FileManager.get().loadModel("D.ttl") ;
-        Query query = QueryFactory.create(qs) ;
-
-        if ( true )
-        {
-            QueryEngineRef.register() ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, data) ;
-            System.out.print(((QueryEngineBase)qExec).getPlan()) ;
-            QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
-            QueryEngineRef.unregister() ;
-        }
-
-        //QueryEngineX.register() ;
-        QueryEngineX qe = new QueryEngineX(query) ;
-        qe.setDataset(new DataSourceImpl(data)) ;
-        QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
-        
+        NodeValue.VerboseWarnings = false ;
+        E_Function.WarnOnUnknownFunction = false ;
+        QueryEngineX.register() ;
+        return QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-engine2.ttl") ; // All tests for engine 2
     }
+    
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

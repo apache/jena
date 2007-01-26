@@ -161,7 +161,10 @@ public class OpCompiler
         { throw new ARQNotImplemented("OpDatasetNames") ; }
 
         public void visit(OpTable opTable)
-        { throw new ARQNotImplemented("OpTable") ; }
+        { 
+            // Input?
+            push(opTable.getTable().iterator(execCxt)) ;
+        }
 
         public void visit(OpExt opExt)
         { throw new ARQNotImplemented("OpExt") ; }
@@ -169,20 +172,23 @@ public class OpCompiler
         public void visit(OpOrder opOrder)
         { 
             QueryIterator qIter = pop() ;
+            qIter = compile(opOrder.getSubOp(), qIter) ;
             qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt) ;
             push(qIter) ;
         }
 
         public void visit(OpProject opProject)
         {
-            QueryIterator q = pop() ;
-            q = new QueryIterProject(q, opProject.getVars(), execCxt) ;
-            push(q) ;
+            QueryIterator qIter = pop() ;
+            qIter = compile(opProject.getSubOp(), qIter) ;
+            qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
+            push(qIter) ;
         }
 
         public void visit(OpDistinct opDistinct)
         {
             QueryIterator qIter = pop() ;
+            qIter = compile(opDistinct.getSubOp(), qIter) ;
             qIter = BindingImmutable.create(opDistinct.getVars(), qIter, execCxt) ;
             push(new QueryIterDistinct(qIter, execCxt)) ;
         }
@@ -190,6 +196,7 @@ public class OpCompiler
         public void visit(OpSlice opSlice)
         { 
             QueryIterator qIter = pop() ;
+            qIter = compile(opSlice.getSubOp(), qIter) ;
             qIter = new QueryIterLimitOffset(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
             push(qIter) ;
         }
