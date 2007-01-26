@@ -6,11 +6,29 @@
 
 package dev;
 
+import arq.cmd.QueryCmdUtils;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.core.DataSourceImpl;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileManager;
+
+import engine3.QueryEngineX;
+
 public class Run
 {
     public static void main(String[] argv)
     {
+        String qs = "PREFIX : <http://example/> SELECT * { ?s :p ?o }" ;
+        Model data = FileManager.get().loadModel("D.ttl") ;
+        Query query = QueryFactory.create(qs) ;
+        //QueryExecution qExec = QueryExecutionFactory.create(query, data) ;
         
+        QueryEngineX qExec = new QueryEngineX(query) ;
+        qExec.setDataset(new DataSourceImpl(data)) ;
+        
+        QueryCmdUtils.executeQuery(query, qExec) ;
     }
 }
 

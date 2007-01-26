@@ -11,13 +11,16 @@ import java.util.Stack;
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.ElementBasicGraphPattern;
 import com.hp.hpl.jena.query.engine.Binding0;
+import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine1.iterator.*;
 import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
 import com.hp.hpl.jena.query.engine2.op.*;
 
 import engine3.iterators.QueryIterFilterExpr;
+import engine3.iterators.QueryIterLeftJoin;
 import engine3.iterators.QueryIterOptionalIndex;
 import engine3.iterators.QueryIterSingleton;
 
@@ -69,15 +72,16 @@ public class OpCompiler
         public void visit(OpQuadPattern quadPattern)
         {}
 
-        // Two inputs.
         public void visit(OpJoin opJoin)
         {
             QueryIterator start = popOrRoot() ;
             
             QueryIterator left = compile(opJoin.getLeft(), start) ;
+            // Pass left into right for streamed evaluation
             QueryIterator right = compile(opJoin.getRight(), left) ;
         }
 
+        
         public void visit(OpLeftJoin opLeftJoin)
         {
             QueryIterator left = compile(opLeftJoin.getLeft(), popOrRoot()) ;
@@ -86,23 +90,39 @@ public class OpCompiler
 
             if ( canDoLinear )
             {
+                // Pass left into right for substitution before right side evaluation.
                 QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), execCxt) ;
                 push(qIter) ;
             }
-            // Do by sub-evaluation
+            
+            // Do it by sub-evaluation of left and right then left join.
+            // Can be expensive if RHS returns a lot.
             
             QueryIterator right = compile(opLeftJoin.getRight(), popOrRoot()) ;
-            // return an iterator that does the optional here.
-            QueryIterator qIter = null ;
-            if ( true )
-                throw new ARQNotImplemented("Exhaustive optional evaluation") ;
+            
+            QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExpr(), execCxt) ;
             push(qIter) ;
             
         }
         
         public void visit(OpUnion opUnion)
         {
-            //QueryIterConcat cat = new QueryIterConcat(execCxt) ;
+            QueryIterator qIter = popOrRoot() ;
+            
+            QueryIterConcat cat = new QueryIterConcat(execCxt) ;
+            QueryIterator qIterLeft = compile(opUnion.getLeft(), qIter) ;
+            cat.add(qIterLeft) ;
+            
+            while (opUnion.getRight() instanceof OpUnion)
+            {
+                Op opUnionNext = (OpUnion)opUnion.getRight() ;
+                QueryIterator qIterLeftN = compile(opUnion.getLeft(), qIter) ;
+                cat.add(qIterLeftN) ;
+            }
+            
+            QueryIterator qIterRight = compile(opUnion.getRight(), qIter) ;
+            cat.add(qIterRight) ;
+            push(cat) ;
         }
 
         public void visit(OpFilter opFilter)
@@ -121,28 +141,43 @@ public class OpCompiler
         }
 
         public void visit(OpGraph opGraph)
-        {}
+        { throw new ARQNotImplemented("OpGraph") ; }
 
         public void visit(OpDatasetNames dsNames)
-        {}
+        { throw new ARQNotImplemented("OpDatasetNames") ; }
 
         public void visit(OpTable opTable)
-        {}
+        { throw new ARQNotImplemented("OpTable") ; }
 
         public void visit(OpExt opExt)
-        {}
+        { throw new ARQNotImplemented("OpExt") ; }
 
         public void visit(OpOrder opOrder)
-        {}
+        { 
+            QueryIterator qIter = popOrRoot() ;
+            qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt) ;
+            push(qIter) ;
+        }
 
         public void visit(OpProject opProject)
-        {}
+        {
+            QueryIterator q = popOrRoot() ;
+            push(new QueryIterProject(q, opProject.getVars(), execCxt)) ;
+        }
 
         public void visit(OpDistinct opDistinct)
-        {}
+        {
+            QueryIterator qIter = popOrRoot() ;
+            qIter = BindingImmutable.create(opDistinct.getVars(), qIter, execCxt) ;
+            push(new QueryIterDistinct(qIter, execCxt)) ;
+        }
 
         public void visit(OpSlice opSlice)
-        {}
+        { 
+            QueryIterator qIter = popOrRoot() ;
+            qIter = new QueryIterLimitOffset(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
+            push(qIter) ;
+        }
     
 //        private void startLinear(QueryIterator qIter)
 //        { current = qIter ; }
