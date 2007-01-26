@@ -28,7 +28,7 @@ public class QueryIterLeftJoin extends QueryIter
         super(qCxt) ;
         this.left = left ;
         tableRight = TableFactory.create(right) ;
-        tableRight.materialize() ;
+        tableRight.materialize() ;              // Delay this?
         right.close();
         this.expr = expr ;
     }
@@ -53,13 +53,10 @@ public class QueryIterLeftJoin extends QueryIter
 
     protected Binding moveToNextBinding()
     {
-        if ( ! hasNext() )
-            return null ;
-        
         if ( nextBinding == null )
             throw new ARQInternalErrorException("moveToNextBinding: slot empty but hasNext was true)") ;
         
-        Binding b = null ;
+        Binding b = nextBinding ;
         nextBinding = null ;
         return b ;
     }
@@ -67,12 +64,12 @@ public class QueryIterLeftJoin extends QueryIter
     // Move on regardless.
     private Binding moveToNext()
     {
-        while ( current == null || ! current.hasNext() )
-        {
-            if ( current != null )
-                current.close();
-            current = joinWorker() ;
-        }
+        if ( current != null && current.hasNext() )
+            return current.nextBinding() ;
+
+        if ( current != null )
+            current.close();
+        current = joinWorker() ;
         if ( current == null )
             return null ;
         return current.nextBinding() ;

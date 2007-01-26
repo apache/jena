@@ -11,8 +11,6 @@ import com.hp.hpl.jena.query.core.Element;
 import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.engine.PlanBase;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.QueryEngineBase.Modifiers;
-import com.hp.hpl.jena.query.engine2.Plan2;
 import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Context;

@@ -6,8 +6,6 @@
 package engine3.iterators;
 import java.util.* ;
 
-import org.apache.commons.logging.*;
-
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
@@ -32,11 +30,11 @@ public abstract class QueryIterStream extends QueryIter
         this.input = null ;
         this.currentStage = null ;
         
-        if ( input == null )
-        {
-            LogFactory.getLog(this.getClass()).fatal("[QueryIterRepeatApply] Repeated application to null input iterator") ;
-            return ;
-        }
+//        if ( input == null )
+//        {
+//            LogFactory.getLog(this.getClass()).fatal("[QueryIterStream] Repeated application to null input iterator") ;
+//            return ;
+//        }
     }
     
     public void setInput(QueryIterator input)

@@ -32,6 +32,12 @@ public class OpCompiler
         return v.compile(op) ;
     }
     
+    static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
+    {
+        OpCompilerVisitor v = new OpCompilerVisitor(execCxt) ;
+        return v.compile(op, qIter) ;
+    }
+    
     static class OpCompilerVisitor implements OpVisitor
     {
         QueryIterator queryIterator = null ;
@@ -47,8 +53,11 @@ public class OpCompiler
             return compile(op, null) ;
         }
 
-        public QueryIterator compile(Op op, QueryIterator previous)
+        public QueryIterator compile(Op op, QueryIterator input)
         {
+            if ( input == null )
+                input = root() ;
+            push(input) ;
             op.visit(this) ;
             QueryIterator qIter = pop() ;
 //            if ( previous != null )
@@ -79,6 +88,7 @@ public class OpCompiler
             QueryIterator left = compile(opJoin.getLeft(), start) ;
             // Pass left into right for streamed evaluation
             QueryIterator right = compile(opJoin.getRight(), left) ;
+            push(right) ;
         }
 
         
@@ -86,19 +96,21 @@ public class OpCompiler
         {
             QueryIterator left = compile(opLeftJoin.getLeft(), popOrRoot()) ;
             // Do an indexed substitute into the right if possible
-            boolean canDoLinear = false ; 
+            boolean canDoLinear = true ; 
 
             if ( canDoLinear )
             {
                 // Pass left into right for substitution before right side evaluation.
                 QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), execCxt) ;
                 push(qIter) ;
+                return ;
             }
             
             // Do it by sub-evaluation of left and right then left join.
             // Can be expensive if RHS returns a lot.
+            // Do better? Allow substitution of the safe vars??
             
-            QueryIterator right = compile(opLeftJoin.getRight(), popOrRoot()) ;
+            QueryIterator right = compile(opLeftJoin.getRight(), root()) ;
             
             QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExpr(), execCxt) ;
             push(qIter) ;
@@ -198,8 +210,12 @@ public class OpCompiler
         
         private QueryIterator popOrRoot()
         { 
+            
             if ( stack.size() == 0 )
+            {
+                System.out.println("Warning: popOrRoot: empty stack - making root") ;
                 return root() ;
+            }
             return (QueryIterator)stack.pop() ;
         }
         

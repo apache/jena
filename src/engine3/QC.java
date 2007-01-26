@@ -24,6 +24,11 @@ public class QC
         return OpCompiler.compile(op, execCxt) ;
     }
     
+    public static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
+    {
+        return OpCompiler.compile(op, qIter, execCxt) ;
+    }
+    
 }
 
 /*

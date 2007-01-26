@@ -7,10 +7,13 @@
 package dev;
 
 import arq.cmd.QueryCmdUtils;
+import arq.cmd.ResultsFormat;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
+import com.hp.hpl.jena.query.engine.QueryEngineBase;
+import com.hp.hpl.jena.query.engine2.QueryEngineRef;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -20,15 +23,20 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        String qs = "PREFIX : <http://example/> SELECT * { ?s :p ?o }" ;
+        QueryEngineRef.register() ;
+        String qs1 = "PREFIX : <http://example/>\n" ;
+        String qs = qs1+"SELECT * { ?s :q ?o . optional { ?o :r ?v } }" ;
         Model data = FileManager.get().loadModel("D.ttl") ;
+
         Query query = QueryFactory.create(qs) ;
-        //QueryExecution qExec = QueryExecutionFactory.create(query, data) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, data) ;
+        System.out.print(((QueryEngineBase)qExec).getPlan()) ;
+        QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
         
-        QueryEngineX qExec = new QueryEngineX(query) ;
-        qExec.setDataset(new DataSourceImpl(data)) ;
+        QueryEngineX qe = new QueryEngineX(query) ;
+        qe.setDataset(new DataSourceImpl(data)) ;
+        QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
         
-        QueryCmdUtils.executeQuery(query, qExec) ;
     }
 }
 
