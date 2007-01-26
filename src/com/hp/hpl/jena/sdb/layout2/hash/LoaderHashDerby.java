@@ -11,6 +11,10 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 
@@ -21,12 +25,14 @@ import com.hp.hpl.jena.sdb.sql.TableUtils;
  */
 
 public class LoaderHashDerby extends LoaderHashLJ
-{	
+{
+	private static Log log = LogFactory.getLog(LoaderHashDerby.class);
+	
     public LoaderHashDerby(SDBConnection connection) { 
 		super(connection) ;
 	}
     
-    /* TODO: Derby's temporary tables are limited. Use a generated table name and clear up afterwards */ 
+    /* Derby's temporary tables are limited. Use a generated table name and clear up afterwards */ 
     public void createLoaderTable() throws SQLException
     {
     	Connection conn = connection().getSqlConnection();
@@ -56,6 +62,16 @@ public class LoaderHashDerby extends LoaderHashLJ
         			"  o BIGINT NOT NULL",
         			")"
         	));
+    }
+    
+    @Override
+    public void close() {
+    	try {
+			connection().exec("DROP TABLE " + getNodeLoader());
+			connection().exec("DROP TABLE " + getTripleLoader());
+		} catch (SQLException e) {
+			log.error("Error removing loader tables", e);
+		}
     }
 }
 
