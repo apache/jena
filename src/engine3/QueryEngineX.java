@@ -7,6 +7,12 @@
 package engine3;
 
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.core.Element;
+import com.hp.hpl.jena.query.engine.Plan;
+import com.hp.hpl.jena.query.engine.PlanBase;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.QueryEngineBase.Modifiers;
+import com.hp.hpl.jena.query.engine2.Plan2;
 import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.util.Context;
@@ -20,18 +26,17 @@ public class QueryEngineX extends QueryEngineRef
     public QueryEngineX(Query query)
     { super(query) ; }
     
-    //@Override
-    //protected Op createOp()
     
-    //@Override
-    protected Op createPatternOp()
+    protected Plan queryToPlan(Query query, Modifiers mods, Element pattern)
     {
-        if ( query.getQueryPattern() == null )
-            return null ;
-        // Step one - compile in the reference model.
-        Op op = super.createPatternOp() ;
-        // Compile op.
-        return op ;
+        Op op = getOp() ;
+        final QueryIterator qIter = OpCompiler.compile(op, getExecContext()) ;
+        return new PlanBase(){
+
+            protected QueryIterator iteratorOnce()
+            {
+                return qIter ;
+            }} ;
     }
 }
 
