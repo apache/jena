@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.98 $
+ * Revision           $Revision: 1.99 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-11 19:55:25 $
+ * Last modified on   $Date: 2007-01-26 12:11:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.98 2007-01-11 19:55:25 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.99 2007-01-26 12:11:40 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -87,12 +87,6 @@ public class OntModelImpl
 
     /** List of URI strings of documents that have been imported into this one */
     protected Set m_imported = new HashSet();
-
-    /** Query that will access nodes with types whose type is Class */
-    protected BindingQueryPlan m_individualsQueryNoInf0;
-
-    /** Query that will access nodes with types whose type is Restriction */
-    protected BindingQueryPlan m_individualsQueryNoInf1;
 
     /** Mode switch for strict checking mode */
     protected boolean m_strictMode = true;
@@ -153,10 +147,6 @@ public class OntModelImpl
         m_union = (getGraph() instanceof MultiUnion) ?
                         ((MultiUnion) getGraph()) :
                         (MultiUnion) ((InfGraph) getGraph()).getRawGraph();
-
-        // cache the query plan for individuals
-        m_individualsQueryNoInf0 = queryXTypeOfType( getProfile().CLASS() );
-        m_individualsQueryNoInf1 = queryXTypeOfType( getProfile().RESTRICTION() );
 
         // add the global prefixes, if required
         if (getDocumentManager().useDeclaredPrefixes()) {
@@ -406,11 +396,14 @@ public class OntModelImpl
         }
         if (!supportsIndAsThing || (getProfile().THING() == null) || getProfile().CLASS().equals( RDFS.Class )) {
             // no inference, or we are in RDFS land, so we pick things that have rdf:type whose rdf:type is Class
-            ExtendedIterator indivI = queryFor( m_individualsQueryNoInf0, null, Individual.class );
 
-            if (m_individualsQueryNoInf1 != null) {
+            // we have to build the query plans dynamically - these were done once-only in pre-Jena-2.5,
+            // but this can interfere with some opimisations
+            ExtendedIterator indivI = queryFor( queryXTypeOfType( getProfile().CLASS() ), null, Individual.class );
+
+            if (getProfile().RESTRICTION() != null) {
                 // and things whose rdf:type is Restriction
-                indivI = indivI.andThen( queryFor( m_individualsQueryNoInf1, null, Individual.class ) );
+                indivI = indivI.andThen( queryFor( queryXTypeOfType( getProfile().RESTRICTION() ), null, Individual.class ) );
             }
 
             // we also must pick resources that simply have rdf:type owl:Thing, since some individuals are asserted that way
@@ -421,7 +414,7 @@ public class OntModelImpl
             return UniqueExtendedIterator.create( indivI );
         }
         else {
-            // inference, so we pick the nodes that are of type Thing
+            // we have inference, so we pick the nodes that are of type Thing
             return UniqueExtendedIterator.create(
                     findByTypeAs( getProfile().THING(), Individual.class ) );
         }
