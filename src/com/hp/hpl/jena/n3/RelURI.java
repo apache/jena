@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.cache.Cache;
 /** RelURI copied to Jena
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.10 2007-01-02 11:48:32 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.11 2007-01-27 18:33:20 andy_seaborne Exp $
  */
 
 public class RelURI
@@ -95,15 +95,15 @@ public class RelURI
     static private String encode(String s)
     {
         if ( s == null ) return s ;
-        //s = s.replace("_", "__") ;
-        //s = s.replace(" ", "_20") ;
+        s = s.replace("_", "__") ;
+        s = s.replace(" ", "_20") ;
         return s ;
     }
     
     static private String decode(String s)
     {
-        //s = s.replace("_20", " ") ;
-        //s = s.replace("__", "_") ;
+        s = s.replace("_20", " ") ;
+        s = s.replace("__", "_") ;
         return s ;
         
     }
