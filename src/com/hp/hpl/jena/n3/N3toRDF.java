@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.35 2007-01-19 11:26:37 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.36 2007-01-28 16:04:13 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -47,61 +47,15 @@ public class N3toRDF implements N3ParserEventHandler
     static final String XMLLiteralURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral" ;
 
 	private String base = null ;
-    private String basedir = null ;
+    //private String basedir = null ;
 	final String anonPrefix = "_" ;
 	
-    public N3toRDF() {}
-    
-    public void setBase(String str)
+    public N3toRDF(Model model, String base)
     {
-        if ( str == null )
-        {
-            base = null ;
-            basedir = null ;
-            return ;
-        }
-        
-        base = RelURI.resolve(str) ;
-        return ;
+        this.base = base ;
+        this.model = model ;
     }
-    
-    public void setBaseOLD(String str)
-    {
-        if ( str == null )
-        {
-            base = null ;
-            basedir = null ;
-            return ;
-        }
-        
-        base = str ;
-        
-        if ( base.startsWith("file:") || base.startsWith("http:") )
-        {
-            int i = base.lastIndexOf('/') ;
-            if ( i >= 0 )
-                // Include the /
-                basedir = base.substring(0,i+1) ;
-            else 
-                basedir = base ;
-        }
-        else
-            basedir = base ;
-    }
-    
-    public void setModel(Model model)
-    {
-        this.model = model ; 
-    }
-    
-    // Need to delay setting the model and base
-//	N3toRDF(Model m, String _base)
-//	{
-//		model = m ; base = _base ;
-//		if ( VERBOSE )
-//			System.out.println("N3toRDF: "+base) ;
-//	}
-	
+
     
 	public void startDocument() { }
 	public void endDocument()   { }
@@ -412,45 +366,6 @@ public class N3toRDF implements N3ParserEventHandler
             error("Line "+line+": N3toRDF: Bad URI: "+text+ " ("+ex.getMessage()+")") ;
         }
         return null ;
-    }
-    // Expand shorthand forms (not QNames) for URIrefs.
-    private String expandURIRefOLD(String text, int line)
-    {
-        // Not a "named" bNode (start with _:)
-        if ( text.equals("") && base == null )
-            error("Line "+line+": N3toRDF: Relative URI but no base for <>") ;
-        
-        if ( text.equals("#") && base == null )
-            error("Line "+line+": N3toRDF: Relative URI but no base for <#>") ;
-        
-        if ( text.equals("") )
-            // The case of <>.
-            return base ;
-        
-        if ( text.equals("#") )
-            // The case of <#>.
-            return base+"#" ;
-        
-        if ( base != null && ! hasURIscheme(text) )
-        {
-            if ( ! base.startsWith("file:"))
-            {
-                if ( text.startsWith("#"))
-                    return base+text ;
-                else
-                    return base+"#"+text ;
-            }
-            
-            // File-like things.
-            if ( text.startsWith("#") )
-                return base + text ;
-            if ( text.startsWith("/") )
-                return "file:" + text ;
-            else
-                return basedir + text ;
-        }
-        
-        return text;
     }
     
     private boolean hasURIscheme(String text)

@@ -6,123 +6,19 @@
 
 package com.hp.hpl.jena.n3.turtle;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.Reader;
 
-import com.hp.hpl.jena.graph.GraphEvents;
-import com.hp.hpl.jena.n3.RelURI;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.BadURIException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.n3.JenaReaderBase;
+import com.hp.hpl.jena.rdf.model.Model;
 
 
-public class TurtleReader implements RDFReader
+public class TurtleReader extends JenaReaderBase
 {
-
-    RDFErrorHandler errorHandler = null ;
-    
-    // Jena's Reader interface
-    
-    public void read(Model model, Reader r, String base) 
+    protected void readWorker(Model model, Reader reader, String base)
     {
-        read(model, r, base, null) ;
+        ParserTurtle p =  new ParserTurtle() ;
+        p.parse(model.getGraph(), base, reader) ;
     }
-
-    public void read(Model model, String url) 
-    {
-          try {
-            URLConnection conn = new URL(url).openConnection();
-            String encoding = conn.getContentEncoding();
-            if ( encoding == null )
-               read(model, conn.getInputStream(), url, url);
-            else
-               read(model, new InputStreamReader(conn.getInputStream(),encoding), url, url);
-        }
-        catch (MalformedURLException ex)
-        { 
-            // parser should do better
-            throw new BadURIException(ex.getMessage()) ; }
-        
-        catch (JenaException e)
-        {
-            if ( errorHandler == null )
-                throw e;
-            errorHandler.error(e) ;
-        }
-        catch (Exception ex)
-        {
-            if ( errorHandler == null ) throw new JenaException(ex) ;
-            errorHandler.error(ex) ;
-        }
-    }
-    
-    public void read(Model model, Reader reader, String base, String sourceName) 
-    {
-        //System.err.println("Call to Turtle reader / Reader") ;
-        readWorker(model, reader, base, sourceName) ;
-    }
-
-    public void read(Model model, InputStream in, String base) 
-    {
-        read(model, in, base, null) ;
-    }
-
-    
-    public void read(Model model, InputStream in, String base, String sourceName) 
-    {
-        Reader reader = FileUtils.asUTF8(in) ;
-        readWorker(model, reader, base, sourceName) ;
-    }
-    
-    private void readWorker(Model model, Reader reader, String base, String sourceName)
-    {
-        try {
-            if ( base == null )
-                base = sourceName ;
-            else if ( base.equals("") )
-                ;
-            
-            if ( base != null )
-                base = RelURI.resolve(base) ;
-            
-            model.notifyEvent( GraphEvents.startRead ) ;
-            ParserTurtle p =  new ParserTurtle() ;
-            p.parse(model.getGraph(), base, reader) ;
-            // Finish done in finally block
-        }
-        catch (JenaException e)
-        {
-            if ( errorHandler == null )
-                throw e;
-            errorHandler.error(e) ;
-        }
-        catch (Exception ex)
-        {
-            if ( errorHandler == null ) throw new JenaException(ex) ;
-            errorHandler.error(ex) ;
-        }
-        finally
-        {
-            model.notifyEvent( GraphEvents.finishRead );
-        }
-    }
-    
-    public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
-    {
-        RDFErrorHandler old = errorHandler ;
-        errorHandler = errHandler ;
-        return old ;
-    }
-    
-    public Object setProperty(String propName, Object propValue)
-    {
-        return null ;
-    }
-
-
 }
 
 /*
