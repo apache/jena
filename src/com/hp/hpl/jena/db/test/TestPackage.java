@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.41 $
+ * @version 	$Revision: 1.42 $
  */
 public class TestPackage extends TestSuite
 {
@@ -98,7 +98,6 @@ public class TestPackage extends TestSuite
 		addTest( "TestReifier", TestReifier.suite() );
 		addTest( "TestReifierCompareToMem", TestReifierCompareToMem.suite());
 		addTest( "TestQueryRDB", TestQueryRDB.suite());
-		addTest( "TestRDQLOptions", TestRDQLOptions.suite());
 		addTest( "TestQuery1", TestQuery1.suite());
         addTest( "TestModelFactory", TestModelFactory.suite() );
         }
