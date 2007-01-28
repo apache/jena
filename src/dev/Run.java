@@ -24,14 +24,18 @@ public class Run
     public static void main(String[] argv)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;
-        String qs = qs1+"SELECT ?s {  ?s :q ?o   filter(true)  }" ;
+        String qs = qs1+"SELECT * {  ?s :q ?o GRAPH ?g {  }  }" ;
         Model data = FileManager.get().loadModel("D.ttl") ;
+        DataSource ds = new DataSourceImpl() ;
+        ds.setDefaultModel(data) ;
+        ds.addNamedModel("http://example/g", data) ;
+        
         Query query = QueryFactory.create(qs) ;
 
-        if ( true )
+        if ( false )
         {
             QueryEngineRef.register() ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, data) ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
             System.out.print(((QueryEngineBase)qExec).getPlan()) ;
             QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
             QueryEngineRef.unregister() ;
@@ -39,7 +43,7 @@ public class Run
 
         //QueryEngineX.register() ;
         QueryEngineX qe = new QueryEngineX(query) ;
-        qe.setDataset(new DataSourceImpl(data)) ;
+        qe.setDataset(ds) ;
         QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
         
     }

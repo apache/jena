@@ -22,12 +22,13 @@ import com.hp.hpl.jena.query.engine1.iterator.QueryIterProject;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterSort;
 import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
 import com.hp.hpl.jena.query.engine2.op.*;
+import com.hp.hpl.jena.query.engine2.table.TableUnit;
 
 import engine3.iterators.*;
 
 public class OpCompiler
 {
-    // TODO OpGraph 
+    // TODO Get working like engine1 - then do OpLeftJoin
     // TODO Filter placement
     // TODO Sort out iterators
 
@@ -143,16 +144,22 @@ public class OpCompiler
     }
 
     QueryIterator compile(OpGraph opGraph, QueryIterator input)
-    { throw new ARQNotImplemented("OpGraph") ; }
-
+    { 
+        return new QueryIterGraph(input, opGraph, execCxt) ;
+    }
+    
     QueryIterator compile(OpDatasetNames dsNames, QueryIterator input)
     { throw new ARQNotImplemented("OpDatasetNames") ; }
 
     QueryIterator compile(OpTable opTable, QueryIterator input)
     { 
-        // Check input is null.
-        // Check is the empty table 
-        return opTable.getTable().iterator(execCxt) ;
+        // Works for all the wrong reasons!
+        // opTable is UnitTable.
+        
+        if ( opTable.getTable() instanceof TableUnit )
+            return input ;
+        throw new ARQNotImplemented("OpTable: no tunit table") ;
+        //return opTable.getTable().iterator(execCxt) ;
     }
 
     QueryIterator compile(OpExt opExt, QueryIterator input)
