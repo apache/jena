@@ -16,7 +16,7 @@ import com.hp.hpl.jena.n3.* ;
 /**
     Read N3 files and print in a variery of formats.
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.17 2007-01-02 11:51:15 andy_seaborne Exp $
+ * @version 	$Id: n3.java,v 1.18 2007-01-28 16:21:24 andy_seaborne Exp $
  */
 public class n3
 {
@@ -234,7 +234,8 @@ public class n3
                 : cause instanceof N3Exception ? cause
                 : null);
             if ( n3Ex != null )
-                System.err.println(n3Ex.getMessage()) ;
+                // Avoid a warning.
+                System.err.println(((Exception)n3Ex).getMessage()) ;
             else
             {
                 Throwable th = (cause == null ? rdfEx : cause);
