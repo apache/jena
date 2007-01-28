@@ -8,7 +8,6 @@ package engine3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.ElementBasicGraphPattern;
@@ -17,217 +16,184 @@ import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.iterator.*;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterDistinct;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterLimitOffset;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterProject;
+import com.hp.hpl.jena.query.engine1.iterator.QueryIterSort;
 import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
 import com.hp.hpl.jena.query.engine2.op.*;
 
 import engine3.iterators.*;
-import engine3.iterators.QueryIterSingleton;
 
 public class OpCompiler
 {
+    // TODO OpGraph 
+    // TODO Filter placement
+    // TODO Sort out iterators
+
     static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
-        OpCompilerVisitor v = new OpCompilerVisitor(execCxt) ;
-        return v.compile(op) ;
+        return compile(op, root(execCxt), execCxt) ;
     }
     
     static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
-        OpCompilerVisitor v = new OpCompilerVisitor(execCxt) ;
-        return v.compile(op, qIter) ;
+        OpCompiler compiler = new OpCompiler(execCxt) ;
+        QueryIterator q = compiler.compileOp(op, qIter) ;
+        return q ;
     }
-    
-    static class OpCompilerVisitor implements OpVisitor
+
+    ExecutionContext execCxt ;
+    CompilerDispatch dispatcher = null ;
+
+    private OpCompiler(ExecutionContext execCxt)
+    { 
+        this.execCxt = execCxt ;
+        dispatcher = new CompilerDispatch(this) ;
+    }
+
+    private QueryIterator compileOp(Op op)
     {
-        QueryIterator queryIterator = null ;
+        return compileOp(op, null) ;
+    }
+
+    private QueryIterator compileOp(Op op, QueryIterator input)
+    {
+        return dispatcher.compile(op, input) ;
+    }
         
-        ExecutionContext execCxt ;
-        Stack stack = new Stack() ;
-        
-        public OpCompilerVisitor(ExecutionContext execCxt)
-        { this.execCxt = execCxt ; } 
-        
-        public QueryIterator compile(Op op)
+    QueryIterator compile(OpBGP opBGP, QueryIterator input)
+    {
+        ElementBasicGraphPattern bgp = new ElementBasicGraphPattern() ; 
+        bgp.getTriples().addAll(opBGP.getPattern()) ;
+
+        // Turn into a real PlanBasicGraphPattern (with property function sorting out)
+        PlanElement planElt = PlanBasicGraphPattern.make(execCxt.getContext(), bgp) ;
+        QueryIterator qIter = planElt.build(input, execCxt) ;
+        return qIter ;
+    }
+
+    // Zero inputs.
+    QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)
+    {
+        throw new ARQNotImplemented("compile/OpQuadPattern") ;
+    }
+
+    QueryIterator compile(OpJoin opJoin, QueryIterator input)
+    {
+        QueryIterator left = compileOp(opJoin.getLeft(), input) ;
+        // Pass left into right for streamed evaluation
+        QueryIterator right = compileOp(opJoin.getRight(), left) ;
+        return right ;
+    }
+
+
+    QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)
+    {
+        QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
+        // Do an indexed substitute into the right if possible
+        boolean canDoLinear = true ; 
+
+        if ( canDoLinear )
         {
-            return compile(op, null) ;
+            // Pass left into right for substitution before right side evaluation.
+            QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), execCxt) ;
+            return  qIter ;
         }
 
-        public QueryIterator compile(Op op, QueryIterator input)
-        {
-            if ( input == null )
-                input = root() ;
-            push(input) ;
-            int x = stack.size() ; 
-            op.visit(this) ;
-            int y = stack.size() ;
-            if ( x != y )
-                System.out.println("Possible stack misalignment") ;
-            QueryIterator qIter = pop() ;
-            return qIter ;
-        }
-        
-        public void visit(OpBGP opBGP)
-        {
-            ElementBasicGraphPattern bgp = new ElementBasicGraphPattern() ; 
-            bgp.getTriples().addAll(opBGP.getPattern()) ;
-            
-            // Turn into a real PlanBasicGraphPattern (with property function sorting out)
-            PlanElement planElt = PlanBasicGraphPattern.make(execCxt.getContext(), bgp) ;
-            QueryIterator start = pop() ;
-            QueryIterator qIter = planElt.build(start, execCxt) ;
-            push(qIter) ;
-        }
+        // Do it by sub-evaluation of left and right then left join.
+        // Can be expensive if RHS returns a lot.
+        // Do better? Allow substitution of the safe vars??
 
-        // Zero inputs.
-        public void visit(OpQuadPattern quadPattern)
+        QueryIterator right = compileOp(opLeftJoin.getRight(), root()) ;
+        QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExpr(), execCxt) ;
+        return qIter ;
+    }
+
+    QueryIterator compile(OpUnion opUnion, QueryIterator input)
+    {
+        List x = new ArrayList() ;
+        x.add(opUnion.getLeft()) ;
+
+        // Merge a casaded union
+        while (opUnion.getRight() instanceof OpUnion)
+        {
+            Op opUnionNext = (OpUnion)opUnion.getRight() ;
+            x.add(opUnionNext) ;
+        }
+        x.add(opUnion.getRight()) ;
+        QueryIterator cIter = new QueryIterSplit(input, x, execCxt) ;
+        return cIter ;
+    }
+
+    QueryIterator compile(OpFilter opFilter, QueryIterator input)
+    {
+        Op sub = opFilter.getSubOp() ;
+
+        // Put filter in best place
+        if ( sub instanceof OpBGP )
         {}
 
-        public void visit(OpJoin opJoin)
-        {
-            QueryIterator start = pop() ;
-            
-            QueryIterator left = compile(opJoin.getLeft(), start) ;
-            // Pass left into right for streamed evaluation
-            QueryIterator right = compile(opJoin.getRight(), left) ;
-            push(right) ;
-        }
+        if ( sub instanceof OpQuadPattern )
+        {}
 
-        
-        public void visit(OpLeftJoin opLeftJoin)
-        {
-            QueryIterator left = compile(opLeftJoin.getLeft(), pop()) ;
-            // Do an indexed substitute into the right if possible
-            boolean canDoLinear = true ; 
-
-            if ( canDoLinear )
-            {
-                // Pass left into right for substitution before right side evaluation.
-                QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), execCxt) ;
-                push(qIter) ;
-                return ;
-            }
-            
-            // Do it by sub-evaluation of left and right then left join.
-            // Can be expensive if RHS returns a lot.
-            // Do better? Allow substitution of the safe vars??
-            
-            QueryIterator right = compile(opLeftJoin.getRight(), root()) ;
-            
-            QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExpr(), execCxt) ;
-            push(qIter) ;
-            
-        }
-        
-        public void visit(OpUnion opUnion)
-        {
-            QueryIterator qIter = pop() ;
-            
-            List x = new ArrayList() ;
-            x.add(opUnion.getLeft()) ;
-            
-            // Merge a casaded union
-            while (opUnion.getRight() instanceof OpUnion)
-            {
-                Op opUnionNext = (OpUnion)opUnion.getRight() ;
-                x.add(opUnionNext) ;
-            }
-            x.add(opUnion.getRight()) ;
-            QueryIterator cIter = new QueryIterSplit(qIter, x, execCxt) ;
-            push(cIter) ;
-        }
-
-        public void visit(OpFilter opFilter)
-        {
-            Op sub = opFilter.getSubOp() ;
-            
-            // Put filter in best place
-            if ( sub instanceof OpBGP )
-            {}
-            
-            if ( sub instanceof OpQuadPattern )
-            {}
-            
-            QueryIterator start = pop() ;
-            QueryIterator qIter = compile(sub, start) ;
-            qIter = new QueryIterFilterExpr(qIter, opFilter.getExpr(), execCxt) ;
-            push(qIter) ;
-        }
-
-        public void visit(OpGraph opGraph)
-        { throw new ARQNotImplemented("OpGraph") ; }
-
-        public void visit(OpDatasetNames dsNames)
-        { throw new ARQNotImplemented("OpDatasetNames") ; }
-
-        public void visit(OpTable opTable)
-        { 
-            // Input?
-            push(opTable.getTable().iterator(execCxt)) ;
-        }
-
-        public void visit(OpExt opExt)
-        { throw new ARQNotImplemented("OpExt") ; }
-
-        public void visit(OpOrder opOrder)
-        { 
-            QueryIterator qIter = pop() ;
-            qIter = compile(opOrder.getSubOp(), qIter) ;
-            qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt) ;
-            push(qIter) ;
-        }
-
-        public void visit(OpProject opProject)
-        {
-            QueryIterator qIter = pop() ;
-            qIter = compile(opProject.getSubOp(), qIter) ;
-            qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
-            push(qIter) ;
-        }
-
-        public void visit(OpDistinct opDistinct)
-        {
-            QueryIterator qIter = pop() ;
-            qIter = compile(opDistinct.getSubOp(), qIter) ;
-            qIter = BindingImmutable.create(opDistinct.getVars(), qIter, execCxt) ;
-            push(new QueryIterDistinct(qIter, execCxt)) ;
-        }
-
-        public void visit(OpSlice opSlice)
-        { 
-            QueryIterator qIter = pop() ;
-            qIter = compile(opSlice.getSubOp(), qIter) ;
-            qIter = new QueryIterLimitOffset(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
-            push(qIter) ;
-        }
-    
-//        private void startLinear(QueryIterator qIter)
-//        { current = qIter ; }
-//        
-//        private void endLinear()
-//        { current = null ; }
-//        
-//        private void addToLinear(QueryIterator qIter)
-//        {
-//            if ( current == null )
-//                throw new ARQInternalErrorException("OpCompiler: addToLinear - linear section not started") ;
-//            // seed qiter with current
-//            current = qIter ;
-//        }
-        
-        private void push(QueryIterator qIter)  { stack.push(qIter) ; }
-        private QueryIterator pop()
-        { 
-            if ( stack.size() == 0 )
-                System.out.println("Warning: pop: empty stack") ;
-            return (QueryIterator)stack.pop() ;
-        }
-        
-        private QueryIterator root()
-        {
-            return new QueryIterSingleton(new Binding0(), execCxt) ;
-        }
+        QueryIterator qIter = compileOp(sub, input) ;
+        qIter = new QueryIterFilterExpr(qIter, opFilter.getExpr(), execCxt) ;
+        return qIter ;
     }
+
+    QueryIterator compile(OpGraph opGraph, QueryIterator input)
+    { throw new ARQNotImplemented("OpGraph") ; }
+
+    QueryIterator compile(OpDatasetNames dsNames, QueryIterator input)
+    { throw new ARQNotImplemented("OpDatasetNames") ; }
+
+    QueryIterator compile(OpTable opTable, QueryIterator input)
+    { 
+        // Check input is null.
+        // Check is the empty table 
+        return opTable.getTable().iterator(execCxt) ;
+    }
+
+    QueryIterator compile(OpExt opExt, QueryIterator input)
+    { throw new ARQNotImplemented("OpExt") ; }
+
+    QueryIterator compile(OpOrder opOrder, QueryIterator input)
+    { 
+        QueryIterator qIter = compileOp(opOrder.getSubOp(), input) ;
+        qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt) ;
+        return qIter ;
+    }
+
+    QueryIterator compile(OpProject opProject, QueryIterator input)
+    {
+        QueryIterator  qIter = compileOp(opProject.getSubOp(), input) ;
+        qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
+        return qIter ;
+    }
+
+    QueryIterator compile(OpSlice opSlice, QueryIterator input)
+    { 
+        QueryIterator qIter = compileOp(opSlice.getSubOp(), input) ;
+        qIter = new QueryIterLimitOffset(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
+        return qIter ;
+        }
+
+    QueryIterator compile(OpDistinct opDistinct, QueryIterator input)
+    {
+        QueryIterator qIter = compileOp(opDistinct.getSubOp(), input) ;
+        qIter = BindingImmutable.create(opDistinct.getVars(), qIter, execCxt) ;
+        qIter = new QueryIterDistinct(qIter, execCxt) ;
+        return qIter ;
+    }
+
+    static private QueryIterator root(ExecutionContext execCxt)
+    {
+        return new QueryIterSingleton(new Binding0(), execCxt) ;
+    }
+
+    private QueryIterator root()
+    { return root(execCxt) ; }
 }
 
 /*
