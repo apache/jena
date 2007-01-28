@@ -28,10 +28,13 @@ public class FileUtils
     public static final String langBDB          = "RDF/BDB" ;
     public static final String langSQL          = "RDF/SQL" ;
     
+    /** Java name for UTF-8 encoding */
+    public static final String encodingUTF8     = "utf-8" ;
+    
     static Charset utf8 = null ;
     static {
         try {
-            utf8 = Charset.forName("utf-8") ;
+            utf8 = Charset.forName(encodingUTF8) ;
         } catch (Throwable ex)
         {
             LogFactory.getLog(FileUtils.class).warn("Failed to get charset for UTF-8") ;
