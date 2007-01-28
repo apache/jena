@@ -1,6 +1,12 @@
 Release Notes
 =============
 
+==== Jena 2.6
+
+    o Removed old RDQL engine
+      Migrate to SPARQL, use ARQ instead and package com.hp.hpl.jena.query
+      http://jena.sf.net/ARQ/ -- ARQ also supports RDQL as a legacy language
+
 ==== Jena 2.5.1
 
 Fix for test.bat not setting the classpath correctly.
