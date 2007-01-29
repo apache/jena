@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.query.engine2.OpVars;
 import com.hp.hpl.jena.query.engine2.op.OpLeftJoin;
+import com.hp.hpl.jena.query.util.SetUtils;
 
 public class LeftJoinClassifier
 {
@@ -23,7 +24,17 @@ public class LeftJoinClassifier
         //   ?x used in non-optional patterns in the RHS directly
         //   ?x not used in RHS or below
         
-        return false ;
+        // Amounts to whether has any *optional* (not the level below but in
+        // some optional lower down. 
+        Set optRight = VarFinder.optDefined(op.getRight()) ;
+        
+        if ( SetUtils.intersectionP(leftVars, optRight) )
+        {
+            System.out.println("Non-linear because of "+SetUtils.intersection(leftVars, optRight) ) ;
+            return false ;
+        }
+        
+        return true ;
     }
 }
 
