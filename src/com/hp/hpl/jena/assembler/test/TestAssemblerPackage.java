@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerPackage.java,v 1.5 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestAssemblerPackage.java,v 1.6 2007-01-29 13:25:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -17,6 +17,7 @@ public class TestAssemblerPackage extends TestCase
         result.addTestSuite( TestModelExpansion.class );
         result.addTestSuite( TestImportManager.class );
         result.addTest( TestAssemblers.suite() );
+        result.addTestSuite( AcceptanceTesting.class );
         return result;
         }
     }

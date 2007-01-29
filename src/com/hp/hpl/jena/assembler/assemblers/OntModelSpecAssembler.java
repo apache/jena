@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelSpecAssembler.java,v 1.8 2007-01-02 11:52:55 andy_seaborne Exp $
+ 	$Id: OntModelSpecAssembler.java,v 1.9 2007-01-29 13:25:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -41,7 +41,7 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
 
     private OntModelSpec getDefault( Resource root )
         {
-        if (root.getNameSpace().equals( JA.uri ))
+        if (root.isURIResource() && root.getNameSpace().equals( JA.uri ))
             {
             OntModelSpec oms = getOntModelSpecField( root.getLocalName() );
             return oms == null ? DEFAULT : oms;
