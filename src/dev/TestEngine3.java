@@ -22,7 +22,10 @@ public class TestEngine3 extends TestCase
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
         QueryEngineX.register() ;
-        return QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-engine2.ttl") ; // All tests for engine 2
+        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-engine2.ttl") ;
+        // SPARQL test suite (does not test algebra)
+        TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-arq.ttl") ;
+        return ts ;
     }
     
 }

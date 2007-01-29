@@ -6,6 +6,7 @@
 
 package dev;
 
+import arq.sparql;
 import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
@@ -41,10 +42,27 @@ public class Run
             QueryEngineRef.unregister() ;
         }
 
-        //QueryEngineX.register() ;
+        execQuery("D.ttl", "Q.rq") ;
+        
+        QueryEngineX.register() ;
         QueryEngineX qe = new QueryEngineX(query) ;
         qe.setDataset(ds) ;
         QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
+        
+    }
+    
+    private static void execQuery(String datafile, String queryfile)
+    {
+        QueryEngineX.register() ;
+        String a[] = new String[]{
+            //"-v",
+            //"--engine=ref",
+            "--data="+datafile,
+            "-query="+queryfile , 
+        } ;
+        
+        sparql.main(a) ;
+        System.exit(0) ;
         
     }
 }

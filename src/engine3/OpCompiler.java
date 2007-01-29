@@ -98,7 +98,7 @@ public class OpCompiler
         if ( canDoLinear )
         {
             // Pass left into right for substitution before right side evaluation.
-            QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), execCxt) ;
+            QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), opLeftJoin.getExpr(), execCxt) ;
             return  qIter ;
         }
 
@@ -131,7 +131,14 @@ public class OpCompiler
     {
         Op sub = opFilter.getSubOp() ;
 
+        
+        
         // Put filter in best place
+        // Beware of 
+        // { _:a ?p ?v .  FILTER(true) . [] ?q _:a }
+        // making sure the right amount is dispatched as the BGP.
+        // Only affects SPARQl extensions.
+        
         if ( sub instanceof OpBGP )
         {}
 
