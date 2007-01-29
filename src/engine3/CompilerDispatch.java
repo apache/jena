@@ -11,7 +11,7 @@ import java.util.Stack;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine2.op.*;
 
-/**  Class to provide type-safe compile() */ 
+/**  Class to provide type-safe compile() dispatch using the visitor support of Op */ 
 
 class CompilerDispatch implements OpVisitor
 {

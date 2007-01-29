@@ -1,38 +1,26 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package dev;
+package engine3;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.query.engine2.op.OpLeftJoin;
 
-import com.hp.hpl.jena.query.expr.E_Function;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
-
-import engine3.QueryEngineX;
-
-public class TestEngine3 extends TestCase
+public class OptionalClassifier
 {
-    public static TestSuite suite()
+    static public boolean isLinear(OpLeftJoin op)
     {
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
-        QueryEngineX.register() ;
         
-        TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/Algebra/manifest.ttl") ;
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-engine2.ttl") ;
-        // SPARQL test suite (does not test algebra)
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-arq.ttl") ;
-        return ts ;
+        
+        
+        return false ;
     }
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -40,6 +40,10 @@ public class QueryIterOptionalIndex extends QueryIterStream
         
         Op op2 = QC.substitute(op, binding) ;
         
+        System.out.println("===="+super.getIteratorNumber()) ;
+        System.out.println(binding) ;
+        System.out.println(op) ;
+        
         // Seems shame to create an iterator just so we can wrap the input binding
         // but we had to unwrap the thing to do the substitute.
         // Maybe another way to pass the parent binding into QC.compile?

@@ -93,7 +93,7 @@ public class OpCompiler
     {
         QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
         // Do an indexed substitute into the right if possible
-        boolean canDoLinear = true ; 
+        boolean canDoLinear = false ; 
 
         if ( canDoLinear )
         {

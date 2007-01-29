@@ -16,7 +16,6 @@ import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.Utils;
 
 public class QueryEngineX extends QueryEngineRef
 {
@@ -27,24 +26,32 @@ public class QueryEngineX extends QueryEngineRef
     public QueryEngineX(Query query)
     { super(query) ; }
     
-    
+    //@Override
     protected Plan queryToPlan(Query query, Modifiers mods, Element pattern)
     {
         Op op = getOp() ;
         final QueryIterator qIter = OpCompiler.compile(op, getExecContext()) ;
-        return new PlanOp(qIter) ;
+        return new PlanOp(op, qIter) ;
     }
     
     static class PlanOp extends PlanBase
     {
         private QueryIterator qIter ;
-        PlanOp(QueryIterator qIter) { this.qIter = qIter ; }
+        private Op op ;
+        PlanOp(Op op, QueryIterator qIter) { this.op = op ; this.qIter = qIter ; }
 
         protected QueryIterator iteratorOnce()
         { return qIter ; }
-        
+
+        //@Override
         public void output(IndentedWriter out, SerializationContext sCxt) // or output(IndentedWriter).
-        { out.print("PlanOp:"+Utils.className(qIter)) ; }
+        {
+            out.println(Plan.startMarker+":EngineX") ;
+            out.incIndent() ;
+            op.output(out, sCxt) ;
+            out.decIndent() ;
+            out.println(Plan.finishMarker) ;
+        }
     }
 }
 
