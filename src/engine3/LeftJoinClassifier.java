@@ -6,14 +6,17 @@
 
 package engine3;
 
+import java.util.Set;
+
+import com.hp.hpl.jena.query.engine2.OpVars;
 import com.hp.hpl.jena.query.engine2.op.OpLeftJoin;
 
-public class OptionalClassifier
+public class LeftJoinClassifier
 {
     static public boolean isLinear(OpLeftJoin op)
     {
-        
-        
+        Set leftVars = OpVars.patternVars(op.getLeft()) ;
+        // Is every left variable
         
         return false ;
     }
