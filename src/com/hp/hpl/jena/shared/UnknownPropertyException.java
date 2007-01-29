@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: UnknownPropertyException.java,v 1.6 2007-01-02 11:48:38 andy_seaborne Exp $
+  $Id: UnknownPropertyException.java,v 1.7 2007-01-29 09:49:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
-
-import com.hp.hpl.jena.rdf.model.*;
 
 /**
     Exception to throw when Jena is presented with an unknown property
@@ -14,10 +12,10 @@ import com.hp.hpl.jena.rdf.model.*;
     
  	@author kers
 */
-public class UnknownPropertyException extends RDFException
+public class UnknownPropertyException extends JenaException
     {
     public UnknownPropertyException( String property )
-        { super( UNKNOWNPROPERTY, property ); }
+        { super( property ); }
     }
 
 

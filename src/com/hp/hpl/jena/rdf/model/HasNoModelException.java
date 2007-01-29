@@ -1,20 +1,22 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: HasNoModelException.java,v 1.6 2007-01-02 11:48:35 andy_seaborne Exp $
+  $Id: HasNoModelException.java,v 1.7 2007-01-29 09:49:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
+
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception to throw when a Statement or Resource (which don't have
     a useful common supertype, alas) don't have an associated model.
  	@author kers
 */
-public class HasNoModelException extends RDFException
+public class HasNoModelException extends JenaException
     {
     public HasNoModelException( Object x )
-        { super( NOTRELATEDTOMODEL, x.toString() ); }
+        { super( x.toString() ); }
     }
 
 

@@ -1,19 +1,21 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SeqIndexBoundsException.java,v 1.6 2007-01-02 11:48:35 andy_seaborne Exp $
+  $Id: SeqIndexBoundsException.java,v 1.7 2007-01-29 09:49:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
+
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception to throw when the index of a sequence is not in range.
  	@author kers
 */
-public class SeqIndexBoundsException extends RDFException
+public class SeqIndexBoundsException extends JenaException
     {
     public SeqIndexBoundsException( int limit, int index )
-        { super( SEQINDEXBOUNDS, "" + index + " must be in the range 1.." + limit ); }
+        { super( "" + index + " must be in the range 1.." + limit ); }
     }
 
 

@@ -1,26 +1,26 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceRequiredException.java,v 1.8 2007-01-02 11:48:34 andy_seaborne Exp $
+  $Id: ResourceRequiredException.java,v 1.9 2007-01-29 09:49:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.*;
 
 /**
     Exception to throw when an RDFNode required to be a Resource isn't, or when a Node
     supposed to be a resource isn't.
  	@author kers
 */
-public class ResourceRequiredException extends RDFException
+public class ResourceRequiredException extends JenaException
     {
     public ResourceRequiredException( RDFNode n )
         { this( n.asNode() ); }
         
     public ResourceRequiredException( Node n )
-        { super( OBJECTNOTRESOURCE, n.toString( PrefixMapping.Extended, true) ); }
+        { super( n.toString( PrefixMapping.Extended, true) ); }
     }
 
 /*

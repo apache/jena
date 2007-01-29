@@ -1,19 +1,21 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AltHasNoDefaultException.java,v 1.6 2007-01-02 11:48:34 andy_seaborne Exp $
+  $Id: AltHasNoDefaultException.java,v 1.7 2007-01-29 09:49:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
+
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception thrown if an Alt has no default statement.
  	@author kers
 */
-public class AltHasNoDefaultException extends RDFException
+public class AltHasNoDefaultException extends JenaException
     {
     public AltHasNoDefaultException( Alt  a )
-        { super( ALTHASNODEFAULT, a.toString() ); }
+        { super( a.toString() ); }
     }
 
 

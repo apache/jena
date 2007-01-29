@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InvalidPropertyURIException.java,v 1.6 2007-01-02 11:48:38 andy_seaborne Exp $
+  $Id: InvalidPropertyURIException.java,v 1.7 2007-01-29 09:49:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
-
-import com.hp.hpl.jena.rdf.model.RDFException;
 
 /**
     Exception to throw when it is discovered that a property has been given
@@ -14,10 +12,10 @@ import com.hp.hpl.jena.rdf.model.RDFException;
     
  	@author kers
 */
-public class InvalidPropertyURIException extends RDFException
+public class InvalidPropertyURIException extends JenaException
     {
     public InvalidPropertyURIException( String uri )
-        { super( INVALIDPROPERTYURI, uri ); }
+        { super( uri ); }
     }
 
 
