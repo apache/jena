@@ -16,7 +16,12 @@ public class LeftJoinClassifier
     static public boolean isLinear(OpLeftJoin op)
     {
         Set leftVars = OpVars.patternVars(op.getLeft()) ;
-        // Is every left variable
+        // Is every left variable used correctly on the right?
+        // i.e. no gaps in useage chain.
+        
+        // ?x is safe if
+        //   ?x used in non-optional patterns in the RHS directly
+        //   ?x not used in RHS or below
         
         return false ;
     }
