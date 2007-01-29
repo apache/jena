@@ -7,11 +7,11 @@
  * Web site           http://jena.sourceforge.net
  * Created            16-Sep-2005
  * Filename           $RCSfile: rdfcat.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-25 13:22:51 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2007-01-29 23:49:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -42,33 +42,50 @@ import jena.cmdline.*;
  * <p>
  * An RDF utility that takes its name from the Unix utility <em>cat</em>, and
  * is used to generate serialisations of the contents of zero or more
- * input model serialisations.
+ * input model serialisations. <strong>Note</strong> In a change from previous
+ * versions, but to ensure compatability with standard argument handling
+ * practice, the input language options are <em>no longer sticky</em>. In
+ * previous versions, <code>rdfcat -n A B C</code> would ensure that A, B
+ * and C were all read as N3. From Jena 2.5.2 onwards, this requires:
+ * <code>rdfcat -n A -n B -n C</code>, or the use of the <code>-in</code>
+ * option.
  * </p>
  * <p>Synopsis:</p>
  * <pre>
- * java jena.rdfcat (options|lang|input)*
+ * java jena.rdfcat (options|input)*
  * where options are:
  *   -out N3  (aliases n, n3, ttl)
  *   -out N-TRIPLE  (aliases t, ntriple)
  *   -out RDF/XML  (aliases x, rdf, xml, rdfxml)
  *   -out RDF/XML-ABBREV (default)
- *   -out <any Jena-supported writer name>
+ *   -in N3  (aliases n, n3, ttl)
+ *   -in N-TRIPLE  (aliases t, ntriple)
+ *   -in RDF/XML  (aliases x, rdf, xml, rdfxml)
  *   -include
  *   -noinclude (default)
  *
- * lang is one of:
- *   -n for n3 input  (aliases -n3, -N3, -ttl)
- *   -x for rdf/xml input  (aliases -rdf, -xml, -rdfxml)
- *   -t for n-triple input  (aliases -ntriple)
- *
- * input is a URL, a filename, or - for the standard input
+ * input is one of:
+ *   -n &lt;filename&gt; for n3 input  (aliases -n3, -N3, -ttl)
+ *   -x &lt;filename&gt; for rdf/xml input  (aliases -rdf, -xml, -rdfxml)
+ *   -t &lt;filename&gt; for n-triple input  (aliases -ntriple)
+ * or just a URL, a filename, or - for the standard input.
  * </pre>
- * <p>The input language options set the default language for all subsequent
- * arguments, up to the next lang option. So in the following example, inputs
- * A, B and C are read as N3, while D and stdin are read as RDF/XML:</p>
+ * <p>
+ * The default
+ * input language is RDF/XML, but the reader will try to guess the
+ * input language based on the file extension (e.g. N3 for file with a .n3
+ * file extension.
+ * </p>
+ * <p>The input language options set the language for the following file
+ * name only. So in the following example, input
+ * A is read as N3, inputs B, C and D are read as RDF/XML,
+ * while stdin is read as N-TRIPLE:</p>
  * <pre>
- * java jena.rdfcat -n A B C -x - D
+ * java jena.rdfcat -n A B C -t - -x D
  * </pre>
+ * <p>To change the default input language for all files that do
+ * not have a specified language encoding, use the <code>-in</code> option.
+ * </p>
  * <p>If the <code>include</code> option is set, the input files are scanned
  * for <code>rdfs:seeAlso</code> and <code>owl:imports</code> statements, and
  * the objects of these statements are read as well.  By default, <code>include</code>
@@ -90,6 +107,9 @@ import jena.cmdline.*;
  *
  * Join two owl files one N3, one XML, and their imports, into a single NTRIPLE file:
  * java jena.rdfcat -out NTRIPLE -include in1.owl -n in2.owl > out.ntriple
+ *
+ * Concatenate two N3-serving http URL's as N-TRIPLE
+ * java jena.rdfcat -in N3 -out N-TRIPLE http://example.com/a http://example.com/b
  * </pre>
  * <p>Note that, in a difference from the Unix utility <code>cat</code>, the order
  * of input statements is not preserved. The output document is a merge of the
@@ -97,7 +117,7 @@ import jena.cmdline.*;
  * serialisations. Also, duplicate triples will be suppressed.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.13 2007-01-25 13:22:51 chris-dollin Exp $)
+ * @version Release @release@ ($Id: rdfcat.java,v 1.14 2007-01-29 23:49:18 ian_dickinson Exp $)
  */
 public class rdfcat
 {
@@ -105,24 +125,24 @@ public class rdfcat
     //////////////////////////////////
 
     /** Argument setting expected input language to N3 */
-    public final ArgDecl IN_N3 = new ArgDecl( false, "n", "n3", "ttl", "N3",
+    public final ArgDecl IN_N3 = new ArgDecl( true, "n", "n3", "ttl", "N3",
             new ArgHandler() {
                 public void action( String arg, String val ) throws IllegalArgumentException {
-                    expectInput("N3");
+                    m_actionQ.add( new ReadAction( val, "N3") );
             }} );
 
     /** Argument setting expected input language to RDF/XML */
-    public final ArgDecl IN_RDF_XML = new ArgDecl( false, "x", "xml", "rdfxml", "rdf",
+    public final ArgDecl IN_RDF_XML = new ArgDecl( true, "x", "xml", "rdfxml", "rdf",
             new ArgHandler() {
                 public void action( String arg, String val ) throws IllegalArgumentException {
-                    expectInput("RDF/XML");
+                    m_actionQ.add( new ReadAction( val, "RDF/XML") );
             }} );
 
     /** Argument setting expected input language to NTRIPLE */
-    public final ArgDecl IN_NTRIPLE = new ArgDecl( false, "t", "ntriples", "ntriple", "n-triple", "n-triples",
+    public final ArgDecl IN_NTRIPLE = new ArgDecl( true, "t", "ntriples", "ntriple", "n-triple", "n-triples",
             new ArgHandler() {
                 public void action( String arg, String val ) throws IllegalArgumentException {
-                    expectInput("N-TRIPLE");
+                    m_actionQ.add( new ReadAction( val, "N-TRIPLE" ) );
             }} );
 
     /** Argument to set the output language */
@@ -130,6 +150,13 @@ public class rdfcat
             new ArgHandler() {
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     setOutput( val );
+            }} );
+
+    /** Argument to set the default input language */
+    public final ArgDecl IN_LANG = new ArgDecl( true, "in",
+            new ArgHandler() {
+                public void action( String arg, String val ) throws IllegalArgumentException {
+                    expectInput( val );
             }} );
 
     /** Argument to turn include processing on */
@@ -173,10 +200,11 @@ public class rdfcat
     //////////////////////////////////
 
     /** The command line processor that handles the arguments */
-    protected RCCommandLine m_cmdLine = (RCCommandLine) new RCCommandLine().add( IN_N3 )
+    protected CommandLine m_cmdLine = new RCCommandLine().add( IN_N3 )
                                                          .add( IN_NTRIPLE )
                                                          .add( IN_RDF_XML )
                                                          .add( OUT_LANG )
+                                                         .add( IN_LANG )
                                                          .add( INCLUDE )
                                                          .add( NOINCLUDE )
                                                          .add( NOFILTER )
@@ -201,6 +229,9 @@ public class rdfcat
     /** Flag to control whether import/include statements are filtered from merged models */
     protected boolean m_removeIncludeStatements = true;
 
+    /** Action queue */
+    protected List m_actionQ = new ArrayList();
+
 
     // Constructors
     //////////////////////////////////
@@ -218,17 +249,27 @@ public class rdfcat
     /* main loop */
     protected void go( String[] args ) {
         m_cmdLine.process( args );
-        read( m_cmdLine.getItems() );
+
+        // process any stored items
+        for (int i = 0; i < m_cmdLine.numItems(); i++) {
+            m_actionQ.add(  new ReadAction( m_cmdLine.getItem( i ), getExpectedInput() ) );
+        }
+        for (Iterator j = m_actionQ.iterator(); j.hasNext(); ) {
+            ((RCAction) j.next()).run( this );
+        }
+
+        // generate the output
         m_model.write( getOutputStream(), m_outputFormat );
     }
-
-    private void read( List items )
-        { for (int i = 0; i < items.size(); i += 1) readInput( (String) items.get(i) );
-        }
 
     /** Set the input language of next and subsequent reads */
     protected void expectInput( String lang ) {
         m_inputFormat = lang;
+    }
+
+    /** Answer the currently expected input format */
+    protected String getExpectedInput() {
+        return m_inputFormat;
     }
 
     /** Set the language to write the output model in */
@@ -237,7 +278,7 @@ public class rdfcat
     }
 
     /**
-     	Answer the full, checked, language name expanded from <code>shortName</code>.
+         Answer the full, checked, language name expanded from <code>shortName</code>.
         The shortName is expanded according to the table of abbreviations [below].
         It is then checked against RDFWriterFImpl's writer table [this is hacky but
         at the moment it's the most available interface] and the NoWriter exception
@@ -248,7 +289,7 @@ public class rdfcat
         String fullLang = (String) unabbreviate.get( shortLang );
         String tryLang = (fullLang == null ? shortLang : fullLang);
         try { new RDFWriterFImpl().getWriter( tryLang ); }
-        catch (NoWriterForLangException e) 
+        catch (NoWriterForLangException e)
             { throw new IllegalArgumentException( "'" + shortLang + "' is not recognised as a legal output format" ); }
         return tryLang;
         }
@@ -389,14 +430,15 @@ public class rdfcat
         extends CommandLine
     {
         /** Don't stop processing args on the first non-arg */
-        public boolean xxendProcessing( String argStr ) {
+        public boolean xendProcessing( String argStr ) {
             return false;
         }
 
         /** Handle an unrecognised argument by assuming it's a URI to read */
         public void handleUnrecognizedArg( String argStr ) {
             if (argStr.equals("-") || !argStr.startsWith( "-" )) {
-                readInput( argStr );
+                // queue this action for reading later
+                m_actionQ.add( new ReadAction( argStr, getExpectedInput() ) );
             }
             else {
                 System.err.println( "Unrecognised argument: " + argStr );
@@ -409,9 +451,11 @@ public class rdfcat
         public boolean ignoreArgument( String argStr ) {
             return !argStr.startsWith("-") || argStr.length() == 1;
         }
-        
-        public List getItems() { return items; }
 
+        /** Answer an iterator over the non-arg items from the command line */
+        public Iterator getItems() {
+            return items.iterator();
+        }
     }
 
     /** Queue entry that contains both a URI to be included, and a statement that may be removed */
@@ -422,6 +466,36 @@ public class rdfcat
         protected IncludeQueueEntry( String includeURI, Statement includeStmt ) {
             m_includeURI = includeURI;
             m_includeStmt = includeStmt;
+        }
+    }
+
+    /** Simple action object for local processing queue */
+    protected interface RCAction {
+        public void run( rdfcat rc );
+    }
+
+    /** Action to set the output format */
+    protected class ReadAction
+        implements RCAction
+    {
+        private String m_lang;
+        private String m_uri;
+        protected ReadAction( String uri, String lang ) {
+            m_lang = lang;
+            m_uri = uri;
+        }
+
+        /** perform the action of reading a uri */
+        public void run( rdfcat rc ) {
+            String l = rc.getExpectedInput();
+            if (m_lang != null) {
+                // if an input lang was given, use that
+                rc.expectInput( m_lang );
+            }
+            rc.readInput( m_uri );
+
+            // put the lang back to default
+            rc.expectInput( l );
         }
     }
 }
