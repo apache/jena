@@ -32,7 +32,6 @@ public class VarFinder
             return v ;
         }
         
-        
         Set<Var> defines = new HashSet<Var>() ;
         Set<Var> optDefines = new HashSet<Var>() ;
 
@@ -89,7 +88,7 @@ public class VarFinder
             
             defines.addAll(leftUsage.defines) ;
             optDefines.addAll(leftUsage.optDefines) ;
-            optDefines.addAll(rightUsage.defines) ;     // Asymetric.
+            optDefines.addAll(rightUsage.defines) ;     // Asymmetric.
             optDefines.addAll(rightUsage.optDefines) ;
             
             // Remove any defintites that are in the optionals 
