@@ -6,40 +6,21 @@
 
 package engine3;
 
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.core.Element;
-import com.hp.hpl.jena.query.engine.*;
+import com.hp.hpl.jena.query.engine.Plan;
+import com.hp.hpl.jena.query.engine.PlanBase;
+import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Utils;
 
 public class QueryEngineX extends QueryEngineRef
 {
-    private static QueryEngineFactory factory = new QueryEngineFactory()
-    {
-        public boolean accept(Query query, Dataset dataset) 
-        { return true ; }
 
-        public QueryExecution create(Query query, Dataset dataset)
-        {
-            QueryEngineX engine = new QueryEngineX(query) ;
-            engine.setDataset(dataset) ;
-            return engine ;
-        }
-    } ;
-    
-    static public void register()
-    {
-        QueryEngineRegistry.addFactory(factory) ;
-    }
-    
-    static public void unregister()
-    {
-        QueryEngineRegistry.removeFactory(factory) ;
-    }
-    
     public QueryEngineX(Query query, Context context)
     { super(query, context) ; }
 
@@ -51,12 +32,19 @@ public class QueryEngineX extends QueryEngineRef
     {
         Op op = getOp() ;
         final QueryIterator qIter = OpCompiler.compile(op, getExecContext()) ;
-        return new PlanBase(){
+        return new PlanOp(qIter) ;
+    }
+    
+    static class PlanOp extends PlanBase
+    {
+        private QueryIterator qIter ;
+        PlanOp(QueryIterator qIter) { this.qIter = qIter ; }
 
-            protected QueryIterator iteratorOnce()
-            {
-                return qIter ;
-            }} ;
+        protected QueryIterator iteratorOnce()
+        { return qIter ; }
+        
+        public void output(IndentedWriter out, SerializationContext sCxt) // or output(IndentedWriter).
+        { out.print("PlanOp:"+Utils.className(qIter)) ; }
     }
 }
 
