@@ -3,9 +3,14 @@ Release Notes
 
 ==== Jena 2.6
 
+RDQL support now in ARQ
     o Removed old RDQL engine
       Migrate to SPARQL, use ARQ instead and package com.hp.hpl.jena.query
       http://jena.sf.net/ARQ/ -- ARQ also supports RDQL as a legacy language
+
+RDFException removed
+    o Removed RDFException. It was obsolete (and recently deprecated). It's
+      subclasses are now subclasses of JenaException.
 
 ==== Jena 2.5.1
 
