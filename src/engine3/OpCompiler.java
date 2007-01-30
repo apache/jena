@@ -185,7 +185,7 @@ public class OpCompiler
     QueryIterator compile(OpSlice opSlice, QueryIterator input)
     { 
         QueryIterator qIter = compileOp(opSlice.getSubOp(), input) ;
-        qIter = new QueryIterLimitOffset(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
+        qIter = new QueryIterSlice(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
         return qIter ;
         }
 

@@ -20,9 +20,9 @@ import com.hp.hpl.jena.query.QueryExecException;
  * @version $Id: QueryIterLimitOffset.java,v 1.6 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
-public class QueryIterLimitOffset extends QueryIter
+public class QueryIterSlice extends QueryIter
 {
-    static Log clsLog = LogFactory.getLog(QueryIterLimitOffset.class) ;
+    static Log clsLog = LogFactory.getLog(QueryIterSlice.class) ;
     long count = 0 ;
     long limit ;
     long offset ;
@@ -36,7 +36,7 @@ public class QueryIterLimitOffset extends QueryIter
      * @param numItems         Maximium number of items to yield.  
      */
     
-    public QueryIterLimitOffset(QueryIterator cIter, long startPosition, long numItems, ExecutionContext context)
+    public QueryIterSlice(QueryIterator cIter, long startPosition, long numItems, ExecutionContext context)
     {
         super(context) ;
         
