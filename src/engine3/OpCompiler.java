@@ -24,7 +24,7 @@ import engine3.iterators.*;
 
 public class OpCompiler
 {
-    // TODO Filter placement : especially WRT bnode varibales.
+    // TODO Filter placement : especially WRT bnode variables.
     // TODO Sort out iterators
     // TODO Extract the PlanBGP code used
     // TODO engine1 to self contained retirement
@@ -86,7 +86,6 @@ public class OpCompiler
         QueryIterator right = compileOp(opJoin.getRight(), left) ;
         return right ;
     }
-
 
     QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)
     {

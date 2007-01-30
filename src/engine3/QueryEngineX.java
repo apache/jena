@@ -30,10 +30,19 @@ public class QueryEngineX extends QueryEngineRef
     protected Plan queryToPlan(Query query, Modifiers mods, Element pattern)
     {
         Op op = getOp() ;
-        final QueryIterator qIter = OpCompiler.compile(op, getExecContext()) ;
+        op = modifyQueryOp(op) ;
+        QueryIterator qIter = OpCompiler.compile(op, getExecContext()) ;
         return new PlanOp(op, qIter) ;
     }
     
+    // Allow plan to be modifed
+    // Have some subclass QueryEngineRef and add all extensibility points.
+    // This one, others?
+    protected Op modifyQueryOp(Op op)
+    {
+        return op ;
+    }
+
     static class PlanOp extends PlanBase
     {
         private QueryIterator qIter ;
