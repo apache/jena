@@ -38,6 +38,7 @@ public class QueryEngineX extends QueryEngineRef
     // Allow plan to be modifed
     // Have some subclass QueryEngineRef and add all extensibility points.
     // This one, others?
+    // All this is not necessary but could clarify how to extend QueryEngines 
     protected Op modifyQueryOp(Op op)
     {
         return op ;

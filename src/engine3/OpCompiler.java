@@ -76,6 +76,8 @@ public class OpCompiler
     // Zero inputs.
     QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)
     {
+        // Turn into a OpGraph/OpBGP.
+        // First, separate out OpBGP's dependency on ElementBasicGraphPattern.
         throw new ARQNotImplemented("compile/OpQuadPattern") ;
     }
 
