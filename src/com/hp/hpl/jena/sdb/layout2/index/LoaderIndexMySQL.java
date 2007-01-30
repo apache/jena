@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.layout2.index;
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -26,8 +25,7 @@ public class LoaderIndexMySQL extends LoaderIndexLJ
     
     public void createLoaderTable() throws SQLException
     {
-        Statement s = connection().getSqlConnection().createStatement();
-        s.execute(sqlStr(
+        connection().exec(sqlStr(
         		"CREATE TEMPORARY TABLE IF NOT EXISTS " + getNodeLoader(),
         		"(",
         		"  hash BIGINT NOT NULL,",
@@ -40,7 +38,7 @@ public class LoaderIndexMySQL extends LoaderIndexLJ
         		"  vDateTime datetime",
         		") ENGINE=MYISAM DEFAULT CHARSET=utf8;"
         ));
-        s.execute(sqlStr(
+        connection().exec(sqlStr(
         		"CREATE TEMPORARY TABLE IF NOT EXISTS " + getTripleLoader(),
         		"(",
         		"  s BIGINT NOT NULL,",

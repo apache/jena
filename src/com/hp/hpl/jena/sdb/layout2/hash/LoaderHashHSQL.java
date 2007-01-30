@@ -8,9 +8,7 @@ package com.hp.hpl.jena.sdb.layout2.hash;
 
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -28,11 +26,8 @@ public class LoaderHashHSQL extends LoaderHashLJ
     
     public void createLoaderTable() throws SQLException
     {
-        Connection conn = connection().getSqlConnection();
-        Statement s = conn.createStatement();
-
-        if (!TableUtils.hasTable(conn, getNodeLoader()))
-        	s.execute(sqlStr(
+    	if (!TableUtils.hasTable(this, getNodeLoader()))
+        	connection().exec(sqlStr(
         			"CREATE TEMPORARY TABLE " + getNodeLoader(),
                     "(",
                     "  hash BIGINT NOT NULL ,",
@@ -46,8 +41,8 @@ public class LoaderHashHSQL extends LoaderHashLJ
                     ") ON COMMIT DELETE ROWS"
         	));
         
-        if (!TableUtils.hasTable(conn, getTripleLoader()))
-        	s.execute(sqlStr(
+        if (!TableUtils.hasTable(this, getTripleLoader()))
+        	connection().exec(sqlStr(
         			"CREATE TEMPORARY TABLE " + getTripleLoader(),
         			"(",
         			"  s BIGINT NOT NULL,",

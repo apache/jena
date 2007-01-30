@@ -40,7 +40,11 @@ public class TableUtils
     	return hasTable;
     }
 
-    /** Get the names of the application tables */
+    public static boolean hasTable(SDBConnectionHolder holder, String table, String... types) throws SQLException {
+		return hasTable(holder.connection().getSqlConnection(), table, types);
+	}
+
+	/** Get the names of the application tables */
     public static List<String> getTableNames(Connection connection)
     {
         return getTableNames(connection, "TABLE") ;

@@ -10,7 +10,6 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,10 +35,9 @@ public class LoaderHashDerby extends LoaderHashLJ
     public void createLoaderTable() throws SQLException
     {
     	Connection conn = connection().getSqlConnection();
-        Statement s = conn.createStatement();
 
         if (!TableUtils.hasTable(conn, getNodeLoader()))
-        	s.execute(sqlStr(
+        	connection().exec(sqlStr(
         			"CREATE TABLE " + getNodeLoader(),
         			"(",
         			"  hash BIGINT NOT NULL ,",
@@ -54,7 +52,7 @@ public class LoaderHashDerby extends LoaderHashLJ
         	));
         
         if (!TableUtils.hasTable(conn, getTripleLoader()))
-        	s.execute(sqlStr(
+        	connection().exec(sqlStr(
         			"CREATE TABLE " + getTripleLoader(),
         			"(",
         			"  s BIGINT NOT NULL,",
