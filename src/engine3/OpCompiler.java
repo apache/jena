@@ -16,10 +16,6 @@ import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterDistinct;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterLimitOffset;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterProject;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterSort;
 import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.engine2.table.TableUnit;
@@ -95,7 +91,7 @@ public class OpCompiler
     QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)
     {
         QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
-        // Do an indexed substitute into the right if possible
+        // Do an indexed substitute into the right if possible.
         boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
 
         if ( canDoLinear )

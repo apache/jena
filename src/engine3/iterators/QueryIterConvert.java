@@ -4,30 +4,60 @@
  * [See end of file]
  */
 
-package dev;
+package engine3.iterators;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine1.ExecutionContext;
 
-import com.hp.hpl.jena.query.expr.E_Function;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
 
-import engine3.QueryEngineX;
+/** Iterator over another QueryIterator, applying a converter function
+ *  to each object that is returned by .next()
+ * 
+ * @author Andy Seaborne
+ * @version $Id: QueryIterConvert.java,v 1.3 2007/01/02 11:19:31 andy_seaborne Exp $
+ */
 
-public class TestEngine3 extends TestCase
+public class QueryIterConvert extends QueryIter
 {
-    public static TestSuite suite()
+    public interface Converter
     {
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
-        QueryEngineX.register() ;
-        
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/Algebra/manifest.ttl") ;
-        TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-engine2.ttl") ;
-        // SPARQL test suite (does not test algebra)
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-arq.ttl") ;
-        return ts ;
+        public Binding convert(Binding obj) ;
+    }
+    
+    Converter converter ; 
+    QueryIterator cIter ;
+    boolean finished = false ;
+    
+    public QueryIterConvert(QueryIterator iter, Converter c, ExecutionContext context)
+    { 
+        super(context) ;
+        cIter = iter ;
+        converter = c ;
+    }
+    
+    protected void closeIterator() 
+    { 
+        if ( !finished )
+        {
+            finished = true ;
+            cIter.close() ;
+            cIter = null ;
+        }
+    }
+
+    public boolean hasNextBinding()
+    {
+        if ( finished ) return false ;
+        boolean r = cIter.hasNext() ;
+        if ( !r )
+            close() ;
+        return r ;
+    }
+
+    public Binding moveToNextBinding()
+    {
+        return converter.convert(cIter.nextBinding()) ;
     }
 }
 

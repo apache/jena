@@ -4,30 +4,47 @@
  * [See end of file]
  */
 
-package dev;
+package engine3.iterators;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.Iterator;
 
-import com.hp.hpl.jena.query.expr.E_Function;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-import engine3.QueryEngineX;
+/** Turn an normal java.util.Iterator into a QueryIterator
+ * 
+ * @author Andy Seaborne
+ * @version $Id: QueryIterPlainWrapper.java,v 1.3 2007/01/02 11:19:31 andy_seaborne Exp $
+ */
 
-public class TestEngine3 extends TestCase
+public class QueryIterPlainWrapper extends QueryIter
 {
-    public static TestSuite suite()
+    Iterator iterator = null ;
+    
+    public QueryIterPlainWrapper(Iterator iter)
+    { this(iter, null) ; }
+    
+    public QueryIterPlainWrapper(Iterator iter, ExecutionContext context )
     {
-        NodeValue.VerboseWarnings = false ;
-        E_Function.WarnOnUnknownFunction = false ;
-        QueryEngineX.register() ;
-        
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/Algebra/manifest.ttl") ;
-        TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-engine2.ttl") ;
-        // SPARQL test suite (does not test algebra)
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-arq.ttl") ;
-        return ts ;
+        super(context) ;
+        iterator = iter ;
+    }
+
+    /** Preferrable to use a constructor - but somtimes that is inconvenient */ 
+    public void setIterator(Iterator iterator) { this.iterator = iterator ; }
+    
+    protected boolean hasNextBinding() { return iterator.hasNext() ; } 
+    
+    protected Binding moveToNextBinding() { return (Binding)iterator.next() ; }
+
+    protected void closeIterator()
+    {
+        if ( iterator != null )
+        {
+            NiceIterator.close(iterator) ;
+            iterator = null ;
+        }
     }
 }
 
