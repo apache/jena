@@ -54,7 +54,9 @@ public class QC
         return join(request, LEFT, left, right, null) ; 
     }
 
-    public static SqlNode leftJoinCoalesce(SDBRequest request, String alias, SqlNode left, SqlNode right, Set<Var> coalesceVars)
+    public static SqlNode leftJoinCoalesce(SDBRequest request, String alias,
+                                           SqlNode left, SqlNode right,
+                                           Set<Var> coalesceVars)
     {
         SqlJoin sqlJoin = join(request, LEFT, left, right, coalesceVars) ;
         return SqlCoalesce.create(alias, sqlJoin, coalesceVars) ;

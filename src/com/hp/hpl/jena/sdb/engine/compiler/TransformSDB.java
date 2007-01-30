@@ -77,41 +77,31 @@ public class TransformSDB extends TransformCopy
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
         SqlNode sqlRight = ((OpSQL)right).getSqlNode() ;
         
-        if ( true )
+        // Check for coalesce.
+
+        // --- Algorithm -- inspired by http://jga.sourceforge.net/
+        // Except we want it working on Sets. 
+        
+        Set<ScopeEntry> scopes = sqlLeft.getIdScope().findScopes() ;
+        Set<ScopeEntry> scopes2 = filter(scopes, ScopeEntry.OptionalFilter) ;
+
+        Set<Var> leftOptVars = convert(scopes2, ScopeEntry.ToVar) ;             // Vars from left optionals.
+        
+        Set<Var> rightOptVars = sqlRight.getIdScope().getVars() ;               // Why is this the opt vars?
+        Set<Var> coalesceVars = intersection(leftOptVars, rightOptVars) ;
+        
+        // Future simplification : LeftJoinClassifier.nonLinearVars 
+//        if ( ! coalesceVars.equals(LeftJoinClassifier.nonLinearVars( opJoin.getLeft(), opJoin.getRight() )) )
+//        { unexpected }
+        
+        if ( coalesceVars.size() > 0  ) 
         {
-            // Check for coalesce.
-    
-            // --- Algorithm -- inspried by http://jga.sourceforge.net/
-            // Except we want it working on Sets. 
+            SqlNode sqlNode = QC.leftJoinCoalesce(request, genCoalesceAlias.next(),
+                                                  sqlLeft, sqlRight, coalesceVars) ;
+            return new OpSQL(sqlNode, opJoin, request) ;
             
-            Set<ScopeEntry> scopes = sqlLeft.getIdScope().findScopes() ;
-            Set<ScopeEntry> scopes2 = filter(scopes, ScopeEntry.OptionalFilter) ;
-            Set<Var> leftOptVars = convert(scopes2, ScopeEntry.ToVar) ;            // Vars from left optionals.
-            
-            if ( true )
-            {
-                Set<Var> optDefsLeft = VarFinder.optDefined(opJoin.getLeft()) ;
-                if ( ! optDefsLeft.equals(leftOptVars) )
-                {
-                    log.warn("Different coalesce algorithms give different answers") ;
-                    log.warn("VarFinder = "+optDefsLeft) ;
-                    log.warn("leftOptVars = "+leftOptVars) ;
-                }
-            }
-            
-            Set<Var> rightOptVars = sqlRight.getIdScope().getVars() ;
-            Set<Var> coalesceVars = intersection(leftOptVars, rightOptVars) ;
-            
-            if ( coalesceVars.size() > 0  ) 
-            {
-                // Need to do this and, at the same time, build the coalesce lists. 
-                SqlNode sqlNode = QC.leftJoinCoalesce(request, genCoalesceAlias.next(),
-                                                      sqlLeft, sqlRight, coalesceVars) ;
-                return new OpSQL(sqlNode, opJoin, request) ;
-                
-                // Punt
-                //return super.transform(opJoin, left, right) ;
-            }
+            // Punt
+            //return super.transform(opJoin, left, right) ;
         }
         return new OpSQL(QC.leftJoin(request, sqlLeft, sqlRight), opJoin, request) ;
     }
