@@ -14,28 +14,34 @@ import com.hp.hpl.jena.query.util.SetUtils;
 
 public class LeftJoinClassifier
 {
+    // Test for the "well-formed" criterion of left joins whereby they can
+    // be executed agains a current set of bindings.  If not, the left join
+    // has to be done by execution the left, executing the right without
+    // the left (so no substitution/additional indexing), then
+    // left-join-ed.  ANd that can be expensive - luckily, it only occurs
+    // in doubly, or more more, nested OPTIONAL expressions. 
+
+    // This amounts to testing whether there are any optional variables in the 
+    // RHS pattern (hence they are nested in someway) that also occur in the LHS
+    // of the LefyJoin being considered.  
+
     static public boolean isLinear(OpLeftJoin op)
     {
         Set leftVars = OpVars.patternVars(op.getLeft()) ;
-        // Is every left variable used correctly on the right?
-        // i.e. no gaps in useage chain.
-        
-        // ?x is safe if
-        //   ?x used in non-optional patterns in the RHS directly
-        //   ?x not used in RHS or below
-        
-        // Amounts to whether has any *optional* (not the level below but in
-        // some optional lower down. 
         Set optRight = VarFinder.optDefined(op.getRight()) ;
-        
-        if ( SetUtils.intersectionP(leftVars, optRight) )
-        {
-            System.out.println("Non-linear because of "+SetUtils.intersection(leftVars, optRight) ) ;
-            return false ;
-        }
-        
-        return true ;
+
+        // Safe for linear execution if there are no  
+        return ! SetUtils.intersectionP(leftVars, optRight) ;
     }
+    
+    static public Set nonLinearVars(OpLeftJoin op)
+    {
+        Set leftVars = OpVars.patternVars(op.getLeft()) ;
+        
+        Set optRight = VarFinder.optDefined(op.getRight()) ;
+        return SetUtils.intersection(leftVars, optRight) ;
+    }
+
 }
 
 /*

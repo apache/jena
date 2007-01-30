@@ -28,9 +28,12 @@ import engine3.iterators.*;
 
 public class OpCompiler
 {
-    // TODO Get working like engine1 - then do OpLeftJoin
-    // TODO Filter placement
+    // TODO Filter placement : especially WRT bnode varibales.
     // TODO Sort out iterators
+    // TODO Extract the PlanBGP code used
+    // TODO engine1 to self contained retirement
+    // TODO property function detemination by general tree rewriting - precursor to pattern replacement?
+    // This is filter placement in groups?
 
     static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
@@ -93,7 +96,7 @@ public class OpCompiler
     {
         QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
         // Do an indexed substitute into the right if possible
-        boolean canDoLinear = false ; 
+        boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
 
         if ( canDoLinear )
         {
@@ -104,7 +107,7 @@ public class OpCompiler
 
         // Do it by sub-evaluation of left and right then left join.
         // Can be expensive if RHS returns a lot.
-        // Do better? Allow substitution of the safe vars??
+        // TODO Can we do better by allowing partial substitution of the safe vars?
 
         QueryIterator right = compileOp(opLeftJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExpr(), execCxt) ;
@@ -130,9 +133,6 @@ public class OpCompiler
     QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
         Op sub = opFilter.getSubOp() ;
-
-        
-        
         // Put filter in best place
         // Beware of 
         // { _:a ?p ?v .  FILTER(true) . [] ?q _:a }
@@ -165,7 +165,7 @@ public class OpCompiler
         
         if ( opTable.getTable() instanceof TableUnit )
             return input ;
-        throw new ARQNotImplemented("OpTable: no tunit table") ;
+        throw new ARQNotImplemented("OpTable: not unit table") ;
         //return opTable.getTable().iterator(execCxt) ;
     }
 

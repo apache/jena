@@ -14,15 +14,60 @@ import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
 import com.hp.hpl.jena.query.engine.QueryEngineBase;
 import com.hp.hpl.jena.query.engine2.QueryEngineRef;
+import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.engine2.op.OpLeftJoin;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
+import engine3.LeftJoinClassifier;
 import engine3.QueryEngineX;
 
 public class Run
 {
     public static void main(String[] argv)
+    {
+        classify() ;
+        query() ;
+    }
+        
+        
+    private static void classify()
+    {
+        String pattern = "" ;
+        classify("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?x} }", true)  ;
+        classify("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 ?p2 ?x} } }", true)  ;
+        classify("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?o3} } }", true)  ;
+        classify("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?x} } }", false)  ;
+        System.exit(0) ;
+    }
+        
+    
+    private static void classify(String pattern, boolean expected)
+    {
+        System.out.println() ;
+        System.out.println(pattern) ;
+        String qs1 = "PREFIX : <http://example/>\n" ;
+        String qs = qs1+"SELECT * "+pattern;
+        Query query = QueryFactory.create(qs) ;
+        QueryEngineX qe = new QueryEngineX(query) ;
+        Op op = ((QueryEngineX)qe).getPatternOp() ;
+        
+        
+        if ( op instanceof OpLeftJoin )
+        {
+            boolean nonLinear = LeftJoinClassifier.isLinear((OpLeftJoin)op) ;
+            System.out.println("Linear: "+nonLinear) ;
+            if ( nonLinear != expected )
+                System.out.println("**** Mismatch with expectation") ;
+        }
+        else
+            System.out.println("Not a left join") ;
+        
+    }
+
+
+    public static void query()
     {
 //        String qs1 = "PREFIX : <http://example/>\n" ;
 //        String qs = qs1+"SELECT * {  ?s :q ?o GRAPH ?g {  }  }" ;
@@ -56,7 +101,7 @@ public class Run
         qe.setDataset(ds) ;
         System.out.print(((QueryEngineBase)qe).getPlan()) ;
         QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
-        
+        System.exit(0) ;
     }
     
     private static void execQuery(String datafile, String queryfile)
