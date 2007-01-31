@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
-import com.hp.hpl.jena.query.core.ElementBasicGraphPattern;
+import com.hp.hpl.jena.query.core.ElementTriplesBlock;
 import com.hp.hpl.jena.query.engine.Binding0;
 import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.plan.PlanBasicGraphPattern;
+import com.hp.hpl.jena.query.engine1.plan.PlanTriplesBlock;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.engine2.table.TableUnit;
 
@@ -26,7 +26,7 @@ public class OpCompiler
 {
     // TODO Filter placement : especially WRT bnode variables.
     // TODO Sort out iterators
-    // TODO Extract the PlanBGP code used
+    // TODO Extract the PlanTriplesBlock code used
     // TODO engine1 to self contained retirement
     // TODO property function detemination by general tree rewriting - precursor to pattern replacement?
     // This is filter placement in groups?
@@ -64,11 +64,11 @@ public class OpCompiler
         
     QueryIterator compile(OpBGP opBGP, QueryIterator input)
     {
-        ElementBasicGraphPattern bgp = new ElementBasicGraphPattern() ; 
+        ElementTriplesBlock bgp = new ElementTriplesBlock() ; 
         bgp.getTriples().addAll(opBGP.getPattern()) ;
 
-        // Turn into a real PlanBasicGraphPattern (with property function sorting out)
-        PlanElement planElt = PlanBasicGraphPattern.make(execCxt.getContext(), bgp) ;
+        // Turn into a real PlanTriplesBlock (with property function sorting out)
+        PlanElement planElt = PlanTriplesBlock.make(execCxt.getContext(), bgp) ;
         QueryIterator qIter = planElt.build(input, execCxt) ;
         return qIter ;
     }

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine2.op.*;
 
@@ -56,7 +57,7 @@ public class VarFinder
         //@Override
         public void visit(OpBGP opBGP)
         {
-            List triples = opBGP.getPattern() ;
+            BasicPattern triples = opBGP.getPattern() ;
             for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
             {
                 Triple triple = (Triple)iter.next() ;
