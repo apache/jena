@@ -1,15 +1,21 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.12 2007-01-02 11:49:45 andy_seaborne Exp $
+    $Id: PatternStageBase.java,v 1.13 2007-02-01 15:58:42 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
+import java.util.*;
+
 import org.apache.commons.logging.*;
 
+import EDU.oswego.cs.dl.util.concurrent.BoundedBuffer;
+
+import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.StageElement.*;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
     PatternStageBase contains the features that are common to the 
@@ -53,15 +59,93 @@ public abstract class PatternStageBase extends Stage
             }
         sink.close();
         }
-
-    public synchronized Pipe deliver( final Pipe result )
+    
+    private final class PatternStageThread extends Thread
         {
-        final Pipe stream = previous.deliver( new BufferPipe() );
-        final StageElement s = makeStageElementChain( result, 0 );
-        new Thread( "PatternStage-" + ++count ) 
-            { public void run() { PatternStageBase.this.run( stream, result, s ); } } 
+        private BoundedBuffer buffer = new BoundedBuffer(1);
+        
+        public PatternStageThread( String name )
+            { super( name ); }
+
+        public void put( Work w )
+            { 
+            try  { buffer.put( w ); }
+            catch (InterruptedException e)
+                { throw new BufferPipe.BoundedBufferPutException( e ); } 
+            }
+        
+        protected Work get()
+            {
+            try { return (Work) buffer.take(); }
+            catch (InterruptedException e)
+                { throw new BufferPipe.BoundedBufferTakeException( e ); }
+            }
+        
+        public void run() 
+            { 
+            while (true)
+                {
+                get().run();
+                addToAvailableThreads( this );
+                }
+            }
+        }
+
+    public class Work
+        {
+        protected final Pipe source;
+        protected final Pipe sink;
+        protected final StageElement e;
+        
+        public Work( Pipe source, Pipe sink, StageElement e )
+            { this.source = source; this.sink = sink; this.e = e; }
+        
+        public void run()
+            { PatternStageBase.this.run( source, sink, e ); }
+        }
+    
+    public static boolean oldStyle = JenaRuntime.getSystemProperty( "jena.patternstage.threads", "old" ).equals( "old" );
+    
+    public synchronized Pipe deliver( final Pipe sink )
+        {
+        final Pipe source = previous.deliver( new BufferPipe() );
+        final StageElement s = makeStageElementChain( sink, 0 );
+        if (oldStyle)
+            new Thread( "PatternStage-" + ++count ) 
+                { public void run() { PatternStageBase.this.run( source, sink, s ); } } 
             .start();
-        return result;
+        else
+                getAvailableThread().put( new Work( source, sink, s ) ); 
+        return sink;
+        }
+
+    private static final List threads = new ArrayList();
+    
+    private void addToAvailableThreads( PatternStageThread thread )
+        {
+        synchronized (threads)
+            {
+            threads.add( thread );
+            System.err.println( "|| caching thread " + this + " [currently " + threads.size() + " cached threads]" );
+            }
+        }
+    
+    private PatternStageThread getAvailableThread()
+        {
+        synchronized (threads)
+            {
+            int size = threads.size();
+            if (size > 0)
+                {
+                PatternStageThread x = (PatternStageThread) threads.remove( size - 1 );
+                System.err.println( "|| reusing thread " + x );
+                return x;
+                }
+            }
+        PatternStageThread f = new PatternStageThread( "PatternStage-" + ++count );
+        System.err.println( "|| created new thread " + f );
+        f.start();
+        return f;
         }
 
     protected StageElement makeStageElementChain( Pipe sink, int index )
