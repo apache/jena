@@ -20,18 +20,18 @@ import com.hp.hpl.jena.query.pfunction.*;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
 
-public class PropertyFunctionStage implements Stage
+public class StagePropertyFunction implements Stage
 {
     Context context ;
     Node predicate ;
     PropFuncArg subjArgs ;
     PropFuncArg objArgs ;
     
-    public static PropertyFunctionStage make(Context context, 
+    public static StagePropertyFunction make(Context context, 
                                              PropFuncArg sArgs, Node predicate, PropFuncArg oArgs)
-    { return new PropertyFunctionStage(context, sArgs, predicate, oArgs) ; }
+    { return new StagePropertyFunction(context, sArgs, predicate, oArgs) ; }
     
-    private PropertyFunctionStage(Context context, PropFuncArg sArgs, Node predicate, PropFuncArg oArgs)
+    private StagePropertyFunction(Context context, PropFuncArg sArgs, Node predicate, PropFuncArg oArgs)
     {
         this.context = context ;
         this.subjArgs = sArgs ;

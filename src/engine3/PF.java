@@ -14,8 +14,6 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.BasicPattern;
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.compiler.PFuncOps;
 import com.hp.hpl.jena.query.engine1.plan.PlanTriples;
 import com.hp.hpl.jena.query.engine1.plan.PlanTriplesBlock;
 import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
@@ -25,7 +23,7 @@ import com.hp.hpl.jena.query.util.Utils;
 class FP
 {
     // ---------------------------------------------------------------------------------
-    // Split into blocks of triples and property functions.
+    // Split into Stages of triples and property functions.
     
     static List process(Context context, BasicPattern pattern)
     {
@@ -38,7 +36,7 @@ class FP
         //   (but leave the proprty function triple in-place as a marker)
         // 3/ For remaining triples, put into blocks.
         
-        List planBGPElements = new ArrayList() ;            // The elements of the PlanBGP
+        List stages = new ArrayList() ;            // The elements of the BGP execution
         List propertyFunctionTriples = new ArrayList() ;    // Property functions seen
         List triples = new ArrayList() ;                    // All triples
         
@@ -46,11 +44,11 @@ class FP
                               doingMagicProperties, registry,
                               triples, propertyFunctionTriples) ;
         
-        Map pfPlanElts = new HashMap() ;
-        makePropetryFunctions(context, registry, pfPlanElts, triples, propertyFunctionTriples) ;
+        Map pfStages = new HashMap() ;
+        makePropetryFunctions(context, registry, pfStages, triples, propertyFunctionTriples) ;
         
-        makePlanElements(context, planBGPElements, pfPlanElts, triples, propertyFunctionTriples) ;
-        return planBGPElements ;
+        makePlanElements(context, stages, pfStages, triples, propertyFunctionTriples) ;
+        return stages ;
     }
 
     private static void findPropetryFunctions(Context context, BasicPattern pattern,
@@ -77,7 +75,7 @@ class FP
     }
 
     private static void makePropetryFunctions(Context context, 
-                                              PropertyFunctionRegistry registry, Map pfPlanElts, 
+                                              PropertyFunctionRegistry registry, Map pfStages, 
                                               List triples, List propertyFunctionTriples)
     {
         // Stage 2 : for each property function, make element and remove associated triples
@@ -86,19 +84,21 @@ class FP
             Triple pf = (Triple)iter.next();
             
             // Removes associated triples. 
-            PlanElement planElt = PFuncOps.magicProperty(context, registry, pf, triples) ;
-            if ( planElt == null )
+            Stage stage = PFuncOps.magicProperty(context, registry, pf, triples) ;
+            if ( stage == null )
             {
-                LogFactory.getLog(PlanTriplesBlock.class).warn("Lost a PlanElement for a property function") ;
+                LogFactory.getLog(FP.class).warn("Lost a Stage for a property function") ;
                 continue ;
             }
-            pfPlanElts.put(pf, planElt) ;
+            pfStages.put(pf, stage) ;
         }
     }
 
-    private static void makePlanElements(Context context, List planBGPElements, 
-                                         Map pfPlanElts, 
-                                         List triples, List propertyFunctionTriples)
+    private static void makePlanElements(Context context,
+                                         List stages, 
+                                         Map pfStages, 
+                                         List triples,
+                                         List propertyFunctionTriples)
     {
         // Stage 3 : 
         //   For each property function, insert the implements PlanElement.
@@ -112,9 +112,9 @@ class FP
             
             if ( propertyFunctionTriples.contains(t) )
             {
-                // It's a property function triple.
-                PlanElement planElt = (PlanElement)pfPlanElts.get(t) ;
-                planBGPElements.add(planElt) ;
+                // It's a property function stage.
+                Stage planElt = (Stage)pfStages.get(t) ;
+                stages.add(planElt) ;
                 pBlk = null ;       // Unset any current PlanBlockTriples
                 continue ;
             }                
@@ -123,7 +123,7 @@ class FP
             if ( pBlk == null )
             {
                 pBlk = new PlanTriples(context) ;
-                planBGPElements.add(pBlk) ;
+                stages.add(pBlk) ;
             }
             pBlk.addTriple(t) ;         // Plain triple
         }
