@@ -7,16 +7,15 @@
 package engine3;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
-import com.hp.hpl.jena.query.core.ElementTriplesBlock;
+import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.Binding0;
 import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.plan.PlanTriplesBlock;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.engine2.table.TableUnit;
 
@@ -64,13 +63,23 @@ public class OpCompiler
         
     QueryIterator compile(OpBGP opBGP, QueryIterator input)
     {
-        ElementTriplesBlock bgp = new ElementTriplesBlock() ; 
-        bgp.getTriples().addAll(opBGP.getPattern()) ;
-
-        // Turn into a real PlanTriplesBlock (with property function sorting out)
-        PlanElement planElt = PlanTriplesBlock.make(execCxt.getContext(), bgp) ;
-        QueryIterator qIter = planElt.build(input, execCxt) ;
-        return qIter ;
+        BasicPattern pattern = opBGP.getPattern() ;
+        List stages = PF.process(execCxt.getContext(), pattern) ;
+        QueryIterator qIter = input ;
+        for ( Iterator iter = stages.iterator() ; iter.hasNext(); )
+        {
+            Stage stage = (Stage)iter.next();
+            input = stage.build(input, execCxt) ;
+        }
+        return qIter ; 
+        
+//        ElementTriplesBlock bgp = new ElementTriplesBlock() ; 
+//        bgp.getTriples().addAll(opBGP.getPattern()) ;
+//
+//        // Turn into a real PlanTriplesBlock (with property function sorting out)
+//        PlanElement planElt = PlanTriplesBlock.make(execCxt.getContext(), bgp) ;
+//        QueryIterator qIter = planElt.build(input, execCxt) ;
+//        return qIter ;
     }
 
     // Zero inputs.

@@ -20,7 +20,7 @@ import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
 
-class FP
+class PF
 {
     // ---------------------------------------------------------------------------------
     // Split into Stages of triples and property functions.
@@ -87,7 +87,7 @@ class FP
             Stage stage = PFuncOps.magicProperty(context, registry, pf, triples) ;
             if ( stage == null )
             {
-                LogFactory.getLog(FP.class).warn("Lost a Stage for a property function") ;
+                LogFactory.getLog(PF.class).warn("Lost a Stage for a property function") ;
                 continue ;
             }
             pfStages.put(pf, stage) ;
