@@ -15,7 +15,6 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine1.plan.PlanTriples;
-import com.hp.hpl.jena.query.engine1.plan.PlanTriplesBlock;
 import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
@@ -63,7 +62,7 @@ class PF
             
             if ( ! ( obj instanceof Triple ) )
             {
-                LogFactory.getLog(PlanTriplesBlock.class).warn("Don't recognize: ["+Utils.className(obj)+"]") ;
+                LogFactory.getLog(PF.class).warn("Don't recognize: ["+Utils.className(obj)+"]") ;
                 throw new ARQInternalErrorException("Not a triple pattern: "+obj.toString() ) ;
             }
                 
@@ -100,11 +99,12 @@ class PF
                                          List triples,
                                          List propertyFunctionTriples)
     {
-        // Stage 3 : 
-        //   For each property function, insert the implements PlanElement.
-        //   For each block of non-property function triples, make a PlanBlockTriples.
+        // Stage 3 : make line up the stages.
+        //   For each property function, insert the implementation 
+        //   For each block of non-property function triples, make a S
         // Structure is PlanBlockTriples/PlanPropertyFunction/PlanBlockTriples...
         
+        // TODO ==> StageBasic
         PlanTriples pBlk = null ;
         for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
         {
