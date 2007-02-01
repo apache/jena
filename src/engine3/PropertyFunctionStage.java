@@ -20,9 +20,7 @@ import com.hp.hpl.jena.query.pfunction.*;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
 
-// Split OpBGP into "Stages" which always flow.
-
-public class PropertyFunctionStage
+public class PropertyFunctionStage implements Stage
 {
     Context context ;
     Node predicate ;
@@ -30,7 +28,7 @@ public class PropertyFunctionStage
     PropFuncArg objArgs ;
     
     public static PropertyFunctionStage make(Context context, 
-                                          PropFuncArg sArgs, Node predicate, PropFuncArg oArgs)
+                                             PropFuncArg sArgs, Node predicate, PropFuncArg oArgs)
     { return new PropertyFunctionStage(context, sArgs, predicate, oArgs) ; }
     
     private PropertyFunctionStage(Context context, PropFuncArg sArgs, Node predicate, PropFuncArg oArgs)
