@@ -10,6 +10,7 @@ import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.iterator.QueryIter;
 import com.hp.hpl.jena.query.engine2.Table;
 import com.hp.hpl.jena.query.engine2.TableFactory;
 import com.hp.hpl.jena.query.expr.Expr;
@@ -76,12 +77,16 @@ public abstract class QueryIterJoinBase extends QueryIter
 
         if ( current != null )
             current.close();
+        // Get a new "current" iterator.
         current = joinWorker() ;
         if ( current == null )
             return null ;
-        return current.nextBinding() ;
+        if ( current.hasNext() )
+            return current.nextBinding() ;
+        return null ;
     }
     
+    // Null iff there is no more results.  
     abstract protected QueryIterator joinWorker() ;
     
     protected QueryIterator leftJoinWorker()

@@ -15,6 +15,8 @@ import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.BindingBase;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.iterator.QueryIter;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterConvert;
 
 
 public class QueryIterProject extends QueryIter

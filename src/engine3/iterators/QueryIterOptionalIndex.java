@@ -9,6 +9,7 @@ package engine3.iterators;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterDefaulting;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpFilter;

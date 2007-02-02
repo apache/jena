@@ -4,18 +4,16 @@
  * [See end of file]
  */
 
-package engine3.iterators;
+package engine3;
 
-import com.hp.hpl.jena.query.engine.Binding;
-import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine2.op.OpJoin;
 
-public class QueryIterSingleton extends com.hp.hpl.jena.query.engine1.iterator.QueryIterSingleton
+public class JoinClassifier
 {
-    public QueryIterSingleton(Binding binding, ExecutionContext execCxt)
+    static public boolean isLinear(OpJoin op)
     {
-        super(binding, execCxt) ;
+        return true ;
     }
-
 }
 
 /*

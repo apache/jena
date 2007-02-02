@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.BindingComparator;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
 
 /** Sort a query iterator.  Uses an in-memory sort, so limiting the size of
  * iterators that can be handled.

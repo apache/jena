@@ -12,8 +12,8 @@ import java.util.List;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterConcat;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine2.OpSubstitute;
 import com.hp.hpl.jena.query.engine2.op.Op;
 

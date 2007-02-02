@@ -25,7 +25,7 @@ public class TestEngine3 extends TestCase
         
         TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-engine2.ttl") ;
 
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/Basic/manifest.ttl") ;
+        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/Dataset/manifest.n3") ;
         //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/Algebra/manifest.ttl") ;
         
         // SPARQL test suite (does not test algebra)

@@ -13,12 +13,11 @@ import java.util.List;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.BasicPattern;
-import com.hp.hpl.jena.query.core.ElementTriplesBlock;
 import com.hp.hpl.jena.query.engine.Binding0;
 import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.plan.PlanTriplesBlock;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.engine2.table.TableUnit;
 
@@ -67,35 +66,21 @@ public class OpCompiler
         
     QueryIterator compile(OpBGP opBGP, QueryIterator input)
     {
-        if ( true )
+        BasicPattern pattern = opBGP.getPattern() ;
+        List stages = PF.process(execCxt.getContext(), pattern) ;
+        QueryIterator qIter = input ;
+        for ( Iterator iter = stages.iterator() ; iter.hasNext(); )
         {
-            // XXX Write StageBasic / de-engine1 PF
-            BasicPattern pattern = opBGP.getPattern() ;
-            List stages = PF.process(execCxt.getContext(), pattern) ;
-            QueryIterator qIter = input ;
-            for ( Iterator iter = stages.iterator() ; iter.hasNext(); )
-            {
-                Object object = iter.next();
-                if ( ! ( object instanceof Stage ) )
-                    throw new ARQInternalErrorException("compile/OpBGPPattern") ;
-                
-                Stage stage = (Stage)object;
-                qIter = stage.build(qIter, execCxt) ;
-            }
-            return qIter ; 
-        }
-        
-        // OLD code.
-        ElementTriplesBlock bgp = new ElementTriplesBlock() ; 
-        bgp.getTriples().addAll(opBGP.getPattern()) ;
+            Object object = iter.next();
+            if ( ! ( object instanceof Stage ) )
+                throw new ARQInternalErrorException("compile/OpBGPPattern") ;
 
-        // Turn into a real PlanTriplesBlock (with property function sorting out)
-       
-        QueryIterator qIter = PlanTriplesBlock.make(execCxt.getContext(), bgp).build(input, execCxt) ;
-        return qIter ;
+            Stage stage = (Stage)object;
+            qIter = stage.build(qIter, execCxt) ;
+        }
+        return qIter ; 
     }
 
-    // Zero inputs.
     QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)
     {
         // Turn into a OpGraph/OpBGP.
@@ -105,9 +90,11 @@ public class OpCompiler
 
     QueryIterator compile(OpJoin opJoin, QueryIterator input)
     {
-        QueryIterator left = compileOp(opJoin.getLeft(), input) ;
+        // TODO Classify Joins
+        // Look one level in for any filters with out-of-scope variables.
+        boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
         
-        boolean canDoLinear = true ;
+        QueryIterator left = compileOp(opJoin.getLeft(), input) ;
         
         if ( canDoLinear )
         {
@@ -116,13 +103,11 @@ public class OpCompiler
             return right ;
         }
         
+        // Input may be null?
         // Can't do purely indexed (a filter referencing a variable out of scope is in the way)
-        
         QueryIterator right = compileOp(opJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
         return qIter ;
-        
-        
     }
 
     QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)

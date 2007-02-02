@@ -27,7 +27,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        classify() ;
+        //classify() ;
         query() ;
     }
         
@@ -69,10 +69,11 @@ public class Run
 
     public static void query()
     {
-//        String qs1 = "PREFIX : <http://example/>\n" ;
-//        String qs = qs1+"SELECT * {  ?s :q ?o GRAPH ?g {  }  }" ;
-//        Query query = QueryFactory.create(qs) ;
-        Query query = QueryFactory.read("Q.rq") ;
+        String qs1 = "PREFIX : <http://example/>\n" ;
+        String qs = qs1+"SELECT * { }" ;
+        Query query = QueryFactory.create(qs) ;
+        
+        //Query query = QueryFactory.read("Q.rq") ;
         Model data = FileManager.get().loadModel("D.ttl") ;
         DataSource ds = new DataSourceImpl() ;
         ds.setDefaultModel(data) ;
