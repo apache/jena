@@ -21,6 +21,7 @@ public class VarFinder
 {
     // TODO Consider doing this once and caching the results in this VarFinder.
     // Op ==> results map.
+    // Need filter stuff as well.
     
     public static Set optDefined(Op op)
     {

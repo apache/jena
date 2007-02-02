@@ -6,52 +6,21 @@
 
 package engine3.iterators;
 
-import java.util.Iterator;
-import java.util.List;
-
-import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterConcat;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.query.engine2.OpSubstitute;
-import com.hp.hpl.jena.query.engine2.op.Op;
 
-import engine3.QC;
-
-/** Execute each sub stage agains the input.
- *  Streamed SPARQL Union.
- * @author Andy Seaborne
- * @version $Id$
- */
-
-public class QueryIterSplit extends QueryIterStream 
+/** Join by materializing the RHS */
+public class QueryIterJoin extends QueryIterJoinBase
 {
-    // Merge back with QueryIterUnion
-    List subOps  ;
-    public QueryIterSplit(QueryIterator input,
-                          List subOps,
-                          ExecutionContext context)
+    public QueryIterJoin(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
     {
-        super(input, context) ;
-        this.subOps = subOps ;
+        super(left, right, null, qCxt) ;
     }
-
-    protected QueryIterator nextStage(Binding binding)
+    
+    protected QueryIterator joinWorker()
     {
-        QueryIterConcat unionQIter = new QueryIterConcat(getExecContext()) ;
-        for ( Iterator iter = subOps.listIterator() ; iter.hasNext() ; )
-        {
-            Op subOp = (Op)iter.next() ;
-            subOp = OpSubstitute.substitute(binding, subOp) ;
-            QueryIterator parent = new QueryIterSingleton(binding, getExecContext()) ;
-            QueryIterator qIter = QC.compile(subOp, parent, getExecContext()) ;
-            unionQIter.add(qIter) ;
-        }
-        
-        return unionQIter ;
+        return super.equiJoinWorker() ;
     }
-
 }
 
 /*

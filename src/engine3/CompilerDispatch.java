@@ -8,6 +8,9 @@ package engine3;
 
 import java.util.Stack;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine2.op.*;
 
@@ -15,6 +18,8 @@ import com.hp.hpl.jena.query.engine2.op.*;
 
 class CompilerDispatch implements OpVisitor
 {
+    private static Log log = LogFactory.getLog(CompilerDispatch.class) ;
+    
     private Stack stack = new Stack() ;
     private OpCompiler opCompiler ;
     
@@ -30,7 +35,7 @@ class CompilerDispatch implements OpVisitor
         op.visit(this) ;
         int y = stack.size() ;
         if ( x != y )
-            System.out.println("Possible stack misalignment") ;
+            log.warn("Possible stack misalignment") ;
         QueryIterator qIter = pop() ;
         return qIter ;
     }
@@ -137,7 +142,7 @@ class CompilerDispatch implements OpVisitor
     private QueryIterator pop()
     { 
         if ( stack.size() == 0 )
-            System.out.println("Warning: pop: empty stack") ;
+            log.warn("Warning: pop: empty stack") ;
         return (QueryIterator)stack.pop() ;
     }
 }

@@ -6,7 +6,7 @@
 
 package engine3.iterators;
 
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 
 public abstract class QueryIter extends com.hp.hpl.jena.query.engine1.iterator.QueryIter
 {

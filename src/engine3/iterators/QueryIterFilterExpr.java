@@ -6,8 +6,8 @@
 
 package engine3.iterators;
 
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.expr.Expr;
 
 public class QueryIterFilterExpr extends com.hp.hpl.jena.query.engine1.iterator.QueryIterConstraintFilter

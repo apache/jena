@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.BasicPattern;
-import com.hp.hpl.jena.query.engine1.plan.PlanTriples;
 import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
@@ -105,7 +104,7 @@ class PF
         // Structure is PlanBlockTriples/PlanPropertyFunction/PlanBlockTriples...
         
         // TODO ==> StageBasic
-        PlanTriples pBlk = null ;
+        BasicPattern pattern = null ;
         for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
         {
             Triple t = (Triple)iter.next() ;
@@ -115,17 +114,18 @@ class PF
                 // It's a property function stage.
                 Stage planElt = (Stage)pfStages.get(t) ;
                 stages.add(planElt) ;
-                pBlk = null ;       // Unset any current PlanBlockTriples
+                pattern = null ;       // Unset any current PlanBlockTriples
                 continue ;
             }                
                 
             // Regular triples
-            if ( pBlk == null )
+            if ( pattern == null )
             {
-                pBlk = new PlanTriples(context) ;
-                stages.add(pBlk) ;
+                pattern = new BasicPattern() ;
+                Stage basicStage = new StageBasic(pattern) ;
+                stages.add(basicStage) ;
             }
-            pBlk.addTriple(t) ;         // Plain triple
+            pattern.add(t) ;         // Plain triple
         }
     }
 }

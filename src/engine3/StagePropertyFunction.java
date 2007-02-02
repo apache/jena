@@ -9,9 +9,9 @@ package engine3;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine1.CompileException;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.compiler.PFuncOps;
 import com.hp.hpl.jena.query.extension.Extension;
 import com.hp.hpl.jena.query.extension.ExtensionFactory;

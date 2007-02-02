@@ -7,8 +7,8 @@
 package engine3;
 
 import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine2.OpSubstitute;
 import com.hp.hpl.jena.query.engine2.op.Op;
 

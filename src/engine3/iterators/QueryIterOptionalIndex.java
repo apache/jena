@@ -7,8 +7,8 @@
 package engine3.iterators;
 
 import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterDefaulting;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpFilter;
@@ -40,12 +40,8 @@ public class QueryIterOptionalIndex extends QueryIterStream
         
         Op op2 = QC.substitute(op, binding) ;
         
-        System.out.println("===="+super.getIteratorNumber()) ;
-        System.out.println(binding) ;
-        System.out.println(op) ;
-        
-        // Seems shame to create an iterator just so we can wrap the input binding
-        // but we had to unwrap the thing to do the substitute.
+        // Seems shame to create an iterator just so we can wrap the input
+        // binding but we had to unwrap the thing to do the substitute.
         // Maybe another way to pass the parent binding into QC.compile?
         QueryIterator thisStep = new QueryIterSingleton(binding, getExecContext()) ;
         

@@ -6,82 +6,22 @@
 
 package engine3.iterators;
 
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine2.Table;
-import com.hp.hpl.jena.query.engine2.TableFactory;
 import com.hp.hpl.jena.query.expr.Expr;
 
 /** Left join by materializing the RHS */
-public class QueryIterLeftJoin extends QueryIter
+public class QueryIterLeftJoin extends QueryIterJoinBase
 {
-    QueryIterator left ;
-    QueryIterator current ;
-    Table tableRight ;
-    Expr expr ;
-    private Binding nextBinding = null ;
-    
     public QueryIterLeftJoin(QueryIterator left, QueryIterator right, Expr expr, ExecutionContext qCxt)
     {
-        super(qCxt) ;
-        this.left = left ;
-        tableRight = TableFactory.create(right) ;
-        tableRight.materialize() ;              // Delay this?
-        right.close();
-        this.expr = expr ;
+        super(left, right, expr, qCxt) ;
     }
 
-    protected void closeIterator()
-    {
-        left.close() ;
-        tableRight = null ;
-    }
     
-    protected boolean hasNextBinding()
+    protected QueryIterator joinWorker()
     {
-        if ( isFinished() )
-            return false ;
-        if ( nextBinding != null )
-            return true ;
-
-        // No nextBinding - only call to moveToNext
-        nextBinding = moveToNext() ;
-        return ( nextBinding != null ) ;
-    }
-
-    protected Binding moveToNextBinding()
-    {
-        if ( nextBinding == null )
-            throw new ARQInternalErrorException("moveToNextBinding: slot empty but hasNext was true)") ;
-        
-        Binding b = nextBinding ;
-        nextBinding = null ;
-        return b ;
-    }
-
-    // Move on regardless.
-    private Binding moveToNext()
-    {
-        if ( current != null && current.hasNext() )
-            return current.nextBinding() ;
-
-        if ( current != null )
-            current.close();
-        current = joinWorker() ;
-        if ( current == null )
-            return null ;
-        return current.nextBinding() ;
-    }
-    
-    private QueryIterator joinWorker()
-    {
-        if ( !left.hasNext() )
-            return null ;
-        Binding b =  left.nextBinding() ;
-        QueryIterator x = tableRight.matchRightLeft(b, true, expr, getExecContext()) ;
-        return x ;
+        return super.leftJoinWorker() ;
     }
 }
 

@@ -7,8 +7,8 @@
 package engine3.iterators;
 
 import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
 
 
 /** Iterator over another QueryIterator, applying a converter function

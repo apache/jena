@@ -9,7 +9,7 @@ package engine3.iterators;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.query.engine.Binding;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Turn an normal java.util.Iterator into a QueryIterator
