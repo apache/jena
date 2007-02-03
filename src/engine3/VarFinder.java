@@ -28,6 +28,19 @@ public class VarFinder
         return VarUsageVisitor.apply(op).optDefines ;
     }
     
+    public static Set fixed(Op op)
+    {
+        return VarUsageVisitor.apply(op).defines ;
+    }
+    
+   
+    VarUsageVisitor varUsageVisitor ;
+    
+    public VarFinder(Op op) { varUsageVisitor = VarUsageVisitor.apply(op) ; }
+    
+    public Set getOpt() { return varUsageVisitor.optDefines ; }
+    public Set getFixed() { return varUsageVisitor.defines ; }
+    
     private static class VarUsageVisitor extends OpVisitorBase
     {
         static VarUsageVisitor apply(Op op)
@@ -36,10 +49,10 @@ public class VarFinder
             op.visit(v) ;
             return v ;
         }
-        
+
         Set defines = new HashSet() ;
         Set optDefines = new HashSet() ;
-
+        
         //@Override
         public void visit(OpQuadPattern quadPattern)
         {

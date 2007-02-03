@@ -15,11 +15,13 @@ import com.hp.hpl.jena.query.core.DataSourceImpl;
 import com.hp.hpl.jena.query.engine.QueryEngineBase;
 import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.engine2.op.OpJoin;
 import com.hp.hpl.jena.query.engine2.op.OpLeftJoin;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
+import engine3.JoinClassifier;
 import engine3.LeftJoinClassifier;
 import engine3.QueryEngineX;
 
@@ -27,23 +29,73 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        //classify() ;
+        classifyJ() ;
+        //classifyLJ() ;
         query() ;
     }
         
+    private static void classifyJ()
+    {
+//        classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ;
+//        classifyJ("{?s :p :o . { ?s :p :o FILTER(?s) } }", true) ;
+//        classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ;
+//        classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ;
+//        classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ;
+//
+//        classifyJ("{ { ?s :p :o FILTER(true) } ?s :p :o }", true) ;
+//        classifyJ("{ { ?s :p :o FILTER(?s) }   ?s :p :o }", true) ;
+//        classifyJ("{ { ?s :p ?o FILTER(?o) }   ?s :p :o }", true) ;
+//        classifyJ("{ { ?s :p :o FILTER(?o) }   ?s :p :o }", true) ;
+//        classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", false) ;
+
+//        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(true) } } }", true) ;
+        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?s) } } }", true) ;
+//        classifyJ("{?s :p :o . { OPTIONAL { ?s :p ?o FILTER(?o) } } }", true) ;
+//        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?o) } } }", true) ;
+//        classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ;
+//
+//        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", true) ;
+
         
-    private static void classify()
+        System.exit(0) ;
+    }
+    
+        
+    private static void classifyJ(String pattern, boolean expected)
+    {
+        System.out.println("--------------------------------") ;
+        System.out.println(pattern) ;
+        String qs1 = "PREFIX : <http://example/>\n" ;
+        String qs = qs1+"SELECT * "+pattern;
+        Query query = QueryFactory.create(qs) ;
+        QueryEngineX qe = new QueryEngineX(query) ;
+        Op op = ((QueryEngineX)qe).getPatternOp() ;
+        System.out.print(op) ;
+        
+        if ( op instanceof OpJoin )
+        {
+            boolean nonLinear = JoinClassifier.isLinear((OpJoin)op) ;
+            System.out.println("Linear: "+nonLinear) ;
+            if ( nonLinear != expected )
+                System.out.println("**** Mismatch with expectation") ;
+        }
+        else
+            System.out.println("Not a join") ;
+
+    }
+
+    private static void classifyLJ()
     {
         String pattern = "" ;
-        classify("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?x} }", true)  ;
-        classify("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 ?p2 ?x} } }", true)  ;
-        classify("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?o3} } }", true)  ;
-        classify("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?x} } }", false)  ;
+        classifyLJ("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?x} }", true)  ;
+        classifyLJ("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 ?p2 ?x} } }", true)  ;
+        classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?o3} } }", true)  ;
+        classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?x} } }", false)  ;
         System.exit(0) ;
     }
         
     
-    private static void classify(String pattern, boolean expected)
+    private static void classifyLJ(String pattern, boolean expected)
     {
         System.out.println() ;
         System.out.println(pattern) ;
@@ -52,7 +104,6 @@ public class Run
         Query query = QueryFactory.create(qs) ;
         QueryEngineX qe = new QueryEngineX(query) ;
         Op op = ((QueryEngineX)qe).getPatternOp() ;
-        
         
         if ( op instanceof OpLeftJoin )
         {

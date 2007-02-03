@@ -25,7 +25,7 @@ import engine3.iterators.*;
 
 public class OpCompiler
 {
-    // TODO Dependency checking on FILTERs to catch  { :x :p ?v . { FILTER(?v = 1) } }
+    // TODO More test cases in testing/Algebra for J and LJ classification
     // And  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
     // TODO Filter placement : especially WRT bnode variables.
     // TODO engine1 to self contained retirement

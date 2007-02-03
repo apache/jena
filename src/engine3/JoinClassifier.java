@@ -6,13 +6,90 @@
 
 package engine3;
 
+import java.util.Set;
+
+import com.hp.hpl.jena.query.engine2.OpVars;
+import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.engine2.op.OpFilter;
 import com.hp.hpl.jena.query.engine2.op.OpJoin;
+import com.hp.hpl.jena.query.engine2.op.OpLeftJoin;
+import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.util.SetUtils;
 
 public class JoinClassifier
 {
-    static public boolean isLinear(OpJoin op)
+    static public boolean isLinear(OpJoin join)
     {
-        return true ;
+        Op left = join.getLeft() ;
+        Op right = join.getRight() ;
+        
+        
+        
+        return check(left, right) && check(right, left) ;
+    }
+    
+    static final boolean print = false ; 
+    
+    static private boolean check(Op op, Op other)
+    {
+        Expr expr = null ; 
+        
+        if ( op instanceof OpFilter )
+        {
+            OpFilter f = (OpFilter)op ;    
+            op = f.getSubOp() ;
+            expr = f.getExpr() ;
+        }
+        
+        if ( op instanceof OpLeftJoin )
+        {
+            OpLeftJoin j = (OpLeftJoin)op ;
+            // Leave op
+            expr = j.getExpr() ;
+        }
+        
+        if ( expr == null )
+            return true ;
+            
+        Set exprVars = expr.getVarsMentioned() ;
+        
+        // remove variables that are safe:
+        //   fixed mentioned here
+        //   or optional and not mentioned in the other branch
+        
+        // **** XXX If expr from a left join, then safe if filter var in LHS or RHS of LJ.  
+        
+        if ( print ) System.out.println("Expr vars:     "+exprVars) ;
+
+        VarFinder vf1 = new VarFinder(op) ;
+        if ( print ) System.out.println("Fixed, here:   "+vf1.getFixed()) ;
+        if ( print ) System.out.println("Opt, here:     "+vf1.getOpt()) ;
+        
+        Set allVarsOther = OpVars.patternVars(other) ;      // The other side.
+        if ( print ) System.out.println("allVarsOther:  "+allVarsOther) ;
+        
+        // Remove variables in filter that are always set below it (hence safe) 
+        exprVars.removeAll(vf1.getFixed()) ;
+        if ( print ) System.out.println("Expr vars:(\\F) "+exprVars) ;
+        if ( exprVars.size() == 0 ) return true ;
+
+        // Ditto safe are any optionals vars IFF they not in other side 
+        // (where they may have a value when they don't in the op below the filter)
+        Set s = SetUtils.difference(vf1.getOpt(), allVarsOther) ;
+        // s is the set of optionals only on this side. 
+        exprVars.removeAll(s) ;
+        if ( exprVars.size() == 0 ) return true ;
+        
+        // At this point, an expr var is "dangerous" if it is mentioned in the other side.
+        if ( print ) System.out.println("Diff           "+s) ;
+        if ( print ) System.out.println("Expr vars:(\\s) "+exprVars) ;
+        
+        // Keep those in the other side : thien, if not empty, it's a dangerous variable.
+        exprVars.retainAll(allVarsOther) ;
+        if ( print ) System.out.println("Expr vars:(!!) "+exprVars) ;
+        
+        // Safe if nothing in the intersection of remaining exprVars and  
+        return exprVars.size() == 0 ;
     }
 }
 
