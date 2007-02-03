@@ -1,198 +1,255 @@
 <project name="SDB" default="main" basedir=".">
 
-    <!-- TODO Convert value's to location's -->
+  <!-- TODO Convert value's to location's -->
 
-    <property name="Name"            value="SDB"/>
-    <property name="name"            value="sdb"/>
+  <property name="Name"            value="SDB"/>
+  <property name="name"            value="sdb"/>
+  
+  <!-- The major and minor version numbers  -->
+  <property name="version-major"   value="0"/>
+  <property name="version-minor"   value="alpha"/>
+  <property name="version-status"  value="-0"/>
+  <property name="version"
+	    value="${version-major}.${version-minor}${version-status}"/>
+
+  <property name="dist.name"       value="${Name}-${version}"/>
+
+  <property name="src.dir"         value="src"/>
+  <property name="src.build.dir"     location="bldsrc"/>
+  <property name="classes.build.dir" location="bldbin"/>
+  <property name="dist.root"       location="dist"/>
+  <property name="dist.dir"        location="${dist.root}/${dist.name}"/>
+  <property name="lib.dir"         value="lib"/>
+  <property name="doc.dir"         value="doc"/>
+  <property name="javadoc.dir"     value="doc/javadoc"/>
+
+  <property name="test.dir"        value="testing"/>
+  <!--    <property name="vocab.dir"       value="Vocabularies"/> -->
+
+  <property name="jarfile"         value="${name}.jar"/>
+
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+  </path>
+
+  <filterset id="filters.general">
+    <filter token="name"           value="${Name}"/>
+    <filter token="website"        value="http://jena.sourceforge.net/"/>
+    <filter token="version"        value="${version}"/>
+    <filter token="version-major"  value="${version-major}"/>
+    <filter token="version-minor"  value="${version-minor}"/>
+    <filter token="version-status" value="${version-status}"/>   
+  </filterset>   
+
+  <!-- Set the javac flags that will produce an optimised jar
+       with no debug symbols -->
+  <target name="optimise-javac-flags">
+    <property name="java.debug"       value="false"/>
+    <property name="java.debuglevel"  value=""/>
+    <property name="java.deprecation" value="false"/>
+    <property name="java.optimize"    value="true"/>
+    <property name="java.source"      value="1.5"/>
+    <property name="java.target"      value="1.5"/>
+  </target>
+
+  <!-- Set the javac flags that will produce an debug jar with 
+       no compiler optimisation and all debug symbols-->
+
+  <target name="default-javac-flags">
+    <!-- Note that in ant, if these flags are already 
+	 set setting them again has no effect -->
+    <property name="java.debug"       value="true"/>
+    <property name="java.debuglevel"  value="source,lines,vars"/>
+    <property name="java.deprecation" value="off"/>
+    <property name="java.optimize"    value="true"/>
+    <property name="java.source"      value="1.5"/>
+    <property name="java.target"      value="1.5"/>
+  </target>
+
+  <target name="javac-flags" depends="default-javac-flags"/>
+
+  <!-- Main external targets -->
+  <target name="main" depends="jar" description="Build sdb.jar"/>
+  
+  <!-- Alternative name -->
+  <target name="jar"  depends="make-jars" description="Build sdb.jar">
+    <antcall target="clean-build-dirs"/>
+  </target>
+
+  <target name="release" depends="init,package"
+	  description="Create SDB release">
+    <antcall target="clean-build-dirs"/>
+  </target>
+
+  <!-- Section: Compilation and jar -->
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target name="pre-compile" depends="init,clean-build-dirs,javac-flags"/>
+
+  <target name="build-src" depends="clean-build-dirs">
+    <tstamp>
+      <format property="BUILD_TIME"      pattern="yyyy-MM-dd HH:mm Z"/>
+      <format property="BUILD_TIME_XSD"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+    </tstamp>
     
-    <!-- The major and minor version numbers  -->
-    <property name="version-major"   value="0"/>
-    <property name="version-minor"   value="0"/>
-    <property name="version-status"  value="-dev"/>
-    <property name="version"
-	      value="${version-major}.${version-minor}${version-status}"/>
+    <copy todir="${src.build.dir}">
+      <fileset dir="${src.dir}" includes="**"/>
+      <filterset>
+	<filterset refid="filters.general"/>
+	<filter token="build-time" value="${BUILD_TIME}" />
+	<filter token="build-time-xsd" value="${BUILD_TIME_XSD}" />
+      </filterset> 
+    </copy>
+  </target>
 
-    <property name="dist.name"       value="${Name}-${version}"/>
+  <target name="compile" 
+	  depends="pre-compile,build-src,compile-java"
+	  description="Compile"/>
 
-    <property name="src.dir"         location="src"/>
-    <property name="src.build.dir"     location="bldsrc"/>
-    <property name="classes.build.dir" location="bldbin"/>
-    <property name="dist.root"       location="dist"/>
-    <property name="dist.dir"        location="${dist.root}/${dist.name}"/>
-    <property name="lib.dir"         location="lib"/>
-    <property name="doc.dir"         location="doc"/>
-    <property name="javadoc.dir"     location="doc/javadoc"/>
-
-    <property name="test.dir"        location="testing"/>
-    <!--    <property name="vocab.dir"       value="Vocabularies"/> -->
-
-    <property name="jarfile"         value="${name}.jar"/>
-
-    <path id="classpath">
-	<fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-    </path>
-
-    <filterset id="filters.general">
-	<filter token="name"           value="${Name}"/>
-	<filter token="website"        value="http://jena.sourceforge.net/"/>
-	<filter token="version"        value="${version}"/>
-	<filter token="version-major"  value="${version-major}"/>
-	<filter token="version-minor"  value="${version-minor}"/>
-	<filter token="version-status" value="${version-status}"/>   
-    </filterset>   
-
-    <!-- Set the javac flags that will produce an optmised jar with no debug symbols -->
-    <target name="optimise-javac-flags">
-	<property name="java.debug"       value="false"/>
-	<property name="java.debuglevel"  value=""/>
-	<property name="java.deprecation" value="false"/>
-	<property name="java.optimize"    value="true"/>
-	<property name="java.source"      value="1.5"/>
-	<property name="java.target"      value="1.5"/>
-    </target>
-
-    <!-- Set the javac flags that will produce an debug jar with no compiler optimisation and all debug symbols-->
-
-    <target name="default-javac-flags">
-	<!-- Note that in ant, if these flags are already set setting them again has no effect -->
-	<property name="java.debug"       value="true"/>
-	<property name="java.debuglevel"  value="source,lines,vars"/>
-	<property name="java.deprecation" value="off"/>
-	<property name="java.optimize"    value="true"/>
-	<property name="java.source"      value="1.5"/>
-	<property name="java.target"      value="1.5"/>
-    </target>
-
-    <target name="javac-flags" depends="default-javac-flags"/>
-
-    <!-- Main external targets -->
-    <target name="main" depends="jar" description="Build sdb.jar"/>
+  <target name="compile-java" depends="pre-compile">
     
-    <!-- Alternative name -->
-    <target name="jar"  depends="make-jar" description="Build sdb.jar">
-	<antcall target="clean-build-dirs"/>
-    </target>
+    <javac srcdir="${src.build.dir}"
+	   destdir="${classes.build.dir}"
+	   debug="${java.debug}"
+	   debuglevel="${java.debuglevel}"
+	   deprecation="${java.deprecation}"
+	   optimize="${java.optimize}"
+	   source="${java.source}"
+	   target="${java.target}"
 
+	   >
+      <classpath refid="classpath" />
+    </javac>
+  </target>
+  
+  <!-- Other things to go into the jar file -->
+  <target name="classes-misc">
+    <copy todir="${classes.build.dir}" file="log4j.properties"/>
+  </target>
 
-    <!-- Section: Compilation and jar -->
+  <target name="make-jars" depends="compile,classes-misc">
+    <jar destfile="${lib.dir}/${jarfile}"
+	 index="yes">
+      <fileset dir="${classes.build.dir}"/>
+    </jar>
+  </target>
 
-    <target name="init">
-	<tstamp/>
-    </target>
+  <!-- Section: Testing -->
 
-    <target name="pre-compile" depends="init,clean-build-dirs,javac-flags"/>
+  <target name="test" depends="jar">
+    <junit printsummary="yes">
+      <classpath>
+	<fileset dir="${lib.dir}" includes="*.jar"/>
+      </classpath>
+      <test name="com.hp.hpl.jena.query.test.ARQTestSuite"/>
+    </junit>
+  </target>
 
-    <target name="build-src" depends="clean-build-dirs">
-	<tstamp>
-	    <format property="BUILD_TIME"      pattern="yyyy-MM-dd HH:mm Z"/>
-	    <format property="BUILD_TIME_XSD"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-	</tstamp>
-	
-	<copy todir="${src.build.dir}">
-	    <fileset dir="${src.dir}" includes="**"/>
-	    <filterset>
-		<filterset refid="filters.general"/>
-		<filter token="build-time" value="${BUILD_TIME}" />
-		<filter token="build-time-xsd" value="${BUILD_TIME_XSD}" />
-	    </filterset> 
-	</copy>
-    </target>
+  <!-- Section: Javadoc -->
 
-    <target name="compile" 
-	    depends="pre-compile,build-src,compile-java"
-	    description="Compile"/>
+  <target name="javadoc-all" />
+  <target name="javadoc" />
 
-    <target name="compile-java" depends="pre-compile">
-	
-	<javac srcdir="${src.build.dir}"
-	       destdir="${classes.build.dir}"
-	       debug="${java.debug}"
-	       debuglevel="${java.debuglevel}"
-	       deprecation="${java.deprecation}"
-	       optimize="${java.optimize}"
-	       source="${java.source}"
-	       target="${java.target}"
+  <target name="javadoc-not-ready" depends="clean-javadoc,build-src,javac-flags"
+	  description="Make the javadoc">
 
->
-	    <classpath refid="classpath" />
-	</javac>
-    </target>
-    
-    <!-- Other things to go into the jar file -->
-    <target name="classes-misc">
-	<copy todir="${classes.build.dir}" file="log4j.properties"/>
-    </target>
+    <javadoc
+     sourcepath="${src.build.dir}"
+     packagenames="com.hp.hpl.jena.query.sdb.*"
+     source="${java.source}"
+     destdir="${javadoc.dir}"
+     author="true"
+     version="true"
+     classpathref="classpath"
+     windowtitle="${Name} Query Processor"
+     doctitle="${Name} Query Processor"
+     Public="true"
+     Use="true"
+     bottom="Copyright &#169; 2006, 2007 Hewlett-Packard Development Company, LP"
+     additionalparam="-breakiterator">
+      <classpath refid="classpath"/>
+      <package name="com.hp.hpl.jena.query.sdb"/>
+    </javadoc>
+  </target>
 
-    <target name="make-jar" depends="compile,classes-misc">
-	<jar destfile="${lib.dir}/${jarfile}"
-	     index="yes">
-	    <fileset dir="${classes.build.dir}"/>
-	</jar>
-    </target>
+  <!-- Section: Create distribution area -->
 
-    <!-- Section: Testing -->
+  <target name="package"
+	  depends="make-jars,javadoc,javadoc-all,distribution-init,copy,zip"/>
 
-    <target name="test" depends="jar">
-	<junit printsummary="yes">
-	    <classpath>
-		<fileset dir="${lib.dir}" includes="*.jar"/>
-	    </classpath>
-	    <test name="com.hp.hpl.jena.query.test.ARQTestSuite"/>
-	</junit>
-    </target>
+  <target name="distribution-init">
+    <mkdir dir="${dist.dir}"/>
+  </target>
 
-    <!-- Section: Javadoc -->
+  <target name="copy" depends="distribution-init">
+    <delete dir="${dist.dir}"/>
+    <mkdir dir="${dist.dir}"/>
 
-    <target name="javadoc" depends="clean-javadoc,build-src,javac-flags"
-	    description="Make the javadoc">
+    <copy todir="${dist.dir}/${lib.dir}">
+      <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </copy>
 
-	<javadoc
-	 sourcepath="${src.build.dir}"
-	 packagenames="com.hp.hpl.jena.query.sdb.*"
-	 source="${java.source}"
-	 destdir="${javadoc.dir}"
-	 author="true"
-	 version="true"
-	 classpathref="classpath"
-	 windowtitle="${Name} Query Processor"
-	 doctitle="${Name} Query Processor"
-	 Public="true"
-	 Use="true"
-	 bottom="Copyright &#169; 2006, 2007 Hewlett-Packard Development Company, LP"
-	 additionalparam="-breakiterator">
-	    <classpath refid="classpath"/>
-	    <package name="com.hp.hpl.jena.query.sdb"/>
-	</javadoc>
-    </target>
+    <copy todir="${dist.dir}/${test.dir}">
+      <fileset dir="${test.dir}"/>
+    </copy>
 
-    <!-- Cleaning -->
+    <!-- bin/ and bat/ -->
+    <copy todir="${dist.dir}/bin">
+      <fileset dir="bin"/>
+    </copy>
+    <copy todir="${dist.dir}/bin2">
+      <fileset dir="bin2"/>
+    </copy>
 
-    <target name="clean" depends="clean-build-dirs"
-	    description="Clean up">
-	<delete dir="${dist.dir}"/>
-    </target>
+    <copy todir="${dist.dir}/${src.dir}">
+      <fileset dir="${src.build.dir}" includes="**" excludes="dev/**"/>
+    </copy>
 
-    <target name="clean-all" depends="clean-javadoc,clean"
-	    description="Clean up a lot">
-	<delete dir="${dist.dir}"/>
-    </target>
+    <copy todir="${dist.dir}/Store">
+      <fileset dir="Store" includes="**"/>
+    </copy>
 
-    <target name="clean-build-dirs"
-	    depends="clean-build-classes-dir,clean-build-src-dir"/>
-    <target name="clean-build-classes-dir">
+  </target>
+  
+  <target name="zip" >
+    <!-- Build the zip of everything -->
+    <delete file="${dist.root}/${dist.name}.zip"/>
+    <zip zipfile="${dist.root}/${dist.name}.zip">
+      <fileset dir="dist" includes="${dist.name}/**"/>
+    </zip>
+  </target>
 
-	<delete dir="${classes.build.dir}"/>
-	<mkdir dir="${classes.build.dir}"/>
-    </target>
+  <!-- Cleaning -->
 
-    <target name="clean-build-src-dir">
-	<delete dir="${src.build.dir}"/>
-	<mkdir  dir="${src.build.dir}"/>
-    </target>
+  <target name="clean" depends="clean-build-dirs"
+	  description="Clean up">
+    <delete dir="${dist.dir}"/>
+  </target>
 
-    <target name="clean-javadoc" description="Clean the javadoc directories">
-	<delete dir="${javadoc.dir}"/>
-	<mkdir  dir="${javadoc.all.dir}"/>
-    </target>
+  <target name="clean-all" depends="clean-javadoc,clean"
+	  description="Clean up a lot">
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  <target name="clean-build-dirs"
+	  depends="clean-build-classes-dir,clean-build-src-dir"/>
+  <target name="clean-build-classes-dir">
+
+    <delete dir="${classes.build.dir}"/>
+    <mkdir dir="${classes.build.dir}"/>
+  </target>
+
+  <target name="clean-build-src-dir">
+    <delete dir="${src.build.dir}"/>
+    <mkdir  dir="${src.build.dir}"/>
+  </target>
+
+  <target name="clean-javadoc" description="Clean the javadoc directories">
+    <delete dir="${javadoc.dir}"/>
+    <mkdir  dir="${javadoc.all.dir}"/>
+  </target>
 
 </project>
