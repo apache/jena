@@ -1,18 +1,16 @@
 <project name="SDB" default="main" basedir=".">
 
-  <!-- TODO Convert value's to location's -->
-
   <property name="Name"            value="SDB"/>
   <property name="name"            value="sdb"/>
   
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="0"/>
-  <property name="version-minor"   value="alpha"/>
-  <property name="version-status"  value="-0"/>
+  <property name="version-minor"   value="0"/>
+  <property name="version-status"  value="-alpha-1"/>
   <property name="version"
 	    value="${version-major}.${version-minor}${version-status}"/>
 
-  <property name="dist.name"       value="${Name}-${version}"/>
+  <property name="dist.name"       value="${name}-${version}"/>
 
   <property name="src.dir"         value="src"/>
   <property name="src.build.dir"     location="bldsrc"/>
@@ -24,8 +22,7 @@
   <property name="javadoc.dir"     value="doc/javadoc"/>
 
   <property name="test.dir"        value="testing"/>
-  <!--    <property name="vocab.dir"       value="Vocabularies"/> -->
-
+  <property name="vocab.dir"       value="Vocabularies"/>
   <property name="jarfile"         value="${name}.jar"/>
 
   <path id="classpath">
@@ -53,7 +50,7 @@
   </target>
 
   <!-- Set the javac flags that will produce an debug jar with 
-       no compiler optimisation and all debug symbols-->
+       compiler optimisation and all debug symbols-->
 
   <target name="default-javac-flags">
     <!-- Note that in ant, if these flags are already 
@@ -203,6 +200,14 @@
     <copy todir="${dist.dir}/bin2">
       <fileset dir="bin2"/>
     </copy>
+
+    <copy todir="${dist.dir}/" file="build.xml"/>
+    <copy todir="${dist.dir}/" file="copyright.txt"/>
+    <copy todir="${dist.dir}/" file="README.txt"/>
+    <!-- 
+    <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
+    <copy todir="${dist.dir}/" file="test.sh"/>
+    -->
 
     <copy todir="${dist.dir}/${src.dir}">
       <fileset dir="${src.build.dir}" includes="**" excludes="dev/**"/>
