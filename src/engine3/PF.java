@@ -103,7 +103,6 @@ class PF
         //   For each block of non-property function triples, make a S
         // Structure is PlanBlockTriples/PlanPropertyFunction/PlanBlockTriples...
         
-        // TODO ==> StageBasic
         BasicPattern pattern = null ;
         for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
         {
