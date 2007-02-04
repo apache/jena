@@ -10,7 +10,7 @@ import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.iterator.QueryIter;
+import com.hp.hpl.jena.query.engine.iterator.QueryIter2;
 import com.hp.hpl.jena.query.engine2.Table;
 import com.hp.hpl.jena.query.engine2.TableFactory;
 import com.hp.hpl.jena.query.expr.Expr;
@@ -23,27 +23,25 @@ import com.hp.hpl.jena.query.expr.Expr;
  * @author Andy Seaborne
  * @version $Id$
  */ 
-public abstract class QueryIterJoinBase extends QueryIter
+public abstract class QueryIterJoinBase extends QueryIter2
 {
-    QueryIterator left ;
     QueryIterator current ;
     Table tableRight ;
     Expr expr ;
     private Binding nextBinding = null ;
     
-    public QueryIterJoinBase(QueryIterator left, QueryIterator right, Expr expr, ExecutionContext qCxt)
+    public QueryIterJoinBase(QueryIterator left, QueryIterator right, Expr expr, ExecutionContext execCxt)
     {
-        super(qCxt) ;
-        this.left = left ;
-        tableRight = TableFactory.create(right) ;
+        super(left, right, execCxt) ;
+        tableRight = TableFactory.create(getRight()) ;
         tableRight.materialize() ;              // Delay this?
-        right.close();
+        getRight().close();
         this.expr = expr ;
     }
 
     protected void closeIterator()
     {
-        left.close() ;
+        super.closeIterator() ;
         tableRight = null ;
     }
     
@@ -91,21 +89,21 @@ public abstract class QueryIterJoinBase extends QueryIter
     
     protected QueryIterator leftJoinWorker()
     {
-        if ( !left.hasNext() )
+        if ( !getLeft().hasNext() )
             return null ;
-        Binding b =  left.nextBinding() ;
+        Binding b =  getLeft().nextBinding() ;
         QueryIterator x = tableRight.matchRightLeft(b, true, expr, getExecContext()) ;
         return x ;
     }
 
     protected QueryIterator equiJoinWorker()
     {
-        if ( !left.hasNext() )
+        if ( !getLeft().hasNext() )
             return null ;
         if ( expr != null )
             throw new ARQInternalErrorException("QueryIterJoinBase: expression not empty for equiJoin") ;
         
-        Binding b =  left.nextBinding() ;
+        Binding b =  getLeft().nextBinding() ;
         QueryIterator x = tableRight.matchRightLeft(b, false, null, getExecContext()) ;
         return x ;
     }

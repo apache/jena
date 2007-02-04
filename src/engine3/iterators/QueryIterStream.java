@@ -4,14 +4,14 @@
  */
 
 package engine3.iterators;
-import java.util.* ;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.iterator.QueryIter;
+import com.hp.hpl.jena.query.engine.iterator.QueryIter1;
 import com.hp.hpl.jena.query.util.Utils;
 
 /** Repeatedly execute the subclass operation for each Binding in the input iterator. 
@@ -20,16 +20,14 @@ import com.hp.hpl.jena.query.util.Utils;
  * @version    $Id: QueryIterRepeatApply.java,v 1.3 2007/01/02 11:19:31 andy_seaborne Exp $
  */
  
-public abstract class QueryIterStream extends QueryIter
+public abstract class QueryIterStream extends QueryIter1
 {
     int count = 0 ; 
-    QueryIterator input ;
     QueryIterator currentStage ;
     
     public QueryIterStream(QueryIterator input, ExecutionContext context)
     {
-        super(context) ;
-        this.input = input ;
+        super(input, context) ;
         this.currentStage = null ;
         
         if ( input == null )
@@ -38,9 +36,6 @@ public abstract class QueryIterStream extends QueryIter
             return ;
         }
     }
-    
-//    public void setInput(QueryIterator input)
-//    { this.input = input ; }
     
     protected abstract QueryIterator nextStage(Binding binding) ;
 
@@ -80,17 +75,16 @@ public abstract class QueryIterStream extends QueryIter
     {
         count++ ;
 
-        if ( input == null )
+        if ( getInput() == null )
             return null ;
 
-        if ( !input.hasNext() )
+        if ( !getInput().hasNext() )
         {
-            input.close() ;
-            input = null ;
+            close();
             return null ; 
         }
         
-        Binding binding = (Binding)input.next() ;
+        Binding binding = (Binding)getInput().next() ;
         QueryIterator iter = nextStage(binding) ;
         return iter ;
     }
@@ -101,9 +95,7 @@ public abstract class QueryIterStream extends QueryIter
         {
             if ( currentStage != null )
                 currentStage.close() ;
-            if ( input != null )
-                input.close() ;
-            input = null ;
+            super.close();
         }
     }
 }

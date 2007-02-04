@@ -6,7 +6,9 @@
 
 package engine3.iterators;
 
-import java.util.* ;
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
 
@@ -14,7 +16,7 @@ import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.iterator.QueryIter;
+import com.hp.hpl.jena.query.engine.iterator.QueryIter1;
 
 /** A QueryIterator that surpresses items already seen. 
  * Like com.hp.hpl.jena.util.iterators.UniqueExtendedIterator
@@ -24,9 +26,8 @@ import com.hp.hpl.jena.query.engine.iterator.QueryIter;
  * @version $Id: QueryIterDistinct.java,v 1.4 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
-public class QueryIterDistinct extends QueryIter
+public class QueryIterDistinct extends QueryIter1
 {
-    QueryIterator cIter ;
     Set seen ; 
     Binding nextBinding = null ;
     
@@ -34,8 +35,7 @@ public class QueryIterDistinct extends QueryIter
     
     public QueryIterDistinct(QueryIterator iter, ExecutionContext context)
     {
-        super(context) ;
-        cIter = iter ;
+        super(iter, context) ;
         seen = new HashSet() ;
     }
 
@@ -52,9 +52,9 @@ public class QueryIterDistinct extends QueryIter
     {
         Binding binding = null ;
         do {
-            if ( ! cIter.hasNext() )
+            if ( ! getInput().hasNext() )
                 return null ;
-            binding = cIter.nextBinding() ;
+            binding = getInput().nextBinding() ;
             if ( ! ( binding instanceof BindingImmutable ) )
                 LogFactory.getLog(QueryIterDistinct.class).warn("Not a BindingImmutable (incorrect .hashCode/.equals likely for DISTINCT)") ;
             
@@ -72,16 +72,6 @@ public class QueryIterDistinct extends QueryIter
         Binding ret = nextBinding ;
         nextBinding = null ;
         return ret ;
-    }
-    
-    /** Close the results iterator and stop query evaluation as soon as convenient.
-     */
-
-    protected void closeIterator()
-    {
-        if ( cIter != null )
-            cIter.close() ;
-        cIter = null ;
     }
 }
 
