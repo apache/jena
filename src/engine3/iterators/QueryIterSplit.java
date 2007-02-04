@@ -19,7 +19,7 @@ import com.hp.hpl.jena.query.engine2.op.Op;
 
 import engine3.QC;
 
-/** Execute each sub stage agains the input.
+/** Execute each sub stage against the input.
  *  Streamed SPARQL Union.
  * @author Andy Seaborne
  * @version $Id$

@@ -6,14 +6,15 @@
 
 package engine3.iterators;
 
-import org.apache.commons.logging.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.iterator.QueryIter;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.query.engine.iterator.QueryIter1;
 
 /** Iterator until a limit is reached. 
  * 
@@ -21,13 +22,12 @@ import com.hp.hpl.jena.query.QueryExecException;
  * @version $Id: QueryIterLimitOffset.java,v 1.6 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
-public class QueryIterSlice extends QueryIter
+public class QueryIterSlice extends QueryIter1
 {
     static Log clsLog = LogFactory.getLog(QueryIterSlice.class) ;
     long count = 0 ;
     long limit ;
     long offset ;
-    QueryIterator base ;
     
     /** Create an iterator that limits the number of returns of
      * another CloseableIterator.
@@ -39,7 +39,7 @@ public class QueryIterSlice extends QueryIter
     
     public QueryIterSlice(QueryIterator cIter, long startPosition, long numItems, ExecutionContext context)
     {
-        super(context) ;
+        super(cIter, context) ;
         
         offset = startPosition ;
         if ( offset == Query.NOLIMIT )
@@ -54,7 +54,6 @@ public class QueryIterSlice extends QueryIter
         if ( offset < 0 )
             throw new QueryExecException("Negative OFFSET: "+offset) ;
         
-        base = cIter ;
         count = 0 ;
         // Offset counts from 0 (the no op).
         for ( int i = 0 ; i < offset ; i++ )
@@ -70,7 +69,7 @@ public class QueryIterSlice extends QueryIter
         if ( isFinished() )
             return false;
         
-        if ( ! base.hasNext() )
+        if ( ! getInput().hasNext() )
             return false ;
         
         if ( count >= limit )
@@ -82,15 +81,10 @@ public class QueryIterSlice extends QueryIter
     protected Binding moveToNextBinding()
     {
         count ++ ;
-        return base.nextBinding() ;
+        return getInput().nextBinding() ;
     }
 
-    protected void closeIterator()
-    {
-        if ( base != null )
-            base.close() ;
-        base = null ;
-    }
+    protected void releaseResources() {}
 }
 
 /*

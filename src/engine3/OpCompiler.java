@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.engine.Binding0;
 import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterFilterExpr;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.engine2.table.TableUnit;

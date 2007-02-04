@@ -21,6 +21,7 @@ import com.hp.hpl.jena.query.engine.iterator.QueryIterConvert;
 
 public class QueryIterProject extends QueryIter
 {
+    // Not worth making subclass or QueryIter1
     QueryIterConvert qIter ;
     Collection projectionVars ;
 
