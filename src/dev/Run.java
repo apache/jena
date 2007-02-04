@@ -36,25 +36,26 @@ public class Run
         
     private static void classifyJ()
     {
-//        classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ;
-//        classifyJ("{?s :p :o . { ?s :p :o FILTER(?s) } }", true) ;
-//        classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ;
-//        classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ;
-//        classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ;
-//
-//        classifyJ("{ { ?s :p :o FILTER(true) } ?s :p :o }", true) ;
-//        classifyJ("{ { ?s :p :o FILTER(?s) }   ?s :p :o }", true) ;
-//        classifyJ("{ { ?s :p ?o FILTER(?o) }   ?s :p :o }", true) ;
-//        classifyJ("{ { ?s :p :o FILTER(?o) }   ?s :p :o }", true) ;
-//        classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", false) ;
+        classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ;
+        classifyJ("{?s :p :o . { ?s :p :o FILTER(?s) } }", true) ;
+        classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ;
+        classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ;
+        classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ;
 
-//        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(true) } } }", true) ;
+        classifyJ("{ { ?s :p :o FILTER(true) } ?s :p :o }", true) ;
+        classifyJ("{ { ?s :p :o FILTER(?s) }   ?s :p :o }", true) ;
+        classifyJ("{ { ?s :p ?o FILTER(?o) }   ?s :p :o }", true) ;
+        classifyJ("{ { ?s :p :o FILTER(?o) }   ?s :p :o }", true) ;
+        classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", false) ;
+
+        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(true) } } }", true) ;
         classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?s) } } }", true) ;
-//        classifyJ("{?s :p :o . { OPTIONAL { ?s :p ?o FILTER(?o) } } }", true) ;
-//        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?o) } } }", true) ;
-//        classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ;
-//
-//        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", true) ;
+        classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { ?s :p :o FILTER(?x) } } }", true) ;
+        classifyJ("{?s :p :o . { OPTIONAL { ?s :p ?o FILTER(?o) } } }", true) ;
+        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?o) } } }", true) ;
+        classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ;
+
+        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", true) ;
 
         
         System.exit(0) ;
@@ -70,14 +71,16 @@ public class Run
         Query query = QueryFactory.create(qs) ;
         QueryEngineX qe = new QueryEngineX(query) ;
         Op op = ((QueryEngineX)qe).getPatternOp() ;
-        System.out.print(op) ;
         
         if ( op instanceof OpJoin )
         {
             boolean nonLinear = JoinClassifier.isLinear((OpJoin)op) ;
             System.out.println("Linear: "+nonLinear) ;
             if ( nonLinear != expected )
+            {
+                System.out.print(op) ;
                 System.out.println("**** Mismatch with expectation") ;
+            }
         }
         else
             System.out.println("Not a join") ;

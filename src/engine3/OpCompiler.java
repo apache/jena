@@ -25,8 +25,14 @@ import engine3.iterators.*;
 
 public class OpCompiler
 {
+    // OpCompile.testLinearJoin(String) -> String true; false; N/A
+    // OpCompile.testLinearLeftJoin(String)
+    // TODO printing QueryIterator structure
+    //  Print linear down column, param of each QI across
+    //  Print [] and indented for two+ paters (J, LJ, U)
     // TODO More test cases in testing/Algebra for J and LJ classification
     // And  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
+    //  And  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
     // TODO Filter placement : especially WRT bnode variables.
     // TODO engine1 to self contained retirement
     // TODO property function detemination by general tree rewriting - precursor to pattern replacement?

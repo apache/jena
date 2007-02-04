@@ -8,6 +8,7 @@ package engine3;
 
 import java.util.Set;
 
+import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.engine2.OpVars;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpFilter;
@@ -32,13 +33,18 @@ public class JoinClassifier
     
     static private boolean check(Op op, Op other)
     {
-        Expr expr = null ; 
+        Expr expr = null ;
+        Set fixedFilterScope = null ;   // Vars in scope to the filter - fixed
+        Set optFilterScope = null ;     // Vars in scope to the filter - optional
         
         if ( op instanceof OpFilter )
         {
             OpFilter f = (OpFilter)op ;    
             op = f.getSubOp() ;
             expr = f.getExpr() ;
+            VarFinder vf = new VarFinder(op) ;
+            fixedFilterScope = vf.getFixed() ;
+            optFilterScope = vf.getOpt() ;
         }
         
         if ( op instanceof OpLeftJoin )
@@ -46,11 +52,19 @@ public class JoinClassifier
             OpLeftJoin j = (OpLeftJoin)op ;
             // Leave op
             expr = j.getExpr() ;
+            VarFinder vf1 = new VarFinder(j.getLeft()) ;
+            VarFinder vf2 = new VarFinder(j.getRight()) ;
+            // Both sides of the LeftJoin are in-scope to the filter. 
+            fixedFilterScope = SetUtils.union(vf1.getFixed(), vf2.getFixed()) ;
+            optFilterScope = SetUtils.union(vf1.getOpt(), vf2.getOpt()) ;
         }
         
         if ( expr == null )
             return true ;
-            
+        
+        if ( fixedFilterScope == null || optFilterScope == null )
+            throw new ARQInternalErrorException("JoinClassifier: Failed to set up variable sets correctly") ;
+        
         Set exprVars = expr.getVarsMentioned() ;
         
         // remove variables that are safe:
@@ -60,22 +74,20 @@ public class JoinClassifier
         // **** XXX If expr from a left join, then safe if filter var in LHS or RHS of LJ.  
         
         if ( print ) System.out.println("Expr vars:     "+exprVars) ;
-
-        VarFinder vf1 = new VarFinder(op) ;
-        if ( print ) System.out.println("Fixed, here:   "+vf1.getFixed()) ;
-        if ( print ) System.out.println("Opt, here:     "+vf1.getOpt()) ;
+        if ( print ) System.out.println("Fixed, here:   "+fixedFilterScope) ;
+        if ( print ) System.out.println("Opt, here:     "+optFilterScope) ;
         
         Set allVarsOther = OpVars.patternVars(other) ;      // The other side.
         if ( print ) System.out.println("allVarsOther:  "+allVarsOther) ;
         
         // Remove variables in filter that are always set below it (hence safe) 
-        exprVars.removeAll(vf1.getFixed()) ;
+        exprVars.removeAll(fixedFilterScope) ;
         if ( print ) System.out.println("Expr vars:(\\F) "+exprVars) ;
         if ( exprVars.size() == 0 ) return true ;
 
         // Ditto safe are any optionals vars IFF they not in other side 
         // (where they may have a value when they don't in the op below the filter)
-        Set s = SetUtils.difference(vf1.getOpt(), allVarsOther) ;
+        Set s = SetUtils.difference(optFilterScope, allVarsOther) ;
         // s is the set of optionals only on this side. 
         exprVars.removeAll(s) ;
         if ( exprVars.size() == 0 ) return true ;
