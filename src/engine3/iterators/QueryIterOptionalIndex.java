@@ -50,9 +50,6 @@ public class QueryIterOptionalIndex extends QueryIterStream
         cIter = new QueryIterDefaulting(cIter, binding, getExecContext()) ;
         return cIter ;
     }
-    
-    protected void closeIterator() 
-    { super.closeIterator() ; }
 }
 
 /*

@@ -89,14 +89,10 @@ public abstract class QueryIterStream extends QueryIter1
         return iter ;
     }
    
-    protected void closeIterator()
+    protected void releaseResources()
     {
-        if ( ! isFinished() )
-        {
-            if ( currentStage != null )
-                currentStage.close() ;
-            super.close();
-        }
+        if ( currentStage != null )
+            currentStage.close() ;
     }
 }
 

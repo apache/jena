@@ -73,6 +73,11 @@ public class QueryIterDistinct extends QueryIter1
         nextBinding = null ;
         return ret ;
     }
+    
+    protected void releaseResources()
+    {
+        seen = null ;
+    }
 }
 
 /*

@@ -39,12 +39,6 @@ public abstract class QueryIterJoinBase extends QueryIter2
         this.expr = expr ;
     }
 
-    protected void closeIterator()
-    {
-        super.closeIterator() ;
-        tableRight = null ;
-    }
-    
     protected boolean hasNextBinding()
     {
         if ( isFinished() )
@@ -65,6 +59,11 @@ public abstract class QueryIterJoinBase extends QueryIter2
         Binding b = nextBinding ;
         nextBinding = null ;
         return b ;
+    }
+
+    protected void releaseResources()
+    {
+        tableRight = null ;
     }
 
     // Move on regardless.
