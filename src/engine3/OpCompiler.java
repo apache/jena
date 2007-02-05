@@ -26,9 +26,6 @@ import engine3.iterators.*;
 
 public class OpCompiler
 {
-    // OpCompile.testLinearJoin(String) -> String true; false; N/A
-    // OpCompile.testLinearLeftJoin(String)
-    // TODO printing QueryIterator structure
     // TODO More test cases in testing/Algebra for J and LJ classification
     // And  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
     // And  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
@@ -36,7 +33,6 @@ public class OpCompiler
     // And filter placement in groups?
     // TODO engine1 to self contained retirement
     // TODO property function detemination by general tree rewriting - precursor to pattern replacement?
-    // OpBGP/Stage
 
     static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
@@ -160,7 +156,7 @@ public class OpCompiler
         // Beware of 
         // { _:a ?p ?v .  FILTER(true) . [] ?q _:a }
         // making sure the right amount is dispatched as the BGP.
-        // Only affects SPARQl extensions.
+        // Only affects SPARQL extensions.
         
         if ( sub instanceof OpBGP )
         {}
