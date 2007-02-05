@@ -151,22 +151,24 @@ import oracle.jdbc.OracleDatabaseMetaData;
 		return;
 	}
 
-	public int getInsertID ( String tableName ) {
-		DBIDInt result = null;
-		try {
-			String op = "getInsertID";
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,tableName);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				result = wrapDBID(rs.getObject(1));
-			} else
-				throw new RDFRDBException("No insert ID");
-			m_sql.returnPreparedSQLStatement(ps);
-		} catch (SQLException e) {
-			throw new RDFRDBException("Failed to insert ID: " + e);
-		}
-		return result.getIntID();
-	}
+    // Now common code moved to DriverRDB - delete this anytime after Jena 2.5.2
+
+//	public int getInsertID ( String tableName ) {
+//		DBIDInt result = null;
+//		try {
+//			String op = "getInsertID";
+//			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,tableName);
+//			ResultSet rs = ps.executeQuery();
+//			if (rs.next()) {
+//				result = wrapDBID(rs.getObject(1));
+//			} else
+//				throw new RDFRDBException("No insert ID");
+//			m_sql.returnPreparedSQLStatement(ps);
+//		} catch (SQLException e) {
+//			throw new RDFRDBException("Failed to insert ID: " + e);
+//		}
+//		return result.getIntID();
+//	}
 
 	
 	/**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Driver_MsSQL.java,v 1.4 2007-01-02 11:50:41 andy_seaborne Exp $
+ * $Id: Driver_MsSQL.java,v 1.5 2007-02-05 12:41:09 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.db.impl;
@@ -19,8 +19,8 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
 
 /**
- * This is a driver file for SQL Server 2000 (intended to be usable
- * with MSDE 2000 and SQL Server 2005, eventually).
+ * This is a driver file for MS SQL Server 2000, MSDE 2000 and 
+ * SQL Server 2005 (inc MS SQL Server Express).
  * <p>
  * There is very little difference from the postgres driver except for the
  * use of script inheritance to override some of the postgresql SQL commands and
@@ -32,7 +32,7 @@ import com.hp.hpl.jena.db.RDFRDBException;
  * for impact.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 
 public class Driver_MsSQL extends Driver_PostgreSQL  {

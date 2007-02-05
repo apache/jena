@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.cache.Cache;
 /** RelURI copied to Jena
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.11 2007-01-27 18:33:20 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.12 2007-02-05 12:41:11 andy_seaborne Exp $
  */
 
 public class RelURI
@@ -92,21 +92,38 @@ public class RelURI
         
     }
     
+    static Pattern patEnc1 = Pattern.compile("_") ;
+    static String encStr1 = "__" ;
+    
+    static Pattern patEnc2 = Pattern.compile(" ") ;
+    static String encStr2 = "_20" ;
+    
     static private String encode(String s)
     {
         if ( s == null ) return s ;
-        s = s.replace("_", "__") ;
-        s = s.replace(" ", "_20") ;
+        s = patEnc1.matcher(s).replaceAll(encStr1) ;
+        s = patEnc2.matcher(s).replaceAll(encStr2) ;
+        // Not Java 1.4
+//        s = s.replace("_", "__") ;
+//        s = s.replace(" ", "_20") ;
         return s ;
     }
     
+    static Pattern patDec1 = Pattern.compile("_20") ;
+    static String decStr1 = " " ;
+    
+    static Pattern patDec2 = Pattern.compile("__") ;
+    static String decStr2 = "_" ;
+    
     static private String decode(String s)
     {
-        s = s.replace("_20", " ") ;
-        s = s.replace("__", "_") ;
+        s = patDec1.matcher(s).replaceAll(decStr1) ;
+        s = patDec2.matcher(s).replaceAll(decStr2) ;
+//        s = s.replace("_20", " ") ;
+//        s = s.replace("__", "_") ;
         return s ;
-        
     }
+
     
     static private String _resolve(String relStr, String baseStr)
     {
@@ -374,7 +391,6 @@ public class RelURI
         }
 
     }
-
 }
 
 class Cache1 implements Cache

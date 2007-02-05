@@ -107,8 +107,9 @@ public class Driver_MySQL extends DriverRDB {
 
 	public int getInsertID ( String tableName ) {
 		DBIDInt result = null;
+        PreparedStatement ps = null ;
 		try {
-			PreparedStatement ps = m_sql.getPreparedSQLStatement("getInsertID");
+			ps = m_sql.getPreparedSQLStatement("getInsertID");
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				result = wrapDBID(rs.getObject(1));
@@ -117,6 +118,11 @@ public class Driver_MySQL extends DriverRDB {
 		} catch (SQLException e) {
 			throw new RDFRDBException("Failed to get last inserted ID: " + e);
 		}
+        finally 
+        { 
+            if ( ps != null )
+                m_sql.returnPreparedSQLStatement(ps) ;
+        }
 		return result.getIntID();
 	}
 

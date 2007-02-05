@@ -43,7 +43,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.66 $ on $Date: 2007-01-21 14:46:05 $
+* @version $Revision: 1.67 $ on $Date: 2007-02-05 12:41:09 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -854,15 +854,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		boolean[] found = new boolean[SYSTEM_TABLE_CNT];
 		int i = 0;
 		for (i = 0; i < SYSTEM_TABLE_CNT; i++) found[i] = false;
-		//ResultSet alltables = null;
 		try {
-			// check that all required system tables exist
-//			alltables = getAllTables();
-//			while (alltables.next()) {
-//				String tblName = alltables.getString("TABLE_NAME");
-//				for (i = 0; i < SYSTEM_TABLE_CNT; i++)
-//					if (SYSTEM_TABLE_NAME[i].equals(tblName))
-//						found[i] = true;
             for ( Iterator iter = getAllTables().iterator() ; iter.hasNext(); )
             {
                 String tblName = (String)iter.next();
@@ -884,15 +876,6 @@ public abstract class DriverRDB implements IRDBDriver {
 			// db or a connection problem.
 			throw new RDFRDBException("Exception while checking db format - " + e1, e1);
 		}
-//        finally {
-//			try {
-//				if(alltables!=null) {
-//					alltables.close();
-//				}
-//			}catch(SQLException e) {
-//				throw new RDFRDBException("Exception while checking db format - " + e);
-//			}
-//		}
 		return result;
 	}
 	
@@ -2065,28 +2048,6 @@ public abstract class DriverRDB implements IRDBDriver {
              setLongObjectHashAndTail(ps, argi, lobj) ;
              argi += 2 ;        // Hash and tail.
 
-             // Old, inline code - to go.
-//             boolean largeIsText = true ;
-//             if ( largeIsText )
-//             {
-//    			 if ( lobj.tail.length() > 0 ) {
-//    			 	ps.setLong(argi++, lobj.hash);
-//    			 	ps.setString(argi++, lobj.tail);
-//    			 } else {
-//    			 	ps.setNull(argi++,java.sql.Types.BIGINT);
-//    				ps.setNull(argi++,java.sql.Types.VARCHAR);     
-//    			 }
-//             }
-//             else
-//             {
-//                 ps.setLong(argi++, lobj.hash);
-//                 // Caveat - does not work for old drivers, notable Oracle.
-//                 // In that case, need the Oracle-specific blob handling driver
-//                 // but better is to upgrade to a newer JDBC driver (work as far back as Oracle 9i)
-//                 byte[] b = lobj.tail.getBytes("UTF-8") ;
-//                 ps.setBytes(argi++, b) ;
-//             }
-             
 			ps.executeUpdate();
 			if ( !PRE_ALLOCATE_ID ) dbid = getInsertID(table);
 			return wrapDBID(new Integer(dbid));
@@ -2100,6 +2061,30 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 	}
 	
+    // Common way to get the sequence ID, even though the SQL statements are quite different. 
+    // MySQL is different (it overrides this in Driver_MySQL).
+    
+	public int getInsertID(String tableName)
+	{
+	    DBIDInt result = null;
+        PreparedStatement ps = null ;
+	    try {
+	        ps = m_sql.getPreparedSQLStatement("getInsertID",tableName);
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            result = wrapDBID(rs.getObject(1));
+	        } else
+	            throw new RDFRDBException("No insert ID");
+	    } catch (SQLException e) {
+	        throw new RDFRDBException("Failed to insert ID: " + e);
+	    } finally { 
+            if ( ps != null )
+                m_sql.returnPreparedSQLStatement(ps) ;
+        }
+	    return result.getIntID();
+	}
+
+    
     // Different ways of inserting the tail value
     // 1/ As a text field, using .setString and letting JDBC encode the characters
     // 2/ As a binary field, using a BLOB of UTF-8 encoded bytes
@@ -2226,10 +2211,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			if (rs.next()) {
                 res = new RDBLongObject();
 				res.head = rs.getString(1);
-                
-                // --------
-                // ALTERNATIVE - WORK IN PROGRESS
-                // Temp - tmpStr, not res.tail.
+
                 switch (rs.getMetaData().getColumnType(2))
                 {
                     case Types.VARCHAR:
@@ -2256,31 +2238,6 @@ public abstract class DriverRDB implements IRDBDriver {
                         logger.fatal("Long object is of unexpected SQL type: "+rs.getMetaData().getColumnType(2)) ;
                         throw new RDFRDBException("Long object is of unexpected SQL type: "+rs.getMetaData().getColumnType(2));
                 }
-                // --------
-                
-                
-//                Object obj = rs.getObject(2) ;
-//                if ( obj == null )
-//                {
-//                    res.tail = null ;
-//                    return res ;
-//                }
-//                if ( obj instanceof String )
-//                    res.tail = (String)obj ;
-//                else if ( obj instanceof byte[] )
-//                {
-//                    try
-//                    {
-//                        res.tail = new String((byte[])obj, "UTF-8") ;
-//                    } catch (UnsupportedEncodingException ex)
-//                    {
-//                        ex.printStackTrace();
-//                    }
-//                }
-//                // Oracle BLOB is a non-standard type.
-//                else
-//                    throw new RDFRDBException("Long object is of unexpected class: "+obj.getClass());
-//                // OLD code (remove after 2.4) res.tail = rs.getString(2);
 			}
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));

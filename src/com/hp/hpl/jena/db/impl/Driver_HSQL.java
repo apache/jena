@@ -7,13 +7,10 @@
 package com.hp.hpl.jena.db.impl;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.db.impl.DBIDInt;
-import com.hp.hpl.jena.db.impl.SQLCache;
 
 public class Driver_HSQL extends DriverRDB 
 {
@@ -136,22 +133,22 @@ public class Driver_HSQL extends DriverRDB
         return;
     }
 
-    public int getInsertID(String tableName)
-    {
-        DBIDInt result = null;
-        try {
-            PreparedStatement ps = m_sql.getPreparedSQLStatement("getInsertID",tableName);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                result = wrapDBID(rs.getObject(1));
-            } else
-                throw new RDFRDBException("No insert ID");
-        } catch (SQLException e) {
-            throw new RDFRDBException("Failed to insert ID: " + e);
-        }
-        return result.getIntID();
-
-    }
+    // Now common code moved to DriverRDB - delete this anytime after Jena 2.5.2
+//    public int getInsertID(String tableName)
+//    {
+//        DBIDInt result = null;
+//        try {
+//            PreparedStatement ps = m_sql.getPreparedSQLStatement("getInsertID",tableName);
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) {
+//                result = wrapDBID(rs.getObject(1));
+//            } else
+//                throw new RDFRDBException("No insert ID");
+//        } catch (SQLException e) {
+//            throw new RDFRDBException("Failed to insert ID: " + e);
+//        }
+//        return result.getIntID();
+//    }
 
     public void setConnection(IDBConnection dbcon)
     {
