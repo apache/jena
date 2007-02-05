@@ -12,6 +12,7 @@ import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
+import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpJoin;
@@ -153,7 +154,8 @@ public class Run
         System.out.println("==== EngineX") ;
         QueryEngineX qe = new QueryEngineX(query) ;
         qe.setDataset(ds) ;
-        System.out.println(qe.getPlan().iterator()) ;
+        QueryIterator qIter = qe.getPlan().iterator() ; 
+        System.out.println(qIter) ;
         System.out.print(qe.getPlan()) ;
         QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
         System.exit(0) ;
