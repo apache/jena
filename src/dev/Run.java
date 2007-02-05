@@ -12,7 +12,6 @@ import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
-import com.hp.hpl.jena.query.engine.QueryEngineBase;
 import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpJoin;
@@ -29,7 +28,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        classifyJ() ;
+        //classifyJ() ;
         //classifyLJ() ;
         query() ;
     }
@@ -123,11 +122,11 @@ public class Run
 
     public static void query()
     {
-        String qs1 = "PREFIX : <http://example/>\n" ;
-        String qs = qs1+"SELECT * { }" ;
-        Query query = QueryFactory.create(qs) ;
+//        String qs1 = "PREFIX : <http://example/>\n" ;
+//        String qs = qs1+"SELECT * { }" ;
+//        Query query = QueryFactory.create(qs) ;
         
-        //Query query = QueryFactory.read("Q.rq") ;
+        Query query = QueryFactory.read("Q.rq") ;
         Model data = FileManager.get().loadModel("D.ttl") ;
         DataSource ds = new DataSourceImpl() ;
         ds.setDefaultModel(data) ;
@@ -154,7 +153,8 @@ public class Run
         System.out.println("==== EngineX") ;
         QueryEngineX qe = new QueryEngineX(query) ;
         qe.setDataset(ds) ;
-        System.out.print(((QueryEngineBase)qe).getPlan()) ;
+        System.out.println(qe.getPlan().iterator()) ;
+        System.out.print(qe.getPlan()) ;
         QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
         System.exit(0) ;
     }
