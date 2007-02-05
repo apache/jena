@@ -97,7 +97,6 @@ public class OpCompiler
 
     QueryIterator compile(OpJoin opJoin, QueryIterator input)
     {
-        // TODO Classify Joins
         // Look one level in for any filters with out-of-scope variables.
         boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
         
@@ -112,6 +111,7 @@ public class OpCompiler
         
         // Input may be null?
         // Can't do purely indexed (a filter referencing a variable out of scope is in the way)
+        // To consider: partial substitution for improved performance (but does it occur for real?)
         QueryIterator right = compileOp(opJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
         return qIter ;
@@ -132,7 +132,7 @@ public class OpCompiler
 
         // Do it by sub-evaluation of left and right then left join.
         // Can be expensive if RHS returns a lot.
-        // TODO Can we do better by allowing partial substitution of the safe vars?
+        // To consider: partial substitution for improved performance (but does it occur for real?)
 
         QueryIterator right = compileOp(opLeftJoin.getRight(), root()) ;
         QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExpr(), execCxt) ;

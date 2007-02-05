@@ -43,18 +43,18 @@ public class StageBasic implements Stage
         
         // Always use the pass-through triple matcher for databases
         if ( qh instanceof DBQueryHandler )
-            return QueryIterBlockTriples.create(input, pattern.toList(), cxt) ;
+            return QueryIterBlockTriples.create(input, pattern, cxt) ;
         
         // If in-memory and allowing alt matching ...
         if ( qh instanceof SimpleQueryHandler &&
              cxt.getContext().isTrueOrUndef(PlanTriples.altMatcher) )
         {
             // The alt matcher avoids thread creation - makes a difference when called very heavily.
-            return QueryIterBlockTripleAlt.create(input, pattern.toList(), cxt) ;
+            return QueryIterBlockTripleAlt.create(input, pattern, cxt) ;
         }
         
         // When in doubt ... use the general pass-through to graph query handler matcher.
-        return QueryIterBlockTriples.create(input, pattern.toList(), cxt) ;
+        return QueryIterBlockTriples.create(input, pattern, cxt) ;
     }
 
 }
