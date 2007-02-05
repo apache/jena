@@ -140,7 +140,7 @@ public class Run
             QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
         }
 
-        if ( true )
+        if ( false )
         {
             QueryEngineRef.register() ;
             QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;

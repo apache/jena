@@ -3,5 +3,5 @@ PREFIX :    <http://example/>
 SELECT *
 { 
     :x1 :p ?v .
-    { FILTER( ?w = 1 ) }
+    { FILTER( ?v = 1 ) }
 }
