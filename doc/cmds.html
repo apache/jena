@@ -16,35 +16,8 @@
 <body>
 
 <h1>SDB</h1>
-<p>in bin/ : sh scripts</p>
-<p>SDBROOT</p>
-<h2>Argument Structure</h2>
-<p>All commands take a SDB store description to extract the connection and 
-configuration information they need.</p>
-<p>Arguments:</p>
-<ul>
-	<li>--sdb=&lt;sdb.ttl&gt;</li>
-</ul>
-<p>&nbsp;</p>
-<ul>
-	<li>--dbName=</li>
-	<li>--dbHost=</li>
-	<li>--dbType=</li>
-	<li>--dbUser=</li>
-	<li>--dbPassword=</li>
-	<li>--layout=</li>
-</ul>
-<p>&nbsp;</p>
-<ul>
-	<li>--load</li>
-	<li>--format</li>
-</ul>
-<h2>Commands</h2>
-<p>Summary:</p>
-<p>--arg=val can also be written --arq val</p>
-<p>--query=FILE can also be a query string.</p>
-<p>--help</p>
-<p>&nbsp;</p>
+<p>The SDB download has a number of command line tools: they all expect the 
+environment variables SDBROOT to be set to the location of the SDB installation.</p>
 
 <p class="cmd">sdbquery <i>SPEC</i> --query=FILE</p>
 <blockquote>
@@ -57,7 +30,8 @@ configuration information they need.</p>
 </blockquote>
 <p class="cmd">sdbformat <i>SPEC</i> DBNAME</p>
 <blockquote>
-	<p>Format a database.&nbsp; Deletes all existing data. DBNAME must be <i>SPEC</i>ificed.</p>
+	<p>Format a database.&nbsp; Deletes all existing data. DBNAME must be <i>
+    spec</i>ified.</p>
 </blockquote>
 <p class="cmd">sdbload <i>SPEC</i> FILE [FILE ...]</p>
 <blockquote>
@@ -81,7 +55,7 @@ names, e.g. &quot;Turtle&quot; or &quot;TTL&quot;).</p>
 <p class="cmd">sdbsql <i>SPEC</i> [ --file=FILE | SQL string ]</p>
 <blockquote>
 	<p>Execute a SQL command on the store, using the connection details from the 
-	store specificiation.</p>
+	store specification.</p>
 </blockquote>
 <p class="cmd">sdbscript<i> SPEC</i> </p>
 <blockquote>
@@ -98,6 +72,42 @@ names, e.g. &quot;Turtle&quot; or &quot;TTL&quot;).</p>
 
 
 
+<h2>Set up</h2>
+<p>Set the environment variable to the root of the the SDB installation.</p>
+<p>Set the environment variables SDB_USER and SDB_PASSWORD to the database user 
+name and password for JDBC.</p>
+<p>The directory bin/ contains shell scripts to run this command. The directory 
+bin2/ contains scripts that can be placed on your PATH to call the scripts in 
+bin/ without needing bin/ on the path.</p>
+<h2>Argument Structure</h2>
+<p>All commands take a SDB store description to extract the connection and 
+configuration information they need.</p>
+<p>Arguments:</p>
+<ul>
+	<li>--sdb=&lt;sdb.ttl&gt;</li>
+</ul>
+<p>If not specified, commands load the description file sdb.ttl from the current 
+directory, or, failing that from the directory named in SDBROOT.</p>
+<p>The individual components of a connection or configuration can be overridden 
+after the description have been read, before it is processed:</p>
+<p>SDB configuration:</p>
+<ul>
+  <li>--layout : layout name (currently, one of &quot;layout1&quot;, &quot;layout2&quot;, 
+  &quot;layout2/index&quot;, &quot;layout2/hash&quot;, &quot;layoutRDB&quot;)</li>
+</ul>
+<p>JDBC parameters:</p>
+<ul>
+	<li>--dbName : Database Name</li>
+	<li>--dbHost : Host machine name</li>
+	<li>--dbType : Database type.</li>
+	<li>--dbUser : Database use</li>
+	<li>--dbPassword : Database password.</li>
+</ul>
+<p>User and password are taken from environment variables SDB_USER and 
+SDB_PASSWORD if not set in the description or command line.</p>
+<p>All commands support --help to give details of other named and positional 
+arguments.</p>
+<p>--arg=val can also be written --arq val</p>
 <p class="footnote"><a href="documentation.html">SDB Documentation Page</a></p>
 </body>
 </html>

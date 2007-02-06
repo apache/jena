@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ Firefox gets it wrong (puts a marging at the top) if the declarations as included 
+-->
+
+<head>
+<title>SDB</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>SDB - Use with Java Applications</h1>
+<p>SDB presents the Jena model and query APIs. To use SDB, the application 
+should call <code>SDB.init()</code>. In fact, this is often unnecessary because 
+all the API classes automatically check for initialization and it is only 
+necessary if directly using assembler descriptions for SDB resources, not using 
+the factory operations that make this more convenient. </p>
+<ol>
+  <li><code>SDB.init()</code> - wires in the assembler support and wires in the 
+  SPARQL query engine for SDB.</li>
+  <li>Create a dataset from <code>SDBFactory</code>.</li>
+  <li>Use a dataset/model/graph as normal, including loading data, API access 
+  and SPARQL query.</li>
+</ol>
+<p>When wired into the ARQ query engine registry, queries on SDB datasets, API 
+calls to SDB models go to SDB; nothing different needs to be done by teh 
+application, including for the bulk loading of data&nbsp; All other queries 
+proceed as normal to the standard ARQ query system.</p>
+<p>There are <a href="cmds.html">command line applications</a> to format, load 
+and query an SDB store.</p>
+
+
+
+
+<p class="footnote">&nbsp;</p>
+</body>
+</html>

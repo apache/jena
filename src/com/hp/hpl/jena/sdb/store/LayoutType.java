@@ -26,6 +26,7 @@ public enum LayoutType implements Named {
     public static LayoutType convert(String s)
     {
         if ( s.equalsIgnoreCase(LayoutRDB.getName()) ) return LayoutRDB ;
+        if ( s.equalsIgnoreCase("layoutRDB") ) return LayoutRDB ;
         
         if ( s.equalsIgnoreCase(LayoutSimple.getName()) ) return LayoutSimple ;
         if ( s.equalsIgnoreCase("layout1") ) return LayoutSimple ;
