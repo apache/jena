@@ -159,7 +159,7 @@ public class OpCompiler
         // Only affects SPARQL extensions.
         
         if ( sub instanceof OpBGP )
-        {}
+            return Filter.placeFilter(opFilter.getExpr(), (OpBGP)sub, input, this, execCxt) ;
 
         if ( sub instanceof OpQuadPattern )
         {}
@@ -169,6 +169,8 @@ public class OpCompiler
         return qIter ;
     }
 
+    
+    
     QueryIterator compile(OpGraph opGraph, QueryIterator input)
     { 
         return new QueryIterGraph(input, opGraph, execCxt) ;
