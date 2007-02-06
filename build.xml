@@ -16,7 +16,7 @@
   <property name="src.build.dir"     location="bldsrc"/>
   <property name="classes.build.dir" location="bldbin"/>
   <property name="dist.root"       location="dist"/>
-  <property name="dist.dir"        location="${dist.root}/${dist.name}"/>
+  <property name="dist.dir"        location="${dist.root}/${dist.Name}"/>
   <property name="lib.dir"         value="lib"/>
   <property name="doc.dir"         value="doc"/>
   <property name="javadoc.dir"     value="doc/javadoc"/>
