@@ -123,7 +123,7 @@ public class Run
 
     public static void parseQuery()
     {
-        //QueryEngineX.register() ;
+        QueryEngineX.register() ;
         String a[] = new String[]{
             //"-v",
             //"--engine=ref",
