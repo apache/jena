@@ -153,12 +153,6 @@ public class OpCompiler
     QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
         Op sub = opFilter.getSubOp() ;
-        // Put filter in best place
-        // Beware of 
-        // { _:a ?p ?v .  FILTER(true) . [] ?q _:a }
-        // making sure the right amount is dispatched as the BGP.
-        // Only affects SPARQL extensions.
-        
         if ( sub instanceof OpBGP )
             return filterPlacement.placeFilter(opFilter.getExpr(), (OpBGP)sub, input) ;
 

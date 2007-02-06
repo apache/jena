@@ -6,18 +6,31 @@
 
 package engine3;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterFilterExpr;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpBGP;
 import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.util.Symbol;
 
 public class FilterPlacement
 {
     // Broken out to keep OpCompiler more manageable.
     private OpCompiler compiler ;
     private ExecutionContext execCxt ;
+    
+    static final Symbol safePlacement = ARQConstants.allocSymbol("safeFilterPlacement") ;
+    
+    boolean doSafePlacement = ARQ.getContext().isTrue(safePlacement) ;
+
+    // Put filter in best place
+    // Beware of 
+    // { _:a ?p ?v .  FILTER(true) . [] ?q _:a }
+    // making sure the right amount is dispatched as the BGP.
+    // Only affects SPARQL extensions.
 
     public FilterPlacement(OpCompiler compiler, ExecutionContext execCxt)
     {
@@ -27,8 +40,11 @@ public class FilterPlacement
     
     public QueryIterator placeFilter(Expr expr, OpBGP sub, QueryIterator input)
     {
-        // Dull.
+        if ( doSafePlacement )
+            return safe(expr, sub, input) ;
+        // And now write the code !
         return safe(expr, sub, input) ;
+
     }
 
     public QueryIterator safe(Expr expr, Op sub, QueryIterator input)
