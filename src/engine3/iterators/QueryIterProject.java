@@ -11,10 +11,10 @@ import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.Binding;
-import com.hp.hpl.jena.query.engine.BindingBase;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.BindingBase;
 import com.hp.hpl.jena.query.engine.iterator.QueryIter;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterConvert;
 

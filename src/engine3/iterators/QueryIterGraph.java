@@ -12,10 +12,10 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.Binding;
-import com.hp.hpl.jena.query.engine.Binding1;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.Binding1;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterConcat;
 import com.hp.hpl.jena.query.engine2.OpSubstitute;

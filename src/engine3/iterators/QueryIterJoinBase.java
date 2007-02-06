@@ -7,9 +7,9 @@
 package engine3.iterators;
 
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.iterator.QueryIter2;
 import com.hp.hpl.jena.query.engine2.Table;
 import com.hp.hpl.jena.query.engine2.TableFactory;

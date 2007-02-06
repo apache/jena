@@ -12,10 +12,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.engine.Binding;
-import com.hp.hpl.jena.query.engine.BindingImmutable;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.BindingImmutable;
 import com.hp.hpl.jena.query.engine.iterator.QueryIter1;
 
 /** A QueryIterator that surpresses items already seen. 

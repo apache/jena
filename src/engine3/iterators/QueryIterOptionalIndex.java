@@ -6,14 +6,17 @@
 
 package engine3.iterators;
 
-import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterDefaulting;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpFilter;
 import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Utils;
 
 import engine3.QC;
 
@@ -49,6 +52,14 @@ public class QueryIterOptionalIndex extends QueryIterStream
         QueryIterator cIter = QC.compile(op2, thisStep, super.getExecContext()) ;
         cIter = new QueryIterDefaulting(cIter, binding, getExecContext()) ;
         return cIter ;
+    }
+    
+    protected void details(IndentedWriter out, SerializationContext sCxt)
+    {
+        out.println(Utils.className(this)) ;
+        out.incIndent() ;
+        op.output(out, sCxt) ;
+        out.decIndent() ;
     }
 }
 

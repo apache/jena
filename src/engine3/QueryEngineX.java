@@ -13,9 +13,7 @@ import com.hp.hpl.jena.query.core.Element;
 import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.engine2.op.Op;
-import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.Context;
-import com.hp.hpl.jena.query.util.IndentedWriter;
 
 public class QueryEngineX extends QueryEngineRef
 {
@@ -64,26 +62,6 @@ public class QueryEngineX extends QueryEngineRef
     protected Op modifyQueryOp(Op op)
     {
         return op ;
-    }
-
-    static class PlanOp extends PlanBase
-    {
-        private QueryIterator qIter ;
-        private Op op ;
-        PlanOp(Op op, QueryIterator qIter) { this.op = op ; this.qIter = qIter ; }
-
-        protected QueryIterator iteratorOnce()
-        { return qIter ; }
-
-        //@Override
-        public void output(IndentedWriter out, SerializationContext sCxt) // or output(IndentedWriter).
-        {
-            out.println(Plan.startMarker+":EngineX") ;
-            out.incIndent() ;
-            op.output(out, sCxt) ;
-            out.decIndent() ;
-            out.println(Plan.finishMarker) ;
-        }
     }
 }
 

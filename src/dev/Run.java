@@ -6,6 +6,7 @@
 
 package dev;
 
+import arq.qparse;
 import arq.sparql;
 import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
@@ -17,7 +18,6 @@ import com.hp.hpl.jena.query.engine2.QueryEngineRef;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpJoin;
 import com.hp.hpl.jena.query.engine2.op.OpLeftJoin;
-
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -31,6 +31,8 @@ public class Run
     {
         //classifyJ() ;
         //classifyLJ() ;
+        //execQuery("D.ttl", "Q.rq") ;
+        parseQuery() ;
         query() ;
     }
         
@@ -56,7 +58,6 @@ public class Run
         classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ;
 
         classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", true) ;
-
         
         System.exit(0) ;
     }
@@ -120,6 +121,19 @@ public class Run
         
     }
 
+    public static void parseQuery()
+    {
+        //QueryEngineX.register() ;
+        String a[] = new String[]{
+            //"-v",
+            //"--engine=ref",
+            "--print=query",
+            "--print=op",
+            "--print=plan",
+            "--query=Q.rq" , 
+        } ;
+        qparse.main(a) ;
+    }
 
     public static void query()
     {
