@@ -6,6 +6,8 @@
 
 package engine3;
 
+import java.util.Set;
+
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
@@ -43,8 +45,9 @@ public class FilterPlacement
         if ( doSafePlacement )
             return safe(expr, sub, input) ;
         // And now write the code !
+        Set exprVars = expr.getVarsMentioned() ; //ExprVars.getVarsMentioned(expr) ;
+        
         return safe(expr, sub, input) ;
-
     }
 
     public QueryIterator safe(Expr expr, Op sub, QueryIterator input)
