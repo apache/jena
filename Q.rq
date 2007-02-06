@@ -2,6 +2,7 @@ PREFIX :    <http://example/>
 
 SELECT *
 { 
-    :x1 :p ?v .
-    { FILTER( ?v = 1 ) }
+    :x1 :p ?v ;
+        :q ?w .
+    OPTIONAL { ?v :r ?a . OPTIONAL { ?v :r ?a } }
 }

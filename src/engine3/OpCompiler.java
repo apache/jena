@@ -17,7 +17,6 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding0;
 import com.hp.hpl.jena.query.engine.binding.BindingImmutable;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterFilterExpr;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.engine2.table.TableUnit;
@@ -46,21 +45,23 @@ public class OpCompiler
         return q ;
     }
 
-    ExecutionContext execCxt ;
-    CompilerDispatch dispatcher = null ;
+    private ExecutionContext execCxt ;
+    private CompilerDispatch dispatcher = null ;
+    private FilterPlacement filterPlacement ;
 
     private OpCompiler(ExecutionContext execCxt)
     { 
         this.execCxt = execCxt ;
         dispatcher = new CompilerDispatch(this) ;
+        filterPlacement = new FilterPlacement(this, execCxt);
     }
 
-    private QueryIterator compileOp(Op op)
+    QueryIterator compileOp(Op op)
     {
         return compileOp(op, null) ;
     }
 
-    private QueryIterator compileOp(Op op, QueryIterator input)
+    QueryIterator compileOp(Op op, QueryIterator input)
     {
         return dispatcher.compile(op, input) ;
     }
@@ -159,18 +160,14 @@ public class OpCompiler
         // Only affects SPARQL extensions.
         
         if ( sub instanceof OpBGP )
-            return Filter.placeFilter(opFilter.getExpr(), (OpBGP)sub, input, this, execCxt) ;
+            return filterPlacement.placeFilter(opFilter.getExpr(), (OpBGP)sub, input) ;
 
-        if ( sub instanceof OpQuadPattern )
+        if ( sub instanceof OpJoin )
         {}
 
-        QueryIterator qIter = compileOp(sub, input) ;
-        qIter = new QueryIterFilterExpr(qIter, opFilter.getExpr(), execCxt) ;
-        return qIter ;
+        return filterPlacement.safe(opFilter.getExpr(), sub, input) ;
     }
 
-    
-    
     QueryIterator compile(OpGraph opGraph, QueryIterator input)
     { 
         return new QueryIterGraph(input, opGraph, execCxt) ;

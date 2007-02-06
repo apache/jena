@@ -9,20 +9,35 @@ package engine3;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterFilterExpr;
+import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpBGP;
 import com.hp.hpl.jena.query.expr.Expr;
 
-public class Filter
+public class FilterPlacement
 {
-    public static QueryIterator placeFilter(Expr expr, OpBGP sub, 
-                                            QueryIterator input, OpCompiler compiler,
-                                            ExecutionContext execCxt)
+    // Broken out to keep OpCompiler more manageable.
+    private OpCompiler compiler ;
+    private ExecutionContext execCxt ;
+
+    public FilterPlacement(OpCompiler compiler, ExecutionContext execCxt)
     {
-        // Dull.  But safe.
-        QueryIterator qIter = compiler.compile(sub, input) ;
+        this.compiler = compiler ;
+        this.execCxt = execCxt ;
+    }
+    
+    public QueryIterator placeFilter(Expr expr, OpBGP sub, QueryIterator input)
+    {
+        // Dull.
+        return safe(expr, sub, input) ;
+    }
+
+    public QueryIterator safe(Expr expr, Op sub, QueryIterator input)
+    {
+        QueryIterator qIter = compiler.compileOp(sub, input) ;
         qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
         return qIter ;
     }
+
 }
 
 /*
