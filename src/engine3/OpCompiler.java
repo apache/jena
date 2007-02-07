@@ -32,6 +32,7 @@ public class OpCompiler
     // And filter placement in groups?
     // TODO engine1 to self contained retirement
     // TODO property function detemination by general tree rewriting - precursor to pattern replacement?
+    // TODO Consider OpFilter having a list of expressions 
 
     static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
