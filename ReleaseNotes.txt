@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-==== Jena 2.6
+==== Jena 2.5.2
 
 RDQL support now in ARQ
     o Removed old RDQL engine
