@@ -12,6 +12,15 @@ RDFException removed
     o Removed RDFException. It was obsolete (and recently deprecated). It's
       subclasses are now subclasses of JenaException.
 
+rdfcat tool
+	o The handling of command line arguments to rdfcat has changed slightly.
+	  The input format (N3, RDF/XML, n-triple) argument, -n, -x and -t
+	  respectively, now *only* affect the following argument. In previous
+	  versions, the format was 'sticky' in that it persisted until another
+	  input format argument was supplied. To set the default input format,
+	  a new parameter -in has been added. See the rdfcat Javadoc for full
+	  details.
+
 ==== Jena 2.5.1
 
 Fix for test.bat not setting the classpath correctly.
@@ -107,7 +116,7 @@ RDF/XML output:
       "&gt;".
 
     o unencodable characters (any control character except \n, \t, \r, also
-      \uFFFF and \uFFFE) now throw exceptions. We may allow a new parameter 
+      \uFFFF and \uFFFE) now throw exceptions. We may allow a new parameter
       setting to switch this off later.
 
     o the entity-conversion code has been rewritten using Java regex's to
@@ -127,11 +136,11 @@ RDF/XML Input:
       for illegal reuse of rdf:ID are not made after the first 10000
       have been seen. A warning is issued about this change when
       reading a large file.
-      
+
 IRI:
      Release synchronized with an IRI release (iri 0.3).
      Minor bug fixes.
-      
+
 Untyped literal operations deprecated (char, boolean, long, float, double, Object)
      These operations do not work on typed literals.  They converted their arguments
      to plain strings and parsed strings to retrive values.
