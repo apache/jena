@@ -18,8 +18,14 @@ import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
 
-class PF
+class StageProcessor
 {
+    /* A stage is a flow-in/flow-out sequence in the execution of a query. They are used
+     * to implement BGP (basic graph patterns), which can be match units (basic patterns),
+     * property functions, or specialized implementations of a number triples
+     * (e.g. result caching).  
+     */   
+    
     // ---------------------------------------------------------------------------------
     // Split into Stages of triples and property functions.
     
@@ -45,7 +51,7 @@ class PF
         Map pfStages = new HashMap() ;
         makePropetryFunctions(context, registry, pfStages, triples, propertyFunctionTriples) ;
         
-        makePlanElements(context, stages, pfStages, triples, propertyFunctionTriples) ;
+        makeStages(context, stages, pfStages, triples, propertyFunctionTriples) ;
         return stages ;
     }
 
@@ -61,7 +67,7 @@ class PF
             
             if ( ! ( obj instanceof Triple ) )
             {
-                LogFactory.getLog(PF.class).warn("Don't recognize: ["+Utils.className(obj)+"]") ;
+                LogFactory.getLog(StageProcessor.class).warn("Don't recognize: ["+Utils.className(obj)+"]") ;
                 throw new ARQInternalErrorException("Not a triple pattern: "+obj.toString() ) ;
             }
                 
@@ -85,14 +91,14 @@ class PF
             Stage stage = PFuncOps.magicProperty(context, registry, pf, triples) ;
             if ( stage == null )
             {
-                LogFactory.getLog(PF.class).warn("Lost a Stage for a property function") ;
+                LogFactory.getLog(StageProcessor.class).warn("Lost a Stage for a property function") ;
                 continue ;
             }
             pfStages.put(pf, stage) ;
         }
     }
 
-    private static void makePlanElements(Context context,
+    private static void makeStages(Context context,
                                          List stages, 
                                          Map pfStages, 
                                          List triples,
@@ -100,8 +106,7 @@ class PF
     {
         // Stage 3 : make line up the stages.
         //   For each property function, insert the implementation 
-        //   For each block of non-property function triples, make a S
-        // Structure is PlanBlockTriples/PlanPropertyFunction/PlanBlockTriples...
+        //   For each block of non-property function triples, make a Stage
         
         BasicPattern pattern = null ;
         for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
@@ -111,13 +116,13 @@ class PF
             if ( propertyFunctionTriples.contains(t) )
             {
                 // It's a property function stage.
-                Stage planElt = (Stage)pfStages.get(t) ;
-                stages.add(planElt) ;
-                pattern = null ;       // Unset any current PlanBlockTriples
+                Stage stage = (Stage)pfStages.get(t) ;
+                stages.add(stage) ;
+                pattern = null ;       // Unset any current BasicPattern
                 continue ;
             }                
                 
-            // Regular triples
+            // Regular triples - make sure there is a basic pattern in progress. 
             if ( pattern == null )
             {
                 pattern = new BasicPattern() ;

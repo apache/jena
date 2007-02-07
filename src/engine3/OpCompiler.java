@@ -33,7 +33,10 @@ public class OpCompiler
      */
     // And filter placement in groups?
     // TODO property function detemination by general tree rewriting - precursor to pattern replacement?
-    // TODO Consider OpFilter having a list of expressions 
+    // TODO Consider OpFilter having a list of expressions
+    // TODO Non-reorganising AlgebraCompiler mode.
+    // Compiler options and globals ; Compiler class like ARQConstants or ARQ onstants
+    // .core => .core, .syntax ?
 
     static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
@@ -71,13 +74,13 @@ public class OpCompiler
     QueryIterator compile(OpBGP opBGP, QueryIterator input)
     {
         BasicPattern pattern = opBGP.getPattern() ;
-        List stages = PF.process(execCxt.getContext(), pattern) ;
+        List stages = StageProcessor.process(execCxt.getContext(), pattern) ;
         QueryIterator qIter = input ;
         for ( Iterator iter = stages.iterator() ; iter.hasNext(); )
         {
             Object object = iter.next();
             if ( ! ( object instanceof Stage ) )
-                throw new ARQInternalErrorException("compile/OpBGPPattern") ;
+                throw new ARQInternalErrorException("compile/OpBGP") ;
 
             Stage stage = (Stage)object;
             qIter = stage.build(qIter, execCxt) ;
