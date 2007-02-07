@@ -10,13 +10,14 @@
   <property name="version"
 	    value="${version-major}.${version-minor}${version-status}"/>
 
-  <property name="dist.name"       value="${name}-${version}"/>
+  <property name="dist.name"       value="${Name}-${version}"/>
+  <property name="zipfile"         value="${name}-${version}.zip"/>
 
   <property name="src.dir"         value="src"/>
   <property name="src.build.dir"     location="bldsrc"/>
   <property name="classes.build.dir" location="bldbin"/>
   <property name="dist.root"       location="dist"/>
-  <property name="dist.dir"        location="${dist.root}/${dist.Name}"/>
+  <property name="dist.dir"        location="${dist.root}/${dist.name}"/>
   <property name="lib.dir"         value="lib"/>
   <property name="doc.dir"         value="doc"/>
   <property name="javadoc.dir"     value="doc/javadoc"/>
@@ -204,6 +205,7 @@
     <copy todir="${dist.dir}/" file="build.xml"/>
     <copy todir="${dist.dir}/" file="copyright.txt"/>
     <copy todir="${dist.dir}/" file="README.txt"/>
+    <copy todir="${dist.dir}/" file="sdb.ttl"/>
     <!-- 
     <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
     <copy todir="${dist.dir}/" file="test.sh"/>
@@ -221,8 +223,8 @@
   
   <target name="zip" >
     <!-- Build the zip of everything -->
-    <delete file="${dist.root}/${dist.name}.zip"/>
-    <zip zipfile="${dist.root}/${dist.name}.zip">
+    <delete file="${dist.root}/${zipfile}"/>
+    <zip zipfile="${dist.root}/${zipfile}">
       <fileset dir="dist" includes="${dist.name}/**"/>
     </zip>
   </target>
