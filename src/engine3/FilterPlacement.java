@@ -50,6 +50,7 @@ public class FilterPlacement
         if ( doSafePlacement )
             return safe(expr, sub, input) ;
         // Ignores special implications of dispatched blank nodes.
+        // TODO Filter placement WRT bnode variables.
         Set exprVars = expr.getVarsMentioned() ;    // ExprVars.getVarsMentioned(expr) ;
         
         BasicPattern pattern = sub.getPattern() ;
@@ -129,7 +130,6 @@ public class FilterPlacement
         }
         exprs.add(expr) ;
     }
-    
 }
 
 /*

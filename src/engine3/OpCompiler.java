@@ -25,12 +25,13 @@ import engine3.iterators.*;
 
 public class OpCompiler
 {
-    // TODO More test cases in testing/Algebra for J and LJ classification
-    // And  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
-    // And  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
-    // TODO Filter placement : especially WRT bnode variables.
+    /* XXX Tests needed:
+     *  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
+     *  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
+     *  Filter placement (internal tests)
+     *  Classifier J and LJ - internal
+     */
     // And filter placement in groups?
-    // TODO engine1 to self contained retirement
     // TODO property function detemination by general tree rewriting - precursor to pattern replacement?
     // TODO Consider OpFilter having a list of expressions 
 
@@ -157,6 +158,9 @@ public class OpCompiler
         if ( sub instanceof OpBGP )
             return filterPlacement.placeFilter(opFilter.getExpr(), (OpBGP)sub, input) ;
 
+//        if ( sub instanceof OpQuadPattern )
+//            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)sub, input) ;
+        
         if ( sub instanceof OpJoin )
         {}
 
