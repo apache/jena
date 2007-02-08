@@ -3,6 +3,7 @@ PREFIX :    <http://example/>
 SELECT *
 { 
     FILTER(true)
+    FILTER(?w)
     :x1 :p ?v ;
         :q ?w .
 }

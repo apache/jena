@@ -6,17 +6,20 @@
 
 package engine3;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.ARQConstants;
+import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterFilterExpr;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpBGP;
-import com.hp.hpl.jena.query.expr.E_LogicalAnd;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.VarUtils;
@@ -44,11 +47,17 @@ public class FilterPlacement
         doSafePlacement = execCxt.getContext().isTrue(safePlacement) ;
     }
     
-    // Better - split filter up into parts.
-    public QueryIterator placeFilter(Expr expr, OpBGP sub, QueryIterator input)
+    public QueryIterator placeFilter(List exprs, OpBGP sub, QueryIterator input)
     {
         if ( doSafePlacement )
-            return safe(expr, sub, input) ;
+            return safe(exprs, sub, input) ;
+
+        if ( exprs.size() != 1 )
+            // TODO relax this
+            throw new ARQNotImplemented("Multiple filters") ;   
+        
+        Expr expr = (Expr)exprs.get(0) ;
+        
         // Ignores special implications of dispatched blank nodes.
         // TODO Filter placement WRT bnode variables.
         Set exprVars = expr.getVarsMentioned() ;    // ExprVars.getVarsMentioned(expr) ;
@@ -83,9 +92,21 @@ public class FilterPlacement
         }
         
         // Nothing better.
-        return safe(expr, sub, input) ;
+        return safe(exprs, sub, input) ;
     }
 
+    public QueryIterator safe(List exprs, Op sub, QueryIterator input)
+    {
+        QueryIterator qIter = compiler.compileOp(sub, input) ;
+
+        for ( Iterator iter = exprs.iterator() ; iter.hasNext(); )
+        {
+            Expr expr = (Expr)iter.next() ;
+            qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
+        }
+        return qIter ;
+    }
+    
     public QueryIterator safe(Expr expr, Op sub, QueryIterator input)
     {
         QueryIterator qIter = compiler.compileOp(sub, input) ;
@@ -106,29 +127,6 @@ public class FilterPlacement
         qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
         qIter = compiler.compileOp(op2, qIter) ;
         return qIter ;
-    }
-
-    // Break up a tree of E_LogicalAnd's into a list
-    // OpFilter compresses multiple expressions into an && expression;
-    // this undoes that.
-    
-    private List partitionExpr(Expr expr)
-    {
-        List exprs = new ArrayList() ;
-        partitionExpr(expr, exprs) ;
-        return exprs ;
-    }
-    
-    private void partitionExpr(Expr expr, List exprs)
-    {
-        while(expr instanceof E_LogicalAnd )
-        {
-            E_LogicalAnd x = (E_LogicalAnd)expr ;
-            Expr left = x.getArg1() ;
-            partitionExpr(left, exprs) ;
-            expr = x.getArg2() ;
-        }
-        exprs.add(expr) ;
     }
 }
 

@@ -34,16 +34,26 @@ public class OpCompiler
     // And filter placement in groups?
     // TODO property function detemination by general tree rewriting
     //   precursor to pattern replacement?
-    //   But that's "Op => Op" so need extension Ops
-    //   OpExtBase implements eval() as exception but need better extensibility.
-    //     register class and have an indirector?
-    //     visitor pattern not the best?
-    //     but need separate compile from structure?
-    //   Make OpBGP case easy
-    // TODO Consider OpFilter having a list of expressions
+    //     But that's "Op => Op" so need extension Ops
+    //   OpExtBase requires eval() but need better extensibility?
+    //   Special case is bottom nodes - adapters and wrappers - and that is OpBGP
+    //   ==> Make OpBGP case special and easy
+    //    Stages.
+    // TODO OpFilter to have a single expression and allow nesting.
+    //     E_logicalAnd != OpFilter(OpFilter()) 
     // TODO Non-reorganising AlgebraCompiler mode.
-    // Compiler options and globals ; Compiler class like ARQConstants or ARQ onstants
-    // .core => .core, .syntax ?
+    //
+    // 
+    // Package structure:
+    //   .core => .core,  .syntax for Element* .describe => .core
+    //   .engine, includes the reference engine or .engine.ref/.engine.algebra/
+    //   .engine.http or .engineHTTP ?
+    //   .engine.engine => normal engine .engine.impl, .engin/std
+    //   .engine.engineplan => old engine
+    //   .shared
+    // Compiler options and globals ; 
+    //   Compiler class like ARQConstants or just use ARQ.
+    //   Delete .extension
 
     static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
@@ -164,9 +174,18 @@ public class OpCompiler
 
     QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
-        Op sub = opFilter.getSubOp() ;
+        // Maybe filter(filter(BGP))
+        Op sub = opFilter ;
+        List exprs = new ArrayList() ;
+        while ( sub instanceof OpFilter )
+        {
+            OpFilter f = (OpFilter)sub ;
+            exprs.add(f.getExpr()) ;
+            sub = f.getSubOp() ;
+        }
+
         if ( sub instanceof OpBGP )
-            return filterPlacement.placeFilter(opFilter.getExpr(), (OpBGP)sub, input) ;
+            return filterPlacement.placeFilter(exprs, (OpBGP)sub, input) ;
 
 //        if ( sub instanceof OpQuadPattern )
 //            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)sub, input) ;
