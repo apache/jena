@@ -32,7 +32,14 @@ public class OpCompiler
      *  Classifier J and LJ - internal
      */
     // And filter placement in groups?
-    // TODO property function detemination by general tree rewriting - precursor to pattern replacement?
+    // TODO property function detemination by general tree rewriting
+    //   precursor to pattern replacement?
+    //   But that's "Op => Op" so need extension Ops
+    //   OpExtBase implements eval() as exception but need better extensibility.
+    //     register class and have an indirector?
+    //     visitor pattern not the best?
+    //     but need separate compile from structure?
+    //   Make OpBGP case easy
     // TODO Consider OpFilter having a list of expressions
     // TODO Non-reorganising AlgebraCompiler mode.
     // Compiler options and globals ; Compiler class like ARQConstants or ARQ onstants
