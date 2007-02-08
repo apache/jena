@@ -196,18 +196,6 @@ public class OpCompiler
         return filterPlacement.safe(opFilter.getExpr(), sub, input) ;
     }
 
-    // OpUtils?
-    private static Op underlyingOp(OpFilter opFilter)
-    {
-        Op sub = opFilter ;
-        while ( sub instanceof OpFilter )
-        {
-            OpFilter f = (OpFilter)sub ;
-            sub = f.getSubOp() ;
-        }
-        return sub ;
-    }
-    
     QueryIterator compile(OpGraph opGraph, QueryIterator input)
     { 
         return new QueryIterGraph(input, opGraph, execCxt) ;
