@@ -43,7 +43,8 @@ public class OpCompiler
     //     E_logicalAnd != OpFilter(OpFilter()) 
     // TODO Non-reorganising AlgebraCompiler mode.
     //
-    // 
+    //
+    // Remove "Op" from classes?
     // Package structure:
     //   .core => .core,  .syntax for Element* .describe => .core
     //   .engine, includes the reference engine or .engine.ref/.engine.algebra/

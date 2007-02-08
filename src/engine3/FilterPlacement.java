@@ -6,10 +6,7 @@
 
 package engine3;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.ARQConstants;
@@ -47,11 +44,12 @@ public class FilterPlacement
         doSafePlacement = execCxt.getContext().isTrue(safePlacement) ;
     }
     
+    // OLD
     public QueryIterator placeFilter(List exprs, OpBGP sub, QueryIterator input)
     {
         if ( doSafePlacement )
             return safe(exprs, sub, input) ;
-
+        
         if ( exprs.size() != 1 )
             // TODO relax this
             throw new ARQNotImplemented("Multiple filters") ;   
@@ -93,6 +91,53 @@ public class FilterPlacement
         
         // Nothing better.
         return safe(exprs, sub, input) ;
+    }
+
+    // This is multipass per expression. Combine.
+    public QueryIterator placeFilter2(List exprs, BasicPattern pattern, QueryIterator input)
+    {
+        // Could insert into a copy of the triples array but I dislike mixed types.
+        // Instead, we record the location of filters.
+        int[] filterIndex = new int[exprs.size()] ; 
+        Arrays.fill(filterIndex, -1) ;
+     
+        // Stage 1 : choose places.
+        int j = 0 ;
+        for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
+        {
+            Expr expr = (Expr)iter.next();
+            int idx = placeFilter(expr, pattern) ; 
+            filterIndex[j] = idx ;
+            j++ ;
+        }
+        // Stage 2 : For next lowest expression location ..
+        //???
+        Arrays.sort(filterIndex) ; // Loose which expr is which.
+        
+        
+        return null ;
+    }
+    
+    private int placeFilter(Expr expr, BasicPattern pattern)
+    {
+        int idx = 0 ;
+        Set exprVars = expr.getVarsMentioned() ;    // ExprVars.getVarsMentioned(expr) ;
+        Set patternVars = new HashSet() ;
+        
+        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+        {
+            // Can we insert here?
+            // If the test is second, then FILTER(true) goes after the first triple
+            // which is bizaar even if correct.
+            if ( patternVars.containsAll(exprVars) )
+                return idx ;
+
+            // No - move on one triple.
+            idx++ ;
+            Triple triple = (Triple)iter.next() ;
+            VarUtils.addVarsFromTriple(patternVars, triple) ;
+        }
+        return idx ;
     }
 
     public QueryIterator safe(List exprs, Op sub, QueryIterator input)
