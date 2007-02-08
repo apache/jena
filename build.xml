@@ -6,12 +6,12 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="0"/>
   <property name="version-minor"   value="0"/>
-  <property name="version-status"  value="-alpha-1"/>
+  <property name="version-status"  value="-alpha-2"/>
   <property name="version"
 	    value="${version-major}.${version-minor}${version-status}"/>
 
   <property name="dist.name"       value="${Name}-${version}"/>
-  <property name="zipfile"         value="${name}-${version}.zip"/>
+  <property name="zipfile"         value="${Name}-${version}.zip"/>
 
   <property name="src.dir"         value="src"/>
   <property name="src.build.dir"     location="bldsrc"/>
