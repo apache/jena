@@ -19,6 +19,7 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterFilterExpr;
 import com.hp.hpl.jena.query.engine2.OpVars;
 import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.engine2.op.OpBGP;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.VarUtils;
@@ -51,6 +52,14 @@ public class FilterPlacement
     
     public QueryIterator placeFilters(List exprs, BasicPattern pattern, QueryIterator input)
     {
+        QueryIterator qIter = placeFiltersWorker(exprs, pattern, input) ;
+        // any remaining filters
+        qIter = buildFilter(exprs, qIter) ;
+        return qIter ;
+    }
+
+    private QueryIterator placeFiltersWorker(List exprs, BasicPattern pattern, QueryIterator input)
+    {
         BasicPattern accPattern = new BasicPattern() ;
         Set patternVarsScope = new HashSet() ;
         QueryIterator qIter = input ;
@@ -76,12 +85,11 @@ public class FilterPlacement
             }
         }
         
+        // Remaining triples.
         qIter = StageProcessor.compile(accPattern, qIter, execCxt) ;
-        qIter = buildFilter(exprs, qIter) ;
-        
         return qIter ;
     }
-
+    
     private QueryIterator insertAnyFilter(List exprs, Set patternVarsScope, BasicPattern accPattern, QueryIterator qIter)
     {
         boolean doneSomething = false ;
@@ -117,10 +125,21 @@ public class FilterPlacement
         for ( Iterator iter = ops.iterator() ; iter.hasNext() ; )
         {
             Op op = (Op)iter.next() ;
-            qIter = compiler.compileOp(op, qIter) ;
+            
+            // Push into BGPs if possible.
+            if ( op instanceof OpBGP )
+            {
+                OpBGP bgp = (OpBGP)op ;
+                BasicPattern pattern = bgp.getPattern() ;
+                qIter = placeFiltersWorker(exprs, pattern, qIter) ;
+            }
+            else
+                qIter = compiler.compileOp(op, qIter) ;
+            
             OpVars.patternVars(op, varScope) ;
             qIter = insertAnyFilter(exprs, varScope, qIter) ;
         }
+        // Insert any remaining filter expressions regardless.
         qIter = buildFilter(exprs, qIter) ;
         return qIter ;
     }

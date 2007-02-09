@@ -22,7 +22,6 @@ public class Tidy extends TransformBase
     
     public Op transform(OpJoin opJoin)
     {
-        
         return opJoin ; 
     }
 }

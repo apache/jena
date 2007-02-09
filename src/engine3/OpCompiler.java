@@ -164,7 +164,7 @@ public class OpCompiler
     {
         Op base = opFilter ;
         
-        // Extract nested filters to find all expressions and the base op. 
+        // Tidyy: Extract nested filters to find all expressions and the base op. 
         List exprs = new ArrayList() ;
         while ( base instanceof OpFilter )
         {
