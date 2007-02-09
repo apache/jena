@@ -30,6 +30,7 @@ public class OpCompiler
      *  Classifier J and LJ - internal
      */
     // And filter placement in LeftJoins?
+    //   Op push(Expr, Op)?? 
     // i.e can we push into the LHS?
     // Is this part of a more general algorithm of pushing the filter down
     // when the vars are known to be fixed?
@@ -196,6 +197,18 @@ public class OpCompiler
             // Do as a separate transform.
         }
 
+        
+        // There must be a better way.
+        if ( base instanceof OpLeftJoin )
+        {}
+
+        if ( base instanceof OpUnion )
+        {}
+
+        if ( base instanceof OpGraph )
+        {}
+
+        
         return filterPlacement.buildOpFilter(exprs, base, input) ;
     }
 
