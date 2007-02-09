@@ -200,8 +200,10 @@ public class OpCompiler
         
         // There must be a better way.
         if ( base instanceof OpLeftJoin )
-        {}
-
+        {
+            // Can push in if used only on the LHS 
+        }
+        
         if ( base instanceof OpUnion )
         {}
 

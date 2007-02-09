@@ -12,17 +12,21 @@ SELECT *
 ##         :q ?x .
 ##     FILTER(true)
 
-    # Case 2 : Filter and joins
-    FILTER(?x + ?w)
-    FILTER(true)
-    { :x :p ?a }
-    FILTER(?a)
-    FILTER(?ZZZ)
-    FILTER(?w)
-    :x1 :p ?v ;
-        :q ?w ;
-        :q ?x .
+##     # Case 2 : Filter and joins
+##     FILTER(?x + ?w)
+##     FILTER(true)
+##     { :x :p ?a }
+##     FILTER(?a)
+##     FILTER(?ZZZ)
+##     FILTER(?w)
+##     :x1 :p ?v ;
+##         :q ?w ;
+##         :q ?x .
 
-## Case 3: OPTIONAL and unbound
+    # Case 3: OPTIONAL and unbound
+    :x :p ?v 
+    OPTIONAL { :x :q ?w }
+    FILTER(?v)
+    FILTER (!bound(?w) )
 
 }
