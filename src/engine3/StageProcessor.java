@@ -14,6 +14,8 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.BasicPattern;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
@@ -27,9 +29,32 @@ class StageProcessor
      */   
     
     // ---------------------------------------------------------------------------------
+    // Turn stages into a QueryIterator sequence. 
+    
+    
+    static public QueryIterator compile(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
+    {
+        if ( pattern.size() == 0 )
+            return input ;
+        
+        List stages = StageProcessor.process(execCxt.getContext(), pattern) ;
+        QueryIterator qIter = input ;
+        for ( Iterator iter = stages.iterator() ; iter.hasNext(); )
+        {
+            Object object = iter.next();
+            if ( ! ( object instanceof Stage ) )
+                throw new ARQInternalErrorException("StageProcessor/compile") ;
+
+            Stage stage = (Stage)object;
+            qIter = stage.build(qIter, execCxt) ;
+        }
+        return qIter ; 
+    }
+    
+    // ---------------------------------------------------------------------------------
     // Split into Stages of triples and property functions.
     
-    static List process(Context context, BasicPattern pattern)
+    private static List process(Context context, BasicPattern pattern)
     {
         boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
         PropertyFunctionRegistry registry = PFuncOps.chooseRegistry(context) ;

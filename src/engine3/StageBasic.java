@@ -25,7 +25,6 @@ public class StageBasic implements Stage
 
     public StageBasic(BasicPattern pattern) { this.pattern = pattern ; }
     
-    //See PlanTriples.make
     public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
     {
         if ( input == null )

@@ -7,10 +7,8 @@
 package engine3;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
@@ -92,18 +90,7 @@ public class OpCompiler
     QueryIterator compile(OpBGP opBGP, QueryIterator input)
     {
         BasicPattern pattern = opBGP.getPattern() ;
-        List stages = StageProcessor.process(execCxt.getContext(), pattern) ;
-        QueryIterator qIter = input ;
-        for ( Iterator iter = stages.iterator() ; iter.hasNext(); )
-        {
-            Object object = iter.next();
-            if ( ! ( object instanceof Stage ) )
-                throw new ARQInternalErrorException("compile/OpBGP") ;
-
-            Stage stage = (Stage)object;
-            qIter = stage.build(qIter, execCxt) ;
-        }
-        return qIter ; 
+        return StageProcessor.compile(pattern, input, execCxt) ;
     }
 
     QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)
@@ -175,28 +162,53 @@ public class OpCompiler
 
     QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
-        // Maybe filter(filter(BGP))
-        Op sub = opFilter ;
+        Op base = opFilter ;
+        
+        // Extract nested filters to find all expressions and the base op. 
         List exprs = new ArrayList() ;
-        while ( sub instanceof OpFilter )
+        while ( base instanceof OpFilter )
         {
-            OpFilter f = (OpFilter)sub ;
+            OpFilter f = (OpFilter)base ;
             exprs.add(f.getExpr()) ;
-            sub = f.getSubOp() ;
+            base = f.getSubOp() ;
         }
 
-        if ( sub instanceof OpBGP )
-            return filterPlacement.placeFilter(exprs, (OpBGP)sub, input) ;
+        if ( base instanceof OpBGP )
+            return filterPlacement.placeFilters(exprs, ((OpBGP)base).getPattern(), input) ;
 
 //        if ( sub instanceof OpQuadPattern )
-//            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)sub, input) ;
+//            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)base, input) ;
         
-        if ( sub instanceof OpJoin )
-        {}
+        // Tidy up.
+        if ( base instanceof OpJoin )
+        {
+            // Look for a join chain (i.e. the left is also a join)
+            List joinElts = new ArrayList() ;
+            joins(base, joinElts) ;
+            //PrintUtils.printList(System.out, joinElts, ":") ;
+            //System.out.println(joinElts) ;
+            return filterPlacement.placeFilters(exprs, joinElts, input) ;
+            // And compress BGPs? Blank node caveats!
+            // Do as a separate transform.
+        }
 
-        return filterPlacement.safe(opFilter.getExpr(), sub, input) ;
+        return filterPlacement.buildOpFilter(exprs, base, input) ;
     }
 
+    private static void joins(Op base, List joinElts)
+    {
+        while ( base instanceof OpJoin )
+        {
+            OpJoin join = (OpJoin)base ;
+            Op right = join.getRight() ; 
+            joins(right, joinElts) ;
+            base = join.getLeft() ;
+        }
+        // Not a join - add it.
+        joinElts.add(base) ;
+    }
+    
+    
     QueryIterator compile(OpGraph opGraph, QueryIterator input)
     { 
         return new QueryIterGraph(input, opGraph, execCxt) ;

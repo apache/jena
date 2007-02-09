@@ -6,17 +6,24 @@
 
 package engine3;
 
-import com.hp.hpl.jena.query.engine2.op.Op;
-import com.hp.hpl.jena.query.engine2.op.OpBGP;
-import com.hp.hpl.jena.query.engine2.op.TransformBase;
+import com.hp.hpl.jena.query.engine2.op.*;
 
-public class PropertyFunctionTransform extends TransformBase
+public class Tidy extends TransformBase
 {
-    public Op transform(OpBGP opBGP)
+    // Convert to better forms.
+    // OpFilter => list of expressions
+    // OpJoin => list of joins 
+    
+    public Op transform(OpFilter opFilter)
     {
-        // Split on PropertyFunctions.
-        // Currently done in Stage processing.
-        return opBGP ;
+        return opFilter ;
+    }
+
+    
+    public Op transform(OpJoin opJoin)
+    {
+        
+        return opJoin ; 
     }
 }
 

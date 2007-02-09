@@ -6,17 +6,19 @@
 
 package engine3;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterFilterExpr;
+import com.hp.hpl.jena.query.engine2.OpVars;
 import com.hp.hpl.jena.query.engine2.op.Op;
-import com.hp.hpl.jena.query.engine2.op.OpBGP;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.VarUtils;
@@ -44,103 +46,106 @@ public class FilterPlacement
         doSafePlacement = execCxt.getContext().isTrue(safePlacement) ;
     }
     
-    // OLD
-    public QueryIterator placeFilter(List exprs, OpBGP sub, QueryIterator input)
+    // --------------------------------
+    // Basic patterns
+    
+    public QueryIterator placeFilters(List exprs, BasicPattern pattern, QueryIterator input)
     {
-        if ( doSafePlacement )
-            return safe(exprs, sub, input) ;
-        
-        if ( exprs.size() != 1 )
-            // TODO relax this
-            throw new ARQNotImplemented("Multiple filters") ;   
-        
-        Expr expr = (Expr)exprs.get(0) ;
-        
-        // Ignores special implications of dispatched blank nodes.
-        // TODO Filter placement WRT bnode variables.
-        Set exprVars = expr.getVarsMentioned() ;    // ExprVars.getVarsMentioned(expr) ;
-        
-        BasicPattern pattern = sub.getPattern() ;
-        Set patternVars = new HashSet() ;
         BasicPattern accPattern = new BasicPattern() ;
+        Set patternVarsScope = new HashSet() ;
+        QueryIterator qIter = input ;
+        
+        //OpVars.patternVars(op) ;
+        
+        qIter = insertAnyFilter(exprs, patternVarsScope, accPattern, qIter) ;
+        if ( qIter == null )
+            qIter = input ;
         
         for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
         {
-            // Can we insert here?
-            // If the test is second, then FILTER(true) goes after the first triple
-            // which is bizaar even if correct.
-            if ( patternVars.containsAll(exprVars) )
-            {
-                // Put all remaining triples in a separate BasicPattern 
-                BasicPattern trailer = new BasicPattern() ;
-                for ( ; iter.hasNext() ; )
-                    trailer.add((Triple)iter.next()) ;
-                
-                // Put the filter here
-                return build(expr, accPattern, trailer, input) ;
-            }
-            
-            // No - move on one triple.
             Triple triple = (Triple)iter.next() ;
-//            if ( ! iter.hasNext() )     // Skip last - no point.
-//                break ;
             
             accPattern.add(triple) ;
-            VarUtils.addVarsFromTriple(patternVars, triple) ;
+            VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+            
+            QueryIterator qIter2 = insertAnyFilter(exprs, patternVarsScope, accPattern, qIter) ;
+            if ( qIter2 != null )
+            {
+                accPattern = new BasicPattern() ;
+                qIter = qIter2 ;
+            }
         }
         
-        // Nothing better.
-        return safe(exprs, sub, input) ;
+        qIter = StageProcessor.compile(accPattern, qIter, execCxt) ;
+        qIter = buildFilter(exprs, qIter) ;
+        
+        return qIter ;
     }
 
-    // This is multipass per expression. Combine.
-    public QueryIterator placeFilter2(List exprs, BasicPattern pattern, QueryIterator input)
+    private QueryIterator insertAnyFilter(List exprs, Set patternVarsScope, BasicPattern accPattern, QueryIterator qIter)
     {
-        // Could insert into a copy of the triples array but I dislike mixed types.
-        // Instead, we record the location of filters.
-        int[] filterIndex = new int[exprs.size()] ; 
-        Arrays.fill(filterIndex, -1) ;
-     
-        // Stage 1 : choose places.
-        int j = 0 ;
+        boolean doneSomething = false ;
         for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
         {
-            Expr expr = (Expr)iter.next();
-            int idx = placeFilter(expr, pattern) ; 
-            filterIndex[j] = idx ;
-            j++ ;
+            Expr expr = (Expr)iter.next() ;
+            // Cache
+            Set exprVars = expr.getVarsMentioned() ;
+            if ( patternVarsScope.containsAll(exprVars) )
+            {
+                QueryIterator qIter2 = buildPatternFilter(expr, accPattern, qIter) ;
+                iter.remove() ;
+                qIter = qIter2 ;
+                doneSomething = true ;
+            }
         }
-        // Stage 2 : For next lowest expression location ..
-        //???
-        Arrays.sort(filterIndex) ; // Loose which expr is which.
         
-        
-        return null ;
+        return ( doneSomething ? qIter : null ) ;
     }
+
+    // --------------------------------
+    // Placement in joins.
     
-    private int placeFilter(Expr expr, BasicPattern pattern)
+    public QueryIterator placeFilters(List exprs, List ops, QueryIterator input)
     {
-        int idx = 0 ;
-        Set exprVars = expr.getVarsMentioned() ;    // ExprVars.getVarsMentioned(expr) ;
-        Set patternVars = new HashSet() ;
+        Set varScope = new HashSet() ;
+        QueryIterator qIter = input ;
         
-        for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
+        qIter = insertAnyFilter(exprs, varScope, qIter) ;
+        if ( qIter == null )
+            qIter = input ;
+        
+        for ( Iterator iter = ops.iterator() ; iter.hasNext() ; )
         {
-            // Can we insert here?
-            // If the test is second, then FILTER(true) goes after the first triple
-            // which is bizaar even if correct.
-            if ( patternVars.containsAll(exprVars) )
-                return idx ;
-
-            // No - move on one triple.
-            idx++ ;
-            Triple triple = (Triple)iter.next() ;
-            VarUtils.addVarsFromTriple(patternVars, triple) ;
+            Op op = (Op)iter.next() ;
+            qIter = compiler.compileOp(op, qIter) ;
+            OpVars.patternVars(op, varScope) ;
+            qIter = insertAnyFilter(exprs, varScope, qIter) ;
         }
-        return idx ;
+        qIter = buildFilter(exprs, qIter) ;
+        return qIter ;
     }
 
-    public QueryIterator safe(List exprs, Op sub, QueryIterator input)
+    private QueryIterator insertAnyFilter(List exprs, Set varScope, QueryIterator qIter)
+    {
+        for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
+        {
+            Expr expr = (Expr)iter.next() ;
+            // Cache
+            Set exprVars = expr.getVarsMentioned() ;
+            // Insert filter if satisified.
+            if ( varScope.containsAll(exprVars) )
+            {
+                qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
+                iter.remove() ;
+            }
+        }
+        return qIter ;
+    }
+
+    // ----------------
+    
+    // Build a series of filters around a compile Op
+    public QueryIterator buildOpFilter(List exprs, Op sub, QueryIterator input)
     {
         QueryIterator qIter = compiler.compileOp(sub, input) ;
 
@@ -152,25 +157,32 @@ public class FilterPlacement
         return qIter ;
     }
     
-    public QueryIterator safe(Expr expr, Op sub, QueryIterator input)
+    private QueryIterator buildOpFilter(Expr expr, Op op, QueryIterator input)
     {
-        QueryIterator qIter = compiler.compileOp(sub, input) ;
+        QueryIterator qIter = compiler.compileOp(op, input) ;
         qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
         return qIter ;
     }
 
-    private QueryIterator build(Expr expr, BasicPattern first, BasicPattern second, QueryIterator input)
+    // Build a series of filters around a BasicPattern
+    private QueryIterator buildPatternFilter(Expr expr, BasicPattern pattern, QueryIterator input)
     {
-        Op op1 = new OpBGP(first) ;
-
-        if ( second.size() == 0 )
-            return safe(expr, op1, input) ;
-        
-        Op op2 = new OpBGP(second) ;
-        
-        QueryIterator qIter = compiler.compileOp(op1, input) ;
+        QueryIterator qIter = StageProcessor.compile(pattern, input, execCxt) ;
         qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
-        qIter = compiler.compileOp(op2, qIter) ;
+        return qIter ;
+    }
+
+    // Insert filters around a query iterator.
+    private QueryIterator buildFilter(List exprs, QueryIterator qIter)
+    {
+        if ( exprs.size() == 0 )
+            return qIter ;
+    
+        for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
+        {
+            Expr expr = (Expr)iter.next() ;
+            qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
+        }
         return qIter ;
     }
 }
