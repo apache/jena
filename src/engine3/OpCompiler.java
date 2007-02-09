@@ -13,8 +13,8 @@ import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.binding.Binding0;
 import com.hp.hpl.jena.query.engine.binding.BindingImmutable;
+import com.hp.hpl.jena.query.engine.binding.BindingRoot;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.engine2.table.TableUnit;
@@ -29,7 +29,11 @@ public class OpCompiler
      *  Filter placement (internal tests)
      *  Classifier J and LJ - internal
      */
-    // And filter placement in groups?
+    // And filter placement in LeftJoins?
+    // i.e can we push into the LHS?
+    // Is this part of a more general algorithm of pushing the filter down
+    // when the vars are known to be fixed?
+    
     // TODO property function detemination by general tree rewriting
     //   precursor to pattern replacement?
     //     But that's "Op => Op" so need extension Ops
@@ -37,12 +41,12 @@ public class OpCompiler
     //   Special case is bottom nodes - adapters and wrappers - and that is OpBGP
     //   ==> Make OpBGP case special and easy
     //    Stages.
-    // TODO OpFilter to have a single expression and allow nesting.
-    //     E_logicalAnd != OpFilter(OpFilter()) 
+    // TODO OpFilter,OpJoin to take lists, built by transform.
+    //   OpFilter: list of expressions.
+    //   OpJoin: list of join items.
+    
     // TODO Non-reorganising AlgebraCompiler mode.
-    //
-    //
-    // Remove "Op" from classes?
+
     // Package structure:
     //   .core => .core,  .syntax for Element* .describe => .core
     //   .engine, includes the reference engine or .engine.ref/.engine.algebra/
@@ -262,7 +266,7 @@ public class OpCompiler
 
     static private QueryIterator root(ExecutionContext execCxt)
     {
-        return new QueryIterSingleton(new Binding0(), execCxt) ;
+        return new QueryIterSingleton(BindingRoot.create(), execCxt) ;
     }
 
     private QueryIterator root()
