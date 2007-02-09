@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.16 2007-02-09 12:09:00 chris-dollin Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.17 2007-02-09 13:19:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -19,6 +19,7 @@ import java.util.*;
     deliver ModelSpecs.
     
  	@author hedgehog
+    @deprecated since ModelSpec is dead
 */
 public class ModelSpecCreatorRegistry
     {

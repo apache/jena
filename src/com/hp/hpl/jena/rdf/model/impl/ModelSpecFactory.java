@@ -22,6 +22,7 @@ import com.hp.hpl.jena.vocabulary.*;
      <p>ModelSpecFactory has no instance methods.
      
      @author kers
+     @deprecated useless since ModelSpec is dead
 */
 public class ModelSpecFactory
     {

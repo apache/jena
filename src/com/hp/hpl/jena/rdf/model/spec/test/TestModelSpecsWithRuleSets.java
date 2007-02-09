@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecsWithRuleSets.java,v 1.5 2007-02-09 12:09:05 chris-dollin Exp $
+  $Id: TestModelSpecsWithRuleSets.java,v 1.6 2007-02-09 13:19:14 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.spec.test;
 
@@ -184,62 +184,6 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }
-
-	protected static class FakeReasoner implements Reasoner
-		{
-    	public Graph bound = Factory.createGraphMem();
-    	
-    	public void validate( Graph desired )
-    		{ assertTrue( "bound graph is not correct", desired.isIsomorphicWith( bound ) ); }
-    	
-		public Reasoner bindSchema( Graph tbox ) throws ReasonerException
-			{ bound.getBulkUpdateHandler().add( tbox ); return this; }
-
-		public Reasoner bindSchema( Model tbox ) throws ReasonerException
-			{ return bindSchema( tbox.getGraph() ); }
-
-		public InfGraph bind( Graph data ) throws ReasonerException
-			{ return new BasicForwardRuleInfGraph( this, new ArrayList(), Factory.createGraphMem(), Factory.createGraphMem() ); }
-
-		public void setDerivationLogging( boolean logOn )
-			{ throw new JenaException( "fakes don't do this" ); }
-
-		public void setParameter( Property parameterUri, Object value )
-			{ throw new JenaException( "fakes don't do this" ); }
-		
-		public Model getReasonerCapabilities()
-			{ throw new JenaException( "fakes don't do this" ); }
-
-		public void addDescription( Model configSpec, Resource base )
-			{ throw new JenaException( "fakes don't do this" ); }
-
-		public boolean supportsProperty( Property property )
-			{ throw new JenaException( "fakes don't do this" ); }
-
-        public Capabilities getGraphCapabilities() {
-            return new BaseInfGraph.InfCapabilities();
-        }
-
-		}
-    
-    protected static class FakeFactory implements ReasonerFactory
-		{
-		public Reasoner create( Resource configuration )
-			{ return new FakeReasoner();
-			}
-
-		public Model getCapabilities()
-			{
-			// TODO Auto-generated method stub
-			return null;
-			}
-
-		public String getURI()
-			{
-			// TODO Auto-generated method stub
-			return null;
-			}
-		}
    
     /**
      * @param factoryURI
@@ -254,19 +198,19 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
         assertSameRules( rules, gr.getRules() );
         }
     
-    protected void testGetReasoner( String uri, Class wantClass )
+    private void testGetReasoner( String uri, Class wantClass )
         {
         ReasonerFactory rf = OntModelSpec.getReasonerFactory( A, rSpec( uri ) );
         assertEquals( wantClass, rf.create( null ).getClass() );
         }
 
-    protected Model rSpec( String factoryURI )
+    private Model rSpec( String factoryURI )
         { return modelWithStatements( "_a jms:reasoner " + factoryURI ); }
     
-    protected static String file( String name )
+    private static String file( String name )
         { return "file:testing/modelspecs/" + name; }
     
-    protected void assertContains( String x, String y )
+    private void assertContains( String x, String y )
         {
         if (y == null) fail( "<null> does not contain anything, especially '" + x + "'" );
         if (y.indexOf( x ) < 0) fail( "'" + y + "' does not contain '" + x + "'" );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.60 2007-01-02 11:48:30 andy_seaborne Exp $
+  $Id: ModelSpecImpl.java,v 1.61 2007-02-09 13:19:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -22,6 +22,7 @@ import java.util.*;
     actual document managers, and so forth.
     
  	@author kers
+    @deprecated since ModelSpec is dead
 */
 public abstract class ModelSpecImpl implements ModelSpec
     {
