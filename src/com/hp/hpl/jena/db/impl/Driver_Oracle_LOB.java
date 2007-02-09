@@ -244,6 +244,7 @@ import oracle.jdbc.OracleDatabaseMetaData;
 			
             // Change in Jena 2.5 - insertLongObjectNoTail (was insertLongObject)
             // Remove these comments after testing and release of 2.5.
+            // THIS DRIVER IS NOT THE REAL Oracle driver and is not untested.
 			String opname = (lobj.tail.length() > 0) ? "insertLongObjectEmptyTail" : "insertLongObjectNoTail";    			
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, table);
 			int dbid = 0; // init only needed to satisfy java compiler
