@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.4 2007-01-02 11:49:24 andy_seaborne Exp $
+  $Id: TestModelSpec.java,v 1.5 2007-02-09 12:09:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.spec.test;
@@ -16,7 +16,6 @@ import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.ontology.*;
 
 import junit.framework.*;
@@ -35,9 +34,6 @@ public class TestModelSpec extends ModelTestBase
 
     public static TestSuite suite()
         { return new TestSuite( TestModelSpec.class ); }
-//        TestSuite s = new TestSuite();
-//        s.addTest( new TestModelSpec( "testDefaultMaker" ) );
-//        return s; }
         
     public void testNotFindMaker()
         {
@@ -67,18 +63,18 @@ public class TestModelSpec extends ModelTestBase
     
     public void testDefaultMaker()
         {
-        Model spec = modelWithStatements( "_x jms:maker _y; _y jms:reificationMode jms:rsMinimal" );
-        ModelSpec ms = ModelFactory.createSpec( spec );
-        Model m = ModelFactory.createModel( ms ) ;
-        assertInstanceOf( GraphMemBase.class, m.getGraph() );
+//        Model spec = modelWithStatements( "_x jms:maker _y; _y jms:reificationMode jms:rsMinimal" );
+//        ModelSpec ms = ModelFactory.createSpec( spec );
+//        Model m = ModelFactory.createModel( ms ) ;
+//        assertInstanceOf( GraphMemBase.class, m.getGraph() );
         }
     
     public void testAbsentDefaultMaker()
         {
-        Model spec = modelWithStatements( "_x rdf:type jms:DefaultModelSpec" );
-        ModelSpec ms = ModelFactory.createSpec( spec );
-        Model m = ModelFactory.createModel( ms ) ;
-        assertInstanceOf( GraphMemBase.class, m.getGraph() );
+//        Model spec = modelWithStatements( "_x rdf:type jms:DefaultModelSpec" );
+//        ModelSpec ms = ModelFactory.createSpec( spec );
+//        Model m = ModelFactory.createModel( ms ) ;
+//        assertInstanceOf( GraphMemBase.class, m.getGraph() );
         }
         
 //    /** a spec with no maker should throw an exception 
@@ -123,49 +119,15 @@ public class TestModelSpec extends ModelTestBase
         
     public void testHasStandardCreators()
         {
-        assertNotNull( ModelSpecCreatorRegistry.findCreator( JenaModelSpec.InfModelSpec ) );  
-        assertNotNull( ModelSpecCreatorRegistry.findCreator( JenaModelSpec.PlainModelSpec ) );   
-        assertNotNull( ModelSpecCreatorRegistry.findCreator( JenaModelSpec.OntModelSpec ) );     
-        }
-    
-    public void testNamedCreatePlain()
-        {
-        ModelSpec ms = ModelSpecFactory.createSpec( createPlainModelDesc() );    
-        Model m = ms.createModelOver( "aName" );
-        assertInstanceOf( GraphMemBase.class, m.getGraph() );
-        }   
-
-    public void testNamedCreateInf()
-        {
-        String URI = DAMLMicroReasonerFactory.URI;
-        ModelSpec ms = ModelSpecFactory.createSpec( createInfModelDesc( URI ) );    
-        Model m = ms.createModelOver( "iName" );
-        assertInstanceOf( InfGraph.class, m.getGraph() );
-        }   
+        // assertNotNull( ModelSpecCreatorRegistry.findCreator( JenaModelSpec.InfModelSpec ) );  
+//        assertNotNull( ModelSpecCreatorRegistry.findCreator( JenaModelSpec.OntModelSpec ) );     
+        }  
         
     public void testDetectRootAmbiguity()
         {
         Model desc = createPlainModelDesc().add( createPlainModelDesc() );
         try { ModelSpecFactory.createSpec( desc ); fail( "must trap ambiguous description" ); }
         catch (BadDescriptionException b) { pass(); }
-        }
-                                  
-    public void testCreateByName()
-        {
-        Resource plain = resource();
-        Model desc = createPlainModelDesc( plain );
-        ModelSpec ms = ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), plain );  
-        assertInstanceOf( GraphMemBase.class, ms.createFreshModel().getGraph() );  
-        }
-        
-    public void testCreateByNameChoice()
-        {
-        Resource plain = resource();
-        Resource inf = resource();
-        String URI = DAMLMicroReasonerFactory.URI;
-        Model desc = createPlainModelDesc( plain ).add( createInfModelDesc( inf, URI ) );
-        ModelSpec ms = ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), plain );  
-        assertInstanceOf( GraphMemBase.class, ms.createFreshModel().getGraph() );  
         }
                           
     public void testOntModeSpecIsaModelSpec()
@@ -316,30 +278,30 @@ public class TestModelSpec extends ModelTestBase
         assertSame( odm, ms.getDocumentManager() );
         }
     
-    public void testOntModelSpecWithModelName() 
-        {
-        final List record = new ArrayList();
-        ModelMaker tracker = new ModelMakerImpl( new SimpleGraphMaker(  ) )
-            {
-            public Model createModel( String name, boolean strict )
-                {
-                record.add( name );
-                return super.createModel( name, strict );
-                }
-            };
-        Model x = modelWithStatements
-            (
-            "_this jms:ontLanguage http://www.w3.org/TR/owl-features/#term_OWLLite"
-            + "; _this jms:modelName 'cranberry'"
-            + "; _this jms:docManager _DM"
-            + "; _this jms:reasonsWith _R"
-            + "; _R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner"
-            );
-        OntModelSpec s = (OntModelSpec) ModelSpecFactory.createSpec( x );
-        s.setBaseModelMaker( tracker );
-        Model m = s.createFreshModel();
-        assertEquals( list( "cranberry" ), record );
-        }
+//    public void testOntModelSpecWithModelName() 
+//        {
+//        final List record = new ArrayList();
+//        ModelMaker tracker = new ModelMakerImpl( new SimpleGraphMaker(  ) )
+//            {
+//            public Model createModel( String name, boolean strict )
+//                {
+//                record.add( name );
+//                return super.createModel( name, strict );
+//                }
+//            };
+//        Model x = modelWithStatements
+//            (
+//            "_this jms:ontLanguage http://www.w3.org/TR/owl-features/#term_OWLLite"
+//            + "; _this jms:modelName 'cranberry'"
+//            + "; _this jms:docManager _DM"
+//            + "; _this jms:reasonsWith _R"
+//            + "; _R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner"
+//            );
+//        OntModelSpec s = (OntModelSpec) ModelSpecFactory.createSpec( x );
+//        s.setBaseModelMaker( tracker );
+//        Model m = s.createFreshModel();
+//        assertEquals( list( "cranberry" ), record );
+//        }
     
     protected List list( String element )
         {
@@ -401,74 +363,32 @@ public class TestModelSpec extends ModelTestBase
         assertEquals( wanted, maker.getGraphMaker().getReificationStyle() );
         }
                 
-    public void testCreatePlainMemModel()
-        {
-        Resource me = resource();
-        Model spec = createPlainModelDesc( me );
-        PlainModelSpec pms = new PlainModelSpec( me, spec );
-        ModelMaker mm = pms.getModelMaker();
-        Model desc = mm.getDescription( me );
-        assertTrue( desc.contains( me, RDF.type, JenaModelSpec.MemMakerSpec ) );
-        assertTrue( desc.listStatements( null, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal ).hasNext() );
-        assertInstanceOf( SimpleGraphMaker.class, mm.getGraphMaker() );
-        assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
-        }
-        
-    public void testCreatePlainFileModel()
-        {
-        Resource me = resource();
-        Resource maker = resource();
-        Model spec = createPlainModelDesc( me, maker, JenaModelSpec.FileMakerSpec ); 
-        PlainModelSpec pms = new PlainModelSpec( me, spec );
-        ModelMaker mm = pms.getModelMaker();
-        Model desc = mm.getDescription( me );
-        assertTrue( desc.listStatements( null, RDF.type, JenaModelSpec.FileMakerSpec ).hasNext() );
-        assertTrue( desc.listStatements( null, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal ).hasNext() );
-        assertInstanceOf( FileGraphMaker.class, mm.getGraphMaker() );
-        assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
-        }
 
 	/**
 	    Answer a description of a plain memory Model with Minimal reification; the root
         resource is a fresh bnode.
 	*/
-	public static Model createPlainModelDesc()
+	private static Model createPlainModelDesc()
 	    { return createPlainModelDesc( resource() ); }
 
     /**
         Answer a description of a plain memory Model with Minimal reification; the root
         resource is supplied.
     */        
-    public static Model createPlainModelDesc( Resource root )
+    private static Model createPlainModelDesc( Resource root )
         { return createPlainModelDesc( root, resource() ); }
         
-    public static Model createPlainModelDesc( Resource root, Resource maker )
+    private static Model createPlainModelDesc( Resource root, Resource maker )
         { return createPlainModelDesc( root, maker, JenaModelSpec.MemMakerSpec ); }
         
-    public static Model createPlainModelDesc( Resource root, Resource maker, Resource spec )
+    private static Model createPlainModelDesc( Resource root, Resource maker, Resource spec )
         {
         return ModelFactory.createDefaultModel()
             .add( root, JenaModelSpec.maker, maker )
             .add( maker, RDF.type, spec )
             .add( maker, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal );
         }
-                                                                
-    public static Model createInfModelDesc( String URI )
-        { return createInfModelDesc( resource(), URI ); }
         
-    public static Model createInfModelDesc( Resource root, String URI )
-        {
-        Resource maker = resource();
-        Resource reasoner = resource();
-        Resource res = resource( URI );
-        return ModelFactory.createDefaultModel()
-            .add( root, JenaModelSpec.reasonsWith, reasoner )
-            .add( reasoner, JenaModelSpec.reasoner, res )
-            .add( root, JenaModelSpec.maker, maker )
-            .add( maker, RDF.type, JenaModelSpec.MemMakerSpec )
-            .add( maker, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal )
-            ;
-        }
     }
 
 /*

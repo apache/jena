@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelSpecPackage.java,v 1.4 2007-01-02 11:49:24 andy_seaborne Exp $
+ 	$Id: TestModelSpecPackage.java,v 1.5 2007-02-09 12:09:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.spec.test;
@@ -13,10 +13,8 @@ public class TestModelSpecPackage extends TestCase
     public static TestSuite suite()
         {
         TestSuite result = new TestSuite();
-        result.addTest( TestModelSpecRDB.suite() );
         result.addTest( TestModelSpecWithSchema.suite() );
         result.addTest( TestModelSpec.suite() );
-        result.addTest( TestModelSpecMore.suite() );
         result.addTest( TestModelSpecsWithRuleSets.suite() );
         result.addTest( TestModelSpecFactory.suite() );
         result.addTest( TestModelSource.suite() );

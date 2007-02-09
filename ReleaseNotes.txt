@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+Post 2.5.2
+
+ModelSpec and family REMOVED
+    o the long-obsolete and recently-deprecated ModelSpec has been removed,
+      along with its related tests, descendants, registry, and references.
+      OntModelSpec remains (but is no longer a ModelSpec). 
+
 ==== Jena 2.5.2
 
 RDQL support now in ARQ

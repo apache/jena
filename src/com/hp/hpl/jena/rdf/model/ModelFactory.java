@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.51 2007-01-09 16:48:41 ian_dickinson Exp $
+  $Id: ModelFactory.java,v 1.52 2007-02-09 12:09:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -78,32 +78,6 @@ public class ModelFactory extends ModelFactoryBase
         { return ModelCom.getDefaultModelPrefixes(); }
 
     /**
-        Answer a ModelSpec which can create models to the specifications in the RDF
-        description. The root of the description is the unique resource of type ModelSpec.
-
-        @deprecated superceeded by the Assembler system
-    */
-    public static ModelSpec createSpec( Model desc )
-        { return ModelSpecFactory.createSpec( desc ); }
-
-    /**
-        Answer a ModelSpec which can create models to the specifcations in the RDF
-        description rooted at the given root.
-
-        @deprecated superceeded by the Assembler system
-    */
-    public static ModelSpec createSpec( Resource root, Model desc )
-        { return ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), root ); }
-
-    /**
-        Answer a fresh Model created according to the ModelSpec argument.
-
-        @deprecated superceeded by the Assembler system
-    */
-    public static Model createModel( ModelSpec desc )
-        { return desc.createFreshModel(); }
-
-    /**
         Answer a Model constructed from the single resource in
         <code>singleRoot</code> of type <code>ja:Model</code>.
         See the Assembler howto (doc/assembler/assembler-howto.html)
@@ -134,18 +108,6 @@ public class ModelFactory extends ModelFactoryBase
     */
     public static Model assembleModelFrom( Resource root )
         { return Assembler.general.openModel( root ); }
-
-    /**
-        Answer a fresh Model created according to the given specification and based on
-        any underlying model with the given name.
-
-     	@param desc the ModelSpec which describes the kind of model to create
-     	@param name the name of the base model in the underlying ModelMaker
-     	@return a fresh model based over the named model
-        @deprecated superceeded by the Assembler system
-    */
-    public static Model createModelOver( ModelSpec desc, String name )
-        { return desc.createModelOver( name ); }
 
     /**
         Answer a fresh Model with the default specification and Standard reification style

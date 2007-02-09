@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.47 $
+ * Revision           $Revision: 1.48 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:48:48 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-02-09 12:08:59 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -30,9 +30,11 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
+import com.hp.hpl.jena.shared.*;
 
 
 /**
@@ -43,7 +45,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.47 2007-01-02 11:48:48 andy_seaborne Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.48 2007-02-09 12:08:59 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -587,9 +589,29 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     public static ReasonerFactory getReasonerFactory( Model description, Resource root ) {
         Statement factStatement = description.getProperty( root, JenaModelSpec.reasonsWith );
         if (factStatement == null) return null;
-        return InfModelSpec.getReasonerFactory( factStatement.getResource(), description );
+        return OntModelSpec.getReasonerFactory( factStatement.getResource(), description );
     }
 
+    /**
+         Answer a ReasonerFactory described by the properties of the resource
+         <code>R</code> in the model <code>rs</code>. Will throw 
+         NoReasonerSuppliedException if no jms:reasoner is supplied, or
+         NoSuchReasonerException if the reasoner value isn't known to
+         ReasonerRegistry. If any <code>ruleSetURL</code>s are supplied, the
+         reasoner factory must be a RuleReasonerFactory, and is wrapped so that
+         the supplied rules are specific to this Factory.
+    */
+    public static ReasonerFactory getReasonerFactory( Resource R, Model rs )
+        {
+        StmtIterator r = rs.listStatements( R, JenaModelSpec.reasoner, (RDFNode) null );
+        if (r.hasNext() == false) throw new NoReasonerSuppliedException();
+        Resource rr = r.nextStatement().getResource();
+        String rrs = rr.getURI();
+        ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( rrs );
+        if (rf == null) throw new NoSuchReasonerException( rrs );
+        return new WrappedReasonerFactory( rf, ((Resource) R.inModel( rs )) );
+        }
+    
     /**
         Add the description of this OntModelSpec to the given model under the given
         resource. This same description can be used to create an equivalent OntModelSpec.

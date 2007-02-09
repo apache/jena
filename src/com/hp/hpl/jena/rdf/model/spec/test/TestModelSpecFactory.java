@@ -73,31 +73,6 @@ public class TestModelSpecFactory extends ModelTestBase
         Resource T = resource( "eh:T" ), root = m.createResource( "eh:root" );
         assertEquals( T, ModelSpecFactory.findSpecificType( root, T ) );
         }
-    
-//    public void testFindSpecificTypeWithSubtypes()
-//        {
-//        Model m = fullModel
-//            ( "eh:root rdf:type eh:V; eh:V rdfs:subClassOf eh:U; eh:U rdfs:subClassOf eh:T" );
-//        Resource root = m.createResource( "eh:root" );
-//        assertEquals( resource( "eh:V" ), ModelSpecFactory.findSpecificType( root, resource( "eh:T") ) );
-//        }        
-    
-    public void testFactoryReturnsAModelSpec()
-        {
-        Model m = modelWithStatements( "eh:Root rdf:type jms:PlainModelSpec" );
-        Resource r = m.createResource( "eh:Root" );
-        ModelSpec s = ModelSpecFactory.createSpec( m, r );
-        }
-    
-    public void testModelAccessible()
-        {
-        Model m = modelWithStatements( "eh:Root rdf:type jms:PlainModelSpec" );
-        Resource r = m.createResource( "eh:Root" );
-        ModelSpec g = ModelSpecFactory.createSpec( m, r );
-//        assertIsoModels( trim( r ), trim( g.getRoot() ) );
-        // assertIsoModels( trim( r ), g.getDescription() );
-        assertNotNull( g.getDescription() );
-        }
 
     public void testFactoryNoRoot()
         {
@@ -111,21 +86,6 @@ public class TestModelSpecFactory extends ModelTestBase
         Model m = modelWithStatements( "eh:Root rdf:type jms:ModelSpec; eh:Fake rdf:type jms:PlainModelSpec" );
         try { ModelSpecFactory.createSpec( m ); }
         catch (BadDescriptionException e) { pass(); }
-        }
-    
-    public void testDefaultCreate()
-        {
-        Model m = modelWithStatements( "eh:Root rdf:type jms:PlainModelSpec" );
-        ModelSpec s = ModelSpecFactory.createSpec( m );
-        Model x = s.createFreshModel();
-        assertNotNull( x );
-        }
-    
-    public void testMatchingModelSpec()
-        {
-        Model m = modelWithStatements( "eh:Root rdf:type jms:PlainModelSpec" );
-        ModelSpec s = ModelSpecFactory.createSpec( m );
-        // TODO assertTrue( s instanceof BaseModelSpecImpl );
         }
     
     public void testLoadsCorrectModelSpec()

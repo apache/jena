@@ -1,20 +1,19 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecsWithRuleSets.java,v 1.4 2007-01-02 11:49:24 andy_seaborne Exp $
+  $Id: TestModelSpecsWithRuleSets.java,v 1.5 2007-02-09 12:09:05 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.spec.test;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestSuite;
@@ -101,7 +100,7 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
         { 
         Model rs = modelWithStatements( "_a rdf:type jms:ReasonerSpec" );
         Resource A = resource( "_a" );
-        try { InfModelSpec.getReasonerFactory( A, rs ); fail( "should catch missing reasoner" ); }
+        try { OntModelSpec.getReasonerFactory( A, rs ); fail( "should catch missing reasoner" ); }
         catch (NoReasonerSuppliedException e) { pass(); }
         }
 
@@ -110,7 +109,7 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
         Model rs = modelWithStatements( "_a rdf:type jms:ReasonerSpec; _a jms:reasoner nosuch:reasoner" );
         Resource A = resource( "_a" );
         try 
-            { InfModelSpec.getReasonerFactory( A, rs ); 
+            { OntModelSpec.getReasonerFactory( A, rs ); 
             fail( "should catch unknown reasoner" ); }
         catch (NoSuchReasonerException e) 
             { assertEquals( "nosuch:reasoner", e.getURI() ); 
@@ -131,7 +130,7 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
         {
         String uri = GenericRuleReasonerFactory.URI;
         Model rs = modelWithStatements( "_a jms:reasoner ?0; _a jms:ruleSetURL nowhere:man", new Object[] { uri } ); 
-        try { InfModelSpec.getReasonerFactory( A, rs ).create( null ); fail( "should report ruleset failure" ); }
+        try { OntModelSpec.getReasonerFactory( A, rs ).create( null ); fail( "should report ruleset failure" ); }
         catch (RulesetNotFoundException e) { assertEquals( "nowhere:man", e.getURI() ); }
         }
     
@@ -151,7 +150,7 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
         String rulesA = file( "example.rules" ), rulesB = file( "extra.rules" );
         List rules = append( Rule.rulesFromURL( rulesA ), Rule.rulesFromURL( rulesB ) );
         Model rs = modelWithStatements( "_a jms:reasoner ?0; _a jms:ruleSetURL ?1; _a jms:ruleSetURL ?2", new Object[] {factoryURI, rulesA, rulesB});
-        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
+        ReasonerFactory rf = OntModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }
@@ -166,7 +165,7 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
             .add( A, JenaModelSpec.ruleSet, resource( "onward:rules" ) )
             .add( resource( "onward:rules" ), JenaModelSpec.hasRule, ruleStringA )
             .add( resource( "onward:rules" ), JenaModelSpec.hasRule, ruleStringB );
-        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
+        ReasonerFactory rf = OntModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }    
@@ -181,43 +180,10 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
             .add( A, JenaModelSpec.ruleSet, resource( "onward:rules" ) )
             .add( resource( "onward:rules" ), JenaModelSpec.ruleSetURL, resource( ruleFileA ) )
             .add( resource( "onward:rules" ), JenaModelSpec.ruleSetURL, resource( ruleFileB ) );
-        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
+        ReasonerFactory rf = OntModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }
-    
-    public void testSchema()
-    	{
-    	ReasonerRegistry.theRegistry().register( "fake:factory", new FakeFactory() );
-        String d = 
-            "_root jms:reasonsWith _reasoner"
-            + "; _reasoner jms:reasoner fake:factory"
-            + "; _root jms:maker _maker"
-            + "; _maker rdf:type jms:MemMakerSpec"
-            + "; _maker jms:reificationMode jms:rsMinimal"
-            + "; _reasoner jms:schemaURL ?0"
-            + "; _reasoner jms:schemaURL ?1"
-            ;
-        Model desc = modelWithStatements( d, new Object[] {file("schema.n3"), file("schema2.n3")} );
-		ModelSpec spec = ModelFactory.createSpec( desc );
-		validateHasSchema( loadBoth( "schema.n3", "schema2.n3" ), spec.createFreshModel() );
-    	}
-    
-	/**
-     * @return
-     */
-    private Graph loadBoth( String x, String y )
-        {
-        Model schema = FileManager.get().loadModel( file( x ) );
-        Model schema2 = FileManager.get().loadModel( file( y ) );
-        schema.add( schema2 );
-        return schema.getGraph();
-        }
-
-    private void validateHasSchema( Graph schema, Model m )
-		{
-		((FakeReasoner) ((InfGraph) m.getGraph()).getReasoner()).validate( schema );
-		}
 
 	protected static class FakeReasoner implements Reasoner
 		{
@@ -274,49 +240,6 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
 			return null;
 			}
 		}
-    
-    public void testCreateReasoningModel()
-        {
-        String ruleString = "[rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]";
-        List wanted = Rule.parseRules( ruleString );
-        ModelSpec spec = createInfModelSpec( ruleString );
-        Model m = spec.createFreshModel();
-        Graph g = m.getGraph();
-        assertInstanceOf( InfGraph.class, g );
-        Reasoner r = ((InfGraph) g).getReasoner();
-        assertInstanceOf( RuleReasoner.class, r );
-        RuleReasoner rr = (RuleReasoner) r;
-        List rules = rr.getRules();
-        assertSameRules( wanted, rules );
-        }
-   
-    public void testDescription()
-    	{
-        String ruleString = "[rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]";
-    	Model desc = createInfModelDesc( A, GenericRuleReasonerFactory.URI, ruleString );
-    	ModelSpec s = ModelSpecFactory.createSpec( desc );
-    	assertIsoModels( desc, s.getDescription() );
-    	}
-    
-    private ModelSpec createInfModelSpec( String ruleString )
-        {
-        Model desc = createInfModelDesc( A, GenericRuleReasonerFactory.URI, ruleString );
-        return ModelSpecFactory.createSpec( desc );
-        }
-    
-    public static Model createInfModelDesc( Resource root, String URI, String ruleString )
-        {
-        String d = 
-            "_root jms:reasonsWith _reasoner"
-            + "; _reasoner jms:reasoner ?0"
-            + "; _root jms:maker _maker"
-            + "; _maker rdf:type jms:MemMakerSpec"
-            + "; _maker jms:reificationMode jms:rsMinimal"
-            + "; _reasoner jms:ruleSet _rules"
-            + "; _rules jms:hasRule ?1"
-            ;
-        return modelWithStatements( d, new Object[] {URI, "'" + ruleString + "'"} ); 
-        }
    
     /**
      * @param factoryURI
@@ -326,14 +249,14 @@ public class TestModelSpecsWithRuleSets extends ModelTestBase
         {
         List rules = Rule.rulesFromURL( rulesURL );
         Model rs = modelWithStatements( "_a jms:reasoner ?0; _a jms:ruleSetURL ?1", new Object[] {factoryURI, rulesURL} );
-        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
+        ReasonerFactory rf = OntModelSpec.getReasonerFactory( A, rs );
         GenericRuleReasoner gr = (GenericRuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }
     
     protected void testGetReasoner( String uri, Class wantClass )
         {
-        ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rSpec( uri ) );
+        ReasonerFactory rf = OntModelSpec.getReasonerFactory( A, rSpec( uri ) );
         assertEquals( wantClass, rf.create( null ).getClass() );
         }
 

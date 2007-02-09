@@ -1,22 +1,19 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelFactory.java,v 1.34 2007-01-02 11:48:26 andy_seaborne Exp $
+  $Id: TestModelFactory.java,v 1.35 2007-02-09 12:09:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.spec.test.TestModelSpec;
-import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.reasoner.InfGraph;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.compose.Union;
-import com.hp.hpl.jena.mem.*;
 
 import junit.framework.*;
 
@@ -60,101 +57,14 @@ public class TestModelFactory extends ModelTestBase
         ModelCom.setDefaultModelPrefixes( original );
         }
     
-    public void testCreateSpecFails()
+    public void testCreateInfModel() 
         {
-        try
-            {
-            ModelFactory.createSpec( ModelFactory.createDefaultModel() );    
-            fail( "empty descriptions should throw the appropriate exception" );
-            }    
-        catch (BadDescriptionException e) { pass(); }
-        }
-        
-    public void testCreatePlainSpec()
-        {
-        Model desc = TestModelSpec.createPlainModelDesc();
-        ModelSpec spec = ModelFactory.createSpec( desc ); 
-        assertIsoModels( desc, spec.getDescription() );
-        assertInstanceOf( PlainModelSpec.class, spec );
-        assertInstanceOf( GraphMemBase.class, spec.createFreshModel().getGraph() );
-        }
-        
-    public void testCreateOntSpec()
-        {
-        Resource root = ResourceFactory.createResource();
-        Resource importsMaker = ResourceFactory.createResource();
-        Resource baseMaker = ResourceFactory.createResource();
-        Resource reasoner = ResourceFactory.createResource();
-        OntDocumentManager docManager = new OntDocumentManager();
-        Resource reasonerURI = ResourceFactory.createResource( DAMLMicroReasonerFactory.URI );
-        Model desc = ModelFactory.createDefaultModel()
-        	.add( root, JenaModelSpec.maker, baseMaker )
-        	.add( root, JenaModelSpec.importMaker, importsMaker )
-            .add( baseMaker, RDF.type, JenaModelSpec.FileMakerSpec )
-            .add( baseMaker, JenaModelSpec.fileBase, "/tmp/example" )
-            .add( baseMaker, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal )
-            .add( importsMaker, RDF.type, JenaModelSpec.MemMakerSpec )
-            .add( importsMaker, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal )
-            .add( root, JenaModelSpec.ontLanguage, DAMLLangResource )
-            .add( root, JenaModelSpec.docManager, ModelSpecImpl.createValue( docManager ) )
-            .add( root, JenaModelSpec.reasonsWith, reasoner )
-            .add( reasoner, JenaModelSpec.reasoner, reasonerURI );
-        ModelSpec spec = ModelFactory.createSpec( desc ); 
-        assertInstanceOf( OntModelSpec.class, spec );         
-        assertIsoModels( desc, spec.getDescription() );
-        assertInstanceOf( OntModel.class, spec.createFreshModel() );
-        }
-        
-    public void testCreateOntologyModelFromSpecOnly()
-        {
-        Resource root = ResourceFactory.createResource();
-        Model desc = ModelFactory.createDefaultModel()
-            .add( root, JenaModelSpec.ontLanguage, DAMLLangResource )
-        	;
-        OntModelSpec spec = (OntModelSpec) ModelFactory.createSpec( desc );
-        OntModel m = ModelFactory.createOntologyModel( spec );
-        }
-    
-    public void testCreateInfSpec()
-        {
-        Model desc = TestModelSpec.createInfModelDesc( DAMLMicroReasonerFactory.URI );
-        ModelSpec spec = ModelFactory.createSpec( desc );
-        assertInstanceOf( InfModelSpec.class, spec );    
-        assertIsoModels( desc, spec.getDescription() );
-        assertInstanceOf( InfModel.class, spec.createFreshModel() );
-        }
-    
-    public void testCreateInfModel() {
         String rule = "-> (eg:r eg:p eg:v).";
         Reasoner r = new GenericRuleReasoner( Rule.parseRules(rule) );
         InfGraph ig = r.bind( ModelFactory.createDefaultModel().getGraph() );
         InfModel im = ModelFactory.createInfModel(ig);
         assertInstanceOf( InfModel.class, im );
-        assertTrue( im.size() == 1);
-    }
-    
-    /**
-        Test that ModelFactory.createModel exists and returns models.
-    */
-    public void testMFCreate()
-        {
-        Model desc = TestModelSpec.createPlainModelDesc();
-        ModelSpec spec = ModelFactory.createSpec( desc );
-        Model m = ModelFactory.createModel( spec );    
-        }
-        
-    public void testMFCreateNamed()
-        {
-        Model desc = TestModelSpec.createPlainModelDesc();
-        ModelSpec spec = ModelFactory.createSpec( desc );
-        Model m = ModelFactory.createModelOver( spec, "aName" );    
-        }        
-        
-    public void testCreateNamed()
-        {
-        Resource root = ResourceFactory.createResource();
-        Model desc = TestModelSpec.createPlainModelDesc( root );
-        ModelSpec spec = ModelFactory.createSpec( root, desc );    
+        assertEquals( 1, im.size() );
         }
     
     /**
@@ -170,6 +80,21 @@ public class TestModelFactory extends ModelTestBase
         assertInstanceOf( Union.class, m.getGraph() );
         assertSame( m1.getGraph(), ((Union) m.getGraph()).getL() );
         assertSame( m2.getGraph(), ((Union) m.getGraph()).getR() );
+        }
+    
+    public void testAssembleModelFromModel()
+        {
+        // TODO Model ModelFactory.assembleModelFrom( Model singleRoot )
+        }
+    
+    public void testFindAssemblerRoots()
+        {
+        // TODO Set ModelFactory.findAssemblerRoots( Model m )
+        }
+
+    public void testAssmbleModelFromRoot()
+        {
+        // TODO Model assembleModelFrom( Resource root )
         }
     }
 

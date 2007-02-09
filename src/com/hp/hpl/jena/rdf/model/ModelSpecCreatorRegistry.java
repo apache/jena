@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.15 2007-01-02 11:48:34 andy_seaborne Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.16 2007-02-09 12:09:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -88,41 +87,6 @@ public class ModelSpecCreatorRegistry
         {
         registerCreator( s.getSubject(), new ModelSpecCreatorByClassname( s.getString() ) );
         }
-    
-    static class InfSpecCreator implements ModelSpecCreator
-        {
-        public ModelSpec create( Resource root, Model desc ) 
-            { return new InfModelSpec( root, desc ); }     
-        }
-        
-    static class PlainSpecCreator implements ModelSpecCreator
-        {
-        public ModelSpec create( Resource root, Model desc ) 
-            { return new PlainModelSpec( root, desc ); }      
-        }  
-    
-    static class RDBSpecCreator implements ModelSpecCreator
-        {
-        public ModelSpec create( Resource root, Model desc ) 
-            { return new RDBModelSpec( root, desc ); }      
-        }
-            
-    static class OntSpecCreator implements ModelSpecCreator
-        {
-        public ModelSpec create( Resource root, Model desc ) 
-            { return new OntModelSpec( root, desc ); }     
-        }
-                        
-    static
-        {
-        register( JenaModelSpec.InfModelSpec, new InfSpecCreator() );  
-        register( JenaModelSpec.OntModelSpec, new OntSpecCreator() );  
-        register( JenaModelSpec.PlainModelSpec, new PlainSpecCreator() );   
-        register( JenaModelSpec.RDBModelSpec, new RDBSpecCreator() );
-        
-        register( JenaModelSpec.ModelSpec, new PlainSpecCreator() );
-        register( JenaModelSpec.DefaultModelSpec, new PlainSpecCreator() );   
-        }   
     }
 
 /*
