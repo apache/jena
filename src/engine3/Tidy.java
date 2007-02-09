@@ -13,6 +13,7 @@ public class Tidy extends TransformBase
     // Convert to better forms.
     // OpFilter => list of expressions
     // OpJoin => list of joins 
+    // See OpCompiler.compile(OpFilter) and (OpJoin)
     
     public Op transform(OpFilter opFilter)
     {
