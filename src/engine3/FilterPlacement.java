@@ -21,6 +21,7 @@ import com.hp.hpl.jena.query.engine2.OpVars;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpBGP;
 import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprList;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.VarUtils;
 
@@ -50,7 +51,7 @@ public class FilterPlacement
     // --------------------------------
     // Basic patterns
     
-    public QueryIterator placeFilters(List exprs, BasicPattern pattern, QueryIterator input)
+    public QueryIterator placeFilters(ExprList exprs, BasicPattern pattern, QueryIterator input)
     {
         QueryIterator qIter = placeFiltersWorker(exprs, pattern, input) ;
         // any remaining filters
@@ -58,7 +59,7 @@ public class FilterPlacement
         return qIter ;
     }
 
-    private QueryIterator placeFiltersWorker(List exprs, BasicPattern pattern, QueryIterator input)
+    private QueryIterator placeFiltersWorker(ExprList exprs, BasicPattern pattern, QueryIterator input)
     {
         BasicPattern accPattern = new BasicPattern() ;
         Set patternVarsScope = new HashSet() ;
@@ -90,7 +91,7 @@ public class FilterPlacement
         return qIter ;
     }
     
-    private QueryIterator insertAnyFilter(List exprs, Set patternVarsScope, BasicPattern accPattern, QueryIterator qIter)
+    private QueryIterator insertAnyFilter(ExprList exprs, Set patternVarsScope, BasicPattern accPattern, QueryIterator qIter)
     {
         boolean doneSomething = false ;
         for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
@@ -113,7 +114,7 @@ public class FilterPlacement
     // --------------------------------
     // Placement in joins.
     
-    public QueryIterator placeFilters(List exprs, List ops, QueryIterator input)
+    public QueryIterator placeFilters(ExprList exprs, List ops, QueryIterator input)
     {
         Set varScope = new HashSet() ;
         QueryIterator qIter = input ;
@@ -144,7 +145,7 @@ public class FilterPlacement
         return qIter ;
     }
 
-    private QueryIterator insertAnyFilter(List exprs, Set varScope, QueryIterator qIter)
+    private QueryIterator insertAnyFilter(ExprList exprs, Set varScope, QueryIterator qIter)
     {
         for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
         {
@@ -164,7 +165,7 @@ public class FilterPlacement
     // ----------------
     
     // Build a series of filters around a compile Op
-    public QueryIterator buildOpFilter(List exprs, Op sub, QueryIterator input)
+    public QueryIterator buildOpFilter(ExprList exprs, Op sub, QueryIterator input)
     {
         QueryIterator qIter = compiler.compileOp(sub, input) ;
 
@@ -192,9 +193,9 @@ public class FilterPlacement
     }
 
     // Insert filters around a query iterator.
-    private QueryIterator buildFilter(List exprs, QueryIterator qIter)
+    private QueryIterator buildFilter(ExprList exprs, QueryIterator qIter)
     {
-        if ( exprs.size() == 0 )
+        if ( exprs.isEmpty() )
             return qIter ;
     
         for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )

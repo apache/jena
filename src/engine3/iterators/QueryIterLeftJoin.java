@@ -8,14 +8,14 @@ package engine3.iterators;
 
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprList;
 
 /** Left join by materializing the RHS */
 public class QueryIterLeftJoin extends QueryIterJoinBase
 {
-    public QueryIterLeftJoin(QueryIterator left, QueryIterator right, Expr expr, ExecutionContext qCxt)
+    public QueryIterLeftJoin(QueryIterator left, QueryIterator right, ExprList exprs, ExecutionContext qCxt)
     {
-        super(left, right, expr, qCxt) ;
+        super(left, right, exprs, qCxt) ;
     }
 
     

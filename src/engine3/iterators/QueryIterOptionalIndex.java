@@ -13,7 +13,7 @@ import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine1.iterator.QueryIterDefaulting;
 import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpFilter;
-import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprList;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
@@ -25,14 +25,14 @@ public class QueryIterOptionalIndex extends QueryIterStream
 {
     private Op op ;
 
-    public QueryIterOptionalIndex(QueryIterator input, Op op, Expr expr, ExecutionContext context)
+    public QueryIterOptionalIndex(QueryIterator input, Op op, ExprList exprs, ExecutionContext context)
     {
         super(input, context) ;
         // In an indexed left join, the LHS bindings are visible to the
         // RHS execution so the expression is evaluted by moving it to be 
         // a filter over the RHS pattern. 
-        if ( expr != null )
-            op = OpFilter.filter(expr, op) ;
+        if ( exprs != null )
+            op = OpFilter.filter(exprs, op) ;
         this.op = op ;
     }
 

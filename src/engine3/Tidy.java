@@ -8,22 +8,35 @@ package engine3;
 
 import com.hp.hpl.jena.query.engine2.op.*;
 
-public class Tidy extends TransformBase
+public class Tidy extends OpVisitorBase
 {
-    // Convert to better forms.
-    // OpFilter => list of expressions
-    // OpJoin => list of joins 
-    // See OpCompiler.compile(OpFilter) and (OpJoin)
-    
-    public Op transform(OpFilter opFilter)
+    static Op tidy(Op op)
     {
-        return opFilter ;
+        return op ;
     }
-
     
-    public Op transform(OpJoin opJoin)
-    {
-        return opJoin ; 
+    // Transformer is bottom-up.
+    // We want top down.
+    
+    static class TidyWorker extends TransformBase
+    {    
+        
+        // Convert to better forms.
+        // OpFilter => list of expressions
+        // OpJoin => list of joins 
+        // See OpCompiler.compile(OpFilter) and (OpJoin)
+        
+        public Op transform(OpFilter opFilter)
+        {
+            
+            return opFilter ;
+        }
+    
+        
+        public Op transform(OpJoin opJoin)
+        {
+            return opJoin ; 
+        }
     }
 }
 

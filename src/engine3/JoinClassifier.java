@@ -14,7 +14,7 @@ import com.hp.hpl.jena.query.engine2.op.Op;
 import com.hp.hpl.jena.query.engine2.op.OpFilter;
 import com.hp.hpl.jena.query.engine2.op.OpJoin;
 import com.hp.hpl.jena.query.engine2.op.OpLeftJoin;
-import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprList;
 import com.hp.hpl.jena.query.util.SetUtils;
 
 public class JoinClassifier
@@ -33,7 +33,7 @@ public class JoinClassifier
     
     static private boolean check(Op op, Op other)
     {
-        Expr expr = null ;
+        ExprList exprs = null ;
         Set fixedFilterScope = null ;   // Vars in scope to the filter - fixed
         Set optFilterScope = null ;     // Vars in scope to the filter - optional
         
@@ -41,7 +41,7 @@ public class JoinClassifier
         {
             OpFilter f = (OpFilter)op ;    
             op = f.getSubOp() ;
-            expr = f.getExpr() ;
+            exprs = f.getExprs() ;
             VarFinder vf = new VarFinder(op) ;
             fixedFilterScope = vf.getFixed() ;
             optFilterScope = vf.getOpt() ;
@@ -51,7 +51,7 @@ public class JoinClassifier
         {
             OpLeftJoin j = (OpLeftJoin)op ;
             // Leave op
-            expr = j.getExpr() ;
+            exprs = j.getExprs() ;
             VarFinder vf1 = new VarFinder(j.getLeft()) ;
             VarFinder vf2 = new VarFinder(j.getRight()) ;
             // Both sides of the LeftJoin are in-scope to the filter. 
@@ -59,13 +59,13 @@ public class JoinClassifier
             optFilterScope = SetUtils.union(vf1.getOpt(), vf2.getOpt()) ;
         }
         
-        if ( expr == null )
+        if ( exprs == null )
             return true ;
         
         if ( fixedFilterScope == null || optFilterScope == null )
             throw new ARQInternalErrorException("JoinClassifier: Failed to set up variable sets correctly") ;
         
-        Set exprVars = expr.getVarsMentioned() ;
+        Set exprVars = exprs.getVarsMentioned() ;
         
         // remove variables that are safe:
         //   fixed mentioned here

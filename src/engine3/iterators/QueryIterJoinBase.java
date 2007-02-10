@@ -13,7 +13,7 @@ import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.iterator.QueryIter2;
 import com.hp.hpl.jena.query.engine2.Table;
 import com.hp.hpl.jena.query.engine2.TableFactory;
-import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprList;
 
 /** Join or LeftJoin by calculating both sides, then doing the join
  *  It almost always better to use substitute algorithm (not this
@@ -27,16 +27,16 @@ public abstract class QueryIterJoinBase extends QueryIter2
 {
     QueryIterator current ;
     Table tableRight ;
-    Expr expr ;
+    ExprList exprs ;
     private Binding nextBinding = null ;
     
-    public QueryIterJoinBase(QueryIterator left, QueryIterator right, Expr expr, ExecutionContext execCxt)
+    public QueryIterJoinBase(QueryIterator left, QueryIterator right, ExprList exprs, ExecutionContext execCxt)
     {
         super(left, right, execCxt) ;
         tableRight = TableFactory.create(getRight()) ;
         tableRight.materialize() ;              // Delay this?
         getRight().close();
-        this.expr = expr ;
+        this.exprs = exprs ;
     }
 
     protected boolean hasNextBinding()
@@ -91,7 +91,7 @@ public abstract class QueryIterJoinBase extends QueryIter2
         if ( !getLeft().hasNext() )
             return null ;
         Binding b =  getLeft().nextBinding() ;
-        QueryIterator x = tableRight.matchRightLeft(b, true, expr, getExecContext()) ;
+        QueryIterator x = tableRight.matchRightLeft(b, true, exprs, getExecContext()) ;
         return x ;
     }
 
@@ -99,7 +99,7 @@ public abstract class QueryIterJoinBase extends QueryIter2
     {
         if ( !getLeft().hasNext() )
             return null ;
-        if ( expr != null )
+        if ( exprs != null )
             throw new ARQInternalErrorException("QueryIterJoinBase: expression not empty for equiJoin") ;
         
         Binding b =  getLeft().nextBinding() ;
