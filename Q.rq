@@ -23,10 +23,13 @@ SELECT *
 ##         :q ?w ;
 ##         :q ?x .
 
-    # Case 3: OPTIONAL and unbound
-    :x :p ?v 
-    OPTIONAL { :x :q ?w }
-    FILTER(?v)
-    FILTER (!bound(?w) )
+##     # Case 3: OPTIONAL and unbound
+##     :x :p ?v 
+##     OPTIONAL { :x :q ?w }
+##     FILTER(?v)
+##     FILTER (!bound(?w) )
 
+    # Case 4: OPTIONAL + Filters
+    :x :p ?v 
+    OPTIONAL { :x :q ?w . FILTER(true) FILTER(?v)  FILTER(?w) }
 }

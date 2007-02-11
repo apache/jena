@@ -24,32 +24,28 @@ import engine3.iterators.*;
 
 public class OpCompiler
 {
+    // TODO Check OPTIONAL/!BOUND() 
+    
     // And filter placement in LeftJoins?
     // Is this part of a more general algorithm of pushing the filter down
     // when the vars are known to be fixed?
     
     // TODO property function detemination by general tree rewriting
-    //   precursor to pattern replacement?
-    //     But that's "Op => Op" so need extension Ops
+    //  By general BGP rewriting.  Stages.
+    //  (General tree rewrite is "Op => Op")
     //   OpExtBase requires eval() but need better extensibility?
-    //   Special case is bottom nodes - adapters and wrappers - and that is OpBGP
-    //   ==> Make OpBGP case special and easy
-    //    Stages.
-    // TODO OpFilter,OpJoin to take lists, built by transform.
-    //   OpFilter: list of expressions.
-    //   OpJoin: list of join items.
     
-    // TODO Non-reorganising AlgebraCompiler mode.
-
     // Package structure:
     //   .core => .core,  .syntax for Element* .describe => .core
     //   .engine, includes the reference engine or .engine.ref/.engine.algebra/
     //   .engine.http or .engineHTTP ?
-    //   .engine.engine => normal engine .engine.impl, .engin/std
+    //   .engine.engine => normal engine .engine.impl, .engin.std, .engine.main
     //   .engine.engineplan => old engine
     //   .shared
     // Compiler options and globals ; 
-    //   Compiler class like ARQConstants or just use ARQ.
+    //   Compiler class like ARQConstants or just use ARQ (a compiler section)
+    //     syntaxPlacement
+    //     filterPlacement
     //   Delete .extension
 
     static QueryIterator compile(Op op, ExecutionContext execCxt)
@@ -100,6 +96,9 @@ public class OpCompiler
 
     QueryIterator compile(OpJoin opJoin, QueryIterator input)
     {
+        // TODO Consider building join lists and place filters carefully.  
+        // Place by fixed - if none present, place by optional
+        
         // Look one level in for any filters with out-of-scope variables.
         boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
         
@@ -165,9 +164,12 @@ public class OpCompiler
         Op base = opFilter.getSubOp() ;
         
         if ( base instanceof OpBGP )
-            return filterPlacement.placeFilters(exprs, ((OpBGP)base).getPattern(), input) ;
+            return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
 
-//        if ( sub instanceof OpQuadPattern )
+        if ( base instanceof OpGraph )
+        {}
+
+//        if ( base instanceof OpQuadPattern )
 //            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)base, input) ;
         
         // Tidy up.
@@ -176,13 +178,8 @@ public class OpCompiler
             // Look for a join chain (i.e. the left is also a join)
             List joinElts = new ArrayList() ;
             joins(base, joinElts) ;
-            //PrintUtils.printList(System.out, joinElts, ":") ;
-            //System.out.println(joinElts) ;
-            return filterPlacement.placeFilters(exprs, joinElts, input) ;
-            // And compress BGPs? Blank node caveats!
-            // Do as a separate transform.
+            return filterPlacement.placeFiltersJoin(exprs, joinElts, input) ;
         }
-
         
         // There must be a better way.
         if ( base instanceof OpLeftJoin )
@@ -191,9 +188,6 @@ public class OpCompiler
         }
         
         if ( base instanceof OpUnion )
-        {}
-
-        if ( base instanceof OpGraph )
         {}
 
         

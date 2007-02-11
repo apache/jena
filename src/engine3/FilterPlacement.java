@@ -51,7 +51,7 @@ public class FilterPlacement
     // --------------------------------
     // Basic patterns
     
-    public QueryIterator placeFilters(ExprList exprs, BasicPattern pattern, QueryIterator input)
+    public QueryIterator placeFiltersBGP(ExprList exprs, BasicPattern pattern, QueryIterator input)
     {
         QueryIterator qIter = placeFiltersWorker(exprs, pattern, input) ;
         // any remaining filters
@@ -114,7 +114,7 @@ public class FilterPlacement
     // --------------------------------
     // Placement in joins.
     
-    public QueryIterator placeFilters(ExprList exprs, List ops, QueryIterator input)
+    public QueryIterator placeFiltersJoin(ExprList exprs, List ops, QueryIterator input)
     {
         Set varScope = new HashSet() ;
         QueryIterator qIter = input ;
