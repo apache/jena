@@ -1,0 +1,37 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "CONSTRUCT" ;
+    mf:entries
+    ( 
+     [  mf:name    "Construct 1" ;
+         mf:action
+            [ qt:query  <q-construct-1.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <results-construct-1.ttl>
+      ]
+
+     [  mf:name    "Construct 2" ;
+         mf:action
+            [ qt:query  <q-construct-2.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <results-construct-2.ttl>
+      ]
+
+
+      [  mf:name    "Reification 1" ;
+         mf:action
+            [ qt:query  <q-reif-1.rq> ;
+              qt:data   <reif-data-1.ttl> ] ;
+        mf:result  <reif-result-1.rdf>
+      ]
+      [  mf:name    "Reification 2" ;
+         mf:action
+            [ qt:query  <q-reif-2.rq> ;
+              qt:data   <reif-data-2.ttl> ] ;
+        mf:result  <reif-result-2.rdf>
+      ]
+    ).

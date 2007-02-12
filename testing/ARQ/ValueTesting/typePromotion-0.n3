@@ -1,0 +1,10 @@
+# $Id: typePromotion-0.n3,v 1.1 2006/01/19 17:21:29 andy_seaborne Exp $
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix t: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/typePromotion-0#> .
+
+t:one	rdf:value	"1"^^xsd:unsignedByte .
+
+t:two	rdf:value	"2"^^xsd:unsignedShort .
+

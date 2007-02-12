@@ -1,0 +1,7 @@
+PREFIX :        <http://example.org/> 
+PREFIX apf:     <java:com.hp.hpl.jena.query.pfunction.library.>
+
+SELECT *
+{
+  "v" apf:assign ?o 
+}

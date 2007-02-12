@@ -1,0 +1,55 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Syntax tests Syntax-ARQ" ;
+    mf:entries
+    ( 
+      [  mf:name    "syntax-reif-arq-01.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-reif-arq-01.arq> ; 
+      ]
+      [  mf:name    "syntax-reif-arq-02.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-reif-arq-02.arq> ; 
+      ]
+      [  mf:name    "syntax-reif-arq-03.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-reif-arq-03.arq> ; 
+      ]
+      [  mf:name    "syntax-reif-arq-04.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-reif-arq-04.arq> ; 
+      ]
+      [  mf:name    "syntax-reif-arq-05.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-reif-arq-05.arq> ; 
+      ]
+      [  mf:name    "syntax-forms-arq-01.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-forms-arq-01.arq> ; 
+      ]
+      [  mf:name    "syntax-forms-arq-02.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-forms-arq-02.arq> ; 
+      ]
+      [  mf:name    "syntax-forms-arq-03.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-forms-arq-03.arq> ; 
+      ]
+      [  mf:name    "syntax-forms-arq-04.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-forms-arq-04.arq> ; 
+      ]
+      [  mf:name    "syntax-forms-arq-05.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-forms-arq-05.arq> ; 
+      ]
+      [  mf:name    "syntax-forms-arq-06.arq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syntax-forms-arq-06.arq> ; 
+      ]
+    ) .

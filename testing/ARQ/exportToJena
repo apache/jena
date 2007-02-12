@@ -1,0 +1,34 @@
+#!/bin/bash
+
+D=$(find . ! -name . ! -name .. ! -name CVS -type d)
+
+MISSING=0
+for d in $D
+  do
+  JDIR=~/Projects/Jena2/testing/ARQ/$d
+  if [ ! -e $JDIR ]
+      then
+      echo "Missing: $JDIR"
+      MISSING=1
+  fi
+done
+
+if [ $MISSING != 0 ]
+then
+    exit 1 ;
+fi
+
+exit 0 ;
+
+for d in $D
+  do
+  JDIR=~/Projects/Jena2/testing/ARQ/$d
+  if [ ! -e $JDIR ]
+      then
+      echo "**** Missing: $JDIR"
+  else
+      cp ~/Projects/ARQ/testing/ARQ/$d/*.* $JDIR
+  fi
+done
+
+cp manifest-*.ttl ~/Projects/ARQ/testing/ARQ/

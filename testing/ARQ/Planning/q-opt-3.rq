@@ -1,0 +1,24 @@
+# An optional and an fixed pattern
+PREFIX : <http://example.org/>
+
+# Ensure an optional does not mask a later one.
+
+# This query works unreordered because it has written out the needed UNION
+
+SELECT * 
+WHERE 
+{
+  :x :p ?v .
+  OPTIONAL {:y ?p ?a } 
+  OPTIONAL {:z ?p ?v }
+}
+
+## SELECT DISTINCT *
+## {
+##   :x :p ?v .
+##     { OPTIONAL {:y ?p ?a }  OPTIONAL {:z ?p ?v } }
+##   UNION
+##     { OPTIONAL {:z ?p ?v }  OPTIONAL {:y ?p ?a } }
+## }
+
+

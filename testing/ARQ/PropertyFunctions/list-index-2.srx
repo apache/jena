@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="x"/>
+    <variable name="member"/>
+  </head>
+  <results ordered="false" distinct="false">
+    <result>
+      <binding name="x">
+        <uri>http://example.org/x4</uri>
+      </binding>
+      <binding name="member">
+        <literal>A1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example.org/x3</uri>
+      </binding>
+      <binding name="member">
+        <literal>A</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example.org/x2</uri>
+      </binding>
+      <binding name="member">
+        <literal>a</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example.org/x1</uri>
+      </binding>
+      <binding name="member">
+        <literal>a</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

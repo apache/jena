@@ -1,0 +1,9 @@
+@prefix  :	    <http://example/ns#> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+:x1 :p  4 .
+:x2 :p  -4 .
+:x3 :p  "-4"^^xsd:negativeInteger .
+## :x4 :p  "4"^^xsd:negativeInteger .      # Bad data.
+
+

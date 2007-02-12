@@ -1,0 +1,9 @@
+PREFIX  :	    <http://example/ns#>
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+# Bad lexical form in data
+SELECT *
+{ 
+    ?x :p ?v . 
+    FILTER (?v >= "2"^^xsd:positiveInteger)
+}

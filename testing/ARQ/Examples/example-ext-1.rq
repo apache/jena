@@ -1,0 +1,12 @@
+PREFIX  jext:    <java:arq.examples.ext.>
+
+SELECT DISTINCT ?x 
+{
+    [] ?p [] .
+    ?p jext:localname ?x .  # Sets ?x
+
+    ## And these ...
+    ?p jext:localname ?x .  # Checks ?x
+    # Checks again - different way
+    { ?p jext:localname "p" } UNION { ?p jext:localname "label" } . 
+}

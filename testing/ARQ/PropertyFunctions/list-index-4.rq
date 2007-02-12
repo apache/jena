@@ -1,0 +1,7 @@
+PREFIX  list:  <http://jena.hpl.hp.com/ARQ/list#>
+PREFIX  :      <http://example.org/>
+
+SELECT ?x ?idx
+{ ?x :p ?list .
+  ?list list:index (?idx "a")
+}

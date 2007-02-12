@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="x"/>
+    <variable name="v"/>
+  </head>
+  <results ordered="true" distinct="false">
+    <result>
+      <binding name="x">
+        <uri>http://example/x6</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string">xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x7</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x8</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://example/unknown">xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x4</uri>
+      </binding>
+      <binding name="v">
+        <literal xml:lang="fr">xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x3</uri>
+      </binding>
+      <binding name="v">
+        <literal xml:lang="FR">xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x2</uri>
+      </binding>
+      <binding name="v">
+        <literal xml:lang="en">xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x5</uri>
+      </binding>
+      <binding name="v">
+        <literal xml:lang="EN">xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x1</uri>
+      </binding>
+      <binding name="v">
+        <literal>xyz</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y4</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#string">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y5</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y6</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://example/unknown">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y2</uri>
+      </binding>
+      <binding name="v">
+        <literal xml:lang="en">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y3</uri>
+      </binding>
+      <binding name="v">
+        <literal xml:lang="EN">abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y1</uri>
+      </binding>
+      <binding name="v">
+        <literal>abc</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/z1</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/z3</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#decimal">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/z2</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">01</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x10</uri>
+      </binding>
+      <binding name="v">
+        <uri>http://example/xyz</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y8</uri>
+      </binding>
+      <binding name="v">
+        <uri>http://example/abc</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x9</uri>
+      </binding>
+      <binding name="v">
+        <bnode>b0</bnode>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y7</uri>
+      </binding>
+      <binding name="v">
+        <bnode>b1</bnode>
+      </binding>
+    </result>
+  </results>
+</sparql>

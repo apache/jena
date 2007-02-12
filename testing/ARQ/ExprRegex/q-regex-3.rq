@@ -1,0 +1,8 @@
+prefix :  <http://example.org/ns#> 
+
+SELECT ?c
+{ :x :str ?c . 
+  :regex :pattern ?pat .
+   FILTER regex(?c, ?pat)
+}
+

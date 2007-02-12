@@ -1,0 +1,8 @@
+PREFIX foaf:       <http://xmlns.com/foaf/0.1/> 
+PREFIX xsd:        <http://www.w3.org/2001/XMLSchema#>
+SELECT ?name
+WHERE {
+	_:someone foaf:name ?name .
+	FILTER ( ?name < "M"^^xsd:string ) 
+}
+

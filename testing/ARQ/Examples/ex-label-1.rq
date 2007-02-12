@@ -1,0 +1,6 @@
+PREFIX  jext:    <java:arq.examples.ext.>
+
+SELECT ?x 
+{
+    ?x jext:labelSearch "zzz" .
+}

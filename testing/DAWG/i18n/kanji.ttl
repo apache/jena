@@ -1,0 +1,20 @@
+# $Id: kanji.ttl,v 1.1 2005/10/25 17:26:57 andy_seaborne Exp $
+# See DOCUMENT INFO below.
+
+# NAMESPACES
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix 食: <http://www.w3.org/2001/sw/DataAccess/tests/data/i18n/kangi.ttl#> .
+
+# DOCUMENT INFO
+<> rdfs:comment "test kanji with and without wide spaces" ;
+   owl:versionInfo "$Id: kanji.ttl,v 1.1 2005/10/25 17:26:57 andy_seaborne Exp $".
+
+# DOCUMENT
+[ foaf:name "Alice" ;
+  食:食べる 食:納豆 ] .
+
+[ foaf:name "Bob" ;
+  食:食べる 食:海老 ] .
+

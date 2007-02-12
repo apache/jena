@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# $Id: run-tests,v 1.3 2003/03/11 17:56:26 andy_seaborne Exp $
+
+# You will probably need to change this script if you use it.
+
+
+
+RDQL_ARGS=""
+
+for arg in "$@"
+do
+    case $arg in
+    -v | --v)              shift ; RDQL_ARGS="$RDQL_ARGS --verbose" ;;
+    -time | --time)        shift ; RDQL_ARGS="$RDQL_ARGS --time" ;;
+    -debug | --debug)      shift ; RDQL_ARGS="$RDQL_ARGS --debug" ;;
+    -*)                    echo "Unknown argument: $arg" 1>&2 ; exit 1 ;;
+    *)                   break ;;
+    esac
+    done
+
+
+export JENAROOT="/home/afs/Projects/Jena2"
+export CP="$JENAROOT/classes"
+
+CP="$(jena_path)"
+
+TESTFILE="${1:-rdql-tests.n3}"
+rdql --test "$TESTFILE"

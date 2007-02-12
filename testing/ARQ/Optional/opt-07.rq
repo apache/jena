@@ -1,0 +1,9 @@
+PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
+
+SELECT ?name ?nick
+{
+    OPTIONAL 
+    { ?x foaf:nick  ?nick
+      OPTIONAL { ?x foaf:name  ?name }
+    }
+}

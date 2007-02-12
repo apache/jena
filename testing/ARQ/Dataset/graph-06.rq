@@ -1,0 +1,6 @@
+SELECT  ?s ?p ?o
+FROM <dft.n3> 
+FROM NAMED  <a.n3>
+FROM NAMED  <b.n3>
+WHERE
+    { GRAPH ?g { ?s ?p ?o } }

@@ -1,0 +1,2 @@
+SELECT *
+{ [ << ?x ?y ?z >> ] } # Same as [] << ?x ?y ?z >>

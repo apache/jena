@@ -1,0 +1,16 @@
+@prefix :         <http://example/> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+:x1 :p1i 1 .
+:x2 :p1i +1 .
+:x3 :p1i "01"^^xsd:integer .
+
+:y1 :p1d 1.0 .
+:y2 :p1d +1.0 .
+:y3 :p1d "01.0"^^xsd:decimal .
+
+:z1 :p13 1.3 .
+:z2 :p13 1.3e0 .
+
+:z4 :p13 +1.3e0 .
+:z5 :p13 "1.3e0"^^xsd:float .

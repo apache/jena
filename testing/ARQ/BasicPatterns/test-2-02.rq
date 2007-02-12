@@ -1,0 +1,5 @@
+SELECT  ?a
+WHERE
+    { ?x ?y ?z .
+      ?x ?y ?a .
+    }

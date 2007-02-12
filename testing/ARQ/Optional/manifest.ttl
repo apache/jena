@@ -1,0 +1,79 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type    mf:Manifest ;
+    rdfs:label  "OPTIONAL" ;
+    mf:entries
+    (
+     [  mf:name    "One optional clause" ;
+        mf:action
+            [ qt:query  <opt-01.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-01.srx>
+     ]
+     [  mf:name    "Two optional clauses" ;
+        mf:action
+            [ qt:query  <opt-02.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-02.srx>
+     ]
+     [  mf:name    "Nested optional clauses (simple)" ;
+        mf:action
+            [ qt:query  <opt-03.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-03.srx>
+     ]
+     [  mf:name    "One optional, no fixed clause." ;
+        mf:action
+            [ qt:query  <opt-04.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-04.srx>
+     ]
+     [  mf:name    "Two optional, no fixed clause (1)" ;
+        mf:action
+            [ qt:query  <opt-05.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-05.srx>
+     ]
+     [  mf:name    "Two optional, no fixed clause (2)" ;
+        mf:action
+            [ qt:query  <opt-06.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-06.srx>
+     ]
+
+     [  mf:name    "Two optional, no fixed clause, nested (1)" ;
+        mf:action
+            [ qt:query  <opt-07.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-07.srx>
+     ]
+     [  mf:name    "Two optional, no fixed clause, nested (2)" ;
+        mf:action
+            [ qt:query  <opt-08.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-08.srx>
+     ]
+## Space for a test
+##      [  mf:name    "Two optional, fixed clause, free opt var" ;
+##         mf:action
+##             [ qt:query  <opt-09.rq> ;
+##               qt:data   <data.ttl> ] ;
+##         mf:result  <opt-09.srx>
+##      ]
+
+     [  mf:name    "Two optional sequential clauses (1)" ;
+        mf:action
+            [ qt:query  <opt-10.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-10.srx>
+     ]
+     [  mf:name    "Two optional sequential clauses (2)" ;
+        mf:action
+            [ qt:query  <opt-11.rq> ;
+              qt:data   <data.ttl> ] ;
+        mf:result  <opt-11.srx>
+     ]
+   ).

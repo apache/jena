@@ -1,0 +1,19 @@
+#!/bin/bash
+
+DATA=${DATA:-data.ttl}
+for q in "$@"
+do
+  QUERY=$q
+  RESULTS="$(basename $q .rq)-result.srx"
+  sparql --data "$DATA" --query "$QUERY" --results srx > $RESULTS
+  # Fragment of manifest
+  cat <<EOF
+      [ mf:name    "$QUERY" ;
+        mf:action
+           [ qt:query  <$QUERY> ;
+             qt:data   <$DATA> ] ;
+        mf:result  <$RESULTS>
+      ]
+EOF
+  
+  done

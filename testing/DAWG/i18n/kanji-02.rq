@@ -1,0 +1,7 @@
+# $Id: kanji-02.rq,v 1.1 2005/10/25 17:26:57 andy_seaborne Exp $
+# test wide spaces
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX 食: <http://www.w3.org/2001/sw/DataAccess/tests/data/i18n/kangi.ttl#>
+SELECT ?name WHERE {
+  [ foaf:name ?name ;
+    食:食べる 食:海老 ] . }

@@ -1,0 +1,4 @@
+PREFIX : <.>
+
+SELECT ?x
+  { GRAPH <a.n3> { } }

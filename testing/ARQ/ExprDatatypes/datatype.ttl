@@ -1,0 +1,14 @@
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix  :       <http://example.org/> .
+
+:x :p1 "true"^^xsd:boolean .
+
+:x :p2 "false"^^xsd:boolean .
+
+:x :p3 "Other" .
+:x :p4 "" .
+
+:x :p5 "1"^^xsd:integer .
+:x :p6 "0"^^xsd:integer .
+
+:x :q "unknown"^^:type .

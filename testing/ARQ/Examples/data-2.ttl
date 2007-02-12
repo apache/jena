@@ -1,0 +1,9 @@
+@prefix : <http://example/> .
+@prefix  rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+
+:x1 rdfs:label "a"  .
+:x2 rdfs:label "z" .
+:x3 :label         2 .
+:x4 :p         rdfs:Class .
+
+:y1 :p "zzz" .

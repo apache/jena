@@ -1,0 +1,19 @@
+@prefix  foaf:   <http://xmlns.com/foaf/0.1/> .
+@prefix  rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+
+[ a foaf:Person ;
+  foaf:mbox <mailto:person@example.org> ;
+  foaf:name "P1" 
+] .
+
+[ a foaf:Person ;
+  foaf:mbox <mailto:person@example.org> ;
+  foaf:name "P1 (alt)" 
+] .
+
+[ a foaf:Person ;
+  foaf:mbox <mailto:person2@example.org> ;
+  foaf:name "P2" 
+] .
+

@@ -1,0 +1,2 @@
+# Test of syntax
+SELECT * WHERE { ?x $x ?z }

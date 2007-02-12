@@ -1,0 +1,30 @@
+Converting RDQL test suite to SPARQL
+
+Check some test have \u and some have raw UTF-8 bytes still
+    test-S-01 has \u00E9
+    test-S-02 has literal UTF-8 bytes
+    test-S-03 has \u00E9
+    test-S-04 has \u00e9
+    test-S-05 has \u03b1
+
+Replace "SELECT *"
+(NB printing fixed)
+
+Fix by adding str()
+
+To Do:
+
+1/ Check for uses of str() latr when URI equals agreed (and implemented)
+
+2/ Check manifest for commented out tests
+
+3/ Reduce duplications.
+
+Known outstanding:
+
+A/ Tests involving string compares of URIs don't work.
+   test-A-01.rq
+   test-A-02.rq
+
+B/ Uses of model9.n3 commented out 
+   Has illegal langtag&datatype literals

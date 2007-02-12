@@ -1,0 +1,47 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Datatype tests" ;
+    mf:entries
+    ( 
+          # TestSyntax, TestSerialization, TestBadSyntax, TestQuery
+       [  mf:name    "FILTER - '= true'" ;
+          rdf:type   mfx:TestQuery ; 
+          mf:action
+             [ qt:query  <dt-query-1.rq> ;
+               qt:data   <datatype.ttl> ] ;
+         mf:result  <dt-result-1.srx>
+       ]
+       [  mf:name    "FILTER - '= false'" ;
+          rdf:type   mfx:TestQuery ; 
+          mf:action
+             [ qt:query  <dt-query-2.rq> ;
+               qt:data   <datatype.ttl> ] ;
+         mf:result  <dt-result-2.srx>
+       ]
+       [  mf:name    "FILTER - '!= true'" ;
+          rdf:type   mfx:TestQuery ; 
+          mf:action
+             [ qt:query  <dt-query-3.rq> ;
+               qt:data   <datatype.ttl> ] ;
+         mf:result  <dt-result-3.srx>
+       ]
+       [  mf:name    "FILTER - 'NOT of (= true)'" ;
+          rdf:type   mfx:TestQuery ; 
+          mf:action
+             [ qt:query  <dt-query-4.rq> ;
+               qt:data   <datatype.ttl> ] ;
+         mf:result  <dt-result-4.srx>
+       ]
+       [  mf:name    "FILTER - 'NOT of ( != true)'" ;
+          rdf:type   mfx:TestQuery ; 
+          mf:action
+             [ qt:query  <dt-query-5.rq> ;
+               qt:data   <datatype.ttl> ] ;
+         mf:result  <dt-result-5.srx>
+       ]
+    ).

@@ -1,0 +1,9 @@
+@prefix     : <http://example.org/> .
+
+:x1 :p ("a" "b" "c") .
+:x2 :p ("a" "b" "c") .
+:x3 :p ("A" "B" "C") .
+:x4 :p ("A1") .
+:x5 :p () .
+
+:x :p :notAList .

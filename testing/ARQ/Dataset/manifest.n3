@@ -1,0 +1,97 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Dataset" ;
+    mf:entries
+    (
+     [  mf:name    "graph-01" ;
+        mf:action
+            [ qt:query  <graph-01.rq> ] ;
+        mf:result  <graph-01-result.n3> ;
+      ]
+
+     [  mf:name    "graph-02" ;
+        mf:action
+            [ qt:query  <graph-02.rq> ] ;
+        mf:result  <graph-02-result.n3> ;
+      ]
+
+     [  mf:name    "graph-03" ;
+        mf:action
+            [ qt:query  <graph-03.rq> ;
+              qt:data   <dft.n3> ;
+              qt:graphData  <a.n3> ;
+              qt:graphData  <b.n3> ;
+            ] ;
+        mf:result  <graph-03-result.n3> ;
+      ]
+
+     [  mf:name    "graph-04" ;
+        mf:action
+            [ qt:query  <graph-04.rq> ] ;
+        mf:result  <graph-04-result.n3> ;
+      ]
+
+     [  mf:name    "graph-05" ;
+        mf:action
+            [ qt:query  <graph-05.rq> ] ;
+        # Result is the same as for graph-04
+        mf:result  <graph-05-result.n3> ;
+      ]
+
+     [  mf:name    "graph-06" ;
+        mf:action
+            [ qt:query  <graph-06.rq> ] ;
+        mf:result  <graph-06-result.n3> ;
+      ]
+
+    ## Accessing the URIs in a dataset
+
+     [  mf:name    "graph-07" ;
+        mf:action
+            [ qt:query  <graph-07.rq> ] ;
+        mf:result  <graph-07-result.n3> ;
+      ]
+
+     [  mf:name    "graph-08" ;
+        mf:action
+            [ qt:query  <graph-08.rq> ;
+              qt:data   <dft.n3> ;
+              qt:graphData  <a.n3> ;
+              qt:graphData  <b.n3> ;
+            ] ;
+        mf:result  <graph-08-result.n3> ;
+      ]
+     [  mf:name    "graph-09" ;
+        mf:action
+            [ qt:query  <graph-09.rq> ;
+              qt:data   <dft.n3> ;
+              qt:graphData  <a.n3> ;
+              qt:graphData  <b.n3> ;
+            ] ;
+        mf:result  <graph-09-result.srx> ;
+      ]
+     [  mf:name    "graph-10" ;
+        mf:action
+            [ qt:query  <graph-10.rq> ;
+              qt:data   <dft.n3> ;
+              qt:graphData  <a.n3> ;
+              qt:graphData  <b.n3> ;
+            ] ;
+        mf:result  <graph-10-result.srx> ;
+      ]
+    [  mf:name    "graph-11" ;
+       # BNodes don't name graphs
+        mf:action
+            [ qt:query  <graph-11.rq> ;
+              qt:graphData  <c.n3> ;
+              qt:graphData  <d.n3> ;
+            ] ;
+        mf:result  <graph-11-result.n3> ;
+      ]
+    # End of tests
+   ).

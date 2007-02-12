@@ -1,0 +1,9 @@
+PREFIX  : <http://example.org/ns#>
+PREFIX  jfn:     <java:com.hp.hpl.jena.query.function.library.>
+
+# Same test as func-02 except we load the funcion knowing is java class
+SELECT  ?z
+WHERE
+    { ?x :p ?z . 
+      FILTER jfn:evenInteger(?z) .
+    }

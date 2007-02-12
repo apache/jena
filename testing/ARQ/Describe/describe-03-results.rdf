@@ -1,0 +1,17 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#"
+    xmlns="http://example.org/book/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:ns="http://example.org/ns#">
+  <rdf:Description rdf:about="http://example.org/book/book2">
+    <dc:title>Harry Potter and the Chamber of Secrets</dc:title>
+    <dc:creator rdf:parseType="Resource">
+      <vcard:FN>J.K. Rowling</vcard:FN>
+      <vcard:N rdf:parseType="Resource">
+        <vcard:Family>Rowling</vcard:Family>
+        <vcard:Given>Joanna</vcard:Given>
+      </vcard:N>
+    </dc:creator>
+  </rdf:Description>
+</rdf:RDF>

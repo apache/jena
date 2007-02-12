@@ -1,0 +1,31 @@
+@prefix log:    <http://www.w3.org/2000/10/swap/log#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rs:     <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :       <#> .
+
+[]  a   rs:ResultSet ;
+    rs:solution
+        [ rs:binding
+              [ rs:value
+                    <http://rdf.hp.com/r> ;
+                rs:variable
+                    "x" ] ;
+          rs:binding
+              [ rs:value
+                    <http://rdf.hp.com/p1> ;
+                rs:variable
+                    "y" ] ;
+          rs:binding
+              [ rs:value
+                    "value"@en^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> ;
+                rs:variable
+                    "z" ] ] ;
+    rs:resultVariable
+        "x" ;
+    rs:resultVariable
+        "y" ;
+    rs:resultVariable
+        "z" ;
+    rs:size
+        "1" .

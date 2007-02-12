@@ -1,0 +1,7 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#> 
+PREFIX  :       <http://example.org/> 
+PREFIX  jfn:    <java:com.hp.hpl.jena.query.function.library.>
+
+SELECT *
+{ :x ?p ?v .  
+   FILTER ( ! (?v = true ) ) }

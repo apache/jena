@@ -1,0 +1,17 @@
+@prefix :  <http://example.org/ns#> .
+
+:x :num  1 .
+:x :num  2 .
+:x :num  3 .
+:x :num  4 .
+:x :num  1.5e0 .
+
+:y :num  1 .
+:y :num  2 .
+:y :num  3 .
+
+:x :str  "aaa" .
+:x :str  "002" .
+:x :str  "1" .
+:x :str  "AAA" .
+:x :str  "" .
