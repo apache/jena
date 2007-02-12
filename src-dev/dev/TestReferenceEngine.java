@@ -15,6 +15,7 @@ import com.hp.hpl.jena.query.expr.E_Function;
 import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
 
+
 /**
  * @author Andy Seaborne
  * @version $Id: TestReferenceEngine.java,v 1.11 2007/01/29 17:59:19 andy_seaborne Exp $

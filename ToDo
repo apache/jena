@@ -5,7 +5,7 @@
   + OpUnit, OpBGP, OpGraph have too much in op eval
   + Use of Plan.
   
-    // TODO property function detemination by general tree rewriting - BGP special first.
+    // TODO property function determination by general tree rewriting - BGP special first.
     //  By general BGP rewriting.  Stages.
     //  (General tree rewrite is "Op => Op")
     //   OpExtBase requires eval() but need better extensibility?

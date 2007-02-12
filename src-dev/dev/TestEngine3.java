@@ -23,13 +23,13 @@ public class TestEngine3 extends TestCase
         E_Function.WarnOnUnknownFunction = false ;
         QueryEngineX.register() ;
         
-        TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-engine2.ttl") ;
+        TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/manifest-engine2.ttl") ;
 
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/Dataset/manifest.n3") ;
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/Algebra/manifest.ttl") ;
+        //TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/Dataset/manifest.n3") ;
+        //TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/Algebra/manifest.ttl") ;
         
         // SPARQL test suite (does not test algebra)
-        //TestSuite ts = QueryTestSuiteFactory.make("../ARQ/testing/ARQ/manifest-arq.ttl") ;
+        //TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/manifest-arq.ttl") ;
         return ts ;
     }
 }
