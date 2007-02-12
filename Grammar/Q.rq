@@ -1,0 +1,5 @@
+PREFIX : <http://example>
+
+SELECT ?x
+# { {?s :p1 ?v1} UNION {?s :p2 ?v2} OPTIONAL {?s :p3 ?v3} }
+{ ?s :p1 ?v1 FILTER (?v1 < 3 ) OPTIONAL {?s :p3 ?v3} }

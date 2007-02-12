@@ -1,0 +1,26 @@
+# Source this
+
+#export ARQROOT=
+
+if [ "$ARQROOT" = "" ]
+then
+    echo "ARQROOT not set" 1>&2
+    
+    fi
+
+if [ -e "$ARQROOT/classes" ]
+then
+  CP2="$ARQROOT/classes"
+  fi
+
+if [ "$CP" != "" ]
+then
+  export CP="$CP;$CP2"
+else
+  export CP="$CP2"
+  fi
+
+unset CP2
+
+echo "JENAROOT = $JENAROOT"
+echo "CP = $CP"

@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <!-- :$Id :-->
+  <title>ARQ - Writing a Bug Report</title>
+  <link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>Writing a Support Request</h1>
+
+<p>A good support request or bug report is clear and concise.  For ARQ, reduce the problem 
+to a short dataset (20 triples should be enough; Turtle, N3 or N-triples preferred)
+and a query that illustrates the problem.   State what you expected to happen as well as what
+did happen.
+</p>
+
+<p>It also a good idea to check the documentation.</p>
+<ul>
+	<li><a href="FAQ.html">ARQ FAQ</a></li>
+    <li><a href="documentation.html">ARQ Documentation</a></li>
+</ul>
+
+<h3>Parse Errors</h3>
+
+<p>The SPARQL parser outputs a line and column number - it is usually
+correct in identifying the first point of a syntax error.</p>
+
+<h3>Execution failure</h3>
+
+<p>If you are reporting a failure that produces a stack trace, please
+include the message, exception and the stack trace.  Only if it is very
+long, should you truncate the trace but please include the whole trace to
+the point where it indicates it is entering ARQ (a package name starting 
+<code>com.hp.hpl.jena.query</code>) and then one level which is your code.</p>
+
+<h3>Unexpected results</h3>
+
+<p>If you are getting unexpected results, show the results you expect
+as well as what you actually get.</p>
+<p>If you are getting no results, or less than you expected, try cutting parts 
+out of the query until something chnages.</p>
+
+<p>
+There are various formatters for result sets included in ARQ.&nbsp; Print your 
+results in text form if possible.
+There is a
+<a href="http://www.w3.org/2001/sw/DataAccess/tests/README.html">testing format</a>
+used by the Data Access Working Group and
+that is used for the scripted tests in the distribution.
+</p>
+
+
+<h3>Reports</h3>
+<p>A bug report or support request should be <b>complete</b> and <b>minimal</b>. 
+It helps you to develop a concise description of the problem - often, you will 
+discover the solution yourself.</p>
+<p><i>Complete</i> means that any query included should include prefixes and the 
+whole syntax string, not a fragment.&nbsp; Any program code should be ready to 
+run, not a fragment of a large program.</p>
+<p><i>Minimal</i> means that the data sent should be an abbreviated selection to 
+illustrate the point. </p>
+<p>Typically, any program will be less that 20 lines, and any data less than 20 
+triples.</p>
+
+<p>The report should also include details of the execution environment:</p>
+<ul>
+  <li>Environment:
+  <ul>
+    <li>ARQ version</li>
+    <li>Java version</li>
+    <li>Operating system</li>
+    <li>What's the CLASSPATH?</li>
+  </ul>
+  </li>
+  <li>How are you running the query?
+  <ul>
+    <li>Are you running in an application server?  Which one?</li>
+    <li>Have you used the command line tools?</li>
+  </ul>
+  </li>
+  <li>Data:
+  <ul>
+    <li>Does your data parse as RDF?</li>
+    <li>Are you querying an inference model?</li>
+  </ul>
+  </li>
+  <li>Query:
+  <ul>
+    <li>Have you printed out the query exactly as it is (especially
+    if the string has been assembled in by java code)? It is a good idea to print
+    the query out after building it programmatically.</li>
+    <li>Have you passed the query through the <a href="cmds.html#arq.qparse">SPARQL syntax checker</a>?<br/>
+        <code>java -cp ... arq.qparse 'your query'</code>
+  </ul>
+  </li>
+</ul>
+
+<p>Bug reports should be sent to the
+<a href="mailto:jena-dev@groups.yahoo.com?s=ARQ">jena-dev mailing list</a> (you 
+need to subscribe to send to this list).</p>
+
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+</body>
+</html>

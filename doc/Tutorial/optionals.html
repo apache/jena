@@ -1,0 +1,129 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>ARQ - SPARQL Tutorial - Optionals</title>
+    <link rel="stylesheet" type="text/css" href="../styles/doc.css" />
+  </head>
+
+<body>
+
+<h1>SPARQL Tutorial - Optional Information</h1>
+
+<p>RDF is semi-structured data so SPARQL has a the ability to query for data but 
+not to fail query when that data does not exist. The query is using an optional part to 
+extend the information found in a query solution but to return the non-optional 
+information anyway.</p>
+<h2>OPTIONALs</h2>
+<p>This query (<a href="q-opt1.rq">q-opt1.rq</a>) gets the name of a person and also their 
+age if that piece of information is available.</p>
+<pre class="box">PREFIX info:    &lt;http://somewhere/peopleInfo#&gt;
+PREFIX vcard:   &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name ?age
+WHERE 
+{
+    ?person vcard:FN  ?name .
+    OPTIONAL { ?person info:age ?age }
+}</pre>
+<p>Two of the four people in the data (<a href="vc-db-2.rdf">vc-db-2.rdf</a>)have age properties so two of the query 
+solutions have that information.&nbsp; However, because the triple pattern for 
+the age is optional, there is a pattern solution for the people who don't have 
+age information.</p>
+<pre class="box">------------------------
+| name          | age |
+=======================
+| &quot;Becky Smith&quot; | 23  |
+| &quot;Sarah Jones&quot; |     |
+| &quot;John Smith&quot;  | 25  |
+| &quot;Matt Jones&quot;  |     |
+-----------------------</pre>
+<p>If the optional clause had not been there, no age information would have been 
+retrieved. If the triple pattern had been included but not optional then we 
+would have the query (<a href="q-opt2.rq">q-opt2.rq</a>):</p>
+<pre class="box">PREFIX info:   &lt;http://somewhere/peopleInfo#&gt;
+PREFIX vcard:  &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name ?age
+WHERE 
+{
+    ?person vcard:FN  ?name .
+    ?person info:age ?age .
+}</pre>
+<p>with only two solutions:</p>
+<pre class="box">-----------------------
+| name          | age |
+=======================
+| "Becky Smith" | 23  |
+| "John Smith"  | 25  |
+-----------------------</pre>
+<p>because the <code>info:age</code> property must now be present in a solution.</p>
+<h2>OPTIONALs with FILTERs</h2>
+<p><code>OPTIONAL</code> is a binary operator that combines two graph patterns. 
+The optional pattern is any group pattern and may involve any SPARQL pattern 
+types.&nbsp; If the group matches, the solution is extended, if not, the 
+original solution is given (<a href="q-opt3.rq">q-opt-3.rq</a>).</p>
+<pre class="box">PREFIX info:        &lt;http://somewhere/peopleInfo#&gt;
+PREFIX vcard:      &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name ?age
+WHERE 
+{
+    ?person vcard:FN  ?name .
+    OPTIONAL { ?person info:age ?age . FILTER ( ?age > 24 ) }
+}</pre>
+<p>So, if we filter for ages greater than 24 in the optional part, we will still 
+get 4 solutions (from the <code>vcard:FN</code> pattern) but only get ages if 
+they pass the test.</p>
+<pre class="box">-----------------------
+| name          | age |
+=======================
+| "Becky Smith" |     |
+| "Sarah Jones" |     |
+| "John Smith"  | 25  |
+| "Matt Jones"  |     |
+-----------------------</pre>
+<p>No age included for "Becky Smith" because it is less than 24.</p>
+<p>If the filter condition is moved out of the optional part, then it can 
+influence the number of solutions but it may be necessary to make the filter 
+more complicated to allow for variable <code>age</code> being unbound (<a href="q-opt4.rq">q-opt4.rq</a>).</p>
+<pre class="box">PREFIX info:        &lt;http://somewhere/peopleInfo#&gt;
+PREFIX vcard:      &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name ?age
+WHERE 
+{
+    ?person vcard:FN  ?name .
+    OPTIONAL { ?person info:age ?age . }
+    FILTER ( !bound(?age) || ?age > 24 )
+}</pre>
+<p>If a solution has an <code>age</code> variable, then it must be greater than 
+24. It can also be unbound.&nbsp; There are now three solutions:</p>
+<pre class="box">-----------------------
+| name          | age |
+=======================
+| "Sarah Jones" |     |
+| "John Smith"  | 25  |
+| "Matt Jones"  |     |
+-----------------------</pre>
+<p>Evaluating an expression which has an unbound variables where a bound one was 
+expected causes an evaluation exception and the whole expression fails.</p>
+<h2>OPTIONALs and Order Dependent Queries</h2>
+<p>One thing to be careful of is using the same variable in two or more optional 
+clauses (and not in some basic pattern as well):</p>
+<pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
+PREFIX vCard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name
+WHERE
+{
+  ?x a foaf:Person .
+  OPTIONAL { ?x foaf:name ?name } 
+  OPTIONAL { ?x vCard:FN  ?name }
+}</pre>
+<p>If the first optional binds <code>?name</code> and <code>?x</code> to some values, the second <code>
+OPTIONAL</code> is an attempt to match the ground triples (<code>?x</code> and <code><kbd>?name</kbd></code> 
+have values). If the first optional did not match the optional part, then the 
+second one is an attempt to match it's triple with two variables.</p>
+<p>&nbsp;</p>
+<p class="footnote"><a href="union.html">Next: Union queries</a></p>
+</body>
+</html>

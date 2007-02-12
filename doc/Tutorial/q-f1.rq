@@ -1,0 +1,6 @@
+PREFIX vcard:      <http://www.w3.org/2001/vcard-rdf/3.0#>
+
+SELECT ?g
+WHERE
+ { ?y vcard:Given ?g . FILTER regex(?g, "r", "i") }
+

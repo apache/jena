@@ -1,0 +1,6 @@
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix web:    <http://example/> .
+
+<ds-ng-1.ttl>  dc:date "2005-07-14T03:18:56+01:00"^^xsd:dateTime .
+<ds-ng-2.ttl>  dc:date "2005-09-22T05:53:05+01:00"^^xsd:dateTime .

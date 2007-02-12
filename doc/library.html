@@ -1,0 +1,652 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "Microsoft FrontPage 6.0" />
+
+  <title>Function Library in ARQ</title>
+  <link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+
+<body>
+  <h1>Functions in ARQ</h1>
+
+  <p>SPARQL allows custom functions in filter expressions so that
+  queries can be used on domain-specific data. SPARQL defines a
+  function by URI (or prefixed name) in FILTER expressions.&nbsp; ARQ
+  provides a function library and supports application-provided
+  functions.&nbsp; Functions and property functions can be <a href=
+  "extension.html">registered or dynamically loaded</a>.</p>
+
+	<p>See also the <a href="lucene-arq.html">free text search</a> page.</p>
+  <ul>
+	<li><a href="#functions">Filter functions</a></li>
+	<li><a href="#propFunc">Property functions</a></li>
+	</ul>
+  <p>Applications can also <a href="writing_functions.html">provide their own 
+  functions</a>. More functions and property functions will be added to the ARQ 
+	library. Contributions welcome.</p>
+	<p>&nbsp;</p>
+
+  <h2><a id="functions" name="functions">Function Library</a></h2>
+
+  <p>The prefix <code>jfn</code> is
+  <code>&lt;java:com.hp.hpl.jena.query.function.library.&gt;</code>. Note the final dot in the prefix.</p>
+
+  <p>The prefix <code>fn</code> is
+  <code>&lt;http://www.w3.org/2005/xpath-functions#&gt;</code> (the XPath and 
+  XQuery function namespace).</p>
+	<h3>XQuery/XPath functions and operators supported</h3>
+	<p align="center"><b>String Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    id="table4" border="1" cellpadding="0" cellspacing="1" width=
+    "90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:contains(<i>string</i>, <i>
+          substr</i>)</code></td>
+
+          <td style="text-align: left;">Test whether <code><i>substr </i></code>
+          occurs in <i>string.</i></td>
+        </tr>
+		<tr>
+          <td style="text-align: left;"><code>fn:starts-with(<i>string</i>, <i>
+          match</i>)</code></td>
+
+          <td style="text-align: left;">Test whether <i><code>string</code></i> 
+          starts with <code><i>substr.</i></code></td>
+        </tr>
+		<tr>
+          <td style="text-align: left;"><code>fn:ends-with(<i>string</i>, <i>
+          match</i>)</code></td>
+
+          <td style="text-align: left;">Test whether <i><code>string</code></i> 
+          ends with <code><i>substr.</i></code></td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:string-length(</code><i><code>string)</code></i></td>
+
+          <td style="text-align: left;">Return the length of a <i><code>string</code></i>.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code class="function">fn:lower-case</code><code>(</code><i><code>string)</code></i></td>
+
+          <td style="text-align: left;">Return a string which is the lower case 
+          equivalent of the argument.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code class="function">fn:upper-case</code><code>(</code><i><code>string)</code></i></td>
+
+          <td style="text-align: left;">Return a string which is the upper case 
+          equivalent of the argument.</td>
+        </tr>
+        <tr>
+          <td style="text-align: left;"><code>fn:matches(</code><code><i>string</i>,
+          <i>pattern </i>[,<i> flags])</i></code></td>
+
+          <td style="text-align: left;">Regular expression match.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:string-join(<i>string1</i>, <i>
+          string2</i>)</code></td>
+
+          <td style="text-align: left;">Return the concatenation of
+          two strings.<p>&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:substring(<i>string</i>,
+          <i>begin</i> [,<i>length</i>])</code></td>
+
+          <td style="text-align: left;">Returns the substring of a <i><code>string</code></i>, given 
+			by <code><i>begin</i> </code>&nbsp;(integer) and, optionally, length
+			<code><i>length</i></code>.&nbsp; 
+			Absence of <i> <code>length</code></i> means to end of string.&nbsp; Strings are indexed from zero.<ul>
+			<li><b>Strings start from one</b>, not zero as they do in Java and 
+			C#.</li>
+			<li><b>3rd argument is the length</b>, like C# but unlike Java, where it is the 
+			<i>endIndex</i><b>.</b></li>
+			</ul>
+			</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Notes: </p>
+	<ol>
+		<li>Strings in &quot;<a href="http://www.w3.org/TR/xpath-functions/">XQuery 
+		1.0 and XPath 2.0 Functions and Operators</a>&quot; start from character 
+		position one, unlike Java and C# where strings start from zero.</li>
+		<li>The <code>fn:substring</code> operation takes an optional length, 
+		like C# but different from Java, where it is the <i>endIndex</i> of the 
+		first character after the substring.</li>
+	</ol>
+	<p>The operation <code>jfn:substring</code> provides Java semantics.</p>
+	<p align="center"><b>Mathematical Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:min(num1,
+          num2)</code></td>
+
+          <td style="text-align: left;">Return the minimum of two
+          expressions evaluating to numbers.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:max(num1,
+          num2)</code></td>
+
+          <td style="text-align: left;">Return the maximum of two
+          expressions evaluating to numbers.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>fn:round(v)</code></td>
+
+          <td style="text-align: left;">Return the nearest integer
+          value to the argument.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>fn:abs(v)</code></td>
+
+          <td style="text-align: left;">Return the absolute
+          value.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>fn:floor(v)</code></td>
+
+          <td style="text-align: left;">Return the greatest integer
+          value less than the argument (as a double).</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>fn:ceiling(v)</code></td>
+
+          <td style="text-align: left;">Return the smallest integer
+          value than the argument (as a double).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p align="left">Note: See also <code>jfn:min</code> and <code>jfn:max</code> 
+	for binary min and max functions.</p>
+	<p align="center"><b>Boolean Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%" id="table5">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:boolean(<i>value</i>)</code></td>
+
+          <td style="text-align: left;">Boolean effective value of <code><i>
+          value</i></code>.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>fn:not(<i>value</i>)</code></td>
+
+          <td style="text-align: left;">Logical negation of the boolean 
+          effective value of <code><i>value</i></code>.</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+
+  <h4>Functions provided by ARQ</h4>
+
+  <p align="center"><b>RDF Graph Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+      
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:bnode(?x)</code></td>
+
+          <td style="text-align: left;">Return the blank node label
+          if ?x is a blank node.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+<!--
+	<p align="center"><b>RDF Graph Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:listMember(<i>list</i>,
+          <i>resource</i>)</code></td>
+
+          <td style="text-align: left;">Test whether a resource is
+          a member of an RDF collection (AKA list)</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:listIndex(<i>list</i>,
+          <i>resource</i>)</code></td>
+
+          <td style="text-align: left;">Return the index of the
+          resource in the RDF collection. Cause an evaluation
+          exception if not a member (and so the expression will not
+          pass the filter unless inside a value disjunction).</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:bagMember(<i>bag</i>,
+          <i>resource</i>)</code></td>
+
+          <td style="text-align: left;">Test whether a resource is
+          a member of an RDF bag</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:seqMember(<i>bag</i>,
+          <i>resource</i>)</code></td>
+
+          <td style="text-align: left;">Test whether a resource is
+          a member of an RDF seq</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:altMember(<i>bag</i>,
+          <i>resource</i>)</code></td>
+
+          <td style="text-align: left;">Test whether a resource is
+          a member of an RDF alt</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:langeq(<i>literal</i>, <i>lang</i>)</code></td>
+
+          <td style="text-align: left;">Compare the language tag of
+          the literal with a language tag. Comparison reflects
+          language tag rules so "foo"@en matches "EN-gb".</td>
+        </tr>
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:bnode(?x)</code></td>
+
+          <td style="text-align: left;">Return the blank node label
+          if ?x is a blank node.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+-->
+
+  <p align="center"><b>String Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>jfn:substr(</code><i><code>string,
+			startIndex [,</code></i><code><i>endIndex</i></code>]<code>)</code></td>
+
+          <td style="text-align: left;">Substring, Java style using <i><code>
+			startIndex</code></i> and <code><i>endIndex</i></code>.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:substring</code></td>
+
+          <td style="text-align: left;">Synonym for jfn:substring</td>
+        </tr>
+      	<tr>
+          <td style="text-align: left;">
+          <code>jfn:sha1sum(<i>resource</i>)</code></td>
+
+          <td style="text-align: left;">Calculate the SHA1 checksum of a literal 
+			or URI.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+	<p align="center"><b>Mathematical Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>jfn:min(num1,
+          num2)</code></td>
+
+          <td style="text-align: left;">Return the minimum of two
+          expressions evaluating to numbers.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>jfn:max(num1,
+          num2)</code></td>
+
+          <td style="text-align: left;">Return the maximum of two
+          expressions evaluating to numbers.</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <p align="center"><b>Miscellaneous Functions</b></p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    border="1" cellpadding="0" cellspacing="1" width="90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>jfn:now()</code></td>
+
+          <td style="text-align: left;">Current time.&nbsp;
+          Actually, the time the query started.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:sha1sum(<i>resource</i>)</code></td>
+
+          <td style="text-align: left;">Calculate the SHA1 checksum
+          of a literal or URI.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p align="center"><b>Debugging Functions</b></p>
+
+  <p>Debugging functions can be inserted into queries as extra
+  <code>FILTER</code> clauses.&nbsp; They don't affect query
+  results (they always return true) but they print information that
+  can be helpful in understanding what's happening.</p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    id="table1" border="1" cellpadding="0" cellspacing="1" width=
+    "90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Function name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>jfn:print(expr,
+          ...)</code></td>
+
+          <td style="text-align: left;">Print the evaluated
+          expressions. With no arguments, prints the current
+          solution. Always returns true.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code>jfn:trace(expr)</code></td>
+
+          <td style="text-align: left;">Print the expression with
+          values substituted for variables if the variable is set
+          and print result of evaluation, including whether there
+          was an evaluation exception. Always returns true so it
+          does not filter based on the expression.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Example:</p>
+  <pre class="box">
+{
+   ...
+   FILTER jfn:print() # Print the solution
+   FILTER jfn:trace(<i>expression</i>) # Evaluate and print the expression
+   FILTER <i>expression</i> # Now use the expression to filter solutions
+   ...
+}
+</pre>
+
+  <h2><a name="propFunc" id="propFunc">Property Function Library</a></h2>
+
+  <p>The library built-in to the ARQ distribution is loaded from
+  <code>&lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;</code>. Note the final dot in the prefix. 
+  In the table below, the prefix <code>apf:</code> is used for this.</p>
+  <p>The prefix <code>list:</code> is <code>http://www.jena.hpl.hp.com/ARQ/list#</code>.</p>
+
+  <div style="margin-left: 5%; margin-right: 5%;">
+    <table style="border-style: solid; border-collapse: collapse;"
+    id="table1" border="1" cellpadding="0" cellspacing="1" width=
+    "90%">
+      <tbody>
+        <tr>
+          <th style="text-align: left;" bgcolor="#C0C0C0" width=
+          "40%">Property name</th>
+
+          <th bgcolor="#C0C0C0" width="60%">Description</th>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code><i>list </i>list:member <i>member</i></code></td>
+
+          <td style="text-align: left;">Membership of an RDF List (RDF 
+          Collection). If <i>list</i> is not bound or a constant, find and 
+          iterate all lists in the graph (can be slow) else evaluate for one 
+          particular list. If <i>member</i> a variable, generate solutions with
+          <i>member</i> bound to each element in the list. If
+          <i>member</i> is bound or a constant expression, test to see if a 
+          member of the list.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code><i>list </i>list:index <i>(index member)</i></code></td>
+
+          <td style="text-align: left;">Index of an RDF List (RDF Collection). 
+          If <i>list</i> is not bound or a constant, find and iterate all lists 
+          in the graph (can be slow) else evaluate for one particular list. The 
+          object is a list pair, either element can be bound, unbound or a fixed 
+          node. Unbound variables in the object list are bound by the property 
+          function.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code><i>list </i>list:length <i>length</i></code></td>
+
+          <td style="text-align: left;">Length of an RDF List (RDF Collection). If <i>
+          list</i> is not bound or a constant, find and iterate all lists in the 
+          graph (can be slow) else evaluate for one particular list. The 
+          object is tested against or bound to the length of the list.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;">
+          <code><i>container </i>rdfs:member <i>member</i></code></td>
+
+          <td style="text-align: left;">Membership of an RDF Container (rdf:Bag, 
+			rdf:Seq, rdf:Alt). Pre-registered URI. If this infers with queries 
+			running over a Jena inference model which also provides <code>
+			rdfs:member</code>, then remove&nbsp;this from the global registry.<br>
+			<code>&nbsp; PropertyFunctionRegistry.get().<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remove(RDFS.member.getURI()) ;</code></td>
+        </tr>
+  
+        <tr>
+          <td style="text-align: left;">
+          <code>apf:textMatch</code></td>
+
+          <td style="text-align: left;">Free text match.&nbsp; See the <a href="lucene-arq.html">free text search</a> 
+			page for details.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code><i>bag </i>apf:bag <i>member</i></code></td>
+
+          <td style="text-align: left;">The argument <i>bag</i>
+          must be bound by this point in the query or a constant
+          expression. If <i>bag</i> is bound or a URI, and
+          <i>member</i> a variable, generate solutions with
+          <i>member</i> bound to each element in the bag. If
+          <i>member</i> is bound or a constant expression, test to
+          see if a member of the list.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code><i>seq</i> apf:seq <i>member</i></code></td>
+
+          <td style="text-align: left;">The argument <i>seq</i>
+          must be bound by this point in the query or a constant
+          expression. If <i>seq</i> is bound or a URI, and
+          <i>member</i> a variable, generate solutions with
+          <i>member</i> bound to each element in the sequence. If
+          <i>member</i> is bound or a constant expression, test to
+          see if a member of the list.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code><i>seq</i> apf:alt <i>member</i></code></td>
+
+          <td style="text-align: left;">The argument <i>alt</i>
+          must be bound by this point in the query or a constant
+          expression. If <i>alt</i> is bound or a URI, and
+          <i>member</i> a variable, generate solutions with
+          <i>member</i> bound to each element in the alt . If
+          <i>member</i> is bound or a constant expression, test to
+          see if a member of the list.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><i><code>varOrTerm</code></i><code> 
+          apf:assign </code><i><code>varOrTerm</code></i></td>
+
+          <td style="text-align: left;">Assign an RDF term from one side to the 
+          other.&nbsp; If both are fixed RDF terms or bound variables, it becomes a 
+          boolean test that the subject is the same RDF term as the object.</td>
+        </tr>
+      	<tr>
+          <td style="text-align: left;">
+          <i><code>iri</code></i><code> apf:splitIRI (<i>namespace</i> <i>&nbsp;localname</i>)</code><br>
+          <i><code>iri</code></i><code> apf:splitURI (<i>namespace</i> <i>&nbsp;localname</i>)</code></td>
+
+          <td style="text-align: left;">Split the IRI or URI into namespace (an 
+          IRI) and local name (a string). Compare if given values or bound 
+          variables, otherwise set the variable. The object is a list with 2 
+			elements.<br>
+          <code>splitURI</code> is an synonym.</td>
+        </tr>
+      	<tr>
+          <td style="text-align: left;">
+          <i>subject</i> apf:blankNode <i>label<br>
+          subject</i> apf:bnode <i>label<br>
+&nbsp;</i></td>
+
+          <td style="text-align: left;"><i>Subject</i> must be bound to a blank 
+          node or a constant. <i>Label</i> is either a string, in which case 
+          test for whether this is the blank node label of <i>subject</i>, or it 
+          is a variable, which is assigned the blank node label as a plain 
+          string. Argument mismatch causes no match. Use with care.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p> </p>
+
+  <p class="footnote"><a href="documentation.html">ARQ
+  Documentation Page</a></p>
+</body>
+</html>

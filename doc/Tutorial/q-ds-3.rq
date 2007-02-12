@@ -1,0 +1,8 @@
+PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
+PREFIX  :       <.>
+
+SELECT ?title
+{ 
+  GRAPH :ds-ng-2.ttl
+      { ?b dc:title ?title }
+}

@@ -1,0 +1,56 @@
+// June 2005:
+
+ XML 1.1 now has:
+  NameStartChar ::= 	":" | [A-Z] | "_" | [a-z] | 
+                        [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] |
+                        [#x370-#x37D] | [#x37F-#x1FFF] |
+                        [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] |
+                        [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | 
+                        [#x10000-#xEFFFF]
+
+[4a]   	NameChar  ::=  	NameStartChar | "-" | "." | [0-9] | #xB7 |
+                        [#x0300-#x036F] | [#x203F-#x2040]
+
+
+
+Whitespace
+
+  #x9 |#xD|#xA|' '|
+
+  #x00A0 -- No break space
+  [#2000-#200B] -- Spaces of various widths
+  #x205F -- medium mathematical space
+  #x3000 ideographic space
+
+
+Previously XML was:
+ XML 1.1              http:www.w3.org/TR/xml11/
+ XML Namespces 1.1    http:www.w3.org/TR/xml-names11/
+     Prefix ':' LocalPart
+     Prefix is an NCName
+     LocalPart is an NCName
+
+     An XML Name, minus the ":"
+     NCName    ::=    NCNameStartChar NCNameChar*
+     NCNameChar         ::=    NameChar - ':' 
+     NCNameStartChar    ::=    NameStartChar - ':' 
+
+     NameChar and NameSartChar defined in XML 1.1
+     NameStartChar := ":" | [A-Z] | "_" | [a-z] |
+                      was: [#xC0-#x2FF] |
+                      now: [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] |
+                      [#x370-#x37D] | [#x37F-#x1FFF] |
+                      [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] |
+                      [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] |
+                      [#x3001-#xD7FF] | [#xF900-#xEFFFF]
+
+     NameChar      := NameStartChar | "-" | "." | [0-9] | #xB7 |
+                      [#x0300-#x036F] | [#x203F-#x2040]
+
+== Escapes
+
+ \n = #xD
+ \r = #xA
+ \  = #x5C
+ "  = #x22
+ '  = #x27

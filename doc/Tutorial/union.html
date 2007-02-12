@@ -1,0 +1,129 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>ARQ - SPARQL Tutorial - Union</title>
+    <link rel="stylesheet" type="text/css" href="../styles/doc.css" />
+  </head>
+
+<body>
+
+  <h1>SPARQL Tutorial - Alternatives in a Pattern</h1>
+
+  <p>Another way of dealing with the semi-structured data is to query for one of 
+  a number of possibilities. This section covers <code>UNION</code> patterns, where one of a number of 
+  possibilities is tried.</p>
+  <h2>UNION - two ways to the same data</h2>
+  <p>Both the vCard vocabulary and the FOAF vocabulary have properties for 
+  people's names.&nbsp; In vCard, it is vCard:FN, the &quot;formatted name&quot;, and in 
+  FOAF, it is foaf:name. In this section, we will look at a small set of data 
+  where the names of people can be given by either the FOAF or the vCard 
+  vocabulary.</p>
+  <p>Suppose we have <a href="vc-db-3.ttl">an RDF graph</a> that contains name information using both the 
+  vCard and FOAF vocabularies.</p>
+
+
+  <pre class="box">@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+@prefix vcard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt; .
+
+_:a foaf:name   &quot;Matt Jones&quot; .
+
+_:b foaf:name   &quot;Sarah Jones&quot; .
+
+_:c vcard:FN    &quot;Becky Smith&quot; .
+
+_:d vcard:FN    &quot;John Smith&quot; .</pre>
+  <p>A query to access the name information, when it can be in either form, 
+  could be (<a href="q-union1.rq">q-union1.rq</a>):</p>
+  <pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
+PREFIX vCard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name
+WHERE
+{
+   { [] foaf:name ?name } UNION { [] vCard:FN ?name }
+}
+</pre>
+<p>This returns the results:</p>
+  <pre class="box">-----------------
+| name          |
+=================
+| &quot;Matt Jones&quot;  |
+| &quot;Sarah Jones&quot; |
+| &quot;Becky Smith&quot; |
+| &quot;John Smith&quot;  |
+-----------------</pre>
+  <p>It didn't matter which form of expression was used for the name, the ?name 
+  variable is set. This can be achieved using a <code>FILTER</code> as this query (<a href="q-union1alt.rq">q-union-1alt.rq</a>) 
+  shows:</p>
+  <pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
+PREFIX vCard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name
+WHERE
+{
+  [] ?p ?name 
+  FILTER ( ?p = foaf:name || ?p = vCard:FN ) 
+}</pre>
+  <p>testing whether the property is one URI or another.&nbsp;The solutions may 
+	not come out in the same order.&nbsp; The first form is more likely to be 
+	faster, depending on the data and the storage used, because the second form may have to get 
+  all the triples from the graph to match the triple pattern with unbound 
+	variables (or blank nodes) in each slot, then test each <code>?p</code> to 
+	see it it matches one of the values. It will depend on the sophistication of 
+	the query optimizer as to whether it spots that it can perform the query 
+	more efficiently and is able to pass the constraint down as will as to the storage 
+	layer. </p>
+  <h2>Union - remembering where the data was found.</h2>
+  <p>The example above used the same variable in each branch. If different 
+  variables are used, the application can discover which sub-pattern caused the 
+  match (<a href="q-union2.rq">q-union2.rq</a>):</p>
+
+  <pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
+PREFIX vCard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name1 ?name2
+WHERE
+{
+   { [] foaf:name ?name1 } UNION { [] vCard:FN ?name2 }
+}
+</pre>
+<pre class="box">---------------------------------
+| name1         | name2         |
+=================================
+| &quot;Matt Jones&quot;  |               |
+| &quot;Sarah Jones&quot; |               |
+|               | &quot;Becky Smith&quot; |
+|               | &quot;John Smith&quot;  |
+---------------------------------</pre>
+  <p>This second query has retained information of where the name of the person 
+  came from by assigning the name to different variables.</p>
+  <h2>OPTIONAL and UNION</h2>
+  <p>In practice, <code>OPTIONAL</code> is more common than <code>UNION</code> 
+  but they both have their uses. <code>OPTIONAL</code> are useful for augmenting the 
+  solutions found, <code>UNION</code> 
+  is useful for concatenating the solutions from two 
+  possibilities. They don't necessary return the information in the same way:</p>
+
+   <p>Query(<a href="q-union3.rq">q-union3.rq</a>):</p>
+  <pre class="box">PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
+PREFIX vCard: &lt;http://www.w3.org/2001/vcard-rdf/3.0#&gt;
+
+SELECT ?name1 ?name2
+WHERE
+{
+  ?x a foaf:Person
+  OPTIONAL { ?x  foaf:name  ?name1 } 
+  OPTIONAL { ?x  vCard:FN   ?name2 }
+}</pre>
+  <pre class="box">---------------------------------
+| name1         | name2         |
+=================================
+| &quot;Matt Jones&quot;  |               |
+| &quot;Sarah Jones&quot; |               |
+|               | &quot;Becky Smith&quot; |
+|               | &quot;John Smith&quot;  |
+---------------------------------</pre>
+  <p>but beware of using <code>?name</code> in each <code>OPTIONAL</code> 
+  because that is an order-dependent query. </p>
+  <p class="footnote"><a href="datasets.html">Next: Named Graphs</a></p>
+</body>
+</html>

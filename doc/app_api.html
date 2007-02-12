@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+
+  
+  
+  <title>ARQ - Application API</title>
+  <link rel="stylesheet" type="text/css" href="styles/doc.css">
+</head>
+
+
+<body>
+
+
+
+<h1>ARQ - Application API</h1>
+
+
+
+<p>The application API is in the package <code>com.hp.hpl.jena.query</code>.</p>
+
+
+
+<p>Other packages contain various parts of the system (execution engine,
+parsers, testing etc).  Most applications will only need to use the main 
+package. Only applications wishing to programmatically
+build queries or modify the behaviour of the query engine need to use the others packages directly.</p>
+
+
+
+<h2>Key Classes</h2>
+
+
+
+<p>The package <code>com.hp.hpl.jena.query</code> is the main application package.</p>
+
+
+
+<ul>
+
+
+  <li><code>Query</code> - a class that represents the application query. It is 
+	a container for all the details of the query. Objects of class Query are 
+	normally created by calling one of the methods of <code>QueryFactory</code> methods which provide access 
+	to the various parsers.</li>
+
+
+  <li><code>QueryExecution</code> - represents one execution of a query.</li>
+
+
+  <li><code>QueryExecutionFactory</code> - a place to get <code>QueryExecution</code> instances</li>
+
+  <li><code>DatasetFactory</code> - a place to make datasets, including making a
+  <code>DataSource</code> (an updatable <code>Dataset</code>)</li>
+
+
+  
+  <li>For SELECT queries:
+    
+    
+    <ul>
+
+
+      <li><code>QuerySolution</code> - A single solution to the query</li>
+
+
+      <li><code>ResultSet</code> - All the QuerySolutions.  An iterator.</li>
+
+
+      <li><code>ResultSetFormatter</code>
+          - turn a ResultSet into various forms; into text,
+          into an RDF graph (Model, in Jena terminology)
+          or as plain XML</li>
+
+
+    
+    
+    </ul>
+
+
+  </li>
+
+
+</ul>
+
+
+
+<h2>SELECT queries</h2>
+
+
+
+<p>The basic steps in making a SELECT query are outlined in the example below. A 
+query is created from a string using the <code>QueryFactory</code>. The query 
+and model 
+or RDF dataset to be queried are then passed to <code>QueryExecutionFactory</code> to produce an instance of 
+a query execution. Result are handled in a loop and finally the query execution 
+is closed.</p>
+
+
+<pre class="box">  import com.hp.hpl.jena.query.* ;<br><br>  Model model = ... ;<br>  String queryString = " .... " ;<br>  <b>Query</b> query = <b>QueryFactory.create</b>(queryString) ;<br>  <b>QueryExecution</b> qexec = <b>QueryExecutionFactory.create</b>(query, model) ;<br>  try {<br><b>    ResultSet</b> results = qexec.<b>execSelect</b>() ;<br>    for ( ; results.hasNext() ; )<br>    {<br>      <b>QuerySolution</b> soln = results.<b>nextSolution</b>() ;<br>      RDFNode x = soln.<b>get</b>("<span style="font-style: italic;">varName</span>") ;       // Get a result variable by name.<br>      Resource r = soln.getResource("<span style="font-style: italic;">VarR</span>") ; // Get a result variable - must be a resource<br>      Literal l = soln.getLiteral("<span style="font-style: italic;">VarL</span>") ;   // Get a result variable - must be a literal<br>    }<br>  } finally { qexec.close() ; }<br></pre>
+
+
+
+
+<p>It is important to cleanly close the query execution when finished. System 
+resources connected to persistent storage may need to be released.</p>
+
+<p>The step of creating a query and then a query execution can be reduced to one step in some common cases:</p>
+
+<pre class="box">  import com.hp.hpl.jena.query.* ;<br><br>  Model model = ... ;<br>  String queryString = " .... " ;<br>  <b>QueryExecution</b> qexec = <b>QueryExecutionFactory.create</b>(queryString, model) ;<br>  try {<br><b>   ResultSet</b> results = qexec.<b>execSelect</b>() ;<br>    . . .<br>  } finally { qexec.close() ; }</pre>
+
+
+<h3>Example: formatting a result set</h3>
+
+
+<p>Instead of a loop to deal with each row in the result set, the application can 
+call an operation of the ResultSetFormatter. This is what the command line 
+applications do.</p>
+
+
+<p>Example: processing results to produce a simple text presentation:</p>
+
+
+
+<pre class="box">    ResultSetFormatter fmt = new ResultSetFormatter(results, query) ;<br>    fmt.printAll(System.out) ;<br></pre>
+
+
+    
+<p>or simply:</p>
+
+
+<pre class="box"> ResultSetFormatter.out(System.out, results, query) ;<br></pre>
+
+
+
+<h3>
+    Example: Processing results</h3>
+
+
+<p>
+    The results are objects from the Jena RDF API and API calls, which do not 
+	modify the model, can be mixed with query results processing: <br>
+
+
+</p>
+
+
+
+
+<pre class="box">  for ( ; results.hasNext() ; )<br>  {<br>      // Access variables: soln.get("x") ;<br>      <b>RDFNode</b> n = soln.get("x") ; // "x" is a variable in the query<br>      // If you need to test the thing returned<br>      if ( n.<b>isLiteral</b>() )<br>          ((Literal)n).getLexicalForm() ;<br>      if ( n.<b>isResource</b>() )<br>      {<br>         Resource r = (Resource)n ;<br>          if ( ! r.<b>isAnon</b>() )<br>          {<br>            ... r.<b>getURI</b>() ...<br>          }<br>      }<br>  }<br></pre>
+
+
+
+
+<p>Updates to the model must be carried out after the query execution has 
+finished. 
+Typically, this involves collecting results of interest in a local datastructure 
+and looping over that structure after the query execution has finished and been 
+closed.</p>
+
+
+
+<h2>CONSTRUCT Queries</h2>
+
+
+<p><code>CONSTRUCT</code> queries return a single RDF graph. As usual, the query 
+execution should be closed after use.</p>
+
+
+<pre class="box"><b>Query</b> query = <b>QueryFactory.create</b>(queryString) ;<br><b>QueryExecution</b> qexec = <b>QueryExecutionFactory.create</b>(query, model) ;<br><b>Model</b> resultModel = qexec.<b>execConstruct</b>() ;<br>qexec.close() ;</pre>
+
+
+<h2>DESCRIBE Queries</h2>
+
+
+<p><code>DESCRIBE</code> queries return a single RDF graph.&nbsp;
+<a href="extension.html#describeHandlers">Different handlers</a> for the <code>
+DESCRIBE</code> operation can be loaded by added by the application.</p>
+
+
+<pre class="box"><b>Query</b> query = <b>QueryFactory.create</b>(queryString) ;<br><b>QueryExecution</b> qexec = <b>QueryExecutionFactory.create</b>(query, model) ;<br><b>Model</b> resultModel = qexec.<b>execDescribe</b>() ;<br>qexec.close() ;</pre>
+
+
+<h2>ASK Queries</h2>
+
+
+<p>The operation Query.execAsk() returns a boolean value indicating whether the 
+query pattern matched the graph or dataset or not.</p>
+
+
+<pre class="box"><b>Query</b> query = <b>QueryFactory.create</b>(queryString) ;<br><b>QueryExecution</b> qexec = <b>QueryExecutionFactory.create</b>(query, model) ;<br><b>boolean</b> result = qexec.<b>execAsk</b>() ;<br>qexec.close() ;</pre>
+
+
+
+<h2>Formatting XML results</h2>
+
+
+<p>The <code>ResultSetFormatter</code> class has methods to write out the
+<a href="http://www.w3.org/TR/rdf-sparql-XMLres/">SPARQL Query Results XML 
+Format</a>. See ResultSetFormatter.outputAsXML method.</p>
+
+<h2>Datasets</h2>
+
+<p>The examples above are all queries on a single model.&nbsp; A SPARQL query is 
+made on a dataset, which is a default graph and zero or more named graphs. 
+Datasets can be constructed using the <code>DatasetFactory</code>:</p>
+
+
+<pre class="box">String dftGraphURI = "file:default-graph.ttl" ;<br>List namedGraphURIs = new ArrayList() ;<br>namedGraphURIs.add("file:named-1.ttl") ;<br>namedGraphURIs.add("file:named-2.ttl") ;<br><br>Query query = QueryFactory.create(queryString) ;<br><br><b>Dataset</b> <b>dataset</b> = <b>DatsetFactory.create</b>(dftGraphURI, namedGraphURIs) ;<br>QueryExecution qExec = QueryExecutionFactory.create(query, <b>dataset</b>) ;<br>try { ... }<br>finally { qExec.close() ; }</pre>
+
+<p>Already existing models can also be used: A <code>DataSource</code> is an 
+updatable dataset: </p>
+
+
+<pre class="box"><b>DataSource dataSource = DatsetFactory.create</b>() ;<br><b>dataSource.setDefaultModel</b>(model) ;<br><b>dataSource.addNamedModel</b>("http://example/named-1", modelX) ;<br><b>dataSource.addNamedModel</b>("http://example/named-2", modelY) ;<br>QueryExecution qExec = QueryExecutionFactory.create(query, <b>dataSource</b>) ;</pre>
+
+<p>&nbsp;</p>
+
+
+
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+
+
+</body>
+</html>

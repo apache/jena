@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  RELAX NG Schema for SPARQL Query Results XML Format
+  
+  This XML schema is normative.
+  $Id$
+  
+  
+-->
+<grammar xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:res="http://www.w3.org/2005/sparql-results#" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <ref name="sparql"/>
+  </start>
+  <define name="xmlLang">
+    <attribute name="xml:lang"/>
+  </define>
+  <!--
+    Using xsi namespaced terms such as xsi:schemaLocation
+    is tricky. as Relax requires them to be given when used.  However,
+    WXS has this knowledge built in and validators complain when they
+    are explicitly listed without a schemaLocation (which is forbidden by
+    the WXS spec)..
+  -->
+  <define name="xsiSchemaLoc">
+    <attribute name="xsi:schemaLocation">
+      <data type="string" datatypeLibrary=""/>
+    </attribute>
+  </define>
+  <define name="sparql">
+    <element name="res:sparql">
+      <optional>
+        <ref name="xsiSchemaLoc"/>
+      </optional>
+      <ref name="head"/>
+      <choice>
+        <ref name="results"/>
+        <ref name="boolean"/>
+      </choice>
+    </element>
+  </define>
+  <define name="head">
+    <element name="res:head">
+      <zeroOrMore>
+        <ref name="varName"/>
+      </zeroOrMore>
+      <zeroOrMore>
+        <ref name="link"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="varName">
+    <element name="res:variable">
+      <ref name="nameAttr"/>
+    </element>
+  </define>
+  <define name="nameAttr">
+    <attribute name="name">
+      <data type="NMTOKEN"/>
+    </attribute>
+  </define>
+  <define name="hrefAttr">
+    <attribute name="href">
+      <ref name="URI-reference"/>
+    </attribute>
+  </define>
+  <define name="link">
+    <element name="res:link">
+      <ref name="hrefAttr"/>
+    </element>
+  </define>
+  <define name="ordered">
+    <attribute name="ordered">
+      <data type="boolean"/>
+    </attribute>
+  </define>
+  <define name="distinct">
+    <attribute name="distinct">
+      <data type="boolean"/>
+    </attribute>
+  </define>
+  <define name="results">
+    <element name="res:results">
+      <ref name="ordered"/>
+      <ref name="distinct"/>
+      <zeroOrMore>
+        <ref name="result"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <!-- ASK -->
+  <define name="boolean">
+    <element name="res:boolean">
+      <data type="boolean"/>
+    </element>
+  </define>
+  <!-- SELECT solution, single match or row -->
+  <define name="result">
+    <element name="res:result">
+      <optional>
+        <ref name="indexAttr"/>
+      </optional>
+      <zeroOrMore>
+        <ref name="binding"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <!-- SELECT binding in a solution -->
+  <define name="binding">
+    <element name="res:binding">
+      <ref name="nameAttr"/>
+      <choice>
+        <ref name="uri"/>
+        <ref name="bnode"/>
+        <ref name="literal"/>
+        <ref name="unbound"/>
+      </choice>
+    </element>
+  </define>
+  <define name="uri">
+    <element name="res:uri">
+      <text/>
+    </element>
+  </define>
+  <define name="bnode">
+    <element name="res:bnode">
+      <text/>
+    </element>
+  </define>
+  <define name="literal">
+    <element name="res:literal">
+      <optional>
+        <ref name="datatypeAttr"/>
+      </optional>
+      <optional>
+        <ref name="xmlLang"/>
+      </optional>
+      <text/>
+    </element>
+  </define>
+  <define name="unbound">
+    <element name="res:unbound">
+      <empty/>
+    </element>
+  </define>
+  <define name="indexAttr">
+    <attribute name="index">
+      <data type="positiveInteger"/>
+    </attribute>
+  </define>
+  <define name="datatypeAttr">
+    <attribute name="datatype">
+      <ref name="URI-reference"/>
+    </attribute>
+  </define>
+  <define name="URI-reference">
+    <data type="anyURI"/>
+  </define>
+</grammar>

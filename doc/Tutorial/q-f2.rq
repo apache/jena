@@ -1,0 +1,8 @@
+PREFIX info:        <http://somewhere/peopleInfo#>
+
+SELECT ?resource
+WHERE 
+  {
+     ?resource info:age ?age .
+     FILTER (?age >= 24)
+  }

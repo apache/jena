@@ -1,0 +1,131 @@
+[<EOF>]          ::=
+[<Q_IRIref>]   ::= '<' ([^<>"{}|^`]-[#x00-#x20])* '>'
+<QNAME_NS>   ::= <NCNAME_PREFIX>? ':'
+<QNAME_LN>   ::= <QNAME_NS> <NCNAME>
+<BLANK_NODE_LABEL>  ::= '_:' <NCNAME>
+<VAR1>       ::= '?' <VARNAME>
+<VAR2>       ::= '$' <VARNAME>
+//<LANGTAG>    ::= AT A2Z+ ('-' (A2ZN)+)*
+<LANGTAG>    ::= '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*
+// <#A2Z>       ::= [a-zA-Z]
+// <#A2ZN>      ::= [a-zA-Z0-9]
+
+<INTEGER>	::= [0-9]+
+<DECIMAL>   ::= ( [0-9]+ '.' [0-9]* | '.' [0-9]+ )
+
+// Optional exponent.
+//<DOUBLE> ::= [0-9]+ '.' [0-9]* <EXPONENT>? | '.' ([0-9])+ <EXPONENT>? | ([0-9])+ <EXPONENT>
+
+// Required exponent
+<DOUBLE> ::= [0-9]+ '.' [0-9]* <EXPONENT> | '.' ([0-9])+ <EXPONENT> | ([0-9])+ <EXPONENT>
+
+<#EXPONENT>  ::= [eE] [+-]? [0-9]+
+
+<STRING_LITERAL1> ::= "'" ( ([^#x27#x5C#xA#xD]) | <ECHAR> )* "'"
+<STRING_LITERAL2> ::= '"' ( ([^#x22#x5C#xA#xD]) | <ECHAR> )* '"'
+
+//<STRING_LITERAL_LONG1> ::= "'''" ( [^'\] | <ECHAR> | ("'" [^']) | ("''" [^']) )* "'''"
+//<STRING_LITERAL_LONG2> ::= '"""' ( [^"\] | <ECHAR> | ('"' [^"]) | ('""' [^"]) )* '"""'
+
+<STRING_LITERAL_LONG1> ::= "'''" ( ( "'" | "''" )? ( [^'\] | <ECHAR> ) )* "'''"
+<STRING_LITERAL_LONG2> ::= '"""' ( ( '"' | '""' )? ( [^"\] | <ECHAR> ) )* '"""'
+
+<ECHAR>           ::= '\' [tbnrf\"']
+//<HEX>             ::= [0-9] | [A-F] | [a-f]
+
+// The print value is the whitespace trimmed value after ::=
+
+[<KW_A>]       ::= 'a'
+
+[<BASE>]       ::= 'BASE'
+[<PREFIX>]     ::= 'PREFIX'
+[<SELECT>]     ::= 'SELECT'
+[<DESCRIBE>]   ::= 'DESCRIBE'
+[<CONSTRUCT>]  ::= 'CONSTRUCT'
+[<ASK>]        ::= 'ASK'
+[<DISTINCT>]   ::= 'DISTINCT'
+[<WHERE>]      ::= 'WHERE'
+
+[<LIMIT>]      ::= 'LIMIT'
+[<OFFSET>]     ::= 'OFFSET'
+[<ORDER>]      ::= 'ORDER'
+[<BY>]         ::= 'BY'
+
+[<FROM>]       ::= 'FROM'
+[<NAMED>]      ::= 'NAMED'
+
+[<ASC>]        ::= 'ASC'
+[<DESC>]       ::= 'DESC'
+
+[<FILTER>]     ::= 'FILTER'
+[<REGEXP>]     ::= 'REGEXP'
+[<GRAPH>]      ::= 'GRAPH'
+[<UNION>]      ::= 'UNION'
+[<OPTIONAL>]   ::= 'OPTIONAL'
+[<BOUND>]      ::= 'BOUND'
+[<STR>]        ::= 'STR'
+[<URI>]        ::= 'URI'
+[<DTYPE>]      ::= 'DATATYPE'
+[<LANG>]       ::= 'LANG'
+[<LANGMATCHES>] ::= 'LANGMATCHES'
+
+//[<IS_IRI>]     ::= ('isURI'|'isIRI')
+[<IS_IRI>]     ::= 'isIRI'
+[<IS_URI>]     ::= 'isURI'
+[<IS_BLANK>]   ::= 'isBLANK'
+[<IS_LITERAL>] ::= 'isLITERAL'
+[<SAME_TERM>]  ::= 'sameTerm'
+[<REGEX>]      ::= 'REGEX'
+[<TRUE>]       ::= 'true'
+[<FALSE>]      ::= 'false'
+
+//[<NIL>]        ::= '(' ')'
+<NIL>          ::= '(' <WS>* ')'
+<WS>           ::= #x20 | #x9 | #xD | #xA
+
+[<LPAREN>]     ::= '('
+[<RPAREN>]     ::= ')'
+
+[<LBRACE>]     ::= '{'
+[<RBRACE>]     ::= '}'
+
+[<LBRACKET>]   ::= '['
+[<RBRACKET>]   ::= ']'
+
+//[<ANON>]       ::= '[' ']'
+<ANON>       ::= '['  <WS>* ']'
+
+[<SEMICOLON>]  ::= ';'
+[<COMMA>]      ::= ','
+[<DOT>]        ::= '.'
+[<GT>]         ::= '>'
+[<LT>]         ::= '<'
+[<BANG>]       ::= '!'
+[<HOOK>]       ::= '?'
+[<COLON>]      ::= ':'
+[<EQ>]         ::= '='
+[<NE>]         ::= '!='
+[<LE>]         ::= '<='
+[<GE>]         ::= '>='
+[<SC_OR>]      ::= '||'
+[<SC_AND>]     ::= '&&'
+[<INCR>]       ::= '++'
+[<DECR>]       ::= '--'
+[<PLUS>]       ::= '+'
+[<MINUS>]      ::= '-'
+[<STAR>]       ::= '*'
+[<SLASH>]      ::= '/'
+[<DATATYPE>]   ::= '^^'
+//[<AT>]         ::= '@'
+
+<#NCCHAR1P>     ::= [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+<#NCCHAR1>      ::= <NCCHAR1P> | '_'
+
+
+<#VARNAME>      ::=  ( <NCCHAR1>  | [0-9] ) ( <NCCHAR1> | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
+
+// Without trailing dots in qnames
+<#NCCHAR>      ::=  <NCCHAR1> | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+<#NCNAME_PREFIX> ::= <NCCHAR1P> ((<NCCHAR>|'.')* <NCCHAR>)?
+<#NCNAME>       ::= <NCCHAR1>  ((<NCCHAR>|'.')* <NCCHAR>)?

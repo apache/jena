@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  
+  RELAX NG Schema for SPARQL Query Results XML Format
+  
+  This XML schema is normative.
+  $Id$
+  
+  
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.w3.org/2005/sparql-results#" xmlns:res="http://www.w3.org/2005/sparql-results#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+  <xs:attributeGroup name="xmlLang">
+    <xs:attribute ref="xml:lang" use="required"/>
+  </xs:attributeGroup>
+  <!--
+    Using xsi namespaced terms such as xsi:schemaLocation
+    is tricky. as Relax requires them to be given when used.  However,
+    WXS has this knowledge built in and validators complain when they
+    are explicitly listed without a schemaLocation (which is forbidden by
+    the WXS spec)..
+  -->
+  <xs:element name="sparql">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="res:head"/>
+        <xs:choice>
+          <xs:element ref="res:results"/>
+          <xs:element ref="res:boolean"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="head">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="res:variable"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="res:link"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="variable">
+    <xs:complexType>
+      <xs:attributeGroup ref="res:nameAttr"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="nameAttr">
+    <xs:attribute name="name" use="required" type="xs:NMTOKEN"/>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="hrefAttr">
+    <xs:attribute name="href" use="required" type="res:URI-reference"/>
+  </xs:attributeGroup>
+  <xs:element name="link">
+    <xs:complexType>
+      <xs:attributeGroup ref="res:hrefAttr"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:attributeGroup name="ordered">
+    <xs:attribute name="ordered" use="required" type="xs:boolean"/>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="distinct">
+    <xs:attribute name="distinct" use="required" type="xs:boolean"/>
+  </xs:attributeGroup>
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="res:result"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="res:ordered"/>
+      <xs:attributeGroup ref="res:distinct"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- ASK -->
+  <xs:element name="boolean" type="xs:boolean"/>
+  <!-- SELECT solution, single match or row -->
+  <xs:element name="result">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="res:binding"/>
+      </xs:sequence>
+      <xs:attribute name="index" type="xs:positiveInteger"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- SELECT binding in a solution -->
+  <xs:element name="binding">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="res:uri"/>
+        <xs:element ref="res:bnode"/>
+        <xs:element ref="res:literal"/>
+        <xs:element ref="res:unbound"/>
+      </xs:choice>
+      <xs:attributeGroup ref="res:nameAttr"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="uri" type="xs:string"/>
+  <xs:element name="bnode" type="xs:string"/>
+  <xs:element name="literal">
+    <xs:complexType mixed="true">
+      <xs:attribute name="datatype" type="res:URI-reference"/>
+      <xs:attribute ref="xml:lang"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="unbound">
+    <xs:complexType/>
+  </xs:element>
+  <xs:attributeGroup name="indexAttr">
+    <xs:attribute name="index" use="required" type="xs:positiveInteger"/>
+  </xs:attributeGroup>
+  <xs:attributeGroup name="datatypeAttr">
+    <xs:attribute name="datatype" use="required" type="res:URI-reference"/>
+  </xs:attributeGroup>
+  <xs:simpleType name="URI-reference">
+    <xs:restriction base="xs:anyURI"/>
+  </xs:simpleType>
+</xs:schema>

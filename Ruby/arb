@@ -1,0 +1,21 @@
+#!/bin/bash
+# Run ARQ through a jRuby script
+
+S=":"
+if [ "$OSTYPE" == "cygwin" ]; then S=";"; fi
+
+CP="$(arq_path)"
+
+if [ "$JRUBY_HOME" = "" ]
+then
+    echo "JRUBY_HOME not defined" 2>&1
+    exit 1
+    fi
+
+if [ $# = 0 ]
+then
+    echo "No scripts to execute" 2>&1
+    exit 2
+    fi
+
+java -cp "$JRUBY_HOME/lib/jruby.jar${S}$CP" org.jruby.Main "$@"

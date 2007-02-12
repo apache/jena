@@ -1,0 +1,4 @@
+vti_encoding:SR|utf8-nl
+vti_timelastmodified:TR|12 Oct 2005 09:28:39 -0000
+vti_extenderversion:SR|6.0.2.6353
+vti_backlinkinfo:VX|Licenses/index.html

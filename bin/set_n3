@@ -1,0 +1,24 @@
+
+B="http://jena.hpl.hp.com/n3/properties/"
+#N3_FMT="-Dcom.hp.hpl.jena.n3.N3JenaWriter.writer=N3-TRIPLE"
+#N3_FMT="-Dcom.hp.hpl.jena.n3.N3JenaWriter.writer=N3-PLAIN"
+#N3_FMT="-Dcom.hp.hpl.jena.n3.N3JenaWriter.writer=N3-PP"
+
+P=""
+## P="$P -D${B}objectsLists=true"
+## P="$P -D${B}minGap=1"
+## P="$P -D${B}objectLists=1"
+## P="$P -D${B}subjectColumn=6"
+## P="$P -D${B}propertyColumn=8"
+## P="$P -D${B}indentProperty=6"
+## P="$P -D${B}widePropertyLen=20"
+## P="$P -D${B}abbrevBaseURI=true"
+
+
+P="$P -D${B}indentProperty=4"
+P="$P -D${B}minGap=2"
+P="$P -D${B}propertyColumn=12"
+P="$P -D${B}usePropertySymbols=false"
+
+JAVA_OPTS_N3="$N3_FMT $P"
+echo "$JAVA_OPTS_N3"

@@ -1,0 +1,11 @@
+#!/bin/perl
+
+
+# print $ARGV[0],"\n" ;
+
+@a = split /\;/ , $ARGV[0] ;
+
+foreach $a (@a)
+{
+    print "    ",$a, "\n" ;
+}

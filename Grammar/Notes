@@ -1,0 +1,49 @@
+==== The Grammars
+
+master.jj - Template for SPARQL and ARQ
+    cpp input to produce sparql.jj or arq.jj
+
+sparql.jj - The DAWG working group syntax
+    This should be exactly the grammar in the DAWG rec.
+    There is a second pass to reorganise for grouped triple patterns.
+    Generates com.hp.hpl.jena.query.parser.sparql.SPARQLParser
+
+arq.jj - The native query language of the query engine
+    Generates com.hp.hpl.jena.query.parser.arq.ARQParser
+
+sparql-alt.jj 
+    Old grammar - the DAWG grammar until March 2005 when it changed from
+    RDQL style triples to being more N3/Turtle-like.
+    DEPRECATED
+
+rdql-arq.jjt
+    RDQL for the ARQ query engine.
+    Generates com.hp.hpl.jena.query.parser.rdql.RDQLParser
+
+==== Making the parsers
+
+See "grammar"
+Note this runs cpp over master.jj to produce arq.jj or sparql.jj
+
+==== Making the HTML
+
+sparql.txt is produced by "grammar"
+
+Run "jj2tokens sparql.jj > tokens.txt"
+Manually tidy, noting which to inline
+
+# this knowns which files to use
+jj2html > X.html 
+
+============================
+
+javacc:
+
+(cd tmp ; javacc -FORCE_LA_CHECK=true ../sparql.jj ; rm * )
+
+==========================
+Yacker:
+Get text
+Remove /* IRI comment */
+Insert @terminals
+Fix all \

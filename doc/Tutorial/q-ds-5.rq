@@ -1,0 +1,11 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
+PREFIX  :       <.>
+
+SELECT *
+FROM <ds-dft.ttl>
+FROM NAMED <ds-ng-1.ttl>
+FROM NAMED <ds-ng-2.ttl>
+{ 
+    { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } 
+}

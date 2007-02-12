@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ "$ARQROOT" == "" ]
+then
+    echo "ARQROOT not set" 1>&2
+    exit 1
+    fi
+
+CP="$($ARQROOT/bin/arq_path)"
+
+#JAVA_OPTS_N3=$($ARQROOT/bin/arq_n3)
+
+#SOCKS="${SOCKS:-}"
+
+java $JAVA_OPTS_N3 $SOCKS -cp "$CP" arq.qtest "$@"
