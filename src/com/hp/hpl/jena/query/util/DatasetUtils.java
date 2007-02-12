@@ -1,0 +1,214 @@
+/*
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.query.util;
+
+import java.util.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.core.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileManager;
+
+/** Internal Dataset/DataSource factory + graph equivalents. */
+
+public class DatasetUtils
+{
+    static private Log log = LogFactory.getLog(DatasetUtils.class) ;
+    
+    public static Dataset createDataset(String uri, List namedSourceList)
+    {
+        return createDataset(uri, namedSourceList, null, null) ;
+    }
+
+    public static Dataset createDataset(String uri, List namedSourceList,
+                                        FileManager fileManager, String baseURI)
+    {
+        List uriList = new ArrayList() ;
+        uriList.add(uri) ;
+        return createDataset(uriList, namedSourceList, fileManager, baseURI) ;
+    }
+    
+    public static Dataset createDataset(List uriList, List namedSourceList)
+    {
+        return createDataset(uriList, namedSourceList, null, null) ;
+    }
+
+    public static Dataset createDataset(List uriList, List namedSourceList,
+                                        FileManager fileManager, String baseURI)
+    {
+        DataSource ds = new DataSourceImpl() ;
+        addInGraphs(ds, uriList, namedSourceList, fileManager, baseURI) ;
+        return ds ;
+    }
+
+    public static Dataset createDataset(DatasetDesc datasetDesc)
+    {
+        return createDataset(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), null, null) ;
+    }
+
+    public static Dataset createDataset(DatasetDesc datasetDesc,  
+                                        FileManager fileManager, String baseURI)
+    {
+        return createDataset(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), fileManager, baseURI) ;
+    }
+    
+    
+    /** add graphs into an exiting DataSource */
+    public static Dataset addInGraphs(DataSource ds, List uriList, List namedSourceList)
+    {
+        return addInGraphs(ds, uriList, namedSourceList, null, null) ;
+    }
+    
+    /** add graphs into an exiting DataSource */
+    public static Dataset addInGraphs(DataSource ds, List uriList, List namedSourceList,
+                                      FileManager fileManager, String baseURI)
+    {
+        
+        if ( fileManager == null )
+            fileManager = FileManager.get() ;
+        
+        if ( ds.getDefaultModel() == null )
+            // Merge into background graph
+            ds.setDefaultModel(GraphUtils.makeDefaultModel()) ;
+        
+        if ( uriList != null )
+        {
+            for (Iterator iter = uriList.iterator() ; iter.hasNext() ; )
+            {
+                String sourceURI = (String)iter.next() ;
+                String absURI = null ;
+                if ( baseURI != null )
+                    absURI = RelURI.resolve(sourceURI, baseURI) ;
+                else
+                    absURI = RelURI.resolve(sourceURI) ;
+                log.debug("Load(unnamed): "+sourceURI) ;
+                fileManager.readModel(ds.getDefaultModel(), sourceURI, absURI, null) ;
+            }
+        }
+            
+        
+        if ( namedSourceList != null )
+        {
+            for (Iterator iter = namedSourceList.iterator() ; iter.hasNext() ; )
+            {
+                String sourceURI = (String)iter.next() ;
+                String absURI = null ;
+                if ( baseURI != null )
+                    absURI = RelURI.resolve(sourceURI, baseURI) ;
+                else
+                    absURI = RelURI.resolve(sourceURI) ;
+                log.debug("Load(named): "+sourceURI+" as "+absURI) ;
+                Model m = GraphUtils.makeDefaultModel() ;
+                fileManager.readModel(m, sourceURI, absURI, null) ;
+                ds.addNamedModel(absURI, m) ;
+            }
+        }
+        return ds ;
+    }
+    
+    // ---- DatasetGraph level.
+    
+    public static DatasetGraph createDatasetGraph(DatasetDesc datasetDesc)
+    {
+        return createDatasetGraph(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), null, null) ;
+    }
+
+    public static DatasetGraph createDatasetGraph(DatasetDesc datasetDesc,  
+                                                  FileManager fileManager, String baseURI)
+    {
+        return createDatasetGraph(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), fileManager, baseURI) ;
+    }
+    
+    
+        
+    public static DatasetGraph createDatasetGraph(String uri, List namedSourceList,
+                                                  FileManager fileManager, String baseURI)
+   {
+       List uriList = new ArrayList() ;
+       uriList.add(uri) ;
+       return createDatasetGraph(uriList, namedSourceList, fileManager, baseURI) ;
+   }
+
+    public static DatasetGraph createDatasetGraph(List uriList, List namedSourceList,
+                                                  FileManager fileManager, String baseURI)
+    {
+        DataSourceGraphImpl ds = new DataSourceGraphImpl() ;
+        
+        if ( fileManager == null )
+            fileManager = FileManager.get() ;
+
+        // Merge into background graph
+        if ( uriList != null )
+        {
+            Model m = GraphUtils.makeDefaultModel() ;
+            for (Iterator iter = uriList.iterator() ; iter.hasNext() ; )
+            {
+                String sourceURI = (String)iter.next() ;
+                String absURI = null ;
+                if ( baseURI != null )
+                    absURI = RelURI.resolve(sourceURI, baseURI) ;
+                else
+                    absURI = RelURI.resolve(sourceURI) ;
+                log.debug("Load(unnamed): "+sourceURI) ;
+                // FileManager.readGraph?
+                fileManager.readModel(m, sourceURI, absURI, null) ;
+            }
+            ds.setDefaultGraph(m.getGraph()) ;
+        }
+        else
+        {
+            ds.setDefaultGraph(GraphUtils.makeDefaultModel().getGraph()) ;
+        }
+        
+        if ( namedSourceList != null )
+        {
+            for (Iterator iter = namedSourceList.iterator() ; iter.hasNext() ; )
+            {
+                String sourceURI = (String)iter.next() ;
+                String absURI = null ;
+                if ( baseURI != null )
+                    absURI = RelURI.resolve(sourceURI, baseURI) ;
+                else
+                    absURI = RelURI.resolve(sourceURI) ;
+                log.debug("Load(named): "+sourceURI+" as "+absURI) ;
+                Model m = fileManager.loadModel(sourceURI, absURI, null) ;
+                ds.addNamedGraph(absURI, m.getGraph()) ;
+            }
+        }
+        return ds ;
+    }
+}
+ 
+/*
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

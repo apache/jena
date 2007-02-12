@@ -1,0 +1,87 @@
+/*
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.query.engine.binding;
+
+import java.util.* ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.core.Var;
+
+
+/** A mapping from a name to a value such that we can create a tree of levels
+ *  with higher (earlier levels) being shared.
+ *  Looking up a name is done by looking in the current level,
+ *  then trying the parent is not found. 
+ * 
+ * @author   Andy Seaborne
+ * @version  $Id: BindingMap.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
+ */
+
+
+public class BindingMap extends BindingBase
+{
+    // Bindings are often small.  Is this overkill? 
+    Map map = new HashMap() ;
+    
+    public BindingMap(Binding parent) { super(parent) ; }
+    public BindingMap() { super(BindingRoot.create()) ; }
+
+    /** Add a (name,value) */
+    
+    protected void add1(Var var, Node node)
+    {
+        map.put(var, node) ;
+    }
+
+    
+    /** Iterate over all the names of variables.
+     */
+    public Iterator vars1() 
+    {
+        // Assumes that varnames are NOT duplicated.
+        Iterator iter = map.keySet().iterator() ;
+        return iter ;
+    }
+    
+    public boolean contains1(Var var)
+    {
+        return map.containsKey(var) ;
+    }
+    
+    public Node get1(Var var)
+    {
+        return (Node)map.get(var) ;
+    }
+
+    protected void checkAdd1(Var v, Node node) { }
+}
+
+/*
+ *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

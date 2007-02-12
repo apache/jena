@@ -1,0 +1,196 @@
+/*
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * [See end of file]
+ */
+
+
+package arq;
+
+import arq.cmd.CmdException;
+import arq.cmd.CmdUtils;
+import arq.cmd.TerminationException;
+import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdLineArgs;
+
+import com.hp.hpl.jena.Jena;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.query.core.ARQConstants;
+import com.hp.hpl.jena.query.engine.binding.BindingMap;
+import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprEvalException;
+import com.hp.hpl.jena.query.expr.NodeValue;
+import com.hp.hpl.jena.query.util.ExprUtils;
+import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.shared.PrefixMapping;
+
+/** A program to execute expressions from the command line.
+  *
+ * @author  Andy Seaborne
+ * @version $Id: qexpr.java,v 1.18 2007/02/06 17:06:27 andy_seaborne Exp $
+ */
+
+public class qexpr
+{
+    // TODO Convert to extends CmdArgModule 
+    static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
+
+    //static protected Log logger = LogFactory.getLog( arq.class );
+
+    public static void main (String [] argv)
+    {
+        try {
+            main2(argv) ;
+        }
+        catch (TerminationException ex) { System.exit(ex.getCode()) ; }
+        catch (CmdException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            if ( ex.getCause() != null )
+                ex.getCause().printStackTrace(System.err) ;
+        }
+        
+    }
+        
+    public static void main2(String [] argv)
+    {
+        
+        CmdLineArgs cl = new CmdLineArgs(argv) ;
+        
+        ArgDecl helpDecl = new ArgDecl(ArgDecl.NoValue, "h", "help") ;
+        cl.add(helpDecl) ;
+        
+        ArgDecl verboseDecl = new ArgDecl(ArgDecl.NoValue, "v", "verbose") ;
+        cl.add(verboseDecl) ;
+        
+        ArgDecl versionDecl = new ArgDecl(ArgDecl.NoValue, "ver", "version", "V") ;
+        cl.add(versionDecl) ;
+        
+        ArgDecl quietDecl = new ArgDecl(ArgDecl.NoValue, "q", "quiet") ;
+        cl.add(quietDecl) ;
+
+        ArgDecl reduceDecl =  new ArgDecl(ArgDecl.NoValue, "reduce", "fold", "simplify" ) ;
+        cl.add(reduceDecl) ;
+
+        ArgDecl printSPARQL =  new ArgDecl(ArgDecl.NoValue, "print") ;
+        cl.add(printSPARQL) ;
+
+        ArgDecl printPrefix =  new ArgDecl(ArgDecl.NoValue, "prefix", "printPrefix", "printprefix") ;
+        cl.add(printPrefix) ;
+
+        
+        try {
+            cl.process() ;
+        } catch (IllegalArgumentException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            usage(System.err) ;
+            throw new CmdException() ;
+        }
+
+        if ( cl.contains(helpDecl) )
+        {
+            usage() ;
+            throw new TerminationException(0) ;
+        }
+        
+        if ( cl.contains(versionDecl) )
+        {
+            System.out.println("ARQ Version: "+ARQ.VERSION+" (Jena: "+Jena.VERSION+")") ;
+            throw new TerminationException(0) ;
+        }
+ 
+        // ==== General things
+        boolean verbose = cl.contains(verboseDecl) ;
+        boolean quiet = cl.contains(quietDecl) ;
+
+        boolean actionCopySubstitute = cl.contains(reduceDecl) ;
+        boolean actionPrintSPARQL = cl.contains(printSPARQL) ;
+        boolean actionPrintPrefix = cl.contains(printPrefix) ;
+        
+        // ==== Do it
+        
+        for ( int i = 0 ; i < cl.getNumPositional() ; i++ )
+        {
+            String exprStr = cl.getPositionalArg(i) ;
+            exprStr = cl.indirect(exprStr) ;
+            
+            try {
+                PrefixMapping pmap = PrefixMapping.Factory.create()  ;
+                pmap.setNsPrefixes(ARQConstants.getGlobalPrefixMap()) ;
+                pmap.setNsPrefix("", "http://example/") ;
+                pmap.setNsPrefix("ex", "http://example/ns#") ;
+                
+                Expr expr = ExprUtils.parse(exprStr, pmap) ;
+                if ( verbose )
+                    System.out.print(expr.toString()+" => ") ;
+                
+                try {
+                    if ( actionCopySubstitute )
+                    {
+                        Expr e = expr.copySubstitute(new BindingMap(), true) ;
+                        
+                        System.out.println(e.toString()) ;
+                    }
+                    else if ( actionPrintSPARQL )
+                        System.out.println(ExprUtils.fmtSPARQL(expr)) ;
+                    else if ( actionPrintPrefix )
+                        System.out.println(ExprUtils.fmtPrefix(expr)) ;
+                    else
+                    {
+                        // Default action
+                        NodeValue r = expr.eval(null, null) ;
+                        //System.out.println(r.asQuotedString()) ;
+                        Node n = r.asNode() ;
+                        String s = FmtUtils.stringForNode(n) ;
+                        System.out.println(s) ;
+                    }
+                } catch (ExprEvalException ex)
+                {
+                    System.out.println("Exception: "+ex.getMessage()) ;
+                    throw new TerminationException(2) ;
+                }
+            } catch (QueryParseException ex)
+            {
+                System.err.println("Parse error: "+ex.getMessage()) ;
+                throw new TerminationException(2) ;
+            }
+        }
+    }
+    
+    static void usage() { usage(System.out) ; }
+    
+    static void usage(java.io.PrintStream out)
+    {
+        out.println("Usage: expression") ;
+    }
+
+ }
+
+/*
+ *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

@@ -1,0 +1,134 @@
+/*
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.query.serializer;
+
+
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.util.NodeToLabelMap;
+import com.hp.hpl.jena.shared.PrefixMapping;
+
+/** Information needed to serialize things */
+
+public class SerializationContext
+{
+    Query query ;
+    PrefixMapping prefixMap ;
+    NodeToLabelMap bNodeMap ;
+    
+    public SerializationContext(SerializationContext cxt)
+    {
+        query = cxt.query ;
+        prefixMap = cxt.prefixMap ;
+        bNodeMap = cxt.bNodeMap ;
+    }
+
+    public SerializationContext(Query query)
+    {
+        this(null,
+             (query.getPrefixMapping()!=null ? query.getPrefixMapping() : null) ,
+             null) ;
+    }
+    
+    public SerializationContext(PrefixMapping prefixMap)
+    {
+        this(null, prefixMap, null) ;
+    }
+
+    public SerializationContext()
+    {
+        this(null, null, null) ;
+    }
+    
+    public SerializationContext(Query _query, PrefixMapping _prefixMap, NodeToLabelMap bMap)
+    {
+        if ( prefixMap == null && query != null )
+            prefixMap = query.getPrefixMapping() ;
+
+        query = _query ;
+        prefixMap = _prefixMap ;
+        
+        bNodeMap = bMap ;
+        if ( bMap == null )
+            bNodeMap = new NodeToLabelMap("b", false) ;
+    }
+    
+    /**
+     * @return Returns the bNodeMap.
+     */
+    public NodeToLabelMap getBNodeMap()
+    {
+        return bNodeMap;
+    }
+    
+    /**
+     * @param nodeMap The bNodeMap to set.
+     */
+    public void setBNodeMap(NodeToLabelMap nodeMap)
+    {
+        bNodeMap = nodeMap;
+    }
+    
+    /**
+     * @return Returns the prefixMap.
+     */
+    public PrefixMapping getPrefixMapping()
+    {
+        return prefixMap;
+    }
+    
+    /**
+     * @param prefixMap The prefixMap to set.
+     */
+    public void setPrefixMapping(PrefixMapping prefixMap)
+    {
+        this.prefixMap = prefixMap;
+    }
+    
+    /**
+     * @return Returns the query.
+     */
+    public Query getQuery()
+    {
+        return query;
+    }
+    
+    /**
+     * @param query The query to set.
+     */
+    public void setQuery(Query query)
+    {
+        this.query = query;
+    }
+    
+}
+
+/*
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

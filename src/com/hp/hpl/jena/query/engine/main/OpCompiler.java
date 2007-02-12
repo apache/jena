@@ -1,0 +1,276 @@
+/*
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.query.engine.main;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.hp.hpl.jena.query.algebra.op.*;
+import com.hp.hpl.jena.query.core.ARQNotImplemented;
+import com.hp.hpl.jena.query.core.BasicPattern;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.BindingImmutable;
+import com.hp.hpl.jena.query.engine.binding.BindingRoot;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.engine.main.iterators.*;
+import com.hp.hpl.jena.query.expr.ExprList;
+
+
+public class OpCompiler
+{
+    // And filter placement in LeftJoins?
+    // Is this part of a more general algorithm of pushing the filter down
+    // when the vars are known to be fixed?
+    
+    
+    // TODO property function detemination by general tree rewriting - BGP special first.
+    //  By general BGP rewriting.  Stages.
+    //  (General tree rewrite is "Op => Op")
+    //   OpExtBase requires eval() but need better extensibility?
+    
+    static QueryIterator compile(Op op, ExecutionContext execCxt)
+    {
+        return compile(op, root(execCxt), execCxt) ;
+    }
+    
+    static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
+    {
+        OpCompiler compiler = new OpCompiler(execCxt) ;
+        QueryIterator q = compiler.compileOp(op, qIter) ;
+        return q ;
+    }
+
+    private ExecutionContext execCxt ;
+    private CompilerDispatch dispatcher = null ;
+    private FilterPlacement filterPlacement ;
+
+    private OpCompiler(ExecutionContext execCxt)
+    { 
+        this.execCxt = execCxt ;
+        dispatcher = new CompilerDispatch(this) ;
+        filterPlacement = new FilterPlacement(this, execCxt);
+    }
+
+    QueryIterator compileOp(Op op)
+    {
+        return compileOp(op, null) ;
+    }
+
+    QueryIterator compileOp(Op op, QueryIterator input)
+    {
+        return dispatcher.compile(op, input) ;
+    }
+        
+    QueryIterator compile(OpBGP opBGP, QueryIterator input)
+    {
+        BasicPattern pattern = opBGP.getPattern() ;
+        return StageProcessor.compile(pattern, input, execCxt) ;
+    }
+
+    QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)
+    {
+        // Turn into a OpGraph/OpBGP.
+        // First, separate out OpBGP's dependency on ElementBasicGraphPattern.
+        throw new ARQNotImplemented("compile/OpQuadPattern") ;
+    }
+
+    QueryIterator compile(OpJoin opJoin, QueryIterator input)
+    {
+        // TODO Consider building join lists and place filters carefully.  
+        // Place by fixed - if none present, place by optional
+        
+        // Look one level in for any filters with out-of-scope variables.
+        boolean canDoLinear = JoinClassifier.isLinear(opJoin) ;
+        
+        QueryIterator left = compileOp(opJoin.getLeft(), input) ;
+        
+        if ( canDoLinear )
+        {
+            // Pass left into right for streamed evaluation
+            QueryIterator right = compileOp(opJoin.getRight(), left) ;
+            return right ;
+        }
+        
+        // Input may be null?
+        // Can't do purely indexed (a filter referencing a variable out of scope is in the way)
+        // To consider: partial substitution for improved performance (but does it occur for real?)
+        QueryIterator right = compileOp(opJoin.getRight(), root()) ;
+        QueryIterator qIter = new QueryIterJoin(left, right, execCxt) ;
+        return qIter ;
+        // Worth doing anything about join(join(..))?  Probably not.
+    }
+
+    QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)
+    {
+        QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
+        // Do an indexed substitute into the right if possible.
+        boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
+
+        if ( canDoLinear )
+        {
+            // Pass left into right for substitution before right side evaluation.
+            QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), opLeftJoin.getExprs(), execCxt) ;
+            return  qIter ;
+        }
+
+        // Do it by sub-evaluation of left and right then left join.
+        // Can be expensive if RHS returns a lot.
+        // To consider: partial substitution for improved performance (but does it occur for real?)
+
+        QueryIterator right = compileOp(opLeftJoin.getRight(), root()) ;
+        QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExprs(), execCxt) ;
+        return qIter ;
+    }
+
+    QueryIterator compile(OpUnion opUnion, QueryIterator input)
+    {
+        List x = new ArrayList() ;
+        x.add(opUnion.getLeft()) ;
+
+        // Merge a casaded union
+        while (opUnion.getRight() instanceof OpUnion)
+        {
+            Op opUnionNext = (OpUnion)opUnion.getRight() ;
+            x.add(opUnionNext) ;
+        }
+        x.add(opUnion.getRight()) ;
+        QueryIterator cIter = new QueryIterSplit(input, x, execCxt) ;
+        return cIter ;
+    }
+
+    QueryIterator compile(OpFilter opFilter, QueryIterator input)
+    {
+        ExprList exprs = opFilter.getExprs() ;
+        Op base = opFilter.getSubOp() ;
+        
+        if ( base instanceof OpBGP )
+            return filterPlacement.placeFiltersBGP(exprs, ((OpBGP)base).getPattern(), input) ;
+
+        if ( base instanceof OpGraph )
+        {}
+
+//        if ( base instanceof OpQuadPattern )
+//            return filterPlacement.placeFilter(opFilter.getExpr(), (OpQuadPattern)base, input) ;
+        
+        // Tidy up.
+        if ( base instanceof OpJoin )
+        {
+            // Look for a join chain (i.e. the left is also a join)
+            List joinElts = new ArrayList() ;
+            joins(base, joinElts) ;
+            return filterPlacement.placeFiltersJoin(exprs, joinElts, input) ;
+        }
+        
+        // There must be a better way.
+        if ( base instanceof OpLeftJoin )
+        {
+            // Can push in if used only on the LHS 
+        }
+        
+        if ( base instanceof OpUnion )
+        {}
+
+        
+        return filterPlacement.buildOpFilter(exprs, base, input) ;
+    }
+
+    private static void joins(Op base, List joinElts)
+    {
+        while ( base instanceof OpJoin )
+        {
+            OpJoin join = (OpJoin)base ;
+            Op right = join.getRight() ; 
+            joins(right, joinElts) ;
+            base = join.getLeft() ;
+        }
+        // Not a join - add it.
+        joinElts.add(base) ;
+    }
+    
+    
+    QueryIterator compile(OpGraph opGraph, QueryIterator input)
+    { 
+        return new QueryIterGraph(input, opGraph, execCxt) ;
+    }
+    
+    QueryIterator compile(OpDatasetNames dsNames, QueryIterator input)
+    { throw new ARQNotImplemented("OpDatasetNames") ; }
+
+    QueryIterator compile(OpUnit opUnit, QueryIterator input)
+    { 
+        // Works for all the wrong reasons!
+        return input ;
+    }
+
+    QueryIterator compile(OpExt opExt, QueryIterator input)
+    { throw new ARQNotImplemented("OpExt") ; }
+
+    QueryIterator compile(OpOrder opOrder, QueryIterator input)
+    { 
+        QueryIterator qIter = compileOp(opOrder.getSubOp(), input) ;
+        qIter = new QueryIterSort(qIter, opOrder.getConditions(), execCxt) ;
+        return qIter ;
+    }
+
+    QueryIterator compile(OpProject opProject, QueryIterator input)
+    {
+        QueryIterator  qIter = compileOp(opProject.getSubOp(), input) ;
+        qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt) ;
+        return qIter ;
+    }
+
+    QueryIterator compile(OpSlice opSlice, QueryIterator input)
+    { 
+        QueryIterator qIter = compileOp(opSlice.getSubOp(), input) ;
+        qIter = new QueryIterSlice(qIter, opSlice.getStart(), opSlice.getLength(), execCxt) ;
+        return qIter ;
+        }
+
+    QueryIterator compile(OpDistinct opDistinct, QueryIterator input)
+    {
+        QueryIterator qIter = compileOp(opDistinct.getSubOp(), input) ;
+        qIter = BindingImmutable.create(opDistinct.getVars(), qIter, execCxt) ;
+        qIter = new QueryIterDistinct(qIter, execCxt) ;
+        return qIter ;
+    }
+
+    static private QueryIterator root(ExecutionContext execCxt)
+    {
+        return new QueryIterSingleton(BindingRoot.create(), execCxt) ;
+    }
+
+    private QueryIterator root()
+    { return root(execCxt) ; }
+}
+
+/*
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

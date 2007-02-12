@@ -1,0 +1,227 @@
+/*
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * [See end of file]
+ */
+
+
+package arq;
+
+import java.io.PrintStream;
+import java.util.Iterator;
+
+import arq.cmd.CmdException;
+import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModQueryIn;
+import arq.cmdline.ModQueryOut;
+
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.core.ARQInternalErrorException;
+import com.hp.hpl.jena.query.resultset.ResultSetException;
+import com.hp.hpl.jena.query.util.QueryUtils;
+import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.shared.JenaException;
+
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
+
+/** A program to parse and print a query.
+ *
+ * @author  Andy Seaborne
+ * @version $Id: qparse.java,v 1.60 2007/02/06 17:06:27 andy_seaborne Exp $
+ */
+
+public class qparse extends CmdARQ
+{
+    ModQueryIn    modQuery   =    new ModQueryIn() ;
+    ModQueryOut   modOutput  =    new ModQueryOut() ; 
+    protected final ArgDecl argDeclPrint  = new ArgDecl(ArgDecl.HasValue, "print") ;
+    
+    boolean printQuery = false ;
+    boolean printOp = false ;
+    boolean printQuad = false ;
+    boolean printPlan = false ;
+    
+    public static void main(String [] argv)
+    {
+        new qparse(argv).mainAndExit() ;
+    }
+    
+    protected qparse(String[] argv)
+    {
+        super(argv) ;
+        super.addModule(modQuery) ;
+        super.addModule(modOutput) ;
+        super.getUsage().startCategory(null) ;
+        super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad]") ;
+    }
+    
+    protected void processModulesAndArgs()
+    {
+        super.processModulesAndArgs() ;
+        
+        // Shoudl --out and --print be combined in some way?
+        
+        for ( Iterator iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
+        {
+            String arg = (String)iter.next() ;
+            if ( arg.equalsIgnoreCase("query"))         { printQuery = true ; }
+            else if ( arg.equalsIgnoreCase("op") ||
+                      arg.equalsIgnoreCase("alg") || 
+                      arg.equalsIgnoreCase("algebra") ) { printOp = true ; }
+            else if ( arg.equalsIgnoreCase("quad"))     { printQuad = true ; }
+            else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
+            else
+                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad") ;
+        }
+        
+        if ( ! printQuery && ! printOp && ! printQuad && ! printPlan )
+            printQuery = true ;
+    }
+
+    static String usage = qparse.class.getName()+" [--in syntax] [--out syntax] [--print=FORM] [\"query\"] | --query <file>" ;
+    
+    protected String getSummary()
+    {
+        return usage ;
+    }
+    
+    static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
+    //static final String divider = "" ;
+    boolean needDivider = false ;
+    private void divider()
+    {
+        if ( needDivider ) System.out.println(divider) ;
+        needDivider = true ;
+    }
+    
+    protected void exec()
+    {
+        try{
+            Query query = modQuery.getQuery() ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
+
+            // Check the query.
+            modOutput.checkParse(query) ;
+            
+            // Print the query out in some syntax
+            if ( printQuery )
+            {
+                divider() ;
+                modOutput.output(query) ;
+            }
+
+            // Print internal forms.
+            
+            if ( printOp )
+            {
+                divider() ;
+                QueryUtils.printOp(query) ;
+            }
+            
+            if ( printQuad )
+            {
+                divider() ;
+                QueryUtils.printQuad(query) ;
+                //System.out.println() ;
+            }
+            
+            if ( printPlan )
+            {
+                divider() ;
+                QueryUtils.printExecPlan(query, qExec) ;
+                //System.out.println() ;
+            }
+            
+        }
+        catch (ARQInternalErrorException intEx)
+        {
+            System.err.println(intEx.getMessage()) ;
+            if ( intEx.getCause() != null )
+            {
+                System.err.println("Cause:") ;
+                intEx.getCause().printStackTrace(System.err) ;
+                System.err.println() ;
+            }
+            intEx.printStackTrace(System.err) ;
+        }
+        catch (ResultSetException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            ex.printStackTrace(System.err) ;
+        }
+        catch (QueryException qEx)
+        {
+            //System.err.println(qEx.getMessage()) ;
+            throw new CmdException("Query Exeception", qEx) ;
+        }
+        catch (JenaException ex) { throw ex ; } 
+        catch (CmdException ex) { throw ex ; } 
+        catch (Exception ex)
+        {
+            throw new CmdException("Exception", ex) ;
+        }
+    }
+
+    protected String getCommandName() { return Utils.className(this) ; }
+
+//    static String usage = qparse.class.getName()+
+//            " [--in syntax] [--out syntax] [\"query\" | --query <file>\n"+
+//            "  where syntax is one of ARQ, SPARQL, RDQL\n" +
+//            "Other options: \n"+
+//            "  --num on|off   Line number ('on' by default)\n"+
+//            "  -n             Same as --num=off\n"+
+//            "  --base URI     Set the base URI for resolving relative URIs\n"+
+//            "  --plain        No pretty printing\n"+
+//            "  --parse        Parse only - don't print\n"+
+//            "  ---planning    Turn planning on/off\n"+
+//            "  --show X       Show internal structure (X = query or plan)\n" ;
+    
+    static void writeSyntaxes(String msg, PrintStream out)
+    {
+        if ( msg != null )
+            out.println(msg) ;
+        for ( Iterator iter = Syntax.querySyntaxNames.keys() ; iter.hasNext() ; )
+        {
+            String k = (String)(iter.next()) ;
+            Syntax v = Syntax.lookup(k) ;
+            k = padOut(k,10) ;
+            out.println("  "+k+"  "+v) ;
+        }
+    }
+    // printf ... java 1.5 .. mutter,mutter
+    static String padOut(String x, int len)
+    {
+        StringBuffer r = new StringBuffer(x) ;
+        for ( int i = x.length() ; i <= len ; i++ )
+            r.append(" ") ;
+        return r.toString() ; 
+    }
+}
+
+/*
+ *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
