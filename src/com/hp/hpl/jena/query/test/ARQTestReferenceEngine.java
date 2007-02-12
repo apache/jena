@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.query.test;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
  * a JUnit target.
  */
 
-public class TestReferenceEngine extends TestCase
+public class ARQTestReferenceEngine extends TestCase
 {
     public static TestSuite suite()
     {
