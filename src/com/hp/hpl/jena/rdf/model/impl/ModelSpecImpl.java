@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.61 2007-02-09 13:19:12 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.62 2007-02-12 15:51:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -22,7 +22,7 @@ import java.util.*;
     actual document managers, and so forth.
     
  	@author kers
-    @deprecated since ModelSpec is dead
+    @deprecated ModelSpecs are dead
 */
 public abstract class ModelSpecImpl implements ModelSpec
     {
@@ -63,6 +63,8 @@ public abstract class ModelSpecImpl implements ModelSpec
     protected Model description = emptyModel;
     
     protected Resource root = ResourceFactory.createResource( "" );
+
+    protected static final RDFNode nullObject = (RDFNode) null;
         
     /**
         Answer a Model created according to this ModelSpec, with any required
@@ -196,38 +198,41 @@ public abstract class ModelSpecImpl implements ModelSpec
         @exception BadDescriptionException if there's not exactly one subject
     */        
     public static Resource findRootByType( Model description, Resource type )
-        { return ModelSpecFactory.findRootByType( ModelSpecFactory.withSchema( description ), type ); }
-    
-    /**
-        Answer a ModelMaker that conforms to the supplied description. The Maker
-        is found from the ModelMakerCreatorRegistry by looking up the most 
-        specific type of the unique object with type JenaModelSpec.MakerSpec.
-        
-        @param d the model containing the description
-        @return a ModelMaker fitting that description
-    */
-    public static ModelMaker createMaker( Model description )
-        { Model d = ModelSpecFactory.withSchema( description );
-        return createMakerByRoot( ModelSpecFactory.findRootByType( d, JenaModelSpec.MakerSpec ), d ); }
+        { 
+        Model m = ModelSpecImpl.withSpecSchema( description );
+        StmtIterator it = m.listStatements( null, RDF.type, type );
+        if (!it.hasNext()) throw new BadDescriptionNoRootException( m, type );
+        Resource root = it.nextStatement().getSubject();
+        if (it.hasNext()) throw new BadDescriptionMultipleRootsException( m, type );
+        return root; 
+        }
         
     public static ModelMaker createMaker( Resource root, Model d )
-        { return createMakerByRoot( root, ModelSpecFactory.withSchema( d ) ); }
+        { return createMakerByRoot( root, ModelSpecImpl.withSpecSchema( d ) ); }
         
     public static ModelMaker createMakerByRoot( Resource root, Model fullDesc )
-        { Resource type = ModelSpecFactory.findSpecificType( (Resource) root.inModel( fullDesc ), JenaModelSpec.MakerSpec );
+        { Resource type = findSpecificType( (Resource) root.inModel( fullDesc ), JenaModelSpec.MakerSpec );
         ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
         if (mmc == null) throw new RuntimeException( "no maker type" );  
         return mmc.create( fullDesc, root ); }
-        
-    /**
-        Read a model from a given URI.
-     	@param source the resource who's URI specifies what to laod
-     	@return the model as loaded from the resource URI
-     */
-    public static Model readModel( Resource source )
+
+    public static Model withSpecSchema( Model m )
         {
-        String uri = source.getURI();
-        return FileManager.get().loadModel( uri );
+        return withSchema( m, JenaModelSpec.getSchema() );
+        }
+
+    /**
+        answer a limited RDFS closure of <code>m union schema</code>.
+    */
+    public static Model withSchema( Model m, Model schema )
+        {
+        Model result = ModelFactory.createDefaultModel();
+        result.add( m );
+        addJMSSubclassesFrom( result, schema );        
+        addDomainTypes( result, m, schema );
+        addSupertypesFrom( result, schema );
+        addSupertypesFrom( result, m );
+        return result;
         }
 
     protected Model loadFiles( Model m )
@@ -260,6 +265,72 @@ public abstract class ModelSpecImpl implements ModelSpec
     
     public Model getModel( String URL, ModelReader loadIfAbsent )
         { throw new CannotCreateException( URL ); }
+
+    /**
+        Answer the "most specific" type of root in desc which is an instance of type.
+        We assume a single inheritance thread starting with that type. The model
+        should contain the subclass closure (ie either be complete, or an inference
+        model which will generate completeness).
+        
+        @param root the subject whose type is to be found
+        @param type the base type for the search
+        @return T such that (root type T) and if (root type T') then (T' subclassof T)
+    */
+    public static Resource findSpecificType( Resource root, Resource type )
+        { StmtIterator it = root.listProperties( RDF.type );
+        Model desc = root.getModel();
+        while (it.hasNext())
+            { Resource candidate = it.nextStatement().getResource();
+            if (desc.contains( candidate, RDFS.subClassOf, type )) type = candidate; }
+        return type; }
+
+    protected static boolean notRDF( Resource resource )
+        {
+        if (resource.isAnon()) return true;
+        if (resource.getNameSpace().equals( RDF.getURI() )) return false;
+        if (resource.getNameSpace().equals( RDFS.getURI() )) return false;
+        return true;
+        }
+
+    protected static void addJMSSubclassesFrom( Model result, Model schema )
+        {
+        for (StmtIterator it = schema.listStatements( null, RDFS.subClassOf, nullObject ); it.hasNext();)
+            { 
+            Statement s = it.nextStatement();
+            if (ModelSpecImpl.notRDF( s.getSubject() ) && ModelSpecImpl.notRDF( s.getResource() )) result.add( s ); 
+            }
+        }
+
+    protected static void addDomainTypes( Model result, Model m, Model schema )
+        {
+        for (StmtIterator it = schema.listStatements( null, RDFS.domain, nullObject ); it.hasNext();)
+            {
+            Statement s = it.nextStatement();
+            Property property = (Property) s.getSubject().as( Property.class );
+            for (StmtIterator x = m.listStatements( null, property, nullObject ); x.hasNext();)
+                {
+                Statement t = x.nextStatement();
+                // System.err.println( ">> adding domain type: subject " + t.getSubject() + ", type " + s.getObject() + " because of property " + property );
+                result.add( t.getSubject(), RDF.type, s.getObject() );
+                }
+            }
+        }
+
+    protected static void addSupertypesFrom( Model result, Model source )
+        {
+        Model temp = ModelFactory.createDefaultModel();
+        for (StmtIterator it = result.listStatements( null, RDF.type, nullObject ); it.hasNext();)
+            {
+            Statement s = it.nextStatement();
+            for (StmtIterator subclasses = source.listStatements( s.getResource(), RDFS.subClassOf, nullObject ); subclasses.hasNext();)
+                {
+                RDFNode type = subclasses.nextStatement().getObject();
+                // System.err.println( ">> adding super type: subject " + s.getSubject() + ", type " + type );
+                temp.add( s.getSubject(), RDF.type, type );
+                }
+            }
+        result.add( temp );
+        }
     }
 
 /*

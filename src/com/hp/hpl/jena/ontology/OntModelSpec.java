@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.48 $
+ * Revision           $Revision: 1.49 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-02-09 12:08:59 $
+ * Last modified on   $Date: 2007-02-12 15:51:14 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
@@ -31,6 +31,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
+import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
@@ -45,7 +46,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.48 2007-02-09 12:08:59 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.49 2007-02-12 15:51:14 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -280,6 +281,8 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      * description is the unique resource with type <code>jms:OntMakerClass</code>.</p>
      *
      * @param description an RDF model using the JenaModelSpec vocabulary
+     * @deprecated ModelSpec has been removed; use the <code>assemble</code>
+     * methods.
      */
     public OntModelSpec( Model description )  {
         this( findRootByType( description, JenaModelSpec.OntModelSpec ), description );
@@ -294,6 +297,8 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      *
      *  @param description an RDF model using the JenaModelSpec vocabulary
      *  @param root the root of the sub-graph to use for the specification
+     *  @deprecated ModelSpec has been removed; use the <code>assemble</code>
+     * methods.
      */
     public OntModelSpec( Resource root, Model description )  {
         this( getBaseModelName( description, root ),
@@ -302,8 +307,28 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
               getDocumentManager( description, root ),
               getReasonerFactory( description, root ),
               getLanguage( description, root )  );
-
     }
+    
+    /**
+        Answer the OntModelSpec described using the Jena Assembler vocabulary
+        properties of <code>root</code>. If the assembled resource is not
+        an OntModelSpec, throw an exception reporting the constructed class.
+    */
+    public static OntModelSpec assemble( Resource root )
+        {
+        Object assembled = Assembler.general.open( root );
+        if (!(assembled instanceof OntModelSpec)) 
+            throw new JenaException( "assemble: expected an OntModelSpec, but got a " + assembled.getClass().getName() );
+        return (OntModelSpec) assembled;
+        }
+    
+    /**
+         Answer the OntModelSpec described using the Jena Assembler vocabulary
+        properties of the single resource in <code>model</code> of type
+        JA:OntModelSpec.
+    */
+    public static OntModelSpec assemble( Model model )
+        { return assemble( AssemblerHelp.singleRoot( model, JA.OntModelSpec ) ); }
 
     /**
      * <p>Answer a default specification for the given language URI. This default

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerCreator.java,v 1.7 2007-01-02 11:48:34 andy_seaborne Exp $
+  $Id: ModelMakerCreator.java,v 1.8 2007-02-12 15:51:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -11,6 +11,7 @@ package com.hp.hpl.jena.rdf.model;
     JenaModelSpec vocabulary.
 
  	@author hedgehog
+    @deprecated ModelSpec is dead
 */
 public interface ModelMakerCreator
     {
