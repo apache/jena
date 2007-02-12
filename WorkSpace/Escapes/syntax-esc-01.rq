@@ -1,0 +1,8 @@
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  :p :x "\u0041" .
+  :\u0041  :p "1" .
+  <http://\u0041/> :p "2" .
+}

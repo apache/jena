@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+
+SELECT *
+WHERE { 
+   ?a ?p ?o . 
+   OPTIONAL { ?b a :T1  . FILTER (?a = ?b) }
+   FILTER(!bound(?b))
+}

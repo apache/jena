@@ -1,0 +1,5 @@
+PREFIX dc10:  <http://purl.org/dc/elements/1.0/>
+PREFIX dc11:  <http://purl.org/dc/elements/1.1/>
+
+SELECT ?title_10 ?title_11
+WHERE  { { ?book dc10:title  ?title_10 } UNION { ?book dc11:title  ?title_11 } }

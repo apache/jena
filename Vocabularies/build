@@ -1,0 +1,52 @@
+#!/bin/bash
+
+function syntaxCheck
+{
+    FILE="$1"
+    echo "Syntax check: $FILE"
+    n3 -n -rdf "$FILE"
+}
+
+function proc
+{
+    TMP=TT
+    FILE="$1"
+    CLASS="$2"
+    NS="$3"
+    echo "Schemagen: $FILE"
+    schemagen --rdfs -i "$FILE" -n "$CLASS" -a "$NS" -o "$CLASS".java -e N3
+    # Add imports
+    echo "package com.hp.hpl.jena.query.vocabulary ;" >> "$TMP"
+    echo >>"$TMP"
+    cat "$CLASS".java >> "$TMP"
+    mv "$TMP" "$CLASS".java
+}
+
+## syntaxCheck test-manifest-x.n3
+## syntaxCheck test-manifest.n3
+## syntaxCheck test-query.n3
+## syntaxCheck test-dawg.n3
+
+##  syntaxCheck result-set.n3
+##  proc result-set.n3 Result~/Projects/ARQ/vocabularies/SetGraphVocab \
+##      'http://www.w3.org/2001/sw/DataAccess/tests/result-set#'
+ 
+## syntaxCheck test-manifest.n3
+## proc test-manifest.n3 TestManifest \
+##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
+
+
+## syntaxCheck test-manifest-x.n3
+## proc test-manifest-x.n3 TestManifestX \
+##     "http://jena.hpl.hp.com/2005/05/test-manifest-extra#"
+
+
+## proc test-query.n3 VocabTestQuery \
+##     "http://www.w3.org/2001/sw/DataAccess/tests/test-query#"
+## 
+## proc test-dawg.n3 TestDAWGVocab \
+##     "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#"
+
+syntaxCheck  list-pfunction.ttl
+proc list-pfunction.ttl ListPFunction "http://jena.hpl.hp.com/ARQ/list#"
+

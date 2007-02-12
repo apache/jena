@@ -1,0 +1,20 @@
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix stock:  <http://example.org/stock#> .
+@prefix inv:    <http://example.org/inventory#> .
+
+stock:book1  dc:title  "SPARQL Query Language Tutorial" .
+stock:book1  inv:price   10 .
+stock:book1  inv:quantity 3 .
+
+
+stock:book2  dc:title     "SPARQL Query Language (2nd ed)" .
+stock:book2  inv:price   20 .
+stock:book2  inv:quantity 5 .
+
+stock:book3  dc:title  "Moving from SQL to SPARQL" .
+stock:book3  inv:price   5 .
+stock:book3  inv:quantity 0 .
+
+stock:book4  dc:title  "Applying XQuery" .
+stock:book4  inv:price   20 .
+stock:book4  inv:quantity 8 .

@@ -1,0 +1,98 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix :       <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix xsd:    <http://www.w3.org/2000/10/XMLSchema#> .
+
+
+:  rdfs:comment     "Vocabulary for recording query result set" ;
+   dc:creator       "Andy Seaborne" ;
+   dc:subject       "" ;
+   dc:publisher     "W3C RDF Data Access Working Group" ;
+   dc:title         "Vocabulary for recording query result set" ;
+   dc:description   "Vocabulary for recording query result set" ;
+   dc:date          "2004-07-26" ;
+   dc:format        "RDF" ;
+   dc:identifier    : ;
+   .
+
+## ---- Class declarations ----
+
+:ResultSet rdf:type rdfs:Class ;
+    rdfs:comment    "Class of things that represent the result set" ;
+    .
+
+:ResultSolution rdf:type rdfs:Class ;
+    rdfs:comment    "Class of things that represent a row in the result table - one solution to the query" ;
+    .
+
+:ResultBinding rdf:type rdfs:Class ;
+    rdfs:comment    "Class of things that represent a single (variable, value) pairing" ;
+    .
+
+## =======================================
+## Modelling style: uses multiple instances of a property
+## to represent multiple results.
+## e.g. :ResultTable has many :hasSolution properties, one per row
+
+## ---- Properties ----
+
+## - Table level
+
+:solution rdf:type rdf:Property ;
+    rdfs:domain     :ResultSet ;
+    rdfs:range      :ResultSolution ;
+    .
+
+
+## Useful information extracted
+:size rdf:type rdf:Property ;
+    rdfs:comment    "Number of rows in the result table" ;
+    rdfs:range      xsd:integer ;
+    .
+
+## Can be convenient to list the variables beforehand
+:resultVariable rdf:type rdf:Property ;
+    rdfs:domain     :ResultSet ;
+    rdfs:range      xsd:string ;
+    rdfs:comment    "Name of a variable used in the result set" ;
+    rdfs:comment    "Multivalued" ;
+    .
+
+
+## -- Row level
+
+:binding rdf:type rdf:Property ;
+    rdfs:comment    "Multi-occurrence property associating a result solution (row) resource to a single (variable, value) binding " ;
+    rdfs:domain     :ResultSolution ;
+    rdfs:range      :ResultBinding ;
+    .
+
+
+:index rdf:type rdf:Property ;
+    rdfs:comment "Index for ordered result sets" ;
+    rdfs:domain	 :ResultSolution ;
+    # rdfs:range   ?? ;
+    .	
+## -- Single binding level
+
+:variable rdf:type rdf:Property ;
+    rdfs:comment    "Variable name" ;
+    rdfs:domain     :ResultBinding ;
+    rdfs:range      rdfs:Literal ;
+    .
+
+:value rdf:type rdf:Property ;
+    ##rdfs:subPropertyOf rdfs:value ;
+    rdfs:comment    "Variable name" ;
+    rdfs:domain     :ResultBinding ;
+    # Range is anything
+    .
+
+## ---- Boolean results
+
+:boolean rdf:type rdf:Property ;
+    rdfs:comment    "Boolean result" ;
+    rdfs:domain     :ResultBinding ;
+    rdfs:domain     xsd:boolean ;
+    .

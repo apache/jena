@@ -1,0 +1,28 @@
+# some OWL Axioms
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+{ ?R owl:minCardinality "1"^^xsd:nonNegativeInteger }
+=> { ?R owl:minCardinality 1 }.
+
+{ ?X a [ owl:onProperty ?P; owl:minCardinality 1 ] }
+ => { ?X ?P [] }.
+
+{ ?X a ?C1, ?C2.
+  ?C3 owl:intersectionOf (?C1 ?C2)
+} => { ?X a ?C3 }.
+
+{ ?X a [ owl:intersectionOf (?C1 ?C2)].
+} => { ?X a ?C1, ?C2 }.
+{ ?X a [ owl:intersectionOf (?C1 ?C2 ?C3)].
+} => { ?X a ?C1, ?C2, ?C3 }.
+
+{ ?X ?P ?V;
+     a [ owl:onProperty ?P; owl:allValuesFrom ?C]
+} => { ?V a ?C }.
+
+{ ?X a [ owl:onProperty ?P; owl:hasValue ?V]
+} => { ?X ?P ?V }.
+
+{ ?X a [ s:subClassOf ?C ] } => { ?X a ?C }.

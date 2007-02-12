@@ -1,0 +1,43 @@
+# Membership of a list
+
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:        <http://www.w3.org/2002/07/owl#> .
+@prefix list:       <http://jena.hpl.hp.com/ARQ/list#> .
+
+list:member rdf:type rdf:Property ;
+    rdfs:label              "RDF collection accessor (RDF List)" ;
+    rdfs:domain             rdf:List ;
+    rdfs:range              rdfs:Resource ;
+    rdfs:comment 
+        "Membership relationship of a list [subject] to a member [object] c.f. rdfs:member" .
+
+list:listMember rdf:type rdf:Property ;
+    rdfs:label              "Alternative name for list:member" ;
+    owl:sameAs              list:member .
+
+
+list:index  rdf:type rdf:Property ;
+    rdfs:label              "RDF collection index accessor(RDF List)" ;
+    rdfs:domain             rdf:List ;
+    rdfs:range              rdfs:Resource ;
+    rdfs:comment 
+        "Index relationship of a list [subject] to a query list (index member)" .
+
+list:listIndex rdf:type rdf:Property ;
+    rdfs:label              "Alternative name for list:index" ;
+    owl:sameAs              list:index .
+
+
+list:length  rdf:type rdf:Property ;
+    rdfs:label              "RDF collection length (RDF List)" ;
+    rdfs:domain             rdf:List ;
+    rdfs:range              rdfs:Resource ;
+    rdfs:comment 
+        "Length relationship of a list [subject] to a length [object]" .
+
+list:listLength rdf:type rdf:Property ;
+    rdfs:label              "Alternative name for list:length" ;
+    owl:sameAs              list:length .
+
+

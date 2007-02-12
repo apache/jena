@@ -1,0 +1,3 @@
+See <DAWG>/data/tests/rdfSemantics/owl*
+
+sparql --desc=dataset.ttl --query=owl-lunch.rq

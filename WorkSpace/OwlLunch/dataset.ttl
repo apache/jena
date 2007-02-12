@@ -1,0 +1,30 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix :       <#> .
+
+## Datatset
+
+<> rdf:type         ja:RDFDataset ;
+    ja:graph :inf .
+
+:inf rdf:type ja:InfModel ;
+    ja:baseModel :owlLunch ;
+    ja:reasoner
+        [ ja:reasonerURL <http://jena.hpl.hp.com/2003/GenericRuleReasoner> ;
+          ja:rulesFrom <owlax.jena> 
+        ] ;
+    .
+
+:owlLunch rdf:type ja:MemoryModel ;
+    ja:content [ja:externalContent <owl-lunch.ttl>] ;
+    .
+
+
+
+## Dataset
+## _:books   rdf:type joseki:RDFDataSet ;
+##    rdfs:label "Books" ;
+##    joseki:namedGraph
+##    joseki:defaultGraph

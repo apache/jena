@@ -1,0 +1,13 @@
+PREFIX dc:     <http://purl.org/dc/elements/1.1/>
+PREFIX stock:  <http://example.org/stock#>
+PREFIX inv:    <http://example.org/inventory#>
+
+SELECT ?book ?title
+WHERE
+{
+  ?book dc:title ?title .
+  ?book inv:price ?price .
+  FILTER ?price < 15 .
+  ?book inv:quantity ?num . 
+  FILTER ?num > 0 .
+}

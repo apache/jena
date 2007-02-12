@@ -1,0 +1,8 @@
+A is 0041, Z is 005A
+a is 0061, z is 007A
+
+0 is 0030, 9 is 0039
+< is 3C
+> is 3E (3D is =)
+
+: is 3A

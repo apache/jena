@@ -1,0 +1,15 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX :        <http://example/>
+
+SELECT ?X ?Y
+WHERE {
+	?X rdfs:subClassOf ?Y
+    FILTER (?X != ?Y )
+    FILTER regex(str(?X), "^http://example/")
+ 	OPTIONAL {
+ 	  ?X rdfs:subClassOf ?Y2 . ?Y2 rdfs:subClassOf ?Y
+      FILTER (?X != ?Y2 && ?Y2 != ?Y)
+         }.
+ 	FILTER (!bound(?Y2))
+}

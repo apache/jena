@@ -1,0 +1,85 @@
+# some OWL Axioms
+## @prefix owl: <http://www.w3.org/2002/07/owl#> .
+## @prefix s: <http://www.w3.org/2000/01/rdf-schema#> .
+## @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+## 
+## { ?R owl:minCardinality "1"^^xsd:nonNegativeInteger }
+## => { ?R owl:minCardinality 1 }.
+## ---- RULE (Not needed)
+
+## ---- RULE
+## { ?X a [ owl:onProperty ?P; owl:minCardinality 1 ] }
+##  => { ?X ?P [] }.
+
+[
+(?X rdf:type ?a), (?a owl:onProperty ?P), 
+(?a owl:minCardinality "1"^^xsd:nonNegativeInteger), makeTemp(?t)
+->
+  (?X, ?P, ?t)
+]
+
+## ---- RULE 
+## { ?X a ?C1, ?C2.
+##   ?C3 owl:intersectionOf (?C1 ?C2)
+## } => { ?X a ?C3 }.
+# Normally done more generally by the engine for efficiency 
+
+[
+(?X rdf:type ?C1) , (?X rdf:type ?C2) ,
+(?C3  owl:intersectionOf ?L1 ) , 
+(?L1 rdf:first ?C1) , (?L1 rdf:rest  ?L2) ,
+(?L2 rdf:first ?C2) , (?L2 rdf:rest  rdf:nil) 
+-> 
+(?X rdf:type ?C3)
+]
+
+## { ?X a [ owl:intersectionOf (?C1 ?C2)].
+## } => { ?X a ?C1, ?C2 }.
+
+[
+(?X rdf:type ?a), (?a owl:intersectionOf ?L1) ,
+(?L1 rdf:first ?C1) , (?L1 rdf:rest  ?L2) ,
+(?L2 rdf:first ?C2) , (?L2 rdf:rest  rdf:nil)
+->
+(?X rdf:type ?C1) , (?X rdf:type ?C2)
+]
+
+## { ?X a [ owl:intersectionOf (?C1 ?C2 ?C3)].
+## } => { ?X a ?C1, ?C2, ?C3 }.
+
+[
+(?X rdf:type ?a), (?a owl:intersectionOf ?L1) ,
+(?L1 rdf:first ?C1) , (?L1 rdf:rest  ?L2) ,
+(?L2 rdf:first ?C2) , (?L2 rdf:rest  ?L3) ,
+(?L3 rdf:first ?C3) , (?L3 rdf:rest  rdf:nil) ,
+->
+(?X rdf:type ?C1) , (?X rdf:type ?C2) , (?X rdf:type ?C3)
+]
+
+## { ?X ?P ?V;
+##      a [ owl:onProperty ?P; owl:allValuesFrom ?C]
+## } => { ?V a ?C }.
+
+[
+( ?X ?P ?V) , (?X rdf:type ?a) , (?a owl:onProperty ?P) , (?a owl:allValuesFrom ?C)
+->
+( ?V rdf:type ?C )
+]
+
+## { ?X a [ owl:onProperty ?P; owl:hasValue ?V]
+## } => { ?X ?P ?V }.
+
+[
+(?X rdf:type ?a) , (?a owl:onProperty ?P) , (?a owl:hasValue ?V)
+->
+(?X ?P ?V)
+]
+
+## 
+## { ?X a [ s:subClassOf ?C ] } => { ?X a ?C }.
+
+[
+(?X rdf:type ?a) , (?a rdfs:subClassOf ?C)
+->
+(?X rdf:type ?C)
+]

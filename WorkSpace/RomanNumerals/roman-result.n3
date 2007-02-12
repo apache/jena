@@ -1,0 +1,14 @@
+@prefix roman:   <http://rome.example.org/> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "legion" ;
+      rs:resultVariable  "n" ;
+      rs:solution   [ rs:binding    [ rs:value      roman:TwentyFirstLegion ;
+                                      rs:variable   "legion"
+                                    ] ;
+                      rs:binding    [ rs:value      "XXI"^^roman:Numeral ;
+                                      rs:variable   "n"
+                                    ]
+                    ] .

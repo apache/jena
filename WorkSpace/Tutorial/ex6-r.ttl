@@ -1,0 +1,24 @@
+@prefix dc11:    <http://purl.org/dc/elements/1.1/> .
+@prefix dc10:    <http://purl.org/dc/elements/1.0/> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "title_10" ;
+      rs:resultVariable  "title_11" ;
+      rs:solution   [ rs:binding    [ rs:value      "SPARQL Query Language Tutorial" ;
+                                      rs:variable   "title_10"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "SPARQL" ;
+                                      rs:variable   "title_10"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "SPARQL" ;
+                                      rs:variable   "title_11"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "SPARQL Query Language (2nd ed)" ;
+                                      rs:variable   "title_11"
+                                    ]
+                    ] .

@@ -1,0 +1,47 @@
+# Re: Blank node identifiers in FILTER clauses
+# http://www.w3.org/mid/20060713162342.GA12357@w3.org
+# http://lists.w3.org/Archives/Public/public-rdf-dawg/2006JulSep/0013
+# $Id: owl-lunch.ttl,v 1.1 2006/09/06 09:45:35 andy_seaborne Exp $
+
+@prefix wine: <http://www.w3.org/2001/sw/WebOnt/guide-src/wine#> .
+@prefix rdf-schema: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix food: <http://www.w3.org/2001/sw/WebOnt/guide-src/food#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix r: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+food:MyLunch r:type food:PastaWithLightCreamCourse .
+food:MyDinner r:type food:RedMeatCourse .
+
+food:MealCourse rdf-schema:subClassOf [
+   owl:onProperty food:hasDrink ;
+   owl:minCardinality "1"^^xsd:nonNegativeInteger
+] .
+
+food:PastaWithLightCreamCourse owl:intersectionOf (
+   food:MealCourse
+   [
+	owl:allValuesFrom food:PastaWithLightCreamSauce ;
+        owl:onProperty food:hasFood
+   ] ) ;
+                               rdf-schema:subClassOf [
+   owl:onProperty food:hasDrink ;
+   owl:allValuesFrom [
+      owl:onProperty wine:hasColor ;
+      owl:hasValue food:White
+   ]
+] .
+
+food:RedMeatCourse owl:intersectionOf (
+   food:MealCourse
+   [
+         owl:onProperty food:hasFood ;
+         owl:allValuesFrom food:RedMeat
+   ] ) ;
+                   rdf-schema:subClassOf [
+   owl:onProperty food:hasDrink ;
+   owl:allValuesFrom [
+      owl:onProperty wine:hasColor ;
+      owl:hasValue food:Red
+   ]
+] .

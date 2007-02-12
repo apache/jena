@@ -1,0 +1,6 @@
+PREFIX food: <http://www.w3.org/2001/sw/WebOnt/guide-src/food#>
+PREFIX wine: <http://www.w3.org/2001/sw/WebOnt/guide-src/wine#>
+SELECT ?Meal ?WineColor
+WHERE {
+   ?Meal food:hasDrink _:Wine .
+   _:Wine wine:hasColor ?WineColor }

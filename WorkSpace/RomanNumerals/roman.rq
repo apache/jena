@@ -1,0 +1,7 @@
+PREFIX roman: <http://rome.example.org/>
+
+SELECT ?legion ?n
+WHERE {
+  ?legion roman:legionNumber ?n .
+  FILTER ( ?n = 21 )
+}

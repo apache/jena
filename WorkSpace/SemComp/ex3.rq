@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+
+SELECT *
+{ ?X :name "paul" 
+  OPTIONAL { ?Y :name "george" 
+             OPTIONAL { ?X :email ?X }
+           }
+}
