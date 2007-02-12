@@ -3,39 +3,21 @@
 + Algebra:
   + Separate op evaluation from the Op tree entirely?
   + OpUnit, OpBGP, OpGraph have too much in op eval
-  + Use of Plan.
+  + Remove engine1 from ref and main
   
     // TODO property function determination by general tree rewriting - BGP special first.
     //  By general BGP rewriting.  Stages.
     //  (General tree rewrite is "Op => Op")
     //   OpExtBase requires eval() but need better extensibility?
     
-    // Package structure:
-    //   .core => .core,  .syntax for Element* .describe => .core
-    //   .engine, includes the reference engine or .engine.ref/.engine.algebra/
-    //   .engine.http or .engineHTTP ?
-    //   .engine.engine => normal engine .engine.impl, .engin.std, .engine.main
-    //   .engine.engineplan => old engine
-    //   .shared
-    // Compiler options and globals ; 
-    //   Compiler class like ARQConstants or just use ARQ (a compiler section)
-    //     syntaxPlacement
-    //     filterPlacement
-    //   Delete .extension
-    
-   
 + test cases:
   Optional with two filters
-      *  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
+     *  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
      *  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
      *  Filter placement (internal tests)
      *  Classifier J and LJ - internal
 
-+ ?? API to build Op structures
-  And STL integration.
-
 + Initial bindings : substitute into pattern (engineRef)
-  No system variables.
   
 + QueryIter1, QueryIter2 // QueryIter(ator).output()
   Check nearly everyting under QueryIterN
@@ -45,11 +27,6 @@
 + AltMatcher - Remove bnodes in QueryIterBlockTriplesAlt
 
 + testing QE1 and QE2 and QE3 in the same test run
-
-+ Tidy table implementations.
-    TableBase
-      TableStream
-      TableMaterialized, inc TableMaterialized(QueryIterator)
 
 + Convenient: Get the version ID (property function?)
   Generalize to system functions.
@@ -65,7 +42,6 @@
     ==> PFuncOps.isMagicProperty
         PropertyFunctionRegistry.manages/.get
           Also FunctionRegistry
-   
 
 Missing java:function causes:
 Caused by: java.lang.NullPointerException
@@ -80,14 +56,6 @@ Check property function as well.
 
 + Commands
   + qtest to use modules.
-
-+ Use DatasetDesc more widely.
-    See TODO in DatasetDesc
-    FROM/FROM NAME
- 
-+ Graph version of interface?
-
-+ Documentation
 
 == Documentation
 
@@ -105,7 +73,3 @@ Check property function as well.
 
 + XML results: process xml:lang on other elements than just <literal>
   Documentation for XML result set processing
-
-+ Serialization
-  + Need to take into account subject width across multiple chunks
-  + Using [] for bNodes
