@@ -10,6 +10,7 @@ import java.io.PrintStream;
 import java.util.Iterator;
 
 import arq.cmd.CmdException;
+import arq.cmd.QueryUtils;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModQueryIn;
@@ -18,7 +19,6 @@ import arq.cmdline.ModQueryOut;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.resultset.ResultSetException;
-import com.hp.hpl.jena.query.util.QueryUtils;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -59,8 +59,6 @@ public class qparse extends CmdARQ
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
-        
-        // Shoudl --out and --print be combined in some way?
         
         for ( Iterator iter = getValues(argDeclPrint).iterator() ; iter.hasNext() ; )
         {
@@ -129,7 +127,7 @@ public class qparse extends CmdARQ
             if ( printPlan )
             {
                 divider() ;
-                QueryUtils.printExecPlan(query, qExec) ;
+                QueryUtils.printPlan(query, qExec) ;
                 //System.out.println() ;
             }
             

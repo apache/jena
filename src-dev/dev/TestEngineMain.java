@@ -9,19 +9,19 @@ package dev;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.query.engine.main.QueryEngineX;
+import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.query.expr.E_Function;
 import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
 
 
-public class TestEngine3 extends TestCase
+public class TestEngineMain extends TestCase
 {
     public static TestSuite suite()
     {
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
-        QueryEngineX.register() ;
+        QueryEngineMain.register() ;
         
         TestSuite ts = QueryTestSuiteFactory.make("testing/ARQ/manifest-engine2.ttl") ;
 

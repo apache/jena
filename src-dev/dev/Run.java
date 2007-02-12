@@ -12,6 +12,7 @@ import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.algebra.op.OpJoin;
 import com.hp.hpl.jena.query.algebra.op.OpLeftJoin;
@@ -19,7 +20,7 @@ import com.hp.hpl.jena.query.core.DataSourceImpl;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.main.JoinClassifier;
 import com.hp.hpl.jena.query.engine.main.LeftJoinClassifier;
-import com.hp.hpl.jena.query.engine.main.QueryEngineX;
+import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
@@ -70,8 +71,7 @@ public class Run
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
         Query query = QueryFactory.create(qs) ;
-        QueryEngineX qe = new QueryEngineX(query) ;
-        Op op = ((QueryEngineX)qe).getPatternOp() ;
+        Op op = AlgebraGenerator.compile(query.getQueryPattern()) ;
         
         if ( op instanceof OpJoin )
         {
@@ -106,8 +106,7 @@ public class Run
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
         Query query = QueryFactory.create(qs) ;
-        QueryEngineX qe = new QueryEngineX(query) ;
-        Op op = ((QueryEngineX)qe).getPatternOp() ;
+        Op op = AlgebraGenerator.compile(query.getQueryPattern()) ;
         
         if ( op instanceof OpLeftJoin )
         {
@@ -123,7 +122,7 @@ public class Run
 
     public static void parseQuery()
     {
-        QueryEngineX.register() ;
+        QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
             //"--engine=ref",
@@ -164,9 +163,9 @@ public class Run
             QueryEngineRef.unregister() ;
         }
 
-        QueryEngineX.register() ;
+        QueryEngineMain.register() ;
         System.out.println("==== EngineX") ;
-        QueryEngineX qe = new QueryEngineX(query) ;
+        QueryEngineMain qe = new QueryEngineMain(query) ;
         qe.setDataset(ds) ;
         QueryIterator qIter = qe.getPlan().iterator() ; 
         System.out.println(qIter) ;
@@ -177,7 +176,7 @@ public class Run
     
     private static void execQuery(String datafile, String queryfile)
     {
-        QueryEngineX.register() ;
+        QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
             //"--engine=ref",

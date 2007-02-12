@@ -19,7 +19,6 @@ import com.hp.hpl.jena.query.core.describe.DescribeHandlerRegistry;
 import com.hp.hpl.jena.query.engine.engine1.EngineConfig;
 import com.hp.hpl.jena.query.engine.engine1.QueryEngineUtils;
 import com.hp.hpl.jena.query.engine.iterator.QueryIter;
-import com.hp.hpl.jena.query.syntax.Element;
 import com.hp.hpl.jena.query.syntax.Template;
 import com.hp.hpl.jena.query.util.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -387,35 +386,6 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
         resultsIter = qIter ;
         return resultsIter ;
     }
-    
-    protected Modifiers getModifiers()
-    {
-        Modifiers mods = new Modifiers(query) ;
-        if ( query.isConstructType() )
-            // Need to expose the initial bindings - no projection at all. 
-            mods.projectVars = null ;
-        return mods ;
-    }
-    
-    static public class Modifiers
-    {
-        // And construct needs to avoid a projection.
-        public long start ;
-        public long length ;
-        public boolean distinct ;
-        public List projectVars ;      // Null for no projection
-        public List orderConditions ;
-        
-        public Modifiers(Query query)
-        {
-            start = query.getOffset() ;
-            length = query.getLimit() ;
-            distinct = query.isDistinct() ;
-            projectVars = Var.varList(query.getResultVars()) ;
-            orderConditions = query.getOrderBy() ;
-        }
-    }
-
 //    private void build() { build(false) ; }
 //    
 //    private void build(boolean surpressProject) { }
@@ -427,7 +397,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
      * been extracted for the query */
     
     protected abstract 
-    Plan queryToPlan(Query query, Modifiers modifiers, Element pattern) ;
+    Plan queryToPlan(Query query) ;
     
     public Plan getPlan()
     {
@@ -436,7 +406,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
         
         if ( queryExecutionInitialised )
         {
-            plan = queryToPlan() ;
+            plan = queryToPlan(query) ;
             return plan ;
         }
         
@@ -449,19 +419,19 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
             dsg = gsrc ;
         }
         execContext = new ExecutionContext(context, query, dsg.getDefaultGraph(), dsg) ;
-        Plan p = queryToPlan() ;
+        Plan p = queryToPlan(query) ;
         // need to fake:
         // ExecutionContext
         execContext = null ;
         return p ;
     }
     
-    private Plan queryToPlan()
-    {
-        Modifiers mods = getModifiers() ;
-        Plan plan = queryToPlan(query, mods, query.getQueryPattern()) ;
-        return plan ;
-    }
+//    private Plan queryToPlan()
+//    {
+//        Modifiers mods = getModifiers() ;
+//        Plan plan = queryToPlan(query, mods, query.getQueryPattern()) ;
+//        return plan ;
+//    }
     
     /** Abnormal end of this execution  */
     public void abort()

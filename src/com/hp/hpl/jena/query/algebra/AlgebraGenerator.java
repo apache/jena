@@ -7,31 +7,45 @@
 package com.hp.hpl.jena.query.algebra;
 
 import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.algebra.op.*;
-import com.hp.hpl.jena.query.core.*;
+import com.hp.hpl.jena.query.core.ARQInternalErrorException;
+import com.hp.hpl.jena.query.core.BasicPattern;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.ExprList;
 import com.hp.hpl.jena.query.syntax.*;
-import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
 
 public class AlgebraGenerator 
 {
-    public static Op compile(Element elt, Context context)
+    public static Op compile(Query query)
     {
-        return new AlgebraGenerator(context).compileGraphPattern(elt) ;
+        if ( query == null )
+            return null ;
+        Op pattern = compile(query.getQueryPattern()) ;
+        Op op = compileModifiers(query, pattern) ;
+        return op ;
     }
+
+    public static Op compile(Element elt)
+    {
+        if ( elt == null )
+            return null ;
+        return new AlgebraGenerator().compileGraphPattern(elt) ;
+    }
+
 
     // Fixed filter position means leave exactly where it is syntactically (illegal SPARQL)
     // Helpful only to write exactly what you mean
     // (and test the full query compiler).
     boolean fixedFilterPosition = false ;
 
-    protected Context context ;
-    
-    public AlgebraGenerator(Context context) {this.context  = context ; }
+    protected AlgebraGenerator() {}
     
     // Compile any structural element
     public Op compileGraphPattern(Element elt)
@@ -238,6 +252,42 @@ public class AlgebraGenerator
         return null ;
     }
 
+    // ---- Wrapping an alrady compile algebra expression in solution modifiers.
+    
+    protected static Op compileModifiers(Query query, Op pattern)
+    {
+        Op op = pattern ;
+        Modifiers mods = new Modifiers(query) ;
+        // Maybe move into the algebra compiler
+        // ORDER BY
+        if ( mods.orderConditions != null )
+            op = new OpOrder(op, mods.orderConditions) ;
+        
+        // Project (ORDER may involve an unselected variable)
+        // No projection => initial variables are exposed.
+        // Needed for CONSTRUCT and initial bindings + SELECT *
+        
+        if ( mods.projectVars != null && ! query.isQueryResultStar())
+        {
+            // Don't project for QueryResultStar so initial bindings show through
+            // in SELECT *
+            if ( mods.projectVars.size() == 0 && query.isSelectType() )
+                LogFactory.getLog(AlgebraGenerator.class).warn("No project variables") ;
+            if ( mods.projectVars.size() > 0 ) 
+                op = new OpProject(op, mods.projectVars) ;
+        }
+        
+        // DISTINCT
+        if ( query.isDistinct() )
+            op = new OpDistinct(op, mods.projectVars) ;
+        
+        // LIMIT/OFFSET
+        if ( query.hasLimit() || query.hasOffset() )
+            op = new OpSlice(op, mods.start, mods.length) ;
+        
+        return op ;
+    }
+    
     // -------- 
     
     protected Op join(Op current, Op newOp)
@@ -247,6 +297,34 @@ public class AlgebraGenerator
     {
         System.err.println("AlgebraCompiler: "+msg) ;
         throw new ARQInternalErrorException(msg) ;
+    }
+    
+//    protected Modifiers getModifiers()
+//    {
+//        Modifiers mods = new Modifiers(query) ;
+//        if ( query.isConstructType() )
+//            // Need to expose the initial bindings - no projection at all. 
+//            mods.projectVars = null ;
+//        return mods ;
+//    }
+
+    private static class Modifiers
+    {
+        // And construct needs to avoid a projection.
+        public long start ;
+        public long length ;
+        public boolean distinct ;
+        public List projectVars ;      // Null for no projection
+        public List orderConditions ;
+
+        public Modifiers(Query query)
+        {
+            start = query.getOffset() ;
+            length = query.getLimit() ;
+            distinct = query.isDistinct() ;
+            projectVars = Var.varList(query.getResultVars()) ;
+            orderConditions = query.getOrderBy() ;
+        }
     }
 }
 

@@ -12,7 +12,6 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.engine.engine1.DefaultEngineFactory;
 
 
 public class QueryEngineRegistry

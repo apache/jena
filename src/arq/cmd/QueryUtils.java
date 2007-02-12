@@ -4,18 +4,20 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.util;
+package arq.cmd;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.query.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
 import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.engine.QueryEngineBase;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineQuad;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Utils;
 
 /** Utilities for queries and plans
  * 
@@ -25,30 +27,7 @@ import com.hp.hpl.jena.query.serializer.SerializationContext;
 
 public class QueryUtils
 {
-    public static void printPlan(Query query)
-    {
-        QueryExecution qe = QueryExecutionFactory.create(query) ;
-        print(query, qe, true, false) ;
-    }
-    
-    public static void printExecPlan(Query query, QueryExecution qe)
-    {
-        print(query, qe, false, true) ;
-    }
-
-    public static void printOp(Query query)
-    {
-        QueryExecution qe = QueryExecutionFactory.create(query) ;
-        print(query, qe, true, false) ;
-    }    
-
-    public static void printQuad(Query query)
-    {
-        QueryExecution qe = new QueryEngineQuad(query) ;
-        print(query, qe, true, false) ;
-    }    
-    
-    private static void print(Query query, QueryExecution qe, boolean printOp, boolean printExecPlan)
+    public static void printPlan(Query query, QueryExecution qe)
     {
         if ( qe instanceof QueryEngineBase )
         {
@@ -62,27 +41,31 @@ public class QueryUtils
                 qeb.setDataset(new DataSourceImpl()) ;
             Plan plan = qeb.getPlan() ;
             
-            if ( printOp )
-            {
-                Op op = plan.getOp() ;
-                if ( op == null )
-                    System.err.println("No algebra expression for query (wrong engine?)") ;
-                else
-                    op.output(out, sCxt) ;
-            }
-            
-            if ( printExecPlan )
-            {
-                QueryIterator qIter = plan.iterator() ;
-                if ( qIter != null )
-                    qIter.output(out, sCxt) ;
-            }
+            QueryIterator qIter = plan.iterator() ;
+            if ( qIter != null )
+                qIter.output(out, sCxt) ;
             out.flush();
             return ;
         }
-        
         System.err.println("printPlan: Unknown engine type: "+Utils.className(qe)) ;
     }
+
+    public static void printOp(Query query)
+    {
+        Op op = AlgebraGenerator.compile(query) ;
+        SerializationContext sCxt = new SerializationContext(query) ;
+        IndentedWriter out = new IndentedWriter(System.out) ;
+        op.output(out, sCxt) ;
+    }    
+
+    public static void printQuad(Query query)
+    {
+        Op op = AlgebraGeneratorQuad.compile(query) ;
+        SerializationContext sCxt = new SerializationContext(query) ;
+        IndentedWriter out = new IndentedWriter(System.out) ;
+        op.output(out, sCxt) ;
+    }    
+    
 }
 
 /*

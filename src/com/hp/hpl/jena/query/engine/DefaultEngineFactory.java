@@ -4,13 +4,10 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.engine.engine1;
+package com.hp.hpl.jena.query.engine;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.engine.QueryEngineFactory;
-import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.query.engine.engine1.QueryEngine1;
+import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
 
 /**
  * The factory for the default engine.
@@ -19,29 +16,17 @@ import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
  * @version $Id: DefaultEngineFactory.java,v 1.8 2007/01/02 11:19:43 andy_seaborne Exp $
  */
 
-public class DefaultEngineFactory implements QueryEngineFactory 
+public class DefaultEngineFactory
 {
-
-    public boolean accept(Query query, Dataset dataset)
-    {
-        return true ;
-    }
-
-    public QueryExecution create(Query query, Dataset dataset)
-    {
-        //QueryEngineAllInOne qe = new QueryEngineAllInOne(query) ;
-        QueryEngine qe = new QueryEngine(query) ;
-        if ( dataset != null )
-            qe.setDataset(dataset) ;
-        return qe ;
-    }
-
     /** Register the default query engine with a registry.
      * @param registry
      */
     public static void register(QueryEngineRegistry registry)
     {
-        registry.add(new DefaultEngineFactory()) ;
+        if ( false )
+            QueryEngineMain.register() ;
+        else
+            QueryEngine1.register() ;
     }
 }
 

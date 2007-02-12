@@ -12,10 +12,9 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.query.syntax.Element;
 import com.hp.hpl.jena.query.util.Context;
 
-public class QueryEngineX extends QueryEngineRef
+public class QueryEngineMain extends QueryEngineRef
 {
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
@@ -24,7 +23,7 @@ public class QueryEngineX extends QueryEngineRef
 
         public QueryExecution create(Query query, Dataset dataset)
         {
-            QueryEngineX engine = new QueryEngineX(query) ;
+            QueryEngineMain engine = new QueryEngineMain(query) ;
             engine.setDataset(dataset) ;
             return engine ;
         }
@@ -40,14 +39,14 @@ public class QueryEngineX extends QueryEngineRef
         QueryEngineRegistry.removeFactory(factory) ;
     }
 
-    public QueryEngineX(Query query, Context context)
+    public QueryEngineMain(Query query, Context context)
     { super(query, context) ; }
 
-    public QueryEngineX(Query query)
+    public QueryEngineMain(Query query)
     { super(query) ; }
     
     //@Override
-    protected Plan queryToPlan(Query query, Modifiers mods, Element pattern)
+    protected Plan queryToPlan(Query query)
     {
         Op op = getOp() ;
         op = modifyQueryOp(op) ;

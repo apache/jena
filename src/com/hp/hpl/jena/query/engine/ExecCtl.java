@@ -17,7 +17,7 @@ import com.hp.hpl.jena.query.core.DatasetGraph;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
 
-/** Execution Control Block : supports tracking iterators, 
+/** Execution Control Block : supports tracking iterators.
  */  
 
 public class ExecCtl

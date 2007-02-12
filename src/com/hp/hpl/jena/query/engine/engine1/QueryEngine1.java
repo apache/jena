@@ -4,11 +4,16 @@
  */
 
 package com.hp.hpl.jena.query.engine.engine1;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingMap;
@@ -28,21 +33,46 @@ import com.hp.hpl.jena.query.util.Context;
  * @version    $Id: QueryEngine.java,v 1.95 2007/02/08 16:19:00 andy_seaborne Exp $
  */
  
-public class QueryEngine extends QueryEngineBase
+public class QueryEngine1 extends QueryEngineBase
 {
-    private static Log log = LogFactory.getLog(QueryEngine.class) ;
+    private static Log log = LogFactory.getLog(QueryEngine1.class) ;
+    
+    // -------- Factory
+    private static QueryEngineFactory factory = new QueryEngineFactory()
+    {
+        public boolean accept(Query query, Dataset dataset) 
+        { return true ; }
+
+        public QueryExecution create(Query query, Dataset dataset)
+        {
+            QueryEngine1 engine = new QueryEngine1(query) ;
+            engine.setDataset(dataset) ;
+            return engine ;
+        }
+    } ;
+    
+    static public void register()
+    {
+        QueryEngineRegistry.addFactory(factory) ;
+    }
+    
+    static public void unregister()
+    {
+        QueryEngineRegistry.removeFactory(factory) ;
+    }
+    // -------- Factory
     
     private PlanElement plan = null ;           // The whole query
     private PlanElement planPattern = null ;    // Just the pattern (convenient).
     
     /** Create a QueryEngine.  The preferred mechanism is through QueryEngineFactory */
     
-    public QueryEngine(Query q)
+    public QueryEngine1(Query q)
     {
         this(q, null) ;
     }
 
-    public QueryEngine(Query q, Context context)
+    public QueryEngine1(Query q, Context context)
     {
         super(q, context) ;
     }
@@ -77,7 +107,7 @@ public class QueryEngine extends QueryEngineBase
     // ---- Interface to QueryEngineBase
     
     protected final
-    Plan queryToPlan(Query query, Modifiers modifiers, Element pattern)
+    Plan queryToPlan(Query query)
     {
         if ( plan == null )
             plan = buildPlan(getModifiers(), query.getQueryPattern()) ;
@@ -218,6 +248,34 @@ public class QueryEngine extends QueryEngineBase
 //        Node n = Node.createLiteral(lex, null, XSDDatatype.XSDdateTime) ;
 //        rootBinding.add(ARQConstants.varCurrentTime, n) ;
         return rootBinding ;
+    }
+
+    protected Modifiers getModifiers()
+    {
+        Modifiers mods = new Modifiers(query) ;
+        if ( query.isConstructType() )
+            // Need to expose the initial bindings - no projection at all. 
+            mods.projectVars = null ;
+        return mods ;
+    }
+
+    private static class Modifiers
+    {
+        // And construct needs to avoid a projection.
+        public long start ;
+        public long length ;
+        public boolean distinct ;
+        public List projectVars ;      // Null for no projection
+        public List orderConditions ;
+
+        public Modifiers(Query query)
+        {
+            start = query.getOffset() ;
+            length = query.getLimit() ;
+            distinct = query.isDistinct() ;
+            projectVars = Var.varList(query.getResultVars()) ;
+            orderConditions = query.getOrderBy() ;
+        }
     }
 }
 

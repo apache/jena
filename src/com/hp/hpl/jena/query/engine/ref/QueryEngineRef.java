@@ -6,26 +6,55 @@
 
 package com.hp.hpl.jena.query.engine.ref;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.OpSubstitute;
 import com.hp.hpl.jena.query.algebra.Table;
-import com.hp.hpl.jena.query.algebra.op.*;
+import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.engine.*;
-import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.engine1.EngineConfig;
-import com.hp.hpl.jena.query.engine.engine1.QueryEngineUtils;
-import com.hp.hpl.jena.query.syntax.Element;
 import com.hp.hpl.jena.query.util.Context;
 
 public class QueryEngineRef extends QueryEngineBase
 {
-    public static boolean verbose = false ;
+    static public void register()   { QueryEngineRegistry.addFactory(factory) ; }
+    static public void unregister() { QueryEngineRegistry.removeFactory(factory) ; }
+    
+    public QueryEngineRef(Query q)
+    {
+        this(q, null) ;
+    }
+
+    private Op queryOp = null ;
+    
+    public QueryEngineRef(Query q, Context context)
+    {
+        super(q, context) ;
+    }
+    
+    protected Plan queryToPlan(Query query)
+    {
+        Op op = getOp() ;
+        ExecutionContext execCxt = getExecContext() ;
+        Evaluator eval = EvaluatorFactory.create(execCxt) ;
+        Table table = op.eval(eval) ;
+        QueryIterator qIter = table.iterator(execCxt) ;
+        return new PlanOp(op, qIter) ;
+    }
+
+    protected Op createOp()
+    { 
+        return AlgebraGenerator.compile(getQuery()) ;
+    }
+    
+    public Op getOp()
+    {
+        if ( queryOp == null )
+            queryOp = createOp() ; 
+        return queryOp ;
+    }
+    
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         public boolean accept(Query query, Dataset dataset) 
@@ -38,103 +67,6 @@ public class QueryEngineRef extends QueryEngineBase
             return engine ;
         }
     } ;
-    
-    static public void register()
-    {
-        QueryEngineRegistry.addFactory(factory) ;
-    }
-    
-    static public void unregister()
-    {
-        QueryEngineRegistry.removeFactory(factory) ;
-    }
-    
-    public QueryEngineRef(Query q)
-    {
-        this(q, null) ;
-    }
-
-    private Op queryOp = null ;
-    private Op patternOp = null ;
-    
-    public QueryEngineRef(Query q, Context context)
-    {
-        super(q, context) ;
-    }
-    
-    protected Plan queryToPlan(Query query, Modifiers mods, Element pattern)
-    {
-        Op op = getOp() ;
-        ExecutionContext execCxt = getExecContext() ;
-        Evaluator eval = EvaluatorFactory.create(execCxt) ;
-        Table table = op.eval(eval) ;
-        QueryIterator qIter = table.iterator(execCxt) ;
-        return new PlanOp(op, qIter) ;
-    }
-
-    protected Op createPatternOp()
-    {
-        if ( query.getQueryPattern() == null )
-            return null ;
-        Op op = AlgebraGenerator.compile(query.getQueryPattern(), getContext()) ;
-        if ( startBinding != null )
-        { 
-            // Misses exposing the input bindings.
-            Binding b = QueryEngineUtils.asBinding(startBinding) ;
-            op = OpSubstitute.substitute(b, op) ;
-        }
-        return op ;
-    }
-    
-    protected Op createOp()
-    { 
-        Op op = getPatternOp() ;
-        
-        Modifiers mods = new Modifiers(query) ;
-        // Maybe move into the algebra compiler
-        // ORDER BY
-        if ( mods.orderConditions != null )
-            op = new OpOrder(op, mods.orderConditions) ;
-        
-        // Project (ORDER may involve an unselected variable)
-        // No projection => initial variables are exposed.
-        // Needed for CONSTRUCT and initial bindings + SELECT *
-        
-        if ( mods.projectVars != null && ! query.isQueryResultStar())
-        {
-            // Don't project for QueryResultStar so initial bindings show through
-            // in SELECT *
-            if ( mods.projectVars.size() == 0 && query.isSelectType() )
-                LogFactory.getLog(this.getClass()).warn("No project variables") ;
-            if ( mods.projectVars.size() > 0 ) 
-                op = new OpProject(op, mods.projectVars) ;
-        }
-        
-        // DISTINCT
-        if ( query.isDistinct() || getContext().isTrue(EngineConfig.autoDistinct) )
-            op = new OpDistinct(op, mods.projectVars) ;
-        
-        // LIMIT/OFFSET
-        if ( query.hasLimit() || query.hasOffset() )
-            op = new OpSlice(op, mods.start, mods.length) ;
-        
-        return op ;
-    }
-    
-    /** Public for debugging and inspection - not used for execution  */  
-    public Op getOp()
-    {
-        if ( queryOp == null )
-            queryOp = createOp() ; 
-        return queryOp ;
-    }
-    
-    public Op getPatternOp()
-    {
-        if ( patternOp == null )
-            patternOp = createPatternOp() ;
-        return patternOp ;
-    }
 }
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

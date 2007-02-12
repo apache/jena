@@ -18,8 +18,30 @@ import com.hp.hpl.jena.query.util.Context;
 
 public class QueryEngineQuad extends QueryEngineRef
 {
-    // Conisder:
-    // Join of two quad patterns is a merge
+    static public void register()
+    {
+        // TODO Is this necessary?
+        QueryIterBlockTriples.rawMode = true ;
+        QueryEngineRegistry.addFactory(factory) ;
+    }
+    
+    static public void unregister() { QueryEngineRegistry.removeFactory(factory) ; }
+    
+    public QueryEngineQuad(Query q)
+    {
+        this(q, null) ;
+    }
+
+    public QueryEngineQuad(Query q, Context context)
+    {
+        super(q, context) ;
+    }
+
+    protected Op createOp()
+    {
+        return AlgebraGeneratorQuad.compile(query) ;
+    }
+
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         public boolean accept(Query query, Dataset dataset) 
@@ -32,35 +54,6 @@ public class QueryEngineQuad extends QueryEngineRef
             return engine ;
         }
     } ;
-    
-    static public void register()
-    {
-        // Important - OpQuadPattern does work 
-        // quad by quad using QueryIterBlockTriples per quad
-        // Reveal blank nodes.
-        QueryIterBlockTriples.rawMode = true ;
-        QueryEngineRegistry.addFactory(factory) ;
-    }
-    
-    static public void unregister()
-    {
-        QueryEngineRegistry.removeFactory(factory) ;
-    }
-    
-    public QueryEngineQuad(Query q)
-    {
-        this(q, null) ;
-    }
-
-    public QueryEngineQuad(Query q, Context context)
-    {
-        super(q, context) ;
-    }
-
-    protected Op createPatternOp()
-    {
-        return AlgebraGeneratorQuad.compile(query.getQueryPattern(), getContext()) ;
-    }
 }
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

@@ -14,9 +14,9 @@ import com.hp.hpl.jena.query.util.IndentedWriter;
 public class Plan1 extends PlanBase
 {
     private PlanElement planElt ;
-    private QueryEngine queryEngine ;
+    private QueryEngine1 queryEngine ;
 
-    public Plan1(PlanElement planElt, QueryEngine queryEngine) 
+    public Plan1(PlanElement planElt, QueryEngine1 queryEngine) 
     {
         super(null) ;
         this.planElt = planElt ;

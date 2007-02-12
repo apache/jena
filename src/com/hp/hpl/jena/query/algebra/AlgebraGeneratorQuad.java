@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.query.algebra;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.algebra.op.OpDatasetNames;
 import com.hp.hpl.jena.query.algebra.op.OpQuadPattern;
@@ -14,22 +15,26 @@ import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.syntax.Element;
 import com.hp.hpl.jena.query.syntax.ElementGroup;
 import com.hp.hpl.jena.query.syntax.ElementNamedGraph;
-import com.hp.hpl.jena.query.util.Context;
 
 public class AlgebraGeneratorQuad extends AlgebraGenerator 
 {
-    // Alternative design: do as a transform
-    
-    public static Node defaultGraph = Node.createURI("http://localhost/defaultgraph") ;
-    Node currentGraph = defaultGraph ;
-    
-    public AlgebraGeneratorQuad(Context context)
-    { super(context) ; }
-    
-    public static Op compile(Element elt, Context context)
+    public static Op compile(Query query)
     {
-        return new AlgebraGeneratorQuad(context).compileGraphPattern(elt) ;
+        Op pattern = compile(query.getQueryPattern()) ;
+        return compileModifiers(query, pattern) ;
     }
+
+    public static Op compile(Element elt)
+    {
+        return new AlgebraGeneratorQuad().compileGraphPattern(elt) ;
+    }
+    
+
+    public static Node defaultGraph = Node.createURI("http://localhost/defaultgraph") ;
+    private Node currentGraph = defaultGraph ;
+    
+    protected AlgebraGeneratorQuad()
+    { super() ; }
     
     protected Op compile(BasicPattern pattern)
     {
