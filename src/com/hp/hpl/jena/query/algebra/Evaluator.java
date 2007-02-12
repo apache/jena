@@ -8,13 +8,11 @@ package com.hp.hpl.jena.query.algebra;
 
 import java.util.List;
 
-import com.hp.hpl.jena.query.engine.ExecCtl;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.expr.ExprList;
 
 public interface Evaluator
 {
-    public ExecCtl getExecCtl() ;
     public ExecutionContext getExecContext() ;
     
     //public Table evaluate(Op op) ;
