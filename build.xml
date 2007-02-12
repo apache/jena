@@ -1,0 +1,390 @@
+<project name="ARQ" default="main" basedir=".">
+
+  <!-- TODO Convert value's to location's -->
+
+  <property name="Name"            value="ARQ"/>
+  <property name="name"            value="arq"/>
+  
+  <!-- The major and minor version numbers  -->
+  <property name="version-major"   value="2"/>
+  <property name="version-minor"   value="0"/>
+  <property name="version-status"  value="-dev"/>
+  <property name="version"
+            value="${version-major}.${version-minor}${version-status}"/>
+
+  <property name="dist.name"       value="${Name}-${version}"/>
+
+  <property name="src.dir"         value="src"/>
+  <property name="src-ex.dir"      value="src-examples"/>
+  <property name="src.build.dir"         value="bldsrc"/>
+  <property name="classes.build.dir"     value="bldbin"/>
+  <property name="dist.root"       value="dist"/>
+  <property name="dist.dir"        value="${dist.root}/${dist.name}"/>
+  <property name="lib.dir"         value="lib"/>
+  <property name="grammar.dir"     value="Grammar"/>
+  <property name="doc.dir"         value="doc"/>
+  <property name="javadoc.dir"     value="doc/javadoc"/>
+  <property name="javadoc.all.dir" value="doc/javadoc-all"/>
+
+  <property name="test.dir"        value="testing"/>
+  <property name="vocab.dir"       value="Vocabularies"/>
+
+  <property name="jarfile"         value="${name}.jar"/>
+  <property name="jarfile.extra"   value="${name}-extra.jar"/>
+
+  <property name="arq.root"        value="src/com/hp/hpl/jena/query"/>
+  
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+  </path>
+
+  <filterset id="filters.general">
+    <filter token="name"           value="${Name}"/>
+    <filter token="website"        value="http://jena.sourceforge.net/ARQ/"/>
+    <filter token="version"        value="${version}"/>
+    <filter token="version-major"  value="${version-major}"/>
+    <filter token="version-minor"  value="${version-minor}"/>
+    <filter token="version-status" value="${version-status}"/>   
+  </filterset>   
+
+  <target name="optimise-javac-flags"
+          description="Set the javac flags that will produce an optmised jar with no debug symbols" >
+    <property name="java.debug"       value="false"/>
+    <property name="java.debuglevel"  value=""/>
+    <property name="java.deprecation" value="false"/>
+    <property name="java.optimize"    value="true"/>
+    <property name="java.source"      value="1.4"/>
+    <property name="java.target"      value="1.4"/>
+  </target>
+
+  <target name="default-javac-flags"
+          description="Set the javac flags that will produce an debug jar with no compiler optimisation and all debug symbols" >
+    <!-- Note that in ant, if these flags are already set setting them again has no effect -->
+    <property name="java.debug"       value="true"/>
+    <property name="java.debuglevel"  value="source,lines,vars"/>
+    <property name="java.deprecation" value="false"/>
+    <property name="java.optimize"    value="false"/>
+    <property name="java.source"      value="1.4"/>
+    <property name="java.target"      value="1.4"/>
+  </target>
+
+  <target name="javac-flags" depends="default-javac-flags"/>
+
+  <!-- Main external targets -->
+  <target name="main" depends="jar,test" description="Build arq.jar"/>
+  
+  <!-- Alternative name -->
+  <target name="jar"  depends="make-jars" description="Build arq.jar">
+    <antcall target="clean-build-dirs"/>
+  </target>
+
+
+  <target name="release" depends="init,package,test"
+          description="Create ARQ release">
+    <antcall target="clean-build-dirs"/>
+  </target>
+  
+
+  <!-- Section: Grammars, Compilation and JAR -->
+
+  <target name="init">
+    <tstamp/>
+  </target>
+
+  <target name="pre-compile" depends="clean-build-dirs,javac-flags">
+  </target>
+
+  <target name="build-src" depends="clean-build-dirs">
+    <tstamp>
+      <format property="BUILD_TIME"      pattern="yyyy-MM-dd HH:mm Z"/>
+      <format property="BUILD_TIME_XSD"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+    </tstamp>
+    
+    <copy todir="${src.build.dir}">
+      <fileset dir="${src.dir}" includes="**"/>
+      <filterset>
+        <filterset refid="filters.general"/>
+        <filter token="build-time" value="${BUILD_TIME}" />
+        <filter token="build-time-xsd" value="${BUILD_TIME_XSD}" />
+      </filterset> 
+    </copy>
+  </target>
+
+  <target name="compile"
+          depends="pre-compile,build-src,compile-arq,compile-apps,compile-examples"/>
+
+  <target name="compile-arq" depends="pre-compile">
+    
+    <javac srcdir="${src.build.dir}"
+           destdir="${classes.build.dir}"
+           debug="${java.debug}"
+           debuglevel="${java.debuglevel}"
+           deprecation="${java.deprecation}"
+           optimize="${java.optimize}"
+           source="${java.source}"
+           target="${java.target}">
+      <classpath refid="classpath" />
+    </javac>
+  </target>
+  
+  <target name="compile-apps" depends="pre-compile">
+    <javac srcdir="${src.build.dir}/arq"
+           destdir="${classes.build.dir}"
+           debug="${java.debug}"
+           deprecation="${java.deprecation}"
+           optimize="${java.optimize}"
+           source="${java.source}"
+           target="${java.target}">
+      <classpath refid="classpath" />
+    </javac>
+  </target>
+
+  <target name="compile-examples" depends="pre-compile">
+    <javac srcdir="${src-ex.dir}"
+           destdir="${classes.build.dir}"
+           debug="${java.debug}"
+           deprecation="${java.deprecation}"
+           optimize="${java.optimize}"
+           source="${java.source}"
+           target="${java.target}">
+      <classpath refid="classpath" />
+    </javac>
+  </target>
+
+  <!-- Other thing to go into the jar file -->
+  <target name="classes-misc">
+    <copy todir="${classes.build.dir}" file="${src.dir}/log4j.properties"/>
+  </target>
+
+  <target name="make-jars" depends="make-jar-core,make-jar-extra"/>
+  
+  <property name="arq.path"      value="com/hp/hpl/jena/query"/>
+  <property name="extra.classes" value="${arq.path}/**/test/*,${arq.path}/**/junit/*,arq/**"/>
+
+  <target name="make-jar-core" depends="compile">
+    <!-- Core jar -->
+      <jar destfile="${lib.dir}/${jarfile}" index="yes">
+        <fileset dir="${classes.build.dir}" excludes="${extra.classes}"/>
+      </jar>
+  </target>
+  
+  <!-- Tests and examples -->
+  <target name="make-jar-extra" depends="compile">
+    <jar destfile="${lib.dir}/${jarfile.extra}" index="yes">
+      <fileset dir="${classes.build.dir}" includes="${extra.classes}"/>
+    </jar>
+  </target>
+
+  <!-- Section: Testing -->
+  <!-- <target name="test" depends="jar"> -->
+  <target name="test">
+    <junit>
+      <classpath>
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+      </classpath>
+      <test name="com.hp.hpl.jena.query.test.ARQTestSuite"/>
+    </junit>
+  </target>
+
+  <!-- Section: Javadoc -->
+
+  <target name="javadoc" depends="clean-javadoc,build-src,javac-flags"
+          description="Make the javadoc">
+
+    <javadoc
+     sourcepath="${src.build.dir}"
+     source="${java.source}"
+     destdir="${javadoc.dir}"
+     author="true"
+     version="true"
+     classpathref="classpath"
+     windowtitle="${Name} Query Processor"
+     doctitle="${Name} Query Processor"
+     Public="true"
+     Use="true"
+     bottom="Copyright &#169; 2004, 2005, 2006 Hewlett-Packard Development Company, LP"
+     additionalparam="-breakiterator">
+      <classpath refid="classpath"/>
+      <package name="com.hp.hpl.jena.query"/>
+      <package name="com.hp.hpl.jena.query.larq"/>
+    </javadoc>
+  </target>
+
+  <target name="javadoc-all" depends="clean-javadoc,build-src,javac-flags"
+          description="Make the javadoc (all of it)">
+
+    <javadoc
+     packagenames="com.hp.hpl.jena.query.*"
+     sourcepath="${src.build.dir}"
+     source="${java.source}"
+     destdir="${javadoc.all.dir}"
+     author="true"
+     version="true"
+     classpathref="classpath"
+     windowtitle="${Name} Query Processor"
+     doctitle="${Name} Query Processor"
+     Public="true"
+     Use="true"
+     bottom="Copyright &#169; 2004, 2005, 2006 Hewlett-Packard Development Company, LP"
+     additionalparam="-breakiterator">
+    </javadoc>
+  </target>
+
+
+  <!-- Section: Create distribution area -->
+
+  <target name="package"
+          depends="make-jars,javadoc,javadoc-all,distribution-init,copy,zip"/>
+
+  <target name="distribution-init">
+    <mkdir dir="${dist.dir}"/>
+  </target>
+
+  <target name="copy" depends="distribution-init">
+    <delete dir="${dist.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+    <copy todir="${dist.dir}/${lib.dir}">
+      <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </copy>
+
+    
+    <!-- Source : We could zip this up -->
+    <copy todir="${dist.dir}/${src.dir}">
+      <fileset dir="${src.build.dir}" includes="**"/>
+    </copy>
+    
+    <!-- Examples source -->   
+    <copy todir="${dist.dir}/${src-ex.dir}">
+      <fileset dir="${src-ex.dir}" includes="**"/>
+    </copy>
+    
+
+    <!-- Misc files -->
+    <copy todir="${dist.dir}/" file="build.xml"/>
+    <copy todir="${dist.dir}/" file="copyright.txt"/>
+    <copy todir="${dist.dir}/" file="README.txt"/>
+    <copy todir="${dist.dir}/" file="ChangeLog.txt"/>
+    <copy todir="${dist.dir}/" file="test.sh"/>
+    
+    <!-- Vocabularies  -->
+    <copy todir="${dist.dir}/${vocab.dir}">
+      <fileset dir="${vocab.dir}" includes="**"/>
+    </copy>
+    
+    <!-- Grammars -->
+    <copy todir="${dist.dir}/${grammar.dir}">
+      <fileset dir="${grammar.dir}">
+        <!-- Just the minimum to produce a buildable grammar -->
+        <include name="master.jj"/>
+        <include name="sparql.jj"/>
+        <include name="arq.jj"/>
+        <include name="grammar"/>
+        <include name="jj2html"/>
+        <include name="tokens.txt"/>
+        <exclude name="CVS/**"/>
+      </fileset>
+    </copy>
+
+    <!-- XML result set example
+         Don't include.
+         <copy todir="${dist.dir}/ResultSet">
+         <fileset dir="ResultSet" includes="**"/>
+         </copy>
+    -->
+
+    <!-- bin/ and bat/ -->
+    <copy todir="${dist.dir}/bin">
+      <fileset dir="bin" includes="**"/>
+    </copy>
+    <copy todir="${dist.dir}/bat">
+      <fileset dir="bat" includes="**"/>
+    </copy>
+    <copy todir="${dist.dir}/etc">
+      <fileset dir="etc" includes="**"/>
+    </copy>
+    
+    
+    <!-- Dependences
+ -->
+
+    <!-- lib directory include jena.jar -->
+    <copy todir="${lib.dir}">
+      <fileset dir="lib" includes="*.jar"/>
+    </copy>
+    <!-- Should all be in the lib directory -->
+
+    <!-- Documentation : Try to be clear here -->
+
+    <!-- Javadoc is part of the documentation directory -->
+    <copy todir="${dist.dir}/${doc.dir}">
+      <fileset dir="${doc.dir}">
+        <include name="**"/>
+        <!-- Drafting area -->
+        <exclude name="**/Drafts/**"/>
+        <exclude name="**/index-css.html"/>
+        <!-- FrontPage internal directories -->
+        <exclude name="**/_vti*/**"/>
+        <exclude name="**/_private/**"/>
+        <exclude name="**/desktop.ini"/>
+      </fileset>
+    </copy>
+
+    <!-- Code examples -->
+    <copy todir="${dist.dir}/${doc.dir}/${src-ex.dir}">
+      <fileset dir="${src-ex.dir}"/>
+      <mapper type="glob" from="*.java" to="*.java.txt"/>
+    </copy>
+
+    <!-- Ruby library -->
+    <copy todir="${dist.dir}/Ruby">
+      <fileset dir="Ruby"/>
+    </copy>
+    
+    <!-- Exclude any zips of the ARQ test scripts -->
+    <copy todir="${dist.dir}/${test.dir}">
+      <fileset dir="${test.dir}"
+               includes="**"
+               excludes="${test.dir}/*/*-tests-jena*.zip"/>
+    </copy>
+
+  </target>
+
+  <target name="zip" >
+    <!-- Build the zip of everything -->
+    <delete file="${dist.root}/${dist.name}.zip"/>
+    <zip zipfile="${dist.root}/${dist.name}.zip">
+      <fileset dir="dist" includes="${dist.name}/**"/>
+    </zip>
+  </target>
+
+  <!-- Cleaning -->
+
+  <target name="clean" depends="clean-build-dirs"
+          description="Clean up">
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  <target name="clean-all" depends="clean-javadoc,clean"
+          description="Clean up a lot">
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  <target name="clean-build-dirs"
+          depends="clean-build-classes-dir,clean-build-src-dir"/>
+  <target name="clean-build-classes-dir">
+
+    <delete dir="${classes.build.dir}"/>
+    <mkdir dir="${classes.build.dir}"/>
+  </target>
+
+  <target name="clean-build-src-dir">
+    <delete dir="${src.build.dir}"/>
+    <mkdir  dir="${src.build.dir}"/>
+  </target>
+
+  <target name="clean-javadoc" description="Clean the javadoc directories">
+    <delete dir="${javadoc.dir}"/>
+    <mkdir  dir="${javadoc.all.dir}"/>
+  </target>
+
+</project>
