@@ -1,0 +1,22 @@
+ChangeLog for ARQ
+=================
+
+ARQ 2.0
+-------
+
+This version uses the SPARQL algebra directly,
+then produces an execution scheme
+that is streaming where possible.
+
++ engine1 deprecated (and wil be removed)
+
++ Internal changes
+  + Filter functions now take a Context, not an ExecutionContext.
+  + Removed "EXT" form from ARQ.  Removed package to go with it
+    (Property functions are better)
+
++ Package reorganisation
+
++ Extending query engines
+  + Op rewrite
+  + BGP intercept

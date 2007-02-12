@@ -1,0 +1,47 @@
+#!/bin/bash
+
+export JENAROOT=${JENAROOT:-../Jena2}
+
+function diffTrees
+{
+    local DIR1="$1"
+    local DIR2="$2"
+    (cd $DIR1 ; find . -type f ) | sort > tmp1
+    (cd $DIR2 ; find . -type f ) | sort > tmp2
+
+    echo "-- Files in $DIR1 only"
+    comm -3 -2 tmp1 tmp2
+    echo "-- Files in $DIR2 only"
+    comm -3 -1 tmp1 tmp2
+    rm tmp1 tmp2
+}
+
+function diffDir
+{
+    local DIR1="$1"
+    local DIR2="$2"
+
+    (cd $DIR1 ; ls -1 *.* ) | sort > tmp1
+    (cd $DIR2 ; ls -1 *.* ) | sort > tmp2
+
+    echo "-- Files in $DIR1 only"
+    comm -3 -2 tmp1 tmp2
+    echo "-- Files in $DIR2 only"
+    comm -3 -1 tmp1 tmp2
+    rm tmp1 tmp2
+    
+}
+
+echo "---- Testing ..."
+diffTrees testing/ARQ "${JENAROOT}/testing/ARQ"
+
+
+echo "---- Documentation ..."
+diffDir doc           "${JENAROOT}/doc/ARQ"
+
+echo "---- Tutorial ..."
+diffDir doc/Tutorial  "${JENAROOT}/doc/ARQ/Tutorial"
+
+## echo "---- Examples ..."
+## diffDir doc/src-examples  "${JENAROOT}/doc/src-examples"
+

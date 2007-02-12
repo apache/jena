@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src-dev"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ARQ"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ARQ-other"/>
+	<classpathentry kind="lib" path="C:/home/afs/Projects/ARQ/lib/lucene-core-2.0.0.jar"/>
+	<classpathentry kind="src" path="src-examples"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
