@@ -9,7 +9,7 @@ import java.util.* ;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.engine.engine1.EngineConfig;
+import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.util.Loader;
 import org.apache.commons.logging.*;
 import com.hp.hpl.jena.query.vocabulary.ListPFunction;

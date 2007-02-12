@@ -1,5 +1,7 @@
 ==== ARQ ToDo
 
++ Where to put EngineConfig.
+
 + Algebra:
   + Separate op evaluation from the Op tree entirely?
   + OpUnit, OpBGP, OpGraph have too much in op eval

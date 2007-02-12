@@ -5,13 +5,17 @@
 
 package com.hp.hpl.jena.query.core;
 
-import java.util.* ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingBase;
-import com.hp.hpl.jena.query.util.NodeUtils;
-import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.query.util.ModelUtils;
 
 /** A mapping from variable name to an RDF value.
  *  A wrapper around the graph level Binding.
@@ -43,7 +47,7 @@ public class ResultBinding extends QuerySolutionBase
         Node n = getNode(varName) ;
         if ( n == null )
             return null;
-        return NodeUtils.convertGraphNodeToRDFNode(n, model) ;
+        return ModelUtils.convertGraphNodeToRDFNode(n, model) ;
     }
     
     private Node getNode(String varName)

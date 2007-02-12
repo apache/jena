@@ -75,11 +75,6 @@ public interface Expr
     public ExprFunction getFunction() ;
     
     public void visit(ExprVisitor visitor) ;
-
-    /** Called when engine1 creates executable filters.
-     * @param execCxt
-     */
-    //public void build(ExecutionContext execCxt) ;
 }
 
 /*

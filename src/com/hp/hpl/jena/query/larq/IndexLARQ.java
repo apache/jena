@@ -18,13 +18,14 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.*;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.util.NodeUtils;
 import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
+
+import com.hp.hpl.jena.query.util.ModelUtils;
 
 /** ARQ wrapper for a Lucene index.
  * 
@@ -78,7 +79,7 @@ public class IndexLARQ extends StatementListener
             public Object map1(Object object)
             {
                 Node node = (Node)object ; 
-                return NodeUtils.convertGraphNodeToRDFNode(node, model) ;
+                return ModelUtils.convertGraphNodeToRDFNode(node, model) ;
             }} ;
         Iterator iter = new Map1Iterator(converter, search(queryString)) ;
         NodeIterator nIter = new NodeIteratorImpl(iter, null) ; 

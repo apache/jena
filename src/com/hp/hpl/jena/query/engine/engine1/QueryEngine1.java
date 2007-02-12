@@ -18,6 +18,7 @@ import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingMap;
 import com.hp.hpl.jena.query.engine.binding.BindingRoot;
+import com.hp.hpl.jena.query.engine.binding.BindingUtils;
 import com.hp.hpl.jena.query.engine.engine1.compiler.QueryPatternCompiler;
 import com.hp.hpl.jena.query.engine.engine1.plan.PlanDistinct;
 import com.hp.hpl.jena.query.engine.engine1.plan.PlanLimitOffset;
@@ -25,6 +26,7 @@ import com.hp.hpl.jena.query.engine.engine1.plan.PlanOrderBy;
 import com.hp.hpl.jena.query.engine.engine1.plan.PlanProject;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.syntax.Element;
 import com.hp.hpl.jena.query.util.Context;
 
@@ -236,7 +238,7 @@ public class QueryEngine1 extends QueryEngineBase
             return rootBinding ;
 
         Binding b = new BindingMap(rootBinding) ;
-        QueryEngineUtils.addToBinding(b, startBinding) ;
+        BindingUtils.addToBinding(b, startBinding) ;
         return b ;
     }
     

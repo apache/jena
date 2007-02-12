@@ -8,7 +8,7 @@ package com.hp.hpl.jena.query.core.describe;
 
 import java.util.* ;
 
-import com.hp.hpl.jena.query.engine.engine1.EngineConfig;
+import com.hp.hpl.jena.query.engine.main.EngineConfig;
 
 /** Registry of DescribeHandlers.     
  * 

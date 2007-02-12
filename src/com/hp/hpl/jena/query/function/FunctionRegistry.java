@@ -11,7 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.engine.engine1.EngineConfig;
+import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.util.Loader;
 
 /** 

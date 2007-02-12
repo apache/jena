@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.engine.engine1;
+package com.hp.hpl.jena.query.engine.main;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
@@ -28,16 +28,6 @@ public class EngineConfig
     
     // Move to ARQ?
     public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;
-    
-    /** Change whether optionals propagate their input always
-     *  (clean theoretical view - order independent - generates unnecessary solutions - not SPARQL)
-     *  or whether they are more convenient (nicer application viewpoint,
-     *  no extra bindings, correct SPARQL).
-     *  Set "true" for the application nice viewpoint (default). 
-     */
-
-//    public static final Symbol niceOptionals =
-//        ARQConstants.allocSymbol("niceOptionals") ;
     
     /** The property function registry */
     public static final Symbol registryPropertyFunctions =

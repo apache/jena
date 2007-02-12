@@ -12,18 +12,18 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.core.describe.DescribeHandler;
 import com.hp.hpl.jena.query.core.describe.DescribeHandlerRegistry;
-import com.hp.hpl.jena.query.engine.engine1.EngineConfig;
-import com.hp.hpl.jena.query.engine.engine1.QueryEngineUtils;
 import com.hp.hpl.jena.query.engine.iterator.QueryIter;
+import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.syntax.Template;
 import com.hp.hpl.jena.query.util.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.FileManager;
 
 /**
  * @author     Andy Seaborne
@@ -241,7 +241,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
         for ( Iterator iter = set.iterator() ; iter.hasNext() ; )
         {
             Triple t = (Triple)iter.next() ;
-            Statement stmt = QueryEngineUtils.tripleToStatement(model, t) ;
+            Statement stmt = ModelUtils.tripleToStatement(model, t) ;
             if ( stmt != null )
                 model.add(stmt) ;
         }
@@ -286,7 +286,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
             for ( Iterator iter = query.getResultURIs().iterator() ; iter.hasNext() ; )
             {
                 Node n = (Node)iter.next() ;
-                RDFNode rNode = NodeUtils.convertGraphNodeToRDFNode(n, dataset.getDefaultModel()) ;
+                RDFNode rNode = ModelUtils.convertGraphNodeToRDFNode(n, dataset.getDefaultModel()) ;
                 set.add(rNode) ;
             }
         }

@@ -9,10 +9,12 @@ package com.hp.hpl.jena.query.syntax;
 import java.util.Collection;
 import java.util.Map;
 
-import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.query.core.LabelMap;
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.engine1.QueryEngineUtils;
+import com.hp.hpl.jena.query.engine.binding.BindingUtils;
 
 /** A single triple template.
  *  bNodes are "magic" in that they are duplicated on substitution.  
@@ -53,7 +55,7 @@ public class TemplateTriple extends Template
             o = newBlank(o, bNodeMap) ;
 
         Triple t = new Triple(s, p, o) ; 
-        Triple t2 = QueryEngineUtils.substituteIntoTriple(t, b) ;
+        Triple t2 = BindingUtils.substituteIntoTriple(t, b) ;
         acc.add(t2) ;
     }
     

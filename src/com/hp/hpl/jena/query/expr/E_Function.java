@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.engine1.EngineConfig;
+import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.function.Function;
 import com.hp.hpl.jena.query.function.FunctionFactory;
 import com.hp.hpl.jena.query.function.FunctionRegistry;

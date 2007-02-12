@@ -11,13 +11,9 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.query.QueryException;
+
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.impl.LiteralImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 
 /** Node utilities. 
  * @author Andy Seaborne
@@ -206,74 +202,7 @@ public class NodeUtils
                 node.getLiteralLanguage().equals("") ; 
     }
     
-//    public static int compareLiteralsBySyntax(Node node1, Node node2)
-//    {
-//        if ( node1 == null || ! node1.isLiteral() ||
-//             node2 == null || ! node2.isLiteral() )
-//            throw new ARQInternalErrorException("compareLiteralsBySyntax called with non-literal: ("+node1+","+node2+")") ;
-//        
-//        String lex1 = node1.getLiteralLexicalForm() ;
-//        String lex2 = node2.getLiteralLexicalForm() ;
-//    
-//        String dt1 = node1.getLiteralDatatypeURI() ;
-//        String dt2 = node2.getLiteralDatatypeURI() ;
-//        
-//        String lang1 = node1.getLiteralLanguage() ;
-//        String lang2 = node2.getLiteralLanguage() ;
-//    
-//        if ( dt1 == null && dt2 == null )
-//        {
-//            // Both plain literals or with lang tags
-//            if ( lang1 == null && lang2 == null )
-//                return StringUtils.strCompare(lex1, lex2) ;
-//            if ( lang1 == null )
-//                return  Expr.CMP_LESS ;
-//            if ( lang2 == null )
-//                return  Expr.CMP_GREATER ;
-//
-//            // Syntactic - lang tags case considered / case sensitive
-//            int x = StringUtils.strCompare(lang1, lang2) ;
-//            if ( x != Expr.CMP_EQUAL )
-//                return x ;
-//            // Same lang tag.
-//            return StringUtils.strCompare(lex1, lex2) ;
-//        }
-//        
-//        if ( dt1 == null )
-//            // Plain or lang literal for node1, typed for node2
-//            return Expr.CMP_LESS ;
-//        if ( dt2 == null )
-//            // Plain or lang literal for node2, typed for node1
-//            return Expr.CMP_GREATER ;
-//
-//        // Both typed.
-//        
-//        // If both have types and are the same ...
-//        if ( dt1.equals(dt2) )
-//            return StringUtils.strCompare(lex1, lex2) ; 
-//
-//        // Different types.
-//        return StringUtils.strCompare(dt1, dt2) ;
-//    }
-//    
-    public static RDFNode convertGraphNodeToRDFNode(Node n, Model model)
-    {
-        if ( n.isVariable() )
-            throw new QueryException("Variable: "+n) ;
 
-        // Best way.
-        if ( model != null )
-             return model.asRDFNode(n) ;
-        
-        if ( n.isLiteral() )
-            return new LiteralImpl(n, null) ;
-                
-        if ( n.isURI() || n.isBlank() )
-            return new ResourceImpl(n, null) ;
-        
-        throw new ARQInternalErrorException("Unknown node type for node: "+n) ;
-    }
-    
     public static Node createLiteralNode(String lex, String lang, String datatypeURI)
     {
         if ( datatypeURI != null && datatypeURI.equals("") )

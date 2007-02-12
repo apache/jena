@@ -3,68 +3,83 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.engine.engine1;
+package com.hp.hpl.jena.query.engine.binding;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.*;
 
-import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.binding.BindingUtils;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.core.Var;
 
 /**
  * @author     Andy Seaborne
  * @version    $Id: QueryEngineUtils.java,v 1.14 2007/02/06 17:06:06 andy_seaborne Exp $
  */
  
-public class QueryEngineUtils
+public class BindingUtils
 {
-    public static Log log = LogFactory.getLog(QueryEngineUtils.class) ;
+    private static Log log = LogFactory.getLog(BindingUtils.class) ;
   
-    public static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,
-                               List pattern, Binding presets, Set vars)
+    public static Triple substituteIntoTriple(Triple t, Binding binding)
     {
-        if ( pattern == null )
-            return ;
-        for (Iterator iter = pattern.listIterator(); iter.hasNext();)
-        {
-            Triple t = (Triple) iter.next();
-            t = BindingUtils.substituteIntoTriple(t, presets) ;
-            if ( vars != null )
-            {
-                if ( t.getSubject().isVariable() )
-                    vars.add(t.getSubject()) ;
-                if ( t.getPredicate().isVariable() )
-                    vars.add(t.getPredicate()) ;
-                if ( t.getObject().isVariable() )
-                    vars.add(t.getObject()) ;
-            }
-            graphQuery.addMatch(t);
-        }
+        Node subject = substituteNode(t.getSubject(), binding) ;
+        Node predicate = substituteNode(t.getPredicate(), binding) ;
+        Node object = substituteNode(t.getObject(), binding) ;
+        
+        if ( subject == t.getSubject() &&
+             predicate == t.getPredicate() &&
+             object == t.getObject() )
+             return t ;
+             
+        return new Triple(subject, predicate, object) ;
     }
     
-    public static void compileConstraints(com.hp.hpl.jena.graph.query.Query graphQuery, List constraints)
+    public static Node substituteNode(Node n, Binding binding)
     {
-        log.warn("Call to compileConstraints for Jena Expressions") ;
+        if ( ! n.isVariable() )
+            return n ;
+
+        if ( ! (n instanceof Var) )
+            log.fatal("Node_Variable, not a Var") ; 
+        
+        //String name = ((Node_Variable)n).getName() ;
+        Var var = Var.alloc(n) ;
+        Object obj = null ;
+        
+        if ( binding != null )
+            obj = binding.get(var) ;
+        
+        if ( obj == null )
+            return n ;
+            
+        if ( obj instanceof Node )
+            return (Node)obj ;
+
+        LogFactory.getLog(BindingUtils.class).warn("Unknown object in binding: ignored: "+obj.getClass().getName()) ;        
+        return n ;
     }
     
-    public static Node[] projectionVars(Set vars)
-    {
-        Node[] result = new Node[vars.size()] ;
     
-        int i = 0 ; 
-        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
+    public static Binding asBinding(QuerySolution qSolution)
+    {
+        Binding binding = new BindingMap(null) ;
+        addToBinding(binding, qSolution) ;
+        return binding ;
+    }
+        
+    public static void addToBinding(Binding binding, QuerySolution qSolution)
+    {        
+        for ( Iterator iter = qSolution.varNames() ; iter.hasNext() ; )
         {
-            Node n = (Node)iter.next() ;
-            result[i] = n ;
-            i++ ;
+            String n = (String)iter.next() ;
+            RDFNode x = qSolution.get(n) ;
+            binding.add(Var.alloc(n), x.asNode()) ;
         }
-        return result ;
     }
 }
 
