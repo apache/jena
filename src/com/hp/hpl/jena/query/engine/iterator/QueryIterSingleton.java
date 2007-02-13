@@ -6,8 +6,11 @@
 
 package com.hp.hpl.jena.query.engine.iterator;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.Binding1;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 
@@ -19,7 +22,12 @@ import com.hp.hpl.jena.query.util.IndentedWriter;
 
 public class QueryIterSingleton extends QueryIterYieldN
 {
-    Throwable th = new Throwable() ; 
+    // A common usage.
+    public static QueryIterSingleton create(Binding parent, Var var, Node value, ExecutionContext context)
+    {
+        Binding b = new Binding1(parent, var, value) ;
+        return new QueryIterSingleton(b) ;
+    }
     
     public QueryIterSingleton(Binding binding)
     {

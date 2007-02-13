@@ -11,7 +11,6 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterExtend1;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 
@@ -24,7 +23,7 @@ public class PFLib
     
     public static QueryIterator oneResult(Binding binding, Var var, Node value, ExecutionContext execCxt)
     {
-        return new QueryIterExtend1(binding, var, value, execCxt) ;
+        return QueryIterSingleton.create(binding, var, value, execCxt) ;
     }
     
     public static QueryIterator result(Binding binding, ExecutionContext execCxt)
