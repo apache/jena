@@ -8,7 +8,6 @@ package com.hp.hpl.jena.query.engine.iterator;
 
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterYieldN;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 

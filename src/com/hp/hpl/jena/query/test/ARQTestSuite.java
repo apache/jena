@@ -11,6 +11,7 @@ import junit.framework.*;
 import com.hp.hpl.jena.query.expr.E_Function;
 import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.query.test.suites.*;
 
 /**
  * All the ARQ tests 
@@ -20,7 +21,7 @@ import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
 
 public class ARQTestSuite extends TestSuite
 {
-    static final String testDirARQ = "testing/ARQ" ;
+    public static final String testDirARQ = "testing/ARQ" ;
     
     static public TestSuite suite() {
         return new ARQTestSuite();
@@ -29,22 +30,13 @@ public class ARQTestSuite extends TestSuite
 	private ARQTestSuite()
 	{
         super("ARQ");
-        
-        // There are only about 20 cache hits and they are
-        // all local files (which are in the OS filing system cache).
-        // The saving of parsing overhead is also small. 
-        
-        //FileManager.get().setModelCaching(false) ;
-        
         // Tests should be silent.
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
-        
-        addTest(TS_Internal.suite() );
-        addTest(TestExpressionsARQ.suite()) ;
-        addTest(TestExpressions.suite()) ;
-        addTest(TS_Syntax.suite()) ;
-        addTest(TS_Serialization.suite()) ;
+
+        // Internal
+        addTest(TS.suite() );
+
         // Scripted tests for SPARQL and ARQ.
         addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
         // Syntax beyond SPARQL
@@ -62,6 +54,7 @@ public class ARQTestSuite extends TestSuite
         addTest(TS_RDQL.suite()) ;
         
         addTest(TestAPI.suite()) ;
+
     }
 }
 

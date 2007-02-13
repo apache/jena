@@ -35,11 +35,6 @@
 + Convenient: Get the version ID (property function?)
   Generalize to system functions.
     
-+ Split tests into
-   Pure SPARQL
-   ARQ/SPARQL (property functions, functions)
-   ARQ/ARQ
-
 + java: general redirection.
   PREFIX apf:     <http://jena.hpl.hp.com/ARQ/pfunction#> 
     Change the java: lookup to add this case.

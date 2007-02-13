@@ -9,13 +9,60 @@ package com.hp.hpl.jena.query.engine.main;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.algebra.OpSubstitute;
 import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.engine.*;
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.BindingMap;
+import com.hp.hpl.jena.query.engine.binding.BindingRoot;
+import com.hp.hpl.jena.query.engine.binding.BindingUtils;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.query.util.Context;
 
 public class QueryEngineMain extends QueryEngineRef
 {
+    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
+    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
+
+    public QueryEngineMain(Query query, Context context)
+    { super(query, context) ; }
+
+    public QueryEngineMain(Query query)
+    { super(query) ; }
+    
+    //@Override
+    protected Plan queryToPlan(Query query)
+    {
+        Op op = getOp() ;
+        Binding b = BindingRoot.create() ;
+        
+        // If there is some initial bindings
+        if ( super.startBinding != null )
+        {
+            b = new BindingMap(b) ;
+            BindingUtils.addToBinding(b, startBinding) ;
+            // Substitute in the Op, and use this b as the root. 
+            op = OpSubstitute.substitute(b, op) ;
+        }
+        
+        op = modifyQueryOp(op) ;
+        QueryIterator qIter = new QueryIterSingleton(b) ;
+        qIter = OpCompiler.compile(op, qIter, getExecContext()) ;
+        return new PlanOp(op, qIter) ;
+    }
+    
+    // Allow plan to be modifed
+    // Have some subclass QueryEngineRef and add all extensibility points.
+    // This one, others?
+    // All this is not necessary but could clarify how to extend QueryEngines 
+    protected Op modifyQueryOp(Op op)
+    {
+        return op ;
+    }
+
+    // -------- Factory
+    
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         public boolean accept(Query query, Dataset dataset) 
@@ -29,39 +76,6 @@ public class QueryEngineMain extends QueryEngineRef
         }
     } ;
     
-    static public void register()
-    {
-        QueryEngineRegistry.addFactory(factory) ;
-    }
-    
-    static public void unregister()
-    {
-        QueryEngineRegistry.removeFactory(factory) ;
-    }
-
-    public QueryEngineMain(Query query, Context context)
-    { super(query, context) ; }
-
-    public QueryEngineMain(Query query)
-    { super(query) ; }
-    
-    //@Override
-    protected Plan queryToPlan(Query query)
-    {
-        Op op = getOp() ;
-        op = modifyQueryOp(op) ;
-        QueryIterator qIter = OpCompiler.compile(op, getExecContext()) ;
-        return new PlanOp(op, qIter) ;
-    }
-    
-    // Allow plan to be modifed
-    // Have some subclass QueryEngineRef and add all extensibility points.
-    // This one, others?
-    // All this is not necessary but could clarify how to extend QueryEngines 
-    protected Op modifyQueryOp(Op op)
-    {
-        return op ;
-    }
 }
 
 /*

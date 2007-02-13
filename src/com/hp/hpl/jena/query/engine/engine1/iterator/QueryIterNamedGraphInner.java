@@ -18,12 +18,11 @@ import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.Binding1;
 import com.hp.hpl.jena.query.engine.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine.iterator.QueryIter;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.util.Utils;
 
 
-public class QueryIterNamedGraphInner extends QueryIter
+public class QueryIterNamedGraphInner extends QueryIterPlan
 {
     Binding binding ;
     Node graphNode ;

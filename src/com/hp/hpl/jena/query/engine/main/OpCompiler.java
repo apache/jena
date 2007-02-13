@@ -16,8 +16,11 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.BindingImmutable;
 import com.hp.hpl.jena.query.engine.binding.BindingRoot;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterDistinct;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterProject;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.query.engine.main.iterators.*;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSlice;
+import com.hp.hpl.jena.query.engine.main.iterator.*;
 import com.hp.hpl.jena.query.expr.ExprList;
 
 
@@ -139,7 +142,7 @@ public class OpCompiler
             x.add(opUnionNext) ;
         }
         x.add(opUnion.getRight()) ;
-        QueryIterator cIter = new QueryIterSplit(input, x, execCxt) ;
+        QueryIterator cIter = new QueryIterUnion(input, x, execCxt) ;
         return cIter ;
     }
 
@@ -239,7 +242,7 @@ public class OpCompiler
         return qIter ;
     }
 
-    static private QueryIterator root(ExecutionContext execCxt)
+    static QueryIterator root(ExecutionContext execCxt)
     {
         return new QueryIterSingleton(BindingRoot.create(), execCxt) ;
     }

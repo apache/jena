@@ -16,12 +16,8 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingImmutable;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterConcat;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterLimitOffset;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.query.engine.main.iterators.QueryIterDistinct;
-import com.hp.hpl.jena.query.engine.main.iterators.QueryIterProject;
-import com.hp.hpl.jena.query.engine.main.iterators.QueryIterSort;
+import com.hp.hpl.jena.query.engine.iterator.*;
+import com.hp.hpl.jena.query.engine.main.iterator.QueryIterSort;
 import com.hp.hpl.jena.query.engine.ref.table.TableSimple;
 import com.hp.hpl.jena.query.expr.ExprList;
 
@@ -150,7 +146,7 @@ class EvaluatorSimple implements Evaluator
         public Table slice(Table table, long start, long length)
         {
             QueryIterator qIter = table.iterator(getExecContext()) ;
-            qIter = new QueryIterLimitOffset(qIter, start, length, getExecContext()) ;
+            qIter = new QueryIterSlice(qIter, start, length, getExecContext()) ;
             return new TableSimple(qIter) ;
         }
 

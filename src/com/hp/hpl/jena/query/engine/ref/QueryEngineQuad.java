@@ -13,7 +13,7 @@ import com.hp.hpl.jena.query.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterBlockTriples;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTriples;
 import com.hp.hpl.jena.query.util.Context;
 
 public class QueryEngineQuad extends QueryEngineRef

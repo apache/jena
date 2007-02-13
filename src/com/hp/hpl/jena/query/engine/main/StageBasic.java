@@ -14,9 +14,9 @@ import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterBlockTripleAlt;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterBlockTriples;
 import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriples;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTripleAlt;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTriples;
 import com.hp.hpl.jena.query.util.Utils;
 
 public class StageBasic implements Stage

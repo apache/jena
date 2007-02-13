@@ -16,7 +16,7 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.Binding1;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterConcat;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.query.pfunction.PropFuncArg;
 import com.hp.hpl.jena.query.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.query.pfunction.PropertyFunctionEval;

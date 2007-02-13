@@ -82,7 +82,7 @@ public class Q_Query extends SimpleNode
             }
             
             if ( q.isUnknownType() )
-                throw new ARQInternalErrorException("Parser didn't catch absence of SELECT, DESCRIBE, ASK or CONSTRUCT clause") ;
+                throw new ARQInternalErrorException("Parser didn't catch absence of SELECT clause") ;
 
             // Source
             if ( i < numQueryChildren )

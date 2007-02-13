@@ -11,7 +11,6 @@ import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Wrap a QueryIterator so it can have some/all of it's methods intercepted. 
  * 
@@ -36,13 +35,13 @@ public class QueryIteratorWrapper extends QueryIteratorBase
     {
         if ( iterator != null )
         {
-            NiceIterator.close(iterator) ;
+            iterator.close() ;
             iterator = null ;
         }
     }
     
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { out.println(Utils.className(this)) ; }
+    { out.println(Utils.className(this)+"/"+Utils.className(iterator)) ; }
 
 }
 

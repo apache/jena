@@ -10,7 +10,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.engine1.*;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterLimitOffset;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSlice;
 import com.hp.hpl.jena.query.util.Context;
 
 
@@ -39,7 +39,7 @@ public class PlanLimitOffset extends PlanSequenceModifier
         long posn = offset ;
         if ( posn == Query.NOLIMIT )
             posn = 0 ;
-        qIter = new QueryIterLimitOffset(qIter, posn, num, context) ;
+        qIter = new QueryIterSlice(qIter, posn, num, context) ;
         return qIter ;
     }
 

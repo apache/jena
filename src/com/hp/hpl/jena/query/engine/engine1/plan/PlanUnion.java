@@ -11,7 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.engine1.*;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterUnion;
+import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterUnionPlan;
 import com.hp.hpl.jena.query.util.Context;
 
 public class PlanUnion extends PlanElementN
@@ -40,7 +40,7 @@ public class PlanUnion extends PlanElementN
             return e.build(input, execCxt) ;
         }
         
-        return new QueryIterUnion(input, getSubElements(), execCxt) ;
+        return new QueryIterUnionPlan(input, getSubElements(), execCxt) ;
     }
     
     public void visit(PlanVisitor visitor) { visitor.visit(this) ; }

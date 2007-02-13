@@ -13,7 +13,6 @@ import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 import com.hp.hpl.jena.util.iterator.SingletonIterator;
 import com.hp.hpl.jena.graph.* ;
@@ -24,7 +23,7 @@ import com.hp.hpl.jena.graph.* ;
  * @version $Id: QueryIterNamedGraph.java,v 1.8 2007/02/06 17:06:03 andy_seaborne Exp $
  */
 
-public class QueryIterNamedGraph extends QueryIterRepeatApply
+public class QueryIterNamedGraph extends QueryIterPlanRepeatApply
 {
     Node sourceNode ;
     PlanElement subPattern ;

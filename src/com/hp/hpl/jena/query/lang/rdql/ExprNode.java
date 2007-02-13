@@ -128,7 +128,27 @@ abstract class ExprNode
         }
     }
     
-    public void varsMentioned(Collection acc) { throw new ARQInternalErrorException("RDQL varsMentioned called (does not use Var)") ; }
+    public void varsMentioned(Collection acc)
+    {
+        if ( this instanceof Q_Var )
+        {
+            Q_Var v = (Q_Var)this ;
+            // Convert to Var as used by the rest of ARQ
+            acc.add(Var.alloc(((Q_Var)v).getName())) ;
+            return ;
+        }
+
+        // Not a variable.  Recurse. 
+        for ( int i = 0 ; i < argCount() ; i++ )
+        {
+            Expression e = getArg(i) ;
+            if ( e != null )
+            {
+                ExprNode ex = (ExprNode)e ;
+                ex.varsMentioned(acc) ;
+            }
+        }
+    }
     
     // Per query execution processing.
 

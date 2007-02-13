@@ -23,7 +23,7 @@ public class DefaultEngineFactory
      */
     public static void register(QueryEngineRegistry registry)
     {
-        if ( false )
+        if ( true )
             QueryEngineMain.register() ;
         else
             QueryEngine1.register() ;

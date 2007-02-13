@@ -10,7 +10,6 @@ import java.util.NoSuchElementException;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.iterator.QueryIter;
 import com.hp.hpl.jena.query.util.Utils;
 
 /** An iterator that returns at least one element from another iterator
@@ -20,7 +19,7 @@ import com.hp.hpl.jena.query.util.Utils;
  * @version $Id: QueryIterDefaulting.java,v 1.6 2007/02/06 17:06:03 andy_seaborne Exp $
  */ 
 
-public class QueryIterDefaulting extends QueryIter 
+public class QueryIterDefaulting extends QueryIterPlan 
 {
     Binding defaultObject ;
     QueryIterator cIter ;

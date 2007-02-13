@@ -14,7 +14,7 @@ import java.util.Collection;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.engine1.*;
-import com.hp.hpl.jena.query.engine.engine1.iterator.QueryIterProject;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterProject;
 import com.hp.hpl.jena.query.util.Context;
 
 /**   
