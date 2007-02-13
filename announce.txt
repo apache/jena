@@ -1,0 +1,62 @@
+ARQ is a query processor for Jena that implements SPARQL.
+
+Announcing ARQ 2.0
+
+In this release:
+
+Download:
+    http://prdownloads.sourceforge.net/jena/ARQ-2.0.zip
+
+Home page:
+	http://jena.sourceforge.net/ARQ/
+
+ARQ is also available via anonymous SVN:
+
+https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
+
+SPARQL is described in:
+  http://www.w3.org/TR/rdf-sparql-query/
+
+
+Notes
+-----
+
+More details in ChangeLog.txt
+
+Status
+------
+
+The implementation of SPARQL is complete and meets the
+SPARQL last call specification when used with the reference
+query engine.
+
+Services
+--------
+
+SPARQL validator: 
+http://www.sparql.org/validator.html
+
+SPARQL processor:
+http://www.sparql.org/sparql.html
+
+JAR changes
+-----------
+
+ARQ requires the version of jena.jar included in the download
+or a later version from Jena CVS.
+
+API Changes
+-----------
+
+Support and Questions
+---------------------
+
+Comments and questions about ARQ to the Jena mailing list 
+    jena-dev@groups.yahoo.com
+
+General questions and comments on SPARQL to jena-dev or
+    public-sparql-dev@w3.org
+    
+Formal comments specific to the SPARQL query language,
+protocol or result set docuemnts to:
+	public-rdf-dawg-comments@w3.org
