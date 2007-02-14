@@ -1,8 +1,8 @@
 PREFIX :    <http://example/>
 
-SELECT *
+SELECT ?v
 { 
-    :x :p ?v . FILTER ( <http://foo>(2) ) .
+    ?x :p ?v . 
 
 ##     # Case 1: Filter and BGPs.
 ##     # No join.
