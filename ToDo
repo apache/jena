@@ -8,7 +8,6 @@
 + Algebra:
   + Separate op evaluation from the Op tree entirely?
   + OpUnit, OpBGP, OpGraph have too much in op eval
-  + Remove engine1 from ref and main
   
     // TODO property function determination by general tree rewriting - BGP special first.
     //  By general BGP rewriting.  Stages.
