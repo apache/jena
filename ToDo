@@ -2,7 +2,8 @@
 
 + Very simple non-streaming table usage.
   No iterators.
-  TableSimple is the only steraing point - and often materialized.
+  TableSimple is the only streaming point - and often materialized.
+  And used via TableFactory.create(QueryIterator) as well as direct
 
 + Algebra:
   + Separate op evaluation from the Op tree entirely?
