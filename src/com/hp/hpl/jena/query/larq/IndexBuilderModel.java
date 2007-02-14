@@ -16,9 +16,9 @@ import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
-/** Root class for index creation from a graph or model.  This class a Model listener interface
- *  to index while loading data.  It also provides the
- *  ability to index from a StmtIterator.
+/** Root class for index creation from a graph or model.  This class
+ *  a Model listener interface to index while loading data.  It also
+ *  provides the ability to index from a StmtIterator.
  *  Once completed, the index builder should be closed for writing,
  *  then the getIndex() called.
  *  To update the index once closed, the application should create a new index builder.
@@ -31,11 +31,9 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public abstract class IndexBuilderModel extends StatementListener
 {
-    //private static Log log = LogFactory.getLog(IndexBuilderBase.class) ;
-
     private Directory dir = null ;
 
-    // Multiple inheritance woudl be nice .
+    // Multiple inheritance would be nice .
     private IndexBuilderBase base ;
     
     /** Create an in-memory index */

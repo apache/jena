@@ -1,6 +1,7 @@
 ==== ARQ ToDo
 
 + Very simple non-streaming table usage.
+  No iterators.
 
 + Where to put EngineConfig.
 

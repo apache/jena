@@ -18,7 +18,6 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.*;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
@@ -32,7 +31,7 @@ import com.hp.hpl.jena.query.util.ModelUtils;
  * @author Andy Seaborne
  * @version $Id: IndexLARQ.java,v 1.6 2007/01/14 20:00:23 andy_seaborne Exp $
  */
-public class IndexLARQ extends StatementListener
+public class IndexLARQ
 {
     private static Log log = LogFactory.getLog(IndexLARQ.class) ;
 

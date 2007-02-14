@@ -23,8 +23,33 @@ public class ARQTestSuite extends TestSuite
 {
     public static final String testDirARQ = "testing/ARQ" ;
     
-    static public TestSuite suite() {
-        return new ARQTestSuite();
+    static public TestSuite suite()
+    {
+        TestSuite ts = new ARQTestSuite() ;
+
+        // Internal
+        ts.addTest(TS.suite() );
+
+        // Scripted tests for SPARQL
+        ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
+      
+        // ARQ + Lucene
+        ts.addTest(TestLARQ.suite()) ;
+      
+        // Scripted tests for ARQ features outside SPARQL syntax
+        ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-ext.ttl")) ;
+        
+        // The DAWG official tests (some may be duplicated in ARQ test suite
+        // but this should be the untouched versions, just changes to
+        // the manifests for rdfs:labels).
+        ts.addTest(TS_DAWG.suite()) ;
+      
+        // The RDQL engine ported to ARQ
+        ts.addTest(TS_RDQL.suite()) ;
+      
+        // API
+        ts.addTest(TestAPI.suite()) ;
+        return ts ;
     }
 
 	private ARQTestSuite()
@@ -33,29 +58,7 @@ public class ARQTestSuite extends TestSuite
         // Tests should be silent.
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
-
-        // Internal
-        addTest(TS.suite() );
-
-        // Scripted tests for SPARQL and ARQ.
-        addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
-        // Syntax beyond SPARQL
-        addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-ext.ttl")) ;
-        
-        // ARQ + Lucene
-        addTest(TestLARQ.suite()) ;
-        
-        // The DAWG official tests (some may be duplicated in ARQ test suite
-        // but this should be the untouched versions, just changes to
-        // the manifests for rdfs:labels).
-        addTest(TS_DAWG.suite()) ;
-        
-        // The RDQL engine ported to ARQ
-        addTest(TS_RDQL.suite()) ;
-        
-        addTest(TestAPI.suite()) ;
-
-    }
+	}
 }
 
 /*

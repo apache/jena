@@ -6,6 +6,7 @@
 
 package arq.examples;
 
+import java.io.StringReader;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.larq.IndexBuilderExt;
@@ -62,7 +63,9 @@ public class ExLucene5
         Literal  lit1 = ResourceFactory.createPlainLiteral("doc") ;
         
         // ---- Index based on some external content 
-        larqBuilder.index(r1, "document") ;
+        
+        
+        larqBuilder.index(r1, new StringReader("document")) ;   // Just to show a Stringreader is possible
         larqBuilder.index(r2, "document") ;
         larqBuilder.index(r3, "slideshow") ;
         larqBuilder.index(r4, "codebase") ;

@@ -70,7 +70,6 @@ public class IndexBuilderSubject extends IndexBuilderModel
         this(fileDir) ;
         property = p ;
     }
-
     
     public void unindexStatement(Statement s)
     { throw new ARQNotImplemented("unindexStatement") ; }
@@ -88,6 +87,9 @@ public class IndexBuilderSubject extends IndexBuilderModel
                 return ;
             // Note: if a subject occurs twice with an indexable string,
             // there will be two hits later.
+            
+            // TODO Same as code in IndexBuilderExt - inherit from that. 
+            
             Node object  = s.getObject().asNode() ;
             Document doc = new Document() ;
             LARQ.index(doc, object) ;
