@@ -2,6 +2,7 @@
 
 + Very simple non-streaming table usage.
   No iterators.
+  TableSimple is the only steraing point - and often materialized.
 
 + Algebra:
   + Separate op evaluation from the Op tree entirely?

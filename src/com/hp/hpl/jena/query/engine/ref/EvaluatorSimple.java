@@ -23,138 +23,138 @@ import com.hp.hpl.jena.query.expr.ExprList;
 
 
 class EvaluatorSimple implements Evaluator
+{
+    // Simple, slow, correct
+
+    private ExecutionContext execCxt ;
+    boolean debug = false ;
+
+    EvaluatorSimple(ExecutionContext context)
     {
-        // Simple, slow, correct
-
-        private ExecutionContext execCxt ;
-        boolean debug = false ;
-
-        EvaluatorSimple(ExecutionContext context)
-        {
-            this.execCxt = context ;
-        }
-
-        public ExecutionContext getExecContext()
-        { return execCxt ; }
-
-        public ExecCtl getExecCtl()
-        { return execCxt ; }
-        
-        private Table joinWorker(Table tableLeft, Table tableRight, boolean leftJoin, ExprList conditions)
-        {
-            // Conditional LeftJoin is (left, Filter(expr, Join(left, right)))
-            // This is done in matchRightLeft
-
-            // Have an iterator that yields one-by-one.
-            QueryIterator left = tableLeft.iterator(execCxt) ;
-            QueryIterConcat output = new QueryIterConcat(execCxt) ;
-            for ( ; left.hasNext() ; )
-            {
-                Binding b = left.nextBinding() ;
-                QueryIterator x = tableRight.matchRightLeft(b, leftJoin, conditions, execCxt) ;
-                if ( x == null )
-                    continue ;
-                output.add(x) ;
-            }
-            tableLeft.close() ;
-            tableRight.close() ;
-            return new TableSimple(output) ;
-        }
-
-        public Table join(Table tableLeft, Table tableRight)
-        {
-            if ( debug )
-            {
-                System.out.println("Join") ;
-                tableLeft.dump() ;
-                tableRight.dump() ;
-            }
-            return joinWorker(tableLeft, tableRight, false, null) ;
-        }
-
-        public Table leftJoin(Table tableLeft, Table tableRight, ExprList exprs)
-        {
-            if ( debug )
-            {
-                System.out.println("Left Join") ;
-                tableLeft.dump() ;
-                tableRight.dump() ;
-                if ( exprs != null )
-                    System.out.println(exprs.toString()) ;
-            }
-            
-            return joinWorker(tableLeft, tableRight, true, exprs) ;
-        }
-
-        public Table filter(ExprList expressions, Table table)
-        {
-            if ( debug )
-            {
-                System.out.println("Restriction") ;
-                System.out.println(expressions.toString()) ;
-                table.dump() ;
-            }
-            QueryIterator iter = table.iterator(execCxt) ;
-            List output = new ArrayList() ;
-            for ( ; iter.hasNext() ; )
-            {
-                Binding b = iter.nextBinding() ;
-                if ( expressions.isSatisfied(b, execCxt.getContext()) )
-                    output.add(b) ;
-            }
-            return new TableSimple(new QueryIterPlainWrapper(output.iterator(), execCxt)) ;
-        }
-
-        
-        
-        public Table union(Table tableLeft, Table tableRight)
-        {
-            if ( debug )
-            {
-                System.out.println("Union") ;
-                tableLeft.dump() ;
-                tableRight.dump() ;
-            }
-            QueryIterConcat output = new QueryIterConcat(execCxt) ;
-            output.add(tableLeft.iterator(execCxt)) ;
-            output.add(tableRight.iterator(execCxt)) ;
-            return new TableSimple(output) ;
-        }
-
-        public Table order(Table table, List conditions)
-        {
-            QueryIterator qIter = table.iterator(getExecContext()) ;
-            qIter = new QueryIterSort(qIter, conditions, getExecContext()) ;
-            return new TableSimple(qIter) ;
-        }
-
-        public Table project(Table table, List vars)
-        {
-            QueryIterator qIter = table.iterator(getExecContext()) ;
-            qIter = new QueryIterProject(qIter, vars, getExecContext()) ;
-            return new TableSimple(qIter) ;
-        }
-
-        public Table distinct(Table table, List vars)
-        {
-            QueryIterator qIter = table.iterator(getExecContext()) ;
-            qIter = BindingImmutable.create(vars, qIter, execCxt) ;
-            qIter = new QueryIterDistinct(qIter, getExecContext()) ;
-            return new TableSimple(qIter) ;
-        }
-
-        public Table slice(Table table, long start, long length)
-        {
-            QueryIterator qIter = table.iterator(getExecContext()) ;
-            qIter = new QueryIterSlice(qIter, start, length, getExecContext()) ;
-            return new TableSimple(qIter) ;
-        }
-
-        public Table unit()
-        {
-            return TableFactory.createUnit() ;
-        }
+        this.execCxt = context ;
     }
+
+    public ExecutionContext getExecContext()
+    { return execCxt ; }
+
+    public ExecCtl getExecCtl()
+    { return execCxt ; }
+
+    public Table join(Table tableLeft, Table tableRight)
+    {
+        if ( debug )
+        {
+            System.out.println("Join") ;
+            tableLeft.dump() ;
+            tableRight.dump() ;
+        }
+        return joinWorker(tableLeft, tableRight, false, null) ;
+    }
+
+    public Table leftJoin(Table tableLeft, Table tableRight, ExprList exprs)
+    {
+        if ( debug )
+        {
+            System.out.println("Left Join") ;
+            tableLeft.dump() ;
+            tableRight.dump() ;
+            if ( exprs != null )
+                System.out.println(exprs.toString()) ;
+        }
+
+        return joinWorker(tableLeft, tableRight, true, exprs) ;
+    }
+
+    public Table filter(ExprList expressions, Table table)
+    {
+        if ( debug )
+        {
+            System.out.println("Restriction") ;
+            System.out.println(expressions.toString()) ;
+            table.dump() ;
+        }
+        QueryIterator iter = table.iterator(execCxt) ;
+        List output = new ArrayList() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Binding b = iter.nextBinding() ;
+            if ( expressions.isSatisfied(b, execCxt.getContext()) )
+                output.add(b) ;
+        }
+        return new TableSimple(new QueryIterPlainWrapper(output.iterator(), execCxt)) ;
+    }
+
+
+
+    public Table union(Table tableLeft, Table tableRight)
+    {
+        if ( debug )
+        {
+            System.out.println("Union") ;
+            tableLeft.dump() ;
+            tableRight.dump() ;
+        }
+        QueryIterConcat output = new QueryIterConcat(execCxt) ;
+        output.add(tableLeft.iterator(execCxt)) ;
+        output.add(tableRight.iterator(execCxt)) ;
+        return new TableSimple(output) ;
+    }
+
+    public Table order(Table table, List conditions)
+    {
+        QueryIterator qIter = table.iterator(getExecContext()) ;
+        qIter = new QueryIterSort(qIter, conditions, getExecContext()) ;
+        return new TableSimple(qIter) ;
+    }
+
+    public Table project(Table table, List vars)
+    {
+        QueryIterator qIter = table.iterator(getExecContext()) ;
+        qIter = new QueryIterProject(qIter, vars, getExecContext()) ;
+        return new TableSimple(qIter) ;
+    }
+
+    public Table distinct(Table table, List vars)
+    {
+        QueryIterator qIter = table.iterator(getExecContext()) ;
+        qIter = BindingImmutable.create(vars, qIter, execCxt) ;
+        qIter = new QueryIterDistinct(qIter, getExecContext()) ;
+        return new TableSimple(qIter) ;
+    }
+
+    public Table slice(Table table, long start, long length)
+    {
+        QueryIterator qIter = table.iterator(getExecContext()) ;
+        qIter = new QueryIterSlice(qIter, start, length, getExecContext()) ;
+        return new TableSimple(qIter) ;
+    }
+
+    public Table unit()
+    {
+        return TableFactory.createUnit() ;
+    }
+
+    private Table joinWorker(Table tableLeft, Table tableRight, boolean leftJoin, ExprList conditions)
+    {
+        // Conditional LeftJoin is (left, Filter(expr, Join(left, right)))
+        // This is done in matchRightLeft
+    
+        // Have an iterator that yields one-by-one.
+        QueryIterator left = tableLeft.iterator(execCxt) ;
+        QueryIterConcat output = new QueryIterConcat(execCxt) ;
+        for ( ; left.hasNext() ; )
+        {
+            Binding b = left.nextBinding() ;
+            QueryIterator x = tableRight.matchRightLeft(b, leftJoin, conditions, execCxt) ;
+            if ( x == null )
+                continue ;
+            output.add(x) ;
+        }
+        tableLeft.close() ;
+        tableRight.close() ;
+        return new TableSimple(output) ;
+    }
+}
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.

@@ -31,6 +31,7 @@ public class TableSimple extends TableBase
     public TableSimple(QueryIterator qIter)
     {
         input = qIter ;
+        materialize() ;
     }
     
     // Note - this table is the RIGHT table, and takes a LEFT binding.

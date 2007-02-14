@@ -2,6 +2,8 @@ PREFIX :    <http://example/>
 
 SELECT *
 { 
+    :x :p ?v . FILTER ( <http://foo>(2) ) .
+
 ##     # Case 1: Filter and BGPs.
 ##     # No join.
 ##     FILTER(?x + ?w)
@@ -29,7 +31,7 @@ SELECT *
 ##     FILTER(?v)
 ##     FILTER (!bound(?w) )
 
-    # Case 4: OPTIONAL + Filters
-    :x :p ?v 
-    OPTIONAL { :x :q ?w . FILTER(true) FILTER(?v)  FILTER(?w) }
+##     # Case 4: OPTIONAL + Filters
+##     :x :p ?v 
+##     OPTIONAL { :x :q ?w . FILTER(true) FILTER(?v)  FILTER(?w) }
 }
