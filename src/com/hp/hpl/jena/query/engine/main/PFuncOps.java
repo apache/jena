@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.pfunction.PropFuncArg;
 import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
@@ -77,7 +78,7 @@ public class PFuncOps
     {
         // Get from the Plan context 
         PropertyFunctionRegistry registry =
-            (PropertyFunctionRegistry)context.get(EngineConfig.registryPropertyFunctions) ;
+            (PropertyFunctionRegistry)context.get(ARQConstants.registryPropertyFunctions) ;
         // Else global
         if ( registry == null )
             registry = PropertyFunctionRegistry.get() ;

@@ -12,18 +12,16 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.core.describe.DescribeHandler;
 import com.hp.hpl.jena.query.core.describe.DescribeHandlerRegistry;
 import com.hp.hpl.jena.query.engine.iterator.QueryIter;
-import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.syntax.Template;
 import com.hp.hpl.jena.query.util.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.FileManager;
 
 /**
  * @author     Andy Seaborne
@@ -54,7 +52,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
     {
         // System initialized by now : Query class ensures ARQ initialized.
         if ( context == null )
-            context = new Context(EngineConfig.getContext()) ;
+            context = new Context(ARQ.getContext()) ;
         query = q ;
         idQueryExecution = (++queryCount) ;
         this.context = context ;

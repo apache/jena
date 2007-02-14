@@ -8,7 +8,8 @@ package com.hp.hpl.jena.query.core.describe;
 
 import java.util.* ;
 
-import com.hp.hpl.jena.query.engine.main.EngineConfig;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.core.ARQConstants;
 
 /** Registry of DescribeHandlers.     
  * 
@@ -35,11 +36,11 @@ public class DescribeHandlerRegistry
     {
         // Intialize if there is no registry already set 
         DescribeHandlerRegistry reg = 
-            (DescribeHandlerRegistry)EngineConfig.getContext().get(EngineConfig.registryDescribeHandlers) ;
+            (DescribeHandlerRegistry)ARQ.getContext().get(ARQConstants.registryDescribeHandlers) ;
         if ( reg == null )
         {
             reg = standardRegistry() ;
-            EngineConfig.getContext().set(EngineConfig.registryDescribeHandlers, reg) ;
+            ARQ.getContext().set(ARQConstants.registryDescribeHandlers, reg) ;
         }
         return reg ;
     }

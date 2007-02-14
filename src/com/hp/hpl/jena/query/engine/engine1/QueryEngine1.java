@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.*;
@@ -26,7 +27,6 @@ import com.hp.hpl.jena.query.engine.engine1.plan.PlanOrderBy;
 import com.hp.hpl.jena.query.engine.engine1.plan.PlanProject;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.syntax.Element;
 import com.hp.hpl.jena.query.util.Context;
 
@@ -188,7 +188,7 @@ public class QueryEngine1 extends QueryEngineBase
         }
         
         // DISTINCT
-        if ( query.isDistinct() || getContext().isTrue(EngineConfig.autoDistinct) )
+        if ( query.isDistinct() || getContext().isTrue(ARQConstants.autoDistinct) )
             planElt = PlanDistinct.make(getContext(), planElt, mods.projectVars) ;
         
         // LIMIT/OFFSET

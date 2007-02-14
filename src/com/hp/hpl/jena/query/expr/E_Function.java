@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.function.Function;
 import com.hp.hpl.jena.query.function.FunctionFactory;
 import com.hp.hpl.jena.query.function.FunctionRegistry;
@@ -65,7 +65,7 @@ public class E_Function extends ExprFunctionN
         // Get from the Plan context 
         FunctionRegistry registry = null ;
         if ( context != null )
-            registry = (FunctionRegistry)context.get(EngineConfig.registryFunctions) ;
+            registry = (FunctionRegistry)context.get(ARQConstants.registryFunctions) ;
         if ( registry == null )
             registry = FunctionRegistry.get() ;
         return registry ;

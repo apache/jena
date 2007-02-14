@@ -5,13 +5,13 @@
  */
 
 package com.hp.hpl.jena.query.function;
-import java.util.* ;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.util.Loader;
 
 /** 
@@ -38,11 +38,11 @@ public class FunctionRegistry //extends HashMap<String, Function>
     {
         // Intialize if there is no registry already set 
         FunctionRegistry reg = 
-            (FunctionRegistry)EngineConfig.getContext().get(EngineConfig.registryFunctions) ;
+            (FunctionRegistry)ARQ.getContext().get(ARQConstants.registryFunctions) ;
         if ( reg == null )
         {
             reg = standardRegistry() ;
-            EngineConfig.getContext().set(EngineConfig.registryFunctions, reg) ;
+            ARQ.getContext().set(ARQConstants.registryFunctions, reg) ;
         }
 
         return reg ;

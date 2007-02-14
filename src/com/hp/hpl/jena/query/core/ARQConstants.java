@@ -91,6 +91,32 @@ public class ARQConstants
     
     public static final Symbol sysVersionARQ   = new Symbol(systemVarMarker+"version/ARQ") ;
     public static final Symbol sysVersionJena  = new Symbol(systemVarMarker+"version/Jena") ;
+
+    // -------- Engine configuration
+    
+    // Move to ARQ? ARQConstants?
+    public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;
+    
+    /** The property function registry */
+    public static final Symbol registryPropertyFunctions =
+        ARQConstants.allocSymbol("registryPropertyFunctions") ;
+    
+    /** The describe handler registry */
+    public static final Symbol registryDescribeHandlers =
+        ARQConstants.allocSymbol("registryDescribeHandlers") ;
+
+    /** The function library registry */
+    public static final Symbol registryFunctions =
+        ARQConstants.allocSymbol("registryFunctions") ;
+    
+    /** The extension library registry */
+    public static final Symbol registryExtensions =
+        ARQConstants.allocSymbol("registryExtensions") ;
+    
+    /** The extension library registry */
+    public static final Symbol registryMagicProperties =
+        ARQConstants.allocSymbol("registryMagicProperties") ;
+
 }
 
 /*

@@ -5,13 +5,14 @@
  */
 
 package com.hp.hpl.jena.query.pfunction;
-import java.util.* ;
+import java.util.*;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.engine.main.EngineConfig;
 import com.hp.hpl.jena.query.util.Loader;
-import org.apache.commons.logging.*;
 import com.hp.hpl.jena.query.vocabulary.ListPFunction;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -40,11 +41,11 @@ public class PropertyFunctionRegistry
     {
         // Intialize if there is no registry already set 
         PropertyFunctionRegistry reg = 
-            (PropertyFunctionRegistry)EngineConfig.getContext().get(EngineConfig.registryPropertyFunctions) ;
+            (PropertyFunctionRegistry)ARQ.getContext().get(ARQConstants.registryPropertyFunctions) ;
         if ( reg == null )
         {
             reg = standardRegistry() ;
-            EngineConfig.getContext().set(EngineConfig.registryPropertyFunctions, reg) ;
+            ARQ.getContext().set(ARQConstants.registryPropertyFunctions, reg) ;
         }
 
         return reg ;
