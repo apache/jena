@@ -14,12 +14,13 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine.engine1.compiler.QueryPatternCompiler;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterNullIterator;
+import com.hp.hpl.jena.query.engine.main.OpCompiler;
 import com.hp.hpl.jena.query.expr.E_Regex;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.expr.NodeVar;
@@ -111,8 +112,8 @@ public class labelSearch implements PropertyFunction
         elementGroup.addElement(elementBGP) ;
         elementGroup.addElement(new ElementFilter(regex)) ;
         // Compile it.
-        PlanElement planlet = QueryPatternCompiler.makePlan(execCxt.getContext(), elementGroup) ;
-        return planlet.build(input, execCxt) ;
+        Op op = AlgebraGenerator.compile(elementGroup) ;
+        return OpCompiler.compile(op, input, execCxt) ;
     }
 
     static int hiddenVariableCount = 0 ; 

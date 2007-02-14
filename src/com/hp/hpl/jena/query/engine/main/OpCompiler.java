@@ -39,12 +39,12 @@ public class OpCompiler
     //  (General tree rewrite is "Op => Op")
     //   OpExtBase requires eval() but need better extensibility?
     
-    static QueryIterator compile(Op op, ExecutionContext execCxt)
+    public static QueryIterator compile(Op op, ExecutionContext execCxt)
     {
         return compile(op, root(execCxt), execCxt) ;
     }
     
-    static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
+    public static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)
     {
         OpCompiler compiler = new OpCompiler(execCxt) ;
         QueryIterator q = compiler.compileOp(op, qIter) ;
