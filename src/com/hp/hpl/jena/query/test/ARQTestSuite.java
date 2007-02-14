@@ -37,7 +37,10 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TestLARQ.suite()) ;
       
         // Scripted tests for ARQ features outside SPARQL syntax
-        ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-ext.ttl")) ;
+        if ( false )
+            ts.addTest(QueryTestSuiteFactory.make(testDirARQ+"/manifest-ext.ttl")) ;
+        else
+            System.err.println("ARQ syntax features not tested") ;
         
         // The DAWG official tests (some may be duplicated in ARQ test suite
         // but this should be the untouched versions, just changes to

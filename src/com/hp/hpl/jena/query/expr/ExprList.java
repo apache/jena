@@ -13,8 +13,7 @@ import com.hp.hpl.jena.query.util.Context;
 
 public class ExprList
 {
-    // Subclass of Expr?
-    List expressions = new ArrayList() ;
+    private List expressions = new ArrayList() ;
     
     public ExprList() {}
     public ExprList(Expr expr)
@@ -71,6 +70,16 @@ public class ExprList
     public void add(Expr expr) { expressions.add(expr) ; }
     public List getList() { return expressions ; }
     public Iterator iterator() { return expressions.iterator() ; }
+    
+    public void prepareExprs(Context context)
+    {
+        // Give each expression the chance to set up (bind functions)
+        for ( Iterator iter = expressions.iterator() ; iter.hasNext() ; )
+        {
+            Expr expr = (Expr)iter.next() ;
+            ExprWalker.walk(new ExprBuild(context), expr) ;
+        }
+    }
 }
 
 /*

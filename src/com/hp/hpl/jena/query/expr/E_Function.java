@@ -56,7 +56,7 @@ public class E_Function extends ExprFunctionN
         catch (ExprException ex)
         {
             if ( WarnOnUnknownFunction )
-                LogFactory.getLog(E_Function.class).warn("URI '"+functionIRI+"' has no registered function factory") ;
+                LogFactory.getLog(E_Function.class).warn("URI <"+functionIRI+"> has no registered function factory") ;
         }
     }
     
@@ -82,7 +82,7 @@ public class E_Function extends ExprFunctionN
         if ( ff == null )
         {
             functionBound = true ;
-            throw new ExprEvalException("URI '"+functionIRI+"' not found as a function") ;
+            throw new ExprEvalException("URI <"+functionIRI+"> not found as a function") ;
         }
         function = ff.create(functionIRI) ;
         function.build(functionIRI, args) ;
@@ -95,9 +95,9 @@ public class E_Function extends ExprFunctionN
         // Otherwise, the buildFunction() calls should have done everything
         if ( ! functionBound )
             // Allow breakpoint for this case.
-            bindFunction(cxt) ;
+            buildFunction(cxt) ;
         if ( function == null )
-            throw new ExprEvalException("URI '"+getFunctionIRI()+"' not bound") ;
+            throw new ExprEvalException("URI <"+getFunctionIRI()+"> not bound") ;
         NodeValue r = function.exec(binding, args, getFunctionIRI(), cxt) ;
         return r ;
     }

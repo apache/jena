@@ -32,7 +32,7 @@ public class Run
     {
         //classifyJ() ;
         //classifyLJ() ;
-        //execQuery("D.ttl", "Q.rq") ;
+        execQuery("D.ttl", "Q.rq") ;
         parseQuery() ;
         query() ;
     }
@@ -176,7 +176,7 @@ public class Run
     
     private static void execQuery(String datafile, String queryfile)
     {
-        QueryEngineMain.register() ;
+        //QueryEngineMain.register() ;
         String a[] = new String[]{
             //"-v",
             //"--engine=ref",

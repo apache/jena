@@ -3,8 +3,6 @@
 + Very simple non-streaming table usage.
   No iterators.
 
-+ Where to put EngineConfig.
-
 + Algebra:
   + Separate op evaluation from the Op tree entirely?
   + OpUnit, OpBGP, OpGraph have too much in op eval
@@ -21,12 +19,7 @@
      *  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
      *  Filter placement (internal tests)
      *  Classifier J and LJ - internal
-
-+ Initial bindings : substitute into pattern (engineRef)
   
-+ QueryIter1, QueryIter2 // QueryIter(ator).output()
-  Check nearly everyting under QueryIterN
-
 + Property function to property path expression
 
 + AltMatcher - Remove bnodes in QueryIterBlockTriplesAlt
@@ -42,17 +35,6 @@
     ==> PFuncOps.isMagicProperty
         PropertyFunctionRegistry.manages/.get
           Also FunctionRegistry
-
-Missing java:function causes:
-Caused by: java.lang.NullPointerException
-	at java.lang.Class.isAssignableFrom(Native Method)
-	at com.hp.hpl.jena.query.function.FunctionRegistry.put(FunctionRegistry.java:65)
-	at com.hp.hpl.jena.query.function.FunctionRegistry.get(FunctionRegistry.java:90)
-	at com.hp.hpl.jena.query.expr.E_Function.bindFunction(E_Function.java:78)
-	at com.hp.hpl.jena.query.expr.E_Function.buildFunction(E_Function.java:53)
-Tidy up.
-Also registered function errors?
-Check property function as well.
 
 + Commands
   + qtest to use modules.

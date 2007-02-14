@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.query.engine.main;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.query.algebra.op.*;
@@ -21,7 +22,10 @@ import com.hp.hpl.jena.query.engine.iterator.QueryIterProject;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSlice;
 import com.hp.hpl.jena.query.engine.main.iterator.*;
+import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprBuild;
 import com.hp.hpl.jena.query.expr.ExprList;
+import com.hp.hpl.jena.query.expr.ExprWalker;
 
 
 public class OpCompiler
@@ -29,7 +33,6 @@ public class OpCompiler
     // And filter placement in LeftJoins?
     // Is this part of a more general algorithm of pushing the filter down
     // when the vars are known to be fixed?
-    
     
     // TODO property function detemination by general tree rewriting - BGP special first.
     //  By general BGP rewriting.  Stages.
@@ -110,14 +113,18 @@ public class OpCompiler
 
     QueryIterator compile(OpLeftJoin opLeftJoin, QueryIterator input)
     {
+        ExprList exprs = opLeftJoin.getExprs() ;
+        if ( exprs != null )
+            exprs.prepareExprs(execCxt.getContext()) ;
+
         QueryIterator left = compileOp(opLeftJoin.getLeft(), input) ;
         // Do an indexed substitute into the right if possible.
         boolean canDoLinear = LeftJoinClassifier.isLinear(opLeftJoin) ;
-
+        
         if ( canDoLinear )
         {
             // Pass left into right for substitution before right side evaluation.
-            QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), opLeftJoin.getExprs(), execCxt) ;
+            QueryIterator qIter = new QueryIterOptionalIndex(left, opLeftJoin.getRight(), exprs, execCxt) ;
             return  qIter ;
         }
 
@@ -126,7 +133,7 @@ public class OpCompiler
         // To consider: partial substitution for improved performance (but does it occur for real?)
 
         QueryIterator right = compileOp(opLeftJoin.getRight(), root()) ;
-        QueryIterator qIter = new QueryIterLeftJoin(left, right, opLeftJoin.getExprs(), execCxt) ;
+        QueryIterator qIter = new QueryIterLeftJoin(left, right, exprs, execCxt) ;
         return qIter ;
     }
 
@@ -149,6 +156,8 @@ public class OpCompiler
     QueryIterator compile(OpFilter opFilter, QueryIterator input)
     {
         ExprList exprs = opFilter.getExprs() ;
+        exprs.prepareExprs(execCxt.getContext()) ;
+        
         Op base = opFilter.getSubOp() ;
         
         if ( base instanceof OpBGP )
@@ -182,6 +191,15 @@ public class OpCompiler
         return filterPlacement.buildOpFilter(exprs, base, input) ;
     }
 
+    private void prepareExprs(ExprList exprs)
+    {
+        for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
+        {
+            Expr expr = (Expr)iter.next() ;
+            ExprWalker.walk(new ExprBuild(execCxt.getContext()), expr) ;
+        }
+    }
+    
     private static void joins(Op base, List joinElts)
     {
         while ( base instanceof OpJoin )

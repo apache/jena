@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;

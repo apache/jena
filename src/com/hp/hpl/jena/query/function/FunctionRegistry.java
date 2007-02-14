@@ -85,7 +85,10 @@ public class FunctionRegistry //extends HashMap<String, Function>
         if ( attemptedLoads.contains(uri) )
             return null ;
         
-        Class functionClass = Loader.loadClass(uri, Function.class) ; 
+        Class functionClass = Loader.loadClass(uri, Function.class) ;
+        if ( functionClass == null )
+            return null ;
+        
         // Registry it (does the checking)
         put(uri, functionClass) ;
         attemptedLoads.add(uri) ;
