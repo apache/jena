@@ -8,52 +8,74 @@ package arq.examples;
 
 
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.*;
 import com.hp.hpl.jena.query.util.StringUtils;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.*;
 
-/** Example code to load a model from a file,
- * index all string literals,
- * then execute a SPARQL query with a Lucene search in it that
- * finds which documents have DC titles
+/** Example code to index subjects by some external content.
+ *  Pattern 3. 
  * 
  * @author Andy Seaborne
- * @version $Id: ExLucene2.java,v 1.3 2007/01/02 11:46:47 andy_seaborne Exp $
+ * @version $Id: ExLucene4.java,v 1.3 2007/01/02 11:46:47 andy_seaborne Exp $
  */
 
-public class ExLucene2
+public class ExLucene5
 {
     
     public static void main(String[] a) throws Exception
     {
-        System.out.println("ARQ Example: "+Utils.classShortName(ExLucene2.class)) ;
+        System.out.println("ARQ Example: "+Utils.classShortName(ExLucene5.class)) ;
         System.out.println("ARQ: "+ARQ.VERSION) ;
         System.out.println() ;
         
         Model model = ModelFactory.createDefaultModel() ;
-        IndexLARQ index = ExLucene1.buildIndex(model,  "testing/LARQ/data-1.ttl") ;
+
+        IndexLARQ index = buildIndexExternalContent(model) ;
         
         // Search for string 
         String searchString = "+document" ;
         
         // This time, find documents with a matching DC title. 
         String queryString = StringUtils.join("\n", new String[]{
-            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>" ,
-            "PREFIX : <http://example/>" ,
             "PREFIX pf: <java:com.hp.hpl.jena.query.pfunction.library.>",
-            "PREFIX  dc:         <http://purl.org/dc/elements/1.1/>",
-            "SELECT ?doc ?title {" ,
-            "    ?title pf:textMatch '"+searchString+"'.",
-            "    ?doc   dc:title ?title", 
+            "SELECT ?doc {" ,
+            "    ?doc pf:textMatch '"+searchString+"'.",
             "}"
         }) ;
         
-        // Two of three documents should match. 
+        // Two of three docuemnts should match. 
         ExLucene1.performQuery(model, index, queryString) ;
         index.close() ;
     }
+    
+    static IndexLARQ buildIndexExternalContent(Model model)
+    {
+        // ---- Create index builder
+        IndexBuilderExt larqBuilder = new IndexBuilderExt() ;
+        
+        Resource r1 = ResourceFactory.createResource("http://example/r1") ;
+        Resource r2 = ResourceFactory.createResource("http://example/r2") ;
+        Resource r3 = ResourceFactory.createResource("http://example/r3") ;
+        Resource r4 = ResourceFactory.createResource("http://example/r4") ;
+        Literal  lit1 = ResourceFactory.createPlainLiteral("doc") ;
+        
+        // ---- Index based on some external content 
+        larqBuilder.index(r1, "document") ;
+        larqBuilder.index(r2, "document") ;
+        larqBuilder.index(r3, "slideshow") ;
+        larqBuilder.index(r4, "codebase") ;
+        larqBuilder.index(lit1, "document") ;
+        
+        // Note that the model is untouched - the index exists outside of any model statements.
+        // The application is responsible for keeping 
+        // ---- 
+        
+        larqBuilder.closeForWriting() ;
+        IndexLARQ index = larqBuilder.getIndex() ;
+        return index ; 
+    }
+
 }
 
 /*
