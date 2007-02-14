@@ -6,7 +6,14 @@ Post 2.5.2
 ModelSpec and family REMOVED
     o the long-obsolete and recently-deprecated ModelSpec has been removed,
       along with its related tests, descendants, registry, and references.
-      OntModelSpec remains (but is no longer a ModelSpec). 
+      OntModelSpec remains (but is no longer a ModelSpec), with the old
+      ModelSpec-oriented constructors deprecated and new Assembler statics
+      introduced.
+
+      OntModelSpec now extends OntModelSpecObsolete, which holds (almost)
+      all of the OntModelSpec's deprecated ModelSpec-oriented machinery. 
+      OMSO will vanish after the next Jena release, when the remaining 
+      ModelSpec code will evaporate.
 
 ==== Jena 2.5.2
 
