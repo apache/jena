@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-11 19:55:14 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2007-02-14 10:53:19 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.23 2007-01-11 19:55:14 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.24 2007-02-14 10:53:19 chris-dollin Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -116,7 +116,7 @@ public class TestOntDocumentManager
         // forget any cached models in the model spec
         // TODO remove this once we rationalise modelmakers in the OntModel code
         Set modelNames = new HashSet();
-        ModelMaker memMaker = OntModelSpec.OWL_MEM.getModelMaker();
+        ModelMaker memMaker = OntModelSpec.OWL_MEM.getImportModelMaker();
         for (Iterator i = memMaker.listModels(); i.hasNext(); ) {
             modelNames.add( i.next() );
         }

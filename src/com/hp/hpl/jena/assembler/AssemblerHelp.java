@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  All rights reserved - see end of file.
- $Id: AssemblerHelp.java,v 1.15 2007-02-12 15:51:17 chris-dollin Exp $
+ $Id: AssemblerHelp.java,v 1.16 2007-02-14 10:53:21 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.assembler;
@@ -107,44 +107,41 @@ public class AssemblerHelp
 
     /**
          Answer the most specific type of <code>root</code> that is a subclass of
-         ja:Object. If there are no candidate types, answer <code>null</code> (for
-         historical reasons that may evaporate). If there is more than one type,
-         throw a NoSpecificTypeException.
+         ja:Object. If there are no candidate types, answer <code>givenType</code>. 
+         If there is more than one type, throw a NoSpecificTypeException.
     */
     public static Resource findSpecificType( Resource root )
+        { return findSpecificType( root, JA.Object ); }
+
+    /**
+     	 Answer the most specific type of <code>root</code> that is a subclass of
+         <code>givenType</code>. If there are no candidate types, answer 
+         <code>givenType</code>. If there is more than one type, throw a 
+         NoSpecificTypeException.
+    */
+    public static Resource findSpecificType( Resource root, Resource givenType )
         {
         Model desc = root.getModel();
         StmtIterator types = root.listProperties( RDF.type );
         List results = new ArrayList();
-        // System.err.println( ">> considering " + root + " ---------------------------" );
         while (types.hasNext())
             {
             Resource type = getResource( types.nextStatement() );
-            // System.err.println( "]]  possible type " + type );
-            if (desc.contains( type, RDFS.subClassOf, JA.Object ))
+            if (desc.contains( type, RDFS.subClassOf, givenType ))
                 {
-                // System.err.println( "]]    and it's a subClass of Object" );
                 boolean allowed = true;
                 for (StmtIterator subs = desc.listStatements( null, RDFS.subClassOf, type ); subs.hasNext(); )
                     {
                     Resource sub = subs.nextStatement().getSubject();
-                    if (!sub.equals( type ) && root.hasProperty( RDF.type, sub )) 
-                        { 
-                        // System.err.println( "]]    rejected: it has a more specific subtype " + sub ); 
-                        allowed = false; 
-                        }
+                    if (!sub.equals( type ) && root.hasProperty( RDF.type, sub )) allowed = false;
                     }
-                if (allowed) 
-                    { 
-                    // System.err.println( "]]    we can add it" ); 
-                    results.add( type );
-                    }
+                if (allowed) results.add( type );
                 }
             }
         if (results.size() == 1)
             return (Resource) results.get(0);
         if (results.size() == 0)
-            return JA.Object;
+            return givenType;
         throw new NoSpecificTypeException( root, results );
         }
 
