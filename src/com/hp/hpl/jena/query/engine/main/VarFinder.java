@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.BasicPattern;
+import com.hp.hpl.jena.query.core.Quad;
 import com.hp.hpl.jena.query.core.Var;
 
 public class VarFinder

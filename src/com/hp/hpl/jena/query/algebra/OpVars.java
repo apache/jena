@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.query.algebra.op.*;
+import com.hp.hpl.jena.query.core.Quad;
 
 /** Get vars for a pattern  */ 
 

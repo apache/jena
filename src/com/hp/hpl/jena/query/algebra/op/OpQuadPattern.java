@@ -14,13 +14,9 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.algebra.Algebra;
-import com.hp.hpl.jena.query.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.query.algebra.Evaluator;
 import com.hp.hpl.jena.query.algebra.Table;
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.core.BasicPattern;
-import com.hp.hpl.jena.query.core.DatasetGraph;
-import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
@@ -93,7 +89,7 @@ public class OpQuadPattern extends Op0
             { throw new ARQInternalErrorException("Not a URI or variable: "+graphNode) ;}
             Graph g = null ;
             
-            if ( graphNode.equals(AlgebraGeneratorQuad.defaultGraph) )
+            if ( graphNode.equals(Quad.defaultGraph) )
                 g = ds.getDefaultGraph() ;
             else
                 g = ds.getNamedGraph(graphNode.getURI()) ;

@@ -15,6 +15,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.query.core.ARQConstants;
+import com.hp.hpl.jena.query.core.Quad;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.expr.ExprList;

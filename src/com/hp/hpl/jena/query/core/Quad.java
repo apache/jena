@@ -4,21 +4,23 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra.op;
+package com.hp.hpl.jena.query.core;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
 public class Quad
 {
+    public static Node defaultGraph = Node.createURI("http://localhost/defaultgraph") ;
+
     private final Node graph, subject, predicate, object ;
     
-    Quad(Node graph, Triple triple)
+    public Quad(Node graph, Triple triple)
     {
         this(graph, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
-    Quad(Node g, Node s, Node p, Node o)
+    public Quad(Node g, Node s, Node p, Node o)
     {
         if ( g == null ) throw new UnsupportedOperationException("Quad: graph cannot be null");
         if ( s == null ) throw new UnsupportedOperationException("Quad: subject cannot be null");

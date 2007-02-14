@@ -30,8 +30,7 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
     }
     
 
-    public static Node defaultGraph = Node.createURI("http://localhost/defaultgraph") ;
-    private Node currentGraph = defaultGraph ;
+    private Node currentGraph = Quad.defaultGraph ;
     
     protected AlgebraGeneratorQuad()
     { super() ; }

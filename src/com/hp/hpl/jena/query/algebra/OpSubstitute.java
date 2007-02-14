@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.BasicPattern;
+import com.hp.hpl.jena.query.core.Quad;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.expr.ExprList;
