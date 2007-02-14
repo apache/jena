@@ -8,7 +8,8 @@ package arq.examples;
 
 
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.larq.*;
+import com.hp.hpl.jena.query.larq.IndexBuilderExt;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.util.StringUtils;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.*;
@@ -73,7 +74,12 @@ public class ExLucene5
         
         larqBuilder.closeForWriting() ;
         IndexLARQ index = larqBuilder.getIndex() ;
-        return index ; 
+        
+//        NodeIterator iter = index.searchModelByIndex(model, "document") ;
+//        for ( ; iter.hasNext() ; )
+//            System.out.println("Found: "+FmtUtils.stringForRDFNode((RDFNode)iter.next())) ;
+        
+        return index ;
     }
 
 }
