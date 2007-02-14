@@ -8,6 +8,7 @@ package com.hp.hpl.jena.query.algebra;
 
 import java.util.List;
 
+import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.expr.ExprList;
 
@@ -15,7 +16,7 @@ public interface Evaluator
 {
     public ExecutionContext getExecContext() ;
     
-    //public Table evaluate(Op op) ;
+    public Table basicPattern(BasicPattern pattern) ;
     
     public Table join(Table tableLeft, Table tableRight) ;
     public Table leftJoin(Table tableLeft, Table tableRight, ExprList expr) ;

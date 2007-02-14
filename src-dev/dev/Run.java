@@ -32,6 +32,7 @@ public class Run
     {
         //classifyJ() ;
         //classifyLJ() ;
+        QueryEngineRef.register() ;
         execQuery("D.ttl", "Q.rq") ;
         parseQuery() ;
         query() ;

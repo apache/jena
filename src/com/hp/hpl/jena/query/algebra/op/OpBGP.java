@@ -6,16 +6,9 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
-import com.hp.hpl.jena.query.algebra.Algebra;
 import com.hp.hpl.jena.query.algebra.Evaluator;
 import com.hp.hpl.jena.query.algebra.Table;
 import com.hp.hpl.jena.query.core.BasicPattern;
-import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriplesBlock;
-import com.hp.hpl.jena.query.engine.ref.TableFactory;
-import com.hp.hpl.jena.query.syntax.ElementTriplesBlock;
 
 public class OpBGP extends Op0
 {
@@ -26,16 +19,7 @@ public class OpBGP extends Op0
     
     public Table eval(Evaluator evaluator)
     {
-        ExecutionContext execCxt = evaluator.getExecContext() ;
-        ElementTriplesBlock bgp = new ElementTriplesBlock() ; 
-        bgp.getTriples().addAll(getPattern()) ;
-        
-        // Extract/simplify to scrap PlanBasicGraphPattern.make and the PropFunc
-        // TODO Remove Plan-ness
-        // Turn into a real PlanBasicGraphPattern (with property function sorting out)
-        PlanElement planElt = PlanTriplesBlock.make(execCxt.getContext(), bgp) ;
-        QueryIterator qIter = planElt.build(Algebra.makeRoot(execCxt), execCxt) ;
-        return TableFactory.create(qIter) ;
+        return evaluator.basicPattern(pattern) ;
     }
 
     public BasicPattern getPattern()                { return pattern ; } 

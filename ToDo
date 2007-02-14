@@ -7,7 +7,8 @@
 
 + Algebra:
   + Separate op evaluation from the Op tree entirely?
-  + OpUnit, OpBGP, OpGraph have too much in op eval
+  	See Eval/EvalDispatch
+  + OpGraph OpQuadPattern and OpDatasetNames have active eval
   
     // TODO property function determination by general tree rewriting - BGP special first.
     //  By general BGP rewriting.  Stages.

@@ -38,7 +38,9 @@ public class QueryEngineRef extends QueryEngineBase
         Op op = getOp() ;
         ExecutionContext execCxt = getExecContext() ;
         Evaluator eval = EvaluatorFactory.create(execCxt) ;
-        Table table = op.eval(eval) ;
+        Table table = Eval.eval(eval, op) ;
+        
+        //Table table = op.eval(eval) ;
         QueryIterator qIter = table.iterator(execCxt) ;
         return new PlanOp(op, qIter) ;
     }
