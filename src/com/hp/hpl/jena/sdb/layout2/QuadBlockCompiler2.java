@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import static com.hp.hpl.jena.query.engine2.AlgebraCompilerQuad.defaultGraph;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,10 +15,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-
+import com.hp.hpl.jena.query.core.Quad;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine2.op.Quad;
-
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -120,7 +116,7 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
     {
         for ( Quad quad : quadBlock )
         {
-            if ( ! quad.getGraph().equals(defaultGraph) )
+            if ( ! quad.getGraph().equals(Quad.defaultGraph) )
             {
                 log.fatal("Non-default graph") ;
                 throw new SDBException("Non-default graph") ;

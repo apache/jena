@@ -18,11 +18,11 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;

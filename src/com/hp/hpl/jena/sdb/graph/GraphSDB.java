@@ -18,11 +18,15 @@ import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.core.*;
-import com.hp.hpl.jena.query.engine.Binding;
+import com.hp.hpl.jena.query.core.DataSourceGraph;
+import com.hp.hpl.jena.query.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.query.core.DataSourceImpl;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
@@ -111,12 +115,13 @@ public class GraphSDB extends GraphBase implements Graph
         
         Triple triple = new Triple(s, p ,o) ;
         
+        // replace with a algebra expression
         Query q = new Query() ;
         if ( sVar != null ) q.addResultVar(sVar) ;
         if ( pVar != null ) q.addResultVar(pVar) ;
         if ( oVar != null ) q.addResultVar(oVar) ;
 
-        ElementBasicGraphPattern el = new ElementBasicGraphPattern() ;
+        ElementTriplesBlock el = new ElementTriplesBlock() ;
         el.addTriple(new Triple(s,p,o)) ;
         q.setQueryPattern(el) ;
         
@@ -125,7 +130,7 @@ public class GraphSDB extends GraphBase implements Graph
         
 //        if ( true )
 //            throw new SDBNotImplemented("GraphSDB: QueryEngineQuadSDB is not a graph-level engine yet.") ;
-        QueryEngineQuadSDB qe = new QueryEngineQuadSDB(getStore(), q, null) ;
+        QueryEngineSDB qe = new QueryEngineSDB(getStore(), q, null) ;
         qe.setDataset(new DataSourceImpl(dsg)) ;
         
         //System.out.println( ((QueryEngineQuadSDB)qe).getOp().toString());

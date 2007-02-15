@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.sdb.script;
 
-import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.util.QueryExecUtils;
 
 public class QExec
 {
@@ -29,7 +29,7 @@ public class QExec
     
     public void exec()
     {
-        QueryCmdUtils.executeQuery(query, exec, format) ;
+        QueryExecUtils.executeQuery(query, exec, format) ;
     }
 
 }

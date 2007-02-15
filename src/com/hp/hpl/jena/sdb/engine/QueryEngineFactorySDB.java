@@ -29,10 +29,10 @@ public class QueryEngineFactorySDB implements QueryEngineFactory
         return make(query, dataset) ;
     }
     
-    private QueryEngineQuadSDB make(Query query, Dataset dataset)
+    private QueryEngineSDB make(Query query, Dataset dataset)
     {
         Store store = ((DatasetStore)dataset).getStore();
-        QueryEngineQuadSDB qe = new QueryEngineQuadSDB(store , query, ARQ.getContext()) ;
+        QueryEngineSDB qe = new QueryEngineSDB(store , query, ARQ.getContext()) ;
         qe.setDataset(dataset) ;
         return qe ;
     }

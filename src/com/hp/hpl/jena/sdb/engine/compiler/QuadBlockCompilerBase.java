@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.engine.compiler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.engine2.op.Quad;
+import com.hp.hpl.jena.query.core.Quad;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.shared.PrefixMapping;

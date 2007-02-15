@@ -16,8 +16,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
+import com.hp.hpl.jena.query.engine.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriples;
 import com.hp.hpl.jena.rdf.model.*;
 
 class PlanScorer
@@ -104,8 +104,8 @@ class PlanScorer
 		for (int i = 0; i < planElt.numSubElements(); i++)
 		{
 			PlanElement elt = planElt.getSubElement(i);
-			if (elt instanceof PlanBlockTriples)
-				subscores[i] = calcScores((PlanBlockTriples) elt);
+			if (elt instanceof PlanTriples)
+				subscores[i] = calcScores((PlanTriples) elt);
 			else
 				subscores[i] = calcScores(elt);
 		}
@@ -114,7 +114,7 @@ class PlanScorer
 		return score;
 	}
 	
-	public int calcScores(PlanBlockTriples planElt)
+	public int calcScores(PlanTriples planElt)
 	{
 		int[] subscores = new int[planElt.getPattern().size()];
 		for (int i = 0; i < planElt.getPattern().size(); i++)

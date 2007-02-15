@@ -10,14 +10,17 @@ import static com.hp.hpl.jena.sdb.util.SetUtils.convert;
 import static com.hp.hpl.jena.sdb.util.SetUtils.filter;
 import static com.hp.hpl.jena.sdb.util.SetUtils.intersection;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine2.op.*;
 import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprList;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -38,11 +41,11 @@ public class TransformSDB extends TransformCopy
         this.quadBlockCompiler = quadBlockCompiler ;
     }
     
-    // Simple example: quads only
-    public void visit(OpBGP opBGP)
+    @Override
+    public Op transform(OpBGP opBGP)
     { throw new SDBException("OpBGP should not appear") ; }
 
-    @Override
+@Override
     public Op transform(OpQuadPattern quadPattern)
     {
         QuadBlock qBlk = new QuadBlock(quadPattern) ;
@@ -70,8 +73,8 @@ public class TransformSDB extends TransformCopy
         if ( ! QC.isOpSQL(left) || ! QC.isOpSQL(right) )
             return super.transform(opJoin, left, right) ;
 
-        // Condition in the left join.  Punt for now. 
-        if ( opJoin.getExpr() != null )
+        // Condition(s) in the left join.  Punt for now. 
+        if ( opJoin.getExprs() != null )
             return super.transform(opJoin, left, right) ;
         
         SqlNode sqlLeft = ((OpSQL)left).getSqlNode() ;
@@ -113,28 +116,30 @@ public class TransformSDB extends TransformCopy
     }
     
     @Override
-    public Op transform(OpTable opTable)
+    public Op transform(OpUnit opUnit)
     {
-//        // Is this a boring empty pattern?
-//        // This only occurs when there are no patterns in a group.
-//        if ( opTable.getTable() instanceof TableUnit )
-//            return new OpSQL(null, opTable, request) ;
-//        
-        return super.transform(opTable) ;
+        //return new OpSQL(null, opUnit, request) ;
+        return super.transform(opUnit) ;
     }
     
     private boolean translateConstraints = false ;
+    
     
     private SDBConstraint transformFilter(OpFilter opFilter)
     {
         if ( ! translateConstraints )
             return null ;
         
-        Expr expr = opFilter.getExpr() ; 
-        ConditionCompiler cc = null ;
-        SDBConstraint psc = cc.recognize(expr) ;
-        // Maybe null (not recognized)
-        return psc ;
+        ExprList exprs = opFilter.getExprs() ;
+        @SuppressWarnings("unchecked")
+        List<Expr> x = (List<Expr>)exprs.getList() ;
+        for ( Expr  expr : x )
+        {
+            ConditionCompiler cc = null ;
+            SDBConstraint psc = cc.recognize(expr) ;
+            // Maybe null (not recognized)
+        }
+        return null ;
     }
 
     private Set<Var> getVarsInFilter(Expr expr)

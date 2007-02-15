@@ -6,36 +6,24 @@
 
 package dev;
 
-import java.util.List;
-
 import junit.framework.TestSuite;
 import arq.cmd.CmdUtils;
-import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.core.ElementBasicGraphPattern;
-import com.hp.hpl.jena.query.core.ElementGroup;
-import com.hp.hpl.jena.query.engine.Binding;
-import com.hp.hpl.jena.query.engine.QueryExecutionGraph;
-import com.hp.hpl.jena.query.engine.QueryExecutionGraphFactory;
-import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.junit.SimpleTestRunner;
-import com.hp.hpl.jena.query.util.PlainGraphMem;
-
+import com.hp.hpl.jena.query.util.QueryExecUtils;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
-import com.hp.hpl.jena.sdb.store.*;
+import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
-import com.hp.hpl.jena.sdb.util.PrintSDB;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class RunSDB
@@ -44,8 +32,8 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        runCode() ;
-        //run() ;
+        
+        runQuery() ;
         //SDBConnection.logSQLStatements = true ;
         
         //runInMem("Q.rq", "D.ttl") ;
@@ -63,55 +51,6 @@ public class RunSDB
         System.exit(0) ;
     }
 
-    public static void runQuad()
-    {
-//        Store store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
-//        store.getTableFormatter().format() ;
-        
-        boolean execute = true ;
-        boolean useHSQL = true ;
-        
-        if ( ! execute )
-            useHSQL = true ;        // Avoid neeing a connection to the DB
-        
-        Store store = null ;
-        if ( useHSQL )
-        {
-            store = SDBFactory.connectStore("Store/sdb-hsqldb-inMemory.ttl") ;
-            store.getTableFormatter().format() ;
-        }
-        else
-        {
-            store = SDBFactory.connectStore("Store/sdb-mysql-innodb.ttl") ;
-            store.getTableFormatter().truncate() ;
-        }
-        
-        Model model = SDBFactory.connectModel(store) ;
-        Query query = QueryFactory.read("Q.rq") ;
-        query.serialize(System.out) ;
-        System.out.println(PrintSDB.divider) ;
-        QueryEngineQuadSDB engine = new QueryEngineQuadSDB(store, query, null) ;
-        
-        if ( true )
-        {
-            //query.setResultVars() ;
-            
-            PrintSDB.print(engine.getOp()) ;
-            System.out.println(PrintSDB.divider) ;
-            PrintSDB.printSqlNodes(engine.getOp()) ;
-        }
-
-        if ( execute )
-        {
-            model.read("file:D.ttl", "N3") ;
-            // Noise.
-            engine.setDataset(new DatasetStore(store)) ;
-            ResultSet rs = engine.execSelect() ;
-            ResultSetFormatter.out(rs, query.getPrefixMapping()) ;
-        }
-        System.exit(0) ;
-    }
-    
     public static void runQuery()
     {
         String queryFile = "Q.rq" ;
@@ -150,7 +89,7 @@ public class RunSDB
         Query query = QueryFactory.read(queryFile) ;
         Model model = FileManager.get().loadModel(dataFile) ;
         QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-        QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
+        QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
     }
     
     public static void runPrint()
@@ -161,36 +100,6 @@ public class RunSDB
         System.exit(0) ;
     }
    
-    public static void runPatternPattern()
-    {
-        Graph graph = new PlainGraphMem() ;
-        {
-            String queryString = "SELECT * { ?s <http://example/p> ?o ; <http://example/q> ?z ;} " ;
-            Query q = QueryFactory.create(queryString) ;
-            
-            List<?> triples = 
-                ((ElementBasicGraphPattern)
-                    ((ElementGroup)q.getQueryPattern()).getElements().get(0))
-                    .getTriples() ;
-            graph.getBulkUpdateHandler().add(triples) ;
-        }
-        
-        String qPattern = "SELECT * { ?a <http://example/p> ?c } " ;
-        Query query = QueryFactory.create(qPattern) ;
-        // Need QueryExecutionFactory.createGraphQuery()
-        QueryExecutionGraph qExec = 
-            QueryExecutionGraphFactory.create(query, graph) ;
-        
-        QueryIterator qiter = qExec.exec() ;
-        for ( ; qiter.hasNext() ; )
-        {
-            Binding b = qiter.nextBinding() ;
-            System.out.println(b) ; 
-        }
-        qExec.close() ;
-        System.exit(0) ;
-    }
-
     public static void runTest()
     {
         if ( false )
@@ -253,35 +162,6 @@ public class RunSDB
         String[] a = new String[]{"--sdb=sdb.ttl", "--format=N3"} ;
         sdb.sdbdump.main(a) ;
     }
-    
-    public static void runCode()
-    {
-        // Need to work on this!
-        // Global command context = store.
-        // By-passes processModulesAndArgs
-        
-        SDB.init() ;
-
-        StoreDesc desc = new StoreDesc(LayoutType.LayoutTripleNodesHash ,
-                                       DatabaseType.Derby ) ;
-        desc.connDesc = new SDBConnectionDesc() ;
-        JDBC.loadDriverDerby() ;
-        String jdbcURL = JDBC.makeURL("derby", "localhost", "DB/SDB2") ;
-        SDBConnection conn = new SDBConnection(jdbcURL, "user", "password") ;
-        Store store = SDBFactory.connectStore(conn, desc) ;
-
-        
-//
-//        Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
-//        
-//        Dataset dataset = new DatasetStore(store) ;
-//        
-//        QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
-//        QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
-        
-        System.exit(0) ;
-    }
-    
 }
 
 /*

@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
-import arq.cmd.QueryCmdUtils;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModResultsOut;
@@ -21,10 +20,11 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.query.util.QueryExecUtils;
 import com.hp.hpl.jena.query.util.Utils;
 
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
-import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
@@ -133,11 +133,11 @@ public class sdbquery extends CmdArgsDB
                 QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
                 
                 if ( isVerbose() )
-                    PrintSDB.print(((QueryEngineQuadSDB)qExec).getOp()) ;
+                    PrintSDB.print(((QueryEngineSDB)qExec).getOp()) ;
                 
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;
-                QueryCmdUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;
+                QueryExecUtils.executeQuery(query, qExec, modResults.getResultsFormat()) ;
                 qExec.close() ;
                 long queryTime = getModTime().endTimer() ;
                 totalTime += queryTime ;

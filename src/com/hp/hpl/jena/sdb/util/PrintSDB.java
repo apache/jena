@@ -6,19 +6,17 @@
 
 package com.hp.hpl.jena.sdb.util;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.op.OpExt;
+import com.hp.hpl.jena.query.algebra.op.OpVisitorBase;
+import com.hp.hpl.jena.query.algebra.op.OpWalker;
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.engine2.op.Op;
-import com.hp.hpl.jena.query.engine2.op.OpExt;
-import com.hp.hpl.jena.query.engine2.op.OpVisitorBase;
-import com.hp.hpl.jena.query.engine2.op.OpWalker;
 import com.hp.hpl.jena.query.util.IndentedWriter;
-
-import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.engine.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 
 
@@ -28,10 +26,10 @@ public class PrintSDB
 {
     public static String divider = "----------------" ;
     
-    public static void print(Store store, Query query, QueryEngineQuadSDB queryEngine)
+    public static void print(Store store, Query query, QueryEngineSDB queryEngine)
     {
         if ( queryEngine == null )
-            queryEngine = new QueryEngineQuadSDB(store, query) ;
+            queryEngine = new QueryEngineSDB(store, query) ;
         Op op = queryEngine.getOp() ;
         System.out.println(op.toString(query.getPrefixMapping())) ;
     }

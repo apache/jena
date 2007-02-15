@@ -10,32 +10,35 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.engine2.QueryEngineQuad;
-import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryEngineOpQuadBase;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.query.engine.ref.Evaluator;
+import com.hp.hpl.jena.query.engine.ref.EvaluatorFactory;
 import com.hp.hpl.jena.query.util.Context;
-
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.compiler.OpSQL;
+import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.compiler.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 
 
-/** Highly experimental quad engine */
-
-public class QueryEngineQuadSDB extends QueryEngineQuad
+public class QueryEngineSDB extends QueryEngineOpQuadBase
 {
-    private static Log log = LogFactory.getLog(QueryEngineQuadSDB.class) ; 
+    private static Log log = LogFactory.getLog(QueryEngineSDB.class) ; 
     private Store store ;
     private SDBRequest request = null ;
     private QueryCompiler queryCompiler = null ;
 
-    public QueryEngineQuadSDB(Store store, Query q)
+    public QueryEngineSDB(Store store, Query q)
     {
         this(store, q, null) ;
     }
     
-    public QueryEngineQuadSDB(Store store, Query q, Context context)
+    public QueryEngineSDB(Store store, Query q, Context context)
     {
         super(q, context) ;
         this.store = store ;
@@ -45,28 +48,35 @@ public class QueryEngineQuadSDB extends QueryEngineQuad
         
         queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
     }
-    
-    public SDBRequest getRequest()      { return request ; }     
-    
-//  @Override
-//  protected Op createOp()
-    
+
+    public SDBRequest getRequest()      { return request ; }
+
     @Override
-    protected Op createPatternOp()
+    protected QueryIterator createQueryIterator(Op op)
     {
-        if ( query.getQueryPattern() == null )
-            return null ;
-        Op op = super.createPatternOp() ;
-        op = queryCompiler.compile(op) ;
-        
         if ( ! ( op instanceof OpSQL ) )
-            return op ;
-        
-        // Other stuff?
+        {
+            Evaluator eval = EvaluatorFactory.create(getExecContext()) ;
+            QueryIterator qIter = QueryEngineMain.eval(op, getExecContext().getDataset()) ;
+            return qIter ;
+        }
+
+        // Direct
         OpSQL opSQL = (OpSQL)op ;
-        return opSQL ;
+        ExecutionContext execCxt = getExecContext() ;
+        QueryIterator qIter = QC.exec(opSQL,
+                                      request,
+                                      null, //BindingRoot.create(),
+                                      execCxt) ;
+        return qIter ;
     }
-    
+
+    @Override
+    protected Op modifyPatternOp(Op op)
+    {
+        Op op2 =  queryCompiler.compile(op) ;
+        return op2 ;
+    }
 }
 
 /*

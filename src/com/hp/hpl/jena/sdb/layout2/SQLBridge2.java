@@ -19,15 +19,13 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.AnonId;
-
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.Binding;
-import com.hp.hpl.jena.query.engine.BindingMap;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine1.iterator.QueryIterPlainWrapper;
-
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.BindingMap;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;

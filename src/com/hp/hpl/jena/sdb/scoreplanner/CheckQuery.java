@@ -13,14 +13,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
-//import com.hp.hpl.jena.query.engine1.PlanElement;
-//import com.hp.hpl.jena.query.engine1.QueryEngine;
-//import com.hp.hpl.jena.query.engine1.plan.Transformer;
-import com.hp.hpl.jena.query.engine2.QueryEngineQuad;
-import com.hp.hpl.jena.query.engine2.op.Op;
-//import com.hp.hpl.jena.rdf.model.Model;
-//import com.hp.hpl.jena.rdf.model.ModelFactory;
-//import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.engine.ref.QueryEngineQuad;
 
 public class CheckQuery {
 	

@@ -11,11 +11,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.engine2.QueryEngineRef;
+import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.query.junit.TestItem;
 import com.hp.hpl.jena.query.resultset.RSCompare;
 import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
-import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -125,7 +125,7 @@ public class QueryTestSDB extends TestCase
         
         // ---- Second, execute in DB
 
-        QueryEngineQuadSDB qExec2 = new QueryEngineQuadSDB(store, query, null) ;
+        QueryEngineSDB qExec2 = new QueryEngineSDB(store, query, null) ;
         qExec2.setDataset(new DatasetStore(store)) ; // Not used
         
         ResultSet rs = null;

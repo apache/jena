@@ -15,10 +15,9 @@ import arq.cmdline.ModQueryIn;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.query.engine2.op.Op;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.util.Utils;
-
-import com.hp.hpl.jena.sdb.engine.QueryEngineQuadSDB;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.store.LayoutType;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -138,7 +137,7 @@ public class sdbprint extends CmdArgsDB
             query.serialize(System.out, Syntax.syntaxPrefix) ;
         }
 
-        QueryEngineQuadSDB qe = new QueryEngineQuadSDB(store, query) ;
+        QueryEngineSDB qe = new QueryEngineSDB(store, query) ;
         Op op = qe.getOp() ;
 
         if ( printOp )

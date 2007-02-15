@@ -6,21 +6,17 @@
 
 package com.hp.hpl.jena.sdb.engine.compiler;
 
+import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine1.ExecutionContext;
-import com.hp.hpl.jena.query.engine2.Evaluator;
-import com.hp.hpl.jena.query.engine2.Table;
-import com.hp.hpl.jena.query.engine2.op.Op;
-import com.hp.hpl.jena.query.engine2.op.OpExtBase;
-import com.hp.hpl.jena.query.engine2.table.TableSimple;
+import com.hp.hpl.jena.query.engine.main.OpExtMain;
 import com.hp.hpl.jena.query.util.IndentedWriter;
-
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 
-public class OpSQL extends OpExtBase
+public class OpSQL extends OpExtMain
 {
     private SqlNode sqlNode ;
     private Op originalOp ;
@@ -29,20 +25,21 @@ public class OpSQL extends OpExtBase
     
     public OpSQL(SqlNode sqlNode, Op original, SDBRequest request)
     {
-        // Only needed for the SqlNode to SQL translation.
         this.request = request ;
         this.sqlNode = sqlNode ;
         this.originalOp = original ;
     }
 
-    public Table eval(Evaluator evaluator)
+    @Override
+    public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
     {
-        ExecutionContext execCxt = evaluator.getExecContext() ;
+        // What about input?
+        // Need to resubstitute and 
         QueryIterator qIter = QC.exec(this,
                                       request,
                                       null, //BindingRoot.create(),
                                       execCxt) ;
-        return new TableSimple(qIter) ;
+        return qIter ;
     }
 
     public Op getOriginal() { return originalOp ; }
@@ -76,6 +73,8 @@ public class OpSQL extends OpExtBase
     public SQLBridge getBridge()            { return bridge ; }
 
     public void setBridge(SQLBridge bridge) { this.bridge = bridge ; }
+
+    public String getName()                 { return "OpSQL" ; }
 }
 
 /*

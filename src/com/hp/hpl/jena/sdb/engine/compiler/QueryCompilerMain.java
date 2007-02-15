@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.OpVars;
+import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine2.OpVars;
-import com.hp.hpl.jena.query.engine2.op.*;
-
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
@@ -35,7 +35,6 @@ public abstract class QueryCompilerMain implements QueryCompiler
     {
         Transform t = new TransformSDB(request, createQuadBlockCompiler()) ;
         op = Transformer.transform(t, op) ;
-        // If it's the whole query, then we only need the  
         
         // Find the first non-modifier.
         Op patternOp = op ;

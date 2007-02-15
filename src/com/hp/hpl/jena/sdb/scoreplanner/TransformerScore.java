@@ -9,9 +9,11 @@ package com.hp.hpl.jena.sdb.scoreplanner;
 import java.util.Collections;
 import java.util.Comparator;
 
-import com.hp.hpl.jena.query.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine1.plan.PlanBlockTriples;
-import com.hp.hpl.jena.query.engine1.plan.TransformCopy;
+
+
+import com.hp.hpl.jena.query.engine.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriples;
+import com.hp.hpl.jena.query.engine.engine1.plan.TransformCopy;
 
 class TransformerScore extends TransformCopy implements Comparator
 {
@@ -24,10 +26,10 @@ class TransformerScore extends TransformCopy implements Comparator
 	
 	@Override
     @SuppressWarnings("unchecked")
-	public PlanElement transform(PlanBlockTriples planElt)
+	public PlanElement transform(PlanTriples planElt)
 	{
-		planElt = (PlanBlockTriples) planElt.copy();
-		Collections.sort(planElt.getPattern(), this);
+		planElt = (PlanTriples) planElt.copy();
+		Collections.sort( planElt.getPattern().getList(), this);
 		return planElt;
 	}
 

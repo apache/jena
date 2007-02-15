@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sdb.layout2.expr;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.engine.Binding;
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.ExprPattern;
