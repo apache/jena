@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.query.engine;
 
-import com.hp.hpl.jena.query.syntax.Element;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.query.algebra.Op;
@@ -18,9 +17,9 @@ public abstract class QueryEngineOpQuadBase extends QueryEngineOpBase
 
     protected QueryEngineOpQuadBase(Op op, Context context)   { super(op, context) ; }
 
-    protected Op createPatternOp(Element elt)
+    protected Op createPatternOp()
     { 
-        return AlgebraGeneratorQuad.compile(elt) ;
+        return AlgebraGeneratorQuad.compile(query.getQueryPattern()) ;
     }
 }
 
