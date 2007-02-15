@@ -12,13 +12,13 @@ import java.util.List;
 
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.algebra.Table;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.ResultSetStream;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.query.engine.ref.Table;
 import com.hp.hpl.jena.query.util.PrintUtils;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.ModelFactory;

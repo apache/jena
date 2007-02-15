@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
+import com.hp.hpl.jena.query.algebra.Op;
+
 public class TransformBase implements Transform
 {
     public Op transform(OpUnit opUnit)              { return opUnit ; }

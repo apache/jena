@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra;
+package com.hp.hpl.jena.query.engine.ref;
 
 import java.util.List;
 

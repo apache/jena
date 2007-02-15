@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
+import com.hp.hpl.jena.query.algebra.Op;
+
 /** Mark solution modifiers */
 
 public abstract class OpModifier extends Op1

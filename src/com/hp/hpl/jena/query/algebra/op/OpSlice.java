@@ -6,9 +6,10 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
+import com.hp.hpl.jena.query.engine.ref.Evaluator;
+import com.hp.hpl.jena.query.engine.ref.Table;
 import com.hp.hpl.jena.query.util.Utils;
 
 public class OpSlice extends OpModifier

@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.query.engine.ref;
 
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 
 public class EvaluatorFactory

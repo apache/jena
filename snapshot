@@ -1,0 +1,25 @@
+#!/bin/bash
+
+ant jar
+
+for d in SDB Joseki3
+do
+  echo "Moving ARQ jars to project $d"
+  cp -u lib/arq.jar ../$d/lib
+  cp -u lib/arq-extra.jar ../$d/lib
+  done
+
+## Keep the JARs around for Eclipse libraries
+## rm -f lib/arq.jar
+## rm -f lib/arq-extra.jar
+
+rm -f arq-src.zip
+find src -name test -prune -o -name CVS -prune -o -print | \
+    xargs -n 200 zip -q arq-src.zip
+
+for d in SDB
+do
+  echo "Moving arq-src.zip to project $d"
+  cp -u arq-src.zip ../$d
+  done
+rm -f arq-src.zip

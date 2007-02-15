@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
+import com.hp.hpl.jena.query.algebra.Op;
 
 public class OpUnit extends Op0
 {
@@ -25,11 +24,6 @@ public class OpUnit extends Op0
 
     public Op copy()
     { return new OpUnit() ; }
-
-    public Table eval(Evaluator evaluator)
-    {
-        return evaluator.unit() ;
-    }
 }
 
 /*

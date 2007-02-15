@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.util.Utils;
 

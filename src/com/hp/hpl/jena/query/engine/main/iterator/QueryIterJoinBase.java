@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.query.engine.main.iterator;
 
-import com.hp.hpl.jena.query.algebra.Table;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.iterator.QueryIter2;
+import com.hp.hpl.jena.query.engine.ref.Table;
 import com.hp.hpl.jena.query.engine.ref.TableFactory;
 import com.hp.hpl.jena.query.expr.ExprList;
 

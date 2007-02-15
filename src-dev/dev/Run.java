@@ -13,7 +13,7 @@ import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
-import com.hp.hpl.jena.query.algebra.op.Op;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.OpJoin;
 import com.hp.hpl.jena.query.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.query.core.DataSourceImpl;

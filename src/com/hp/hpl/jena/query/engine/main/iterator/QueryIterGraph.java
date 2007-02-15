@@ -11,8 +11,8 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.OpSubstitute;
-import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.algebra.op.OpGraph;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ExecutionContext;

@@ -8,7 +8,6 @@ package com.hp.hpl.jena.query.algebra;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.algebra.op.OpDatasetNames;
 import com.hp.hpl.jena.query.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.query.core.*;

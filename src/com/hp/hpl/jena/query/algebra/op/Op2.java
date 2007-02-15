@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
+import com.hp.hpl.jena.query.algebra.Op;
 
 public abstract class Op2 extends OpBase
 {
@@ -25,18 +24,6 @@ public abstract class Op2 extends OpBase
     public void setLeft(Op op)  { left = op ; }
     public void setRight(Op op) { right = op ; }
     
-    public Table eval(Evaluator evaluator)
-    {
-        Table left = null ;
-        Table right = null ;
-        
-        left = getLeft().eval(evaluator) ;
-        right = getRight().eval(evaluator) ;
-        return eval_2(left, right, evaluator) ;
-    }
-    
-    public abstract Table eval_2(Table tableLeft, Table tableRight, Evaluator evaluator) ;
-
     public abstract Op apply(Transform transform, Op left, Op right) ;
     public abstract Op copy(Op left, Op right) ;
 }

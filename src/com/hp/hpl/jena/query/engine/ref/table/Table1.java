@@ -10,8 +10,6 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
@@ -20,6 +18,8 @@ import com.hp.hpl.jena.query.engine.binding.Binding1;
 import com.hp.hpl.jena.query.engine.binding.BindingMap;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.engine.ref.Evaluator;
+import com.hp.hpl.jena.query.engine.ref.Table;
 import com.hp.hpl.jena.query.expr.ExprList;
 
 public class Table1 extends TableBase

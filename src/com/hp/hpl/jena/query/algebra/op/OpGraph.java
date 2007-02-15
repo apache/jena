@@ -6,18 +6,8 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
-import java.util.Iterator;
-
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.ref.EvaluatorFactory;
-import com.hp.hpl.jena.query.engine.ref.TableFactory;
-import com.hp.hpl.jena.query.engine.ref.table.TableEmpty;
+import com.hp.hpl.jena.query.algebra.Op;
 
 public class OpGraph extends Op1
     // Must override evaluation - need to flip the execution context on the way down
@@ -32,67 +22,11 @@ public class OpGraph extends Op1
     
     public Node getNode() { return node ; }
     
-//    public Table eval_1(Table table, Evaluator evaluator)
-//    {
-//        return evaluator.graph(getNode(), table) ;
-//    }
-
-    public Table eval(Evaluator evaluator)
-    {
-        // TODO Move into evaluator
-        // Complicated by the fact we can't eval the subnode then eval the op.
-        // This would be true if we had a more quad-like view of execution.
-        ExecutionContext execCxt = evaluator.getExecContext() ;
-        
-        if ( ! Var.isVar(node) )
-        {
-            Graph graph = execCxt.getDataset().getNamedGraph(node.getURI()) ;
-            if ( graph == null )
-                // No such name in the dataset
-                return new TableEmpty() ;
-            ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph) ;
-            Evaluator e2 = EvaluatorFactory.create(execCxt2) ;
-            return getSubOp().eval(e2) ;
-        }
-        
-        // Graph node is a variable.
-        Var gVar = Var.alloc(node) ;
-        Table current = null ;
-        for ( Iterator iter = execCxt.getDataset().listNames() ; iter.hasNext() ; )
-        {
-            String uri = (String)iter.next();
-            Graph graph = execCxt.getDataset().getNamedGraph(uri) ;
-            ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph) ;
-            Evaluator e2 = EvaluatorFactory.create(execCxt2) ;
-            
-            Table tableVarURI = TableFactory.create(gVar, Node.createURI(uri)) ;
-            // Evaluate the pattern, join with this graph node possibility.
-            
-            Table patternTable = getSubOp().eval(e2) ;
-            Table stepResult = evaluator.join(patternTable, tableVarURI) ;
-            
-            if ( current == null )
-                current = stepResult ;
-            else
-                current = evaluator.union(current, stepResult) ;
-        }
-        
-        if ( current == null )
-            // Nothing to loop over
-            return new TableEmpty() ;
-        return current ;
-    }
-
     public String getName()                         { return "Graph" ; }
 
     public Op apply(Transform transform, Op op)     { return transform.transform(this, op) ; } 
     public void visit(OpVisitor opVisitor)          { opVisitor.visit(this) ; }
     public Op copy(Op newOp)                        { return new OpGraph(node, newOp) ; }
-
-    public Table eval_1(Table table, Evaluator evaluator)
-    {
-        throw new ARQInternalErrorException("OpGraph.eval_1 called") ;
-    }
 }
 
 /*

@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.core.Quad;

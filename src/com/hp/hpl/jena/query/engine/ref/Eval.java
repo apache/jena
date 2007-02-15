@@ -6,14 +6,36 @@
 
 package com.hp.hpl.jena.query.engine.ref;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.algebra.Algebra;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.*;
+import com.hp.hpl.jena.query.core.ARQInternalErrorException;
+import com.hp.hpl.jena.query.core.DatasetGraph;
+import com.hp.hpl.jena.query.core.Quad;
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.Binding1;
+import com.hp.hpl.jena.query.engine.binding.BindingRoot;
+import com.hp.hpl.jena.query.engine.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriplesBlock;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterConcat;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.engine.ref.table.TableEmpty;
+import com.hp.hpl.jena.query.engine.ref.table.TableUnit;
+import com.hp.hpl.jena.query.syntax.ElementTriplesBlock;
 
 public class Eval
 {
@@ -31,7 +53,8 @@ public class Eval
 
     static class EvaluatorDispatch implements OpVisitor
     {
-
+        // TODO Clean up: OpGraph, OpDatasetNames (needed?)
+        
         private Stack stack = new Stack() ;
         private Evaluator evaluator ;
         
@@ -63,8 +86,7 @@ public class Eval
 
         public void visit(OpQuadPattern quadPattern)
         {
-            // TODO OpGraph
-            push(quadPattern.eval(evaluator)) ;
+            push(evalQuadPattern(quadPattern, evaluator)) ;
             //throw new ARQNotImplemented("EvaDispatch/quadPattern") ;
         }
 
@@ -101,17 +123,12 @@ public class Eval
 
         public void visit(OpGraph opGraph)
         {
-            //eval(opGraph.getSubOp()) ;
-            // TODO OpGraph
-            push(opGraph.eval(evaluator)) ;
-            //throw new ARQNotImplemented("EvaDispatch/opGraph") ;
+            push(evalGraph(opGraph, evaluator)) ;
         }
 
         public void visit(OpDatasetNames dsNames)
         {
-            // TODO OpDatasetNames
-            push(dsNames.eval(evaluator)) ;
-            //throw new ARQNotImplemented("EvaDispatch/opGraph") ;
+            push(evalDS(dsNames, evaluator)) ;
         }
 
         public void visit(OpUnit opUnit)
@@ -121,9 +138,7 @@ public class Eval
 
         public void visit(OpExt opExt)
         {
-            // TODO OpExt
-            push(opExt.eval(evaluator)) ;
-            //throw new ARQNotImplemented("EvaDispatch/OpExt") ;
+            push(opExt.eval()) ;
         }
 
         public void visit(OpOrder opOrder)
@@ -161,7 +176,216 @@ public class Eval
                 log.warn("Warning: pop: empty stack") ;
             return (Table)stack.pop() ;
         }
+    
     }
+
+    static Table evalDS(OpDatasetNames opDSN, Evaluator evaluator)
+    {
+        Node graphNode = opDSN.getGraphNode() ;
+        if ( graphNode.isURI() )
+        {
+            if ( evaluator.getExecContext().getDataset().containsNamedGraph(graphNode.getURI()))
+            { return new TableUnit() ; } 
+            else
+                // WRONG
+            { return new TableEmpty() ; }
+        }
+
+        if ( ! Var.isVar(graphNode) )
+            throw new ARQInternalErrorException("OpDatasetNames: Not a URI or variable: "+graphNode) ; 
+
+        Iterator iter = evaluator.getExecContext().getDataset().listNames() ;
+        List list = new ArrayList() ;
+        for ( ; iter.hasNext(); )
+        {
+            String uri = (String)iter.next();
+            Binding b = new Binding1(null, Var.alloc(graphNode), Node.createURI(uri)) ;
+            list.add(b) ;
+        }
+
+        QueryIterator qIter = new QueryIterPlainWrapper(list.iterator(), evaluator.getExecContext()) ;
+        return TableFactory.create(qIter) ;
+
+    }
+    
+    static Table evalGraph(OpGraph opGraph, Evaluator evaluator)
+    {
+        // Complicated by the fact we can't eval the subnode then eval the op.
+        // This would be true if we had a more quad-like view of execution.
+        ExecutionContext execCxt = evaluator.getExecContext() ;
+        
+        if ( ! Var.isVar(opGraph.getNode()) )
+        {
+            Graph graph = execCxt.getDataset().getNamedGraph(opGraph.getNode().getURI()) ;
+            if ( graph == null )
+                // No such name in the dataset
+                return new TableEmpty() ;
+            ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph) ;
+            Evaluator e2 = EvaluatorFactory.create(execCxt2) ;
+            return eval(e2, opGraph.getSubOp()) ;
+        }
+        
+        // Graph node is a variable.
+        Var gVar = Var.alloc(opGraph.getNode()) ;
+        Table current = null ;
+        for ( Iterator iter = execCxt.getDataset().listNames() ; iter.hasNext() ; )
+        {
+            String uri = (String)iter.next();
+            Graph graph = execCxt.getDataset().getNamedGraph(uri) ;
+            ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph) ;
+            Evaluator e2 = EvaluatorFactory.create(execCxt2) ;
+            
+            Table tableVarURI = TableFactory.create(gVar, Node.createURI(uri)) ;
+            // Evaluate the pattern, join with this graph node possibility.
+            
+            Table patternTable = eval(e2, opGraph.getSubOp()) ;
+            Table stepResult = evaluator.join(patternTable, tableVarURI) ;
+            
+            if ( current == null )
+                current = stepResult ;
+            else
+                current = evaluator.union(current, stepResult) ;
+        }
+        
+        if ( current == null )
+            // Nothing to loop over
+            return new TableEmpty() ;
+        return current ;
+    }
+    
+    static Table evalQuadPattern(OpQuadPattern opQuad, Evaluator evaluator)
+    {
+        if ( opQuad.getQuads().size() == 0 )
+            return TableFactory.createUnit() ;
+        
+        ExecutionContext cxt = evaluator.getExecContext() ;
+        DatasetGraph ds = cxt.getDataset() ;
+        
+        ElementTriplesBlock bgp = new ElementTriplesBlock() ;
+        bgp.getTriples().addAll(opQuad.getBasicPattern()) ;
+        
+        if ( ! opQuad.getGraphNode().isVariable() ) 
+        {
+            if ( ! opQuad.getGraphNode().isURI() )
+            { throw new ARQInternalErrorException("Not a URI or variable: "+opQuad.getGraphNode()) ;}
+            Graph g = null ;
+            
+            if ( opQuad.getGraphNode().equals(Quad.defaultGraph) )
+                g = ds.getDefaultGraph() ;
+            else
+                g = ds.getNamedGraph(opQuad.getGraphNode().getURI()) ;
+            if ( g == null )
+                return new TableEmpty() ;
+            ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
+            // This enable PropertyFunctions.
+            // need to separate it out
+            // And use in opBGP.
+            PlanElement planElt = PlanTriplesBlock.make(cxt2.getContext(), bgp) ;
+            return TableFactory.
+                    create(planElt.build(Algebra.makeRoot(cxt2), cxt2)) ;
+        }
+        else
+        {
+            // Variable.
+            Var gVar = Var.alloc(opQuad.getGraphNode()) ;
+            // Or just just devolve to OpGraph and get OpUnion chain of OpJoin
+            QueryIterConcat concat = new QueryIterConcat(cxt) ;
+            for ( Iterator graphURIs = cxt.getDataset().listNames() ; graphURIs.hasNext(); )
+            {
+                String uri = (String)graphURIs.next() ;
+                //Op tableVarURI = TableFactory.create(gn.getName(), Node.createURI(uri)) ;
+                
+                Graph g = cxt.getDataset().getNamedGraph(uri) ;
+                Binding b = new Binding1(BindingRoot.create(), gVar, Node.createURI(uri)) ;
+                QueryIterator qIter1 = new QueryIterSingleton(b, cxt) ;
+                ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
+                PlanElement planElt = PlanTriplesBlock.make(cxt2.getContext(), bgp) ;
+                QueryIterator qIter = planElt.build(qIter1, cxt2) ;
+                concat.add(qIter) ;
+            }
+            return TableFactory.create(concat) ;
+        }
+    }
+
+    // This is for an arbitrary quad collection.
+    // Downside is that each quad is solved separtely, not in a BGP.
+    // This breaks property functions with list arguments
+    // and extension to entailment regimes which as DL.
+    
+//    public Table evalAny(Evaluator evaluator)
+//    {
+//        if ( getQuads().size() == 0 )
+//            return TableFactory.createUnit().eval(evaluator) ;
+//        
+//        ExecutionContext cxt = evaluator.getExecContext() ;
+//        DatasetGraph ds = cxt.getDataset() ;
+//        //Table working = TableFactory.createUnit().eval(evaluator) ;
+//        Table working = null ; 
+//        for ( Iterator iter = quads.iterator() ; iter.hasNext() ; )
+//        {
+//            Quad quad = (Quad)iter.next() ;
+//            Table nextTable = oneStep(quad, cxt)  ;
+//            if ( working != null )
+//                working = evaluator.join(working, nextTable) ;
+//            else
+//                working = nextTable ;
+//        }
+//        return working ;
+//    }
+//
+//    private Table oneStep(Quad quad, ExecutionContext cxt)
+//    {
+//        Node gn = quad.getGraph() ;
+//        DatasetGraph ds = cxt.getDataset() ;
+//        if ( ! gn.isVariable() ) 
+//        {
+//            if ( ! gn.isURI() )
+//                throw new ARQInternalErrorException("Not a URI or variable: "+gn) ;
+//            
+//            Graph g = gn.equals(AlgebraCompilerQuad.defaultGraph) ?
+//                          ds.getDefaultGraph() : 
+//                          ds.getNamedGraph(gn.getURI()) ;
+//            
+//            if ( g == null )
+//                return new TableEmpty() ;
+//
+//            ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
+//            // A BGP of one triple ensure property functions are processed.
+//            // QueryIterator qIter = new QueryIterTriplePattern(OpBGP.makeRoot(cxt2), quad.getTriple(), cxt2) ;
+//            // return TableFactory.create(qIter) ;
+//
+//            // Alt : gather adjacent quads with the same graph node.
+//            // Then blank node projection can be done.
+//            
+//            // Create a BGP of one to sort property functions out.
+//            // ** Projecting blank nodes must be off.
+//            ElementBasicGraphPattern bgp = new ElementBasicGraphPattern() ;
+//            bgp.addTriple(quad.getTriple()) ;
+//            PlanElement planElt = PlanBasicGraphPattern.make(cxt.getContext(), bgp) ;
+//            return TableFactory.
+//                    create(planElt.build(Algebra.makeRoot(cxt2), cxt2)) ;
+//        }
+//        else
+//        {
+//            // Or just just devolve to OpGraph and get OpUnion chain of OpJoin
+//            QueryIterConcat concat = new QueryIterConcat(cxt) ;
+//            for ( Iterator graphURIs = cxt.getDataset().listNames() ; graphURIs.hasNext(); )
+//            {
+//                String uri = (String)graphURIs.next() ;
+//                //Op tableVarURI = TableFactory.create(gn.getName(), Node.createURI(uri)) ;
+//                
+//                Graph g = cxt.getDataset().getNamedGraph(uri) ;
+//                Binding b = new Binding1(BindingRoot.create(), gn.getName(), Node.createURI(uri)) ;
+//                QueryIterator qIter1 = new QueryIterSingleton(b, cxt) ;
+//                ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
+//                QueryIterator qIter = new QueryIterTriplePattern(qIter1, quad.getTriple(), cxt2) ;
+//                concat.add(qIter) ;
+//            }
+//            return TableFactory.create(concat) ;
+//        }
+//        
+//    }
+
 }
 
 /*

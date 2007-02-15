@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
+import com.hp.hpl.jena.query.algebra.Op;
+
 /** One step in the transformation process */
 public class TransformCopy implements Transform
 {

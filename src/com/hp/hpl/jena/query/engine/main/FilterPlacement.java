@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.OpVars;
-import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.algebra.op.OpBGP;
 import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.core.BasicPattern;

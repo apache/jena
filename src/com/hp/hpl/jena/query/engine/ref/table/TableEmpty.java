@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.query.engine.ref.table;
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.engine.ref.Evaluator;
+import com.hp.hpl.jena.query.engine.ref.Table;
 import com.hp.hpl.jena.query.expr.ExprList;
 
 public class TableEmpty implements Table

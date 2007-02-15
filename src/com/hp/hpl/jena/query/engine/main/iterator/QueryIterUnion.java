@@ -9,8 +9,8 @@ package com.hp.hpl.jena.query.engine.main.iterator;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.OpSubstitute;
-import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;

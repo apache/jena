@@ -14,6 +14,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.core.Quad;
 import com.hp.hpl.jena.query.core.Var;

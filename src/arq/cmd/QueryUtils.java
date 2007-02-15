@@ -10,7 +10,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.AlgebraGeneratorQuad;
-import com.hp.hpl.jena.query.algebra.op.Op;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
 import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.engine.QueryEngineBase;

@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.BasicPattern;
 
 public class OpBGP extends Op0
@@ -17,11 +16,6 @@ public class OpBGP extends Op0
     public OpBGP(BasicPattern pattern)
     { this.pattern = pattern ; }
     
-    public Table eval(Evaluator evaluator)
-    {
-        return evaluator.basicPattern(pattern) ;
-    }
-
     public BasicPattern getPattern()                { return pattern ; } 
     
     public String getName()                 { return "BGP" ; }

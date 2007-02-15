@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.query.algebra.Algebra;
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;

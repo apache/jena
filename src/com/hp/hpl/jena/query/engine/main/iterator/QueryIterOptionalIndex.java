@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.query.engine.main.iterator;
 
-import com.hp.hpl.jena.query.algebra.op.Op;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.OpFilter;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;

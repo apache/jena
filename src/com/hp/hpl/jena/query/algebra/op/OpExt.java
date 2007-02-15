@@ -6,9 +6,13 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
+import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.engine.ref.Table;
+
 
 public interface OpExt extends Op
 { 
+    public Table eval() ;
 }
 
 /*

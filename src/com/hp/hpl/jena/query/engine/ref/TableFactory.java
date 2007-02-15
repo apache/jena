@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.query.engine.ref;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.algebra.Table;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.ref.table.Table1;

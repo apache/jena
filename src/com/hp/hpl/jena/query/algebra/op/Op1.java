@@ -6,8 +6,7 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
+import com.hp.hpl.jena.query.algebra.Op;
 
 public abstract class Op1 extends OpBase
 {
@@ -21,13 +20,6 @@ public abstract class Op1 extends OpBase
     public Op getSubOp() { return sub ; }
     //public void setSubOp(Op op) { sub = op ; }
     
-    public Table eval(Evaluator evaluator)
-    {
-        Table t = getSubOp().eval(evaluator) ;
-        return eval_1(t, evaluator) ;
-    }
-    
-    public abstract Table eval_1(Table table, Evaluator evaluator) ;
     public abstract Op apply(Transform transform, Op subOp) ;
     public abstract Op copy(Op subOp) ;
 }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.BasicPattern;

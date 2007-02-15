@@ -8,8 +8,8 @@ package com.hp.hpl.jena.query.engine.main;
 
 import java.util.Set;
 
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.OpVars;
-import com.hp.hpl.jena.query.algebra.op.Op;
 import com.hp.hpl.jena.query.algebra.op.OpFilter;
 import com.hp.hpl.jena.query.algebra.op.OpJoin;
 import com.hp.hpl.jena.query.algebra.op.OpLeftJoin;

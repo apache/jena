@@ -6,56 +6,14 @@
 
 package com.hp.hpl.jena.query.algebra.op;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.algebra.Evaluator;
-import com.hp.hpl.jena.query.algebra.Table;
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.binding.Binding1;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.query.engine.ref.TableFactory;
-import com.hp.hpl.jena.query.engine.ref.table.TableEmpty;
-import com.hp.hpl.jena.query.engine.ref.table.TableUnit;
+import com.hp.hpl.jena.query.algebra.Op;
 
 public class OpDatasetNames extends Op0
 {
     Node graphNode ;
     public OpDatasetNames(Node gn) { this.graphNode = gn ; }
     
-    public Table eval(Evaluator evaluator)
-    {
-        if ( graphNode.isURI() )
-        {
-            if ( evaluator.getExecContext().getDataset().containsNamedGraph(graphNode.getURI()))
-            { return new TableUnit() ; } 
-            else
-                // WRONG
-            { return new TableEmpty() ; }
-        }
-        
-        if ( ! Var.isVar(graphNode) )
-            throw new ARQInternalErrorException("OpDatasetNames: Not a URI or variable: "+graphNode) ; 
-        
-        Iterator iter = evaluator.getExecContext().getDataset().listNames() ;
-        List list = new ArrayList() ;
-        for ( ; iter.hasNext(); )
-        {
-            String uri = (String)iter.next();
-            Binding b = new Binding1(null, Var.alloc(graphNode), Node.createURI(uri)) ;
-            list.add(b) ;
-        }
-        
-        QueryIterator qIter = new QueryIterPlainWrapper(list.iterator(), evaluator.getExecContext()) ;
-        return TableFactory.create(qIter) ;
-    }
-
-
     public Node getGraphNode()
     {
         return graphNode ;

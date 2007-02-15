@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.query.engine.main;
 
-import com.hp.hpl.jena.query.algebra.op.Op;
+import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.OpBGP;
 import com.hp.hpl.jena.query.algebra.op.TransformBase;
 

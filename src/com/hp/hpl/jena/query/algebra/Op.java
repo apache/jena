@@ -6,26 +6,14 @@
 
 package com.hp.hpl.jena.query.algebra;
 
-import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.expr.ExprList;
+import com.hp.hpl.jena.query.algebra.op.OpVisitor;
+import com.hp.hpl.jena.query.util.Named;
+import com.hp.hpl.jena.query.util.PrintSerializable;
+import com.hp.hpl.jena.query.util.Printable;
 
-public interface Table
+public interface Op extends PrintSerializable, Printable, Named
 {
-    // Note - this table is the RIGHT table, and takes a LEFT binding.
-    public QueryIterator matchRightLeft(Binding bindingLeft, 
-                                        boolean includeOnNoMatch,
-                                        ExprList condition,
-                                        ExecutionContext execCxt) ;
-
-    public void materialize() ;
-    
-    public void close() ;
-    
-    public void dump() ;
-    
-    public QueryIterator iterator(ExecutionContext execCxt) ;
+    public void visit(OpVisitor opVisitor) ;
 }
 
 /*
