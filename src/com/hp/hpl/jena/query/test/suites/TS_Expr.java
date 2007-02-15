@@ -21,7 +21,8 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 public class TS_Expr extends TestSuite
 {
-    // TODO IDeall, split this and us testXXX form.
+    // Ideally, split this and us testXXX form.
+    
     // Mid level testing
     // Low level : see TestFunctions,. TestNodeValue
     // High level: see TestExpressions

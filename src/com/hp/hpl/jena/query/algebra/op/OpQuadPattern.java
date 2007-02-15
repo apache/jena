@@ -38,7 +38,6 @@ public class OpQuadPattern extends Op0
     
     public List getQuads()
     {
-        // TODO QuadPattern
         if ( quads == null )
         {
             quads = new ArrayList() ;

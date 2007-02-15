@@ -175,8 +175,6 @@ public class AlgebraGenerator
         return current ;
     }
 
-    // Compile to left join
-    // TODO Check on OpFilter chains.
     protected Op compile(ElementOptional eltOpt, Op current)
     {
         Element subElt = eltOpt.getOptionalElement() ;

@@ -6,10 +6,10 @@
 
 package arq.cmdline;
 
-import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.util.QueryExecUtils;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 public class ModResultsOut implements ArgModuleGeneral
@@ -43,7 +43,7 @@ public class ModResultsOut implements ArgModuleGeneral
 
     public void printResultSet(ResultSet resultSet, PrefixMapping prefixMapping)
     {
-        QueryCmdUtils.outputResultSet(resultSet, prefixMapping, resultsFormat) ;
+        QueryExecUtils.outputResultSet(resultSet, prefixMapping, resultsFormat) ;
     }
     
     public ResultsFormat getResultsFormat() { return resultsFormat ; }

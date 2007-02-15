@@ -4,7 +4,9 @@
  * [See end of file]
  */
 
-package arq.cmd;
+package com.hp.hpl.jena.query.util;
+
+import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.core.ARQConstants;
@@ -21,9 +23,8 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * @author Andy Seaborne
  * @version $Id: QueryCmdUtils.java,v 1.5 2007/01/29 14:14:49 andy_seaborne Exp $
  */
-public class QueryCmdUtils
+public class QueryExecUtils
 {
-    // TODO Better, better place?
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
         globalPrefixMap.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;

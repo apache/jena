@@ -21,8 +21,7 @@ import com.hp.hpl.jena.query.util.Context;
 /** Function that evaluates an expression - catches evaluation failures
  *  and returns false.
  *  Mainly used in extensions.
- *  TODO Need also evalFunction(function, args)
- *  Woudl be better if that were eval and this were "safe" or somesuch
+ *  Would be better if that were eval and this were "safe" or somesuch
  * @author Andy Seaborne
  * @version $Id: eval.java,v 1.12 2007/02/06 17:06:15 andy_seaborne Exp $
  */

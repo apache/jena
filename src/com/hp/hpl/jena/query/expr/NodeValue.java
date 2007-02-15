@@ -34,10 +34,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
 
 public abstract class NodeValue extends ExprNode
 {
-    // TODO NodeValueStringLang - strings with language tag
-    // TODO .sameValue should be delegated to subclasses like .equals can be?  
-    // No - unless NodeValue classes for each value space.
-    // TODO Compare: Convert to use nodes - merge with NodeUtils code (used from BindingComparator).
+    // Maybe:: NodeValueStringLang - strings with language tag
     
     /* Naming:
      * getXXX => plain accessor

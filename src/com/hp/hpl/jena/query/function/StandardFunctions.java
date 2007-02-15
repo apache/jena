@@ -74,7 +74,6 @@ public class StandardFunctions
         add(registry, xfn+"ceiling", ceiling.class) ;
         add(registry, xfn+"floor", floor.class) ;
         
-        // TODO
         // fn:compare/2 and /3 and provide collation argument
         //    Locale locale = new Locale(String language, String country)
         //      language is two letter lower case, county is uppercase.

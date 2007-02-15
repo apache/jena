@@ -7,7 +7,6 @@
 package arq;
 
 import arq.cmd.CmdException;
-import arq.cmd.QueryCmdUtils;
 import arq.cmdline.*;
 
 import com.hp.hpl.jena.query.*;
@@ -16,6 +15,7 @@ import com.hp.hpl.jena.query.engine.http.HttpQuery;
 import com.hp.hpl.jena.query.engine.http.QueryExceptionHTTP;
 import com.hp.hpl.jena.query.resultset.ResultSetException;
 import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.QueryExecUtils;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -97,7 +97,7 @@ public class query extends CmdARQ
                 System.err.println("Dataset not specified in query nor provided on command line.");
                 return ;
             }
-            QueryCmdUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
+            QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
             long time = modTime.endTimer() ;
             if ( modTime.timingEnabled() )
                 System.out.println("Time: "+modTime.timeStr(time)) ;
@@ -145,7 +145,7 @@ public class query extends CmdARQ
             if ( modRemote.usePost() )
                 HttpQuery.urlLimit = 0 ;
             
-            QueryCmdUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
+            QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
         } catch (QueryExceptionHTTP ex)
         {
             throw new CmdException("HTTP Exeception", ex) ;

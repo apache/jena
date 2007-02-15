@@ -156,12 +156,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
      */
     public void setDataset(Dataset dataset)
     {
-        // TODO check not initialized yet
-        // TODO Make setting the Dataset, set the dataset graph
-        // Check init() ;
-        //datasetGraph = new DataSourceGraphImpl(dataset) ;
         this.dataset = dataset;
-        
     }
 
     /**

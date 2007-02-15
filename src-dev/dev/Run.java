@@ -8,7 +8,6 @@ package dev;
 
 import arq.qparse;
 import arq.sparql;
-import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.graph.Node;
@@ -34,6 +33,7 @@ import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.expr.NodeVar;
 import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.query.util.QueryExecUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -193,7 +193,7 @@ public class Run
         {
             QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
             System.out.println("==== Engine1") ;
-            QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
+            QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
         }
 
         if ( false )
@@ -202,7 +202,7 @@ public class Run
             QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
             System.out.println("==== EngineRef") ;
             //System.out.print(((QueryEngineBase)qExec).getPlan()) ;
-            QueryCmdUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
+            QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
             QueryEngineRef.unregister() ;
         }
 
@@ -213,7 +213,7 @@ public class Run
         QueryIterator qIter = qe.getPlan().iterator() ; 
         System.out.println(qIter) ;
         System.out.print(qe.getPlan()) ;
-        QueryCmdUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
+        QueryExecUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
         System.exit(0) ;
     }
     

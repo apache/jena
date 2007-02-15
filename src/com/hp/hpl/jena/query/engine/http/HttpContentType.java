@@ -17,7 +17,6 @@ import org.apache.commons.logging.*;
 
 public class HttpContentType
 {
-    // TODO Replace by AcceptType? 
     static Log log = LogFactory.getLog(HttpContentType.class);
 
     String mediaType = null;

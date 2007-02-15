@@ -35,9 +35,7 @@ public class RDFInput extends ResultSetMem
     }
 
 
-    // TODO Create a RDFInput class : add ResultSetMem(List vars, List rows, bool ordered, bool distinct)
     // Convert from RDF model to in-memory result set
-
     private void buildFromDumpFormat(Model resultsModel)
     {
         varNames = new ArrayList() ;
