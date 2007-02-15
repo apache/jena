@@ -1,22 +1,31 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra.op;
+package com.hp.hpl.jena.query.engine;
 
+import com.hp.hpl.jena.query.syntax.Element;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.util.Context;
 
-public interface OpExt extends Op
-{ 
-    public QueryIterator eval(ExecutionContext execCxt) ;
+public abstract class QueryEngineOpQuadBase extends QueryEngineOpBase
+{
+    protected QueryEngineOpQuadBase(Query q, Context context) { super(q, context) ; }
+
+    protected QueryEngineOpQuadBase(Op op, Context context)   { super(op, context) ; }
+
+    protected Op createPatternOp(Element elt)
+    { 
+        return AlgebraGeneratorQuad.compile(elt) ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

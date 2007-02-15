@@ -104,7 +104,9 @@ public class Transformer
         { throw new ARQInternalErrorException("Can't transform a "+Utils.className(opExt)) ; }
         
         public void visit(OpOrder opOrder)
-        { throw new ARQInternalErrorException("Can't transform a "+Utils.className(opOrder)) ; }
+        { 
+            visit1(opOrder) ;
+        }
         
         public void visit(OpProject opProject)
         { throw new ARQInternalErrorException("Can't transform a "+Utils.className(opProject)) ; }

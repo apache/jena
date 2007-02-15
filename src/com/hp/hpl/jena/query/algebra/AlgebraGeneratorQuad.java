@@ -28,6 +28,11 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
         return new AlgebraGeneratorQuad().compileGraphPattern(elt) ;
     }
     
+    /** Compile query modifiers */
+    public static Op compileModifiers(Query query, Op pattern)
+    {
+        return AlgebraGenerator.compileModifiers(query, pattern) ;
+    }
 
     private Node currentGraph = Quad.defaultGraph ;
     

@@ -7,6 +7,8 @@
 
 + Tidy up main.Eval
 
++ Transform to apply to more than just pattern ops?
+
 + Algebra:
     // TODO property function determination by general tree rewriting - BGP special first.
     //  By general BGP rewriting.  Stages.

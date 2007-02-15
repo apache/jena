@@ -22,9 +22,8 @@ public interface Transform
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right) ;
     public Op transform(OpUnion opUnion, Op left, Op right) ;
     
-    
-    //public Op transform(OpPlanElement element) ;
     //public Op transform(OpExt opExt) ;
+    
 }
 
 /*

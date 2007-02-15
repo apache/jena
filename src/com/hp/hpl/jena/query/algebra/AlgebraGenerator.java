@@ -24,6 +24,7 @@ import com.hp.hpl.jena.query.util.Utils;
 
 public class AlgebraGenerator 
 {
+    /** Compile a query - pattern and modifiers */
     public static Op compile(Query query)
     {
         if ( query == null )
@@ -33,11 +34,49 @@ public class AlgebraGenerator
         return op ;
     }
 
+    /** Compile a pattern */
     public static Op compile(Element elt)
     {
         if ( elt == null )
             return null ;
         return new AlgebraGenerator().compileGraphPattern(elt) ;
+    }
+
+    // ---- Wrapping an alrady compile algebra expression in solution modifiers.
+    
+    /** Compile query modifiers */
+    public static Op compileModifiers(Query query, Op pattern)
+    {
+        Op op = pattern ;
+        Modifiers mods = new Modifiers(query) ;
+        // Maybe move into the algebra compiler
+        // ORDER BY
+        if ( mods.orderConditions != null )
+            op = new OpOrder(op, mods.orderConditions) ;
+        
+        // Project (ORDER may involve an unselected variable)
+        // No projection => initial variables are exposed.
+        // Needed for CONSTRUCT and initial bindings + SELECT *
+        
+        if ( mods.projectVars != null && ! query.isQueryResultStar())
+        {
+            // Don't project for QueryResultStar so initial bindings show through
+            // in SELECT *
+            if ( mods.projectVars.size() == 0 && query.isSelectType() )
+                LogFactory.getLog(AlgebraGenerator.class).warn("No project variables") ;
+            if ( mods.projectVars.size() > 0 ) 
+                op = new OpProject(op, mods.projectVars) ;
+        }
+        
+        // DISTINCT
+        if ( query.isDistinct() )
+            op = new OpDistinct(op, mods.projectVars) ;
+        
+        // LIMIT/OFFSET
+        if ( query.hasLimit() || query.hasOffset() )
+            op = new OpSlice(op, mods.start, mods.length) ;
+        
+        return op ;
     }
 
 
@@ -251,42 +290,6 @@ public class AlgebraGenerator
         return null ;
     }
 
-    // ---- Wrapping an alrady compile algebra expression in solution modifiers.
-    
-    protected static Op compileModifiers(Query query, Op pattern)
-    {
-        Op op = pattern ;
-        Modifiers mods = new Modifiers(query) ;
-        // Maybe move into the algebra compiler
-        // ORDER BY
-        if ( mods.orderConditions != null )
-            op = new OpOrder(op, mods.orderConditions) ;
-        
-        // Project (ORDER may involve an unselected variable)
-        // No projection => initial variables are exposed.
-        // Needed for CONSTRUCT and initial bindings + SELECT *
-        
-        if ( mods.projectVars != null && ! query.isQueryResultStar())
-        {
-            // Don't project for QueryResultStar so initial bindings show through
-            // in SELECT *
-            if ( mods.projectVars.size() == 0 && query.isSelectType() )
-                LogFactory.getLog(AlgebraGenerator.class).warn("No project variables") ;
-            if ( mods.projectVars.size() > 0 ) 
-                op = new OpProject(op, mods.projectVars) ;
-        }
-        
-        // DISTINCT
-        if ( query.isDistinct() )
-            op = new OpDistinct(op, mods.projectVars) ;
-        
-        // LIMIT/OFFSET
-        if ( query.hasLimit() || query.hasOffset() )
-            op = new OpSlice(op, mods.start, mods.length) ;
-        
-        return op ;
-    }
-    
     // -------- 
     
     protected Op join(Op current, Op newOp)

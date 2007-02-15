@@ -138,7 +138,8 @@ public class Eval
 
         public void visit(OpExt opExt)
         {
-            push(opExt.eval()) ;
+            
+            push(TableFactory.create(opExt.eval(evaluator.getExecContext()))) ;
         }
 
         public void visit(OpOrder opOrder)

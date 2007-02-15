@@ -56,7 +56,16 @@ public abstract class QueryEngineOpBase extends QueryEngineBase
     
     protected Op createOp()
     { 
-        return AlgebraGenerator.compile(getQuery()) ;
+        Op op = createPatternOp() ;
+        op = modifyPatternOp(op) ;
+        op = AlgebraGenerator.compileModifiers(getQuery(), op) ;
+        op = modifyQueryOp(op) ;
+        return op ;
+    }
+    
+    protected Op createPatternOp()
+    {
+        return AlgebraGenerator.compile(getQuery().getQueryPattern()) ;
     }
     
     public Op getOp()
@@ -69,6 +78,12 @@ public abstract class QueryEngineOpBase extends QueryEngineBase
     
     /** Allow the algebra expression to be modifed */
     protected Op modifyQueryOp(Op op)
+    {
+        return op ;
+    }
+
+    /** Allow the algebra expression to be modifed */
+    protected Op modifyPatternOp(Op op)
     {
         return op ;
     }
