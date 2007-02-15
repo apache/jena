@@ -7,11 +7,14 @@
 package com.hp.hpl.jena.query.engine.main;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.OpSubstitute;
-import com.hp.hpl.jena.query.core.DataSourceGraph;
 import com.hp.hpl.jena.query.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.query.core.DatasetGraph;
 import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingMap;
@@ -56,10 +59,13 @@ public class QueryEngineMain extends QueryEngineOpBase
 //        return qIter ;
     }
 
-    public static QueryIterator eval(Query query, Op op, Graph graph)
+    public static QueryIterator eval(Op op, Graph graph)
     {
-        DataSourceGraph dsg = new DataSourceGraphImpl(graph) ;
-        ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), query, graph, dsg) ;
+        return eval(op, new DataSourceGraphImpl(graph)) ;
+    }
+    public static QueryIterator eval(Op op, DatasetGraph dsg)
+    {
+        ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), null, dsg.getDefaultGraph(), dsg) ;
         return eval(op, BindingRoot.create(), execCxt) ; 
     }
     

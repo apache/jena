@@ -16,7 +16,10 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.op.*;
+import com.hp.hpl.jena.query.algebra.op.OpBGP;
+import com.hp.hpl.jena.query.algebra.op.OpFilter;
+import com.hp.hpl.jena.query.algebra.op.OpJoin;
+import com.hp.hpl.jena.query.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
 import com.hp.hpl.jena.query.core.Var;
@@ -26,6 +29,11 @@ import com.hp.hpl.jena.query.engine.main.JoinClassifier;
 import com.hp.hpl.jena.query.engine.main.LeftJoinClassifier;
 import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.query.expr.E_LessThan;
+import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.NodeValue;
+import com.hp.hpl.jena.query.expr.NodeVar;
+import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -45,26 +53,30 @@ public class Run
         
     private static void code()
     {
-        Query query = new Query() ;
-        query.setQuerySelectType() ;
-        query.addResultVar(Var.alloc("x")) ;
-        
+        // Experimental low level access t query execution. 
         String BASE = "http://example/" ; 
         BasicPattern bp = new BasicPattern() ;
+        Var var_x = Var.alloc("x") ;
+        Var var_z = Var.alloc("z") ;
         
-        bp.add(new Triple(Var.alloc("x"), Node.createURI(BASE+"p"), Var.alloc("z"))) ;
+        bp.add(new Triple(var_x, Node.createURI(BASE+"p"), var_z)) ;
         Op op = new OpBGP(bp) ;
+        //Expr expr = ExprUtils.parse("?z < 2 ") ;
+        Expr expr = new E_LessThan(new NodeVar(var_z), NodeValue.makeNodeInteger(2)) ;
+        op = OpFilter.filter(expr, op) ;
         
         Model m = FileManager.get().loadModel("D.ttl") ;
         
-        QueryIterator qIter = QueryEngineMain.eval(query, op, m.getGraph()) ;
+        QueryIterator qIter = QueryEngineMain.eval(op, m.getGraph()) ;
         for ( ; qIter.hasNext() ; )
         {
             Binding b = qIter.nextBinding() ;
+            Node n = b.get(var_x) ;
+            System.out.println(FmtUtils.stringForNode(n)) ;
             System.out.println(b) ; 
         }
         qIter.close() ;
-        
+        System.exit(0) ;
         
     }
 

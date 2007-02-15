@@ -226,7 +226,16 @@ public class Context
     
     public String toString()
     {
-        return context.toString() ;
+        String x = "" ;
+        String sep = "" ;
+        for ( Iterator iter = keys().iterator() ; iter.hasNext() ; )
+        {
+            Symbol s = (Symbol)iter.next();
+            Object value = get(s) ;
+            x = x + sep + s + " = " + value ;
+            sep = "\n" ;
+        }
+        return x ;
     }
 }
 
