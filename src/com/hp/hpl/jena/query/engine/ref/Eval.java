@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.algebra.Algebra;
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.*;
@@ -137,10 +138,7 @@ public class Eval
         }
 
         public void visit(OpExt opExt)
-        {
-            
-            push(TableFactory.create(opExt.eval(evaluator.getExecContext()))) ;
-        }
+        { throw new QueryExecException("Encountered OpExt during execution of reference engine") ; }
 
         public void visit(OpOrder opOrder)
         {

@@ -46,7 +46,6 @@ public abstract class QueryEngineOpBase extends QueryEngineBase
     protected Plan queryToPlan(Query query)
     {
         Op op = getOp() ;
-        op = modifyQueryOp(op) ;
         QueryIterator qIter = createQueryIterator(op) ;
         return new PlanOp(op, qIter) ;
     }

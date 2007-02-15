@@ -1,24 +1,22 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra.op;
+package com.hp.hpl.jena.query.engine.main;
 
-import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.op.OpExtBase;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryIterator;
 
-/** Marker for extension points
- *  Execution will be per-engine specific
- * @author Andy Seaborne
- * @version $Id$
- */
-public interface OpExt extends Op
-{ }
-
+public abstract class OpExtMain extends OpExtBase
+{
+    public abstract QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
+}
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

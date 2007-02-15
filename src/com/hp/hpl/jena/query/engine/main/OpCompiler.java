@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
@@ -230,7 +231,15 @@ public class OpCompiler
     }
 
     QueryIterator compile(OpExt opExt, QueryIterator input)
-    { throw new ARQNotImplemented("OpExt") ; }
+    { 
+        if ( opExt instanceof OpExtMain )
+        {
+            OpExtMain op = (OpExtMain)opExt ;
+            return op.eval(input, execCxt) ;
+        }
+        
+        throw new QueryExecException("Encountered unsupport OpExt: "+opExt.getName()) ;
+    }
 
     QueryIterator compile(OpOrder opOrder, QueryIterator input)
     { 
