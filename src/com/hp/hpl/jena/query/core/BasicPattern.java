@@ -12,8 +12,6 @@ import java.util.ListIterator;
 
 import com.hp.hpl.jena.graph.Triple;
 
-// Rename as "BlockTriples"?
-
 /** A class whose purpose is to give a name to a collection of triples
  * Reduces the use of bland "List" in APIs (Java 1.4) 
  */ 

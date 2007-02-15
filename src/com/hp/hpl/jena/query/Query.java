@@ -322,7 +322,7 @@ public class Query implements Cloneable
         varName = Var.canonical(varName) ;
         if ( !resultVars.contains(varName) )
             resultVars.add(varName);
-        resultVarsSet = false ;
+        resultVarsSet = true ;
     }
 
     public void addResultVar(Node v)

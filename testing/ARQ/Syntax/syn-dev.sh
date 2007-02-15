@@ -348,6 +348,16 @@ WHERE
 }
 EOF
 
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  _:a ?p ?v . OPTIONAL { ?s ?p ?v } _:a ?q 1
+}
+EOF
+
+
 ## ==== Other bad : from NegativeSyntax/
 N=0
 testBad "bnode-dot.rq" <<EOF

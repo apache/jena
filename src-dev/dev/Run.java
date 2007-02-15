@@ -11,13 +11,17 @@ import arq.sparql;
 import arq.cmd.QueryCmdUtils;
 import arq.cmd.ResultsFormat;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.op.OpJoin;
-import com.hp.hpl.jena.query.algebra.op.OpLeftJoin;
+import com.hp.hpl.jena.query.algebra.op.*;
+import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.main.JoinClassifier;
 import com.hp.hpl.jena.query.engine.main.LeftJoinClassifier;
 import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
@@ -30,6 +34,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
+        code() ;
         //classifyJ() ;
         //classifyLJ() ;
         QueryEngineRef.register() ;
@@ -38,6 +43,31 @@ public class Run
         query() ;
     }
         
+    private static void code()
+    {
+        Query query = new Query() ;
+        query.setQuerySelectType() ;
+        query.addResultVar(Var.alloc("x")) ;
+        
+        String BASE = "http://example/" ; 
+        BasicPattern bp = new BasicPattern() ;
+        
+        bp.add(new Triple(Var.alloc("x"), Node.createURI(BASE+"p"), Var.alloc("z"))) ;
+        Op op = new OpBGP(bp) ;
+        
+        Model m = FileManager.get().loadModel("D.ttl") ;
+        
+        QueryIterator qIter = QueryEngineMain.eval(query, op, m.getGraph()) ;
+        for ( ; qIter.hasNext() ; )
+        {
+            Binding b = qIter.nextBinding() ;
+            System.out.println(b) ; 
+        }
+        qIter.close() ;
+        
+        
+    }
+
     private static void classifyJ()
     {
         classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ;

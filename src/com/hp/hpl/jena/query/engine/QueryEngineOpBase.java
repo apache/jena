@@ -6,56 +6,74 @@
 
 package com.hp.hpl.jena.query.engine;
 
+import java.util.Iterator;
+import java.util.Set;
+
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.serializer.SerializationContext;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.query.algebra.OpVars;
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.util.Context;
 
-public class PlanOp extends PlanBase
+public abstract class QueryEngineOpBase extends QueryEngineBase
 {
-    private QueryIterator qIter ;
-    private String label = null ;
-    
-    public PlanOp(Op op, QueryIterator qIter)
+    private Op queryOp = null ;
+
+    protected QueryEngineOpBase(Query q, Context context)
+    { super(q, context) ; }
+
+    protected QueryEngineOpBase(Op op, Context context)
     { 
-        super(op) ;
-        this.qIter = qIter ;
-    }
-
-    public PlanOp(String label, Op op, QueryIterator qIter)
-    {
-        this(op, qIter) ;
-        this.label = label ;
+        super(dummy(op), context) ;
+        queryOp = op ;
     }
     
-    protected QueryIterator iteratorOnce()
-    { return qIter ; }
-
-    //@Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
+    static Query dummy(Op op)
     {
-        if ( getOp() == null )
+        Set x = OpVars.patternVars(op) ;
+        Query query = new Query() ;
+        query.setQuerySelectType() ;
+        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
         {
-            out.println(Utils.className(this)) ;
-            return ;
+            Var v = (Var)iter.next();
+            query.addResultVar(v) ;
         }
-        if ( label != null )
-        {
-            out.print(Plan.startMarker) ;
-            out.println(label) ;
-            out.incIndent() ;
-        }
-        
-        getOp().output(out, sCxt) ;
-        
-        if ( label != null )
-        {
-            out.print(Plan.finishMarker) ;
-            out.decIndent() ;
-        }
-        out.ensureStartOfLine() ;
+        return query ;
+    }
+    
+    final
+    protected Plan queryToPlan(Query query)
+    {
+        Op op = getOp() ;
+        op = modifyQueryOp(op) ;
+        QueryIterator qIter = createQueryIterator(op) ;
+        return new PlanOp(op, qIter) ;
+    }
+
+    /** Turn a SPARQL algebra expression into a QueryIterator */ 
+    protected abstract QueryIterator createQueryIterator(Op op) ;
+    
+    protected Op createOp()
+    { 
+        return AlgebraGenerator.compile(getQuery()) ;
+    }
+    
+    public Op getOp()
+    {
+        if ( queryOp == null )
+            queryOp = createOp() ; 
+        return queryOp ;
+    }
+
+    
+    /** Allow the algebra expression to be modifed */
+    protected Op modifyQueryOp(Op op)
+    {
+        return op ;
     }
 }
+
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.

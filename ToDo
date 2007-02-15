@@ -5,10 +5,12 @@
   TableSimple is the only streaming point - and often materialized.
   And used via TableFactory.create(QueryIterator) as well as direct
 
++ Tidy up main.Eval
+
++ Execution of op expression
+  QueryEngineOpBase
+
 + Algebra:
-  + Separate op evaluation from the Op tree entirely?
-  	See Eval/EvalDispatch
-  + OpGraph OpQuadPattern and OpDatasetNames have active eval
   
     // TODO property function determination by general tree rewriting - BGP special first.
     //  By general BGP rewriting.  Stages.

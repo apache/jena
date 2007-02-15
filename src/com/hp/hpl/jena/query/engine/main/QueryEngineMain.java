@@ -6,21 +6,21 @@
 
 package com.hp.hpl.jena.query.engine.main;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.OpSubstitute;
+import com.hp.hpl.jena.query.core.DataSourceGraph;
+import com.hp.hpl.jena.query.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingMap;
 import com.hp.hpl.jena.query.engine.binding.BindingRoot;
 import com.hp.hpl.jena.query.engine.binding.BindingUtils;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.query.util.Context;
 
-public class QueryEngineMain extends QueryEngineRef
+public class QueryEngineMain extends QueryEngineOpBase
 {
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
@@ -29,12 +29,17 @@ public class QueryEngineMain extends QueryEngineRef
     { super(query, context) ; }
 
     public QueryEngineMain(Query query)
-    { super(query) ; }
+    { super(query, ARQ.getContext()) ; }
+    
+    public QueryEngineMain(Op op, Context context)
+    { super(op, context) ; }
+
+    public QueryEngineMain(Op op)
+    { super(op, ARQ.getContext()) ; }
     
     //@Override
-    protected Plan queryToPlan(Query query)
+    protected QueryIterator createQueryIterator(Op op)
     {
-        Op op = getOp() ;
         Binding b = BindingRoot.create() ;
         
         // If there is some initial bindings
@@ -45,22 +50,26 @@ public class QueryEngineMain extends QueryEngineRef
             // Substitute in the Op, and use this b as the root. 
             op = OpSubstitute.substitute(b, op) ;
         }
-        
-        op = modifyQueryOp(op) ;
-        QueryIterator qIter = new QueryIterSingleton(b) ;
-        qIter = OpCompiler.compile(op, qIter, getExecContext()) ;
-        return new PlanOp(op, qIter) ;
-    }
-    
-    // Allow plan to be modifed
-    // Have some subclass QueryEngineRef and add all extensibility points.
-    // This one, others?
-    // All this is not necessary but could clarify how to extend QueryEngines 
-    protected Op modifyQueryOp(Op op)
-    {
-        return op ;
+        return eval(op, b, getExecContext()) ;
+//        QueryIterator qIter = new QueryIterSingleton(b) ;
+//        qIter = OpCompiler.compile(op, qIter, getExecContext()) ;
+//        return qIter ;
     }
 
+    public static QueryIterator eval(Query query, Op op, Graph graph)
+    {
+        DataSourceGraph dsg = new DataSourceGraphImpl(graph) ;
+        ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), query, graph, dsg) ;
+        return eval(op, BindingRoot.create(), execCxt) ; 
+    }
+    
+    private static QueryIterator eval(Op op, Binding b, ExecutionContext execCxt)
+    {
+        QueryIterator qIter = new QueryIterSingleton(b) ;
+        qIter = OpCompiler.compile(op, qIter, execCxt) ;
+        return qIter ;
+    }
+    
     // -------- Factory
     
     private static QueryEngineFactory factory = new QueryEngineFactory()

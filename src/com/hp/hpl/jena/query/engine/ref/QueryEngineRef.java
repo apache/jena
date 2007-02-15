@@ -6,55 +6,39 @@
 
 package com.hp.hpl.jena.query.engine.ref;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.util.Context;
 
-public class QueryEngineRef extends QueryEngineBase
+public class QueryEngineRef extends QueryEngineOpBase
 {
     static public void register()   { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister() { QueryEngineRegistry.removeFactory(factory) ; }
     
     public QueryEngineRef(Query q)
-    {
-        this(q, null) ;
-    }
+    { this(q, null) ; }
 
-    private Op queryOp = null ;
-    
     public QueryEngineRef(Query q, Context context)
-    {
-        super(q, context) ;
-    }
+    { super(q, context) ; }
     
-    protected Plan queryToPlan(Query query)
+    public QueryEngineRef(Op op, Context context)
+    { super(op, context) ; }
+
+    public QueryEngineRef(Op op)
+    { super(op, ARQ.getContext()) ; }
+    
+    protected QueryIterator createQueryIterator(Op op)
     {
-        Op op = getOp() ;
         ExecutionContext execCxt = getExecContext() ;
         Evaluator eval = EvaluatorFactory.create(execCxt) ;
         Table table = Eval.eval(eval, op) ;
-        
-        //Table table = op.eval(eval) ;
-        QueryIterator qIter = table.iterator(execCxt) ;
-        return new PlanOp(op, qIter) ;
+        return table.iterator(execCxt) ;
     }
 
-    protected Op createOp()
-    { 
-        return AlgebraGenerator.compile(getQuery()) ;
-    }
-    
-    public Op getOp()
-    {
-        if ( queryOp == null )
-            queryOp = createOp() ; 
-        return queryOp ;
-    }
-    
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         public boolean accept(Query query, Dataset dataset) 
