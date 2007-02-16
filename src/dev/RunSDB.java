@@ -59,6 +59,8 @@ public class RunSDB
         queryFile = "testing/Expressions/regex-opt-2.rq" ;
         dataFile  = "testing/Expressions/data.ttl" ;
         
+        System.out.println(QueryFactory.read(queryFile)) ;
+        
         System.out.println("*** Reference") ;
         runInMem(queryFile, dataFile) ;
         System.out.println("*** SDB") ;

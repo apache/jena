@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryEngineOpQuadBase;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.BindingRoot;
 import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.query.engine.ref.Evaluator;
 import com.hp.hpl.jena.query.engine.ref.EvaluatorFactory;
@@ -61,14 +62,19 @@ public class QueryEngineSDB extends QueryEngineOpQuadBase
             return qIter ;
         }
 
-        // Direct
+        // Direct - bypass QueryIterSQL?
         OpSQL opSQL = (OpSQL)op ;
         ExecutionContext execCxt = getExecContext() ;
         QueryIterator qIter = QC.exec(opSQL,
-                                      request,
-                                      null, //BindingRoot.create(),
+                                      opSQL.getRequest(),
+                                      BindingRoot.create(), 
                                       execCxt) ;
         return qIter ;
+        
+//        // What's the initial binding?
+//        // This needs to be put somewhere : QueryEngineMain.getInitialBinding()
+//        QueryIterator qIter = new QueryIterSingleton() ;
+//        return opSQL.eval(qIter, getExecContext()) ;
     }
 
     @Override

@@ -25,24 +25,25 @@ public class OpSQL extends OpExtMain
     
     public OpSQL(SqlNode sqlNode, Op original, SDBRequest request)
     {
+        // Trouble is, we may have to throw the SqlNode away because of substitution.  What a waste!
         this.request = request ;
         this.sqlNode = sqlNode ;
         this.originalOp = original ;
     }
 
+    public OpSQL copy() 
+    { 
+        //System.out.println("Copy called") ;
+        return new OpSQL(sqlNode, originalOp, request) ; }
+    
     @Override
     public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
     {
-        // What about input?
-        // Need to resubstitute and 
-        QueryIterator qIter = QC.exec(this,
-                                      request,
-                                      null, //BindingRoot.create(),
-                                      execCxt) ;
-        return qIter ;
+        return new QueryIterSQL(this, input, execCxt) ;
     }
 
     public Op getOriginal() { return originalOp ; }
+    public SDBRequest getRequest() { return request ; }
 
     @Override
     public void output(IndentedWriter out)
