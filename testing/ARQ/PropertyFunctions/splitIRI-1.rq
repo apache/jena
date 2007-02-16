@@ -1,5 +1,5 @@
-PREFIX :           <http://example.org/>
-PREFIX apf:        <java:com.hp.hpl.jena.query.pfunction.library.>
+PREFIX :    <http://example.org/>
+PREFIX apf: <http://jena.hpl.hp.com/ARQ/pfunction#>
 
 SELECT ?ns ?ln
 { :x ?p 1 .

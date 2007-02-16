@@ -28,7 +28,7 @@ public abstract class FunctionBase implements Function
     String uri = null ;
     protected List arguments = null ;
     protected Binding currentBinding = null ; 
-    protected Context execCxt ;
+    private Context context ;
     
     public final void build(String uri, List args)
     {
@@ -39,7 +39,7 @@ public abstract class FunctionBase implements Function
 
     public NodeValue exec(Binding binding, List args, String uri, Context cxt)
     {
-        this.execCxt = cxt ;
+        this.context = cxt ;
         
         if ( args == null )
             // The contract on the function interface is that this should not happen.
@@ -66,18 +66,10 @@ public abstract class FunctionBase implements Function
         return nv ;
     }
     
-    /** Only valid when exec() is being called
-     * @deprecated Functions should not access any variables that are not in their argument list.
-     * 
-     * See also property functions.
-     */
-    public Binding getCurrentBinding() { return currentBinding ; }
-    
     /** Return the Context object for this execution */
-    public Context getContext() { return execCxt ; }
+    public Context getContext() { return context ; }
     
     /** Function call to a list of evaluated argument values */ 
-    
     public abstract NodeValue exec(List args) ;
 
     public abstract void checkBuild(String uri, List args) ;

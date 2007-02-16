@@ -101,21 +101,19 @@ public class Transformer
         { visit1(opGraph) ; }
 
         public void visit(OpExt opExt)
-        { throw new ARQInternalErrorException("Can't transform a "+Utils.className(opExt)) ; }
+        { throw new ARQInternalErrorException("Can't transform OpExt: "+Utils.className(opExt)) ; }
         
         public void visit(OpOrder opOrder)
-        { 
-            visit1(opOrder) ;
-        }
+        { throw new ARQInternalErrorException("Can't transform an OpOrder") ; }
         
         public void visit(OpProject opProject)
-        { throw new ARQInternalErrorException("Can't transform a "+Utils.className(opProject)) ; }
+        { throw new ARQInternalErrorException("Can't transform an OpProject") ; }
         
         public void visit(OpDistinct opDistinct)
-        { throw new ARQInternalErrorException("Can't transform a "+Utils.className(opDistinct)) ; }
+        { throw new ARQInternalErrorException("Can't transform an OpDistinct") ; }
         
         public void visit(OpSlice opSlice)
-        { throw new ARQInternalErrorException("Can't tranform a "+Utils.className(opSlice)) ; }
+        { throw new ARQInternalErrorException("Can't tranform an OpSlice") ; }
     }
 }
 

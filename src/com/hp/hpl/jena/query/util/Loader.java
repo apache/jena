@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.query.util;
 
 import com.hp.hpl.jena.query.core.ARQConstants;
+import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +21,9 @@ public class Loader
     
     static public Class loadClass(String classNameOrURI, Class requiredClass)
     {
+        if ( classNameOrURI == null )
+            throw new ARQInternalErrorException("Null classNameorIRI") ;
+        
         if ( classNameOrURI.startsWith("http:") )
             return null ;
         if ( classNameOrURI.startsWith("urn:") )

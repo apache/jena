@@ -1,5 +1,10 @@
 ==== ARQ ToDo
 
++ Expose getActiveGraph to filter functions in some safe way because EXISTS will/might need it.
+  FunctionBase - but how? Functions don't see ExecutionContext any more!
+  Function - take ExecutionContext // FunctionBase, mask it?
+  Or is EXISTS a different form?
+
 + Very simple non-streaming table usage.
   No iterators.
   TableSimple is the only streaming point - and often materialized.
@@ -31,12 +36,6 @@
 + Convenient: Get the version ID (property function?)
   Generalize to system functions.
     
-+ java: general redirection.
-  PREFIX apf:     <http://jena.hpl.hp.com/ARQ/pfunction#> 
-    Change the java: lookup to add this case.
-    ==> PFuncOps.isMagicProperty
-        PropertyFunctionRegistry.manages/.get
-          Also FunctionRegistry
 
 + Commands
   + qtest to use modules.
@@ -46,7 +45,7 @@
 + Document API (more)
     Document lists
     Document symbols and configuration
-	Writing filter functions
+	Writing filter functions (example 
 	Writing property functions
     Creating datasets
   Document making and using datasets

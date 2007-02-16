@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.util.Loader;
+import com.hp.hpl.jena.query.util.MappedLoader;
 
 /** 
  * 
@@ -25,7 +25,6 @@ public class FunctionRegistry //extends HashMap<String, Function>
     static Log log = LogFactory.getLog(FunctionRegistry.class) ;
     Map registry = new HashMap() ;
     Set attemptedLoads = new HashSet() ;
-    
     
     public synchronized static FunctionRegistry standardRegistry()
     {
@@ -79,17 +78,13 @@ public class FunctionRegistry //extends HashMap<String, Function>
         if ( function != null )
             return function ;
 
-        if ( ! uri.startsWith(ARQConstants.javaClassURIScheme) )
-            return null ;
-        
         if ( attemptedLoads.contains(uri) )
             return null ;
-        
-        Class functionClass = Loader.loadClass(uri, Function.class) ;
+
+        Class functionClass = MappedLoader.loadClass(uri, Function.class) ;
         if ( functionClass == null )
             return null ;
-        
-        // Registry it (does the checking)
+        // Registry it
         put(uri, functionClass) ;
         attemptedLoads.add(uri) ;
         // Call again to get it.

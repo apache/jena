@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.util.Loader;
+import com.hp.hpl.jena.query.util.MappedLoader;
 import com.hp.hpl.jena.query.vocabulary.ListPFunction;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -82,7 +82,7 @@ public class PropertyFunctionRegistry
     {
         if ( registry.containsKey(uri) )
             return true ;
-        if ( uri.startsWith(ARQConstants.javaClassURIScheme) )
+        if ( MappedLoader.isPossibleDynamicURI(uri, PropertyFunction.class) )
             return true ;
         return false ;
     }
@@ -94,16 +94,13 @@ public class PropertyFunctionRegistry
         if ( ext != null )
             return ext ;
         
-        if ( ! uri.startsWith(ARQConstants.javaClassURIScheme) )
-            return null ;
-        
         if ( attemptedLoads.contains(uri) )
             return null ;
 
-        Class extClass = Loader.loadClass(uri, PropertyFunction.class) ;
+        Class extClass = MappedLoader.loadClass(uri, PropertyFunction.class) ;
         if ( extClass == null )
             return null ;
-        // Registry it (does the checking)
+        // Register it
         put(uri, extClass) ;
         attemptedLoads.add(uri) ;
         // Call again to get it.

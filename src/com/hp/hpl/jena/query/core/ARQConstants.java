@@ -49,12 +49,21 @@ public class ARQConstants
     
     public static final String javaClassURIScheme = "java:" ;
     
+    /** The ARQ function library URI */
+    public static final String ARQFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/function#" ;
+    
+    /** The ARQ property function library URI */
+    public static final String ARQPropertyFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/pfunction#" ;
+    
     /** The ARQ function library */
     public static final String ARQFunctionLibrary = javaClassURIScheme+"com.hp.hpl.jena.query.function.library." ;
     
-    /** The ARQ extensions library */
-    public static final String ARQExtensionLibrary = javaClassURIScheme+"com.hp.hpl.jena.query.extension.library." ;
-    
+    /** The ARQ property function library */
+    public static final String ARQPropertyFunctionLibrary = javaClassURIScheme+"com.hp.hpl.jena.query.pfunction.library." ;
+
+    //    /** The ARQ extensions library */
+//    public static final String ARQExtensionLibrary = javaClassURIScheme+"com.hp.hpl.jena.query.extension.library." ;
+
     /** Common prefixes */
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
@@ -63,8 +72,8 @@ public class ARQConstants
         globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;
         globalPrefixMap.setNsPrefix("owl" , owlPrefix) ;
         globalPrefixMap.setNsPrefix("fn" ,  fnPrefix) ; 
-        globalPrefixMap.setNsPrefix("jfn",  ARQFunctionLibrary) ;
-        globalPrefixMap.setNsPrefix("jext", ARQExtensionLibrary) ;
+        globalPrefixMap.setNsPrefix("jfn",  ARQFunctionLibraryURI) ;
+        globalPrefixMap.setNsPrefix("apf",  ARQPropertyFunctionLibraryURI) ;
     }
     public static PrefixMapping getGlobalPrefixMap() { return globalPrefixMap ; }
     

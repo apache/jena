@@ -24,10 +24,18 @@ Firefox puts space in with this  -->
   </ul>
 
   <p>Functions are standard part of SPARQL. ARQ provides
-  application-written functions and provides a <a href="library.html#functions">function library</a>. 
+  application-written functions and provides a <a href="library-function.html">function library</a>. 
   Applications can <a href="writing_functions.html">write and register their own 
   functions</a>.</p>
-	<p>Property functions provide </p>
+	<p>Property functions provide a way to provide custom matching of particular 
+    predicates. They enable triple matches to be calculated, rather than just 
+    looked up in a RDF graph and they are a way to add functionality and remain 
+    within SPARQL. ARQ has a <a href="library-propfunc.html">property function 
+    library</a>. Applications can <a href="writing_propfunc.html">write and register their own 
+    property functions</a>.</p>
+  <p>The <a href="lucene-arq.html">free text support in 
+    ARQ</a> is provided by <a href="http://lucene.apache.org/java/docs/index.html">Lucene</a>, 
+    using property functions. </p>
 
   <h2><a id="valueFunctions" name="valueFunctions">Filter Functions</a></h2>
 
@@ -59,6 +67,11 @@ Firefox puts space in with this  -->
   <pre class="box">PREFIX jfn: &lt;java:com.hp.hpl.jena.query.function.library.&gt;<br />PREFIX dc: &lt;http://purl.org/dc/elements/1.1/&gt;<br />SELECT ?v<br />{ ?x dc:date ?date .<br /> FILTER (?date &lt; jfn:now() )<br />}<br /></pre>
 
   <p>The <kbd>jfn:now</kbd> returns the time the query started.</p>
+
+  <p>The filter functions in the ARQ distribution are described
+  on the <a href="library-function.html">filter function library page</a>.</p>
+
+  <p>&nbsp;</p>
 
   <h2><a id="propertyFunctions" name="propertyFunctions">Property functions</a></h2>
 
@@ -96,7 +109,7 @@ PREFIX apf: &lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;<br /><br />SEL
   <p>or on a per instance basis:</p><pre class="box"> QueryExecution qExec = . . . ;<br /> qExec.getContext().setFalse(ARQ.enablePropertyFunctions) ;<br /></pre>
 
   <p>The property functions in the ARQ distribution are described
-  on the <a href="library.html#propFunc">library page</a>.</p>
+  on the <a href="library-propfunc.html">property function library page</a>.</p>
 
   <h2><a id="describeHandlers" name="describeHandlers">DESCRIBE
   handlers</a></h2>

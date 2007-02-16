@@ -19,19 +19,17 @@ import com.hp.hpl.jena.query.util.GNode;
 import com.hp.hpl.jena.query.util.GraphList;
 
 /** Manipulation functions for property functions
- * Auxilliary to PlaBasicGraphPattern
  * @author Andy Seaborne
  * @version $Id: PFuncOps.java,v 1.7 2007/02/01 18:05:30 andy_seaborne Exp $
  */
 
 public class PFuncOps
 {
-   
-//    public static PlanElement magicProperty(Context context, Triple t, List triples)
-//    { return magicProperty(context, chooseRegistry(context), t, triples) ; }
-    
     public static boolean isMagicProperty(PropertyFunctionRegistry registry, Triple pfTriple)
     {
+        // Unfortunately, this does not absolutely mean it is a property function until
+        // we try to load it.
+        
         if ( ! pfTriple.getPredicate().isURI() ) 
             return false ;
 
@@ -41,6 +39,8 @@ public class PFuncOps
         return false ;
     }
     
+    // Remove all triples associated with this magic property,
+    // and make the stage. Null means it's not really a magic property
     public static Stage magicProperty(Context context, PropertyFunctionRegistry registry, Triple pfTriple, List triples)
     {
         if ( ! isMagicProperty(registry, pfTriple) )
@@ -63,16 +63,14 @@ public class PFuncOps
             GraphList.allTriples(oGNode, listTriples) ;
         }
         
-        triples.removeAll(listTriples) ;
-        
         PropFuncArg subjArgs = new PropFuncArg(sList, pfTriple.getSubject()) ;
         PropFuncArg objArgs =  new PropFuncArg(oList, pfTriple.getObject()) ;
 
         Stage propFuncStage = StagePropertyFunction.make(context, subjArgs, pfTriple.getPredicate(), objArgs) ;
+        if ( propFuncStage != null )
+            triples.removeAll(listTriples) ;
         return propFuncStage ;
     }
-    
-    
     
     static public PropertyFunctionRegistry chooseRegistry(Context context)
     {

@@ -232,4 +232,11 @@
               qt:data   <data-3.ttl> ] ;
         mf:result  <assign-5.srx>
       ]
+
+     [ mf:name    "Function Property - Assign 6 (via java:)" ;
+        mf:action
+            [ qt:query  <assign-6.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <assign-6.srx>
+      ]
     ) .

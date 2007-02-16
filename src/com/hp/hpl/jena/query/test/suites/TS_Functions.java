@@ -7,6 +7,7 @@ package com.hp.hpl.jena.query.test.suites;
 
 import junit.framework.* ;
 
+import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.expr.ExprEvalException;
 import com.hp.hpl.jena.query.expr.NodeValue ;
 import com.hp.hpl.jena.query.expr.Expr;
@@ -54,6 +55,9 @@ public class TS_Functions extends TestCase
     
     public void testJavaSubstring1() { test("jfn:substr('abc',0,0)", NodeValue.makeString("")) ; }
     public void testJavaSubstring2() { test("jfn:substr('abc',0,1)", NodeValue.makeString("a")) ; }
+
+    public void testJavaSubstring3() { test("<"+ARQConstants.ARQFunctionLibrary+"substr>('abc',0,0)", NodeValue.makeString("")) ; }
+    public void testJavaSubstring4() { test("<"+ARQConstants.ARQFunctionLibrary+"substr>('abc',0,1)", NodeValue.makeString("a")) ; }
     
     public void testStrStart0() { test("fn:starts-with('abc', '')", TRUE) ; }
     public void testStrStart1() { test("fn:starts-with('abc', 'a')", TRUE) ; }

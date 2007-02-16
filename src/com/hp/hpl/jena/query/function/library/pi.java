@@ -16,7 +16,6 @@ abstract class pi extends FunctionBase0
     static NodeValue value_pi = NodeValue.makeDouble(Math.PI) ;
     
     public NodeValue exec() { return value_pi ; }
-    
 }
 
 /*

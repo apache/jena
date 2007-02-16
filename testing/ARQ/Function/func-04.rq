@@ -1,0 +1,8 @@
+PREFIX  :       <http://example.org/ns#>
+PREFIX  jfn:    <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT  ?z
+WHERE
+    { ?x :p ?z . 
+      FILTER jfn:evenInteger(?z) .
+    }

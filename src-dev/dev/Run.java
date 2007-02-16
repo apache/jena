@@ -51,6 +51,7 @@ public class Run
         query() ;
     }
         
+    
     private static void code()
     {
         // Experimental low level access t query execution. 
@@ -77,7 +78,6 @@ public class Run
         }
         qIter.close() ;
         System.exit(0) ;
-        
     }
 
     private static void classifyJ()

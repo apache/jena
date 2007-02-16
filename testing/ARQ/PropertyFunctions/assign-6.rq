@@ -1,0 +1,6 @@
+PREFIX :        <http://example.org/> 
+# java: route
+PREFIX apf:     <java:com.hp.hpl.jena.query.pfunction.library.>
+
+SELECT *
+{ ?s apf:assign "v" . }

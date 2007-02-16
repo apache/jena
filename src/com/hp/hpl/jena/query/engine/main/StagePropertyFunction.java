@@ -53,6 +53,8 @@ public class StagePropertyFunction implements Stage
         propFunc = factory.create(uri) ;
         propFunc.build(getSubjArgs(), getPredicate(), getObjArgs(), execCxt) ;
         
+        // If this fails (e.g. load failure) we need to back out.
+        
         if ( input == null )
             LogFactory.getLog(this.getClass()).fatal("Null input to "+Utils.classShortName(this.getClass())) ;
         

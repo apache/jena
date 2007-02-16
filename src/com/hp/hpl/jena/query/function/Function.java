@@ -20,18 +20,6 @@ import com.hp.hpl.jena.query.util.Context;
 
 public interface Function
 {
-    /* Richard:
-    The Function interface should be implementable without knowing much about the rest of ARQ. 
-    The javadocs are too concise. I think they should mention:
-        - that build() can be useful for checking the number of arguments (anything else?)
-        - what exception should be thrown by build() if bad arguments
-        - that the URI parameter of build() is just the name of the function/ extension
-        - the class of the items in the args List
-        - how exec() should deal with bad input data (return null? throw some
-        exception?)
-   */
-    
-    
     /** Called during query plan construction immediately after the
      * construction of the extension instance.
      * Can throw ExprBuildException if something is wrong (like wrong number of arguments). 

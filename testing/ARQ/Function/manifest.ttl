@@ -27,6 +27,13 @@
          mf:result  <func-03-results.ttl>
       ]
 
+      [  mf:name    "Function - loaded via known library prefix" ;
+         mf:action
+            [ qt:query  <func-04.rq> ;
+              qt:data   <data-1.ttl> ] ;
+         mf:result  <func-04-results.ttl>
+      ]
+
       [  mf:name    "Lang 1" ;
          mf:action
             [ qt:query  <q-lang-1.rq> ;
