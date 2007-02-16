@@ -12,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.util.Utils;
 
 public class Transformer
 {
@@ -101,7 +100,10 @@ public class Transformer
         { visit1(opGraph) ; }
 
         public void visit(OpExt opExt)
-        { throw new ARQInternalErrorException("Can't transform OpExt: "+Utils.className(opExt)) ; }
+        { 
+            push(transform.transform(opExt)) ;
+            //throw new ARQInternalErrorException("Can't transform OpExt: "+Utils.className(opExt)) ;
+        }
         
         public void visit(OpOrder opOrder)
         { throw new ARQInternalErrorException("Can't transform an OpOrder") ; }

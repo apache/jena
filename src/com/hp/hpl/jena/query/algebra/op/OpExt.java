@@ -14,7 +14,9 @@ import com.hp.hpl.jena.query.algebra.Op;
  * @version $Id$
  */
 public interface OpExt extends Op
-{ }
+{ 
+    public OpExt copy() ;
+}
 
 
 /*
