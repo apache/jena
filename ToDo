@@ -1,5 +1,12 @@
 ==== ARQ ToDo
 
+ARQ2-beta
++ Stages
++ E1 cleanup (opt?)
++ Tests
+
+-----
+
 + Expose getActiveGraph to filter functions in some safe way because EXISTS will/might need it.
   FunctionBase - but how? Functions don't see ExecutionContext any more!
   Function - take ExecutionContext // FunctionBase, mask it?
