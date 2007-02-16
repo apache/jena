@@ -6,11 +6,15 @@
 
 package com.hp.hpl.jena.query.engine.ref;
 
+import com.hp.hpl.jena.graph.Graph;
+
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.query.core.DatasetGraph;
 import com.hp.hpl.jena.query.engine.*;
 import com.hp.hpl.jena.query.util.Context;
 
@@ -25,12 +29,6 @@ public class QueryEngineRef extends QueryEngineOpBase
     public QueryEngineRef(Query q, Context context)
     { super(q, context) ; }
     
-    public QueryEngineRef(Op op, Context context)
-    { super(op, context) ; }
-
-    public QueryEngineRef(Op op)
-    { super(op, ARQ.getContext()) ; }
-    
     protected QueryIterator createQueryIterator(Op op)
     {
         ExecutionContext execCxt = getExecContext() ;
@@ -39,6 +37,20 @@ public class QueryEngineRef extends QueryEngineOpBase
         return table.iterator(execCxt) ;
     }
 
+
+    public static QueryIterator eval(Op op, Graph graph)
+    {
+        return eval(op, new DataSourceGraphImpl(graph)) ;
+    }
+    
+    public static QueryIterator eval(Op op, DatasetGraph dsg)
+    {
+        ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), null, dsg.getDefaultGraph(), dsg) ;
+        Evaluator eval = EvaluatorFactory.create(execCxt) ;
+        Table table = Eval.eval(eval, op) ;
+        return table.iterator(execCxt) ;
+    }
+    
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         public boolean accept(Query query, Dataset dataset) 

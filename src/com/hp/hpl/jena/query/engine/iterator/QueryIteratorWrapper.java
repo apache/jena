@@ -22,9 +22,9 @@ public class QueryIteratorWrapper extends QueryIteratorBase
 {
     QueryIterator iterator ;
     
-    public QueryIteratorWrapper(QueryIterator iter)
+    public QueryIteratorWrapper(QueryIterator qIter)
     { 
-        iterator = iter ;
+        iterator = qIter ;
     }
 
     protected boolean hasNextBinding() { return iterator.hasNext() ; } 

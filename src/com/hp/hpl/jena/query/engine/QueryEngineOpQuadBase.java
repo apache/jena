@@ -15,8 +15,6 @@ public abstract class QueryEngineOpQuadBase extends QueryEngineOpBase
 {
     protected QueryEngineOpQuadBase(Query q, Context context) { super(q, context) ; }
 
-    protected QueryEngineOpQuadBase(Op op, Context context)   { super(op, context) ; }
-
     protected Op createPatternOp()
     { 
         return AlgebraGeneratorQuad.compile(query.getQueryPattern()) ;

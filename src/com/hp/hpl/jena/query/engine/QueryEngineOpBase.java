@@ -6,14 +6,9 @@
 
 package com.hp.hpl.jena.query.engine;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.OpVars;
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.util.Context;
 
 public abstract class QueryEngineOpBase extends QueryEngineBase
@@ -23,25 +18,6 @@ public abstract class QueryEngineOpBase extends QueryEngineBase
     protected QueryEngineOpBase(Query q, Context context)
     { super(q, context) ; }
 
-    protected QueryEngineOpBase(Op op, Context context)
-    { 
-        super(dummy(op), context) ;
-        queryOp = op ;
-    }
-    
-    static Query dummy(Op op)
-    {
-        Set x = OpVars.patternVars(op) ;
-        Query query = new Query() ;
-        query.setQuerySelectType() ;
-        for ( Iterator iter = x.iterator() ; iter.hasNext() ; )
-        {
-            Var v = (Var)iter.next();
-            query.addResultVar(v) ;
-        }
-        return query ;
-    }
-    
     final
     protected Plan queryToPlan(Query query)
     {

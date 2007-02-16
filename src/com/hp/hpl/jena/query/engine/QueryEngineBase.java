@@ -465,7 +465,17 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
             resultsIter = null ;
         }
         
-        // Now check for open iterators
+        checkForOpenIterators(execContext) ;
+
+        // Close it anyway
+        if ( resultsIter != null )
+            resultsIter.close() ;
+        resultsIter = null ;
+        queryExecutionClosed = true ;
+    }
+    
+    public static void checkForOpenIterators(ExecutionContext execContext)
+    {
         Iterator iter = execContext.listOpenIterators() ;
         while(iter.hasNext())
         {
@@ -478,12 +488,6 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
             else
                 log.warn("Open iterator: "+qIterOpen) ;
         }
-        
-        // Close it anyway
-        if ( resultsIter != null )
-            resultsIter.close() ;
-        resultsIter = null ;
-        queryExecutionClosed = true ;
     }
     
     private void insertPrefixesInto(Model model)

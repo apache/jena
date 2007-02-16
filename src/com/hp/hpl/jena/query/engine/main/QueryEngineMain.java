@@ -21,6 +21,7 @@ import com.hp.hpl.jena.query.engine.binding.BindingMap;
 import com.hp.hpl.jena.query.engine.binding.BindingRoot;
 import com.hp.hpl.jena.query.engine.binding.BindingUtils;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.engine.iterator.QueryIteratorWrapper;
 import com.hp.hpl.jena.query.util.Context;
 
 public class QueryEngineMain extends QueryEngineOpBase
@@ -33,12 +34,6 @@ public class QueryEngineMain extends QueryEngineOpBase
 
     public QueryEngineMain(Query query)
     { super(query, ARQ.getContext()) ; }
-    
-    public QueryEngineMain(Op op, Context context)
-    { super(op, context) ; }
-
-    public QueryEngineMain(Op op)
-    { super(op, ARQ.getContext()) ; }
     
     //@Override
     protected QueryIterator createQueryIterator(Op op)
@@ -54,15 +49,13 @@ public class QueryEngineMain extends QueryEngineOpBase
             op = OpSubstitute.substitute(b, op) ;
         }
         return eval(op, b, getExecContext()) ;
-//        QueryIterator qIter = new QueryIterSingleton(b) ;
-//        qIter = OpCompiler.compile(op, qIter, getExecContext()) ;
-//        return qIter ;
     }
 
     public static QueryIterator eval(Op op, Graph graph)
     {
         return eval(op, new DataSourceGraphImpl(graph)) ;
     }
+    
     public static QueryIterator eval(Op op, DatasetGraph dsg)
     {
         ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), null, dsg.getDefaultGraph(), dsg) ;
@@ -73,6 +66,8 @@ public class QueryEngineMain extends QueryEngineOpBase
     {
         QueryIterator qIter = new QueryIterSingleton(b) ;
         qIter = OpCompiler.compile(op, qIter, execCxt) ;
+        // Wrap with something to check for closed iterators.
+        qIter = new QueryIteratorCheck(qIter, execCxt) ;
         return qIter ;
     }
     
@@ -91,6 +86,26 @@ public class QueryEngineMain extends QueryEngineOpBase
         }
     } ;
     
+    static class QueryIteratorCheck extends QueryIteratorWrapper
+    {
+        private ExecutionContext execCxt ;
+        public QueryIteratorCheck(QueryIterator qIter, ExecutionContext execCxt)
+        {
+            super(qIter) ;
+            this.execCxt = execCxt ;
+            
+        }
+        public void close()
+        {
+            super.close() ;
+            QueryEngineBase.checkForOpenIterators(execCxt) ;
+        }
+        public void abort()
+        {
+            super.abort() ;
+            QueryEngineBase.checkForOpenIterators(execCxt) ;
+        }
+    }
 }
 
 /*
