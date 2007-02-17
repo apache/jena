@@ -1,8 +1,10 @@
 ==== ARQ ToDo
 
 ARQ2-beta
-+ Stages
-+ E1 cleanup (opt?)
++ examples: 
+   build an op tree and executiong it
+   Own stage generator
++ Engine1 cleanup (opt?), esp. examples!
 + Tests
 
 -----

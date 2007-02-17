@@ -27,7 +27,7 @@ public class ARQTestSuite extends TestSuite
     
     static public TestSuite suite()
     {
-        // Fiddle around with the config.
+        // Fiddle around with the config if necessary
         if ( false )
         {
             QueryEngineMain.unregister() ;
