@@ -42,7 +42,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        code() ;
+        //code() ;
         //classifyJ() ;
         //classifyLJ() ;
         QueryEngineRef.register() ;

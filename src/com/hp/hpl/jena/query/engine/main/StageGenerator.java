@@ -4,27 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.util;
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
+package com.hp.hpl.jena.query.engine.main;
 
 import com.hp.hpl.jena.query.core.BasicPattern;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 
-public class GNode
+public interface StageGenerator
 {
-    public final Findable findable ;
-    public final Node node ;
-    
-    public GNode(Graph graph, Node node)
-    { this.findable = new FindableGraph(graph) ; this.node = node ; }
-    
-    public GNode(BasicPattern triples, Node node)
-    { this.findable = new FindableBasicPattern(triples) ; this.node = node ; }
-    
-    public GNode(GNode other, Node node)
-    { this.findable = other.findable ; this.node = node ; }
-
+    public StageList compile(BasicPattern pattern, 
+                             ExecutionContext execCxt) ;
 }
 
 /*

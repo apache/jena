@@ -77,7 +77,7 @@ public class OpCompiler
     QueryIterator compile(OpBGP opBGP, QueryIterator input)
     {
         BasicPattern pattern = opBGP.getPattern() ;
-        return StageProcessor.compile(pattern, input, execCxt) ;
+        return StageBuilder.compile(pattern, input, execCxt) ;
     }
 
     QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)

@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
+import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.MappedLoader;
 
 /** 
@@ -36,17 +37,29 @@ public class FunctionRegistry //extends HashMap<String, Function>
     public synchronized static FunctionRegistry get()
     {
         // Intialize if there is no registry already set 
-        FunctionRegistry reg = 
-            (FunctionRegistry)ARQ.getContext().get(ARQConstants.registryFunctions) ;
+        FunctionRegistry reg = get(ARQ.getContext()) ;
         if ( reg == null )
         {
             reg = standardRegistry() ;
-            ARQ.getContext().set(ARQConstants.registryFunctions, reg) ;
+            set(ARQ.getContext(), reg) ;
         }
 
         return reg ;
     }
 
+    public static FunctionRegistry get(Context context)
+    {
+        if ( context == null )
+            return null ;
+        return (FunctionRegistry)ARQ.getContext().get(ARQConstants.registryFunctions) ;
+    }
+    
+    public static void set(Context context, FunctionRegistry reg)
+    {
+        context.set(ARQConstants.registryFunctions, reg) ;
+    }
+
+    
     /** Insert a function. Re-inserting with the same URI overwrites the old entry. 
      * 
      * @param uri
@@ -98,7 +111,7 @@ public class FunctionRegistry //extends HashMap<String, Function>
     
     /** Iterate over URIs */
     public Iterator keys() { return registry.keySet().iterator() ; }
-    
+
 }
 
 

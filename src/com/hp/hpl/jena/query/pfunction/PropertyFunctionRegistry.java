@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
+import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.MappedLoader;
 import com.hp.hpl.jena.query.vocabulary.ListPFunction;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -37,17 +38,26 @@ public class PropertyFunctionRegistry
         return reg ;
     }
 
+    // Comment out the conts and see what happens
+    public static PropertyFunctionRegistry get(Context context)
+    { 
+        if ( context == null )
+            return null ;
+        return (PropertyFunctionRegistry)context.get(ARQConstants.registryPropertyFunctions) ;
+    }
+    
+    public static void set(Context context, PropertyFunctionRegistry reg)
+    { context.set(ARQConstants.registryPropertyFunctions, reg) ; }
+    
     public synchronized static PropertyFunctionRegistry get()
     {
         // Intialize if there is no registry already set 
-        PropertyFunctionRegistry reg = 
-            (PropertyFunctionRegistry)ARQ.getContext().get(ARQConstants.registryPropertyFunctions) ;
+        PropertyFunctionRegistry reg = get(ARQ.getContext()) ;
         if ( reg == null )
         {
             reg = standardRegistry() ;
-            ARQ.getContext().set(ARQConstants.registryPropertyFunctions, reg) ;
+            set(ARQ.getContext(), reg) ; 
         }
-
         return reg ;
     }
     

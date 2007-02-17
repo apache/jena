@@ -17,8 +17,6 @@ ARQ2-beta
   TableSimple is the only streaming point - and often materialized.
   And used via TableFactory.create(QueryIterator) as well as direct
 
-+ Tidy up main.Eval
-
 + Transform to apply to more than just pattern ops?
 
 + Algebra:
@@ -43,9 +41,8 @@ ARQ2-beta
 + Convenient: Get the version ID (property function?)
   Generalize to system functions.
     
-
 + Commands
-  + qtest to use modules.
+  + qtest, qexpr? to use modules.
 
 == Documentation
 

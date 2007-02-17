@@ -87,7 +87,7 @@ class FP
         
         List planBGPElements = new ArrayList() ;            // The elements of the PlanBGP
         List propertyFunctionTriples = new ArrayList() ;    // Property functions seen
-        List triples = new ArrayList() ;                    // All triples
+        BasicPattern triples = new BasicPattern() ;                    // All triples
         
         findPropetryFunctions(context, pattern, 
                               doingMagicProperties, registry,
@@ -103,7 +103,7 @@ class FP
     private static void findPropetryFunctions(Context context, BasicPattern pattern,
                                               boolean doingMagicProperties,
                                               PropertyFunctionRegistry registry,
-                                              List triples, List propertyFunctionTriples)
+                                              BasicPattern triples, List propertyFunctionTriples)
     {
         // Stage 1 : find property functions (if any); collect triples.
         for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
@@ -125,7 +125,7 @@ class FP
 
     private static void makePropetryFunctions(Context context, 
                                               PropertyFunctionRegistry registry, Map pfPlanElts, 
-                                              List triples, List propertyFunctionTriples)
+                                              BasicPattern triples, List propertyFunctionTriples)
     {
         // Stage 2 : for each property function, make element and remove associated triples
         for ( Iterator iter = propertyFunctionTriples.iterator() ; iter.hasNext(); )
@@ -145,7 +145,7 @@ class FP
 
     private static void makePlanElements(Context context, List planBGPElements, 
                                          Map pfPlanElts, 
-                                         List triples, List propertyFunctionTriples)
+                                         BasicPattern triples, List propertyFunctionTriples)
     {
         // Stage 3 : 
         //   For each property function, insert the implements PlanElement.

@@ -30,6 +30,7 @@ public class BasicPattern
     public Triple get(int i) { return (Triple)triples.get(i) ; }
     public ListIterator iterator() { return triples.listIterator() ; } 
     public int size() { return triples.size() ; }
+    public boolean isEmpty() { return triples.isEmpty() ; }
     
     public List getList() { return triples ; } 
     

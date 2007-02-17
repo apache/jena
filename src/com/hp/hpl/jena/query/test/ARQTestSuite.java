@@ -8,6 +8,8 @@ package com.hp.hpl.jena.query.test;
 
 import junit.framework.*;
 
+import com.hp.hpl.jena.query.engine.engine1.QueryEngine1;
+import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.query.expr.E_Function;
 import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
@@ -25,6 +27,13 @@ public class ARQTestSuite extends TestSuite
     
     static public TestSuite suite()
     {
+        // Fiddle around with the config.
+        if ( false )
+        {
+            QueryEngineMain.unregister() ;
+            QueryEngine1.register() ;
+        }
+        
         TestSuite ts = new ARQTestSuite() ;
 
         // Internal

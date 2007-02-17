@@ -11,53 +11,49 @@ import java.util.*;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Triple;
+
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.pfunction.PropFuncArg;
 import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.util.GNode;
+import com.hp.hpl.jena.query.util.GraphList;
 import com.hp.hpl.jena.query.util.Utils;
 
-class StageProcessor
+public class StageGenPropertyFunction implements StageGenerator
 {
-    /* A stage is a flow-in/flow-out sequence in the execution of a query. They are used
-     * to implement BGP (basic graph patterns), which can be match units (basic patterns),
-     * property functions, or specialized implementations of a number triples
-     * (e.g. result caching).  
-     */   
-    
-    // ---------------------------------------------------------------------------------
-    // Turn stages into a QueryIterator sequence. 
-    
-    
-    static public QueryIterator compile(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
-        if ( pattern.size() == 0 )
-            return input ;
-        
-        List stages = StageProcessor.process(execCxt.getContext(), pattern) ;
-        QueryIterator qIter = input ;
-        for ( Iterator iter = stages.iterator() ; iter.hasNext(); )
-        {
-            Object object = iter.next();
-            if ( ! ( object instanceof Stage ) )
-                throw new ARQInternalErrorException("StageProcessor/compile") ;
+    private StageGenerator other ;
 
-            Stage stage = (Stage)object;
-            qIter = stage.build(qIter, execCxt) ;
-        }
-        return qIter ; 
+    /** A StageGenerator that splits out triples in
+     *  those that are property functions and those that are not.
+     *  Calls <code>other</code> on each block of non-property function triples.
+     *  Merges the results with StagePropertyFunctions to produce an overall
+     *  StageList   
+     *  */
+    public StageGenPropertyFunction(StageGenerator other)
+    {
+        this.other = other ;
     }
     
+    public StageList compile(BasicPattern pattern,
+                             ExecutionContext execCxt)
+    {
+        if ( pattern.isEmpty() )
+            return new StageList() ;
+        return process(execCxt.getContext(), pattern) ;
+    }
+    
+    // From StageProcessorFunc which can be removed later.
     // ---------------------------------------------------------------------------------
     // Split into Stages of triples and property functions.
     
-    private static List process(Context context, BasicPattern pattern)
+    private static StageList process(Context context, BasicPattern pattern)
     {
         boolean doingMagicProperties = context.isTrue(ARQ.enablePropertyFunctions) ;
-        PropertyFunctionRegistry registry = PFuncOps.chooseRegistry(context) ;
+        PropertyFunctionRegistry registry = chooseRegistry(context) ;
     
         // 1/ Find property functions.
         //   Property functions may involve other triples (for list arguments)
@@ -65,9 +61,9 @@ class StageProcessor
         //   (but leave the proprty function triple in-place as a marker)
         // 3/ For remaining triples, put into blocks.
         
-        List stages = new ArrayList() ;            // The elements of the BGP execution
+        StageList stages = new StageList() ;                // The elements of the BGP execution
         List propertyFunctionTriples = new ArrayList() ;    // Property functions seen
-        List triples = new ArrayList() ;                    // All triples
+        BasicPattern triples = new BasicPattern() ;         // All triples (mutated)
         
         findPropetryFunctions(context, pattern, 
                               doingMagicProperties, registry,
@@ -83,7 +79,7 @@ class StageProcessor
     private static void findPropetryFunctions(Context context, BasicPattern pattern,
                                               boolean doingMagicProperties,
                                               PropertyFunctionRegistry registry,
-                                              List triples, List propertyFunctionTriples)
+                                              BasicPattern triples, List propertyFunctionTriples)
     {
         // Stage 1 : find property functions (if any); collect triples.
         for ( Iterator iter = pattern.iterator() ; iter.hasNext() ; )
@@ -92,20 +88,20 @@ class StageProcessor
             
             if ( ! ( obj instanceof Triple ) )
             {
-                LogFactory.getLog(StageProcessor.class).warn("Don't recognize: ["+Utils.className(obj)+"]") ;
+                LogFactory.getLog(StageGenPropertyFunction.class).warn("Don't recognize: ["+Utils.className(obj)+"]") ;
                 throw new ARQInternalErrorException("Not a triple pattern: "+obj.toString() ) ;
             }
                 
             Triple t = (Triple)obj ;
             triples.add(t) ;
-            if ( doingMagicProperties && PFuncOps.isMagicProperty(registry, t) )
+            if ( doingMagicProperties && isMagicProperty(registry, t) )
                 propertyFunctionTriples.add(t) ;
         }
     }
 
     private static void makePropetryFunctions(Context context, 
                                               PropertyFunctionRegistry registry, Map pfStages, 
-                                              List triples, List propertyFunctionTriples)
+                                              BasicPattern triples, List propertyFunctionTriples)
     {
         // Stage 2 : for each property function, make element and remove associated triples
         for ( Iterator iter = propertyFunctionTriples.iterator() ; iter.hasNext(); )
@@ -113,10 +109,10 @@ class StageProcessor
             Triple pf = (Triple)iter.next();
             
             // Removes associated triples. 
-            Stage stage = PFuncOps.magicProperty(context, registry, pf, triples) ;
+            Stage stage = magicProperty(context, registry, pf, triples) ;
             if ( stage == null )
             {
-                LogFactory.getLog(StageProcessor.class).warn("Lost a Stage for a property function") ;
+                LogFactory.getLog(StageGenPropertyFunction.class).warn("Lost a Stage for a property function") ;
                 continue ;
             }
             pfStages.put(pf, stage) ;
@@ -124,10 +120,10 @@ class StageProcessor
     }
 
     private static void makeStages(Context context,
-                                         List stages, 
-                                         Map pfStages, 
-                                         List triples,
-                                         List propertyFunctionTriples)
+                                   StageList stages, 
+                                   Map pfStages, 
+                                   BasicPattern triples,
+                                   List propertyFunctionTriples)
     {
         // Stage 3 : make line up the stages.
         //   For each property function, insert the implementation 
@@ -157,6 +153,60 @@ class StageProcessor
             pattern.add(t) ;         // Plain triple
         }
     }
+    
+    private static PropertyFunctionRegistry chooseRegistry(Context context)
+    {
+        PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ;
+        // Else global
+        if ( registry == null )
+            registry = PropertyFunctionRegistry.get() ;
+        return registry ;
+    }
+    
+    private static boolean isMagicProperty(PropertyFunctionRegistry registry, Triple pfTriple)
+    {
+        if ( ! pfTriple.getPredicate().isURI() ) 
+            return false ;
+
+        if ( registry.manages(pfTriple.getPredicate().getURI()) )
+            return true ;
+        
+        return false ;
+    }
+    
+    // Remove all triples associated with this magic property,
+    // and make the stage. Null means it's not really a magic property
+    private static Stage magicProperty(Context context, PropertyFunctionRegistry registry, Triple pfTriple, BasicPattern triples)
+    {
+        if ( ! isMagicProperty(registry, pfTriple) )
+            throw new ARQInternalErrorException("Not a property function: "+pfTriple.getMatchPredicate()) ;
+        
+        List listTriples = new ArrayList() ;
+        GNode sGNode = new GNode(triples, pfTriple.getSubject()) ;
+        GNode oGNode = new GNode(triples, pfTriple.getObject()) ;
+        List sList = null ;
+        List oList = null ;
+        
+        if ( GraphList.isListNode(sGNode) )
+        {
+            sList = GraphList.members(sGNode) ;
+            GraphList.allTriples(sGNode, listTriples) ;
+        }
+        if ( GraphList.isListNode(oGNode) )
+        {
+            oList = GraphList.members(oGNode) ;
+            GraphList.allTriples(oGNode, listTriples) ;
+        }
+        
+        PropFuncArg subjArgs = new PropFuncArg(sList, pfTriple.getSubject()) ;
+        PropFuncArg objArgs =  new PropFuncArg(oList, pfTriple.getObject()) ;
+
+        Stage propFuncStage = StagePropertyFunction.make(context, subjArgs, pfTriple.getPredicate(), objArgs) ;
+        if ( propFuncStage != null )
+            triples.getList().removeAll(listTriples) ;
+        return propFuncStage ;
+    }
+   
 }
 
 /*

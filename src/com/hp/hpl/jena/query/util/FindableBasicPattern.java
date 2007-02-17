@@ -6,26 +6,58 @@
 
 package com.hp.hpl.jena.query.util;
 
-import com.hp.hpl.jena.graph.Graph;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
 import com.hp.hpl.jena.query.core.BasicPattern;
 
-public class GNode
-{
-    public final Findable findable ;
-    public final Node node ;
-    
-    public GNode(Graph graph, Node node)
-    { this.findable = new FindableGraph(graph) ; this.node = node ; }
-    
-    public GNode(BasicPattern triples, Node node)
-    { this.findable = new FindableBasicPattern(triples) ; this.node = node ; }
-    
-    public GNode(GNode other, Node node)
-    { this.findable = other.findable ; this.node = node ; }
 
+
+class FindableBasicPattern implements Findable
+{
+    private BasicPattern triples ;
+
+    FindableBasicPattern(BasicPattern triples) { this.triples = triples ; }
+
+    public Iterator find(Node s, Node p, Node o)
+    {
+        if ( s == Node.ANY ) s = null ;
+        if ( p == Node.ANY ) p = null ;
+        if ( o == Node.ANY ) o = null ;
+        
+        List r = new ArrayList() ;
+        for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
+        {
+            Triple t = (Triple)iter.next();
+            if ( s != null && ! t.getSubject().equals(s) ) continue ;
+            if ( p != null && ! t.getPredicate().equals(p) ) continue ;
+            if ( o != null && ! t.getObject().equals(o) ) continue ;
+            r.add(t) ;
+        }
+        return r.iterator() ;
+    }
+    
+    public boolean contains(Node s, Node p, Node o)
+    {
+        if ( s == Node.ANY ) s = null ;
+        if ( p == Node.ANY ) p = null ;
+        if ( o == Node.ANY ) o = null ;
+        for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
+        {
+            Triple t = (Triple)iter.next();
+            if ( s != null && ! t.getSubject().equals(s) ) continue ;
+            if ( p != null && ! t.getPredicate().equals(p) ) continue ;
+            if ( o != null && ! t.getObject().equals(o) ) continue ;
+            return true ;
+        }
+        return false ;
+    }
 }
+
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP

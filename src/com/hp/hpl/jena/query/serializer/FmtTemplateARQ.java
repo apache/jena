@@ -65,7 +65,7 @@ public class FmtTemplateARQ extends FormatterBase
                 continue ;
             }
             // Flush accumulator
-            if ( acc != null && acc.size() > 0 )
+            if ( acc != null && ! acc.isEmpty() )
                 formatTriples(acc) ;
             acc = new BasicPattern() ;
             temp.visit(this) ;
@@ -75,7 +75,7 @@ public class FmtTemplateARQ extends FormatterBase
         }
     
         // Flush accumulator
-        if ( acc != null && acc.size() > 0 )
+        if ( acc != null && ! acc.isEmpty() )
             formatTriples(acc) ;
         
         out.decIndent(INDENT) ;

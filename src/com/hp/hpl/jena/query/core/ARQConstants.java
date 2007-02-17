@@ -49,10 +49,10 @@ public class ARQConstants
     
     public static final String javaClassURIScheme = "java:" ;
     
-    /** The ARQ function library URI */
+    /** The ARQ function library URI space */
     public static final String ARQFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/function#" ;
     
-    /** The ARQ property function library URI */
+    /** The ARQ property function library URI space */
     public static final String ARQPropertyFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/pfunction#" ;
     
     /** The ARQ function library */
@@ -90,8 +90,6 @@ public class ARQConstants
     /** Marker for general temporary variables (not blank node variables or system variables */
     public static final String allocVarMarker = "@" ;
 
-    // System symbols
-    
     /** Marker for system symbols */
     public static final String systemVarMarker = "#" ;
     
@@ -101,31 +99,24 @@ public class ARQConstants
     public static final Symbol sysVersionARQ   = new Symbol(systemVarMarker+"version/ARQ") ;
     public static final Symbol sysVersionJena  = new Symbol(systemVarMarker+"version/Jena") ;
 
-    // -------- Engine configuration
-    
-    // Move to ARQ? ARQConstants?
+    /** All SELECT queries have DISTINCt applied, whether stated ot not */
     public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;
     
-    /** The property function registry */
+    /** The property function registry key */
     public static final Symbol registryPropertyFunctions =
         ARQConstants.allocSymbol("registryPropertyFunctions") ;
     
-    /** The describe handler registry */
+    /** The describe handler registry key */
     public static final Symbol registryDescribeHandlers =
         ARQConstants.allocSymbol("registryDescribeHandlers") ;
 
-    /** The function library registry */
+    /** The function library registry key */
     public static final Symbol registryFunctions =
         ARQConstants.allocSymbol("registryFunctions") ;
     
-    /** The extension library registry */
+    /** The extension library registry key */
     public static final Symbol registryExtensions =
         ARQConstants.allocSymbol("registryExtensions") ;
-    
-    /** The extension library registry */
-    public static final Symbol registryMagicProperties =
-        ARQConstants.allocSymbol("registryMagicProperties") ;
-
 }
 
 /*

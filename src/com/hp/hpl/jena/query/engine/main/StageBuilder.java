@@ -6,38 +6,35 @@
 
 package com.hp.hpl.jena.query.engine.main;
 
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.op.*;
+import com.hp.hpl.jena.query.core.BasicPattern;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.util.Context;
 
-public class Tidy extends OpVisitorBase
+public class StageBuilder
 {
-    static Op tidy(Op op)
+    public static StageGenerator get(Context context)
     {
-        return op ;
+        // fixed and hard wired - temp
+        return new StageGenPropertyFunction(new StageGenBasicPattern()) ;
     }
     
-    // Transformer is bottom-up.
-    // We want top down.
-    
-    static class TidyWorker extends TransformBase
-    {    
+    public static QueryIterator compile(BasicPattern pattern, 
+                                        QueryIterator input, 
+                                        ExecutionContext execCxt)
+    {
+        if ( pattern.isEmpty() )
+            return input ;
         
-        // Convert to better forms.
-        // OpFilter => list of expressions
-        // OpJoin => list of joins 
-        // See OpCompiler.compile(OpFilter) and (OpJoin)
-        
-        public Op transform(OpFilter opFilter)
+        StageGenerator gen = StageBuilder.get(execCxt.getContext()) ;
+        StageList sList = gen.compile(pattern, execCxt) ;
+        if ( sList == null )
         {
-            
-            return opFilter ;
+            System.err.println("Oops") ;
+            sList = gen.compile(pattern, execCxt) ;
         }
-    
-        
-        public Op transform(OpJoin opJoin)
-        {
-            return opJoin ; 
-        }
+        QueryIterator qIter = sList.build(input, execCxt) ;
+        return qIter ;
     }
 }
 

@@ -27,7 +27,7 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     public ElementTriplesBlock()
     {  }
 
-    public boolean isEmpty() { return pattern.size() == 0 ; }
+    public boolean isEmpty() { return pattern.isEmpty() ; }
     
     public void addTriple(Triple t)
     { pattern.add(t) ; }

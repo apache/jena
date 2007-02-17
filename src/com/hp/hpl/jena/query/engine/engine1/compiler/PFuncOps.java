@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.ARQConstants;
+
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
+import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine.engine1.plan.PlanPropertyFunction;
 import com.hp.hpl.jena.query.pfunction.PropFuncArg;
@@ -43,7 +44,7 @@ public class PFuncOps
         return false ;
     }
     
-    public static PlanElement magicProperty(Context context, PropertyFunctionRegistry registry, Triple pfTriple, List triples)
+    public static PlanElement magicProperty(Context context, PropertyFunctionRegistry registry, Triple pfTriple, BasicPattern triples)
     {
         if ( ! isMagicProperty(registry, pfTriple) )
             throw new ARQInternalErrorException("Not a property function: "+pfTriple.getMatchPredicate()) ;
@@ -65,7 +66,7 @@ public class PFuncOps
             GraphList.allTriples(oGNode, listTriples) ;
         }
         
-        triples.removeAll(listTriples) ;
+        triples.getList().removeAll(listTriples) ;
         
         PropFuncArg subjArgs = new PropFuncArg(sList, pfTriple.getSubject()) ;
         PropFuncArg objArgs =  new PropFuncArg(oList, pfTriple.getObject()) ;
@@ -78,9 +79,8 @@ public class PFuncOps
     
     static public PropertyFunctionRegistry chooseRegistry(Context context)
     {
-        // Get from the Plan context 
-        PropertyFunctionRegistry registry =
-            (PropertyFunctionRegistry)context.get(ARQConstants.registryPropertyFunctions) ;
+        // Get from the context 
+        PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ; 
         // Else global
         if ( registry == null )
             registry = PropertyFunctionRegistry.get() ;

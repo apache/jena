@@ -80,6 +80,9 @@ public class ExprList
             ExprWalker.walk(new ExprBuild(context), expr) ;
         }
     }
+    
+    public String toString()
+    { return expressions.toString() ; }
 }
 
 /*

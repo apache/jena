@@ -6,10 +6,13 @@
 
 package com.hp.hpl.jena.query.core.describe;
 
-import java.util.* ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.core.ARQConstants;
+import com.hp.hpl.jena.query.util.Context;
 
 /** Registry of DescribeHandlers.     
  * 
@@ -32,15 +35,26 @@ public class DescribeHandlerRegistry
         return reg ;
     }
     
+    public static DescribeHandlerRegistry get(Context context)
+    {
+        if ( context == null )
+            return null ;
+        return (DescribeHandlerRegistry)ARQ.getContext().get(ARQConstants.registryDescribeHandlers) ;
+    }
+    
+    public static void set(Context context, DescribeHandlerRegistry reg)
+    {
+        context.set(ARQConstants.registryDescribeHandlers, reg) ;
+    }
+    
     public static DescribeHandlerRegistry get()
     {
         // Intialize if there is no registry already set 
-        DescribeHandlerRegistry reg = 
-            (DescribeHandlerRegistry)ARQ.getContext().get(ARQConstants.registryDescribeHandlers) ;
+        DescribeHandlerRegistry reg = get(ARQ.getContext()) ;
         if ( reg == null )
         {
             reg = standardRegistry() ;
-            ARQ.getContext().set(ARQConstants.registryDescribeHandlers, reg) ;
+            set(ARQ.getContext(), reg) ;
         }
         return reg ;
     }

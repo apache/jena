@@ -4,59 +4,63 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.util;
+package com.hp.hpl.jena.query.engine.main;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryIterator;
 
-
-
-class FindableList implements Findable
+public class StageList
 {
-    private List triples ;
+    private List stages = new ArrayList() ;
 
-    FindableList(List triples) { this.triples = triples ; }
-
-    public Iterator find(Node s, Node p, Node o)
-    {
-        if ( s == Node.ANY ) s = null ;
-        if ( p == Node.ANY ) p = null ;
-        if ( o == Node.ANY ) o = null ;
-        
-        List r = new ArrayList() ;
-        for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
-        {
-            Triple t = (Triple)iter.next();
-            if ( s != null && ! t.getSubject().equals(s) ) continue ;
-            if ( p != null && ! t.getPredicate().equals(p) ) continue ;
-            if ( o != null && ! t.getObject().equals(o) ) continue ;
-            r.add(t) ;
-        }
-        return r.iterator() ;
-    }
-
+    public StageList() {}
+    public StageList(StageList other) {stages.addAll(other.stages) ; }
     
-    public boolean contains(Node s, Node p, Node o)
+    public static StageList merge(StageList sList1 , StageList sList2)
     {
-        if ( s == Node.ANY ) s = null ;
-        if ( p == Node.ANY ) p = null ;
-        if ( o == Node.ANY ) o = null ;
-        for ( Iterator iter = triples.iterator() ; iter.hasNext(); )
-        {
-            Triple t = (Triple)iter.next();
-            if ( s != null && ! t.getSubject().equals(s) ) continue ;
-            if ( p != null && ! t.getPredicate().equals(p) ) continue ;
-            if ( o != null && ! t.getObject().equals(o) ) continue ;
-            return true ;
-        }
-        return false ;
+        StageList x = new StageList() ;
+        x.addAll(sList1) ;
+        x.addAll(sList2) ;
+        return x ;
     }
+    
+    public void add(Stage stage) { stages.add(stage) ; }
+    public void addAll(StageList other) { stages.addAll(other.stages) ; }
+    public void add(int i, Stage stage) { stages.add(i, stage) ; }
+    
+    public Stage get(int i) { return (Stage)stages.get(i) ; }
+    public ListIterator iterator() { return stages.listIterator() ; } 
+    public int size() { return stages.size() ; }
+    
+    public List getList() { return stages ; } 
+    
+    public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
+    {
+        QueryIterator qIter = input ;
+        for ( Iterator iter = stages.iterator() ; iter.hasNext(); )
+        {
+            Stage stage = (Stage)iter.next();
+            qIter = stage.build(qIter, execCxt) ;
+        }
+        return qIter ;
+    }
+    
+    public int hashCode() { return stages.hashCode() ; } 
+    public boolean equals(Object other)
+    { 
+        if ( ! ( other instanceof StageList) ) 
+            return false ;
+        StageList sList = (StageList)other ;
+        return stages.equals(sList.stages) ;
+    }
+    
+    public String toString() { return stages.toString() ; } 
 }
-
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP

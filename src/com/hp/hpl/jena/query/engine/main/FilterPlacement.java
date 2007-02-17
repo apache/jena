@@ -87,7 +87,7 @@ public class FilterPlacement
         }
         
         // Remaining triples.
-        qIter = StageProcessor.compile(accPattern, qIter, execCxt) ;
+        qIter = StageBuilder.compile(accPattern, qIter, execCxt) ;
         return qIter ;
     }
     
@@ -187,7 +187,7 @@ public class FilterPlacement
     // Build a series of filters around a BasicPattern
     private QueryIterator buildPatternFilter(Expr expr, BasicPattern pattern, QueryIterator input)
     {
-        QueryIterator qIter = StageProcessor.compile(pattern, input, execCxt) ;
+        QueryIterator qIter = StageBuilder.compile(pattern, input, execCxt) ;
         qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
         return qIter ;
     }

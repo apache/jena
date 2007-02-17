@@ -367,7 +367,7 @@ public class FormatterARQ extends FormatterBase
         3 ;
         
         // TODO RDF Collections - spot the parsers pattern 
-        if ( triples.size() == 0 )
+        if ( triples.isEmpty() )
             return ;
 
         setWidths(triples) ;
