@@ -19,12 +19,6 @@ ARQ2-beta
 
 + Transform to apply to more than just pattern ops?
 
-+ Algebra:
-    // TODO property function determination by general tree rewriting - BGP special first.
-    //  By general BGP rewriting.  Stages.
-    //  (General tree rewrite is "Op => Op")
-    //   OpExtBase requires eval() but need better extensibility?
-    
 + test cases:
   Optional with two filters
      *  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
@@ -39,22 +33,17 @@ ARQ2-beta
 + testing QE1 and QE2 and QE3 in the same test run
 
 + Convenient: Get the version ID (property function?)
-  Generalize to system functions.
     
 + Commands
   + qtest, qexpr? to use modules.
 
 == Documentation
 
-+ Document API (more)
-    Document lists
-    Document symbols and configuration
-	Writing filter functions (example 
-	Writing property functions
-    Creating datasets
-  Document making and using datasets
-  Document configuration (?)
-  location-mapping and FROM/FROM NAMED
++ Document list handling as a specific page.
++ Writing filter functions
++ Writing property functions
++ Document making and using datasets
++ Location-mapping and FROM/FROM NAMED
   
 == Core
 
