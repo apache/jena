@@ -16,12 +16,7 @@ public class QC
 {
     public static Op substitute(Op op, Binding binding)
     {
-        return OpSubstitute.substitute(binding, op) ;
-    }
-    
-    public static QueryIterator compile(Op op, ExecutionContext execCxt)
-    {
-        return OpCompiler.compile(op, execCxt) ;
+        return OpSubstitute.substitute(op, binding) ;
     }
     
     public static QueryIterator compile(Op op, QueryIterator qIter, ExecutionContext execCxt)

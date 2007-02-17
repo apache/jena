@@ -43,7 +43,7 @@ public class QueryIterUnion extends QueryIterRepeatApply
         for ( Iterator iter = subOps.listIterator() ; iter.hasNext() ; )
         {
             Op subOp = (Op)iter.next() ;
-            subOp = OpSubstitute.substitute(binding, subOp) ;
+            subOp = OpSubstitute.substitute(subOp, binding) ;
             QueryIterator parent = new QueryIterSingleton(binding, getExecContext()) ;
             QueryIterator qIter = QC.compile(subOp, parent, getExecContext()) ;
             unionQIter.add(qIter) ;

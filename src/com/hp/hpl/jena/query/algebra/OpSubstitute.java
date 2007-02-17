@@ -23,7 +23,7 @@ public class OpSubstitute extends TransformCopy
 {
     private Binding binding ;
     
-    public static Op substitute(Binding b, Op op)
+    public static Op substitute(Op op, Binding b)
     {
         return Transformer.transform(new OpSubstitute(b), op) ;
     }

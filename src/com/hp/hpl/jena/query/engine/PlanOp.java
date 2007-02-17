@@ -46,7 +46,8 @@ public class PlanOp extends PlanBase
             out.incIndent() ;
         }
         
-        getOp().output(out, sCxt) ;
+        //getOp().output(out, sCxt) ;
+        iterator().output(out, sCxt) ;
         
         if ( label != null )
         {

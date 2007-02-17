@@ -20,7 +20,7 @@ import com.hp.hpl.jena.query.util.Utils;
 
 public class QueryIteratorWrapper extends QueryIteratorBase
 {
-    QueryIterator iterator ;
+    protected QueryIterator iterator ;
     
     public QueryIteratorWrapper(QueryIterator qIter)
     { 

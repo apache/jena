@@ -48,7 +48,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         if ( !graphURI.isURI() )
             return null ;
         ExecutionContext cxt = getExecContext() ;
-        Op op = OpSubstitute.substitute(binding, opGraph.getSubOp()) ;
+        Op op = OpSubstitute.substitute(opGraph.getSubOp(), binding) ;
         Graph g = cxt.getDataset().getNamedGraph(graphURI.getURI()) ;
         if ( g == null )
             return null ;

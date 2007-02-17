@@ -14,7 +14,6 @@ import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
 import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.engine.QueryEngineBase;
-import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
@@ -40,10 +39,7 @@ public class QueryUtils
             if ( !qeb.hasDatasetOrDescription() )
                 qeb.setDataset(new DataSourceImpl()) ;
             Plan plan = qeb.getPlan() ;
-            
-            QueryIterator qIter = plan.iterator() ;
-            if ( qIter != null )
-                qIter.output(out, sCxt) ;
+            plan.output(out, sCxt) ;
             out.flush();
             return ;
         }

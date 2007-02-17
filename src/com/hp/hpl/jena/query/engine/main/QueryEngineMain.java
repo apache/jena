@@ -12,7 +12,6 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.OpSubstitute;
 import com.hp.hpl.jena.query.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.query.core.DatasetGraph;
 import com.hp.hpl.jena.query.engine.*;
@@ -22,7 +21,9 @@ import com.hp.hpl.jena.query.engine.binding.BindingRoot;
 import com.hp.hpl.jena.query.engine.binding.BindingUtils;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine.iterator.QueryIteratorWrapper;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.util.IndentedWriter;
 
 public class QueryEngineMain extends QueryEngineOpBase
 {
@@ -46,7 +47,7 @@ public class QueryEngineMain extends QueryEngineOpBase
             b = new BindingMap(b) ;
             BindingUtils.addToBinding(b, startBinding) ;
             // Substitute in the Op, and use this b as the root. 
-            op = OpSubstitute.substitute(b, op) ;
+            op = QC.substitute(op, b) ;
         }
         return eval(op, b, getExecContext()) ;
     }
@@ -105,6 +106,10 @@ public class QueryEngineMain extends QueryEngineOpBase
             super.abort() ;
             QueryEngineBase.checkForOpenIterators(execCxt) ;
         }
+        
+        // Be silent abount ourselves.
+        public void output(IndentedWriter out, SerializationContext sCxt)
+        { super.iterator.output(out, sCxt) ; }
     }
 }
 
