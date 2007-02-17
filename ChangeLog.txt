@@ -8,15 +8,32 @@ This version uses the SPARQL algebra directly,
 then produces an execution scheme
 that is streaming where possible.
 
-+ engine1 deprecated (and wil be removed)
++ Multiple query engines:
+  + Main query engine for optimization and efficient execution
+  + Reference engine for checking functionality
+    (implements the SPARQL evaluation semantics very simply for clarity and validation)
+  + Remote access engine for querying SPARQL endpoints over HTTP.
+  + Engine1, for exact ARQ1 semantics and enhancements
+    (deprecated for new applications (and will be removed sometime))
+  + RDQL engine
+  + See also SDB - an ARQ query engine that for RDF stored in SQL databases 
 
-+ Internal changes
-  + Filter functions now take a Context, not an ExecutionContext.
-  + Removed "EXT" form from ARQ.  Removed package to go with it
-    (Property functions are better)
++ Access and extension points:
+   + Filter functions
+   + Property functions
+   + The parsed syntax
+   + Generation of the SPARQL algebra expression
+     + Modification of SPARQL algebra expression before executin plan generation
+     + Custom algebra operations 
+   + Basic graph pattern replacement or modification
+     for access to other data sources
+   + Modular query engine class hierarchy for reuse of machinary,
+     resulting in less extra coding for extensions.
+ 
+ + Internal changes
+   + Package reorganisation
+   + Filter functions now take a Context, not an ExecutionContext.
+   + Deprecate "EXT" form from ARQ.
+     (Property functions are better)
 
-+ Package reorganisation
-
-+ Extending query engines
-  + Op rewrite
-  + BGP intercept
+ 

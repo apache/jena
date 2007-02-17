@@ -102,6 +102,10 @@ public class ARQConstants
     /** All SELECT queries have DISTINCt applied, whether stated ot not */
     public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;
     
+    /** Key for StageBuilder used in BGP compilation */ 
+    public static final Symbol stageGenerator =
+        ARQConstants.allocSymbol("stageGenerator") ;
+    
     /** The property function registry key */
     public static final Symbol registryPropertyFunctions =
         ARQConstants.allocSymbol("registryPropertyFunctions") ;

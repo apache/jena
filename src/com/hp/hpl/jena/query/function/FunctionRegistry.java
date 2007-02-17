@@ -51,7 +51,7 @@ public class FunctionRegistry //extends HashMap<String, Function>
     {
         if ( context == null )
             return null ;
-        return (FunctionRegistry)ARQ.getContext().get(ARQConstants.registryFunctions) ;
+        return (FunctionRegistry)context.get(ARQConstants.registryFunctions) ;
     }
     
     public static void set(Context context, FunctionRegistry reg)

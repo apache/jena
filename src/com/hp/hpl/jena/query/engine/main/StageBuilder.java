@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.query.engine.main;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
@@ -13,12 +15,6 @@ import com.hp.hpl.jena.query.util.Context;
 
 public class StageBuilder
 {
-    public static StageGenerator get(Context context)
-    {
-        // fixed and hard wired - temp
-        return new StageGenPropertyFunction(new StageGenBasicPattern()) ;
-    }
-    
     public static QueryIterator compile(BasicPattern pattern, 
                                         QueryIterator input, 
                                         ExecutionContext execCxt)
@@ -26,15 +22,52 @@ public class StageBuilder
         if ( pattern.isEmpty() )
             return input ;
         
-        StageGenerator gen = StageBuilder.get(execCxt.getContext()) ;
+        StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
         StageList sList = gen.compile(pattern, execCxt) ;
-        if ( sList == null )
-        {
-            System.err.println("Oops") ;
-            sList = gen.compile(pattern, execCxt) ;
-        }
         QueryIterator qIter = sList.build(input, execCxt) ;
         return qIter ;
+    }
+    
+    // -------- Manage StageGenerator registration
+    
+    public static void setGenerator(Context context, StageGenerator builder)
+    {
+        context.set(ARQConstants.stageGenerator, builder) ;
+    }
+    
+    public static StageGenerator getGenerator(Context context)
+    {
+        if ( context == null )
+            return null ;
+        return (StageGenerator)context.get(ARQConstants.stageGenerator) ;
+        
+        // fixed and hard wired - temp
+        //return new StageGenPropertyFunction(new StageGenBasicPattern()) ;
+    }
+    
+    public static StageGenerator getGenerator()
+    {
+        StageGenerator gen = getGenerator(ARQ.getContext()) ;
+        if ( gen == null )
+        {
+            gen = standardGenerator() ;
+            setGenerator(ARQ.getContext(), gen) ;
+        }
+        return gen ;
+    }
+    
+    public static StageGenerator standardGenerator()
+    {
+        return 
+        new StageGenPropertyFunction(new StageGenBasicPattern()) ;
+    }
+    
+    private static StageGenerator chooseStageGenerator(Context context)
+    {
+        StageGenerator gen = getGenerator(context) ;
+        if ( gen == null )
+            gen = getGenerator() ;
+        return gen ; 
     }
 }
 
