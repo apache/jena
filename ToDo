@@ -2,7 +2,7 @@
 
 ARQ2-beta
 + examples: 
-   build an op tree and executiong it
+   build an op tree and execute it
    Own stage generator
 + Engine1 cleanup (opt?), esp. examples!
 + Tests

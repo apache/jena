@@ -10,6 +10,7 @@ import arq.qparse;
 import arq.sparql;
 import arq.cmd.ResultsFormat;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.*;
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.expr.NodeVar;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.QueryExecUtils;
-import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -42,7 +43,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        //code() ;
+        code() ;
         //classifyJ() ;
         //classifyLJ() ;
         QueryEngineRef.register() ;
@@ -54,7 +55,7 @@ public class Run
     
     private static void code()
     {
-        // Experimental low level access t query execution. 
+        // Experimental low level access to query execution. 
         String BASE = "http://example/" ; 
         BasicPattern bp = new BasicPattern() ;
         Var var_x = Var.alloc("x") ;
@@ -66,8 +67,11 @@ public class Run
         Expr expr = new E_LessThan(new NodeVar(var_z), NodeValue.makeNodeInteger(2)) ;
         op = OpFilter.filter(expr, op) ;
         
-        Model m = FileManager.get().loadModel("D.ttl") ;
-        
+        Model m = makeModel() ;
+        m.write(System.out, "TTL") ;
+        System.out.println("--------------") ;
+        System.out.print(op) ;
+        System.out.println("--------------") ;
         QueryIterator qIter = QueryEngineMain.eval(op, m.getGraph()) ;
         for ( ; qIter.hasNext() ; )
         {
@@ -80,6 +84,25 @@ public class Run
         System.exit(0) ;
     }
 
+    private static Model makeModel()
+    {
+        String BASE = "http://example/" ;
+        Model model = ModelFactory.createDefaultModel() ;
+        model.setNsPrefix("", BASE) ;
+        Resource r1 = model.createResource(BASE+"r1") ;
+        Resource r2 = model.createResource(BASE+"r2") ;
+        Property p1 = model.createProperty(BASE+"p") ;
+        Property p2 = model.createProperty(BASE+"p2") ;
+        RDFNode v1 = model.createTypedLiteral("1", XSDDatatype.XSDinteger) ;
+        RDFNode v2 = model.createTypedLiteral("2", XSDDatatype.XSDinteger) ;
+        
+        r1.addProperty(p1, v1).addProperty(p1, v2) ;
+        r1.addProperty(p2, v1).addProperty(p2, v2) ;
+        r2.addProperty(p1, v1).addProperty(p1, v2) ;
+        
+        return model  ;
+    }
+    
     private static void classifyJ()
     {
         classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ;
