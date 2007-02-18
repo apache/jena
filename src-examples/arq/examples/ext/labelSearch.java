@@ -13,7 +13,12 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.core.Var;
@@ -26,11 +31,11 @@ import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.expr.NodeVar;
 import com.hp.hpl.jena.query.pfunction.PropFuncArg;
 import com.hp.hpl.jena.query.pfunction.PropertyFunction;
+import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
 import com.hp.hpl.jena.query.syntax.ElementFilter;
 import com.hp.hpl.jena.query.syntax.ElementGroup;
 import com.hp.hpl.jena.query.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.query.util.NodeUtils;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
 /** Example extension or property function to show rewriting part of a query.
  *  A simpler, more driect way to implement property functions is to extends
@@ -84,7 +89,7 @@ public class labelSearch implements PropertyFunction
 
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        log.debug("labelSearch.exec") ;
+        log.debug("exec") ;
         
         // No real need to check the pattern arguments because
         // the replacement triple pattern and regex will cope
@@ -124,6 +129,48 @@ public class labelSearch implements PropertyFunction
         hiddenVariableCount ++ ;
         String varName = "-search-"+hiddenVariableCount ;
         return Var.alloc(varName) ;
+    }
+    
+    // -------- Example usage
+    
+    public static void main(String[] argv)
+    {
+        // Call the function as java:arq.examples.ext.labelSearch or register it.
+        String prologue = "PREFIX ext: <java:arq.examples.ext.>\n" ;
+
+        String qs = prologue+"SELECT * { ?x ext:labelSearch 'EF' }" ;
+        Query query = QueryFactory.create(qs) ;
+        Model model = make() ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+        try {
+            ResultSet rs = qExec.execSelect() ;
+            ResultSetFormatter.out(rs) ;
+        } finally { qExec.close() ; }
+        
+        // Or register it.
+        PropertyFunctionRegistry.get().put("http://example/f#search", labelSearch.class) ;
+        prologue = "PREFIX ext: <http://example/f#>\n" ;
+        qs = prologue+"SELECT * { ?x ext:search 'EF' }" ;
+        query = QueryFactory.create(qs) ;
+        qExec = QueryExecutionFactory.create(query, model) ;
+        try {
+            ResultSet rs = qExec.execSelect() ;
+            ResultSetFormatter.out(rs) ;
+        } finally { qExec.close() ; }
+    }
+    
+    private static Model make()
+    {
+        String BASE = "http://example/" ;
+        Model model = ModelFactory.createDefaultModel() ;
+        model.setNsPrefix("", BASE) ;
+        Resource r1 = model.createResource(BASE+"r1") ;
+        Resource r2 = model.createResource(BASE+"r2") ;
+
+        r1.addProperty(RDFS.label, "abc") ;
+        r2.addProperty(RDFS.label, "def") ;
+
+        return model  ;
     }
 }
 

@@ -24,7 +24,7 @@ import com.hp.hpl.jena.query.pfunction.PFuncSimple;
 import com.hp.hpl.jena.query.util.NodeUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-/** Example property function that creates the associate between a URI and it's localname.
+/** Example property function that creates the association between a URI and it's localname.
  *  See also splitIRI which is more general. This is just an example.
  * 
  *  If it is not a URI, then does not match.

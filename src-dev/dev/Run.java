@@ -6,6 +6,9 @@
 
 package dev;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import arq.qparse;
 import arq.sparql;
 import arq.cmd.ResultsFormat;
@@ -13,6 +16,9 @@ import arq.cmd.ResultsFormat;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Op;
@@ -24,6 +30,7 @@ import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.core.DataSourceImpl;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.ResultSetStream;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.main.JoinClassifier;
 import com.hp.hpl.jena.query.engine.main.LeftJoinClassifier;
@@ -35,8 +42,6 @@ import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.expr.NodeVar;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.QueryExecUtils;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileManager;
 
 
 public class Run
@@ -73,14 +78,30 @@ public class Run
         System.out.print(op) ;
         System.out.println("--------------") ;
         QueryIterator qIter = QueryEngineMain.eval(op, m.getGraph()) ;
-        for ( ; qIter.hasNext() ; )
+        
+        
+        // Either read the query itertaor driectly ...
+        if ( false )
         {
-            Binding b = qIter.nextBinding() ;
-            Node n = b.get(var_x) ;
-            System.out.println(FmtUtils.stringForNode(n)) ;
-            System.out.println(b) ; 
+            for ( ; qIter.hasNext() ; )
+            {
+                Binding b = qIter.nextBinding() ;
+                Node n = b.get(var_x) ;
+                System.out.println(FmtUtils.stringForNode(n)) ;
+                System.out.println(b) ; 
+            }
+            qIter.close() ;
         }
-        qIter.close() ;
+        else
+        {
+            // Or make ResultSet from it (but not both)
+            List varNames = new ArrayList() ;
+            varNames.add("x") ;
+            varNames.add("z") ;
+            ResultSet rs = new ResultSetStream(varNames, m, qIter);
+            ResultSetFormatter.out(rs) ;
+            qIter.close() ;
+        }
         System.exit(0) ;
     }
 
