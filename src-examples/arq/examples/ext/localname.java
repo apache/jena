@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *  Use as: 
  *  
  *  <pre>
- *    ?uri jext:localname ?localname
+ *    ?uri ext:localname ?localname
  *  </pre>
  * 
  *  Depending on whether the subject/object are bound when called:

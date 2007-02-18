@@ -54,7 +54,7 @@ import com.hp.hpl.jena.query.util.NodeUtils;
  *  we just show looking for RDFS labels.
  *  
  *  <pre>
- *    ?x ext:search "something"
+ *    ?x ext:labelSearch "something"
  *  </pre>
  *  as 
  *  <pre>
