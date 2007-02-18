@@ -2,7 +2,9 @@ PREFIX :    <http://example/>
 
 SELECT ?v
 { 
-    ?x :p ?v . 
+ :x :p ?v . { FILTER(?v = 1) }
+
+#    ?x :p ?v . 
 
 ##     # Case 1: Filter and BGPs.
 ##     # No join.
