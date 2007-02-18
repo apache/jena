@@ -31,7 +31,7 @@ public class QueryIterSQL extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding binding)
     {
         QueryCompiler qc = opSQL.getRequest().getStore().getQueryCompilerFactory().createQueryCompiler(opSQL.getRequest()) ;
-        Op op2 = OpSubstitute.substitute(binding, opSQL.getOriginal()) ;
+        Op op2 = OpSubstitute.substitute(opSQL.getOriginal(), binding) ;
         Op op = qc.compile(op2) ;
         if ( op instanceof OpSQL )
         {
