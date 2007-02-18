@@ -107,9 +107,9 @@ public class QueryEngineMain extends QueryEngineOpBase
             QueryEngineBase.checkForOpenIterators(execCxt) ;
         }
         
-        // Be silent abount ourselves.
+        // Be silent about ourselves.
         public void output(IndentedWriter out, SerializationContext sCxt)
-        { super.iterator.output(out, sCxt) ; }
+        { iterator.output(out, sCxt) ; }
     }
 }
 

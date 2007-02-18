@@ -48,12 +48,13 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        code() ;
+        print() ;
+        //code() ;
         //classifyJ() ;
         //classifyLJ() ;
         QueryEngineRef.register() ;
         execQuery("D.ttl", "Q.rq") ;
-        parseQuery() ;
+        print() ;
         query() ;
     }
         
@@ -207,7 +208,7 @@ public class Run
         
     }
 
-    public static void parseQuery()
+    public static void print()
     {
         QueryEngineMain.register() ;
         String a[] = new String[]{
