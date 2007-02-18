@@ -23,9 +23,6 @@ public class JoinClassifier
     {
         Op left = join.getLeft() ;
         Op right = join.getRight() ;
-        
-        
-        
         return check(left, right) && check(right, left) ;
     }
     
