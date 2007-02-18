@@ -33,7 +33,6 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         
-        runPrint("testing/Algebra/filter-nested-2.rq") ;
         runQuery() ;
         //SDBConnection.logSQLStatements = true ;
         
@@ -57,8 +56,8 @@ public class RunSDB
         String queryFile = "Q.rq" ;
         String dataFile = "D.ttl" ;
         
-        queryFile = "testing/Expressions/regex-opt-2.rq" ;
-        dataFile  = "testing/Expressions/data.ttl" ;
+        queryFile = "testing/Algebra/filter-nested-2.rq" ;
+        dataFile  = "testing/Algebra/data.ttl" ;
         
         System.out.println(QueryFactory.read(queryFile)) ;
         
