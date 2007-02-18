@@ -33,6 +33,7 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         
+        runPrint("testing/Algebra/filter-nested-2.rq") ;
         runQuery() ;
         //SDBConnection.logSQLStatements = true ;
         
@@ -96,11 +97,17 @@ public class RunSDB
     
     public static void runPrint()
     {
+        runPrint("Q.rq") ;
+    }
+    
+    public static void runPrint(String filename)
+    {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {"--print=sql", "--print=op", "--sdb=sdb1.ttl", "--query=Q.rq"} ;
+        String[] a = {"--print=sql", "--print=op", "--sdb=sdb.ttl", "--query="+filename} ;
         sdb.sdbprint.main(a) ;
         System.exit(0) ;
     }
+    
    
     public static void runTest()
     {

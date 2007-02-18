@@ -14,6 +14,8 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
+import com.hp.hpl.jena.sdb.sql.SQLUtils;
+
 import com.hp.hpl.jena.sdb.store.StoreLoader;
 
 
@@ -35,9 +37,9 @@ public class LoaderSimple
     public void addTriple(Triple t )
     {
         // not transactional
-        String sStr = "'"+codec.encode(t.getSubject())+"'" ;
-        String pStr = "'"+codec.encode(t.getPredicate())+"'" ;
-        String oStr = "'"+codec.encode(t.getObject())+"'" ;
+        String sStr = SQLUtils.quoteStr(codec.encode(t.getSubject())) ;
+        String pStr = SQLUtils.quoteStr(codec.encode(t.getPredicate())) ;
+        String oStr = SQLUtils.quoteStr(codec.encode(t.getObject())) ;
         
         String sqlStmt = 
             "SELECT count(*) FROM Triples WHERE "+

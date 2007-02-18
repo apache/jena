@@ -44,9 +44,15 @@ public class SQLUtils
     static private String[] strChar =       { strQuoteChar } ;
     static private String[] strCharEsc =    { strQuoteCharEsc } ;
     
+    static public String escapeStr(String s)
+    { return map(s, strChar, strCharEsc) ; }
+    
+    static public String unescapeStr(String s)
+    { return map(s, strCharEsc, strChar) ; }
+    
     static public String quoteStr(String s)
     {
-        s = map(s, strChar, strCharEsc) ;
+        s = escapeStr(s) ;
         return strQuoteChar+s+strQuoteChar ;
     }
 
@@ -54,7 +60,7 @@ public class SQLUtils
     {
         if ( s.startsWith(strQuoteChar) )
             s = s.substring(1,s.length()-1 ) ;
-        s = map(s, strCharEsc, strChar) ;
+        s = unescapeStr(s) ;
         return s ;
     }
     
