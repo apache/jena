@@ -18,20 +18,20 @@ public class TransformCopy implements Transform
     public TransformCopy() { this(COPY_ONLY_ON_CHANGE) ; }
     public TransformCopy(boolean alwaysDuplicate)   { this.alwaysCopy = alwaysDuplicate ; }
 
-    public Op transform(OpUnit opUnit)              { return xform(opUnit) ; }
-    public Op transform(OpBGP opBGP)                { return xform(opBGP) ; }
-    public Op transform(OpDatasetNames dsNames)     { return xform(dsNames) ; }
-    public Op transform(OpQuadPattern quadPattern)  { return xform(quadPattern) ; }
+    public Op transform(OpUnit opUnit)                              { return xform(opUnit) ; }
+    public Op transform(OpBGP opBGP)                                { return xform(opBGP) ; }
+    public Op transform(OpDatasetNames dsNames)                     { return xform(dsNames) ; }
+    public Op transform(OpQuadPattern quadPattern)                  { return xform(quadPattern) ; }
 
-    public Op transform(OpFilter opFilter, Op x)    { return xform(opFilter, x) ; }
-    public Op transform(OpGraph opGraph, Op x)      { return xform(opGraph, x) ; }
+    public Op transform(OpFilter opFilter, Op x)                    { return xform(opFilter, x) ; }
+    public Op transform(OpGraph opGraph, Op x)                      { return xform(opGraph, x) ; }
     
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
     
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return xform(opLeftJoin, left, right) ; }
     public Op transform(OpUnion opUnion, Op left, Op right)         { return xform(opUnion, left, right) ; }
     
-    public Op transform(OpExt opExt)                { return opExt.copy() ; }
+    public Op transform(OpExt opExt)                                { return opExt.copy() ; }
 
     private Op xform(Op0 op)
     { 

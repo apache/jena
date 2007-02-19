@@ -6,6 +6,8 @@
 
 package arq;
 
+import java.util.Iterator;
+
 import arq.cmd.CmdException;
 import arq.cmd.CmdUtils;
 import arq.cmd.TerminationException;
@@ -73,13 +75,9 @@ public class qexpr
         ArgDecl reduceDecl =  new ArgDecl(ArgDecl.NoValue, "reduce", "fold", "simplify" ) ;
         cl.add(reduceDecl) ;
 
-        ArgDecl printSPARQL =  new ArgDecl(ArgDecl.NoValue, "print") ;
-        cl.add(printSPARQL) ;
+        ArgDecl printDecl =  new ArgDecl(ArgDecl.HasValue, "print") ;
+        cl.add(printDecl) ;
 
-        ArgDecl printPrefix =  new ArgDecl(ArgDecl.NoValue, "prefix", "printPrefix", "printprefix") ;
-        cl.add(printPrefix) ;
-
-        
         try {
             cl.process() ;
         } catch (IllegalArgumentException ex)
@@ -106,9 +104,22 @@ public class qexpr
         boolean quiet = cl.contains(quietDecl) ;
 
         boolean actionCopySubstitute = cl.contains(reduceDecl) ;
-        boolean actionPrintSPARQL = cl.contains(printSPARQL) ;
-        boolean actionPrintPrefix = cl.contains(printPrefix) ;
+        boolean actionPrintPrefix = false ;
+        boolean actionPrintSPARQL = false ; 
+            
+        for ( Iterator iter = cl.getValues(printDecl).iterator() ; iter.hasNext(); )
+        {
+            String v = (String)iter.next();
+            if ( v.equalsIgnoreCase("prefix") ) actionPrintPrefix = true ;
+            else if ( v.equalsIgnoreCase("expr") )   actionPrintSPARQL = true ;
+            else
+            {
+                System.err.println("Unknown print form: "+v) ;
+                throw new TerminationException(0) ;
+            }
+        }
         
+
         // ==== Do it
         
         for ( int i = 0 ; i < cl.getNumPositional() ; i++ )
@@ -126,17 +137,17 @@ public class qexpr
                 if ( verbose )
                     System.out.print(expr.toString()+" => ") ;
                 
+                if ( actionPrintSPARQL )
+                    System.out.println(ExprUtils.fmtSPARQL(expr)) ;
+                if ( actionPrintPrefix )
+                    System.out.println(ExprUtils.fmtPrefix(expr)) ;
+                
                 try {
                     if ( actionCopySubstitute )
                     {
                         Expr e = expr.copySubstitute(new BindingMap(), true) ;
-                        
                         System.out.println(e.toString()) ;
                     }
-                    else if ( actionPrintSPARQL )
-                        System.out.println(ExprUtils.fmtSPARQL(expr)) ;
-                    else if ( actionPrintPrefix )
-                        System.out.println(ExprUtils.fmtPrefix(expr)) ;
                     else
                     {
                         // Default action

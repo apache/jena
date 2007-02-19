@@ -96,25 +96,40 @@ public class ParserBase
         return Integer.parseInt(lexicalForm) ;
     }
     
+    protected Node makeNodeInteger(String lexicalForm)
+    {
+        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
+    }
+    
+    protected Node makeNodeDouble(String lexicalForm)
+    {
+        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
+    }
+    
+    protected Node makeNodeDecimal(String lexicalForm)
+    {
+        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
+    }
+
     protected Node makeNodeInteger(boolean positive, String lexicalForm)
     {
         if ( !positive )
             lexicalForm = "-"+lexicalForm ;
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
+        return makeNodeInteger(lexicalForm) ;
     }
     
     protected Node makeNodeDouble(boolean positive, String lexicalForm)
     {
         if ( !positive )
             lexicalForm = "-"+lexicalForm ;
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
+        return makeNodeDouble(lexicalForm) ;
     }
     
     protected Node makeNodeDecimal(boolean positive, String lexicalForm)
     {
         if ( !positive )
             lexicalForm = "-"+lexicalForm ;
-        return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
+        return makeNodeDecimal(lexicalForm) ;
     }
 
     protected Node makeNode(String lexicalForm, String langTag, Node datatype)
@@ -306,6 +321,16 @@ public class ParserBase
 
     protected Expr asExpr(Node n)
     {
+        return ExprUtils.nodeToExpr(n) ;
+    }
+
+    protected Expr asExprNoSign(Node n)
+    {
+        String lex = n.getLiteralLexicalForm() ;
+        String lang = n.getLiteralLanguage() ;
+        String dtURI = n.getLiteralDatatypeURI() ;
+        n = makeNode(lex, lang, dtURI) ;
+        
         return ExprUtils.nodeToExpr(n) ;
     }
 

@@ -342,7 +342,6 @@ Element UnsaidGraphPattern() : { Element el ; }
 
 Element GraphMatchExtension() : { Element el = null ; Node n ; List a = null ; }
 {
-    // Need a syntax that is delimiting.  This isn't.
     <EXT>
     n = IRIref()
     a = ArgList()
@@ -399,7 +398,6 @@ Template ConstructTemplate() : { }
     { return g ; }
 }
 
-//@@ Bug - multiple DOTs?
 void ConstructTriples(TemplateGroup acc) : { }
 {
     TriplesSameSubject(acc)
@@ -418,51 +416,55 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   PropertyList(s, acc)
 }
 
-// @@ Non-recursive for Turtle long PropertyList tests
-// void PropertyListNotEmpty(Node s) : { Node p ; }
-// {
-//   p = Verb()
-//   ObjectList(s, p)
-//   (<SEMICOLON> (p = Verb() ObjectList(s, p))? )*
-// }
-
-void PropertyList(Node s, TripleCollector acc) : { }
-{
-  ( PropertyListNotEmpty(s, acc) ) ?
-}
-
 void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
 {
   p = Verb()
   ObjectList(s, p, acc)
-  (<SEMICOLON> PropertyList(s, acc) ) ?
+  (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
 
   |
   Reification(s, acc)
 
 }
 
+void PropertyList(Node s, TripleCollector acc) : { }
+{
+  ( PropertyListNotEmpty(s, acc) ) ?
+}
+
+// // Recursive
+// void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
+// {
+//   p = Verb()
+//   ObjectList(s, p, acc)
+//   (<SEMICOLON> PropertyList(s, acc) ) ?
+// #ifdef ARQ
+//   |
+//   Reification(s, acc)
+// #endif
+// }
+
+// // Recursive
+// void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
+// {
+//     { int mark = acc.mark() ; }
+//   o = GraphNode(acc) 
+//     { insert(acc, mark, s, p, o) ; }
+//   ( <COMMA> ObjectList(s, p , acc) )?
+// }
+
 void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; }
+{
+  Object(s, p, acc)
+  ( <COMMA> Object(s, p, acc) )*
+}
+
+void Object(Node s, Node p, TripleCollector acc): { Node o ; }
 {
     { int mark = acc.mark() ; }
   o = GraphNode(acc)
-    { insert(acc, mark, s, p, o) ; }
-  ( <COMMA> ObjectList(s, p , acc) )?
+  { insert(acc, mark, s, p, o) ; }
 }
-
-// @@ Non-recursive for Turtle long PropertyList tests
-// void ObjectList(Node s, Node p): { Node o ; } 
-// {
-//   Object(s, p)
-//   ( <COMMA> Object(s, p) )*
-// }
-// 
-// void Object(Node s, Node p): { Node o ; }
-// {
-//   o = GraphNode() 
-//   { Triple t = new Triple(s,p,o) ; 
-//     emitTriple(token.beginLine, token.beginColumn, t) ; }  
-// }
 
 Node Verb() : {Node p ;}
 {
@@ -506,16 +508,15 @@ Node Reification(Node id, TripleCollector acc) :
         id = createBNode() ;
       mark = acc.mark() ; }
   s = GraphNode(acc)
-    { insert(acc, mark, id, nRDFsubject, s) ; }
-
-    { mark = acc.mark() ; }
+    { insert(acc, mark, id, nRDFsubject, s) ;
+      mark = acc.mark() ;
+    }
   p = GraphNode(acc)
-    { insert(acc, mark, id, nRDFpredicate, p) ; }
-
-    { mark = acc.mark() ; }
+    { insert(acc, mark, id, nRDFpredicate, p) ;
+      mark = acc.mark() ;
+    }
   o = GraphNode(acc)
     { insert(acc, mark, id, nRDFobject, o) ; }
-
   ">>"
     { return id ; }
 }
@@ -605,94 +606,94 @@ Node GraphTerm() : { Node n ; }
 
 // -------- Constraint syntax
 
-Expr Expression() : { Expr n ; }
+Expr Expression() : { Expr expr ; }
 {
-  n = ConditionalOrExpression()
-  { return n ; }
+  expr = ConditionalOrExpression()
+  { return expr ; }
 }
 
-Expr ConditionalOrExpression() : { Expr n1, n2 ; }
+Expr ConditionalOrExpression() : { Expr expr1, expr2 ; }
 {
-  n1 = ConditionalAndExpression()
-  ( <SC_OR> n2 = ConditionalAndExpression()
-    { n1 = new E_LogicalOr(n1,n2) ; }
+  expr1 = ConditionalAndExpression()
+  ( <SC_OR> expr2 = ConditionalAndExpression()
+    { expr1 = new E_LogicalOr(expr1, expr2) ; }
   )*
-    { return n1 ; }
+    { return expr1 ; }
 
 }
 
-Expr ConditionalAndExpression() : { Expr n1, n2 ;}
+Expr ConditionalAndExpression() : { Expr expr1, expr2 ;}
 {
-  n1 = ValueLogical()
-  ( <SC_AND> n2 = ValueLogical()
-    { n1 = new E_LogicalAnd(n1,n2) ; }
+  expr1 = ValueLogical()
+  ( <SC_AND> expr2 = ValueLogical()
+    { expr1 = new E_LogicalAnd(expr1, expr2) ; }
   )*
-    { return n1 ; }
+    { return expr1 ; }
 }
 
-Expr ValueLogical() : { Expr n ; }
+Expr ValueLogical() : { Expr expr ; }
 {
-  n = RelationalExpression()
-    { return n ; }
+  expr = RelationalExpression()
+    { return expr ; }
 }
 
-Expr RelationalExpression() : { Expr n1, n2 ; }
+Expr RelationalExpression() : { Expr expr1, expr2 ; }
 {
-  n1 = NumericExpression()
+  expr1 = NumericExpression()
   (
-    <EQ> n2 = NumericExpression()
-      { n1 = new E_Equals(n1,n2) ; }
-  | <NE> n2 = NumericExpression()
-      { n1 = new E_NotEquals(n1,n2) ; }
-  | <LT> n2 = NumericExpression()
-      { n1 = new E_LessThan(n1,n2) ; }
-  | <GT> n2 = NumericExpression()
-      { n1 = new E_GreaterThan(n1,n2) ; }
-  | <LE> n2 = NumericExpression()
-      { n1 = new E_LessThanOrEqual(n1,n2) ; }
-  | <GE> n2 = NumericExpression()
-      { n1 = new E_GreaterThanOrEqual(n1,n2) ; }
+    <EQ> expr2 = NumericExpression()
+      { expr1 = new E_Equals(expr1, expr2) ; }
+  | <NE> expr2 = NumericExpression()
+      { expr1 = new E_NotEquals(expr1, expr2) ; }
+  | <LT> expr2 = NumericExpression()
+      { expr1 = new E_LessThan(expr1, expr2) ; }
+  | <GT> expr2 = NumericExpression()
+      { expr1 = new E_GreaterThan(expr1, expr2) ; }
+  | <LE> expr2 = NumericExpression()
+      { expr1 = new E_LessThanOrEqual(expr1, expr2) ; }
+  | <GE> expr2 = NumericExpression()
+      { expr1 = new E_GreaterThanOrEqual(expr1, expr2) ; }
   )?
-    { return n1 ; }
+    { return expr1 ; }
 }
 
-Expr NumericExpression () : { Expr n ; }
+Expr NumericExpression () : { Expr expr ; }
 {
-  n = AdditiveExpression()
-    { return n ; }
+  expr = AdditiveExpression()
+    { return expr ; }
 }
 
-Expr AdditiveExpression() : { Expr n1,n2 ; }
+Expr AdditiveExpression() : { Expr expr1, expr2 ; }
 {
-  n1 = MultiplicativeExpression()
-  ( <PLUS> n2 = MultiplicativeExpression()
-    { n1 = new E_Add(n1, n2) ; }
-  | <MINUS> n2 = MultiplicativeExpression()
-    { n1 = new E_Subtract(n1, n2) ; }
+  expr1 = MultiplicativeExpression()
+  ( <PLUS> expr2 = MultiplicativeExpression()
+    { expr1 = new E_Add(expr1, expr2) ; }
+  | <MINUS> expr2 = MultiplicativeExpression()
+    { expr1 = new E_Subtract(expr1, expr2) ; }
   )*
-    { return n1 ; }
+    { return expr1 ; }
 }
 
-Expr MultiplicativeExpression() : { Expr n1,n2 ; }
+Expr MultiplicativeExpression() : { Expr expr1, expr2 ; }
 {
-  n1 = UnaryExpression()
-  ( <STAR> n2 = UnaryExpression()
-    { n1 = new E_Multiply(n1, n2) ; }
-  | <SLASH> n2 = UnaryExpression()
-    { n1 = new E_Divide(n1, n2) ; }
-//   | <REM>   n2 = UnaryExpression()
-//     { n1 = new E_Modulus(n1, n2) ; }
+  expr1 = UnaryExpression()
+  ( <STAR> expr2 = UnaryExpression()
+    { expr1 = new E_Multiply(expr1, expr2) ; }
+  | <SLASH> expr2 = UnaryExpression()
+    { expr1 = new E_Divide(expr1, expr2) ; }
+//   | <REM>   expr2 = UnaryExpression()
+//     { expr1 = new E_Modulus(expr1, expr2) ; }
   )*
-    { return n1 ; }
+    { return expr1 ; }
 }
 
-Expr UnaryExpression() : { Expr n ; }
+Expr UnaryExpression() : { Expr expr ; }
 {
-  <BANG> n = PrimaryExpression()
-    { return new E_LogicalNot(n) ; }
-  | <PLUS> n = PrimaryExpression() { return new E_UnaryPlus(n) ; }
-  | <MINUS> n = PrimaryExpression() { return new E_UnaryMinus(n) ; }
-  | n = PrimaryExpression() { return n ; }
+  <BANG> expr = PrimaryExpression()
+    { return new E_LogicalNot(expr) ; }
+  | <PLUS> expr = PrimaryExpression() { return new E_UnaryPlus(expr) ; }
+  | <MINUS> expr = PrimaryExpression() { return new E_UnaryMinus(expr) ; }
+  | expr = PrimaryExpression() { return expr ; }
 }
 
 Expr PrimaryExpression() : { Expr expr ; Node gn ; }
@@ -702,13 +703,10 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | expr = IRIrefOrFunction() { return expr ; }
 
 // NOT  | gn = VarOrTerm()           { return asExpr(gn) ; }
-// Because of IRIrefOrFunction vs <NIL>
-// and because of signhandling (which is done 
-// with unary ops in expressions.
+// Because of IRIrefOrFunction vs <NIL> and blank nodes
   | gn = RDFLiteral() { return asExpr(gn) ; }
   | gn = NumericLiteral(true) { return asExpr(gn) ; }
   | gn = BooleanLiteral() { return asExpr(gn) ; }
-//  | gn = BlankNode()       { return asExpr(gn) ; }
   | gn = Var() { return asExpr(gn) ; }
   )
 }
@@ -723,10 +721,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
     // STR
     <STR> <LPAREN> expr = Expression() <RPAREN>
     { return new E_Str(expr) ; }
-//   | 
-//     // URI
-//     <URI> <LPAREN> expr = Expression() <RPAREN>
-//     { return new E_Str(expr) ; }
   | // Lang
     <LANG> <LPAREN> expr = Expression() <RPAREN>
     { return new E_Lang(expr) ; }
@@ -811,8 +805,6 @@ Node BooleanLiteral() : {}
  |
   <FALSE> { return XSD_FALSE ; }
 }
-
-
 
 String String() : { Token t ; String lex ; }
 {
@@ -964,26 +956,18 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN :
 {
-   < INTEGER: /*(["-","+"])?*/ <DIGITS> >
+   < INTEGER: <DIGITS> >
 |
-   // Becareful to bracket the digits part if +/- added
-   < DECIMAL: /*(["-","+"])?*/ ( (<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+ ) >
+   // Be careful to bracket the digits part if +/- added
+   < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
       // Required exponent.
 | < DOUBLE:
-      /*(["+","-"])?*/
       (
         (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
         | "." (["0"-"9"])+ (<EXPONENT>)
         | (["0"-"9"])+ <EXPONENT>
       )
       >
-   // Optional exponent.
-// |  < DOUBLE:
-//       //(["+","-"])?
-//       (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
-//       | "." (["0"-"9"])+ (<EXPONENT>)?
-//       | (["0"-"9"])+ <EXPONENT>
-//       >
 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">

@@ -9,6 +9,7 @@ package dev;
 import java.util.ArrayList;
 import java.util.List;
 
+import arq.qexpr;
 import arq.qparse;
 import arq.sparql;
 import arq.cmd.ResultsFormat;
@@ -16,9 +17,6 @@ import arq.cmd.ResultsFormat;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.query.algebra.Op;
@@ -42,13 +40,16 @@ import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.expr.NodeVar;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.QueryExecUtils;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class Run
 {
     public static void main(String[] argv)
     {
-        print() ;
+        runQExpr() ;
+        //print() ;
         //code() ;
         //classifyJ() ;
         //classifyLJ() ;
@@ -275,6 +276,35 @@ public class Run
         sparql.main(a) ;
         System.exit(0) ;
         
+    }
+    public static void runQParse()
+    {
+        qparse.main(new String[]{ //"--in=prefix", 
+                                  //"--out=prefix",
+                                  "--print=op",
+                                  "--print=query",
+                                  "--engine=ref",
+                                  "--query=Q.rq"
+                                  //"--query=testing/ARQ/Serialization/syntax-general-13.rq" ,
+                                  }) ;
+        System.exit(0) ;
+    }
+
+    static public void runQExpr()
+    {
+        qexpr.main(new String[]{"--print=prefix", "--", "-3"}) ;
+        qexpr.main(new String[]{"--print=prefix", "--", "+3"}) ;
+        qexpr.main(new String[]{"--print=prefix", "--", "+ 3"}) ;
+        qexpr.main(new String[]{"--print=prefix", "--", "- 3"}) ;
+//        qexpr.main(new String[]{"(1+3)"}) ;
+//        qexpr.main(new String[]{"(?x+3)"}) ;
+//        System.exit(0) ;
+//        qexpr.main(new String[]{"35.59/1.87715"}) ;
+//        qexpr.main(new String[]{"0.5"}) ;
+//        qexpr.main(new String[]{"1/2"}) ;
+//        qexpr.main(new String[]{"1/3"}) ;
+//        qexpr.main(new String[]{"100*1.0"}) ;
+        System.exit(0) ;
     }
 }
 

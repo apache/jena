@@ -42,34 +42,34 @@ NON-TERMINALS
 	ArgList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
 // -------- Construct patterns
 	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
-//@@ Bug - multiple DOTs?
 	ConstructTriples	:=	TriplesSameSubject ( <DOT> ( ConstructTriples )? )?
 // -------- Triple lists with property and object lists
 	TriplesSameSubject	:=	VarOrTerm PropertyListNotEmpty
 		|	TriplesNode PropertyList
-// @@ Non-recursive for Turtle long PropertyList tests
-// void PropertyListNotEmpty(Node s) : { Node p ; }
+	PropertyListNotEmpty	:=	Verb ObjectList ( <SEMICOLON> ( Verb ObjectList )? )*
+	PropertyList	:=	( PropertyListNotEmpty )?
+// // Recursive
+// void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
 // {
 //   p = Verb()
-//   ObjectList(s, p)
-//   (<SEMICOLON> (p = Verb() ObjectList(s, p))? )*
+//   ObjectList(s, p, acc)
+//   (<SEMICOLON> PropertyList(s, acc) ) ?
+// #ifdef ARQ
+//   |
+//   Reification(s, acc)
+// #endif
 // }
-	PropertyList	:=	( PropertyListNotEmpty )?
-	PropertyListNotEmpty	:=	Verb ObjectList ( <SEMICOLON> PropertyList )?
-	ObjectList	:=	GraphNode ( <COMMA> ObjectList )?
-// @@ Non-recursive for Turtle long PropertyList tests
-// void ObjectList(Node s, Node p): { Node o ; } 
+
+// // Recursive
+// void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
 // {
-//   Object(s, p)
-//   ( <COMMA> Object(s, p) )*
+//     { int mark = acc.mark() ; }
+//   o = GraphNode(acc) 
+//     { insert(acc, mark, s, p, o) ; }
+//   ( <COMMA> ObjectList(s, p , acc) )?
 // }
-// 
-// void Object(Node s, Node p): { Node o ; }
-// {
-//   o = GraphNode() 
-//   { Triple t = new Triple(s,p,o) ; 
-//     emitTriple(token.beginLine, token.beginColumn, t) ; }  
-// }
+	ObjectList	:=	Object ( <COMMA> Object )*
+	Object	:=	GraphNode
 	Verb	:=	( VarOrIRIref | <KW_A> )
 // -------- Triple expansions
 

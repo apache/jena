@@ -15,8 +15,16 @@ import com.hp.hpl.jena.query.algebra.Op;
  */
 public interface OpExt extends Op
 { 
+    
     /** A copy - immutable OpExt subclasses can return 'this' */
     public OpExt copy() ;
+    
+    /** Return an op that will used by query processing algorithms such as 
+     * optimization.  This method returns a non-extension Op expression that
+     * is the equivalent SPARQL expression.  Normally, this is the Op replaced
+     * by this extension node.   
+     */ 
+    public Op effectiveOp() ;
 }
 
 

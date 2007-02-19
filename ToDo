@@ -43,6 +43,8 @@ ARQ2-beta
 + Commands
   + qtest, qexpr? to use modules.
 
++ LARQ assembler
+
 == Documentation
 
 + Document list handling as a specific page.
