@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDuration.java,v 1.13 2007-01-14 14:18:03 jeremy_carroll Exp $
+ * $Id: XSDDuration.java,v 1.14 2007-02-19 14:21:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * decimals for seconds.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2007-01-14 14:18:03 $
+ * @version $Revision: 1.14 $ on $Date: 2007-02-19 14:21:11 $
  */
 public class XSDDuration extends AbstractDateTime {
 
@@ -123,7 +123,7 @@ public class XSDDuration extends AbstractDateTime {
              message.append(negate * data[D]);
              message.append('D');
          }
-         if (data[h] != 0 && data[m] != 0 && data[s] != 0 && data[ms] != 0) {
+         if (data[h] != 0 || data[m] != 0 || data[s] != 0 || data[ms] != 0) {
              message.append('T');
              if (data[h] != 0) {
                  message.append(negate * data[h]);

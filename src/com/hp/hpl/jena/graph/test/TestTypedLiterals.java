@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.59 2007-01-02 11:50:06 andy_seaborne Exp $
+ * $Id: TestTypedLiterals.java,v 1.60 2007-02-19 14:21:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.59 $ on $Date: 2007-01-02 11:50:06 $
+ * @version $Revision: 1.60 $ on $Date: 2007-02-19 14:21:12 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -469,6 +469,9 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("serialization", "P1Y2M3DT5H6M7.5S", l1.getValue().toString());
         assertTrue("equality test", l1.sameValueAs( m.createTypedLiteral("P1Y2M3DT5H6M7.5S", XSDDatatype.XSDduration) ) );
         assertTrue("inequality test", l1 != m.createTypedLiteral("P1Y2M2DT5H6M7.5S", XSDDatatype.XSDduration));
+        
+        l1 = m.createTypedLiteral("P1Y2M3DT5H0M", XSDDatatype.XSDduration);
+        assertEquals("serialization", "P1Y2M3DT5H", l1.getValue().toString());
         
         l1 = m.createTypedLiteral("P1Y", XSDDatatype.XSDduration);
         assertEquals("duration data type", XSDDatatype.XSDduration, l1.getDatatype());
