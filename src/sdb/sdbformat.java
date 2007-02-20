@@ -37,17 +37,13 @@ public class sdbformat extends CmdArgsDB
     @Override
     protected void processModulesAndArgs()
     {
-//        if ( getNumPositional() == 1 )
-//        {
-//            String dbToZap = getPositionalArg(0) ;
-//            getModStore().setDbName(dbToZap) ;
-//        }
+        if ( getNumPositional() == 1 )
+        {
+            String dbToZap = getPositionalArg(0) ;
+            getModStore().setDbName(dbToZap) ;
+        }
 //        else
 //            cmdError("Must give the database name explicitly") ;
-        
-//        // Safety check
-//        if ( !contains("dbName") )
-//            cmdError("Must give the name of the database") ;
     }
     
     @Override
