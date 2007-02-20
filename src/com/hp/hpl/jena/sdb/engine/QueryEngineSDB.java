@@ -11,17 +11,14 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryEngineOpQuadBase;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.binding.BindingRoot;
 import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.query.engine.ref.Evaluator;
 import com.hp.hpl.jena.query.engine.ref.EvaluatorFactory;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.compiler.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
@@ -61,20 +58,10 @@ public class QueryEngineSDB extends QueryEngineOpQuadBase
             QueryIterator qIter = QueryEngineMain.eval(op, getExecContext().getDataset()) ;
             return qIter ;
         }
-
-        // Direct - bypass QueryIterSQL?
+        // Direct.
         OpSQL opSQL = (OpSQL)op ;
-        ExecutionContext execCxt = getExecContext() ;
-        QueryIterator qIter = QC.exec(opSQL,
-                                      opSQL.getRequest(),
-                                      BindingRoot.create(), 
-                                      execCxt) ;
-        return qIter ;
-        
-//        // What's the initial binding?
-//        // This needs to be put somewhere : QueryEngineMain.getInitialBinding()
-//        QueryIterator qIter = new QueryIterSingleton() ;
-//        return opSQL.eval(qIter, getExecContext()) ;
+        // Does the SQL SELECT happen exactly now? 
+        return opSQL.exec(getExecContext()) ;
     }
 
     @Override

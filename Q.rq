@@ -2,7 +2,8 @@ PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 PREFIX  :       <http://example/>
 PREFIX  ex:     <http://example/ns#>
 
-SELECT *
+SELECT  ?v
 {
-   ?x :p ?z OPTIONAL { ?z :q1 ?w  FILTER (true) }
+  ?x :p ?v 
+  { FILTER ( ?v = 1 ) }
 }

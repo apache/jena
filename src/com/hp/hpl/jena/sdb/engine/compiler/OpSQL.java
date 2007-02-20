@@ -10,6 +10,8 @@ import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.Plan;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.BindingRoot;
 import com.hp.hpl.jena.query.engine.main.OpExtMain;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -29,12 +31,19 @@ public class OpSQL extends OpExtMain
         this.request = request ;
         this.sqlNode = sqlNode ;
         this.originalOp = original ;
+        // Only set at the top, eventually, when we know the projection variables.
+        this.bridge = null ;
     }
 
     public OpSQL copy() 
     { 
-        //System.out.println("Copy called") ;
-        return new OpSQL(sqlNode, originalOp, request) ; }
+        return this ;       // We're immutable - return self.
+//        //System.out.println("Copy called") ;
+//        OpSQL x = new OpSQL(sqlNode, originalOp, request) ;
+//        x.setBridge(getBridge()) ;    // Remember any bridge
+//        return x ;
+    }
+    
     
     @Override
     public QueryIterator eval(QueryIterator input, ExecutionContext execCxt)
@@ -42,7 +51,27 @@ public class OpSQL extends OpExtMain
         return new QueryIterSQL(this, input, execCxt) ;
     }
 
+    public QueryIterator exec(ExecutionContext execCxt)
+    {
+        return exec(BindingRoot.create(), execCxt) ; 
+    }
+
+    public QueryIterator exec(Binding parent, ExecutionContext execCxt)
+    {
+        if ( parent == null )
+            parent = BindingRoot.create() ;
+        QueryIterator qIter = QC.exec(this,
+                                      getRequest(),
+                                      parent, 
+                                      execCxt) ;
+        return qIter ;
+    }
+
+
     public Op getOriginal() { return originalOp ; }
+    public Op effectiveOp() 
+    { return originalOp ; }
+
     public SDBRequest getRequest() { return request ; }
 
     @Override

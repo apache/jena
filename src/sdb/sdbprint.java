@@ -42,13 +42,10 @@ public class sdbprint extends CmdArgsDB
     ArgDecl argDeclPrint = new ArgDecl(ArgDecl.HasValue, "print") ;
 
     boolean printQuery = false ;
-
     boolean printPrefix = false ;
-
     boolean printOp = false ;
-
     boolean printSqlNode = false ;
-
+    boolean printPlan = false ;
     boolean printSQL = false ;
     public static void main (String [] argv)
     {
@@ -61,7 +58,7 @@ public class sdbprint extends CmdArgsDB
         super.addModule(modQuery) ;
         super.getUsage().startCategory("SQL") ;
         super.add(argDeclPrintSQL, "--sql", "Print SQL") ;
-        super.add(argDeclPrint, "--print=", "Print any of query, prefix, op, sqlnode, SQL") ;
+        super.add(argDeclPrint, "--print=", "Print any of query, prefix, op, sqlnode, SQL, plan") ;
     }
 
     @Override
@@ -90,6 +87,7 @@ public class sdbprint extends CmdArgsDB
             else if ( arg.equalsIgnoreCase("Op"))       { printOp = true ; }
             else if ( arg.equalsIgnoreCase("SqlNode"))  { printSqlNode = true ; }
             else if ( arg.equalsIgnoreCase("sql"))      { printSQL = true ; }
+            else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
             else
                 throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, prefix, op, sqlNode, sql") ;
         }
@@ -113,7 +111,7 @@ public class sdbprint extends CmdArgsDB
     
     private void compilePrint(Store store, Query query)
     {
-        if ( !printQuery && ! printPrefix && ! printOp && ! printSqlNode && ! printSQL )
+        if ( !printQuery && ! printPrefix && ! printOp && ! printSqlNode && ! printSQL && ! printPlan )
             printSQL = true ;
         
         if ( isVerbose() )
@@ -157,6 +155,12 @@ public class sdbprint extends CmdArgsDB
         {
             divider() ;
             PrintSDB.printSQL(op) ;
+        }
+        
+        if ( printPlan )
+        {
+            divider() ;
+            System.out.print(qe.getPlan().toString()) ;
         }
     }
 

@@ -176,6 +176,9 @@ public class QC
                 // Destructive
                 RS.printResultSet(jdbcResultSet) ;
             try {
+                // And check this is called once per SQL.
+                if ( opSQL.getBridge() == null )
+                    System.err.println("Null bridge") ;
                 return opSQL.getBridge().assembleResults(jdbcResultSet, binding, execCxt) ;
             } finally { jdbcResultSet.close() ; }
         } catch (SQLException ex)

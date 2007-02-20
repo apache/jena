@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterRepeatApply;
+import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.SDBException;
 
 public class QueryIterSQL extends QueryIterRepeatApply
@@ -30,24 +31,32 @@ public class QueryIterSQL extends QueryIterRepeatApply
     @Override
     protected QueryIterator nextStage(Binding binding)
     {
-        QueryCompiler qc = opSQL.getRequest().getStore().getQueryCompilerFactory().createQueryCompiler(opSQL.getRequest()) ;
-        Op op2 = OpSubstitute.substitute(opSQL.getOriginal(), binding) ;
-        Op op = qc.compile(op2) ;
-        if ( op instanceof OpSQL )
+        OpSQL execSQL = this.opSQL ;
+
+        if ( binding != null && ! isRoot(binding) )
         {
-            // See QueryEngineSDB for duplicate code.
-            //Move to OpSQL.exec();
-            OpSQL opSQL = (OpSQL)op ;
-            ExecutionContext execCxt = getExecContext() ;
-            QueryIterator qIter = QC.exec(opSQL,
-                                          opSQL.getRequest(),
-                                          binding, 
-                                          execCxt) ;
-            return qIter ;
+            QueryCompiler qc = opSQL.getRequest().getStore().getQueryCompilerFactory().createQueryCompiler(opSQL.getRequest()) ;
+            Op op2 = OpSubstitute.substitute(opSQL.getOriginal(), binding) ;
+            Op op = qc.compile(op2) ;
+            if ( op instanceof OpSQL )
+                execSQL = (OpSQL)op ;
+            else
+                throw new SDBException("Failed to recompile the OpSQL to an OpSQL") ;
         }
-        throw new SDBException("Failed to recompile the OpSQL to an OpSQL") ;
+
+        return execSQL.exec(binding, getExecContext()) ;
+    }
+    
+    private static boolean isRoot(Binding binding)
+    {
+        return ! binding.vars().hasNext() ; 
     }
 
+    @Override
+    public void output(IndentedWriter out)
+    {
+        opSQL.output(out) ;
+    }
 }
 
 /*

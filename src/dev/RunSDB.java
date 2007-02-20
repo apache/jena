@@ -56,8 +56,8 @@ public class RunSDB
         String queryFile = "Q.rq" ;
         String dataFile = "D.ttl" ;
         
-        queryFile = "testing/Algebra/filter-nested-2.rq" ;
-        dataFile  = "testing/Algebra/data.ttl" ;
+//        queryFile = "testing/Algebra/filter-nested-2.rq" ;
+//        dataFile  = "testing/Algebra/data.ttl" ;
         
         System.out.println(QueryFactory.read(queryFile)) ;
         
@@ -73,6 +73,7 @@ public class RunSDB
         String a[] = {"--format", "--load="+dataFile,"--sdb=sdb.ttl", "--query="+queryFile } ;
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
+        new sdb.sdbprint(new String []{"--sdb=sdb.ttl", "--print=plan", "--file=Q.rq"}).main() ; 
         sdb.sdbquery.main(a) ;
      }
 

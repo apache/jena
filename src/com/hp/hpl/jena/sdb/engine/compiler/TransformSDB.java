@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-
 public class TransformSDB extends TransformCopy
 {
     private static Log log = LogFactory.getLog(TransformSDB.class) ;

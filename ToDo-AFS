@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Change static .main from .mainAndExit() to call .main()
+  Check for other exists
+  
 + Prepared statement query cache?
   When will it be beneficial - GraphSDB?
 
