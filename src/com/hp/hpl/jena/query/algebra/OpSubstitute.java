@@ -78,6 +78,8 @@ public class OpSubstitute extends TransformCopy
         ExprList exprs = filter.getExprs().copySubstitute(binding, true) ;
         return OpFilter.filter(exprs, op) ; 
     }
+
+    //public Op transform(OpExt op) {}
     
     private static Node substitute(Binding b, Node n)
     {

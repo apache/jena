@@ -10,6 +10,9 @@ ARQ2-beta
 
 -----
 
++ Cmds: Change static .main from .mainAndExit() to call .main()
+  Check for other exits
+
 + QueryIterProject prints as QueryIterConvert because QueryIterConvert is the real worker.
   Check all uses of QueryIteratorWrapped
   

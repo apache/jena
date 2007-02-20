@@ -21,10 +21,6 @@ import com.hp.hpl.jena.query.core.Var;
 
 public class VarFinder
 {
-    // TODO Consider doing this once and caching the results in this VarFinder.
-    // Op ==> results map.
-    // Need filter stuff as well.
-    
     public static Set optDefined(Op op)
     {
         return VarUsageVisitor.apply(op).optDefines ;
@@ -90,6 +86,12 @@ public class VarFinder
         }
         
         //@Override
+        public void visit(OpExt opExt)
+        {
+            opExt.effectiveOp().visit(this) ;
+        }
+        
+        //@Override
         public void visit(OpJoin opJoin)
         {
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opJoin.getLeft()) ;
@@ -111,8 +113,8 @@ public class VarFinder
             optDefines.addAll(rightUsage.defines) ;     // Asymmetric.
             optDefines.addAll(rightUsage.optDefines) ;
             
-            // Remove any defintites that are in the optionals 
-            // as, overall, they are defintites 
+            // Remove any definites that are in the optionals 
+            // as, overall, they are definites 
             optDefines.removeAll(leftUsage.defines) ;
         }
 
