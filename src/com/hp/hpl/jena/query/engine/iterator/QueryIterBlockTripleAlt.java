@@ -22,7 +22,7 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class QueryIterBlockTripleAlt extends QueryIter1
 {
-    BasicPattern pattern ;          // List of Triples
+    private BasicPattern pattern ;
     private Graph graph ;
     private QueryIterator output ;
     
