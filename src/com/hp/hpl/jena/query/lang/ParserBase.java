@@ -9,22 +9,20 @@ package com.hp.hpl.jena.query.lang;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.* ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.query.expr.* ;
-import com.hp.hpl.jena.query.core.*;
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.syntax.Element;
 import com.hp.hpl.jena.query.syntax.ElementGroup;
-import com.hp.hpl.jena.query.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.query.syntax.TripleCollector;
 import com.hp.hpl.jena.query.util.*;
-
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -246,11 +244,10 @@ public class ParserBase
     protected void endBasicGraphPattern()
     { oldLabels.addAll(activeLabelMap.getLabels()) ; }
     
-    // Management of the Blank Node label map. 
-    protected void startTriplesBlock(ElementTriplesBlock blk)
+    protected void startTriplesBlock()
     { }
     
-    protected void endTriplesBlock(ElementTriplesBlock blk)
+    protected void endTriplesBlock()
     { } 
 
     // On entry to a new group, the current BGP is ended.

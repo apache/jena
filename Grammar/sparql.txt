@@ -24,10 +24,95 @@ NON-TERMINALS
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
 // ---- General Graph Pattern 
-	GroupGraphPattern	:=	<LBRACE> GraphPatternElement <RBRACE>
-// Without {}
-	GraphPatternElement	:=	( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? GraphPatternElement )?
+	GroupGraphPattern	:=	<LBRACE> ( TriplesBlock )? ( ( GraphPatternNotTriples | Filter ) ( <DOT> )? ( TriplesBlock )? )* <RBRACE>
 	TriplesBlock	:=	TriplesSameSubject ( <DOT> ( TriplesBlock )? )?
+// @@ Ready to be deleted
+// Element GroupGraphPattern() : { Element el = null ; ElementTriplesBlock acc = null ; }
+// {
+//     { ElementGroup elg = new ElementGroup() ; }
+//   <LBRACE>
+//       { startGroup(elg) ; }
+//   // Ensure two BGP's can't be next to each other
+//   // Done by seeing if there is a non-BGP and recursing
+//   // if there is an intermediate
+//   (
+//     { acc = new ElementTriplesBlock() ;
+//       startTriplesBlock(acc) ;
+//     }
+//     el = TriplesBlock(acc)
+//     { endTriplesBlock(acc) ;
+//       elg.addElement(el) ; } 
+//   )?
+//   (
+//     ( el = GraphPatternNotTriples() | el = Filter() )
+//     { elg.addElement(el) ; }
+//     (<DOT>)?
+// 
+//     (
+//       { acc = new ElementTriplesBlock() ;
+//         startTriplesBlock(acc) ;
+//       }
+//       el = TriplesBlock(acc)
+//       { endTriplesBlock(acc) ;
+//         elg.addElement(el) ; } 
+//     )?
+//   )*
+//       { endGroup(elg) ; }
+//   <RBRACE>
+//     { return elg ; }
+// }
+
+// Element GroupGraphPattern() : {}
+// {
+//     { ElementGroup elg = new ElementGroup() ; }
+//   <LBRACE>
+//       { startGroup(elg) ; }
+//     GraphPatternElement(elg)
+//       { endGroup(elg) ; }
+//   <RBRACE>
+//     { return elg ; }
+// }
+// 
+// 
+// // Without {}
+// // If the recusion is removed can roll GraphPatternElement into GroupGraphPattern()
+// 
+// void GraphPatternElement(ElementGroup elg) : 
+//     { Element el = null ; ElementTriplesBlock acc = null ; }
+// {
+//   // Ensure two BGP's can't be next to each other
+//   // Done by seeing if there is a non-BGP and recursing
+//   // if there is an intermediate
+//   (
+//     { acc = new ElementTriplesBlock() ;
+//       startTriplesBlock(acc) ;
+//     }
+//     el = TriplesBlock(acc)
+//     { endTriplesBlock(acc) ;
+//       elg.addElement(el) ; } 
+//   )?
+//   (
+//     ( el = GraphPatternNotTriples()
+//     | el = Filter()                 
+//     )
+//     { elg.addElement(el) ; }
+//     (<DOT>)?
+//     GraphPatternElement(elg)
+//   )?
+// }
+// 
+// 
+// Element TriplesBlock(ElementTriplesBlock acc) : { }
+// {
+//   { if ( acc == null )
+//       acc = new ElementTriplesBlock() ;
+//   }
+//   TriplesSameSubject(acc)
+//   ( <DOT> (TriplesBlock(acc))? )?
+//     { return acc ; }
+// }
+
+
 // -----
 	GraphPatternNotTriples	:=	( OptionalGraphPattern | GroupOrUnionGraphPattern | GraphGraphPattern )
 // ---- Definitions of each pattern element
