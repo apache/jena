@@ -10,17 +10,17 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.db.impl.DBQueryHandler;
 import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
+import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriples;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTripleAlt;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTriples;
+import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.Utils;
 
 public class StageBasic implements Stage
 {
+    public static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
     private BasicPattern pattern ;
 
     public StageBasic(BasicPattern pattern) { this.pattern = pattern ; }
@@ -44,13 +44,13 @@ public class StageBasic implements Stage
         if ( qh instanceof DBQueryHandler )
             return QueryIterBlockTriples.create(input, pattern, cxt) ;
         
-        // If in-memory and allowing alt matching ...
-        if ( qh instanceof SimpleQueryHandler &&
-             cxt.getContext().isTrueOrUndef(PlanTriples.altMatcher) )
-        {
-            // The alt matcher avoids thread creation - makes a difference when called very heavily.
-            return QueryIterBlockTripleAlt.create(input, pattern, cxt) ;
-        }
+//        // If in-memory and allowing alt matching ...
+//        if ( qh instanceof SimpleQueryHandler &&
+//             cxt.getContext().isTrueOrUndef(altMatcher) )
+//        {
+//            // The alt matcher avoids thread creation - makes a difference when called very heavily.
+//            return QueryIterBlockTripleAlt.create(input, pattern, cxt) ;
+//        }
         
         // When in doubt ... use the general pass-through to graph query handler matcher.
         return QueryIterBlockTriples.create(input, pattern, cxt) ;

@@ -58,22 +58,39 @@ public class CommandLineBase
     
     /** Process String[] to a list of tokens.
      *  All "=" and ":" terms are split.
+     *  Make -flag/--flag consistent.
      * @param argv The words of the command line.
      */    
     private List processArgv(String[] argv)
     {
+        // Combine with processedArgs/process?
         List argList = new ArrayList() ;
+        
+        boolean positional = false ;
         
         for ( int i = 0 ; i < argv.length ; i++ )
         {
             String argStr = argv[i] ;
+            
             if ( ! argStr.startsWith("-") )
+                positional = true ;
+                // and get caught by next if statement 
+            
+            if ( positional )
             {
                 argList.add(argStr) ; 
                 continue ;
             }
             
+            if ( argStr.equals("-") || argStr.equals("--") )
+            {
+                positional = true ;
+                argList.add("--") ; 
+                continue ;
+            }
+            
             // Starts with a "-"
+            // Do not canonicalize positional arguments.
             if ( !argStr.startsWith("--") )
                 argStr = "-"+argStr ;
             

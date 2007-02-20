@@ -69,7 +69,7 @@ public class QueryTest extends TestCaseARQ
         if ( ! isRDQLtest )
         {
             resetNeeded = true ;
-            ARQ.setTrue(ARQ.graphNoSameValueAs) ;
+            ARQ.setTrue(ARQ.strictGraph) ;
         }
         // Sort out data.
         // Not here - done during test execution because it needs to look in the query for source URIs
@@ -80,7 +80,7 @@ public class QueryTest extends TestCaseARQ
     protected void tearDown() throws Exception
     {
         if ( resetNeeded )
-            ARQ.setFalse(ARQ.graphNoSameValueAs) ;
+            ARQ.setFalse(ARQ.strictGraph) ;
         super.tearDown() ;
     }
     

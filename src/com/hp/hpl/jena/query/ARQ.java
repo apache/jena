@@ -108,8 +108,8 @@ public class ARQ
      * value testing.  Needed for DAWG tests where matching is exact
      * and results compared by graph-equivalence.
      */
-    public static final Symbol graphNoSameValueAs =
-        ARQConstants.allocSymbol("graphNoSameValueAs") ;
+    public static final Symbol strictGraph =
+        ARQConstants.allocSymbol("strictGraph") ;
     
     private static Context globalContext = null ;
     
@@ -132,7 +132,7 @@ public class ARQ
         globalContext.setIfUndef(strictSPARQL,                  "false") ; 
         globalContext.setIfUndef(constantBNodeLabels,           "true") ;
         globalContext.setIfUndef(enablePropertyFunctions,       "true") ;
-        globalContext.setIfUndef(graphNoSameValueAs,            "false") ;
+        globalContext.setIfUndef(strictGraph,            "false") ;
         
         //globalContext.setIfUndef(useSAX,                        "false") ;
         globalContext.setIfUndef(enableRomanNumerals,           "false") ;

@@ -1,8 +1,8 @@
 PREFIX :    <http://example/>
 
-SELECT ?v
+SELECT ?x
 { 
- :x :p ?v . { FILTER(?v = 1) }
+ ?x :p "string"@en .
 
 #    ?x :p ?v . 
 

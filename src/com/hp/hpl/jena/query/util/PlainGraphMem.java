@@ -12,7 +12,9 @@ import com.hp.hpl.jena.mem.SmallGraphMem;
 import com.hp.hpl.jena.util.iterator.*;
 
 /** A lightweight implementation of graph that uses syntactic identity
- * for find(), that is, .equals(), not .sameValueAs().
+ * for find(), that is, .equals(), not .sameValueAs(), and also compares
+ * language tags canonically (as lowercase).
+ * 
  * Suitable for small graph only (no indexing of s/p/o)
  * 
  * @author Andy Seaborne
@@ -65,8 +67,28 @@ public class PlainGraphMem extends SmallGraphMem
     
     private static boolean equalNode(Node m, Node n)
     {
-        // m should not be null unless .getMatchXXXX used to get the node. 
+        // m should not be null unless .getMatchXXXX used to get the node.
+        // Language tag canonicalization
+        n = fixupNode(n) ;
+        m = fixupNode(m) ;
         return (m==null) || (m == Node.ANY) || m.equals(n) ;
+    }
+    
+    private static Node fixupNode(Node node)
+    {
+        if ( node == null || node == Node.ANY )
+            return node ;
+
+        // RDF says ... language tags should be canonicalized to lower case.
+        if ( node.isLiteral() )
+        {
+            String lang = node.getLiteralLanguage() ;
+            if ( lang != null && ! lang.equals("") )
+                node = Node.createLiteral(node.getLiteralLexicalForm(),
+                                          lang.toLowerCase(),
+                                          node.getLiteralDatatype()) ;
+        }
+        return node ; 
     }
     
     static class TripleMatchFilterEquality extends Filter

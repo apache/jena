@@ -15,13 +15,11 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingImmutable;
-import com.hp.hpl.jena.query.engine.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriplesBlock;
 import com.hp.hpl.jena.query.engine.iterator.*;
+import com.hp.hpl.jena.query.engine.main.StageBuilder;
 import com.hp.hpl.jena.query.engine.main.iterator.QueryIterSort;
 import com.hp.hpl.jena.query.engine.ref.table.TableSimple;
 import com.hp.hpl.jena.query.expr.ExprList;
-import com.hp.hpl.jena.query.syntax.ElementTriplesBlock;
 
 
 class EvaluatorSimple implements Evaluator
@@ -41,13 +39,7 @@ class EvaluatorSimple implements Evaluator
 
     public Table basicPattern(BasicPattern pattern)
     {
-        ElementTriplesBlock bgp = new ElementTriplesBlock() ; 
-        bgp.getTriples().addAll(pattern) ;
-        // Extract/simplify to scrap PlanBasicGraphPattern.make and the PropFunc
-        // TODO Remove Plan-ness
-        // Turn into a real PlanBasicGraphPattern (with property function sorting out)
-        PlanElement planElt = PlanTriplesBlock.make(execCxt.getContext(), bgp) ;
-        QueryIterator qIter = planElt.build(Algebra.makeRoot(execCxt), execCxt) ;
+        QueryIterator qIter = StageBuilder.compile(pattern, Algebra.makeRoot(execCxt), execCxt) ;
         return TableFactory.create(qIter) ;
     }
 

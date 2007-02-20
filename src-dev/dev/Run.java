@@ -48,12 +48,12 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        runQExpr() ;
+        //runQExpr() ;
         //print() ;
         //code() ;
         //classifyJ() ;
         //classifyLJ() ;
-        QueryEngineRef.register() ;
+        //QueryEngineRef.register() ;
         execQuery("D.ttl", "Q.rq") ;
         print() ;
         query() ;

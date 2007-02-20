@@ -1,6 +1,7 @@
 @prefix   :         <http://example/> .
 
-:x :p 1 .
+:x1 :p "string"@EN .
+:x2 :p "string"@en .
 
 ## :x1 :p 1 .
 ## :x2 :p 2 .

@@ -27,7 +27,7 @@ public class GraphUtils
     
     private static RefBoolean usePlainGraph = null ;
     static {
-        usePlainGraph = new RefBoolean(ARQ.graphNoSameValueAs) ;
+        usePlainGraph = new RefBoolean(ARQ.strictGraph) ;
     }
 
     // These functions control creating models for datasets.
