@@ -33,10 +33,10 @@ public class query extends CmdARQ
     
     public static void main (String [] argv)
     {
-        new query(argv).mainAndExit() ;
+        new query(argv).main() ;
     }
     
-    protected query(String[] argv)
+    public query(String[] argv)
     {
         super(argv) ;
         super.addModule(modQuery) ;

@@ -45,7 +45,7 @@ public abstract class CmdMain extends CmdLineArgs
     { main(true, true) ; }
      
     /** Run command */
-    public void main(boolean exitOnSuccess, boolean exitOnFailure)
+    public int main(boolean exitOnSuccess, boolean exitOnFailure)
     {
         try { mainMethod() ; }
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
@@ -53,13 +53,13 @@ public abstract class CmdMain extends CmdLineArgs
         { 
             System.err.println(ex.getMessage()) ;
             if ( exitOnFailure ) System.exit(2) ;
-            return ;
+            return 2 ;
         }
         catch (IllegalArgumentException ex)
         {
             System.err.println(ex.getMessage()) ;
             if ( exitOnFailure ) System.exit(1) ;
-            return ; 
+            return 1 ; 
         }
         catch (CmdException ex)
         {
@@ -71,10 +71,11 @@ public abstract class CmdMain extends CmdLineArgs
                 ex.getCause().printStackTrace(System.err) ;
             
             if ( exitOnFailure ) System.exit(1) ;
-            return ;
+            return 1 ;
         }
         if ( exitOnSuccess ) 
             System.exit(0) ;
+        return 0 ;
     }
 
     protected final void mainMethod()

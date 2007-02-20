@@ -24,10 +24,10 @@ public class rset extends CmdARQ
 
     public static void main(String [] argv)
     {
-        new rset(argv).mainAndExit() ;
+        new rset(argv).main() ;
     }
 
-    protected rset(String[] argv)
+    public rset(String[] argv)
     {
         super(argv) ;
         super.addModule(modInput) ;

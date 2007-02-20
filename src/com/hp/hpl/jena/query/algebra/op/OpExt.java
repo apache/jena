@@ -15,6 +15,7 @@ import com.hp.hpl.jena.query.algebra.Op;
  */
 public interface OpExt extends Op
 { 
+    // TODO Have boolean linearSafe(???) - Join and LeftJoin separate?
     
     /** A copy - immutable OpExt subclasses can return 'this' */
     public OpExt copy() ;
