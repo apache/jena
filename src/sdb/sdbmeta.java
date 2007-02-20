@@ -35,12 +35,12 @@ public class sdbmeta extends CmdArgsDB
     
     String format = "N3" ;
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
-        new sdbmeta(argv).mainAndExit() ;
+        new sdbmeta(argv).main() ;
     }
     
-    protected sdbmeta(String[] argv)
+    protected sdbmeta(String... argv)
     {
         super(argv) ;
         super.add(argDeclSyntax) ;

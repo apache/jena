@@ -7,6 +7,7 @@
 package dev;
 
 import junit.framework.TestSuite;
+import static sdb.SDBCmd.* ;
 import arq.cmd.CmdUtils;
 import arq.cmd.ResultsFormat;
 
@@ -70,41 +71,49 @@ public class RunSDB
      public static void runQuery(String queryFile, String dataFile)
      {
         //String a[] = {"-v", "--time","--sdb=Store/sdb-hsqldb-file.ttl", "--query=Q.rq" } ;
-        String a[] = {"--format", "--load="+dataFile,"--sdb=sdb.ttl", "--query="+queryFile } ;
+//        String a[] = {"--format", "--load="+dataFile,"--sdb=sdb.ttl", "--query="+queryFile } ;
+        
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
-        new sdb.sdbprint(new String []{"--sdb=sdb.ttl", "--print=plan", "--file=Q.rq"}).main() ; 
-        sdb.sdbquery.main(a) ;
+         setSDBConfig("sdb.ttl") ;
+         //setExitOnError(true) ;
+         sdbformat() ; 
+         sdbload(dataFile) ;
+         sdbprint("--print=plan", "--file=Q.rq") ; 
+         sdbquery("--file=Q.rq") ;
+         System.exit(0) ;
      }
 
      public static void runQuery(String queryFile)
      {
-        //String a[] = {"-v", "--time","--sdb=Store/sdb-hsqldb-file.ttl", "--query=Q.rq" } ;
-        String a[] = {"--sdb=sdb.ttl", "--query="+queryFile } ;
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
-        sdb.sdbquery.main(a) ;
+        sdbquery("--sdb=sdb.ttl", "--query="+queryFile ) ;
      }
      
      public static void runInMem(String queryFile, String dataFile)
      {
-        // Run with normal engine
-        Query query = QueryFactory.read(queryFile) ;
-        Model model = FileManager.get().loadModel(dataFile) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-        QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
+         if ( true )
+             sparql("--data="+dataFile, "--query="+queryFile) ;
+         else
+         {
+             Query query = QueryFactory.read(queryFile) ;
+             Model model = FileManager.get().loadModel(dataFile) ;
+             QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+             QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
+         }
     }
     
     public static void runPrint()
     {
         runPrint("Q.rq") ;
+        System.exit(0) ;
     }
     
     public static void runPrint(String filename)
     {
         //QueryCompilerBasicPattern.printAbstractSQL = true ;
-        String[] a = {"--print=sql", "--print=op", "--sdb=sdb.ttl", "--query="+filename} ;
-        sdb.sdbprint.main(a) ;
+        sdb.sdbprint.main("--print=sql", "--print=op", "--sdb=sdb.ttl", "--query="+filename) ;
         System.exit(0) ;
     }
     

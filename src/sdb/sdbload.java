@@ -38,14 +38,14 @@ public class sdbload extends CmdArgsDB
     
     private static ArgDecl argDeclTruncate = new ArgDecl(false, "truncate") ;
     
-    public static void main (String [] argv)
+    public static void main(String... argv)
     {
-        new sdbload(argv).mainAndExit() ;
+        new sdbload(argv).main() ;
     }
     
     String filename = null ;
 
-    public sdbload(String[] args)
+    public sdbload(String... args)
     {
         super(args);
         add(argDeclTruncate) ;

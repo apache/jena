@@ -24,12 +24,12 @@ public class sdbsql extends CmdArgsDB
     
     static public final String usage = "sdbsql --sdb <SPEC> SQLSTRING | --file=FILE" ;
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
-        new sdbsql(argv).mainAndExit() ;
+        new sdbsql(argv).main() ;
     }
 
-    private sdbsql(String[] argv)
+    private sdbsql(String... argv)
     {
         super(argv) ;
         add(argDeclQuery, "--file=", "SQL command to execute (or positional arguments)") ;

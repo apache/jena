@@ -5,7 +5,7 @@ SDB ToDo list (and general notes)
   Check for other exists
   
 + Prepared statement query cache?
-  When will it be beneficial - GraphSDB?
+  When will it be beneficial - GraphSDB and add/delete single triples?
 
 + Value-based hashing
   String version - and have fixed choice of xsd:string or plain string for terms.

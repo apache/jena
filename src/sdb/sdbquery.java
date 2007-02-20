@@ -55,12 +55,12 @@ public class sdbquery extends CmdArgsDB
     ModQueryIn    modQuery =    new ModQueryIn() ;
     ModResultsOut modResults =  new ModResultsOut() ;
 
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
-        new sdbquery(argv).mainAndExit() ;
+        new sdbquery(argv).main() ;
     }
    
-    protected sdbquery(String[] args)
+    protected sdbquery(String... args)
     {
         super(args);
         addModule(modQuery) ;

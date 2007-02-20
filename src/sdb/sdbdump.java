@@ -34,12 +34,12 @@ public class sdbdump extends CmdArgsDB
 
     static ArgDecl argDeclSyntax = new ArgDecl(true, "out") ;
 
-    public static void main (String [] argv)
+    public static void main(String ... argv)
     {
-        new sdbdump(argv).mainAndExit() ;
+        new sdbdump(argv).main() ;
     }
 
-    protected sdbdump(String[] args)
+    protected sdbdump(String ... args)
     {
         super(args);
         add(argDeclSyntax) ;

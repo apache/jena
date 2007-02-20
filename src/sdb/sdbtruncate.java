@@ -20,14 +20,14 @@ import com.hp.hpl.jena.query.util.Utils;
 
 public class sdbtruncate extends CmdArgsDB
 {
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
-        new sdbtruncate(argv).mainAndExit() ;
+        new sdbtruncate(argv).main() ;
     }
 
     private String dbToZap = null ;
     
-    protected sdbtruncate(String[] args)
+    protected sdbtruncate(String... args)
     {
         super(args);
         

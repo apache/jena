@@ -36,12 +36,12 @@ public class sdbinfo extends CmdArgsDB
     String format = "N3" ; 
 
 
-    public static void main (String [] argv)
+    public static void main(String ... argv)
     {
-        new sdbinfo(argv).mainAndExit() ;
+        new sdbinfo(argv).main() ;
     }
     
-    protected sdbinfo(String[] args)
+    protected sdbinfo(String... args)
     {
         super(args);
         add(argDeclSyntax) ;

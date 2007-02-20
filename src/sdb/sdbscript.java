@@ -15,7 +15,7 @@ public class sdbscript
 {
     private static Log log = LogFactory.getLog(sdbscript.class) ;
     
-    public static void main(String[] a)
+    public static void main(String... a)
     {
         if ( a.length == 0 )
             a = new String[]{ "script.rb" } ;

@@ -18,12 +18,12 @@ import com.hp.hpl.jena.sdb.store.StoreFormatter;
 
 public class sdbformat extends CmdArgsDB
 {
-    public static void main(String [] argv)
+    public static void main(String ... argv)
     {
-        new sdbformat(argv).mainAndExit() ;
+        new sdbformat(argv).main() ;
     }
     
-    protected sdbformat(String[] args)
+    protected sdbformat(String... args)
     {
         super(args);
     }
@@ -37,13 +37,13 @@ public class sdbformat extends CmdArgsDB
     @Override
     protected void processModulesAndArgs()
     {
-        if ( getNumPositional() == 1 )
-        {
-            String dbToZap = getPositionalArg(0) ;
-            getModStore().setDbName(dbToZap) ;
-        }
-        else
-            cmdError("Must give the database name explicitly") ;
+//        if ( getNumPositional() == 1 )
+//        {
+//            String dbToZap = getPositionalArg(0) ;
+//            getModStore().setDbName(dbToZap) ;
+//        }
+//        else
+//            cmdError("Must give the database name explicitly") ;
         
 //        // Safety check
 //        if ( !contains("dbName") )

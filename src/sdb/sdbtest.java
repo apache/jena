@@ -30,14 +30,14 @@ public class sdbtest extends CmdArgsDB
 {
     public static final String usage = "sdbtest --sdb <SPEC> --schema schemaName [--direct] [manifest]" ;
     
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
-        new sdbtest(argv).mainAndExit() ;
+        new sdbtest(argv).main() ;
     }
     
     String filename = null ;
 
-    protected sdbtest(String[] args)
+    protected sdbtest(String... args)
     {
         super(args);
     }

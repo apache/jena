@@ -47,12 +47,12 @@ public class sdbprint extends CmdArgsDB
     boolean printSqlNode = false ;
     boolean printPlan = false ;
     boolean printSQL = false ;
-    public static void main (String [] argv)
+    public static void main (String... argv)
     {
-        new sdbprint(argv).mainAndExit() ;
+        new sdbprint(argv).main() ;
     }
     
-    public sdbprint(String[] args)
+    public sdbprint(String... args)
     {
         super(args);
         super.addModule(modQuery) ;
