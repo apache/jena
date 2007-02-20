@@ -17,7 +17,7 @@ import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingImmutable;
 import com.hp.hpl.jena.query.engine.iterator.*;
 import com.hp.hpl.jena.query.engine.main.StageBuilder;
-import com.hp.hpl.jena.query.engine.main.iterator.QueryIterSort;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterSort;
 import com.hp.hpl.jena.query.engine.ref.table.TableSimple;
 import com.hp.hpl.jena.query.expr.ExprList;
 

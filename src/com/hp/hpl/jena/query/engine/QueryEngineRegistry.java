@@ -12,6 +12,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
 
 
 public class QueryEngineRegistry
@@ -33,8 +34,7 @@ public class QueryEngineRegistry
     private static void init()
     {
         registry = new QueryEngineRegistry() ;
-        DefaultEngineFactory.register(registry) ;
-        //registry.add(new DefaultEngineFactory()) ;
+        registry.add(QueryEngineMain.getFactory()) ;
     }
     
     /** Locate a suitable factory for this query and dataset from the default registry

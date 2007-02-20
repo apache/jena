@@ -9,10 +9,10 @@ package com.hp.hpl.jena.query.engine.main;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.engine1.CompileException;
-import com.hp.hpl.jena.query.engine.engine1.compiler.PFuncOps;
 import com.hp.hpl.jena.query.pfunction.PropFuncArg;
 import com.hp.hpl.jena.query.pfunction.PropertyFunction;
 import com.hp.hpl.jena.query.pfunction.PropertyFunctionFactory;
@@ -43,12 +43,12 @@ public class StagePropertyFunction implements Stage
     {
         String uri = predicate.getURI() ;
         
-        PropertyFunctionRegistry registry = PFuncOps.chooseRegistry(execCxt.getContext()) ;
+        PropertyFunctionRegistry registry = chooseRegistry(execCxt.getContext()) ;
         PropertyFunctionFactory factory = registry.get(uri) ; 
         PropertyFunction propFunc = null ;
         
         if ( factory == null )
-            throw new CompileException("No property function for '"+uri+"'") ;
+            throw new QueryBuildException("No property function for '"+uri+"'") ;
 
         propFunc = factory.create(uri) ;
         propFunc.build(getSubjArgs(), getPredicate(), getObjArgs(), execCxt) ;
@@ -66,6 +66,15 @@ public class StagePropertyFunction implements Stage
     public PropFuncArg getSubjArgs()   { return subjArgs ; }
     public Node getPredicate()         { return predicate ; }
     public PropFuncArg getObjArgs()    { return objArgs ; }
+    
+    
+    static public PropertyFunctionRegistry chooseRegistry(Context context)
+    {
+        PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ; 
+        if ( registry == null )
+            registry = PropertyFunctionRegistry.get() ;
+        return registry ;
+    }
 }
 
 /*

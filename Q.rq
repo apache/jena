@@ -2,9 +2,9 @@ PREFIX :    <http://example/>
 
 SELECT ?x
 { 
- ?x :p "string"@en .
+##  ?x :p "string"@en .
 
-#    ?x :p ?v . 
+  { ?x :p ?v . } UNION { ?x :p ?v . }
 
 ##     # Case 1: Filter and BGPs.
 ##     # No join.

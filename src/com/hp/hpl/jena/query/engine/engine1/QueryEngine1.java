@@ -39,30 +39,9 @@ public class QueryEngine1 extends QueryEngineBase
 {
     private static Log log = LogFactory.getLog(QueryEngine1.class) ;
     
-    // -------- Factory
-    private static QueryEngineFactory factory = new QueryEngineFactory()
-    {
-        public boolean accept(Query query, Dataset dataset) 
-        { return true ; }
-
-        public QueryExecution create(Query query, Dataset dataset)
-        {
-            QueryEngine1 engine = new QueryEngine1(query) ;
-            engine.setDataset(dataset) ;
-            return engine ;
-        }
-    } ;
-    
-    static public void register()
-    {
-        QueryEngineRegistry.addFactory(factory) ;
-    }
-    
-    static public void unregister()
-    {
-        QueryEngineRegistry.removeFactory(factory) ;
-    }
-    // -------- Factory
+    static public QueryEngineFactory getFactory() { return factory ; } 
+    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
+    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
     
     private PlanElement plan = null ;           // The whole query
     private PlanElement planPattern = null ;    // Just the pattern (convenient).
@@ -279,6 +258,20 @@ public class QueryEngine1 extends QueryEngineBase
             orderConditions = query.getOrderBy() ;
         }
     }
+    
+    // -------- Factory
+    private static QueryEngineFactory factory = new QueryEngineFactory()
+    {
+        public boolean accept(Query query, Dataset dataset) 
+        { return true ; }
+
+        public QueryExecution create(Query query, Dataset dataset)
+        {
+            QueryEngine1 engine = new QueryEngine1(query) ;
+            engine.setDataset(dataset) ;
+            return engine ;
+        }
+    } ;
 }
 
 /*

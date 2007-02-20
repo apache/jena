@@ -10,6 +10,7 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.engine1.PlanElement;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterDefaulting;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.IndentedWriter;

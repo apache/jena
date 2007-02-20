@@ -3,7 +3,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.engine.engine1.iterator;
+package com.hp.hpl.jena.query.engine.iterator;
 
 import java.util.NoSuchElementException;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.query.util.Utils;
  * @version $Id: QueryIterDefaulting.java,v 1.6 2007/02/06 17:06:03 andy_seaborne Exp $
  */ 
 
-public class QueryIterDefaulting extends QueryIterPlan 
+public class QueryIterDefaulting extends QueryIter 
 {
     Binding defaultObject ;
     QueryIterator cIter ;

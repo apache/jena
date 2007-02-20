@@ -27,6 +27,7 @@ import com.hp.hpl.jena.query.util.IndentedWriter;
 
 public class QueryEngineMain extends QueryEngineOpBase
 {
+    static public QueryEngineFactory getFactory() { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
 

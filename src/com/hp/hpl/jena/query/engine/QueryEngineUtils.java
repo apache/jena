@@ -3,7 +3,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.engine.engine1;
+package com.hp.hpl.jena.query.engine;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;

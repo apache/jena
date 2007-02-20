@@ -10,9 +10,10 @@ package com.hp.hpl.jena.query.engine.engine1.plan;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+
+import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.engine1.CompileException;
 import com.hp.hpl.jena.query.engine.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine.engine1.PlanVisitor;
 import com.hp.hpl.jena.query.engine.engine1.compiler.PFuncOps;
@@ -51,7 +52,7 @@ public class PlanPropertyFunction extends PlanElement0
         PropertyFunction propFunc = null ;
         
         if ( factory == null )
-            throw new CompileException("No property function for '"+uri+"'") ;
+            throw new QueryBuildException("No property function for '"+uri+"'") ;
 
         propFunc = factory.create(uri) ;
         

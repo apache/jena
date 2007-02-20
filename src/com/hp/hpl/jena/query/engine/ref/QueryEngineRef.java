@@ -20,8 +20,9 @@ import com.hp.hpl.jena.query.util.Context;
 
 public class QueryEngineRef extends QueryEngineOpBase
 {
-    static public void register()   { QueryEngineRegistry.addFactory(factory) ; }
-    static public void unregister() { QueryEngineRegistry.removeFactory(factory) ; }
+    static public QueryEngineFactory getFactory()   { return factory ; } 
+    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
+    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
     
     public QueryEngineRef(Query q)
     { this(q, null) ; }

@@ -16,10 +16,10 @@ import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryEngineUtils;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingMap;
-import com.hp.hpl.jena.query.engine.engine1.QueryEngineUtils;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
 

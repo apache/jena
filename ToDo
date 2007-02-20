@@ -2,20 +2,20 @@
 
 ARQ2-beta
 + examples: 
-   example filter function
-   Own stage generator
-+ Engine1 cleanup (opt?), esp. examples!
+   example filter function, stage generator
 + Tests
++ Documentation
 
 -----
 
-+ QueryIterProject prints as QueryIterConvert because QueryIterConvert is the real worker.
-  Check all uses of QueryIteratorWrapped
++ Printing and QueryIterUnion , QueryIterConcat
   
 + Expose getActiveGraph to filter functions in some safe way because EXISTS will/might need it.
   FunctionBase - but how? Functions don't see ExecutionContext any more!
   Function - take ExecutionContext // FunctionBase, mask it?
   Or is EXISTS a different form?
+
++ ref.Eval - tidy up
 
 + Very simple non-streaming table usage.
   No iterators.

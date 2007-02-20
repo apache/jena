@@ -13,19 +13,13 @@ import com.hp.hpl.jena.query.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.engine.QueryEngineFactory;
 import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTriples;
 import com.hp.hpl.jena.query.util.Context;
 
 public class QueryEngineQuad extends QueryEngineRef
 {
-    static public void register()
-    {
-        // TODO Is this necessary?
-        QueryIterBlockTriples.rawMode = true ;
-        QueryEngineRegistry.addFactory(factory) ;
-    }
-    
-    static public void unregister() { QueryEngineRegistry.removeFactory(factory) ; }
+    static public QueryEngineFactory getFactory()   { return factory ; } 
+    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
+    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
     
     public QueryEngineQuad(Query q)
     {

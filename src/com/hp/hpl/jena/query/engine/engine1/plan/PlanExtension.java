@@ -9,6 +9,7 @@ package com.hp.hpl.jena.query.engine.engine1.plan;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.engine1.*;
@@ -38,7 +39,7 @@ public class PlanExtension extends PlanElement0
         ExtensionFactory factory = ExtensionRegistry.get().get(uri) ; 
         
         if ( factory == null )
-            throw new CompileException("No extension for '"+uri+"'") ;
+            throw new QueryBuildException("No extension for '"+uri+"'") ;
         
         Extension ext = factory.create(uri) ;
         ext.build(uri, element.getArgs()) ;

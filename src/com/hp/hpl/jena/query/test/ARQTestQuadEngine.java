@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.query.engine.ref.QueryEngineQuad;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.query.expr.E_Function;
 import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
@@ -19,38 +18,15 @@ import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
 /**
  * @author Andy Seaborne
  * @version $Id: TestReferenceEngine.java,v 1.11 2007/01/29 17:59:19 andy_seaborne Exp $
- * 
- * Run tests - used in developement to execute commands from within Eclipse as
- * a JUnit target.
  */
 
-public class ARQTestReferenceEngine extends TestCase
+public class ARQTestQuadEngine extends TestCase
 {
     public static TestSuite suite()
     {
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
-        return suiteRef() ;
-    }
-    
-//    private static TestSuite suiteAll()
-//    {
-//        TestSuite ts1 = suiteRef() ;
-//        TestSuite ts2 = suiteRef() ;
-//        TestSuite ts = new TestSuite("Engine2") ;
-//        ts.addTest(ts1) ;
-//        ts.addTest(ts2) ;
-//        return ts ;
-//    }
-    
-    // One or the other - the test suite does not take a query execution factory as a parameter. 
-    
-    private static TestSuite suiteRef()
-    {
-        QueryEngineRef.register() ;
-        TestSuite ts = suiteMaker() ;
-        //QueryEngineRef.unregister() ;
-        return ts ;
+        return suiteQuad() ;
     }
     
     private static TestSuite suiteQuad()

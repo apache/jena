@@ -16,27 +16,22 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.algebra.Algebra;
 import com.hp.hpl.jena.query.algebra.Op;
 import com.hp.hpl.jena.query.algebra.op.*;
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.core.DatasetGraph;
-import com.hp.hpl.jena.query.core.Quad;
-import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.Binding1;
 import com.hp.hpl.jena.query.engine.binding.BindingRoot;
-import com.hp.hpl.jena.query.engine.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriplesBlock;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.query.engine.main.StageBuilder;
 import com.hp.hpl.jena.query.engine.ref.table.TableEmpty;
 import com.hp.hpl.jena.query.engine.ref.table.TableUnit;
-import com.hp.hpl.jena.query.syntax.ElementTriplesBlock;
 
 public class Eval
 {
@@ -259,9 +254,7 @@ public class Eval
         
         ExecutionContext cxt = evaluator.getExecContext() ;
         DatasetGraph ds = cxt.getDataset() ;
-        
-        ElementTriplesBlock bgp = new ElementTriplesBlock() ;
-        bgp.getTriples().addAll(opQuad.getBasicPattern()) ;
+        BasicPattern pattern = opQuad.getBasicPattern() ;
         
         if ( ! opQuad.getGraphNode().isVariable() ) 
         {
@@ -276,12 +269,8 @@ public class Eval
             if ( g == null )
                 return new TableEmpty() ;
             ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-            // This enable PropertyFunctions.
-            // need to separate it out
-            // And use in opBGP.
-            PlanElement planElt = PlanTriplesBlock.make(cxt2.getContext(), bgp) ;
-            return TableFactory.
-                    create(planElt.build(Algebra.makeRoot(cxt2), cxt2)) ;
+            QueryIterator qIter = StageBuilder.compile(pattern, Algebra.makeRoot(cxt2), cxt2) ;
+            return TableFactory.create(qIter) ;
         }
         else
         {
@@ -296,11 +285,15 @@ public class Eval
                 
                 Graph g = cxt.getDataset().getNamedGraph(uri) ;
                 Binding b = new Binding1(BindingRoot.create(), gVar, Node.createURI(uri)) ;
-                QueryIterator qIter1 = new QueryIterSingleton(b, cxt) ;
                 ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-                PlanElement planElt = PlanTriplesBlock.make(cxt2.getContext(), bgp) ;
-                QueryIterator qIter = planElt.build(qIter1, cxt2) ;
-                concat.add(qIter) ;
+
+                // Eval the pattern, eval the variable, join.
+                // Pattern may be non-linear in tehvariable - do a pure execution.  
+                Table t1 = TableFactory.create(gVar, Node.createURI(uri)) ;
+                QueryIterator qIter = StageBuilder.compile(pattern, Algebra.makeRoot(cxt2), cxt2) ;
+                Table t2 = TableFactory.create(qIter) ;
+                Table t3 = evaluator.join(t1, t2) ;
+                concat.add(t3.iterator(cxt2)) ;
             }
             return TableFactory.create(concat) ;
         }
