@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.OpVars;
-import com.hp.hpl.jena.query.algebra.op.*;
+import com.hp.hpl.jena.query.algebra.*;
+import com.hp.hpl.jena.query.algebra.op.OpExt;
+import com.hp.hpl.jena.query.algebra.op.OpModifier;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;

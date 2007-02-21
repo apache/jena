@@ -111,10 +111,10 @@ public class QueryTestSDB extends TestCase
         }
         
         // Make sure a plain, no sameValueAs graph is used.
-        Object oldValue = ARQ.getContext().get(ARQ.graphNoSameValueAs) ;
-        ARQ.setTrue(ARQ.graphNoSameValueAs) ;
+        Object oldValue = ARQ.getContext().get(ARQ.strictGraph) ;
+        ARQ.setTrue(ARQ.strictGraph) ;
         Dataset ds = DatasetFactory.create(item.getDefaultGraphURIs(), item.getNamedGraphURIs()) ;
-        ARQ.getContext().set(ARQ.graphNoSameValueAs, oldValue) ;
+        ARQ.getContext().set(ARQ.strictGraph, oldValue) ;
         
         // ---- First, execute in-memory.
         //QueryExecution qExec1 = QueryExecutionFactory.create(query, ds) ;
