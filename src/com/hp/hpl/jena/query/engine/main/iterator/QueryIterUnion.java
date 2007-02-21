@@ -18,6 +18,9 @@ import com.hp.hpl.jena.query.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterRepeatApply;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.query.engine.main.QC;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Utils;
 
 
 /** Execute each sub stage against the input.
@@ -29,6 +32,7 @@ import com.hp.hpl.jena.query.engine.main.QC;
 public class QueryIterUnion extends QueryIterRepeatApply 
 {
     List subOps  ;
+    
     public QueryIterUnion(QueryIterator input,
                           List subOps,
                           ExecutionContext context)
@@ -51,7 +55,19 @@ public class QueryIterUnion extends QueryIterRepeatApply
         
         return unionQIter ;
     }
-
+    
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    { 
+        out.println(Utils.className(this)) ;
+        out.incIndent() ;
+        for ( Iterator iter = subOps.iterator() ; iter.hasNext() ; )
+        {
+            Op op = (Op)iter.next() ;
+            op.output(out, sCxt) ;
+        }
+        out.decIndent() ;
+        out.ensureStartOfLine() ;
+    }
 }
 
 /*

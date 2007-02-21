@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.query.util;
 
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,8 +22,9 @@ public class PrintUtils
             return thing.toString() ;
         }} ;
     
-
-    public static void printList(IndentedWriter out, List list, 
+    // Prints a collection (a List usually).  
+        
+    public static void printList(IndentedWriter out, Collection list, 
                                  String sep, Fmt itemFmt)
     {
         String sep$ = "" ; 
@@ -35,13 +37,13 @@ public class PrintUtils
         }
     }
 
-    public static void printList(IndentedWriter out, List list, String sep)
+    public static void printList(IndentedWriter out, Collection list, String sep)
     { printList(out, list, sep, itemFmt) ; }
 
-    public static void printList(IndentedWriter out, List list)
+    public static void printList(IndentedWriter out, Collection list)
     { printList(out, list, " ") ; }
 
-    public static void printList(PrintStream out, List list, 
+    public static void printList(PrintStream out, Collection list, 
                                  String sep, Fmt itemFmt)
     {
         String sep$ = "" ; 

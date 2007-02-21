@@ -19,7 +19,7 @@ import com.hp.hpl.jena.query.util.Utils;
  * @version $Id: QueryIterDefaulting.java,v 1.6 2007/02/06 17:06:03 andy_seaborne Exp $
  */ 
 
-public class QueryIterDefaulting extends QueryIter 
+public class QueryIterDefaulting extends QueryIter
 {
     Binding defaultObject ;
     QueryIterator cIter ;
@@ -27,10 +27,10 @@ public class QueryIterDefaulting extends QueryIter
     boolean returnDefaultObject = false ;
     boolean haveReturnedSomeObject = false ; 
 
-    public QueryIterDefaulting(QueryIterator _cIter, Binding _defaultObject, ExecutionContext qCxt) 
+    public QueryIterDefaulting(QueryIterator cIter, Binding _defaultObject, ExecutionContext qCxt) 
     {
         super(qCxt) ;
-        cIter = _cIter ;
+        this.cIter = cIter ;
         defaultObject = _defaultObject ;
     }
 

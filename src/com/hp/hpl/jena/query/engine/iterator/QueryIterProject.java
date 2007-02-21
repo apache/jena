@@ -15,27 +15,35 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingBase;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.PrintUtils;
+import com.hp.hpl.jena.query.util.Utils;
 
 
-public class QueryIterProject extends QueryIteratorWrapper
+public class QueryIterProject extends QueryIterConvert
 {
-    // Not a subclass of QueryIter1 -- the QueryIterConvert is though.
     Collection projectionVars ;
 
     public QueryIterProject(QueryIterator input, Collection vars, ExecutionContext qCxt)
     {
-        super(wrap(input, vars, qCxt)) ;
+        super(input, new Projection(vars), qCxt) ;
         Var.checkVarList(vars) ;
         projectionVars = vars ;
     }
 
-    private static QueryIterator wrap(QueryIterator input, Collection vars, ExecutionContext qCxt)
-    {
-        return new QueryIterConvert(input, new Projection(vars), qCxt) ;
-    }
-    
     public Collection getProjectionVars()   { return projectionVars ; }
 
+    protected void releaseResources()
+    {}
+
+    protected void details(IndentedWriter out, SerializationContext sCxt)
+    {
+        out.print(Utils.className(this)) ;
+        out.print(" ") ;
+        PrintUtils.printList(out, projectionVars) ;
+    }
+    
     static
     class Projection implements QueryIterConvert.Converter
     {

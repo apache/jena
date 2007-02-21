@@ -49,13 +49,11 @@ public class Run
     public static void main(String[] argv)
     {
         //runQExpr() ;
-        //print() ;
+        print() ;
         //code() ;
         //classifyJ() ;
         //classifyLJ() ;
-        //QueryEngineRef.register() ;
         execQuery("D.ttl", "Q.rq") ;
-        print() ;
         query() ;
     }
         

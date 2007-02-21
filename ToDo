@@ -8,8 +8,6 @@ ARQ2-beta
 
 -----
 
-+ Printing and QueryIterUnion , QueryIterConcat
-  
 + Expose getActiveGraph to filter functions in some safe way because EXISTS will/might need it.
   FunctionBase - but how? Functions don't see ExecutionContext any more!
   Function - take ExecutionContext // FunctionBase, mask it?

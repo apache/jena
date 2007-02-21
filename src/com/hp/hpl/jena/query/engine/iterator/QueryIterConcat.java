@@ -10,6 +10,8 @@ import java.util.*;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
+import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
 
 
@@ -102,6 +104,19 @@ public class QueryIterConcat extends QueryIter
             if ( qIter != null )
                 qIter.close() ;
         }
+    }
+    
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    { 
+        out.println(Utils.className(this)) ;
+        out.incIndent() ;
+        for ( Iterator iter = iteratorList.iterator() ; iter.hasNext() ; )
+        {
+            QueryIterator qIter = (QueryIterator)iter.next() ;
+            qIter.output(out, sCxt) ;
+        }
+        out.decIndent() ;
+        out.ensureStartOfLine() ;
     }
 }
 

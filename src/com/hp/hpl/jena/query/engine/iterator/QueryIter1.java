@@ -42,16 +42,26 @@ public abstract class QueryIter1 extends QueryIter
     
     protected abstract void releaseResources() ;
     
+    public static void releaseResources(QueryIterator qIter)
+    {
+        if ( qIter instanceof QueryIter1 )
+        {
+            QueryIter1 qIter1 = (QueryIter1)qIter ;
+            qIter1.releaseResources() ;
+        }
+    }
+    
     // Do better
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { 
-        getInput().output(out, sCxt) ;
+    {
         details(out, sCxt) ;
+        out.ensureStartOfLine() ;
+        out.incIndent() ;
+        getInput().output(out, sCxt) ;
+        out.decIndent() ;
         out.ensureStartOfLine() ;
     }
 
-    //protected abstract void details(IndentedWriter out, SerializationContext sCxt) ;
-    
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
         out.println(Utils.className(this)) ;

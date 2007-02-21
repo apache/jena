@@ -36,7 +36,10 @@ public class QueryIterConvert extends QueryIter1
         converter = c ;
     }
     
-    protected void releaseResources() {} 
+    protected void releaseResources()
+    {
+        QueryIter1.releaseResources(getInput()) ;
+    }
 
     public boolean hasNextBinding()
     {
@@ -54,7 +57,9 @@ public class QueryIterConvert extends QueryIter1
     }
 
     protected void details(IndentedWriter out, SerializationContext cxt)
-    { out.println(Utils.className(this)) ; }
+    { 
+        out.println(Utils.className(this)) ;
+    }
 }
 
 /*
