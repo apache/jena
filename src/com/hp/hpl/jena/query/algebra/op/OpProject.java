@@ -9,6 +9,8 @@ package com.hp.hpl.jena.query.algebra.op;
 import java.util.List;
 
 import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.OpVisitor;
+import com.hp.hpl.jena.query.algebra.Transform;
 import com.hp.hpl.jena.query.core.ARQNotImplemented;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ref.Evaluator;

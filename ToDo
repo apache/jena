@@ -33,7 +33,11 @@ ARQ2-beta
   
 + Property function to property path expression
 
-+ AltMatcher - Remove bnodes in QueryIterBlockTriplesAlt
++ Constant to control this
++ Non-distinguished variable removal.
+   StageBuilder - strict place
+   In a project (or pseudo project) - does it once.
+      Need test case : { _:a :p ?v. ?v :splitIRI (?ns ?ln) . _a :p ?w } 
 
 + testing QE1 and QE2 and QE3 in the same test run
 

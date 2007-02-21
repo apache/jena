@@ -4,53 +4,26 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra.op;
+package com.hp.hpl.jena.query.algebra;
 
+import com.hp.hpl.jena.query.algebra.op.*;
 
-public class OpVisitorBase implements OpVisitor
+public interface Transform
 {
+    public Op transform(OpUnit opUnit) ;
+    public Op transform(OpBGP opBGP) ;
+    public Op transform(OpDatasetNames dsNames) ;
+    public Op transform(OpQuadPattern quadPattern) ;
+    
+    public Op transform(OpFilter opFilter, Op subOp) ;
+    public Op transform(OpGraph opGraph, Op subOp) ;
 
-    public void visit(OpBGP opBGP)
-    {}
-
-    public void visit(OpJoin opJoin)
-    {}
-
-    public void visit(OpLeftJoin opLeftJoin)
-    {}
-
-    public void visit(OpUnion opUnion)
-    {}
-
-    public void visit(OpFilter opFilter)
-    {}
-
-    public void visit(OpGraph opGraph)
-    {}
-
-    public void visit(OpQuadPattern quadPattern)
-    {}
-
-    public void visit(OpDatasetNames dsNames)
-    {}
-
-    public void visit(OpUnit opUnit)
-    {}
-
-    public void visit(OpExt opExt)
-    {}
-
-    public void visit(OpOrder opOrder)
-    {}
-
-    public void visit(OpProject opProject)
-    {}
-
-    public void visit(OpDistinct opDistinct)
-    {}
-
-    public void visit(OpSlice opSlice)
-    {}
+    public Op transform(OpJoin opJoin, Op left, Op right) ;
+    public Op transform(OpLeftJoin opLeftJoin, Op left, Op right) ;
+    public Op transform(OpUnion opUnion, Op left, Op right) ;
+    
+    public Op transform(OpExt opExt) ;
+    
 }
 
 /*

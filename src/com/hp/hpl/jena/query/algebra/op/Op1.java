@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.query.algebra.op;
 
 import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.Transform;
 
 public abstract class Op1 extends OpBase
 {

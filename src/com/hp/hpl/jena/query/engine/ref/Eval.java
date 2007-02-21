@@ -20,6 +20,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.algebra.Algebra;
 import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.OpVisitor;
 import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.*;
 import com.hp.hpl.jena.query.engine.ExecutionContext;

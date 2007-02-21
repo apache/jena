@@ -8,6 +8,8 @@ package com.hp.hpl.jena.query.algebra.op;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.OpVisitor;
+import com.hp.hpl.jena.query.algebra.Transform;
 
 public class OpDatasetNames extends Op0
 {

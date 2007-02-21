@@ -11,10 +11,13 @@ import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterDistinguishedVars;
 import com.hp.hpl.jena.query.util.Context;
 
 public class StageBuilder
 {
+    public static boolean rawMode = true ;
+    
     public static QueryIterator compile(BasicPattern pattern, 
                                         QueryIterator input, 
                                         ExecutionContext execCxt)
@@ -25,6 +28,12 @@ public class StageBuilder
         StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
         StageList sList = gen.compile(pattern, execCxt) ;
         QueryIterator qIter = sList.build(input, execCxt) ;
+        
+        // Remove nondistinguished variables here.
+        // Can't do at any one stage because two stages may share a 
+        // nondistinguished variable.
+        if ( ! rawMode )
+            qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
         return qIter ;
     }
     

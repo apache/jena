@@ -11,9 +11,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-
+import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingUtils;
 
@@ -53,14 +52,15 @@ public class QueryEngineUtils
         log.warn("Call to compileConstraints for Jena Expressions") ;
     }
     
-    public static Node[] projectionVars(Set vars)
+    public static Var[] projectionVars(Set vars)
     {
-        Node[] result = new Node[vars.size()] ;
+        Var[] result = new Var[vars.size()] ;
     
         int i = 0 ; 
         for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
         {
-            Node n = (Node)iter.next() ;
+            // Or Var.alloc((Node)iter.next()) ;
+            Var n = (Var)iter.next() ;
             result[i] = n ;
             i++ ;
         }

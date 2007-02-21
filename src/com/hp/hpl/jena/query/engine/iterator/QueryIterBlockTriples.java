@@ -31,11 +31,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  
 public class QueryIterBlockTriples extends QueryIterRepeatApply
 {
-    /** In raw mode, blank node variables are left in the binding */
-    static public boolean rawMode = false ;
-    // and they are in the alt matcher currently They get hidden by projection anyway.
-    
-    BasicPattern pattern ;
+    private BasicPattern pattern ;
 
     public static QueryIterator create( QueryIterator input,
                                         BasicPattern pattern , 
@@ -54,21 +50,21 @@ public class QueryIterBlockTriples extends QueryIterRepeatApply
 
     public QueryIterator nextStage(Binding binding)
     {
-        return new StageBasePattern(binding, pattern, getExecContext()) ;
+        return new StagePattern(binding, pattern, getExecContext()) ;
     }
 
-    static class StageBasePattern extends QueryIter
+    static class StagePattern extends QueryIter
     {
         ClosableIterator graphIter ;
         Binding binding ;
         //DatasetGraph data ;
-        Node[] projectionVars ;
+        Var[] projectionVars ;
 
         // Could get pattern, constraints and data from parent if this were not static.
         // But non-static inner class that inherit from an external class can
         // be confusing.  Unnecessary complication.
         
-        public StageBasePattern(Binding binding,
+        public StagePattern(Binding binding,
                                 BasicPattern pattern, 
                                 ExecutionContext qCxt)
         {
@@ -90,7 +86,7 @@ public class QueryIterBlockTriples extends QueryIterRepeatApply
             BindingQueryPlan plan = qh.prepareBindings(graphQuery, projectionVars);
             graphIter = plan.executeBindings() ;
             if ( graphIter == null )
-                LogFactory.getLog(StageBasePattern.class).warn("Graph Iterator is null") ;
+                LogFactory.getLog(StagePattern.class).warn("Graph Iterator is null") ;
         }
 
         //@Override
@@ -118,27 +114,30 @@ public class QueryIterBlockTriples extends QueryIterRepeatApply
                 graphIter = null ;
             }
         }
-        
     }
     
-    private static Binding graphResultsToBinding(Binding parent, Domain d, Node[] projectionVars)
+//  /** In raw mode, blank node variables are left in the binding */
+//  static private boolean rawMode = false ;
+
+    
+    private static Binding graphResultsToBinding(Binding parent, Domain d, Var[] projectionVars)
     {
-        // Copy out (into a smaller structure).
-        // Mask bnode variables.
+        // Copy out
         Binding binding = new BindingMap(parent) ;
         
         for ( int i = 0 ; i < projectionVars.length ; i++ )
         {
-            String name = projectionVars[i].getName() ;
-            if ( ! rawMode && Var.isBlankNodeVarName(name) )
-                // Blank node variables don't get out.
-                continue ;
+            Var var = projectionVars[i] ;
+            
+            // Don't remove here because may have a BGP with multiple BlockTriples
+//            if ( !rawMode && ! var.isNamedVar() )
+//                continue ;
             
             Node n = (Node)d.get(i) ;
             if ( n == null )
                 // There was no variable of this name.
                 continue ;
-            binding.add(Var.alloc(name), n) ;
+            binding.add(var, n) ;
         }
         return binding ;
     }

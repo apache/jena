@@ -4,9 +4,9 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra.op;
+package com.hp.hpl.jena.query.algebra;
 
-import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.op.*;
 
 
 public class OpWalker

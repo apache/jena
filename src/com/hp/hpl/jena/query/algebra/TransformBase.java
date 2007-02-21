@@ -4,26 +4,25 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra.op;
+package com.hp.hpl.jena.query.algebra;
 
-public interface OpVisitor
+import com.hp.hpl.jena.query.algebra.op.*;
+
+public class TransformBase implements Transform
 {
-    public void visit(OpBGP opBGP) ;
-    public void visit(OpQuadPattern quadPattern) ;
-    public void visit(OpJoin opJoin) ;
-    public void visit(OpLeftJoin opLeftJoin) ;
-    public void visit(OpUnion opUnion) ;
-    public void visit(OpFilter opFilter) ;
-    public void visit(OpGraph opGraph) ;
-    public void visit(OpDatasetNames dsNames) ;
-
-    public void visit(OpUnit opUnit) ;
-    public void visit(OpExt opExt) ;
+    public Op transform(OpUnit opUnit)              { return opUnit ; }
+    public Op transform(OpBGP opBGP)                { return opBGP ; }
+    public Op transform(OpDatasetNames dsNames)     { return dsNames ; }
+    public Op transform(OpQuadPattern quadPattern)  { return quadPattern ; }
     
-    public void visit(OpOrder opOrder) ;
-    public void visit(OpProject opProject) ;
-    public void visit(OpDistinct opDistinct) ;
-    public void visit(OpSlice opSlice) ;
+    public Op transform(OpFilter opFilter, Op subOp)    { return opFilter ; }
+    public Op transform(OpGraph opGraph, Op subOp)      { return opGraph ; } 
+
+    public Op transform(OpJoin opJoin, Op left, Op right)           { return opJoin ; }
+    public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return opLeftJoin ; }
+    public Op transform(OpUnion opUnion, Op left, Op right)         { return opUnion ; }
+    
+    public Op transform(OpExt opExt)                { return opExt ; }
 }
 
 /*

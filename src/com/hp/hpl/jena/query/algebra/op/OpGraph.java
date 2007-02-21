@@ -8,6 +8,8 @@ package com.hp.hpl.jena.query.algebra.op;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.OpVisitor;
+import com.hp.hpl.jena.query.algebra.Transform;
 
 public class OpGraph extends Op1
     // Must override evaluation - need to flip the execution context on the way down

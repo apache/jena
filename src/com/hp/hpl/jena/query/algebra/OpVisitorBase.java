@@ -1,27 +1,62 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.engine.main;
+package com.hp.hpl.jena.query.algebra;
 
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.TransformBase;
-import com.hp.hpl.jena.query.algebra.op.OpBGP;
+import com.hp.hpl.jena.query.algebra.op.*;
 
-public class PropertyFunctionTransform extends TransformBase
+
+public class OpVisitorBase implements OpVisitor
 {
-    public Op transform(OpBGP opBGP)
-    {
-        // Split on PropertyFunctions.
-        // Currently done in Stage processing.
-        return opBGP ;
-    }
+
+    public void visit(OpBGP opBGP)
+    {}
+
+    public void visit(OpJoin opJoin)
+    {}
+
+    public void visit(OpLeftJoin opLeftJoin)
+    {}
+
+    public void visit(OpUnion opUnion)
+    {}
+
+    public void visit(OpFilter opFilter)
+    {}
+
+    public void visit(OpGraph opGraph)
+    {}
+
+    public void visit(OpQuadPattern quadPattern)
+    {}
+
+    public void visit(OpDatasetNames dsNames)
+    {}
+
+    public void visit(OpUnit opUnit)
+    {}
+
+    public void visit(OpExt opExt)
+    {}
+
+    public void visit(OpOrder opOrder)
+    {}
+
+    public void visit(OpProject opProject)
+    {}
+
+    public void visit(OpDistinct opDistinct)
+    {}
+
+    public void visit(OpSlice opSlice)
+    {}
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -4,13 +4,13 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra.op;
+package com.hp.hpl.jena.query.algebra;
 
 import java.util.Stack;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 
 public class Transformer

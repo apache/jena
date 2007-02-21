@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.query.algebra;
 
-import com.hp.hpl.jena.query.algebra.op.OpVisitor;
 import com.hp.hpl.jena.query.util.Named;
 import com.hp.hpl.jena.query.util.PrintSerializable;
 import com.hp.hpl.jena.query.util.Printable;

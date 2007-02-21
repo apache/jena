@@ -4,19 +4,57 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.engine.main;
+package com.hp.hpl.jena.query.engine.iterator;
 
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.TransformBase;
-import com.hp.hpl.jena.query.algebra.op.OpBGP;
+import java.util.Iterator;
 
-public class PropertyFunctionTransform extends TransformBase
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.engine.QueryIterator;
+import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.engine.binding.BindingMap;
+import com.hp.hpl.jena.query.engine.binding.BindingNamedVar;
+
+/** Filter bindings for distinguished variables only 
+ *  Currently unused.
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+
+public class QueryIterDistinguishedVars extends QueryIterConvert
 {
-    public Op transform(OpBGP opBGP)
+
+    public QueryIterDistinguishedVars(QueryIterator iter, ExecutionContext context)
     {
-        // Split on PropertyFunctions.
-        // Currently done in Stage processing.
-        return opBGP ;
+        super(iter, conv, context) ;
+    }
+
+    static Converter conv = new ProjectWrap() ;
+    
+    static class ProjectCopy implements Converter
+    {
+        public Binding convert(Binding binding)
+        {
+            Binding b = new BindingMap() ;
+            for ( Iterator iter = binding.vars() ; iter.hasNext(); )
+            {
+                Var v = (Var)iter.next() ;
+                if ( ! v.isNamedVar() )
+                    continue ;
+                Node n = binding.get(v) ;
+                b.add(v, n) ;
+            }
+            return b ;
+        }
+    }
+
+    static class ProjectWrap implements Converter
+    {
+        public Binding convert(Binding binding)
+        {
+            return new BindingNamedVar(binding) ;
+        }
     }
 }
 

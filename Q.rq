@@ -1,6 +1,6 @@
 PREFIX :    <http://example/>
 
-SELECT ?x
+SELECT ?x ?y
 { 
 ##  ?x :p "string"@en .
 

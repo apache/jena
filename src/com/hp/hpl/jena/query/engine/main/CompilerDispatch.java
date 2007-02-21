@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.query.algebra.OpVisitor;
 import com.hp.hpl.jena.query.algebra.op.*;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 

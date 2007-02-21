@@ -1,33 +1,33 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.algebra.op;
+package com.hp.hpl.jena.query.engine.binding;
 
-import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.core.Var;
 
-public interface Transform
+/** A binding modifier that hides nondistinguished variables */
+
+public class BindingNamedVar extends BindingWrapped
 {
-    public Op transform(OpUnit opUnit) ;
-    public Op transform(OpBGP opBGP) ;
-    public Op transform(OpDatasetNames dsNames) ;
-    public Op transform(OpQuadPattern quadPattern) ;
+    public BindingNamedVar(Binding other)
+    {
+        super(other) ;
+    }
     
-    public Op transform(OpFilter opFilter, Op subOp) ;
-    public Op transform(OpGraph opGraph, Op subOp) ;
-
-    public Op transform(OpJoin opJoin, Op left, Op right) ;
-    public Op transform(OpLeftJoin opLeftJoin, Op left, Op right) ;
-    public Op transform(OpUnion opUnion, Op left, Op right) ;
-    
-    public Op transform(OpExt opExt) ;
-    
+    public Node get(Var var)
+    {
+        if ( ! var.isNamedVar() )
+            return null ;
+        return binding.get(var) ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
