@@ -16,14 +16,14 @@ import com.hp.hpl.jena.query.util.Context;
 
 public class StageBuilder
 {
-    public static boolean rawMode = true ;
-    
     public static QueryIterator compile(BasicPattern pattern, 
                                         QueryIterator input, 
                                         ExecutionContext execCxt)
     {
         if ( pattern.isEmpty() )
             return input ;
+        
+        boolean hideBNodeVars = execCxt.getContext().isTrue(ARQConstants.hideNonDistiguishedVariables) ;
         
         StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
         StageList sList = gen.compile(pattern, execCxt) ;
@@ -32,7 +32,7 @@ public class StageBuilder
         // Remove nondistinguished variables here.
         // Can't do at any one stage because two stages may share a 
         // nondistinguished variable.
-        if ( ! rawMode )
+        if ( hideBNodeVars )
             qIter = new QueryIterDistinguishedVars(qIter, execCxt) ;
         return qIter ;
     }

@@ -111,6 +111,22 @@ public class ARQ
     public static final Symbol strictGraph =
         ARQConstants.allocSymbol("strictGraph") ;
     
+    /** Set global strict mode */
+    
+    public static void setStrictMode() { setStrictMode(ARQ.getContext()) ; }
+    
+    /** Set strict mode for a given Context */
+    
+    public static void setStrictMode(Context context)
+    {
+        // TODO What are all the strict mode settings?
+        context.set(ARQConstants.hideNonDistiguishedVariables, true) ;
+        
+        context.set(strictGraph,            true) ;
+        context.set(strictSPARQL,           true) ;
+        context.set(constantBNodeLabels,    false) ;
+    }
+    
     private static Context globalContext = null ;
     
     private static boolean initialized = false ;
@@ -132,7 +148,7 @@ public class ARQ
         globalContext.setIfUndef(strictSPARQL,                  "false") ; 
         globalContext.setIfUndef(constantBNodeLabels,           "true") ;
         globalContext.setIfUndef(enablePropertyFunctions,       "true") ;
-        globalContext.setIfUndef(strictGraph,            "false") ;
+        globalContext.setIfUndef(strictGraph,                   "false") ;
         
         //globalContext.setIfUndef(useSAX,                        "false") ;
         globalContext.setIfUndef(enableRomanNumerals,           "false") ;

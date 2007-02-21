@@ -93,18 +93,26 @@ public class ARQConstants
     /** Marker for system symbols */
     public static final String systemVarMarker = "#" ;
     
-    /** Name of the system symbol for the current time of query execution */
+    /** Context key for the current time of query execution */
     public static final Symbol sysCurrentTime  = new Symbol(systemVarMarker+"now") ;
     
+    /** Context key for ARQ version */
     public static final Symbol sysVersionARQ   = new Symbol(systemVarMarker+"version/ARQ") ;
+    /** Context key for Jena version */
     public static final Symbol sysVersionJena  = new Symbol(systemVarMarker+"version/Jena") ;
 
-    /** All SELECT queries have DISTINCt applied, whether stated ot not */
+    /** Context key for making all SELECT queries have DISTINCt applied, whether stated ot not */
     public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;
     
-    /** Key for StageBuilder used in BGP compilation */ 
+    // Context keys : some here, some in ARQ - sort out
+    
+    /** Context key for StageBuilder used in BGP compilation */ 
     public static final Symbol stageGenerator =
         ARQConstants.allocSymbol("stageGenerator") ;
+
+    /** Context key to control hiding non-distinuished variables */ 
+    public static final Symbol hideNonDistiguishedVariables =
+        ARQConstants.allocSymbol("hideNonDistiguishedVariables") ;
     
     /** The property function registry key */
     public static final Symbol registryPropertyFunctions =

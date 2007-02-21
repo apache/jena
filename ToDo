@@ -33,18 +33,20 @@ ARQ2-beta
   
 + Property function to property path expression
 
-+ Constant to control this
 + Non-distinguished variable removal.
    StageBuilder - strict place
    In a project (or pseudo project) - does it once.
       Need test case : { _:a :p ?v. ?v :splitIRI (?ns ?ln) . _a :p ?w } 
+      
+ + Tidy ARQ./ARQConstants context keys
++  strictMode - use in ref engine?
 
 + testing QE1 and QE2 and QE3 in the same test run
 
 + Convenient: Get the version ID (property function?)
     
 + Commands
-  + qtest, qexpr? to use modules.
+  + qtest to use modules (and qexpr)
 
 + LARQ assembler
 

@@ -116,10 +116,6 @@ public class QueryIterBlockTriples extends QueryIterRepeatApply
         }
     }
     
-//  /** In raw mode, blank node variables are left in the binding */
-//  static private boolean rawMode = false ;
-
-    
     private static Binding graphResultsToBinding(Binding parent, Domain d, Var[] projectionVars)
     {
         // Copy out
@@ -128,10 +124,6 @@ public class QueryIterBlockTriples extends QueryIterRepeatApply
         for ( int i = 0 ; i < projectionVars.length ; i++ )
         {
             Var var = projectionVars[i] ;
-            
-            // Don't remove here because may have a BGP with multiple BlockTriples
-//            if ( !rawMode && ! var.isNamedVar() )
-//                continue ;
             
             Node n = (Node)d.get(i) ;
             if ( n == null )
