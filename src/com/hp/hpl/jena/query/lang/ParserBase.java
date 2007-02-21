@@ -17,6 +17,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.syntax.Element;
@@ -86,14 +87,6 @@ public class ParserBase
         return elg ;
     }
     
-    protected int makePositiveInteger(String lexicalForm)
-    {
-        if ( lexicalForm == null )
-            return -1 ;
-        
-        return Integer.parseInt(lexicalForm) ;
-    }
-    
     protected Node makeNodeInteger(String lexicalForm)
     {
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
@@ -109,26 +102,40 @@ public class ParserBase
         return Node.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
     }
 
-    protected Node makeNodeInteger(boolean positive, String lexicalForm)
+    protected Node stripSign(Node node)
     {
-        if ( !positive )
-            lexicalForm = "-"+lexicalForm ;
-        return makeNodeInteger(lexicalForm) ;
+        if ( ! node.isLiteral() ) return node ;
+        String lex = node.getLiteralLexicalForm() ;
+        String lang = node.getLiteralLanguage() ;
+        RDFDatatype dt = node.getLiteralDatatype() ;
+        
+        if ( ! lex.startsWith("-") && ! lex.startsWith("+") )
+            throw new ARQInternalErrorException("Literal does not start with a sign: "+lex) ;
+        
+        lex = lex.substring(1) ;
+        return Node.createLiteral(lex, lang, dt) ;
     }
     
-    protected Node makeNodeDouble(boolean positive, String lexicalForm)
-    {
-        if ( !positive )
-            lexicalForm = "-"+lexicalForm ;
-        return makeNodeDouble(lexicalForm) ;
-    }
-    
-    protected Node makeNodeDecimal(boolean positive, String lexicalForm)
-    {
-        if ( !positive )
-            lexicalForm = "-"+lexicalForm ;
-        return makeNodeDecimal(lexicalForm) ;
-    }
+//    protected Node makeNodeInteger(boolean positive, String lexicalForm)
+//    {
+//        if ( !positive )
+//            lexicalForm = "-"+lexicalForm ;
+//        return makeNodeInteger(lexicalForm) ;
+//    }
+//    
+//    protected Node makeNodeDouble(boolean positive, String lexicalForm)
+//    {
+//        if ( !positive )
+//            lexicalForm = "-"+lexicalForm ;
+//        return makeNodeDouble(lexicalForm) ;
+//    }
+//    
+//    protected Node makeNodeDecimal(boolean positive, String lexicalForm)
+//    {
+//        if ( !positive )
+//            lexicalForm = "-"+lexicalForm ;
+//        return makeNodeDecimal(lexicalForm) ;
+//    }
 
     protected Node makeNode(String lexicalForm, String langTag, Node datatype)
     {

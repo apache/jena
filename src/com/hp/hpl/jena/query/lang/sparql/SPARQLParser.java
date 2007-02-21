@@ -499,6 +499,12 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
@@ -507,8 +513,6 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case NIL:
     case LBRACKET:
     case ANON:
-    case PLUS:
-    case MINUS:
       startTriplesBlock() ;
       el = TriplesBlock(null);
       endTriplesBlock() ;
@@ -566,6 +570,12 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -574,8 +584,6 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case NIL:
       case LBRACKET:
       case ANON:
-      case PLUS:
-      case MINUS:
         startTriplesBlock() ;
         el = TriplesBlock(null);
         endTriplesBlock() ;
@@ -611,6 +619,12 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -619,8 +633,6 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case NIL:
       case LBRACKET:
       case ANON:
-      case PLUS:
-      case MINUS:
         TriplesBlock(acc);
         break;
       default:
@@ -892,6 +904,12 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
@@ -900,8 +918,6 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case NIL:
     case LBRACKET:
     case ANON:
-    case PLUS:
-    case MINUS:
       ConstructTriples(g);
       break;
     default:
@@ -930,6 +946,12 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -938,8 +960,6 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case NIL:
       case LBRACKET:
       case ANON:
-      case PLUS:
-      case MINUS:
         ConstructTriples(acc);
         break;
       default:
@@ -968,14 +988,18 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
     case NIL:
     case ANON:
-    case PLUS:
-    case MINUS:
       s = VarOrTerm();
       PropertyListNotEmpty(s, acc);
       break;
@@ -1167,6 +1191,12 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -1175,8 +1205,6 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       case NIL:
       case LBRACKET:
       case ANON:
-      case PLUS:
-      case MINUS:
         ;
         break;
       default:
@@ -1206,14 +1234,18 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
     case NIL:
     case ANON:
-    case PLUS:
-    case MINUS:
       n = VarOrTerm();
                     {if (true) return n ;}
       break;
@@ -1246,14 +1278,18 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
     case NIL:
     case ANON:
-    case PLUS:
-    case MINUS:
       n = GraphTerm();
       break;
     default:
@@ -1311,8 +1347,6 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     throw new Error("Missing return statement in function");
   }
 
-// Not suitable for use in expressions
-// because of sign-handling, and <NIL>
   final public Node GraphTerm() throws ParseException {
                      Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1332,32 +1366,14 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-    case PLUS:
-    case MINUS:
-    boolean positive = true ;
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case PLUS:
-      case MINUS:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case MINUS:
-          jj_consume_token(MINUS);
-           positive=false;
-          break;
-        case PLUS:
-          jj_consume_token(PLUS);
-          break;
-        default:
-          jj_la1[51] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        break;
-      default:
-        jj_la1[52] = jj_gen;
-        ;
-      }
-      n = NumericLiteral(positive);
-                                 {if (true) return n ;}
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
+      n = NumericLiteral();
+                         {if (true) return n ;}
       break;
     case TRUE:
     case FALSE:
@@ -1374,7 +1390,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
           {if (true) return nRDFnil ;}
       break;
     default:
-      jj_la1[53] = jj_gen;
+      jj_la1[51] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1399,7 +1415,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
         ;
         break;
       default:
-        jj_la1[54] = jj_gen;
+        jj_la1[52] = jj_gen;
         break label_15;
       }
       jj_consume_token(SC_OR);
@@ -1420,7 +1436,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
         ;
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[53] = jj_gen;
         break label_16;
       }
       jj_consume_token(SC_AND);
@@ -1480,13 +1496,13 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
         expr1 = new E_GreaterThanOrEqual(expr1, expr2) ;
         break;
       default:
-        jj_la1[56] = jj_gen;
+        jj_la1[54] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[57] = jj_gen;
+      jj_la1[55] = jj_gen;
       ;
     }
       {if (true) return expr1 ;}
@@ -1501,17 +1517,23 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
   }
 
   final public Expr AdditiveExpression() throws ParseException {
-                              Expr expr1, expr2 ;
+                              Expr expr1, expr2 ; Node n ;
     expr1 = MultiplicativeExpression();
     label_17:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case PLUS:
       case MINUS:
         ;
         break;
       default:
-        jj_la1[58] = jj_gen;
+        jj_la1[56] = jj_gen;
         break label_17;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1525,8 +1547,24 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
         expr2 = MultiplicativeExpression();
       expr1 = new E_Subtract(expr1, expr2) ;
         break;
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+        n = NumericLiteralPositive();
+      n = stripSign(n) ;
+      expr2 = asExpr(n) ;
+      expr1 = new E_Add(expr1, expr2) ;
+        break;
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
+        n = NumericLiteralNegative();
+      n = stripSign(n) ;
+      expr2 = asExpr(n) ;
+      expr1 = new E_Subtract(expr1, expr2) ;
+        break;
       default:
-        jj_la1[59] = jj_gen;
+        jj_la1[57] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1546,7 +1584,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
         ;
         break;
       default:
-        jj_la1[60] = jj_gen;
+        jj_la1[58] = jj_gen;
         break label_18;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1561,7 +1599,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       expr1 = new E_Divide(expr1, expr2) ;
         break;
       default:
-        jj_la1[61] = jj_gen;
+        jj_la1[59] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1609,6 +1647,12 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
@@ -1618,7 +1662,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
                                  {if (true) return expr ;}
       break;
     default:
-      jj_la1[62] = jj_gen;
+      jj_la1[60] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1662,8 +1706,14 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-      gn = NumericLiteral(true);
-                                {if (true) return asExpr(gn) ;}
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
+      gn = NumericLiteral();
+                            {if (true) return asExpr(gn) ;}
       break;
     case TRUE:
     case FALSE:
@@ -1676,7 +1726,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
                  {if (true) return asExpr(gn) ;}
       break;
     default:
-      jj_la1[63] = jj_gen;
+      jj_la1[61] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1775,7 +1825,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
                                {if (true) return expr ;}
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[62] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1795,7 +1845,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       flagsExpr = Expression();
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[63] = jj_gen;
       ;
     }
     jj_consume_token(RPAREN);
@@ -1814,7 +1864,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       a = ArgList();
       break;
     default:
-      jj_la1[66] = jj_gen;
+      jj_la1[64] = jj_gen;
       ;
     }
       if ( a == null ) {if (true) return asExpr(gn) ;}
@@ -1839,36 +1889,109 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
         uri = IRIref();
         break;
       default:
-        jj_la1[67] = jj_gen;
+        jj_la1[65] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[68] = jj_gen;
+      jj_la1[66] = jj_gen;
       ;
     }
       {if (true) return makeNode(lex, lang, uri) ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public Node NumericLiteral(boolean positive) throws ParseException {
-                                          Token t ;
+  final public Node NumericLiteral() throws ParseException {
+                          Node n ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INTEGER:
+    case DECIMAL:
+    case DOUBLE:
+      n = NumericLiteralUnsigned();
+      break;
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+      n = NumericLiteralPositive();
+      break;
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
+      n = NumericLiteralNegative();
+      break;
+    default:
+      jj_la1[67] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    {if (true) return n ;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Node NumericLiteralUnsigned() throws ParseException {
+                                  Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       t = jj_consume_token(INTEGER);
-                  {if (true) return makeNodeInteger(positive, t.image) ;}
+                  {if (true) return makeNodeInteger(t.image) ;}
       break;
     case DECIMAL:
       t = jj_consume_token(DECIMAL);
-                  {if (true) return makeNodeDecimal(positive, t.image) ;}
+                  {if (true) return makeNodeDecimal(t.image) ;}
       break;
     case DOUBLE:
       t = jj_consume_token(DOUBLE);
-                 {if (true) return makeNodeDouble(positive, t.image) ;}
+                 {if (true) return makeNodeDouble(t.image) ;}
+      break;
+    default:
+      jj_la1[68] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Node NumericLiteralPositive() throws ParseException {
+                                  Token t ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INTEGER_POSITIVE:
+      t = jj_consume_token(INTEGER_POSITIVE);
+                           {if (true) return makeNodeInteger(t.image) ;}
+      break;
+    case DECIMAL_POSITIVE:
+      t = jj_consume_token(DECIMAL_POSITIVE);
+                           {if (true) return makeNodeDecimal(t.image) ;}
+      break;
+    case DOUBLE_POSITIVE:
+      t = jj_consume_token(DOUBLE_POSITIVE);
+                          {if (true) return makeNodeDouble(t.image) ;}
       break;
     default:
       jj_la1[69] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Node NumericLiteralNegative() throws ParseException {
+                                  Token t ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INTEGER_NEGATIVE:
+      t = jj_consume_token(INTEGER_NEGATIVE);
+                           {if (true) return makeNodeInteger(t.image) ;}
+      break;
+    case DECIMAL_NEGATIVE:
+      t = jj_consume_token(DECIMAL_NEGATIVE);
+                           {if (true) return makeNodeDecimal(t.image) ;}
+      break;
+    case DOUBLE_NEGATIVE:
+      t = jj_consume_token(DOUBLE_NEGATIVE);
+                          {if (true) return makeNodeDouble(t.image) ;}
+      break;
+    default:
+      jj_la1[70] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1886,7 +2009,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
             {if (true) return XSD_FALSE ;}
       break;
     default:
-      jj_la1[70] = jj_gen;
+      jj_la1[71] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1913,7 +2036,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[71] = jj_gen;
+      jj_la1[72] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1935,7 +2058,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
                 {if (true) return n ;}
       break;
     default:
-      jj_la1[72] = jj_gen;
+      jj_la1[73] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1954,7 +2077,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
-      jj_la1[73] = jj_gen;
+      jj_la1[74] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1973,7 +2096,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
            {if (true) return createBNode() ;}
       break;
     default:
-      jj_la1[74] = jj_gen;
+      jj_la1[75] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1992,7 +2115,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[75];
+  final private int[] jj_la1 = new int[76];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -2004,16 +2127,16 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
       jj_la1_3();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x1d00000,0x40000,0x80000,0x200000,0x3000,0x3000,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x80000700,0x0,0x8000000,0x6000000,0x4000000,0x2000000,0x6000000,0x60003700,0x60000000,0x3700,0x60003700,0x3f00,0x0,0x0,0x0,0x3f00,0x3f00,0x0,0x0,0x0,0x700,0x0,0x0,0x3f00,0x3f00,0x0,0x3f00,0x0,0x23700,0x23700,0x0,0x23700,0x0,0x3f00,0x3f00,0x3f00,0x3700,0x3000,0x0,0x0,0xf00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x4000,0x4000,0x0,0x0,0x0,0x700,0x600,0x800,};
+      jj_la1_0 = new int[] {0x1d00000,0x40000,0x80000,0x200000,0x3000,0x3000,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x80000700,0x0,0x8000000,0x6000000,0x4000000,0x2000000,0x6000000,0x60003700,0x60000000,0x3700,0x60003700,0x3f00,0x0,0x0,0x0,0x3f00,0x3f00,0x0,0x0,0x0,0x700,0x0,0x0,0x3f00,0x3f00,0x0,0x3f00,0x0,0x23700,0x23700,0x0,0x23700,0x0,0x3f00,0x3f00,0x3f00,0x3700,0x3000,0xf00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700,0x3700,0x0,0x0,0x0,0x4000,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x700,0x600,0x800,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x0,0x0,0x1,0x2,0x1,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x3ff80,0x0,0x3ff80,0x3ff80,0x787c0000,0x58,0x58,0x0,0x787c0000,0x787c0000,0x0,0x18,0x20,0x3ff80,0x0,0x0,0x787c0000,0x787c0000,0x0,0x787c0000,0x0,0x0,0x0,0x0,0x0,0x0,0x787c0000,0x787c0000,0x787c0000,0x0,0x0,0x0,0x0,0x787c0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x787fff80,0x787fff80,0x3ff80,0x0,0x0,0x0,0x0,0x700000,0xc0000,0x78000000,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x0,0x0,0x1,0x2,0x1,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x3ff80,0x0,0x3ff80,0x3ff80,0x1ffc0000,0x58,0x58,0x0,0x1ffc0000,0x1ffc0000,0x0,0x18,0x20,0x3ff80,0x0,0x0,0x1ffc0000,0x1ffc0000,0x0,0x1ffc0000,0x0,0x0,0x0,0x0,0x0,0x0,0x1ffc0000,0x1ffc0000,0x1ffc0000,0x0,0x0,0x1ffc0000,0x0,0x0,0x0,0x0,0x1f800000,0x1f800000,0x0,0x0,0x1fffff80,0x1fffff80,0x3ff80,0x0,0x0,0x0,0x0,0x1ff00000,0x700000,0x3800000,0x1c000000,0xc0000,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x1000000,0x0,0x0,0x0,0x1000000,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x1,0x1,0xc000a5,0x8,0x8,0x400,0xc000a5,0xc000a5,0x400,0x8,0x0,0x1,0x200,0x5,0xc000a5,0xc000a5,0x400,0xc000a5,0x100,0x0,0x0,0x200,0x0,0x21,0xc000a5,0xc000a5,0xc00084,0x0,0x0,0xc00000,0xc00000,0xc00084,0x100000,0x200000,0x1f800,0x1f800,0xc00000,0xc00000,0x3000000,0x3000000,0xc20001,0x1,0x0,0x200,0x5,0x4000000,0x4000000,0x0,0x0,0x0,0x0,0x0,0x80,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x40000000,0x0,0x0,0x0,0x40000000,0x0,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40,0x0,0x40,0x40,0x295e,0x200,0x200,0x10000,0x295e,0x295e,0x10000,0x200,0x0,0x40,0x8000,0x140,0x295e,0x295e,0x10000,0x295e,0x4000,0x0,0x0,0x8000,0x0,0x840,0x295e,0x295e,0x211e,0x0,0x0,0x211e,0x4000000,0x8000000,0x7e0000,0x7e0000,0x30000000,0x30000000,0xc0000000,0xc0000000,0x3080005e,0x5e,0x0,0x8000,0x140,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1e,0x0,0x0,0x2000,};
    }
    private static void jj_la1_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public SPARQLParser(java.io.InputStream stream) {
@@ -2025,7 +2148,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -2037,7 +2160,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   public SPARQLParser(java.io.Reader stream) {
@@ -2046,7 +2169,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -2055,7 +2178,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   public SPARQLParser(SPARQLParserTokenManager tm) {
@@ -2063,7 +2186,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(SPARQLParserTokenManager tm) {
@@ -2071,7 +2194,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -2118,15 +2241,15 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[99];
-    for (int i = 0; i < 99; i++) {
+    boolean[] la1tokens = new boolean[105];
+    for (int i = 0; i < 105; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 75; i++) {
+    for (int i = 0; i < 76; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -2144,7 +2267,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
         }
       }
     }
-    for (int i = 0; i < 99; i++) {
+    for (int i = 0; i < 105; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

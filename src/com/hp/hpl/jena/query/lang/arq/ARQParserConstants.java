@@ -63,50 +63,56 @@ public interface ARQParserConstants {
   int INTEGER = 57;
   int DECIMAL = 58;
   int DOUBLE = 59;
-  int EXPONENT = 60;
-  int QUOTE_3D = 61;
-  int QUOTE_3S = 62;
-  int ECHAR = 63;
-  int STRING_LITERAL1 = 64;
-  int STRING_LITERAL2 = 65;
-  int STRING_LITERAL_LONG1 = 66;
-  int STRING_LITERAL_LONG2 = 67;
-  int DIGITS = 68;
-  int LPAREN = 69;
-  int RPAREN = 70;
-  int NIL = 71;
-  int LBRACE = 72;
-  int RBRACE = 73;
-  int LBRACKET = 74;
-  int RBRACKET = 75;
-  int ANON = 76;
-  int SEMICOLON = 77;
-  int COMMA = 78;
-  int DOT = 79;
-  int EQ = 80;
-  int NE = 81;
-  int GT = 82;
-  int LT = 83;
-  int LE = 84;
-  int GE = 85;
-  int BANG = 86;
-  int TILDE = 87;
-  int COLON = 88;
-  int SC_OR = 89;
-  int SC_AND = 90;
-  int PLUS = 91;
-  int MINUS = 92;
-  int STAR = 93;
-  int SLASH = 94;
-  int DATATYPE = 95;
-  int AT = 96;
-  int NCCHAR1P = 97;
-  int NCCHAR1 = 98;
-  int NCCHAR = 99;
-  int NCNAME_PREFIX = 100;
-  int NCNAME = 101;
-  int VARNAME = 102;
-  int UNKNOWN = 103;
+  int INTEGER_POSITIVE = 60;
+  int DECIMAL_POSITIVE = 61;
+  int DOUBLE_POSITIVE = 62;
+  int INTEGER_NEGATIVE = 63;
+  int DECIMAL_NEGATIVE = 64;
+  int DOUBLE_NEGATIVE = 65;
+  int EXPONENT = 66;
+  int QUOTE_3D = 67;
+  int QUOTE_3S = 68;
+  int ECHAR = 69;
+  int STRING_LITERAL1 = 70;
+  int STRING_LITERAL2 = 71;
+  int STRING_LITERAL_LONG1 = 72;
+  int STRING_LITERAL_LONG2 = 73;
+  int DIGITS = 74;
+  int LPAREN = 75;
+  int RPAREN = 76;
+  int NIL = 77;
+  int LBRACE = 78;
+  int RBRACE = 79;
+  int LBRACKET = 80;
+  int RBRACKET = 81;
+  int ANON = 82;
+  int SEMICOLON = 83;
+  int COMMA = 84;
+  int DOT = 85;
+  int EQ = 86;
+  int NE = 87;
+  int GT = 88;
+  int LT = 89;
+  int LE = 90;
+  int GE = 91;
+  int BANG = 92;
+  int TILDE = 93;
+  int COLON = 94;
+  int SC_OR = 95;
+  int SC_AND = 96;
+  int PLUS = 97;
+  int MINUS = 98;
+  int STAR = 99;
+  int SLASH = 100;
+  int DATATYPE = 101;
+  int AT = 102;
+  int NCCHAR1P = 103;
+  int NCCHAR1 = 104;
+  int NCCHAR = 105;
+  int NCNAME_PREFIX = 106;
+  int NCNAME = 107;
+  int VARNAME = 108;
+  int UNKNOWN = 109;
 
   int DEFAULT = 0;
 
@@ -171,6 +177,12 @@ public interface ARQParserConstants {
     "<INTEGER>",
     "<DECIMAL>",
     "<DOUBLE>",
+    "<INTEGER_POSITIVE>",
+    "<DECIMAL_POSITIVE>",
+    "<DOUBLE_POSITIVE>",
+    "<INTEGER_NEGATIVE>",
+    "<DECIMAL_NEGATIVE>",
+    "<DOUBLE_NEGATIVE>",
     "<EXPONENT>",
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",

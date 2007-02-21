@@ -618,24 +618,15 @@ Node Var() : { Token t ;}
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
 }
 
-// Not suitable for use in expressions
-// because of sign-handling, and <NIL>
 Node GraphTerm() : { Node n ; }
 {
   n = IRIref() { return n ; }
-|
-  n = RDFLiteral() { return n ; }
-|
-  { boolean positive = true ; }
-  (<MINUS>{positive=false;}|<PLUS>)?
-  n = NumericLiteral(positive) { return n ; }
-|
-  n = BooleanLiteral() { return n ; }
-|
-  n = BlankNode() { return n ; }
-|
-//  <LPAREN> <RPAREN>     { return nRDFnil ; }
-  <NIL> { return nRDFnil ; }
+| n = RDFLiteral() { return n ; }
+| n = NumericLiteral() { return n ; }
+| n = BooleanLiteral() { return n ; }
+| n = BlankNode() { return n ; }
+  //  <LPAREN> <RPAREN>     { return nRDFnil ; }
+| <NIL> { return nRDFnil ; }
 }
 
 // -------- Constraint syntax
@@ -697,13 +688,26 @@ Expr NumericExpression () : { Expr expr ; }
     { return expr ; }
 }
 
-Expr AdditiveExpression() : { Expr expr1, expr2 ; }
+Expr AdditiveExpression() : { Expr expr1, expr2 ; Node n ; }
 {
   expr1 = MultiplicativeExpression()
   ( <PLUS> expr2 = MultiplicativeExpression()
     { expr1 = new E_Add(expr1, expr2) ; }
   | <MINUS> expr2 = MultiplicativeExpression()
     { expr1 = new E_Subtract(expr1, expr2) ; }
+  | n = NumericLiteralPositive()
+    {
+      n = stripSign(n) ;
+      expr2 = asExpr(n) ;
+      expr1 = new E_Add(expr1, expr2) ;
+    }
+  |
+    n = NumericLiteralNegative()
+    {
+      n = stripSign(n) ;
+      expr2 = asExpr(n) ;
+      expr1 = new E_Subtract(expr1, expr2) ;
+    }
   )*
     { return expr1 ; }
 }
@@ -739,7 +743,7 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
 // NOT  | gn = VarOrTerm()           { return asExpr(gn) ; }
 // Because of IRIrefOrFunction vs <NIL> and blank nodes
   | gn = RDFLiteral() { return asExpr(gn) ; }
-  | gn = NumericLiteral(true) { return asExpr(gn) ; }
+  | gn = NumericLiteral() { return asExpr(gn) ; }
   | gn = BooleanLiteral() { return asExpr(gn) ; }
   | gn = Var() { return asExpr(gn) ; }
   )
@@ -826,12 +830,39 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
     { return makeNode(lex, lang, uri) ; }
 }
 
-Node NumericLiteral(boolean positive) : { Token t ; }
+
+Node NumericLiteral() : { Node n ; }
 {
-  t = <INTEGER> { return makeNodeInteger(positive, t.image) ; }
-| t = <DECIMAL> { return makeNodeDecimal(positive, t.image) ; }
-| t = <DOUBLE> { return makeNodeDouble(positive, t.image) ; }
+  (
+    n = NumericLiteralUnsigned()
+  | n = NumericLiteralPositive()
+  | n = NumericLiteralNegative()
+  )
+  { return n ; }
+
 }
+
+Node NumericLiteralUnsigned() : { Token t ; }
+{
+  t = <INTEGER> { return makeNodeInteger(t.image) ; }
+| t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
+| t = <DOUBLE> { return makeNodeDouble(t.image) ; }
+}
+
+Node NumericLiteralPositive() : { Token t ; }
+{
+  t = <INTEGER_POSITIVE> { return makeNodeInteger(t.image) ; }
+| t = <DECIMAL_POSITIVE> { return makeNodeDecimal(t.image) ; }
+| t = <DOUBLE_POSITIVE> { return makeNodeDouble(t.image) ; }
+}
+
+Node NumericLiteralNegative() : { Token t ; }
+{
+  t = <INTEGER_NEGATIVE> { return makeNodeInteger(t.image) ; }
+| t = <DECIMAL_NEGATIVE> { return makeNodeDecimal(t.image) ; }
+| t = <DOUBLE_NEGATIVE> { return makeNodeDouble(t.image) ; }
+}
+
 
 Node BooleanLiteral() : {}
 {
@@ -1002,6 +1033,15 @@ TOKEN :
         | (["0"-"9"])+ <EXPONENT>
       )
       >
+
+| < INTEGER_POSITIVE: <PLUS> <INTEGER> >
+| < DECIMAL_POSITIVE: <PLUS> <DECIMAL> >
+| < DOUBLE_POSITIVE: <PLUS> <DOUBLE> >
+
+| < INTEGER_NEGATIVE: <MINUS> <INTEGER> >
+| < DECIMAL_NEGATIVE: <MINUS> <DECIMAL> >
+| < DOUBLE_NEGATIVE: <MINUS> <DOUBLE> >
+
 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
@@ -1121,7 +1161,7 @@ TOKEN:
 
 /*
 
- * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 
  *
 

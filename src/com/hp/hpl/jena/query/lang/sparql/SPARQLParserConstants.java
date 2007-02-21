@@ -60,50 +60,56 @@ public interface SPARQLParserConstants {
   int INTEGER = 52;
   int DECIMAL = 53;
   int DOUBLE = 54;
-  int EXPONENT = 55;
-  int QUOTE_3D = 56;
-  int QUOTE_3S = 57;
-  int ECHAR = 58;
-  int STRING_LITERAL1 = 59;
-  int STRING_LITERAL2 = 60;
-  int STRING_LITERAL_LONG1 = 61;
-  int STRING_LITERAL_LONG2 = 62;
-  int DIGITS = 63;
-  int LPAREN = 64;
-  int RPAREN = 65;
-  int NIL = 66;
-  int LBRACE = 67;
-  int RBRACE = 68;
-  int LBRACKET = 69;
-  int RBRACKET = 70;
-  int ANON = 71;
-  int SEMICOLON = 72;
-  int COMMA = 73;
-  int DOT = 74;
-  int EQ = 75;
-  int NE = 76;
-  int GT = 77;
-  int LT = 78;
-  int LE = 79;
-  int GE = 80;
-  int BANG = 81;
-  int TILDE = 82;
-  int COLON = 83;
-  int SC_OR = 84;
-  int SC_AND = 85;
-  int PLUS = 86;
-  int MINUS = 87;
-  int STAR = 88;
-  int SLASH = 89;
-  int DATATYPE = 90;
-  int AT = 91;
-  int NCCHAR1P = 92;
-  int NCCHAR1 = 93;
-  int NCCHAR = 94;
-  int NCNAME_PREFIX = 95;
-  int NCNAME = 96;
-  int VARNAME = 97;
-  int UNKNOWN = 98;
+  int INTEGER_POSITIVE = 55;
+  int DECIMAL_POSITIVE = 56;
+  int DOUBLE_POSITIVE = 57;
+  int INTEGER_NEGATIVE = 58;
+  int DECIMAL_NEGATIVE = 59;
+  int DOUBLE_NEGATIVE = 60;
+  int EXPONENT = 61;
+  int QUOTE_3D = 62;
+  int QUOTE_3S = 63;
+  int ECHAR = 64;
+  int STRING_LITERAL1 = 65;
+  int STRING_LITERAL2 = 66;
+  int STRING_LITERAL_LONG1 = 67;
+  int STRING_LITERAL_LONG2 = 68;
+  int DIGITS = 69;
+  int LPAREN = 70;
+  int RPAREN = 71;
+  int NIL = 72;
+  int LBRACE = 73;
+  int RBRACE = 74;
+  int LBRACKET = 75;
+  int RBRACKET = 76;
+  int ANON = 77;
+  int SEMICOLON = 78;
+  int COMMA = 79;
+  int DOT = 80;
+  int EQ = 81;
+  int NE = 82;
+  int GT = 83;
+  int LT = 84;
+  int LE = 85;
+  int GE = 86;
+  int BANG = 87;
+  int TILDE = 88;
+  int COLON = 89;
+  int SC_OR = 90;
+  int SC_AND = 91;
+  int PLUS = 92;
+  int MINUS = 93;
+  int STAR = 94;
+  int SLASH = 95;
+  int DATATYPE = 96;
+  int AT = 97;
+  int NCCHAR1P = 98;
+  int NCCHAR1 = 99;
+  int NCCHAR = 100;
+  int NCNAME_PREFIX = 101;
+  int NCNAME = 102;
+  int VARNAME = 103;
+  int UNKNOWN = 104;
 
   int DEFAULT = 0;
 
@@ -163,6 +169,12 @@ public interface SPARQLParserConstants {
     "<INTEGER>",
     "<DECIMAL>",
     "<DOUBLE>",
+    "<INTEGER_POSITIVE>",
+    "<DECIMAL_POSITIVE>",
+    "<DOUBLE_POSITIVE>",
+    "<INTEGER_NEGATIVE>",
+    "<DECIMAL_NEGATIVE>",
+    "<DOUBLE_NEGATIVE>",
     "<EXPONENT>",
     "\"\\\"\\\"\\\"\"",
     "\"\\\'\\\'\\\'\"",

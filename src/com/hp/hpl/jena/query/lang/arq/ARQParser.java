@@ -500,6 +500,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
@@ -508,8 +514,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case NIL:
     case LBRACKET:
     case ANON:
-    case PLUS:
-    case MINUS:
       startTriplesBlock() ;
       el = TriplesBlock(null);
       endTriplesBlock() ;
@@ -572,6 +576,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -580,8 +590,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case NIL:
       case LBRACKET:
       case ANON:
-      case PLUS:
-      case MINUS:
         startTriplesBlock() ;
         el = TriplesBlock(null);
         endTriplesBlock() ;
@@ -618,6 +626,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -626,8 +640,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case NIL:
       case LBRACKET:
       case ANON:
-      case PLUS:
-      case MINUS:
         TriplesBlock(acc);
         break;
       default:
@@ -924,6 +936,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
@@ -932,8 +950,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case NIL:
     case LBRACKET:
     case ANON:
-    case PLUS:
-    case MINUS:
       ConstructTriples(g);
       break;
     default:
@@ -963,6 +979,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -971,8 +993,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case NIL:
       case LBRACKET:
       case ANON:
-      case PLUS:
-      case MINUS:
         ConstructTriples(acc);
         break;
       default:
@@ -1001,14 +1021,18 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
     case NIL:
     case ANON:
-    case PLUS:
-    case MINUS:
       s = VarOrTerm();
       PropertyListNotEmpty(s, acc);
       break;
@@ -1242,6 +1266,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case INTEGER:
       case DECIMAL:
       case DOUBLE:
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case STRING_LITERAL1:
       case STRING_LITERAL2:
       case STRING_LITERAL_LONG1:
@@ -1250,8 +1280,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case NIL:
       case LBRACKET:
       case ANON:
-      case PLUS:
-      case MINUS:
         ;
         break;
       default:
@@ -1281,14 +1309,18 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
     case NIL:
     case ANON:
-    case PLUS:
-    case MINUS:
       n = VarOrTerm();
                     {if (true) return n ;}
       break;
@@ -1322,14 +1354,18 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
     case NIL:
     case ANON:
-    case PLUS:
-    case MINUS:
       n = GraphTerm();
       break;
     default:
@@ -1387,8 +1423,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// Not suitable for use in expressions
-// because of sign-handling, and <NIL>
   final public Node GraphTerm() throws ParseException {
                      Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1408,32 +1442,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-    case PLUS:
-    case MINUS:
-    boolean positive = true ;
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case PLUS:
-      case MINUS:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case MINUS:
-          jj_consume_token(MINUS);
-           positive=false;
-          break;
-        case PLUS:
-          jj_consume_token(PLUS);
-          break;
-        default:
-          jj_la1[52] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        break;
-      default:
-        jj_la1[53] = jj_gen;
-        ;
-      }
-      n = NumericLiteral(positive);
-                                 {if (true) return n ;}
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
+      n = NumericLiteral();
+                         {if (true) return n ;}
       break;
     case TRUE:
     case FALSE:
@@ -1450,7 +1466,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           {if (true) return nRDFnil ;}
       break;
     default:
-      jj_la1[54] = jj_gen;
+      jj_la1[52] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1475,7 +1491,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[53] = jj_gen;
         break label_15;
       }
       jj_consume_token(SC_OR);
@@ -1496,7 +1512,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
-        jj_la1[56] = jj_gen;
+        jj_la1[54] = jj_gen;
         break label_16;
       }
       jj_consume_token(SC_AND);
@@ -1556,13 +1572,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         expr1 = new E_GreaterThanOrEqual(expr1, expr2) ;
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[55] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[58] = jj_gen;
+      jj_la1[56] = jj_gen;
       ;
     }
       {if (true) return expr1 ;}
@@ -1577,17 +1593,23 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Expr AdditiveExpression() throws ParseException {
-                              Expr expr1, expr2 ;
+                              Expr expr1, expr2 ; Node n ;
     expr1 = MultiplicativeExpression();
     label_17:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
       case PLUS:
       case MINUS:
         ;
         break;
       default:
-        jj_la1[59] = jj_gen;
+        jj_la1[57] = jj_gen;
         break label_17;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1601,8 +1623,24 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         expr2 = MultiplicativeExpression();
       expr1 = new E_Subtract(expr1, expr2) ;
         break;
+      case INTEGER_POSITIVE:
+      case DECIMAL_POSITIVE:
+      case DOUBLE_POSITIVE:
+        n = NumericLiteralPositive();
+      n = stripSign(n) ;
+      expr2 = asExpr(n) ;
+      expr1 = new E_Add(expr1, expr2) ;
+        break;
+      case INTEGER_NEGATIVE:
+      case DECIMAL_NEGATIVE:
+      case DOUBLE_NEGATIVE:
+        n = NumericLiteralNegative();
+      n = stripSign(n) ;
+      expr2 = asExpr(n) ;
+      expr1 = new E_Subtract(expr1, expr2) ;
+        break;
       default:
-        jj_la1[60] = jj_gen;
+        jj_la1[58] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1622,7 +1660,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
-        jj_la1[61] = jj_gen;
+        jj_la1[59] = jj_gen;
         break label_18;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1637,7 +1675,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       expr1 = new E_Divide(expr1, expr2) ;
         break;
       default:
-        jj_la1[62] = jj_gen;
+        jj_la1[60] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1685,6 +1723,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
@@ -1694,7 +1738,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                  {if (true) return expr ;}
       break;
     default:
-      jj_la1[63] = jj_gen;
+      jj_la1[61] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1738,8 +1782,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-      gn = NumericLiteral(true);
-                                {if (true) return asExpr(gn) ;}
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
+      gn = NumericLiteral();
+                            {if (true) return asExpr(gn) ;}
       break;
     case TRUE:
     case FALSE:
@@ -1752,7 +1802,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                  {if (true) return asExpr(gn) ;}
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[62] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1851,7 +1901,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                {if (true) return expr ;}
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[63] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1871,7 +1921,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       flagsExpr = Expression();
       break;
     default:
-      jj_la1[66] = jj_gen;
+      jj_la1[64] = jj_gen;
       ;
     }
     jj_consume_token(RPAREN);
@@ -1890,7 +1940,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       a = ArgList();
       break;
     default:
-      jj_la1[67] = jj_gen;
+      jj_la1[65] = jj_gen;
       ;
     }
       if ( a == null ) {if (true) return asExpr(gn) ;}
@@ -1915,36 +1965,109 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         uri = IRIref();
         break;
       default:
-        jj_la1[68] = jj_gen;
+        jj_la1[66] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[69] = jj_gen;
+      jj_la1[67] = jj_gen;
       ;
     }
       {if (true) return makeNode(lex, lang, uri) ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public Node NumericLiteral(boolean positive) throws ParseException {
-                                          Token t ;
+  final public Node NumericLiteral() throws ParseException {
+                          Node n ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INTEGER:
+    case DECIMAL:
+    case DOUBLE:
+      n = NumericLiteralUnsigned();
+      break;
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+      n = NumericLiteralPositive();
+      break;
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
+      n = NumericLiteralNegative();
+      break;
+    default:
+      jj_la1[68] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    {if (true) return n ;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Node NumericLiteralUnsigned() throws ParseException {
+                                  Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       t = jj_consume_token(INTEGER);
-                  {if (true) return makeNodeInteger(positive, t.image) ;}
+                  {if (true) return makeNodeInteger(t.image) ;}
       break;
     case DECIMAL:
       t = jj_consume_token(DECIMAL);
-                  {if (true) return makeNodeDecimal(positive, t.image) ;}
+                  {if (true) return makeNodeDecimal(t.image) ;}
       break;
     case DOUBLE:
       t = jj_consume_token(DOUBLE);
-                 {if (true) return makeNodeDouble(positive, t.image) ;}
+                 {if (true) return makeNodeDouble(t.image) ;}
+      break;
+    default:
+      jj_la1[69] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Node NumericLiteralPositive() throws ParseException {
+                                  Token t ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INTEGER_POSITIVE:
+      t = jj_consume_token(INTEGER_POSITIVE);
+                           {if (true) return makeNodeInteger(t.image) ;}
+      break;
+    case DECIMAL_POSITIVE:
+      t = jj_consume_token(DECIMAL_POSITIVE);
+                           {if (true) return makeNodeDecimal(t.image) ;}
+      break;
+    case DOUBLE_POSITIVE:
+      t = jj_consume_token(DOUBLE_POSITIVE);
+                          {if (true) return makeNodeDouble(t.image) ;}
       break;
     default:
       jj_la1[70] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Node NumericLiteralNegative() throws ParseException {
+                                  Token t ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INTEGER_NEGATIVE:
+      t = jj_consume_token(INTEGER_NEGATIVE);
+                           {if (true) return makeNodeInteger(t.image) ;}
+      break;
+    case DECIMAL_NEGATIVE:
+      t = jj_consume_token(DECIMAL_NEGATIVE);
+                           {if (true) return makeNodeDecimal(t.image) ;}
+      break;
+    case DOUBLE_NEGATIVE:
+      t = jj_consume_token(DOUBLE_NEGATIVE);
+                          {if (true) return makeNodeDouble(t.image) ;}
+      break;
+    default:
+      jj_la1[71] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1962,7 +2085,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
             {if (true) return XSD_FALSE ;}
       break;
     default:
-      jj_la1[71] = jj_gen;
+      jj_la1[72] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1989,7 +2112,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[72] = jj_gen;
+      jj_la1[73] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2011,7 +2134,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                 {if (true) return n ;}
       break;
     default:
-      jj_la1[73] = jj_gen;
+      jj_la1[74] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2030,7 +2153,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
-      jj_la1[74] = jj_gen;
+      jj_la1[75] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2049,7 +2172,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
            {if (true) return createBNode() ;}
       break;
     default:
-      jj_la1[75] = jj_gen;
+      jj_la1[76] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2068,7 +2191,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[76];
+  final private int[] jj_la1 = new int[77];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -2080,16 +2203,16 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_la1_3();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x7400000,0x100000,0x200000,0x800000,0xc000,0xc000,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x1c00,0x0,0x20000000,0x18000000,0x10000000,0x8000000,0x18000000,0xdc00,0x0,0xdc00,0xdc00,0xfc02,0x0,0x0,0x0,0xfc02,0xfc02,0x0,0x0,0x0,0x1c00,0x0,0x0,0xfc02,0xfc02,0x0,0xfc02,0x0,0x8dc00,0x8dc02,0x8dc02,0x0,0x8dc00,0x2,0xfc02,0xfc02,0xfc00,0xdc00,0xc000,0x0,0x0,0x3c00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x1c00,0x1800,0x2000,};
+      jj_la1_0 = new int[] {0x7400000,0x100000,0x200000,0x800000,0xc000,0xc000,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x1c00,0x0,0x20000000,0x18000000,0x10000000,0x8000000,0x18000000,0xdc00,0x0,0xdc00,0xdc00,0xfc02,0x0,0x0,0x0,0xfc02,0xfc02,0x0,0x0,0x0,0x1c00,0x0,0x0,0xfc02,0xfc02,0x0,0xfc02,0x0,0x8dc00,0x8dc02,0x8dc02,0x0,0x8dc00,0x2,0xfc02,0xfc02,0xfc00,0xdc00,0xc000,0x3c00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1800,0x2000,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x8,0x0,0x0,0x8,0x10,0x8,0x4,0x10,0x0,0x0,0x0,0x0,0x0,0x7ff003,0x3,0x7ff000,0x7ff003,0xf800000,0xec0,0xec0,0x0,0xf800000,0xf800000,0x0,0x6c0,0x100,0x7ff000,0x0,0x0,0xf800000,0xf800000,0x0,0xf800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf800000,0xf800000,0xf800000,0x0,0x0,0x0,0x0,0xf800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffff000,0xffff000,0x7ff000,0x0,0x0,0x0,0x0,0xe000000,0x1800000,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x8,0x0,0x0,0x8,0x10,0x8,0x4,0x10,0x0,0x0,0x0,0x0,0x0,0x7ff003,0x3,0x7ff000,0x7ff003,0xff800000,0xec0,0xec0,0x0,0xff800000,0xff800000,0x0,0x6c0,0x100,0x7ff000,0x0,0x0,0xff800000,0xff800000,0x0,0xff800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xff800000,0xff800000,0xff800000,0x0,0x0,0xff800000,0x0,0x0,0x0,0x0,0xf0000000,0xf0000000,0x0,0x0,0xfffff000,0xfffff000,0x7ff000,0x0,0x0,0x0,0x0,0xfe000000,0xe000000,0x70000000,0x80000000,0x1800000,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x20000000,0x0,0x0,0x0,0x20000000,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x0,0x20,0x20,0x180014af,0x100,0x100,0x8000,0x180014af,0x180014af,0x8000,0x100,0x0,0x20,0x4000,0xa0,0x180014af,0x180014af,0x8000,0x180014af,0x2000,0x0,0x0,0x0,0x4000,0x0,0x420,0x180014af,0x180014af,0x1800108f,0x0,0x0,0x18000000,0x18000000,0x1800108f,0x2000000,0x4000000,0x3f0000,0x3f0000,0x18000000,0x18000000,0x60000000,0x60000000,0x1840002f,0x2f,0x0,0x4000,0xa0,0x80000000,0x80000000,0x0,0x0,0xf,0x0,0x0,0x1000,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800,0x0,0x800,0x800,0x52bc3,0x4000,0x4000,0x200000,0x52bc3,0x52bc3,0x200000,0x4000,0x0,0x800,0x100000,0x2800,0x52bc3,0x52bc3,0x200000,0x52bc3,0x80000,0x0,0x0,0x0,0x100000,0x0,0x10800,0x52bc3,0x52bc3,0x423c3,0x0,0x0,0x423c3,0x80000000,0x0,0xfc00000,0xfc00000,0x3,0x3,0x0,0x0,0x10000bc3,0xbc3,0x0,0x100000,0x2800,0x0,0x0,0x3,0x0,0x0,0x3,0x0,0x3c0,0x0,0x0,0x40000,};
    }
    private static void jj_la1_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x8,0x0,0x0,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x6,0x6,0x18,0x18,0x6,0x0,0x0,0x0,0x0,0x20,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public ARQParser(java.io.InputStream stream) {
@@ -2101,7 +2224,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -2113,7 +2236,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
   public ARQParser(java.io.Reader stream) {
@@ -2122,7 +2245,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -2131,7 +2254,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
   public ARQParser(ARQParserTokenManager tm) {
@@ -2139,7 +2262,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(ARQParserTokenManager tm) {
@@ -2147,7 +2270,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -2194,15 +2317,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[104];
-    for (int i = 0; i < 104; i++) {
+    boolean[] la1tokens = new boolean[110];
+    for (int i = 0; i < 110; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 76; i++) {
+    for (int i = 0; i < 77; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -2220,7 +2343,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         }
       }
     }
-    for (int i = 0; i < 104; i++) {
+    for (int i = 0; i < 110; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

@@ -1207,8 +1207,8 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-      gn = NumericLiteral(true);
-                                {if (true) return asExpr(gn) ;}
+      gn = NumericLiteral();
+                            {if (true) return asExpr(gn) ;}
       break;
     case TRUE:
     case FALSE:
@@ -1507,9 +1507,8 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     case INTEGER:
     case DECIMAL:
     case DOUBLE:
-      // No sign here
-        n = NumericLiteral(true);
-                             {if (true) return n ;}
+      n = NumericLiteral();
+                         {if (true) return n ;}
       break;
     case TRUE:
     case FALSE:
@@ -1563,20 +1562,20 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     throw new Error("Missing return statement in function");
   }
 
-  final public Node NumericLiteral(boolean positive) throws ParseException {
-                                          Token t ;
+  final public Node NumericLiteral() throws ParseException {
+                          Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       t = jj_consume_token(INTEGER);
-                  {if (true) return makeNodeInteger(positive, t.image) ;}
+                  {if (true) return makeNodeInteger(t.image) ;}
       break;
     case DECIMAL:
       t = jj_consume_token(DECIMAL);
-                  {if (true) return makeNodeDecimal(positive, t.image) ;}
+                  {if (true) return makeNodeDecimal(t.image) ;}
       break;
     case DOUBLE:
       t = jj_consume_token(DOUBLE);
-                 {if (true) return makeNodeDouble(positive, t.image) ;}
+                 {if (true) return makeNodeDouble(t.image) ;}
       break;
     default:
       jj_la1[47] = jj_gen;

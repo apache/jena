@@ -613,7 +613,7 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
 // and because of signhandling (which is done 
 // with unary ops in expressions.
   | gn = RDFLiteral()      { return asExpr(gn) ; }
-  | gn = NumericLiteral(true)  { return asExpr(gn) ; }
+  | gn = NumericLiteral()  { return asExpr(gn) ; }
   | gn = BooleanLiteral()  { return asExpr(gn) ; }
 //  | gn = BlankNode()       { return asExpr(gn) ; }
   | gn = Var()             { return asExpr(gn) ; }
@@ -745,8 +745,7 @@ Node GraphTerm() : { Node n ; }
 | 
   n = RDFLiteral()      { return n ; }
 |
-  // No sign here
-  n = NumericLiteral(true)  { return n ; }
+  n = NumericLiteral()  { return n ; }
 |
   n = BooleanLiteral()  { return n ; }
 |
@@ -770,11 +769,11 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
     { return makeNode(lex, lang, uri) ; }
 } 
 
-Node NumericLiteral(boolean positive) : { Token t ; }
+Node NumericLiteral() : { Token t ; }
 {
-  t = <INTEGER> { return makeNodeInteger(positive, t.image) ; }
-| t = <DECIMAL> { return makeNodeDecimal(positive, t.image) ; }
-| t = <DOUBLE>  { return makeNodeDouble(positive, t.image) ; }
+  t = <INTEGER> { return makeNodeInteger(t.image) ; }
+| t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
+| t = <DOUBLE>  { return makeNodeDouble(t.image) ; }
 }
 
 Node BooleanLiteral() : {}
@@ -953,6 +952,15 @@ TOKEN :
       | "." (["0"-"9"])+ (<EXPONENT>)
       | (["0"-"9"])+ <EXPONENT>
       >
+
+// | < INTEGER_POSITIVE: <PLUS> <INTEGER> >
+// | < DECIMAL_POSITIVE: <PLUS> <DECIMAL> >
+// | < DOUBLE_POSITIVE:  <PLUS> <DOUBLE> >
+// 
+// | < INTEGER_NEGATIVE: <MINUS> <INTEGER> >
+// | < DECIMAL_NEGATIVE: <MINUS> <DECIMAL> >
+// | < DOUBLE_NEGATIVE:  <MINUS> <DOUBLE> >
+
    // Optional exponent.
 // |  < DOUBLE:
 //       //(["+","-"])?
