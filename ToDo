@@ -31,6 +31,8 @@ ARQ2-beta
      *  Filter placement (internal tests)
      *  Classifier J and LJ - internal
   
++ Faster cmd loading with org.codehaus.classworlds ??
+  
 + Property function to property path expression
 
 + AltMatcher - Remove bnodes in QueryIterBlockTriplesAlt
