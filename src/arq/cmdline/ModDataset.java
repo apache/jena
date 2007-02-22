@@ -9,6 +9,7 @@ package arq.cmdline;
 import java.util.List;
 
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.core.DataFormat;
 import com.hp.hpl.jena.query.util.DatasetUtils;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileManager;

@@ -16,10 +16,7 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.Binding1;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.expr.ExprEvalException;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.expr.NodeVar;
+import com.hp.hpl.jena.query.expr.*;
 import com.hp.hpl.jena.query.extension.ExtensionBase;
 import com.hp.hpl.jena.query.extension.ExtensionSingleton;
 import com.hp.hpl.jena.query.util.Utils;
@@ -63,14 +60,14 @@ public class assign extends ExtensionBase
         
         NodeValue nv = null ;
         try {
-            nv = value.eval(binding, execCxt.getContext()) ;
+            nv = value.eval(binding, execCxt) ;
         } catch (ExprEvalException ex)
         {   
             if ( args.size() == 3 )
             {
                 Expr dft = (Expr)args.get(2) ;
                 try {
-                    nv = dft.eval(binding, execCxt.getContext()) ;
+                    nv = dft.eval(binding, execCxt) ;
                 } catch (ExprEvalException ex2)
                 {
                     LogFactory.getLog(assign.class).warn("Default value could not be evaluated: "+ex2.getMessage()) ;

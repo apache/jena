@@ -73,33 +73,28 @@ do
 
       sparql|sparql.jj)
           # The parser that is exactly the working group grammar.
-          cpp -P -C -DSPARQL < "$GRAMMAR" | unix2dos > sparql.jj
+          dos2unix < "$GRAMMAR" | cpp -P -C -DSPARQL | unix2dos > sparql.jj
           grammar sparql.jj sparql SPARQL
           ;;
 
-      sparqldev|sparql2)
-          # Development version of SPARQL
-          #cpp -P -C -DSPARQL < "X" | unix2dos > sparql-dev.jj
-          grammar sparql-dev.jj sparqldev SPARQLDev
-          ;;
+##       sparqldev|sparql2)
+##           # Development version of SPARQL
+##           #cpp -P -C -DSPARQL < "X" | unix2dos > sparql-dev.jj
+##           grammar sparql-dev.jj sparqldev SPARQLDev
+##           ;;
 
       arq|arq.jj)
-          cpp -P -C -DARQ < "$GRAMMAR" | unix2dos > arq.jj
+          dos2unix < "$GRAMMAR" | cpp -P -C -DARQ | unix2dos > arq.jj
           grammar arq.jj arq ARQ
           ;;
 
       prefix|prefix.jj)
-          cpp -P -C -DSPARQL < prefix.jj | unix2dos > ast.jj
+          dos2unix < prefix.jj | cpp -P -C -DSPARQL | unix2dos > ast.jj
           grammar ast.jj prefix Prefix
 	  ;; 
       rdql) echo "Tread carefully" 1>&2
           rdqlGrammar
           ;;
-
-      arq2)
-          cpp -P -C -DARQ < master2.jj > arq2.jj
-          grammar arq.jj arq ARQ
-	  ;;
 
       all)  grammar sparql
             grammar arq

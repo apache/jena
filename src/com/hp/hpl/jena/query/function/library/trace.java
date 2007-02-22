@@ -18,8 +18,8 @@ import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.expr.ExprEvalException;
 import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.function.Function;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.serializer.FmtExprARQSubst;
-import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -48,7 +48,7 @@ public class trace implements Function
             throw new QueryBuildException("Function '"+Utils.className(this)+"' takes one argument") ;
     }
 
-    public NodeValue exec(Binding binding, List args, String uri, Context cxt)
+    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env)
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
@@ -61,7 +61,7 @@ public class trace implements Function
         String s = FmtExprARQSubst.format(expr, binding) ;
         
         try {
-            NodeValue x = expr.eval(binding, cxt) ;
+            NodeValue x = expr.eval(binding, env) ;
             out.println(s+" => "+x) ;
             out.flush() ;
         } catch (ExprEvalException ex)

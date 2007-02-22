@@ -28,7 +28,7 @@ public class QueryIterSort
     
     public QueryIterSort(QueryIterator qIter, List conditions, ExecutionContext context)
     {
-        this(qIter, new BindingComparator(conditions), context) ;
+        this(qIter, new BindingComparator(conditions, context), context) ;
     }
 
     public QueryIterSort(QueryIterator qIter, Comparator comparator, ExecutionContext context)

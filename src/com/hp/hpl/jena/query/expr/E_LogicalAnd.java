@@ -8,7 +8,7 @@ package com.hp.hpl.jena.query.expr;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.expr.nodevalue.Functions;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 
 /**
  * @author Andy Seaborne
@@ -27,11 +27,11 @@ public class E_LogicalAnd extends ExprFunction2
     }
     
     // Special : does not evaluate RHS if LHS means it is unnecessary. 
-    public NodeValue evalSpecial(Binding binding, Context cxt)
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
         ExprEvalException error = null ;
         try {
-            NodeValue x = getArg1().eval(binding, cxt) ;
+            NodeValue x = getArg1().eval(binding, env) ;
     
             if ( ! Functions.booleanEffectiveValue(x) )
                 return NodeValue.FALSE ; 
@@ -44,7 +44,7 @@ public class E_LogicalAnd extends ExprFunction2
         // LHS was false or error.
         
         try {
-            NodeValue y = getArg2().eval(binding, cxt) ;
+            NodeValue y = getArg2().eval(binding, env) ;
     
             if ( ! Functions.booleanEffectiveValue(y) )
                 return NodeValue.FALSE ;

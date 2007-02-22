@@ -6,7 +6,7 @@
 package com.hp.hpl.jena.query.expr;
 
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 
 
 /** A function of two arguments */
@@ -48,19 +48,19 @@ public abstract class ExprFunction2 extends ExprFunction
                getArg2().hashCode() ;
     }
 
-    final public NodeValue eval(Binding binding, Context cxt)
+    final public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        NodeValue s = evalSpecial(binding, cxt) ;
+        NodeValue s = evalSpecial(binding, env) ;
         if ( s != null )
             return s ;
         
-        NodeValue x = expr1.eval(binding, cxt) ;
-        NodeValue y = expr2.eval(binding, cxt) ;
+        NodeValue x = expr1.eval(binding, env) ;
+        NodeValue y = expr2.eval(binding, env) ;
         return eval(x, y) ;
     }
     
-    // Allow special cases.
-    protected NodeValue evalSpecial(Binding binding, Context cxt) { return null ; } 
+    /** Special form evaluation (example, don't eval the arguments first) */
+    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
     
     public abstract NodeValue eval(NodeValue x, NodeValue y) ; 
 

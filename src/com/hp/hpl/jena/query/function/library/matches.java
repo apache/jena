@@ -12,7 +12,7 @@ import java.util.List;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.expr.* ;
 import com.hp.hpl.jena.query.function.Function;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 
 /** Function for XPath fn:matches
@@ -35,7 +35,7 @@ public class matches implements Function
         
     }
     
-    public NodeValue exec(Binding binding, List args, String uri, Context cxt)
+    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env)
     {
         if ( myArgs != args )
             throw new ARQInternalErrorException("matches: Arguments have changed since checking") ;
@@ -50,8 +50,8 @@ public class matches implements Function
             if ( args.size() == 3 )
                 e2 = (Expr)args.get(2) ;
 
-            String pattern = e1.eval(binding, cxt).getString() ;
-            String flags = (e2==null)?null : e2.eval(binding, cxt).getString() ;
+            String pattern = e1.eval(binding, env).getString() ;
+            String flags = (e2==null)?null : e2.eval(binding, env).getString() ;
             
             regexEval = new E_Regex(expr, pattern, flags) ;
 
@@ -60,7 +60,7 @@ public class matches implements Function
                 regex = regexEval ;
         }
 
-        NodeValue nv = regexEval.eval(binding, cxt) ;
+        NodeValue nv = regexEval.eval(binding, env) ;
         return nv ;
     }
 

@@ -59,7 +59,7 @@ public class Table1 extends TableBase
         else
         {
             if ( conditions != null )
-                matches = conditions.isSatisfied(bindingLeft, execContext.getContext()) ;
+                matches = conditions.isSatisfied(bindingLeft, execContext) ;
         }
         
         if ( ! matches && ! includeOnNoMatch)

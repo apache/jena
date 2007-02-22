@@ -1,47 +1,31 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.expr;
+package com.hp.hpl.jena.query.function;
 
-import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.function.FunctionEnv;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.query.util.Context;
 
-/** 
- * @author Andy Seaborne
- * @version $Id: E_Bound.java,v 1.17 2007/02/06 17:05:51 andy_seaborne Exp $
- */
+/** Environment passed to functions */
 
-public class E_Bound extends ExprFunction1
+public interface FunctionEnv
 {
-    private static final String symbol = "bound" ;
-    boolean isBound = false ;
-
-    public E_Bound(Expr expr)
-    {
-        super(expr, symbol) ;
-    }
+    /** Return the active graph (the one matching is against at this point in the query.
+     * May be null if unknown or not applicable - for example, doing quad store access or
+     * when sorting  
+     */ 
+    public Graph getActiveGraph() ;
     
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    { 
-		try {
-			expr.eval(binding, env) ;
-            return NodeValue.TRUE ;
-		} catch (VariableNotBoundException ex)
-		{
-			return  NodeValue.FALSE ;
-		}
-    }
-
-    public NodeValue eval(NodeValue x) { return NodeValue.TRUE ; }
-    
-    public Expr copy(Expr expr) { return new E_Bound(expr) ; } 
+    /** Return the context for this function call */
+    public Context getContext() ;
 }
 
 /*
- *  (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

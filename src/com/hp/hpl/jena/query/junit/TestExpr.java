@@ -18,6 +18,8 @@ import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingMap;
 import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.expr.NodeValue;
+import com.hp.hpl.jena.query.function.FunctionEnv;
+import com.hp.hpl.jena.query.function.FunctionEnvBase;
 import com.hp.hpl.jena.query.lang.sparql.SPARQLParser;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.ExprUtils;
@@ -114,7 +116,8 @@ public abstract class TestExpr extends TestCase
             return ;
         
         try { 
-            NodeValue v = expr.eval(binding, context) ;
+            FunctionEnv env = new FunctionEnvBase(context, null) ; 
+            NodeValue v = expr.eval(binding, env) ;
             checkValue(expr, v) ;
         }
         catch (NullPointerException ex)

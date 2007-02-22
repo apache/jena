@@ -49,7 +49,7 @@ public class TableSimple extends TableBase
             if ( r == null )
                 continue ;
             // This does the conditional part. Theta-join.
-            if ( conditions == null || conditions.isSatisfied(r, execContext.getContext()) )
+            if ( conditions == null || conditions.isSatisfied(r, execContext) )
                 out.add(r) ;
         }
                 

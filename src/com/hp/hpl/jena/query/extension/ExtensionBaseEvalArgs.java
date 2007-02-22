@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
@@ -42,7 +41,7 @@ public abstract class ExtensionBaseEvalArgs extends ExtensionBase
             Expr e = (Expr)iter.next() ;
             
             try {
-                NodeValue x = e.eval(binding, execCxt.getContext()) ;
+                NodeValue x = e.eval(binding, execCxt) ;
                 argsEval.add(x) ;
             } catch (ExprEvalException ex)
             {

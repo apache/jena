@@ -9,9 +9,10 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.expr.nodevalue.Functions;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.util.ExprUtils;
 
 
@@ -25,10 +26,10 @@ import com.hp.hpl.jena.query.util.ExprUtils;
  
 public abstract class ExprNode implements Expr
 {
-    public boolean isSatisfied(Binding binding, Context cxt)
+    public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
     {
         try {
-            NodeValue v = eval(binding, cxt) ;
+            NodeValue v = eval(binding, execCxt) ;
             boolean b = Functions.booleanEffectiveValue(v) ;
             return b ;
         }
@@ -43,7 +44,7 @@ public abstract class ExprNode implements Expr
     
     // --- interface Constraint
     
-    public abstract NodeValue eval(Binding binding, Context cxt) ; 
+    public abstract NodeValue eval(Binding binding, FunctionEnv env) ; 
     
     public Set getVarsMentioned() { return ExprVars.getVarsMentioned(this) ; }
     public void varsMentioned(Collection acc) { ExprVars.varsMentioned(acc, this) ; }

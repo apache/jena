@@ -43,7 +43,7 @@ public class QueryIterFilterExpr extends QueryIterFilter
         try {
             //Binding b = new BindingFixed(binding) ;
             Binding b = binding ;
-            passFilter = expr.isSatisfied(b, super.getExecContext().getContext()) ;
+            passFilter = expr.isSatisfied(b, super.getExecContext()) ;
         } catch (ExprException ex)
         { // Some evaluation exception
             passFilter = false ;

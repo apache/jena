@@ -5,12 +5,14 @@
 
 package com.hp.hpl.jena.query.test.suites;
 
-import junit.framework.* ;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.expr.ExprEvalException;
-import com.hp.hpl.jena.query.expr.NodeValue ;
 import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.query.expr.ExprEvalException;
+import com.hp.hpl.jena.query.expr.NodeValue;
+import com.hp.hpl.jena.query.function.FunctionEnvBase;
 import com.hp.hpl.jena.query.util.ExprUtils;
 
 public class TS_Functions extends TestCase
@@ -110,11 +112,10 @@ public class TS_Functions extends TestCase
     public void testSameTerm5()     { test("sameTerm(<x>, <x>)",      TRUE) ; }
     public void testSameTerm6()     { test("sameTerm(<x>, <y>)",      FALSE) ; }
 
-    
     private void test(String exprStr, NodeValue result)
     {
         Expr expr = ExprUtils.parse(exprStr) ;
-        NodeValue r = expr.eval(null, null) ;
+        NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
         assertEquals(result, r) ;
     }
     
@@ -122,7 +123,7 @@ public class TS_Functions extends TestCase
     {
         Expr expr = ExprUtils.parse(exprStr) ;
         try {
-             NodeValue r = expr.eval(null, null) ;
+             NodeValue r = expr.eval(null, FunctionEnvBase.createTest()) ;
              fail("No exception raised") ;
         } catch (ExprEvalException ex) {}
             

@@ -1,3 +1,5 @@
+//Tokens in BNF
+// [] means will be inlined.
 [<EOF>]          ::=
 [<Q_IRIref>]   ::= '<' ([^<>"{}|^`]-[#x00-#x20])* '>'
 <QNAME_NS>   ::= <NCNAME_PREFIX>? ':'

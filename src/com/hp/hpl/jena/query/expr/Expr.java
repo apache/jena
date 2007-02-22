@@ -9,8 +9,9 @@ import java.util.Collection;
 import java.util.Set;
 
 import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 
 public interface Expr
 {
@@ -21,13 +22,13 @@ public interface Expr
     public static final int CMP_UNEQUAL  = -9 ;
     
     /** Test whether a Constraint is satisfied, given a set of bindings
-     *  Includes error propagtion and Effect Boolean Value rules.
+     *  Includes error propagtion and Effective Boolean Value rules.
      * 
      * @param binding   The bindings
-     * @param cxt   ExecutionContext   
+     * @param execCxt   ExecutionContext   
      * @return  true or false
      */ 
-    public boolean isSatisfied(Binding binding, Context cxt) ;
+    public boolean isSatisfied(Binding binding, ExecutionContext execCxt) ;
   
     // Coudl use ExprVars directly.
     public Set  getVarsMentioned() ;
@@ -40,9 +41,9 @@ public interface Expr
 
     /** Evaluate this expression against the binding
      * @param binding 
-     * @param cxt
+     * @param env
      */
-    public NodeValue eval(Binding binding, Context cxt) ;
+    public NodeValue eval(Binding binding, FunctionEnv env) ;
     
     /** Deep copy with substitution */
     public Expr copySubstitute(Binding binding) ;

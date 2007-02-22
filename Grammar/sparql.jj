@@ -20,12 +20,10 @@ options
 
 PARSER_BEGIN(SPARQLParser)
 /*
-
  * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
-
  * All rights reserved.
-
  */
+
 package com.hp.hpl.jena.query.lang.sparql ;
 
 import java.util.* ;
@@ -935,13 +933,9 @@ TOKEN:
 {
    // Includes # for relative URIs
    <Q_IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
-
 | <QNAME_NS: (<NCNAME_PREFIX>)? ":" >
 | <QNAME_LN: <QNAME_NS> <NCNAME> >
-
 | <BLANK_NODE_LABEL: "_:" <NCNAME> >
-//|  <BLANK_NODE_ID: "_!:" <NCNAME> >
-
 | <VAR1: "?" <VARNAME> >
 | <VAR2: "$" <VARNAME> >
 | <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
@@ -954,7 +948,7 @@ TOKEN:
 // before general things like IDENTIFIER which swallow almost
 // anything
 
-TOKEN : { <KW_A: "a" > } // Before HEX rule!
+TOKEN : { <KW_A: "a" > }
 
 TOKEN [IGNORE_CASE] :
 {
@@ -1021,12 +1015,10 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN :
 {
-   < INTEGER: <DIGITS> >
-|
-   // Be careful to bracket the digits part if +/- added
-   < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
-      // Required exponent.
-| < DOUBLE:
+  < #DIGITS: (["0"-"9"])+>
+| < INTEGER: <DIGITS> >
+| < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
+| < DOUBLE: // Required exponent.
       (
         (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
         | "." (["0"-"9"])+ (<EXPONENT>)
@@ -1061,8 +1053,6 @@ TOKEN :
      <QUOTE_3D>
       ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
      <QUOTE_3D> >
-| < DIGITS: (["0"-"9"])+>
-//| <HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"]>
 }
 
 TOKEN :
@@ -1160,64 +1150,34 @@ TOKEN:
 }
 
 /*
-
  * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
-
  *
-
  * Redistribution and use in source and binary forms, with or without
-
  * modification, are permitted provided that the following conditions
-
  * are met:
-
  * 1. Redistributions of source code must retain the above copyright
-
  *    notice, this list of conditions and the following disclaimer.
-
  * 2. Redistributions in binary form must reproduce the above copyright
-
  *    notice, this list of conditions and the following disclaimer in the
-
  *    documentation and/or other materials provided with the distribution.
-
  * 3. The name of the author may not be used to endorse or promote products
-
  *    derived from this software without specific prior written permission.
-
  *
-
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-
  * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-
  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-
  * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-
  * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
  */
 /*
-
 # Local Variables:
-
 # tab-width: 4
-
 # indent-tabs-mode: nil
-
 # comment-default-style: "//"
-
 # End:
-
 */

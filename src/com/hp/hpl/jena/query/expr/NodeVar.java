@@ -12,9 +12,9 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.IndentedWriter ;
 
 /** A node that is a variable in an expression. */
@@ -36,7 +36,7 @@ public class NodeVar extends ExprNode
         varNode = n ;
     }
     
-    public NodeValue eval(Binding binding, Context cxt)
+    public NodeValue eval(Binding binding, FunctionEnv env)
     {
         if ( binding == null )
             throw new VariableNotBoundException("Not bound: (no binding): "+varNode) ;

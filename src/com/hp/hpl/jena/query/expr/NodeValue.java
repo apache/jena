@@ -17,6 +17,7 @@ import org.apache.commons.logging.*;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.*;
 import com.hp.hpl.jena.graph.Node ;
@@ -309,7 +310,7 @@ public abstract class NodeValue extends ExprNode
    // ----------------------------------------------------------------
    // ---- Expr interface
     
-    public NodeValue eval(Binding binding, Context cxt)
+    public NodeValue eval(Binding binding, FunctionEnv env)
     { return this ; }
 
     // NodeValues are immutable so no need to duplicate.

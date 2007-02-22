@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.function.Function;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.function.FunctionFactory;
 import com.hp.hpl.jena.query.function.FunctionRegistry;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
@@ -49,9 +50,21 @@ public class E_Function extends ExprFunctionN
 
     public String getFunctionIRI() { return functionIRI ; }
     
-    public void buildFunction(Context context)
+    public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        try { bindFunction(context) ; }
+        // Only needed because some tests call straight in.
+        // Otherwise, the buildFunction() calls should have done everything
+        if ( ! functionBound  )
+            buildFunction(env.getContext()) ;
+        if ( function == null )
+            throw new ExprEvalException("URI <"+getFunctionIRI()+"> not bound") ;
+        NodeValue r = function.exec(binding, args, getFunctionIRI(), env) ;
+        return r ;
+    }
+    
+    public void buildFunction(Context cxt)
+    {
+        try { bindFunction(cxt) ; }
         catch (ExprException ex)
         {
             if ( WarnOnUnknownFunction )
@@ -59,20 +72,12 @@ public class E_Function extends ExprFunctionN
         }
     }
     
-    private FunctionRegistry chooseRegistry(Context context)
-    {
-        FunctionRegistry registry = FunctionRegistry.get(context) ;
-        if ( registry == null )
-            registry = FunctionRegistry.get() ;
-        return registry ;
-    }
-    
-    private void bindFunction(Context context)
+    private void bindFunction(Context cxt)
     {
         if ( functionBound )
             return ;
         
-        FunctionRegistry registry = chooseRegistry(context) ;
+        FunctionRegistry registry = chooseRegistry(cxt) ;
         FunctionFactory ff = registry.get(functionIRI) ;
         
         if ( ff == null )
@@ -85,17 +90,12 @@ public class E_Function extends ExprFunctionN
         functionBound = true ;
     }
     
-    public NodeValue eval(Binding binding, Context cxt)
+    private FunctionRegistry chooseRegistry(Context context)
     {
-        // Only needed because some tests call straight in
-        // Otherwise, the buildFunction() calls should have done everything
-        if ( ! functionBound )
-            // Allow breakpoint for this case.
-            buildFunction(cxt) ;
-        if ( function == null )
-            throw new ExprEvalException("URI <"+getFunctionIRI()+"> not bound") ;
-        NodeValue r = function.exec(binding, args, getFunctionIRI(), cxt) ;
-        return r ;
+        FunctionRegistry registry = FunctionRegistry.get(context) ;
+        if ( registry == null )
+            registry = FunctionRegistry.get() ;
+        return registry ;
     }
     
     public String getFunctionPrintName(SerializationContext cxt)

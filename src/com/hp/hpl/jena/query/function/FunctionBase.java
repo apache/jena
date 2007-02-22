@@ -28,7 +28,7 @@ public abstract class FunctionBase implements Function
     String uri = null ;
     protected List arguments = null ;
     protected Binding currentBinding = null ; 
-    private Context context ;
+    private FunctionEnv env ;
     
     public final void build(String uri, List args)
     {
@@ -37,9 +37,9 @@ public abstract class FunctionBase implements Function
         checkBuild(uri, args) ;
     }
 
-    public NodeValue exec(Binding binding, List args, String uri, Context cxt)
+    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env)
     {
-        this.context = cxt ;
+        this.env = env ;
         
         if ( args == null )
             // The contract on the function interface is that this should not happen.
@@ -51,7 +51,7 @@ public abstract class FunctionBase implements Function
             Expr e = (Expr)iter.next() ;
             
             try {
-                NodeValue x = e.eval(binding, cxt) ;
+                NodeValue x = e.eval(binding, env) ;
                 evalArgs.add(x) ;
             } catch (ExprEvalException ex)
             {
@@ -67,7 +67,7 @@ public abstract class FunctionBase implements Function
     }
     
     /** Return the Context object for this execution */
-    public Context getContext() { return context ; }
+    public Context getContext() { return env.getContext() ; }
     
     /** Function call to a list of evaluated argument values */ 
     public abstract NodeValue exec(List args) ;

@@ -44,7 +44,7 @@ public class cache implements Extension
 
 
 // Extract
-// Should be QueryIter?
+// Should be QueryIter? QueryIteratorWrapper?
 class CachingIterator extends QueryIteratorBase
 {
     boolean initialized = false ;

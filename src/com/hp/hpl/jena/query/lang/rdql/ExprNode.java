@@ -18,10 +18,11 @@ import com.hp.hpl.jena.graph.query.Valuator;
 import com.hp.hpl.jena.graph.query.VariableIndexes;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.*;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingIndex;
 import com.hp.hpl.jena.query.expr.*;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 
 
@@ -52,7 +53,7 @@ abstract class ExprNode
 
     public Expr deepCopy() { return null ; }
 
-    public com.hp.hpl.jena.query.expr.NodeValue eval(Binding binding, Context cxt)
+    public com.hp.hpl.jena.query.expr.NodeValue eval(Binding binding, FunctionEnv env)
     { return null ; }
 
     public com.hp.hpl.jena.query.expr.NodeValue getConstant()
@@ -73,7 +74,7 @@ abstract class ExprNode
     }
 
 
-    public boolean isSatisfied(Binding binding, Context cxt)
+    public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
     {
         BindingIndex bInd = new BindingIndex(binding) ;
         VariableIndexes vi = bInd ;

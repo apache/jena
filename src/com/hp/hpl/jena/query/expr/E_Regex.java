@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.util.Symbol;
 
 //import java.util.regex.* ;
@@ -76,17 +76,17 @@ public class E_Regex extends ExprFunction
             regexEngine = makeRegexEngine(pattern.getConstant(), (flags==null)?null:flags.getConstant()) ;
     }
     
-    public NodeValue eval(Binding binding, Context cxt)
+    public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        NodeValue v = expr.eval(binding, cxt) ;
+        NodeValue v = expr.eval(binding, env) ;
         if ( ! v.isString() )
             throw new ExprEvalException("REGEX: "+expr+" evaluates to "+v+", which is not a string") ;
 
         RegexEngine regex = regexEngine ;
         if ( regex == null  )
         {
-            NodeValue vPattern = pattern.eval(binding, cxt) ;
-            NodeValue vFlags = (flags==null) ? null : flags.eval(binding, cxt) ;
+            NodeValue vPattern = pattern.eval(binding, env) ;
+            NodeValue vFlags = (flags==null) ? null : flags.eval(binding, env) ;
             regex = makeRegexEngine(vPattern, vFlags) ;
         }
         

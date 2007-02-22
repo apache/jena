@@ -17,11 +17,10 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.expr.ExprEvalException;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.expr.VariableNotBoundException;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.engine.ExecutionContext;
+import com.hp.hpl.jena.query.expr.*;
+import com.hp.hpl.jena.query.function.FunctionEnv;
+import com.hp.hpl.jena.query.function.FunctionEnvBase;
 import com.hp.hpl.jena.query.util.NodeUtils;
 
 public class BindingComparator implements java.util.Comparator 
@@ -29,18 +28,18 @@ public class BindingComparator implements java.util.Comparator
     private Log log = LogFactory.getLog(BindingComparator.class) ;
 
     List conditions ;
-    private Context context ;
+    private FunctionEnv env ;
     
-    public BindingComparator(List _conditions, Context context)
+    public BindingComparator(List conditions, ExecutionContext execCxt)
     {
-        conditions = _conditions ;
-        this.context = context ;
+        this.conditions = conditions ;
+        env = execCxt ;
     }
     
     public BindingComparator(List _conditions)
     {
         conditions = _conditions ;
-        this.context = null ;
+        this.env = new FunctionEnvBase();
     }
 
     // Compare bindings by iterating.
@@ -61,12 +60,12 @@ public class BindingComparator implements java.util.Comparator
             NodeValue nv1 = null ;
             NodeValue nv2 = null ;
             
-            try { nv1 = sc.expression.eval(bind1, context) ; }
+            try { nv1 = sc.expression.eval(bind1, env) ; }
             catch (VariableNotBoundException ex) {}
             catch (ExprEvalException ex)
             { log.warn(ex.getMessage()) ; }
             
-            try { nv2 = sc.expression.eval(bind2, context) ; }
+            try { nv2 = sc.expression.eval(bind2, env) ; }
             catch (VariableNotBoundException ex) {}
             catch (ExprEvalException ex)
             { log.warn(ex.getMessage()) ; }

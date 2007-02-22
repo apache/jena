@@ -16,7 +16,7 @@ import com.hp.hpl.jena.query.expr.Expr;
 import com.hp.hpl.jena.query.expr.ExprEvalException;
 import com.hp.hpl.jena.query.expr.NodeValue;
 import com.hp.hpl.jena.query.function.Function;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 
 /** Function that evaluates an expression - catches evaluation failures
  *  and returns false.
@@ -39,7 +39,7 @@ public class eval implements Function
     
     /** Processes unevaluated arguments */
     
-    public NodeValue exec(Binding binding, List args, String uri, Context cxt)
+    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env)
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.
@@ -50,7 +50,7 @@ public class eval implements Function
         
         Expr ex = (Expr)args.get(0) ;
         try {
-            NodeValue v = ex.eval(binding, cxt) ;
+            NodeValue v = ex.eval(binding, env) ;
             return v ;
         } catch (ExprEvalException evalEx)
         {

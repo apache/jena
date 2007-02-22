@@ -9,14 +9,15 @@ package com.hp.hpl.jena.query.engine;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.core.DatasetGraph;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 import com.hp.hpl.jena.query.util.Context;
 
-public class ExecutionContext extends ExecCtl
+public class ExecutionContext extends ExecCtl implements FunctionEnv
 {
     private Graph activeGraph     = null ;
 
     /** For testing only */
-    public ExecutionContext(Context context) 
+    private ExecutionContext(Context context) 
     {
         super(context) ;
     }
@@ -39,6 +40,10 @@ public class ExecutionContext extends ExecCtl
         super(other, dataset) ;
     }
     
+    /** Return the active graph (the one matching is against at this point in the query.
+     * May be null if unknown or not applicable - for example, doing quad store access or
+     * when sorting  
+     */ 
     public Graph getActiveGraph()     { return activeGraph ; }
 }
 

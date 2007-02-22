@@ -81,7 +81,7 @@ class EvaluatorSimple implements Evaluator
         for ( ; iter.hasNext() ; )
         {
             Binding b = iter.nextBinding() ;
-            if ( expressions.isSatisfied(b, execCxt.getContext()) )
+            if ( expressions.isSatisfied(b, execCxt) )
                 output.add(b) ;
         }
         return new TableSimple(new QueryIterPlainWrapper(output.iterator(), execCxt)) ;

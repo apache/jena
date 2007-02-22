@@ -22,8 +22,8 @@ import com.hp.hpl.jena.query.util.Utils;
  */
 public abstract class QueryIter extends QueryIteratorBase
 {
-    // volatile just to make it safe to concurrent updates
-    // It does not matter if it is wrong.
+    // Volatile just to make it safe to concurrent updates
+    // It does not matter too much if it is wrong - it's used as a label.
     volatile static int iteratorCounter = 0 ;
     private int iteratorNumber = (iteratorCounter++) ;
     

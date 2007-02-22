@@ -8,6 +8,7 @@ package com.hp.hpl.jena.query.expr;
 
 import java.util.*;
 
+import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.util.Context;
 
@@ -23,13 +24,13 @@ public class ExprList
     }
     
     
-    public boolean isSatisfied(Binding binding, Context cxt)
+    public boolean isSatisfied(Binding binding, ExecutionContext execCxt)
     {
         // Dream of generics
         for ( Iterator iter = expressions.iterator() ; iter.hasNext() ; )
         {
             Expr expr = (Expr)iter.next();
-            if ( ! expr.isSatisfied(binding, cxt) )
+            if ( ! expr.isSatisfied(binding, execCxt) )
                 return false ;
         }
         return true ;

@@ -10,7 +10,6 @@ import java.util.List;
 
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.util.Context;
 
 /** Interface to value-testing extensions to the expression evaluator.
  * 
@@ -35,11 +34,11 @@ public interface Function
      * @param binding   The current solution
      * @param args      A list of unevaluated expressions
      * @param uri       The name of this   
-     * @param cxt   The execution context
+     * @param env   The execution context
      * @return NodeValue - a value
      */ 
     
-    public NodeValue exec(Binding binding, List args, String uri, Context cxt) ;
+    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env) ;
 }
 
 /*

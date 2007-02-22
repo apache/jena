@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.query.junit;
 
-import com.hp.hpl.jena.query.DataFormat;
 import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.query.core.DataFormat;
 import com.hp.hpl.jena.query.vocabulary.TestManifestX;
 import com.hp.hpl.jena.query.vocabulary.TestManifest;
 import com.hp.hpl.jena.rdf.model.Model;

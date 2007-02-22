@@ -39,9 +39,8 @@ public abstract class Parser
         if (syntaxURI.equals(Syntax.syntaxSPARQL))
             return new ParserSPARQL() ;
         
-        if (syntaxURI.equals(Syntax.syntaxSPARQLdev))
-            return new ParserSPARQLdev() ;
-        
+//        if (syntaxURI.equals(Syntax.syntaxSPARQLdev))
+//            return new ParserSPARQLdev() ;
         if (syntaxURI.equals(Syntax.syntaxPrefix))
             return new ParserPrefix() ;
         

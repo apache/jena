@@ -13,14 +13,13 @@ import com.hp.hpl.jena.query.util.TranslationTable;
 
 public class Syntax extends Symbol
 {
-    
     /** The syntax that the working group has defined */
     public static final Syntax syntaxSPARQL
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL") ;
 
-    /** Development version of the working group gramamr */ 
-    public static final Syntax syntaxSPARQLdev
-                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQLdev") ;
+//    /** Development version of the working group gramamr */ 
+//    public static final Syntax syntaxSPARQLdev
+//                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQLdev") ;
 
     public static final Syntax syntaxARQ
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/ARQ") ;
@@ -45,7 +44,7 @@ public class Syntax extends Symbol
     public static TranslationTable querySyntaxNames = new TranslationTable(true) ;
     static {
         querySyntaxNames.put("sparql",      Syntax.syntaxSPARQL) ;
-        querySyntaxNames.put("sparqldev",   Syntax.syntaxSPARQLdev) ;
+//        querySyntaxNames.put("sparqldev",   Syntax.syntaxSPARQLdev) ;
         querySyntaxNames.put("sparql-x",    Syntax.syntaxSPARQL_X) ;
         //querySyntaxNames.put("sparql-alt",  Syntax.syntaxSPARQL_alt) ;
         querySyntaxNames.put("arq",         Syntax.syntaxARQ) ;

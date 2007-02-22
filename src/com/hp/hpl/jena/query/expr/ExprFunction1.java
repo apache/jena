@@ -6,7 +6,7 @@
 package com.hp.hpl.jena.query.expr;
 
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 
 /** A function that has a single argument */
  
@@ -43,20 +43,20 @@ public abstract class ExprFunction1 extends ExprFunction
     
     // ---- Evaluation
     
-    final public NodeValue eval(Binding binding, Context cxt)
+    final public NodeValue eval(Binding binding, FunctionEnv env)
     {
-        NodeValue s = evalSpecial(binding, cxt) ;
+        NodeValue s = evalSpecial(binding, env) ;
         if ( s != null )
             return s ;
         
-        NodeValue x = expr.eval(binding, cxt) ;
+        NodeValue x = expr.eval(binding, env) ;
         return eval(x) ;
     }
     
     public abstract NodeValue eval(NodeValue v) ;
     
     // Allow special cases.
-    protected NodeValue evalSpecial(Binding binding, Context cxt) { return null ; } 
+    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
     
     final public Expr copySubstitute(Binding binding, boolean foldConstants)
     {

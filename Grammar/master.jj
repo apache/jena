@@ -1004,13 +1004,9 @@ TOKEN:
 {
    // Includes # for relative URIs
    <Q_IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
-
 |  <QNAME_NS: (<NCNAME_PREFIX>)? ":" >
 |  <QNAME_LN: <QNAME_NS> <NCNAME> >
-
 |  <BLANK_NODE_LABEL: "_:" <NCNAME> >
-//|  <BLANK_NODE_ID: "_!:" <NCNAME> >
-
 |  <VAR1: "?" <VARNAME> >
 |  <VAR2: "$" <VARNAME> >
 |  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
@@ -1023,7 +1019,7 @@ TOKEN:
 // before general things like IDENTIFIER which swallow almost
 // anything
 
-TOKEN : { <KW_A:  "a" > } // Before HEX rule!
+TOKEN : { <KW_A:  "a" > }
 
 TOKEN [IGNORE_CASE] :
 {
@@ -1090,12 +1086,10 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN :
 {
-   < INTEGER: <DIGITS> >
-|
-   // Be careful to bracket the digits part if +/- added
-   < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
-      // Required exponent.
-|  < DOUBLE:
+  < #DIGITS: (["0"-"9"])+>
+| < INTEGER: <DIGITS> >
+| < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
+| < DOUBLE:   // Required exponent.
       (
         (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
         | "." (["0"-"9"])+ (<EXPONENT>)
@@ -1130,8 +1124,6 @@ TOKEN :
      <QUOTE_3D> 
       ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
      <QUOTE_3D> >
-| < DIGITS: (["0"-"9"])+>
-//| <HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"]>
 }
 
 TOKEN :

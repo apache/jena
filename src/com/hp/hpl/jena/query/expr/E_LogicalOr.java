@@ -8,7 +8,7 @@ package com.hp.hpl.jena.query.expr;
 import com.hp.hpl.jena.query.core.ARQInternalErrorException;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.expr.nodevalue.Functions;
-import com.hp.hpl.jena.query.util.Context;
+import com.hp.hpl.jena.query.function.FunctionEnv;
 
 /* 
     Logical OR and AND is special with respect to handling errors truth table.
@@ -43,11 +43,11 @@ public class E_LogicalOr extends ExprFunction2
         super(left, right, printName, symbol) ;
     }
     
-    public NodeValue evalSpecial(Binding binding, Context cxt)
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
         ExprEvalException error = null ;
         try {
-            NodeValue x = getArg1().eval(binding, cxt) ;
+            NodeValue x = getArg1().eval(binding, env) ;
     
             if ( Functions.booleanEffectiveValue(x) )
     			return NodeValue.TRUE ; 
@@ -60,7 +60,7 @@ public class E_LogicalOr extends ExprFunction2
         // LHS was false or error.
         
         try {
-            NodeValue y = getArg2().eval(binding, cxt) ;
+            NodeValue y = getArg2().eval(binding, env) ;
     
     		if ( Functions.booleanEffectiveValue(y) )
     			return NodeValue.TRUE ;

@@ -184,10 +184,11 @@ public class OpWriter
         
         public void visit(OpDatasetNames dsNames)
         {
-
-            out.print("(TableDatasetNames") ;
+            start() ;
+            out.print("TableDatasetNames") ;
             out.print(" "); 
             out.print(slotToString(dsNames.getGraphNode())) ;
+            finish() ;
         }
 
         public void visit(OpExt opExt)
@@ -250,27 +251,24 @@ public class OpWriter
             printOp(opSlice.getSubOp()) ;
             finish(opSlice) ; }
 
-//        private void start(Op op)
-//        { start(op, true) ; }
-
-//        private void simple(Op op)
-//        { start(op, NL) ; finish(op) ; }
+        private void start()
+        { out.print(Plan.startMarker) ; }
         
         private void start(Op op, int newline)
         {
-
-            out.print(Plan.startMarker) ;
+            start() ;
             out.print(op.getName()) ;
             if ( newline == NL ) out.println();
             out.incIndent() ;
         }
         
+        private void finish()
+        { out.print(Plan.finishMarker) ; }
+
         private void finish(Op op)
         {
             out.decIndent() ;
-            // Allow different opens to have different layouts. 
-            //out.ensureStartOfLine() ;
-            out.print(Plan.finishMarker) ;
+            finish();
         }
         
         private void printOp(Op op)
@@ -285,15 +283,22 @@ public class OpWriter
         
         private void formatTriple(Triple tp)
         {
+            start() ;
+            out.print("Triple") ;
+            out.print(" ") ;
             out.print(slotToString(tp.getSubject())) ;
             out.print(" ") ;
             out.print(slotToString(tp.getPredicate())) ;
             out.print(" ") ;
             out.print(slotToString(tp.getObject())) ;
+            finish() ;
         }
 
         private void formatQuad(Quad qp)
         {
+            start() ;
+            out.print("Quad") ;
+            out.print(" ") ;
             out.print(slotToString(qp.getGraph())) ;
             out.print(" ") ;
             out.print(slotToString(qp.getSubject())) ;
@@ -301,6 +306,7 @@ public class OpWriter
             out.print(slotToString(qp.getPredicate())) ;
             out.print(" ") ;
             out.print(slotToString(qp.getObject())) ;
+            finish() ;
         }
 
         private String slotToString(Node n)

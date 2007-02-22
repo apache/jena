@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query;
+package com.hp.hpl.jena.query.core;
 
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.TranslationTable;
