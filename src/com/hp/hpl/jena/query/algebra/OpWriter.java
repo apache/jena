@@ -158,9 +158,10 @@ public class OpWriter
             out.print(" ") ;
             ExprList exprs = opFilter.getExprs() ;
             if ( exprs == null )
-                out.print("(null expr)") ;
+                out.print("()") ;
             else
-                ExprUtils.fmtSPARQL(out, exprs, sContext.getPrefixMapping()) ;
+                //ExprUtils.fmtSPARQL(out, exprs, sContext.getPrefixMapping()) ;
+                ExprUtils.fmtPrefix(out, exprs, sContext.getPrefixMapping()) ;
             out.println();
             printOp(opFilter.getSubOp()) ;
             finish(opFilter) ;
