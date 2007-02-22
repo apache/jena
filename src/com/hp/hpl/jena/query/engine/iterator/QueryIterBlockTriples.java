@@ -20,6 +20,10 @@ import com.hp.hpl.jena.query.engine.QueryEngineUtils;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
 import com.hp.hpl.jena.query.engine.binding.BindingMap;
+import com.hp.hpl.jena.query.serializer.SerializationContext;
+import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
 
@@ -133,6 +137,16 @@ public class QueryIterBlockTriples extends QueryIterRepeatApply
         }
         return binding ;
     }
+    
+    protected void details(IndentedWriter out, SerializationContext sCxt)
+    {
+        out.print(Utils.className(this)) ;
+        out.println() ;
+        out.incIndent() ;
+        FmtUtils.formatPattern(out, pattern, sCxt) ;
+        out.decIndent() ;
+    }
+
 }
 
 /*

@@ -54,12 +54,18 @@ public abstract class QueryIter1 extends QueryIter
     // Do better
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
+        // Linear form.
+        getInput().output(out, sCxt) ;
+        out.ensureStartOfLine() ;
         details(out, sCxt) ;
         out.ensureStartOfLine() ;
-        out.incIndent() ;
-        getInput().output(out, sCxt) ;
-        out.decIndent() ;
-        out.ensureStartOfLine() ;
+
+//        details(out, sCxt) ;
+//        out.ensureStartOfLine() ;
+//        out.incIndent() ;
+//        getInput().output(out, sCxt) ;
+//        out.decIndent() ;
+//        out.ensureStartOfLine() ;
     }
 
     protected void details(IndentedWriter out, SerializationContext sCxt)
