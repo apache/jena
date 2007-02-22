@@ -10,11 +10,13 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.db.impl.DBQueryHandler;
 import com.hp.hpl.jena.graph.query.QueryHandler;
+import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
 import com.hp.hpl.jena.query.core.ARQConstants;
 import com.hp.hpl.jena.query.core.BasicPattern;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTriples;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTriplesQH;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.Utils;
 
@@ -42,18 +44,18 @@ public class StageBasic implements Stage
         
         // Always use the pass-through triple matcher for databases
         if ( qh instanceof DBQueryHandler )
-            return QueryIterBlockTriples.create(input, pattern, cxt) ;
+            return QueryIterBlockTriplesQH.create(input, pattern, cxt) ;
         
-//        // If in-memory and allowing alt matching ...
-//        if ( qh instanceof SimpleQueryHandler &&
-//             cxt.getContext().isTrueOrUndef(altMatcher) )
-//        {
-//            // The alt matcher avoids thread creation - makes a difference when called very heavily.
-//            return QueryIterBlockTripleAlt.create(input, pattern, cxt) ;
-//        }
+        // If in-memory and allowing alt matching ...
+        if ( qh instanceof SimpleQueryHandler &&
+             cxt.getContext().isTrueOrUndef(altMatcher) )
+        {
+            // The alt matcher avoids thread creation - makes a difference when called very heavily.
+            return QueryIterBlockTriples.create(input, pattern, cxt) ;
+        }
         
         // When in doubt ... use the general pass-through to graph query handler matcher.
-        return QueryIterBlockTriples.create(input, pattern, cxt) ;
+        return QueryIterBlockTriplesQH.create(input, pattern, cxt) ;
     }
 
 }

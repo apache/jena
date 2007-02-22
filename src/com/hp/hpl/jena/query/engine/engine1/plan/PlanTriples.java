@@ -21,8 +21,8 @@ import com.hp.hpl.jena.query.engine.ExecutionContext;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.engine1.PlanElement;
 import com.hp.hpl.jena.query.engine.engine1.PlanVisitor;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTripleAlt;
 import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTriples;
+import com.hp.hpl.jena.query.engine.iterator.QueryIterBlockTriplesQH;
 import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.query.util.Symbol;
 import com.hp.hpl.jena.query.util.Utils;
@@ -58,18 +58,18 @@ public class PlanTriples extends PlanElement0
         
         // Always use the pass-through triple matcher for databases
         if ( qh instanceof DBQueryHandler )
-            return QueryIterBlockTriples.create(input, pattern, cxt) ;
+            return QueryIterBlockTriplesQH.create(input, pattern, cxt) ;
         
         // If in-memory and allowing alt matching ...
         if ( qh instanceof GraphMemBaseQueryHandler &&
              cxt.getContext().isTrueOrUndef(PlanTriples.altMatcher) )
         {
             // The alt matcher avoids thread creation - makes a difference when called very heavily.
-            return QueryIterBlockTripleAlt.create(input, pattern, cxt) ;
+            return QueryIterBlockTriples.create(input, pattern, cxt) ;
         }
         
         // When in doubt ... use the general pass-through to graph query handler matcher.
-        return QueryIterBlockTriples.create(input, pattern, cxt) ;
+        return QueryIterBlockTriplesQH.create(input, pattern, cxt) ;
         
     }
     public PlanTriples(Context context)

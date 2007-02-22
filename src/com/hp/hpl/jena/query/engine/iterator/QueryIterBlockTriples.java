@@ -1,143 +1,74 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.query.engine.iterator;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
+import java.util.Iterator;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.query.BindingQueryPlan;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.QueryHandler;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.core.BasicPattern;
-import com.hp.hpl.jena.query.core.Var;
 import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.QueryEngineUtils;
 import com.hp.hpl.jena.query.engine.QueryIterator;
 import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.binding.BindingMap;
 import com.hp.hpl.jena.query.serializer.SerializationContext;
 import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.query.util.Utils;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-
-/** An Iterator that takes a binding and executes a pattern.
- * 
- * @author     Andy Seaborne
- * @version    $Id: QueryIterBlockTriples.java,v 1.18 2007/02/06 17:06:02 andy_seaborne Exp $
- */
- 
-public class QueryIterBlockTriples extends QueryIterRepeatApply
+public class QueryIterBlockTriples extends QueryIter1
 {
     private BasicPattern pattern ;
-
-    public static QueryIterator create( QueryIterator input,
-                                        BasicPattern pattern , 
-                                        ExecutionContext cxt)
+    private Graph graph ;
+    private QueryIterator output ;
+    
+    public static QueryIterator create(QueryIterator input,
+                                       BasicPattern pattern , 
+                                       ExecutionContext execContext)
     {
-        return new QueryIterBlockTriples(input, pattern, cxt) ;
+        return new QueryIterBlockTriples(input, pattern, execContext) ;
     }
     
-    private QueryIterBlockTriples( QueryIterator input,
-                                   BasicPattern pattern , 
-                                   ExecutionContext cxt)
+    private QueryIterBlockTriples(QueryIterator input,
+                                    BasicPattern pattern , 
+                                    ExecutionContext execContext)
     {
-        super(input, cxt) ;
+        super(input, execContext) ;
         this.pattern = pattern ;
+        graph = execContext.getActiveGraph() ;
+        // Create a chain of triple iterators.
+        // This code is elsewhere (Group? build serial?)
+        QueryIterator chain = getInput() ;
+        for ( Iterator iter = pattern.iterator(); iter.hasNext(); )
+        {
+            Triple t = (Triple) iter.next() ;
+            chain = new QueryIterTriplePattern(chain, t, execContext) ;
+        }
+        output = chain ;
     }
 
-    public QueryIterator nextStage(Binding binding)
+    //@Override
+    protected boolean hasNextBinding()
     {
-        return new StagePattern(binding, pattern, getExecContext()) ;
+        return output.hasNext() ;
     }
 
-    static class StagePattern extends QueryIter
+    //@Override
+    protected Binding moveToNextBinding()
     {
-        ClosableIterator graphIter ;
-        Binding binding ;
-        //DatasetGraph data ;
-        Var[] projectionVars ;
-
-        // Could get pattern, constraints and data from parent if this were not static.
-        // But non-static inner class that inherit from an external class can
-        // be confusing.  Unnecessary complication.
-        
-        public StagePattern(Binding binding,
-                                BasicPattern pattern, 
-                                ExecutionContext qCxt)
-        {
-            super(qCxt) ;
-            this.binding = binding ;
-            
-            QueryHandler qh = qCxt.getActiveGraph().queryHandler() ;
-            com.hp.hpl.jena.graph.query.Query graphQuery = new com.hp.hpl.jena.graph.query.Query() ;
-            
-            //System.out.println("StageBasePattern: "+pattern) ;
-            
-            Set vars = new HashSet() ;
-            QueryEngineUtils.compilePattern(graphQuery, pattern.getList(), binding, vars) ;
-            projectionVars = QueryEngineUtils.projectionVars(vars) ; 
-            // **** No constraints done here currently
-            //QueryEngineUtils.compileConstraints(graphQuery, constraints) ;
-            
-            // Start our next iterator.
-            BindingQueryPlan plan = qh.prepareBindings(graphQuery, projectionVars);
-            graphIter = plan.executeBindings() ;
-            if ( graphIter == null )
-                LogFactory.getLog(StagePattern.class).warn("Graph Iterator is null") ;
-        }
-
-        //@Override
-        protected boolean hasNextBinding()
-        {
-            boolean isMore = graphIter.hasNext() ;
-            return isMore ;
-        }
-
-        //@Override
-        protected Binding moveToNextBinding()
-        {
-          Domain d = (Domain)graphIter.next() ;
-          Binding b = graphResultsToBinding(binding, d, projectionVars) ;
-          return b ;
-        }
-
-        //@Override
-        protected void closeIterator()
-        {
-            if ( ! isFinished() )
-            {
-                if ( graphIter != null )
-                    graphIter.close() ;
-                graphIter = null ;
-            }
-        }
+        return output.nextBinding() ;
     }
-    
-    private static Binding graphResultsToBinding(Binding parent, Domain d, Var[] projectionVars)
+
+    protected void releaseResources()
     {
-        // Copy out
-        Binding binding = new BindingMap(parent) ;
-        
-        for ( int i = 0 ; i < projectionVars.length ; i++ )
-        {
-            Var var = projectionVars[i] ;
-            
-            Node n = (Node)d.get(i) ;
-            if ( n == null )
-                // There was no variable of this name.
-                continue ;
-            binding.add(var, n) ;
-        }
-        return binding ;
+        NiceIterator.close(output) ;
+        output = null ;
     }
-    
+
     protected void details(IndentedWriter out, SerializationContext sCxt)
     {
         out.print(Utils.className(this)) ;
@@ -146,12 +77,11 @@ public class QueryIterBlockTriples extends QueryIterRepeatApply
         FmtUtils.formatPattern(out, pattern, sCxt) ;
         out.decIndent() ;
     }
-
 }
 
 /*
- *  (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
