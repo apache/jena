@@ -62,7 +62,9 @@ public class PrefixMappingSDB extends PrefixMappingImpl
     {
         super() ;
         connection = sdb  ;
-        readPrefixMapping() ;
+        
+        // DISABLED - does not work on ModelRDB
+        //readPrefixMapping() ;
     }
     
     @Override

@@ -62,7 +62,6 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
             
         // ModelRDB special
         storeDesc.rdbModelName = GraphUtils.getStringValue(root, AssemblerVocab.pModelRDBname) ;
-        
         return storeDesc ;
     }
 }

@@ -33,6 +33,9 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
+        sdbquery("--sdb=Store/sdb-psql-rdb.ttl", "--query=../Jena-Misc/Q.rq" ) ;
+        System.exit(0) ;
+        
         
         runQuery() ;
         //SDBConnection.logSQLStatements = true ;

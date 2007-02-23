@@ -53,7 +53,6 @@ public class QuadBlockCompiler1 extends QuadBlockCompilerTriple
     {
         return new TableTriples1(tripleTableDesc.getTableName(), alias) ;
     }
-
 }
 
 /*

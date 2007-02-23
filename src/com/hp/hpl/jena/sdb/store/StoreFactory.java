@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
+import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -95,6 +96,13 @@ public class StoreFactory
         if ( sdb == null ) 
             sdb = SDBFactory.createConnection(desc.connDesc) ;
 
+        if ( desc.layout == null )
+        {
+            log.warn("Layout is null.") ; 
+            throw new SDBException("No such layout") ;
+        }
+            
+        
         if ( desc.layout == LayoutType.LayoutSimple )
         {
             switch (desc.dbType)
@@ -163,16 +171,23 @@ public class StoreFactory
         
         if ( desc.layout == LayoutType.LayoutRDB )
         {
-            // TODO Cope with no real connection
-            IDBConnection conn = new DBConnection(sdb.getSqlConnection(), desc.connDesc.rdbType) ;
-            String mName = desc.rdbModelName ;
-            ModelRDB modelRDB = null ;
-            if ( mName == null || mName.equals("") || mName.equalsIgnoreCase("default") )
-                modelRDB = ModelRDB.open(conn) ;
-            else
-                modelRDB = ModelRDB.open(conn, mName) ;
-            StoreRDB store = new StoreRDB(modelRDB) ;
-            return store ;
+            try { 
+                // TODO Cope with no real connection
+                IDBConnection conn = new DBConnection(sdb.getSqlConnection(), desc.connDesc.rdbType) ;
+                String mName = desc.rdbModelName ;
+                ModelRDB modelRDB = null ;
+                if ( mName == null || mName.equals("") || mName.equalsIgnoreCase("default") )
+                    modelRDB = ModelRDB.open(conn) ;
+                else
+                    modelRDB = ModelRDB.open(conn, mName) ;
+                StoreRDB store = new StoreRDB(modelRDB) ;
+                return store ;
+            } catch ( RDFRDBException ex)
+            {
+                throw new SDBException(format("Failed to create ModelRDB store (%s, %s): %s", 
+                                              desc.rdbModelName==null?"<default>":desc.rdbModelName,
+                                              desc.rdbModelType, ex.getMessage())) ;
+            }
         }
 
         log.warn(format("Can't make (%s, %s)", desc.layout.getName(), desc.connDesc.type)) ; 

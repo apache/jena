@@ -177,6 +177,12 @@ public class ModStore extends ModBase
         String f = cmdLine.getArg(argDeclSDBdesc).getValue() ;
         try {
             storeDesc = StoreDesc.read(f) ;
+            if ( storeDesc.layout == null )
+            {
+                System.err.println("No layout or unrecognized layout");
+                throw new TerminationException(1);
+            }
+            
         } catch (SDBException ex)
         {
             System.err.println("Failed to read the store description");
@@ -282,6 +288,7 @@ public class ModStore extends ModBase
         if ( store == null )
         {
             store = StoreFactory.create(getConnection(), storeDesc) ;
+            
             if ( formatFirst )
                 getStore().getTableFormatter().format() ;
         }

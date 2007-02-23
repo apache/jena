@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ QuadBlockCompiler needs variable table name and column name for ModelRDB use.
+  Move TableDesc out of layout1.
+
 + Prepared statement query cache?
   When will it be beneficial - GraphSDB and add/delete single triples?
 
