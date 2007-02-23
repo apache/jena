@@ -6,8 +6,12 @@
 
 package com.hp.hpl.jena.sparql.test.suites;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.Iterator;
+
+import arq.examples.* ;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -378,15 +382,64 @@ public class TestLARQ extends TestCase
         LARQ.removeDefaultIndex() ;
     }
 
+    public void test_larq_example_1() throws Exception
+    { 
+        PrintStream pOut = System.out ;
+        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
+        System.setOut(pNull) ;
+        try {
+            ExLucene1.main(null) ;
+        } finally { System.setOut(pOut) ; }
+    }
+
+    public void test_larq_example_2() throws Exception
+    {
+        PrintStream pOut = System.out ;
+        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
+        System.setOut(pNull) ;
+        try {
+            ExLucene2.main(null) ;
+        } finally { System.setOut(pOut) ; }
+    }
+
+    public void test_larq_example_3() throws Exception
+    {
+        PrintStream pOut = System.out ;
+        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
+        System.setOut(pNull) ;
+        try {
+            ExLucene3.main(null) ;
+        } finally { System.setOut(pOut) ; }
+    }
+
+    public void test_larq_example_4() throws Exception
+    {
+        PrintStream pOut = System.out ;
+        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
+        System.setOut(pNull) ;
+        try {
+            ExLucene4.main(null) ;
+        } finally { System.setOut(pOut) ; }
+    }
+    public void test_larq_example_5() throws Exception
+    {
+        PrintStream pOut = System.out ;
+        PrintStream pNull = new PrintStream(new ByteArrayOutputStream()) ;
+        System.setOut(pNull) ;
+        try {
+            ExLucene5.main(null) ;
+        } finally { System.setOut(pOut) ; }
+    }
+    
     private QueryExecution query(Model model, String pattern)
     { return query(model, pattern, null) ; }
 
     private QueryExecution query(Model model, String pattern, IndexLARQ index)
     {
         String queryString = StringUtils.join("\n", new String[]{
-            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>" ,
-            "PREFIX : <http://example/>" ,
-            "PREFIX pf: <java:com.hp.hpl.jena.query.pfunction.library.>",
+            "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
+            "PREFIX :       <http://example/>" ,
+            "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/pfunction#>",
             "PREFIX  dc:    <http://purl.org/dc/elements/1.1/>",
             "SELECT *",
             pattern,

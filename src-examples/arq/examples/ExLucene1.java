@@ -40,9 +40,9 @@ public class ExLucene1
         String searchString = "+document" ;
         
         String queryString = StringUtils.join("\n", new String[]{
-            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>" ,
-            "PREFIX : <http://example/>" ,
-            "PREFIX pf: <java:com.hp.hpl.jena.query.pfunction.library.>",
+            "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
+            "PREFIX :       <http://example/>" ,
+            "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/pfunction#>",
             "SELECT * {" ,
             "    ?lit pf:textMatch '"+searchString+"'.",
             "}"

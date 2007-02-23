@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 public class MappedLoader
 {
     // Map string => string of prefixes 
-    //   e.g. http://jena.hpl.hp.com/ARQ/pfunction# => java:com.hp.hpl.jena.query.pfunction.
+    //   e.g. http://jena.hpl.hp.com/ARQ/pfunction# => java:com.hp.hpl.jena.sparql.pfunction.
     
     static Map uriMap = new HashMap() ;
     

@@ -40,7 +40,7 @@ public class ExLucene5
         
         // This time, find documents with a matching DC title. 
         String queryString = StringUtils.join("\n", new String[]{
-            "PREFIX pf: <java:com.hp.hpl.jena.query.pfunction.library.>",
+            "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/pfunction#>",
             "SELECT ?doc {" ,
             "    ?doc pf:textMatch '"+searchString+"'.",
             "}"

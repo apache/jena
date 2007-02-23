@@ -43,7 +43,7 @@ public class ExLucene4
         String queryString = StringUtils.join("\n", new String[]{
             "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
             "PREFIX :       <http://example/>" ,
-            "PREFIX pf: <java:com.hp.hpl.jena.query.pfunction.library.>",
+            "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/pfunction#>",
             "PREFIX  dc:    <http://purl.org/dc/elements/1.1/>",
             "SELECT ?doc {" ,
             "    ?doc pf:textMatch '"+searchString+"'.",

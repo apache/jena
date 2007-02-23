@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.FileUtils;
 /** Function that prints what happens to an expression - always returns true.
  *  Example:
  *  <pre>
- *    PREFIX  jfn:   &lt;java:com.hp.hpl.jena.query.function.library.&gt;
+ *    PREFIX  jfn:   &lt;http://jena.hpl.hp.com/ARQ/pfunction#&gt;
  *    . . . 
  *    FILTER jfn:print("?v =",?v,"?w =",>w)
  *    FILTER jfn:trace(?v = ?w)
