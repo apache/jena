@@ -8,13 +8,13 @@ package arq.examples;
 
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
-import com.hp.hpl.jena.query.util.StringUtils;
-import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.larq.IndexBuilderString;
+import com.hp.hpl.jena.sparql.larq.IndexLARQ;
+import com.hp.hpl.jena.sparql.larq.LARQ;
+import com.hp.hpl.jena.sparql.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileManager;
 
 /** Example code to load a model from a file, index all string literals,

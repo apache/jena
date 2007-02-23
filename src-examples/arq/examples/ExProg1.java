@@ -10,10 +10,10 @@ package arq.examples;
 // The ARQ application API.
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.syntax.ElementGroup;
-import com.hp.hpl.jena.query.util.IndentedWriter;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.vocabulary.DC;
 
 /** Example : Build a query programmatically.

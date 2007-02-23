@@ -8,11 +8,9 @@ package arq.examples;
 
 
 // The ARQ application API.
-import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-//import com.hp.hpl.jena.query.util.IndentedWriter;
-
-import com.hp.hpl.jena.rdf.model.*; 
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.DC;
 
 /** Example 1 : Execute a simple SELECT query on a model

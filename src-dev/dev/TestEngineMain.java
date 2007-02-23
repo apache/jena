@@ -9,10 +9,10 @@ package dev;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.query.expr.E_Function;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.expr.E_Function;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 
 
 public class TestEngineMain extends TestCase

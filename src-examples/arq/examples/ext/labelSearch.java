@@ -13,29 +13,28 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
+import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
+import com.hp.hpl.jena.sparql.expr.E_Regex;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
+import com.hp.hpl.jena.sparql.syntax.ElementFilter;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.vocabulary.RDFS;
-
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.query.engine.main.OpCompiler;
-import com.hp.hpl.jena.query.expr.E_Regex;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.expr.NodeVar;
-import com.hp.hpl.jena.query.pfunction.PropFuncArg;
-import com.hp.hpl.jena.query.pfunction.PropertyFunction;
-import com.hp.hpl.jena.query.pfunction.PropertyFunctionRegistry;
-import com.hp.hpl.jena.query.syntax.ElementFilter;
-import com.hp.hpl.jena.query.syntax.ElementGroup;
-import com.hp.hpl.jena.query.syntax.ElementTriplesBlock;
-import com.hp.hpl.jena.query.util.NodeUtils;
 
 /** Example extension or property function to show rewriting part of a query.
  *  A simpler, more driect way to implement property functions is to extends

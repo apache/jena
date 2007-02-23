@@ -12,16 +12,17 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.*;
-import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.binding.Binding1;
-import com.hp.hpl.jena.query.engine.binding.BindingMap;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.query.pfunction.PFuncSimple;
-import com.hp.hpl.jena.query.util.NodeUtils;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /** Example property function that creates the association between a URI and it's localname.

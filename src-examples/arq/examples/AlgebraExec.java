@@ -12,24 +12,23 @@ import java.util.List;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.*;
-
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.op.OpBGP;
-import com.hp.hpl.jena.query.algebra.op.OpFilter;
-import com.hp.hpl.jena.query.core.BasicPattern;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.ResultSetStream;
-import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.query.expr.E_LessThan;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.expr.NodeVar;
-import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.expr.E_LessThan;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 /** Build an algebra expression and execute it */
 
