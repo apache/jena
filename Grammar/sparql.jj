@@ -24,13 +24,13 @@ PARSER_BEGIN(SPARQLParser)
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.query.lang.sparql ;
+package com.hp.hpl.jena.sparql.lang.sparql ;
 
 import java.util.* ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.query.syntax.* ;
-import com.hp.hpl.jena.query.expr.* ;
+import com.hp.hpl.jena.sparql.syntax.* ;
+import com.hp.hpl.jena.sparql.expr.* ;
 
 public class SPARQLParser extends SPARQLParserBase
 {

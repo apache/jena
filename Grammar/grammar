@@ -14,7 +14,7 @@ function grammar
 ##     NAME="$(echo $N | tr '[:lower:]' '[:upper:]')"
 ##     DIR1="$(echo $N | tr '[:upper:]' '[:lower:]')"
     
-    DIR="../src/com/hp/hpl/jena/query/lang/$PKG"
+    DIR="../src/com/hp/hpl/jena/sparql/lang/$PKG"
     echo "---- Process grammar -- $1"
     javacc -OUTPUT_DIRECTORY=$DIR "${FILE}"
     RC=$?
@@ -43,7 +43,7 @@ function rdqlGrammar
     # This one uses the old RDQL expression code via JJTree
     (
 	echo "---- Process RDQL grammar"
-	DIR="../src/com/hp/hpl/jena/query/lang/rdql"
+	DIR="../src/com/hp/hpl/jena/sparql/lang/rdql"
 	rm -f rdql-arq.jj
 	jjtree "-OUTPUT_DIRECTORY=$DIR" rdql-arq.jjt
 	RC=$?

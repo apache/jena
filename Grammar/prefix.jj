@@ -32,13 +32,13 @@ PARSER_BEGIN(CLASS)
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.query.PACKAGE ;
+package com.hp.hpl.jena.sparql.PACKAGE ;
 
 import java.util.* ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
-import com.hp.hpl.jena.query.syntax.* ;
-import com.hp.hpl.jena.query.expr.* ;
+import com.hp.hpl.jena.sparql.syntax.* ;
+import com.hp.hpl.jena.sparql.expr.* ;
 
 public class CLASS extends PARSERBASE
 {

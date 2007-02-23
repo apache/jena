@@ -7,11 +7,10 @@
 package com.hp.hpl.jena.sparql.lang.prefix ;
 
 import java.util.* ;
-
 import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.sparql.expr.*;
-import com.hp.hpl.jena.sparql.syntax.*;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.sparql.syntax.* ;
+import com.hp.hpl.jena.sparql.expr.* ;
 
 public class PrefixParser extends PrefixParserBase implements PrefixParserConstants {
 
