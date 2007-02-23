@@ -5,8 +5,8 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.query.util.Context;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.util.FileManager;
 
 /** A interface for a single execution of a query.

@@ -18,14 +18,14 @@ import com.hp.hpl.jena.Jena;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryParseException;
-import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.engine.binding.BindingMap;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.expr.ExprEvalException;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.util.ExprUtils;
-import com.hp.hpl.jena.query.util.FmtUtils;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 /** A program to execute expressions from the command line.
   *

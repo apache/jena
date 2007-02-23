@@ -11,14 +11,14 @@ import arq.cmd.CmdException;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.util.GraphUtils;
-import com.hp.hpl.jena.query.util.TypeNotUniqueException;
-import com.hp.hpl.jena.query.util.assembler.AssemblerUtils;
-import com.hp.hpl.jena.query.util.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.NotFoundException;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
+import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
+import com.hp.hpl.jena.sparql.util.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.util.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.util.FileManager;
 
 

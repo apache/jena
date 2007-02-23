@@ -8,9 +8,9 @@ package com.hp.hpl.jena.query;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.resultset.*;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 
-import com.hp.hpl.jena.query.resultset.*;
-import com.hp.hpl.jena.query.serializer.SerializationContext;
 
 import java.io.* ;
 import java.util.ArrayList;

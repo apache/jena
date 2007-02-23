@@ -8,10 +8,10 @@ package com.hp.hpl.jena.query;
 
 import java.util.* ;
 
-import com.hp.hpl.jena.query.core.DataSourceImpl;
-import com.hp.hpl.jena.query.util.DatasetUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.util.DatasetUtils;
 
 /** Make Datasets and DataSources in various ways   
  * 

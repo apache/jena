@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.util.Context;
-import com.hp.hpl.jena.query.util.Symbol;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.Symbol;
 
 /** ARQ - miscellaneous settings
  * 

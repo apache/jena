@@ -9,12 +9,12 @@ package arq.cmdline;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.query.engine.engine1.QueryEngine1;
-import com.hp.hpl.jena.query.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineQuad;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
-
 import arq.cmd.CmdException;
+
+import com.hp.hpl.jena.sparql.engine.engine1.QueryEngine1;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 
 
 public class ModEngine extends ModBase

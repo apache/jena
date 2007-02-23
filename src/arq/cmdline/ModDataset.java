@@ -8,14 +8,17 @@ package arq.cmdline;
 
 import java.util.List;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.core.DataFormat;
-import com.hp.hpl.jena.query.util.DatasetUtils;
+import arq.cmd.CmdException;
+
+import com.hp.hpl.jena.query.DataSource;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.query.LabelExistsException;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.sparql.core.DataFormat;
+import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.LocationMapper;
-
-import arq.cmd.CmdException;
 
 /** ModDataset: arguments to build a dataset - see also ModAssembler which extends ModDataset with a description parameter.
  * 

@@ -9,18 +9,18 @@ package com.hp.hpl.jena.query;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.E_Function;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprVisitor;
+import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.PrintSerializableBase;
+import com.hp.hpl.jena.sparql.util.Utils;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.expr.E_Function;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.expr.ExprVisitor;
-import com.hp.hpl.jena.query.expr.NodeVar;
-import com.hp.hpl.jena.query.serializer.FmtExprARQ;
-import com.hp.hpl.jena.query.serializer.SerializationContext;
-import com.hp.hpl.jena.query.util.ExprUtils;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.PrintSerializableBase;
-import com.hp.hpl.jena.query.util.Utils;
 
 public class SortCondition extends PrintSerializableBase
 {

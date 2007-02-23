@@ -6,11 +6,11 @@
 
 package arq.cmdline;
 
-import arq.cmd.ResultsFormat;
 
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.util.QueryExecUtils;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 
 public class ModResultsOut implements ArgModuleGeneral
 {

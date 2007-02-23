@@ -13,7 +13,7 @@ import java.util.List;
 import arq.cmd.CmdUtils;
 import arq.cmd.TerminationException;
 
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 // Added usage + some common flags
 // This is the usual starting point for any sub 

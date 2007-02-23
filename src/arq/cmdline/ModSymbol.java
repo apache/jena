@@ -10,9 +10,9 @@ import java.io.PrintStream;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.util.Context;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.Symbol;
+import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Symbol;
 
 public class ModSymbol implements ArgModuleGeneral
 {

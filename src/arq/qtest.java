@@ -6,11 +6,10 @@
 
 package arq;
 
-import junit.framework.TestSuite;
-
-import java.io.File ;
+import java.io.File;
 import java.util.Iterator;
 
+import junit.framework.TestSuite;
 import arq.cmd.CmdException;
 import arq.cmd.CmdUtils;
 import arq.cmd.TerminationException;
@@ -18,15 +17,16 @@ import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdLineArgs;
 
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineQuad;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.query.expr.E_Function;
-import com.hp.hpl.jena.query.expr.NodeValue;
-import com.hp.hpl.jena.query.junit.*;
-import com.hp.hpl.jena.query.test.ARQTestSuite;
-import com.hp.hpl.jena.query.util.RelURI;
-import com.hp.hpl.jena.query.util.Symbol;
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.sparql.expr.E_Function;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
+import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
+import com.hp.hpl.jena.sparql.test.ARQTestSuite;
+import com.hp.hpl.jena.sparql.util.RelURI;
+import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 
 /** A program to execute query test suites

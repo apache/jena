@@ -8,13 +8,13 @@ package arq.cmdline;
 
 import java.io.IOException;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileUtils;
-
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
+
+import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.util.FileUtils;
 
 public class ModQueryIn implements ArgModuleGeneral
 {

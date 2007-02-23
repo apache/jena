@@ -7,12 +7,12 @@ package com.hp.hpl.jena.query;
 import java.util.List;
 
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.query.core.DataSourceImpl;
 
-import com.hp.hpl.jena.query.engine.QueryEngineFactory;
-import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.query.engine.http.QueryEngineHTTP;
 
 import org.apache.commons.logging.*;
 

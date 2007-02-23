@@ -17,10 +17,10 @@ import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModQueryOut;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.resultset.ResultSetException;
-import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.resultset.ResultSetException;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 //import org.apache.commons.logging.Log;
 //import org.apache.commons.logging.LogFactory;

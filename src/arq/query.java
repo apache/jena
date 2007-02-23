@@ -10,14 +10,14 @@ import arq.cmd.CmdException;
 import arq.cmdline.*;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.core.ARQInternalErrorException;
-import com.hp.hpl.jena.query.engine.http.HttpQuery;
-import com.hp.hpl.jena.query.engine.http.QueryExceptionHTTP;
-import com.hp.hpl.jena.query.resultset.ResultSetException;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.QueryExecUtils;
-import com.hp.hpl.jena.query.util.Utils;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.engine.http.HttpQuery;
+import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
+import com.hp.hpl.jena.sparql.resultset.ResultSetException;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 public class query extends CmdARQ
 {

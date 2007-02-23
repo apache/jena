@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.query;
 
-import com.hp.hpl.jena.query.lang.Parser;
+import com.hp.hpl.jena.sparql.lang.Parser;
 import com.hp.hpl.jena.util.FileManager;
 
 

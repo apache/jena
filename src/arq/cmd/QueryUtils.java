@@ -8,15 +8,15 @@ package arq.cmd;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.algebra.AlgebraGenerator;
-import com.hp.hpl.jena.query.algebra.AlgebraGeneratorQuad;
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.core.DataSourceImpl;
-import com.hp.hpl.jena.query.engine.Plan;
-import com.hp.hpl.jena.query.engine.QueryEngineBase;
-import com.hp.hpl.jena.query.serializer.SerializationContext;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryEngineBase;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Utilities for queries and plans
  * 

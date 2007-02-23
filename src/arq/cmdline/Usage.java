@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class Usage
 {

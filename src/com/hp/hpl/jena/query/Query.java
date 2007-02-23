@@ -15,22 +15,20 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.query.core.*;
-import com.hp.hpl.jena.query.serializer.Serializer;
-import com.hp.hpl.jena.query.syntax.Element;
-import com.hp.hpl.jena.query.syntax.Template;
-
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.IndentedLineBuffer;
-import com.hp.hpl.jena.query.util.FmtUtils;
-import com.hp.hpl.jena.query.util.RelURI;
-
-import com.hp.hpl.jena.query.expr.Expr ;
-import com.hp.hpl.jena.query.expr.NodeVar;
-
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.core.QueryCompare;
+import com.hp.hpl.jena.sparql.core.QueryHashCode;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.NodeVar;
+import com.hp.hpl.jena.sparql.serializer.Serializer;
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.Template;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.RelURI;
 
 /** The data structure for a query as presented externally.
  *  There are two ways of creating a query - use the parser to turn
