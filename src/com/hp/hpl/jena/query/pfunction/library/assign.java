@@ -16,8 +16,8 @@ import com.hp.hpl.jena.query.pfunction.PFLib;
 import com.hp.hpl.jena.query.pfunction.PFuncSimple;
 import com.hp.hpl.jena.query.util.FmtUtils;
 
-/** Assignment: does not chnage the value of an existing binding.
- *  Either the subject or object must be a constant or be a boudn variable.
+/** Assignment: does not change the value of an existing binding.
+ *  Either the subject or object must be a constant or be a bound variable.
  *  If both are bound, it degenerates to a test of RDF term equality.
  *   
  * @author Andy Seaborne
