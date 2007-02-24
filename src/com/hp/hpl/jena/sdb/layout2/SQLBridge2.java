@@ -19,13 +19,14 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.binding.Binding;
-import com.hp.hpl.jena.query.engine.binding.BindingMap;
-import com.hp.hpl.jena.query.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -36,6 +37,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.store.NodeTableDesc;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 
 public class SQLBridge2 extends SQLBridgeBase 
@@ -115,8 +117,10 @@ public class SQLBridge2 extends SQLBridgeBase
         
         SqlColumn c1 = e1.getColumn() ;
         // Not in scope -- add a table to get it
-        SqlTable nTable = new TableNodes(genNodeResultAlias.next()) ;
-        String nodeKeyColName = request.getStore().getNodeKeyColName() ;    // Yuk.
+        NodeTableDesc nodeTableDesc = request.getStore().getNodeTableDesc() ;
+        
+        SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), genNodeResultAlias.next()) ; 
+        String nodeKeyColName = nodeTableDesc.getKeyColName() ;
         SqlColumn c2 = new SqlColumn(nTable, nodeKeyColName) ;
 
         nTable.setValueColumnForVar(var, c2) ;

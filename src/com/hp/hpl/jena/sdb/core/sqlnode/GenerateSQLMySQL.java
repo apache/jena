@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.query.util.IndentedLineBuffer;
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.core.JoinType;
 
 public class GenerateSQLMySQL extends GenerateSQL

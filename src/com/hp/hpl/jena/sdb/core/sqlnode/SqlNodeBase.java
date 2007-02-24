@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.query.util.IndentedLineBuffer;
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.core.AnnotationsBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 

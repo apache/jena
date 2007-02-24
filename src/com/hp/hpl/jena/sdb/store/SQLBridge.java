@@ -9,9 +9,9 @@ package com.hp.hpl.jena.sdb.store;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.query.engine.ExecutionContext;
-import com.hp.hpl.jena.query.engine.QueryIterator;
-import com.hp.hpl.jena.query.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 /** Convert from whatever results a particular layout returns into

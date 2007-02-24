@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.store;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.util.Named;
+import com.hp.hpl.jena.sparql.util.Named;
 import com.hp.hpl.jena.sdb.SDBException;
 
 /** Symbolic names for databases supported

@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sparql.core.Var;
 
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;

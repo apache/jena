@@ -6,26 +6,26 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 /**
  * @author Andy Seaborne
  * @version $Id: TableTriples.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public class TableTriples extends SqlTable
+public class TableTriples implements TripleTableDesc
 {
-    public static final String subjectCol    = "s" ;
-    public static final String predicateCol  = "p" ;
-    public static final String objectCol     = "o" ;
-    
-    
-    //private static Log log = LogFactory.getLog(TableTriples.class) ;
-    public static final String tableName    = "Triples" ;
-    
-    public TableTriples(String aliasName)
-    { super(tableName, aliasName) ; }
-    
+    private static final String graphCol      = "g" ;
+    private static final String subjectCol    = "s" ;
+    private static final String predicateCol  = "p" ;
+    private static final String objectCol     = "o" ;
+    public static final String tableName     = "Triples" ;
+
+    public String getTableName()        { return tableName ; }
+    public String getGraphColName()     { return graphCol ; }
+    public String getSubjectColName()   { return subjectCol ; }
+    public String getPredicateColName() { return predicateCol ; }
+    public String getObjectColName()    { return objectCol ; }
 }
 
 /*

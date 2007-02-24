@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import static com.hp.hpl.jena.query.util.FmtUtils.stringForNode;
+import static com.hp.hpl.jena.sparql.util.FmtUtils.stringForNode;
 
 import java.util.Collection;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.query.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
 
 public class GenerateSQL implements SQLGenerator 

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.core.Scope;
 import com.hp.hpl.jena.sdb.core.ScopeBase;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;

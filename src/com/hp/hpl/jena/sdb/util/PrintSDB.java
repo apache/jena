@@ -7,12 +7,12 @@
 package com.hp.hpl.jena.sdb.util;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.OpVisitorBase;
-import com.hp.hpl.jena.query.algebra.OpWalker;
-import com.hp.hpl.jena.query.algebra.op.OpExt;
-import com.hp.hpl.jena.query.core.ARQConstants;
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
+import com.hp.hpl.jena.sparql.algebra.OpWalker;
+import com.hp.hpl.jena.sparql.algebra.op.OpExt;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.engine.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.store.Store;

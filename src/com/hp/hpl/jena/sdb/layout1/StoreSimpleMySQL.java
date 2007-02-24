@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBase;
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 
 /** Store class for the simple layout (i.e. one triple table)
@@ -38,7 +39,7 @@ public class StoreSimpleMySQL extends StoreBase
               new LoaderSimple(connection, codec), 
               new QueryCompilerFactory1(codec, tripleTableDesc), 
               new SQLBridgeFactory1(codec),
-              new GenerateSQL()) ;
+              new GenerateSQL(), tripleTableDesc, null) ;
     }
 }
 

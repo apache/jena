@@ -1,28 +1,29 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.layout2.hash;
 
-import java.util.Collections;
-import java.util.Set;
+import com.hp.hpl.jena.sdb.layout2.TableNodes;
 
-import com.hp.hpl.jena.sparql.core.Var;
+/**
+ * @author Andy Seaborne
+ * @version $Id: TableNodes.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
+ */
 
-public class ScopeNull implements Scope 
+public class TableNodesHash extends TableNodes
 {
-    public boolean          hasColumnForVar(Var var)    { return false ; }
-    public ScopeEntry       findScopeForVar(Var var)     { return null ; }
-    public Set<Var>         getVars()                   { return Collections.emptySet()  ; }
-    public Set<ScopeEntry>  findScopes()                 { return Collections.emptySet()  ; }
+    @Override
+    public String getKeyColName()   { return TableNodes.colHash ; }
     
-    @Override public String toString() { return "ScopeNull" ; } 
+    @Override
+    public String getIdColName()    { return null ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

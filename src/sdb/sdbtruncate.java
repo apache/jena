@@ -10,7 +10,7 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Format an SDB database.  Destroys all existing data permanently.
  *  Ignores -dbName argument in favour of the command line positional parameter. 

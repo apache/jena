@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.RS;

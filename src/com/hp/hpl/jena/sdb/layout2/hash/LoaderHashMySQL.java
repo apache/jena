@@ -31,7 +31,7 @@ public class LoaderHashMySQL extends LoaderHashLJ
         		"  hash BIGINT NOT NULL,",
         		"  lex TEXT BINARY CHARACTER SET utf8 NOT NULL,",
         		"  lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL,",
-        		"  datatype VARCHAR("+ TableNodes.UriLength+ ") BINARY CHARACTER SET utf8 NOT NULL,",
+        		"  datatype VARCHAR("+ TableNodes.DatatypeUriLength+ ") BINARY CHARACTER SET utf8 NOT NULL,",
         		"  type int unsigned NOT NULL,",
         		"  vInt int,",
         		"  vDouble double,",

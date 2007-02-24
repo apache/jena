@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout1;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 
 /** Store class for the simple layout (i.e. one triple table)
@@ -30,7 +31,8 @@ public class StoreSimpleHSQL extends StoreBaseHSQL
               new FormatterSimpleHSQL(sdb) ,
               new LoaderSimple(sdb, codec),
               new QueryCompilerFactory1(codec, tripleTableDesc),
-              new SQLBridgeFactory1(codec) ) ;
+              new SQLBridgeFactory1(codec),
+              tripleTableDesc, null) ;
     }
 }
 

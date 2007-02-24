@@ -13,10 +13,10 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
-import com.hp.hpl.jena.query.util.FmtUtils;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.ValueType;

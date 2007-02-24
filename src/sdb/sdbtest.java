@@ -10,8 +10,8 @@ import java.util.List;
 import junit.framework.TestSuite;
 import sdb.cmd.CmdArgsDB;
 
-import com.hp.hpl.jena.query.junit.SimpleTestRunner;
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
  
  /** Run a test suite

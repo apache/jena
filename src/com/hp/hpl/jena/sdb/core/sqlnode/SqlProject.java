@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.util.Pair;
 

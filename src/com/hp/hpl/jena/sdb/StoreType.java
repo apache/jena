@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb;
 
-import com.hp.hpl.jena.query.util.Symbol;
-import com.hp.hpl.jena.query.util.TranslationTable;
+import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.TranslationTable;
 
 
 public class StoreType extends Symbol

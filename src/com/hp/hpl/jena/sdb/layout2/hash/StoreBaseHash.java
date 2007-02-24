@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerFactory;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.*;
 
@@ -15,11 +15,10 @@ public class StoreBaseHash extends StoreBase
 {
     public StoreBaseHash(SDBConnection connection, StoreFormatter formatter, StoreLoader loader, QueryCompilerFactory compilerF, SQLBridgeFactory sqlBridgeF, SQLGenerator sqlGenerator)
     {
-        super(connection, formatter, loader, compilerF, sqlBridgeF, sqlGenerator) ;
+        super(connection, formatter, loader, compilerF, sqlBridgeF, sqlGenerator,
+              new TableTriples(),
+              new TableNodesHash()) ;
     }
-
-    @Override
-    public String getNodeKeyColName() { return TableNodes.colHash ; }
 }
 
 /*

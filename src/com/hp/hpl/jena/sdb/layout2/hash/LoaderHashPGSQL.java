@@ -33,7 +33,7 @@ public class LoaderHashPGSQL extends LoaderHashLJ
                     "  hash BIGINT NOT NULL ,",
                     "  lex TEXT NOT NULL ,",
                     "  lang VARCHAR(10) NOT NULL ,",
-                    "  datatype VARCHAR("+ TableNodes.UriLength+ ") NOT NULL ,",
+                    "  datatype VARCHAR("+ TableNodes.DatatypeUriLength+ ") NOT NULL ,",
                     "  type int NOT NULL ,",
                     "  vInt int,",
                     "  vDouble double precision,",

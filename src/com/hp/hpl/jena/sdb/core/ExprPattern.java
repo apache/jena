@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.util.ExprUtils;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.exprmatch.Action;
 import com.hp.hpl.jena.sdb.exprmatch.ExprMatcher;

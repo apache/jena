@@ -6,17 +6,18 @@
 
 package com.hp.hpl.jena.sdb.script;
 
-import arq.cmd.ResultsFormat;
-
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
+
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.util.GraphUtils;
-import com.hp.hpl.jena.rdf.model.Resource;
+
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
 
 // EXPERIMENTAL - Move to ARQ?

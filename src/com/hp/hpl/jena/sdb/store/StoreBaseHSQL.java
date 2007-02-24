@@ -22,9 +22,12 @@ public class StoreBaseHSQL extends StoreBase
                          StoreFormatter formatter,
                          StoreLoader loader,
                          QueryCompilerFactory compilerF,
-                         SQLBridgeFactory sqlBridgeF)
+                         SQLBridgeFactory sqlBridgeF,
+                         TripleTableDesc tripleTableDesc,
+                         NodeTableDesc nodeTableDesc)
     {
-        super(connection, formatter, loader, compilerF, sqlBridgeF, new GenerateSQL()) ;
+        super(connection, formatter, loader, compilerF, sqlBridgeF, 
+              new GenerateSQL(), tripleTableDesc, nodeTableDesc) ;
     }
 
     @Override 

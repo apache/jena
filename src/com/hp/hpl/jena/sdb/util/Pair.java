@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.util;
 
-import static com.hp.hpl.jena.query.util.StringUtils.str;
-import static com.hp.hpl.jena.query.util.Utils.eq;
-import static com.hp.hpl.jena.query.util.Utils.hashCodeObject;
+import static com.hp.hpl.jena.sparql.util.StringUtils.str;
+import static com.hp.hpl.jena.sparql.util.Utils.eq;
+import static com.hp.hpl.jena.sparql.util.Utils.hashCodeObject;
 
 public class Pair<A, B>
 {

@@ -13,8 +13,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineQuad;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
 
 public class CheckQuery {
 	

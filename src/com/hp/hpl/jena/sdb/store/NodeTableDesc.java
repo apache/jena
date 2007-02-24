@@ -4,15 +4,21 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package com.hp.hpl.jena.sdb.store;
 
-public interface TripleTableDesc
+public interface NodeTableDesc
 {
-    public String getTableName() ; 
-    public String getGraphsColName() ;
-    public String getSubjectColName() ;
-    public String getPredicateColName() ;
-    public String getObjectColName() ;
+    public String getTableName() ;
+    
+    /** Name of the column used to join with the triple table. */
+    public String getKeyColName() ;
+    
+    public String getIdColName() ;
+    public String getHashColName() ;
+    public String getLexColName() ;
+    public String getLangColName() ;
+    public String getDatatypeColName() ;
+    public String getTypeColName() ;
 }
 
 /*

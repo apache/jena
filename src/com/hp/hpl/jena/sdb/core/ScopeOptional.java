@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.core;
 
 import java.util.Set;
 
-import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.util.SetUtils;
 
 public class ScopeOptional implements Scope

@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+
 
 /**
  * @author Andy Seaborne
@@ -18,7 +20,7 @@ public class TripleTableDescSPO implements TripleTableDesc
     
     public String getTableName()         { return tableName ; }
     
-    public String getGraphsColName()     { return "g" ; }
+    public String getGraphColName()     { return "g" ; }
 
     public String getSubjectColName()    { return "s" ; }
 

@@ -11,10 +11,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.query.junit.TestItem;
-import com.hp.hpl.jena.query.resultset.RSCompare;
-import com.hp.hpl.jena.query.resultset.ResultSetRewindable;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.sparql.junit.TestItem;
+import com.hp.hpl.jena.sparql.resultset.RSCompare;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;

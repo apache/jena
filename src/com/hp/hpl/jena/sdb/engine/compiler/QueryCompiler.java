@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.engine.compiler;
 
-import com.hp.hpl.jena.query.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Op;
 
 public interface QueryCompiler
 {

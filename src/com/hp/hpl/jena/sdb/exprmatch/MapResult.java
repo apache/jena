@@ -8,9 +8,9 @@ package com.hp.hpl.jena.sdb.exprmatch;
 
 import java.util.HashMap;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.expr.Expr;
-import com.hp.hpl.jena.query.util.ExprUtils;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
 
 public class MapResult extends HashMap<Var, Expr>
 {

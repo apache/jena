@@ -11,10 +11,10 @@ import java.io.StringReader;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.lang.sparql.ParseException;
-import com.hp.hpl.jena.query.lang.sparql.SPARQLParser;
-import com.hp.hpl.jena.query.lang.sparql.Token;
-import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.sparql.lang.sparql.ParseException;
+import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
+import com.hp.hpl.jena.sparql.lang.sparql.Token;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;

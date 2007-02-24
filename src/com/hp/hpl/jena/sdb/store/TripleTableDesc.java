@@ -4,21 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package com.hp.hpl.jena.sdb.store;
 
-import java.util.Collections;
-import java.util.Set;
-
-import com.hp.hpl.jena.sparql.core.Var;
-
-public class ScopeNull implements Scope 
+public interface TripleTableDesc
 {
-    public boolean          hasColumnForVar(Var var)    { return false ; }
-    public ScopeEntry       findScopeForVar(Var var)     { return null ; }
-    public Set<Var>         getVars()                   { return Collections.emptySet()  ; }
-    public Set<ScopeEntry>  findScopes()                 { return Collections.emptySet()  ; }
-    
-    @Override public String toString() { return "ScopeNull" ; } 
+    public String getTableName() ; 
+    public String getGraphColName() ;
+    public String getSubjectColName() ;
+    public String getPredicateColName() ;
+    public String getObjectColName() ;
 }
 
 /*

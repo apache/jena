@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.engine.compiler;
 
-import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.Expr;
 
 /**
  * ConditionCompiler that does nothing, refusing to recognize any conditions  

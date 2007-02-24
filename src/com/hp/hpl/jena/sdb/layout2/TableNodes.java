@@ -6,48 +6,39 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.store.NodeTableDesc;
 
 /**
  * @author Andy Seaborne
  * @version $Id: TableNodes.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public class TableNodes extends SqlTable
+public abstract class TableNodes implements NodeTableDesc
 {
-    // TODO This table is different in Hash and Index versions
-    private static Log log = LogFactory.getLog(TableNodes.class) ;
+    // This table is different in Hash and Index versions
     
-    public static final String tableName       = "Nodes" ;
+    public static final String tableName        = "Nodes" ;
     
-//    // Note: URIs are actually stored in the lexical slot.  It's only datatype URIs that need be shorter. 
-//    public static final int LexicalLength          = 10*1024 ;
-//    public static final int LexicalLengthIndex     = 200 ;  // Index the first X bytes
-    public static final int UriLength              = 200 ;
-//    public static final int UriLengthIndex         = 200 ;
+    public static final String colId            = "id" ;
+    public static final String colHash          = "hash" ;
+    private static final String colLex           = "lex" ;
+    private static final String colLang          = "lang" ;
+    private static final String colDatatype      = "datatype" ;
+
+    private static final String colType          = "type" ;
+
+    public static final int DatatypeUriLength           = 200 ;
     
-    public static final String colId           = "id" ;
-    public static final String colHash         = "hash" ;
-    public static final String colLex          = "lex" ;
-    
-//    public static final Map<String, String> colNameMap = new HashMap<String, String>() ;
-//    static {
-//        colNameMap.put("{"+colId+"}",        colId) ;
-//        colNameMap.put("{"+colHash+"}",      colHash) ;
-//        colNameMap.put("{"+colLex+"}",       colLex) ; 
-//        colNameMap.put("{"+colLang+"}",      colLang) ; 
-//        colNameMap.put("{"+colDatatype+"}",  colDatatype) ; 
-//        colNameMap.put("{"+colType+"}",      colType) ; 
-//        colNameMap.put("{"+colInt+"}",       colInt) ; 
-//        colNameMap.put("{"+colDouble+"}",    colDouble) ; 
-//        colNameMap.put("{"+colDatetime+"}",  colDatetime) ; 
-//    }
-    
-    public TableNodes(String aliasName)
-    { super(tableName, aliasName) ; }
+    public String getTableName()            { return tableName ; }
+    public abstract String getKeyColName() ;
+
+    public abstract String getIdColName() ; // Maybe null
+
+    public String getHashColName()          { return colHash ; }
+    public String getLexColName()           { return colLex ; }
+    public String getLangColName()          { return colLang ; }
+    public String getTypeColName()          { return colType ; }
+    public String getDatatypeColName()      { return colDatatype ; }
 
 }
 

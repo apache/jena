@@ -14,8 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.sdb.core.Aliases;
 import com.hp.hpl.jena.sdb.core.Generator;
@@ -28,8 +27,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
-
 
 public class QuadBlockCompilerIndex extends QuadBlockCompiler2
 {
@@ -50,11 +47,13 @@ public class QuadBlockCompilerIndex extends QuadBlockCompiler2
             SqlConstant hashValue = new SqlConstant(hash) ;
 
             // Access nodes table.
-            SqlTable nTable = new TableNodes(genNodeConstantAlias.next()) ;
+            SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), 
+                                           genNodeConstantAlias.next()) ;
+            
             nTable.addNote("Const: "+FmtUtils.stringForNode(n, prefixMapping)) ; 
-            SqlColumn cHash = new SqlColumn(nTable, TableNodes.colHash) ;
+            SqlColumn cHash = new SqlColumn(nTable, nodeTableDesc.getHashColName()) ;
             // Record 
-            constantCols.put(n, new SqlColumn(nTable, "id")) ;
+            constantCols.put(n, new SqlColumn(nTable, nodeTableDesc.getIdColName())) ;
             SqlExpr c = new S_Equal(cHash, hashValue) ;
             sqlNode = QC.innerJoin(request, sqlNode, nTable) ;
             sqlNode = SqlRestrict.restrict(sqlNode, c)  ;

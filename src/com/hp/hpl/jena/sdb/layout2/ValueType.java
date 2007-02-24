@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.util.Named;
+import com.hp.hpl.jena.sparql.util.Named;
 import com.hp.hpl.jena.sdb.SDBException;
 
 public enum ValueType implements Named

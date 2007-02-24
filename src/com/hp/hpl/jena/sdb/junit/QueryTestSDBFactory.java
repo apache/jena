@@ -10,13 +10,15 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.query.DataFormat;
-import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.query.junit.*;
-import com.hp.hpl.jena.query.vocabulary.TestManifestX;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sparql.core.DataFormat;
+import com.hp.hpl.jena.sparql.junit.*;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.Syntax;
+
+import com.hp.hpl.jena.sdb.store.Store;
 
 
 public class QueryTestSDBFactory extends TestFactory

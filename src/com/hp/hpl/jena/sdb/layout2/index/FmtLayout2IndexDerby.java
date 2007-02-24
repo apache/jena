@@ -58,7 +58,7 @@ public class FmtLayout2IndexDerby extends FmtLayout2
                                        "   hash BIGINT NOT NULL ,",
                                        "   lex CLOB NOT NULL ,",
                                        "   lang LONG VARCHAR NOT NULL ,",
-                                       "   datatype varchar("+TableNodes.UriLength+") NOT NULL ,",
+                                       "   datatype varchar("+TableNodes.DatatypeUriLength+") NOT NULL ,",
                                        "   type integer NOT NULL ,",
                                        "   PRIMARY KEY (id)",
                                        ")"

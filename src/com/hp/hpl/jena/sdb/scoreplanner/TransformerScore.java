@@ -11,9 +11,9 @@ import java.util.Comparator;
 
 
 
-import com.hp.hpl.jena.query.engine.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriples;
-import com.hp.hpl.jena.query.engine.engine1.plan.TransformCopy;
+import com.hp.hpl.jena.sparql.engine.engine1.PlanElement;
+import com.hp.hpl.jena.sparql.engine.engine1.plan.PlanTriples;
+import com.hp.hpl.jena.sparql.engine.engine1.plan.TransformCopy;
 
 class TransformerScore extends TransformCopy implements Comparator
 {

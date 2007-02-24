@@ -9,8 +9,8 @@ package dev.inf;
 import java.util.Collection;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.core.Quad;
-import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;

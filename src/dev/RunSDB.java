@@ -6,25 +6,32 @@
 
 package dev;
 
+import static sdb.SDBCmd.sdbformat;
+import static sdb.SDBCmd.sdbload;
+import static sdb.SDBCmd.sdbprint;
+import static sdb.SDBCmd.sdbquery;
+import static sdb.SDBCmd.setSDBConfig;
+import static sdb.SDBCmd.sparql;
 import junit.framework.TestSuite;
-import static sdb.SDBCmd.* ;
 import arq.cmd.CmdUtils;
-import arq.cmd.ResultsFormat;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.junit.SimpleTestRunner;
-import com.hp.hpl.jena.query.util.QueryExecUtils;
-import com.hp.hpl.jena.rdf.model.Model;
+
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
-import com.hp.hpl.jena.util.FileManager;
 
 
 public class RunSDB

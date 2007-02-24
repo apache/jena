@@ -58,7 +58,7 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
                                        "   hash BIGINT NOT NULL,",
                                        "   lex TEXT NOT NULL,",
                                        "   lang varchar NOT NULL default '',",
-                                       "   datatype varchar("+TableNodes.UriLength+") NOT NULL default '',",
+                                       "   datatype varchar("+TableNodes.DatatypeUriLength+") NOT NULL default '',",
                                        "   type integer NOT NULL default '0',",
                                        "   PRIMARY KEY (hash)",
                                        ")"

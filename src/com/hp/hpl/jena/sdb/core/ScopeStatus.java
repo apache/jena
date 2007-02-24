@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.query.util.Named;
+import com.hp.hpl.jena.sparql.util.Named;
 
 public enum ScopeStatus implements Named 
 {

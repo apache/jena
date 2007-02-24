@@ -10,7 +10,7 @@ import java.util.List;
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ArgDecl;
 
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 

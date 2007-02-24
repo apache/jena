@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sdb.util.alg;
 
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.Printable;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Printable;
 
 public class PrintAction <T extends Printable> implements Action<T> 
 {

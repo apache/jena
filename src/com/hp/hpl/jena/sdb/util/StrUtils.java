@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.util;
 import java.util.List;
 import java.util.Map;
 
-import com.hp.hpl.jena.query.util.StringUtils;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 
 
 public class StrUtils

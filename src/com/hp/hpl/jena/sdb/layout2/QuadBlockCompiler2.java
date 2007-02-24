@@ -15,8 +15,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.core.Quad;
-import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -28,6 +28,8 @@ import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompilerTriple;
 import com.hp.hpl.jena.sdb.engine.compiler.SDBConstraint;
+import com.hp.hpl.jena.sdb.store.NodeTableDesc;
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 {
@@ -40,9 +42,16 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 
     List<Node> constants = new ArrayList<Node>() ;
     List<Var>  vars = new ArrayList<Var>() ;
+    protected TripleTableDesc tripleTableDesc ;
+    protected NodeTableDesc   nodeTableDesc ;
+    
     
     public QuadBlockCompiler2(SDBRequest request)
-    { super(request) ; }
+    { 
+        super(request) ;
+        tripleTableDesc = request.getStore().getTripleTableDesc() ;
+        nodeTableDesc = request.getStore().getNodeTableDesc() ;
+    }
 
     @Override
     final protected SqlNode start(QuadBlock quads)
@@ -90,10 +99,10 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
                 SqlColumn tripleTableCol = e.getColumn() ;    
 
                 // Value table column
-                SqlTable nTable =   new TableNodes(genNodeResultAlias.next()) ;
-                SqlColumn colId =   new SqlColumn(nTable, "id") ;
-                SqlColumn colLex =  new SqlColumn(nTable, "lex") ;
-                SqlColumn colType = new SqlColumn(nTable, "type") ;
+                SqlTable nTable =   new SqlTable(nodeTableDesc.getTableName(), genNodeResultAlias.next()) ;
+                SqlColumn colId =   new SqlColumn(nTable, nodeTableDesc.getIdColName()) ;
+                SqlColumn colLex =  new SqlColumn(nTable, nodeTableDesc.getLexColName()) ;
+//                SqlColumn colType = new SqlColumn(nTable, nodeTableDesc.getTypeColName()) ;
 
                 nTable.setValueColumnForVar(v, colLex) ;        // ASSUME lexical/string form needed 
                 nTable.setIdColumnForVar(v, colId) ;            // Id scope => join
@@ -109,7 +118,7 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
     @Override
     final protected SqlTable accessTriplesTable(String alias)
     {
-        return new TableTriples(alias) ;
+        return new SqlTable(tripleTableDesc.getTableName(), alias) ;
     }
     
     private static void classify(QuadBlock quadBlock, Collection<Node> constants, Collection<Var>vars)

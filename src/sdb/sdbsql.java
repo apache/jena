@@ -14,7 +14,7 @@ import sdb.cmd.CmdArgsDB;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.util.FileManager;
 

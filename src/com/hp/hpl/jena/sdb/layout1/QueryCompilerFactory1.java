@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.layout1;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.compiler.QueryCompiler;
 import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 
 public class QueryCompilerFactory1 implements QueryCompilerFactory

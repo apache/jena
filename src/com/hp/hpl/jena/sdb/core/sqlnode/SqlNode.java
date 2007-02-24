@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.query.util.Printable;
+import com.hp.hpl.jena.sparql.util.Printable;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.Scope;
 

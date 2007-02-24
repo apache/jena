@@ -7,13 +7,14 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompilerTriple;
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 
 public class QuadBlockCompiler1 extends QuadBlockCompilerTriple

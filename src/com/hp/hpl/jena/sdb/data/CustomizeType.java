@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sdb.data;
 
 import com.hp.hpl.jena.graph.Node;
 //import com.hp.hpl.jena.graph.Triple;
-//import com.hp.hpl.jena.query.core.VarAlloc;
+//import com.hp.hpl.jena.sparql.core.VarAlloc;
 //import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
 //import com.hp.hpl.jena.sdb.store.StoreCustomizer;
 import com.hp.hpl.jena.vocabulary.RDF;

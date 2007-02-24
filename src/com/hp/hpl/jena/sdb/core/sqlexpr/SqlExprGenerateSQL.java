@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.RegexUtils;
 

@@ -12,11 +12,11 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.algebra.Op;
-import com.hp.hpl.jena.query.algebra.OpVisitorBase;
-import com.hp.hpl.jena.query.algebra.op.*;
-import com.hp.hpl.jena.query.core.Quad;
-import com.hp.hpl.jena.query.core.Var;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
+import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
 
 public class VarFinder
 {

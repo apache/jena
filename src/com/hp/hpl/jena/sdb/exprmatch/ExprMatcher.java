@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.exprmatch;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.expr.*;
-import com.hp.hpl.jena.query.util.ExprUtils;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.*;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
 
 /** Matches an expression template to a query expression.  
  * @author Andy Seaborne

@@ -19,7 +19,7 @@ import sdb.test.TestI18N;
 import sdb.test.TestStringBasic;
 import arq.cmd.CmdException;
 
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Run some DB tests to check setup */ 
 

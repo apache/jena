@@ -13,7 +13,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;

@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.Printable;
-import com.hp.hpl.jena.query.util.PrintableBase;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Printable;
+import com.hp.hpl.jena.sparql.util.PrintableBase;
 import com.hp.hpl.jena.sdb.util.ListUtils;
 
 /** A set of features (order retained */

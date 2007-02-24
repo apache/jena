@@ -9,8 +9,8 @@ package com.hp.hpl.jena.sdb.util;
 import java.util.List;
 import java.util.ArrayList ;
 
-import com.hp.hpl.jena.query.util.IndentedWriter;
-import com.hp.hpl.jena.query.util.Printable;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Printable;
 import com.hp.hpl.jena.sdb.util.alg.Action;
 import com.hp.hpl.jena.sdb.util.alg.Filter;
 import com.hp.hpl.jena.sdb.util.alg.PrintAction;

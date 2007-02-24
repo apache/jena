@@ -10,9 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.core.Quad;
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.FmtUtils;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
@@ -22,16 +22,20 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.layout2.TableTriples;
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerTriple.class) ;
     
     protected Generator genTableAlias = Gensym.create(Aliases.TriplesTableBase) ;
+    protected TripleTableDesc tripleTableDesc ; 
     
     public QuadBlockCompilerTriple(SDBRequest request)
-    { super(request) ; }
+    { 
+        super(request) ;
+        tripleTableDesc = request.getStore().getTripleTableDesc() ;
+    }
 
     @Override
     protected SqlNode compile(Quad quad)
@@ -47,11 +51,12 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
         
         SqlTable triples = accessTriplesTable(alias) ;
         triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), prefixMapping)) ;
-        
-        //processSlot(request, triples, conditions, quad.getGraph(),   TableTriples.subjectGraph) ; 
-        processSlot(request, triples, conditions, quad.getSubject(),   TableTriples.subjectCol) ; 
-        processSlot(request, triples, conditions, quad.getPredicate(), TableTriples.predicateCol) ;
-        processSlot(request, triples, conditions, quad.getObject(),    TableTriples.objectCol) ;
+
+        if ( false )
+            processSlot(request, triples, conditions, quad.getGraph(),    tripleTableDesc.getGraphColName()) ;
+        processSlot(request, triples, conditions, quad.getSubject(),   tripleTableDesc.getSubjectColName()) ; 
+        processSlot(request, triples, conditions, quad.getPredicate(), tripleTableDesc.getPredicateColName()) ;
+        processSlot(request, triples, conditions, quad.getObject(),    tripleTableDesc.getObjectColName()) ;
         
         if ( conditions.size() == 0 )
             return triples ;
@@ -86,7 +91,7 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
     }
 
     protected abstract void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions) ;
-
+    
     protected abstract SqlTable accessTriplesTable(String alias) ;
 }
 

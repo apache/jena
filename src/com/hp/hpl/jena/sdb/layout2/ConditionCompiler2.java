@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sdb.layout2;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.Expr;
 
 import com.hp.hpl.jena.sdb.engine.compiler.ConditionCompiler;
 import com.hp.hpl.jena.sdb.engine.compiler.SDBConstraint;

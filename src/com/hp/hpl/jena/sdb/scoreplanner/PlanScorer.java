@@ -16,8 +16,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.engine.engine1.PlanElement;
-import com.hp.hpl.jena.query.engine.engine1.plan.PlanTriples;
+import com.hp.hpl.jena.sparql.engine.engine1.PlanElement;
+import com.hp.hpl.jena.sparql.engine.engine1.plan.PlanTriples;
 import com.hp.hpl.jena.rdf.model.*;
 
 class PlanScorer

@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreTriplesNodesHashDerby extends StoreBaseHash
@@ -24,9 +23,6 @@ public class StoreTriplesNodesHashDerby extends StoreBaseHash
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;
     }
-    
-    @Override
-    public String getNodeKeyColName() { return TableNodes.colHash ; }
 }
 
 /*

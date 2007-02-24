@@ -6,12 +6,19 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+
 
 public class TripleTableDescRDB implements TripleTableDesc
 {
-    public String getTableName()         { return "jena_g1t1_stmt" ; }
+    String tripleTable = "jena_g1t1_stmt" ;
     
-    public String getGraphsColName()     { return "GraphID" ; }
+    public TripleTableDescRDB() {}
+    public TripleTableDescRDB(String tableName) { tripleTable = tableName ; }
+    
+    public String getTableName()         { return tripleTable ; }
+    
+    public String getGraphColName()     { return "GraphID" ; }
 
     public String getSubjectColName()    { return "Subj" ; }
 

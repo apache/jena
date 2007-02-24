@@ -6,7 +6,7 @@
 
 package sdb;
 
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 import arq.cmdline.CmdMain;
 

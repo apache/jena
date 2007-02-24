@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.query.core.Quad;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
+import com.hp.hpl.jena.sparql.core.Quad;
 
 public class QuadBlock implements Iterable<Quad>
 {

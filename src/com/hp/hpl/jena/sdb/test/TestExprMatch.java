@@ -11,8 +11,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.ExprUtils;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sdb.exprmatch.*;
 
 

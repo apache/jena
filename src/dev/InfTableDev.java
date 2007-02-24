@@ -12,8 +12,10 @@ import java.sql.SQLException;
 
 import arq.cmd.CmdUtils;
 
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.store.DatasetStore;

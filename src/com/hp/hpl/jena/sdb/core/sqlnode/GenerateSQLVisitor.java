@@ -6,12 +6,12 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import static com.hp.hpl.jena.query.util.StringUtils.str;
+import static com.hp.hpl.jena.sparql.util.StringUtils.str;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.core.Var;
-import com.hp.hpl.jena.query.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;

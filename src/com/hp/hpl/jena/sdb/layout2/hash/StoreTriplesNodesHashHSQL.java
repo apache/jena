@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
@@ -27,12 +27,9 @@ public class StoreTriplesNodesHashHSQL extends StoreBaseHSQL
               new FmtLayout2HashHSQL(connection),
               new LoaderHashHSQL(connection),
               new QueryCompilerFactoryHash(),
-              new SQLBridgeFactory2()
-        );
+              new SQLBridgeFactory2(),
+              new TableTriples(), new TableNodesHash()) ; 
     }
-    
-    @Override
-    public String getNodeKeyColName() { return TableNodes.colHash ; }
 }
 
 /*

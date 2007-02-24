@@ -10,7 +10,7 @@ import java.util.List;
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ArgDecl;
 
-import com.hp.hpl.jena.query.util.Utils;
+import com.hp.hpl.jena.sparql.util.Utils;
 
  /** Write out the data from an SDB model.  Only works for small models
   * because of JDBC limitations in default configurations. 

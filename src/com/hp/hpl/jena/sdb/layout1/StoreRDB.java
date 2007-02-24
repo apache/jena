@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.StoreBase;
+import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 
 /** Store class for the Jena2 databse layout : query-only,
@@ -39,7 +40,8 @@ public class StoreRDB extends StoreBase
               null, // Loader
               new QueryCompilerFactory1(codec, tripleTableDesc),
               new SQLBridgeFactory1(codec),
-              new GenerateSQL()) ;
+              new GenerateSQL(),
+              tripleTableDesc, null) ;
         
         this.model = model ;
     }

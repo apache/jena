@@ -57,8 +57,11 @@ public interface Store
     /** Get the size of this store **/
     public long  getSize() ;
 
-    // temp hack for Layout2.
-    public String getNodeKeyColName() ;
+    public TripleTableDesc getTripleTableDesc() ;
+    public NodeTableDesc   getNodeTableDesc() ;
+    
+//    // temp hack for Layout2.
+//    public String getNodeKeyColName() ;
 }
 
 /*

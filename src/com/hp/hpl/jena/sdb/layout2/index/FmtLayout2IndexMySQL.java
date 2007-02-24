@@ -74,7 +74,7 @@ public class FmtLayout2IndexMySQL extends FmtLayout2
                                  // VARBINARY - better?  Manage char=>bytes in SDB, not the DB. 
                                  "   lex TEXT BINARY CHARACTER SET utf8 ,",
                                  "   lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
-                                 "   datatype VARCHAR("+TableNodes.UriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
+                                 "   datatype VARCHAR("+TableNodes.DatatypeUriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
                                  "   type int unsigned NOT NULL default '0',",      // SDB built-in
                                  "   PRIMARY KEY Id  (id)",
                                  ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8;"  

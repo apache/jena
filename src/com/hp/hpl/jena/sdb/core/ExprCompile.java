@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.query.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 
 public interface ExprCompile
