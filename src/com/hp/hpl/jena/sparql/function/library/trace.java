@@ -26,10 +26,10 @@ import com.hp.hpl.jena.util.FileUtils;
 /** Function that prints what happens to an expression - always returns true.
  *  Example:
  *  <pre>
- *    PREFIX  jfn:   &lt;http://jena.hpl.hp.com/ARQ/pfunction#&gt;
+ *    PREFIX  afn:   &lt;http://jena.hpl.hp.com/ARQ/function#&gt;
  *    . . . 
- *    FILTER jfn:print("?v =",?v,"?w =",>w)
- *    FILTER jfn:trace(?v = ?w)
+ *    FILTER afn:print("?v =",?v,"?w =",>w)
+ *    FILTER afn:trace(?v = ?w)
  *    FILTER (?v = ?w)
  *  </pre>
  * 

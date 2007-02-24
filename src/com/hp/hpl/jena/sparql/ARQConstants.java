@@ -53,7 +53,7 @@ public class ARQConstants
     public static final String ARQFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/function#" ;
     
     /** The ARQ property function library URI space */
-    public static final String ARQPropertyFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/pfunction#" ;
+    public static final String ARQPropertyFunctionLibraryURI = "http://jena.hpl.hp.com/ARQ/property#" ;
     
     /** The ARQ function library */
     public static final String ARQFunctionLibrary = javaClassURIScheme+"com.hp.hpl.jena.sparql.function.library." ;
@@ -72,7 +72,7 @@ public class ARQConstants
         globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;
         globalPrefixMap.setNsPrefix("owl" , owlPrefix) ;
         globalPrefixMap.setNsPrefix("fn" ,  fnPrefix) ; 
-        globalPrefixMap.setNsPrefix("jfn",  ARQFunctionLibraryURI) ;
+        globalPrefixMap.setNsPrefix("afn",  ARQFunctionLibraryURI) ;
         globalPrefixMap.setNsPrefix("apf",  ARQPropertyFunctionLibraryURI) ;
     }
     public static PrefixMapping getGlobalPrefixMap() { return globalPrefixMap ; }

@@ -36,27 +36,39 @@
     <td>The application API</td>
   </tr>
   <tr>
-    <td><code>com.hp.hpl.jena.query.core</code>
-    <td>Parse tree</td>
+    <td><code>com.hp.hpl.jena.sparql.syntax</code>
+    <td>Abstract syntax tree</td>
   </tr>
   <tr>
-    <td><code>com.hp.hpl.jena.query.parser</code></td>
+    <td><code>com.hp.hpl.jena.sparql.algebra</code>
+    <td>SPARQL algebra</td>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.sparql.lang</code></td>
     <td>The parsers: SPARQL, ARQ, RDQL</td>
   </tr>
   <tr>
-    <td><code>com.hp.hpl.jena.query.serializer</code></td>
+    <td><code>com.hp.hpl.jena.sparql.expr</code></td>
+    <td>Expression code.</td>
+  </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.sparql.serializer</code></td>
     <td>Output in SPARQL, ARQ forms, in SPARQL 
   syntax, in an abstract form (useful in debugging) and in XML.</td>
   </tr>
   <tr>
-    <td><code>com.hp.hpl.jena.query.engine</code></td>
+    <td><code>com.hp.hpl.jena.sparql.engine</code></td>
     <td>The abstraction of a query engine.</td>
   </tr>
   <tr>
-    <td><code>com.hp.hpl.jena.query.engine1</code></td>
-    <td>A query engine that is as faithful to the 
-  SPARQL specification as possible.</td>
+    <td><code>com.hp.hpl.jena.sparql.engine.main</code></td>
+    <td>The usual query engine.</td>
   </tr>
+  <tr>
+    <td><code>com.hp.hpl.jena.sparql.engine.ref</code></td>
+    <td>The reference query engine (and quad version)</td>
+  </tr>
+  <tr>
   <tr>
     <td><code>com.hp.hpl.jena.query.resultset</code></td>
     <td>Utilities for handling result sets, 

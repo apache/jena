@@ -27,10 +27,10 @@
 
   <h2><a id="functions" name="functions">Function Library</a></h2>
 
-  <p>The prefix <code>jfn</code> is
+  <p>The prefix <code>afn</code> is
   <code>&lt;http://jena.hpl.hp.com/ARQ/function#&gt;</code>. Note the final dot in the prefix.</p>
   <p>Direct loading using a URI prefix of
-  <code>&lt;java:com.hp.hpl.jena.query.function.library.&gt;</code> (note the 
+  <code>&lt;java:com.hp.hpl.jena.sparql.function.library.&gt;</code> (note the 
   final dot)</p>
 
   <p>The prefix <code>fn</code> is
@@ -135,7 +135,7 @@
 		like C# but different from Java, where it is the <i>endIndex</i> of the 
 		first character after the substring.</li>
 	</ol>
-	<p>The operation <code>jfn:substring</code> provides Java semantics.</p>
+	<p>The operation <code>afn:substring</code> provides Java semantics.</p>
 	<p align="center"><b>Mathematical Functions</b></p>
 
   <div style="margin-left: 5%; margin-right: 5%;">
@@ -200,7 +200,7 @@
     </table>
   </div>
 
-  <p align="left">Note: See also <code>jfn:min</code> and <code>jfn:max</code> 
+  <p align="left">Note: See also <code>afn:min</code> and <code>afn:max</code> 
 	for binary min and max functions.</p>
 	<p align="center"><b>Boolean Functions</b></p>
 
@@ -251,7 +251,7 @@
       
         <tr>
           <td style="text-align: left;">
-          <code>jfn:bnode(?x)</code></td>
+          <code>afn:bnode(?x)</code></td>
 
           <td style="text-align: left;">Return the blank node label
           if ?x is a blank node.</td>
@@ -259,7 +259,7 @@
       
         <tr>
           <td style="text-align: left;">
-          <code>jfn:localname(?x)</code></td>
+          <code>afn:localname(?x)</code></td>
 
           <td style="text-align: left;">The local name of ?x if a IRI. Based on 
           splitting the IRI, not on any prefixes in the query or dataset.</td>
@@ -267,7 +267,7 @@
       
         <tr>
           <td style="text-align: left;">
-          <code>jfn:namespace(?x)</code></td>
+          <code>afn:namespace(?x)</code></td>
 
           <td style="text-align: left;">The namespace of ?x if a IRI. Based on 
           splitting the IRI, not on any prefixes in the query or dataset.</td>
@@ -372,7 +372,7 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:substr(</code><i><code>string,
+          <td style="text-align: left;"><code>afn:substr(</code><i><code>string,
 			startIndex [,</code></i><code><i>endIndex</i></code>]<code>)</code></td>
 
           <td style="text-align: left;">Substring, Java style using <i><code>
@@ -381,13 +381,13 @@
 
         <tr>
           <td style="text-align: left;">
-          <code>jfn:substring</code></td>
+          <code>afn:substring</code></td>
 
-          <td style="text-align: left;">Synonym for jfn:substring</td>
+          <td style="text-align: left;">Synonym for afn:substring</td>
         </tr>
       	<tr>
           <td style="text-align: left;">
-          <code>jfn:sha1sum(<i>resource</i>)</code></td>
+          <code>afn:sha1sum(<i>resource</i>)</code></td>
 
           <td style="text-align: left;">Calculate the SHA1 checksum of a literal 
 			or URI.</td>
@@ -410,7 +410,7 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:min(num1,
+          <td style="text-align: left;"><code>afn:min(num1,
           num2)</code></td>
 
           <td style="text-align: left;">Return the minimum of two
@@ -418,7 +418,7 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:max(num1,
+          <td style="text-align: left;"><code>afn:max(num1,
           num2)</code></td>
 
           <td style="text-align: left;">Return the maximum of two
@@ -426,13 +426,13 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:pi()</code></td>
+          <td style="text-align: left;"><code>afn:pi()</code></td>
 
           <td style="text-align: left;">The value of pi, as an XSD double.</td>
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:e()</code></td>
+          <td style="text-align: left;"><code>afn:e()</code></td>
 
           <td style="text-align: left;">The value of e, as an XSD double.</td>
         </tr>
@@ -455,7 +455,7 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:now()</code></td>
+          <td style="text-align: left;"><code>afn:now()</code></td>
 
           <td style="text-align: left;">Current time.&nbsp;
           Actually, the time the query started. Constant throughout a query 
@@ -464,7 +464,7 @@
 
         <tr>
           <td style="text-align: left;">
-          <code>jfn:sha1sum(<i>resource</i>)</code></td>
+          <code>afn:sha1sum(<i>resource</i>)</code></td>
 
           <td style="text-align: left;">Calculate the SHA1 checksum
           of a literal or URI.</td>
@@ -493,7 +493,7 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:print(expr,
+          <td style="text-align: left;"><code>afn:print(expr,
           ...)</code></td>
 
           <td style="text-align: left;">Print the evaluated
@@ -503,7 +503,7 @@
 
         <tr>
           <td style="text-align: left;">
-          <code>jfn:trace(expr)</code></td>
+          <code>afn:trace(expr)</code></td>
 
           <td style="text-align: left;">Print the expression with
           values substituted for variables if the variable is set
@@ -519,8 +519,8 @@
   <pre class="box">
 {
    ...
-   FILTER jfn:print() # Print the solution
-   FILTER jfn:trace(<i>expression</i>) # Evaluate and print the expression
+   FILTER afn:print() # Print the solution
+   FILTER afn:trace(<i>expression</i>) # Evaluate and print the expression
    FILTER <i>expression</i> # Now use the expression to filter solutions
    ...
 }

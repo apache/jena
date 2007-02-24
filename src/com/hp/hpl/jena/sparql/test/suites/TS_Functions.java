@@ -55,8 +55,8 @@ public class TS_Functions extends TestCase
     // This test was added because the test suite had 1199 tests in. 
     public void testSubstring11() { test("fn:substring('abc',-1, -15.3)", NodeValue.makeString("")) ; }
     
-    public void testJavaSubstring1() { test("jfn:substr('abc',0,0)", NodeValue.makeString("")) ; }
-    public void testJavaSubstring2() { test("jfn:substr('abc',0,1)", NodeValue.makeString("a")) ; }
+    public void testJavaSubstring1() { test("afn:substr('abc',0,0)", NodeValue.makeString("")) ; }
+    public void testJavaSubstring2() { test("afn:substr('abc',0,1)", NodeValue.makeString("a")) ; }
 
     public void testJavaSubstring3() { test("<"+ARQConstants.ARQFunctionLibrary+"substr>('abc',0,0)", NodeValue.makeString("")) ; }
     public void testJavaSubstring4() { test("<"+ARQConstants.ARQFunctionLibrary+"substr>('abc',0,1)", NodeValue.makeString("a")) ; }
