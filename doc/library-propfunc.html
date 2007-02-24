@@ -153,8 +153,9 @@
         </tr>
       	<tr>
           <td style="text-align: left;">
-          <i>subject</i> apf:blankNode <i>label<br>
-          subject</i> apf:bnode <i>label<br>
+          <i><code><font size="2">subject</font></code></i><code><font size="2"> apf:blankNode 
+			</font></code> <i><code><font size="2">label</font></code><br>
+          <code>subject</code></i><code> apf:bnode </code> <i><code>label</code><br>
 &nbsp;</i></td>
 
           <td style="text-align: left;"><i>Subject</i> must be bound to a blank 
@@ -162,6 +163,17 @@
           test for whether this is the blank node label of <i>subject</i>, or it 
           is a variable, which is assigned the blank node label as a plain 
           string. Argument mismatch causes no match. Use with care.</td>
+        </tr>
+      	<tr>
+          <td style="text-align: left;">
+          <code><i>subject</i> apf:versionARQ <i>version</i><br>
+			<i>subject</i> apf:versionARQ (<i>majorVersion minorVersion</i>)<br>
+&nbsp;</code></td>
+
+          <td style="text-align: left;">Set the <i>subject</i> to the IRI for 
+			ARQ and set the object to either the version string or to major and 
+			minor version strings. If any of the variables are already set, test 
+			for the correct value.</td>
         </tr>
       </tbody>
     </table>

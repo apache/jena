@@ -18,6 +18,9 @@ import com.hp.hpl.jena.sparql.util.Symbol;
 
 public class ARQ
 {
+    /** IRI for ARQ */  
+    public static final String arqIRI = "http://jena.hpl.hp.com/#arq" ;
+
     /** Root of ARQ-defined parameter names */  
     public static final String arqNS = "http://jena.hpl.hp.com/ARQ#" ;
     
@@ -186,10 +189,10 @@ public class ARQ
     /** The full name of the current ARQ version */   
     public static final String VERSION = "@version@";
    
-    /** The major version number for this release of ARQ (ie '2' for Jena 2.0) */
+    /** The major version number for this release of ARQ (ie '2' for ARQ 2.0) */
     public static final String MAJOR_VERSION = "@version-major@";
    
-    /** The minor version number for this release of ARQ (ie '0' for Jena 2.0) */
+    /** The minor version number for this release of ARQ (ie '0' for ARQ 2.0) */
     public static final String MINOR_VERSION = "@version-minor@";
    
     /** The version status for this release of ARQ (eg '-beta1' or the empty string) */
