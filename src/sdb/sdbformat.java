@@ -9,15 +9,17 @@ package sdb;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
+import sdb.cmd.ModFormat;
 
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreFormatter;
 
 /** Format an SDB database.  Destroys all existing data permanently. */ 
 
 public class sdbformat extends CmdArgsDB
 {
+    ModFormat modFormat = new ModFormat() ; 
+    
     public static void main(String ... argv)
     {
         new sdbformat(argv).main() ;
@@ -26,6 +28,7 @@ public class sdbformat extends CmdArgsDB
     protected sdbformat(String... args)
     {
         super(args);
+        addModule(modFormat) ;
     }
 
     @Override
@@ -50,8 +53,15 @@ public class sdbformat extends CmdArgsDB
     protected void execCmd(List<String> args)
     {
         Store store = getModStore().getStore() ;
-        StoreFormatter f = store.getTableFormatter() ; 
-        f.format() ;
+        if ( ! modFormat.format() && ! modFormat.dropIndexes() && ! modFormat.buildIndexes() )
+        {
+            System.err.println("Nothing to do") ;
+            return ;
+        }
+        
+        modFormat.enact(store) ;
+//        StoreFormatter f = store.getTableFormatter() ; 
+//        f.format() ;
     }
 }
 

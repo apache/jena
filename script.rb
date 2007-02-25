@@ -10,8 +10,8 @@ include_class 'com.hp.hpl.jena.util.FileManager'
 include_class 'com.hp.hpl.jena.query.QueryFactory'
 include_class 'com.hp.hpl.jena.query.QueryExecutionFactory'
 include_class 'com.hp.hpl.jena.query.ResultSetFormatter'
-include_class 'arq.cmd.ResultsFormat'
-include_class 'arq.cmd.QueryCmdUtils'
+include_class 'com.hp.hpl.jena.sparql.resultset.ResultsFormat'
+include_class 'com.hp.hpl.jena.sparql.util.QueryExecUtils'
 
 
 include_class 'com.hp.hpl.jena.sdb.store.StoreFormatter'
@@ -52,14 +52,13 @@ class SDB
   def query_print(queryString)
     query = QueryFactory.create(queryString)
     qExec = QueryExecutionFactory.create(query, @dataset)
-    QueryCmdUtils.executeQuery(query, qExec, nil)
+    QueryExecUtils.executeQuery(query, qExec, nil)
   end
   
   def tables
     return @connection.getTableNames()
   end
 end
-
 
 sdb = SDB.fromDesc("sdb.ttl")
 #sdb.format

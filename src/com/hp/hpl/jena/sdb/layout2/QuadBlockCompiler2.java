@@ -34,7 +34,6 @@ import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 {
     // Slot typing.
-    // Result handling.
     
     private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
     
