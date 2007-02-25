@@ -6,22 +6,23 @@
 
 package dev.pattern;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.util.ListUtils;
 
 public class StageBuilder
 {
-    //?? How to interface into varibable handling.
-    
     QuadBlockCompiler baseCompiler ;
     public SqlNode compile(SDBRequest request, QuadBlockCompiler compiler, QuadBlock quads)
     {
         baseCompiler = compiler ; 
-        //return baseCompiler.compile(quads) ;
-        // Find any interesting bits.
         
         StageList sList = split(quads) ;
         
@@ -36,6 +37,29 @@ public class StageBuilder
         
         return sqlNode ;
     }
+    
+    static final Node rdfType = RDF.type.asNode() ; 
+    
+    private StageList splitType(QuadBlock quads)
+    {
+        StageList sList = new StageList() ;
+        QuadBlock qb = new QuadBlock() ;
+        // ListUtils?
+        for ( Quad q : quads )
+        {
+            if ( q.getPredicate().equals(rdfType) )
+            {
+                // rdf:type ?t ==> rdf:type ?temp . ?temp rdfs:subClassOf ?t 
+                // rdf:type ?t ==> rdf:type ?temp . TRANS table (?temp, ?t)
+            }
+            else
+                qb.add(q) ;
+            
+        }
+        
+        return sList ;
+    }
+    
     
     private StageList split(QuadBlock quads)
     {

@@ -6,38 +6,79 @@
 
 package com.hp.hpl.jena.sdb.engine.compiler;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 
-public class QuadBlock implements Iterable<Quad>
+public class QuadBlock extends ArrayList<Quad> //implements Iterable<Quad>
 {
-    List<Quad> quads ;
     Node graphNode ;
     
-//    public QuadBlock(List<Quad> quads)
-//    { this.quads = quads ; }
+    public QuadBlock() { super() ; }
+    
+  public QuadBlock(OpQuadPattern quadPattern)
+  {
+      super() ;
+      @SuppressWarnings("unchecked")
+      // Needs two steps to avoid a warning.
+      List<Quad> q = (List<Quad>)quadPattern.getQuads() ;
+      this.addAll(q) ;
+      graphNode = quadPattern.getGraphNode() ;
+  }
 
-    
-    public QuadBlock(OpQuadPattern quadPattern)
-    {
-        @SuppressWarnings("unchecked")
-        // Needs two steps to avoid a warning.
-        List<Quad>q = (List<Quad>)quadPattern.getQuads() ;
-        quads = q ;
-        graphNode = quadPattern.getGraphNode() ;
-    }
-    
-    public Iterator<Quad> iterator()
-    {
-        return quads.iterator() ;
-    }
-    
-    public Node getGraphNode() { return graphNode ; }
-    
+  public Node getGraphNode() { return graphNode ; }
+  
+    //    Alternative isspell out what we want.  
+//    
+//    List<Quad> quads ;
+//    Node graphNode ;
+//    
+////    public QuadBlock(List<Quad> quads)
+////    { this.quads = quads ; }
+//
+//    
+//    public QuadBlock(OpQuadPattern quadPattern)
+//    {
+//        @SuppressWarnings("unchecked")
+//        // Needs two steps to avoid a warning.
+//        List<Quad>q = (List<Quad>)quadPattern.getQuads() ;
+//        quads = q ;
+//        graphNode = quadPattern.getGraphNode() ;
+//    }
+//    
+//    public Iterator<Quad> iterator()
+//    {
+//        return quads.iterator() ;
+//    }
+//    
+//    public Node getGraphNode() { return graphNode ; }
+//    
+//    public void add(Quad quad) { quads.add(quad) ; }
+//    public void addAll(QuadBlock other) { quads.addAll(other.quads) ; }
+//    public void add(int i, Quad quad) { quads.add(i, quads) ; }
+//    
+//    public Quad get(int i) { return quads.get(i) ; }
+//    public int size() { return quads.size() ; }
+//    public boolean isEmpty() { return quads.isEmpty() ; }
+//    
+//    public List getList() { return quads ; } 
+//    
+//    @Override public int hashCode() { return quads.hashCode() ; }
+//    
+//    @Override 
+//    public boolean equals(Object other)
+//    { 
+//        if ( ! ( other instanceof QuadBlock) ) 
+//            return false ;
+//        QuadBlock bp = (QuadBlock)other ;
+//        return quads.equals(bp.quads) ;
+//    }
+//    
+//    @Override public String toString() { return quads.toString() ; } 
+//    
 }
 
 /*
