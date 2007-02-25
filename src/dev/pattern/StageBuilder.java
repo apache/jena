@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.util.ListUtils;
 
 public class StageBuilder
 {
@@ -44,16 +43,17 @@ public class StageBuilder
     {
         StageList sList = new StageList() ;
         QuadBlock qb = new QuadBlock() ;
+        
         // ListUtils?
-        for ( Quad q : quads )
+        for ( Quad q : quads.find(null, null, rdfType, null) )
         {
-            if ( q.getPredicate().equals(rdfType) )
-            {
-                // rdf:type ?t ==> rdf:type ?temp . ?temp rdfs:subClassOf ?t 
-                // rdf:type ?t ==> rdf:type ?temp . TRANS table (?temp, ?t)
-            }
-            else
-                qb.add(q) ;
+//            if ( q.getPredicate().equals(rdfType) )
+//            {
+//                // rdf:type ?t ==> rdf:type ?temp . ?temp rdfs:subClassOf ?t 
+//                // rdf:type ?t ==> rdf:type ?temp . TRANS table (?temp, ?t)
+//            }
+//            else
+//                qb.add(q) ;
             
         }
         

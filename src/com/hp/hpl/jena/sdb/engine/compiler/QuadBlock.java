@@ -13,25 +13,63 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 
-public class QuadBlock extends ArrayList<Quad> //implements Iterable<Quad>
+public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
 {
     Node graphNode ;
-    
-    public QuadBlock() { super() ; }
-    
-  public QuadBlock(OpQuadPattern quadPattern)
-  {
-      super() ;
-      @SuppressWarnings("unchecked")
-      // Needs two steps to avoid a warning.
-      List<Quad> q = (List<Quad>)quadPattern.getQuads() ;
-      this.addAll(q) ;
-      graphNode = quadPattern.getGraphNode() ;
-  }
 
-  public Node getGraphNode() { return graphNode ; }
-  
-    //    Alternative isspell out what we want.  
+    public QuadBlock() { super() ; }
+
+    public QuadBlock(OpQuadPattern quadPattern)
+    {
+        super() ;
+        @SuppressWarnings("unchecked")
+        // Needs two steps to avoid a warning.
+        List<Quad> q = (List<Quad>)quadPattern.getQuads() ;
+        this.addAll(q) ;
+        graphNode = quadPattern.getGraphNode() ;
+    }
+
+    public Node getGraphNode() { return graphNode ; }
+
+
+    public Iterable<Quad> find(Quad pattern)
+    {
+        return find(pattern.getGraph(), pattern.getSubject(), pattern.getPredicate(),pattern.getObject()) ;
+    }
+
+    // Optimized for small quad blocks.
+
+    public Iterable<Quad> find(Node g, Node s, Node p, Node o)
+    {
+        List<Quad> matches = new ArrayList<Quad>() ;
+
+        if ( g == Node.ANY ) g = null ;
+        if ( s == Node.ANY ) s = null ;
+        if ( p == Node.ANY ) p = null ;
+        if ( o == Node.ANY ) o = null ;
+
+        for ( Quad q : this )
+        {
+            if ( matchOne(g,s,p,o,q) )
+                matches.add(q) ;
+
+        }
+        return matches;
+    }
+
+    private static boolean matchOne(Node g, Node s, Node p, Node o, Quad q)
+    {
+        return
+        ( p == null || p.equals(q.getPredicate()) )
+        &&
+        ( s == null || s.equals(q.getSubject()) )
+        &&
+        ( o == null || o.equals(q.getObject()) ) 
+        &&
+        ( g == null || g.equals(q.getGraph()) ) ;
+    }
+
+    //    Alternative is to spell out what we want.  
 //    
 //    List<Quad> quads ;
 //    Node graphNode ;
