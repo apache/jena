@@ -36,9 +36,8 @@ public class SqlStageBuilderMain
     
     public SqlStageList compile(QuadBlock quads)
     {
-        SqlStageList sList = new SqlStageList() ;
-        sList.add(new SqlStagePlain(baseCompiler, quads)) ;
-        return sList ;
+        SqlStageBuilder bob = new SqlStageBuilderPlain(baseCompiler) ;
+        return bob.compile(quads) ;
     }
     
 //    public SqlStageList compile(QuadBlock quads)
