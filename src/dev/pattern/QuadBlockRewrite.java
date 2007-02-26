@@ -8,9 +8,9 @@ package dev.pattern;
 
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 
-public interface BGPMatcher
+public interface QuadBlockRewrite
 {
-    public boolean match(QuadBlock block) ;
+    public QuadBlock rewrite(QuadBlock quadBlock) ;
 }
 
 /*

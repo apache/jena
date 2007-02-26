@@ -10,7 +10,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface SqlStage
 {
-    // Rename Stage -> SqlStage
     public SqlNode build() ; 
 }
 

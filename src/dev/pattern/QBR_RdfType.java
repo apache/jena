@@ -6,8 +6,41 @@
 
 package dev.pattern;
 
-public class QuadMatcher
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarAlloc;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
+
+public class QBR_RdfType implements QuadBlockRewrite
 {
+    private static final Node rdfType = RDF.type.asNode() ;
+    static VarAlloc varAlloc = new VarAlloc("X") ;
+    
+    public QuadBlock rewrite(QuadBlock quadBlock)
+    {
+        if ( ! quadBlock.contains(null, null, rdfType, null) )
+            return quadBlock ;
+        
+        quadBlock = new QuadBlock(quadBlock) ;
+        
+        int i = -1 ;
+        
+        while ( ( i = quadBlock.findFirst(i, null, null, rdfType, null) ) != -1 ) 
+        {
+            Quad rdfTypeQuad = quadBlock.get(i) ;
+            Var v = varAlloc.allocVar() ;
+            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, v) ;
+            Quad q2 = new Quad(rdfTypeQuad.getGraph(), v, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
+            quadBlock.set(i, q1) ;      // replace rdf:type statement
+            quadBlock.add(i+1, q2) ;    // add subClassOf statement
+            i = i+2 ;   // Skip the two statements.
+        }
+        return quadBlock ;
+    }
 
 }
 

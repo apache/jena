@@ -8,8 +8,26 @@ package dev.pattern;
 
 import java.util.ArrayList;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.engine.compiler.QC;
+
 public class SqlStageList extends ArrayList<SqlStage>
 {
+
+    public SqlNode build(SDBRequest request)
+    {
+        SqlNode sqlNode = null ;
+        // See QuadCompilerBase.compile
+        for ( SqlStage s : this )
+        {
+            SqlNode sNode = s.build() ;
+            if ( sNode != null )
+                sqlNode = QC.innerJoin(request, sqlNode, sNode) ;
+        }
+        
+        return sqlNode ;
+    }
 
 }
 

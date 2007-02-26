@@ -18,6 +18,12 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
     Node graphNode ;
 
     public QuadBlock() { super() ; }
+    
+    public QuadBlock(QuadBlock other)
+    { 
+        super(other) ;
+        this.graphNode = other.graphNode ;
+    }
 
     public QuadBlock(OpQuadPattern quadPattern)
     {
@@ -31,6 +37,12 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
 
     public Node getGraphNode() { return graphNode ; }
 
+    public boolean contains(Quad pattern)
+    { return contains(pattern.getGraph(), pattern.getSubject(), pattern.getPredicate(),pattern.getObject()) ; } 
+
+    public boolean contains(Node g, Node s, Node p, Node o)
+    { return findFirst(g, s, p, o) >= 0 ; } 
+    
     public int findFirst(Quad pattern)
     {
         return findFirst(0, pattern) ;

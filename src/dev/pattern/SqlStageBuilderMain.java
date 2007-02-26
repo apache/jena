@@ -6,19 +6,16 @@
 
 package dev.pattern;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarAlloc;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
 
-public class SqlStageBuilderMain implements SqlStageBuilder
+// Two phases : 
+//    QuadBlock => QuadBlock rewrite
+//    QuadBlock => QuadBlock+SQL 
+
+public class SqlStageBuilderMain
 {
     QuadBlockCompiler baseCompiler ;
     private SDBRequest request ;
@@ -28,75 +25,76 @@ public class SqlStageBuilderMain implements SqlStageBuilder
         this.baseCompiler = compiler ;
     }
     
+    QuadBlockRewrite qbr = new QBR_RdfType() ;
+    
     public SqlNode compileToSql(QuadBlock quads)
     {
+        quads = qbr.rewrite(quads) ;
         SqlStageList sList = compile(quads) ;
-        SqlNode sqlNode = null ;
-        // See QuadCompilerBase.compile
-        for ( SqlStage s : sList )
-        {
-            SqlNode sNode = s.build() ;
-            if ( sNode != null )
-                sqlNode = QC.innerJoin(request, sqlNode, sNode) ;
-        }
-        
-        return sqlNode ;
+        return sList.build(request) ;
     }
     
     public SqlStageList compile(QuadBlock quads)
-    {
-        return splitType(quads, new SqlStageBuilderPlain(baseCompiler)) ;
-    }
-    
-    // Just avoid competing matchers for now!
-    
-    static final Node rdfType = RDF.type.asNode() ;
-    // Need a single global var allocator.
-    static VarAlloc varAlloc = new VarAlloc("X") ;
-    
-    private SqlStageList splitType(QuadBlock quads, SqlStageBuilder otherHandler)
-    {
-        int i = -1 ;
-        SqlStageList stageList = new SqlStageList() ;
-        
-        for ( ; i < quads.size() ; ) 
-        {
-            SqlStage stage = null ;
-            int j = quads.findFirst(i, null, null, rdfType, null) ;
-            if ( j == -1 )
-            {
-                QuadBlock qbRest = quads.subBlock(i) ;
-                stage = new SqlStagePlain(baseCompiler, qbRest) ;
-                stageList.add(stage) ;
-                break ;
-            }
-            i = j ;
-            
-            QuadBlock qb1 = quads.subBlock(0, i) ;
-            Quad rdfTypeQuad = quads.get(i) ;
-            stage = new SqlStagePlain(baseCompiler, qb1) ;
-            stageList.add(stage) ;
-            i++ ;
-            
-            QuadBlock qbType = new QuadBlock() ;
-            Var v = varAlloc.allocVar() ;
-            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, v) ;
-            Quad q2 = new Quad(rdfTypeQuad.getGraph(), v, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
-            qbType.add(q1) ;
-            qbType.add(q2) ;
-            stage = new SqlStagePlain(baseCompiler, qbType) ;
-            stageList.add(stage) ;
-        }
-        return stageList ;
-    }
-    
-    
-    private SqlStageList split(QuadBlock quads)
     {
         SqlStageList sList = new SqlStageList() ;
         sList.add(new SqlStagePlain(baseCompiler, quads)) ;
         return sList ;
     }
+    
+//    public SqlStageList compile(QuadBlock quads)
+//    {
+//        return splitType(quads, new SqlStageBuilderPlain(baseCompiler)) ;
+//    }
+    
+//    // Just avoid competing matchers for now!
+//    
+//    static final Node rdfType = RDF.type.asNode() ;
+//    // Need a single global var allocator.
+//    static VarAlloc varAlloc = new VarAlloc("X") ;
+//    
+//    private SqlStageList splitType(QuadBlock quads, SqlStageBuilder otherHandler)
+//    {
+//        int i = -1 ;
+//        SqlStageList stageList = new SqlStageList() ;
+//        
+//        for ( ; i < quads.size() ; ) 
+//        {
+//            SqlStage stage = null ;
+//            int j = quads.findFirst(i, null, null, rdfType, null) ;
+//            if ( j == -1 )
+//            {
+//                QuadBlock qbRest = quads.subBlock(i) ;
+//                stage = new SqlStagePlain(baseCompiler, qbRest) ;
+//                stageList.add(stage) ;
+//                break ;
+//            }
+//            i = j ;
+//            
+//            QuadBlock qb1 = quads.subBlock(0, i) ;
+//            Quad rdfTypeQuad = quads.get(i) ;
+//            stage = new SqlStagePlain(baseCompiler, qb1) ;
+//            stageList.add(stage) ;
+//            i++ ;
+//            
+//            QuadBlock qbType = new QuadBlock() ;
+//            Var v = varAlloc.allocVar() ;
+//            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, v) ;
+//            Quad q2 = new Quad(rdfTypeQuad.getGraph(), v, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
+//            qbType.add(q1) ;
+//            qbType.add(q2) ;
+//            stage = new SqlStagePlain(baseCompiler, qbType) ;
+//            stageList.add(stage) ;
+//        }
+//        return stageList ;
+//    }
+//    
+//    
+//    private SqlStageList split(QuadBlock quads)
+//    {
+//        SqlStageList sList = new SqlStageList() ;
+//        sList.add(new SqlStagePlain(baseCompiler, quads)) ;
+//        return sList ;
+//    }
 }
 
 /*
