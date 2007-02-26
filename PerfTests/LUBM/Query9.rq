@@ -1,12 +1,14 @@
 # Query9
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ub: <http://www.lehigh.edu/%7Ezhp2/2004/0401/univ-bench.owl#>
+PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
 SELECT * WHERE
 {
 	?x rdf:type ub:Student .
 	?y rdf:type ub:Faculty .
 	?z rdf:type ub:Course .
 	?x ub:advisor ?y .
+        ?x ub:takesCourse ?z .
+        ?y ub:teacherOf ?z .
 }
 #(type Student ?X)
 #(type Faculty ?Y)
