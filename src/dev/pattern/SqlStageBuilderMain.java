@@ -7,27 +7,33 @@
 package dev.pattern;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarAlloc;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
-public class StageBuilder
+public class SqlStageBuilderMain implements SqlStageBuilder
 {
     QuadBlockCompiler baseCompiler ;
-    public SqlNode compile(SDBRequest request, QuadBlockCompiler compiler, QuadBlock quads)
+    private SDBRequest request ;
+    public SqlStageBuilderMain(SDBRequest request, QuadBlockCompiler compiler)
     {
-        baseCompiler = compiler ; 
-        
-        StageList sList = split(quads) ;
-        
+        this.request = request ;
+        this.baseCompiler = compiler ;
+    }
+    
+    public SqlNode compileToSql(QuadBlock quads)
+    {
+        SqlStageList sList = compile(quads) ;
         SqlNode sqlNode = null ;
         // See QuadCompilerBase.compile
-        for ( Stage s : sList )
+        for ( SqlStage s : sList )
         {
             SqlNode sNode = s.build() ;
             if ( sNode != null )
@@ -37,34 +43,58 @@ public class StageBuilder
         return sqlNode ;
     }
     
-    static final Node rdfType = RDF.type.asNode() ; 
-    
-    private StageList splitType(QuadBlock quads)
+    public SqlStageList compile(QuadBlock quads)
     {
-        StageList sList = new StageList() ;
-        QuadBlock qb = new QuadBlock() ;
+        return splitType(quads, new SqlStageBuilderPlain(baseCompiler)) ;
+    }
+    
+    // Just avoid competing matchers for now!
+    
+    static final Node rdfType = RDF.type.asNode() ;
+    // Need a single global var allocator.
+    static VarAlloc varAlloc = new VarAlloc("X") ;
+    
+    private SqlStageList splitType(QuadBlock quads, SqlStageBuilder otherHandler)
+    {
+        int i = -1 ;
+        SqlStageList stageList = new SqlStageList() ;
         
-        // ListUtils?
-        for ( Quad q : quads.find(null, null, rdfType, null) )
+        for ( ; i < quads.size() ; ) 
         {
-//            if ( q.getPredicate().equals(rdfType) )
-//            {
-//                // rdf:type ?t ==> rdf:type ?temp . ?temp rdfs:subClassOf ?t 
-//                // rdf:type ?t ==> rdf:type ?temp . TRANS table (?temp, ?t)
-//            }
-//            else
-//                qb.add(q) ;
+            SqlStage stage = null ;
+            int j = quads.findFirst(i, null, null, rdfType, null) ;
+            if ( j == -1 )
+            {
+                QuadBlock qbRest = quads.subBlock(i) ;
+                stage = new SqlStagePlain(baseCompiler, qbRest) ;
+                stageList.add(stage) ;
+                break ;
+            }
+            i = j ;
             
+            QuadBlock qb1 = quads.subBlock(0, i) ;
+            Quad rdfTypeQuad = quads.get(i) ;
+            stage = new SqlStagePlain(baseCompiler, qb1) ;
+            stageList.add(stage) ;
+            i++ ;
+            
+            QuadBlock qbType = new QuadBlock() ;
+            Var v = varAlloc.allocVar() ;
+            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, v) ;
+            Quad q2 = new Quad(rdfTypeQuad.getGraph(), v, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
+            qbType.add(q1) ;
+            qbType.add(q2) ;
+            stage = new SqlStagePlain(baseCompiler, qbType) ;
+            stageList.add(stage) ;
         }
-        
-        return sList ;
+        return stageList ;
     }
     
     
-    private StageList split(QuadBlock quads)
+    private SqlStageList split(QuadBlock quads)
     {
-        StageList sList = new StageList() ;
-        sList.add(new StagePlain(baseCompiler, quads)) ;
+        SqlStageList sList = new SqlStageList() ;
+        sList.add(new SqlStagePlain(baseCompiler, quads)) ;
         return sList ;
     }
 }

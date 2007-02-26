@@ -7,10 +7,24 @@
 package dev.pattern;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
 
-public interface StageRDFType
+public class SqlStagePlain implements SqlStage
 {
-    public SqlNode build() ; 
+    private QuadBlockCompiler compiler ;
+    private QuadBlock quads ;
+
+    public SqlStagePlain(QuadBlockCompiler compiler, QuadBlock quads)
+    {
+        this.compiler = compiler ; 
+        this.quads = quads ;
+    }
+
+    public SqlNode build()
+    {
+        return compiler.compile(quads) ;
+    }
 }
 
 /*

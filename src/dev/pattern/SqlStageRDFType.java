@@ -1,23 +1,23 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package dev.pattern;
 
-public class Aliases
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+
+public class SqlStageRDFType implements SqlStage
 {
-    public static final String NodesConstantAliasBase   = "N" ;
-    public static final String TriplesTableBase         = "T" ;
-    public static final String CoalesceAliasBase        = "M" ;
-    public static final String NodesResultAliasBase     = "R" ;
-    public static final String VarBase                  = "V" ;
-    public static final String VarCollasce              = "VC" ;
+    public SqlNode build()
+    {
+        return null ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

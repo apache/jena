@@ -8,7 +8,7 @@ package dev.pattern;
 
 import java.util.ArrayList;
 
-public class StageList extends ArrayList<Stage>
+public class SqlStageList extends ArrayList<SqlStage>
 {
 
 }

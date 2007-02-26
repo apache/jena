@@ -8,8 +8,9 @@ package dev.pattern;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public interface Stage
+public interface SqlStage
 {
+    // Rename Stage -> SqlStage
     public SqlNode build() ; 
 }
 

@@ -1,23 +1,34 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.core;
+package dev.pattern;
 
-public class Aliases
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
+
+public class SqlStageBuilderPlain implements SqlStageBuilder
 {
-    public static final String NodesConstantAliasBase   = "N" ;
-    public static final String TriplesTableBase         = "T" ;
-    public static final String CoalesceAliasBase        = "M" ;
-    public static final String NodesResultAliasBase     = "R" ;
-    public static final String VarBase                  = "V" ;
-    public static final String VarCollasce              = "VC" ;
+    private QuadBlockCompiler compiler ;
+
+    public SqlStageBuilderPlain(QuadBlockCompiler compiler)
+    {
+        this.compiler = compiler ; 
+    }
+
+    public SqlStageList compile(QuadBlock quads)
+    {
+        // TODO have a special SqlStage which is a list.  Simpler?
+        SqlStageList sList = new SqlStageList() ;
+        sList.add(new SqlStagePlain(compiler, quads)) ;
+        return sList ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

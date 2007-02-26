@@ -22,8 +22,8 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
     public QuadBlock(OpQuadPattern quadPattern)
     {
         super() ;
+        // Needs two steps to allow the @SuppressWarnings on a statement.
         @SuppressWarnings("unchecked")
-        // Needs two steps to avoid a warning.
         List<Quad> q = (List<Quad>)quadPattern.getQuads() ;
         this.addAll(q) ;
         graphNode = quadPattern.getGraphNode() ;
@@ -31,7 +31,51 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
 
     public Node getGraphNode() { return graphNode ; }
 
+    public int findFirst(Quad pattern)
+    {
+        return findFirst(0, pattern) ;
+    }
 
+    public int findFirst(Node g, Node s, Node p, Node o)
+    {
+        return findFirst(0, g, s, p, o) ; 
+    }
+    
+    public int findFirst(int start, Quad pattern)
+    {
+        return findFirst(start, pattern.getGraph(), pattern.getSubject(), pattern.getPredicate(),pattern.getObject()) ;
+    }
+
+    public int findFirst(int start, Node g, Node s, Node p, Node o)
+    {
+        if ( g == Node.ANY ) g = null ;
+        if ( s == Node.ANY ) s = null ;
+        if ( p == Node.ANY ) p = null ;
+        if ( o == Node.ANY ) o = null ;
+
+        for ( int i = start ; i < size() ; i++ )
+        {
+            Quad q = get(i) ;
+            if ( matchOne(g,s,p,o,q) )
+                return i ;
+        }
+        return -1 ;
+    }
+
+    public QuadBlock subBlock(int fromIndex, int toIndex)
+    {
+        QuadBlock slice = new QuadBlock() ;
+        slice.addAll(subList(fromIndex, toIndex)) ;
+        return slice ;  
+    }
+
+    public QuadBlock subBlock(int fromIndex)
+    {
+        QuadBlock slice = new QuadBlock() ;
+        slice.addAll(subList(fromIndex, this.size())) ;
+        return slice ;  
+    }
+    
     public Iterable<Quad> find(Quad pattern)
     {
         return find(pattern.getGraph(), pattern.getSubject(), pattern.getPredicate(),pattern.getObject()) ;
@@ -68,55 +112,6 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
         &&
         ( g == null || g.equals(q.getGraph()) ) ;
     }
-
-    //    Alternative is to spell out what we want.  
-//    
-//    List<Quad> quads ;
-//    Node graphNode ;
-//    
-////    public QuadBlock(List<Quad> quads)
-////    { this.quads = quads ; }
-//
-//    
-//    public QuadBlock(OpQuadPattern quadPattern)
-//    {
-//        @SuppressWarnings("unchecked")
-//        // Needs two steps to avoid a warning.
-//        List<Quad>q = (List<Quad>)quadPattern.getQuads() ;
-//        quads = q ;
-//        graphNode = quadPattern.getGraphNode() ;
-//    }
-//    
-//    public Iterator<Quad> iterator()
-//    {
-//        return quads.iterator() ;
-//    }
-//    
-//    public Node getGraphNode() { return graphNode ; }
-//    
-//    public void add(Quad quad) { quads.add(quad) ; }
-//    public void addAll(QuadBlock other) { quads.addAll(other.quads) ; }
-//    public void add(int i, Quad quad) { quads.add(i, quads) ; }
-//    
-//    public Quad get(int i) { return quads.get(i) ; }
-//    public int size() { return quads.size() ; }
-//    public boolean isEmpty() { return quads.isEmpty() ; }
-//    
-//    public List getList() { return quads ; } 
-//    
-//    @Override public int hashCode() { return quads.hashCode() ; }
-//    
-//    @Override 
-//    public boolean equals(Object other)
-//    { 
-//        if ( ! ( other instanceof QuadBlock) ) 
-//            return false ;
-//        QuadBlock bp = (QuadBlock)other ;
-//        return quads.equals(bp.quads) ;
-//    }
-//    
-//    @Override public String toString() { return quads.toString() ; } 
-//    
 }
 
 /*
