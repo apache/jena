@@ -1,0 +1,19 @@
+# Setting up a single graph which is backed by the transitive reasoner.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix :       <#> .
+
+## Datatset
+
+<> rdf:type         ja:RDFDataset ;
+    ja:graph :ontModel
+    . 
+
+:ontModel rdf:type ja:OntModel ;
+    ja:baseModel 
+        [ rdf:type ja:MemoryModel ;
+          ja:content [ja:externalContent <D.ttl>] ];
+    ja:reasoner
+         [ ja:reasonerURL <http://jena.hpl.hp.com/2003/TransitiveReasoner> ]
+    . 

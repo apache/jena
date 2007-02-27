@@ -69,11 +69,11 @@ void CompilationUnit(): { }
 
 void Query() : { }
 {
-  Prolog()
+  Prologue()
   ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
 }
 
-void Prolog() : {}
+void Prologue() : {}
 {
   ( BaseDecl() ) ?
   ( PrefixDecl() )*
