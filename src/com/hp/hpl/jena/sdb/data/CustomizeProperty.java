@@ -7,14 +7,9 @@
 package com.hp.hpl.jena.sdb.data;
 
 import com.hp.hpl.jena.graph.Node;
-//import com.hp.hpl.jena.graph.Triple;
-//import com.hp.hpl.jena.sparql.core.VarAlloc;
-//import com.hp.hpl.jena.sdb.core.compiler.BlockBGP;
-//import com.hp.hpl.jena.sdb.store.StoreCustomizer;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 /** Rewrite a query based on sub/super property */
-
 
 
 public class CustomizeProperty //implements StoreCustomizer

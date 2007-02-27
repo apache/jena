@@ -9,39 +9,39 @@ package dev.pattern;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 
-public class QBR_RdfType implements QuadBlockRewrite
+public class QBR_SubProperty implements QuadBlockRewrite
 {
     private static final Node rdfType = RDF.type.asNode() ;
-    static VarAlloc varAlloc = new VarAlloc("X") ;
     
-    public QuadBlock rewrite(QuadBlock quadBlock)
+    public QuadBlock rewrite(SDBRequest request, QuadBlock quadBlock)
     {
-        if ( ! quadBlock.contains(null, null, rdfType, null) )
-            return quadBlock ;
-        
-        quadBlock = new QuadBlock(quadBlock) ;
-        
-        int i = -1 ;
-        
-        while ( ( i = quadBlock.findFirst(i, null, null, rdfType, null) ) != -1 ) 
+        QuadBlock newBlock = new QuadBlock(quadBlock) ;
+        for ( Quad q : quadBlock )
         {
-            Quad rdfTypeQuad = quadBlock.get(i) ;
-            Var v = varAlloc.allocVar() ;
-            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, v) ;
-            Quad q2 = new Quad(rdfTypeQuad.getGraph(), v, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
-            quadBlock.set(i, q1) ;      // replace rdf:type statement
-            quadBlock.add(i+1, q2) ;    // add subClassOf statement
-            i = i+2 ;   // Skip the two statements.
+            // If has superproperty ...
+            if ( false )
+            {
+                Var v = request.genvar();
+                Node property = q.getPredicate() ;
+                
+                // { :s :p :o } ==> { :s ?v :o . ?v rdfs:subPropertyOf :o }
+                // Also works if the property slot is a variable in the first place.
+                Quad q1 = new Quad(q.getGraph(), q.getSubject(), v, q.getObject()) ;
+                Quad q2 = new Quad(q.getGraph(), v, RDFS.subPropertyOf.asNode(), property) ;
+                newBlock.add(q1) ;      // replace property
+                newBlock.add(q2) ;      // add subPropertyOf statement
+            }
+            else
+                newBlock.add(q) ;
         }
-        return quadBlock ;
+        return newBlock ;
     }
-
 }
 
 /*

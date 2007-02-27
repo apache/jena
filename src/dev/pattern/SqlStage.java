@@ -6,11 +6,12 @@
 
 package dev.pattern;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface SqlStage
 {
-    public SqlNode build() ; 
+    public SqlNode build(SDBRequest request) ; 
 }
 
 /*

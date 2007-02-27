@@ -12,16 +12,15 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.compiler.QC;
 
-public class SqlStageList extends ArrayList<SqlStage>
+public class SqlStageList extends ArrayList<SqlStage> implements SqlStage
 {
-
     public SqlNode build(SDBRequest request)
     {
         SqlNode sqlNode = null ;
         // See QuadCompilerBase.compile
         for ( SqlStage s : this )
         {
-            SqlNode sNode = s.build() ;
+            SqlNode sNode = s.build(request) ;
             if ( sNode != null )
                 sqlNode = QC.innerJoin(request, sqlNode, sNode) ;
         }

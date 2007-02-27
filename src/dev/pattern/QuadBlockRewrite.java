@@ -6,11 +6,12 @@
 
 package dev.pattern;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 
 public interface QuadBlockRewrite
 {
-    public QuadBlock rewrite(QuadBlock quadBlock) ;
+    public QuadBlock rewrite(SDBRequest request, QuadBlock quadBlock) ;
 }
 
 /*

@@ -6,11 +6,37 @@
 
 package dev.pattern;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
 
-public interface SqlStageBuilder
+// Two phases : 
+//    QuadBlock => QuadBlock rewrite
+//    QuadBlock => QuadBlock+SQL 
+
+public class SqlStageBuilder implements QuadBlockCompiler
 {
-    public SqlStageList compile(QuadBlock quads) ;
+    QuadBlockCompiler baseCompiler ;
+    private SDBRequest request ;
+    public SqlStageBuilder(SDBRequest request, QuadBlockCompiler baseCompiler)
+    {
+        this.request = request ;
+        this.baseCompiler = baseCompiler ;
+    }
+    
+    QuadBlockRewrite qbr = new QBR_SubType() ;
+    
+    public SqlNode compile(QuadBlock quads)
+    {
+        // Phase 1.
+        quads = qbr.rewrite(request, quads) ;
+        
+        // Phase 2.
+        // Look for alternative tables.
+        SqlStage stage = new SqlStagePlain(baseCompiler, quads) ;
+        return stage.build(request) ;
+    }
 }
 
 /*

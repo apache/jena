@@ -6,6 +6,7 @@
 
 package dev.pattern;
 
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
@@ -21,7 +22,7 @@ public class SqlStagePlain implements SqlStage
         this.quads = quads ;
     }
 
-    public SqlNode build()
+    public SqlNode build(SDBRequest request)
     {
         return compiler.compile(quads) ;
     }

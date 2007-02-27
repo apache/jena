@@ -10,6 +10,8 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreHolder;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.core.VarAlloc;
 
 
 /** A collection of things to track during query compilation
@@ -24,6 +26,9 @@ public class SDBRequest extends StoreHolder
     private PrefixMapping prefixMapping ;
     private Query query ;
     
+    // Per request unique variables.
+    private VarAlloc varAlloc = new VarAlloc("V") ;
+    
     // See TransformSDB
     public boolean LeftJoinTranslation = true ;
 
@@ -37,6 +42,8 @@ public class SDBRequest extends StoreHolder
     public PrefixMapping getPrefixMapping()     { return prefixMapping ; }
     public Query getQuery()                     { return query ; }
     public Store getStore()                     { return store() ; }
+    public Var genvar()                         { return varAlloc.allocVar() ; }
+    
 }
 
 /*

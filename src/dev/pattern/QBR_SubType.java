@@ -6,25 +6,45 @@
 
 package dev.pattern;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
 
-public class SqlStageBuilderPlain implements SqlStageBuilder
+public class QBR_SubType implements QuadBlockRewrite
 {
-    private QuadBlockCompiler compiler ;
-
-    public SqlStageBuilderPlain(QuadBlockCompiler compiler)
+    private static final Node rdfType = RDF.type.asNode() ;
+    
+    public QuadBlock rewrite(SDBRequest request, QuadBlock quadBlock)
     {
-        this.compiler = compiler ; 
+        // Does not consider if the property slot is a variable.
+        
+        if ( ! quadBlock.contains(null, null, rdfType, null) )
+            return quadBlock ;
+        
+        // Test if can have a supertype.
+        
+        quadBlock = new QuadBlock(quadBlock) ;
+        
+        int i = -1 ;
+        
+        while ( ( i = quadBlock.findFirst(i, null, null, rdfType, null) ) != -1 ) 
+        {
+            Quad rdfTypeQuad = quadBlock.get(i) ;
+            Var v = request.genvar() ;
+            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, v) ;
+            Quad q2 = new Quad(rdfTypeQuad.getGraph(), v, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
+            quadBlock.set(i, q1) ;      // replace rdf:type statement
+            quadBlock.add(i+1, q2) ;    // add subClassOf statement
+            i = i+2 ;   // Skip the two statements.
+        }
+        return quadBlock ;
     }
 
-    public SqlStageList compile(QuadBlock quads)
-    {
-        // TODO have a special SqlStage which is a list.  Simpler?
-        SqlStageList sList = new SqlStageList() ;
-        sList.add(new SqlStagePlain(compiler, quads)) ;
-        return sList ;
-    }
 }
 
 /*
