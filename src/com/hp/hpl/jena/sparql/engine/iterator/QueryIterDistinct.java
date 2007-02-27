@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingImmutable;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 /** A QueryIterator that surpresses items already seen. 
  * Like com.hp.hpl.jena.util.iterators.UniqueExtendedIterator
@@ -55,7 +56,9 @@ public class QueryIterDistinct extends QueryIter1
                 return null ;
             binding = getInput().nextBinding() ;
             if ( ! ( binding instanceof BindingImmutable ) )
-                LogFactory.getLog(QueryIterDistinct.class).warn("Not a BindingImmutable (incorrect .hashCode/.equals likely for DISTINCT)") ;
+                LogFactory
+                    .getLog(QueryIterDistinct.class)
+                    .warn("Not a BindingImmutable (incorrect .hashCode/.equals likely for DISTINCT): "+Utils.className(binding)) ;
             
         } while ( seen.contains(binding) ) ;
         seen.add(binding) ;
