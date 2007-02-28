@@ -1,11 +1,15 @@
 PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX :    <http://example/>
 
 SELECT ?x ?y
 { 
-##  ?x :p "string"@en .
+  ?x apf:str "string"@en .
+  ?y apf:str <http://example/uri> .
+  "http://example/uri" apf:str <http://example/uri> .
 
-  { ?x :p ?v . } UNION { ?x :p ?v . }
+
+##  { ?x :p ?v . } UNION { ?x :p ?v . }
 
 ##     # Case 1: Filter and BGPs.
 ##     # No join.

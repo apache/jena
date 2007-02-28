@@ -1,0 +1,10 @@
+PREFIX :        <http://example/>
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+
+SELECT ?x
+{
+  ?x apf:str "x" .
+  "x" apf:str "x" .
+  "x" apf:str "x"@en .
+  "http://example/x" apf:str :x .
+}

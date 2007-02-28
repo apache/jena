@@ -6,6 +6,7 @@
 <>  rdf:type mf:Manifest ;
     rdfs:label "Function Properties" ;
     mf:entries
+    # data-0 is a zero triple graph.
     ( 
       [  mf:name    "Function Property - list 1" ;
          mf:action
@@ -238,5 +239,11 @@
             [ qt:query  <assign-6.rq> ;
               qt:data   <data-3.ttl> ] ;
         mf:result  <assign-6.srx>
+      ]
+     [ mf:name    "Function Property - str" ;
+        mf:action
+            [ qt:query  <str-1.rq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <str-1.srx>
       ]
     ) .

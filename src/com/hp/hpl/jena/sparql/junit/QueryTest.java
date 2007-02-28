@@ -181,7 +181,6 @@ public class QueryTest extends TestCaseARQ
 
             QueryExecution qe = null ;
             
-            QueryExecutionFactory.create(query, queryFileManager) ;
             if ( dataset == null )
                 qe = QueryExecutionFactory.create(query) ;
             else

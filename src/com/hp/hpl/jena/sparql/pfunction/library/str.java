@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -7,54 +7,62 @@
 package com.hp.hpl.jena.sparql.pfunction.library;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
 import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 
-/** Relationship between a node (subject) and it's bNode label (object/string) */ 
+/** Property function to turn an RDF term (but not a blank node) into a string
+      <pre>
+      ?x :str "foo"@en
+      </pre>
+*/ 
 
-public class blankNode extends PFuncSimple
+public class str extends PFuncSimple
 {
-    public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt)
+    public str() {}
+
+    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+    { }
+    
+    public QueryIterator execEvaluated(Binding binding,
+                                       Node subject, Node predicate, Node object,
+                                       ExecutionContext execCxt)
     {
-        if ( Var.isVar(subject) )
-            throw new ExprEvalException("bnode: subject is an unbound variable") ;
-        if ( ! subject.isBlank() )
+        // Subject bound to something other a literal. 
+        if ( subject.isURI() || subject.isBlank() )
             return PFLib.noResults(execCxt) ;
-        String str = subject.getBlankNodeLabel() ;
-        Node obj = Node.createLiteral(str) ;
-        if ( Var.isVar(object) )
-            return PFLib.oneResult(binding, Var.alloc(object), obj, execCxt) ;
+
+        if ( Var.isVar(subject) && Var.isVar(object) )
+            throw new QueryExecException("str: Both subject and object are unbound variables") ;
         
-        // Subject and object are concrete 
-        if ( object.sameValueAs(obj) )
-            return PFLib.result(binding, execCxt) ;
-        return PFLib.noResults(execCxt) ;
+        if ( Var.isVar(object) )
+            throw new QueryExecException("str: Object is an unbound variables") ;
+        
+        if ( object.isBlank() )
+            throw new QueryExecException("str: object is a blank node") ;
+        
+        Node strValue =  Node.createLiteral(NodeFunctions.str(object)) ;
+        
+        if ( Var.isVar(subject) )
+            return PFLib.oneResult(binding, Var.alloc(subject), strValue, execCxt) ;
+        else
+        {
+            // Subject bound : check it.
+            if ( subject.equals(strValue) )
+                return PFLib.result(binding, execCxt) ;
+            return PFLib.noResults(execCxt) ;
+        }
     }
 }
 
-// Code to create bNodes from strings.
-//            // Subject a variable : we're try to create a bNode ... :-)
-//            
-//            if ( Var.isVar(object) )
-//                throw new ExprEvalException("bnode: subject and object are both unbound variables") ;
-//            
-//            if ( ! object.isLiteral() ) return PFLib.noResults(execCxt) ;
-//            
-//            RDFDatatype dt = object.getLiteralDatatype() ;
-//            if ( dt != null &&  !dt.equals(XSDDatatype.XSDstring) )
-//                return PFLib.noResults(execCxt) ;
-//            
-//            String str = object.getLiteralLexicalForm() ;
-//            Node n = Node.createAnon(new AnonId(str)) ;
-//            return PFLib.oneResult(binding, Var.alloc(subject), n, execCxt) ;
-
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
