@@ -55,7 +55,7 @@ public class sdbformat extends CmdArgsDB
         Store store = getModStore().getStore() ;
         if ( ! modFormat.format() && ! modFormat.dropIndexes() && ! modFormat.buildIndexes() )
         {
-            System.err.println("Nothing to do") ;
+            System.err.println("Nothing to do : --create | --drop | -indexes") ;
             return ;
         }
         

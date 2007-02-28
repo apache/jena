@@ -3,4 +3,7 @@
 
 @prefix : <http://example/> .
 
-:x :p 1 .
+:x rdf:type :t1 .
+:t1 rdfs:subClassOf :t1 .
+:t1 rdfs:subClassOf :t2 .
+
