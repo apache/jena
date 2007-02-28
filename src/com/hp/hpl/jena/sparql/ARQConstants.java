@@ -91,7 +91,7 @@ public class ARQConstants
     public static final String allocVarMarker = "@" ;
 
     /** Marker for system symbols */
-    public static final String systemVarMarker = "#" ;
+    public static final String systemVarMarker = "http://jena.hpl.hp.com/ARQ/system#" ;
     
     /** Context key for the current time of query execution */
     public static final Symbol sysCurrentTime  = new Symbol(systemVarMarker+"now") ;
