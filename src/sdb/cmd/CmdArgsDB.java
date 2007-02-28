@@ -9,6 +9,7 @@ package sdb.cmd;
 import java.util.List;
 
 import arq.cmdline.CmdGeneral;
+import arq.cmdline.ModSymbol;
 import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.sdb.SDB;
@@ -24,12 +25,14 @@ public abstract class CmdArgsDB extends CmdGeneral
         System.setProperty("propertyColumn",       "14") ;
     }
     
+    private ModSymbol modSymbol = new ModSymbol(SDB.symbolNamespace) ;
     private ModStore modStore = new ModStore() ;
     private ModTime  modTime  = new ModTime() ;
 
     protected CmdArgsDB(String argv[])
     {
         super(argv) ;
+        addModule(modSymbol) ;
         addModule(modStore) ;
         addModule(modTime) ;
     }

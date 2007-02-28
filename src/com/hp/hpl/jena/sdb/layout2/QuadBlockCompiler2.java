@@ -33,17 +33,14 @@ import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 {
-    // Slot typing.
-    
     private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
     
-    private Generator genNodeResultAlias = Gensym.create(Aliases.NodesResultAliasBase) ;
+    private Generator genNodeResultAlias = Gensym.create(AliasesSql.NodesResultAliasBase) ;
 
     List<Node> constants = new ArrayList<Node>() ;
     List<Var>  vars = new ArrayList<Var>() ;
     protected TripleTableDesc tripleTableDesc ;
     protected NodeTableDesc   nodeTableDesc ;
-    
     
     public QuadBlockCompiler2(SDBRequest request)
     { 

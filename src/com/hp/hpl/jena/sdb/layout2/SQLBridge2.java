@@ -43,7 +43,7 @@ import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 public class SQLBridge2 extends SQLBridgeBase 
 {
     private static Log log = LogFactory.getLog(SQLBridge2.class) ;
-    private Generator genNodeResultAlias = Gensym.create(Aliases.NodesResultAliasBase) ;
+    private Generator genNodeResultAlias = Gensym.create(AliasesSql.NodesResultAliasBase) ;
 
     public SQLBridge2(SDBRequest request, SqlNode sqlNode, Collection<Var> projectVars)
     { super(request, sqlNode, projectVars) ; }

@@ -28,7 +28,7 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerTriple.class) ;
     
-    protected Generator genTableAlias = Gensym.create(Aliases.TriplesTableBase) ;
+    protected Generator genTableAlias = Gensym.create(AliasesSql.TriplesTableBase) ;
     protected TripleTableDesc tripleTableDesc ; 
     
     public QuadBlockCompilerTriple(SDBRequest request)

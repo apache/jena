@@ -33,7 +33,7 @@ public class TransformSDB extends TransformCopy
     private QuadBlockCompiler quadBlockCompiler ;
     //private boolean doLeftJoin = true ;
     
-    private Generator genCoalesceAlias = Gensym.create(Aliases.CoalesceAliasBase) ;
+    private Generator genCoalesceAlias = Gensym.create(AliasesSql.CoalesceAliasBase) ;
     
     public TransformSDB(SDBRequest request, QuadBlockCompiler quadBlockCompiler) 
     {

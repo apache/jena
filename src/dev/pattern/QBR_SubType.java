@@ -26,11 +26,11 @@ public class QBR_SubType implements QuadBlockRewrite
         if ( ! quadBlock.contains(null, null, rdfType, null) )
             return quadBlock ;
         
-        // Test if can have a supertype.
+        // Test if it can have a supertype.
         
         quadBlock = new QuadBlock(quadBlock) ;
         
-        int i = -1 ;
+        int i = 0 ;
         
         while ( ( i = quadBlock.findFirst(i, null, null, rdfType, null) ) != -1 ) 
         {

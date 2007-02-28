@@ -6,10 +6,19 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sparql.util.Symbol;
+
 
 public class SDBConstants
 {
-
+    public static final String sdbSymbolSpace = "http://jena.hpl.hp.com/SDB/symbol#" ;
+    public static Symbol allocSymbol(String shortName)
+    { 
+        if ( shortName.matches("^[a-zA-Z]*:") )
+            throw new SDBException("Symbol short name begins URI scheme") ;
+        return new Symbol(sdbSymbolSpace+shortName) ;
+    }
 }
 
 /*

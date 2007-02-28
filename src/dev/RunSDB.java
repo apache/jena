@@ -21,10 +21,7 @@ import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.*;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -40,11 +37,13 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        sdbquery("--sdb=Store/sdb-psql-rdb.ttl", "--query=../Jena-Misc/Q.rq" ) ;
+        
+        
+        sdbprint("--sdb=sdb.ttl", "--set=useStageBuilder=true", "--query=Q.rq" ) ;
         System.exit(0) ;
         
         
-        runQuery() ;
+        //runQuery() ;
         //SDBConnection.logSQLStatements = true ;
         
         //runInMem("Q.rq", "D.ttl") ;
@@ -53,7 +52,7 @@ public class RunSDB
         
         //runQuad() ;
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
         
         //run() ;

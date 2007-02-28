@@ -102,7 +102,6 @@ public class StoreFactory
             throw new SDBException("No such layout") ;
         }
             
-        
         if ( desc.layout == LayoutType.LayoutSimple )
         {
             switch (desc.dbType)

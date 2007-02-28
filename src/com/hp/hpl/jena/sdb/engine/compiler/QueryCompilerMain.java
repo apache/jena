@@ -14,15 +14,17 @@ import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
 
+import dev.pattern.SqlStageBuilder;
+
 
 public abstract class QueryCompilerMain implements QueryCompiler 
 {
-    // Do we need this as a class?
     protected SDBRequest request ;
     
     public QueryCompilerMain(SDBRequest request)
@@ -32,7 +34,11 @@ public abstract class QueryCompilerMain implements QueryCompiler
     
     public Op compile(Op op)
     {
-        Transform t = new TransformSDB(request, createQuadBlockCompiler()) ;
+        QuadBlockCompiler quadCompiler = createQuadBlockCompiler() ;
+        if ( request.getContext().isTrue(SDB.useStageBudiler) )
+            quadCompiler = new SqlStageBuilder(request, quadCompiler) ;
+        
+        Transform t = new TransformSDB(request, quadCompiler) ;
         op = Transformer.transform(t, op) ;
         
         // Find the first non-modifier.

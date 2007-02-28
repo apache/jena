@@ -6,8 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-public class Aliases
+public class AliasesSql
 {
+    // SQL name generation
     public static final String NodesConstantAliasBase   = "N" ;
     public static final String TriplesTableBase         = "T" ;
     public static final String CoalesceAliasBase        = "M" ;

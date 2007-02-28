@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-import com.hp.hpl.jena.sdb.core.Aliases;
+import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -32,7 +32,7 @@ public class QuadBlockCompilerIndex extends QuadBlockCompiler2
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerIndex.class) ;
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
-    private Generator genNodeConstantAlias = Gensym.create(Aliases.NodesConstantAliasBase) ;
+    private Generator genNodeConstantAlias = Gensym.create(AliasesSql.NodesConstantAliasBase) ;
     
     public QuadBlockCompilerIndex(SDBRequest request)
     { super(request) ; }

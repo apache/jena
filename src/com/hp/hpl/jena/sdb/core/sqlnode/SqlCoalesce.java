@@ -30,7 +30,7 @@ public class SqlCoalesce extends SqlNodeBase
     Set<Var> nonCoalesceVars = new HashSet<Var>() ;
     ScopeRename idScope ;
     ScopeRename nodeScope ;
-    Generator genvar = new Gensym(Aliases.VarCollasce) ;
+    Generator genvar = new Gensym(AliasesSql.VarCollasce) ;
     
     public static SqlCoalesce create(String alias, SqlJoin join, Set<Var>coalesceVars) 
     {

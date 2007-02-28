@@ -4,25 +4,12 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.core;
 
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerMain;
-
-public class QueryCompilerHash extends QueryCompilerMain 
+public class AliasesSparql
 {
-    public QueryCompilerHash(SDBRequest request)
-    { 
-        super(request) ;
-    }
-    
-    @Override
-    protected QuadBlockCompiler createQuadBlockCompiler()
-    { 
-        QuadBlockCompiler base = new QuadBlockCompilerHash(request) ;
-        return base ;
-    }
+    // SPARQL name generation
+    public static final String VarBase                  = "V" ;
 }
 
 /*

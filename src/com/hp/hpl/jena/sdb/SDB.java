@@ -7,12 +7,14 @@
 package com.hp.hpl.jena.sdb;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
 import com.hp.hpl.jena.sdb.util.DerbyUtils;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -21,7 +23,8 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class SDB
 {
     /** SDB namespace */
-    public final static String namespace = "http://jena.hpl.hp.com/2006/sdb#" ;
+    public final static String namespace = "http://jena.hpl.hp.com/SDB#" ;
+    public final static String symbolNamespace = "http://jena.hpl.hp.com/SDB/symbol#" ; 
     
     static boolean initialized = false ;
     static public void init()
@@ -64,6 +67,9 @@ public class SDB
         globalPrefixMap.setNsPrefix("sdb" , namespace) ;
     }
     public static PrefixMapping getGlobalPrefixMapping() { return globalPrefixMap ; }
+    
+    // ----------------------------------
+    public static final Symbol useStageBudiler = SDBConstants.allocSymbol("useStageBuilder") ;
     
     // ----------------------------------
     
