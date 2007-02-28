@@ -10,6 +10,8 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerMain;
 
+import dev.pattern.SqlStageBuilder;
+
 
 public class QueryCompilerHash extends QueryCompilerMain 
 {
@@ -20,7 +22,13 @@ public class QueryCompilerHash extends QueryCompilerMain
     
     @Override
     protected QuadBlockCompiler createQuadBlockCompiler()
-    { return new QuadBlockCompilerHash(request) ; }
+    { 
+        QuadBlockCompiler plain = new QuadBlockCompilerHash(request) ;
+        if ( true )
+            return plain ;
+        else
+            return new SqlStageBuilder(request, plain) ;
+    }
 }
 
 /*

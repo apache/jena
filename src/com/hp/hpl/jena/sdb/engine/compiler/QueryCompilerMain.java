@@ -25,7 +25,6 @@ public abstract class QueryCompilerMain implements QueryCompiler
     // Do we need this as a class?
     protected SDBRequest request ;
     
-    
     public QueryCompilerMain(SDBRequest request)
     { 
         this.request = request ;

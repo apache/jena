@@ -40,11 +40,10 @@ public class QBR_SubType implements QuadBlockRewrite
             Quad q2 = new Quad(rdfTypeQuad.getGraph(), v, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
             quadBlock.set(i, q1) ;      // replace rdf:type statement
             quadBlock.add(i+1, q2) ;    // add subClassOf statement
-            i = i+2 ;   // Skip the two statements.
+            i = i+2 ;                   // Skip the two statements.
         }
         return quadBlock ;
     }
-
 }
 
 /*
