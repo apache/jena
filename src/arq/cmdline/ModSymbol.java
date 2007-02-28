@@ -18,7 +18,11 @@ public class ModSymbol implements ArgModuleGeneral
 {
     protected final ArgDecl setDecl = new ArgDecl(ArgDecl.HasValue, "set", "define", "defn", "def") ;
     Context context = new Context() ;
+    private String namespace ;
     
+    public ModSymbol() { this(ARQ.arqNS) ; }
+    
+    public ModSymbol(String namespace) { this.namespace = namespace ; }
     
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -45,7 +49,7 @@ public class ModSymbol implements ArgModuleGeneral
             String value = frags[1] ;
 
             if ( ! symbolName.matches("^[a-zA-Z]*:") )
-                symbolName = ARQ.arqNS + symbolName ;
+                symbolName = namespace + symbolName ;
             
             Symbol symbol = new Symbol(symbolName) ;
             context.set(symbol, value) ;
