@@ -25,12 +25,17 @@ public class SqlStageBuilder implements QuadBlockCompiler
         this.baseCompiler = baseCompiler ;
     }
     
-    QuadBlockRewrite qbr = new QBR_SubType() ;
+    QuadBlockRewrite qbr1 = new QBR_SubType() ;
+    QuadBlockRewrite qbr2 = new QBR_SubProperty() ;
     
     public SqlNode compile(QuadBlock quads)
     {
         // Phase 1.
-        quads = qbr.rewrite(request, quads) ;
+        quads = qbr1.rewrite(request, quads) ;
+        if ( false )
+            // rewrites the rewrites done for rdf:type.
+            // reverse the order and theer is a variable in the property slot for rdf:type.  
+            quads = qbr2.rewrite(request, quads) ;
         
         // Phase 2.
         // Look for alternative tables.

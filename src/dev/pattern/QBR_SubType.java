@@ -26,8 +26,6 @@ public class QBR_SubType implements QuadBlockRewrite
         if ( ! quadBlock.contains(null, null, rdfType, null) )
             return quadBlock ;
         
-        // Test if it can have a supertype.
-        
         quadBlock = new QuadBlock(quadBlock) ;
         
         int i = 0 ;
@@ -35,9 +33,9 @@ public class QBR_SubType implements QuadBlockRewrite
         while ( ( i = quadBlock.findFirst(i, null, null, rdfType, null) ) != -1 ) 
         {
             Quad rdfTypeQuad = quadBlock.get(i) ;
-            Var v = request.genvar() ;
-            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, v) ;
-            Quad q2 = new Quad(rdfTypeQuad.getGraph(), v, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
+            Var var = request.genvar() ;
+            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, var) ;
+            Quad q2 = new Quad(rdfTypeQuad.getGraph(), var, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
             quadBlock.set(i, q1) ;      // replace rdf:type statement
             quadBlock.add(i+1, q2) ;    // add subClassOf statement
             i = i+2 ;                   // Skip the two statements.

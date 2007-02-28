@@ -25,15 +25,15 @@ public class QBR_SubProperty implements QuadBlockRewrite
         for ( Quad q : quadBlock )
         {
             // If has superproperty ...
-            if ( false )
+            if ( true )
             {
-                Var v = request.genvar();
+                Var var = request.genvar();
                 Node property = q.getPredicate() ;
                 
                 // { :s :p :o } ==> { :s ?v :o . ?v rdfs:subPropertyOf :o }
                 // Also works if the property slot is a variable in the first place.
-                Quad q1 = new Quad(q.getGraph(), q.getSubject(), v, q.getObject()) ;
-                Quad q2 = new Quad(q.getGraph(), v, RDFS.subPropertyOf.asNode(), property) ;
+                Quad q1 = new Quad(q.getGraph(), q.getSubject(), var, q.getObject()) ;
+                Quad q2 = new Quad(q.getGraph(), var, RDFS.subPropertyOf.asNode(), property) ;
                 newBlock.add(q1) ;      // replace property
                 newBlock.add(q2) ;      // add subPropertyOf statement
             }
