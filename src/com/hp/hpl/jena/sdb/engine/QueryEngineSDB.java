@@ -17,9 +17,9 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.engine.ref.EvaluatorFactory;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sdb.compiler.OpSQL;
+import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.compiler.OpSQL;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompiler;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 

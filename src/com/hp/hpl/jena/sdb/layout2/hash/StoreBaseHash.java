@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.*;

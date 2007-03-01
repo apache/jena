@@ -1,36 +1,51 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package dev.rewrite;
 
-import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
-
-public class QueryCompilerFactory1 implements QueryCompilerFactory
+public class QBR_SubProperty implements QuadBlockRewrite
 {
-    private EncoderDecoder codec ;
-    private TripleTableDesc tripleTableDesc ;
-
-    public QueryCompilerFactory1(EncoderDecoder codec, TripleTableDesc desc)
+    private static final Node rdfType = RDF.type.asNode() ;
+    
+    public QuadBlock rewrite(SDBRequest request, QuadBlock quadBlock)
     {
-        this.codec = codec ;
-        this.tripleTableDesc = desc ;
-    }
-
-    public QueryCompiler createQueryCompiler(SDBRequest request)
-    {
-        return new QueryCompiler1(request, codec, tripleTableDesc) ;
+        QuadBlock newBlock = new QuadBlock(quadBlock) ;
+        for ( Quad q : quadBlock )
+        {
+            // If has superproperty ...
+            if ( true )
+            {
+                Var var = request.genvar();
+                Node property = q.getPredicate() ;
+                
+                // { :s :p :o } ==> { :s ?v :o . ?v rdfs:subPropertyOf :o }
+                // Also works if the property slot is a variable in the first place.
+                Quad q1 = new Quad(q.getGraph(), q.getSubject(), var, q.getObject()) ;
+                Quad q2 = new Quad(q.getGraph(), var, RDFS.subPropertyOf.asNode(), property) ;
+                newBlock.add(q1) ;      // replace property
+                newBlock.add(q2) ;      // add subPropertyOf statement
+            }
+            else
+                newBlock.add(q) ;
+        }
+        return newBlock ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

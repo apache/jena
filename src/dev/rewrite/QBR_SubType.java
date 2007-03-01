@@ -1,32 +1,51 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.hash;
+package dev.rewrite;
 
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 
-public class QueryCompilerHash extends QueryCompilerMain 
+public class QBR_SubType implements QuadBlockRewrite
 {
-    public QueryCompilerHash(SDBRequest request)
-    { 
-        super(request) ;
-    }
+    private static final Node rdfType = RDF.type.asNode() ;
     
-    @Override
-    protected QuadBlockCompiler createQuadBlockCompiler()
-    { 
-        QuadBlockCompiler base = new QuadBlockCompilerHash(request) ;
-        return base ;
+    public QuadBlock rewrite(SDBRequest request, QuadBlock quadBlock)
+    {
+        // Does not consider if the property slot is a variable.
+        
+        if ( ! quadBlock.contains(null, null, rdfType, null) )
+            return quadBlock ;
+        
+        quadBlock = new QuadBlock(quadBlock) ;
+        
+        int i = 0 ;
+        
+        while ( ( i = quadBlock.findFirst(i, null, null, rdfType, null) ) != -1 ) 
+        {
+            Quad rdfTypeQuad = quadBlock.get(i) ;
+            Var var = request.genvar() ;
+            Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, var) ;
+            Quad q2 = new Quad(rdfTypeQuad.getGraph(), var, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
+            quadBlock.set(i, q1) ;      // replace rdf:type statement
+            quadBlock.add(i+1, q2) ;    // add subClassOf statement
+            i = i+2 ;                   // Skip the two statements.
+        }
+        return quadBlock ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

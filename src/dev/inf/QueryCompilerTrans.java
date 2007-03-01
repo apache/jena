@@ -11,6 +11,7 @@ import java.util.Collection;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -26,17 +27,19 @@ public class QueryCompilerTrans extends QuadBlockCompilerIndex
     private TransTable transTable ;
     private String aliasBase ;
     Generator gen = null ;
+    private QuadBlockCompiler baseCompiler ;
 
-    public QueryCompilerTrans(SDBRequest request, TransTable transTable)
+    public QueryCompilerTrans(SDBRequest request, TransTable transTable, QuadBlockCompiler baseCompiler)
     {
-        this(request, transTable, "Trans");   
+        this(request, transTable, baseCompiler, "Trans");   
     }
 
-    public QueryCompilerTrans(SDBRequest request, TransTable transTable, String aliasBase)
+    public QueryCompilerTrans(SDBRequest request, TransTable transTable, QuadBlockCompiler baseCompiler, String aliasBase)
     {
         super(request) ;
         this.transTable = transTable ;   
         this.aliasBase = aliasBase ;
+        this.baseCompiler = baseCompiler ;
         this.gen = new Gensym(aliasBase) ;
     }
     
@@ -58,8 +61,7 @@ public class QueryCompilerTrans extends QuadBlockCompilerIndex
         
         SqlTable transTripleTable = transTable.createSqlTable(alias) ;
         
-        // TODO stringForQuad
-        transTripleTable.addNote("Trans: "+FmtUtils.stringForTriple(quad.getTriple())) ;
+        transTripleTable.addNote("Trans: "+FmtUtils.stringForQuad(quad)) ;
         
         //processSlot(request, transTripleTable, conditions, quad.getGraph(), ?????) ;
         processSlot(request, transTripleTable, conditions, quad.getSubject(), transTable.getColLeft()) ; 

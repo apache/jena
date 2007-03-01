@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006 Hewlett--Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett--Packard Development Company, LP
  * [See end of file]
  */
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 
 import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.engine.compiler.QC;
+import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
  
@@ -167,7 +167,7 @@ public class sdbquery extends CmdArgsDB
 
 
 /*
- * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

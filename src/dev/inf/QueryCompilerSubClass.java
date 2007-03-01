@@ -6,14 +6,15 @@
 
 package dev.inf;
 
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 
 
 public class QueryCompilerSubClass extends QueryCompilerTrans
 {
-    public QueryCompilerSubClass(SDBRequest request)
+    public QueryCompilerSubClass(SDBRequest request, QuadBlockCompiler baseCompiler)
     {
-        super(request, new TransSubClassTable(), "SC") ;
+        super(request, new TransSubClassTable(), baseCompiler, "SC") ;
     }
 }
 

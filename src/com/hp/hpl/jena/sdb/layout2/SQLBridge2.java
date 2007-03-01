@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 
+import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -34,7 +35,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.NodeTableDesc;

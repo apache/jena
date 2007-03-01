@@ -1,36 +1,21 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package dev.rewrite;
 
-import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
-
-public class QueryCompilerFactory1 implements QueryCompilerFactory
+public interface QuadBlockRewrite
 {
-    private EncoderDecoder codec ;
-    private TripleTableDesc tripleTableDesc ;
-
-    public QueryCompilerFactory1(EncoderDecoder codec, TripleTableDesc desc)
-    {
-        this.codec = codec ;
-        this.tripleTableDesc = desc ;
-    }
-
-    public QueryCompiler createQueryCompiler(SDBRequest request)
-    {
-        return new QueryCompiler1(request, codec, tripleTableDesc) ;
-    }
+    public QuadBlock rewrite(SDBRequest request, QuadBlock quadBlock) ;
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

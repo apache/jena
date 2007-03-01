@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
+import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
@@ -24,7 +25,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.engine.compiler.QC;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
 

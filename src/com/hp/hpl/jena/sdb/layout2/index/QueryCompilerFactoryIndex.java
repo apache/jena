@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
+import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerFactory;
 
 
 public class QueryCompilerFactoryIndex implements QueryCompilerFactory

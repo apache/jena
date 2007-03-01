@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.engine.compiler.QueryCompilerMain;
 
 
 public class QueryCompilerIndex extends QueryCompilerMain 
