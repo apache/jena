@@ -49,12 +49,15 @@ public class AlgebraGenerator
     {
         Op op = pattern ;
         Modifiers mods = new Modifiers(query) ;
-        // Maybe move into the algebra compiler
-        // ORDER BY
+        // Listify it.
+        op = new OpList(op) ;
+        
+        // ---- ORDER BY
         if ( mods.orderConditions != null )
             op = new OpOrder(op, mods.orderConditions) ;
         
-        // Project (ORDER may involve an unselected variable)
+        // ---- PROJECT
+        // (ORDER may involve an unselected variable)
         // No projection => initial variables are exposed.
         // Needed for CONSTRUCT and initial bindings + SELECT *
         
@@ -68,11 +71,11 @@ public class AlgebraGenerator
                 op = new OpProject(op, mods.projectVars) ;
         }
         
-        // DISTINCT
+        // ---- DISTINCT
         if ( query.isDistinct() )
             op = new OpDistinct(op, mods.projectVars) ;
         
-        // LIMIT/OFFSET
+        // ---- LIMIT/OFFSET
         if ( query.hasLimit() || query.hasOffset() )
             op = new OpSlice(op, mods.start, mods.length) ;
         

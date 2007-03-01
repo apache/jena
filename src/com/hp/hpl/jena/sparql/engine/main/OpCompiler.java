@@ -238,6 +238,11 @@ public class OpCompiler
         throw new QueryExecException("Encountered unsupport OpExt: "+opExt.getName()) ;
     }
 
+    QueryIterator compile(OpList opList, QueryIterator input)
+    {
+        return compileOp(opList.getSubOp(), input) ;
+    }
+    
     QueryIterator compile(OpOrder opOrder, QueryIterator input)
     { 
         QueryIterator qIter = compileOp(opOrder.getSubOp(), input) ;

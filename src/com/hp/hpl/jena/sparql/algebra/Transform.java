@@ -24,6 +24,11 @@ public interface Transform
     
     public Op transform(OpExt opExt) ;
     
+    public Op transform(OpList opList, Op subOp) ;
+    public Op transform(OpOrder opOrder, Op subOp) ;
+    public Op transform(OpProject opProject, Op subOp) ;
+    public Op transform(OpDistinct opDistinct, Op subOp) ;
+    public Op transform(OpSlice opSlice, Op subOp) ;
 }
 
 /*

@@ -22,6 +22,7 @@ public interface OpVisitor
     public void visit(OpUnit opUnit) ;
     public void visit(OpExt opExt) ;
     
+    public void visit(OpList opList) ;
     public void visit(OpOrder opOrder) ;
     public void visit(OpProject opProject) ;
     public void visit(OpDistinct opDistinct) ;

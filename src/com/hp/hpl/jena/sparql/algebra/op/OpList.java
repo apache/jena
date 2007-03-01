@@ -4,58 +4,27 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
 
-
-public class OpVisitorBase implements OpVisitor
+public class OpList extends OpModifier
 {
+    public OpList(Op subOp)
+    { super(subOp) ; }
 
-    public void visit(OpBGP opBGP)
-    {}
+    public Op copy(Op subOp)
+    { return new OpList(subOp) ; }
 
-    public void visit(OpJoin opJoin)
-    {}
+    public void visit(OpVisitor opVisitor)
+    { opVisitor.visit(this) ; }
 
-    public void visit(OpLeftJoin opLeftJoin)
-    {}
+    public String getName() { return "ToList" ; }
 
-    public void visit(OpUnion opUnion)
-    {}
-
-    public void visit(OpFilter opFilter)
-    {}
-
-    public void visit(OpGraph opGraph)
-    {}
-
-    public void visit(OpQuadPattern quadPattern)
-    {}
-
-    public void visit(OpDatasetNames dsNames)
-    {}
-
-    public void visit(OpUnit opUnit)
-    {}
-
-    public void visit(OpExt opExt)
-    {}
-
-    public void visit(OpList opList)
-    {}
-
-    public void visit(OpOrder opOrder)
-    {}
-
-    public void visit(OpProject opProject)
-    {}
-
-    public void visit(OpDistinct opDistinct)
-    {}
-
-    public void visit(OpSlice opSlice)
-    {}
+    public Op apply(Transform transform, Op subOp) 
+    { return transform.transform(this, subOp) ; }
 }
 
 /*

@@ -22,7 +22,13 @@ public class TransformBase implements Transform
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return opLeftJoin ; }
     public Op transform(OpUnion opUnion, Op left, Op right)         { return opUnion ; }
     
-    public Op transform(OpExt opExt)                { return opExt ; }
+    public Op transform(OpExt opExt)                        { return opExt ; }
+    
+    public Op transform(OpList opList, Op subOp)            { return opList ; }
+    public Op transform(OpOrder opOrder, Op subOp)          { return opOrder ; }
+    public Op transform(OpProject opProject, Op subOp)      { return opProject ; }
+    public Op transform(OpDistinct opDistinct, Op subOp)    { return opDistinct ; }
+    public Op transform(OpSlice opSlice, Op subOp)          { return opSlice ; }
 }
 
 /*

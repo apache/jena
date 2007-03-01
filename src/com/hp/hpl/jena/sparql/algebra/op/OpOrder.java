@@ -8,13 +8,11 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.engine.ref.Table;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpOrder extends OpModifier
 {
@@ -37,15 +35,12 @@ public class OpOrder extends OpModifier
         return evaluator.order(table, conditions) ;
     }
 
-//    public Op apply(Transform transform, Op subOp)
-//    { return transform.transform(this, subOp) ; }
-
     public String getName()                 { return "Order" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
 
     public Op apply(Transform transform, Op subOp)
-    { throw new ARQNotImplemented(Utils.className(this)+".apply") ; } 
+    { return transform.transform(this, subOp) ; }
 }
 
 /*

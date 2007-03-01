@@ -6,13 +6,11 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.engine.ref.Table;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 public class OpSlice extends OpModifier
 {
@@ -47,8 +45,7 @@ public class OpSlice extends OpModifier
     public Op copy(Op subOp)                { return new OpSlice(subOp, start, length) ; }
 
     public Op apply(Transform transform, Op subOp)
-    { throw new ARQNotImplemented(Utils.className(this)+".apply") ; }
-
+    { return transform.transform(this, subOp) ; }
 }
 
 /*

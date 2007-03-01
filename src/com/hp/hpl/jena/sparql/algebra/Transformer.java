@@ -10,7 +10,6 @@ import java.util.Stack;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 
 public class Transformer
@@ -100,22 +99,22 @@ public class Transformer
         { visit1(opGraph) ; }
 
         public void visit(OpExt opExt)
-        { 
-            push(transform.transform(opExt)) ;
-            //throw new ARQInternalErrorException("Can't transform OpExt: "+Utils.className(opExt)) ;
-        }
+        { push(transform.transform(opExt)) ; }
+        
+        public void visit(OpList opList)
+        { visit1(opList) ; }
         
         public void visit(OpOrder opOrder)
-        { throw new ARQInternalErrorException("Can't transform an OpOrder") ; }
+        { visit1(opOrder) ; }
         
         public void visit(OpProject opProject)
-        { throw new ARQInternalErrorException("Can't transform an OpProject") ; }
+        { visit1(opProject) ; }
         
         public void visit(OpDistinct opDistinct)
-        { throw new ARQInternalErrorException("Can't transform an OpDistinct") ; }
+        { visit1(opDistinct) ; }
         
         public void visit(OpSlice opSlice)
-        { throw new ARQInternalErrorException("Can't tranform an OpSlice") ; }
+        { visit1(opSlice) ; }
     }
 }
 

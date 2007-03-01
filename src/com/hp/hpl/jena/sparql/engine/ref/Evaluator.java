@@ -24,11 +24,13 @@ public interface Evaluator
     public Table filter(ExprList expressions, Table tableLeft) ;
 
     public Table unit() ; 
-
+    public Table list(Table table) ;
+    
     public Table order(Table table, List conditions) ;
     public Table project(Table table, List vars) ; 
     public Table distinct(Table table, List vars) ;
-    public Table slice(Table table, long start, long length) ; 
+    public Table slice(Table table, long start, long length) ;
+
 }
 
 /*

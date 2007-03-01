@@ -102,6 +102,8 @@ class EvaluatorSimple implements Evaluator
         return new TableSimple(output) ;
     }
 
+    public Table list(Table table) { return table ; } 
+
     public Table order(Table table, List conditions)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;

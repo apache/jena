@@ -199,6 +199,11 @@ public class OpWriter
             //finish() ;
         }
 
+        public void visit(OpList opList)
+        {
+            visitOp1(opList) ;
+        }
+        
         public void visit(OpOrder opOrder)
         { 
             start(opOrder, NoNL) ;
