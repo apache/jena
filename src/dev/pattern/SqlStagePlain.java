@@ -8,8 +8,8 @@ package dev.pattern;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.engine.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.engine.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
 
 public class SqlStagePlain implements SqlStage
 {

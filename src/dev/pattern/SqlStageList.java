@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.engine.compiler.QC;
+import com.hp.hpl.jena.sdb.compiler.QC;
 
 public class SqlStageList extends ArrayList<SqlStage> implements SqlStage
 {
