@@ -2,7 +2,7 @@ PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX :    <http://example/>
 
-SELECT ?x ?y
+SELECT *
 { 
   ?x apf:str "string"@en .
   ?y apf:str <http://example/uri> .
