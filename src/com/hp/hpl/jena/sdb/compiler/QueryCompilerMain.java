@@ -35,7 +35,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
     public Op compile(Op op)
     {
         QuadBlockCompiler quadCompiler = createQuadBlockCompiler() ;
-        if ( request.getContext().isTrue(SDB.useStageBudiler) )
+        if ( request.getContext().isTrue(SDB.useQuadRewrite) )
             quadCompiler = new QuadBlockRewriteCompiler(request, quadCompiler) ;
         
         Transform t = new TransformSDB(request, quadCompiler) ;

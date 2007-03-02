@@ -69,7 +69,7 @@ public class SDB
     public static PrefixMapping getGlobalPrefixMapping() { return globalPrefixMap ; }
     
     // ----------------------------------
-    public static final Symbol useStageBudiler = SDBConstants.allocSymbol("useStageBuilder") ;
+    public static final Symbol useQuadRewrite = SDBConstants.allocSymbol("useQuadRewrite") ;
     
     // ----------------------------------
     
