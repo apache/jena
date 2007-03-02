@@ -6,25 +6,24 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-/** Control of the main tables (triples, nodes) in a Store.
- *  This class does not manage secondary tables like PTables 
- */
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 
-public interface StoreFormatter
+public abstract class StoreFormatterBase 
+    extends SDBConnectionHolder 
+    implements StoreFormatter
 {
-    /** Create the main tables with primary indexes only */
-    public void create() ;
+    public StoreFormatterBase(SDBConnection connection)
+    { 
+        super(connection) ;
+    }
     
-//    /** Create secondary indexes for triples/node tables */
-//    void buildSecondaryIndexes() ;
-//    /** Drop secondary indexes for triples/node tables */
-//    void dropSecondaryIndexes() ;
-    
-    /** Format the store - create tables, create secondary indexes */ 
-    void format() ;
-    
-    /** Truncate tables - clearing the store but leaving all indexes inplace */
-    void truncate() ;
+//    /** Format the store - create tables, create secondary indexes */ 
+//    public void format()
+//    {
+//        create() ;
+//        //createSecondaryIndexes() ;
+//    }
 }
 
 /*

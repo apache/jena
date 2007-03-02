@@ -15,13 +15,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
-import com.hp.hpl.jena.sdb.store.StoreFormatter;
 
-
-public class FormatterSimpleHSQL 
-    extends SDBConnectionHolder 
-    implements StoreFormatter
+public class FormatterSimpleHSQL extends FormatterSimple 
 {
     private static Log log = LogFactory.getLog(FormatterSimpleHSQL.class) ;
     

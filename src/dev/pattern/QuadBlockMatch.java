@@ -1,34 +1,47 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package dev.pattern;
 
-/** Control of the main tables (triples, nodes) in a Store.
- *  This class does not manage secondary tables like PTables 
- */
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
+import com.hp.hpl.jena.sparql.core.Quad;
 
-public interface StoreFormatter
+public class QuadBlockMatch
 {
-    /** Create the main tables with primary indexes only */
-    public void create() ;
+    // A match is ...
     
-//    /** Create secondary indexes for triples/node tables */
-//    void buildSecondaryIndexes() ;
-//    /** Drop secondary indexes for triples/node tables */
-//    void dropSecondaryIndexes() ;
     
-    /** Format the store - create tables, create secondary indexes */ 
-    void format() ;
     
-    /** Truncate tables - clearing the store but leaving all indexes inplace */
-    void truncate() ;
+    // QuadBlocks are typically not large so linear sweeps is acceptable.
+    static public boolean match(QuadBlock pattern, QuadBlock data)
+    {
+        for ( Quad p : pattern )
+        {
+            if ( ! data.contains(p) )
+                return false ;
+        }
+        
+        return true ;
+    }
+    
+
+//    static public QuadBlock matchRemove(QuadBlock pattern, QuadBlock data)
+//    {
+//        for ( Quad p : pattern )
+//        {
+//            if ( ! data.contains(p) )
+//                return false ;
+//        }
+//        
+//        return true ;
+//    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

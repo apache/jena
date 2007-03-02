@@ -18,13 +18,9 @@ import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
-import com.hp.hpl.jena.sdb.store.StoreFormatter;
 
 
-public class FormatterSimpleMySQL
-    extends SDBConnectionHolder
-    implements StoreFormatter
+public class FormatterSimpleMySQL extends FormatterSimple
 {
     private static Log log = LogFactory.getLog(FormatterSimpleMySQL.class) ;
     private MySQLEngineType engineType ;

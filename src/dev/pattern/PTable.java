@@ -1,34 +1,22 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package dev.pattern;
 
-/** Control of the main tables (triples, nodes) in a Store.
- *  This class does not manage secondary tables like PTables 
- */
+/** A (description of a) table that holds a cached/optimized version of a pattern */ 
 
-public interface StoreFormatter
+public class PTable
 {
-    /** Create the main tables with primary indexes only */
-    public void create() ;
+    public PTable() {}
     
-//    /** Create secondary indexes for triples/node tables */
-//    void buildSecondaryIndexes() ;
-//    /** Drop secondary indexes for triples/node tables */
-//    void dropSecondaryIndexes() ;
-    
-    /** Format the store - create tables, create secondary indexes */ 
-    void format() ;
-    
-    /** Truncate tables - clearing the store but leaving all indexes inplace */
-    void truncate() ;
+    public void trigger() {}
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

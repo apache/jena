@@ -3,7 +3,9 @@ SDB ToDo list (and general notes)
 
 + Trans table builder.
 
-+ Prefixes : disable for ModelRDB.
++ Separate out index building in formatter - see StoreFormatterBase
+
++ Prefixes : disable for ModelRDB only.
 
 + Prepared statement query cache?
   When will it be beneficial - GraphSDB and add/delete single triples?

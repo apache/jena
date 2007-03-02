@@ -1,34 +1,24 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.layout1;
 
-/** Control of the main tables (triples, nodes) in a Store.
- *  This class does not manage secondary tables like PTables 
- */
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.StoreFormatterBase;
 
-public interface StoreFormatter
+public abstract class FormatterSimple extends StoreFormatterBase
 {
-    /** Create the main tables with primary indexes only */
-    public void create() ;
-    
-//    /** Create secondary indexes for triples/node tables */
-//    void buildSecondaryIndexes() ;
-//    /** Drop secondary indexes for triples/node tables */
-//    void dropSecondaryIndexes() ;
-    
-    /** Format the store - create tables, create secondary indexes */ 
-    void format() ;
-    
-    /** Truncate tables - clearing the store but leaving all indexes inplace */
-    void truncate() ;
+    public FormatterSimple(SDBConnection connection)
+    { 
+        super(connection) ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

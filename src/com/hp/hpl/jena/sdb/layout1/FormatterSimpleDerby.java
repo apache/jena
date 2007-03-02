@@ -16,13 +16,10 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
-import com.hp.hpl.jena.sdb.sql.*;
-import com.hp.hpl.jena.sdb.store.StoreFormatter;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 
-
-public class FormatterSimpleDerby
-    extends SDBConnectionHolder
-    implements StoreFormatter
+public class FormatterSimpleDerby extends FormatterSimple 
 {
     private static Log log = LogFactory.getLog(FormatterSimpleDerby.class) ;
     
