@@ -7,13 +7,12 @@
 package dev.rewrite;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
-
-import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
 
 public class QBR_SubProperty implements QuadBlockRewrite
 {
