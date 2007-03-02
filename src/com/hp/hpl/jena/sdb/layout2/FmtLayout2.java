@@ -20,7 +20,11 @@ public abstract class FmtLayout2
 {
     public FmtLayout2(SDBConnection connection) { super(connection) ; }
     
-    public void create() { format() ; }
+    public void create()
+    { 
+        format() ;
+        //buildIndexesTableTriples() ;
+    }
     
     public void format()
     { 
@@ -35,6 +39,9 @@ public abstract class FmtLayout2
         truncateTableNodes() ;
         truncateTableTriples() ;
     }
+    
+//    abstract protected void buildIndexesTableTriples() ;
+//    abstract protected void dropIndexesTableTriples() ;
     
     abstract protected void formatTableTriples() ;
     abstract protected void formatTableNodes() ;

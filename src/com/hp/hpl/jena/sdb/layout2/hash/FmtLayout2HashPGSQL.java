@@ -41,12 +41,32 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
                                  "    PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.tableName+"'",ex) ; }
+        // TODO Remove when called from superclass
+        buildIndexesTableTriples() ;
+    }
+
+    //@Override
+    protected void buildIndexesTableTriples()
+    {
+        try {
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
             connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
             connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p);") ;
-            
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableNodes.tableName+"'",ex) ; }
+    }
+    
+    //@Override
+    protected void dropIndexesTableTriples()
+    {
+        try {
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
+            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p);") ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableNodes.tableName+"'",ex) ; }
     }
 
     @Override
@@ -66,7 +86,7 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
             connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.tableName+"'",ex) ;
         }
     }
 
