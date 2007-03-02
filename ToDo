@@ -8,10 +8,13 @@ ARQ2-beta
 
 -----
 
-+ Expose getActiveGraph to filter functions in some safe way because EXISTS will/might need it.
-  FunctionBase - but how? Functions don't see ExecutionContext any more!
-  Function - take ExecutionContext // FunctionBase, mask it?
-  Or is EXISTS a different form?
++ test cases:
+  Optional with two filters
+     *  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
+     *  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
+     *  Filter placement (internal tests)
+     *  Classifier J and LJ - internal
+  
 
 + ref.Eval - tidy up
 
@@ -20,17 +23,6 @@ ARQ2-beta
   TableSimple is the only streaming point - and often materialized.
   And used via TableFactory.create(QueryIterator) as well as direct
 
-+ Transform to apply to more than just pattern ops?
-
-+ test cases:
-  Optional with two filters
-     *  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
-     *  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
-     *  Filter placement (internal tests)
-     *  Classifier J and LJ - internal
-  
-+ Faster cmd loading with org.codehaus.classworlds ??
-  
 + Property function to property path expression
 
 + Non-distinguished variable removal.
@@ -38,13 +30,10 @@ ARQ2-beta
    In a project (or pseudo project) - does it once.
       Need test case : { _:a :p ?v. ?v :splitIRI (?ns ?ln) . _a :p ?w } 
       
- + Tidy ARQ./ARQConstants context keys
 +  strictMode - use in ref engine?
 
 + testing QE1 and QE2 and QE3 in the same test run
 
-+ Convenient: Get the version ID (property function?)
-    
 + Commands
   + qtest to use modules (and qexpr)
 
