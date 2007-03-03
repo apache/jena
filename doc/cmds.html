@@ -28,10 +28,13 @@ environment variables SDBROOT to be set to the location of the SDB installation.
 	<p>Print details of a query. &quot;X&quot; is any of &quot;query&quot;, &quot;prefix&quot;, &quot;op&quot;, &quot;sqlNode&quot;, &quot;sql&quot;. 
 --print=X can be repeated.&nbsp; --sql is short for --print=sql.</p>
 </blockquote>
-<p class="cmd">sdbformat <i>SPEC</i> DBNAME</p>
+<p class="cmd">sdbsetup <i>SPEC</i> [--create|--format|--indexes|--dropIndexes]</p>
 <blockquote>
-	<p>Format a database.&nbsp; Deletes all existing data. DBNAME must be <i>
-    spec</i>ified.</p>
+	<p>Setup a database. <code>--create</code> formats the store and sets up 
+	indexes. <code>--format</code> just formats the store. <code>--indexes</code> 
+	and <code>--dropIndexes</code> add or remove the indexes for the layout. 
+	Loading large graphs can be faster by formatting, loading the data then 
+	building the indexes manually with this command.</p>
 </blockquote>
 <p class="cmd">sdbload <i>SPEC</i> FILE [FILE ...]</p>
 <blockquote>
