@@ -1,42 +1,50 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package arq.examples.ext;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.pfunction.PFuncAssignToObject;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.FunctionBase1;
 
-/** Example property function that uppercases the lexical form of a literal.
- *  The subject must be bound, the object not bound. {@link localname} shows a
- *  property function that handles more cases of subject or object bing bound or unbound.
+/** Example filter function that returns an indicative type string.
+ *  <ul>
+ *  <li>"Number", if it's a number of some kind</li>
+ *  <li>"String", if it's string</li>
+ *  <li>"DateTime", if it's a date time</li>
+ *  <li>"unknown" otherwise</li>
+ *  </ul>
+ *  
+ *  Usage:
  *  <pre>
- *     PREFIX ext: <java:arq.examples.ext.>
- *  </pre>   
- *  <pre>
- *     { ?string ext:uppercase ?uppercase }
+ *    PREFIX ext: <java:arq.examples.ext.>
  *  </pre>
  *  <pre>
- *     { "lower case" ext:uppercase ?uppercase }
- *  </pre>
- *  Else fails to match.
- */
+ *    FILTER ext:classify(3+?x)
+ *  <pre>
+ * @author Andy Seaborne
+ * @version $Id$
+ */ 
 
-public class uppercase extends PFuncAssignToObject
+public class classify extends FunctionBase1
 {
-    public Node calc(Node node)
-    {
-        if ( ! node.isLiteral() ) 
-            return null ;
-        String str = node.getLiteralLexicalForm().toUpperCase() ;
-        return Node.createLiteral(str) ;
+    public classify() { super() ; }
+
+    //@Override
+    public NodeValue exec(NodeValue v)
+    { 
+        if ( v.isNumber() ) return NodeValue.makeString("number") ;
+        if ( v.isDateTime() ) return NodeValue.makeString("dateTime") ;
+        if ( v.isString() ) return NodeValue.makeString("string") ;
+        
+        return NodeValue.makeString("unknown") ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
