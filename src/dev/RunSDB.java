@@ -6,12 +6,7 @@
 
 package dev;
 
-import static sdb.SDBCmd.sdbformat;
-import static sdb.SDBCmd.sdbload;
-import static sdb.SDBCmd.sdbprint;
-import static sdb.SDBCmd.sdbquery;
-import static sdb.SDBCmd.setSDBConfig;
-import static sdb.SDBCmd.sparql;
+import static sdb.SDBCmd.* ;
 import junit.framework.TestSuite;
 import arq.cmd.CmdUtils;
 
@@ -37,9 +32,8 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        
-        
-        sdbprint("--sdb=sdb.ttl", "--set=useStageBuilder=true", "--query=Q.rq" ) ;
+        sdbconfig("--sdb=Store/sdb-psql.ttl", "--create") ;
+        //sdbprint("--sdb=sdb.ttl", "--set=useStageBuilder=true", "--query=Q.rq" ) ;
         System.exit(0) ;
         
         
@@ -86,7 +80,7 @@ public class RunSDB
 //        SDBConnection.logSQLExceptions = true ;
          setSDBConfig("sdb.ttl") ;
          //setExitOnError(true) ;
-         sdbformat() ; 
+         sdbconfig() ; 
          sdbload(dataFile) ;
          sdbprint("--print=plan", "--file=Q.rq") ; 
          sdbquery("--file=Q.rq") ;

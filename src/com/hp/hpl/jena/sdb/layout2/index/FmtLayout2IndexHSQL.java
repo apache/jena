@@ -10,19 +10,16 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
-import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
-import com.hp.hpl.jena.sdb.sql.*;
+import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashHSQL;
+import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 
-public class FmtLayout2IndexHSQL extends FmtLayout2
+public class FmtLayout2IndexHSQL extends FmtLayout2HashHSQL
 {
-    static private Log log = LogFactory.getLog(FmtLayout2IndexHSQL.class) ;
     private MySQLEngineType engineType ;
     
     public FmtLayout2IndexHSQL(SDBConnection connection)
@@ -43,12 +40,9 @@ public class FmtLayout2IndexHSQL extends FmtLayout2
                                  "    PRIMARY KEY (s, p, o)",
                                  ")"               
                     )) ;
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s,o)") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o,p)") ;
-            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.tableName+"'",ex) ;
         }
     }
 
@@ -57,7 +51,6 @@ public class FmtLayout2IndexHSQL extends FmtLayout2
     {
         dropTable(TableNodes.tableName) ;
         try { 
-            // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
             connection().exec(sqlStr (
                      "CREATE TABLE "+TableNodes.tableName+" (",
                      "   id INT IDENTITY ,",
@@ -72,44 +65,9 @@ public class FmtLayout2IndexHSQL extends FmtLayout2
             connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.tableName+" (hash)") ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.tableName+"'",ex) ;
         }
     }
-
-    @Override
-    protected void formatTablePrefixes()
-    {
-        dropTable(TablePrefixes.tableName) ;
-        try { 
-            connection().exec(sqlStr(
-                                 "CREATE TABLE "+TablePrefixes.tableName+" (",
-                                 "    prefix  VARCHAR NOT NULL,",
-                                 "    uri     VARCHAR NOT NULL,", 
-                                 "    PRIMARY KEY  (prefix)",
-                                 ")"            
-                    )) ;
-        } catch (SQLException ex)
-        {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.tableName+"'",ex) ;
-        }
-    }
-    
-    @Override
-    protected void truncateTable(String tableName)
-    { 
-        try { 
-            if ( TableUtils.hasTable(connection().getSqlConnection(), tableName) )
-                connection().exec("DELETE FROM "+tableName) ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException : Can't truncate table: "+tableName, ex) ; }
-    }
-    
-    @Override
-    protected void dropTable(String tableName)
-    {
-        TableUtils.dropTable(connection(), tableName) ;
-    }
-
 }
 
 /*

@@ -16,16 +16,16 @@ import com.hp.hpl.jena.sdb.store.Store;
 
 /** Format an SDB database.  Destroys all existing data permanently. */ 
 
-public class sdbformat extends CmdArgsDB
+public class sdbconfig extends CmdArgsDB
 {
     ModFormat modFormat = new ModFormat() ; 
     
     public static void main(String ... argv)
     {
-        new sdbformat(argv).main() ;
+        new sdbconfig(argv).main() ;
     }
     
-    protected sdbformat(String... args)
+    protected sdbconfig(String... args)
     {
         super(args);
         addModule(modFormat) ;
@@ -53,9 +53,18 @@ public class sdbformat extends CmdArgsDB
     protected void execCmd(List<String> args)
     {
         Store store = getModStore().getStore() ;
-        if ( ! modFormat.format() && ! modFormat.dropIndexes() && ! modFormat.buildIndexes() )
+        if ( ! modFormat.format() && 
+             ! modFormat.create() &&
+             ! modFormat.dropIndexes() && 
+             ! modFormat.buildIndexes() )
         {
-            System.err.println("Nothing to do : --create | --drop | -indexes") ;
+            System.err.println("Nothing to do : --format | --create | --drop | -indexes") ;
+            return ;
+        }
+        
+        if ( modFormat.format() && modFormat.create() )
+        {
+            System.err.println("Both --format and --create (--create formats and adds indexing)") ;
             return ;
         }
         

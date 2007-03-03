@@ -14,7 +14,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class FormatterSimpleHSQL extends FormatterSimple 
 {
@@ -25,10 +27,6 @@ public class FormatterSimpleHSQL extends FormatterSimple
         super(connection) ;
     }
    
-    // -------- Formatting
-    
-    public void create() { format() ; }
-
     public void truncate()
     {
         try { 
@@ -91,14 +89,33 @@ public class FormatterSimpleHSQL extends FormatterSimple
                     "  PRIMARY KEY (s,p,o)",                
                     ")"
                 )) ;
-            connection().exec("CREATE INDEX SubjObj ON Triples (s,o)") ;
-            connection().exec("CREATE INDEX ObjPred ON Triples (o,p)") ;
-            //connection().execAny("CREATE INDEX Pred ON Triples (p)") ;
         } catch (SQLException ex)
         {
             log.warn("Exception resetting table 'Triples'") ; 
             throw new SDBException("SQLException resetting table 'Triples'",ex) ;
         }
+    }
+    
+    public void buildSecondaryIndexes()
+    {
+        try {
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o,p)") ;
+            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
+        } catch (SQLException ex)
+        {
+            throw new SDBException("SQLException indexing table 'Triples'",ex) ;
+        }
+    }
+
+    public void dropSecondaryIndexes()
+    {
+        try {
+            connection().exec("DROP INDEX SubjObj IF EXISTS") ;
+            connection().exec("DROP INDEX ObjPred IF EXISTS") ;
+            connection().exec("DROP INDEX Pred    IF EXISTS") ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }
 }
 

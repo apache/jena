@@ -23,7 +23,7 @@ public abstract class FmtLayout2
     public void create()
     { 
         format() ;
-        //buildIndexesTableTriples() ;
+        buildIndexesTableTriples() ;
     }
     
     public void format()
@@ -40,8 +40,14 @@ public abstract class FmtLayout2
         truncateTableTriples() ;
     }
     
-//    abstract protected void buildIndexesTableTriples() ;
-//    abstract protected void dropIndexesTableTriples() ;
+    public void buildSecondaryIndexes()
+    { buildIndexesTableTriples() ; }
+    
+    public void dropSecondaryIndexes()
+    { dropIndexesTableTriples() ; }
+    
+    abstract protected void buildIndexesTableTriples() ;
+    abstract protected void dropIndexesTableTriples() ;
     
     abstract protected void formatTableTriples() ;
     abstract protected void formatTableNodes() ;

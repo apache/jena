@@ -1,6 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
++ --sdb=@ for global registration?
+
 + Trans table builder.
 
 + Separate out index building in formatter - see StoreFormatterBase

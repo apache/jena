@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 
 public class FormatterSimpleMySQL extends FormatterSimple
@@ -36,10 +37,6 @@ public class FormatterSimpleMySQL extends FormatterSimple
         }
     }
     
-    // -------- Formatting
-    
-    public void create() { format() ; }
-
     public void truncate()
     {
         try { 
@@ -103,16 +100,33 @@ public class FormatterSimpleMySQL extends FormatterSimple
                     ")",
                     "ENGINE="+engineType.getEngineName()+" CHARSET=utf8"
                 )) ;
-            // ?? Indexes limited to 1000 bytes (MyISAM?)
-            //connection().execAny("CREATE INDEX SPO     ON "+TableTriples.tableName+" (s,p,o)") ;
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s(100),o(100))") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o(100),p(100))") ;
-            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p(100))") ;
         } catch (SQLException ex)
         {
             log.warn("Exception resetting table 'Triples'") ; 
             throw new SDBException("SQLException resetting table 'Triples'",ex) ;
         }
+    }
+    
+    public void buildSecondaryIndexes()
+    {
+        try {
+            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s(100),o(100))") ;
+            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o(100),p(100))") ;
+            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p(100))") ;
+        } catch (SQLException ex)
+        {
+            throw new SDBException("SQLException indexing table 'Triples'",ex) ;
+        }
+    }
+
+    public void dropSecondaryIndexes()
+    {
+        try {
+            connection().exec("DROP INDEX SubjObj ON "+TableTriples.tableName) ;
+            connection().exec("DROP INDEX ObjPred ON "+TableTriples.tableName) ;
+            connection().exec("DROP INDEX Pred    ON "+TableTriples.tableName) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }
 }
 

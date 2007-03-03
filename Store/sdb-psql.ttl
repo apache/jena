@@ -5,7 +5,7 @@
 
 _:c rdf:type acmd:SDBConnection ;
     acmd:sdbType        "postgresql" ;
-    acmd:sdbHost        "sweb-sdb-1.hpl.hp.com" ;
+    acmd:sdbHost        "localhost" ;
     acmd:sdbName        "SDB2" ;
     acmd:driver         "org.postgresql.Driver" ;
     .

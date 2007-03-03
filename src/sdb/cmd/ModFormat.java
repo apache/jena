@@ -15,13 +15,13 @@ import arq.cmdline.ModBase;
 
 public class ModFormat extends ModBase
 {
-    // Arg - "format" !!!!
-    // ModStore has --format
-    protected final ArgDecl argDeclFormat = new ArgDecl(ArgDecl.NoValue, "create") ;
+    protected final ArgDecl argDeclFormat = new ArgDecl(ArgDecl.NoValue, "format") ;
+    protected final ArgDecl argDeclCreate = new ArgDecl(ArgDecl.NoValue, "create") ;
     protected final ArgDecl argDeclDropIndexes = new ArgDecl(ArgDecl.NoValue, "drop") ;
     protected final ArgDecl argDeclIndexes = new ArgDecl(ArgDecl.NoValue, "build", "indexes", "index") ;
     
     private boolean format = false ;
+    private boolean create = false ;
     private boolean dropIndexes = false ;
     private boolean buildIndexes = false ;
     
@@ -29,7 +29,7 @@ public class ModFormat extends ModBase
 
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.add(argDeclFormat,
+        cmdLine.add(argDeclCreate,
                     "--create", "Format a database - destroys any existing data") ;
         cmdLine.add(argDeclDropIndexes,
                     "--drop", "Drop the secondary indexes (primary indexes can't be dropped)") ;
@@ -40,6 +40,7 @@ public class ModFormat extends ModBase
     public void processArgs(CmdArgModule cmdLine)
     {
         format = cmdLine.contains(argDeclFormat) ;
+        create = cmdLine.contains(argDeclCreate) ;
         dropIndexes = cmdLine.contains(argDeclDropIndexes) ;
         buildIndexes = cmdLine.contains(argDeclIndexes) ;
     }
@@ -49,15 +50,19 @@ public class ModFormat extends ModBase
     public boolean dropIndexes()      { return dropIndexes ; }
 
     public boolean format()           { return format ; }
+    public boolean create()           { return create ; }
 
     public void enact(Store store)
     {
-        if ( format() ) 
+        // "create" = format + build indexes.
+        if ( create() )
+            store.getTableFormatter().create() ;
+        if ( format() && ! create() ) 
             store.getTableFormatter().format() ;
-//        if ( dropIndexes() ) 
-//            store.getTableFormatter().dropSeconaryIndexes() ;
-//        if ( buildIndexes() ) 
-//            store.getTableFormatter().buildSeconaryIndexes() ;
+        if ( dropIndexes() ) 
+            store.getTableFormatter().dropSecondaryIndexes() ;
+        if ( buildIndexes() ) 
+            store.getTableFormatter().buildSecondaryIndexes() ;
     }
 }
 

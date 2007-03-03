@@ -42,12 +42,10 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
                                  ")"                
                     )) ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.tableName+"'",ex) ; }
-        // TODO Remove when called from superclass
-        buildIndexesTableTriples() ;
+        { throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.tableName+"'",ex) ; }
     }
 
-    //@Override
+    @Override
     protected void buildIndexesTableTriples()
     {
         try {
@@ -55,18 +53,18 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
             connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
             connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p);") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException indexing table '"+TableNodes.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
     }
     
-    //@Override
+    @Override
     protected void dropIndexesTableTriples()
     {
         try {
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
-            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p);") ;
+            connection().exec("DROP INDEX IF EXISTS SubjObj ;") ;
+            connection().exec("DROP INDEX IF EXISTS ObjPred ;") ;
+            connection().exec("DROP INDEX IF EXISTS Pred ;") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException indexing table '"+TableNodes.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
     }
 
     @Override

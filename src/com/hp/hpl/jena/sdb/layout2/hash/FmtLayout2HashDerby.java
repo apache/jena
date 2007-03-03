@@ -41,12 +41,33 @@ public class FmtLayout2HashDerby extends FmtLayout2
                                  "    PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
+        } catch (SQLException ex)
+        {
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.tableName+"'",ex) ;
+        }
+    }
+
+
+    @Override
+    protected void buildIndexesTableTriples()
+    {
+        try {
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
             connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p)") ;
-            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p)") ;
-            
+            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
+    }
+    
+    @Override
+    protected void dropIndexesTableTriples()
+    {
+        try {
+            connection().exec("DROP INDEX SubjObj") ;
+            connection().exec("DROP INDEX ObjPred") ;
+            connection().exec("DROP INDEX Pred") ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableTriples.tableName+"'",ex) ; }
     }
 
     @Override

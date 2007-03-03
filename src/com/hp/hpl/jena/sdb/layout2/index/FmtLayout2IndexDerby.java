@@ -10,18 +10,14 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
-import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
+import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashDerby;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.sql.TableUtils;
 
-public class FmtLayout2IndexDerby extends FmtLayout2
+public class FmtLayout2IndexDerby extends FmtLayout2HashDerby
 {
-    //static private Log log = LogFactory.getLog(FmtLayout2Derby.class) ;
-    
     public FmtLayout2IndexDerby(SDBConnection connection)
     { 
         super(connection) ;
@@ -40,12 +36,8 @@ public class FmtLayout2IndexDerby extends FmtLayout2
                                  "    PRIMARY KEY (s, p, o)",
                                  ")"                
                     )) ;
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p)") ;
-            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p)") ;
-            
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.tableName+"'",ex) ; }
     }
 
     @Override
@@ -66,32 +58,8 @@ public class FmtLayout2IndexDerby extends FmtLayout2
             connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.tableName+"'",ex) ;
         }
-    }
-
-    @Override
-    protected void formatTablePrefixes()
-    {
-        dropTable(TablePrefixes.tableName) ;
-        try { 
-            connection().exec(sqlStr(
-                                      "CREATE TABLE "+TablePrefixes.tableName+" (",
-                                      "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") NOT NULL ,",
-                                      "    uri VARCHAR("+TablePrefixes.uriColWidth+") NOT NULL ,", 
-                                      "    PRIMARY KEY  (prefix)",
-                                      ")"            
-                    )) ;
-        } catch (SQLException ex)
-        {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.tableName+"'",ex) ;
-        }
-    }
-    
-    @Override
-    protected void dropTable(String tableName)
-    {
-        TableUtils.dropTable(connection(), tableName) ;
     }
 }
 

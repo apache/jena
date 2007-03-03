@@ -6,4 +6,4 @@ then
     exit 1
     fi
 
-exec "${SDBROOT}/bin/sdbformat" "$@"
+exec "${SDBROOT}/bin/sdbconfig" "$@"

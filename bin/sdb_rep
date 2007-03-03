@@ -1,7 +1,7 @@
 #!/bin/bash
 # Replicate the commands
 
-## sdbdump sdbformat sdbinfo sdbload sdbprint
+## sdbdump sdbconfig sdbinfo sdbload sdbprint
 ## sdbquery sdbsql sdbtest sdbtruncate sdbmeta
 
 for c in sdb[a-z]*

@@ -61,8 +61,8 @@ public class ModStore extends ModBase
 
     // Load some data - useful for in-memory stores.
     // ModData extends ModStore? 
-    protected final ArgDecl argDeclLoad         = new ArgDecl(true,  "load");
-    protected final ArgDecl argDeclFormat       = new ArgDecl(false, "format");
+//    protected final ArgDecl argDeclLoad         = new ArgDecl(true,  "load");
+//    protected final ArgDecl argDeclFormat       = new ArgDecl(false, "format");
     
     protected String driverName = null;      // JDBC class name
     //protected String argDriverTypeName = null;  // Jena driver name
@@ -154,13 +154,13 @@ public class ModStore extends ModBase
         if ( AddUsage )
             cmdLine.getUsage().addUsage("--engine=", "MySQL engine type") ;
         
-        cmdLine.add(argDeclLoad) ;
-        if ( AddUsage )
-            cmdLine.getUsage().addUsage("--load=", "Datafile to load (permanent : for in-memory stores only) ") ;
-        
-        cmdLine.add(argDeclFormat) ;
-        if ( AddUsage )
-            cmdLine.getUsage().addUsage("--format", "Format first(permanent : for in-memory stores only) ") ;
+//        cmdLine.add(argDeclLoad) ;
+//        if ( AddUsage )
+//            cmdLine.getUsage().addUsage("--load=", "Datafile to load (permanent : for in-memory stores only) ") ;
+//        
+//        cmdLine.add(argDeclFormat) ;
+//        if ( AddUsage )
+//            cmdLine.getUsage().addUsage("--format", "Format first(permanent : for in-memory stores only) ") ;
         
     }
     
@@ -278,9 +278,9 @@ public class ModStore extends ModBase
             throw new TerminationException(9);
         }
         
-        // Data stuff
-        loadFiles = (List<String>)cmdLine.getValues(argDeclLoad) ;
-        formatFirst = cmdLine.contains(argDeclFormat) ;
+        // Data stuff - move to ModData
+        loadFiles = null ; //(List<String>)cmdLine.getValues(argDeclLoad) ;
+        formatFirst = false ; // cmdLine.contains(argDeclFormat) ;
     }
     
     public Store getStore()

@@ -23,7 +23,7 @@ public class SDBCmd
     public static int sparql(String... args)       { return exit(new arq.query(args(args))) ; } 
     
     public static int sdbprint(String... args)     { return exit(new sdb.sdbprint(args(args))) ; } 
-    public static int sdbformat(String... args)    { return exit(new sdb.sdbformat(args(args))) ; } 
+    public static int sdbconfig(String... args)    { return exit(new sdb.sdbconfig(args(args))) ; } 
     public static int sdbload(String... args)      { return exit(new sdb.sdbload(args(args))) ; } 
     public static int sdbdump(String... args)      { return exit(new sdb.sdbdump(args(args))) ; } 
     public static int sdbquery(String... args)     { return exit(new sdb.sdbquery(args(args))) ; } 
