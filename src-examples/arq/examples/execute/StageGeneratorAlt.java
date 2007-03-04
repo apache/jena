@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.main.Stage;
+import com.hp.hpl.jena.sparql.engine.main.StageBasic;
 import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
 import com.hp.hpl.jena.sparql.engine.main.StageList;
 
@@ -25,6 +26,15 @@ public class StageGeneratorAlt implements StageGenerator
                              ExecutionContext execCxt)
     {
         System.err.println("MyStageGenerator.compile:: triple patterns = "+pattern.size()) ;
+        
+        if ( false )
+        {
+            // Illustrative -- call the usual one (no property functions)
+            StageList sList = new StageList() ;
+            sList.add(new StageBasic(pattern)) ;
+            return sList ;
+        }
+        
         StageList sList = new StageList() ;
         for ( Iterator iter = pattern.getList().iterator() ; iter.hasNext() ; )
         {
