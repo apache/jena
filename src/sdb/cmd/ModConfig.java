@@ -13,56 +13,58 @@ import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModBase;
 
-public class ModFormat extends ModBase
+public class ModConfig extends ModBase
 {
     protected final ArgDecl argDeclFormat = new ArgDecl(ArgDecl.NoValue, "format") ;
     protected final ArgDecl argDeclCreate = new ArgDecl(ArgDecl.NoValue, "create") ;
-    protected final ArgDecl argDeclDropIndexes = new ArgDecl(ArgDecl.NoValue, "drop") ;
-    protected final ArgDecl argDeclIndexes = new ArgDecl(ArgDecl.NoValue, "build", "indexes", "index") ;
+    protected final ArgDecl argDeclDropIndexes = new ArgDecl(ArgDecl.NoValue, "dropIndexes", "drop") ;
+    protected final ArgDecl argDeclIndexes = new ArgDecl(ArgDecl.NoValue, "addIndexes", "indexes", "index") ;
     
     private boolean format = false ;
-    private boolean create = false ;
+    private boolean createStore = false ;
     private boolean dropIndexes = false ;
-    private boolean buildIndexes = false ;
+    private boolean createIndexes = false ;
     
-    public ModFormat() {}
+    public ModConfig() {}
 
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclCreate,
-                    "--create", "Format a database - destroys any existing data") ;
+                    "--create", "Format a database - destroys any existing data - add indexes") ;
+        cmdLine.add(argDeclCreate,
+                    "--format", "Format a database - destroys any existing data - no indexes") ;
         cmdLine.add(argDeclDropIndexes,
-                    "--drop", "Drop the secondary indexes (primary indexes can't be dropped)") ;
+                    "--drop", "Drop indexes") ;
         cmdLine.add(argDeclIndexes,
-                    "--indexes", "Build the secondary indexes") ;
+                    "--indexes", "Add indexes") ;
     }
 
     public void processArgs(CmdArgModule cmdLine)
     {
         format = cmdLine.contains(argDeclFormat) ;
-        create = cmdLine.contains(argDeclCreate) ;
+        createStore = cmdLine.contains(argDeclCreate) ;
         dropIndexes = cmdLine.contains(argDeclDropIndexes) ;
-        buildIndexes = cmdLine.contains(argDeclIndexes) ;
+        createIndexes = cmdLine.contains(argDeclIndexes) ;
     }
 
-    public boolean buildIndexes()     { return buildIndexes ; }
+    public boolean addIndexes()     { return createIndexes ; }
 
     public boolean dropIndexes()      { return dropIndexes ; }
 
     public boolean format()           { return format ; }
-    public boolean create()           { return create ; }
+    public boolean createStore()           { return createStore ; }
 
     public void enact(Store store)
     {
         // "create" = format + build indexes.
-        if ( create() )
+        if ( createStore() )
             store.getTableFormatter().create() ;
-        if ( format() && ! create() ) 
+        if ( format() && ! createStore() ) 
             store.getTableFormatter().format() ;
         if ( dropIndexes() ) 
-            store.getTableFormatter().dropSecondaryIndexes() ;
-        if ( buildIndexes() ) 
-            store.getTableFormatter().buildSecondaryIndexes() ;
+            store.getTableFormatter().dropIndexes() ;
+        if ( addIndexes() ) 
+            store.getTableFormatter().addIndexes() ;
     }
 }
 

@@ -15,8 +15,6 @@ public abstract class FormatterSimple extends StoreFormatterBase
     { 
         super(connection) ;
     }
-    
-    public void create() { format() ; buildSecondaryIndexes() ; }
 }
 
 /*

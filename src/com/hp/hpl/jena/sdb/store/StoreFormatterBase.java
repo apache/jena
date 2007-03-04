@@ -17,13 +17,14 @@ public abstract class StoreFormatterBase
     { 
         super(connection) ;
     }
-    
-//    /** Format the store - create tables, create secondary indexes */ 
-//    public void format()
-//    {
-//        create() ;
-//        //createSecondaryIndexes() ;
-//    }
+
+    /** Format the store - create tables, create secondary indexes */
+     
+    public final void create()
+    {
+        format() ;
+        addIndexes() ;
+    }
 }
 
 /*

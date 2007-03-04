@@ -105,7 +105,7 @@ public class FormatterSimplePGSQL extends FormatterSimple
         TableUtils.dropTable(connection(), tableName) ;
     }
     
-    public void buildSecondaryIndexes()
+    public void addIndexes()
     {
         try {
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
@@ -117,7 +117,7 @@ public class FormatterSimplePGSQL extends FormatterSimple
         }
     }
 
-    public void dropSecondaryIndexes()
+    public void dropIndexes()
     {
         try {
             connection().exec("DROP INDEX  IF EXISTS SubjObj") ;

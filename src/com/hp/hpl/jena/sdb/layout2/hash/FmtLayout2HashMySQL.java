@@ -59,7 +59,7 @@ public class FmtLayout2HashMySQL extends FmtLayout2
     }
 
     @Override
-    protected void buildIndexesTableTriples()
+    protected void addIndexesTableTriples()
     {
         try {
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s,o)") ;

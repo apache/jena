@@ -107,7 +107,7 @@ public class FormatterSimpleMySQL extends FormatterSimple
         }
     }
     
-    public void buildSecondaryIndexes()
+    public void addIndexes()
     {
         try {
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s(100),o(100))") ;
@@ -119,7 +119,7 @@ public class FormatterSimpleMySQL extends FormatterSimple
         }
     }
 
-    public void dropSecondaryIndexes()
+    public void dropIndexes()
     {
         try {
             connection().exec("DROP INDEX SubjObj ON "+TableTriples.tableName) ;

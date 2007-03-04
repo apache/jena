@@ -15,11 +15,11 @@ public interface StoreFormatter
     /** Create the main tables with primary indexes only */
     public void create() ;
     
-    /** Create secondary indexes for triple/node tables */
-    void buildSecondaryIndexes() ;
+    /** Add indexes - these are kept upto date for any future additions or deletions of data */
+    void addIndexes() ;
 
-    /** Drop secondary indexes for triple/node tables */
-    void dropSecondaryIndexes() ;
+    /** Drop indexes for triple/node tables */
+    void dropIndexes() ;
     
     /** Format the store - create tables, create secondary indexes */ 
     void format() ;

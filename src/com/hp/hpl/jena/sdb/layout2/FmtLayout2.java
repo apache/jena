@@ -9,22 +9,14 @@ package com.hp.hpl.jena.sdb.layout2;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.StoreFormatter;
+import com.hp.hpl.jena.sdb.store.StoreFormatterBase;
 
 
 public abstract class FmtLayout2
-    extends SDBConnectionHolder 
-    implements StoreFormatter
+    extends StoreFormatterBase
 {
     public FmtLayout2(SDBConnection connection) { super(connection) ; }
-    
-    public void create()
-    { 
-        format() ;
-        buildIndexesTableTriples() ;
-    }
     
     public void format()
     { 
@@ -40,13 +32,13 @@ public abstract class FmtLayout2
         truncateTableTriples() ;
     }
     
-    public void buildSecondaryIndexes()
-    { buildIndexesTableTriples() ; }
+    public void addIndexes()
+    { addIndexesTableTriples() ; }
     
-    public void dropSecondaryIndexes()
+    public void dropIndexes()
     { dropIndexesTableTriples() ; }
     
-    abstract protected void buildIndexesTableTriples() ;
+    abstract protected void addIndexesTableTriples() ;
     abstract protected void dropIndexesTableTriples() ;
     
     abstract protected void formatTableTriples() ;

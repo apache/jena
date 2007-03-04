@@ -9,16 +9,16 @@ package sdb;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
-import sdb.cmd.ModFormat;
+import sdb.cmd.ModConfig;
 
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.store.Store;
 
-/** Format an SDB database.  Destroys all existing data permanently. */ 
+/** Configure an SDB database.  Destroys all existing data permanently. */ 
 
 public class sdbconfig extends CmdArgsDB
 {
-    ModFormat modFormat = new ModFormat() ; 
+    ModConfig modConfig = new ModConfig() ; 
     
     public static void main(String ... argv)
     {
@@ -28,7 +28,7 @@ public class sdbconfig extends CmdArgsDB
     protected sdbconfig(String... args)
     {
         super(args);
-        addModule(modFormat) ;
+        addModule(modConfig) ;
     }
 
     @Override
@@ -53,22 +53,22 @@ public class sdbconfig extends CmdArgsDB
     protected void execCmd(List<String> args)
     {
         Store store = getModStore().getStore() ;
-        if ( ! modFormat.format() && 
-             ! modFormat.create() &&
-             ! modFormat.dropIndexes() && 
-             ! modFormat.buildIndexes() )
+        if ( ! modConfig.format() && 
+             ! modConfig.createStore() &&
+             ! modConfig.dropIndexes() && 
+             ! modConfig.addIndexes() )
         {
             System.err.println("Nothing to do : --format | --create | --drop | -indexes") ;
             return ;
         }
         
-        if ( modFormat.format() && modFormat.create() )
+        if ( modConfig.format() && modConfig.createStore() )
         {
             System.err.println("Both --format and --create (--create formats and adds indexing)") ;
             return ;
         }
         
-        modFormat.enact(store) ;
+        modConfig.enact(store) ;
 //        StoreFormatter f = store.getTableFormatter() ; 
 //        f.format() ;
     }

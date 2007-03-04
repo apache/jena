@@ -103,7 +103,7 @@ public class FormatterSimpleDerby extends FormatterSimple
         TableUtils.dropTable(connection(), tableName) ;
     }
 
-    public void buildSecondaryIndexes()
+    public void addIndexes()
     {
         try {
             connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
@@ -115,7 +115,7 @@ public class FormatterSimpleDerby extends FormatterSimple
         }
     }
 
-    public void dropSecondaryIndexes()
+    public void dropIndexes()
     {
         try {
             connection().exec("DROP INDEX SubjObj") ;
