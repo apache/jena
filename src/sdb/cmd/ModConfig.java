@@ -31,7 +31,7 @@ public class ModConfig extends ModBase
     {
         cmdLine.add(argDeclCreate,
                     "--create", "Format a database - destroys any existing data - add indexes") ;
-        cmdLine.add(argDeclCreate,
+        cmdLine.add(argDeclFormat,
                     "--format", "Format a database - destroys any existing data - no indexes") ;
         cmdLine.add(argDeclDropIndexes,
                     "--drop", "Drop indexes") ;
