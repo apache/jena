@@ -29,18 +29,43 @@
               qt:data   <opt-filter.ttl> ] ;
         mf:result  <opt-filter.srx>
       ]
+
+      [  mf:name    "Filter-placement - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-placement-1.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <filter-placement-1.srx>
+      ]
+      [  mf:name    "Filter-placement - 2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-placement-2.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <filter-placement-2.srx>
+      ]
+      [  mf:name    "Filter-placement - 3" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-placement-3.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <filter-placement-3.srx>
+      ]
+
       [  mf:name    "Filter-nested - 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <filter-nested-1.rq> ;
-              qt:data   <data.ttl> ] ;
+              qt:data   <data-1.ttl> ] ;
         mf:result  <filter-nested-1.srx>
       ]
       [  mf:name    "Filter-nested - 2" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <filter-nested-2.rq> ;
-              qt:data   <data.ttl> ] ;
+              qt:data   <data-1.ttl> ] ;
         mf:result  <filter-nested-2.srx>
-      ]
+       ]
+
+
     ).

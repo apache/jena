@@ -12,7 +12,6 @@ ARQ2-beta
   Optional with two filters
      *  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
      *  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
-     *  Filter placement (internal tests)
      *  Classifier J and LJ - internal
   
 
