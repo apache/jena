@@ -6,7 +6,6 @@
 
 package arq.examples.execute;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
@@ -24,7 +23,7 @@ public class StageAltEngine extends QueryEngineMain
     {
         super(query, context) ;
         // Hook in the stage generator to use
-        context.set(ARQConstants.stageGenerator, new StageGeneratorAlt()) ;
+        context.set(ARQ.stageGenerator, new StageGeneratorAlt()) ;
     }
 
     public StageAltEngine(Query query)

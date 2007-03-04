@@ -106,14 +106,6 @@ public class ARQConstants
     
     // Context keys : some here, some in ARQ - sort out
     
-    /** Context key for StageBuilder used in BGP compilation */ 
-    public static final Symbol stageGenerator =
-        ARQConstants.allocSymbol("stageGenerator") ;
-
-    /** Context key to control hiding non-distinuished variables */ 
-    public static final Symbol hideNonDistiguishedVariables =
-        ARQConstants.allocSymbol("hideNonDistiguishedVariables") ;
-    
     /** The property function registry key */
     public static final Symbol registryPropertyFunctions =
         ARQConstants.allocSymbol("registryPropertyFunctions") ;

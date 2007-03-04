@@ -25,10 +25,17 @@ the graph matching process for specific predicates.&nbsp; The
 <a href="lucene-arq.html">free text search</a> capabilities, using Lucene, are 
 done this way.</p>
 <p>To replace all SPARQL basic graph pattern (BGP) matching in a query, an 
-application (or extended query engine) can intercept the BGP matching process 
-and insert different BGP matching code. Such an application </p>
+application can enhance the main query engine and intercept the BGP matching process.</p>
 <h2>Basic Graph Pattern matching</h2>
+<p>BGP matching proceeds a number of &quot;stages&quot;.&nbsp; Each stage matches a subset 
+of the basic graph pattern.</p>
+<p>The normal BGP matching is a single stage that finds all bindings for 
+variables for a pattern.</p>
 <p class="todo">@@stages</p>
+<p>The query optimizer prefers execution plans that pass the results from 
+previous patterns into later stages. This enables maximal indexing of pattern 
+matching.</p>
+<p><i>Query optimization, input&nbsp; and substitution</i></p>
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 </body>
 </html>

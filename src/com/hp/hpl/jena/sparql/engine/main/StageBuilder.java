@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sparql.engine.main;
 
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -23,7 +22,7 @@ public class StageBuilder
         if ( pattern.isEmpty() )
             return input ;
         
-        boolean hideBNodeVars = execCxt.getContext().isTrue(ARQConstants.hideNonDistiguishedVariables) ;
+        boolean hideBNodeVars = execCxt.getContext().isTrue(ARQ.hideNonDistiguishedVariables) ;
         
         StageGenerator gen = chooseStageGenerator(execCxt.getContext()) ;
         StageList sList = gen.compile(pattern, execCxt) ;
@@ -41,14 +40,14 @@ public class StageBuilder
     
     public static void setGenerator(Context context, StageGenerator builder)
     {
-        context.set(ARQConstants.stageGenerator, builder) ;
+        context.set(ARQ.stageGenerator, builder) ;
     }
     
     public static StageGenerator getGenerator(Context context)
     {
         if ( context == null )
             return null ;
-        return (StageGenerator)context.get(ARQConstants.stageGenerator) ;
+        return (StageGenerator)context.get(ARQ.stageGenerator) ;
     }
     
     public static StageGenerator getGenerator()

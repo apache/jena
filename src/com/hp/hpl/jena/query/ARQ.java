@@ -85,6 +85,16 @@ public class ARQ
     public static final Symbol enableXSDdate = ARQConstants.allocSymbol("xsdDate") ;
 
     /**
+     * Context key for StageBuilder used in BGP compilation 
+     */
+    public static final Symbol stageGenerator = ARQConstants.allocSymbol("stageGenerator") ;
+
+    /**
+     * Context key to control hiding non-distinuished variables 
+     */
+    public static final Symbol hideNonDistiguishedVariables = ARQConstants.allocSymbol("hideNonDistiguishedVariables") ;
+
+    /**
      * Use the SAX parser for XML result sets.  The default is to use StAX for
      * full streaming of XML results.  The SAX parser takes a copy of the result set
      * before giving the ResultSet to the calling application.
@@ -122,12 +132,11 @@ public class ARQ
     
     public static void setStrictMode(Context context)
     {
-        // TODO What are all the strict mode settings?
-        context.set(ARQConstants.hideNonDistiguishedVariables, true) ;
-        
+        context.set(ARQ.hideNonDistiguishedVariables, true) ;
         context.set(strictGraph,            true) ;
         context.set(strictSPARQL,           true) ;
         context.set(constantBNodeLabels,    false) ;
+        context.set(regexImpl,              xercesRegex) ;
     }
     
     private static Context globalContext = null ;
