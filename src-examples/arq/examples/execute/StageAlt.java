@@ -6,33 +6,24 @@
 
 package arq.examples.execute;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterTriplePattern;
 import com.hp.hpl.jena.sparql.engine.main.Stage;
-import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
-import com.hp.hpl.jena.sparql.engine.main.StageList;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-/** Example stage generator that compiles a BasicPattern into a sequence of
- *  individual triple pattern stages.  No property functions considered.
- */   
 
-public class ExStageGenerator implements StageGenerator
+public class StageAlt implements Stage 
 {
-    public StageList compile(BasicPattern pattern, 
-                             ExecutionContext execCxt)
+    Triple pattern ; 
+    
+    public StageAlt(Triple pattern) { this.pattern = pattern ; }
+
+    public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
     {
-        System.err.println("MyStageGenerator.compile:: triple patterns = "+pattern.size()) ;
-        StageList sList = new StageList() ;
-        for ( Iterator iter = pattern.getList().iterator() ; iter.hasNext() ; )
-        {
-            Triple triple = (Triple)iter.next();
-            Stage stage = new ExStage(triple) ;
-            sList.add(stage) ;
-        }
-        return sList ;
+        System.err.println("MyStage.build:: "+FmtUtils.stringForTriple(pattern)) ;
+        return new QueryIterTriplePattern(input, pattern, execCxt) ;
     }
 }
 

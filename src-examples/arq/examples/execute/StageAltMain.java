@@ -6,49 +6,57 @@
 
 package arq.examples.execute;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 
-public class ExEngine extends QueryEngineMain
+/** Example to execute a query but handle the
+ *  basic graph patterns in the query in some special way.
+ *  Stages are one step in executing a basic graph pattern (BGP).
+ *  A StageGenerator builds a StageList and the stage list
+ *  is executes with the output (a QueryIterator) of the previous
+ *  stage fed int the current stage. 
+ */  
+
+public class StageAltMain
 {
+    static String NS = "http://example/" ;
 
-    public ExEngine(Query query, Context context)
+    public static void main(String[] argv)
     {
-        super(query, context) ;
-        // Hook in the stage generator to use
-        context.set(ARQConstants.stageGenerator, new ExStageGenerator()) ;
-    }
-
-    public ExEngine(Query query)
-    { this(query, ARQ.getContext()) ; }
-    
-    // ---- Register this implementation
-    // call MyEngine.register() 
-    
-    static public QueryEngineFactory getFactory() { return factory ; } 
-    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
-    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-    
-    private static QueryEngineFactory factory = new QueryEngineFactory()
-    {
-        public boolean accept(Query query, Dataset dataset) 
-        { return true ; }
-
-        public QueryExecution create(Query query, Dataset dataset)
+        String[] queryString = 
         {
-            ExEngine engine = new ExEngine(query) ;
-            engine.setDataset(dataset) ;
-            return engine ;
-        }
-    } ;
+            "PREFIX ns: <"+NS+">" ,
+            "SELECT ?v ",
+            "{ ?s ns:p1 'xyz' ;",
+            "     ns:p2 ?v }"
+        } ;
+
+        Query query = QueryFactory.create( StringUtils.join("\n", queryString)) ;
+        StageAltEngine.register() ;
+        
+        QueryExecution engine = QueryExecutionFactory.create(query, makeData()) ;
+        QueryExecUtils.executeQuery(query, engine) ;
+    }
+    
+    private static Model makeData()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        Resource r = model.createResource(NS+"r") ;
+        Property p1 = model.createProperty(NS+"p1") ;
+        Property p2 = model.createProperty(NS+"p2") ;
+        model.add(r, p1, "xyz") ;
+        model.add(r, p2, "abc") ;
+        return model ;
+    }
 }
 
 /*

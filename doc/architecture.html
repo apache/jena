@@ -12,16 +12,23 @@
 <p class="todo">@@ Incomplete</p>
 <p>ARQ consists of the following parts:</p>
 <ul>
-  <li>The core : the datastructures that describe a query.&nbsp; All the other 
-  subsystems operate on this structure.</li>
-  <li>Query engines to execute queries</li>
-  <li>Parsers that built query structures</li>
-  <li>Serializers that print out queries</li>
+  <li>The SPARQL abstract syntax tree (AST) and the SPARQL parser</li>
+	<li>The algebra generator that turns SPARQL AST into algebra expressions<ul>
+  <li>Implementation of the translation in the SPARQL specification.</li>
+	<li>Quad version compiling SPARQL to quad expressions, not basic graph 
+	patterns.</li>
 </ul>
-<p>In addition there are class to assist the application writer:</p>
-<ul>
-  <li>Result set tools: </li>
-  <li>Reading</li>
+	</li>
+  <li>Query engines to execute queries<ul>
+  <li>SPARQL protocol client - remote HTTP requests</li>
+	<li>Reference engine - direct implementation of the algebra</li>
+	<li>Quad engine - direct implementation of the algebra except </li>
+	<li>The main engine</li>
+	<li>SDB, a SPARQL database for large-sale persistent data (external system)</li>
+</ul>
+	</li>
+  <li>Result set handling for the SPARQL XML results format, the
+	<a href="http://json.org">JSON</a> and text versions.</li>
 </ul>
 <p>Main packages:</p>
 
@@ -77,14 +84,6 @@
 </table>
   </div>
 
-
-<h2>Core</h2>
-<p>Parse tree.</p>
-<p>Query Engine: </p>
-<h2>Execution Strategy</h2>
-<h2>Parsers</h2>
-<h2>Serializers</h2>
-<p>&nbsp;</p>
 
 <p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
 

@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ Firefox gets it wrong (puts a marging at the top) if the declarations as included 
+-->
+
+<head>
+<title>ARQ</title>
+<link rel="stylesheet" type="text/css" href="styles/doc.css" />
+</head>
+<body>
+
+<h1>ARQ - Extending Query Execution</h1>
+<p>There are a number of ways of extending query execution </p>
+<ul>
+	<li><a href="extension.html#propertyFunctions">Property functions</a>: 
+	custom code that provides the matching of a property, rather than just 
+	simply matching RDF data.</li>
+	<li>Alternative basic pattern matching</li>
+</ul>
+<p>Property functions provide the most convenient way of adding custom code to 
+the graph matching process for specific predicates.&nbsp; The
+<a href="lucene-arq.html">free text search</a> capabilities, using Lucene, are 
+done this way.</p>
+<p>To replace all SPARQL basic graph pattern (BGP) matching in a query, an 
+application (or extended query engine) can intercept the BGP matching process 
+and insert different BGP matching code. Such an application </p>
+<h2>Basic Graph Pattern matching</h2>
+<p class="todo">@@stages</p>
+<p class="footnote"><a href="documentation.html">ARQ Documentation Page</a></p>
+</body>
+</html>
