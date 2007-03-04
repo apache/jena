@@ -1,9 +1,9 @@
 ==== ARQ ToDo
 
 ARQ2-beta
-+ ** examples: 
-    stage generator
 + ** Tests
++ ** Document stages
++ ** Sort out constants - move to ARQ?
 
 
 -----

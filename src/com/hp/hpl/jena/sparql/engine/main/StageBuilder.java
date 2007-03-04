@@ -49,9 +49,6 @@ public class StageBuilder
         if ( context == null )
             return null ;
         return (StageGenerator)context.get(ARQConstants.stageGenerator) ;
-        
-        // fixed and hard wired - temp
-        //return new StageGenPropertyFunction(new StageGenBasicPattern()) ;
     }
     
     public static StageGenerator getGenerator()
@@ -67,8 +64,7 @@ public class StageBuilder
     
     public static StageGenerator standardGenerator()
     {
-        return 
-        new StageGenPropertyFunction(new StageGenBasicPattern()) ;
+        return new StageGenPropertyFunction(new StageGenBasicPattern()) ;
     }
     
     private static StageGenerator chooseStageGenerator(Context context)
