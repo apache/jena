@@ -6,49 +6,34 @@
 
 package arq.examples.execute;
 
-import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.util.Context;
+import java.util.Iterator;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.main.Stage;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.sparql.engine.main.StageList;
 
-public class MyEngine extends QueryEngineMain
+/** Example stage generator that compiles a BasicPattern into a sequence of
+ *  individual triple pattern stages.  No property functions considered.
+ */   
+
+public class ExStageGenerator implements StageGenerator
 {
-
-    public MyEngine(Query query, Context context)
+    public StageList compile(BasicPattern pattern, 
+                             ExecutionContext execCxt)
     {
-        super(query, context) ;
-        // Hook in the stage generator to use
-        context.set(ARQConstants.stageGenerator, new MyStageGenerator()) ;
-    }
-
-    public MyEngine(Query query)
-    { this(query, ARQ.getContext()) ; }
-    
-    // ---- Register this implementation
-    // call MyEngine.register() 
-    
-    static public QueryEngineFactory getFactory() { return factory ; } 
-    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
-    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-    
-    private static QueryEngineFactory factory = new QueryEngineFactory()
-    {
-        public boolean accept(Query query, Dataset dataset) 
-        { return true ; }
-
-        public QueryExecution create(Query query, Dataset dataset)
+        System.err.println("MyStageGenerator.compile:: triple patterns = "+pattern.size()) ;
+        StageList sList = new StageList() ;
+        for ( Iterator iter = pattern.getList().iterator() ; iter.hasNext() ; )
         {
-            MyEngine engine = new MyEngine(query) ;
-            engine.setDataset(dataset) ;
-            return engine ;
+            Triple triple = (Triple)iter.next();
+            Stage stage = new ExStage(triple) ;
+            sList.add(stage) ;
         }
-    } ;
+        return sList ;
+    }
 }
 
 /*

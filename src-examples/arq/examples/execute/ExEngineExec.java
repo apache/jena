@@ -20,9 +20,13 @@ import com.hp.hpl.jena.query.QueryFactory;
 
 /** Example to execute a query but handle the
  *  basic graph patterns in the query in some special way.
+ *  Stages are one step in executing a basic graph pattern (BGP).
+ *  A StageGenerator builds a StageList and the stage list
+ *  is executes with the output (a QueryIterator) of the previous
+ *  stage fed int the current stage. 
  */  
 
-public class Exec
+public class ExEngineExec
 {
     static String NS = "http://example/" ;
 
@@ -37,7 +41,7 @@ public class Exec
         } ;
 
         Query query = QueryFactory.create( StringUtils.join("\n", queryString)) ;
-        MyEngine.register() ;
+        ExEngine.register() ;
         
         QueryExecution engine = QueryExecutionFactory.create(query, makeData()) ;
         QueryExecUtils.executeQuery(query, engine) ;

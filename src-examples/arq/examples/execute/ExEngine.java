@@ -6,25 +6,49 @@
 
 package arq.examples.execute;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterTriplePattern;
-import com.hp.hpl.jena.sparql.engine.main.Stage;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.util.Context;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
 
-public class MyStage implements Stage 
+public class ExEngine extends QueryEngineMain
 {
-    Triple pattern ; 
-    
-    public MyStage(Triple pattern) { this.pattern = pattern ; }
 
-    public QueryIterator build(QueryIterator input, ExecutionContext execCxt)
+    public ExEngine(Query query, Context context)
     {
-        System.err.println("MyStage.build:: "+FmtUtils.stringForTriple(pattern)) ;
-        return new QueryIterTriplePattern(input, pattern, execCxt) ;
+        super(query, context) ;
+        // Hook in the stage generator to use
+        context.set(ARQConstants.stageGenerator, new ExStageGenerator()) ;
     }
+
+    public ExEngine(Query query)
+    { this(query, ARQ.getContext()) ; }
+    
+    // ---- Register this implementation
+    // call MyEngine.register() 
+    
+    static public QueryEngineFactory getFactory() { return factory ; } 
+    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
+    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
+    
+    private static QueryEngineFactory factory = new QueryEngineFactory()
+    {
+        public boolean accept(Query query, Dataset dataset) 
+        { return true ; }
+
+        public QueryExecution create(Query query, Dataset dataset)
+        {
+            ExEngine engine = new ExEngine(query) ;
+            engine.setDataset(dataset) ;
+            return engine ;
+        }
+    } ;
 }
 
 /*
