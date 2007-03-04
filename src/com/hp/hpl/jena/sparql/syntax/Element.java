@@ -20,9 +20,9 @@ import com.hp.hpl.jena.sparql.serializer.FormatterARQ;
 
 public abstract class Element
 {
-
     public Set varsMentioned()
     {
+        // In patterns, not in filters
         LinkedHashSet s = new LinkedHashSet() ;
         ElementVisitor v = new VarsMentionedVisitor(s) ;
         ElementWalker.walk(this, v) ;

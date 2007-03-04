@@ -16,22 +16,16 @@ import arq.sparql;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.main.JoinClassifier;
-import com.hp.hpl.jena.sparql.engine.main.LeftJoinClassifier;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_LessThan;
@@ -43,13 +37,15 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.query.*;
+
 
 public class Run
 {
     public static void main(String[] argv)
     {
         //runQExpr() ;
-        print() ;
+        //print() ;
         //code() ;
         //classifyJ() ;
         //classifyLJ() ;
@@ -124,89 +120,6 @@ public class Run
         return model  ;
     }
     
-    private static void classifyJ()
-    {
-        classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ;
-        classifyJ("{?s :p :o . { ?s :p :o FILTER(?s) } }", true) ;
-        classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ;
-        classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ;
-        classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ;
-
-        classifyJ("{ { ?s :p :o FILTER(true) } ?s :p :o }", true) ;
-        classifyJ("{ { ?s :p :o FILTER(?s) }   ?s :p :o }", true) ;
-        classifyJ("{ { ?s :p ?o FILTER(?o) }   ?s :p :o }", true) ;
-        classifyJ("{ { ?s :p :o FILTER(?o) }   ?s :p :o }", true) ;
-        classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", false) ;
-
-        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(true) } } }", true) ;
-        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?s) } } }", true) ;
-        classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { ?s :p :o FILTER(?x) } } }", true) ;
-        classifyJ("{?s :p :o . { OPTIONAL { ?s :p ?o FILTER(?o) } } }", true) ;
-        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?o) } } }", true) ;
-        classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ;
-
-        classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", true) ;
-        
-        System.exit(0) ;
-    }
-    
-        
-    private static void classifyJ(String pattern, boolean expected)
-    {
-        System.out.println("--------------------------------") ;
-        System.out.println(pattern) ;
-        String qs1 = "PREFIX : <http://example/>\n" ;
-        String qs = qs1+"SELECT * "+pattern;
-        Query query = QueryFactory.create(qs) ;
-        Op op = AlgebraGenerator.compile(query.getQueryPattern()) ;
-        
-        if ( op instanceof OpJoin )
-        {
-            boolean nonLinear = JoinClassifier.isLinear((OpJoin)op) ;
-            System.out.println("Linear: "+nonLinear) ;
-            if ( nonLinear != expected )
-            {
-                System.out.print(op) ;
-                System.out.println("**** Mismatch with expectation") ;
-            }
-        }
-        else
-            System.out.println("Not a join") ;
-
-    }
-
-    private static void classifyLJ()
-    {
-        String pattern = "" ;
-        classifyLJ("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?x} }", true)  ;
-        classifyLJ("{ ?s ?p ?o OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 ?p2 ?x} } }", true)  ;
-        classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?o3} } }", true)  ;
-        classifyLJ("{ ?s ?p ?x OPTIONAL { ?s1 ?p2 ?o3 OPTIONAL { ?s1 :p ?x} } }", false)  ;
-        System.exit(0) ;
-    }
-        
-    
-    private static void classifyLJ(String pattern, boolean expected)
-    {
-        System.out.println() ;
-        System.out.println(pattern) ;
-        String qs1 = "PREFIX : <http://example/>\n" ;
-        String qs = qs1+"SELECT * "+pattern;
-        Query query = QueryFactory.create(qs) ;
-        Op op = AlgebraGenerator.compile(query.getQueryPattern()) ;
-        
-        if ( op instanceof OpLeftJoin )
-        {
-            boolean nonLinear = LeftJoinClassifier.isLinear((OpLeftJoin)op) ;
-            System.out.println("Linear: "+nonLinear) ;
-            if ( nonLinear != expected )
-                System.out.println("**** Mismatch with expectation") ;
-        }
-        else
-            System.out.println("Not a left join") ;
-        
-    }
-
     public static void print()
     {
         QueryEngineMain.register() ;

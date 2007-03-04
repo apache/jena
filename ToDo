@@ -1,19 +1,10 @@
 ==== ARQ ToDo
 
 ARQ2-beta
-+ ** Tests
-+ ** Document stages
++ ** Document "stages"
 + ** Sort out constants - move to ARQ?
 
-
 -----
-
-+ test cases:
-  Optional with two filters
-     *  { :x :p ?v . OPTIONAL { FILTER(?v = 1) } } -- Algebra test needed
-     *  { :x :p ?v . { :y :q ?v OPTIONAL { FILTER(?v = 1) } } } -- Algebra test needed
-     *  Classifier J and LJ - internal
-  
 
 + ref.Eval - tidy up
 

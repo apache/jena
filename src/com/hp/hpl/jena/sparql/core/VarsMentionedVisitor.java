@@ -29,10 +29,10 @@ public class VarsMentionedVisitor extends ElementVisitorBase
         }
     }
     
-    public void visit(ElementFilter el)
-    {
-        el.getExpr().varsMentioned(acc);
-    }
+//    public void visit(ElementFilter el)
+//    {
+//        el.getExpr().varsMentioned(acc);
+//    }
     
     public void visit(ElementNamedGraph el)
     {

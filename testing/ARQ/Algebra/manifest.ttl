@@ -25,9 +25,17 @@
       [  mf:name    "Optional-filter - 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <opt-filter.rq> ;
-              qt:data   <opt-filter.ttl> ] ;
-        mf:result  <opt-filter.srx>
+            [ qt:query  <opt-filter-1.rq> ;
+              qt:data   <opt-filter-1.ttl> ] ;
+        mf:result  <opt-filter-1.srx>
+      ]
+
+      [  mf:name    "Optional-filter - 2 filters" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-filter-2.rq> ;
+              qt:data   <opt-filter-2.ttl> ] ;
+        mf:result  <opt-filter-2.srx>
       ]
 
       [  mf:name    "Filter-placement - 1" ;
@@ -67,5 +75,12 @@
         mf:result  <filter-nested-2.srx>
        ]
 
+      [  mf:name    "Filter-scope - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-scope-1.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <filter-scope-1.srx>
+      ]
 
     ).

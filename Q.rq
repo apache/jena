@@ -4,10 +4,7 @@ PREFIX :    <http://example/>
 
 SELECT *
 { 
-  ?x apf:str "string"@en .
-  ?y apf:str <http://example/uri> .
-  "http://example/uri" apf:str <http://example/uri> .
-
+    OPTIONAL{ FILTER (?x = 1 ) }
 
 ##  { ?x :p ?v . } UNION { ?x :p ?v . }
 

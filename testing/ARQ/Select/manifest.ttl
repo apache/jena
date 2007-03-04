@@ -1,4 +1,4 @@
-@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+ @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
 @prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
@@ -44,8 +44,17 @@
         rdfs:comment
             "SELECT - two variables in query, one in SELECT" ;
         mf:action
-            [ qt:query  <query-select-3.rq> ;
+            [ qt:query  <query-select-4.rq> ;
               qt:data   <data-1.ttl> ] ;
-        mf:result  <results-select-3.ttl>
+        mf:result  <results-select-4.ttl>
      ]
+    [  mf:name    "select-5" ;
+        rdfs:comment
+            "SELECT - filter vars do not contribute to SELECT *" ;
+        mf:action
+            [ qt:query  <query-select-5.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <results-select-5.srx>
+     ]
+
    ).
