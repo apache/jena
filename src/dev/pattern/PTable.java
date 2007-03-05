@@ -11,13 +11,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.util.alg.Filter;
 import com.hp.hpl.jena.sparql.core.Quad;
+
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerTriple;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.util.alg.Filter;
 
 /** A (description of a) table that holds a cached/optimized version of a pattern.
  *  P for pattern
@@ -25,6 +33,9 @@ import com.hp.hpl.jena.sparql.core.Quad;
 
 public class PTable
 {
+    private static Log log = LogFactory.getLog(PTable.class) ;
+    
+    String subjColName = "subject" ;
     Map <Node, String> cols = new HashMap<Node, String>() ;
     
     public PTable() {}
@@ -71,24 +82,30 @@ public class PTable
     // Returns a stage list of a reduced quad block and this step.
     // Issue: placement of this step.  An SqlNode optimization problem?
     
-    public SqlStageList modBlock(QuadBlockCompiler compiler, QuadBlock quadBlock)
+    public SqlStageList modBlock(QuadBlockCompilerTriple compiler, QuadBlock quadBlock)
     {
+        if ( quadBlock.getGraphNode() != Quad.defaultGraph )
+            log.fatal("Not the default graph") ;
+        
         Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
         SqlStageList sList = new SqlStageList() ;
 
+        QuadBlock tableQuads = new QuadBlock() ; 
         QuadBlock replacement = quadBlock.clone() ;
 
         for ( Node p : predicates )
         {
+            // Need common subject
             int idx = quadBlock.findFirst(null, null, p, null) ;
             if ( idx < 0 )
                 // No match.
                 return null ;
             Quad q = quadBlock.get(idx) ;
             replacement.remove(q) ; // Not index as it might have moved.
+            tableQuads.add(q) ;
         }
         
-        SqlStagePTable stage = new SqlStagePTable() ;
+        SqlStagePTable stage = new SqlStagePTable(compiler, tableQuads) ;
         sList.add(stage) ;
         sList.add(new SqlStagePlain(compiler, replacement)) ;
         return sList ;
@@ -96,9 +113,31 @@ public class PTable
     
     class SqlStagePTable implements SqlStage
     {
+        
+        private QuadBlock quadBlock ;
+        private QuadBlockCompilerTriple compiler ;
+
+        public SqlStagePTable(QuadBlockCompilerTriple compiler, QuadBlock tableQuads)
+        { this.quadBlock = tableQuads ; this.compiler = compiler ; }
+
         public SqlNode build(SDBRequest request)
         {
-            return null ;
+            SqlTable sqlTable = new SqlTable("TABLE", "ALIAS") ;
+            SqlExprList conditions = new SqlExprList() ;
+            //compiler.processSlot(request, sqlTable, conditions, subj, subjColName) ;
+            
+            for ( Node pred : cols.keySet() )
+            {
+                if ( ! quadBlock.contains(null, null, pred, null) )
+                    continue ;
+                
+                String colName = cols.get(pred) ;
+                SqlColumn col = new SqlColumn(sqlTable, colName) ;
+
+                Node obj = null ; // q.getObject()?
+                compiler.processSlot(request, sqlTable, conditions, obj, colName) ;
+            }
+            return SqlRestrict.restrict(sqlTable, conditions) ;
         }
     }
 }

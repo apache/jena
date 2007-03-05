@@ -58,14 +58,11 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
         processSlot(request, triples, conditions, quad.getPredicate(), tripleTableDesc.getPredicateColName()) ;
         processSlot(request, triples, conditions, quad.getObject(),    tripleTableDesc.getObjectColName()) ;
         
-        if ( conditions.size() == 0 )
-            return triples ;
-        
         return SqlRestrict.restrict(triples, conditions) ;
     }
 
 
-    protected final void processSlot(SDBRequest request,
+    public final void processSlot(SDBRequest request,
                                      SqlTable table, SqlExprList conditions,
                                      Node node, String colName)
     {
