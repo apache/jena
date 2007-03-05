@@ -111,6 +111,7 @@ public class PTable
         return sList ;
     }
     
+    // Context?  Spanning conditions between SqlStages? 
     class SqlStagePTable implements SqlStage
     {
         
