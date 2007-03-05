@@ -6,13 +6,102 @@
 
 package dev.pattern;
 
-/** A (description of a) table that holds a cached/optimized version of a pattern */ 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.util.alg.Filter;
+import com.hp.hpl.jena.sparql.core.Quad;
+
+/** A (description of a) table that holds a cached/optimized version of a pattern.
+ *  P for pattern
+ *  */ 
 
 public class PTable
 {
+    Map <Node, String> cols = new HashMap<Node, String>() ;
+    
     public PTable() {}
     
-    public void trigger() {}
+    public void add(Node property, String colname)
+    {
+        cols.put(property, colname) ;
+    }
+    
+    // Accept a node if it is in the 
+    static Filter<Node> f = new Filter<Node>()
+    {
+        public boolean accept(Node node)
+        {
+            return false ;
+        }
+        
+    } ;
+    
+    public boolean match(QuadBlock quadBlock)
+    {
+        //QuadBlockMatch.match(pattern, quadBlock) ;
+        
+        Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
+        
+        //SetUtils.filter(cols.keySet(), f) ;
+        
+        
+        for ( Node p : predicates )
+        {
+            if ( ! quadBlock.contains(null, null, p, null) )
+                return false ;
+        }
+        return true ;
+    }
+//        for ( Quad q : quadBlock )
+//        {
+//            Node p = q.getPredicate() ;
+//            predicates.remove(p) ;
+////            if ( predicates.contains(p) )
+////                predicates.remove(p) ;
+//        }
+    
+    // Returns a stage list of a reduced quad block and this step.
+    // Issue: placement of this step.  An SqlNode optimization problem?
+    
+    public SqlStageList modBlock(QuadBlockCompiler compiler, QuadBlock quadBlock)
+    {
+        Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
+        SqlStageList sList = new SqlStageList() ;
+
+        QuadBlock replacement = quadBlock.clone() ;
+
+        for ( Node p : predicates )
+        {
+            int idx = quadBlock.findFirst(null, null, p, null) ;
+            if ( idx < 0 )
+                // No match.
+                return null ;
+            Quad q = quadBlock.get(idx) ;
+            replacement.remove(q) ; // Not index as it might have moved.
+        }
+        
+        SqlStagePTable stage = new SqlStagePTable() ;
+        sList.add(stage) ;
+        sList.add(new SqlStagePlain(compiler, replacement)) ;
+        return sList ;
+    }
+    
+    class SqlStagePTable implements SqlStage
+    {
+        public SqlNode build(SDBRequest request)
+        {
+            return null ;
+        }
+
+    }
 }
 
 /*

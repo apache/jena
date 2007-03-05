@@ -35,6 +35,13 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
         graphNode = quadPattern.getGraphNode() ;
     }
 
+    /** Copy with no shared quads */
+    @Override
+    public QuadBlock clone()
+    { 
+        return new QuadBlock(this) ;
+    }
+    
     public Node getGraphNode() { return graphNode ; }
 
     public boolean contains(Quad pattern)
