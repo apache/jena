@@ -1,5 +1,5 @@
 #!/bin/perl
-# Grammar HMTL to a form of HTML suitable for cut&paste as fragments.
+# Grammar HTML to a form of HTML suitable for cut&paste as fragments.
 
 # Remove definition links.
 # In <code class="gRuleHead">
