@@ -2,8 +2,8 @@
 DOCUMENT START
 NON-TERMINALS
 	CompilationUnit	:=	Query <EOF>
-	Query	:=	Prolog ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
-	Prolog	:=	( BaseDecl )? ( PrefixDecl )*
+	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery )
+	Prologue	:=	( BaseDecl )? ( PrefixDecl )*
 	BaseDecl	:=	<BASE> Q_IRI_REF
 	PrefixDecl	:=	<PREFIX> <QNAME_NS> Q_IRI_REF
 // ---- Query type clauses

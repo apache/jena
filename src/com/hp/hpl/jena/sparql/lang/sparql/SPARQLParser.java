@@ -20,7 +20,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
   }
 
   final public void Query() throws ParseException {
-    Prolog();
+    Prologue();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SELECT:
       SelectQuery();
@@ -41,7 +41,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
     }
   }
 
-  final public void Prolog() throws ParseException {
+  final public void Prologue() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case BASE:
       BaseDecl();
