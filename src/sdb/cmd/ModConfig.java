@@ -8,10 +8,7 @@ package sdb.cmd;
 
 import com.hp.hpl.jena.sdb.store.Store;
 
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
-import arq.cmdline.ModBase;
+import arq.cmdline.*;
 
 public class ModConfig extends ModBase
 {
@@ -54,18 +51,64 @@ public class ModConfig extends ModBase
     public boolean format()           { return format ; }
     public boolean createStore()           { return createStore ; }
 
-    public void enact(Store store)
+    public void enact(Store store)      { enact(store, null) ; }
+    public void enact(Store store, ModTime timer)
     {
         // "create" = format + build indexes.
         if ( createStore() )
+        {
+            if ( timer != null  )
+                timer.startTimer() ;
             store.getTableFormatter().create() ;
-        if ( format() && ! createStore() ) 
+            if ( timer != null  )
+            {
+                long time = timer.endTimer() ;
+                printTime("create", time) ;
+            }
+            
+        }
+        if ( format() && ! createStore() )
+        {
+            if ( timer != null  )
+                timer.startTimer() ;
             store.getTableFormatter().format() ;
-        if ( dropIndexes() ) 
+            if ( timer != null  )
+            {
+                long time = timer.endTimer() ;
+                printTime("format", time) ;
+            }
+        }
+        if ( dropIndexes() )
+        {
+            if ( timer != null  )
+                timer.startTimer() ;
             store.getTableFormatter().dropIndexes() ;
-        if ( addIndexes() ) 
+            if ( timer != null  )
+            {
+                long time = timer.endTimer() ;
+                printTime("drop indexes", time) ;
+            }
+        }
+        
+        if ( addIndexes() )
+        {
+            if ( timer != null  )
+                timer.startTimer() ;
             store.getTableFormatter().addIndexes() ;
+            if ( timer != null  )
+            {
+                long time = timer.endTimer() ;
+                printTime("add indexes", time) ;
+            }
+        }
     }
+
+    private void printTime(String string, long timeMilli)
+    {
+            System.out.printf("Operation: %s: Time %.3f seconds\n", 
+                              string, timeMilli/1000.0) ;
+    }
+    
 }
 
 /*

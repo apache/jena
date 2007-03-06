@@ -68,9 +68,10 @@ public class sdbconfig extends CmdArgsDB
             return ;
         }
         
-        modConfig.enact(store) ;
-//        StoreFormatter f = store.getTableFormatter() ; 
-//        f.format() ;
+        if ( ! isQuiet() )
+            modConfig.enact(store, getModTime()) ;
+        else
+            modConfig.enact(store) ;
     }
 }
 

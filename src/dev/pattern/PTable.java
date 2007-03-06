@@ -82,6 +82,9 @@ public class PTable
     // Returns a stage list of a reduced quad block and this step.
     // Issue: placement of this step.  An SqlNode optimization problem?
     
+    // "Slot compiler" for QuadBlockCompiler.
+    
+    
     public SqlStageList modBlock(QuadBlockCompilerTriple compiler, QuadBlock quadBlock)
     {
         if ( quadBlock.getGraphNode() != Quad.defaultGraph )
