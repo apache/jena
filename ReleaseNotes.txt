@@ -15,6 +15,9 @@ ModelSpec and family REMOVED
       OMSO will vanish after the next Jena release, when the remaining 
       ModelSpec code will evaporate.
 
+Deprecated XSD.NS in favour of XSD.getURI() which reports namespace with a 
+      trailing # character.
+      
 ==== Jena 2.5.2
 
 RDQL support now in ARQ
