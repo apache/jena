@@ -37,8 +37,11 @@ public abstract class QuadBlockCompiler2 extends QuadBlockCompilerTriple
     
     private Generator genNodeResultAlias = Gensym.create(AliasesSql.NodesResultAliasBase) ;
 
+    // Slot stuff.
     List<Node> constants = new ArrayList<Node>() ;
     List<Var>  vars = new ArrayList<Var>() ;
+    // --
+    
     protected TripleTableDesc tripleTableDesc ;
     protected NodeTableDesc   nodeTableDesc ;
     

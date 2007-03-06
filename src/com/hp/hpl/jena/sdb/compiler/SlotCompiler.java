@@ -4,10 +4,9 @@
  * [See end of file]
  */
 
-package dev.pattern;
+package com.hp.hpl.jena.sdb.compiler;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
@@ -21,12 +20,15 @@ import com.hp.hpl.jena.sparql.core.Var;
 public abstract class SlotCompiler
 {
     /* Notes:
-     * Slot compilation assumes that there is a start/finish
+     * Slot compilation assumes that there is a start/finish 
+     * (this is in QuadBlockCompilerBase)
      * around a QuadBlock to allow hooks for constants to be handled.
+     * QuadBlockCompiler has a SlotCompiler
      */
     
-    protected abstract SqlNode start(QuadBlock quads) ;
-    protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
+    // Or QBC.getSlotCompiler and so relative to QBC.
+//    protected abstract SqlNode start(QuadBlock quads) ;
+//    protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
     
     public final void processSlot(SDBRequest request,
                                   SqlTable table, SqlExprList conditions,
