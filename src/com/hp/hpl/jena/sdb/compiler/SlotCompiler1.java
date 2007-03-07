@@ -19,7 +19,7 @@ public class SlotCompiler1 extends SlotCompiler
     private EncoderDecoder codec ;
     private TripleTableDesc tripleTableDesc ;
 
-    public SlotCompiler1(SDBRequest request, EncoderDecoder codec)
+    public SlotCompiler1(EncoderDecoder codec)
     {
         super() ;
         this.codec = codec ;
