@@ -53,7 +53,6 @@ Home page:
 	http://jena.sourceforge.net/ARQ/
 
 ARQ is also available via anonymous SVN:
-
 https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
 
 SPARQL is described in:

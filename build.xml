@@ -8,7 +8,7 @@
   <!-- The major and minor version numbers  -->
   <property name="version-major"   value="2"/>
   <property name="version-minor"   value="0"/>
-  <property name="version-status"  value="-dev"/>
+  <property name="version-status"  value="-beta"/>
   <property name="version"
             value="${version-major}.${version-minor}${version-status}"/>
 
@@ -202,7 +202,7 @@
      doctitle="${Name} Query Processor"
      Public="true"
      Use="true"
-     bottom="Copyright &#169; 2004, 2005, 2006 Hewlett-Packard Development Company, LP"
+     bottom="Copyright &#169; 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP"
      additionalparam="-breakiterator">
       <classpath refid="classpath"/>
       <package name="com.hp.hpl.jena.query"/>
@@ -225,7 +225,7 @@
      doctitle="${Name} Query Processor"
      Public="true"
      Use="true"
-     bottom="Copyright &#169; 2004, 2005, 2006 Hewlett-Packard Development Company, LP"
+     bottom="Copyright &#169; 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP"
      additionalparam="-breakiterator">
     </javadoc>
   </target>
