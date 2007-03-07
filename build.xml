@@ -110,10 +110,7 @@
     </copy>
   </target>
 
-  <target name="compile"
-          depends="pre-compile,build-src,compile-arq,compile-apps,compile-examples"/>
-
-  <target name="compile-arq" depends="pre-compile">
+  <target name="compile" depends="pre-compile,build-src">
     
     <javac srcdir="${src.build.dir}"
            destdir="${classes.build.dir}"
@@ -123,30 +120,8 @@
            optimize="${java.optimize}"
            source="${java.source}"
            target="${java.target}">
-      <classpath refid="classpath" />
-    </javac>
-  </target>
-  
-  <target name="compile-apps" depends="pre-compile">
-    <javac srcdir="${src.build.dir}/arq"
-           destdir="${classes.build.dir}"
-           debug="${java.debug}"
-           deprecation="${java.deprecation}"
-           optimize="${java.optimize}"
-           source="${java.source}"
-           target="${java.target}">
-      <classpath refid="classpath" />
-    </javac>
-  </target>
-
-  <target name="compile-examples" depends="pre-compile">
-    <javac srcdir="${src-ex.dir}"
-           destdir="${classes.build.dir}"
-           debug="${java.debug}"
-           deprecation="${java.deprecation}"
-           optimize="${java.optimize}"
-           source="${java.source}"
-           target="${java.target}">
+      <src path="${src.build.dir}"/>
+      <src path="${src-ex.dir}"/>
       <classpath refid="classpath" />
     </javac>
   </target>
@@ -182,7 +157,7 @@
       <classpath>
         <fileset dir="${lib.dir}" includes="*.jar"/>
       </classpath>
-      <test name="com.hp.hpl.jena.query.test.ARQTestSuite"/>
+      <test name="com.hp.hpl.jena.sparql.test.ARQTestSuite"/>
     </junit>
   </target>
 
@@ -279,9 +254,6 @@
         <include name="sparql.jj"/>
         <include name="arq.jj"/>
         <include name="grammar"/>
-        <include name="jj2html"/>
-        <include name="tokens.txt"/>
-        <exclude name="CVS/**"/>
       </fileset>
     </copy>
 
