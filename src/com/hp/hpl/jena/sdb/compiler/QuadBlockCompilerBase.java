@@ -27,6 +27,15 @@ class QuadBlockCompilerBase implements QuadBlockCompiler
     final
     public SqlNode compile(QuadBlock quads)
     {
+        // New version
+        // build SqlStageList which is one table access each.
+        // Each triple is a stage.
+        // SlotComplier.start(quads) ;
+        // for each stage
+        //   build(slotCompiler, request, SqrExprList)
+        // finish(sqlNode, quads) 
+        
+        
         SqlNode sqlNode = start(quads);
         
         for ( Quad quad : quads )

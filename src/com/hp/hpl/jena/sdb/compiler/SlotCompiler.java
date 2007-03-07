@@ -27,8 +27,8 @@ public abstract class SlotCompiler
      */
     
     // Or QBC.getSlotCompiler and so relative to QBC.
-//    protected abstract SqlNode start(QuadBlock quads) ;
-//    protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
+    protected abstract SqlNode start(QuadBlock quads) ;
+    protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
     
     public final void processSlot(SDBRequest request,
                                   SqlTable table, SqlExprList conditions,
