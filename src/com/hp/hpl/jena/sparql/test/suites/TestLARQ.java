@@ -17,8 +17,8 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.larq.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.larq.*;
 import com.hp.hpl.jena.sparql.resultset.RSCompare;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
 import com.hp.hpl.jena.sparql.util.StringUtils;

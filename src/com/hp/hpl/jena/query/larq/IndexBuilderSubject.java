@@ -4,48 +4,73 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.larq;
+package com.hp.hpl.jena.query.larq;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 
 /** 
- * Base class for indexing literals (i.e. index is a literal and the 
- * index return the literal)
- *
+ * Class for indexing by subject (i.e. index is a literal and the 
+ * index returns the subject).  Often the application can provide an
+ * additional property to further restrict what gets indexed.
+ *    
+ * @author Andy Seaborne
+ * @version $Id: IndexBuilderSubject.java,v 1.7 2007/01/02 11:19:52 andy_seaborne Exp $
  */
 
-public abstract class IndexBuilderLiteral extends IndexBuilderModel
+public class IndexBuilderSubject extends IndexBuilderModel
 {
+    private static Log log = LogFactory.getLog(IndexBuilderSubject.class) ;
     private Set seen = new HashSet() ;
+    Property property ;
     
-    public IndexBuilderLiteral()
+    public IndexBuilderSubject()
     { super() ; }
 
-    public IndexBuilderLiteral(IndexWriter existingWriter)
+    public IndexBuilderSubject(IndexWriter existingWriter)
     { super(existingWriter) ; }
     
-    public IndexBuilderLiteral(File fileDir)
+    
+    public IndexBuilderSubject(File fileDir)
     { super(fileDir) ; }
     
-    public IndexBuilderLiteral(String fileDir)
+    public IndexBuilderSubject(String fileDir)
     { super(fileDir) ; }
 
-    /** Test whether to index this literal */
-    protected abstract boolean indexThisLiteral(Literal literal) ;
-    
-    /** Condition to filter statements passed to the indexStatement */
-    protected abstract boolean indexThisStatement(Statement stmt) ;
+    public IndexBuilderSubject(Property p)
+    {
+        this() ;
+        property = p ;
+    }
 
+    public IndexBuilderSubject(Property p, IndexWriter existingWriter)
+    { 
+        super(existingWriter) ;
+        property = p ;
+    }
+    
+    public IndexBuilderSubject(Property p, File fileDir)
+    {
+        this(fileDir) ;
+        property = p ;
+    }
+    
+    public IndexBuilderSubject(Property p, String fileDir)
+    {
+        this(fileDir) ;
+        property = p ;
+    }
+    
     public void unindexStatement(Statement s)
     { throw new ARQNotImplemented("unindexStatement") ; }
     
@@ -55,28 +80,32 @@ public abstract class IndexBuilderLiteral extends IndexBuilderModel
             return ;
         
         try {
-            if ( s.getObject().isLiteral() )
-            {
-                Node node = s.getObject().asNode() ;
-                // How do we use the lucene index to self??
-                // Or do duplicate supression on query
-                if ( ! seen.contains(node) )
-                {
-                    if ( indexThisLiteral(s.getLiteral()))
-                    {
-                        // TODO Same as code in IndexBuilderExt - inherit from that. 
-                        Document doc = new Document() ;
-                        LARQ.store(doc, node) ;
-                        LARQ.index(doc, node) ;
-                        getIndexWriter().addDocument(doc) ;
-                        seen.add(node) ;
-                    }
-                }
-            }
+            Node subject = s.getSubject().asNode() ;
+
+            if ( ! s.getObject().isLiteral() ||
+                 ! LARQ.isString(s.getLiteral()) )
+                return ;
+            // Note: if a subject occurs twice with an indexable string,
+            // there will be two hits later.
+            
+            // TODO Same as code in IndexBuilderExt - inherit from that. 
+            
+            Node object  = s.getObject().asNode() ;
+            Document doc = new Document() ;
+            LARQ.index(doc, object) ;
+            LARQ.store(doc, subject) ;
+            getIndexWriter().addDocument(doc) ;
         } catch (Exception e)
         { throw new ARQLuceneException("indexStatement", e) ; }
     }
-   
+
+    protected boolean indexThisStatement(Statement s)
+    {  
+        if ( property == null ) 
+            return true ;
+        return s.getPredicate().equals(property) ;
+    }
+
     public void closeForWriting()
     {
         super.closeForWriting() ;

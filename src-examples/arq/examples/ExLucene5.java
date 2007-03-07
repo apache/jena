@@ -9,9 +9,9 @@ package arq.examples;
 import java.io.StringReader;
 
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.larq.IndexBuilderExt;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.larq.IndexBuilderExt;
-import com.hp.hpl.jena.sparql.larq.IndexLARQ;
 import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 

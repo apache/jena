@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.larq;
+package com.hp.hpl.jena.query.larq;
 
 import java.util.ArrayList;
 import java.util.Iterator;
