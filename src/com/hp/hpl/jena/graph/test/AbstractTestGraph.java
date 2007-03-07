@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.72 2007-01-02 11:50:08 andy_seaborne Exp $i
+  $Id: AbstractTestGraph.java,v 1.73 2007-03-07 15:54:30 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -130,6 +130,48 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         //
             Graph g3 = getGraphWith( "x P '123'xsd:string" );
             assertTrue( g3.contains( triple( "x P '123'" ) ) );
+            }
+        }
+    
+    public void testMatchLanguagedLiteralCaseInsensitive()
+        {
+        Graph m = graphWith( "a p 'chat'en" );
+        if (m.getCapabilities().handlesLiteralTyping())
+            {
+            Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
+            assertDiffer( chaten, chatEN );
+            assertTrue( chaten.sameValueAs( chatEN ) );
+            assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
+            assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
+            assertEquals( 1, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
+            }
+        }
+    
+    public void testMatchBothLanguagedLiteralsCaseInsensitive()
+        {
+        Graph m = graphWith( "a p 'chat'en; a p 'chat'EN" );
+        if (m.getCapabilities().handlesLiteralTyping())
+            {
+            Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
+            assertDiffer( chaten, chatEN );
+            assertTrue( chaten.sameValueAs( chatEN ) );
+            assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
+            assertEquals( 2, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
+            assertEquals( 2, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
+            }
+        }
+    
+    public void testNoMatchAgainstUnlanguagesLiteral()
+        {
+        Graph m = graphWith( "a p 'chat'en; a p 'chat'" );
+        if (m.getCapabilities().handlesLiteralTyping())
+            {
+            Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
+            assertDiffer( chaten, chatEN );
+            assertTrue( chaten.sameValueAs( chatEN ) );
+            assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
+            assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
+            assertEquals( 1, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );        
             }
         }
     

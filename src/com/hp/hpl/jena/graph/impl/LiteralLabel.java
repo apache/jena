@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.30 2007-01-02 11:48:28 andy_seaborne Exp $
+  $Id: LiteralLabel.java,v 1.31 2007-03-07 15:54:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -255,8 +255,7 @@ final public class LiteralLabel {
     */
 	public String getLexicalForm() {
 		if (lexicalForm == null)
-			lexicalForm =
-				(dtype == null ? value.toString() : dtype.unparse(value));
+			lexicalForm = (dtype == null ? value.toString() : dtype.unparse(value));
 		return lexicalForm;
 	}
     
@@ -265,13 +264,13 @@ final public class LiteralLabel {
         TODO Consider pushing indexing decisions down to the datatype
     */
     public Object getIndexingValue() {
-        if (isXML()) {
-            return this;
-        } else {
-            return wellformed ? getValue() : getLexicalForm(); 
-        }
+        return
+            isXML() ? this
+            : !lang.equals( "" ) ? getLexicalForm() + "@" + lang.toLowerCase()
+            : wellformed ? getValue()
+            : getLexicalForm() 
+            ;
     }
-
 
 	/** 
      	Answer the language associated with this literal (the empty string if

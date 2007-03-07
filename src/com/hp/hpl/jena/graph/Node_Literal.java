@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Literal.java,v 1.17 2007-01-02 11:49:18 andy_seaborne Exp $
+  $Id: Node_Literal.java,v 1.18 2007-03-07 15:54:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -46,8 +46,12 @@ public class Node_Literal extends Node_Concrete
     public boolean isLiteral() 
         { return true; }    
         
+    /**
+        Literal nodes defer their indexing value to the component literal.
+        @see com.hp.hpl.jena.graph.Node#getIndexingValue()
+    */
     public Object getIndexingValue()
-        { return getLiteral().getDatatype() == null && !getLiteral().language().equals( "" ) ? this : getLiteral().getIndexingValue(); }
+        { return getLiteral().getIndexingValue(); }
     
     public Object visitWith( NodeVisitor v )
         { return v.visitLiteral( this, getLiteral() ); }

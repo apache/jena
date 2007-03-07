@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Trail.java,v 1.7 2007-01-02 11:52:33 andy_seaborne Exp $
+ * $Id: Trail.java,v 1.8 2007-03-07 15:54:31 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * own trail segment which is an instance of this class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2007-01-02 11:52:33 $
+ * @version $Revision: 1.8 $ on $Date: 2007-03-07 15:54:31 $
  */
 public class Trail implements BindingEnvironment {
     
@@ -131,7 +131,7 @@ public class Trail implements BindingEnvironment {
                 if (Functor.isFunctor(dn2)) {
                     // Unify functors
                     Functor f1 = (Functor)dn1.getLiteralValue();
-                    Functor f2 = (Functor)dn2.getLiteral().getValue();
+                    Functor f2 = (Functor)dn2.getLiteralValue();
                     if ( ! f1.getName().equals(f2.getName()) ) return false;
                     Node[] args1 = f1.getArgs();
                     Node[] args2 = f2.getArgs();
