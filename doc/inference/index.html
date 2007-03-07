@@ -1264,6 +1264,7 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple p
 
 <i>node</i>      :=   <i>uri-ref</i>		               // e.g. http://foo.com/eg
           or   prefix:localname		       // e.g. rdf:type
+          or   &lt;<i>uri-ref</i>&gt;		       // e.g. &lt;myscheme:myuri&gt;
           or   ?<i>varname                    </i>// variable
           or   'a literal'                 // a plain string literal
           or   'lex'^^typeURI              // a typed literal, xsd:* type names supported
@@ -2008,7 +2009,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.33 2007-01-11 14:21:09 der Exp $</i>
+  Last modification: $Id: index.html,v 1.34 2007-03-07 14:17:38 der Exp $</i>
 </p>
 </body>
 </html>
