@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.38 2007-01-02 11:50:30 andy_seaborne Exp $
+ * $Id: TestBasics.java,v 1.39 2007-03-07 10:27:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.38 $ on $Date: 2007-01-02 11:50:30 $
+ * @version $Revision: 1.39 $ on $Date: 2007-03-07 10:27:24 $
  */
 public class TestBasics extends TestCase  {
     
@@ -82,7 +82,8 @@ public class TestBasics extends TestCase  {
             "-> print(42). ",
             "-> print('42'^^xsd:byte). ",
             "-> print('42'^^http://www.w3.org/2001/XMLSchema#int). ",
-            "-> print('42'^^foobar:byte). "
+            "-> print('42'^^foobar:byte). ",
+            "-> print(<foo://a/file>). "
         };
         String[] testResults = new String[] {
             "[ (?a rdf:type ?_) -> (?a rdf:type ?b) ]",
@@ -101,6 +102,7 @@ public class TestBasics extends TestCase  {
             "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#byte) ]",
             "[ -> print('42'^^http://www.w3.org/2001/XMLSchema#int) ]",
             "[ -> print('42'^^http://foobar#byte) ]",
+            "[ -> print(foo://a/file) ]",
         };
         
         PrintUtil.registerPrefix("foobar", "http://foobar#");

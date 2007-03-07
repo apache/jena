@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.45 2007-01-02 11:50:58 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.46 2007-03-07 10:27:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -62,7 +62,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.45 $ on $Date: 2007-01-02 11:50:58 $ 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.46 $ on $Date: 2007-03-07 10:27:19 $ 
  */
 public class Rule implements ClauseEntry {
     
@@ -824,13 +824,16 @@ public class Rule implements ClauseEntry {
                 throw new ParserException("Wildcard variables no longer supported", this);
 ////                return Node_RuleVariable.ANY;
 //                return Node_RuleVariable.WILD;
+            } else if (token.startsWith("<") && token.endsWith(">")) {
+                String uri = token.substring(1, token.length()-1);
+                return Node.createURI(uri);
             } else if (token.indexOf(':') != -1) {
                 String exp = prefixMapping.expandPrefix(token); // Local map first
                 exp = PrintUtil.expandQname(exp);  // Retain global map for backward compatibility
                 if (exp == token) {
                     // No expansion was possible
                     String prefix = token.substring(0, token.indexOf(':'));
-                    if (prefix.equals("http") || prefix.equals("urn") 
+                    if (prefix.equals("http") || prefix.equals("urn") || prefix.equals("file")
                      || prefix.equals("ftp") || prefix.equals("mailto")) {
                         // assume it is all OK and fall through
                     } else {
