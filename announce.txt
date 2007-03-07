@@ -1,11 +1,53 @@
 ARQ is a query processor for Jena that implements SPARQL.
 
-Announcing ARQ 2.0
+==== Announcing ARQ 2.0 beta
 
-In this release:
+This is the first, and hopefully only, beta release of ARQ 2.0.
+It is functionally a complete implementation of SPARQL including
+support for custom filter function, property functions and
+free text search.
+
+There are changes to the correct results from SPARQL queries in
+this release to reflectthe new SPARQL algebra:
+
++ {} form scoping delimiters for filter.
+  + { FILTER(?v > 3) :z : p ?v } is the same as 
+     { :z : p ?v FILTER(?v > 3) }
+  + Variables outsoide the group are no in scope.
+    Any extraneous {} around FILTERs may cause different results.
+  + Results from corner cases of doubly nested OPTIONALs change.
+
+The purpose of this beta release is to ensure migration costs from
+ARQ 1.5.1 to ARQ 2.0 are as low as possible.  Please report any 
+differences in behaviour, both functional and performance.
+
+ARQ 2.0 provides the same external API as ARQ 1.5.  Internally, query
+execution follows the SPARQL algebra, in development by the RDF Data
+Access Working Group.  Several query engines are available:
+
+
+ + Main query engine for optimization and efficient execution
+ + Reference engine for checking functionality
+    (implements the SPARQL evaluation semantics very simply for clarity
+     and validation)
+  + Remote access engine for querying SPARQL endpoints over HTTP.
+  + The query engine from ARQ1, for exact ARQ1 semantics and to assist
+    in migration (deprecated for new applications, it and will be removed
+    sometime
+  + RDQL engine
+  
+Internally, there has been significant reorganisation and renaming
+to align with termininology of the SPARQL specification.
+
+ARQ can also be used just SPARQL parsers, as a SPARQL algebra generator
+or for spoecialised query engines.
+
+Not in ARQ 2.0:
+Extensions beyond the SPARQL syntax: UNSAID and EXT. 
+OPTIONAL/!bound queries are support.
 
 Download:
-    http://prdownloads.sourceforge.net/jena/ARQ-2.0.zip
+    http://prdownloads.sourceforge.net/jena/ARQ-2.0-beta.zip
 
 Home page:
 	http://jena.sourceforge.net/ARQ/
@@ -17,21 +59,24 @@ https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
 SPARQL is described in:
   http://www.w3.org/TR/rdf-sparql-query/
 
-
-Notes
------
+== Notes
 
 More details in ChangeLog.txt
 
-Status
-------
+== Status
 
 The implementation of SPARQL is complete and meets the
-SPARQL last call specification when used with the reference
-query engine.
+SPARQL current editors' working draft and cu=urently planned
+Last Call design.
 
-Services
---------
+Editors' working draft:
+http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html
+
+Defition of SPARQL:
+http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html#sparqlDefinition
+
+
+== Services
 
 SPARQL validator: 
 http://www.sparql.org/validator.html
@@ -39,17 +84,8 @@ http://www.sparql.org/validator.html
 SPARQL processor:
 http://www.sparql.org/sparql.html
 
-JAR changes
------------
+== Support and Questions
 
-ARQ requires the version of jena.jar included in the download
-or a later version from Jena CVS.
-
-API Changes
------------
-
-Support and Questions
----------------------
 
 Comments and questions about ARQ to the Jena mailing list 
     jena-dev@groups.yahoo.com

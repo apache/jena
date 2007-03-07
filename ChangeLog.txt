@@ -5,8 +5,8 @@ ARQ 2.0
 -------
 
 This version uses the SPARQL algebra directly,
-then produces an execution scheme
-that is streaming where possible.
+then produces an execution scheme that uses streaming
+execution where possible.
 
 + Multiple query engines:
   + Main query engine for optimization and efficient execution
@@ -32,8 +32,8 @@ that is streaming where possible.
  
  + Internal changes
    + Package reorganisation
+     Implemnentation in com.hp.hpl.jena.sparql
    + Filter functions now take a Context, not an ExecutionContext.
    + Deprecate "EXT" form from ARQ.
      (Property functions are better)
-
  
