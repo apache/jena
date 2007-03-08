@@ -2,25 +2,14 @@
 
 ARQ2-beta
 + ** Document "stages"
-+ ** Sort out constants - move to ARQ?
 
 -----
 
-+ PFlib amd function lib redirection from old names.
-
-+ LARQ: access to other fields
-  e.g. +((text:(foo bar)^2)(title:(foo bar)^4)(description:(foo bar)^3))
-  Use cases and examples?
-+ LARQ: (?node ?score) textMatch ('query' 100) 
-  Also ARQ.luceneLimit context parameter
-
-  
-+ LARQ Doc : the internals
-  Fields: index, lex/lang/datatype, uri, bnode
+== Core
 
 + ref.Eval - tidy up
 
-+ Very simple non-streaming table usage.
++ Very simple, non-streaming table usage.
   No iterators.
   TableSimple is the only streaming point - and often materialized.
   And used via TableFactory.create(QueryIterator) as well as direct
@@ -39,13 +28,30 @@ ARQ2-beta
 + Commands
   + qtest to use modules (and qexpr)
 
+== LARQ
+
 + LARQ assembler
+
++ Access to other fields
+  e.g. +((text:(foo bar)^2)(title:(foo bar)^4)(description:(foo bar)^3))
+  Use cases and examples?
+
++ Extend to: (?node ?score) textMatch ('query' 100) 
+  Also ARQ.luceneLimit context parameter
+
++ Doc internals
+  Fields: index, lex/lang/datatype, uri, bnode
 
 == Documentation
 
 + Document list handling as a specific page.
+  + Internals
+  	Query iterators
+  	Bindings
+
 + Writing filter functions
 + Writing property functions
+
 + Document making and using datasets
 + Location-mapping and FROM/FROM NAMED
   
