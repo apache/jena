@@ -186,13 +186,13 @@ to initialise the model.
 See <a href="#spec-content">Content</a> for the description of Content
 specifications. For example:</p>
 
-<pre>eg:common-example a ja:MemoryModel 
+<pre>eg:sharedContent
+    ja:externalContent &lt;http://somewhere/RDF/ont.owl&gt; 
+    . 
+eg:common-example a ja:MemoryModel 
     ; ja:content eg:sharedContent 
     ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/A.rdf&gt;] 
     ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/B.rdf&gt;] 
-    . 
-eg:sharedContent
-    ja:externalContent &lt;http://somewhere/RDF/ont.owl&gt; 
     . </pre>
 
 <p>
@@ -278,14 +278,14 @@ The description of an RDB model requires its name and a description of
 the JDBC connection for the database the model is in. For example:
 </p>
 
-<pre>eg:connection
+<pre>eg:database-example
+    ja:connection eg:connection 
+    ; ja:modelName "Thunderbird3" 
+    . 
+eg:connection
     ja:dbType "MySQL" 
     ; ja:dbURL &lt;jdbc:mysql://localhost/test&gt; 
     ; ja:dbUser "cjd" 
-    . 
-eg:database-example
-    ja:connection eg:connection 
-    ; ja:modelName "Thunderbird3" 
     . </pre>
 
 
@@ -356,17 +356,17 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbType <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1007B"><a href="javascript:exchange('1007')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connection a rdfs:Class
-<div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
 <div class="show-property">ja:dbPasswordProperty a rdf:Property
 <div class="show-property">; rdfs:domain ja:Connection</div>
@@ -517,14 +517,14 @@ model is used. Of course, you can specify a database model as a base
 model:
 </p>
 
-<pre>eg:connection
+<pre>eg:database-example
+    ja:connection eg:connection 
+    ; ja:modelName "Thunderbird3" 
+    . 
+eg:connection
     ja:dbType "MySQL" 
     ; ja:dbURL &lt;jdbc:mysql://localhost/test&gt; 
     ; ja:dbUser "cjd" 
-    . 
-eg:database-example
-    ja:connection eg:connection 
-    ; ja:modelName "Thunderbird3" 
     . 
 eg:db-inference-example
     ja:baseModel eg:database-example 
@@ -743,13 +743,9 @@ as <code>ModelFactory.createOntologyModel()</code>.
 <code>ja:baseModel</code> property means the same thing.
 </p>
 
-<p>The <code>OntModelSpec</code> property value is a resource. If that
-resource has any properties in the specification model, it is interpreted 
-as an OntModelSpec description;
-otherwise the local name of the value is interpreted as the name of an
-OntModelSpec constant (looked up by reflection).</p>
-
-<p>An <code>OntModelSpec</code> has several possible properties.
+<p>The <code>OntModelSpec</code> property value is a resource,
+interpreted as an OntModelSpec description based on its name
+and the value of the appropriate properties:
 
 <ul>
 <li><code>ja:importSource</code>:
@@ -757,7 +753,7 @@ The value of this optional unique property is a <code>ModelSource</code>
 description which describes where imports are obtained from. A <code>ModelSource</code>
 my be of class <code>ja:ModelSource</code>, for which memory models are constructed,
 or a <code>ja:RDBModelSource</code> with a <code>ja:connection</code> property,
-for which models are constructed in the specified database. 
+for which models are constructed in the specified database.
 </li>
 
 <li><code>ja:documentManager</code>:
@@ -793,6 +789,13 @@ of this <code>OntModelSpec</code>:
     
 </li>
 </ul>
+</p>
+
+<p>Any unspecified properties have default values, normally taken
+from those of <code>OntModelSpec.OWL_MEM_RDFS_INF</code>. However,
+if the OntModelSpec resource is in the JA namespace, and its local
+name is the same as that of an OntModelSpec constant, then that
+constant is used as the default value. 
 </p>
 
 <h2><a name="TOC-ID-10"></a>document managers</h2>

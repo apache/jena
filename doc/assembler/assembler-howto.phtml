@@ -406,13 +406,9 @@ as <code>ModelFactory.createOntologyModel()</code>.
 <code>ja:baseModel</code> property means the same thing.
 </p>
 
-<p>The <code>OntModelSpec</code> property value is a resource. If that
-resource has any properties in the specification model, it is interpreted 
-as an OntModelSpec description;
-otherwise the local name of the value is interpreted as the name of an
-OntModelSpec constant (looked up by reflection).</p>
-
-<p>An <code>OntModelSpec</code> has several possible properties.
+<p>The <code>OntModelSpec</code> property value is a resource,
+interpreted as an OntModelSpec description based on its name
+and the value of the appropriate properties:
 
 <ul>
 <li><code>ja:importSource</code>:
@@ -420,7 +416,7 @@ The value of this optional unique property is a <code>ModelSource</code>
 description which describes where imports are obtained from. A <code>ModelSource</code>
 my be of class <code>ja:ModelSource</code>, for which memory models are constructed,
 or a <code>ja:RDBModelSource</code> with a <code>ja:connection</code> property,
-for which models are constructed in the specified database. 
+for which models are constructed in the specified database.
 </li>
 
 <li><code>ja:documentManager</code>:
@@ -456,6 +452,13 @@ of this <code>OntModelSpec</code>:
     
 </li>
 </ul>
+</p>
+
+<p>Any unspecified properties have default values, normally taken
+from those of <code>OntModelSpec.OWL_MEM_RDFS_INF</code>. However,
+if the OntModelSpec resource is in the JA namespace, and its local
+name is the same as that of an OntModelSpec constant, then that
+constant is used as the default value.
 </p>
 
 <h2>document managers</h2>
