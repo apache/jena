@@ -40,12 +40,6 @@ public class LARQ
     public static final String fURI                 = "uri" ;
     // Object bnode
     public static final String fBNodeID             = "bnode" ;
-    // Predicate
-    public static final String fPredciate           = "property" ;
-    // Subject URI
-    // public static final String fSubjectURI          = "subjectURI" ;
-    // Subject bnode
-    // public static final String fSubjectBNodeID      = "subjectBNode" ;
 
     // The symbol used to register the index in the query context
     public static final Symbol indexKey     = ARQConstants.allocSymbol("lucene") ;

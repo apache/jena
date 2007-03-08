@@ -7,6 +7,8 @@ It is functionally a complete implementation of SPARQL including
 support for custom filter function, property functions and
 free text search.
 
+== Changes to SPARQL
+
 There are changes to the correct results from SPARQL queries in
 this release to reflectthe new SPARQL algebra:
 
@@ -16,6 +18,20 @@ this release to reflectthe new SPARQL algebra:
   + Variables outsoide the group are no in scope.
     Any extraneous {} around FILTERs may cause different results.
   + Results from corner cases of doubly nested OPTIONALs change.
+  
+== Changes to applications
+  
+The function library and property function libary have both moved:
+The correct base URIs are now:
+    Functions: http://jena.hpl.hp.com/ARQ/function#
+    Property functions: http://jena.hpl.hp.com/ARQ/property#
+
+The code now resides in packages "com.hp.hpl.jena.sparql.function.library" and
+"com.hp.hpl.jena.sparql.pfunction.library".  Old URIs using the old package
+name and "java:" should work because there is a redirection left in-place.
+
+
+
 
 The purpose of this beta release is to ensure migration costs from
 ARQ 1.5.1 to ARQ 2.0 are as low as possible.  Please report any 
@@ -24,7 +40,6 @@ differences in behaviour, both functional and performance.
 ARQ 2.0 provides the same external API as ARQ 1.5.  Internally, query
 execution follows the SPARQL algebra, in development by the RDF Data
 Access Working Group.  Several query engines are available:
-
 
  + Main query engine for optimization and efficient execution
  + Reference engine for checking functionality

@@ -23,7 +23,13 @@ public class MappedLoader
                    ARQConstants.ARQFunctionLibrary) ;
         uriMap.put(ARQConstants.ARQPropertyFunctionLibraryURI,
                    ARQConstants.ARQPropertyFunctionLibrary) ;
-
+        
+        // Old name, new name
+        uriMap.put("java:com.hp.hpl.jena.query.function.library.",
+                   "java:com.hp.hpl.jena.sparql.function.library.") ;
+        
+        uriMap.put("java:com.hp.hpl.jena.query.pfunction.library.",
+                   "java:com.hp.hpl.jena.sparql.pfunction.library.") ;
     }
     
     public static boolean isPossibleDynamicURI(String uri, Class expectedClass)
@@ -39,11 +45,13 @@ public class MappedLoader
 
     public static String mapDynamicURI(String uri)
     {
-        if ( uri.startsWith(ARQConstants.javaClassURIScheme) )
-            return uri ;
         Map.Entry e = find(uri) ;
         if ( e == null )
+        {
+            if ( uri.startsWith(ARQConstants.javaClassURIScheme) )
+                return uri ;
             return null ;
+        }
         
         String k = (String)e.getKey() ;
         String v = (String)e.getValue();

@@ -6,6 +6,18 @@ ARQ2-beta
 
 -----
 
++ PFlib amd function lib redirection from old names.
+
++ LARQ: access to other fields
+  e.g. +((text:(foo bar)^2)(title:(foo bar)^4)(description:(foo bar)^3))
+  Use cases and examples?
++ LARQ: (?node ?score) textMatch ('query' 100) 
+  Also ARQ.luceneLimit context parameter
+
+  
++ LARQ Doc : the internals
+  Fields: index, lex/lang/datatype, uri, bnode
+
 + ref.Eval - tidy up
 
 + Very simple non-streaming table usage.

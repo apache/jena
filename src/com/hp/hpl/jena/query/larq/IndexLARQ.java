@@ -114,9 +114,10 @@ public class IndexLARQ
                 public Object map1(Object object)
                 {
                     try {
-                    Hit h = (Hit)object ;
-                    Node x = LARQ.build(h.getDocument()) ;
-                    return x ; 
+                        Hit h = (Hit)object ;
+                        Node x = LARQ.build(h.getDocument()) ;
+                        // TODO Make a pair of Node and weight 
+                        return x ; 
                     } catch (Exception e)
                     { throw new ARQLuceneException("node conversion error", e) ; }
                 }} ;
