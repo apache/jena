@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerBase;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sparql.core.Quad;
 
@@ -20,6 +21,8 @@ public class QuadBlockStageBuilder extends QuadBlockCompilerBase
         super(request, slotCompiler) ;
     }
 
+    PTable pTable = new PTable() ; 
+    
     // New version of QuadBlockCompilerBase
     // build SqlStageList which is one table access each.
     // Each triple is a table stage.
@@ -37,10 +40,23 @@ public class QuadBlockStageBuilder extends QuadBlockCompilerBase
     //@Override
     public SqlNode compileNew(QuadBlock quads)
     {
-        SqlNode sqlNode = slotCompiler.start(quads) ; 
+        //Stage == table
         
+        SqlNode sqlNode = slotCompiler.start(quads) ; 
+        SqlExprList conditions = new SqlExprList() ;
+        
+        // Split into stages.
+        
+        // This splits into 2 parts then block compiles all quads.
+        // Instead, work quad by quad until a PTable triggers
+        //  No trigger => plain quad stage.
+        //  Let the PTable remove quads it handles
+        //  Do PTable stage.
+        //  Continue.
+        
+        SqlStageList sList = pTable.modBlock(this, quads) ;
         // SlotCompiler argument?
-        SqlStageList sList = new SqlStageList() ;
+        //SqlStageList sList = new SqlStageList() ;
         sList.build(request, slotCompiler) ;
         
         slotCompiler.finish(sqlNode, quads) ;
