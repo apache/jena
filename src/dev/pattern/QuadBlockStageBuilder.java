@@ -6,13 +6,53 @@
 
 package dev.pattern;
 
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerBase;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sparql.core.Quad;
 
-public interface SqlStage
+public class QuadBlockStageBuilder extends QuadBlockCompilerBase 
 {
-    public SqlNode build(SDBRequest request, SlotCompiler slotCompiler) ; 
+    public QuadBlockStageBuilder(SDBRequest request, SlotCompiler slotCompiler)
+    {
+        super(request, slotCompiler) ;
+    }
+
+    // New version of QuadBlockCompilerBase
+    // build SqlStageList which is one table access each.
+    // Each triple is a table stage.
+
+    // SlotComplier.start(quads) ;
+    // for each stage
+    //   build(slotCompiler, request, SqrExprList)
+    // SlotCompiler.finish(sqlNode, quads) 
+    // QuadCompilerTriple becomes the SqlStage for a single triple.
+    //   SqlStage.compile(slotCompiler?) ;
+    
+    // SlotCompilers for layout1, layout2/index, layout2/hash 
+    
+
+    //@Override
+    public SqlNode compileNew(QuadBlock quads)
+    {
+        SqlNode sqlNode = slotCompiler.start(quads) ; 
+        
+        // SlotCompiler argument?
+        SqlStageList sList = new SqlStageList() ;
+        sList.build(request, slotCompiler) ;
+        
+        slotCompiler.finish(sqlNode, quads) ;
+        
+        return null ;
+    }
+
+    @Override
+    protected SqlNode compile(Quad quad)
+    {   // DUMMY
+        return null ;
+    }
 }
 
 /*

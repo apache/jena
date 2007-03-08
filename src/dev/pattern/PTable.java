@@ -99,7 +99,7 @@ public class PTable
             tableQuads.add(q) ;
         }
         
-        SqlStagePTable stage = new SqlStagePTable(compiler, tableQuads) ;
+        SqlStagePTable stage = new SqlStagePTable(tableQuads) ;
         sList.add(stage) ;
         sList.add(new SqlStagePlain(compiler, replacement)) ;
         return sList ;
@@ -110,12 +110,11 @@ public class PTable
     {
         
         private QuadBlock quadBlock ;
-        private QuadBlockCompiler compiler ;
 
-        public SqlStagePTable(QuadBlockCompiler compiler, QuadBlock tableQuads)
-        { this.quadBlock = tableQuads ; this.compiler = compiler ; }
+        public SqlStagePTable(QuadBlock tableQuads)
+        { this.quadBlock = tableQuads ;}
 
-        public SqlNode build(SDBRequest request)
+        public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
         {
             SqlTable sqlTable = new SqlTable("TABLE", "ALIAS") ;
             SqlExprList conditions = new SqlExprList() ;
@@ -130,7 +129,6 @@ public class PTable
                 SqlColumn col = new SqlColumn(sqlTable, colName) ;
 
                 Node obj = null ; // q.getObject()?
-                SlotCompiler slotCompiler = null ; //compiler.getSlotCompiler() ;
                 slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
             }
             return SqlRestrict.restrict(sqlTable, conditions) ;

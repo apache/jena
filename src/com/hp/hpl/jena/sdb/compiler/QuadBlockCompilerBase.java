@@ -9,37 +9,30 @@ package com.hp.hpl.jena.sdb.compiler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Quad;
 
 public abstract
 class QuadBlockCompilerBase implements QuadBlockCompiler
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerBase.class) ;
     protected SDBRequest request ;
-    protected PrefixMapping prefixMapping ;     // used for annotations
+    protected SlotCompiler slotCompiler ;
 
-    public QuadBlockCompilerBase(SDBRequest request)
-    { this.request = request ; prefixMapping = request.getPrefixMapping() ; }
+    public QuadBlockCompilerBase(SDBRequest request, SlotCompiler slotCompiler)
+    { 
+        this.request = request ; 
+        //prefixMapping = request.getPrefixMapping() ;
+        this.slotCompiler = slotCompiler ;
+    }
 
     final
     public SqlNode compile(QuadBlock quads)
     {
-        // New version
-        // build SqlStageList which is one table access each.
-        // Each triple is a stage.
-        // SlotComplier.start(quads) ;
-        // for each stage
-        //   build(slotCompiler, request, SqrExprList)
-        // finish(sqlNode, quads) 
-        // QuadCompilerTriple becomes the SqlStage for a single triple.
-        //   SqlStage.compile(slotCompiler?) ;
+        // See QuadBlockStageBuilder for the replacement
         
-        // SlotCompilers for layout1, layout2/index, layout2/hash 
-        
-        SqlNode sqlNode = start(quads);
+        SqlNode sqlNode = slotCompiler.start(quads);
         
         for ( Quad quad : quads )
         {
@@ -47,14 +40,24 @@ class QuadBlockCompilerBase implements QuadBlockCompiler
             if ( sNode != null )
                 sqlNode = QC.innerJoin(request, sqlNode, sNode) ;
         }
-        sqlNode = finish(sqlNode, quads);
+        sqlNode = slotCompiler.finish(sqlNode, quads);
         return sqlNode ;
     }
         
     protected abstract SqlNode compile(Quad quad) ;
 
-    protected abstract SqlNode start(QuadBlock quads) ;
-    protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
+//    @Override
+//    protected final SqlNode start(QuadBlock quads)
+//    { return slotCompiler.start(quads) ; }
+//    
+//    @Override
+//    protected final SqlNode finish(SqlNode sqlNode, QuadBlock quads)
+//    { return slotCompiler.finish(sqlNode, quads) ; }
+//    
+//
+//    
+//    protected abstract SqlNode start(QuadBlock quads) ;
+//    protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
 }
 
 /*

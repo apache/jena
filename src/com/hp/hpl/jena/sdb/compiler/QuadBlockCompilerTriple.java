@@ -28,22 +28,11 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
     
     protected Generator genTableAlias = Gensym.create(AliasesSql.TriplesTableBase) ;
     
-    private SlotCompiler slotCompiler ;
-    
     public QuadBlockCompilerTriple(SDBRequest request, SlotCompiler slotCompiler)
     { 
-        super(request) ;
-        this.slotCompiler = slotCompiler ;
+        super(request, slotCompiler) ;
     }
 
-    @Override
-    protected final SqlNode start(QuadBlock quads)
-    { return slotCompiler.start(quads) ; }
-    
-    @Override
-    protected final SqlNode finish(SqlNode sqlNode, QuadBlock quads)
-    { return slotCompiler.finish(sqlNode, quads) ; }
-    
     @Override
     protected SqlNode compile(Quad quad)
     {
@@ -57,7 +46,7 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
         }
         
         SqlTable triples = accessTriplesTable(alias) ;
-        triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), prefixMapping)) ;
+        triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
 
         TripleTableDesc tripleTableDesc = request.getStore().getTripleTableDesc() ;
         

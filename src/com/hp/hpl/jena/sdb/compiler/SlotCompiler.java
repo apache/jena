@@ -21,8 +21,8 @@ public abstract class SlotCompiler
 {
     private SDBRequest request ;
     
-    protected abstract SqlNode start(QuadBlock quads) ;
-    protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
+    public abstract SqlNode start(QuadBlock quads) ;
+    public abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
     
     public SlotCompiler(SDBRequest request)
     {

@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 
 public class SqlStagePlain implements SqlStage
 {
@@ -22,7 +23,8 @@ public class SqlStagePlain implements SqlStage
         this.quads = quads ;
     }
 
-    public SqlNode build(SDBRequest request)
+    // Temporary?
+    public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
         return compiler.compile(quads) ;
     }

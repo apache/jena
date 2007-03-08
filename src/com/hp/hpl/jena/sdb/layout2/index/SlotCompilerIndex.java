@@ -53,7 +53,7 @@ public class SlotCompilerIndex extends SlotCompiler2
     }
     
     @Override
-    protected SqlNode start(QuadBlock quads)
+    public SqlNode start(QuadBlock quads)
     {
         classify(quads, constants, vars) ;
         SqlNode sqlNode = insertConstantAccesses(constants) ;

@@ -24,11 +24,11 @@ public abstract class SlotCompiler2 extends SlotCompiler
     // Default choices
     
     @Override
-    protected SqlNode start(QuadBlock quads)
+    public SqlNode start(QuadBlock quads)
     { return null ; }
 
     @Override
-    protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
+    public SqlNode finish(SqlNode sqlNode, QuadBlock quads)
     { return sqlNode ; }
 }
 
