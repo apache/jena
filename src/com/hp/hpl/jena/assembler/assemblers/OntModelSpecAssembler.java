@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelSpecAssembler.java,v 1.9 2007-01-29 13:25:02 chris-dollin Exp $
+ 	$Id: OntModelSpecAssembler.java,v 1.10 2007-03-08 15:24:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -13,32 +13,67 @@ import com.hp.hpl.jena.assembler.exceptions.ReasonerClashException;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
-import com.hp.hpl.jena.shared.JenaException;
 
+/**
+    An OntModelSpecAssembler constructs OntModelSpec's from their
+    RDF description. The description allows the document manageer, the
+    reasoner factory, the ont language, and the import model getter to
+    be specified: the default values will be those of OWL_MEM_RDFS_INF,
+    unless the root is ja:SPOO for some constant SPOO of OntModelSpec,
+    in which case the defaults are taken from there.
+*/
 public class OntModelSpecAssembler extends AssemblerBase implements Assembler
     {
     private static final OntModelSpec DEFAULT = OntModelSpec.OWL_MEM_RDFS_INF;
 
     public Object open( Assembler a, Resource root, Mode irrelevant )
         {
-        if (root.hasProperty( null, (RDFNode) null )) 
-            {
-            checkType( root, JA.OntModelSpec );
-            OntModelSpec spec = new OntModelSpec( getDefault( root ) );
-            spec.setDocumentManager( getDocumentManager( a, root ) );
-            spec.setReasonerFactory( getReasonerFactory( a, root ) );
-            spec.setLanguage( getLanguage( a, root ) );
-            spec.setImportModelGetter( getModelSource( a, root ) );
-            return spec;
-            }
-        else
-            {
-            OntModelSpec oms = getOntModelSpecField( root.getLocalName() );
-            if (oms == null) throw new JenaException( "no such OntModelSpec: " + root );
-            return oms;                
-            }
+        checkType( root, JA.OntModelSpec );
+        OntModelSpec spec = new OntModelSpec( getDefault( root ) );
+        OntDocumentManager dm = getDocumentManager( a, root );
+        ReasonerFactory rf = getReasonerFactory( a, root );
+        String lang = getLanguage( a, root );
+        ModelGetter source = getModelSource( a, root );
+        if (dm != null) spec.setDocumentManager( dm );
+        if (rf != null) spec.setReasonerFactory( rf );
+        if (lang != null) spec.setLanguage( lang );
+        if (source != null) spec.setImportModelGetter( source );
+        return spec;
+        }
+    
+    private ModelGetter getModelSource( Assembler a, Resource root )
+        {
+        Resource source = getUniqueResource( root, JA.importSource );
+        return source == null ? null : (ModelGetter) a.open( source );
         }
 
+    private String getLanguage( Assembler a, Resource root )
+        {
+        Resource lang = getUniqueResource( root, JA.ontLanguage );
+        return lang == null ? null : lang.getURI();
+        }
+
+    private ReasonerFactory getReasonerFactory( Assembler a, Resource root )
+        {
+        Resource rf = getUniqueResource( root, JA.reasonerFactory );
+        Resource ru = getUniqueResource( root, JA.reasonerURL );
+        if (ru != null && rf != null) throw new ReasonerClashException( root );
+        if (ru != null) return ReasonerFactoryAssembler.getReasonerFactoryByURL( root, ru );
+        return rf == null ? null : (ReasonerFactory) a.open( rf );
+        }
+    
+    private OntDocumentManager getDocumentManager( Assembler a, Resource root )
+        {
+        Resource dm = getUniqueResource( root, JA.documentManager );
+        return dm == null ? null : (OntDocumentManager) a.open( dm );
+        }
+
+    /**
+        Answer the default OntModelSpec for this root, which will be
+        <code>DEFAULT</code> unless <code>root</code> has the JA
+        namespace and a local name which is the name of an OntModelSpec
+        constant (in OntModelSpec), in which case it's that constant's value.
+    */
     private OntModelSpec getDefault( Resource root )
         {
         if (root.isURIResource() && root.getNameSpace().equals( JA.uri ))
@@ -49,34 +84,6 @@ public class OntModelSpecAssembler extends AssemblerBase implements Assembler
         else
             return DEFAULT;
         }
-    
-    private ModelGetter getModelSource( Assembler a, Resource root )
-        {
-        Resource source = getUniqueResource( root, JA.importSource );
-        return source == null ? DEFAULT.getImportModelGetter() : (ModelGetter) a.open( source );
-        }
-
-    private String getLanguage( Assembler a, Resource root )
-        {
-        Resource lang = getUniqueResource( root, JA.ontLanguage );
-        return lang == null ? DEFAULT.getLanguage() : lang.getURI();
-        }
-
-    private ReasonerFactory getReasonerFactory( Assembler a, Resource root )
-        {
-        Resource rf = getUniqueResource( root, JA.reasonerFactory );
-        Resource ru = getUniqueResource( root, JA.reasonerURL );
-        if (ru != null && rf != null) throw new ReasonerClashException( root );
-        if (ru != null) return ReasonerFactoryAssembler.getReasonerFactoryByURL( root, ru );
-        return rf == null ? DEFAULT.getReasonerFactory() : (ReasonerFactory) a.open( rf );
-        }
-    
-    private OntDocumentManager getDocumentManager( Assembler a, Resource root )
-        { 
-        Resource dm = getUniqueResource( root, JA.documentManager );
-        return dm == null ? OntDocumentManager.getInstance() : (OntDocumentManager) a.open( dm );
-        }
-    
     /**
         Answer the OntModelSpec in the OntModelSpec class with the given
         member name, or null if there isn't one.

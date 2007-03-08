@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelSpecAssembler.java,v 1.7 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestOntModelSpecAssembler.java,v 1.8 2007-03-08 15:24:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -53,13 +53,12 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
                     }
             }
         }    
-
+    
     protected void testSpecificSpec( OntModelSpec ontModelSpec, String specName )
         {
+        Resource root = resourceInModel( JA.getURI() + specName + " rdf:type ja:OntModelSpec" );
         Assembler a = new OntModelSpecAssembler();
-        Object  oms = a.open( resource(  JA.getURI() + specName ) );
-        assertInstanceOf( OntModelSpec.class, oms );
-        assertSame( ontModelSpec, oms );
+        assertEquals( ontModelSpec, a.open( root ) );
         }
     
     protected static Test createTest( final OntModelSpec spec, final String name )

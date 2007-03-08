@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.50 $
+ * Revision           $Revision: 1.51 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-02-14 10:53:16 $
+ * Last modified on   $Date: 2007-03-08 15:24:16 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.50 2007-02-14 10:53:16 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.51 2007-03-08 15:24:16 chris-dollin Exp $
  */
 public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
     // Constants
@@ -217,6 +217,26 @@ public class OntModelSpec extends OntModelSpecObsolete implements ModelSpec {
         this( spec.getBaseModelMaker(), spec.getImportModelMaker(), spec.getDocumentManager(),
               spec.getReasonerFactory(), spec.getLanguage() );
     }
+
+    public boolean equals( Object other )
+        { return other instanceof OntModelSpec && same( (OntModelSpec) other );}
+    
+    private boolean same( OntModelSpec other )
+        {
+        return 
+            getLanguage().equals( other.getLanguage() )
+            && sameReasonerFactory( other )
+            && getDocumentManager().equals( other.getDocumentManager() )
+            && getImportModelGetter().equals( other.getImportModelGetter() )
+            ;
+        }
+        
+    private boolean sameReasonerFactory( OntModelSpec other )
+        {
+        ReasonerFactory rf = getReasonerFactory();
+        ReasonerFactory orf = other.getReasonerFactory();
+        return rf == null ? orf == null : rf.equals( orf );
+        }
 
     /**
      * Answer the model maker used for creating imported models.
