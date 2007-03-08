@@ -3,11 +3,8 @@ SDB ToDo list (and general notes)
 
 + --sdb=@ for global registration?
 
-+ Trans table builder.
-
-+ Separate out index building in formatter - see StoreFormatterBase
-
 + Prefixes : disable for ModelRDB only.
+  Done?? Check
 
 + Prepared statement query cache?
   When will it be beneficial - GraphSDB and add/delete single triples?
@@ -34,26 +31,9 @@ SDB ToDo list (and general notes)
   Need value access
   Isolate QC2.insertValueGetter
 
-+ Ugly Store.getNodeKeyColName()
-
-+ Term tests : check there is a test for ' quotes
-
-+ Script library
-
-+ cmd: 
-  @ --load for sdb.sdbquery --format
-     Done - but should be ModData/ModInit/ModSetup
-     
 + Add query tests :
   /Structure/ { opt ... } JOIN { opt ... } 
   
-+ Abstracting databases:
-  Graph for an SDBConnection (or get from DB).
-    That is the unit of database if there are multiple stores per connection.
-    Or maybe a Store features?
-      A/ regex syntax
-      B/ Table exists code (Classes, Value tables etc).
-
 + ValueTables
   String value table
     With no URIs, much shorter.
