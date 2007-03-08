@@ -3,6 +3,21 @@ Release Notes
 
 Post 2.5.2
 
+Assembler modification-and-fix
+    o There was a bug with the behaviour of OntModelSpec assemblers.
+      The "feature" that if a ja:OntModelSpec had no properties it
+      was treated as an OntModelSpec constant name did not work,
+      since the generalAssembler obligingly inferred properties for
+      it.
+
+      The behavior has changed (I hope for the better ...). Instead,
+      an OntModelSpec is built by modifying the properties of [a copy
+      of] a default spec, which is normally OWL_MEM_RDFS_INF. However,
+      if the root resource is ja:<SomeOntModelSpecConstantName>, then
+      that constant provides the default. This gives the intended
+      behaviour of "I specified no properties" and additionally
+      allows specs to be specified as tweaks-to-a-constant.
+
 ModelSpec and family REMOVED
     o the long-obsolete and recently-deprecated ModelSpec has been removed,
       along with its related tests, descendants, registry, and references.
