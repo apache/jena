@@ -25,10 +25,19 @@ public abstract class SlotCompiler
      * around a QuadBlock to allow hooks for constants to be handled.
      * QuadBlockCompiler has a SlotCompiler
      */
+ 
+    private SDBRequest request ;
     
     // Or QBC.getSlotCompiler and so relative to QBC.
     protected abstract SqlNode start(QuadBlock quads) ;
     protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
+    
+    public SlotCompiler(SDBRequest request)
+    {
+        this.request = request ;
+    }
+    
+    protected SDBRequest getRequest() { return request ; }
     
     public final void processSlot(SDBRequest request,
                                   SqlTable table, SqlExprList conditions,

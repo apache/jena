@@ -9,38 +9,24 @@ package com.hp.hpl.jena.sdb.compiler;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.layout1.EncoderDecoder;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-public class SlotCompiler1 extends SlotCompiler
+public class SlotCompilerHash extends SlotCompiler2
 {
-    private EncoderDecoder codec ;
-    private TripleTableDesc tripleTableDesc ;
-
-    public SlotCompiler1(SDBRequest request, EncoderDecoder codec)
-    {
+    public SlotCompilerHash(SDBRequest request)
+    { 
         super(request) ;
-        this.codec = codec ;
     }
-    
-    @Override
-    protected SqlNode start(QuadBlock quads)
-    { return null ; }
 
-    @Override
-    protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
-    { return sqlNode ; }
-    
     @Override
     protected void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions)
     {
-          String str = codec.encode(node) ;
-          SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-          c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
-          conditions.add(c) ;
-          return ;
+        long hash = NodeLayout2.hash(node) ;
+        SqlExpr c = new S_Equal(thisCol, new SqlConstant(hash)) ;
+        c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+        conditions.add(c) ;
+        return ;
     }
 }
 

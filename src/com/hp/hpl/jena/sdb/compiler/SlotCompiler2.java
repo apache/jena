@@ -6,101 +6,28 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.NodeTableDesc;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
 
 public abstract class SlotCompiler2 extends SlotCompiler
 {
     private static Log log = LogFactory.getLog(SlotCompiler2.class) ;
 
-    protected TripleTableDesc tripleTableDesc ;
-    protected NodeTableDesc   nodeTableDesc ;
-    
-    private List<Node> constants = new ArrayList<Node>() ;
-    private List<Var>  vars = new ArrayList<Var>() ;
-    
     public SlotCompiler2(SDBRequest request)
-    { 
-        super() ;
-        tripleTableDesc = request.getStore().getTripleTableDesc() ;
-        nodeTableDesc = request.getStore().getNodeTableDesc() ;
-    }
+    { super(request) ; }
+
+    // Default choices
+    
+    @Override
+    protected SqlNode start(QuadBlock quads)
+    { return null ; }
 
     @Override
-    final protected SqlNode start(QuadBlock quads)
-    {
-        classify(quads, constants, vars) ;
-        SqlNode sqlNode = insertConstantAccesses(constants) ;
-        return sqlNode ;
-    }
-
-    @Override
-    final protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
+    protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
     { return sqlNode ; }
-    
-    protected abstract 
-    SqlNode insertConstantAccesses(Collection<Node> constants) ;
-
-    @Override
-    protected abstract 
-    void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions) ;
- 
-    
-    private static void classify(QuadBlock quadBlock, Collection<Node> constants, Collection<Var>vars)
-    {
-        for ( Quad quad : quadBlock )
-        {
-            if ( ! quad.getGraph().equals(Quad.defaultGraph) )
-            {
-                log.fatal("Non-default graph") ;
-                throw new SDBException("Non-default graph") ;
-            }
-            if ( false )
-                // Not quadding currently.
-                acc(constants, vars, quad.getGraph()) ;
-            acc(constants, vars, quad.getSubject()) ;
-            acc(constants, vars, quad.getPredicate()) ;
-            acc(constants, vars, quad.getObject()) ;
-        }
-    }
-
-    private static void acc(Collection<Node>constants,  Collection<Var>vars, Node node)
-    { 
-        // ?? node.isConcrete()
-        if ( node.isLiteral() || node.isBlank() || node.isURI() )
-        {
-            constants.add(node) ;
-            return ;
-        }
-        if ( Var.isVar(node) )
-        {
-            vars.add(Var.alloc(node)) ;
-            return ;
-        }
-        if ( node.isVariable() )
-        {
-            log.warn("Node_Varable but not a Var; bodged") ;
-            vars.add(Var.alloc(node)) ;
-            return ;
-        }
-        log.fatal("Unknown Node type: "+node) ;
-        throw new SDBException("Unknown Node type: "+node) ;
-    }
 }
 
 /*
