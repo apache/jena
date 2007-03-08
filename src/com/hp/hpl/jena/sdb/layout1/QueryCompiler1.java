@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
+import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
@@ -18,16 +19,18 @@ public class QueryCompiler1 extends QueryCompilerMain
     private TripleTableDesc tripleTableDesc ;
     
     
-    public QueryCompiler1(SDBRequest request, EncoderDecoder codec, TripleTableDesc tripleTableDesc)
+    public QueryCompiler1(SDBRequest request, EncoderDecoder codec)
     { 
         super(request) ; 
         this.codec = codec ;
-        this.tripleTableDesc = tripleTableDesc ;
     }
     
     @Override
     protected QuadBlockCompiler createQuadBlockCompiler()
-    { return new QuadBlockCompiler1(request, codec, tripleTableDesc) ; }
+    { 
+        SlotCompiler sComp = new SlotCompiler1(request, codec) ;
+        return new QuadBlockCompiler1(request, sComp) ; 
+    }
 }
 
 /*

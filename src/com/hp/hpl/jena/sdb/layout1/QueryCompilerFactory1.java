@@ -9,23 +9,20 @@ package com.hp.hpl.jena.sdb.layout1;
 import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 
 
 public class QueryCompilerFactory1 implements QueryCompilerFactory
 {
     private EncoderDecoder codec ;
-    private TripleTableDesc tripleTableDesc ;
 
-    public QueryCompilerFactory1(EncoderDecoder codec, TripleTableDesc desc)
+    public QueryCompilerFactory1(EncoderDecoder codec)
     {
         this.codec = codec ;
-        this.tripleTableDesc = desc ;
     }
 
     public QueryCompiler createQueryCompiler(SDBRequest request)
     {
-        return new QueryCompiler1(request, codec, tripleTableDesc) ;
+        return new QueryCompiler1(request, codec) ;
     }
 }
 

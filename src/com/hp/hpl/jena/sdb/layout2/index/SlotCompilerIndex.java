@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.compiler;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import java.util.*;
 
@@ -13,6 +13,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.compiler.QC;
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Generator;
 import com.hp.hpl.jena.sdb.core.Gensym;
@@ -22,6 +24,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
+import com.hp.hpl.jena.sdb.layout2.SlotCompiler2;
 import com.hp.hpl.jena.sdb.store.NodeTableDesc;
 import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 import com.hp.hpl.jena.sparql.core.Quad;

@@ -4,26 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.compiler;
+package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.graph.Node;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.sdb.compiler.QuadBlock;
+import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.layout1.EncoderDecoder;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-public class SlotCompiler1 extends SlotCompiler
+public abstract class SlotCompiler2 extends SlotCompiler
 {
-    private EncoderDecoder codec ;
-    private TripleTableDesc tripleTableDesc ;
+    private static Log log = LogFactory.getLog(SlotCompiler2.class) ;
 
-    public SlotCompiler1(SDBRequest request, EncoderDecoder codec)
-    {
-        super(request) ;
-        this.codec = codec ;
-    }
+    public SlotCompiler2(SDBRequest request)
+    { super(request) ; }
+
+    // Default choices
     
     @Override
     protected SqlNode start(QuadBlock quads)
@@ -32,16 +30,6 @@ public class SlotCompiler1 extends SlotCompiler
     @Override
     protected SqlNode finish(SqlNode sqlNode, QuadBlock quads)
     { return sqlNode ; }
-    
-    @Override
-    protected void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions)
-    {
-          String str = codec.encode(node) ;
-          SqlExpr c = new S_Equal(thisCol, new SqlConstant(str)) ;
-          c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
-          conditions.add(c) ;
-          return ;
-    }
 }
 
 /*

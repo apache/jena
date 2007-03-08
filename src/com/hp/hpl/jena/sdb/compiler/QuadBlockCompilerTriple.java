@@ -9,34 +9,41 @@ package com.hp.hpl.jena.sdb.compiler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.*;
-import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
+import com.hp.hpl.jena.sdb.core.AliasesSql;
+import com.hp.hpl.jena.sdb.core.Generator;
+import com.hp.hpl.jena.sdb.core.Gensym;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
 {
     private static Log log = LogFactory.getLog(QuadBlockCompilerTriple.class) ;
     
     protected Generator genTableAlias = Gensym.create(AliasesSql.TriplesTableBase) ;
-    protected TripleTableDesc tripleTableDesc ; 
     
-    public QuadBlockCompilerTriple(SDBRequest request)
+    private SlotCompiler slotCompiler ;
+    
+    public QuadBlockCompilerTriple(SDBRequest request, SlotCompiler slotCompiler)
     { 
         super(request) ;
-        tripleTableDesc = request.getStore().getTripleTableDesc() ;
+        this.slotCompiler = slotCompiler ;
     }
 
+    @Override
+    protected final SqlNode start(QuadBlock quads)
+    { return slotCompiler.start(quads) ; }
+    
+    @Override
+    protected final SqlNode finish(SqlNode sqlNode, QuadBlock quads)
+    { return slotCompiler.finish(sqlNode, quads) ; }
+    
     @Override
     protected SqlNode compile(Quad quad)
     {
@@ -52,43 +59,20 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
         SqlTable triples = accessTriplesTable(alias) ;
         triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), prefixMapping)) ;
 
+        TripleTableDesc tripleTableDesc = request.getStore().getTripleTableDesc() ;
+        
         if ( false )
-            processSlot(request, triples, conditions, quad.getGraph(),    tripleTableDesc.getGraphColName()) ;
-        processSlot(request, triples, conditions, quad.getSubject(),   tripleTableDesc.getSubjectColName()) ; 
-        processSlot(request, triples, conditions, quad.getPredicate(), tripleTableDesc.getPredicateColName()) ;
-        processSlot(request, triples, conditions, quad.getObject(),    tripleTableDesc.getObjectColName()) ;
+            slotCompiler.processSlot(request, triples, conditions, quad.getGraph(),
+                                     tripleTableDesc.getGraphColName()) ;
+        slotCompiler.processSlot(request, triples, conditions,quad.getSubject(),
+                                 tripleTableDesc.getSubjectColName()) ; 
+        slotCompiler.processSlot(request, triples, conditions, quad.getPredicate(),
+                                 tripleTableDesc.getPredicateColName()) ;
+        slotCompiler.processSlot(request, triples, conditions, quad.getObject(),
+                                 tripleTableDesc.getObjectColName()) ;
         
         return SqlRestrict.restrict(triples, conditions) ;
     }
-
-
-    public final void processSlot(SDBRequest request,
-                                     SqlTable table, SqlExprList conditions,
-                                     Node node, String colName)
-    {
-        SqlColumn thisCol = new SqlColumn(table, colName) ;
-        if ( ! node.isVariable() )
-        {
-            // Is this constant already loaded?
-            constantSlot(request, node, thisCol, conditions) ;
-            return ;
-        }
-        
-        Var var = Var.alloc(node) ;
-        if ( table.getIdScope().hasColumnForVar(var) )
-        {
-            ScopeEntry e = table.getIdScope().findScopeForVar(var) ;
-            SqlColumn otherCol = e.getColumn() ;
-            SqlExpr c = new S_Equal(otherCol, thisCol) ;
-            conditions.add(c) ;
-            c.addNote("processVar: "+node) ;
-            return ;
-        }
-        table.setIdColumnForVar(var, thisCol) ;
-    }
-
-    protected abstract void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions) ;
-    
     protected abstract SqlTable accessTriplesTable(String alias) ;
 }
 

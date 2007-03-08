@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.layout2.hash;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.layout2.QuadBlockCompiler2;
 
 public class QueryCompilerHash extends QueryCompilerMain 
 {
@@ -20,8 +21,7 @@ public class QueryCompilerHash extends QueryCompilerMain
     @Override
     protected QuadBlockCompiler createQuadBlockCompiler()
     { 
-        QuadBlockCompiler base = new QuadBlockCompilerHash(request) ;
-        return base ;
+        return new QuadBlockCompiler2(request, new SlotCompilerHash(request)) ;
     }
 }
 

@@ -19,16 +19,8 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 public abstract class SlotCompiler
 {
-    /* Notes:
-     * Slot compilation assumes that there is a start/finish 
-     * (this is in QuadBlockCompilerBase)
-     * around a QuadBlock to allow hooks for constants to be handled.
-     * QuadBlockCompiler has a SlotCompiler
-     */
- 
     private SDBRequest request ;
     
-    // Or QBC.getSlotCompiler and so relative to QBC.
     protected abstract SqlNode start(QuadBlock quads) ;
     protected abstract SqlNode finish(SqlNode sqlNode, QuadBlock quads) ;
     
