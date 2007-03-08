@@ -40,6 +40,8 @@ public class QuadBlockStageBuilder extends QuadBlockCompilerBase
     //@Override
     public SqlNode compileNew(QuadBlock quads)
     {
+        // What's the abstraction of a Table?
+        //  PTable, Triple table,  == SqlStage?
         //Stage == table
         
         SqlNode sqlNode = slotCompiler.start(quads) ; 
