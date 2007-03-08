@@ -3,6 +3,8 @@
 :x1 :p "string"@EN .
 :x2 :p "string"@en .
 
+_:a :q _:b .
+
 ## :x1 :p 1 .
 ## :x2 :p 2 .
 ## :x3 :q 3 .

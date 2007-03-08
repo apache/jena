@@ -14,8 +14,8 @@ Download
 Releases : SourceForge, Project Jena : Package ARQ
 http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=143808
 
-Also available via anonymous CVS:
-cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/jena co ARQ
+Also available via anonymous SVN:
+https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
 
 Online demos and services
 -------------------------
@@ -77,7 +77,6 @@ Run the script with no argument to get a usage message.
 
 See doc/cmds.html for details.  Check the suitablity of scripts before running them.
 
-
 Running commands as Java
 ------------------------
 
@@ -113,3 +112,4 @@ General questions and comments on SPARQL to jena-dev or
 Formal comments specific to the SPARQL query language,
 protocol or result set docuemnts to:
 	public-rdf-dawg-comments@w3.org
+v
