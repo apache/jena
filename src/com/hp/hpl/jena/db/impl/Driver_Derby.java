@@ -11,6 +11,7 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
+import com.hp.hpl.jena.db.impl.DriverRDB.RDBLongObject;
 
 public class Driver_Derby extends DriverRDB 
 {
@@ -99,6 +100,14 @@ public class Driver_Derby extends DriverRDB
         res[0] = genTableName(graphId,tblCnt,isReif);
         res[1] = parms[0];
         return res;
+    }
+    
+    protected void setLongObjectHashAndTail(PreparedStatement ps, int argi, RDBLongObject lobj)
+    throws SQLException
+    {
+        // USe blobs and setLongObjectHashAndTail_Binary?
+        int paramCount = ps.getParameterMetaData().getParameterCount() ;
+        super.setLongObjectHashAndTail_Text(ps, argi, lobj) ;
     }
         
     public int graphIdAlloc ( String graphName )
