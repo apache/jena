@@ -15,6 +15,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -23,8 +27,6 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** A (description of a) table that holds a cached/optimized
  * version of a pattern.  P for pattern
@@ -153,19 +155,35 @@ public class PTable
 
         public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
         {
+            QuadBlock quads = new QuadBlock(quadBlock) ;
+            
             SqlTable sqlTable = new SqlTable("TABLE", "ALIAS") ;
+            
             SqlExprList conditions = new SqlExprList() ;
             //compiler.processSlot(request, sqlTable, conditions, subj, subjColName) ;
             
             for ( Node pred : cols.keySet() )
             {
-                if ( ! quadBlock.contains(null, null, pred, null) )
-                    continue ;
+//                if ( ! quads.contains(null, null, pred, null) )
+//                    continue ;
+
+                int idx = quads.findFirst(null, null, pred, null) ;
+                if ( idx < 0 )
+                {
+                    log.fatal("Can't find quad in SqlStagePTable.build") ;
+                    throw new SDBException("SqlStagePTable.build") ;
+                }
+                
+                Quad q = quads.remove(idx) ;
                 
                 String colName = cols.get(pred) ;
                 SqlColumn col = new SqlColumn(sqlTable, colName) ;
 
-                Node obj = Node.createURI("URI_DUMMY") ; // q.getObject()?
+                
+                Node obj = q.getObject() ;
+//                if ( Var.isVar(obj) )
+//                    sqlTable.setIdColumnForVar(Var.alloc(obj), col) ;
+                
                 slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
             }
             return SqlRestrict.restrict(sqlTable, conditions) ;

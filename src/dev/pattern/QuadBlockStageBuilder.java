@@ -8,26 +8,36 @@ package dev.pattern;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sdb.compiler.QC;
-import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerBase;
-import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
+import com.hp.hpl.jena.sdb.compiler.*;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.layout1.CodecSimple;
+import com.hp.hpl.jena.sdb.layout1.QuadBlockCompiler1;
 import com.hp.hpl.jena.sdb.layout1.SlotCompiler1;
+import com.hp.hpl.jena.sdb.layout1.StoreSimplePGSQL;
+import com.hp.hpl.jena.sdb.store.Store;
+
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-public class QuadBlockStageBuilder extends QuadBlockCompilerBase 
+// replacement QuadBlockCompilerTriple -- eventually
+public class QuadBlockStageBuilder //extends QuadBlockCompilerBase 
+    
 {
+    
+    SDBRequest request ;
+    SlotCompiler slotCompiler ;
     private PTable pTable ;
+    private QuadBlockCompiler compiler ;
 
-    public QuadBlockStageBuilder(SDBRequest request, SlotCompiler slotCompiler)
+    public QuadBlockStageBuilder(SDBRequest request, QuadBlockCompiler compiler, SlotCompiler slotCompiler)
     {
-        super(request, slotCompiler) ;
+        //super(request, slotCompiler) ;
+        this.request = request ;
+        this.slotCompiler = slotCompiler ;
+        this.compiler = compiler ;
         pTable = new PTable();
         pTable.add(RDF.type.asNode(), "TYPE") ;
     }
@@ -74,7 +84,7 @@ public class QuadBlockStageBuilder extends QuadBlockCompilerBase
                 // Do accumulator
                 if ( plainQuads.size() != 0 )
                 {
-                    SqlStage stagePre = new SqlStagePlain(this, plainQuads) ;
+                    SqlStage stagePre = new SqlStagePlain(compiler, plainQuads) ;
                     sList.add(stagePre) ;
                     plainQuads.clear() ;
                 }
@@ -97,7 +107,7 @@ public class QuadBlockStageBuilder extends QuadBlockCompilerBase
         if ( plainQuads.size() != 0 )
         {
             System.out.println("trailer") ;
-            SqlStage stagePre = new SqlStagePlain(this, plainQuads) ;
+            SqlStage stagePre = new SqlStagePlain(compiler, new QuadBlock(plainQuads)) ;
             sList.add(stagePre) ;
             plainQuads.clear() ;
         }
@@ -116,18 +126,21 @@ public class QuadBlockStageBuilder extends QuadBlockCompilerBase
         return sqlNode ;
     }
 
-    @Override
-    protected SqlNode compile(Quad quad)
-    {   // DUMMY
-        return null ;
-    }
+//    @Override
+//    protected SqlNode compile(Quad quad)
+//    {   // DUMMY
+//        return null ;
+//    }
 
     public static void main(String[] args)
     {
         
-        SDBRequest request = new SDBRequest(null, new Query());
+        Store store = new StoreSimplePGSQL(null) ;
+        SDBRequest request = new SDBRequest(store, new Query());
+        SlotCompiler sComp =  new SlotCompiler1(request, new CodecSimple()) ;
+        QuadBlockCompiler comp = new QuadBlockCompiler1(request, sComp) ;
         
-        QuadBlockStageBuilder builder = new QuadBlockStageBuilder(null, new SlotCompiler1(request, new CodecSimple())) ;
+        QuadBlockStageBuilder builder = new QuadBlockStageBuilder(request, comp, sComp) ;
         QuadBlock quadBlock = new QuadBlock() ;
         Quad q1 = new Quad(Quad.defaultGraph, 
                            Var.alloc("s"), RDF.type.asNode(), Var.alloc("o") ) ;
