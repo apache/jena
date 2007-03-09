@@ -6,22 +6,32 @@
 
 package dev.pattern;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerBase;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.layout1.CodecSimple;
+import com.hp.hpl.jena.sdb.layout1.SlotCompiler1;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class QuadBlockStageBuilder extends QuadBlockCompilerBase 
 {
+    private PTable pTable ;
+
     public QuadBlockStageBuilder(SDBRequest request, SlotCompiler slotCompiler)
     {
         super(request, slotCompiler) ;
+        pTable = new PTable();
+        pTable.add(RDF.type.asNode(), "TYPE") ;
     }
 
-    PTable pTable = new PTable() ; 
     
     // New version of QuadBlockCompilerBase
     // build SqlStageList which is one table access each.
@@ -44,9 +54,54 @@ public class QuadBlockStageBuilder extends QuadBlockCompilerBase
         //  PTable, Triple table,  == SqlStage?
         //Stage == table
         
-        SqlNode sqlNode = slotCompiler.start(quads) ; 
+        SqlNode sqlNode = slotCompiler.start(quads) ;   // ****
         SqlExprList conditions = new SqlExprList() ;
         
+        QuadBlock plainQuads = new QuadBlock() ;
+        quads = new QuadBlock(quads) ;          // Copy
+        
+        SqlStageList sList = new SqlStageList() ;
+        // Concurrent modification - need to use an explicit index.
+        for ( int i = 0 ; i < quads.size() ; )
+        {
+            System.out.println("Acc:   "+plainQuads.size()) ;
+            System.out.println("Quads: "+quads.size()) ;
+            System.out.println("SList: "+sList.size()) ;
+            
+            Quad q = quads.get(i) ;
+            if ( pTable.trigger(q) )
+            {
+                // Do accumulator
+                if ( plainQuads.size() != 0 )
+                {
+                    SqlStage stagePre = new SqlStagePlain(this, plainQuads) ;
+                    sList.add(stagePre) ;
+                    plainQuads.clear() ;
+                }
+                
+                System.out.println("trigger") ;
+//                System.out.println("quads: "+quads) ;
+                // Removes current quad
+                SqlStage stage = pTable.process(i, quads) ;
+                sList.add(stage) ;
+//                System.out.println("quads: "+quads) ;
+//                System.out.println(stage) ;
+                continue ;
+            }
+            // Not a special.
+            plainQuads.add(q) ;
+            i++ ;
+        }
+
+        // Remaining?
+        if ( plainQuads.size() != 0 )
+        {
+            System.out.println("trailer") ;
+            SqlStage stagePre = new SqlStagePlain(this, plainQuads) ;
+            sList.add(stagePre) ;
+            plainQuads.clear() ;
+        }
+        System.out.println(sList) ;
         // Split into stages.
         
         // This splits into 2 parts then block compiles all quads.
@@ -55,21 +110,35 @@ public class QuadBlockStageBuilder extends QuadBlockCompilerBase
         //  Let the PTable remove quads it handles
         //  Do PTable stage.
         //  Continue.
-        
-        SqlStageList sList = pTable.modBlock(this, quads) ;
-        // SlotCompiler argument?
-        //SqlStageList sList = new SqlStageList() ;
-        sList.build(request, slotCompiler) ;
-        
-        slotCompiler.finish(sqlNode, quads) ;
-        
-        return null ;
+
+        sqlNode = QC.innerJoin(request, sqlNode, sList.build(request, slotCompiler)) ;
+        sqlNode = slotCompiler.finish(sqlNode, quads) ;
+        return sqlNode ;
     }
 
     @Override
     protected SqlNode compile(Quad quad)
     {   // DUMMY
         return null ;
+    }
+
+    public static void main(String[] args)
+    {
+        
+        SDBRequest request = new SDBRequest(null, new Query());
+        
+        QuadBlockStageBuilder builder = new QuadBlockStageBuilder(null, new SlotCompiler1(request, new CodecSimple())) ;
+        QuadBlock quadBlock = new QuadBlock() ;
+        Quad q1 = new Quad(Quad.defaultGraph, 
+                           Var.alloc("s"), RDF.type.asNode(), Var.alloc("o") ) ;
+        Quad q2 = new Quad(Quad.defaultGraph, 
+                           Var.alloc("s"), Node.createURI("http://host/p"), Var.alloc("o") ) ;
+        
+        quadBlock.add(q1);
+        quadBlock.add(q2);
+        
+        SqlNode sqlNode = builder.compileNew(quadBlock) ;
+        System.out.println(sqlNode) ;
     }
 }
 

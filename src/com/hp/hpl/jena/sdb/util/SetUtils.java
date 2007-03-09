@@ -9,12 +9,15 @@ package com.hp.hpl.jena.sdb.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.sdb.util.alg.Action;
 import com.hp.hpl.jena.sdb.util.alg.Filter;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
 
-public class SetUtils
+public class SetUtils extends Alg
 {
+    // Set speciifc operations and functions returning something
+    // that need to know the concrete type of that thing.
+    // Hence not in general AlgUtils
+    
     public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight)
     {
         Set<T> results = new HashSet<T>(setLeft) ;
@@ -47,12 +50,6 @@ public class SetUtils
         Set<T> s3 = new HashSet<T>(s1) ;
         s3.removeAll(s2) ;
         return s3 ;
-    }
-    
-    public static <T> void apply(Set<? extends T> s, Action<T> action)
-    {
-        for ( T item : s )
-            action.apply(item) ;
     }
     
     public static <T> Set<T> filter(Set<? extends T> s, Filter<T> f)

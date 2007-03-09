@@ -16,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -25,6 +24,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** A (description of a) table that holds a cached/optimized
  * version of a pattern.  P for pattern
@@ -53,57 +53,94 @@ public class PTable
 //        }
 //    } ;
     
-    public boolean match(QuadBlock quadBlock)
+    
+    // trigger if we see a prediate this table supports.
+    public boolean trigger(Quad quad)
     {
-        //QuadBlockMatch.match(pattern, quadBlock) ;
-        
-        Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
-        
-        //SetUtils.filter(cols.keySet(), f) ;
-        
-        
-        for ( Node p : predicates )
+        for ( Node p : cols.keySet() )
         {
-            if ( ! quadBlock.contains(null, null, p, null) )
-                return false ;
+            if ( p.equals(quad.getPredicate()) )
+                return true ;
         }
-        return true ;
+        return false ;
     }
+    
 
-    // Returns a stage list of a reduced quad block and this step.
-    // Issue: placement of this step.  An SqlNode optimization problem?
-    
-    // "Slot compiler" for QuadBlockCompiler.
-    
-    
-    public SqlStageList modBlock(QuadBlockCompiler compiler, QuadBlock quadBlock)
+    // Start a table from the i'th quad 
+    public SqlStage process(int i, QuadBlock quadBlock)
     {
-        if ( quadBlock.getGraphNode() != Quad.defaultGraph )
-            log.fatal("Not the default graph") ;
-        
+        QuadBlock tableQuads = new QuadBlock() ;
         Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
-        SqlStageList sList = new SqlStageList() ;
-
-        QuadBlock tableQuads = new QuadBlock() ; 
-        QuadBlock replacement = quadBlock.clone() ;
-
         for ( Node p : predicates )
         {
             // Need common subject
-            int idx = quadBlock.findFirst(null, null, p, null) ;
+            int idx = quadBlock.findFirst(i, null, null, p, null) ;
             if ( idx < 0 )
                 // No match.
+                // Conservative - must find all predicates
                 return null ;
+            
             Quad q = quadBlock.get(idx) ;
-            replacement.remove(q) ; // Not index as it might have moved.
+            quadBlock.remove(q) ; // Not index as it might have moved.
             tableQuads.add(q) ;
         }
         
         SqlStagePTable stage = new SqlStagePTable(tableQuads) ;
-        sList.add(stage) ;
-        sList.add(new SqlStagePlain(compiler, replacement)) ;
-        return sList ;
+        return stage ;
     }
+
+//    // -------------------***************************
+//    public boolean match(QuadBlock quadBlock)
+//    {
+//        //QuadBlockMatch.match(pattern, quadBlock) ;
+//        
+//        Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
+//        
+//        //SetUtils.filter(cols.keySet(), f) ;
+//        
+//        
+//        for ( Node p : predicates )
+//        {
+//            if ( ! quadBlock.contains(null, null, p, null) )
+//                return false ;
+//        }
+//        return true ;
+//    }
+//
+//    // Returns a stage list of a reduced quad block and this step.
+//    // Issue: placement of this step.  An SqlNode optimization problem?
+//    
+//    // "Slot compiler" for QuadBlockCompiler.
+//    
+//    
+//    public SqlStageList modBlock(QuadBlockCompiler compiler, QuadBlock quadBlock)
+//    {
+//        if ( quadBlock.getGraphNode() != Quad.defaultGraph )
+//            log.fatal("Not the default graph") ;
+//        
+//        Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
+//        SqlStageList sList = new SqlStageList() ;
+//
+//        QuadBlock tableQuads = new QuadBlock() ; 
+//        QuadBlock replacement = quadBlock.clone() ;
+//
+//        for ( Node p : predicates )
+//        {
+//            // Need common subject
+//            int idx = quadBlock.findFirst(null, null, p, null) ;
+//            if ( idx < 0 )
+//                // No match.
+//                return null ;
+//            Quad q = quadBlock.get(idx) ;
+//            replacement.remove(q) ; // Not index as it might have moved.
+//            tableQuads.add(q) ;
+//        }
+//        
+//        SqlStagePTable stage = new SqlStagePTable(tableQuads) ;
+//        sList.add(stage) ;
+//        sList.add(new SqlStagePlain(compiler, replacement)) ;
+//        return sList ;
+//    }
     
     // Context?  Spanning conditions between SqlStages? 
     class SqlStagePTable implements SqlStage
@@ -128,11 +165,17 @@ public class PTable
                 String colName = cols.get(pred) ;
                 SqlColumn col = new SqlColumn(sqlTable, colName) ;
 
-                Node obj = null ; // q.getObject()?
+                Node obj = Node.createURI("URI_DUMMY") ; // q.getObject()?
                 slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
             }
             return SqlRestrict.restrict(sqlTable, conditions) ;
         }
+        
+        @Override
+        public String toString() { return "PTable"; }
+
+        public void output(IndentedWriter out)
+        {  out.print("PTable") ; }
     }
 }
 

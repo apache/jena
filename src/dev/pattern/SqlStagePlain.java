@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class SqlStagePlain implements SqlStage
 {
@@ -28,6 +29,13 @@ public class SqlStagePlain implements SqlStage
     {
         return compiler.compile(quads) ;
     }
+    
+    @Override
+    public String toString() { return "Plain: "+quads; } 
+    
+    public void output(IndentedWriter out)
+    {  out.print(toString()) ; }
+
 }
 
 /*

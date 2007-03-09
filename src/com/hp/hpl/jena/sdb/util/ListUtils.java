@@ -6,28 +6,15 @@
 
 package com.hp.hpl.jena.sdb.util;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList ;
 
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Printable;
-import com.hp.hpl.jena.sdb.util.alg.Action;
 import com.hp.hpl.jena.sdb.util.alg.Filter;
-import com.hp.hpl.jena.sdb.util.alg.PrintAction;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
 
-public class ListUtils
+public class ListUtils extends Alg
 {
-    public static <T extends Printable> void print(IndentedWriter out, List<? extends T> list)
-    {
-        apply(list, new PrintAction<T>(out)) ;
-    }
-    
-    public static <T> void apply(List<? extends T> list, Action<T> action)
-    {
-        for ( T item : list )
-            action.apply(item) ;
-    }
+    // These create a return object so have to be typed to the relevant kind (List/Set)
     
     public static <T> List<T> filter(List<? extends T> list, Filter<T> f)
     {
@@ -44,6 +31,16 @@ public class ListUtils
         for ( T item : list)
             x.add(converter.convert(item) ) ;
         return x ;
+    }
+
+    public static <T> List<T> removeNulls(List<? extends T> list)
+    { 
+        Filter<T> RemoveNulls = new Filter<T>()
+        {
+            public boolean accept(T item) { return item != null ; } 
+        } ;
+
+        return filter(list, RemoveNulls) ;
     }
 }
 

@@ -12,13 +12,16 @@ import com.hp.hpl.jena.sparql.util.Printable;
 public class PrintAction <T extends Printable> implements Action<T> 
 {
     private boolean first = true ;
-    private IndentedWriter out ; 
-    public PrintAction(IndentedWriter out) { this.out = out ; }
+    private IndentedWriter out ;
+    private String sep ; 
+    
+    public PrintAction(IndentedWriter out, String sep) { this.out = out ; this.sep = sep ; }
+    public PrintAction(IndentedWriter out) { this(out, " ") ; }
     
     public void apply(Printable item)
     {
         if ( ! first )
-            out.print(" ") ;
+            out.print(sep) ;
         first = false ;
         item.output(out) ;
     }

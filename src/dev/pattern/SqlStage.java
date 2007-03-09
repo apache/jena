@@ -9,8 +9,9 @@ package dev.pattern;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sparql.util.Printable;
 
-public interface SqlStage
+public interface SqlStage extends Printable
 {
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler) ; 
 }

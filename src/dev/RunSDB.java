@@ -25,6 +25,8 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
 
+import dev.pattern.QuadBlockStageBuilder;
+
 
 public class RunSDB
 {
@@ -32,8 +34,8 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        sdbconfig("--sdb=Store/sdb-psql.ttl", "--create") ;
-        //sdbprint("--sdb=sdb.ttl", "--set=useStageBuilder=true", "--query=Q.rq" ) ;
+        
+        QuadBlockStageBuilder.main(null) ;
         System.exit(0) ;
         
         

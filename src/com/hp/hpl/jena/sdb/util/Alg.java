@@ -4,13 +4,44 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.util.alg;
+package com.hp.hpl.jena.sdb.util;
+
+import com.hp.hpl.jena.sdb.util.alg.Action;
+import com.hp.hpl.jena.sdb.util.alg.PrintAction;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Printable;
 
 public class Alg
 {
-    public static Filter RemoveNulls = new Filter(){
-        public boolean accept(Object item) { return item != null ; } } ;
-        
+    public static <T extends Printable> String toString(Iterable<? extends T> struct)
+    {
+        return toString(struct, " ") ;
+    }
+    
+    public static <T extends Printable> String toString(Iterable<? extends T> struct, String sep)
+    {
+        IndentedLineBuffer b = new IndentedLineBuffer() ;
+        apply(struct, new PrintAction<T>(b.getIndentedWriter(), sep)) ;
+        return b.asString() ; 
+    }
+    
+    public static <T extends Printable> void print(IndentedWriter out, Iterable<? extends T> struct)
+    {
+        apply(struct, new PrintAction<T>(out)) ;
+    }
+
+    public static <T extends Printable> void print(IndentedWriter out, Iterable<? extends T> struct, String sep)
+    {
+        apply(struct, new PrintAction<T>(out, sep)) ;
+    }
+
+    
+    public static <T> void apply(Iterable<? extends T> struct, Action<T> action)
+    {
+        for ( T item : struct )
+            action.apply(item) ;
+    }
 }
 
 /*
