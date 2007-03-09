@@ -3,63 +3,19 @@ ARQ is a query processor for Jena that implements SPARQL.
 ==== Announcing ARQ 2.0 beta
 
 This is the first, and hopefully only, beta release of ARQ 2.0.
-It is functionally a complete implementation of SPARQL including
-support for custom filter function, property functions and
-free text search.
 
-== Changes to SPARQL
+ARQ 2.0 is a complete implementation of SPARQL including
+support for custom filter function, property functions
+and free text search.
 
-There are changes to the correct results from SPARQL queries in
-this release to reflectthe new SPARQL algebra:
+ARQ 2.0 provides the same external API as ARQ 1.5.  Internally,
+query execution follows the SPARQL algebra, in development by
+the RDF Data Access Working Group.  There has been significant
+reorganisation and renaming of implementation code to align with
+termininology of the SPARQL specification.
 
-+ {} form scoping delimiters for filter.
-  + { FILTER(?v > 3) :z : p ?v } is the same as 
-     { :z : p ?v FILTER(?v > 3) }
-  + Variables outsoide the group are no in scope.
-    Any extraneous {} around FILTERs may cause different results.
-  + Results from corner cases of doubly nested OPTIONALs change.
-  
-== Changes to applications
-  
-The function library and property function libary have both moved:
-The correct base URIs are now:
-    Functions: http://jena.hpl.hp.com/ARQ/function#
-    Property functions: http://jena.hpl.hp.com/ARQ/property#
-
-The code now resides in packages "com.hp.hpl.jena.sparql.function.library" and
-"com.hp.hpl.jena.sparql.pfunction.library".  Old URIs using the old package
-name and "java:" should work because there is a redirection left in-place.
-
-
-
-
-The purpose of this beta release is to ensure migration costs from
-ARQ 1.5.1 to ARQ 2.0 are as low as possible.  Please report any 
-differences in behaviour, both functional and performance.
-
-ARQ 2.0 provides the same external API as ARQ 1.5.  Internally, query
-execution follows the SPARQL algebra, in development by the RDF Data
-Access Working Group.  Several query engines are available:
-
- + Main query engine for optimization and efficient execution
- + Reference engine for checking functionality
-    (implements the SPARQL evaluation semantics very simply for clarity
-     and validation)
-  + Remote access engine for querying SPARQL endpoints over HTTP.
-  + The query engine from ARQ1, for exact ARQ1 semantics and to assist
-    in migration (deprecated for new applications, it and will be removed
-    sometime
-  + RDQL engine
-  
-Internally, there has been significant reorganisation and renaming
-to align with termininology of the SPARQL specification.
-
-ARQ can also be used just SPARQL parsers, as a SPARQL algebra generator
-or for spoecialised query engines.
-
-Not in ARQ 2.0:
-Extensions beyond the SPARQL syntax: UNSAID and EXT. 
-OPTIONAL/!bound queries are support.
+Please report any differences in behaviour, both functional
+and performance.
 
 Download:
     http://prdownloads.sourceforge.net/jena/ARQ-2.0-beta.zip
@@ -73,14 +29,37 @@ https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
 SPARQL is described in:
   http://www.w3.org/TR/rdf-sparql-query/
 
-== Notes
+== Changes to SPARQL
 
-More details in ChangeLog.txt
+There are changes to the correct results from SPARQL queries in
+this release to reflect the new SPARQL algebra:
+
++ {} form scoping delimiters
+  + { FILTER(?v > 3) :z : p ?v } is the same as 
+     { :z : p ?v FILTER(?v > 3) }
+    { :z : p ?v { FILTER (?v > 3) } } 
+  + Variables outside the group are not in scope.
+    { :z : p ?v { FILTER (?v > 3) } } has no solutions.
+    Any extraneous {} around FILTERs may cause different results.
+  + Results from corner cases of doubly nested OPTIONALs change.
+  
+== Changes to applications
+  
+The function library and property function libary have both moved:
+The correct base URIs are now:
+    Functions: http://jena.hpl.hp.com/ARQ/function#
+    Property functions: http://jena.hpl.hp.com/ARQ/property#
+
+These are the perferred prefix URIs.
+
+The code now resides in packages "com.hp.hpl.jena.sparql.function.library" and
+"com.hp.hpl.jena.sparql.pfunction.library".  Old URIs using the old package
+name and "java:" should work because there is a redirection left in-place.
 
 == Status
 
 The implementation of SPARQL is complete and meets the
-SPARQL current editors' working draft and cu=urently planned
+SPARQL current editors' working draft and cuurently planned
 Last Call design.
 
 Editors' working draft:
@@ -89,6 +68,29 @@ http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html
 Defition of SPARQL:
 http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html#sparqlDefinition
 
+== Notes
+
+Several query engines are available:
+
+ + Main query engine for optimization and efficient execution
+ + Reference engine for checking functionality
+    (implements the SPARQL evaluation semantics very simply for clarity
+     and validation)
+  + Remote access engine for querying SPARQL endpoints over HTTP.
+  + The query engine from ARQ1, for exact ARQ1 semantics and to assist
+    in migration (deprecated for new applications, it and will be removed
+    sometime
+  + RDQL engine
+ 
+ARQ can also be used just as a SPARQL parser, as a SPARQL algebra
+generator or as a basis for specialised query engines.
+
+Not in ARQ 2.0:
+
+Extensions beyond the SPARQL syntax: UNSAID and EXT. 
+OPTIONAL/!bound queries are support.
+
+More details in ChangeLog.txt
 
 == Services
 
@@ -99,7 +101,6 @@ SPARQL processor:
 http://www.sparql.org/sparql.html
 
 == Support and Questions
-
 
 Comments and questions about ARQ to the Jena mailing list 
     jena-dev@groups.yahoo.com
