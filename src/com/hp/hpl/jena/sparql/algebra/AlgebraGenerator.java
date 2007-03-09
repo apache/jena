@@ -134,7 +134,6 @@ public class AlgebraGenerator
         }
         return current ;
     }
-
     
     protected Op compile(ElementGroup groupElt)
     {

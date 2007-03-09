@@ -19,6 +19,9 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -30,6 +33,7 @@ import com.hp.hpl.jena.sparql.expr.NodeVar;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
+import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
@@ -101,9 +105,31 @@ public class labelSearch implements PropertyFunction
             log.warn("Pattern must be a plain literal or xsd:string: "+argObject.getArg()) ;
             return new QueryIterNullIterator(execCxt) ;
         }
+
+        if ( false )
+            // Old (ARQ 1) way - not recommended.
+            return buildSyntax(input, nodeVar, pattern, execCxt) ;
         
-        Var var2 = createNewVar() ;   // Hidden variable
+        // Build a SPARQL algebra expression
+        Var var2 = createNewVar() ;                     // Hidden variable
         
+        BasicPattern bp = new BasicPattern() ;
+        Triple t = new Triple(nodeVar, RDFS.label.asNode(), var2) ;
+        bp.add(t) ;
+        OpBGP op = new OpBGP(bp) ;
+        
+        Expr regex = new E_Regex(new NodeVar(var2.getName()), pattern, "i") ;
+        OpFilter filter = OpFilter.filter(regex, op) ;
+        
+        return OpCompiler.compile(filter, input, execCxt) ;
+    }
+
+    
+    // Build SPARQL syntax and compile it.
+    // Not recommended.
+    private QueryIterator buildSyntax(QueryIterator input, Node nodeVar, String pattern, ExecutionContext execCxt)
+    {
+        Var var2 = createNewVar() ; 
         // Triple patterns for   ?x rdfs:label ?hiddenVar
         ElementTriplesBlock elementBGP = new ElementTriplesBlock();
         Triple t = new Triple(nodeVar, RDFS.label.asNode(), var2) ;
@@ -116,10 +142,12 @@ public class labelSearch implements PropertyFunction
         elementGroup.addElement(elementBGP) ;
         elementGroup.addElement(new ElementFilter(regex)) ;
         // Compile it.
-        Op op = AlgebraGenerator.compile(elementGroup) ;
+        // An alternative design is to build the Op structure programmatically,
+        // 
+        Op op = AlgebraGenerator.compile((Element)elementGroup) ;
         return OpCompiler.compile(op, input, execCxt) ;
     }
-
+    
     static int hiddenVariableCount = 0 ; 
 
     // Create a new, hidden, variable.
