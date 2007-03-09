@@ -29,32 +29,24 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
 /** A (description of a) table that holds a cached/optimized
- * version of a pattern.  P for pattern
- *  */ 
+ * version of a pattern.
+ */ 
 
-public class PTable
+public class PatternTable
 {
-    private static Log log = LogFactory.getLog(PTable.class) ;
+    private static Log log = LogFactory.getLog(PatternTable.class) ;
     
-    String subjColName = "subject" ;
+    static final String subjColName = "subject" ;
+    
+    // Property => column name
     Map <Node, String> cols = new HashMap<Node, String>() ;
     
-    public PTable() {}
+    public PatternTable() {}
     
     public void add(Node property, String colname)
     {
         cols.put(property, colname) ;
     }
-    
-//    // Accept a node if it is in the 
-//    static Filter<Node> f = new Filter<Node>()
-//    {
-//        public boolean accept(Node node)
-//        {
-//            return false ;
-//        }
-//    } ;
-    
     
     // trigger if we see a prediate this table supports.
     public boolean trigger(Quad quad)
@@ -66,28 +58,31 @@ public class PTable
         }
         return false ;
     }
-    
 
     // Start a table from the i'th quad 
     public SqlStage process(int i, QuadBlock quadBlock)
     {
         QuadBlock tableQuads = new QuadBlock() ;
         Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
+        Node subject = null ;
+        
         for ( Node p : predicates )
         {
-            // Need common subject
-            int idx = quadBlock.findFirst(i, null, null, p, null) ;
+            // Need common subject search/check.
+            int idx = quadBlock.findFirst(i, null, subject, p, null) ;
             if ( idx < 0 )
                 // No match.
                 // Conservative - must find all predicates
                 return null ;
             
             Quad q = quadBlock.get(idx) ;
-            quadBlock.remove(q) ; // Not index as it might have moved.
             tableQuads.add(q) ;
+            if ( subject == null )
+                subject = q.getSubject() ;
         }
         
-        SqlStagePTable stage = new SqlStagePTable(tableQuads) ;
+        quadBlock.removeAll(tableQuads) ;
+        SqlStagePatternTable stage = new SqlStagePatternTable(tableQuads) ;
         return stage ;
     }
 
@@ -145,12 +140,12 @@ public class PTable
 //    }
     
     // Context?  Spanning conditions between SqlStages? 
-    class SqlStagePTable implements SqlStage
+    class SqlStagePatternTable implements SqlStage
     {
         
         private QuadBlock quadBlock ;
 
-        public SqlStagePTable(QuadBlock tableQuads)
+        public SqlStagePatternTable(QuadBlock tableQuads)
         { this.quadBlock = tableQuads ;}
 
         public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
