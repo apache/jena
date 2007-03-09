@@ -17,8 +17,7 @@ public class StoreTriplesNodesHashDerby extends StoreBaseHash
     {
         super(connection,
               new FmtLayout2HashDerby(connection) ,
-              new LoaderOneTripleHash(connection) ,
-              //new LoaderHashDerby(connection),
+              new LoaderHashDerby(connection),
               new QueryCompilerFactoryHash(), 
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;
