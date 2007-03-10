@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -8,6 +8,10 @@ package com.hp.hpl.jena.sdb.compiler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
@@ -19,22 +23,21 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.store.TripleTableDesc;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
+public class SqlStageTripleTable implements SqlStage
 {
-    private static Log log = LogFactory.getLog(QuadBlockCompilerTriple.class) ;
+    private static Log log = LogFactory.getLog(SqlStageTripleTable.class) ;
     
-    protected Generator genTableAlias = Gensym.create(AliasesSql.TriplesTableBase) ;
-    
-    public QuadBlockCompilerTriple(SDBRequest request, SlotCompiler slotCompiler)
-    { 
-        super(request, slotCompiler) ;
+    // TODO Sort out generators
+    static protected Generator genTableAlias = Gensym.create(AliasesSql.TriplesTableBase) ;
+    private Quad quad ;
+
+    public SqlStageTripleTable(Quad quad)
+    {
+        this.quad = quad ;
     }
 
-    @Override
-    protected SqlNode compile(Quad quad)
+    public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
         String alias = genTableAlias.next();
         SqlExprList conditions = new SqlExprList() ;
@@ -45,7 +48,7 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
             throw new SDBException("Non-default graph") ;
         }
         
-        SqlTable triples = accessTriplesTable(alias) ;
+        SqlTable triples = accessTriplesTable(request, alias) ;
         triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
 
         TripleTableDesc tripleTableDesc = request.getStore().getTripleTableDesc() ;
@@ -62,11 +65,22 @@ public abstract class QuadBlockCompilerTriple extends QuadBlockCompilerBase
         
         return SqlRestrict.restrict(triples, conditions) ;
     }
-    protected abstract SqlTable accessTriplesTable(String alias) ;
+    
+    private SqlTable accessTriplesTable(SDBRequest request, String alias)
+    {
+        return new SqlTable(request.getStore().getTripleTableDesc().getTableName(), alias) ;
+    }
+
+    @Override
+    public String toString() { return "Table: "+quad ; } 
+    
+    public void output(IndentedWriter out)
+    {  out.print(toString()) ; }
+
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

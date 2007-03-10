@@ -6,45 +6,23 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import java.util.ArrayList;
-import java.util.List;
+//import org.apache.commons.logging.Log;
+//import org.apache.commons.logging.LogFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerTriple;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerStage;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
-import com.hp.hpl.jena.sdb.core.AliasesSql;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.store.NodeTableDesc;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
-import com.hp.hpl.jena.sparql.core.Var;
 
-public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
+
+// Only here to think about addRestrictions later.
+public class QuadBlockCompiler2 extends QuadBlockCompilerStage
 {
-    private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
-    
-    private Generator genNodeResultAlias = Gensym.create(AliasesSql.NodesResultAliasBase) ;
+    //private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
 
-    // Slot stuff.
-    List<Node> constants = new ArrayList<Node>() ;
-    List<Var>  vars = new ArrayList<Var>() ;
-    // --
-    
-    protected TripleTableDesc tripleTableDesc ;
-    protected NodeTableDesc   nodeTableDesc ;
-    
     public QuadBlockCompiler2(SDBRequest request, SlotCompiler slotCompiler)
     { 
         super(request, slotCompiler) ;
-        tripleTableDesc = request.getStore().getTripleTableDesc() ;
-        nodeTableDesc = request.getStore().getNodeTableDesc() ;
     }
-
 
     // Maybe needed, later, for value-based testing
     
@@ -89,12 +67,6 @@ public class QuadBlockCompiler2 extends QuadBlockCompilerTriple
 //        }
 //        return sqlNode ;
 //    }
-
-    @Override
-    final protected SqlTable accessTriplesTable(String alias)
-    {
-        return new SqlTable(tripleTableDesc.getTableName(), alias) ;
-    }
 }
 
 /*

@@ -1,33 +1,50 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package com.hp.hpl.jena.sdb.compiler;
 
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerTriple;
-import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
+import java.util.ArrayList;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sdb.util.ListUtils;
 
-
-public class QuadBlockCompiler1 extends QuadBlockCompilerTriple
+public class SqlStageList extends ArrayList<SqlStage>
 {
-    public QuadBlockCompiler1(SDBRequest request, SlotCompiler slotCompiler)
+    public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
-        super(request, slotCompiler) ;
+        SqlNode sqlNode = null ;
+        // See QuadCompilerBase.compile
+        for ( SqlStage s : this )
+        {
+            SqlNode sNode = s.build(request, slotCompiler) ;
+            if ( sNode != null )
+                sqlNode = QC.innerJoin(request, sqlNode, sNode) ;
+        }
+        
+        return sqlNode ;
     }
+
     
     @Override
-    protected SqlTable accessTriplesTable(String alias)
+    public String toString()
     {
-        return new TableTriples1(request.getStore().getTripleTableDesc().getTableName(), alias) ;
+        String str = "SqlStageList::" ;
+        
+        if ( isEmpty() )
+            str = str + " (empty)" ;
+        else
+            str = str + " "+ListUtils.toString(this, " // " ) ;
+        //str = str + "\n" ;
+        return str ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

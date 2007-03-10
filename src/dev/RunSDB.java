@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
 
-import dev.pattern.QuadBlockStageBuilder;
+import dev.pattern.QBuilder;
 
 
 public class RunSDB
@@ -35,7 +35,7 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         
-        QuadBlockStageBuilder.main(null) ;
+        QBuilder.main(null) ;
         System.exit(0) ;
         
         

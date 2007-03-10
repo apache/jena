@@ -4,45 +4,15 @@
  * [See end of file]
  */
 
-package dev.pattern;
-
-import java.util.ArrayList;
+package com.hp.hpl.jena.sdb.compiler;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.compiler.QC;
-import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
-import com.hp.hpl.jena.sdb.util.ListUtils;
+import com.hp.hpl.jena.sparql.util.Printable;
 
-public class SqlStageList extends ArrayList<SqlStage>
+public interface SqlStage extends Printable
 {
-    public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
-    {
-        SqlNode sqlNode = null ;
-        // See QuadCompilerBase.compile
-        for ( SqlStage s : this )
-        {
-            SqlNode sNode = s.build(request, slotCompiler) ;
-            if ( sNode != null )
-                sqlNode = QC.innerJoin(request, sqlNode, sNode) ;
-        }
-        
-        return sqlNode ;
-    }
-
-    
-    @Override
-    public String toString()
-    {
-        String str = "SqlStageList::" ;
-        
-        if ( isEmpty() )
-            str = str + " (empty)" ;
-        else
-            str = str + " "+ListUtils.toString(this, " // " ) ;
-        //str = str + "\n" ;
-        return str ;
-    }
+    public SqlNode build(SDBRequest request, SlotCompiler slotCompiler) ; 
 }
 
 /*

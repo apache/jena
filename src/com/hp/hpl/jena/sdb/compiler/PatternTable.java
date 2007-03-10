@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.pattern;
+package com.hp.hpl.jena.sdb.compiler;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,8 +19,6 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;

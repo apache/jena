@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerStage;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -29,7 +30,7 @@ public class QueryCompiler1 extends QueryCompilerMain
     protected QuadBlockCompiler createQuadBlockCompiler()
     { 
         SlotCompiler sComp = new SlotCompiler1(request, codec) ;
-        return new QuadBlockCompiler1(request, sComp) ; 
+        return new QuadBlockCompilerStage(request, sComp) ; 
     }
 }
 

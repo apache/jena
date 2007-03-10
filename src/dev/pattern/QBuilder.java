@@ -16,12 +16,10 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
-import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerStage;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.layout2.hash.SlotCompilerHash;
@@ -31,67 +29,9 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
 // replacement QuadBlockCompilerBase -- eventually
-public class QuadBlockStageBuilder implements QuadBlockCompiler
+public class QBuilder
 {
     
-    SDBRequest request ;
-    SlotCompiler slotCompiler ;
-    private PatternTable patternTable ;
-
-    public QuadBlockStageBuilder(SDBRequest request, SlotCompiler slotCompiler)
-    {
-        //super(request, slotCompiler) ;
-        this.request = request ;
-        this.slotCompiler = slotCompiler ;
-        
-        // testing.
-        patternTable = new PatternTable();
-        patternTable.add(RDF.type.asNode(), "TYPE") ;
-        patternTable.add(RDF.value.asNode(), "VALUE") ;
-    }
-
-    
-    //@Override
-    public SqlNode compile(QuadBlock quads)
-    {
-        // What's the abstraction of a Table?
-        //  PTable, Triple table,  == SqlStage?
-        //Stage == table
-        
-        SqlNode sqlNode = slotCompiler.start(quads) ;   // ****
-        SqlExprList conditions = new SqlExprList() ;
-        
-        QuadBlock plainQuads = new QuadBlock() ;
-        quads = new QuadBlock(quads) ;          // Copy it because it's modified.
-        
-        // Why not get rid of SqlStageList and have .process return an SqlNode?
-
-        SqlStageList sList = new SqlStageList() ;
-        // Potential concurrent modification - need to use an explicit index.
-        for ( int i = 0 ; i < quads.size() ; )
-        {
-            Quad q = quads.get(i) ;
-            if ( patternTable.trigger(q) )
-            {
-                // Removes current quad
-                SqlStage stage = patternTable.process(i, quads) ;
-                if ( stage != null )
-                {
-                    sList.add(stage) ;
-                    continue ;
-                }
-            }
-            sList.add(new SqlStageTripleTable(q)) ; 
-            i++ ;
-        }
-
-        // Join the initial node (constants). 
-        SqlNode sqlStages = sList.build(request, slotCompiler) ;
-        sqlNode = QC.innerJoin(request, sqlNode, sqlStages) ;
-        sqlNode = slotCompiler.finish(sqlNode, quads) ;
-        return sqlNode ;
-    }
-
     public static void main(String[] args)
     {
         // Make getting a slot compiler easier for testing?
@@ -120,7 +60,7 @@ public class QuadBlockStageBuilder implements QuadBlockCompiler
             PrintSDB.printSQL(op) ;
         }
             
-        QuadBlockStageBuilder builder = new QuadBlockStageBuilder(request, sComp) ;
+        QuadBlockCompilerStage builder = new QuadBlockCompilerStage(request, sComp) ;
         QuadBlock quadBlock = new QuadBlock() ;
         
         Quad qValue = new Quad(Quad.defaultGraph, 
