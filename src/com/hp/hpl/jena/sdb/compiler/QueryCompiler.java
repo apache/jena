@@ -10,8 +10,8 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 
 public interface QueryCompiler
 {
-    public ConditionCompiler getConditionCompiler() ;
     public Op compile(Op op) ;
+    public ConditionCompiler getConditionCompiler() ;
 }
 
 /*

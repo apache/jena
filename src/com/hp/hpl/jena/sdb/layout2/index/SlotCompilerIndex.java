@@ -36,6 +36,7 @@ public class SlotCompilerIndex extends SlotCompiler2
     private static Log log = LogFactory.getLog(SlotCompilerIndex.class) ;
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
     
+    // Could be a set but it's convenient to keep thing in order for debugging.
     private List<Node> constants = new ArrayList<Node>() ;
     private List<Var>  vars = new ArrayList<Var>() ;
     
@@ -122,7 +123,8 @@ public class SlotCompilerIndex extends SlotCompiler2
     { 
         if ( node.isLiteral() || node.isBlank() || node.isURI() )
         {
-            constants.add(node) ;
+            if ( ! constants.contains(node) )
+                constants.add(node) ;
             return ;
         }
         if ( Var.isVar(node) )

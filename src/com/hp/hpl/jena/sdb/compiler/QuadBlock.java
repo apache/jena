@@ -6,15 +6,25 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
+import static com.hp.hpl.jena.sdb.util.Alg.apply;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.PrintSerializable;
+import com.hp.hpl.jena.sparql.util.PrintUtils;
 
-public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
+import com.hp.hpl.jena.sdb.util.alg.Action;
+
+public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintSerializable
 {
+    // A nicer QuadPattern
     Node graphNode ;
 
     public QuadBlock() { super() ; }
@@ -131,6 +141,34 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>
         &&
         ( g == null || g.equals(q.getGraph()) ) ;
     }
+    
+    @Override
+    public String toString()
+    { return PrintUtils.toString(this) ; }
+
+    public void output(final IndentedWriter out, SerializationContext sCxt)
+    { 
+        final String sep = "\n" ;
+        
+        final Action<Quad> strAction = new Action<Quad>() {
+            boolean first = true ; 
+            public void apply(Quad quad)
+            {
+                if ( ! first )
+                    out.print(sep) ;
+                first = false ;
+                out.print(quad.toString()) ;
+            } } ;
+
+        apply(this, strAction) ;
+    }
+
+    public String toString(PrefixMapping prefixMapping)
+    { return PrintUtils.toString(this, prefixMapping) ; }
+
+    public void output(IndentedWriter out)
+    { PrintUtils.output(this, out) ; }
+
 }
 
 /*

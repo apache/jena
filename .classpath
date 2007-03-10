@@ -20,7 +20,7 @@
 	<classpathentry kind="lib" path="lib/wstx-asl-3.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JRuby"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDBC"/>
-	<classpathentry kind="lib" path="lib/arq.jar"/>
+	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="C:/home/afs/Projects/SDB/arq-src.zip"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
