@@ -1,19 +1,52 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util;
+package com.hp.hpl.jena.sparql.core;
 
-// Hmm - hardly worth it!
-public abstract class PrintableBase implements Printable
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+
+
+/** A class whose purpose is to give a name to a collection of quads
+ * Reduces the use of bland "List" in APIs (Java 1.4) 
+ */ 
+
+public class QuadPattern
 {
-    public String toString() { return PrintUtils.toString(this) ; }
+    private List quads = new ArrayList() ; 
+
+    public QuadPattern() {}
+    public QuadPattern(QuadPattern other) {quads.addAll(other.quads) ; }
+    
+    public void add(Quad q) { quads.add(q) ; }
+    public void addAll(QuadPattern other) { quads.addAll(other.quads) ; }
+    public void add(int i, Quad q) { quads.add(i, q) ; }
+    
+    public Quad get(int i) { return (Quad)quads.get(i) ; }
+    public ListIterator iterator() { return quads.listIterator() ; } 
+    public int size() { return quads.size() ; }
+    public boolean isEmpty() { return quads.isEmpty() ; }
+    
+    public List getList() { return quads ; } 
+    
+    public int hashCode() { return quads.hashCode() ; } 
+    public boolean equals(Object other)
+    { 
+        if ( ! ( other instanceof QuadPattern) ) 
+            return false ;
+        QuadPattern bp = (QuadPattern)other ;
+        return quads.equals(bp.quads) ;
+    }
+    
+    public String toString() { return quads.toString() ; } 
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

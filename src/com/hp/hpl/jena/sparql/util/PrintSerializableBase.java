@@ -7,8 +7,6 @@
 package com.hp.hpl.jena.sparql.util;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 /** Simple implementation of PrintSerializable.  Subclasses should override
  * output(IndentedWriter, SerializationContext) or output(IndentedWriter).
@@ -22,18 +20,14 @@ public abstract class PrintSerializableBase implements PrintSerializable
 //    { output(out) ; }
 
     public String toString(PrefixMapping pmap)
-    { return FmtUtils.toString(this, pmap) ; }
+    { return PrintUtils.toString(this, pmap) ; }
 
     // final stops it being overridden and missing the output() route.
     public final String toString()
-    { return FmtUtils.toString(this) ; }
+    { return PrintUtils.toString(this) ; }
     
     public void output(IndentedWriter out)
-    { 
-        out.print(Plan.startMarker) ;
-        out.print(Utils.className(this)) ;
-        out.print(Plan.finishMarker) ;
-    }
+    { PrintUtils.output(this, out) ; }
 }
 
 /*

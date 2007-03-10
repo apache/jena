@@ -11,8 +11,43 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+
 public class PrintUtils
 {
+    // ---- Printable
+    public static String toString(Printable f)
+    { 
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        IndentedWriter out = buff.getIndentedWriter() ;
+        f.output(out) ;
+        return buff.toString() ;
+    }
+    
+    // ---- PrintSerializable
+    public static String toString(PrintSerializable item, PrefixMapping pmap)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        IndentedWriter out = buff.getIndentedWriter() ;
+        SerializationContext sCxt = new SerializationContext(pmap) ;
+        item.output(out, sCxt) ;
+        return buff.toString() ;
+    }
+
+    public static String toString(PrintSerializable item)
+    { return toString(item, ARQConstants.getGlobalPrefixMap()) ; }
+    
+    public static void output(PrintSerializable item, IndentedWriter out)
+    { 
+        out.print(Plan.startMarker) ;
+        out.print(Utils.className(item)) ;
+        out.print(Plan.finishMarker) ;
+    }
+    
+    // ----
     public static interface Fmt { String fmt(Object thing) ; }
     
     private static Fmt itemFmt = new Fmt(){
