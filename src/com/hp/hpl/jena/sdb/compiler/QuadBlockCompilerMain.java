@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.compiler;
 
 import com.hp.hpl.jena.sparql.core.Quad;
 
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -48,6 +49,8 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
                 SqlStage stage = patternTable.process(i, quads) ;
                 if ( stage != null )
                 {
+                    if ( quads.get(i) == q )
+                        throw new SDBException("Pattern table returned a stage but did not remove the first quad") ;
                     sList.add(stage) ;
                     continue ;
                 }

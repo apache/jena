@@ -18,7 +18,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -58,126 +57,94 @@ public class PatternTable
     }
 
     // Start a table from the i'th quad 
+    // Must remove the quad at index i if return is not null.
     public SqlStage process(int i, QuadBlock quadBlock)
     {
         QuadBlock tableQuads = new QuadBlock() ;
         Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
-        Node subject = null ;
+
+        // Use the fact that i'th quad is the trigger  
+        Quad trigger = quadBlock.get(i) ;
+        Node subject = trigger.getSubject() ;
+        Node graph = trigger.getGraph() ;
         
         for ( Node p : predicates )
         {
-            // Need common subject search/check.
-            int idx = quadBlock.findFirst(i, null, subject, p, null) ;
+            int idx = quadBlock.findFirst(i, graph, subject, p, null) ;
             if ( idx < 0 )
                 // No match.
                 // Conservative - must find all predicates
-                return null ;
+                //return null ;
+                // Liberal - any predicates
+                continue ;
             
             Quad q = quadBlock.get(idx) ;
             tableQuads.add(q) ;
-            if ( subject == null )
-                subject = q.getSubject() ;
         }
         
         quadBlock.removeAll(tableQuads) ;
-        SqlStagePatternTable stage = new SqlStagePatternTable(tableQuads) ;
+        SqlStagePatternTable stage = new SqlStagePatternTable(graph, subject, tableQuads) ;
         return stage ;
     }
 
-//    // -------------------***************************
-//    public boolean match(QuadBlock quadBlock)
-//    {
-//        //QuadBlockMatch.match(pattern, quadBlock) ;
-//        
-//        Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
-//        
-//        //SetUtils.filter(cols.keySet(), f) ;
-//        
-//        
-//        for ( Node p : predicates )
-//        {
-//            if ( ! quadBlock.contains(null, null, p, null) )
-//                return false ;
-//        }
-//        return true ;
-//    }
-//
-//    // Returns a stage list of a reduced quad block and this step.
-//    // Issue: placement of this step.  An SqlNode optimization problem?
-//    
-//    // "Slot compiler" for QuadBlockCompiler.
-//    
-//    
-//    public SqlStageList modBlock(QuadBlockCompiler compiler, QuadBlock quadBlock)
-//    {
-//        if ( quadBlock.getGraphNode() != Quad.defaultGraph )
-//            log.fatal("Not the default graph") ;
-//        
-//        Set<Node> predicates = new HashSet<Node>(cols.keySet()) ;
-//        SqlStageList sList = new SqlStageList() ;
-//
-//        QuadBlock tableQuads = new QuadBlock() ; 
-//        QuadBlock replacement = quadBlock.clone() ;
-//
-//        for ( Node p : predicates )
-//        {
-//            // Need common subject
-//            int idx = quadBlock.findFirst(null, null, p, null) ;
-//            if ( idx < 0 )
-//                // No match.
-//                return null ;
-//            Quad q = quadBlock.get(idx) ;
-//            replacement.remove(q) ; // Not index as it might have moved.
-//            tableQuads.add(q) ;
-//        }
-//        
-//        SqlStagePTable stage = new SqlStagePTable(tableQuads) ;
-//        sList.add(stage) ;
-//        sList.add(new SqlStagePlain(compiler, replacement)) ;
-//        return sList ;
-//    }
-    
-    // Context?  Spanning conditions between SqlStages? 
     class SqlStagePatternTable implements SqlStage
     {
-        
-        private QuadBlock quadBlock ;
+        private QuadBlock tableQuads ;
+        private Node graphNode ;
+        private Node subject ;
 
-        public SqlStagePatternTable(QuadBlock tableQuads)
-        { this.quadBlock = tableQuads ;}
+        public SqlStagePatternTable(Node graphNode, Node subject, QuadBlock tableQuads)
+        { 
+            this.tableQuads = tableQuads ;
+            this.subject = subject ;
+            this.graphNode = graphNode ;
+        }
 
         public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
         {
-            QuadBlock quads = new QuadBlock(quadBlock) ;
-            
             SqlTable sqlTable = new SqlTable("TABLE", "ALIAS") ;
             
             SqlExprList conditions = new SqlExprList() ;
-            //compiler.processSlot(request, sqlTable, conditions, subj, subjColName) ;
             
-            for ( Node pred : cols.keySet() )
+            if ( !graphNode.equals(Quad.defaultGraph) )
+                log.fatal("Not the default graph in SqlStagePTable.build") ;
+            if ( false )
+                slotCompiler.processSlot(request, sqlTable, conditions, graphNode, subjColName) ;
+            slotCompiler.processSlot(request, sqlTable, conditions, subject, subjColName) ;
+
+            for ( Quad quad : tableQuads )
             {
-//                if ( ! quads.contains(null, null, pred, null) )
-//                    continue ;
-
-                int idx = quads.findFirst(null, null, pred, null) ;
-                if ( idx < 0 )
-                {
-                    log.fatal("Can't find quad in SqlStagePTable.build") ;
-                    throw new SDBException("SqlStagePTable.build") ;
-                }
-                
-                Quad q = quads.remove(idx) ;
-                
-                String colName = cols.get(pred) ;
+                String colName = cols.get(quad.getPredicate()) ;
                 SqlColumn col = new SqlColumn(sqlTable, colName) ;
-
-                
-                Node obj = q.getObject() ;
-//                if ( Var.isVar(obj) )
-//                    sqlTable.setIdColumnForVar(Var.alloc(obj), col) ;
-                
+                Node obj = quad.getObject() ;
                 slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
+            }
+
+            if ( false )
+            {
+                for ( Node pred : cols.keySet() )
+                {
+                    int idx = tableQuads.findFirst(graphNode, subject, pred, null) ;
+                    if ( idx < 0 )
+                    {
+                        // Liberal
+                        continue ;
+                        //log.fatal("Can't find quad in SqlStagePTable.build") ;
+                        //throw new SDBException("SqlStagePTable.build") ;
+                    }
+                    
+                    Quad q = tableQuads.remove(idx) ;
+                    
+                    String colName = cols.get(pred) ;
+                    SqlColumn col = new SqlColumn(sqlTable, colName) ;
+    
+                    
+                    Node obj = q.getObject() ;
+    //                if ( Var.isVar(obj) )
+    //                    sqlTable.setIdColumnForVar(Var.alloc(obj), col) ;
+                    
+                    slotCompiler.processSlot(request, sqlTable, conditions, obj, colName) ;
+                }
             }
             return SqlRestrict.restrict(sqlTable, conditions) ;
         }
