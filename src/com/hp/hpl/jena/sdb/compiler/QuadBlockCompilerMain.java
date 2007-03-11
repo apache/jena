@@ -12,20 +12,19 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public class QuadBlockCompilerStage implements QuadBlockCompiler
+public class QuadBlockCompilerMain implements QuadBlockCompiler
 {
     SDBRequest request ;
     SlotCompiler slotCompiler ;
     static public PatternTable patternTable = null ;
 
-    public QuadBlockCompilerStage(SDBRequest request, SlotCompiler slotCompiler)
+    public QuadBlockCompilerMain(SDBRequest request, SlotCompiler slotCompiler)
     {
         //super(request, slotCompiler) ;
         this.request = request ;
         this.slotCompiler = slotCompiler ;
         
     }
-
     
     //@Override
     public SqlNode compile(QuadBlock quads)

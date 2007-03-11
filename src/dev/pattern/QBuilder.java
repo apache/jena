@@ -18,7 +18,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerStage;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -39,7 +39,7 @@ public class QBuilder
         
         patternTable.add(RDF.type.asNode(), "TYPE") ;
         patternTable.add(RDF.value.asNode(), "VALUE") ;
-        QuadBlockCompilerStage.patternTable = patternTable ;
+        QuadBlockCompilerMain.patternTable = patternTable ;
             
         
         // Make getting a slot compiler easier for testing?
@@ -68,7 +68,7 @@ public class QBuilder
             PrintSDB.printSQL(op) ;
         }
             
-        QuadBlockCompilerStage builder = new QuadBlockCompilerStage(request, sComp) ;
+        QuadBlockCompilerMain builder = new QuadBlockCompilerMain(request, sComp) ;
         QuadBlock quadBlock = new QuadBlock() ;
         
         Quad qValue = new Quad(Quad.defaultGraph, 

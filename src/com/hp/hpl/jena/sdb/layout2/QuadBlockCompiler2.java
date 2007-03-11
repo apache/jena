@@ -9,13 +9,13 @@ package com.hp.hpl.jena.sdb.layout2;
 //import org.apache.commons.logging.Log;
 //import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerStage;
+import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 
 
 // Only here to think about addRestrictions later.
-public class QuadBlockCompiler2 extends QuadBlockCompilerStage
+public class QuadBlockCompiler2 extends QuadBlockCompilerMain
 {
     //private static Log log = LogFactory.getLog(QuadBlockCompiler2.class) ;
 
