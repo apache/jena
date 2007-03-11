@@ -18,8 +18,11 @@ public class Gensym implements Generator
     public static Gensym create(String base) 
     { return new Gensym(SQLUtils.gen(base)) ; }
     
-    public Gensym(String base) { this(base, 1) ; }
-    public Gensym(String base, int startCount) { this.base = base ; this.count = startCount ; }
+    public static Gensym create(String base, int startCount) 
+    { return new Gensym(SQLUtils.gen(base), startCount) ; }
+
+    private Gensym(String base) { this(base, 1) ; }
+    private Gensym(String base, int startCount) { this.base = base ; this.count = startCount ; }
     
     public String next()
     {

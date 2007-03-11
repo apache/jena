@@ -26,7 +26,7 @@ public class QBR_SubProperty implements QuadBlockRewrite
             // If has superproperty ...
             if ( true )
             {
-                Var var = request.genvar();
+                Var var = request.genVar();
                 Node property = q.getPredicate() ;
                 
                 // { :s :p :o } ==> { :s ?v :o . ?v rdfs:subPropertyOf :o }

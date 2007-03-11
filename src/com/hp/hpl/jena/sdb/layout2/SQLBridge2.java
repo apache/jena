@@ -43,10 +43,13 @@ import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 public class SQLBridge2 extends SQLBridgeBase 
 {
     private static Log log = LogFactory.getLog(SQLBridge2.class) ;
-    private Generator genNodeResultAlias = Gensym.create(AliasesSql.NodesResultAliasBase) ;
+    private static final String NodeBase = AliasesSql.NodesResultAliasBase ;
+    //private Generator genNodeResultAlias = null ;
 
     public SQLBridge2(SDBRequest request, SqlNode sqlNode, Collection<Var> projectVars)
-    { super(request, sqlNode, projectVars) ; }
+    { 
+        super(request, sqlNode, projectVars) ;
+    }
     
     @Override
     protected void buildValues()
@@ -119,7 +122,8 @@ public class SQLBridge2 extends SQLBridgeBase
         // Not in scope -- add a table to get it
         NodeTableDesc nodeTableDesc = request.getStore().getNodeTableDesc() ;
         
-        SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), genNodeResultAlias.next()) ; 
+        String tableAlias = request.genId(NodeBase) ; 
+        SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), tableAlias) ;
         String nodeKeyColName = nodeTableDesc.getKeyColName() ;
         SqlColumn c2 = new SqlColumn(nTable, nodeKeyColName) ;
 

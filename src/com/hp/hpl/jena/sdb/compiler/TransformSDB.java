@@ -22,8 +22,11 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.AliasesSql;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public class TransformSDB extends TransformCopy
@@ -32,8 +35,6 @@ public class TransformSDB extends TransformCopy
     private SDBRequest request ;
     private QuadBlockCompiler quadBlockCompiler ;
     //private boolean doLeftJoin = true ;
-    
-    private Generator genCoalesceAlias = Gensym.create(AliasesSql.CoalesceAliasBase) ;
     
     public TransformSDB(SDBRequest request, QuadBlockCompiler quadBlockCompiler) 
     {
@@ -99,8 +100,10 @@ public class TransformSDB extends TransformCopy
         
         if ( coalesceVars.size() > 0  ) 
         {
-            SqlNode sqlNode = QC.leftJoinCoalesce(request, genCoalesceAlias.next(),
-                                                  sqlLeft, sqlRight, coalesceVars) ;
+            String alias = request.genId(AliasesSql.CoalesceAliasBase) ;
+            SqlNode sqlNode = QC.leftJoinCoalesce(request, alias,
+                                                  sqlLeft, sqlRight, 
+                                                  coalesceVars) ;
             return new OpSQL(sqlNode, opJoin, request) ;
             
             // Punt

@@ -32,7 +32,7 @@ public class QBR_SubType implements QuadBlockRewrite
         while ( ( i = quadBlock.findFirst(i, null, null, rdfType, null) ) != -1 ) 
         {
             Quad rdfTypeQuad = quadBlock.get(i) ;
-            Var var = request.genvar() ;
+            Var var = request.genVar() ;
             Quad q1 = new Quad(rdfTypeQuad.getGraph(), rdfTypeQuad.getSubject(), rdfType, var) ;
             Quad q2 = new Quad(rdfTypeQuad.getGraph(), var, RDFS.subClassOf.asNode(), rdfTypeQuad.getObject()) ;
             quadBlock.set(i, q1) ;      // replace rdf:type statement

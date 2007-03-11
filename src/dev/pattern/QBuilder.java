@@ -16,6 +16,7 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
+import com.hp.hpl.jena.sdb.compiler.PatternTable;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerStage;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
@@ -34,6 +35,13 @@ public class QBuilder
     
     public static void main(String[] args)
     {
+        PatternTable patternTable = new PatternTable();
+        
+        patternTable.add(RDF.type.asNode(), "TYPE") ;
+        patternTable.add(RDF.value.asNode(), "VALUE") ;
+        QuadBlockCompilerStage.patternTable = patternTable ;
+            
+        
         // Make getting a slot compiler easier for testing?
         
 //        Store store = new StoreSimplePGSQL(null) ;

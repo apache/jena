@@ -15,8 +15,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -27,9 +25,6 @@ import com.hp.hpl.jena.sdb.store.TripleTableDesc;
 public class SqlStageTripleTable implements SqlStage
 {
     private static Log log = LogFactory.getLog(SqlStageTripleTable.class) ;
-    
-    // TODO Sort out generators
-    static protected Generator genTableAlias = Gensym.create(AliasesSql.TriplesTableBase) ;
     private Quad quad ;
 
     public SqlStageTripleTable(Quad quad)
@@ -39,7 +34,7 @@ public class SqlStageTripleTable implements SqlStage
 
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
-        String alias = genTableAlias.next();
+        String alias = request.genId(AliasesSql.TriplesTableBase) ;
         SqlExprList conditions = new SqlExprList() ;
         
         if ( ! quad.getGraph().equals(Quad.defaultGraph) )

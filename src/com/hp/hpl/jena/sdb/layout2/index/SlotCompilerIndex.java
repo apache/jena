@@ -12,12 +12,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
-import com.hp.hpl.jena.sdb.core.Generator;
-import com.hp.hpl.jena.sdb.core.Gensym;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -27,13 +29,13 @@ import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.SlotCompiler2;
 import com.hp.hpl.jena.sdb.store.NodeTableDesc;
 import com.hp.hpl.jena.sdb.store.TripleTableDesc;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 public class SlotCompilerIndex extends SlotCompiler2
 {
     private static Log log = LogFactory.getLog(SlotCompilerIndex.class) ;
+    
+    private static final String NodeConstBase = AliasesSql.NodesConstantAliasBase ;
+    
     Map<Node, SqlColumn> constantCols = new HashMap<Node, SqlColumn>() ;
     
     // Could be a set but it's convenient to keep thing in order for debugging.
@@ -42,9 +44,6 @@ public class SlotCompilerIndex extends SlotCompiler2
     
     protected TripleTableDesc tripleTableDesc ;
     protected NodeTableDesc   nodeTableDesc ;
-    
-    //TODO request-wide unique number generation.
-    private Generator genNodeConstantAlias = Gensym.create(AliasesSql.NodesConstantAliasBase) ;
     
     public SlotCompilerIndex(SDBRequest request)
     { 
@@ -88,7 +87,7 @@ public class SlotCompilerIndex extends SlotCompiler2
 
             // Access nodes table.
             SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), 
-                                           genNodeConstantAlias.next()) ;
+                                           getRequest().genId(NodeConstBase)) ;
             
             nTable.addNote("Const: "+FmtUtils.stringForNode(n, getRequest().getPrefixMapping())) ; 
             SqlColumn cHash = new SqlColumn(nTable, nodeTableDesc.getHashColName()) ;

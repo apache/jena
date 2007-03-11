@@ -61,7 +61,7 @@ public class QC
                                            Set<Var> coalesceVars)
     {
         SqlJoin sqlJoin = join(request, LEFT, left, right, coalesceVars) ;
-        return SqlCoalesce.create(alias, sqlJoin, coalesceVars) ;
+        return SqlCoalesce.create(request, alias, sqlJoin, coalesceVars) ;
     }
     
 //    private static String sqlNodeName(SqlNode sNode)

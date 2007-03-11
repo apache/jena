@@ -30,21 +30,21 @@ public class SqlCoalesce extends SqlNodeBase
     Set<Var> nonCoalesceVars = new HashSet<Var>() ;
     ScopeRename idScope ;
     ScopeRename nodeScope ;
-    Generator genvar = new Gensym(AliasesSql.VarCollasce) ;
+    private static final String AliasBase = AliasesSql.VarCollasce ;
     
-    public static SqlCoalesce create(String alias, SqlJoin join, Set<Var>coalesceVars) 
+    public static SqlCoalesce create(SDBRequest request, String alias, SqlJoin join, Set<Var>coalesceVars) 
     {
-        // This is not actually true!
-        // But at the moment, it is a restriction so we test for it for now and 
-        // remove the test when the new cde arrices as the rest of the class and 
-        // it's usage then needs to be checked. 
+        // This is not actually true in general.
+        // But at the moment, it is a restriction so we test for it for now 
+        // as a snaity check. Remove the test when the new situation arises 
+        // as this class then needs to be checked. 
         if ( ! join.isLeftJoin() )
             LogFactory.getLog(SqlCoalesce.class).warn("SqlCoalesce node is not a LeftJoin") ;
         
-        return new SqlCoalesce(alias, join, coalesceVars) ;
+        return new SqlCoalesce(request, alias, join, coalesceVars) ;
     }
     
-    private SqlCoalesce(String alias, SqlJoin join, Set<Var> coalesceVars)
+    private SqlCoalesce(SDBRequest request, String alias, SqlJoin join, Set<Var> coalesceVars)
     { 
         super(alias) ;
         this.join = join ;
@@ -71,7 +71,7 @@ public class SqlCoalesce extends SqlNodeBase
         
         for ( Var v : coalesceVars )
         {
-            String sqlColName = genvar.next() ;
+            String sqlColName = request.genId(AliasBase) ;
             SqlColumn col = new SqlColumn(table, sqlColName) ;
             idScope.setAlias(v, col) ;
             annotation.addAnnotation(v+" as "+col) ;
@@ -87,7 +87,7 @@ public class SqlCoalesce extends SqlNodeBase
                 LogFactory.getLog(SqlCoalesce.class).warn("Variable in coalesce and non-coalesce sets: "+v) ;
                 continue ;
             }
-            String sqlColName = genvar.next() ;
+            String sqlColName = request.genId(AliasBase) ;
             SqlColumn col = new SqlColumn(table, sqlColName) ;
             idScope.setAlias(v, col) ;
             annotation.addAnnotation(v+" as "+col) ;

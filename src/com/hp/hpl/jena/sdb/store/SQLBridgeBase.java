@@ -28,8 +28,6 @@ import com.hp.hpl.jena.sdb.util.Pair;
 
 public abstract class SQLBridgeBase implements SQLBridge
 {
-    private Generator vargen = new Gensym(AliasesSql.VarBase) ;
-    
     // Always need to allocate a label for a column 
     // because can't access by table.column
     private Map<Var, String>varLabels = new HashMap<Var, String>() ;
@@ -103,7 +101,7 @@ public abstract class SQLBridgeBase implements SQLBridge
         String sqlVarName = varLabels.get(v) ;
         if ( sqlVarName == null )
         {
-            sqlVarName = vargen.next() ;
+            sqlVarName = request.genId(AliasesSql.VarBase) ;
             varLabels.put(v, sqlVarName) ;
         }
         return sqlVarName ;

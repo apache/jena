@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.sdb.compiler;
 
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -17,7 +16,7 @@ public class QuadBlockCompilerStage implements QuadBlockCompiler
 {
     SDBRequest request ;
     SlotCompiler slotCompiler ;
-    private PatternTable patternTable ;
+    static public PatternTable patternTable = null ;
 
     public QuadBlockCompilerStage(SDBRequest request, SlotCompiler slotCompiler)
     {
@@ -25,13 +24,6 @@ public class QuadBlockCompilerStage implements QuadBlockCompiler
         this.request = request ;
         this.slotCompiler = slotCompiler ;
         
-        // testing.
-        if ( false )
-        {
-            patternTable = new PatternTable();
-            patternTable.add(RDF.type.asNode(), "TYPE") ;
-            patternTable.add(RDF.value.asNode(), "VALUE") ;
-        }
     }
 
     

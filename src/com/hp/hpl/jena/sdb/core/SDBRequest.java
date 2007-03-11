@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -54,7 +57,28 @@ public class SDBRequest extends StoreHolder
     public PrefixMapping getPrefixMapping()     { return prefixMapping ; }
     public Query getQuery()                     { return query ; }
     public Store getStore()                     { return store() ; }
-    public Var genvar()                         { return varAlloc.allocVar() ; }
+    
+    // Per request allocations
+    private Map<String, Generator> generators = new HashMap<String, Generator>() ;
+    public Generator generator(String base)
+    {
+        Generator g = generators.get(base) ;
+        if ( g == null )
+        {
+            g = Gensym.create(base) ;
+            generators.put(base, g) ;
+        }
+        return g ;
+    }
+
+    public String genId(String base)
+    {
+        Generator gen = generator(base) ;
+        return gen.next() ;
+    }
+
+    
+    public Var genVar()                         { return varAlloc.allocVar() ; }
 }
 
 /*
