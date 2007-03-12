@@ -15,7 +15,6 @@ import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
@@ -35,7 +34,13 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
         if ( dftGraph == null )
             dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pGraph) ;
         
-        Model dftModel = a.openModel(dftGraph) ;
+        Model dftModel = null ;
+        if ( dftGraph == null )
+            dftModel = a.openModel(dftGraph) ;
+        else
+            // Assembler description did not define one - make a dummy.
+            dftModel = GraphUtils.makePlainModel() ;
+
         ds.setDefaultModel(dftModel) ;
 
         // -------- Named graphs
@@ -54,8 +59,6 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
             ds.addNamedModel(gName, m) ;
         }
         
-        if ( ds.getDefaultModel() == null )
-            ds.setDefaultModel(ModelFactory.createDefaultModel()) ;
         return ds ;
     }
 }
