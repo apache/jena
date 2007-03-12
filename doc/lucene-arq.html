@@ -24,7 +24,7 @@ syntax</a> document.</p>
 	return the literals matching the Lucene search pattern.</li>
 	<li>Pattern 2 : index subject resources by string literal. 
 	The index returns the subjects with property value matching a text query.</li>
-    <li>Pattern 3: index graph nodes based on strings not present in the graph.</li>
+    <li>Pattern 3 : index graph nodes based on strings not present in the graph.</li>
 </ul>
 <p>Patterns 1 and 2 have the indexed content in the graph. Both 1 and 2 can be modified by specifying a property so that only values of a 
 given property are indexed. Pattern 2 is less flexible as
@@ -50,7 +50,7 @@ graph is read in, or to built from an existing graph. </p>
 	and stores the complete literal. Optionally, a property can be supplied which 
 	restricts indexing to strings in statements using that property.</li>
 	<li><code>IndexBuilderSubject</code>: Index the subject resource by a string 
-	literal, an stoire the subject resource, possibly restricted by a specified property.</li>
+	literal, an store the subject resource, possibly restricted by a specified property.</li>
 </ul>
 <p>Lucene has many ways to create indexes and the index builder classes do not 
 attempt to provide all possible Lucene features. Applications may need to extend 
