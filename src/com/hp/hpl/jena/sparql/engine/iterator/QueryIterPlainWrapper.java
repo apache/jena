@@ -28,7 +28,7 @@ public class QueryIterPlainWrapper extends QueryIter
     public QueryIterPlainWrapper(Iterator iter)
     { this(iter, null) ; }
     
-    public QueryIterPlainWrapper(Iterator iter, ExecutionContext context )
+    public QueryIterPlainWrapper(Iterator iter, ExecutionContext context)
     {
         super(context) ;
         iterator = iter ;

@@ -27,7 +27,7 @@ public class LabelMap extends HashMap
     public String put(String key, String value)
     { return (String)super.put(key, value) ; }
     
-    public Object  put(Object key, Object value)
+    public Object put(Object key, Object value)
     { throw new ARQInternalErrorException("LabelMap: attempt to put with Objects, not Strings") ; }
 }
 
