@@ -35,7 +35,7 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
             dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pGraph) ;
         
         Model dftModel = null ;
-        if ( dftGraph == null )
+        if ( dftGraph != null )
             dftModel = a.openModel(dftGraph) ;
         else
             // Assembler description did not define one - make a dummy.
