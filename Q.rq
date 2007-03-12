@@ -1,14 +1,9 @@
-#PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
-#PREFIX  apf:    <java:com.hp.hpl.jena.query.pfunction.library.>
-PREFIX  apf:    <java:com.hp.hpl.jena.sparql.pfunction.library.>
-
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX :    <http://example/>
 
 SELECT *
 { 
-    ?a :q ?b .
-    ?a apf:bnode ?label
+    ?a ?b ?c
 
 ##     # Case 1: Filter and BGPs.
 ##     # No join.

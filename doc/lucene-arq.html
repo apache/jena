@@ -100,12 +100,12 @@ subclass the search class <code>com.hp.hpl.jena.query.larq.LuceneSearch</code>
 to set different indexes with different property names.</p>
 <h2><a name="queryTextMatches">Query using a Lucene index</a></h2>
 <p>Query execution is as usual using the property function <code>pf:textMatch</code>. 
-&quot;textMatch&quot; can be throught of as an implied relationship in the data. Note the 
+&quot;textMatch&quot; can be thought of as an implied relationship in the data. Note the 
 prefix ends in &quot;.&quot;.</p>
 
 <pre class="box">
   String queryString = StringUtils.join("\n", new String[]{
-            "PREFIX pf: &lt;<b>java:com.hp.hpl.jena.query.pfunction.library.</b>&gt",
+            "PREFIX pf: &lt;<b>http://jena.hpl.hp.com/ARQ/property#</b>&gt",
             "SELECT * {" ,
             "    ?lit <b>pf:textMatch</b> '+text'",
             "}"
@@ -117,7 +117,7 @@ prefix ends in &quot;.&quot;.</p>
   The subjects with a property value of the matched literals can be retrieved by 
 	looking up the literals in the model: </p>
 <pre class="box">
-  PREFIX pf: &lt;<b>java:com.hp.hpl.jena.query.pfunction.library.</b>&gt
+  PREFIX pf: &lt;<b>http://jena.hpl.hp.com/ARQ/property#</b>&gt
   SELECT ?doc {
     ?lit <b>pf:textMatch</b> '+text' .
     ?doc ?p ?lit
