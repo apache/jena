@@ -4,14 +4,26 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util.assembler;
+package com.hp.hpl.jena.sparql.core.assembler;
 
+import com.hp.hpl.jena.assembler.JA;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
-public class DatasetAssembler extends DataSourceAssembler
+public class DatasetAssemblerVocab
 {
-    // Just an alternative name.
-}
+    public static final String NS = JA.getURI() ;
+    public static String getURI() { return NS ; }
+    
+    public static final Resource tDataset            = ResourceFactory.createResource(NS+"RDFDataset") ;
+    public static final Property pDefaultGraph       = ResourceFactory.createProperty(NS, "defaultGraph") ;
+    public static final Property pNamedGraph         = ResourceFactory.createProperty(NS, "namedGraph") ;
+    
+    public static final Property pGraphName          = ResourceFactory.createProperty(NS, "graphName") ;
+    public static final Property pGraph              = ResourceFactory.createProperty(NS, "graph") ;
 
+}
 
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

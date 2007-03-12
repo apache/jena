@@ -4,58 +4,37 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.util.assembler;
+package com.hp.hpl.jena.sparql.core.assembler;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.core.DatasetDesc;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 
-public class DataSourceAssembler extends AssemblerBase implements Assembler
+public class DatasetDescAssembler extends AssemblerBase implements Assembler
 {
+
     public static Resource getType() { return DatasetAssemblerVocab.tDataset ; }
     
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        DataSource ds = DatasetFactory.create() ;
+        DatasetDesc ds = new DatasetDesc() ;
 
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph
-        Resource dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pDefaultGraph) ;
-        if ( dftGraph == null )
-            dftGraph = GraphUtils.getResourceValue(root, DatasetAssemblerVocab.pGraph) ;
-        
-        Model dftModel = a.openModel(dftGraph) ;
-        ds.setDefaultModel(dftModel) ;
+        List dftGraphs1 = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pDefaultGraph) ;
+        List dftGraphs2 = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pGraph) ;
+        ds.getDefaultGraphURIs().addAll(dftGraphs1) ;
+        ds.getDefaultGraphURIs().addAll(dftGraphs2) ;
 
         // -------- Named graphs
-        List nodes = GraphUtils.multiValue(root, DatasetAssemblerVocab.pNamedGraph) ; 
+        List namedGraphURIs = GraphUtils.multiValueString(root, DatasetAssemblerVocab.pNamedGraph) ; 
+        ds.getNamedGraphURIs().addAll(namedGraphURIs) ;
         
-        for ( Iterator iter= nodes.iterator() ; iter.hasNext() ; )
-        {
-            RDFNode n = (RDFNode)iter.next();
-            if ( ! ( n instanceof Resource ) )
-                throw new DatasetAssemblerException(root, "Not a resource: "+FmtUtils.stringForRDFNode(n)) ;
-            Resource r = (Resource)n ;
-
-            String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName) ;
-            Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph) ;
-            Model m = a.openModel(g) ;
-            ds.addNamedModel(gName, m) ;
-        }
-        
-        if ( ds.getDefaultModel() == null )
-            ds.setDefaultModel(ModelFactory.createDefaultModel()) ;
         return ds ;
     }
 }

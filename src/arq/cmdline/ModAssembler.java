@@ -15,10 +15,10 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.NotFoundException;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException;
-import com.hp.hpl.jena.sparql.util.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.util.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.util.FileManager;
 
 
