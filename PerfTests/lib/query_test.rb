@@ -1,16 +1,19 @@
 class QueryTest
 
     require 'benchmark'
+    include Benchmark
     require 'java'
     
     StoreFactory = com.hp.hpl.jena.sdb.store.StoreFactory
     QueryFactory = com.hp.hpl.jena.query.QueryFactory
     DatasetFactory = com.hp.hpl.jena.query.DatasetFactory
     QueryExecutionFactory = com.hp.hpl.jena.query.QueryExecutionFactory
-    
+    ResultSetFactory = com.hp.hpl.jena.query.ResultSetFactory
+
     def initialize
         @stores = []
         @queries = []
+        @width = 0
     end
     
     def store(store)
@@ -19,6 +22,7 @@ class QueryTest
     
     def query(queryfile)
         @queries << queryfile
+        @width = queryfile.size if queryfile.size > @width
     end
     
     def run
@@ -26,10 +30,22 @@ class QueryTest
             model = StoreFactory.create_model(store)
             ds = DatasetFactory.create(model)
             
-            Benchmark.bmbm do |x|
+            puts "\n\n**** #{store} ****\n\n" 
+            
+            print '[ Warm up '
+            @queries.each { |queryfile| do_query(ds, queryfile); print '.' }
+            print " ]\n\n"
+            Benchmark.bm(@width + 3, ">total:") do |x|
+                total = nil
                 @queries.each do |queryfile|
-                    x.report(queryfile.dup) { do_query(ds, queryfile) } # dup because of bug in bmbm
+                    res = x.report(queryfile.dup) { do_query(ds, queryfile) }
+                    if total then
+                      total += res
+                    else
+                      total = res
+                    end
                 end
+                [total]
             end
         end
     end
@@ -41,9 +57,10 @@ class QueryTest
         
         results = qe.exec_select
         
-        while results.has_next # exhaust results
+        if results.has_next # exhaust results
             results.next
         end
+        qe.close
     end
 
 end
