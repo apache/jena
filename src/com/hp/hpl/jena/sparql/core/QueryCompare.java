@@ -49,7 +49,7 @@ public class QueryCompare implements QueryVisitor
     public void visitResultForm(Query query1)
     { check("Query result form", query1.getQueryType() == query2.getQueryType()) ; }
 
-    public void visitBase(Query query1)
+    public void visitPrologue(Prologue query1)
     {
         // This is after parsing so all IRIs in the query have been made absolute.
         // For two queries to be equal, their explicitly set base URIs must be the same. 
@@ -57,14 +57,10 @@ public class QueryCompare implements QueryVisitor
         String b1 = query1.explicitlySetBaseURI() ? query1.getBaseURI() : null ;
         String b2 = query2.explicitlySetBaseURI() ? query2.getBaseURI() : null ;        
         check("Base URIs", b1, b2) ;
-    }
 
-    public void visitPrefixes(Query query1)
-    {
         if ( query1.getPrefixMapping() == null &&
             query2.getPrefixMapping() == null )
             return ;
-        
         check("Prefixes", query1.getPrefixMapping().samePrefixMappingAs(query2.getPrefixMapping())) ;
     }
 

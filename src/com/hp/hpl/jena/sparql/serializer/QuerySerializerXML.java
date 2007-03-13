@@ -13,6 +13,7 @@ import java.util.List;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryVisitor;
 import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -50,9 +51,7 @@ public class QuerySerializerXML implements QueryVisitor
     
     public void visitResultForm(Query query)  {}
 
-    public void visitBase(Query query) {}
-    
-    public void visitPrefixes(Query query) { }
+    public void visitPrologue(Prologue prologue) {}
     
     public void visitSelectResultForm(Query query)
     {

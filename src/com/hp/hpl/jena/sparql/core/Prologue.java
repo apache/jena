@@ -6,14 +6,18 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.util.RelURI;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.*;
 
-public class Prologue
+public class Prologue implements PrintSerializable
 {
     private static Log log = LogFactory.getLog(Prologue.class) ;
 
@@ -23,6 +27,12 @@ public class Prologue
 
     // Prefixes
     protected PrefixMapping prefixMap = new PrefixMappingImpl() ;
+    
+    public Prologue() {}
+    
+    public Prologue(PrefixMapping pmap) { this.prefixMap = pmap ; }
+    
+    public Prologue(PrefixMapping pmap, String base) { this.prefixMap = pmap ; setBaseURI(base) ; }
     
     /**
      * @return True if the query has an explicitly set base URI. 
@@ -74,12 +84,6 @@ public class Prologue
     /** Set the mapping */
     public void setPrefixMapping(PrefixMapping pmap ) { prefixMap = pmap ; }
 
-//    /** Return the prefix map from the parsed query */ 
-//    public PrefixMapping getLocalPrefixMap() { return prefixMap.getLocalPrefixMapping() ; }
-//
-//    public static PrefixMapping getGlobalPrefixMap() { return globalPrefixMap ; }
-
-    
     /** Lookup a prefix for this query, including the default prefixes */
     public String getPrefix(String prefix)
     {
@@ -116,6 +120,68 @@ public class Prologue
     public String shortForm(String uri)
     {
         return prefixMap.shortForm(uri) ;
+    }
+
+    public String toString()
+    { return PrintUtils.toString(this) ; }
+    
+    // Be a bit careful
+    
+    public void output(IndentedWriter out, SerializationContext sCxt)
+    { output(out) ; }
+
+    public String toString(PrefixMapping pmap)
+    {
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        IndentedWriter out = buff.getIndentedWriter() ;
+        this.output(out) ;
+        return buff.toString() ;
+    }
+
+    public void output(IndentedWriter out)
+    {
+        printBase(out) ;
+        printPrefixes(out) ;
+    }
+    
+    private void printBase(IndentedWriter out)
+    {
+        if ( getBaseURI() != null && explicitlySetBaseURI() )
+        {
+            out.print("BASE    ") ;
+            out.print("<"+getBaseURI()+">") ;
+            out.newline() ;
+        }
+    }
+    
+    public void printPrefixes(IndentedWriter out)
+    {
+        Map pmap = null ;
+        
+        if ( getPrefixMapping() instanceof PrefixMapping2 )
+        {
+            PrefixMapping2 pm2 = (PrefixMapping2)getPrefixMapping() ;
+            pmap = pm2.getNsPrefixMap(false) ;
+        }
+        else
+            pmap = getPrefixMapping().getNsPrefixMap() ;
+        
+        if ( pmap.size() > 0 )
+        {
+            //boolean first = true ;
+            for ( Iterator iter = pmap.keySet().iterator() ; iter.hasNext() ; )
+            {
+                String k = (String)iter.next() ;
+                String v = (String)pmap.get(k) ;
+                out.print("PREFIX  ") ;
+                out.print(k) ;
+                out.print(':') ;
+                out.print(' ', -k.length()) ;
+                // Include at least one space 
+                out.print(" <"+v+">") ;
+                out.newline() ;
+            }
+        }
     }
 }
 

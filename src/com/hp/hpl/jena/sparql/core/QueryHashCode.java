@@ -35,14 +35,10 @@ public class QueryHashCode
         public void visitResultForm(Query query)
         { }
 
-        public void visitBase(Query query)
+        public void visitPrologue(Prologue query)
         {
             if ( query.explicitlySetBaseURI() )
                 x ^= query.getBaseURI().hashCode() ;
-        }
-
-        public void visitPrefixes(Query query)
-        {
             x ^= query.getPrefixMapping().getNsPrefixMap().hashCode() ;
         }
 

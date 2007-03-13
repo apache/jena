@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryVisitor;
 import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -60,17 +61,24 @@ public class QuerySerializerPrefix implements QueryVisitor
 
     public void visitResultForm(Query query)  {}
 
-    public void visitBase(Query query)
+    
+    public void visitPrologue(Prologue prologue)
     {
-        if ( query.explicitlySetBaseURI() && query.getBaseURI() != null )
-            out.println("(base <"+query.getBaseURI()+">)") ;
+        printBase(prologue) ;
+        printPrefixes(prologue) ;
     }
     
-    public void visitPrefixes(Query query)
+    private void printBase(Prologue prologue)
     {
-        if ( query.getPrefixMapping() == null )
+        if ( prologue.explicitlySetBaseURI() && prologue.getBaseURI() != null )
+            out.println("(base <"+prologue.getBaseURI()+">)") ;
+    }
+    
+    private void printPrefixes(Prologue prologue)
+    {
+        if ( prologue.getPrefixMapping() == null )
             return ;
-        Map pmap = query.getPrefixMapping().getNsPrefixMap() ;
+        Map pmap = prologue.getPrefixMapping().getNsPrefixMap() ;
         for ( Iterator iter = pmap.keySet().iterator() ; iter.hasNext() ; )
         {
             String k = (String)iter.next() ;

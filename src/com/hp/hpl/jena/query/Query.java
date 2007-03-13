@@ -417,8 +417,7 @@ public class Query extends Prologue implements Cloneable
     {
         visitor.startVisit(this) ;
         visitor.visitResultForm(this) ;
-        visitor.visitBase(this) ;
-        visitor.visitPrefixes(this) ;
+        visitor.visitPrologue(this) ;
         if ( this.isSelectType() )
             visitor.visitSelectResultForm(this) ;
         if ( this.isConstructType() )

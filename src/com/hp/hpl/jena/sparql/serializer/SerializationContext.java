@@ -6,50 +6,48 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMap;
 
 /** Information needed to serialize things */
 
 public class SerializationContext
 {
-    Query query ;
-    PrefixMapping prefixMap ;
+    Prologue prologue ;
     NodeToLabelMap bNodeMap ;
     
     public SerializationContext(SerializationContext cxt)
     {
-        query = cxt.query ;
-        prefixMap = cxt.prefixMap ;
+        prologue = cxt.prologue ;
         bNodeMap = cxt.bNodeMap ;
     }
 
-    public SerializationContext(Query query)
+    public SerializationContext(Prologue prologue)
     {
-        this(null,
-             (query.getPrefixMapping()!=null ? query.getPrefixMapping() : null) ,
-             null) ;
+        this(prologue, null) ;
     }
     
     public SerializationContext(PrefixMapping prefixMap)
     {
-        this(null, prefixMap, null) ;
+        this(new Prologue(prefixMap)) ;
     }
 
     public SerializationContext()
     {
-        this(null, null, null) ;
+        this((Prologue)null, null) ;
+    }
+
+    public SerializationContext(PrefixMapping prefixMap, NodeToLabelMap bMap)
+    {
+        this(new Prologue(prefixMap), bMap) ;
     }
     
-    public SerializationContext(Query _query, PrefixMapping _prefixMap, NodeToLabelMap bMap)
+    public SerializationContext(Prologue prologue, NodeToLabelMap bMap)
     {
-        if ( prefixMap == null && query != null )
-            prefixMap = query.getPrefixMapping() ;
-
-        query = _query ;
-        prefixMap = _prefixMap ;
+        this.prologue = prologue ;
+        if ( this.prologue == null )
+            this.prologue = new Prologue() ;
         
         bNodeMap = bMap ;
         if ( bMap == null )
@@ -77,7 +75,7 @@ public class SerializationContext
      */
     public PrefixMapping getPrefixMapping()
     {
-        return prefixMap;
+        return prologue.getPrefixMapping();
     }
     
     /**
@@ -85,24 +83,24 @@ public class SerializationContext
      */
     public void setPrefixMapping(PrefixMapping prefixMap)
     {
-        this.prefixMap = prefixMap;
+        prologue.setPrefixMapping(prefixMap) ;
     }
     
-    /**
-     * @return Returns the query.
-     */
-    public Query getQuery()
-    {
-        return query;
-    }
-    
-    /**
-     * @param query The query to set.
-     */
-    public void setQuery(Query query)
-    {
-        this.query = query;
-    }
+//    /**
+//     * @return Returns the query.
+//     */
+//    public Query getQuery()
+//    {
+//        return query;
+//    }
+//    
+//    /**
+//     * @param query The query to set.
+//     */
+//    public void setQuery(Query query)
+//    {
+//        this.query = query;
+//    }
     
 }
 

@@ -9,19 +9,17 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryVisitor;
 import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 /** Serialize a query into SPARQL or ARQ formats */
 
@@ -76,46 +74,8 @@ public class QuerySerializer implements QueryVisitor
     
     public void visitResultForm(Query query)  {}
 
-    public void visitBase(Query query)
-    {
-        if ( query.getBaseURI() != null && query.explicitlySetBaseURI() )
-        {
-            out.print("BASE    ") ;
-            out.print("<"+query.getBaseURI()+">") ;
-            out.newline() ;
-        }
-    }
-    
-    public void visitPrefixes(Query query)
-    {
-        Map pmap = null ;
-        
-        if ( query.getPrefixMapping() instanceof PrefixMapping2 )
-        {
-            PrefixMapping2 pm2 = (PrefixMapping2)query.getPrefixMapping() ;
-            pmap = pm2.getNsPrefixMap(false) ;
-        }
-        else
-            pmap = query.getPrefixMapping().getNsPrefixMap() ;
-        
-        if ( pmap.size() > 0 )
-        {
-            //boolean first = true ;
-            for ( Iterator iter = pmap.keySet().iterator() ; iter.hasNext() ; )
-            {
-                String k = (String)iter.next() ;
-                String v = (String)pmap.get(k) ;
-                out.print("PREFIX  ") ;
-                out.print(k) ;
-                out.print(':') ;
-                out.print(' ', -k.length()) ;
-                // Include at least one space 
-                out.print(" <"+v+">") ;
-                out.newline() ;
-            }
-            out.newline() ;
-        }
-    }
+    public void visitPrologue(Prologue prologue)
+    { prologue.output(out) ; out.newline() ; }
     
     public void visitSelectResultForm(Query query)
     {

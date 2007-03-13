@@ -7,6 +7,8 @@ ARQ2-beta
 
 == Core
 
++ Check "=" is an error when unknown.
+
 + ref.Eval - tidy up
 
 + Very simple, non-streaming table usage.

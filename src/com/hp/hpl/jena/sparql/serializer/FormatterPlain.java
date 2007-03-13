@@ -46,7 +46,7 @@ public class FormatterPlain extends FormatterBase
     
     public static String asString(Element el)
     {
-        SerializationContext cxt = new SerializationContext(null, null, null) ;
+        SerializationContext cxt = new SerializationContext() ;
         IndentedLineBuffer b = new IndentedLineBuffer() ;
         FormatterPlain.format(b.getIndentedWriter(), cxt, el) ;
         return b.toString() ;

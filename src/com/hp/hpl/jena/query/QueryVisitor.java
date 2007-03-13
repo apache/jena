@@ -6,13 +6,14 @@
 
 package com.hp.hpl.jena.query;
 
+import com.hp.hpl.jena.sparql.core.Prologue;
+
 /** Query visitor pattern */
 
 public interface QueryVisitor
 {
     public void startVisit(Query query) ;
-    public void visitBase(Query query) ;
-    public void visitPrefixes(Query query) ;
+    public void visitPrologue(Prologue prologue) ;
 
     public void visitResultForm(Query query) ;
     public void visitSelectResultForm(Query query) ;

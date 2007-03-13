@@ -21,7 +21,7 @@ public class FmtExprARQ extends FmtExpr
     
     public FmtExprARQ(IndentedWriter writer, PrefixMapping pmap)
     {
-        this(writer, new SerializationContext(null, pmap , null)) ;
+        this(writer, new SerializationContext(pmap , null)) ;
     }
     
 
@@ -30,7 +30,7 @@ public class FmtExprARQ extends FmtExpr
         out = writer ;
         context = cxt ;
         if ( context == null )
-            context = new SerializationContext(null, null, null) ;
+            context = new SerializationContext() ;
     }
     
     public static void format(IndentedWriter out, SerializationContext cxt, Expr expr)

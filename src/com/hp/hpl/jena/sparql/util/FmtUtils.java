@@ -33,23 +33,6 @@ public class FmtUtils
     
     static NodeToLabelMap bNodeMap = new NodeToLabelMap("b", false) ;
     
-//    // ---- Printable
-//    public static String toString(Printable f)
-//    { 
-//        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-//        IndentedWriter out = buff.getIndentedWriter() ;
-//        f.output(out) ;
-//        return buff.toString() ;
-//    }
-//    
-//    // ---- PrintSerializable : they moved to PrintUtils;
-//    
-//    public static String toString(PrintSerializable f)
-//    { return PrintUtils.toString(f) ; }
-//    
-//    public static String toString(PrintSerializable f, PrefixMapping pmap)
-//    { return PrintUtils.toString(f, pmap) ; }
-    
     // Formatting various items
     public static String stringForTriple(Triple triple)
     {
@@ -459,7 +442,7 @@ public class FmtUtils
     
     private static SerializationContext newSerializationContext(PrefixMapping prefixMapping)
     {
-        return new SerializationContext(null, prefixMapping, bNodeMap) ;
+        return new SerializationContext(prefixMapping, bNodeMap) ;
     }
 }
 

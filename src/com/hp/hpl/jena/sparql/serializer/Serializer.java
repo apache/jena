@@ -163,9 +163,9 @@ public class Serializer
     static public void serializeARQ(Query query, IndentedWriter writer)
     {
         // For the query pattern
-        SerializationContext cxt1 = new SerializationContext(query, query.getPrefixMapping(), new NodeToLabelMap("b", false) ) ;
+        SerializationContext cxt1 = new SerializationContext(query, new NodeToLabelMap("b", false) ) ;
         // For the construct pattern
-        SerializationContext cxt2 = new SerializationContext(query, query.getPrefixMapping(),  new NodeToLabelMap("c", false)  ) ;
+        SerializationContext cxt2 = new SerializationContext(query, new NodeToLabelMap("c", false)  ) ;
         
         serializeARQ(query, writer, 
                      new FormatterARQ(writer, cxt1),
@@ -191,7 +191,7 @@ public class Serializer
 
     static public void serializeSPARQL_X(Query query, IndentedWriter writer)
     {
-        SerializationContext cxt = new SerializationContext(query, query.getPrefixMapping(), null ) ;
+        SerializationContext cxt = new SerializationContext(query, null ) ;
         QuerySerializerXML serilizer = new QuerySerializerXML(writer, cxt) ;
         query.visit(serilizer) ;
     }
@@ -219,14 +219,14 @@ public class Serializer
 
     static public void serializePrefix(Query query, IndentedWriter writer)
     {
-        SerializationContext cxt = new SerializationContext(query, query.getPrefixMapping(), null ) ;
+        SerializationContext cxt = new SerializationContext(query, null ) ;
         QuerySerializerPrefix serializer = new QuerySerializerPrefix(writer, cxt) ;
         query.visit(serializer) ;
     }
     
     static public void serializePlain(Query query, IndentedWriter writer)
     {
-        SerializationContext cxt = new SerializationContext(query, query.getPrefixMapping(), null ) ;
+        SerializationContext cxt = new SerializationContext(query, null ) ;
         QuerySerializerPlain serializer = new QuerySerializerPlain(writer, cxt) ;
         query.visit(serializer) ;
     }

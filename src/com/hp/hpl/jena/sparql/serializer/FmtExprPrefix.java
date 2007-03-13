@@ -21,7 +21,7 @@ public class FmtExprPrefix extends FmtExpr
     
     public FmtExprPrefix(IndentedWriter writer, PrefixMapping pm)
     {
-        this(writer, new SerializationContext(null, pm , null)) ;
+        this(writer, new SerializationContext(pm , null)) ;
     }
     
     public FmtExprPrefix(IndentedWriter writer, SerializationContext qCxt)
@@ -29,7 +29,7 @@ public class FmtExprPrefix extends FmtExpr
         out = writer ;
         context = qCxt ;
         if ( context == null )
-            context = new SerializationContext(null, null, null) ;
+            context = new SerializationContext() ;
     }
     
     public static void format(IndentedWriter out, SerializationContext cxt, Expr expr)

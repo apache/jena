@@ -40,7 +40,7 @@ public class FmtTemplateARQ extends FormatterBase
     
     public static String asString(Template template)
     {
-        SerializationContext cxt = new SerializationContext(null, null, null) ;
+        SerializationContext cxt = new SerializationContext() ;
         IndentedLineBuffer b = new IndentedLineBuffer() ;
         FmtTemplateARQ.format(b.getIndentedWriter(), cxt, template) ;
         return b.toString() ;
