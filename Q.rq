@@ -3,7 +3,7 @@ PREFIX :    <http://example/>
 
 SELECT *
 { 
-    ?a ?b ?c
+    ?a :b ?c
 
 ##     # Case 1: Filter and BGPs.
 ##     # No join.
