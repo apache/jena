@@ -14,10 +14,9 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.*;
 
-public class Prologue implements PrintSerializable
+public class Prologue implements Printable
 {
     private static Log log = LogFactory.getLog(Prologue.class) ;
 
@@ -125,11 +124,6 @@ public class Prologue implements PrintSerializable
     public String toString()
     { return PrintUtils.toString(this) ; }
     
-    // Be a bit careful
-    
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    { output(out) ; }
-
     public String toString(PrefixMapping pmap)
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
