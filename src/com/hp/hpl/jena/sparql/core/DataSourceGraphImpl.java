@@ -71,6 +71,13 @@ public class DataSourceGraphImpl implements DataSourceGraph
         namedGraphs.put(uri, graph) ;
     }
      
+    public Graph removeNamedGraph(String uri)
+    {
+        if ( namedGraphs == null )
+            return null ;
+        return (Graph)namedGraphs.remove(uri) ;
+    }
+
     public boolean containsNamedGraph(String uri)
     { 
         if ( namedGraphs == null ) return false ;

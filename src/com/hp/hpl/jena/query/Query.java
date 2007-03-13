@@ -15,8 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.QueryCompare;
 import com.hp.hpl.jena.sparql.core.QueryHashCode;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -28,7 +27,6 @@ import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.RelURI;
 
 /** The data structure for a query as presented externally.
  *  There are two ways of creating a query - use the parser to turn
@@ -45,10 +43,10 @@ import com.hp.hpl.jena.sparql.util.RelURI;
  * @version 	$Id: Query.java,v 1.91 2007/01/27 16:59:13 andy_seaborne Exp $
  */
 
-public class Query implements Cloneable
+public class Query extends Prologue implements Cloneable
 {
     static { ARQ.init() ; /* Ensure everything has started properly */ }
-    static Log log = LogFactory.getLog(Query.class) ;
+    private static Log log = LogFactory.getLog(Query.class) ;
     
     public static final int QueryTypeUnknown    = -123 ;
     public static final int QueryTypeSelect     = 111 ;
@@ -99,18 +97,6 @@ public class Query implements Cloneable
     // Also uses resultVars
     protected List resultNodes               = new ArrayList() ;     // Type in list: Node
     
-    // BASE URI
-    protected boolean seenBaseURI = false ;
-    protected String baseURI = null ;
-
-    // Prefixes
-    protected PrefixMapping prefixMap = new PrefixMappingImpl() ;
-    
-    /** Create a blank query normally queries are build by the parser or va the QueryFactory).
-     *  The application is expected to complete the query parts needed
-     *  by calling the various "add" operations later.
-     */
-
     public Query()
     {
         syntax = Syntax.syntaxSPARQL ;
@@ -427,102 +413,6 @@ public class Query implements Cloneable
         }
     }
 
-    
-    /**
-     * @return True if the query has an explicitly set base URI. 
-     */
-    public boolean explicitlySetBaseURI() { return seenBaseURI ; }
-
-    /**
-     * @return Returns the baseURI.
-     */
-    public String getBaseURI()
-    {
-        if ( baseURI == null )
-            initParserBaseURI() ;
-        return baseURI;
-    }
-    /**
-     * @param baseURI The baseURI to set.
-     */
-    public void setBaseURI(String baseURI)
-    {
-        this.baseURI = baseURI;
-        this.seenBaseURI = true ;
-    }
-    
-    void initParserBaseURI() { initParserBaseURI(null) ; }
-    void initParserBaseURI(String base)
-    {
-        if ( baseURI != null )
-            return ;
-        
-        baseURI =  RelURI.chooseBaseURI(base) ;
-    }
-    
-    // ---- Query prefixes
-    
-	/** Set a prefix for this query */
-	public void setPrefix(String prefix, String expansion)
-	{
-        try {
-            prefixMap.setNsPrefix(prefix, expansion) ;
-        } catch (PrefixMapping.IllegalPrefixException ex)
-        {
-            log.warn("Illegal prefix mapping(ignored): "+prefix+"=>"+expansion) ;
-        }
-	}	
-
-	/** Return the prefix map from the parsed query */ 
-	public PrefixMapping getPrefixMapping() { return prefixMap ; }
-    /** Set the mapping */
-    public void setPrefixMapping(PrefixMapping pmap ) { prefixMap = pmap ; }
-
-//    /** Return the prefix map from the parsed query */ 
-//    public PrefixMapping getLocalPrefixMap() { return prefixMap.getLocalPrefixMapping() ; }
-//
-//    public static PrefixMapping getGlobalPrefixMap() { return globalPrefixMap ; }
-
-    
-	/** Lookup a prefix for this query, including the default prefixes */
-    public String getPrefix(String prefix)
-    {
-        return prefixMap.getNsPrefixURI(prefix) ;
-    }
-    
-    /**
-     * @deprecated use expandPrefixedName instead
-     * @param qname
-     * @return String Expanded prefixed name
-     */
-    
-    public String expandQName(String qname)
-    { return expandPrefixedName(qname) ; }
-    
-    
-    /** Expand prefixed name 
-     * 
-     * @param qname  The prefixed name to be expanded
-     * @return URI, or null if not expanded.
-     */
-
-    public String expandPrefixedName(String qname)
-    {
-        String s = prefixMap.expandPrefix(qname) ;
-        if ( s.equals(qname) )
-            return null ;
-        return s ;
-    }
-    
-    
-    /** Use the prefix map to turn a URI into a qname, or return the original URI */
-    
-    public String shortForm(String uri)
-    {
-        return prefixMap.shortForm(uri) ;
-    }
-
-    
     public void visit(QueryVisitor visitor)
     {
         visitor.startVisit(this) ;
