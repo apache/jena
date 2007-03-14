@@ -6,9 +6,9 @@ java.lang.System.set_property 'derby.storage.pageCacheSize','3000'
 
 test do
   #store 'sdb-hsqldb-file.ttl'
-  store 'sdb-derby.ttl'
-  #store 'sdb-hash.ttl'
-  #store 'sdb-index.ttl'
+  #store 'sdb-derby.ttl'
+  store 'sdb-hash.ttl'
+  store 'sdb-index.ttl'
   query 'Query1.rq'
   #query 'Query2.rq'
   query 'Query3.rq'
