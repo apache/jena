@@ -6,15 +6,18 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import com.hp.hpl.jena.shared.Lock; 
-import com.hp.hpl.jena.shared.LockMRSW;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.iterator.NullIterator;
-import com.hp.hpl.jena.graph.Graph ;
-import java.util.* ;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.shared.LockMRSW;
+import com.hp.hpl.jena.util.iterator.NullIterator;
 
 /** Graph-level dataset.
  *  @see com.hp.hpl.jena.sparql.core.DatasetGraph
