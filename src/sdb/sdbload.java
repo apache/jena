@@ -105,6 +105,7 @@ public class sdbload extends CmdArgsDB
             if ( getModTime().timingEnabled() && !isQuiet() )
                 System.out.printf("Loaded in %.3f seconds [%d triples/s]\n", 
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
+            getModStore().getGraph().getEventManager().unregister(monitor) ;
         }
     }
         
