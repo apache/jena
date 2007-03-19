@@ -9,6 +9,8 @@ package com.hp.hpl.jena.sparql.core.assembler;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
@@ -55,6 +57,15 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
 
             String gName = GraphUtils.getAsStringValue(r, DatasetAssemblerVocab.pGraphName) ;
             Resource g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraph) ;
+            if ( g == null )
+            {
+                g = GraphUtils.getResourceValue(r, DatasetAssemblerVocab.pGraphAlt) ;
+                if ( g != null )
+                    LogFactory.getLog(DataSourceAssembler.class).warn("Use of old vocabulary: use :graph not :graphData") ;
+                else
+                    throw new DatasetAssemblerException(root, "no graph for: "+gName) ;
+            }
+            
             Model m = a.openModel(g) ;
             ds.addNamedModel(gName, m) ;
         }
