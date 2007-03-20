@@ -118,6 +118,14 @@ class EvaluatorSimple implements Evaluator
         return new TableSimple(qIter) ;
     }
 
+    public Table reduced(Table table, List vars)
+    {
+        QueryIterator qIter = table.iterator(getExecContext()) ;
+        qIter = BindingImmutable.create(vars, qIter, execCxt) ;
+        qIter = new QueryIterReduced(qIter, getExecContext()) ;
+        return new TableSimple(qIter) ;
+    }
+
     public Table distinct(Table table, List vars)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;

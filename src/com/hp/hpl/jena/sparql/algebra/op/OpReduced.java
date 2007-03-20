@@ -4,30 +4,38 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import java.util.List;
 
-public interface OpVisitor
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.engine.ref.Table;
+
+public class OpReduced extends OpModifier
 {
-    public void visit(OpBGP opBGP) ;
-    public void visit(OpQuadPattern quadPattern) ;
-    public void visit(OpJoin opJoin) ;
-    public void visit(OpLeftJoin opLeftJoin) ;
-    public void visit(OpUnion opUnion) ;
-    public void visit(OpFilter opFilter) ;
-    public void visit(OpGraph opGraph) ;
-    public void visit(OpDatasetNames dsNames) ;
-
-    public void visit(OpUnit opUnit) ;
-    public void visit(OpExt opExt) ;
+    private List vars ;
     
-    public void visit(OpList opList) ;
-    public void visit(OpOrder opOrder) ;
-    public void visit(OpProject opProject) ;
-    public void visit(OpReduced opReduced) ;
-    public void visit(OpDistinct opDistinct) ;
-    public void visit(OpSlice opSlice) ;
+    public OpReduced(Op subOp, List vars)
+    { 
+        super(subOp) ;
+        this.vars = vars ;
+    }
+    
+    public List getVars() { return vars ; }
+    
+    public Table eval_1(Table table, Evaluator evaluator)
+    { return evaluator.distinct(table, vars) ; }
+
+    public Op apply(Transform transform, Op subOp)
+    { return transform.transform(this, subOp) ; }
+
+    public String getName()                 { return "Reduced" ; }
+
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public Op copy(Op subOp)                { return new OpReduced(subOp, vars) ; }
 }
 
 /*

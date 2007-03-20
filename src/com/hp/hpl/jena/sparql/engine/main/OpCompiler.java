@@ -272,6 +272,14 @@ public class OpCompiler
         return qIter ;
     }
 
+    QueryIterator compile(OpReduced opReduced, QueryIterator input)
+    {
+        QueryIterator qIter = compileOp(opReduced.getSubOp(), input) ;
+        qIter = BindingImmutable.create(opReduced.getVars(), qIter, execCxt) ;
+        qIter = new QueryIterDistinct(qIter, execCxt) ;
+        return qIter ;
+    }
+
     static QueryIterator root(ExecutionContext execCxt)
     {
         return new QueryIterSingleton(BindingRoot.create(), execCxt) ;

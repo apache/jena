@@ -28,6 +28,7 @@ public class TransformBase implements Transform
     public Op transform(OpOrder opOrder, Op subOp)          { return opOrder ; }
     public Op transform(OpProject opProject, Op subOp)      { return opProject ; }
     public Op transform(OpDistinct opDistinct, Op subOp)    { return opDistinct ; }
+    public Op transform(OpReduced opReduced, Op subOp)      { return opReduced ; }
     public Op transform(OpSlice opSlice, Op subOp)          { return opSlice ; }
 }
 

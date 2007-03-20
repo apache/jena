@@ -165,6 +165,13 @@ public class Eval
             push(table) ;
         }
 
+        public void visit(OpReduced opReduced)
+        {
+            Table table = eval(opReduced.getSubOp()) ;
+            table = evaluator.reduced(table, opReduced.getVars()) ;
+            push(table) ;
+        }
+
         public void visit(OpSlice opSlice)
         {
             Table table = eval(opSlice.getSubOp()) ;

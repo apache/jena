@@ -1,9 +1,9 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX :    <http://example/>
 
-SELECT *
+SELECT REDUCED ?c
 { 
-    ?a :b ?c
+    ?a :p ?c
 
 ##     # Case 1: Filter and BGPs.
 ##     # No join.

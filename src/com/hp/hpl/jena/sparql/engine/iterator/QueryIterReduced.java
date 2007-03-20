@@ -1,37 +1,28 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.engine.iterator;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 
-public interface OpVisitor
+/** 
+ * @author Andy Seaborne
+ * @version $Id: QueryIterDistinct.java,v 1.4 2007/01/02 11:19:31 andy_seaborne Exp $
+ */
+
+public class QueryIterReduced extends QueryIterDistinct
 {
-    public void visit(OpBGP opBGP) ;
-    public void visit(OpQuadPattern quadPattern) ;
-    public void visit(OpJoin opJoin) ;
-    public void visit(OpLeftJoin opLeftJoin) ;
-    public void visit(OpUnion opUnion) ;
-    public void visit(OpFilter opFilter) ;
-    public void visit(OpGraph opGraph) ;
-    public void visit(OpDatasetNames dsNames) ;
-
-    public void visit(OpUnit opUnit) ;
-    public void visit(OpExt opExt) ;
-    
-    public void visit(OpList opList) ;
-    public void visit(OpOrder opOrder) ;
-    public void visit(OpProject opProject) ;
-    public void visit(OpReduced opReduced) ;
-    public void visit(OpDistinct opDistinct) ;
-    public void visit(OpSlice opSlice) ;
+    // TODO Replace with an iterator that surpresses adjacent duplicates 
+    public QueryIterReduced(QueryIterator iter, ExecutionContext context)
+    { super(iter, context) ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

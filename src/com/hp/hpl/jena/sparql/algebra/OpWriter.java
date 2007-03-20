@@ -246,6 +246,11 @@ public class OpWriter
             visitOp1(opDistinct) ;
         }
         
+        public void visit(OpReduced opReduced)
+        {
+            visitOp1(opReduced) ;
+        }
+        
         public void visit(OpSlice opSlice)
         { 
             start(opSlice, NoNL) ;

@@ -45,6 +45,7 @@
 [<CONSTRUCT>]  ::= 'CONSTRUCT'
 [<ASK>]        ::= 'ASK'
 [<DISTINCT>]   ::= 'DISTINCT'
+[<REDUCED>]    ::= 'REDUCED'
 [<WHERE>]      ::= 'WHERE'
 
 [<LIMIT>]      ::= 'LIMIT'

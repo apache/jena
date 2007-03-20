@@ -80,6 +80,9 @@ public class OpWalker
         public void visit(OpProject opProject)
         { visitX(opProject) ; }
 
+        public void visit(OpReduced opReduced)
+        { visitX(opReduced) ; }
+
         public void visit(OpDistinct opDistinct)
         { visitX(opDistinct) ; }
 

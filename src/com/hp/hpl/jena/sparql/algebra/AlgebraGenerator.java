@@ -75,6 +75,10 @@ public class AlgebraGenerator
         if ( query.isDistinct() )
             op = new OpDistinct(op, mods.projectVars) ;
         
+        // ---- REDUCED
+        if ( query.isReduced() )
+            op = new OpReduced(op, mods.projectVars) ;
+        
         // ---- LIMIT/OFFSET
         if ( query.hasLimit() || query.hasOffset() )
             op = new OpSlice(op, mods.start, mods.length) ;
@@ -318,6 +322,7 @@ public class AlgebraGenerator
         public long start ;
         public long length ;
         public boolean distinct ;
+        public boolean reduced ;
         public List projectVars ;      // Null for no projection
         public List orderConditions ;
 
@@ -326,6 +331,7 @@ public class AlgebraGenerator
             start = query.getOffset() ;
             length = query.getLimit() ;
             distinct = query.isDistinct() ;
+            reduced = query.isReduced() ;
             projectVars = Var.varList(query.getResultVars()) ;
             orderConditions = query.getOrderBy() ;
         }

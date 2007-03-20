@@ -54,6 +54,9 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpDistinct opDistinct)
     {}
 
+    public void visit(OpReduced opReduced)
+    {}
+
     public void visit(OpSlice opSlice)
     {}
 }

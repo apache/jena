@@ -9,12 +9,18 @@ ARQ2-beta
 
 + Check "=" is an error when unknown.
 
-+ ref.Eval - tidy up
++ Serilization: 
+    redo "prefix" to be SSE compatible.
+    op: triples/quads as lists themselves (+builder)
+    op: builder for modifier
 
-+ Very simple, non-streaming table usage.
-  No iterators.
-  TableSimple is the only streaming point - and often materialized.
-  And used via TableFactory.create(QueryIterator) as well as direct
++ ref.Eval - tidy up
+  
+  + Very simple, non-streaming table usage.
+    No iterators.
+    TableSimple is the only streaming point - and often materialized.
+    And used via TableFactory.create(QueryIterator) as well as direct
+  + Only one evaluator?
 
 + Property function to property path expression
 

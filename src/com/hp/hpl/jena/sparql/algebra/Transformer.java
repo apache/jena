@@ -113,6 +113,9 @@ public class Transformer
         public void visit(OpDistinct opDistinct)
         { visit1(opDistinct) ; }
         
+        public void visit(OpReduced opReduced)
+        { visit1(opReduced) ; }
+        
         public void visit(OpSlice opSlice)
         { visit1(opSlice) ; }
     }

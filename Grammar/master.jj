@@ -95,12 +95,13 @@ void PrefixDecl() : { Token t ; Node n ; }
 
 // ---- Query type clauses
 
-void SelectQuery() : { Node v ; Token t = null ;}
+void SelectQuery() : { Node v ; }
 {  
   <SELECT>
     { getQuery().setQuerySelectType() ; }
-  (t = <DISTINCT>)? 
-    { getQuery().setDistinct( t != null  ) ; }
+  ( <DISTINCT> { getQuery().setDistinct(true);} 
+  | <REDUCED>  { getQuery().setReduced(true); }
+  )? 
   (
     ( v = Var() { getQuery().addResultVar(v) ; } )+
     { getQuery().setQueryResultStar(false) ; }
@@ -1030,6 +1031,7 @@ TOKEN [IGNORE_CASE] :
 // Result forms
 |  < SELECT:      "select" >
 |  < DISTINCT:    "distinct" >
+|  < REDUCED:     "reduced" >
 |  < DESCRIBE:    "describe" >
 |  < CONSTRUCT:   "construct" >
 |  < ASK:         "ask" >

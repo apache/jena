@@ -88,6 +88,7 @@ public class Query extends Prologue implements Cloneable
     // The names of variables wanted by the caller
     protected List resultVars                = new ArrayList() ;     // Type in list: String name
     protected boolean distinct               = false ;
+    protected boolean reduced                = false ;
     
     // CONSTRUCT
     protected Template constructTemplate  = null ;
@@ -146,8 +147,11 @@ public class Query extends Prologue implements Cloneable
     }
     
     public void setDistinct(boolean b) { distinct = b ; }
-    public boolean isDistinct()       { return distinct ; }
+    public boolean isDistinct()        { return distinct ; }
     
+    public void setReduced(boolean b) { reduced = b ; }
+    public boolean isReduced()        { return reduced ; }
+
     /** @return Returns the syntax. */
     public Syntax getSyntax()         { return syntax ; }
 

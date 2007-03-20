@@ -7,7 +7,7 @@ NON-TERMINALS
 	BaseDecl	:=	<BASE> Q_IRI_REF
 	PrefixDecl	:=	<PREFIX> <QNAME_NS> Q_IRI_REF
 // ---- Query type clauses
-	SelectQuery	:=	<SELECT> ( <DISTINCT> )? ( ( Var )+ | <STAR> ) ( DatasetClause )* WhereClause SolutionModifier
+	SelectQuery	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( Var )+ | <STAR> ) ( DatasetClause )* WhereClause SolutionModifier
 	ConstructQuery	:=	<CONSTRUCT> ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier
 	DescribeQuery	:=	<DESCRIBE> ( ( VarOrIRIref )+ | <STAR> ) ( DatasetClause )* ( WhereClause )? SolutionModifier
 	AskQuery	:=	<ASK> ( DatasetClause )* WhereClause

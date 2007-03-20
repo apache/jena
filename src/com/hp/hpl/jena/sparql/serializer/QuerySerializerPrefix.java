@@ -216,6 +216,9 @@ public class QuerySerializerPrefix implements QueryVisitor
 
         if ( query.isDistinct() )
             out.println("(distinct true)") ;
+        
+        if ( query.isReduced() )
+            out.println("(reduced true)") ;
 
         if ( query.hasOffset() )
             out.println("(offset "+query.getOffset()+")") ;

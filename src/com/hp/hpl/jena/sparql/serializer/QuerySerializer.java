@@ -82,6 +82,8 @@ public class QuerySerializer implements QueryVisitor
         out.print("SELECT ") ;
         if ( query.isDistinct() )
             out.print("DISTINCT ") ;
+        if ( query.isReduced() )
+            out.print("REDUCED ") ;
         out.print(" ") ; //Padding
         
         if ( query.isQueryResultStar() )
