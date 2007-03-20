@@ -18,6 +18,7 @@ public class OpDistinct extends OpModifier
 {
     private List vars ;
     
+    // Why does this take vars?
     public OpDistinct(Op subOp, List vars)
     { 
         super(subOp) ;
