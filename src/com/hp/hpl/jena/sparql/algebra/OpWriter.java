@@ -225,18 +225,15 @@ public class OpWriter
         public void visit(OpProject opProject)
         { 
             start(opProject, NoNL) ;
-            if ( opProject.getVars().size() > 0 )
-            {
-                
-                out.print(" ") ;
-                PrintUtils.Fmt fmt = new PrintUtils.Fmt(){
-                    public String fmt(Object thing)
-                    {
-                        return ((Var)thing).toString() ;
-                    }} ;
-                PrintUtils.printList(out, opProject.getVars(), " ", fmt) ;
-            }
-            out.println();
+            
+            out.print(" (") ;
+            PrintUtils.Fmt fmt = new PrintUtils.Fmt(){
+                public String fmt(Object thing)
+                {
+                    return ((Var)thing).toString() ;
+                }} ;
+            PrintUtils.printList(out, opProject.getVars(), " ", fmt) ;
+            out.println(")");
             printOp(opProject.getSubOp()) ;
             finish(opProject) ;
         }
