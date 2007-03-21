@@ -7,16 +7,15 @@
 package com.hp.hpl.jena.n3.turtle.test;
 
 
+import junit.framework.TestCase;
+
 import com.hp.hpl.jena.n3.turtle.TurtleParseException;
 import com.hp.hpl.jena.n3.turtle.TurtleReader;
-import com.hp.hpl.jena.query.junit.SimpleTestRunner;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
-
-import junit.framework.TestCase;
 
 
 public class TestTurtle extends TestCase
@@ -49,18 +48,6 @@ public class TestTurtle extends TestCase
         {
             throw ex ;    
         }
-    }
-
-    static void runOne(String input, String output)
-    {
-        TestCase t = new TestTurtle("TurtleTest", input, output, null) ;
-        SimpleTestRunner.runAndReport(t) ;
-    }
-    
-    public static void main(String[] argv)
-    {
-        String dir = "testing/Turtle/RaptorTurtle/" ;
-        runOne("file:"+dir+"test-15.ttl", "file:"+dir+"test-15.out") ;
     }
 }
 

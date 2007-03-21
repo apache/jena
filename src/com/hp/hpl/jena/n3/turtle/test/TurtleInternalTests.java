@@ -10,11 +10,11 @@ import java.io.* ;
 
 import com.hp.hpl.jena.n3.turtle.TripleHandlerNull;
 import com.hp.hpl.jena.n3.turtle.parser.TurtleParser;
-import com.hp.hpl.jena.query.junit.TestUtils;
+import com.hp.hpl.jena.sparql.junit.TestUtils;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TurtleInternalTests.java,v 1.3 2007-01-02 11:49:52 andy_seaborne Exp $
+ * @version 	$Id: TurtleInternalTests.java,v 1.4 2007-03-21 17:55:05 andy_seaborne Exp $
  */
 public class TurtleInternalTests extends TestSuite
 {
