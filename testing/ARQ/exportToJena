@@ -1,6 +1,6 @@
 #!/bin/bash
 
-D=$(find . ! -name . ! -name .. ! -name CVS -type d)
+D=$(find . ! -name . ! -name .. ! \( -name .svn -prune \) -type d)
 
 MISSING=0
 for d in $D
@@ -31,4 +31,4 @@ for d in $D
   fi
 done
 
-cp manifest-*.ttl ~/Projects/ARQ/testing/ARQ/
+cp manifest-*.ttl ~/Projects/Jena2/testing/ARQ/
