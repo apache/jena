@@ -16,7 +16,7 @@ import com.hp.hpl.jena.n3.RelURI.RelativeURIException;
 /** com.hp.hpl.jena.query.util.test.TestCaseURI
  * 
  * @author Andy Seaborne
- * @version $Id: TestRelURI.java,v 1.1 2007-03-21 16:09:30 andy_seaborne Exp $
+ * @version $Id: TestRelURI.java,v 1.2 2007-03-21 16:52:51 andy_seaborne Exp $
  */
 
 public class TestRelURI extends TestCase
@@ -69,7 +69,11 @@ public class TestRelURI extends TestCase
     
     // ---- Basic
     
-    public void testURI()   { execTest("", "http://example.org/", "http://example.org/"); }
+    public void testURI_1()   { execTest("", "http://example.org/", "http://example.org/"); }
+    public void testURI_2()   { execTest("", "http://example.org/xyz_2007", "http://example.org/xyz_2007"); }
+    public void testURI_3()   { execTest("", "http://example.org/xyz 2007", "http://example.org/xyz 2007"); }
+    public void testURI_4()   { execTest("", "http://example.org/xyz__2007", "http://example.org/xyz__2007"); }
+    public void testURI_5()   { execTest("", "http://example.org/xyz__abc", "http://example.org/xyz__abc"); }
     
     // ---- Relative URIs
     
