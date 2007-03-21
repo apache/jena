@@ -15,7 +15,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 /** Simple example to show parsing a query and producing the
  *  SPARQL agebra expression for the query.
  * @author Andy Seaborne
- * @version $Id: Algebra.java,v 1.1 2007-03-21 21:29:39 andy_seaborne Exp $
+ * @version $Id: Algebra.java,v 1.2 2007-03-21 21:36:01 andy_seaborne Exp $
  */
 public class Algebra
 {
