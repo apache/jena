@@ -5,20 +5,14 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConvert;
 
-/** A binding that is fixed - used in calculating DISTINCT result sets.
- *  .hashCode and .equals are overidden for content equality semantics (where
- *  "equality" means Node.equals, not Node.sameValueAs)
+/** A binding that is fixed - used in calculating DISTINCT and REDUCED result sets.
+ *  .hashCode and .equals are overridden for content equality semantics (where
+ *  "equality" means Node.equals, not Node.sameValueAs).
  * 
  * @author   Andy Seaborne
  * @version  $Id: BindingImmutable.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
@@ -27,53 +21,42 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConvert;
 
 public class BindingImmutable extends BindingBase
 {
-    List vars ;
-    List values ;
-    private int calcHashCode ;    
-
+    BindingMap binding = null ;
+    int varSize = 0 ;
+    int calcHashCode = 0 ; 
+    
     /**
      * @param projectVars    The projection variables.
      * @param original       Binding to use
      */
     
-    private BindingImmutable(Collection projectVars, Binding original)
+    public BindingImmutable(Binding original)
     {
-        super(null) ; 
-        this.vars = new ArrayList(projectVars.size()) ;
-        values = new ArrayList(projectVars.size()) ;
-        calcHashCode = 0 ; 
-        for ( Iterator iter = projectVars.iterator() ; iter.hasNext() ; )
+        super(null) ;
+        // Copy the binding for safety against update.
+        binding = new BindingMap() ;
+        calcHashCode = 0 ;
+        for ( Iterator iter = original.vars() ; iter.hasNext() ; )
         {
             Var var = (Var)iter.next() ;
-            Object n = original.get(var) ;
-
-            vars.add(var) ;
-            values.add(n) ; // Includes nulls.
-            
-            if ( n != null )
-                // Independent of variable order.
-                calcHashCode = calcHashCode^n.hashCode()^var.hashCode() ; 
+            Node n = original.get(var) ;
+            if ( n == null )
+                continue ;
+            // Independent of variable order.
+            calcHashCode = calcHashCode^n.hashCode()^var.hashCode() ; 
+            binding.add(var, n) ;
+            varSize ++ ;
         }
     }
         
     protected void add1(Var var, Node node)
     { throw new UnsupportedOperationException("BindingImmutable.add") ; }
 
-    protected Iterator vars1() { return vars.listIterator() ; }
+    protected Iterator vars1()              { return binding.vars1() ; }
     
-    protected boolean contains1(Var var)
-    {
-        Object tmp = get1(var) ;
-        return tmp != null ;
-    }
+    protected boolean contains1(Var var)    { return binding.contains1(var) ; }
 
-    protected Node get1(Var var)
-    {
-        int i = vars.indexOf(var) ;
-        if (i < 0 )
-            return null ;
-        return (Node)values.get(i) ;
-    }
+    protected Node get1(Var var)            { return binding.get1(var) ;}
 
     public boolean equals(Object obj)
     {
@@ -81,15 +64,16 @@ public class BindingImmutable extends BindingBase
         
         if ( ! ( obj instanceof BindingImmutable) )
             return false ;
+        
         BindingImmutable b = (BindingImmutable)obj ;
         if ( b.hashCode() != this.hashCode())
             return false ;
         
-        if ( this.vars.size() != b.vars.size() )
+        if ( varSize != b.varSize )
             // Mismatch in the variables.
             return false ;
         
-        Iterator iter = this.vars.listIterator() ;
+        Iterator iter = binding.vars() ;
         for ( ; iter.hasNext() ; )
         {
             Var v = (Var)iter.next() ; 
@@ -103,7 +87,7 @@ public class BindingImmutable extends BindingBase
             if (node2 == null )
                 return false ;      // obj1 not null
 
-            // Same by graph matching (.eausl or .sameAs)
+            // Same by graph matching (.equals or .sameAs)
             if ( !node1.equals(node2) )   // *** .equals - not sameValueAs
                 return false ;
         }
@@ -116,22 +100,6 @@ public class BindingImmutable extends BindingBase
     }
     
     protected void checkAdd1(Var v, Node node) { }
-    
-    public static QueryIterator create(Collection vars, QueryIterator cIter, ExecutionContext context)
-    {
-        return new QueryIterConvert(cIter, new Convert(vars), context) ;
-    }
-    
-    public static class Convert implements QueryIterConvert.Converter
-    {
-        Collection vars  ;
-        public Convert(Collection vars) { this.vars = vars ; }
-        
-        public Binding convert(Binding binding)
-        {
-            return new BindingImmutable(vars, binding) ;
-        }
-    }
 }
 
 /*

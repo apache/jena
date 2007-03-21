@@ -58,7 +58,7 @@ public class QueryIterDistinct extends QueryIter1
             if ( ! ( binding instanceof BindingImmutable ) )
                 LogFactory
                     .getLog(QueryIterDistinct.class)
-                    .warn("Not a BindingImmutable (incorrect .hashCode/.equals likely for DISTINCT): "+Utils.className(binding)) ;
+                    .warn("Not a BindingImmutable (incorrect .hashCode/.equals possible for DISTINCT): "+Utils.className(binding)) ;
             
         } while ( seen.contains(binding) ) ;
         seen.add(binding) ;

@@ -9,6 +9,9 @@ ARQ2-beta
 
 + Check "=" is an error when unknown.
 
++ Further tidying around BindingImmutable.
+  Stop repeadted wrapping?
+
 + Serilization: 
     redo "prefix" to be SSE compatible.
     op: triples/quads as lists themselves (+builder)

@@ -12,9 +12,10 @@ import java.util.Collection;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.BindingImmutable;
-import com.hp.hpl.jena.sparql.engine.engine1.*;
+import com.hp.hpl.jena.sparql.engine.engine1.PlanElement;
+import com.hp.hpl.jena.sparql.engine.engine1.PlanVisitor;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterDistinct;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterFixed;
 import com.hp.hpl.jena.sparql.util.Context;
 
 /**   
@@ -39,7 +40,7 @@ public class PlanDistinct extends PlanSequenceModifier
     
     public QueryIterator execModifer(QueryIterator qIter, ExecutionContext context)
     {
-        qIter = BindingImmutable.create(vars, qIter, context) ;
+        qIter = QueryIterFixed.create(qIter, context) ;
         qIter = new QueryIterDistinct(qIter, context) ;
         return qIter ;
     }

@@ -17,7 +17,6 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.BindingImmutable;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.iterator.*;
@@ -267,7 +266,7 @@ public class OpCompiler
     QueryIterator compile(OpDistinct opDistinct, QueryIterator input)
     {
         QueryIterator qIter = compileOp(opDistinct.getSubOp(), input) ;
-        qIter = BindingImmutable.create(opDistinct.getVars(), qIter, execCxt) ;
+        qIter = QueryIterFixed.create(qIter, execCxt) ;
         qIter = new QueryIterDistinct(qIter, execCxt) ;
         return qIter ;
     }
@@ -275,7 +274,7 @@ public class OpCompiler
     QueryIterator compile(OpReduced opReduced, QueryIterator input)
     {
         QueryIterator qIter = compileOp(opReduced.getSubOp(), input) ;
-        qIter = BindingImmutable.create(opReduced.getVars(), qIter, execCxt) ;
+        qIter = QueryIterFixed.create(qIter, execCxt) ;
         qIter = new QueryIterDistinct(qIter, execCxt) ;
         return qIter ;
     }

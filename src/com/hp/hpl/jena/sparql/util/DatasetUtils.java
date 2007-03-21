@@ -6,14 +6,21 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.query.DataSource;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.core.*;
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.core.DatasetDesc;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.util.FileManager;
 
 /** Internal Dataset/DataSource factory + graph equivalents. */

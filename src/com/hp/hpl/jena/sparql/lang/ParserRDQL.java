@@ -9,13 +9,16 @@ package com.hp.hpl.jena.sparql.lang;
 import java.io.Reader;
 import java.io.StringReader;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.lang.rdql.Q_Query;
 import com.hp.hpl.jena.sparql.lang.rdql.RDQLParser;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
-import com.hp.hpl.jena.sparql.util.RelURI;
 
 
 class ParserRDQL extends Parser

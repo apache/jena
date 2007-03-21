@@ -1,37 +1,46 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.engine.iterator;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.engine.ref.Table;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingImmutable;
 
-public class OpDistinct extends OpModifier
+public class QueryIterFixed extends QueryIterConvert
 {
-    public OpDistinct(Op subOp)
-    { super(subOp) ; }
+
+    static public QueryIterFixed create(QueryIterator iter, ExecutionContext execCxt)
+    {
+        if ( iter instanceof QueryIterFixed )
+            return (QueryIterFixed)iter ;
+        return new QueryIterFixed(iter, execCxt) ;
+    }
     
-    public Table eval_1(Table table, Evaluator evaluator)
-    { return evaluator.distinct(table) ; }
+    public QueryIterFixed(QueryIterator iter, ExecutionContext execCxt)
+    {
+        super(iter, new ConvertImmutable(), execCxt) ;
+    }
+    
+    public static class ConvertImmutable implements QueryIterConvert.Converter
+    {
+        public ConvertImmutable() {  }
+        
+        public Binding convert(Binding binding)
+        {
+            return new BindingImmutable(binding) ;
+        }
+    }
 
-    public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
-
-    public String getName()                 { return "Distinct" ; }
-
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpDistinct(subOp) ; }
 
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -73,11 +73,11 @@ public class AlgebraGenerator
         
         // ---- DISTINCT
         if ( query.isDistinct() )
-            op = new OpDistinct(op, mods.projectVars) ;
+            op = new OpDistinct(op) ;
         
         // ---- REDUCED
         if ( query.isReduced() )
-            op = new OpReduced(op, mods.projectVars) ;
+            op = new OpReduced(op) ;
         
         // ---- LIMIT/OFFSET
         if ( query.hasLimit() || query.hasOffset() )

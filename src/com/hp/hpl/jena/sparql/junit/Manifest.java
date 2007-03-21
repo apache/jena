@@ -13,8 +13,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.util.RelURI;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 import com.hp.hpl.jena.util.FileManager;

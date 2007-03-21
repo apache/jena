@@ -36,4 +36,7 @@ execution where possible.
    + Filter functions now take a Context, not an ExecutionContext.
    + Deprecate "EXT" form from ARQ.
      (Property functions are better)
- 
+
+Post ARQ-2.0-beta: 
++ Added REDUCED as per DAWG decision 2007-03-20
++ OpDistinct and OpReduce no longer take a variable list

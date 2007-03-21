@@ -8,20 +8,13 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.io.File;
 import java.io.IOException;
-
-import com.hp.hpl.jena.util.FileUtils; 
-import com.hp.hpl.jena.util.cache.Cache;
+import java.net.URI;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.LogFactory;
 
-// Apache URI code
-//import com.hp.hpl.jena.rdf.arp.URI ;
-//import com.hp.hpl.jena.rdf.arp.MalformedURIException; 
-//import com.hp.hpl.jena.rdf.arp.RelativeURIException;
-
-//java.net.URI code
-import java.net.URI ;
-import java.util.regex.Pattern;
+import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.cache.Cache;
 
 /** com.hp.hpl.jena.query.util.RelURI
  * 
@@ -29,7 +22,7 @@ import java.util.regex.Pattern;
  * @version $Id: RelURI.java,v 1.34 2007/02/05 17:11:25 andy_seaborne Exp $
  */
 
-public class RelURI
+public class RelURI_X
 {
     // "Pragmatic" is the polite way of describing this code.
     // "Hack", "kludge", "ugly", "bletch" are also heard 
@@ -76,47 +69,42 @@ public class RelURI
         }
         
         // Encode spaces (for filenames)
-        baseStr = encode(baseStr) ;
-        relStr = encode(relStr) ;
+        baseStr = CodecHex.encode(baseStr) ;
+        relStr = CodecHex.encode(relStr) ;
         // "Adapt" URIs with spaces
         String s = _resolve(relStr, baseStr) ;
-        s = decode(s) ;
+        s = CodecHex.decode(s) ;
         return s ;
         
     }
     
-    static Pattern patEnc1 = Pattern.compile("_") ;
-    static String encStr1 = "__" ;
-    
-    static Pattern patEnc2 = Pattern.compile(" ") ;
-    static String encStr2 = "_20" ;
-    
-    static private String encode(String s)
-    {
-        if ( s == null ) return s ;
-        s = patEnc1.matcher(s).replaceAll(encStr1) ;
-        s = patEnc2.matcher(s).replaceAll(encStr2) ;
-        // Not Java 1.4
-//        s = s.replace("_", "__") ;
-//        s = s.replace(" ", "_20") ;
-        return s ;
-    }
-    
-    static Pattern patDec1 = Pattern.compile("_20") ;
-    static String decStr1 = " " ;
-    
-    static Pattern patDec2 = Pattern.compile("__") ;
-    static String decStr2 = "_" ;
-    
-    static private String decode(String s)
-    {
-        s = patDec1.matcher(s).replaceAll(decStr1) ;
-        s = patDec2.matcher(s).replaceAll(decStr2) ;
-//        s = s.replace("_20", " ") ;
-//        s = s.replace("__", "_") ;
-        return s ;
-    }
-
+//    static Pattern patEnc1 = Pattern.compile("_") ;
+//    static String encStr1 = "_5F" ;
+//
+//    static Pattern patEnc2 = Pattern.compile(" ") ;
+//    static String encStr2 = "_20" ;
+//
+//    static public String encode(String s)
+//    {
+//        if ( s == null ) return s ;
+//
+//        s = patEnc1.matcher(s).replaceAll(encStr1) ;
+//        s = patEnc2.matcher(s).replaceAll(encStr2) ;
+//        return s ;
+//    }
+//
+//    static Pattern patDec1 = Pattern.compile("_20") ;
+//    static String decStr1 = " " ;
+//
+//    static Pattern patDec2 = Pattern.compile("_5F") ;
+//    static String decStr2 = "_" ;
+//
+//    static public String decode(String s)
+//    {
+//        s = patDec1.matcher(s).replaceAll(decStr1) ;
+//        s = patDec2.matcher(s).replaceAll(decStr2) ;
+//        return s ;
+//    }
     
     static private String _resolve(String relStr, String baseStr)
     {
@@ -204,7 +192,7 @@ public class RelURI
                 base = new URI(baseStr+"/") ;
             } catch (java.net.URISyntaxException ex)
             { 
-                LogFactory.getLog(RelURI.class).fatal("Base now illegal fixing up path-less base URI ("+baseStr+")") ;
+                LogFactory.getLog(RelURI_X.class).fatal("Base now illegal fixing up path-less base URI ("+baseStr+")") ;
                 throw new JenaURIException("Illegal URI (base) ptII: "+baseStr) ;
             }
         }
@@ -234,7 +222,7 @@ public class RelURI
             return abs ;
         } catch (RuntimeException ex)
         {
-            LogFactory.getLog(RelURI.class).warn("\nException in Java library: "+ex.getMessage()+"\nresolve("+rel.toString()+", "+base.toString()+")") ;
+            LogFactory.getLog(RelURI_X.class).warn("\nException in Java library: "+ex.getMessage()+"\nresolve("+rel.toString()+", "+base.toString()+")") ;
             throw ex ;
         }
     }
@@ -254,7 +242,7 @@ public class RelURI
     static public void setBaseURI(String uriBase)
     {
         if ( uriBase != null && uriBase.startsWith("file:/") && ! uriBase.startsWith("file:///") )
-            LogFactory.getLog(RelURI.class).warn("setBaseURI: File URIs should look like 'file:///path' (or at least file://host/path)") ;
+            LogFactory.getLog(RelURI_X.class).warn("setBaseURI: File URIs should look like 'file:///path' (or at least file://host/path)") ;
         
         globalBase = uriBase ;
     }
@@ -316,7 +304,7 @@ public class RelURI
 
                 } catch (IOException ex)
                 {
-                    LogFactory.getLog(RelURI.class).warn("IOException in chooseBase - ignored") ;
+                    LogFactory.getLog(RelURI_X.class).warn("IOException in chooseBase - ignored") ;
                     return null ;
                 }
             }
@@ -383,6 +371,82 @@ public class RelURI
             return null ;
         }
 
+    }
+    
+    /** Like URL encoding but settable char.  Default '_' */ 
+
+    public static class CodecHex
+    {
+        private static char[] chars = { ' ' , '_' } ;
+        
+        static public String encode(String s)
+        {
+            if ( s == null ) return s ;
+        
+            StringBuffer sb = new StringBuffer() ;
+            
+            loop1:
+            for ( int i = 0 ; i < s.length() ; i++ )
+            {
+                char ch = s.charAt(i) ;
+                for ( int j = 0 ; j < chars.length ; j++ )
+                    if ( ch == chars[j] )
+                    {
+                        sb.append('_') ;
+                        // Low codepoints only.
+                        sb.append(Integer.toHexString(((int)ch)&255)) ;
+                        continue loop1;
+                    }
+                sb.append(ch) ;
+            }
+            return sb.toString() ;
+        }
+        
+        
+        static public String decode(String s)
+        {
+            if ( s == null ) return s ;
+
+            StringBuffer sb = new StringBuffer() ;
+            for ( int i = 0 ; i < s.length() ; i++ )
+            {
+                char ch = s.charAt(i) ;
+                if ( ch == '_' ) 
+                {
+                    if ( i >= s.length()-2 )
+                        throw new IllegalArgumentException("Broken encoded string: "+s) ;
+                    i++ ;
+                    char ch2 = s.charAt(i) ;
+                    i++ ;
+                    char ch3 = s.charAt(i) ;
+                    char ch4 = (char)((hexDecode(ch2)<<4)+hexDecode(ch3)) ;
+                    sb.append(ch4) ;
+                    continue ;
+                }
+                sb.append(ch) ;
+            }
+            return sb.toString() ;
+        }
+            
+        static private char hexEncode(int i ) {
+            if (i<10)
+                return  (char)('0' + i);
+            else
+                return (char)('A' + i - 10);
+        }
+        
+        static private int hexDecode(char b ) {
+            switch (b) { 
+                case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
+                 return (((int)b)&255)-'a'+10;
+                case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': 
+                return b - 'A' + 10;
+                case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
+                    return b - '0';
+                    default:
+                        throw new IllegalArgumentException("Bad Hex escape character: " + (((int)b)&255) );
+            }
+        }
     }
 }
 

@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingImmutable;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.ref.table.TableSimple;
@@ -118,18 +117,18 @@ class EvaluatorSimple implements Evaluator
         return new TableSimple(qIter) ;
     }
 
-    public Table reduced(Table table, List vars)
+    public Table reduced(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = BindingImmutable.create(vars, qIter, execCxt) ;
+        qIter = QueryIterFixed.create(qIter, execCxt) ;
         qIter = new QueryIterReduced(qIter, getExecContext()) ;
         return new TableSimple(qIter) ;
     }
 
-    public Table distinct(Table table, List vars)
+    public Table distinct(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = BindingImmutable.create(vars, qIter, execCxt) ;
+        qIter = QueryIterFixed.create(qIter, execCxt) ;
         qIter = new QueryIterDistinct(qIter, getExecContext()) ;
         return new TableSimple(qIter) ;
     }

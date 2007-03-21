@@ -14,6 +14,7 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryParseException;
@@ -24,7 +25,10 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.TripleCollector;
-import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.sparql.util.ExprUtils;
+import com.hp.hpl.jena.sparql.util.JenaURIException;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
+import com.hp.hpl.jena.sparql.util.RefBoolean;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ParserBase

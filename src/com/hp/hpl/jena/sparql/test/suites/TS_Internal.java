@@ -29,8 +29,6 @@ public class TS_Internal extends TestSuite
         addTest(TestResultSet.suite()) ;
         addTest(TestSerialization.suite()) ;
         
-        // Utils
-        addTest(TestURI.suite()) ;
         addTest(TestContext.suite()) ;
         addTest(TestList.suite()) ;
         

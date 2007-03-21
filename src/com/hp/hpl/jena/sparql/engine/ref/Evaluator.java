@@ -28,8 +28,8 @@ public interface Evaluator
     
     public Table order(Table table, List conditions) ;
     public Table project(Table table, List vars) ; 
-    public Table distinct(Table table, List vars) ;
-    public Table reduced(Table table, List vars) ;
+    public Table distinct(Table table) ;
+    public Table reduced(Table table) ;
     public Table slice(Table table, long start, long length) ;
 
 }

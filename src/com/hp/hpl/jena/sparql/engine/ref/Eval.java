@@ -161,14 +161,14 @@ public class Eval
         public void visit(OpDistinct opDistinct)
         {
             Table table = eval(opDistinct.getSubOp()) ;
-            table = evaluator.distinct(table, opDistinct.getVars()) ;
+            table = evaluator.distinct(table) ;
             push(table) ;
         }
 
         public void visit(OpReduced opReduced)
         {
             Table table = eval(opReduced.getSubOp()) ;
-            table = evaluator.reduced(table, opReduced.getVars()) ;
+            table = evaluator.reduced(table) ;
             push(table) ;
         }
 

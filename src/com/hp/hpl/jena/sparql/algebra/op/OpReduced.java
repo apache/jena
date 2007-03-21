@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import java.util.List;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
@@ -16,18 +14,11 @@ import com.hp.hpl.jena.sparql.engine.ref.Table;
 
 public class OpReduced extends OpModifier
 {
-    private List vars ;
-    
-    public OpReduced(Op subOp, List vars)
-    { 
-        super(subOp) ;
-        this.vars = vars ;
-    }
-    
-    public List getVars() { return vars ; }
+    public OpReduced(Op subOp)
+    { super(subOp) ; }
     
     public Table eval_1(Table table, Evaluator evaluator)
-    { return evaluator.distinct(table, vars) ; }
+    { return evaluator.reduced(table) ; }
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
@@ -35,7 +26,7 @@ public class OpReduced extends OpModifier
     public String getName()                 { return "Reduced" ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpReduced(subOp, vars) ; }
+    public Op copy(Op subOp)                { return new OpReduced(subOp) ; }
 }
 
 /*
