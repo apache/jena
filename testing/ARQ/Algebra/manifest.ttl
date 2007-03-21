@@ -1,0 +1,86 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Algebra" ;
+    mf:entries
+    ( 
+      [  mf:name    "Nested Optionals - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <two-nested-opt.rq> ;
+              qt:data   <two-nested-opt.ttl> ] ;
+        mf:result  <two-nested-opt.srx>
+      ]
+      [  mf:name    "Nested Optionals - 2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <two-nested-opt-alt.rq> ;
+              qt:data   <two-nested-opt.ttl> ] ;
+        mf:result  <two-nested-opt-alt.srx>
+      ]
+      [  mf:name    "Optional-filter - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-filter-1.rq> ;
+              qt:data   <opt-filter-1.ttl> ] ;
+        mf:result  <opt-filter-1.srx>
+      ]
+
+      [  mf:name    "Optional-filter - 2 filters" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-filter-2.rq> ;
+              qt:data   <opt-filter-2.ttl> ] ;
+        mf:result  <opt-filter-2.srx>
+      ]
+
+      [  mf:name    "Filter-placement - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-placement-1.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <filter-placement-1.srx>
+      ]
+      [  mf:name    "Filter-placement - 2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-placement-2.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <filter-placement-2.srx>
+      ]
+      [  mf:name    "Filter-placement - 3" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-placement-3.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <filter-placement-3.srx>
+      ]
+
+      [  mf:name    "Filter-nested - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-nested-1.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <filter-nested-1.srx>
+      ]
+      [  mf:name    "Filter-nested - 2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-nested-2.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <filter-nested-2.srx>
+       ]
+
+      [  mf:name    "Filter-scope - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-scope-1.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <filter-scope-1.srx>
+      ]
+
+    ).

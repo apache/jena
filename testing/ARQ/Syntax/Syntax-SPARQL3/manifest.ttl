@@ -40,6 +40,14 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syn-08.rq> ; 
       ]
+      [  mf:name    "syn-09.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syn-09.rq> ; 
+      ]
+      [  mf:name    "syn-10.rq" ;
+         rdf:type   mfx:TestSyntax ;
+         mf:action  <syn-10.rq> ; 
+      ]
       [  mf:name    "syn-bad-01.rq" ;
          rdf:type   mfx:TestBadSyntax ;
          mf:action  <syn-bad-01.rq> ; 
@@ -171,6 +179,30 @@
       [  mf:name    "syn-bad-33.rq" ;
          rdf:type   mfx:TestBadSyntax ;
          mf:action  <syn-bad-33.rq> ; 
+      ]
+      [  mf:name    "syn-bad-34.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-34.rq> ; 
+      ]
+      [  mf:name    "syn-bad-35.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-35.rq> ; 
+      ]
+      [  mf:name    "syn-bad-36.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-36.rq> ; 
+      ]
+      [  mf:name    "syn-bad-37.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-37.rq> ; 
+      ]
+      [  mf:name    "syn-bad-38.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-38.rq> ; 
+      ]
+      [  mf:name    "syn-bad-39.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-39.rq> ; 
       ]
       [  mf:name    "bnode-dot.rq" ;
          rdf:type   mfx:TestBadSyntax ;

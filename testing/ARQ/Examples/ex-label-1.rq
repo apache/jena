@@ -1,4 +1,4 @@
-PREFIX  jext:    <java:arq.examples.ext.>
+PREFIX  jext:    <java:arq.examples.propertyfunction.>
 
 SELECT ?x 
 {

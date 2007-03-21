@@ -1,5 +1,5 @@
 PREFIX :           <http://example.org/>
-PREFIX apf:        <java:com.hp.hpl.jena.query.pfunction.library.>
+PREFIX apf:        <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX xsd:        <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?ns

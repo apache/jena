@@ -1,38 +1,42 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+Firefox puts space in with this  -->
 <html xmlns="http://www.w3.org/1999/xhtml"><head>
   <meta name="generator" content="Microsoft FrontPage 6.0" />
 
-  
   <title>Extensions in ARQ</title><link rel="stylesheet" type="text/css" href="styles/doc.css" /></head>
 
-
-<body>
+<body style="margin-top:0">
   <h1>Extensions in ARQ</h1>
 
   <p>There are several ways to extend ARQ:</p>
 
   <ul>
-    <li><a href="#valueFunctions">Value Functions</a> - additional operations in FILTERS</li>
+    <li><a href="#valueFunctions">Filter Functions</a> - additional operations in FILTERS</li>
     <li><a href="#propertyFunctions">Property functions</a> - adding predicates that introduce custom query 
     stages</li>
 
     <li><a href="#describeHandlers">DESCRIBE handlers</a></li>
 
     <li>Support for <a href="#matchBlankNodeLabels">finding blank nodes by label</a></li>
-    <li>Inserting <a href="#arqExtensions">code into the query processing 
-    pipeline</a>.</li>
 
-    <li><a href="#specializedQueryEngines">New query engines</a> for performance in special
-    circumstances</li>
+    <li><a href="bgp-stages.html">Specialised basic pattern matching</a> for querying different storage and inference systems</li>
   </ul>
 
   <p>Functions are standard part of SPARQL. ARQ provides
-  application-written functions and provides a <a href="library.html#functions">function library</a>. 
+  application-written functions and provides a <a href="library-function.html">function library</a>. 
   Applications can <a href="writing_functions.html">write and register their own 
   functions</a>.</p>
-	<p>Property functions provide </p>
+	<p>Property functions provide a way to provide custom matching of particular 
+    predicates. They enable triple matches to be calculated, rather than just 
+    looked up in a RDF graph and they are a way to add functionality and remain 
+    within SPARQL. ARQ has a <a href="library-propfunc.html">property function 
+    library</a>. Applications can <a href="writing_propfunc.html">write and register their own 
+    property functions</a>.</p>
+  <p>The <a href="lucene-arq.html">free text support in 
+    ARQ</a> is provided by <a href="http://lucene.apache.org/java/docs/index.html">Lucene</a>, 
+    using property functions. </p>
 
-  <h2><a id="valueFunctions" name="valueFunctions">Functions</a></h2>
+  <h2><a id="valueFunctions" name="valueFunctions">Filter Functions</a></h2>
 
   <p>A SPARQL custom function is implementation dependent. Most
   details of the ARQ query engine do not have to be understood to
@@ -62,6 +66,9 @@
   <pre class="box">PREFIX jfn: &lt;java:com.hp.hpl.jena.query.function.library.&gt;<br />PREFIX dc: &lt;http://purl.org/dc/elements/1.1/&gt;<br />SELECT ?v<br />{ ?x dc:date ?date .<br /> FILTER (?date &lt; jfn:now() )<br />}<br /></pre>
 
   <p>The <kbd>jfn:now</kbd> returns the time the query started.</p>
+
+  <p>The filter functions in the ARQ distribution are described
+  on the <a href="library-function.html">filter function library page</a>.</p>
 
   <h2><a id="propertyFunctions" name="propertyFunctions">Property functions</a></h2>
 
@@ -99,7 +106,7 @@ PREFIX apf: &lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;<br /><br />SEL
   <p>or on a per instance basis:</p><pre class="box"> QueryExecution qExec = . . . ;<br /> qExec.getContext().setFalse(ARQ.enablePropertyFunctions) ;<br /></pre>
 
   <p>The property functions in the ARQ distribution are described
-  on the <a href="library.html#propFunc">library page</a>.</p>
+  on the <a href="library-propfunc.html">property function library page</a>.</p>
 
   <h2><a id="describeHandlers" name="describeHandlers">DESCRIBE
   handlers</a></h2>
@@ -132,29 +139,6 @@ PREFIX apf: &lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;<br /><br />SEL
   portable - use with care.</p>
   <pre class="box">&lt;_:1234-5678-90&gt; # A blank node in the data<br /></pre>
   <pre class="box">_:b0 # A blank node in the query - a variable<br /></pre>
-
-  <h2><a name="arqExtensions">Extensions</a></h2>
-
-  <p>Property functions allow custom extensions to be added and still use the 
-  SPARQL syntax.&nbsp; Occasionally, it is convenient to pass in the value of an 
-  expression, not a graph node.&nbsp; Such custom extensions with expression 
-  arguments are supported but this not part of SPARQL; the application will need to use the ARQ
-  query language (a superset of SPARQL). Unlike a value function,
-  an extension can set variables and generate multiple solutions.
-  An extensions can also query the dataset.</p>
-  <pre class="box">EXT q:name(?a, ?b, ?c)<br /></pre>
-
-  <p>Writing a an extension requires more understanding of the ARQ
-  query engine. See <a href="architecture.html">ARQ Query Engine
-  Design</a>. Extensions are registered or loaded in a similar
-  manner to functions.</p>
-
-  <p>There are some extensions provided in the ARQ distribution and
-  these are described on the <a href="library.html#extensions">library page</a>.</p>
-
-  <h2><a name="specializedQueryEngines">Specialized Query Engines</a></h2>
-
-  <p class="todo">@@to be written</p>
 
   <p class="footnote"><a href="documentation.html">ARQ
   Documentation Page</a></p>

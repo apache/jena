@@ -15,9 +15,7 @@
         <BasicPatterns/manifest.n3>
 
         <Optional/manifest.ttl>
-        <Optional/manifest-ext.ttl>
         <Union/manifest.ttl>
-        <Unsaid/manifest.ttl>
 
         <Select/manifest.ttl>
         <Construct/manifest.ttl>
@@ -49,7 +47,6 @@
         <Planning/manifest.ttl>
 
         <General/manifest.ttl>
-        <Extensions/manifest.ttl>
 
         <Distinct/manifest.ttl>
         <Sort/manifest.ttl>

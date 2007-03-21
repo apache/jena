@@ -17,23 +17,21 @@
   queries can be used on domain-specific data. SPARQL defines a
   function by URI (or prefixed name) in FILTER expressions.&nbsp; ARQ
   provides a function library and supports application-provided
-  functions.&nbsp; Functions and extensions can be <a href=
+  functions.&nbsp; Functions and property functions can be <a href=
   "extension.html">registered or dynamically loaded</a>.</p>
 
 	<p>See also the <a href="lucene-arq.html">free text search</a> page.</p>
-  <ul>
-	<li><a href="#functions">Filter functions</a></li>
-	<li><a href="#propFunc">Property functions</a></li>
-	</ul>
+  <p>See also the <a href="#propFunc">property functions</a> library page.</p>
   <p>Applications can also <a href="writing_functions.html">provide their own 
-  functions</a>. More functions and property functions will be added to the ARQ 
-	library. Contributions welcome.</p>
-	<p>&nbsp;</p>
+  functions</a>.</p>
 
   <h2><a id="functions" name="functions">Function Library</a></h2>
 
-  <p>The prefix <code>jfn</code> is
-  <code>&lt;java:com.hp.hpl.jena.query.function.library.&gt;</code>. Note the final dot in the prefix.</p>
+  <p>The prefix <code>afn</code> is
+  <code>&lt;http://jena.hpl.hp.com/ARQ/function#&gt;</code>. Note the final dot in the prefix.</p>
+  <p>Direct loading using a URI prefix of
+  <code>&lt;java:com.hp.hpl.jena.sparql.function.library.&gt;</code> (note the 
+  final dot)</p>
 
   <p>The prefix <code>fn</code> is
   <code>&lt;http://www.w3.org/2005/xpath-functions#&gt;</code> (the XPath and 
@@ -137,7 +135,7 @@
 		like C# but different from Java, where it is the <i>endIndex</i> of the 
 		first character after the substring.</li>
 	</ol>
-	<p>The operation <code>jfn:substring</code> provides Java semantics.</p>
+	<p>The operation <code>afn:substring</code> provides Java semantics.</p>
 	<p align="center"><b>Mathematical Functions</b></p>
 
   <div style="margin-left: 5%; margin-right: 5%;">
@@ -202,7 +200,7 @@
     </table>
   </div>
 
-  <p align="left">Note: See also <code>jfn:min</code> and <code>jfn:max</code> 
+  <p align="left">Note: See also <code>afn:min</code> and <code>afn:max</code> 
 	for binary min and max functions.</p>
 	<p align="center"><b>Boolean Functions</b></p>
 
@@ -253,10 +251,26 @@
       
         <tr>
           <td style="text-align: left;">
-          <code>jfn:bnode(?x)</code></td>
+          <code>afn:bnode(?x)</code></td>
 
           <td style="text-align: left;">Return the blank node label
           if ?x is a blank node.</td>
+        </tr>
+      
+        <tr>
+          <td style="text-align: left;">
+          <code>afn:localname(?x)</code></td>
+
+          <td style="text-align: left;">The local name of ?x if a IRI. Based on 
+          splitting the IRI, not on any prefixes in the query or dataset.</td>
+        </tr>
+      
+        <tr>
+          <td style="text-align: left;">
+          <code>afn:namespace(?x)</code></td>
+
+          <td style="text-align: left;">The namespace of ?x if a IRI. Based on 
+          splitting the IRI, not on any prefixes in the query or dataset.</td>
         </tr>
       </tbody>
     </table>
@@ -358,7 +372,7 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:substr(</code><i><code>string,
+          <td style="text-align: left;"><code>afn:substr(</code><i><code>string,
 			startIndex [,</code></i><code><i>endIndex</i></code>]<code>)</code></td>
 
           <td style="text-align: left;">Substring, Java style using <i><code>
@@ -367,13 +381,13 @@
 
         <tr>
           <td style="text-align: left;">
-          <code>jfn:substring</code></td>
+          <code>afn:substring</code></td>
 
-          <td style="text-align: left;">Synonym for jfn:substring</td>
+          <td style="text-align: left;">Synonym for afn:substring</td>
         </tr>
       	<tr>
           <td style="text-align: left;">
-          <code>jfn:sha1sum(<i>resource</i>)</code></td>
+          <code>afn:sha1sum(<i>resource</i>)</code></td>
 
           <td style="text-align: left;">Calculate the SHA1 checksum of a literal 
 			or URI.</td>
@@ -396,7 +410,7 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:min(num1,
+          <td style="text-align: left;"><code>afn:min(num1,
           num2)</code></td>
 
           <td style="text-align: left;">Return the minimum of two
@@ -404,11 +418,23 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:max(num1,
+          <td style="text-align: left;"><code>afn:max(num1,
           num2)</code></td>
 
           <td style="text-align: left;">Return the maximum of two
           expressions evaluating to numbers.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>afn:pi()</code></td>
+
+          <td style="text-align: left;">The value of pi, as an XSD double.</td>
+        </tr>
+
+        <tr>
+          <td style="text-align: left;"><code>afn:e()</code></td>
+
+          <td style="text-align: left;">The value of e, as an XSD double.</td>
         </tr>
 
       </tbody>
@@ -429,15 +455,16 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:now()</code></td>
+          <td style="text-align: left;"><code>afn:now()</code></td>
 
           <td style="text-align: left;">Current time.&nbsp;
-          Actually, the time the query started.</td>
+          Actually, the time the query started. Constant throughout a query 
+          execution.</td>
         </tr>
 
         <tr>
           <td style="text-align: left;">
-          <code>jfn:sha1sum(<i>resource</i>)</code></td>
+          <code>afn:sha1sum(<i>resource</i>)</code></td>
 
           <td style="text-align: left;">Calculate the SHA1 checksum
           of a literal or URI.</td>
@@ -466,7 +493,7 @@
         </tr>
 
         <tr>
-          <td style="text-align: left;"><code>jfn:print(expr,
+          <td style="text-align: left;"><code>afn:print(expr,
           ...)</code></td>
 
           <td style="text-align: left;">Print the evaluated
@@ -476,7 +503,7 @@
 
         <tr>
           <td style="text-align: left;">
-          <code>jfn:trace(expr)</code></td>
+          <code>afn:trace(expr)</code></td>
 
           <td style="text-align: left;">Print the expression with
           values substituted for variables if the variable is set
@@ -492,159 +519,12 @@
   <pre class="box">
 {
    ...
-   FILTER jfn:print() # Print the solution
-   FILTER jfn:trace(<i>expression</i>) # Evaluate and print the expression
+   FILTER afn:print() # Print the solution
+   FILTER afn:trace(<i>expression</i>) # Evaluate and print the expression
    FILTER <i>expression</i> # Now use the expression to filter solutions
    ...
 }
 </pre>
-
-  <h2><a name="propFunc" id="propFunc">Property Function Library</a></h2>
-
-  <p>The library built-in to the ARQ distribution is loaded from
-  <code>&lt;java:com.hp.hpl.jena.query.pfunction.library.&gt;</code>. Note the final dot in the prefix. 
-  In the table below, the prefix <code>apf:</code> is used for this.</p>
-  <p>The prefix <code>list:</code> is <code>http://www.jena.hpl.hp.com/ARQ/list#</code>.</p>
-
-  <div style="margin-left: 5%; margin-right: 5%;">
-    <table style="border-style: solid; border-collapse: collapse;"
-    id="table1" border="1" cellpadding="0" cellspacing="1" width=
-    "90%">
-      <tbody>
-        <tr>
-          <th style="text-align: left;" bgcolor="#C0C0C0" width=
-          "40%">Property name</th>
-
-          <th bgcolor="#C0C0C0" width="60%">Description</th>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code><i>list </i>list:member <i>member</i></code></td>
-
-          <td style="text-align: left;">Membership of an RDF List (RDF 
-          Collection). If <i>list</i> is not bound or a constant, find and 
-          iterate all lists in the graph (can be slow) else evaluate for one 
-          particular list. If <i>member</i> a variable, generate solutions with
-          <i>member</i> bound to each element in the list. If
-          <i>member</i> is bound or a constant expression, test to see if a 
-          member of the list.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code><i>list </i>list:index <i>(index member)</i></code></td>
-
-          <td style="text-align: left;">Index of an RDF List (RDF Collection). 
-          If <i>list</i> is not bound or a constant, find and iterate all lists 
-          in the graph (can be slow) else evaluate for one particular list. The 
-          object is a list pair, either element can be bound, unbound or a fixed 
-          node. Unbound variables in the object list are bound by the property 
-          function.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code><i>list </i>list:length <i>length</i></code></td>
-
-          <td style="text-align: left;">Length of an RDF List (RDF Collection). If <i>
-          list</i> is not bound or a constant, find and iterate all lists in the 
-          graph (can be slow) else evaluate for one particular list. The 
-          object is tested against or bound to the length of the list.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;">
-          <code><i>container </i>rdfs:member <i>member</i></code></td>
-
-          <td style="text-align: left;">Membership of an RDF Container (rdf:Bag, 
-			rdf:Seq, rdf:Alt). Pre-registered URI. If this infers with queries 
-			running over a Jena inference model which also provides <code>
-			rdfs:member</code>, then remove&nbsp;this from the global registry.<br>
-			<code>&nbsp; PropertyFunctionRegistry.get().<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remove(RDFS.member.getURI()) ;</code></td>
-        </tr>
-  
-        <tr>
-          <td style="text-align: left;">
-          <code>apf:textMatch</code></td>
-
-          <td style="text-align: left;">Free text match.&nbsp; See the <a href="lucene-arq.html">free text search</a> 
-			page for details.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;"><code><i>bag </i>apf:bag <i>member</i></code></td>
-
-          <td style="text-align: left;">The argument <i>bag</i>
-          must be bound by this point in the query or a constant
-          expression. If <i>bag</i> is bound or a URI, and
-          <i>member</i> a variable, generate solutions with
-          <i>member</i> bound to each element in the bag. If
-          <i>member</i> is bound or a constant expression, test to
-          see if a member of the list.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;"><code><i>seq</i> apf:seq <i>member</i></code></td>
-
-          <td style="text-align: left;">The argument <i>seq</i>
-          must be bound by this point in the query or a constant
-          expression. If <i>seq</i> is bound or a URI, and
-          <i>member</i> a variable, generate solutions with
-          <i>member</i> bound to each element in the sequence. If
-          <i>member</i> is bound or a constant expression, test to
-          see if a member of the list.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;"><code><i>seq</i> apf:alt <i>member</i></code></td>
-
-          <td style="text-align: left;">The argument <i>alt</i>
-          must be bound by this point in the query or a constant
-          expression. If <i>alt</i> is bound or a URI, and
-          <i>member</i> a variable, generate solutions with
-          <i>member</i> bound to each element in the alt . If
-          <i>member</i> is bound or a constant expression, test to
-          see if a member of the list.</td>
-        </tr>
-
-        <tr>
-          <td style="text-align: left;"><i><code>varOrTerm</code></i><code> 
-          apf:assign </code><i><code>varOrTerm</code></i></td>
-
-          <td style="text-align: left;">Assign an RDF term from one side to the 
-          other.&nbsp; If both are fixed RDF terms or bound variables, it becomes a 
-          boolean test that the subject is the same RDF term as the object.</td>
-        </tr>
-      	<tr>
-          <td style="text-align: left;">
-          <i><code>iri</code></i><code> apf:splitIRI (<i>namespace</i> <i>&nbsp;localname</i>)</code><br>
-          <i><code>iri</code></i><code> apf:splitURI (<i>namespace</i> <i>&nbsp;localname</i>)</code></td>
-
-          <td style="text-align: left;">Split the IRI or URI into namespace (an 
-          IRI) and local name (a string). Compare if given values or bound 
-          variables, otherwise set the variable. The object is a list with 2 
-			elements.<br>
-          <code>splitURI</code> is an synonym.</td>
-        </tr>
-      	<tr>
-          <td style="text-align: left;">
-          <i>subject</i> apf:blankNode <i>label<br>
-          subject</i> apf:bnode <i>label<br>
-&nbsp;</i></td>
-
-          <td style="text-align: left;"><i>Subject</i> must be bound to a blank 
-          node or a constant. <i>Label</i> is either a string, in which case 
-          test for whether this is the blank node label of <i>subject</i>, or it 
-          is a variable, which is assigned the blank node label as a plain 
-          string. Argument mismatch causes no match. Use with care.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p> </p>
 
   <p class="footnote"><a href="documentation.html">ARQ
   Documentation Page</a></p>

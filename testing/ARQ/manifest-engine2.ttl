@@ -55,7 +55,7 @@
         <Sort/manifest.ttl>
         <Examples/manifest.ttl>
 
-## Specials
-        <../../WorkSpace/Algebra/manifest.ttl>
+## Specials : does not pass on engine1
+        <Algebra/manifest.ttl>
     ) .
 

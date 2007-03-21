@@ -48,11 +48,40 @@ EOF
 
 
 N=$((N+1)) ; testGood $(fname "syn-" $N) <<EOF
-# Broken ;
+# Early ;
 PREFIX :   <http://example/ns#>
 SELECT * WHERE
 { :s :p :o ; . }
 EOF
+
+N=$((N+1)) ; testGood $(fname "syn-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  _:a ?p ?v .  _:a ?q 1 
+}
+EOF
+
+N=$((N+1)) ; testGood $(fname "syn-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  { _:a ?p ?v .  _:a ?q _:a } UNION { _:b ?q _:c }
+}
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+# Filter do not break up a BGP.
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  _:a ?p ?v .  FILTER(true) . [] ?q _:a
+}
+EOF
+
 
 
 ## ==== Bad
@@ -271,6 +300,60 @@ SELECT *
 WHERE
 {
   GRAPH [] { } 
+}
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  _:a ?p ?v . { _:a ?q 1 }
+}
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  { _:a ?p ?v . } _:a ?q 1
+}
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  { _:a ?p ?v . } UNION { _:a ?q 1 }
+}
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  { _:a ?p ?v . } _:a ?q 1
+}
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  _:a ?p ?v . OPTIONAL {_:a ?q 1 }
+}
+EOF
+
+N=$((N+1)) ; testBad $(fname "syn-bad-" $N) <<EOF
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  _:a ?p ?v . OPTIONAL { ?s ?p ?v } _:a ?q 1
 }
 EOF
 

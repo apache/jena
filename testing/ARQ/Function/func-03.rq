@@ -1,7 +1,6 @@
-PREFIX  : <http://example.org/ns#>
-PREFIX  jfn:     <java:com.hp.hpl.jena.query.function.library.>
+PREFIX  :        <http://example.org/ns#>
+PREFIX  jfn:     <http://jena.hpl.hp.com/ARQ/function#>
 
-# Same test as func-02 except we load the funcion knowing is java class
 SELECT  ?z
 WHERE
     { ?x :p ?z . 

@@ -80,9 +80,9 @@
       [
          mf:name "lang-3 : Graph matching with lang tag being a different case" ;
          mf:action
-            [ qt:query  <q-lang-2.rq> ;
+            [ qt:query  <q-lang-3.rq> ;
               qt:data   <data-builtin-2.ttl> ] ;
-         mf:result  <result-lang-2.srx>
+         mf:result  <result-lang-3.srx>
       ]
 
       [  mf:name    "isURI-1" ;
