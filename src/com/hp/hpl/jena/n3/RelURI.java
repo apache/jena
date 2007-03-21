@@ -23,10 +23,10 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.cache.Cache;
 
-/** RelURI copied to Jena
+/** RelURI.  To be replaced by the IRI library.
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.12 2007-02-05 12:41:11 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.13 2007-03-21 16:09:34 andy_seaborne Exp $
  */
 
 public class RelURI
@@ -83,47 +83,42 @@ public class RelURI
         }
         
         // Encode spaces (for filenames)
-        baseStr = encode(baseStr) ;
-        relStr = encode(relStr) ;
+        baseStr = CodecHex.encode(baseStr) ;
+        relStr = CodecHex.encode(relStr) ;
         // "Adapt" URIs with spaces
         String s = _resolve(relStr, baseStr) ;
-        s = decode(s) ;
+        s = CodecHex.decode(s) ;
         return s ;
         
     }
     
-    static Pattern patEnc1 = Pattern.compile("_") ;
-    static String encStr1 = "__" ;
-    
-    static Pattern patEnc2 = Pattern.compile(" ") ;
-    static String encStr2 = "_20" ;
-    
-    static private String encode(String s)
-    {
-        if ( s == null ) return s ;
-        s = patEnc1.matcher(s).replaceAll(encStr1) ;
-        s = patEnc2.matcher(s).replaceAll(encStr2) ;
-        // Not Java 1.4
-//        s = s.replace("_", "__") ;
-//        s = s.replace(" ", "_20") ;
-        return s ;
-    }
-    
-    static Pattern patDec1 = Pattern.compile("_20") ;
-    static String decStr1 = " " ;
-    
-    static Pattern patDec2 = Pattern.compile("__") ;
-    static String decStr2 = "_" ;
-    
-    static private String decode(String s)
-    {
-        s = patDec1.matcher(s).replaceAll(decStr1) ;
-        s = patDec2.matcher(s).replaceAll(decStr2) ;
-//        s = s.replace("_20", " ") ;
-//        s = s.replace("__", "_") ;
-        return s ;
-    }
-
+//    static Pattern patEnc1 = Pattern.compile("_") ;
+//    static String encStr1 = "_5F" ;
+//
+//    static Pattern patEnc2 = Pattern.compile(" ") ;
+//    static String encStr2 = "_20" ;
+//
+//    static public String encode(String s)
+//    {
+//        if ( s == null ) return s ;
+//
+//        s = patEnc1.matcher(s).replaceAll(encStr1) ;
+//        s = patEnc2.matcher(s).replaceAll(encStr2) ;
+//        return s ;
+//    }
+//
+//    static Pattern patDec1 = Pattern.compile("_20") ;
+//    static String decStr1 = " " ;
+//
+//    static Pattern patDec2 = Pattern.compile("_5F") ;
+//    static String decStr2 = "_" ;
+//
+//    static public String decode(String s)
+//    {
+//        s = patDec1.matcher(s).replaceAll(decStr1) ;
+//        s = patDec2.matcher(s).replaceAll(decStr2) ;
+//        return s ;
+//    }
     
     static private String _resolve(String relStr, String baseStr)
     {
@@ -391,71 +386,146 @@ public class RelURI
         }
 
     }
-}
+    
+    /** Like URL encoding but settable char.  Default '_' */ 
 
-class Cache1 implements Cache
-{
-    boolean isEnabled = true ;
-    Object cacheKey = null ;
-    Object cacheValue = null ;
-    
-    int numGet = 0 ;
-    int numPut = 0 ;
-    int numHits = 0 ;
-    
-    public Object get(Object key)
+    public static class CodecHex
     {
-        if ( ! isEnabled )
-            return null ;
+        private static char[] chars = { ' ' , '_' } ;
         
-        numGet ++ ;
-        
-        if ( cacheKey == null )
-            return null ;
-        
-        if ( cacheKey.equals(key) )
+        static public String encode(String s)
         {
-            numHits ++ ;
-            return cacheValue ;
+            if ( s == null ) return s ;
+        
+            StringBuffer sb = new StringBuffer() ;
+            
+            loop1:
+            for ( int i = 0 ; i < s.length() ; i++ )
+            {
+                char ch = s.charAt(i) ;
+                for ( int j = 0 ; j < chars.length ; j++ )
+                    if ( ch == chars[j] )
+                    {
+                        sb.append('_') ;
+                        // Low codepoints only.
+                        sb.append(Integer.toHexString(((int)ch)&255)) ;
+                        continue loop1;
+                    }
+                sb.append(ch) ;
+            }
+            return sb.toString() ;
         }
         
-        return null ;
+        
+        static public String decode(String s)
+        {
+            if ( s == null ) return s ;
+
+            StringBuffer sb = new StringBuffer() ;
+            for ( int i = 0 ; i < s.length() ; i++ )
+            {
+                char ch = s.charAt(i) ;
+                if ( ch == '_' ) 
+                {
+                    if ( i >= s.length()-2 )
+                        throw new IllegalArgumentException("Broken encoded string: "+s) ;
+                    i++ ;
+                    char ch2 = s.charAt(i) ;
+                    i++ ;
+                    char ch3 = s.charAt(i) ;
+                    char ch4 = (char)((hexDecode(ch2)<<4)+hexDecode(ch3)) ;
+                    sb.append(ch4) ;
+                    continue ;
+                }
+                sb.append(ch) ;
+            }
+            return sb.toString() ;
+        }
+            
+        static private char hexEncode(int i ) {
+            if (i<10)
+                return  (char)('0' + i);
+            else
+                return (char)('A' + i - 10);
+        }
+        
+        static private int hexDecode(char b ) {
+            switch (b) { 
+                case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
+                 return (((int)b)&255)-'a'+10;
+                case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': 
+                return b - 'A' + 10;
+                case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
+                    return b - '0';
+                    default:
+                        throw new IllegalArgumentException("Bad Hex escape character: " + (((int)b)&255) );
+            }
+        }
     }
 
-    public void put(Object key, Object value)
+    static class Cache1 implements Cache
     {
-        if ( ! isEnabled )
-            return ;
-        numPut ++ ;
-        cacheKey = key ; 
-        cacheValue = value ;
+        boolean isEnabled = true ;
+        Object cacheKey = null ;
+        Object cacheValue = null ;
+        
+        int numGet = 0 ;
+        int numPut = 0 ;
+        int numHits = 0 ;
+        
+        public Object get(Object key)
+        {
+            if ( ! isEnabled )
+                return null ;
+            
+            numGet ++ ;
+            
+            if ( cacheKey == null )
+                return null ;
+            
+            if ( cacheKey.equals(key) )
+            {
+                numHits ++ ;
+                return cacheValue ;
+            }
+            
+            return null ;
+        }
+    
+        public void put(Object key, Object value)
+        {
+            if ( ! isEnabled )
+                return ;
+            numPut ++ ;
+            cacheKey = key ; 
+            cacheValue = value ;
+        }
+    
+        public boolean getEnabled()
+        {
+            return isEnabled ;
+        }
+    
+        public boolean setEnabled(boolean enabled)
+        {
+            boolean b = isEnabled ;
+            isEnabled = enabled ;
+            return b ;
+        }
+    
+        public void clear()
+        {
+            cacheKey = null ;
+            cacheValue = null ;
+        }
+    
+        public long getGets() { return numGet ; }
+    
+        public long getPuts() { return numPut ; }
+    
+        public long getHits() { return numHits ; }
     }
-
-    public boolean getEnabled()
-    {
-        return isEnabled ;
-    }
-
-    public boolean setEnabled(boolean enabled)
-    {
-        boolean b = isEnabled ;
-        isEnabled = enabled ;
-        return b ;
-    }
-
-    public void clear()
-    {
-        cacheKey = null ;
-        cacheValue = null ;
-    }
-
-    public long getGets() { return numGet ; }
-
-    public long getPuts() { return numPut ; }
-
-    public long getHits() { return numHits ; }
 }
-
 
 /*
  * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
