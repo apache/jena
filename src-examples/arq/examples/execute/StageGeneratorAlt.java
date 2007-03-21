@@ -1,55 +1,53 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples.ext;
+package arq.examples.execute;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.engine.QueryEngineFactory;
-import com.hp.hpl.jena.query.engine.QueryEngineRegistry;
+import java.util.Iterator;
 
-/**
- * Example factory for an extension query engine 
- * 
- * @author Andy Seaborne
- * @version $Id: MyEngineFactory.java,v 1.4 2007-01-02 11:53:35 andy_seaborne Exp $
- */
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.main.Stage;
+import com.hp.hpl.jena.sparql.engine.main.StageBasic;
+import com.hp.hpl.jena.sparql.engine.main.StageGenerator;
+import com.hp.hpl.jena.sparql.engine.main.StageList;
 
-public class MyEngineFactory implements QueryEngineFactory 
+/** Example stage generator that compiles a BasicPattern into a sequence of
+ *  individual triple pattern stages.  No property functions considered.
+ */   
+
+public class StageGeneratorAlt implements StageGenerator
 {
-    /** Register with the global query engine registry */
-    public static void register()
+    public StageList compile(BasicPattern pattern, 
+                             ExecutionContext execCxt)
     {
-        register(QueryEngineRegistry.get()) ;
+        System.err.println("MyStageGenerator.compile:: triple patterns = "+pattern.size()) ;
+        
+        if ( false )
+        {
+            // Illustrative -- call the usual one (no property functions)
+            StageList sList = new StageList() ;
+            sList.add(new StageBasic(pattern)) ;
+            return sList ;
+        }
+        
+        StageList sList = new StageList() ;
+        for ( Iterator iter = pattern.getList().iterator() ; iter.hasNext() ; )
+        {
+            Triple triple = (Triple)iter.next();
+            Stage stage = new StageAlt(triple) ;
+            sList.add(stage) ;
+        }
+        return sList ;
     }
-    
-    /** Register with some specific query engine registry */
-    public static void register(QueryEngineRegistry registry)
-    {
-        registry.add(new MyEngineFactory()) ;
-    }
-    
-    public boolean accept(Query query, Dataset dataset)
-    {
-        return true ;
-    }
-
-    public QueryExecution create(Query query, Dataset dataset)
-    {
-        MyQueryEngine qe = new MyQueryEngine(query) ;
-        if ( dataset != null )
-            qe.setDataset(dataset) ;
-        return qe ;
-    }
-
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
