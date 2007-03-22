@@ -1,4 +1,4 @@
-<!-- CVS: $Id: build.xml,v 1.127 2007-02-07 14:17:53 andy_seaborne Exp $ -->
+<!-- CVS: $Id: build.xml,v 1.128 2007-03-22 18:58:51 andy_seaborne Exp $ -->
 
 <project name="jena" default="main" basedir=".">
 
@@ -46,7 +46,8 @@
 
   <!-- Classpaths -->
   <path id="classpath">
-    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile},${arq.jarfile}"/>
+    <!-- Don't exclude arq.jar for now - TEMP fix -->
+    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
   </path>
   <path id="classpath.tools">
     <fileset dir="${lib.dir}" includes="*.jar"/>
