@@ -1,19 +1,6 @@
 // SPARQL Abstract Grammar
-
-#if !defined(ARQ) && !defined(SPARQL)
-#error Please define one of ARQ and SPARQL
-#endif
-
-#if defined(ARQ) && defined(SPARQL)
-#error Please define only one of ARQ and SPARQL
-#endif
-
-#define PACKAGE     lang.prefix
-#define CLASS       PrefixParser
-#define PARSERBASE  PrefixParserBase
-
 // Author:  Andy Seaborne andy.seaborne@hp.com
-// (c) 2006 Hewlett-Packard Development Company, LP
+// (c) 2006, 2007 Hewlett-Packard Development Company, LP
 // All rights reserved.
 // See end of file for details.
 
@@ -26,24 +13,23 @@ options
 //  DEBUG_TOKEN_MANAGER   = true ;
 }
 
-PARSER_BEGIN(CLASS)
+PARSER_BEGIN(PrefixParser)
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.PACKAGE ;
+package com.hp.hpl.jena.sparql.lang.prefix ;
 
-import java.util.* ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 
-public class CLASS extends PARSERBASE
+public class PrefixParser extends PrefixParserBase
 {
 }
-PARSER_END(CLASS)
+PARSER_END(PrefixParser)
 
 void CompilationUnit(): { }
 {
@@ -263,12 +249,8 @@ Element GraphPattern() : { Element el = null ; Expr c = null ; }
    el = UnionGraphPattern()
  |
    el = GraphGraphPattern()
-#ifdef ARQ
  |
    el = UnsaidGraphPattern()
- |
-   el = GraphMatchExtension()
-#endif
 )
  <RPAREN>
     { return el ; }
@@ -337,24 +319,12 @@ Element UnionGraphPattern() : { ElementUnion el = null ; Element el2 = null ; }
     { return el ; }
 }
 
-#ifdef ARQ
-
 Element UnsaidGraphPattern() : { Element el ; }
 {
   <UNSAID>
     el = GraphPattern()
     { return new ElementUnsaid(el) ; }
 }
-
-Element GraphMatchExtension() : { Element el = null ; Node n ; List a = null ; }
-{
-   <EXT>
-   n = IRIref()
-   a = ArgList()
-   { return new ElementExtension(n.getURI(), a, el) ; }
-}
-
-#endif
 
 Expr Constraint() : { Expr c ; }
 {
@@ -442,7 +412,7 @@ Expr P_GeneralFunctionCall() : {Expr n1 = null; Expr n2 = null ; Expr e ; Node n
   <EXPR> e = Expression() { return e ; }
 }
 
-Expr P_Function() : { Expr e ; Node fname ; List a ; }
+Expr P_Function() : { Expr e ; Node fname ; ExprList a ; }
 {
   e = P_BuiltInCall() { return e ; }
 |
@@ -450,7 +420,7 @@ Expr P_Function() : { Expr e ; Node fname ; List a ; }
     { return new E_Function(fname.getURI(), a) ; }  
 }
 
-List P_ArgList() : { Expr expr ;  List args = new ArrayList() ; }
+ExprList P_ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
 { 
       (expr = P_Expression() { args.add(expr) ; } )*
     { return args ; }
@@ -680,13 +650,13 @@ Expr RegexExpression() :
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
 
-Expr FunctionCall() : { Node fname ; List a ; }
+Expr FunctionCall() : { Node fname ; ExprList a ; }
 {
   fname = IRIref() a = ArgList()
     { return new E_Function(fname.getURI(), a) ; }
 }
 
-List ArgList() : { Expr expr ;  List args = new ArrayList() ; }
+ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
 { 
   (
     <NIL>
@@ -704,7 +674,7 @@ List ArgList() : { Expr expr ;  List args = new ArrayList() ; }
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr IRIrefOrFunction() : {Node gn ; List a = null ; }
+Expr IRIrefOrFunction() : {Node gn ; ExprList a = null ; }
 {
   gn = IRIref()
   ( a = ArgList() )?
@@ -889,9 +859,7 @@ TOKEN [IGNORE_CASE] :
 |  < ORDER:       "order" >
 |  < BY:          "by" >
 
-#ifdef ARQ
 |  < AS:          "as" >
-#endif
 |  < ASC:         "asc" >
 |  < DESC:        "desc" >
 
@@ -912,12 +880,7 @@ TOKEN [IGNORE_CASE] :
 |  < GRAPH:       "graph" >
 |  < OPTIONAL:    "optional" >
 |  < UNION:       "union" >
-
-#ifdef ARQ
 |  < UNSAID:      "unsaid" >
-|  < EXT:         "ext" >
-#endif
-
 |  < FILTER:      "filter" >
 |  < EXPR:        "expr" >
 
@@ -1090,7 +1053,7 @@ TOKEN:
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

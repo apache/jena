@@ -89,8 +89,7 @@ do
           ;;
 
       prefix|prefix.jj)
-          dos2unix < prefix.jj | cpp -P -C -DSPARQL | unix2dos > ast.jj
-          grammar ast.jj prefix Prefix
+          grammar prefix.jj prefix Prefix
 	  ;; 
       rdql) echo "Tread carefully" 1>&2
           rdqlGrammar
