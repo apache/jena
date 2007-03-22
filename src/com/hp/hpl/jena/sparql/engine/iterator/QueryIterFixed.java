@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingImmutable;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFixed;
 
 public class QueryIterFixed extends QueryIterConvert
 {
@@ -32,7 +32,7 @@ public class QueryIterFixed extends QueryIterConvert
         
         public Binding convert(Binding binding)
         {
-            return new BindingImmutable(binding) ;
+            return new BindingFixed(binding) ;
         }
     }
 

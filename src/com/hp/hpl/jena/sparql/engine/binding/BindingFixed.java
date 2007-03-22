@@ -19,55 +19,42 @@ import com.hp.hpl.jena.sparql.core.Var;
  */
 
 
-public class BindingImmutable extends BindingBase
+public class BindingFixed extends BindingWrapped
 {
-    // (Structure) copying version - to go.
-    
-    BindingMap binding = null ;
     int varSize = 0 ;
-    int calcHashCode = 0 ; 
+    int calcHashCode = 0 ;
+    private boolean haveDoneHashCode = false ; 
     
-    /**
-     * @param projectVars    The projection variables.
-     * @param original       Binding to use
-     */
+    public BindingFixed(Binding binding)
+    { super(binding) ; }
     
-    private BindingImmutable(Binding original)
+    private int calcHashCode()
     {
-        super(null) ;
-        // Copy the binding for safety against update.
-        binding = new BindingMap() ;
-        calcHashCode = 0 ;
-        for ( Iterator iter = original.vars() ; iter.hasNext() ; )
+        int _hashCode = 0 ;
+        for ( Iterator iter = vars() ; iter.hasNext() ; )
         {
             Var var = (Var)iter.next() ;
-            Node n = original.get(var) ;
+            Node n = get(var) ;
             if ( n == null )
                 continue ;
             // Independent of variable order.
-            calcHashCode = calcHashCode^n.hashCode()^var.hashCode() ; 
-            binding.add(var, n) ;
+            _hashCode = _hashCode^n.hashCode()^var.hashCode() ; 
             varSize ++ ;
         }
+        return _hashCode ;
     }
         
-    protected void add1(Var var, Node node)
-    { throw new UnsupportedOperationException("BindingImmutable.add") ; }
-
-    protected Iterator vars1()              { return binding.vars1() ; }
-    
-    protected boolean contains1(Var var)    { return binding.contains1(var) ; }
-
-    protected Node get1(Var var)            { return binding.get1(var) ;}
+    public void add(Var var, Node node)
+    { throw new UnsupportedOperationException("BindingFixed.add") ; }
 
     public boolean equals(Object obj)
     {
         if ( this == obj ) return true ;
         
-        if ( ! ( obj instanceof BindingImmutable) )
+        if ( ! ( obj instanceof BindingFixed) )
             return false ;
         
-        BindingImmutable b = (BindingImmutable)obj ;
+        BindingFixed b = (BindingFixed)obj ;
         if ( b.hashCode() != this.hashCode())
             return false ;
         
@@ -98,6 +85,11 @@ public class BindingImmutable extends BindingBase
     
     public int hashCode()
     {
+        if ( ! haveDoneHashCode )
+        {
+            calcHashCode = calcHashCode() ;
+            haveDoneHashCode = true ;
+        }
         return calcHashCode ;
     }
     
