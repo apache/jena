@@ -5,9 +5,6 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 /** A function in the expression hierarchy.
@@ -17,10 +14,9 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  
 public abstract class ExprFunctionN extends ExprFunction
 {
-    protected List args = null ;
-
+    protected ExprList args = null ;
     
-    protected ExprFunctionN(String fName, List args)
+    protected ExprFunctionN(String fName, ExprList args)
     {
         super(fName) ;
         this.args = args ;
@@ -36,11 +32,11 @@ public abstract class ExprFunctionN extends ExprFunction
 
     public int numArgs() { return args.size() ; }
     
-    public List getArgs() { return args ; }
+    //public List getArgs() { return args.getList() ; }
 
     public Expr copySubstitute(Binding binding, boolean foldConstants)
     {
-        List newArgs = new ArrayList() ;
+        ExprList newArgs = new ExprList() ;
         for ( int i = 1 ; i <= numArgs() ; i++ )
         {
             Expr e = (Expr)getArg(i) ;
@@ -50,7 +46,7 @@ public abstract class ExprFunctionN extends ExprFunction
         return copy(newArgs) ;
     }
 
-    protected abstract Expr copy(List newArgs) ;
+    protected abstract Expr copy(ExprList newArgs) ;
 }
 
 /*

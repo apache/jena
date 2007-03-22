@@ -7,6 +7,8 @@ ARQ2-beta
 
 == Core
 
++ Function interface -- use ExprList or not?
+
 + Check "=" is an error when unknown.
 
 + REDUCED tests :-(

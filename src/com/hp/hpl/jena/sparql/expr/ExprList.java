@@ -36,7 +36,8 @@ public class ExprList
         return true ;
     }
     
-    //public int size() { return expressions.size() ; }
+    public Expr get(int idx) { return (Expr)expressions.get(idx) ; }
+    public int size() { return expressions.size() ; }
     public boolean isEmpty() { return expressions.isEmpty() ; }
     
     public Set getVarsMentioned()

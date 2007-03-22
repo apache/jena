@@ -5,8 +5,6 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.List;
-
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -42,15 +40,15 @@ public class E_Function extends ExprFunctionN
 //        args.add(arg) ;
 //    }
     
-    public E_Function(String functionIRI, List args)
-    {
-        super(name, args) ;
-        this.functionIRI = functionIRI ; 
-    }
+//    public E_Function(String functionIRI, List args)
+//    {
+//        super(name, args) ;
+//        this.functionIRI = functionIRI ; 
+//    }
     
     public E_Function(String functionIRI, ExprList args)
     {
-        super(name, args.getList()) ;
+        super(name, args) ;
         this.functionIRI = functionIRI ; 
     }
 
@@ -64,7 +62,7 @@ public class E_Function extends ExprFunctionN
             buildFunction(env.getContext()) ;
         if ( function == null )
             throw new ExprEvalException("URI <"+getFunctionIRI()+"> not bound") ;
-        NodeValue r = function.exec(binding, args, getFunctionIRI(), env) ;
+        NodeValue r = function.exec(binding, args.getList(), getFunctionIRI(), env) ;
         return r ;
     }
     
@@ -92,7 +90,7 @@ public class E_Function extends ExprFunctionN
             throw new ExprEvalException("URI <"+functionIRI+"> not found as a function") ;
         }
         function = ff.create(functionIRI) ;
-        function.build(functionIRI, args) ;
+        function.build(functionIRI, args.getList()) ;
         functionBound = true ;
     }
     
@@ -109,7 +107,7 @@ public class E_Function extends ExprFunctionN
         return FmtUtils.stringForURI(functionIRI, cxt) ;
     }
 
-    protected Expr copy(List newArgs)
+    protected Expr copy(ExprList newArgs)
     {
         return new E_Function(getFunctionIRI(), newArgs) ;
     }
