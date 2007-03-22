@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestVocabularies.java,v 1.10 2007-01-02 11:52:16 andy_seaborne Exp $
+  $Id: TestVocabularies.java,v 1.11 2007-03-22 15:30:59 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
@@ -23,8 +23,6 @@ public class TestVocabularies extends TestCase
         result.addTest( TestVocabRDF.suite() );
         result.addTest( TestVocabRDFS.suite() );
         result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabTestQuery.suite() );
-        result.addTest( TestVocabTestManifest.suite() );
         result.addTest( TestVocabDB.suite() );
         result.addTest( TestVocabRSS.suite() );
         result.addTest( TestVocabResultSet.suite() );
