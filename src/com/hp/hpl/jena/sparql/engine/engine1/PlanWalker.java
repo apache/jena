@@ -88,7 +88,6 @@ public class PlanWalker
         
         // Other
         public void visit(PlanPropertyFunction planElt) { proc.visit(planElt) ; }
-        public void visit(PlanExtension planElt)        { proc.visit(planElt) ; }
         public void visit(PlanDataset planElt)
         {
             visitOrNull(planElt.getSubElement()) ;

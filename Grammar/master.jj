@@ -51,7 +51,6 @@ PARSER_BEGIN(CLASS)
 
 package com.hp.hpl.jena.sparql.PACKAGE ;
 
-import java.util.* ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.syntax.* ;
@@ -396,8 +395,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 #ifdef ARQ
  |
    el = UnsaidGraphPattern()
- |
-   el = GraphMatchExtension()
 #endif
  )
   { return el ; }
@@ -443,16 +440,6 @@ Element UnsaidGraphPattern() : { Element el ; }
       return el ;
     }
 }
-
-Element GraphMatchExtension() : { Element el = null ; Node n ; List a = null ; }
-{
-    <EXT>
-    n = IRIref()
-    a = ArgList()
-    // Ambiguity here - may be followed by a group.
-    //(el = GroupGraphPattern())?
-    { return new ElementExtension(n.getURI(), a, el) ; }
-}
 #endif
 
 Element Filter() : { Expr c ; }
@@ -471,13 +458,13 @@ Expr Constraint() : { Expr c ; }
 }
 
 
-Expr FunctionCall() : { Node fname ; List a ; }
+Expr FunctionCall() : { Node fname ; ExprList a ; }
 {
   fname = IRIref() a = ArgList()
     { return new E_Function(fname.getURI(), a) ; }
 }
 
-List ArgList() : { Expr expr ;  List args = new ArrayList() ; }
+ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
 { 
   (
     <NIL>
@@ -878,7 +865,7 @@ Expr RegexExpression() :
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr IRIrefOrFunction() : {Node gn ; List a = null ; }
+Expr IRIrefOrFunction() : {Node gn ; ExprList a = null ; }
 {
   gn = IRIref()
   ( a = ArgList() )?

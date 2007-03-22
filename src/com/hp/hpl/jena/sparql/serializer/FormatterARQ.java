@@ -12,11 +12,10 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.*;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.syntax.*;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 ;
@@ -307,27 +306,6 @@ public class FormatterARQ extends FormatterBase
             out.decIndent(len) ;
     }
     
-   public void visit(ElementExtension el)
-    {
-        out.print("EXT ") ;
-        String uri = el.getURI() ;
-        String tmp = FmtUtils.stringForURI(uri, context.getPrefixMapping()) ;
-        out.print(tmp) ;
-        out.print("(") ;
-        
-        for ( int i = 1 ; ; i++ )  
-        {
-            Expr expr = el.getArg(i) ;
-            if ( expr == null )
-                break ; 
-            if ( i != 1 )
-                out.print(", ") ;
-            ExprVisitor v = new FmtExprARQ(out, context) ;
-            expr.visit(v) ;
-        }
-        out.print(")") ;
-    }
-
     // Visit an element, ensuring it is always surround by {} as a group.
     
     private void visitAsGroup(Element el)

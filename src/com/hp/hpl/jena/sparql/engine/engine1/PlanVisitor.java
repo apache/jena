@@ -25,7 +25,6 @@ public interface PlanVisitor
 
     // Other
     public void visit(PlanPropertyFunction planPF) ;
-    public void visit(PlanExtension planElt) ;
     public void visit(PlanDataset   planElt) ;
     public void visit(PlanElementExternal  planElt) ;
     

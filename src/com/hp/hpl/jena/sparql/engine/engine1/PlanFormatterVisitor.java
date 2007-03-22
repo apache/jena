@@ -150,16 +150,6 @@ public class PlanFormatterVisitor implements PlanVisitor
         
     }
     
-    public void visit(PlanExtension planElt)
-    {
-        start("Extension") ;
-        out.print(" <") ;
-        out.print(planElt.getElement().getURI()) ;
-        out.print(">") ;
-        finish() ;
-
-    }
-
     public void visit(PlanDataset planElt)
     {
         singleSubPlan("Block", planElt.getSubElement()) ;

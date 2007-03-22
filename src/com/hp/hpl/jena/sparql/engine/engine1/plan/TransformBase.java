@@ -15,7 +15,6 @@ public class TransformBase implements Transform
     // PlanElement0 (leaves of the plan tree)
     public PlanElement transform(PlanTriples planElt)      { return planElt ; }
     public PlanElement transform(PlanFilter planElt)            { return planElt ; }
-    public PlanElement transform(PlanExtension planElt)         { return planElt ; }
     public PlanElement transform(PlanPropertyFunction planElt)  { return planElt ; }
     //public PlanElement transform(PlanOuterJoin planElt) { return planElt ; }
 

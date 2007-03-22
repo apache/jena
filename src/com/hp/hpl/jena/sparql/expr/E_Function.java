@@ -47,6 +47,12 @@ public class E_Function extends ExprFunctionN
         super(name, args) ;
         this.functionIRI = functionIRI ; 
     }
+    
+    public E_Function(String functionIRI, ExprList args)
+    {
+        super(name, args.getList()) ;
+        this.functionIRI = functionIRI ; 
+    }
 
     public String getFunctionIRI() { return functionIRI ; }
     

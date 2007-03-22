@@ -41,8 +41,6 @@ public class FormatterXML extends FormatterBase
 
     public void visit(ElementUnsaid el)             { }
     
-    public void visit(ElementExtension el)          { }
-
     public void visit(TemplateTriple template)      { }
 
     public void visit(TemplateGroup template)       { }

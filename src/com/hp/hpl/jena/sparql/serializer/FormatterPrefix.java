@@ -9,10 +9,7 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.syntax.*;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
@@ -142,31 +139,6 @@ public class FormatterPrefix extends FormatterBase
     public void visit(ElementUnsaid el)
     {
         singleElement("unsaid", el.getElement()) ;
-    }
-    
-    public void visit(ElementExtension el)
-    {
-        printOpen() ;
-        out.print("ext") ;
-        out.print(" ") ;
-        String uri = el.getURI() ;
-        String tmp = FmtUtils.stringForURI(uri, context.getPrefixMapping()) ;
-        out.print(tmp) ;
-        out.print("(") ;
-        
-        for ( int i = 1 ; ; i++ )  
-        {
-            Expr expr = el.getArg(i) ;
-            if ( expr == null )
-                break ; 
-            if ( i != 1 )
-                out.print(", ") ;
-            ExprVisitor v = new FmtExprARQ(out, context) ;
-            expr.visit(v) ;
-        }
-        out.print(")") ;
-        out.print(" )") ;
-        //printClose() ;
     }
     
     // ---- Worker functions

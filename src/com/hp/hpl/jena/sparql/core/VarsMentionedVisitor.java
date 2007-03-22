@@ -10,8 +10,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.syntax.*;
+import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase;
 import com.hp.hpl.jena.sparql.util.VarUtils;
 
 
@@ -37,16 +38,6 @@ public class VarsMentionedVisitor extends ElementVisitorBase
     public void visit(ElementNamedGraph el)
     {
         VarUtils.addVar(acc, el.getGraphNameNode()) ;
-    }
-
-    public void visit(ElementExtension el)
-    {
-        Iterator iter = el.getArgs().iterator() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Expr e = (Expr)iter.next() ;
-            e.varsMentioned(acc) ;
-        }
     }
 }
 

@@ -30,7 +30,6 @@ public class TransformCopy implements Transform
     
     public PlanElement transform(PlanTriples planElt)      { return xform(planElt) ; }
     public PlanElement transform(PlanFilter planElt)            { return xform(planElt) ; }
-    public PlanElement transform(PlanExtension planElt)         { return xform(planElt) ; }
     public PlanElement transform(PlanPropertyFunction planElt)  { return xform(planElt) ; }
     //public PlanElement transform(PlanOuterJoin planElt) { return xform(planElt) ; }
 

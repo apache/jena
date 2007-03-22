@@ -25,7 +25,6 @@ public class PlanVisitorBase implements PlanVisitor
 
     // Other
     public void visit(PlanPropertyFunction planElt) {}
-    public void visit(PlanExtension planElt) {}
     public void visit(PlanDataset planElt)   {}
     public void visit(PlanElementExternal planElt)  {}
     

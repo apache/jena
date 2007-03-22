@@ -15,7 +15,6 @@ public interface Transform
     // PlanElement0 (leaves of the plan tree)
     public PlanElement transform(PlanTriples planElt) ;
     public PlanElement transform(PlanFilter planElt) ;
-    public PlanElement transform(PlanExtension planElt) ;
     public PlanElement transform(PlanPropertyFunction function) ;
     //public PlanElement transform(PlanOuterJoin planElt) ;
 

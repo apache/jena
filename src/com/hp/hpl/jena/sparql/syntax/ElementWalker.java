@@ -105,8 +105,6 @@ public class ElementWalker
                 el.getElement().visit(this) ;
             proc.visit(el) ;
         }
-        
-        public void visit(ElementExtension el) { proc.visit(el) ; }
     }
 }
 

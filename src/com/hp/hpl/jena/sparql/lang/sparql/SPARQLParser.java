@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.lang.sparql ;
 
-import java.util.* ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.syntax.* ;
@@ -857,15 +856,15 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
   }
 
   final public Expr FunctionCall() throws ParseException {
-                        Node fname ; List a ;
+                        Node fname ; ExprList a ;
     fname = IRIref();
     a = ArgList();
       {if (true) return new E_Function(fname.getURI(), a) ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public List ArgList() throws ParseException {
-                   Expr expr ; List args = new ArrayList() ;
+  final public ExprList ArgList() throws ParseException {
+                       Expr expr ; ExprList args = new ExprList() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NIL:
       jj_consume_token(NIL);
@@ -1867,7 +1866,7 @@ public class SPARQLParser extends SPARQLParserBase implements SPARQLParserConsta
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
   final public Expr IRIrefOrFunction() throws ParseException {
-                           Node gn ; List a = null ;
+                           Node gn ; ExprList a = null ;
     gn = IRIref();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:

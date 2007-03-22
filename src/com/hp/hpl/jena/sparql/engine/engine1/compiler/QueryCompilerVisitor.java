@@ -125,12 +125,6 @@ public class QueryCompilerVisitor implements ElementVisitor
         push(cElt) ;
     }
     
-    public void visit(ElementExtension el)
-    {
-        PlanElement cElt = PlanExtension.make(context, el) ;
-        push(cElt) ;
-    }
-    
     private void push(PlanElement cElt)  { retStack.push(cElt) ; }
     private PlanElement pop()            { return (PlanElement)retStack.pop() ; }
 }

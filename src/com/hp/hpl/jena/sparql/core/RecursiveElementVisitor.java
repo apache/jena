@@ -44,9 +44,6 @@ public class RecursiveElementVisitor implements ElementVisitor
     public void startElement(ElementTriplesBlock el) {}
     public void endElement  (ElementTriplesBlock el) {}
 
-    public void startElement(ElementExtension el) {}
-    public void endElement  (ElementExtension el) {}
-
     public void startElement(ElementDataset el) {}
     public void endElement  (ElementDataset el) {}
 
@@ -83,12 +80,6 @@ public class RecursiveElementVisitor implements ElementVisitor
     // Visitor pattern on Elements
     
     public final void visit(ElementTriplesBlock el)
-    {
-        startElement(el) ;
-        endElement(el) ;
-    }
-    
-    public final void visit(ElementExtension el)
     {
         startElement(el) ;
         endElement(el) ;
