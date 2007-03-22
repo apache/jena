@@ -21,7 +21,7 @@ public class QueryIterFixed extends QueryIterConvert
         return new QueryIterFixed(iter, execCxt) ;
     }
     
-    public QueryIterFixed(QueryIterator iter, ExecutionContext execCxt)
+    private QueryIterFixed(QueryIterator iter, ExecutionContext execCxt)
     {
         super(iter, new ConvertImmutable(), execCxt) ;
     }

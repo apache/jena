@@ -35,7 +35,7 @@ public class QueryIterDistinct extends QueryIter1
     
     public QueryIterDistinct(QueryIterator iter, ExecutionContext context)
     {
-        super(iter, context) ;
+        super(QueryIterFixed.create(iter, context), context)  ;
         seen = new HashSet() ;
     }
 

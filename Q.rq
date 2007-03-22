@@ -1,38 +1,9 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX :    <http://example/>
 
-SELECT REDUCED *
+SELECT 
+REDUCED 
+?c
 { 
     ?a :p ?c
-
-##     # Case 1: Filter and BGPs.
-##     # No join.
-##     FILTER(?x + ?w)
-##     FILTER(?a)
-##     FILTER(?w)
-##     :x1 :p ?v ;
-##         :q ?w ;
-##         :q ?x .
-##     FILTER(true)
-
-##     # Case 2 : Filter and joins
-##     FILTER(?x + ?w)
-##     FILTER(true)
-##     { :x :p ?a }
-##     FILTER(?a)
-##     FILTER(?ZZZ)
-##     FILTER(?w)
-##     :x1 :p ?v ;
-##         :q ?w ;
-##         :q ?x .
-
-##     # Case 3: OPTIONAL and unbound
-##     :x :p ?v 
-##     OPTIONAL { :x :q ?w }
-##     FILTER(?v)
-##     FILTER (!bound(?w) )
-
-##     # Case 4: OPTIONAL + Filters
-##     :x :p ?v 
-##     OPTIONAL { :x :q ?w . FILTER(true) FILTER(?v)  FILTER(?w) }
-}
+} ORDER BY ?a

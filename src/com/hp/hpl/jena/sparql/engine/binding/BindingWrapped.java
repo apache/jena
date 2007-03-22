@@ -47,6 +47,8 @@ public class BindingWrapped implements Binding
     {
         return binding.vars() ;
     }
+    
+    public String toString() { return binding.toString(); }
 }
 
 /*

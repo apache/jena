@@ -120,7 +120,6 @@ class EvaluatorSimple implements Evaluator
     public Table reduced(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = QueryIterFixed.create(qIter, execCxt) ;
         qIter = new QueryIterReduced(qIter, getExecContext()) ;
         return new TableSimple(qIter) ;
     }
@@ -128,7 +127,6 @@ class EvaluatorSimple implements Evaluator
     public Table distinct(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
-        qIter = QueryIterFixed.create(qIter, execCxt) ;
         qIter = new QueryIterDistinct(qIter, getExecContext()) ;
         return new TableSimple(qIter) ;
     }

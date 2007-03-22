@@ -8,17 +8,51 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 /** 
  * @author Andy Seaborne
  * @version $Id: QueryIterDistinct.java,v 1.4 2007/01/02 11:19:31 andy_seaborne Exp $
  */
 
-public class QueryIterReduced extends QueryIterDistinct
+public class QueryIterReduced extends QueryIter1
 {
-    // TODO Replace with an iterator that surpresses adjacent duplicates 
+    Binding lastSeen = null ;
+    Binding slot = null ;       // ready to go.
+    
     public QueryIterReduced(QueryIterator iter, ExecutionContext context)
-    { super(iter, context) ; }
+    { super(QueryIterFixed.create(iter, context), context)  ; }
+
+    protected void releaseResources()
+    { slot = null ; lastSeen = null ; }
+
+    protected boolean hasNextBinding()
+    {
+        // Already waiting to go.
+        if ( slot != null )
+            return true ;
+        
+        // Always moves.
+        for ( ; getInput().hasNext() ; )
+        {
+            Binding b = getInput().nextBinding() ;
+            if ( lastSeen == null || ! b.equals(lastSeen) )
+            {
+                lastSeen = b ;
+                slot = b ;
+                return true ;
+            }
+        }
+        lastSeen = null ;
+        return false ;
+    }
+
+    protected Binding moveToNextBinding()
+    {
+        Binding r = slot ;
+        slot = null ;
+        return r ;
+    }
 }
 
 /*

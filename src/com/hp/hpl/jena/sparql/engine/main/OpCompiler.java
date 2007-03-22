@@ -266,7 +266,6 @@ public class OpCompiler
     QueryIterator compile(OpDistinct opDistinct, QueryIterator input)
     {
         QueryIterator qIter = compileOp(opDistinct.getSubOp(), input) ;
-        qIter = QueryIterFixed.create(qIter, execCxt) ;
         qIter = new QueryIterDistinct(qIter, execCxt) ;
         return qIter ;
     }
@@ -274,8 +273,7 @@ public class OpCompiler
     QueryIterator compile(OpReduced opReduced, QueryIterator input)
     {
         QueryIterator qIter = compileOp(opReduced.getSubOp(), input) ;
-        qIter = QueryIterFixed.create(qIter, execCxt) ;
-        qIter = new QueryIterDistinct(qIter, execCxt) ;
+        qIter = new QueryIterReduced(qIter, execCxt) ;
         return qIter ;
     }
 
