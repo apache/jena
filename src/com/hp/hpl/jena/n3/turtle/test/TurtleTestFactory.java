@@ -9,13 +9,13 @@ package com.hp.hpl.jena.n3.turtle.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.sparql.junit.TestFactory;
-import com.hp.hpl.jena.sparql.junit.TestUtils;
+import com.hp.hpl.jena.util.junit.TestFactoryManifest;
+import com.hp.hpl.jena.util.junit.TestUtils;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 
-public class TurtleTestFactory extends TestFactory
+public class TurtleTestFactory extends TestFactoryManifest
 {
     
     public static TestSuite make(String filename)
