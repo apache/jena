@@ -6,22 +6,25 @@
 
 package com.hp.hpl.jena.sdb.junit;
 
+import static com.hp.hpl.jena.sparql.junit.TestQueryUtils.getQuerySyntax;
+import static com.hp.hpl.jena.util.junit.TestUtils.getResource;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sparql.core.DataFormat;
-import com.hp.hpl.jena.sparql.junit.*;
+import com.hp.hpl.jena.sparql.junit.QueryTestException;
+import com.hp.hpl.jena.sparql.junit.SurpressedTest;
+import com.hp.hpl.jena.sparql.junit.TestItem;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.query.Syntax;
-
-import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.util.junit.TestFactoryManifest;
 
 
-public class QueryTestSDBFactory extends TestFactory
+public class QueryTestSDBFactory extends TestFactoryManifest
 {
     FileManager fileManager = FileManager.get() ;
     Store store ;
@@ -43,7 +46,7 @@ public class QueryTestSDBFactory extends TestFactory
     public Test makeTest(Resource manifest, Resource entry, String testName, Resource action, Resource result)
     {
             // Defaults.
-            Syntax querySyntax = TestUtils.getQuerySyntax(manifest)  ;
+            Syntax querySyntax = getQuerySyntax(manifest)  ;
             
             if ( testRootName != null )
                 testName = testRootName+testName ;
@@ -57,7 +60,7 @@ public class QueryTestSDBFactory extends TestFactory
             }
             
             // May be null
-            Resource defaultTestType = TestUtils.getResource(manifest, TestManifestX.defaultTestType) ;
+            Resource defaultTestType = getResource(manifest, TestManifestX.defaultTestType) ;
             // test name
             // test type
             // action -> query specific query[+data]
