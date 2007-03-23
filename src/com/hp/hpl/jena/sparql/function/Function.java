@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.function;
 
-import java.util.List;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 
 /** Interface to value-testing extensions to the expression evaluator.
@@ -24,7 +24,7 @@ public interface Function
      * Can throw ExprBuildException if something is wrong (like wrong number of arguments). 
      * @param args The parsed arguements
      */ 
-    public void build(String uri, List args) ;
+    public void build(String uri, ExprList args) ;
 
     /** Test a list of values - argument will not be null but
      *  may have the wrong number of arguments.
@@ -38,7 +38,7 @@ public interface Function
      * @return NodeValue - a value
      */ 
     
-    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env) ;
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) ;
 }
 
 /*

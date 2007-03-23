@@ -62,7 +62,7 @@ public class E_Function extends ExprFunctionN
             buildFunction(env.getContext()) ;
         if ( function == null )
             throw new ExprEvalException("URI <"+getFunctionIRI()+"> not bound") ;
-        NodeValue r = function.exec(binding, args.getList(), getFunctionIRI(), env) ;
+        NodeValue r = function.exec(binding, args, getFunctionIRI(), env) ;
         return r ;
     }
     
@@ -90,7 +90,7 @@ public class E_Function extends ExprFunctionN
             throw new ExprEvalException("URI <"+functionIRI+"> not found as a function") ;
         }
         function = ff.create(functionIRI) ;
-        function.build(functionIRI, args.getList()) ;
+        function.build(functionIRI, args) ;
         functionBound = true ;
     }
     

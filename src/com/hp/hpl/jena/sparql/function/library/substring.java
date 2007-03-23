@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
 import com.hp.hpl.jena.sparql.function.FunctionBase;
@@ -22,7 +23,7 @@ public class substring extends FunctionBase
     public substring() { super() ; }
 
     //@Override
-    public void checkBuild(String uri, List args)
+    public void checkBuild(String uri, ExprList args)
     {
         if ( args.size() != 2 && args.size() != 3 )
             throw new QueryBuildException("Function '"+Utils.className(this)+"' takes two or three arguments") ;

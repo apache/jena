@@ -10,6 +10,7 @@ import java.util.List;
 import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -20,14 +21,14 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public abstract class FunctionBase4 extends FunctionBase
 {
-    public void checkBuild(String uri, List args)
+    public void checkBuild(String uri, ExprList args)
     { 
         if ( args.size() != 4 )
             throw new QueryBuildException("Function '"+Utils.className(this)+"' takes four arguments") ;
     }
 
     
-    public NodeValue exec(List args)
+    public final NodeValue exec(List args)
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.

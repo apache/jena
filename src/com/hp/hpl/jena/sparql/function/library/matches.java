@@ -6,9 +6,6 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
-import java.util.List;
-
-//import org.apache.commons.logging.*;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.*;
@@ -25,9 +22,9 @@ public class matches implements Function
 {
     // Wrapper around an E_Regex. Maybe move actual regex to Function.regex.
     E_Regex regex = null;
-    List myArgs = null ;
+    ExprList myArgs = null ;
     
-    public void build(String uri, List args)
+    public void build(String uri, ExprList args)
     {
         if ( args.size() != 3 && args.size() != 2 )
             throw new ExprEvalException("matches: Wrong number of arguments: Wanted 2 or 3, got "+args.size()) ;
@@ -35,7 +32,7 @@ public class matches implements Function
         
     }
     
-    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env)
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
         if ( myArgs != args )
             throw new ARQInternalErrorException("matches: Arguments have changed since checking") ;

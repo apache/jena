@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 //import org.apache.commons.logging.*;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionBase;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
@@ -29,7 +30,7 @@ public class print extends FunctionBase
     private static PrintWriter out = FileUtils.asPrintWriterUTF8(System.out) ; 
     static public void setStream(PrintStream stream) { out = FileUtils.asPrintWriterUTF8(stream) ; }  
     
-    public void checkBuild(String uri, List args)
+    public void checkBuild(String uri, ExprList args)
     {} 
     
     /** Processes evaluated args */

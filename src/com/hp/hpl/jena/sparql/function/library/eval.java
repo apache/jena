@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.function.library;
 
-import java.util.List;
 
 //import org.apache.commons.logging.*;
 import com.hp.hpl.jena.query.QueryBuildException;
@@ -14,6 +13,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.Function;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
@@ -30,7 +30,7 @@ public class eval implements Function
 {
     //private static Log log = LogFactory.getLog(eval) ;
     
-    public void build(String uri, List args)
+    public void build(String uri, ExprList args)
     {
         if ( args.size() != 1 )
             throw new QueryBuildException("'eval' takes one argument") ;
@@ -39,7 +39,7 @@ public class eval implements Function
     
     /** Processes unevaluated arguments */
     
-    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env)
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
         if ( args == null )
             // The contract on the function interface is that this should not happen.

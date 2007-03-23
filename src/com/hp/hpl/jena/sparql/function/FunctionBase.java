@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -26,18 +27,18 @@ import com.hp.hpl.jena.sparql.util.Context;
 public abstract class FunctionBase implements Function
 {
     String uri = null ;
-    protected List arguments = null ;
+    protected ExprList arguments = null ;
     protected Binding currentBinding = null ; 
     private FunctionEnv env ;
     
-    public final void build(String uri, List args)
+    public final void build(String uri, ExprList args)
     {
         this.uri = uri ;
         arguments = args ;
         checkBuild(uri, args) ;
     }
 
-    public NodeValue exec(Binding binding, List args, String uri, FunctionEnv env)
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
         this.env = env ;
         
@@ -46,7 +47,7 @@ public abstract class FunctionBase implements Function
             throw new ARQInternalErrorException("FunctionBase: Null args list") ;
         
         List evalArgs = new ArrayList() ;
-        for ( Iterator iter = args.listIterator() ; iter.hasNext() ; )
+        for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
         {
             Expr e = (Expr)iter.next() ;
             
@@ -72,7 +73,7 @@ public abstract class FunctionBase implements Function
     /** Function call to a list of evaluated argument values */ 
     public abstract NodeValue exec(List args) ;
 
-    public abstract void checkBuild(String uri, List args) ;
+    public abstract void checkBuild(String uri, ExprList args) ;
     
     /** Get argument, indexing from 1 **/
     public NodeValue getArg(int i)
