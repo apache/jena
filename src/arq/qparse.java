@@ -53,7 +53,7 @@ public class qparse extends CmdARQ
         super.addModule(modQuery) ;
         super.addModule(modOutput) ;
         super.getUsage().startCategory(null) ;
-        super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad]") ;
+        super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad, plan]") ;
     }
     
     protected void processModulesAndArgs()

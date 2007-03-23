@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 import com.hp.hpl.jena.sparql.vocabulary.VocabTestQuery;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.junit.TestUtils;
 
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.RDF;

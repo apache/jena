@@ -13,10 +13,12 @@ import com.hp.hpl.jena.sparql.core.DataFormat;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.junit.TestFactoryManifest;
+import com.hp.hpl.jena.util.junit.TestUtils;
 
 import junit.framework.*;
 
-public class QueryTestSuiteFactory extends TestFactory
+public class QueryTestSuiteFactory extends TestFactoryManifest
 {
     private FileManager fileManager = FileManager.get() ;
     private Model model = null ;
@@ -43,7 +45,7 @@ public class QueryTestSuiteFactory extends TestFactory
     public Test makeTest(Resource manifest, Resource entry, String testName, Resource action, Resource result)
     {
         // Defaults.
-        Syntax querySyntax = TestUtils.getQuerySyntax(manifest)  ;
+        Syntax querySyntax = TestQueryUtils.getQuerySyntax(manifest)  ;
         
         if ( querySyntax != null )
         {

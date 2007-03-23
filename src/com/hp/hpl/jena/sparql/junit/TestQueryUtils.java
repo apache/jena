@@ -1,26 +1,35 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.junit;
 
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
+import com.hp.hpl.jena.util.junit.TestUtils;
 
+/** com.hp.hpl.jena.query.test.TestUtils
+ * 
+ * @author Andy Seaborne
+ * @version $Id: TestUtils.java,v 1.10 2007/01/09 16:58:04 andy_seaborne Exp $
+ */
 
-public interface ManifestItemHandler
+public class TestQueryUtils
 {
-    /** Handle an item in a manifest */
-    public boolean processManifestItem(Resource manifest ,
-                                       Resource item ,
-                                       String testName ,
-                                       Resource action ,
-                                       Resource result) ;
+    public static boolean hasQuerySyntax(Resource r) { return r.hasProperty(TestManifestX.querySyntax) ; }
+    
+    public static Syntax getQuerySyntax(Resource r)
+    { return Syntax.make(TestUtils.getLiteralOrURI(r, TestManifestX.querySyntax)) ; }
+
+    public static String getDataSyntax(Resource r)
+    { return TestUtils.getLiteralOrURI(r, TestManifestX.dataSyntax) ; }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
