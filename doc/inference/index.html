@@ -1747,6 +1747,44 @@ floating point or XSDDateTime).</div>
     </td>
   </tr>
   <tr> 
+    <td width="41%">listContains(?l, ?x) <br />listNotContains(?l, ?x)</td>
+    <td width="59%"> 
+      <div align="left">Passes if ?l is a list which contains (does not contain) the element ?x, 
+      both arguments must be ground, can not be used as a generator.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">listEntry(?list, ?index, ?val)</td>
+    <td width="59%"> 
+      <div align="left">Binds ?val to the ?index'th entry
+in the RDF list ?list. If there is no such entry the variable will be unbound
+and the call will fail. Only useable in rule bodies.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">listLength(?l, ?len)</td>
+    <td width="59%"> 
+      <div align="left">Binds ?len to the length of the list ?l.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">listEqual(?la, ?lb) <br />listNotEqual(?la, ?lb)</td>
+    <td width="59%"> 
+      <div align="left">listEqual tests if the two arguments are both lists and contain
+      the same elements. The equality test is semantic equality on literals (sameValueAs) but
+      will not take into account owl:sameAs aliases. listNotEqual is the negation of this (passes if listEqual fails).</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="41%">listMapAsObject(?s, ?p ?l) <br /> listMapAsSubject(?l, ?p, ?o)</td>
+    <td width="59%"> 
+      <div align="left">These can only be used as actions in the head of a rule.
+      They deduce a set of triples derived from the list argument ?l : listMapAsObject asserts
+      triples (?s ?p ?x) for each ?x in the list ?l, listMapAsSubject asserts triples (?x ?p ?o). </div>
+    </td>
+  </tr>
+  
+  <tr> 
     <td width="41%">table(?p) tableAll()</td>
     <td width="59%"> 
       <div align="left">Declare that all goals involving property ?p (or all goals) 
@@ -2009,7 +2047,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.34 2007-03-07 14:17:38 der Exp $</i>
+  Last modification: $Id: index.html,v 1.35 2007-03-23 16:06:33 der Exp $</i>
 </p>
 </body>
 </html>
