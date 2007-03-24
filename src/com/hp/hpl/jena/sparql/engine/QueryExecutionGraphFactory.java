@@ -15,6 +15,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.syntax.Element;
 
 
 /** Factory to make QueryExecutionGraph objects from Query objects or a string.   
@@ -44,7 +45,24 @@ public class QueryExecutionGraphFactory
         return make(query, dataset) ;
     }
 
-    static private QueryExecutionGraph make(Query query, DatasetGraph datasetGraph)
+    public static QueryExecutionGraph create(Element pattern, Graph graph)
+    {
+        return create(toQuery(pattern), graph) ; 
+    }
+    
+    public static QueryExecutionGraph create(Element pattern, DatasetGraph dataset)
+    {
+        return make(toQuery(pattern), dataset) ;
+    }
+    
+    private static Query toQuery(Element pattern)
+    {
+        Query query = QueryFactory.make() ;
+        query.setQueryPattern(pattern) ;
+        return query ;
+    }
+
+    private static QueryExecutionGraph make(Query query, DatasetGraph datasetGraph)
     {
         Dataset dataset = new DataSourceImpl(datasetGraph) ;
         for ( Iterator iter = QueryEngineRegistry.get().factories().iterator() ; iter.hasNext() ; )
