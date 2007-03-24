@@ -106,6 +106,7 @@ public class qexpr
         boolean actionCopySubstitute = cl.contains(reduceDecl) ;
         boolean actionPrintPrefix = false ;
         boolean actionPrintSPARQL = false ; 
+        boolean actionPrint = cl.contains(printDecl) ;
             
         for ( Iterator iter = cl.getValues(printDecl).iterator() ; iter.hasNext(); )
         {
@@ -137,10 +138,14 @@ public class qexpr
                 if ( verbose )
                     System.out.print(expr.toString()+" => ") ;
                 
-                if ( actionPrintSPARQL )
-                    System.out.println(ExprUtils.fmtSPARQL(expr)) ;
-                if ( actionPrintPrefix )
-                    System.out.println(ExprUtils.fmtPrefix(expr)) ;
+                if ( actionPrint )
+                {
+                    if ( actionPrintSPARQL )
+                        System.out.println(ExprUtils.fmtSPARQL(expr)) ;
+                    if ( actionPrintPrefix )
+                        System.out.println(ExprUtils.fmtPrefix(expr)) ;
+                    continue ;
+                }
                 
                 try {
                     if ( actionCopySubstitute )
