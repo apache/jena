@@ -17,7 +17,9 @@ system.&nbsp; You can use Java 1.4 logging instead.</p>
 application at INFO will cause no output in normal operation. Output below INFO 
 can be very verbose and is intended mainly to help debug ARQ. WARN and FATAL 
 messages are only used when something is wrong.</p>
-<p>The root of all the loggers is &quot;com.hp.hpl.jena.query&quot;.</p>
+<p>The root of all the loggers is &quot;com.hp.hpl.jena&quot;. &quot;com.hp.hpl.jena.query&quot; 
+is the application API.&nbsp; &quot;com.hp.hpl.jena.sparql&quot; is the implementation and 
+extensions points.</p>
 <p>If using in Tomcat, or other system that provides complex class loading 
 arrangements, be careful about loading from jars in both the web application and 
 the system directories as this can cause separate logging systems to be created 
