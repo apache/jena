@@ -15,25 +15,72 @@ import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.lang.sparql.SPARQLParser;
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.Template;
 
 
-class ParserSPARQL extends Parser
+public class ParserSPARQL extends Parser
 {
-    public Query parse(Query query, String queryString)
+    private interface Action { void exec(SPARQLParser parser) throws Exception ; }
+    
+    public Query parse(final Query query, String queryString)
     {
-        SPARQLParser parser = null ;
-        Reader in = new StringReader(queryString) ;
+        query.setSyntax(Syntax.syntaxSPARQL) ;
+
+        Action action = new Action() {
+            public void exec(SPARQLParser parser) throws Exception
+            {
+                parser.CompilationUnit() ;
+            }
+        } ;
+
+        perform(query, queryString, action) ;
+        validateParsedQuery(query) ;
+        return query ;
+    }
+    
+    public static Element parseElement(String string)
+    {
+        final Query query = new Query () ;
+        Action action = new Action() {
+            public void exec(SPARQLParser parser) throws Exception
+            {
+                Element el = parser.GroupGraphPattern() ;
+                query.setQueryPattern(el) ;
+            }
+        } ;
+        perform(query, string, action) ;
+        return query.getQueryPattern() ;
+    }
+    
+    public static Template parseTemplate(String string)
+    {
+        final Query query = new Query () ;
+        Action action = new Action() {
+            public void exec(SPARQLParser parser) throws Exception
+            {
+                Template t = parser.ConstructTemplate() ;
+                query.setConstructTemplate(t) ;
+            }
+        } ;
+        perform(query, string, action) ;
+        return query.getConstructTemplate() ;
+    }
+    
+    
+    // All throwable handling.
+    private static void perform(Query query, String string, Action action)
+    {
+        Reader in = new StringReader(string) ;
+        SPARQLParser parser = new SPARQLParser(in) ;
+
         try {
             query.setStrict(true) ;
             // If reading from an InputStream, do 
             // Reader r = new InputStreamreader(in, "UTF-8")  and 
             // parser = new SPARQLParser(r) ;
-            parser = new SPARQLParser(in) ;
             parser.setQuery(query) ;
-            parser.CompilationUnit() ;
-            query.setSyntax(Syntax.syntaxSPARQL) ;
-            validateParsedQuery(query) ;
-            return query ;
+            action.exec(parser) ;
         }
         catch (com.hp.hpl.jena.sparql.lang.sparql.ParseException ex)
         { 

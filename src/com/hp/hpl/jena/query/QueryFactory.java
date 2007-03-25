@@ -7,6 +7,9 @@
 package com.hp.hpl.jena.query;
 
 import com.hp.hpl.jena.sparql.lang.Parser;
+import com.hp.hpl.jena.sparql.lang.ParserSPARQL;
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -177,7 +180,16 @@ public class QueryFactory
         
         return create(qStr, baseURI, langURI) ;
     }
+    
+    static public Element createElement(String elementString)
+    {
+        return ParserSPARQL.parseElement(elementString) ;
+    }
 
+    static public Template createTemplate(String templateString)
+    {
+        return ParserSPARQL.parseTemplate(templateString) ;
+    }
 }
 
 /*
