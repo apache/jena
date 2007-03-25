@@ -20,12 +20,70 @@ using the fake <code>java:</code> URI scheme to dynamically call the function.</
 <p>A SPARQL value function is an extension point of the SPARQL query language 
 that allows URI to name a function in the query processor.</p>
 <p>In the ARQ engine, code to implement function must implement the interface
-<code>com.hp.hpl.jena.query.function.Function</code> although it is easier to 
-work with one the abstract classes for specific numbers of arguments like <code>
-com.hp.hpl.jena.query.function.FunctionBase1</code> for one argument functions. 
-Function do not have to have a fixed number of arguments.</p>
+<code>com.hp.hpl.jena.sparql.function.Function</code> although it is easier to 
+work with one of the abstract classes for specific numbers of arguments like <code>
+com.hp.hpl.jena.sparql.function.FunctionBase1</code> for one argument functions. 
+Functions do not have to have a fixed number of arguments.</p>
+<p>The abstract class <code>
+FunctionBase</code>, the superclass of <code>
+FunctionBase1</code> to <code>
+FunctionBase4</code>, evaluates its arguments and calls the implementation code 
+with argument values (if a variable was unbound, an error will have been 
+generated)&nbsp; </p>
+<p>It is possible to get unevaluated arguments but care must be taken not to 
+violate the rules of function evaluation. The standard functions that access 
+unevaluated arguments are the logical 'or' and logical 'and' operations that 
+back <code>||</code> and <code>&amp;&amp;</code> are special forms to allow for the 
+special exception handling rules.</p>
+<p>Normally, function should be a pure evaluation based on it's argument. It 
+should not access a graph nor return different values for the same arguments (to 
+allow expression optimization). Usually, these requirements can be better met 
+with a <a href="writing_propfunc.html">property function</a>. Functions can't 
+bind a variables; this would be done in a <a href="writing_propfunc.html">
+property function</a> as well.</p>
+<p>Example: (this is the max function in the standard ARQ library):</p>
+<pre class="box">public class max extends FunctionBase2
+{
+    public max() { super() ; }
+    public NodeValue exec(NodeValue nv1, NodeValue nv2)
+    {
+        return Functions.max(nv1, nv2) ;
+    }
+}</pre>
+<p>The function takes two arguments and returns a single value. The class 
+NodeValue represents values and supports value-based operations. NodeValue value 
+support includes the XSD datatypes, xsd:decimal and all it's subtypes like 
+xsd:integer and xsd:byte, xsd';doiuble, xsd:float, xsd:boolean, xsd:dateTime and 
+xsd:date. Literals with language tags are also treated as values in additional 
+&quot;value spaces&quot; determined by the language tag without regard to case.</p>
+<p>The <code>
+Functions</code> class contains the core XML Functions and Operators operations. 
+Class NodeFunctions contains the implementations of node-centric operations like
+<code>isLiteral</code> and <code>str</code>.</p>
+<p>If any of the arguments are wrong, then the function should throw <code>
+ExprEvalException</code>.</p>
+<p>Example: calculate the canonical namespace from a URI (calls the Jena 
+operation for the actual work):</p>
+<pre class="box">public class namespace extends FunctionBase1
+{
+    public namespace() { super() ; }
+    
+    public NodeValue exec(NodeValue v)
+    {
+        Node n = v.asNode() ;
+        if ( ! n.isURI() )
+            throw new ExprEvalException("Not a URI: "+FmtUtils.stringForNode(n)) ;
+        String str = n.getNameSpace() ;
+        return NodeValue.makeString(str) ;
+    }
+}</pre>
+<p>This throws an evaluation exception if it is passed a value that is not a 
+URI.</p>
+<p>The standard library, in package
+<code>com.hp.hpl.jena.sparql.function.library</code>, contains many examples.</p>
 <h2>Registering the Function</h2>
 <p>Function registry : global and per-query execution.</p>
+<p>The java: URI scheme</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 

@@ -61,9 +61,8 @@ Firefox puts space in with this  -->
 
   <p>The ARQ function library uses this mechanism.&nbsp; The
   namespace of the ARQ function library is
-  &lt;<code>java:com.hp.hpl.jena.query.function.library.&gt;</code>
-  (note the trailing dot).</p>
-  <pre class="box">PREFIX jfn: &lt;java:com.hp.hpl.jena.query.function.library.&gt;<br />PREFIX dc: &lt;http://purl.org/dc/elements/1.1/&gt;<br />SELECT ?v<br />{ ?x dc:date ?date .<br /> FILTER (?date &lt; jfn:now() )<br />}<br /></pre>
+  &lt;<code>http://jena.hpl.hp.com/function#&gt;</code>.</p>
+  <pre class="box">PREFIX jfn: &lt;<code>http://jena.hpl.hp.com/function#</code>&gt;<br />PREFIX dc: &lt;http://purl.org/dc/elements/1.1/&gt;<br />SELECT ?v<br />{ ?x dc:date ?date .<br /> FILTER (?date &lt; jfn:now() )<br />}<br /></pre>
 
   <p>The <kbd>jfn:now</kbd> returns the time the query started.</p>
 

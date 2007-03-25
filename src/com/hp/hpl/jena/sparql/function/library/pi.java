@@ -9,9 +9,9 @@ package com.hp.hpl.jena.sparql.function.library;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.function.FunctionBase0;
 
-/** Value of e */  
+/** Value of pi */  
 
-abstract class pi extends FunctionBase0
+class pi extends FunctionBase0
 {
     static NodeValue value_pi = NodeValue.makeDouble(Math.PI) ;
     

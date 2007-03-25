@@ -13,7 +13,6 @@ import java.util.List;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -50,14 +49,8 @@ public abstract class FunctionBase implements Function
         for ( Iterator iter = args.iterator() ; iter.hasNext() ; )
         {
             Expr e = (Expr)iter.next() ;
-            
-            try {
-                NodeValue x = e.eval(binding, env) ;
-                evalArgs.add(x) ;
-            } catch (ExprEvalException ex)
-            {
-                throw ex ;
-            }
+            NodeValue x = e.eval(binding, env) ;
+            evalArgs.add(x) ;
         }
         
         currentBinding = binding ;
