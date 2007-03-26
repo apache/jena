@@ -36,6 +36,9 @@ execution where possible.
    + Filter functions now take a Context, not an ExecutionContext.
    + Deprecate "EXT" form from ARQ.
      (Property functions are better)
+     
+ + Experimental SPARQL/Update API
+   See http://jena.hpl.hp.com/~afs/SPARQL-Update.html
 
 Post ARQ-2.0-beta: 
 + Added REDUCED as per DAWG decision 2007-03-20
@@ -43,3 +46,4 @@ Post ARQ-2.0-beta:
 + Removed ElementExtension/PlanExtension and extension package
   The ARQ(beyond SPARQL feature) of "EXT" has been removed.
   Element visitors may be affected.
++ Added an update API (
