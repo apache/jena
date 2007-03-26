@@ -15,7 +15,8 @@ public interface DataSourceGraph extends DatasetGraph
     public void setDefaultGraph(Graph g) ;
 
     public void addNamedGraph(String uri, Graph graph) ;
-
+    
+    public Graph removeNamedGraph(String uri) ;
 }
 /*
  * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP

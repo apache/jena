@@ -38,7 +38,6 @@ public class DataSourceGraphImpl implements DataSourceGraph
         defaultGraph = graph ;
         namedGraphs = new HashMap() ;
     }
-
     
     // Copy over to own structures for later modification
     public DataSourceGraphImpl(Dataset dataset)
