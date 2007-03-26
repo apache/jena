@@ -45,7 +45,7 @@ public class ModelUtils
         if ( sNode.isLiteral() || sNode.isVariable() )
             return null ;
         
-        if ( ! pNode.isURI() )
+        if ( ! pNode.isURI() )  // Includes variable.
             return null ;
         
         if ( oNode.isVariable() )
