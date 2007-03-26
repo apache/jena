@@ -4,13 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.prefix;
-import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
+package com.hp.hpl.jena.sparql.lang;
 
-class PrefixParserBase
-    extends ParserQueryBase
-    implements PrefixParserConstants
+import com.hp.hpl.jena.query.Query;
+
+public class ParserQueryBase extends ParserBase 
 {
+    Query query ;
+    public void setQuery(Query q)
+    { 
+        query = q ;
+        setPrologue(q) ;
+    }
+    public Query getQuery() { return query ; }
 }
 
 /*

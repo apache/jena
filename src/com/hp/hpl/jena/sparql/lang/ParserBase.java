@@ -15,11 +15,9 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.RelURI;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
@@ -30,6 +28,9 @@ import com.hp.hpl.jena.sparql.util.JenaURIException;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.RefBoolean;
 import com.hp.hpl.jena.vocabulary.RDF;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QueryParseException;
 
 public class ParserBase
 {
@@ -66,9 +67,9 @@ public class ParserBase
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
     
-    Query query ;
-    public void setQuery(Query q) { query = q ; }
-    public Query getQuery() { return query ; }
+    Prologue prologue ;
+    public void setPrologue(Prologue prologue) { this.prologue = prologue ; }
+    public Prologue getPrologue() { return prologue ; }
     
     protected void setInConstructTemplate(boolean b)
     {
@@ -231,11 +232,11 @@ public class ParserBase
             return n ;
         }
         
-        if ( getQuery() != null )
+        if ( getPrologue() != null )
         {
-            if ( getQuery().getBaseURI() != null )
+            if ( getPrologue().getBaseURI() != null )
                 try {
-                    uriStr = RelURI.resolve(uriStr, getQuery().getBaseURI()) ;
+                    uriStr = RelURI.resolve(uriStr, getPrologue().getBaseURI()) ;
                 } catch (JenaURIException ex)
                 { throw makeParseException(ex.getMessage(), line, column) ; }
         }
@@ -247,7 +248,7 @@ public class ParserBase
     // A BasicGraphPattern is any sequence of TripleBlocks, separated by filters,
     // but not by other graph patterns 
     
-    // SPARQL does not have a strainght syntactci unit for BGPs - but prefix does. 
+    // SPARQL does not have a straight syntactic unit for BGPs - but prefix does. 
     
     protected void startBasicGraphPattern()
     { activeLabelMap.clear() ; }
@@ -297,7 +298,7 @@ public class ParserBase
     
     private String fixupPrefixedName(String qname, int line, int column)
     {
-        String s = getQuery().expandPrefixedName(qname) ;
+        String s = getPrologue().expandPrefixedName(qname) ;
         if ( s == null )
         {
             String msg = "Line " + line + ", column " + column;

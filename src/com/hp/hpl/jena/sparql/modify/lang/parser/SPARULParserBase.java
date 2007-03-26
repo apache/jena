@@ -6,13 +6,13 @@
 
 package com.hp.hpl.jena.sparql.modify.lang.parser;
 
-import com.hp.hpl.jena.sparql.modify.lang.ParserBase;
+import com.hp.hpl.jena.sparql.modify.lang.ParserUpdateBase;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 
 
 public class SPARULParserBase
-    extends ParserBase
+    extends ParserUpdateBase
     implements SPARULParserConstants
 {
     private UpdateRequest request = null ;

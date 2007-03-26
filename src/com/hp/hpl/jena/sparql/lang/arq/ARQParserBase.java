@@ -5,10 +5,10 @@
  */
 
 package com.hp.hpl.jena.sparql.lang.arq;
-import com.hp.hpl.jena.sparql.lang.ParserBase;
+import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
 
 class ARQParserBase
-    extends ParserBase
+    extends ParserQueryBase
     implements ARQParserConstants
 {
 }

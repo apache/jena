@@ -1,20 +1,20 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.prefix;
-import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
+package com.hp.hpl.jena.sparql.modify.lang;
 
-class PrefixParserBase
-    extends ParserQueryBase
-    implements PrefixParserConstants
+import com.hp.hpl.jena.sparql.lang.ParserBase;
+
+public class ParserUpdateBase extends ParserBase 
 {
+
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
