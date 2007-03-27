@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.lang.ParserBase;
 
 public class ParserSSEBase extends ParserBase
 {
-    VarAlloc varAlloc = new VarAlloc("") ;
+    private VarAlloc varAlloc = new VarAlloc("") ;
     protected Var createVariable()
     {
         return varAlloc.allocVar() ;
