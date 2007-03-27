@@ -1,12 +1,12 @@
-ARQ is a query processor for Jena that implements SPARQL.
-
-==== Announcing ARQ 2.0 beta
-
-This is the first, and hopefully only, beta release of ARQ 2.0.
+==== Announcing ARQ 2.0
 
 ARQ 2.0 is a complete implementation of SPARQL including
 support for custom filter function, property functions
 and free text search.
+
+This release also includes a first implementation of the
+SPARQL/Update language.  The API for this is not yet stable;
+suggestions and feedback on it's utility most welcome.
 
 ARQ 2.0 provides the same external API as ARQ 1.5.  Internally,
 query execution follows the SPARQL algebra, in development by
@@ -14,11 +14,18 @@ the RDF Data Access Working Group.  There has been significant
 reorganisation and renaming of implementation code to align with
 termininology of the SPARQL specification.
 
-Please report any differences in behaviour, both functional
-and performance.
+This version also makes it easier to reuse and extend ARQ.  
+ ARQ can also be used just as a SPARQL parser, as a SPARQL algebra
+generator or as a basis for specialised query engines.
+
+As well as custom functions and custom property functions, the 
+SPARQL algebra can be extended with new operators.  There is a 
+new internal language for reading and writing algebra expressions
+directly, allowing experimentation in query optimization or query
+features not avilable in SPARQL currently.  
 
 Download:
-    http://prdownloads.sourceforge.net/jena/ARQ-2.0-beta.zip
+    http://prdownloads.sourceforge.net/jena/ARQ-2.0.zip
 
 Home page:
 	http://jena.sourceforge.net/ARQ/
@@ -59,13 +66,15 @@ name and "java:" should work because there is a redirection left in-place.
 == Status
 
 The implementation of SPARQL is complete and meets the
-SPARQL current editors' working draft and cuurently planned
-Last Call design.
+SPARQL current editors' working draft and Last Call design.
+
+Latest published:
+http://www.w3.org/TR/rdf-sparql-query/
 
 Editors' working draft:
 http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html
 
-Defition of SPARQL:
+Definition of SPARQL:
 http://www.w3.org/2001/sw/DataAccess/rq23/rq25.html#sparqlDefinition
 
 == Notes
@@ -81,9 +90,7 @@ Several query engines are available:
     in migration (deprecated for new applications, it and will be removed
     sometime
   + RDQL engine
- 
-ARQ can also be used just as a SPARQL parser, as a SPARQL algebra
-generator or as a basis for specialised query engines.
+
 
 Not in ARQ 2.0:
 
