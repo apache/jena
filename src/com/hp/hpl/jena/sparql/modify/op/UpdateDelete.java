@@ -30,7 +30,7 @@ public class UpdateDelete extends UpdateModifyBase
     public void setDeleteTemplate(Template template)
     { setDeleteTemplateBase(template) ; }
     
-    /** Parse the string into a template - string must include the surounding {} */
+    /** Parse the string into a template - string must include the surrounding {} */
     public void setDeleteTemplate(String template)
     { setDeleteTemplateBase(template) ; }
     

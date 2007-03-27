@@ -21,11 +21,11 @@ public class UpdateModify extends UpdateModifyBase
     public void setInsertTemplate(Template template)
     { setInsertTemplateBase(template) ; }
     
-    /** Parse the string into a template - string must include the surounding {} */
+    /** Parse the string into a template - string must include the surrounding {} */
     public void setInsertTemplate(String template)
     { setInsertTemplateBase(template) ; }
 
-    /** Parse the string into a template - string must include the surounding {} */
+    /** Parse the string into a template - string must include the surrounding {} */
     public void setDeleteTemplate(String template)
     { setDeleteTemplateBase(template) ; }
     

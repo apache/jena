@@ -34,11 +34,11 @@ public abstract class UpdateModifyBase extends UpdatePattern
     protected void setInsertTemplateBase(Template template)
     { this.inserts = template ; }
 
-    /** Parse the string into a template - string must include the surounding {} */
+    /** Parse the string into a template - string must include the surrounding {} */
     protected void setDeleteTemplateBase(String template)
     { this.deletes = QueryFactory.createTemplate(template) ; }
     
-    /** Parse the string into a template - string must include the surounding {} */
+    /** Parse the string into a template - string must include the surrounding {} */
     protected void setInsertTemplateBase(String template)
     { this.inserts = QueryFactory.createTemplate(template) ; }
 
