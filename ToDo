@@ -7,6 +7,9 @@ ARQ2-beta
 
 == Core
 
++ Alternative indexes
+  LARQ idea - extracted.
+
 + Check "=" is an error when unknown.
 
 + REDUCED tests :-(
