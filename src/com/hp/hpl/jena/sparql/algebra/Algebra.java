@@ -6,20 +6,10 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 
 public class Algebra
 {
-    public static QueryIterator makeRoot(ExecutionContext execCxt)
-    {
-        Binding rootBinding = BindingRoot.create() ;
-        QueryIterator initialIter = new QueryIterSingleton(rootBinding, execCxt) ;
-        return initialIter ;
-    }
+    //TODO Transfer builder code
 }
 
 /*

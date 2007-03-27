@@ -9,9 +9,9 @@ package com.hp.hpl.jena.sparql.engine.ref;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.ExecUtils;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
@@ -37,7 +37,7 @@ class EvaluatorSimple implements Evaluator
 
     public Table basicPattern(BasicPattern pattern)
     {
-        QueryIterator qIter = StageBuilder.compile(pattern, Algebra.makeRoot(execCxt), execCxt) ;
+        QueryIterator qIter = StageBuilder.compile(pattern, ExecUtils.makeRoot(execCxt), execCxt) ;
         return TableFactory.create(qIter) ;
     }
 

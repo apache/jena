@@ -6,55 +6,36 @@
 
 package sse;
 
-import java.io.*;
+import sse.builders.OpBuilder;
+import sse.builders.ResolveURI;
 
-import sse.parser.ParseException;
-import sse.parser.SSE_Parser;
-import sse.parser.TokenMgrError;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.algebra.Op;
 
-import com.hp.hpl.jena.shared.NotFoundException;
-import com.hp.hpl.jena.util.FileUtils;
 
-public class SSE
+public class Algebra
 {
-    public static Item parseFile(String filename)
+    static public Op read(String filename)
     {
-        try {
-            InputStream in = new FileInputStream(filename) ;
-            return parse(in) ;
-        } 
-        catch (FileNotFoundException ex)
-        { throw new NotFoundException("Not found: "+filename) ; }
+        Item item = SSE.parseFile(filename) ;
+        return parse(item) ;
     }
     
-    public static Item parseString(String str)
+    static public Op parse(String string)
     {
-        return parse(new StringReader(str)) ;
+        Item item = SSE.parseString(string) ;
+        return parse(item) ;
     }
     
-    public static Item parse(InputStream in)
+    static public Op parse(Item item)
     {
-        Reader reader = FileUtils.asBufferedUTF8(in) ;
-        return parse(reader) ;
-    }
-    
-    private static Item parse(Reader reader)
-    {
-        SSE_Parser p = new SSE_Parser(reader) ;
-        try
-        {
-            return p.parse() ;
-       } 
-       catch (ParseException ex)
-       { throw new StlParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-       catch (TokenMgrError tErr)
-       { 
-           // Last valid token : not the same as token error message - but this should not happen
-           int col = p.token.endColumn ;
-           int line = p.token.endLine ;
-           throw new StlParseException(tErr.getMessage(), line, col) ;
-       }
-       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+        // TODO - design AND write
+        PrefixMapping pmap = new PrefixMappingImpl() ;
+        pmap.setNsPrefix("", "http://example/") ;
+        item = ResolveURI.resolve(item, pmap) ;
+        Op op = OpBuilder.build(item) ;
+        return op ;
     }
 }
 

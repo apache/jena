@@ -16,8 +16,8 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.ExecUtils;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.iterator.*;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -279,7 +279,7 @@ public class OpCompiler
 
     static QueryIterator root(ExecutionContext execCxt)
     {
-        return new QueryIterSingleton(BindingRoot.create(), execCxt) ;
+        return ExecUtils.makeRoot(execCxt) ;
     }
 
     private QueryIterator root()

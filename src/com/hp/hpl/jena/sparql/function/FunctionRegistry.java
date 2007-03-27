@@ -82,7 +82,6 @@ public class FunctionRegistry //extends HashMap<String, Function>
         
         registry.put(uri, new FunctionFactoryAuto(funcClass)) ;
     }
-
     
     /** Lookup by URI */
     public FunctionFactory get(String uri)

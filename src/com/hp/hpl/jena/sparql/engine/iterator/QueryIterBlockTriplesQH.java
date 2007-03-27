@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryEngineUtils;
+import com.hp.hpl.jena.sparql.engine.ExecUtils;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
@@ -81,8 +81,8 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
             //System.out.println("StageBasePattern: "+pattern) ;
             
             Set vars = new HashSet() ;
-            QueryEngineUtils.compilePattern(graphQuery, pattern.getList(), binding, vars) ;
-            projectionVars = QueryEngineUtils.projectionVars(vars) ; 
+            ExecUtils.compilePattern(graphQuery, pattern.getList(), binding, vars) ;
+            projectionVars = ExecUtils.projectionVars(vars) ; 
             // **** No constraints done here currently
             //QueryEngineUtils.compileConstraints(graphQuery, constraints) ;
             

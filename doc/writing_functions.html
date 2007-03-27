@@ -81,10 +81,32 @@ operation for the actual work):</p>
 URI.</p>
 <p>The standard library, in package
 <code>com.hp.hpl.jena.sparql.function.library</code>, contains many examples.</p>
-<h2>Registering the Function</h2>
-<p>Function registry : global and per-query execution.</p>
-<p>The java: URI scheme</p>
-<p>&nbsp;</p>
+<h2>Registering Functions</h2>
+<p>The query compiler finds functions based on the functions URI.&nbsp; There is 
+a global registry of known functions, but any 
+query execution can have it's own function registry.</p>
+<p>For each function, there is a function factory associated with the URI. A new 
+function instance is created for each use of a function in each query execution.</p>
+<pre class="box">// Register with the global registry.
+FunctionRegistry.get().put(&quot;http://example.org/function#myFunction&quot;, new MyFunctionFactory()) ;</pre>
+<p>A common case is registering a specific class for a function implementation 
+so there is an addition method that takes a class, wraps in a built-in function 
+factory and registers the function implementation.</p>
+<pre class="box">// Register with the global registry.
+FunctionRegistry.get().put(&quot;http://example.org/function#myFunction&quot;, MyFunction.class) ;</pre>
+<p>Another convenience route to function calling is to use the
+<a href="java-uri.html"><code>java:</code> URI scheme</a>. This dynamical loads 
+the code, which must be on the Java classpath. With this scheme, the function 
+URI gives the class name. There is automatic registration of a wrapper into the 
+function registry. This way, no explicit registration step is needed by the 
+application and queries issues with the command line tools can load custom 
+functions.</p>
+<pre class="box">PREFIX f: &lt;java:app.myFunctions.&gt;
+...
+   FILTER f:myTest(?x, ?y)
+...
+   FILTER (?x + f:myIntToXSD(?y))
+...</pre>
 <p>&nbsp;</p>
 
 

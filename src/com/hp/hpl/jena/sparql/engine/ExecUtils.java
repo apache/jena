@@ -14,16 +14,25 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 
 /**
  * @author     Andy Seaborne
  * @version    $Id: QueryEngineUtils.java,v 1.14 2007/02/06 17:06:06 andy_seaborne Exp $
  */
  
-public class QueryEngineUtils
+public class ExecUtils
 {
-    public static Log log = LogFactory.getLog(QueryEngineUtils.class) ;
+    public static Log log = LogFactory.getLog(ExecUtils.class) ;
+    
+    public static QueryIterator makeRoot(ExecutionContext execCxt)
+    {
+        Binding rootBinding = BindingRoot.create() ;
+        QueryIterator initialIter = new QueryIterSingleton(rootBinding, execCxt) ;
+        return initialIter ;
+    }
   
     public static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,
                                List pattern, Binding presets, Set vars)
