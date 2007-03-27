@@ -78,12 +78,16 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         
         /*
         + Access to other fields
-        e.g. +((text:(foo bar)^2)(title:(foo bar)^4)(description:(foo bar)^3))
-        Use cases and examples?
+          e.g. +((text:(foo bar)^2)(title:(foo bar)^4)(description:(foo bar)^3))
+          Use cases and examples?
 
-      + Extend to: (?node ?score) textMatch ('query' 100) 
-        Also ARQ.luceneLimit context parameter
+        + Extend to: (?node ?score) textMatch ('query' 100) 
+          Also ARQ.luceneLimit context parameter
         */
+        // Get query string and limit from object
+        
+        // Get node and score for subject
+        
         return null ;
     }
 
@@ -129,6 +133,7 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
     {
         //TODO - made public - reverse?
         Iterator iter = getIndex(execCxt).search(searchString) ;
+        //iter = limited iter ;
         // Better a wrapper-converted iterator
         //new QueryIterConvert()
         List results = new ArrayList() ;

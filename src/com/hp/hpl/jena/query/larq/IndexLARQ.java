@@ -98,8 +98,16 @@ public class IndexLARQ
      *  @param queryString
      *  @return Iterator of Nodes 
      */
+
+//    /** Perform a free text Lucene search and returns an iterator of graph Nodes.   
+//     *  Applications normally call searchModelByIndex.
+//     *  @param queryString
+//     *  @return Iterator of Nodes 
+//     */
+//    public Iterator search(String queryString, int limit)
+
     public Iterator search(String queryString)
-    {
+    {    
         try{
             Searcher searcher = new IndexSearcher(reader);
             
