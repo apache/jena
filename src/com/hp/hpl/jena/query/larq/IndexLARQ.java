@@ -94,11 +94,11 @@ public class IndexLARQ
     }
     
     /** Perform a free text Lucene search and returns an iterator of graph Nodes.   
-     *  Application normally call searchModelByIndex
+     *  Applications normally call searchModelByIndex.
      *  @param queryString
      *  @return Iterator of Nodes 
      */
-    Iterator search(String queryString)
+    public Iterator search(String queryString)
     {
         try{
             Searcher searcher = new IndexSearcher(reader);
@@ -129,16 +129,13 @@ public class IndexLARQ
         { throw new ARQLuceneException("search", e) ; }
     }
     
-    
     /** Check whether an index recognizes a node.   
-     * 
      * @param node
      * @param queryString
      * @return boolean 
      */
-    boolean contains(Node node, String queryString)
+    public boolean contains(Node node, String queryString)
     {
-        // Spaces are a problem in just adding a term.
         try{
             Iterator iter = search(queryString) ;
             for ( ; iter.hasNext() ; )

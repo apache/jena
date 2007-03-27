@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.query.larq;
+package dev;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryBuildException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -24,41 +23,74 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
+
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
 
 /** Base class for searching a IndexLARQ */
+// V2
 
-public abstract class LuceneSearch extends PFuncSimple
+public abstract class LuceneSearch2 extends PropertyFunctionEval
 {
-    private static Log log = LogFactory.getLog(LuceneSearch.class) ; 
+    private static Log log = LogFactory.getLog(LuceneSearch2.class) ;
     
+    protected LuceneSearch2()
+    {
+        super(PropFuncArgType.PF_ARG_EITHER,
+              PropFuncArgType.PF_ARG_EITHER) ;
+    }
+
     protected abstract IndexLARQ getIndex(ExecutionContext execCxt) ;
     
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         super.build(argSubject, predicate, argObject, execCxt) ;
-        
-        Node obj = argObject.getArg() ;
         if ( getIndex(execCxt) == null )
             throw new QueryBuildException("Index not found") ;
-        
-        if ( !obj.isLiteral() )
-            throw new QueryBuildException("Not a string: "+argObject.getArg()) ;
-        
-        if ( obj.getLiteralDatatypeURI() != null )
-            throw new QueryBuildException("Not a plain string: "+argObject.getArg()) ;
-        
-        if ( obj.getLiteralLanguage() != null && ! obj.getLiteralLanguage().equals("") )
-            throw new QueryBuildException("Not a plain string (has lang tag): "+argObject.getArg()) ;
+
+//        
+//        Node obj = argObject.getArg() ;
+//        if ( getIndex(execCxt) == null )
+//            throw new QueryBuildException("Index not found") ;
+//        
+//        if ( !obj.isLiteral() )
+//            throw new QueryBuildException("Not a string: "+argObject.getArg()) ;
+//        
+//        if ( obj.getLiteralDatatypeURI() != null )
+//            throw new QueryBuildException("Not a plain string: "+argObject.getArg()) ;
+//        
+//        if ( obj.getLiteralLanguage() != null && ! obj.getLiteralLanguage().equals("") )
+//            throw new QueryBuildException("Not a plain string (has lang tag): "+argObject.getArg()) ;
         
     }
     
-    public QueryIterator execEvaluated(Binding binding, 
+    public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
+    {
+        if ( ! argSubject.isList() && ! argObject.isList() )
+            return execEvaluatedSimple(binding, 
+                                       argSubject.getArg(),
+                                       predicate,
+                                       argObject.getArg(),
+                                       execCxt) ;
+        
+        /*
+        + Access to other fields
+        e.g. +((text:(foo bar)^2)(title:(foo bar)^4)(description:(foo bar)^3))
+        Use cases and examples?
+
+      + Extend to: (?node ?score) textMatch ('query' 100) 
+        Also ARQ.luceneLimit context parameter
+        */
+        return null ;
+    }
+
+    public QueryIterator execEvaluatedSimple(Binding binding, 
                                        Node subject, Node predicate, Node searchString, 
                                        ExecutionContext execCxt)
     {
-        // Duplicates build tests - but those might be removed.
         if ( !searchString.isLiteral() )
         {
             log.warn("Not a string: "+searchString) ;
@@ -95,6 +127,7 @@ public abstract class LuceneSearch extends PFuncSimple
                                        Node subject, String searchString, 
                                        ExecutionContext execCxt)
     {
+        //TODO - made public - reverse?
         Iterator iter = getIndex(execCxt).search(searchString) ;
         // Better a wrapper-converted iterator
         //new QueryIterConvert()
@@ -112,6 +145,7 @@ public abstract class LuceneSearch extends PFuncSimple
                                       Node subject, String searchString, 
                                       ExecutionContext execCxt)
     {
+        //TODO - made public - reverse?
         if ( getIndex(execCxt).contains(subject, searchString) )
             return new QueryIterSingleton(binding, execCxt) ;
         else

@@ -57,6 +57,7 @@ public class PropFuncArg extends PrintSerializableBase
     }
     
     public boolean isList()             { return argList != null  ; }
+    public boolean isNode()             { return arg != null  ; }
     
     public void output(IndentedWriter out, final SerializationContext sCxt)
     {
