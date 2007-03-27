@@ -15,18 +15,18 @@ options
 PARSER_BEGIN(SSE_Parser)
 
 /*
- * (c) Copyright 2006 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  */
 
-package sse_dev.parser ;
+package com.hp.hpl.jena.sparql.lang.sse.parser ;
 
-import sse_dev.* ;
+import com.hp.hpl.jena.sparql.lang.sse.* ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.sparql.core.Var;   
     
 
-public class SSE_Parser extends ParserBase
+public class SSE_Parser extends ParserSSEBase
 {
 }
 
@@ -162,7 +162,7 @@ Node IRIref() : { Node n ; }
 Node QName() : { Token t ; Node n ; }
 {
   t = <QNAME>
-    { return createNodeFromQName(t.image, t.beginLine, t.beginColumn) ; }
+    { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 Node BlankNode() :  { Token t = null ; }

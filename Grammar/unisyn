@@ -13,7 +13,7 @@ function grammar
 
     echo $1 $2 $3
 
-    DIR="../src-dev/$PKG"
+    DIR="../src/com/hp/hpl/jena/sparql/lang/$PKG"
     echo "---- Process grammar -- $1"
 ##    javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.5 "${FILE}"
     javacc -OUTPUT_DIRECTORY=$DIR "${FILE}"
@@ -83,7 +83,7 @@ for G in "$@"
   case "$G" in
   unisyn)
     dos2unix < "$GRAMMAR" | cpp -P -C | unix2dos > parser.jj
-    grammar parser.jj sse_dev/parser SSE_Parser
+    grammar parser.jj sse/parser SSE_Parser
     ;;
   *)    echo "**** Unknown grammar: $G" 1>&2
     ;;

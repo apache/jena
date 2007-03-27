@@ -198,7 +198,7 @@ public class ParserBase
         return s.substring(n, s.length())  ;
     }
         
-    protected Node createVariable(String s, int line, int column)
+    protected Var createVariable(String s, int line, int column)
     {
         s = s.substring(1) ; // Drop the marker
         
@@ -238,7 +238,7 @@ public class ParserBase
                 try {
                     uriStr = RelURI.resolve(uriStr, getPrologue().getBaseURI()) ;
                 } catch (JenaURIException ex)
-                { throw makeParseException(ex.getMessage(), line, column) ; }
+                { throwParseException(ex.getMessage(), line, column) ; }
         }
         return Node.createURI(uriStr) ;
     }
@@ -289,8 +289,8 @@ public class ParserBase
     protected Node createBNode(String label, int line, int column)
     { 
         if ( oldLabels.contains(label) )
-            throw makeParseException("Blank node reused across basic graph patterns: "+label,
-                                     line, column) ;
+            throwParseException("Blank node reused across basic graph patterns: "+label,
+                                line, column) ;
         
         //label = unescapeCodePoint(label, line, column) ;
         return activeLabelMap.asNode(label) ;
@@ -346,7 +346,13 @@ public class ParserBase
     // Utilities to remove escapes
     
     // Testing interface
-    public static String unescapeStr(String s)
+    
+    public static String testUnescapeStr(String s)
+    {
+        return new ParserBase().unescapeStr(s) ;
+    }
+    
+    protected String unescapeStr(String s)
     { return unescape(s, '\\', false, 1, 1) ; }
 
 //    public static String unescapeCodePoint(String s)
@@ -360,7 +366,7 @@ public class ParserBase
     { return unescape(s, '\\', false, line, column) ; }
     
     // Worker function
-    private static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column)
+    private String unescape(String s, char escape, boolean pointCodeOnly, int line, int column)
     {
         int i = s.indexOf(escape) ;
         
@@ -394,7 +400,7 @@ public class ParserBase
                 
             // Escape
             if ( i >= s.length()-1 )
-                throw makeParseException("Illegal escape at end of string", line, column) ;
+                throwParseException("Illegal escape at end of string", line, column) ;
             char ch2 = s.charAt(i+1) ;
             column = column+1 ;
             i = i + 1 ;
@@ -404,7 +410,7 @@ public class ParserBase
             {
                 // i points to the \ so i+6 is next character
                 if ( i+4 >= s.length() )
-                    throw makeParseException("\\u escape too short", line, column) ;
+                    throwParseException("\\u escape too short", line, column) ;
                 int x = hex(s, i+1, 4, line, column) ;
                 sb.append((char)x) ;
                 // Jump 1 2 3 4 -- already skipped \ and u
@@ -416,7 +422,7 @@ public class ParserBase
             {
                 // i points to the \ so i+6 is next character
                 if ( i+8 >= s.length() )
-                    throw makeParseException("\\U escape too short", line, column) ;
+                    throwParseException("\\U escape too short", line, column) ;
                 int x = hex(s, i+1, 8, line, column) ;
                 // Convert to UTF-16 codepoint pair.
                 sb.append((char)x) ;
@@ -450,7 +456,7 @@ public class ParserBase
                 case '\"': ch3 = '\"' ; break ;
                 case '\\': ch3 = '\\' ; break ;
                 default:
-                    throw makeParseException("Unknown escape: \\"+ch2, line, column) ;
+                    throwParseException("Unknown escape: \\"+ch2, line, column) ;
             }
             sb.append(ch3) ;
         }
@@ -458,7 +464,7 @@ public class ParserBase
     }
 
     // Line and column that started the escape
-    static private int hex(String s, int i, int len, int line, int column)
+    private int hex(String s, int i, int len, int line, int column)
     {
         if ( i+len >= s.length() )
         {
@@ -489,17 +495,18 @@ public class ParserBase
                case 'E': case 'e': k = 14 ; break ;
                case 'F': case 'f': k = 15 ; break ;
                default:
-                   throw makeParseException("Illegal hex escape: "+ch, line, column) ;
+                   throwParseException("Illegal hex escape: "+ch, line, column) ;
            }
            x = (x<<4)+k ;
         }
         return x ;
     }
     
-    protected static QueryParseException makeParseException(String msg, int line, int column)
+    
+    protected void throwParseException(String msg, int line, int column)
     {
-        return new  QueryParseException("Line " + line + ", column " + column + ": " + msg,
-                                        line, column) ;
+        throw new QueryParseException("Line " + line + ", column " + column + ": " + msg,
+                                      line, column) ;
     }
 }
 

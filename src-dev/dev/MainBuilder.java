@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse.builders;
+package dev;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -28,23 +28,26 @@ public class MainBuilder
     public static void main(String[] argv)
     {
         mainExpr(argv) ;
-        //mainOp(argv) ;
+        System.out.println() ;
+        mainOp(argv) ;
     }
     
     public static void mainExpr(String[] argv)
     {
         try
         {
-            InputStream in = new FileInputStream("expr.sse") ;
+            InputStream in = new FileInputStream("SSE/expr.sse") ;
             Item item = SSE.parse(in) ;
-            Expr expr = ExprBuilder.build(item) ;
-            System.out.println(expr) ;
-
             if ( true )
             {
                 System.out.println("**** SSE expression") ;
                 Writer.write(System.out, item) ;
+                System.out.println() ;
             }
+            
+            Expr expr = ExprBuilder.build(item) ;
+            System.out.println(expr) ;
+            System.out.println() ;
         } catch (Exception ex)
         {
             ex.printStackTrace();
@@ -58,7 +61,7 @@ public class MainBuilder
 
             if ( false )
             {
-                String s = FileUtils.readWholeFileAsUTF8("op.sse") ;
+                String s = FileUtils.readWholeFileAsUTF8("SSE/op.sse") ;
                 IndentedWriter iw = new IndentedWriter(System.out, true) ;
                 iw.print(s) ;
                 iw.flush();
@@ -67,7 +70,7 @@ public class MainBuilder
                 System.out.println() ;
             }
 
-            InputStream in = new FileInputStream("op.sse") ;
+            InputStream in = new FileInputStream("SSE/op.sse") ;
             Item item = SSE.parse(in) ;
 
             if ( true )

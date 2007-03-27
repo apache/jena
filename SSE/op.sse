@@ -1,0 +1,22 @@
+[Reduced
+  [Project (?c)
+    [ToList
+      [Filter 
+        [BGP [Triple ? :p ?c]]
+        (= (str ?c) "who")
+      ]
+    ]
+  ]
+]
+
+## (LeftJoin
+##   (Join
+##     (BGP (triple ?s ?p ?o))
+##     (BGP 
+##     	(triple _:b :q 123)
+##     	(triple _:b :q +123))
+##    	)
+##   (Filter 
+##     (BGP (triple ?s ?p ?o))
+##     (&& (str ?o) -3)
+##     ))
