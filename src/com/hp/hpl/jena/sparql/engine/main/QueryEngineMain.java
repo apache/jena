@@ -20,10 +20,8 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorWrapper;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class QueryEngineMain extends QueryEngineOpBase
 {
@@ -69,7 +67,7 @@ public class QueryEngineMain extends QueryEngineOpBase
         QueryIterator qIter = new QueryIterSingleton(b) ;
         qIter = OpCompiler.compile(op, qIter, execCxt) ;
         // Wrap with something to check for closed iterators.
-        qIter = new QueryIteratorCheck(qIter, execCxt) ;
+        qIter = QueryIteratorCheck.check(qIter, execCxt) ;
         return qIter ;
     }
     
@@ -87,31 +85,6 @@ public class QueryEngineMain extends QueryEngineOpBase
             return engine ;
         }
     } ;
-    
-    static class QueryIteratorCheck extends QueryIteratorWrapper
-    {
-        private ExecutionContext execCxt ;
-        public QueryIteratorCheck(QueryIterator qIter, ExecutionContext execCxt)
-        {
-            super(qIter) ;
-            this.execCxt = execCxt ;
-            
-        }
-        public void close()
-        {
-            super.close() ;
-            QueryEngineBase.checkForOpenIterators(execCxt) ;
-        }
-        public void abort()
-        {
-            super.abort() ;
-            QueryEngineBase.checkForOpenIterators(execCxt) ;
-        }
-        
-        // Be silent about ourselves.
-        public void output(IndentedWriter out, SerializationContext sCxt)
-        { iterator.output(out, sCxt) ; }
-    }
 }
 
 /*

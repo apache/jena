@@ -1,46 +1,52 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse;
+package arq.examples;
 
-
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
+import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ResolveURI;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
+import com.hp.hpl.jena.query.QueryFactory;
 
-public class Algebra
+/** Simple example to show parsing a query and producing the
+ *  SPARQL agebra expression for the query.
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+public class AlgebraEx
 {
-    static public Op read(String filename)
+    public static void main(String []args)
     {
-        Item item = SSE.parseFile(filename) ;
-        return parse(item) ;
-    }
-    
-    static public Op parse(String string)
-    {
-        Item item = SSE.parseString(string) ;
-        return parse(item) ;
-    }
-    
-    static public Op parse(Item item)
-    {
-        // TODO - design AND write
-        PrefixMapping pmap = new PrefixMappingImpl() ;
-        pmap.setNsPrefix("", "http://example/") ;
-        item = ResolveURI.resolve(item, pmap) ;
-        Op op = OpBuilder.build(item) ;
-        return op ;
+        String s = "SELECT DISTINCT ?s { ?s ?p ?o }";
+        
+        // Parse
+        Query query = QueryFactory.create(s) ;
+        System.out.println(query) ;
+        
+        // Generate algebra
+        Op op = AlgebraGenerator.compile(query) ;
+        System.out.println(op) ;
+        
+        // Execute it.
+        QueryIterator qIter = Algebra.exec(op, Ex1.createModel()) ;
+        for ( ; qIter.hasNext() ; )
+        {
+            Binding b = qIter.nextBinding() ;
+            System.out.println(b) ;
+        }
+        qIter.close() ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

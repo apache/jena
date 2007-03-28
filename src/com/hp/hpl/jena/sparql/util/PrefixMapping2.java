@@ -80,7 +80,9 @@ public class PrefixMapping2 implements PrefixMapping
         if ( s != null )
             return s ;
 
-        return pmapGlobal.getNsPrefixURI(prefix) ;
+        if ( pmapGlobal != null )
+            return pmapGlobal.getNsPrefixURI(prefix) ;
+        return null ;
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#getNsURIPrefix(java.lang.String) */
@@ -91,7 +93,9 @@ public class PrefixMapping2 implements PrefixMapping
             return s ;
         if ( pmapGlobal == null )
             return null ;
-        return  pmapGlobal.getNsURIPrefix(uri) ;
+        if ( pmapGlobal != null )
+            return pmapGlobal.getNsURIPrefix(uri) ;
+        return null ;
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#getNsPrefixMap() */
@@ -120,7 +124,10 @@ public class PrefixMapping2 implements PrefixMapping
             return s ;
         
         if ( s == null || s.equals(prefixed) )
-            s = pmapGlobal.expandPrefix(prefixed) ;
+        {
+            if ( pmapGlobal != null )
+                s = pmapGlobal.expandPrefix(prefixed) ;
+        }
         return s ;
     }
 
@@ -145,7 +152,9 @@ public class PrefixMapping2 implements PrefixMapping
             return s ;
         if ( s != null )
             return s ;
-        return pmapGlobal.qnameFor(uri) ;
+        if ( pmapGlobal != null )
+            return pmapGlobal.qnameFor(uri) ;
+        return null ;
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#qnameFor(java.lang.String) */
@@ -156,7 +165,9 @@ public class PrefixMapping2 implements PrefixMapping
             return s ;
         if ( s != null )
             return s ;
-        return pmapGlobal.qnameFor(uri) ;
+        if ( pmapGlobal != null )
+            return pmapGlobal.qnameFor(uri) ;
+        return null ;
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#lock() */

@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
@@ -380,7 +380,8 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
         // init() ;
         Plan plan = getPlan() ;
         QueryIterator qIter = plan.iterator() ;
-        resultsIter = qIter ;
+        
+        resultsIter = QueryIteratorCheck.check(qIter, execContext) ;
         return resultsIter ;
     }
 //    private void build() { build(false) ; }
@@ -469,29 +470,11 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
             resultsIter = null ;
         }
         
-        checkForOpenIterators(execContext) ;
-
         // Close it anyway
         if ( resultsIter != null )
             resultsIter.close() ;
         resultsIter = null ;
         queryExecutionClosed = true ;
-    }
-    
-    public static void checkForOpenIterators(ExecutionContext execContext)
-    {
-        Iterator iter = execContext.listOpenIterators() ;
-        while(iter.hasNext())
-        {
-            QueryIterator qIterOpen = (QueryIterator)iter.next() ;
-            if ( qIterOpen instanceof QueryIter )
-            {
-                QueryIter qIterBase = (QueryIter)qIterOpen ;
-                log.warn("Open iterator: "+qIterBase.getIteratorNumber()+" "+qIterOpen) ;
-            }
-            else
-                log.warn("Open iterator: "+qIterOpen) ;
-        }
     }
     
     private void insertPrefixesInto(Model model)

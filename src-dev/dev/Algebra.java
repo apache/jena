@@ -1,40 +1,58 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.examples;
+package dev;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.lang.sse.Item;
+import com.hp.hpl.jena.sparql.lang.sse.SSE;
+import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
+import com.hp.hpl.jena.sparql.lang.sse.builders.ResolveURI;
+import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
-import com.hp.hpl.jena.query.QueryFactory;
 
-/** Simple example to show parsing a query and producing the
- *  SPARQL agebra expression for the query.
- * @author Andy Seaborne
- * @version $Id$
- */
 public class Algebra
 {
-    public static void main(String []args)
+    static public Op read(String filename)
     {
-        String s = "SELECT DISTINCT ?s { ?s ?p ?o }";
-        
-        // Parse
-        Query query = QueryFactory.create(s) ;
-        System.out.println(query) ;
-        
-        // Generate algebra
-        Op op = AlgebraGenerator.compile(query) ;
-        System.out.println(op) ;
+        Item item = SSE.parseFile(filename) ;
+        return parse(item) ;
     }
+    
+    static public Op parse(String string)
+    {
+        Item item = SSE.parseString(string) ;
+        return parse(item) ;
+    }
+    
+    static public Op parse(Item item)
+    {
+        // TODO - design AND write
+        
+        PrefixMapping pmap = new PrefixMappingImpl() ;
+        PrefixMapping pmapSub = new PrefixMappingImpl() ;
+
+        
+        // Add any prefixes to pmapSub.
+        //e.g.
+        pmap.setNsPrefix("", "http://example/") ;
+
+        PrefixMapping2 pmap2 = new PrefixMapping2(pmap, pmapSub) ;
+        item = ResolveURI.resolve(item, pmap2) ;
+        Op op = OpBuilder.build(item) ;
+        return op ;
+    }
+
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

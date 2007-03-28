@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
 
 
@@ -49,7 +50,9 @@ public class QueryEngineRef extends QueryEngineOpBase
         ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), null, dsg.getDefaultGraph(), dsg) ;
         Evaluator eval = EvaluatorFactory.create(execCxt) ;
         Table table = Eval.eval(eval, op) ;
-        return table.iterator(execCxt) ;
+        // If ref eval becomes non-iterator-ish, remove this.
+        return QueryIteratorCheck.check(table.iterator(execCxt), execCxt) ;
+        //return table.iterator(execCxt) ;
     }
     
     private static QueryEngineFactory factory = new QueryEngineFactory()

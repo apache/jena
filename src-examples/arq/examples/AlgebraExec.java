@@ -58,7 +58,7 @@ public class AlgebraExec
         // ---- Execute expression
         QueryIterator qIter = QueryEngineMain.eval(op, m.getGraph()) ;
         
-        // -------- Either read the query iterator driectly ...
+        // -------- Either read the query iterator directly ...
         if ( false )
         {
             for ( ; qIter.hasNext() ; )
@@ -73,7 +73,7 @@ public class AlgebraExec
         else
         {
             // -------- Or make ResultSet from it (but not both - reading an
-            //          iterator consumes the current solution
+            //          iterator consumes the current solution)
             List varNames = new ArrayList() ;
             varNames.add("x") ;
             varNames.add("z") ;

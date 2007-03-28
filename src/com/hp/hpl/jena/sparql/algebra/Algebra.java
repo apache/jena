@@ -1,19 +1,104 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.lang.sse.Item;
+import com.hp.hpl.jena.sparql.lang.sse.SSE;
+import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
+import com.hp.hpl.jena.sparql.lang.sse.builders.ResolveURI;
 
 public class Algebra
 {
-    //TODO Transfer builder code
-}
 
+    static public Op read(String filename)
+    {
+        Item item = SSE.parseFile(filename) ;
+        return parse(item) ;
+    }
+
+    static public Op parse(String string)
+    {
+        Item item = SSE.parseString(string) ;
+        return parse(item) ;
+    }
+
+    static public Op parse(Item item)
+    {
+        // TODO - design AND write
+        PrefixMapping pmap = new PrefixMappingImpl() ;
+        pmap.setNsPrefix("", "http://example/") ;
+        item = ResolveURI.resolve(item, pmap) ;
+        Op op = OpBuilder.build(item) ;
+        return op ;
+    }
+
+    // Execute!
+
+    static public QueryIterator exec(Op op, Dataset ds)
+    {
+        return exec(op, new DataSourceGraphImpl(ds)) ;
+    }
+
+    static public QueryIterator exec(Op op, Model model)
+    {
+        return exec(op, model.getGraph()) ;
+    }
+
+    static public QueryIterator exec(Op op, DatasetGraph ds)
+    {
+        // QueryEngineRef.eval
+        QueryIterator qIter = QueryEngineMain.eval(op, ds) ;
+        return qIter ;
+    }
+
+    static public QueryIterator exec(Op op, Graph graph)
+    {
+        QueryIterator qIter = QueryEngineMain.eval(op, graph) ;
+        return qIter ;
+    }
+
+    //  Reference engine
+    //  Should we do the registery thing here?
+    //  Extends QueryExecutionGraph or a separate interface for exec(op)? 
+
+    static public QueryIterator execRef(Op op, Dataset ds)
+    {
+        return execRef(op, new DataSourceGraphImpl(ds)) ;
+    }
+
+    static public QueryIterator execRef(Op op, Model model)
+    {
+        return execRef(op, model.getGraph()) ;
+    }
+
+    static public QueryIterator execRef(Op op, DatasetGraph ds)
+    {
+        // QueryEngineRef.eval
+        QueryIterator qIter = QueryEngineMain.eval(op, ds) ;
+        return qIter ;
+    }
+
+    static public QueryIterator execRef(Op op, Graph graph)
+    {
+        QueryIterator qIter = QueryEngineMain.eval(op, graph) ;
+        return qIter ;
+    }
+}
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
