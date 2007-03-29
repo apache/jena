@@ -231,6 +231,7 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         
     }
     
+    // TODO Score.
     public QueryIterator boundSubject(Binding binding, 
                                       Node subject, Node score,
                                       String searchString, long limit, 
