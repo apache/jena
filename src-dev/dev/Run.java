@@ -6,120 +6,109 @@
 
 package dev;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import arq.qexpr;
 import arq.qparse;
 import arq.sparql;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.sparql.expr.E_LessThan;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.NodeVar;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.util.FileManager;
-
 import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.query.larq.LARQ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class Run
 {
     public static void main(String[] argv)
     {
-        runQExpr() ;
+        //runQExpr() ;
         //print() ;
-        //code() ;
+        code() ;
         //classifyJ() ;
         //classifyLJ() ;
-        execQuery("D.ttl", "Q.rq") ;
-        query() ;
+        //execQuery("D.ttl", "Q.rq") ;
     }
         
     
     private static void code()
     {
-        // Experimental low level access to query execution. 
-        String BASE = "http://example/" ; 
-        BasicPattern bp = new BasicPattern() ;
-        Var var_x = Var.alloc("x") ;
-        Var var_z = Var.alloc("z") ;
+        Model model = ModelFactory.createDefaultModel() ;
+        IndexLARQ index = buildIndex(model, "D.ttl") ;
+        LARQ.setDefaultIndex(index) ;
         
-        bp.add(new Triple(var_x, Node.createURI(BASE+"p"), var_z)) ;
-        Op op = new OpBGP(bp) ;
-        //Expr expr = ExprUtils.parse("?z < 2 ") ;
-        Expr expr = new E_LessThan(new NodeVar(var_z), NodeValue.makeNodeInteger(2)) ;
-        op = OpFilter.filter(expr, op) ;
-        
-        Model m = makeModel() ;
-        m.write(System.out, "TTL") ;
-        System.out.println("--------------") ;
-        System.out.print(op) ;
-        System.out.println("--------------") ;
-        QueryIterator qIter = QueryEngineMain.eval(op, m.getGraph()) ;
-        
-        
-        // Either read the query itertaor driectly ...
-        if ( false )
-        {
-            for ( ; qIter.hasNext() ; )
-            {
-                Binding b = qIter.nextBinding() ;
-                Node n = b.get(var_x) ;
-                System.out.println(FmtUtils.stringForNode(n)) ;
-                System.out.println(b) ; 
-            }
-            qIter.close() ;
-        }
-        else
-        {
-            // Or make ResultSet from it (but not both)
-            List varNames = new ArrayList() ;
-            varNames.add("x") ;
-            varNames.add("z") ;
-            ResultSet rs = new ResultSetStream(varNames, m, qIter);
-            ResultSetFormatter.out(rs) ;
-            qIter.close() ;
-        }
-        System.exit(0) ;
+        Query query = QueryFactory.read("Q.rq") ;
+        query.serialize(System.out) ;
+        System.out.println();
+                                          
+        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+        //LARQ.setDefaultIndex(qExec.getContext(), index) ;
+        ResultSetFormatter.out(System.out, qExec.execSelect(), query) ;
+        qExec.close() ;
     }
 
-    private static Model makeModel()
+    static IndexLARQ buildIndex(Model model, String datafile)
     {
-        String BASE = "http://example/" ;
-        Model model = ModelFactory.createDefaultModel() ;
-        model.setNsPrefix("", BASE) ;
-        Resource r1 = model.createResource(BASE+"r1") ;
-        Resource r2 = model.createResource(BASE+"r2") ;
-        Property p1 = model.createProperty(BASE+"p") ;
-        Property p2 = model.createProperty(BASE+"p2") ;
-        RDFNode v1 = model.createTypedLiteral("1", XSDDatatype.XSDinteger) ;
-        RDFNode v2 = model.createTypedLiteral("2", XSDDatatype.XSDinteger) ;
+        // ---- Read and index all literal strings.
+        IndexBuilderString larqBuilder = new IndexBuilderString() ;
         
-        r1.addProperty(p1, v1).addProperty(p1, v2) ;
-        r1.addProperty(p2, v1).addProperty(p2, v2) ;
-        r2.addProperty(p1, v1).addProperty(p1, v2) ;
+        // Index statements as they are added to the model.
+        model.register(larqBuilder) ;
         
-        return model  ;
+        // To just build the index, create a model that does not store statements 
+        // Model model2 = ModelFactory.createModelForGraph(new GraphSink()) ;
+        
+        FileManager.get().readModel(model, datafile) ;
+        
+        // ---- Alternatively build the index after the model has been created. 
+        // larqBuilder.indexStatements(model.listStatements()) ;
+        
+        // ---- Finish indexing
+        larqBuilder.closeForWriting() ;
+        model.unregister(larqBuilder) ;
+        
+        // ---- Create the access index  
+        IndexLARQ index = larqBuilder.getIndex() ;
+        return index ; 
     }
+
+    static void performQuery(Model model, IndexLARQ index, String queryString)
+    {  
+        // Make globally available
+        LARQ.setDefaultIndex(index) ;
+        
+        Query query = QueryFactory.create(queryString) ;
+        query.serialize(System.out) ;
+        System.out.println();
+                                          
+        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+        //LARQ.setDefaultIndex(qExec.getContext(), index) ;
+        ResultSetFormatter.out(System.out, qExec.execSelect(), query) ;
+        qExec.close() ;
+    }
+
     
+//    private static Model makeModel()
+//    {
+//        String BASE = "http://example/" ;
+//        Model model = ModelFactory.createDefaultModel() ;
+//        model.setNsPrefix("", BASE) ;
+//        Resource r1 = model.createResource(BASE+"r1") ;
+//        Resource r2 = model.createResource(BASE+"r2") ;
+//        Property p1 = model.createProperty(BASE+"p") ;
+//        Property p2 = model.createProperty(BASE+"p2") ;
+//        RDFNode v1 = model.createTypedLiteral("1", XSDDatatype.XSDinteger) ;
+//        RDFNode v2 = model.createTypedLiteral("2", XSDDatatype.XSDinteger) ;
+//        
+//        r1.addProperty(p1, v1).addProperty(p1, v2) ;
+//        r1.addProperty(p2, v1).addProperty(p2, v2) ;
+//        r2.addProperty(p1, v1).addProperty(p1, v2) ;
+//        
+//        return model  ;
+//    }
+//    
     public static void print()
     {
         QueryEngineMain.register() ;
@@ -134,46 +123,6 @@ public class Run
         qparse.main(a) ;
     }
 
-    public static void query()
-    {
-//        String qs1 = "PREFIX : <http://example/>\n" ;
-//        String qs = qs1+"SELECT * { }" ;
-//        Query query = QueryFactory.create(qs) ;
-        
-        Query query = QueryFactory.read("Q.rq") ;
-        Model data = FileManager.get().loadModel("D.ttl") ;
-        DataSource ds = new DataSourceImpl() ;
-        ds.setDefaultModel(data) ;
-        //ds.addNamedModel("http://example/g", data) ;
-        
-        if ( false )
-        {
-            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-            System.out.println("==== Engine1") ;
-            QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
-        }
-
-        if ( false )
-        {
-            QueryEngineRef.register() ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
-            System.out.println("==== EngineRef") ;
-            //System.out.print(((QueryEngineBase)qExec).getPlan()) ;
-            QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
-            QueryEngineRef.unregister() ;
-        }
-
-        QueryEngineMain.register() ;
-        System.out.println("==== EngineX") ;
-        QueryEngineMain qe = new QueryEngineMain(query) ;
-        qe.setDataset(ds) ;
-        QueryIterator qIter = qe.getPlan().iterator() ; 
-        System.out.println(qIter) ;
-        System.out.print(qe.getPlan()) ;
-        QueryExecUtils.executeQuery(query, qe, ResultsFormat.FMT_RS_TEXT) ;
-        System.exit(0) ;
-    }
-    
     private static void execQuery(String datafile, String queryfile)
     {
         //QueryEngineMain.register() ;

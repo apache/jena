@@ -77,10 +77,11 @@ public class IndexLARQ
         Map1 converter = new Map1(){
             public Object map1(Object object)
             {
-                Node node = (Node)object ; 
-                return ModelUtils.convertGraphNodeToRDFNode(node, model) ;
+                HitLARQ x = (HitLARQ)object ; 
+                return ModelUtils.convertGraphNodeToRDFNode(x.getNode(), model) ;
             }} ;
         Iterator iter = new Map1Iterator(converter, search(queryString)) ;
+        
         NodeIterator nIter = new NodeIteratorImpl(iter, null) ; 
         return nIter ;
     }
@@ -99,12 +100,7 @@ public class IndexLARQ
      *  @return Iterator of Nodes 
      */
 
-//    /** Perform a free text Lucene search and returns an iterator of graph Nodes.   
-//     *  Applications normally call searchModelByIndex.
-//     *  @param queryString
-//     *  @return Iterator of Nodes 
-//     */
-//    public Iterator search(String queryString, int limit)
+   // public Iterator search(String queryString, int limit)
 
     public Iterator search(String queryString)
     {    
@@ -121,13 +117,8 @@ public class IndexLARQ
             Map1 converter = new Map1(){
                 public Object map1(Object object)
                 {
-                    try {
-                        Hit h = (Hit)object ;
-                        Node x = LARQ.build(h.getDocument()) ;
-                        // TODO Make a pair of Node and weight 
-                        return x ; 
-                    } catch (Exception e)
-                    { throw new ARQLuceneException("node conversion error", e) ; }
+                    Hit h = (Hit)object ;
+                    return new HitLARQ(h) ;
                 }} ;
             
             Iterator iter = new Map1Iterator(converter, hits.iterator()) ;
@@ -148,8 +139,8 @@ public class IndexLARQ
             Iterator iter = search(queryString) ;
             for ( ; iter.hasNext() ; )
             {
-                Node x = (Node)iter.next();
-                if ( x != null && x.equals(node)) 
+                HitLARQ x = (HitLARQ)iter.next();
+                if ( x != null && x.getNode().equals(node)) 
                     return true ;
             }
             return false ;

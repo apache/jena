@@ -24,7 +24,10 @@ public abstract class CmdARQ extends CmdGeneral
     }
     
     protected void processModulesAndArgs()
-    { }
+    { 
+        if ( modVersion.getVersionFlag() )
+            ModVersion.printVersionAndExit() ;
+    }
     
     public void version(List items)
     {

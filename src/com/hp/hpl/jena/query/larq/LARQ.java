@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
-
 public class LARQ
 {
  

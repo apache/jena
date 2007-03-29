@@ -6,29 +6,34 @@
 
 package dev;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.query.larq.HitLARQ;
+import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice;
+import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
-
-import com.hp.hpl.jena.query.QueryBuildException;
-import com.hp.hpl.jena.query.larq.IndexLARQ;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 /** Base class for searching a IndexLARQ */
 // V2
@@ -51,6 +56,12 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         if ( getIndex(execCxt) == null )
             throw new QueryBuildException("Index not found") ;
 
+        if ( argSubject.isList() && argSubject.getArgList().size() != 2 )
+                throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, not 2: "+argSubject) ;
+        
+        if ( argObject.isList() && argObject.getArgList().size() != 2 )
+                throw new QueryBuildException("Object has "+argObject.getArgList().size()+" elements, not 2: "+argObject) ;
+        
 //        
 //        Node obj = argObject.getArg() ;
 //        if ( getIndex(execCxt) == null )
@@ -69,13 +80,54 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
     
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        if ( ! argSubject.isList() && ! argObject.isList() )
-            return execEvaluatedSimple(binding, 
-                                       argSubject.getArg(),
-                                       predicate,
-                                       argObject.getArg(),
-                                       execCxt) ;
+        Node subject = null ;
+        Node score = null ;
         
+        Node searchString = null ;
+        long limit = Query.NOLIMIT ;
+        
+        
+        if ( argSubject.isList() )
+        {
+            // Length checked in build
+            subject = argSubject.getArg(0) ;
+            score = argSubject.getArg(1) ;
+            
+            if ( subject.isVariable() && ! score.isVariable() )
+                throw new QueryExecException("Subject is a variable but the score is not: ("+argSubject) ;
+        }
+        else
+        {
+            subject = argSubject.getArg() ;
+            score = null ;
+        }
+        
+        if ( argObject.isList() )
+        {
+            // Length checked in build
+            searchString= argObject.getArg(0) ;
+            
+            Node limitN = argObject.getArg(1) ;
+            if ( ! isValidSearchString(searchString) )
+                return new QueryIterNullIterator(execCxt) ;
+            limit = NodeUtils.nodeToInt(limitN) ; 
+            if ( limit < 0 )
+            {
+                log.warn("Can't grok limit: "+limitN) ;
+                return PFLib.noResults(execCxt) ;
+            }
+        }
+        else
+        {
+            searchString = argObject.getArg() ;
+            limit = Query.NOLIMIT ;
+        }
+        
+        return execEvaluatedSimple(binding, 
+                                   subject, score,
+                                   predicate,
+                                   searchString, limit,
+                                   execCxt) ;
         /*
         + Access to other fields
           e.g. +((text:(foo bar)^2)(title:(foo bar)^4)(description:(foo bar)^3))
@@ -84,35 +136,17 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         + Extend to: (?node ?score) textMatch ('query' 100) 
           Also ARQ.luceneLimit context parameter
         */
-        // Get query string and limit from object
-        
-        // Get node and score for subject
-        
-        return null ;
     }
 
     public QueryIterator execEvaluatedSimple(Binding binding, 
-                                       Node subject, Node predicate, Node searchString, 
-                                       ExecutionContext execCxt)
+                                             Node subject, Node score,  
+                                             Node predicate, 
+                                             Node searchString, long limit,
+                                             ExecutionContext execCxt)
     {
-        if ( !searchString.isLiteral() )
-        {
-            log.warn("Not a string: "+searchString) ;
-            return new QueryIterNullIterator(execCxt) ;
-        }
+        if ( !isValidSearchString(searchString) )
+            return PFLib.noResults(execCxt) ;
 
-        if ( searchString.getLiteralDatatypeURI() != null )
-        {
-            log.warn("Not a plain string: "+searchString) ;
-            return new QueryIterNullIterator(execCxt) ;
-        }
-
-        if ( searchString.getLiteralLanguage() != null && ! searchString.getLiteralLanguage().equals("") )
-        {
-            log.warn("Not a plain string (has lang tag): "+searchString) ;
-            return new QueryIterNullIterator(execCxt) ;
-        }
-        
         String qs = asString(searchString) ;
         
         if ( qs == null )
@@ -122,32 +156,84 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         }
         
         if ( subject.isVariable() )
-            return varSubject(binding,subject,qs, execCxt) ;
+            return varSubject(binding, 
+                              Var.alloc(subject), (score==null)?null:Var.alloc(score),
+                              qs, limit,
+                              execCxt) ;
         else
-            return boundSubject(binding,subject,qs, execCxt) ;
+            return boundSubject(binding, 
+                                subject, score, 
+                                qs, limit,
+                                execCxt) ;
+    }
+    
+    private static boolean isValidSearchString(Node searchString)
+    {
+        if ( !searchString.isLiteral() )
+        {
+            log.warn("Not a string: "+searchString) ;
+            return false ;
+        }
+
+        if ( searchString.getLiteralDatatypeURI() != null )
+        {
+            log.warn("Not a plain string: "+searchString) ;
+            return false ;
+        }
+
+        if ( searchString.getLiteralLanguage() != null && ! searchString.getLiteralLanguage().equals("") )
+        {
+            log.warn("Not a plain string (has lang tag): "+searchString) ;
+            return false ;
+        }
+        return true ;
     }
     
     public QueryIterator varSubject(Binding binding, 
-                                       Node subject, String searchString, 
-                                       ExecutionContext execCxt)
+                                    Var subject, Var score,
+                                    String searchString, long limit, 
+                                    ExecutionContext execCxt)
     {
         //TODO - made public - reverse?
         Iterator iter = getIndex(execCxt).search(searchString) ;
-        //iter = limited iter ;
-        // Better a wrapper-converted iterator
-        //new QueryIterConvert()
-        List results = new ArrayList() ;
-        for ( ; iter.hasNext(); )
+        
+        HitConverter converter = new HitConverter(binding, subject, score) ;
+        iter =  new Map1Iterator(converter, iter) ;
+        QueryIterator qIter = new QueryIterPlainWrapper(iter, execCxt) ;
+
+        if ( limit >= 0 )
+            qIter = new QueryIterSlice(qIter, 0, limit, execCxt) ;
+        return qIter ;
+    }
+    
+    static class HitConverter implements Map1
+    {
+        private Binding binding ;
+        private Var subject ;
+        private Var score ;
+        
+        HitConverter(Binding binding, Var subject, Var score)
         {
-            Node x = (Node)iter.next();
-            results.add(new Binding1(binding, Var.alloc(subject), x)) ;
+            this.binding = binding ;
+            this.subject = subject ;
+            this.score = score ;
         }
-        // To binding.
-        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+        
+        public Object map1(Object thing)
+        {
+            HitLARQ hit = (HitLARQ)thing ;
+            Binding b = new BindingMap(binding) ;
+            b.add(Var.alloc(subject), hit.getNode()) ;
+            if ( score != null )
+                b.add(Var.alloc(score), NodeUtils.floatToNode(hit.getScore())) ;
+            return b ;
+        }
+        
     }
     
     public QueryIterator boundSubject(Binding binding, 
-                                      Node subject, String searchString, 
+                                      Node subject, Node score,
+                                      String searchString, long limit, 
                                       ExecutionContext execCxt)
     {
         //TODO - made public - reverse?

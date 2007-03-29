@@ -6,43 +6,9 @@
 
 package arq.cmdline;
 
-public class ModGeneral extends ModBase
+public interface CallbackHelp
 {
-    private CallbackHelp helpCallback = null ;
-
-    public ModGeneral(CallbackHelp callback) { this.helpCallback = callback ; }
-    
-    // Could be turned into a module but these are convenient as inherited flags 
-    private final ArgDecl argDeclHelp        = new ArgDecl(false, "help", "h");
-    private final ArgDecl argDeclVerbose     = new ArgDecl(false, "v", "verbose");
-    private final ArgDecl argDeclQuiet       = new ArgDecl(false, "q", "quiet");
-    private final ArgDecl argDeclDebug       = new ArgDecl(false, "debug");
-
-    protected boolean verbose = false ;
-    protected boolean quiet = false ;
-    protected boolean debug = false ;
-    protected boolean help = false ;
-    
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.getUsage().startCategory("General") ;
-        cmdLine.add(argDeclVerbose, "-v   --verbose", "Verbose") ;
-        cmdLine.add(argDeclQuiet, "-q   --quiet", "Run with minimal output") ;
-        cmdLine.add(argDeclDebug, "--debug", "Output information for debugging") ;
-        cmdLine.add(argDeclHelp, "--help", null) ;
-    }
-
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        verbose = cmdLine.contains(argDeclVerbose) ;
-        quiet   = cmdLine.contains(argDeclQuiet) ;
-        debug   = cmdLine.contains(argDeclDebug) ;
-        if ( debug )
-            verbose = true ;
-        help = cmdLine.contains(argDeclHelp) ;
-        if ( help )
-            helpCallback.doHelp() ;
-    }
+    void doHelp() ; 
 }
 
 /*

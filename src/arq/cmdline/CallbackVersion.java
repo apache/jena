@@ -6,7 +6,7 @@
 
 package arq.cmdline;
 
-public interface HelpCallback
+public interface CallbackVersion
 {
     void doHelp() ; 
 }

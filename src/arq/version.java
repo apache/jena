@@ -1,34 +1,23 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.pfunction.library;
+package arq;
 
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
-import com.hp.hpl.jena.query.larq.LuceneSearch;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import arq.cmdline.ModVersion;
 
-/** Property function to search the default Lucene index (which is 
- *  the one set by {@link LARQ#setDefaultIndex(IndexLARQ) })
- */
-
-public class textMatch extends LuceneSearch
+public class version
 {
-    private IndexLARQ index = null ;
-
-    protected IndexLARQ getIndex(ExecutionContext execCxt)
-    { 
-        if ( index == null )
-            index = LARQ.getDefaultIndex(execCxt.getContext()) ;
-        return index ; 
+    public static void main (String [] argv)
+    {
+        ModVersion.printVersionAndExit() ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

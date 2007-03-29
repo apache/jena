@@ -134,7 +134,6 @@ public class PropertyFunctionRegistry
         put(ListPFunction.listMember.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listMember.class) ;
         put(ListPFunction.listIndex.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listIndex.class) ;
         put(ListPFunction.listLength.getURI() , com.hp.hpl.jena.sparql.pfunction.library.listLength.class) ;
-
         
         put(RDFS.member.getURI(), com.hp.hpl.jena.sparql.pfunction.library.container.class) ;
         put(ARQ.arqNS+"splitIRI", com.hp.hpl.jena.sparql.pfunction.library.splitIRI.class) ;

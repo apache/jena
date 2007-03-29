@@ -30,12 +30,6 @@ public class JoinClassifier
         if ( right instanceof OpExt )
             right = ((OpExt)right).effectiveOp() ;
 
-        // Cross check with LeftJoinClassifier. 
-        
-//        boolean b1 = check(left, right) ;
-//        boolean b2 = check(right, left) ;
-//        System.out.println("b1="+b1+" b2="+b2) ;
-        
         return check(left, right) && check(right, left) ;
     }
     
@@ -47,12 +41,6 @@ public class JoinClassifier
         Set fixedFilterScope = null ;   // Vars in scope to the filter - fixed
         Set optFilterScope = null ;     // Vars in scope to the filter - optional
         
-//        if ( op instanceof OpExt )
-//            op = ((OpExt)op).effectiveOp() ;
-//        
-//        if ( other instanceof OpExt )
-//            other = ((OpExt)other).effectiveOp() ;
-
         if ( op instanceof OpFilter )
         {
             OpFilter f = (OpFilter)op ;    

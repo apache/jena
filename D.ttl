@@ -1,8 +1,6 @@
 @prefix   :         <http://example/> .
 
-##:x0 :p 0 .
-:x1 :p 1 .
-##:x1a :p 1 .
-:x2 :p 2 .
-## :x3 :p 3 .
-:x4 :p 1 .
+:x1 :p "Hello world" .
+:x2 :p "Cruel world" .
+:x3 :p "Nice day" .
+:x4 :p "world" .

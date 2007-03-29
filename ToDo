@@ -38,6 +38,7 @@ ARQ2-beta
 
 + Commands
   + qtest to use modules (and qexpr)
+    ModVersion
 
 == LARQ
 

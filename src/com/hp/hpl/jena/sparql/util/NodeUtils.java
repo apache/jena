@@ -217,11 +217,25 @@ public class NodeUtils
         return i ;
     }
     
+    public static int nodeToLong(Node node)
+    {
+        LiteralLabel lit = node.getLiteral() ;
+        
+        if ( ! XSDDatatype.XSDinteger.isValidLiteral(lit) )
+            return -2 ;
+        int i = ((Number)lit.getValue()).intValue() ;
+        return i ;
+    }
+    
     public static Node intToNode(int integer)
     {
         return Node.createLiteral(Integer.toString(integer), "", XSDDatatype.XSDinteger) ;
     }
-    
+
+    public static Node floatToNode(float value)
+    {
+        return Node.createLiteral(Float.toString(value), "", XSDDatatype.XSDfloat) ;
+    }
 }
 
 /*

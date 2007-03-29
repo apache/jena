@@ -79,12 +79,6 @@ public class ARQ
     public static final Symbol enableRomanNumerals = ARQConstants.allocSymbol("romanNumerals") ;
 
     /**
-     * Context symbol controlling Roman Numerals in Filters.
-     * This is on a global basis - it can't be set per-query or per-query-execution basis.
-     */
-    public static final Symbol enableXSDdate = ARQConstants.allocSymbol("xsdDate") ;
-
-    /**
      * Context key for StageBuilder used in BGP compilation 
      */
     public static final Symbol stageGenerator = ARQConstants.allocSymbol("stageGenerator") ;
@@ -170,7 +164,6 @@ public class ARQ
         
         //globalContext.setIfUndef(useSAX,                        "false") ;
         globalContext.setIfUndef(enableRomanNumerals,           "false") ;
-        globalContext.setIfUndef(enableXSDdate,                 "true") ;
         // enableBlankNodeLabels() ;
         globalContext.setIfUndef(regexImpl,                     javaRegex) ;
 //        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )

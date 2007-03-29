@@ -1,34 +1,43 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.pfunction.library;
+package com.hp.hpl.jena.query.larq;
 
-import com.hp.hpl.jena.query.larq.IndexLARQ;
-import com.hp.hpl.jena.query.larq.LARQ;
-import com.hp.hpl.jena.query.larq.LuceneSearch;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import org.apache.lucene.search.Hit;
 
-/** Property function to search the default Lucene index (which is 
- *  the one set by {@link LARQ#setDefaultIndex(IndexLARQ) })
- */
+import com.hp.hpl.jena.graph.Node;
 
-public class textMatch extends LuceneSearch
+public class HitLARQ
 {
-    private IndexLARQ index = null ;
+    private Node node ;
+    private float score ;
 
-    protected IndexLARQ getIndex(ExecutionContext execCxt)
-    { 
-        if ( index == null )
-            index = LARQ.getDefaultIndex(execCxt.getContext()) ;
-        return index ; 
+    public HitLARQ(Hit hit)
+    {
+        try {
+            node = LARQ.build(hit.getDocument()) ;
+            score = hit.getScore() ;
+        }
+        catch (Exception e)
+        { throw new ARQLuceneException("node conversion error", e) ; }
+    }
+
+    public Node getNode()
+    {
+        return node ;
+    }
+
+    public float getScore()
+    {
+        return score ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -96,15 +96,15 @@ public abstract class LuceneSearch extends PFuncSimple
                                        ExecutionContext execCxt)
     {
         Iterator iter = getIndex(execCxt).search(searchString) ;
+        
         // Better a wrapper-converted iterator
         //new QueryIterConvert()
         List results = new ArrayList() ;
         for ( ; iter.hasNext(); )
         {
-            Node x = (Node)iter.next();
-            results.add(new Binding1(binding, Var.alloc(subject), x)) ;
+            HitLARQ x = (HitLARQ)iter.next();
+            results.add(new Binding1(binding, Var.alloc(subject), x.getNode())) ;
         }
-        // To binding.
         return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
     }
     

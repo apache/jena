@@ -18,11 +18,12 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 // Added usage + some common flags
 // This is the usual starting point for any sub 
 
-public abstract class CmdGeneral extends CmdArgModule implements HelpCallback
+public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//, VersionCallback
 {
     static { CmdUtils.setLog4j() ; CmdUtils.setN3Params() ; }
 
     ModGeneral modGeneral = new ModGeneral(this) ;
+    ModVersion modVersion = new ModVersion(true) ;
     
     // Could be turned into a module but these are convenient as inherited flags
     // ModGeneral.
@@ -32,6 +33,7 @@ public abstract class CmdGeneral extends CmdArgModule implements HelpCallback
     {
         super(argv) ;
         addModule(modGeneral) ;
+        addModule(modVersion) ;
     }
 
     public void addModule(ArgModuleGeneral argModule)
