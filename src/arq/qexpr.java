@@ -75,6 +75,9 @@ public class qexpr
         ArgDecl reduceDecl =  new ArgDecl(ArgDecl.NoValue, "reduce", "fold", "simplify" ) ;
         cl.add(reduceDecl) ;
 
+        ArgDecl strictDecl =  new ArgDecl(ArgDecl.NoValue, "strict") ;
+        cl.add(strictDecl) ;
+        
         ArgDecl printDecl =  new ArgDecl(ArgDecl.HasValue, "print") ;
         cl.add(printDecl) ;
 
@@ -103,6 +106,9 @@ public class qexpr
         boolean verbose = cl.contains(verboseDecl) ;
         boolean quiet = cl.contains(quietDecl) ;
 
+        if ( cl.contains(strictDecl) )
+            ARQ.getContext().set(ARQ.extensionValueTypes, false) ; 
+        
         boolean actionCopySubstitute = cl.contains(reduceDecl) ;
         boolean actionPrintPrefix = false ;
         boolean actionPrintSPARQL = false ; 

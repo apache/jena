@@ -44,7 +44,7 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        //runQExpr() ;
+        runQExpr() ;
         //print() ;
         //code() ;
         //classifyJ() ;
@@ -203,10 +203,7 @@ public class Run
 
     static public void runQExpr()
     {
-        qexpr.main(new String[]{"--print=prefix", "--", "-3"}) ;
-        qexpr.main(new String[]{"--print=prefix", "--", "+3"}) ;
-        qexpr.main(new String[]{"--print=prefix", "--", "+ 3"}) ;
-        qexpr.main(new String[]{"--print=prefix", "--", "- 3"}) ;
+        qexpr.main(new String[]{"--strict", "1 = :x"}) ;
 //        qexpr.main(new String[]{"(1+3)"}) ;
 //        qexpr.main(new String[]{"(?x+3)"}) ;
 //        System.exit(0) ;

@@ -6,19 +6,19 @@
 
 package com.hp.hpl.jena.sparql.test.suites;
 
-import junit.framework.*;
-
 import java.math.BigDecimal;
-import java.util.Calendar ;
-import java.util.GregorianCalendar ;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.expr.nodevalue.Functions;
-import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 
@@ -40,37 +40,7 @@ public class TestNodeValue extends TestCase
         ts.setName(Utils.classShortName(TestNodeValue.class)) ;
         return ts ;
     }
-
-    public void testNode1()
-    {
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createLiteral("xyz") ;
-        assertTrue(NodeUtils.sameNode(n1, n2)) ;
-    }
-    
-    
-    public void testNode2()
-    {
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createLiteral("abc") ;
-        assertFalse(NodeUtils.sameNode(n1, n2)) ;
-    }
-    
-    public void testNode3()
-    {
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createURI("xyz") ;
-        assertFalse(NodeUtils.sameNode(n1, n2)) ;
-    }
-    
-    public void testNode4()
-    {
-        Node n1 = Node.createLiteral("xyz") ;
-        Node n2 = Node.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
-        assertFalse(NodeUtils.sameNode(n1, n2)) ;
-    }
-    
-    
+   
     public void testInt1()
     {
         NodeValue v = NodeValue.makeInteger(5) ;

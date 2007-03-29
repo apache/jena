@@ -20,6 +20,28 @@ import com.hp.hpl.jena.vocabulary.XSD;
 public class NodeFunctions
 {
     private static final NodeValue xsdString = NodeValue.makeNode(XSD.xstring.asNode()) ;
+    
+    // -------- sameTerm
+    
+    public static NodeValue sameTerm(NodeValue nv1, NodeValue nv2)
+    { return NodeValue.booleanReturn(sameTerm(nv1.asNode(), nv2.asNode())) ; }
+    
+    public static boolean sameTerm(Node n1, Node n2)
+    { return n1.equals(n2) ; }
+    
+    // -------- RDFterm-equals
+    
+    public static NodeValue rdfTermEquals(NodeValue nv1, NodeValue nv2)
+    { return NodeValue.booleanReturn(rdfTermEquals(nv1.asNode(), nv2.asNode())) ; }
+    
+    public static boolean rdfTermEquals(Node n1, Node n2)
+    { 
+        if ( n1.equals(n2) )
+            return true ;
+        NodeValue.raise(new ExprEvalException("Not RDF term equals: "+n1+", "+n2)) ;
+        return false ;
+    }
+    
     // -------- str
     public static NodeValue str(NodeValue nv) { return NodeValue.makeString(str(nv.asNode())) ; }
     public static String str(Node node)

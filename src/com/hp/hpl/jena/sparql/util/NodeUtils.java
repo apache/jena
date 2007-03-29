@@ -48,18 +48,6 @@ public class NodeUtils
         return literal.getLiteralLexicalForm() ; 
     }
     
-    /** return true IFF exactly the same node (no value testing, not even
-     *  plain literals and xsd:strings) 
-     */
-    public static boolean sameNode(Node node1, Node node2)
-    {
-        // Node.equals is purely syntactic 
-        return node1.equals(node2) ;
-    }
-
-    // Node-based tests based on syntax.
-    // (Value testing, using NodeValue, are in NodeValue)
-
     /** Compare two Nodes, based on their RDF terms forms, not value */
     public static int compareRDFTerms(Node node1, Node node2)
     {

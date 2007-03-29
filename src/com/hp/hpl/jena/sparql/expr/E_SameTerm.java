@@ -5,6 +5,8 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions;
+
 /** 
  * @author Andy Seaborne
  * @version $Id: E_SameTerm.java,v 1.2 2007/01/02 11:19:17 andy_seaborne Exp $
@@ -21,8 +23,7 @@ public class E_SameTerm extends ExprFunction2
     
     public NodeValue eval(NodeValue x, NodeValue y)
     {
-        boolean b = x.equals(y) ;
-        return NodeValue.booleanReturn(b) ;
+        return NodeFunctions.sameTerm(x, y) ;
     }
     
     public Expr copy(Expr e1, Expr e2) {  return new E_SameTerm(e1 , e2 ) ; }

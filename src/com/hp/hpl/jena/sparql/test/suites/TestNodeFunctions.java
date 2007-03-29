@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.test.suites;
 
 import junit.framework.*;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
@@ -32,6 +33,35 @@ public class TestNodeFunctions extends TestCase
         return ts ;
     }
 
+
+    public void testSameTerm1()
+    {
+        Node n1 = Node.createLiteral("xyz") ;
+        Node n2 = Node.createLiteral("xyz") ;
+        assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
+    }
+    
+    public void testSameTerm2()
+    {
+        Node n1 = Node.createLiteral("xyz") ;
+        Node n2 = Node.createLiteral("abc") ;
+        assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
+    }
+    
+    public void testSameTerm3()
+    {
+        Node n1 = Node.createLiteral("xyz") ;
+        Node n2 = Node.createURI("xyz") ;
+        assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
+    }
+    
+    public void testSameTerm4()
+    {
+        Node n1 = Node.createLiteral("xyz") ;
+        Node n2 = Node.createLiteral("xyz", null, XSDDatatype.XSDstring) ;
+        assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
+    }
+    
     public void testStr1()
     {
         NodeValue nv = NodeValue.makeNodeInteger(56) ;

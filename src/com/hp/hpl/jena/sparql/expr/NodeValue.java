@@ -77,8 +77,7 @@ public abstract class NodeValue extends ExprNode
     //   numeric: number != Nan && number != 0 is true
     // http://www.w3.org/TR/xquery/#dt-ebv
     
-    private static Log log = 
-        LogFactory.getLog(NodeValue.class) ;
+    private static Log log = LogFactory.getLog(NodeValue.class) ;
     
     // ---- Constants and initializers / public
     
@@ -94,6 +93,8 @@ public abstract class NodeValue extends ExprNode
 
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDDatatype.XSDboolean) ;
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDDatatype.XSDboolean) ;
+    
+    private static boolean VALUE_EXTENSIONS = ARQ.getContext().isTrueOrUndef(ARQ.extensionValueTypes) ;
     
     // ---- State
     
@@ -349,26 +350,26 @@ public abstract class NodeValue extends ExprNode
     private static final int VSPACE_STRING    = 40 ;
     private static final int VSPACE_LANG      = 50 ;    // Lang tag (valid - no datatype).
     private static final int VSPACE_BOOLEAN   = 60 ;
-    private static final int VSPACE_NODE      = 70 ;    // Nodes - not literals   
-    private static final int VSPACE_UNKNOWN   = 80 ;    // Node - literal unknown value space or wrong in some way.
-    private static final int VSPACE_DIFFERENT = 90 ;        // Known to be different values spaces
+    private static final int VSPACE_NODE      = 70 ;    // RDT Terms that are not literals   
+    private static final int VSPACE_UNKNOWN   = 80 ;    // Nodes - literal unknown value space or wrong in some way.
+    private static final int VSPACE_DIFFERENT = 90 ;    // Known to be different values spaces
     
-    /** Return true if the two Nodes are known to be the same value
-     *  return false if known to be different values,
-     *  throw ExprEvalException if unknown
-     */
-    public static boolean sameAs(Node n1, Node n2)
-    {
-        return sameAs(NodeValue.makeNode(n1), NodeValue.makeNode(n2)) ;  
-    }
+//    /** Return true if the two Nodes are known to be the same value
+//     *  return false if known to be different values,
+//     *  throw ExprEvalException if unknown
+//     */
+//    public static boolean sameAs(Node n1, Node n2)
+//    {
+//        return sameAs(NodeValue.makeNode(n1), NodeValue.makeNode(n2)) ;  
+//    }
 
     /** Return true if the two NodeValues are known to be the same value
      *  return false if known to be different values,
-     *  throw ExprEvalException if unknown
+     *  throw ExprEvalException otherwise
      */
     public static boolean sameAs(NodeValue nv1, NodeValue nv2)
     {
-        // Currently called from E_Equals (only)
+        // Currently only called from E_Equals/E_NotEquals
         if ( nv1 == null || nv2 == null )
             new ARQInternalErrorException("Attempt to sameValueAs on a null") ;
         
@@ -392,27 +393,36 @@ public abstract class NodeValue extends ExprNode
 
             case VSPACE_NODE:
                 // Two non-literals
-                return NodeUtils.sameNode(nv1.getNode(), nv2.getNode()) ;
+                return NodeFunctions.sameTerm(nv1.getNode(), nv2.getNode()) ;
 
             case VSPACE_UNKNOWN:
             {
                 // One or two unknown value spaces, or one has a lang tag (but not both).
-                
                 Node node1 = nv1.getNode() ;
                 Node node2 = nv2.getNode() ;
                 
-                // Zero or one non-literal (not both non-literals, that's case VSPACE_NODE)
+                if ( ! VALUE_EXTENSIONS && ( node1.isLiteral() && node2.isLiteral() ) )
+                {
+                    return NodeFunctions.rdfTermEquals(node1, node2) ;
+//                    if ( NodeFunctions.sameTerm(node1, node2) )
+//                        return true ;
+//                    else
+//                        raise(new ExprNotComparableException("Unknown equality test: "+nv1+" and "+nv2)) ;
+                }
+                
+                // Zero or one non-literal (not both non-literals), that's case VSPACE_NODE)
                 if ( ! node1.isLiteral() || ! node2.isLiteral() )
-                    return NodeUtils.sameNode(node1, node2) ;
+                    // So it's false? node1 can't be same form as node2.
+                    return false ;
+                    //return NodeFunctions.sameTerm(node1, node2) ;
                 
                 // Two literals
-                if ( NodeUtils.sameNode(node1, node2) )
+                if ( NodeFunctions.sameTerm(node1, node2) )
                     return true ;
                 
                 if ( ! node1.getLiteralLanguage().equals("") ||
                      ! node2.getLiteralLanguage().equals("") )
-                    // One lang tags but weren't sameNode => not equals
-                    // Not two lang tags as that's VSPACE_LANG
+                    // One had lang tags but weren't sameNode => not equals
                     return false ;
                 
                 raise(new ExprEvalException("Unknown equality test: "+nv1+" and "+nv2)) ;
@@ -420,6 +430,9 @@ public abstract class NodeValue extends ExprNode
             }
             
             case VSPACE_DIFFERENT:
+                // Known to be incompatible.
+                if ( ! VALUE_EXTENSIONS && ( nv1.isLiteral() && nv2.isLiteral() ) )
+                    raise(new ExprEvalException("Incompatible: "+nv1+" and "+nv2)) ;
                 return false ; 
             default:
                 throw new ARQInternalErrorException("sameValueAs failure"+nv1+" and "+nv2) ;
@@ -492,6 +505,13 @@ public abstract class NodeValue extends ExprNode
         return x ;
     }
     
+    // E_GreaterThan/E_LessThan/E_GreaterThanOrEqual/E_LessThanOrEqual
+    // ==> compare(nv1, nv12) => compare (nv1, nv2, false)
+    
+    // BindingComparator => compareAlways(nv1, nv2) => compare (nv1, nv2, true)
+    
+    // E_Equals calls NodeValue.sameAs() ==> 
+    
     // sortOrderingCompare means that the comparison should do something with normally unlike things,
     // and split plain strings from xsd:strings.
     
@@ -557,7 +577,7 @@ public abstract class NodeValue extends ExprNode
                 x = StringUtils.strCompare(node1.getLiteralLanguage(), node2.getLiteralLanguage()) ;
                 // Maybe they are the same after all!
                 // Should be node.equals by now.
-                if ( x == Expr.CMP_EQUAL  && ! NodeUtils.sameNode(node1, node2) )
+                if ( x == Expr.CMP_EQUAL  && ! NodeFunctions.sameTerm(node1, node2) )
                     throw new ARQInternalErrorException("Look the same (lang tags) but no node equals") ;
                 return x ;
             }
@@ -578,7 +598,7 @@ public abstract class NodeValue extends ExprNode
                 Node node1 = nv1.asNode() ;
                 Node node2 = nv2.asNode() ;
                 // Two unknown literals can be equal.
-                if ( node1.isLiteral() && node2.isLiteral() && NodeUtils.sameNode(node1, node2) )
+                if ( NodeFunctions.sameTerm(node1, node2) )
                     return Expr.CMP_EQUAL ;
                 
                 if ( sortOrderingCompare )
@@ -611,22 +631,24 @@ public abstract class NodeValue extends ExprNode
         // Known values spaces but incompatible  
         return VSPACE_DIFFERENT ;
     }
-        
+    
     private static int classifyValueSpace(NodeValue nv)
     {
         if ( nv.isNumber() )   return VSPACE_NUM ;
         if ( nv.isDateTime() ) return VSPACE_DATETIME ;
         
-        if ( nv.isDate() )     return VSPACE_DATE ;
+        
+        if ( VALUE_EXTENSIONS && nv.isDate() )
+            return VSPACE_DATE ;
         if ( nv.isString())    return VSPACE_STRING ;
         if ( nv.isBoolean())   return VSPACE_BOOLEAN ;
         
         if ( ! nv.isLiteral() )
             return VSPACE_NODE ;
 
-        if ( nv.getNode() != null &&
-        nv.getNode().isLiteral() &&
-        ! nv.getNode().getLiteralLanguage().equals("") )
+        if ( VALUE_EXTENSIONS && nv.getNode() != null &&
+             nv.getNode().isLiteral() &&
+             ! nv.getNode().getLiteralLanguage().equals("") )
             return VSPACE_LANG ;
         
         return VSPACE_UNKNOWN ;
@@ -925,7 +947,7 @@ public abstract class NodeValue extends ExprNode
         if ( ! ( other instanceof NodeValue ) )
             return false ;
         NodeValue nv = (NodeValue)other ;
-        return asNode().equals(nv.asNode()) ;
+        return NodeFunctions.sameTerm(this.asNode(), nv.asNode()) ;
     }
 
     public abstract void visit(NodeValueVisitor visitor) ;
