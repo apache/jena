@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.util.MappedLoader;
 
 public class FunctionRegistry //extends HashMap<String, Function>
 {
+    // Extrac a Registry class and do casting and initialization here.
     static Log log = LogFactory.getLog(FunctionRegistry.class) ;
     Map registry = new HashMap() ;
     Set attemptedLoads = new HashSet() ;

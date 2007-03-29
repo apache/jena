@@ -91,7 +91,7 @@ UpdatePattern Delete() :
 { UpdateDelete up = new UpdateDelete() ; Node iri ; Template template ; }
 {
     <DELETE> 
-    ((<FROM>)? iri = GraphIRI() { up.addGraphName(iri.getURI()) ; } )*
+    ((<FROM>)? iri = IRIref() { up.addGraphName(iri.getURI()) ; } )*
     template = ConstructTemplate() { up.setDeleteTemplate(template) ; }
     { return up ; }
 }
@@ -100,7 +100,7 @@ UpdatePattern Insert() :
 { UpdateInsert up = new UpdateInsert() ; Node iri ; Template template ; }
 {
     <INSERT> 
-    ((<INTO>)? iri = GraphIRI() { up.addGraphName(iri.getURI()) ; } )*
+    ((<INTO>)? iri = IRIref() { up.addGraphName(iri.getURI()) ; } )*
     template = ConstructTemplate() { up.setInsertTemplate(template) ; }
     { return up ; }
 }

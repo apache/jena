@@ -39,8 +39,6 @@ public class UpdateSerializer implements UpdateVisitor
                 out.print(word) ;
             }
             out.print(" ") ;
-            out.print("GRAPH") ;
-            out.print(" ") ;
             out.print(FmtUtils.stringForURI(iri, sCxt)) ;
         }
         out.println(); 
@@ -60,7 +58,7 @@ public class UpdateSerializer implements UpdateVisitor
     
     public void visit(UpdateModify modify)
     { 
-        visitModifyHeader("MODIFY", null, modify) ;
+        visitModifyHeader("MODIFY", "GRAPH", modify) ;
         out.println("DELETE") ;
         printTemplate(modify.getDeleteTemplate()) ;
         out.println("INSERT") ;

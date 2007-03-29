@@ -27,16 +27,6 @@ import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
 
-
-//TODO Naming : Update->UpdateOp ; UpdateRequest->Update 
-//TODO Think of API creation an Update(Request)
-//?? Constructors to take all args - no setters. Harder for the parser but cleaner?
-//?? Constructires with args and setters
-
-// op subpackage? syntax? c.f. SPARQl algebra
-
-// See grammar and UpdateCreate
-
 public class DEV
 {
     protected static Node s = Node.create("http://example/r") ;
