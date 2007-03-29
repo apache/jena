@@ -81,6 +81,19 @@
 [<TRUE>]       ::= 'true'
 [<FALSE>]      ::= 'false'
 
+[<MODIFY>]      ::= 'MODIFY'
+[<INSERT>]      ::= 'INSERT'
+[<DELETE>]      ::= 'DELETE'
+[<LOAD>]        ::= 'LOAD' 
+[<CLEAR>]       ::= 'CLEAR' 
+[<CREATE>]      ::= 'CREATE' 
+[<SILENT>]      ::= 'SILENT' 
+[<DROP>]        ::= 'DROP' 
+[<INTO>]        ::= 'INTO' 
+[<BEGIN>]       ::= 'BEGIN'
+[<COMMIT>]      ::= 'COMMIT'
+[<ABORT>]       ::= 'ABORT'
+
 //[<NIL>]        ::= '(' ')'
 <NIL>          ::= '(' <WS>* ')'
 <WS>           ::= #x20 | #x9 | #xD | #xA
