@@ -46,4 +46,7 @@ Post ARQ-2.0-beta:
 + Removed ElementExtension/PlanExtension and extension package
   The ARQ(beyond SPARQL feature) of "EXT" has been removed.
   Element visitors may be affected.
-+ Added an update API (
++ Added an update API
++ LARQ
+	+ added access to the match score
+	+ added limits on score or number of results as part of Lucene search

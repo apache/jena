@@ -100,8 +100,6 @@ public class IndexLARQ
      *  @return Iterator of Nodes 
      */
 
-   // public Iterator search(String queryString, int limit)
-
     public Iterator search(String queryString)
     {    
         try{

@@ -20,7 +20,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -765,12 +764,12 @@ public abstract class NodeValue extends ExprNode
         {
             if ( NodeValue.VerboseWarnings )
             {
-                String tmp =  FmtUtils.stringForNode(node, ARQConstants.getGlobalPrefixMap()) ;
+                String tmp =  FmtUtils.stringForNode(node) ;
                 log.warn("Datatype format exception: "+tmp) ;
             }
             else if ( log.isDebugEnabled() )
             {
-                String tmp =  FmtUtils.stringForNode(node, ARQConstants.getGlobalPrefixMap()) ;
+                String tmp =  FmtUtils.stringForNode(node) ;
                 log.debug("Datatype format exception: "+tmp) ;
             }
             // Invalid lexical form.

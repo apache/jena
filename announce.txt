@@ -15,7 +15,7 @@ reorganisation and renaming of implementation code to align with
 termininology of the SPARQL specification.
 
 This version also makes it easier to reuse and extend ARQ.  
- ARQ can also be used just as a SPARQL parser, as a SPARQL algebra
+ARQ can also be used just as a SPARQL parser, as a SPARQL algebra
 generator or as a basis for specialised query engines.
 
 As well as custom functions and custom property functions, the 
@@ -62,6 +62,14 @@ These are the perferred prefix URIs.
 The code now resides in packages "com.hp.hpl.jena.sparql.function.library" and
 "com.hp.hpl.jena.sparql.pfunction.library".  Old URIs using the old package
 name and "java:" should work because there is a redirection left in-place.
+
+== Other Enhancements
+
+Preliminary support for SPARQL/Update.  (The API is unstable.)
+
+The Lucene-index property function (LARQ) now includes:
+ + access to the matching score 
+ + limits, by score and by number of Lucene matches
 
 == Status
 

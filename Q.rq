@@ -4,5 +4,5 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT *
 { 
-    ("Hello world" ?score) x:textMatch2 ('+world' 2) .
+    (?hit ?score) x:textMatch2 ('+world' 1.1) .
 }

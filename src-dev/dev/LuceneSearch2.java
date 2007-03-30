@@ -7,6 +7,7 @@
 package dev;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,13 +28,17 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Base class for searching a IndexLARQ */
 // V2
@@ -61,11 +66,11 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         if ( getIndex(execCxt) == null )
             throw new QueryBuildException("Index not found") ;
 
-        if ( argSubject.isList() && argSubject.getArgList().size() != 2 )
+        if ( argSubject.isList() && argSubject.getArgListSize() != 2 )
                 throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, not 2: "+argSubject) ;
         
-        if ( argObject.isList() && argObject.getArgList().size() != 2 )
-                throw new QueryBuildException("Object has "+argObject.getArgList().size()+" elements, not 2: "+argObject) ;
+        if ( argObject.isList() && (argObject.getArgListSize() != 2 && argObject.getArgListSize() != 3) )
+                throw new QueryBuildException("Object has "+argObject.getArgList().size()+" elements, not 2 or 3: "+argObject) ;
         
 //        
 //        Node obj = argObject.getArg() ;
@@ -90,7 +95,7 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         
         Node searchString = null ;
         long limit = Query.NOLIMIT ;
-        float scroreLimit = 0.0f ;
+        float scoreLimit = -1.0f ;
         
         if ( argSubject.isList() )
         {
@@ -110,33 +115,52 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         if ( argObject.isList() )
         {
             // Length checked in build
-            searchString= argObject.getArg(0) ;
+            searchString = argObject.getArg(0) ;
             
-            Node limitN = argObject.getArg(1) ;
-            if ( ! isValidSearchString(searchString) )
-                return new QueryIterNullIterator(execCxt) ;
-            
-            // TODO Check this copes for negatives 
-            limit = NodeUtils.nodeToInt(limitN) ; 
-            if ( limit < 0 )
+            for ( int i = 1 ; i < argObject.getArgListSize() ; i++ )
             {
-                log.warn("Can't grok limit: "+limitN) ;
-                return PFLib.noResults(execCxt) ;
+                Node n = argObject.getArg(i) ;
+                int nInt = asInteger(n) ;
+                if ( isInteger(nInt) )
+                {
+                    if ( limit > 0 )
+                        throw new ExprEvalException("2 potential limits to Lucene search: "+argObject) ;
+                    limit = nInt ;
+                    if ( limit < 0 )
+                        limit = Query.NOLIMIT ;
+                    continue ;
+                }
+                
+                float nFloat = asFloat(n) ;
+                if ( isFloat(nFloat) )
+                {
+                    if ( scoreLimit > 0 )
+                        throw new ExprEvalException("2 potential score limits to Lucene search: "+argObject) ;
+                    if ( nFloat < 0 )
+                        throw new ExprEvalException("Negative score limit to Lucene search: "+argObject) ;
+                    scoreLimit = nFloat ;
+                    continue ;
+                }
+                throw new ExprEvalException("Bad argument to Lucene search: "+argObject) ;
             }
             
-            // Third possible arg: score limit (decimal/float/double)
-            
+            if ( scoreLimit < 0 )
+                scoreLimit = 0.0f ;
+
+            if ( ! isValidSearchString(searchString) )
+                return new QueryIterNullIterator(execCxt) ;
         }
         else
         {
             searchString = argObject.getArg() ;
             limit = Query.NOLIMIT ;
+            scoreLimit = 0.0f ;
         }
         
         return execEvaluatedSimple(binding, 
                                    subject, score,
                                    predicate,
-                                   searchString, limit,
+                                   searchString, limit, scoreLimit,
                                    execCxt) ;
         /*
         + Access to other fields
@@ -151,7 +175,7 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
     public QueryIterator execEvaluatedSimple(Binding binding, 
                                              Node subject, Node score,  
                                              Node predicate, 
-                                             Node searchString, long limit,
+                                             Node searchString, long limit, float scoreLimit,
                                              ExecutionContext execCxt)
     {
         if ( !isValidSearchString(searchString) )
@@ -168,12 +192,12 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         if ( subject.isVariable() )
             return varSubject(binding, 
                               Var.alloc(subject), (score==null)?null:Var.alloc(score),
-                              qs, limit,
+                              qs, limit, scoreLimit,
                               execCxt) ;
         else
             return boundSubject(binding, 
                                 subject, score, 
-                                qs, limit,
+                                qs, limit, scoreLimit,
                                 execCxt) ;
     }
     
@@ -201,19 +225,86 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
     
     public QueryIterator varSubject(Binding binding, 
                                     Var subject, Var score,
-                                    String searchString, long limit, 
+                                    String searchString, long limit, float scoreLimit,
                                     ExecutionContext execCxt)
     {
         //TODO - made public - reverse?
         Iterator iter = getIndex(execCxt).search(searchString) ;
         
+        // Score limit. Truncating Iterator.
+        if ( scoreLimit > 0 )
+            iter = new IteratorTruncate(new ScoreTest(scoreLimit), iter) ;
+        
         HitConverter converter = new HitConverter(binding, subject, score) ;
+        
         iter =  new Map1Iterator(converter, iter) ;
         QueryIterator qIter = new QueryIterPlainWrapper(iter, execCxt) ;
 
         if ( limit >= 0 )
             qIter = new QueryIterSlice(qIter, 0, limit, execCxt) ;
         return qIter ;
+    }
+    
+    static class ScoreTest implements IteratorTruncate.Test
+    {
+        private float scoreLimit ;
+        ScoreTest(float scoreLimit) { this.scoreLimit = scoreLimit ; }
+        public boolean accept(Object object)
+        {
+            HitLARQ hit = (HitLARQ)object ;
+            return hit.getScore() >= scoreLimit ;
+        }
+    }
+    
+    static class IteratorTruncate implements ClosableIterator
+    {
+        static interface Test { boolean accept(Object object) ; }
+        Test test ;
+        Object slot = null ;
+        boolean active = true ;
+        Iterator iter ;
+        
+        IteratorTruncate (Test test, Iterator iter)
+        { this.test = test ; this.iter = iter ; }
+
+        public boolean hasNext()
+        {
+            if ( ! active ) return false ;
+            if ( slot != null )
+                return true ;
+
+            if ( ! iter.hasNext() )
+            {
+                active = false ;
+                return false ;
+            }
+            
+            slot = iter.next() ;
+            if ( test.accept(slot) )
+                return true ;
+            // Once the test goes false, no longer yield anything.
+            NiceIterator.close(iter) ;
+            active = false ;
+            iter = null ;
+            slot = null ;
+            return false ;
+        }
+
+        public Object next()
+        {
+            if ( ! hasNext() )
+                throw new NoSuchElementException("IteratorTruncate.next") ;    
+            Object x = slot ;
+            slot = null ;
+            return x ;
+        }
+
+        public void remove()
+        { throw new UnsupportedOperationException("IteratorTruncate.remove"); }
+
+        public void close()
+        { if ( iter != null ) NiceIterator.close(iter) ; }
+        
     }
     
     static class HitConverter implements Map1
@@ -244,7 +335,7 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
     // TODO Score.
     public QueryIterator boundSubject(Binding binding, 
                                       Node subject, Node score,
-                                      String searchString, long limit, 
+                                      String searchString, long limit, float scoreLimit,
                                       ExecutionContext execCxt)
     {
         //TODO - made public - reverse?
@@ -254,7 +345,7 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
             return new QueryIterNullIterator(execCxt) ;
     }
 
-    private String asString(Node node)
+    static private String asString(Node node)
     {
         if ( node.getLiteralDatatype() != null
             && ! node.getLiteralDatatype().equals("") 
@@ -262,6 +353,24 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
             return null ;
         return node.getLiteralLexicalForm() ;
     }
+
+    static private float asFloat(Node n)
+    {
+        if ( n == null ) return Float.MIN_VALUE ;
+        NodeValue nv = NodeValue.makeNode(n) ;
+        if ( nv.isFloat() )
+            return nv.getFloat() ;
+        return Float.MIN_VALUE ;
+    }
+
+    static private int asInteger(Node n)
+    {
+        if ( n == null ) return Integer.MIN_VALUE ;
+        return NodeUtils.nodeToInt(n) ;
+    }
+    
+    static private boolean isInteger(int i) { return i != Integer.MIN_VALUE ; }
+    static private boolean isFloat(float f) { return f != Float.MIN_VALUE ; }
 }
 
 /*

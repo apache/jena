@@ -212,18 +212,18 @@ public class NodeUtils
         LiteralLabel lit = node.getLiteral() ;
         
         if ( ! XSDDatatype.XSDinteger.isValidLiteral(lit) )
-            return -2 ;
+            return Integer.MIN_VALUE ;
         int i = ((Number)lit.getValue()).intValue() ;
         return i ;
     }
     
-    public static int nodeToLong(Node node)
+    public static long nodeToLong(Node node)
     {
         LiteralLabel lit = node.getLiteral() ;
         
         if ( ! XSDDatatype.XSDinteger.isValidLiteral(lit) )
-            return -2 ;
-        int i = ((Number)lit.getValue()).intValue() ;
+            return Long.MIN_VALUE ;
+        long i = ((Number)lit.getValue()).longValue() ;
         return i ;
     }
     

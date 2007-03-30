@@ -50,6 +50,7 @@ public class PropFuncArg extends PrintSerializableBase
     
     public Node getArg()                { return arg ; }
     public List getArgList()            { return argList ; }
+    public int  getArgListSize()        { return argList==null ? -1 : argList.size() ; }
     public Node getArg(int index)
     {
         if ( argList == null ) return null ;
