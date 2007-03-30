@@ -63,6 +63,7 @@ public class ResultsFormat extends Symbol
         resultFormats.put("rdf",       ResultsFormat.FMT_RDF_XML ) ;
         resultFormats.put("rdf/xml",   ResultsFormat.FMT_RDF_XML ) ;
         resultFormats.put("n3",        ResultsFormat.FMT_RDF_N3 ) ;
+        resultFormats.put("ttl",       ResultsFormat.FMT_RDF_TTL ) ;
         resultFormats.put("n-triples", ResultsFormat.FMT_RDF_NT ) ;
     }
     

@@ -15,18 +15,22 @@ public abstract class CmdARQ extends CmdGeneral
 {
     ModSymbol modSymbol = new ModSymbol() ;
     ModEngine modEngine = new ModEngine() ;
+    ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict", "basic") ;
     
     protected CmdARQ(String[] argv)
     {
         super(argv) ;
         addModule(modSymbol) ;
         addModule(modEngine) ;
+        super.add(strictDecl, "--strict", "Operate in strict mode (no extensions of any kind)") ;
     }
     
     protected void processModulesAndArgs()
     { 
         if ( modVersion.getVersionFlag() )
             ModVersion.printVersionAndExit() ;
+        if ( super.contains(strictDecl) ) 
+            ARQ.setStrictMode() ;
     }
     
     public void version(List items)

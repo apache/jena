@@ -9,21 +9,18 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import org.apache.commons.logging.*;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-
-import com.hp.hpl.jena.vocabulary.XSD;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.JenaParameters;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -31,6 +28,7 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.*;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.*;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 
 public abstract class NodeValue extends ExprNode
@@ -84,7 +82,9 @@ public abstract class NodeValue extends ExprNode
     public static boolean VerboseWarnings = true ;
     public static boolean VerboseExceptions = false ;
     
-    private static final boolean sameValueAsString = JenaParameters.enablePlainLiteralSameAsString ;
+    private static boolean VALUE_EXTENSIONS = ARQ.getContext().isTrueOrUndef(ARQ.extensionValueTypes) ;
+    private static boolean sameValueAsString = VALUE_EXTENSIONS ;
+    
     private static RefBoolean enableRomanNumerals = new RefBoolean(ARQ.enableRomanNumerals, false) ;
     //private static RefBoolean strictSPARQL = new RefBoolean(ARQ.strictSPARQL, false) ;
     
@@ -94,7 +94,10 @@ public abstract class NodeValue extends ExprNode
     public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDDatatype.XSDboolean) ;
     public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDDatatype.XSDboolean) ;
     
-    private static boolean VALUE_EXTENSIONS = ARQ.getContext().isTrueOrUndef(ARQ.extensionValueTypes) ;
+    
+    // Initialization
+//    static
+//    {}
     
     // ---- State
     
@@ -762,12 +765,12 @@ public abstract class NodeValue extends ExprNode
         {
             if ( NodeValue.VerboseWarnings )
             {
-                String tmp =  FmtUtils.stringForNode(node, PrefixMapping.Standard) ;
+                String tmp =  FmtUtils.stringForNode(node, ARQConstants.getGlobalPrefixMap()) ;
                 log.warn("Datatype format exception: "+tmp) ;
             }
             else if ( log.isDebugEnabled() )
             {
-                String tmp =  FmtUtils.stringForNode(node, PrefixMapping.Standard) ;
+                String tmp =  FmtUtils.stringForNode(node, ARQConstants.getGlobalPrefixMap()) ;
                 log.debug("Datatype format exception: "+tmp) ;
             }
             // Invalid lexical form.

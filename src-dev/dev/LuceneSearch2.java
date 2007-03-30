@@ -42,6 +42,11 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
 {
     private static Log log = LogFactory.getLog(LuceneSearch2.class) ;
     
+    // TODO 2/3 arg object form
+    // TODO Score limit
+    // TODO Testing limit and scoreLimit are valid (-ve numbers etc
+    
+    
     protected LuceneSearch2()
     {
         super(PropFuncArgType.PF_ARG_EITHER,
@@ -85,7 +90,7 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
         
         Node searchString = null ;
         long limit = Query.NOLIMIT ;
-        
+        float scroreLimit = 0.0f ;
         
         if ( argSubject.isList() )
         {
@@ -110,12 +115,17 @@ public abstract class LuceneSearch2 extends PropertyFunctionEval
             Node limitN = argObject.getArg(1) ;
             if ( ! isValidSearchString(searchString) )
                 return new QueryIterNullIterator(execCxt) ;
+            
+            // TODO Check this copes for negatives 
             limit = NodeUtils.nodeToInt(limitN) ; 
             if ( limit < 0 )
             {
                 log.warn("Can't grok limit: "+limitN) ;
                 return PFLib.noResults(execCxt) ;
             }
+            
+            // Third possible arg: score limit (decimal/float/double)
+            
         }
         else
         {

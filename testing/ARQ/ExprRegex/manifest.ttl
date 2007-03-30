@@ -34,4 +34,12 @@
               qt:data   <data-regex-1.ttl> ] ;
          mf:result  <result-regex-4.ttl>
       ]
+
+      [  mf:name    "regex-5" ;
+         # Tests for legal extension that xsd:string is legal in regex.
+         mf:action
+            [ qt:query  <q-regex-5.rq> ;
+              qt:data   <data-regex-2.ttl> ] ;
+         mf:result  <result-regex-5.ttl>
+      ]
     ).

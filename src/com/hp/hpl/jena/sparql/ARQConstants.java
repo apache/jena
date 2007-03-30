@@ -67,6 +67,7 @@ public class ARQConstants
     /** Common prefixes */
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
+        globalPrefixMap.setNsPrefixes(PrefixMapping.Standard) ;
         globalPrefixMap.setNsPrefix("rdf",  rdfPrefix) ;
         globalPrefixMap.setNsPrefix("rdfs", rdfsPrefix) ;
         globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;

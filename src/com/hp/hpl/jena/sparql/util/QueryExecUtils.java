@@ -77,7 +77,8 @@ public class QueryExecUtils
         }
 
         if ( outputFormat.equals(ResultsFormat.FMT_RS_RDF) ||
-             outputFormat.equals(ResultsFormat.FMT_RDF_N3) )
+             outputFormat.equals(ResultsFormat.FMT_RDF_N3) ||
+             outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
         {
             Model m = ResultSetFormatter.toModel(results) ;
             m.setNsPrefixes(prefixMapping) ;

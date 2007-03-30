@@ -122,22 +122,27 @@ public class ARQ
      * Expression evaluation without extension types (e.g. xsd:date, language tags)
      */
     public static final Symbol extensionValueTypes = ARQConstants.allocSymbol("extensionValueTypesExpr") ;
+
+    private static boolean strictMode = false ; 
     
     /** Set global strict mode */
-    
     public static void setStrictMode() { setStrictMode(ARQ.getContext()) ; }
     
     /** Set strict mode for a given Context */
     
     public static void setStrictMode(Context context)
     {
+        strictMode = true ;
         context.set(hideNonDistiguishedVariables, true) ;
-        context.set(strictGraph,            true) ;
-        context.set(strictSPARQL,           true) ;
-        context.set(extensionValueTypes,    false) ;
-        context.set(constantBNodeLabels,    false) ;
-        context.set(regexImpl,              xercesRegex) ;
+        context.set(strictGraph,                true) ;
+        context.set(strictSPARQL,               true) ;
+        context.set(extensionValueTypes,        false) ;
+        context.set(constantBNodeLabels,        false) ;
+        context.set(enablePropertyFunctions,    false) ;
+        context.set(regexImpl,                  xercesRegex) ;
     }
+    
+    //public static boolean getStrictMode()       { return strictMode ; }
     
     private static Context globalContext = null ;
     
