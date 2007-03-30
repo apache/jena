@@ -34,7 +34,6 @@ public abstract class QueryIterJoinBase extends QueryIter2
     {
         super(left, right, execCxt) ;
         tableRight = TableFactory.create(getRight()) ;
-        tableRight.materialize() ;              // Delay this?
         getRight().close();
         this.exprs = exprs ;
     }

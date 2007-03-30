@@ -10,14 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.ExecUtils;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.engine.ref.table.TableSimple;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 
 
 class EvaluatorSimple implements Evaluator
@@ -46,8 +51,8 @@ class EvaluatorSimple implements Evaluator
         if ( debug )
         {
             System.out.println("Join") ;
-            tableLeft.dump() ;
-            tableRight.dump() ;
+            dump(tableLeft) ;
+            dump(tableRight) ;
         }
         return joinWorker(tableLeft, tableRight, false, null) ;
     }
@@ -57,8 +62,8 @@ class EvaluatorSimple implements Evaluator
         if ( debug )
         {
             System.out.println("Left Join") ;
-            tableLeft.dump() ;
-            tableRight.dump() ;
+            dump(tableLeft) ;
+            dump(tableRight) ;
             if ( exprs != null )
                 System.out.println(exprs.toString()) ;
         }
@@ -72,7 +77,7 @@ class EvaluatorSimple implements Evaluator
         {
             System.out.println("Restriction") ;
             System.out.println(expressions.toString()) ;
-            table.dump() ;
+            dump(table) ;
         }
         QueryIterator iter = table.iterator(execCxt) ;
         List output = new ArrayList() ;
@@ -92,8 +97,8 @@ class EvaluatorSimple implements Evaluator
         if ( debug )
         {
             System.out.println("Union") ;
-            tableLeft.dump() ;
-            tableRight.dump() ;
+            dump(tableLeft) ;
+            dump(tableRight) ;
         }
         QueryIterConcat output = new QueryIterConcat(execCxt) ;
         output.add(tableLeft.iterator(execCxt)) ;
@@ -162,6 +167,14 @@ class EvaluatorSimple implements Evaluator
         tableLeft.close() ;
         tableRight.close() ;
         return new TableSimple(output) ;
+    }
+    
+    private static void dump(Table table)
+    {
+        System.out.println("Table: "+Utils.className(table)) ;
+        QueryIterator qIter = table.iterator(null) ;
+        ResultSet rs = new ResultSetStream(table.getVarNames(), null, table.iterator(null)) ;
+        ResultSetFormatter.out(rs) ;
     }
 }
 /*

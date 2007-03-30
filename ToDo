@@ -7,8 +7,6 @@ ARQ2-beta
 
 == Core
 
-Tbale - simple.  Now!
-
 + Alternative indexes
   LARQ idea - extracted.
   
@@ -17,14 +15,6 @@ Tbale - simple.  Now!
 + Serilization: 
     redo "prefix" to be SSE compatible.
     op: triples/quads as lists themselves (+builder)
-
-+ ref.Eval - tidy up
-  
-  + Very simple, non-streaming table usage.
-    No iterators.
-    TableSimple is the only streaming point - and often materialized.
-    And used via TableFactory.create(QueryIterator) as well as direct
-  + Only one evaluator?
 
 + Property function to property path expression
 

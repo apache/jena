@@ -6,101 +6,73 @@
 
 package com.hp.hpl.jena.sparql.engine.ref.table;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.engine.ref.Table;
-import com.hp.hpl.jena.sparql.util.PrintUtils;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 public abstract class TableBase implements Table
 {
-    // Materialization support
-    private boolean materialized = false ;
-    protected List rows = null ;
-    protected List vars = null ;  // Not necessary : could be a set
-    
     protected TableBase() {}
 
     final public
     void close()
     {
         closeTable() ;
-        rows = null ; 
-        vars = null ;
     }
     
     protected abstract void closeTable() ;
 
-    public void dump()
-    {   
-        System.out.println("Table: "+Utils.className(this)) ;
-        materialize() ;
-        if ( rows.size() == 0 )
-        { 
-            if ( vars.size() == 0 )
-                System.out.println("++ Empty table, no variables") ;
-            else
-            {
-                System.out.print("++ Empty table, with variables:") ;
-                PrintUtils.printList(System.out, vars) ;
-                System.out.println() ;
-            }
-        }
-        else
-            ResultSetFormatter.out(toResultSet()) ;
-    }
-
+    // TODO remove createIterator
     final
     public QueryIterator iterator(ExecutionContext execCxt)
     {
-        if ( !materialized )
-            // Can't then materialize
-            return createIterator(execCxt) ;
-        return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
+        return createIterator(execCxt) ;
     }
 
-    // Contract - call this at most once.
     protected abstract QueryIterator createIterator(ExecutionContext execCxt) ;
 
-    public void materialize()
+    final public Table eval(Evaluator evaluator)  { return this ; }
+    
+    // This is the SPARQL merge rule. 
+    protected static Binding merge(Binding bindingLeft, Binding bindingRight)
     {
-        if ( rows != null ) return ;
-        materialized = true ;
-        rows = new ArrayList() ;
-        vars = new ArrayList() ;
-        
-        QueryIterator source = createIterator(null) ;
-        
-        while ( source.hasNext() )
+        // Test to see if compatible: Iterate over variables in left
+        boolean matches = true ;
+        for ( Iterator vIter = bindingLeft.vars() ; vIter.hasNext() ; )
         {
-            Binding b = source.nextBinding() ;
-            for ( Iterator names = b.vars() ; names.hasNext() ; )
+            Var v = (Var)vIter.next();
+            Node nLeft  = bindingLeft.get(v) ; 
+            Node nRight = bindingRight.get(v) ;
+            
+            if ( nRight != null && ! nRight.equals(nLeft) )
             {
-                Var v = (Var)names.next() ;
-                if ( ! vars.contains(v))
-                    vars.add(v) ;
+                matches = false ;
+                break ;
             }
-            rows.add(b) ;
         }
-        source.close() ;
+        if ( ! matches ) 
+            return null ;
+        
+        // If compatible, merge. Iterate over variables in right but not in left.
+        Binding b = new BindingMap(bindingLeft) ;
+        for ( Iterator vIter = bindingRight.vars() ; vIter.hasNext() ; )
+        {
+            Var v = (Var)vIter.next();
+            Node n = bindingRight.get(v) ;
+            if ( ! bindingLeft.contains(v) )
+                b.add(v, n) ;
+        }
+        return b ;
     }
     
-    private ResultSet toResultSet()
-    {
-        materialize() ;
-        return new ResultSetStream(vars, ModelFactory.createDefaultModel(), iterator(null)) ;
-    }
+    
 }
 
 /*

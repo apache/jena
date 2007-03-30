@@ -6,7 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.ref.table;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -14,11 +15,8 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.engine.ref.Table;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 
@@ -49,7 +47,7 @@ public class Table1 extends TableBase
         
         if ( other == null )
         {
-            // Not present - return the merge 
+            // Not present - return the merge = the other binding + this (var/value)
             Binding mergedBinding = new Binding1(bindingLeft, var, value) ;
             return new QueryIterSingleton(mergedBinding, execContext) ;
         }
@@ -68,32 +66,20 @@ public class Table1 extends TableBase
         return new QueryIterSingleton(bindingLeft, execContext) ;
     }
 
-    private static Binding merge(Binding binding1, Binding binding2)
-    {
-        Binding b = new BindingMap(binding1) ;
-        for ( Iterator vIter = binding2.vars() ; vIter.hasNext() ; )
-        {
-            Var v = (Var)vIter.next();
-            Node n = binding2.get(v) ;
-            if ( ! binding1.contains(v) )
-                b.add(v, n) ;
-        }
-        return b ;
-    }
+    public void closeTable()        {}
 
+    public List getVars()
+    {
+        List x = new ArrayList() ;
+        x.add(var) ;
+        return x ;
+    }
     
-    public void closeTable()
-    {}
-
-
-    public void dump()
+    public List getVarNames()
     {
-        System.out.println("Table1") ;
-    }
-
-    public Table eval(Evaluator evaluator)
-    {
-        return this ;
+        List x = new ArrayList() ;
+        x.add(var.getVarName()) ;
+        return x ;
     }
 }
 

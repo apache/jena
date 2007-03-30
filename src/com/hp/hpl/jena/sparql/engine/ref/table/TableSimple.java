@@ -10,14 +10,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -25,21 +21,36 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public class TableSimple extends TableBase
 {
-    boolean iteratorReturned = false ;
-    private QueryIterator input ;
-    
+    List rows = new ArrayList() ;
+    List vars = new ArrayList() ;
+
     public TableSimple(QueryIterator qIter)
     {
-        input = qIter ;
-        materialize() ;
+        materialize(qIter) ;
     }
+
+    public void materialize(QueryIterator qIter)
+    {
+        while ( qIter.hasNext() )
+        {
+            Binding b = qIter.nextBinding() ;
+            for ( Iterator names = b.vars() ; names.hasNext() ; )
+            {
+                Var v = (Var)names.next() ;
+                if ( ! vars.contains(v))
+                    vars.add(v) ;
+            }
+            rows.add(b) ;
+        }
+        qIter.close() ;
+    }
+
     
     // Note - this table is the RIGHT table, and takes a LEFT binding.
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
                                         ExprList conditions,
                                         ExecutionContext execContext)
     {
-        materialize() ;
         List out = new ArrayList() ;
         for ( Iterator iter = rows.iterator() ; iter.hasNext() ; )
         {
@@ -61,54 +72,21 @@ public class TableSimple extends TableBase
         return new QueryIterPlainWrapper(out.iterator(), execContext) ;
     }
 
-    // This is the SPARQL merge rule. 
-    private static Binding merge(Binding bindingLeft, Binding bindingRight)
-    {
-        // Test to see if compatible: Iterate over variables in left
-        boolean matches = true ;
-        for ( Iterator vIter = bindingLeft.vars() ; vIter.hasNext() ; )
-        {
-            Var v = (Var)vIter.next();
-            Node nLeft  = bindingLeft.get(v) ; 
-            Node nRight = bindingRight.get(v) ;
-            
-            if ( nRight != null && ! nRight.equals(nLeft) )
-            {
-                matches = false ;
-                break ;
-            }
-        }
-        if ( ! matches ) 
-            return null ;
-        
-        // If compatible, merge. Iterate over variables in right but not in left.
-        Binding b = new BindingMap(bindingLeft) ;
-        for ( Iterator vIter = bindingRight.vars() ; vIter.hasNext() ; )
-        {
-            Var v = (Var)vIter.next();
-            Node n = bindingRight.get(v) ;
-            if ( ! bindingLeft.contains(v) )
-                b.add(v, n) ;
-        }
-        return b ;
-    }
-    
+ 
     public QueryIterator createIterator(ExecutionContext execCxt)
     {
-        if ( iteratorReturned )
-        {
-            LogFactory.getLog(TableSimple.class).fatal("Iterator already returned") ;
-            return null ;
-        }
-        iteratorReturned = true ;
-        return input ;
+        return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
     }
     
     public void closeTable()
     {
-        if (input != null ) input.close() ;
-        input = null ;
+        rows = null ;
+        vars = null ;
     }
+
+    public List getVarNames()   { return vars ; }
+
+    public List getVars()       { return Var.varNames(vars) ; } 
 }
 
 /*

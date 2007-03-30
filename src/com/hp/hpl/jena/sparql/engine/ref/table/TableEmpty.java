@@ -6,21 +6,22 @@
 
 package com.hp.hpl.jena.sparql.engine.ref.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.engine.ref.Table;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-public class TableEmpty implements Table
+public class TableEmpty extends TableBase
 {
     public TableEmpty()
     { }
     
-    public QueryIterator iterator(ExecutionContext execCxt)
+    public QueryIterator createIterator(ExecutionContext execCxt)
     {
         return new QueryIterNullIterator(execCxt) ;
     }
@@ -36,22 +37,11 @@ public class TableEmpty implements Table
             return new QueryIterNullIterator(execContext) ;
     }
 
-    public void materialize()
-    {}
+    public void closeTable()    { }
 
-    public void close()
-    {}
+    public List getVarNames()   { return new ArrayList() ; }
 
-
-    public void dump()
-    {
-        System.out.println("TableEmpty") ;
-    }
-
-    public Table eval(Evaluator evaluator)
-    {
-        return this ;
-    }
+    public List getVars()       { return new ArrayList() ; }
 }
 
 /*

@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -19,12 +21,9 @@ public interface Table
                                         ExprList condition,
                                         ExecutionContext execCxt) ;
 
-    public void materialize() ;
-    
     public void close() ;
-    
-    public void dump() ;
-    
+    public List getVars() ;
+    public List getVarNames() ;
     public QueryIterator iterator(ExecutionContext execCxt) ;
 }
 

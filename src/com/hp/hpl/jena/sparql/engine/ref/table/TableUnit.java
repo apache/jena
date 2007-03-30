@@ -6,20 +6,21 @@
 
 package com.hp.hpl.jena.sparql.engine.ref.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding0;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.engine.ref.Table;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-public class TableUnit implements Table
+public class TableUnit extends TableBase
 {
     public TableUnit() {}
     
-    public QueryIterator iterator(ExecutionContext execCxt)
+    public QueryIterator createIterator(ExecutionContext execCxt)
     {
         return new QueryIterSingleton(new Binding0(), execCxt) ;
     }
@@ -28,27 +29,15 @@ public class TableUnit implements Table
                                         ExprList conditions,
                                         ExecutionContext execCxt)
     {
-        //System.err.println("TableUnit.matchRightLeft");
         // We are one row of no entries - joins with anything
         return new QueryIterSingleton(bindingLeft, execCxt) ;
     }
 
-    public void materialize()
-    {}
+    public void closeTable()    { }
 
-    public void close()
-    { }
+    public List getVarNames()   { return new ArrayList() ; }
 
-
-    public void dump()
-    {
-        System.out.println("Unit table") ;
-    }
-
-    public Table eval(Evaluator evaluator)
-    {
-        return this ;
-    }
+    public List getVars()       { return new ArrayList() ; }
 }
 
 /*
