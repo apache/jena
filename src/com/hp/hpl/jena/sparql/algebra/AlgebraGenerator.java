@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -49,8 +50,11 @@ public class AlgebraGenerator
     {
         Op op = pattern ;
         Modifiers mods = new Modifiers(query) ;
-        // Listify it.
-        op = new OpList(op) ;
+        
+        // ---- ToList
+        if ( ARQ.getContext().isTrue(ARQ.generateToList) )
+            // Listify it.
+            op = new OpList(op) ;
         
         // ---- ORDER BY
         if ( mods.orderConditions != null )

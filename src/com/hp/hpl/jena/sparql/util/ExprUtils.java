@@ -16,6 +16,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.lang.sparql.*;
 import com.hp.hpl.jena.sparql.serializer.FmtExprARQ;
@@ -208,18 +209,29 @@ public class ExprUtils
     }
 
     public static void fmtPrefix(IndentedWriter iOut, ExprList exprs, PrefixMapping pmap)
+    { fmtPrefix(iOut, exprs, 0, pmap ) ; }
+    
+    
+    private static void fmtPrefix(IndentedWriter iOut, ExprList exprs, int i, PrefixMapping pmap)
     {
         ExprVisitor v = new FmtExprPrefix(iOut, pmap) ;
-        String sep = "" ;
-        for ( Iterator iter = exprs.iterator() ; iter.hasNext() ; )
-        {
-            Expr expr = (Expr)iter.next();
-            iOut.print(sep) ;
-            sep = " && " ;
-            expr.visit(v) ;
+        
+        if ( exprs.size() <= i )
+            throw new ARQInternalErrorException("ExprList too short (Size:"+exprs.size()+"<="+i+")") ;
+        
+        if ( exprs.size() == (i+1) )
+        { 
+            exprs.get(i).visit(v) ;
+            return ;
         }
+        
+        iOut.print("( && ") ;
+        exprs.get(i).visit(v) ;
+        iOut.print(" ") ;
+        fmtPrefix(iOut, exprs, i+1, pmap) ;
+        iOut.print(")") ;
     }
-
+        
     public static void fmtPrefix(IndentedWriter iOut, ExprList exprs)
     {
         fmtPrefix(iOut, exprs, ARQConstants.getGlobalPrefixMap()) ;

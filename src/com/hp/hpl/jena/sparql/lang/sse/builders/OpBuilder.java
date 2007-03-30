@@ -189,10 +189,13 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(3, list, "leftJoin") ;
+            checkLength(3, 4, list, "leftJoin") ;
             Op right = build(list, 1) ;
             Op left  = build(list, 2) ;
-            Op op = OpLeftJoin.create(left, right, null) ;
+            Expr expr = null ;
+            if ( list.size() == 4 ) 
+                expr = buildExpr(list.get(3)) ;
+            Op op = OpLeftJoin.create(left, right, expr) ;
             return op ;
         }
     } ;

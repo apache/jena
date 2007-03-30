@@ -10,20 +10,11 @@ ARQ2-beta
 + Alternative indexes
   LARQ idea - extracted.
   
-+ LARQ  
-  IndexLARQ : searchModelByIndex - access to limits and score.
-    - return HitLARQs.
-  Contains - no subject score.
-  
-
 + REDUCED tests :-(
-
-+ Regex(xsd:string,)
 
 + Serilization: 
     redo "prefix" to be SSE compatible.
     op: triples/quads as lists themselves (+builder)
-    op: builder for modifier
 
 + ref.Eval - tidy up
   
@@ -40,8 +31,6 @@ ARQ2-beta
    In a project (or pseudo project) - does it once.
       Need test case : { _:a :p ?v. ?v :splitIRI (?ns ?ln) . _a :p ?w } 
       
-+  strictMode - use in ref engine?
-
 + testing QE1 and QE2 and QE3 in the same test run
 
 + Commands

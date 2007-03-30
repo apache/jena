@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 import com.hp.hpl.jena.sparql.engine.ref.Table;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public class OpLeftJoin extends Op2
@@ -22,6 +23,11 @@ public class OpLeftJoin extends Op2
         return new OpLeftJoin(left, right, exprs) ;
     }
     
+    public static Op create(Op left, Op right, Expr expr)
+    { 
+        return new OpLeftJoin(left, right, new ExprList(expr)) ;
+    }
+
     protected OpLeftJoin(Op left, Op right, ExprList exprs) 
     { 
         super(left, right) ;

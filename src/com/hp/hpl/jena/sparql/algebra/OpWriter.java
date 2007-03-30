@@ -86,11 +86,7 @@ public class OpWriter
             //out.println() ; 
 
             if ( exprs != null )
-            {
-                out.print("(expr ") ;
-                ExprUtils.fmtSPARQL(out, exprs) ;
-                out.println(" )") ;
-            }
+                ExprUtils.fmtPrefix(out, exprs) ;
             finish(op) ;
         }
 

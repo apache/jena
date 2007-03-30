@@ -123,6 +123,12 @@ public class ARQ
      */
     public static final Symbol extensionValueTypes = ARQConstants.allocSymbol("extensionValueTypesExpr") ;
 
+    /**
+     * Generate the ToList operation in the algebra (as ARQ is stream based, ToList is a non-op).
+     * Default is not to do so.  Strict mode will also enable this.
+     */
+    public static final Symbol generateToList = ARQConstants.allocSymbol("generateToList") ;
+
     private static boolean strictMode = false ; 
     
     /** Set global strict mode */
@@ -139,6 +145,7 @@ public class ARQ
         context.set(extensionValueTypes,        false) ;
         context.set(constantBNodeLabels,        false) ;
         context.set(enablePropertyFunctions,    false) ;
+        context.set(generateToList,             true) ;
         context.set(regexImpl,                  xercesRegex) ;
     }
     

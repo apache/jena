@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.query.larq;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,11 +31,10 @@ import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
+import com.hp.hpl.jena.sparql.util.IteratorTruncate;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Base class for searching a IndexLARQ */
 
@@ -199,68 +197,6 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         if ( limit >= 0 )
             qIter = new QueryIterSlice(qIter, 0, limit, execCxt) ;
         return qIter ;
-    }
-    
-    static class ScoreTest implements IteratorTruncate.Test
-    {
-        private float scoreLimit ;
-        ScoreTest(float scoreLimit) { this.scoreLimit = scoreLimit ; }
-        public boolean accept(Object object)
-        {
-            HitLARQ hit = (HitLARQ)object ;
-            return hit.getScore() >= scoreLimit ;
-        }
-    }
-    
-    static class IteratorTruncate implements ClosableIterator
-    {
-        static interface Test { boolean accept(Object object) ; }
-        Test test ;
-        Object slot = null ;
-        boolean active = true ;
-        Iterator iter ;
-        
-        IteratorTruncate (Test test, Iterator iter)
-        { this.test = test ; this.iter = iter ; }
-
-        public boolean hasNext()
-        {
-            if ( ! active ) return false ;
-            if ( slot != null )
-                return true ;
-
-            if ( ! iter.hasNext() )
-            {
-                active = false ;
-                return false ;
-            }
-            
-            slot = iter.next() ;
-            if ( test.accept(slot) )
-                return true ;
-            // Once the test goes false, no longer yield anything.
-            NiceIterator.close(iter) ;
-            active = false ;
-            iter = null ;
-            slot = null ;
-            return false ;
-        }
-
-        public Object next()
-        {
-            if ( ! hasNext() )
-                throw new NoSuchElementException("IteratorTruncate.next") ;    
-            Object x = slot ;
-            slot = null ;
-            return x ;
-        }
-
-        public void remove()
-        { throw new UnsupportedOperationException("IteratorTruncate.remove"); }
-
-        public void close()
-        { if ( iter != null ) NiceIterator.close(iter) ; }
-        
     }
     
     static class HitConverter implements Map1

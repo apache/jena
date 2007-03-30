@@ -1,8 +1,8 @@
-PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX :  <http://example/> 
 
-SELECT *
-{ 
-    ("Hello world" ?score) pf:textMatch ('+world' 2) .
+SELECT ?s ?p
+{
+  ?s ?p ?o .
+  OPTIONAL { ?o ?p1 ?v . FILTER(?s = :x) FILTER(?s = :y) }
 }

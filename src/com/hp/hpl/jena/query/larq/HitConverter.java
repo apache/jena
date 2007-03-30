@@ -1,25 +1,51 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine;
+package com.hp.hpl.jena.query.larq;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.util.PrintSerializable;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.util.iterator.Map1;
 
-public interface Plan extends PrintSerializable
+/** Convert Lucene search hits to LARQ form (node and score)
+ *  Hides the Lucene classes from the rest of ARQ.
+ *  
+ * @author Andy Seaborne
+ * @version $Id$
+ */ 
+
+class HitConverter implements Map1
 {
-    public static final String startMarker = "(" ;
-    public static final String finishMarker = ")" ;
-
-    public Op getOp() ;
-    public QueryIterator iterator() ;
+    private Binding binding ;
+    private Var subject ;
+    private Var score ;
+    
+    HitConverter(Binding binding, Var subject, Var score)
+    {
+        this.binding = binding ;
+        this.subject = subject ;
+        this.score = score ;
+    }
+    
+    public Object map1(Object thing)
+    {
+        HitLARQ hit = (HitLARQ)thing ;
+        Binding b = new BindingMap(binding) ;
+        b.add(Var.alloc(subject), hit.getNode()) ;
+        if ( score != null )
+            b.add(Var.alloc(score), NodeUtils.floatToNode(hit.getScore())) ;
+        return b ;
+    }
+    
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

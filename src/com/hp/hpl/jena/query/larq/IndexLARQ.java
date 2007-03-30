@@ -21,6 +21,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
+import com.hp.hpl.jena.sparql.util.IteratorTruncate;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
@@ -63,7 +64,6 @@ public class IndexLARQ
     public NodeIterator searchModelByIndex(String queryString)
     { return searchModelByIndex(null, queryString) ; }
     
-    
     /** Perform a free text Lucene search and return a NodeIterator. The RDFNodes
      * in the iterator are associated with the model supplied.
      * 
@@ -72,7 +72,19 @@ public class IndexLARQ
      * @return NodeIterator
      */ 
 
-    public NodeIterator searchModelByIndex(final Model model, String queryString)
+    public NodeIterator searchModelByIndex(Model model, String queryString)
+    { return searchModelByIndex(model, queryString, 0.0f) ; }
+
+    /** Perform a free text Lucene search and return a NodeIterator. The RDFNodes
+     * in the iterator are associated with the model supplied.
+     * 
+     * @param model
+     * @param queryString
+     * @param scoreLimit    Minimum Lucene score
+     * @return NodeIterator
+     */ 
+
+    public NodeIterator searchModelByIndex(final Model model, String queryString, final float scoreLimit)
     {
         Map1 converter = new Map1(){
             public Object map1(Object object)
@@ -80,7 +92,10 @@ public class IndexLARQ
                 HitLARQ x = (HitLARQ)object ; 
                 return ModelUtils.convertGraphNodeToRDFNode(x.getNode(), model) ;
             }} ;
+        
         Iterator iter = new Map1Iterator(converter, search(queryString)) ;
+        if ( scoreLimit > 0 )
+            iter = new IteratorTruncate(new ScoreTest(scoreLimit), iter) ;
         
         NodeIterator nIter = new NodeIteratorImpl(iter, null) ; 
         return nIter ;
@@ -97,7 +112,7 @@ public class IndexLARQ
     /** Perform a free text Lucene search and returns an iterator of graph Nodes.   
      *  Applications normally call searchModelByIndex.
      *  @param queryString
-     *  @return Iterator of Nodes 
+     *  @return Iterator of hits (Graph node and score)
      */
 
     public Iterator search(String queryString)
