@@ -1,8 +1,8 @@
+PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX x:    <java:dev.>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT *
 { 
-    (?hit ?score) x:textMatch2 ('+world' 1.1) .
+    ("Hello world" ?score) pf:textMatch ('+world' 2) .
 }

@@ -131,7 +131,7 @@ public class IndexLARQ
      * @param queryString
      * @return boolean 
      */
-    public boolean contains(Node node, String queryString)
+    public HitLARQ contains(Node node, String queryString)
     {
         try{
             Iterator iter = search(queryString) ;
@@ -139,9 +139,9 @@ public class IndexLARQ
             {
                 HitLARQ x = (HitLARQ)iter.next();
                 if ( x != null && x.getNode().equals(node)) 
-                    return true ;
+                    return x ;
             }
-            return false ;
+            return null ;
         } catch (Exception e)
         { throw new ARQLuceneException("contains", e) ; }
     }

@@ -6,77 +6,137 @@
 
 package com.hp.hpl.jena.query.larq;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryBuildException;
+import com.hp.hpl.jena.query.QueryExecException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.pfunction.PFuncSimple;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSlice;
+import com.hp.hpl.jena.sparql.expr.ExprEvalException;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.pfunction.PFLib;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
+import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType;
+import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionEval;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.Map1Iterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 /** Base class for searching a IndexLARQ */
 
-public abstract class LuceneSearch extends PFuncSimple
+public abstract class LuceneSearch extends PropertyFunctionEval
 {
-    private static Log log = LogFactory.getLog(LuceneSearch.class) ; 
+    private static Log log = LogFactory.getLog(LuceneSearch.class) ;
     
+    protected LuceneSearch()
+    {
+        super(PropFuncArgType.PF_ARG_EITHER,
+              PropFuncArgType.PF_ARG_EITHER) ;
+    }
+
     protected abstract IndexLARQ getIndex(ExecutionContext execCxt) ;
     
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         super.build(argSubject, predicate, argObject, execCxt) ;
-        
-        Node obj = argObject.getArg() ;
         if ( getIndex(execCxt) == null )
             throw new QueryBuildException("Index not found") ;
+
+        if ( argSubject.isList() && argSubject.getArgListSize() != 2 )
+                throw new QueryBuildException("Subject has "+argSubject.getArgList().size()+" elements, not 2: "+argSubject) ;
         
-        if ( !obj.isLiteral() )
-            throw new QueryBuildException("Not a string: "+argObject.getArg()) ;
-        
-        if ( obj.getLiteralDatatypeURI() != null )
-            throw new QueryBuildException("Not a plain string: "+argObject.getArg()) ;
-        
-        if ( obj.getLiteralLanguage() != null && ! obj.getLiteralLanguage().equals("") )
-            throw new QueryBuildException("Not a plain string (has lang tag): "+argObject.getArg()) ;
-        
+        if ( argObject.isList() && (argObject.getArgListSize() != 2 && argObject.getArgListSize() != 3) )
+                throw new QueryBuildException("Object has "+argObject.getArgList().size()+" elements, not 2 or 3: "+argObject) ;
     }
     
-    public QueryIterator execEvaluated(Binding binding, 
-                                       Node subject, Node predicate, Node searchString, 
-                                       ExecutionContext execCxt)
+    public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        // Duplicates build tests - but those might be removed.
-        if ( !searchString.isLiteral() )
+        Node subject = null ;
+        Node score = null ;
+        
+        Node searchString = null ;
+        long limit = Query.NOLIMIT ;
+        float scoreLimit = -1.0f ;
+        
+        if ( argSubject.isList() )
         {
-            log.warn("Not a string: "+searchString) ;
-            return new QueryIterNullIterator(execCxt) ;
+            // Length checked in build
+            subject = argSubject.getArg(0) ;
+            score = argSubject.getArg(1) ;
+            
+            if ( ! score.isVariable() )
+                throw new QueryExecException("Hit score is not a variable: "+argSubject) ;
         }
-
-        if ( searchString.getLiteralDatatypeURI() != null )
+        else
         {
-            log.warn("Not a plain string: "+searchString) ;
-            return new QueryIterNullIterator(execCxt) ;
-        }
-
-        if ( searchString.getLiteralLanguage() != null && ! searchString.getLiteralLanguage().equals("") )
-        {
-            log.warn("Not a plain string (has lang tag): "+searchString) ;
-            return new QueryIterNullIterator(execCxt) ;
+            subject = argSubject.getArg() ;
+            score = null ;
         }
         
+        if ( argObject.isList() )
+        {
+            // Length checked in build
+            searchString = argObject.getArg(0) ;
+            
+            for ( int i = 1 ; i < argObject.getArgListSize() ; i++ )
+            {
+                Node n = argObject.getArg(i) ;
+                int nInt = asInteger(n) ;
+                if ( isInteger(nInt) )
+                {
+                    if ( limit > 0 )
+                        throw new ExprEvalException("2 potential limits to Lucene search: "+argObject) ;
+                    limit = nInt ;
+                    if ( limit < 0 )
+                        limit = Query.NOLIMIT ;
+                    continue ;
+                }
+                
+                float nFloat = asFloat(n) ;
+                if ( isFloat(nFloat) )
+                {
+                    if ( scoreLimit > 0 )
+                        throw new ExprEvalException("2 potential score limits to Lucene search: "+argObject) ;
+                    if ( nFloat < 0 )
+                        throw new ExprEvalException("Negative score limit to Lucene search: "+argObject) ;
+                    scoreLimit = nFloat ;
+                    continue ;
+                }
+                throw new ExprEvalException("Bad argument to Lucene search: "+argObject) ;
+            }
+            
+            if ( scoreLimit < 0 )
+                scoreLimit = 0.0f ;
+
+            if ( ! isValidSearchString(searchString) )
+                return new QueryIterNullIterator(execCxt) ;
+        }
+        else
+        {
+            searchString = argObject.getArg() ;
+            limit = Query.NOLIMIT ;
+            scoreLimit = 0.0f ;
+        }
+        
+        if ( !isValidSearchString(searchString) )
+            return PFLib.noResults(execCxt) ;
+
         String qs = asString(searchString) ;
         
         if ( qs == null )
@@ -85,40 +145,164 @@ public abstract class LuceneSearch extends PFuncSimple
             return new QueryIterNullIterator(execCxt) ;
         }
         
+        Var scoreVar = (score==null)?null:Var.alloc(score) ;
+        
         if ( subject.isVariable() )
-            return varSubject(binding,subject,qs, execCxt) ;
+            return varSubject(binding, 
+                              Var.alloc(subject), scoreVar,
+                              qs, limit, scoreLimit,
+                              execCxt) ;
         else
-            return boundSubject(binding,subject,qs, execCxt) ;
+            return boundSubject(binding, 
+                                subject, scoreVar, 
+                                qs, limit, scoreLimit,
+                                execCxt) ;
+    }
+    
+    private static boolean isValidSearchString(Node searchString)
+    {
+        if ( !searchString.isLiteral() )
+        {
+            log.warn("Not a string: "+searchString) ;
+            return false ;
+        }
+
+        if ( searchString.getLiteralDatatypeURI() != null )
+        {
+            log.warn("Not a plain string: "+searchString) ;
+            return false ;
+        }
+
+        if ( searchString.getLiteralLanguage() != null && ! searchString.getLiteralLanguage().equals("") )
+        {
+            log.warn("Not a plain string (has lang tag): "+searchString) ;
+            return false ;
+        }
+        return true ;
     }
     
     public QueryIterator varSubject(Binding binding, 
-                                       Node subject, String searchString, 
-                                       ExecutionContext execCxt)
+                                    Var subject, Var score,
+                                    String searchString, long limit, float scoreLimit,
+                                    ExecutionContext execCxt)
     {
         Iterator iter = getIndex(execCxt).search(searchString) ;
         
-        // Better a wrapper-converted iterator
-        //new QueryIterConvert()
-        List results = new ArrayList() ;
-        for ( ; iter.hasNext(); )
+        if ( scoreLimit > 0 )
+            iter = new IteratorTruncate(new ScoreTest(scoreLimit), iter) ;
+        
+        HitConverter converter = new HitConverter(binding, subject, score) ;
+        
+        iter =  new Map1Iterator(converter, iter) ;
+        QueryIterator qIter = new QueryIterPlainWrapper(iter, execCxt) ;
+
+        if ( limit >= 0 )
+            qIter = new QueryIterSlice(qIter, 0, limit, execCxt) ;
+        return qIter ;
+    }
+    
+    static class ScoreTest implements IteratorTruncate.Test
+    {
+        private float scoreLimit ;
+        ScoreTest(float scoreLimit) { this.scoreLimit = scoreLimit ; }
+        public boolean accept(Object object)
         {
-            HitLARQ x = (HitLARQ)iter.next();
-            results.add(new Binding1(binding, Var.alloc(subject), x.getNode())) ;
+            HitLARQ hit = (HitLARQ)object ;
+            return hit.getScore() >= scoreLimit ;
         }
-        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+    }
+    
+    static class IteratorTruncate implements ClosableIterator
+    {
+        static interface Test { boolean accept(Object object) ; }
+        Test test ;
+        Object slot = null ;
+        boolean active = true ;
+        Iterator iter ;
+        
+        IteratorTruncate (Test test, Iterator iter)
+        { this.test = test ; this.iter = iter ; }
+
+        public boolean hasNext()
+        {
+            if ( ! active ) return false ;
+            if ( slot != null )
+                return true ;
+
+            if ( ! iter.hasNext() )
+            {
+                active = false ;
+                return false ;
+            }
+            
+            slot = iter.next() ;
+            if ( test.accept(slot) )
+                return true ;
+            // Once the test goes false, no longer yield anything.
+            NiceIterator.close(iter) ;
+            active = false ;
+            iter = null ;
+            slot = null ;
+            return false ;
+        }
+
+        public Object next()
+        {
+            if ( ! hasNext() )
+                throw new NoSuchElementException("IteratorTruncate.next") ;    
+            Object x = slot ;
+            slot = null ;
+            return x ;
+        }
+
+        public void remove()
+        { throw new UnsupportedOperationException("IteratorTruncate.remove"); }
+
+        public void close()
+        { if ( iter != null ) NiceIterator.close(iter) ; }
+        
+    }
+    
+    static class HitConverter implements Map1
+    {
+        private Binding binding ;
+        private Var subject ;
+        private Var score ;
+        
+        HitConverter(Binding binding, Var subject, Var score)
+        {
+            this.binding = binding ;
+            this.subject = subject ;
+            this.score = score ;
+        }
+        
+        public Object map1(Object thing)
+        {
+            HitLARQ hit = (HitLARQ)thing ;
+            Binding b = new BindingMap(binding) ;
+            b.add(Var.alloc(subject), hit.getNode()) ;
+            if ( score != null )
+                b.add(Var.alloc(score), NodeUtils.floatToNode(hit.getScore())) ;
+            return b ;
+        }
+        
     }
     
     public QueryIterator boundSubject(Binding binding, 
-                                      Node subject, String searchString, 
+                                      Node subject, Var score,
+                                      String searchString, long limit, float scoreLimit,
                                       ExecutionContext execCxt)
     {
-        if ( getIndex(execCxt).contains(subject, searchString) )
-            return new QueryIterSingleton(binding, execCxt) ;
-        else
+        HitLARQ hit = getIndex(execCxt).contains(subject, searchString) ;
+        
+        if ( hit == null )
             return new QueryIterNullIterator(execCxt) ;
+        if ( score == null ) 
+            return new QueryIterSingleton(binding, execCxt) ;
+        return PFLib.oneResult(binding, score, NodeUtils.floatToNode(hit.getScore()), execCxt) ;
     }
 
-    private String asString(Node node)
+    static private String asString(Node node)
     {
         if ( node.getLiteralDatatype() != null
             && ! node.getLiteralDatatype().equals("") 
@@ -126,6 +310,24 @@ public abstract class LuceneSearch extends PFuncSimple
             return null ;
         return node.getLiteralLexicalForm() ;
     }
+
+    static private float asFloat(Node n)
+    {
+        if ( n == null ) return Float.MIN_VALUE ;
+        NodeValue nv = NodeValue.makeNode(n) ;
+        if ( nv.isFloat() )
+            return nv.getFloat() ;
+        return Float.MIN_VALUE ;
+    }
+
+    static private int asInteger(Node n)
+    {
+        if ( n == null ) return Integer.MIN_VALUE ;
+        return NodeUtils.nodeToInt(n) ;
+    }
+    
+    static private boolean isInteger(int i) { return i != Integer.MIN_VALUE ; }
+    static private boolean isFloat(float f) { return f != Float.MIN_VALUE ; }
 }
 
 /*

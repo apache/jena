@@ -10,6 +10,11 @@ ARQ2-beta
 + Alternative indexes
   LARQ idea - extracted.
   
++ LARQ  
+  IndexLARQ : searchModelByIndex - access to limits and score.
+    - return HitLARQs.
+  Contains - no subject score.
+  
 
 + REDUCED tests :-(
 
@@ -47,15 +52,7 @@ ARQ2-beta
 
 + LARQ assembler
 
-+ Access to other fields
-  e.g. +((text:(foo bar)^2)(title:(foo bar)^4)(description:(foo bar)^3))
-  Use cases and examples?
-  ('query' limit scoreLimit)
-
-+ Extend to: (?node ?score) textMatch ('query' 100) 
-  Also ARQ.luceneLimit context parameter
-
-+ Doc internals
++ LARQ Doc internals
   Fields: index, lex/lang/datatype, uri, bnode
 
 == Documentation
