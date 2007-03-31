@@ -65,7 +65,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     
     public QueryIterator execEvaluated(Binding binding, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
-        Node subject = null ;
+        Node match = null ;
         Node score = null ;
         
         Node searchString = null ;
@@ -75,7 +75,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         if ( argSubject.isList() )
         {
             // Length checked in build
-            subject = argSubject.getArg(0) ;
+            match = argSubject.getArg(0) ;
             score = argSubject.getArg(1) ;
             
             if ( ! score.isVariable() )
@@ -83,7 +83,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         }
         else
         {
-            subject = argSubject.getArg() ;
+            match = argSubject.getArg() ;
             score = null ;
         }
         
@@ -145,14 +145,14 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         
         Var scoreVar = (score==null)?null:Var.alloc(score) ;
         
-        if ( subject.isVariable() )
+        if ( match.isVariable() )
             return varSubject(binding, 
-                              Var.alloc(subject), scoreVar,
+                              Var.alloc(match), scoreVar,
                               qs, limit, scoreLimit,
                               execCxt) ;
         else
             return boundSubject(binding, 
-                                subject, scoreVar, 
+                                match, scoreVar, 
                                 qs, limit, scoreLimit,
                                 execCxt) ;
     }
@@ -180,7 +180,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     }
     
     public QueryIterator varSubject(Binding binding, 
-                                    Var subject, Var score,
+                                    Var match, Var score,
                                     String searchString, long limit, float scoreLimit,
                                     ExecutionContext execCxt)
     {
@@ -189,7 +189,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         if ( scoreLimit > 0 )
             iter = new IteratorTruncate(new ScoreTest(scoreLimit), iter) ;
         
-        HitConverter converter = new HitConverter(binding, subject, score) ;
+        HitConverter converter = new HitConverter(binding, match, score) ;
         
         iter =  new Map1Iterator(converter, iter) ;
         QueryIterator qIter = new QueryIterPlainWrapper(iter, execCxt) ;
@@ -202,13 +202,13 @@ public abstract class LuceneSearch extends PropertyFunctionEval
     static class HitConverter implements Map1
     {
         private Binding binding ;
-        private Var subject ;
+        private Var match ;
         private Var score ;
         
-        HitConverter(Binding binding, Var subject, Var score)
+        HitConverter(Binding binding, Var matchVar, Var score)
         {
             this.binding = binding ;
-            this.subject = subject ;
+            this.match = matchVar ;
             this.score = score ;
         }
         
@@ -216,20 +216,20 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         {
             HitLARQ hit = (HitLARQ)thing ;
             Binding b = new BindingMap(binding) ;
-            b.add(Var.alloc(subject), hit.getNode()) ;
+            b.add(match, hit.getNode()) ;
             if ( score != null )
-                b.add(Var.alloc(score), NodeUtils.floatToNode(hit.getScore())) ;
+                b.add(score, NodeUtils.floatToNode(hit.getScore())) ;
             return b ;
         }
         
     }
     
     public QueryIterator boundSubject(Binding binding, 
-                                      Node subject, Var score,
+                                      Node match, Var score,
                                       String searchString, long limit, float scoreLimit,
                                       ExecutionContext execCxt)
     {
-        HitLARQ hit = getIndex(execCxt).contains(subject, searchString) ;
+        HitLARQ hit = getIndex(execCxt).contains(match, searchString) ;
         
         if ( hit == null )
             return new QueryIterNullIterator(execCxt) ;

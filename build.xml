@@ -179,9 +179,10 @@
      Use="true"
      bottom="Copyright &#169; 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP"
      additionalparam="-breakiterator">
-      <classpath refid="classpath"/>
-      <package name="com.hp.hpl.jena.query"/>
-      <package name="com.hp.hpl.jena.query.larq"/>
+        <classpath refid="classpath"/>
+        <package name="com.hp.hpl.jena.query"/>
+        <package name="com.hp.hpl.jena.update"/>
+        <package name="com.hp.hpl.jena.query.larq"/>
     </javadoc>
   </target>
 
