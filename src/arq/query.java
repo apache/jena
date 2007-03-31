@@ -7,9 +7,9 @@
 package arq;
 
 import arq.cmd.CmdException;
+import arq.cmd.TerminationException;
 import arq.cmdline.*;
 
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.http.HttpQuery;
@@ -18,6 +18,8 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.*;
 
 public class query extends CmdARQ
 {
@@ -89,13 +91,12 @@ public class query extends CmdARQ
             Dataset dataset = modDataset.getDataset() ;
             modTime.startTimer() ;
             QueryExecution qe = QueryExecutionFactory.create(query, dataset) ;
-            
             // Check there is a dataset
             
             if ( dataset == null && ! query.hasDatasetDescription() )
             {
                 System.err.println("Dataset not specified in query nor provided on command line.");
-                return ;
+                throw new TerminationException(1) ;
             }
             QueryExecUtils.executeQuery(query, qe, modResults.getResultsFormat()) ;
             long time = modTime.endTimer() ;

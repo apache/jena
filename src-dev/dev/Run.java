@@ -6,6 +6,7 @@
 
 package dev;
 
+import arq.qexec;
 import arq.qexpr;
 import arq.qparse;
 import arq.sparql;
@@ -26,10 +27,11 @@ public class Run
     {
         //runQExpr() ;
         //print() ;
-        code() ;
+        //code() ;
         //classifyJ() ;
         //classifyLJ() ;
         //execQuery("D.ttl", "Q.rq") ;
+        exec("D.ttl", "SSE/op.sse") ;
     }
         
     
@@ -137,6 +139,22 @@ public class Run
         System.exit(0) ;
         
     }
+    
+    private static void exec(String datafile, String queryfile)
+    {
+        String a[] = new String[]{
+            //"-v",
+            //"--engine=ref",
+            "--data="+datafile,
+            "-query="+queryfile , 
+        } ;
+        
+        qexec.main(a) ;
+        System.exit(0) ;
+        
+    }
+
+    
     public static void runQParse()
     {
         qparse.main(new String[]{ //"--in=prefix", 

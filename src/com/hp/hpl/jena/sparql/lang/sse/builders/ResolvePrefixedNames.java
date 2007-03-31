@@ -10,15 +10,12 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.lang.sse.Item;
-import com.hp.hpl.jena.sparql.lang.sse.ItemList;
-import com.hp.hpl.jena.sparql.lang.sse.ItemTransformBase;
-import com.hp.hpl.jena.sparql.lang.sse.ItemTransformer;
+import com.hp.hpl.jena.sparql.lang.sse.*;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 /** Resolve URIs, expand any prefixed names */
 
-public class ResolveURI
+public class ResolvePrefixedNames
 {
     /*
      * (prefix LIST_PAIRS BODY ...)
@@ -31,29 +28,51 @@ public class ResolveURI
     
     public static Item resolve(Item item, PrefixMapping pmap)
     {
-        return ItemTransformer.transform(new Resolver(pmap), item) ;
+        return new Resolver(pmap).resolve(item) ;
     }
     
     public static Item resolve(Item item)
     {
-        return ItemTransformer.transform(new Resolver(), item) ;
+        return new Resolver().resolve(item) ;
     }
 
-    private static class Resolver extends ItemTransformBase
+    private static class Resolver
     {
         private PrefixMapping pmap ;
         Resolver(PrefixMapping pmap)    { this.pmap = pmap ; }
         Resolver()                      { this.pmap = null ; }
         
-        //@Override
-        public Item transform(Item item, ItemList list)
+        public Item resolve(Item item)
+        {
+            if ( item.isList() )
+                return resolve(item, item.getList()) ;
+            else if ( item.isNode() ) 
+                return resolve(item, item.getNode()) ;
+            else if ( item.isWord() )
+                return resolve(item, item.getWord()) ;
+            else
+                System.err.println("broken item") ;
+            return null ;
+        }
+        
+        public Item resolve(Item item, ItemList list)
         {
             if ( list.isEmpty() )
-                return super.transform(item, list) ;
+                return item ; 
                 
             Item head = list.get(0) ;
-            if ( ! head.isWord() || ! head.getWord().equalsIgnoreCase("prefix") ) 
-                return super.transform(item, list) ;
+            if ( ! head.isWord() || ! head.getWord().equalsIgnoreCase("prefix") )
+            {
+                ItemList newItemList = new ItemList(list.getLine(), list.getColumn()) ; 
+                for ( Iterator iter = list.iterator() ; iter.hasNext(); )
+                {
+                    Item sub = (Item)iter.next();
+                    sub = resolve(sub) ;
+                    newItemList.add(sub) ;
+                }
+                return Item.createList(newItemList) ;
+            }
+                 
             
             // It's (prefix ...)
             BuilderUtils.checkLength(3, list, "List is "+list.size()+"not 3 :: (prefix ...)") ;
@@ -72,7 +91,7 @@ public class ResolveURI
             // Push (on the current execution frame) the existing prefix map. 
             PrefixMapping pmapPush = pmap ;
             pmap = ext ;
-            Item result = body.transform(this) ;
+            Item result = resolve(body) ;
             pmap = pmapPush ;
             return result ;
         }
@@ -106,32 +125,28 @@ public class ResolveURI
             }
         }
 
-//        @Override
-//        public Item transform(Item item, String word)
-//        { }
+        public Item resolve(Item item, String word)
+        { return item ; }
         
-        //@Override
-        public Item transform(Item item, Node node)
+        public Item resolve(Item item, Node node)
         {
-            if ( node.isURI() )
+            if ( ! node.isURI() )
+                return item ;
+            String uri = node.getURI() ;
+            if ( uri.startsWith(":") )
             {
-                String uri = node.getURI() ;
-                if ( uri.startsWith(":") )
-                {
-                    String qname = uri.substring(1) ;
-                    if ( pmap != null )
-                        uri = pmap.expandPrefix(qname) ;
-                    if ( uri == null || uri.equals(qname) )
-                        BuilderUtils.broken(item, "Can't resolve "+qname) ;
-                    return Item.createNode(Node.createURI(uri)) ;
-                }
-                else
-                {
-                    uri = RelURI.resolve(uri) ;
-                    return Item.createNode(Node.createURI(uri)) ;
-                }
+                String qname = uri.substring(1) ;
+                if ( pmap != null )
+                    uri = pmap.expandPrefix(qname) ;
+                if ( uri == null || uri.equals(qname) )
+                    BuilderUtils.broken(item, "Can't resolve "+qname) ;
+                return Item.createNode(Node.createURI(uri)) ;
             }
-            return super.transform(item, node) ;
+            else
+            {
+                uri = RelURI.resolve(uri) ;
+                return Item.createNode(Node.createURI(uri)) ;
+            }
         }
     }
 }

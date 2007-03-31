@@ -7,6 +7,8 @@ ARQ2-beta
 
 == Core
 
++ Test for qexec evaluation => tests algebra
+
 + Alternative indexes
   LARQ idea - extracted.
   

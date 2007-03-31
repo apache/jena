@@ -7,10 +7,12 @@
 package com.hp.hpl.jena.sparql.lang.sse.builders;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.ItemList;
@@ -31,6 +33,38 @@ public class ExprBuilder extends BuilderUtils
     }
 
     protected Map dispatch = new HashMap() ;
+    public Expr buildItem(Item item)
+    {
+        Expr expr = null ;
+    
+        if ( item.isList() )
+        {
+            Item head = item.getList().get(0) ;
+            if ( head.isNode() )
+                return buildFunctionCall(item.getList()) ;
+            else if ( head.isWord() )
+                return buildKnownFunction(item.getList()) ;
+            else if ( head.isList() )
+                broken(item, "Head is a list") ;
+        }
+    
+        if ( item.isNode() )
+        {
+            if ( Var.isVar(item.getNode()) )
+                return new NodeVar(Var.alloc(item.getNode())) ;
+            return NodeValue.makeNode(item.getNode()) ;
+        }
+    
+        String w = item.getWord() ;
+        if ( w.equalsIgnoreCase(symTrue) )
+            return NodeValue.TRUE ;
+        if ( w.equalsIgnoreCase(symFalse) )
+            return NodeValue.FALSE ;
+        
+        broken(item, "Not a list or a node or recognized word: "+item) ;
+        return null ;
+    }
+
     public ExprBuilder()
     {
         dispatch.put(symRegex, buildRegex) ;
@@ -91,8 +125,22 @@ public class ExprBuilder extends BuilderUtils
     final static String symIsBlank = "isBlank" ;
     final static String symIsLiteral = "isLiteral" ;
     final static String symRegex = "regex" ;
+    
+    final static String symTrue = "true" ;
+    final static String symFalse = "false" ;
 
     static public interface Build { Expr make(ItemList list) ; }
+    
+    protected Build findBuild(String str)
+    {
+        for ( Iterator iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        {
+            String key = (String)iter.next() ; 
+            if ( str.equalsIgnoreCase(key) )
+                return (Build)dispatch.get(key) ;
+        }
+        return null ;
+    }
     
     // Specials
     
@@ -403,28 +451,6 @@ public class ExprBuilder extends BuilderUtils
     };
 
 
-    public Expr buildItem(Item item)
-    {
-        Expr expr = null ;
-
-        if ( item.isList() )
-        {
-            Item head = item.getList().get(0) ;
-            if ( head.isNode() )
-                return buildFunctionCall(item.getList()) ;
-            else if ( head.isWord() )
-                return buildKnownFunction(item.getList()) ;
-            else if ( head.isList() )
-                broken(item, "Head is a list") ;
-        }
-
-        if ( item.isNode() )
-            return NodeValue.makeNode(item.getNode()) ;
-
-        broken(item, "Not a list or a node: "+item) ;
-        return null ;
-    }            
-
     protected Expr buildKnownFunction(ItemList list)
     {
         if ( list.size() == 0 )
@@ -436,7 +462,7 @@ public class ExprBuilder extends BuilderUtils
         if ( tag == null )
             broken(item, "Null tag") ;
 
-        Build b = (Build)dispatch.get(tag) ;
+        Build b = findBuild(tag) ;
         if ( b == null )
             broken(item, "No known symbol for "+tag) ;
         return b.make(list) ;

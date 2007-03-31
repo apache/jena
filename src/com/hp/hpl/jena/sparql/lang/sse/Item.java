@@ -26,7 +26,7 @@ public class Item extends ItemLocation implements PrintSerializable
     public static Item createList(int line, int column)
     {
         Item item = new Item(line, column) ;
-        item.list = new ItemList() ;
+        item.list = new ItemList(line, column) ;
         return item ;
     }
     

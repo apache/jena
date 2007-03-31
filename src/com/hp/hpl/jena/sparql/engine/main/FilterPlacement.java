@@ -53,6 +53,7 @@ public class FilterPlacement
     
     public QueryIterator placeFiltersBGP(ExprList exprs, BasicPattern pattern, QueryIterator input)
     {
+        exprs = new ExprList(exprs) ;
         QueryIterator qIter = placeFiltersWorker(exprs, pattern, input) ;
         // any remaining filters
         qIter = buildFilter(exprs, qIter) ;

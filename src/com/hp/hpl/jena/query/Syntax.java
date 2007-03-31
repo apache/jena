@@ -41,6 +41,9 @@ public class Syntax extends Symbol
     public static final Syntax syntaxN3QL
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/N3QL") ;
 
+    public static final Syntax syntaxAlgebra
+                = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_Algebra") ;
+    
     public static TranslationTable querySyntaxNames = new TranslationTable(true) ;
     static {
         querySyntaxNames.put("sparql",      Syntax.syntaxSPARQL) ;
@@ -51,6 +54,8 @@ public class Syntax extends Symbol
         querySyntaxNames.put("rdql",        Syntax.syntaxRDQL) ;
         querySyntaxNames.put("n3ql",        Syntax.syntaxN3QL) ;
         querySyntaxNames.put("prefix",      Syntax.syntaxPrefix) ;
+        querySyntaxNames.put("alg",         Syntax.syntaxAlgebra) ;
+        querySyntaxNames.put("op",          Syntax.syntaxAlgebra) ;
         querySyntaxNames.put("debug",       Syntax.syntaxDebug) ;
         querySyntaxNames.put("plain",       Syntax.syntaxDebug) ;
     }
@@ -80,6 +85,7 @@ public class Syntax extends Symbol
         if ( sym.equals(syntaxPrefix) )      return syntaxPrefix ;
         if ( sym.equals(syntaxDebug) )       return syntaxDebug ;
         if ( sym.equals(syntaxN3QL) )        return syntaxN3QL ;
+        if ( sym.equals(syntaxAlgebra) )    return syntaxAlgebra ;
         return null ;
     }
     
@@ -101,6 +107,8 @@ public class Syntax extends Symbol
             return Syntax.syntaxSPARQL_X ;
         if ( url.endsWith(".rdql") )
             return Syntax.syntaxRDQL ;
+        if ( url.endsWith(".sse") )
+            return Syntax.syntaxAlgebra ;
         
         // Default
         return defaultSyntax ;

@@ -7,10 +7,7 @@
 package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -18,11 +15,12 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.SSE;
 import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ResolveURI;
+import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
+
+import com.hp.hpl.jena.query.Dataset;
 
 public class Algebra
 {
-
     static public Op read(String filename)
     {
         Item item = SSE.parseFile(filename) ;
@@ -37,10 +35,7 @@ public class Algebra
 
     static public Op parse(Item item)
     {
-        // TODO - design AND write
-        PrefixMapping pmap = new PrefixMappingImpl() ;
-        pmap.setNsPrefix("", "http://example/") ;
-        item = ResolveURI.resolve(item, pmap) ;
+        item = ResolvePrefixedNames.resolve(item) ;
         Op op = OpBuilder.build(item) ;
         return op ;
     }

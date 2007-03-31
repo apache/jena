@@ -9,7 +9,15 @@ package com.hp.hpl.jena.sparql.lang.sse;
 import java.io.*;
 
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.NotFoundException;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
+import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
 import com.hp.hpl.jena.sparql.lang.sse.parser.ParseException;
 import com.hp.hpl.jena.sparql.lang.sse.parser.SSE_Parser;
 import com.hp.hpl.jena.sparql.lang.sse.parser.TokenMgrError;
@@ -17,6 +25,47 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE
 {
+    public static Node parseNode(String s) { return parseNode(s, null) ; }
+    
+    public static Node parseNode(String s, PrefixMapping pmap)
+    { 
+        Item item = SSE.parseResolve(s, pmap) ;
+        if ( !item.isNode() )
+            throw new ARQException("Not a node: "+s) ; 
+        return item.getNode() ;
+    }
+    
+    public static Quad parseQuad(String s) { return parseQuad(s, null) ; }
+    
+    public static Quad parseQuad(String s, PrefixMapping pmap)
+    {
+        Item item = SSE.parseResolve(s, pmap) ;
+        if ( !item.isList() )
+            throw new ARQException("Not a list: "+s) ; 
+        return OpBuilder.buildQuad(item.getList()) ;
+    }
+
+    public static Triple parseTriple(String s) { return parseTriple(s, null) ; }
+    
+    public static Triple parseTriple(String s, PrefixMapping pmap)
+    {
+        Item item = SSE.parseResolve(s, pmap) ;
+        if ( !item.isList() )
+            throw new ARQException("Not a list: "+s) ; 
+        return OpBuilder.buildTriple(item.getList()) ;
+    }
+    
+    public static Item parseResolve(String string)
+    { return parseResolve(string, null) ; }
+    
+    public static Item parseResolve(String string, PrefixMapping pmap)
+    {
+        if ( pmap == null )
+            pmap = ARQConstants.getGlobalPrefixMap() ;
+        Item item = parseString(string) ;
+        return ResolvePrefixedNames.resolve(item, pmap) ;
+    }
+    
     public static Item parseFile(String filename)
     {
         try {

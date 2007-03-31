@@ -60,7 +60,7 @@ public class ItemTransformer
         
         public void visit(Item item, ItemList list)
         {
-            ItemList newList = new ItemList() ;
+            ItemList newList = new ItemList(item.getLine(), item.getColumn()) ;
             
             for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
             {

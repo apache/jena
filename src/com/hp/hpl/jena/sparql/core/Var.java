@@ -140,10 +140,10 @@ public class Var extends Node_Variable
         return x ;
     }
     
-    public static List varNames(List vars)
+    public static List varNames(Collection vars)
     {
         List x = new ArrayList() ;
-        for ( Iterator iter = vars.listIterator() ; iter.hasNext() ; )
+        for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
         {
             Var v = (Var)iter.next() ;
             x.add(v.getVarName()) ;

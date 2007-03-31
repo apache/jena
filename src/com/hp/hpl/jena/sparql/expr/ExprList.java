@@ -17,6 +17,7 @@ public class ExprList
     private List expressions = new ArrayList() ;
     
     public ExprList() {}
+    public ExprList(ExprList other) { expressions.addAll(other.expressions) ; }
     public ExprList(Expr expr)
     {
         this() ;

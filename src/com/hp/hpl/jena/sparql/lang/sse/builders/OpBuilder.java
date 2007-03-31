@@ -6,11 +6,7 @@
 
 package com.hp.hpl.jena.sparql.lang.sse.builders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -72,11 +68,11 @@ public class OpBuilder extends BuilderUtils
         Item head = list.get(0) ;
         String tag = head.getWord() ;
     
-        Build bob = (Build)dispatch.get(tag) ;
+        Build bob = findBuild(tag) ;
         if ( bob != null )
             return bob.make(list) ;
         else
-            broken(head, "Unrecognized: "+tag) ;
+            broken(head, "Unrecognized algebra operation: "+tag) ;
         return null ;
     }
 
@@ -102,6 +98,17 @@ public class OpBuilder extends BuilderUtils
     static protected final String symReduced      = symBase + "Reduced" ;
     static protected final String symSlice        = symBase + "Slice" ;
 
+    protected Build findBuild(String str)
+    {
+        for ( Iterator iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        {
+            String key = (String)iter.next() ; 
+            if ( str.equalsIgnoreCase(key) )
+                return (Build)dispatch.get(key) ;
+        }
+        return null ;
+    }
+    
     static public interface Build { Op make(ItemList list) ; }
 
     final protected Build buildBGP = new Build()
@@ -154,20 +161,14 @@ public class OpBuilder extends BuilderUtils
         public Op make(ItemList list)
         {
             checkLength(3, list, "Malformed filter") ;
-            Item itemOp = list.get(1) ;
-            Item itemExpr = list.get(2) ;
+            Item itemExpr = list.get(1) ;
+            Item itemOp = list.get(2) ;
 
             Op op = build(itemOp.getList()) ;
 
-            if ( ! itemExpr.isList() )
-                broken(itemExpr, "List expected for expression") ;
-
-            if ( itemExpr.getList().size() == 0 )
-            {
-                warning(itemExpr, "Empty List for expression") ;
+            if ( itemExpr.isList() && itemExpr.getList().size() == 0 )
                 return OpFilter.filter(new ExprList(), op) ;
-            }
-
+            
             Expr expr = buildExpr(itemExpr) ;
             return OpFilter.filter(expr, op) ;
         }
@@ -291,12 +292,12 @@ public class OpBuilder extends BuilderUtils
         }
     } ;
 
-    protected static Expr buildExpr(Item item)
+    public static Expr buildExpr(Item item)
     {
         return ExprBuilder.build(item) ;
     }
 
-    protected static Triple buildTriple(ItemList list)
+    public static Triple buildTriple(ItemList list)
     {
         checkLength(4, list, "triple") ;
         Node s = buildNode(list.get(1)) ;
@@ -305,17 +306,22 @@ public class OpBuilder extends BuilderUtils
         return new Triple(s, p, o) ; 
     }
 
-    protected static Quad buildQuad(ItemList list)
+    public static Quad buildQuad(ItemList list)
     {
         checkLength(5, list, "quad") ;
-        Node g = buildNode(list.get(1)) ;
+        
+        Node g = null ;
+        if ( "_".equals(list.get(1).getWord()) )
+            g = Quad.defaultGraph ;
+        else
+            g = buildNode(list.get(1)) ;
         Node s = buildNode(list.get(2)) ;
         Node p = buildNode(list.get(3)) ;
         Node o = buildNode(list.get(4)) ;
         return new Quad(g, s, p, o) ; 
     }
 
-    protected static List buildExpr(ItemList list, int start)
+    public static List buildExpr(ItemList list, int start)
     {
         List x = new ArrayList() ;
         for ( int i = start ; i < list.size() ; i++ )
@@ -327,7 +333,7 @@ public class OpBuilder extends BuilderUtils
         return x ;
     }
 
-    protected static Node buildNode(Item item)
+    public static Node buildNode(Item item)
     {
         if ( !item.isNode() )
             broken(item, "Not a node: "+item) ;

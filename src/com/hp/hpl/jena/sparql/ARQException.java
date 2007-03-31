@@ -1,59 +1,30 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
+ 
+/** Hopefully, you won't see this!
+ * @author   Andy Seaborne
+ * @version  $Id: ARQInternalErrorException.java,v 1.5 2007/01/02 11:20:30 andy_seaborne Exp $
+ */
 
-package dev;
+package com.hp.hpl.jena.sparql;
 
+import com.hp.hpl.jena.shared.JenaException;
 
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.lang.sse.Item;
-import com.hp.hpl.jena.sparql.lang.sse.SSE;
-import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ResolveURI;
-import com.hp.hpl.jena.sparql.util.PrefixMapping2;
-
-
-public class Algebra
+public class ARQException extends JenaException
 {
-    static public Op read(String filename)
-    {
-        Item item = SSE.parseFile(filename) ;
-        return parse(item) ;
-    }
-    
-    static public Op parse(String string)
-    {
-        Item item = SSE.parseString(string) ;
-        return parse(item) ;
-    }
-    
-    static public Op parse(Item item)
-    {
-        // TODO - design AND write
-        
-        PrefixMapping pmap = new PrefixMappingImpl() ;
-        PrefixMapping pmapSub = new PrefixMappingImpl() ;
+    public ARQException(Throwable cause) { super(cause) ; }
+    public ARQException() { super() ; }
+    public ARQException (String msg) { super(msg) ; }
+    public ARQException (String msg, Throwable cause) { super(msg, cause) ; }
 
-        
-        // Add any prefixes to pmapSub.
-        //e.g.
-        pmap.setNsPrefix("", "http://example/") ;
-
-        PrefixMapping2 pmap2 = new PrefixMapping2(pmap, pmapSub) ;
-        item = ResolveURI.resolve(item, pmap2) ;
-        Op op = OpBuilder.build(item) ;
-        return op ;
-    }
-
+    private static final long serialVersionUID = 1L; // Unused
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
- * All rights reserved.
+ *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
