@@ -1,13 +1,9 @@
-[Reduced
-  [Project (?c)
-    [ToList
-      [Filter 
-        [BGP [Triple ? :p ?c]]
-        (= (str ?c) "who")
-      ]
-    ]
-  ]
-]
+(prefix ((: <http://example/>))
+  (filter (= ?c "world")
+    (project (?s)
+      (bgp [triple ?s :p ?c])
+      ))
+  )
 
 ## (LeftJoin
 ##   (Join
@@ -16,7 +12,6 @@
 ##     	(triple _:b :q 123)
 ##     	(triple _:b :q +123))
 ##    	)
-##   (Filter 
+##   (Filter (&& (str ?o) -3)
 ##     (BGP (triple ?s ?p ?o))
-##     (&& (str ?o) -3)
 ##     ))

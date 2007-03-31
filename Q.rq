@@ -1,8 +1,7 @@
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX :  <http://example/> 
 
-SELECT ?s ?p
+SELECT *
 {
-  ?s ?p ?o .
-  OPTIONAL { ?o ?p1 ?v . FILTER(?s = :x) FILTER(?s = :y) }
+    ?s :p ?c
+    FILTER(?c =  "world")
 }
