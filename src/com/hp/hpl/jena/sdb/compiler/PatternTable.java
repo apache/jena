@@ -41,9 +41,9 @@ public class PatternTable
     public PatternTable() {}
     
     public void add(Node property, String colname)
-    {
-        cols.put(property, colname) ;
-    }
+    { cols.put(property, colname) ; }
+    
+    public Map <Node, String> getCols() { return cols ; }
     
     // trigger if we see a prediate this table supports.
     public boolean trigger(Quad quad)

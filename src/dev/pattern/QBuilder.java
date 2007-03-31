@@ -6,10 +6,9 @@
 
 package dev.pattern;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.lang.sse.SSE;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import com.hp.hpl.jena.query.ARQ;
@@ -29,7 +28,6 @@ import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
-// replacement QuadBlockCompilerBase -- eventually
 public class QBuilder
 {
     
@@ -71,28 +69,28 @@ public class QBuilder
         QuadBlockCompilerMain builder = new QuadBlockCompilerMain(request, sComp) ;
         QuadBlock quadBlock = new QuadBlock() ;
         
+        Quad qX = new Quad(Quad.defaultGraph,
+                           SSE.parseTriple("(triple ?s rdf:type 'XYZ')")) ;
+        
+        
 //        Quad qValue = new Quad(Quad.defaultGraph, 
 //                               Var.alloc("s"), RDF.value.asNode(), Node.createLiteral("XYZ") ) ;
 //        Quad qType  = new Quad(Quad.defaultGraph, 
 //                               Var.alloc("s"), RDF.type.asNode(), Node.createLiteral("XYZ") ) ;
         
-        Quad qValue = new Quad(Quad.defaultGraph, 
-                               Var.alloc("s"), RDF.value.asNode(), Var.alloc("o") ) ;
-        Quad qType  = new Quad(Quad.defaultGraph, 
-                               Var.alloc("s"), RDF.type.asNode(), Var.alloc("o") ) ;
+        Quad qValue = SSE.parseQuad("(quad _ ?s rdf:value ?o)") ;
+        Quad qType  = SSE.parseQuad("(quad _ ?s rdf:type  ?o)") ;
         
-        Quad q1 = new Quad(Quad.defaultGraph, 
-                           Var.alloc("s"), Node.createURI("http://host/p"), Var.alloc("o") ) ;
-        Quad q2 = new Quad(Quad.defaultGraph, 
-                           Var.alloc("s"), Node.createURI("http://host/p"), Node.createLiteral("XYZ") ) ;
+        Quad q1 = SSE.parseQuad("(quad _ ?s <http://host/p> ?o)") ;
+        Quad q2 = SSE.parseQuad("(quad _ ?s <http://host/p> 'XYZ')") ;
         
         quadBlock.add(qType);
         quadBlock.add(q2);
         quadBlock.add(qValue);
 //        quadBlock.add(q1);
         
-        System.out.println(quadBlock) ;
-        System.out.println() ;
+        //System.out.println(quadBlock) ;
+        //System.out.println() ;
         SqlNode sqlNode = builder.compile(quadBlock) ;
         System.out.println(sqlNode) ;
     }
