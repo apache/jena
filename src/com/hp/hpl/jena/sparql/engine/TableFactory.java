@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.table.Table1;
 import com.hp.hpl.jena.sparql.engine.table.TableEmpty;
-import com.hp.hpl.jena.sparql.engine.table.TableSimple;
+import com.hp.hpl.jena.sparql.engine.table.TableN;
 import com.hp.hpl.jena.sparql.engine.table.TableUnit;
 
 public class TableFactory
@@ -21,8 +21,11 @@ public class TableFactory
     public static Table createEmpty()
     { return new TableEmpty() ; }
 
+    public static Table create()
+    { return new TableN() ; }
+    
     public static Table create(QueryIterator queryIterator)
-    { return new TableSimple(queryIterator) ; }
+    { return new TableN(queryIterator) ; }
 
     public static Table create(Var var, Node value)
     { return new Table1(var, value) ; }

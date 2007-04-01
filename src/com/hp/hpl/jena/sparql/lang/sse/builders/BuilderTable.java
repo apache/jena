@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sparql.lang.sse.builders;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.engine.Table;
+import com.hp.hpl.jena.sparql.engine.TableFactory;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.table.TableSimple;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.ItemList;
 
@@ -37,7 +37,7 @@ public class BuilderTable
         int start = 1 ;
         // cols
         
-        TableSimple table = new TableSimple() ;
+        Table table = TableFactory.create() ;
         for ( int i = start ; i < list.size() ; i++ )
         {
             Item item = list.get(i) ;

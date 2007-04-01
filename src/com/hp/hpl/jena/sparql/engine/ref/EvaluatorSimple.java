@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
-import com.hp.hpl.jena.sparql.engine.table.TableSimple;
+import com.hp.hpl.jena.sparql.engine.table.TableN;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -84,7 +84,7 @@ class EvaluatorSimple implements Evaluator
             if ( expressions.isSatisfied(b, execCxt) )
                 output.add(b) ;
         }
-        return new TableSimple(new QueryIterPlainWrapper(output.iterator(), execCxt)) ;
+        return new TableN(new QueryIterPlainWrapper(output.iterator(), execCxt)) ;
     }
 
 
@@ -100,7 +100,7 @@ class EvaluatorSimple implements Evaluator
         QueryIterConcat output = new QueryIterConcat(execCxt) ;
         output.add(tableLeft.iterator(execCxt)) ;
         output.add(tableRight.iterator(execCxt)) ;
-        return new TableSimple(output) ;
+        return new TableN(output) ;
     }
 
     public Table list(Table table) { return table ; } 
@@ -109,35 +109,35 @@ class EvaluatorSimple implements Evaluator
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterSort(qIter, conditions, getExecContext()) ;
-        return new TableSimple(qIter) ;
+        return new TableN(qIter) ;
     }
 
     public Table project(Table table, List vars)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterProject(qIter, vars, getExecContext()) ;
-        return new TableSimple(qIter) ;
+        return new TableN(qIter) ;
     }
 
     public Table reduced(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterReduced(qIter, getExecContext()) ;
-        return new TableSimple(qIter) ;
+        return new TableN(qIter) ;
     }
 
     public Table distinct(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterDistinct(qIter, getExecContext()) ;
-        return new TableSimple(qIter) ;
+        return new TableN(qIter) ;
     }
 
     public Table slice(Table table, long start, long length)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
         qIter = new QueryIterSlice(qIter, start, length, getExecContext()) ;
-        return new TableSimple(qIter) ;
+        return new TableN(qIter) ;
     }
 
     public Table unit()
@@ -163,7 +163,7 @@ class EvaluatorSimple implements Evaluator
         }
         tableLeft.close() ;
         tableRight.close() ;
-        return new TableSimple(output) ;
+        return new TableN(output) ;
     }
     
     private static void dump(Table table)

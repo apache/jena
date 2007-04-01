@@ -19,14 +19,14 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 
-public class TableSimple extends TableBase
+public class TableN extends TableBase
 {
     List rows = new ArrayList() ;
     List vars = new ArrayList() ;
 
-    public TableSimple() {}
+    public TableN() {}
     
-    public TableSimple(QueryIterator qIter)
+    public TableN(QueryIterator qIter)
     {
         materialize(qIter) ;
     }

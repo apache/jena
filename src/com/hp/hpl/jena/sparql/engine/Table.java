@@ -23,6 +23,7 @@ public interface Table
     public List getVars() ;
     public List getVarNames() ;
     public QueryIterator iterator(ExecutionContext execCxt) ;
+    public void addBinding(Binding binding) ;
 }
 
 /*

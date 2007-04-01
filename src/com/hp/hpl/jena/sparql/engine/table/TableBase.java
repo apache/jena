@@ -72,7 +72,8 @@ public abstract class TableBase implements Table
         return b ;
     }
     
-    
+    public void addBinding(Binding binding)
+    { throw new UnsupportedOperationException("Table.add") ; }
 }
 
 /*
