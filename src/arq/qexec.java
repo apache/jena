@@ -7,16 +7,25 @@
 package arq;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.*;
 
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.DataSourceGraph;
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.PlanOp;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileUtils;
@@ -27,11 +36,15 @@ import com.hp.hpl.jena.query.QueryException;
 public class qexec extends CmdARQ
 {
     protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
+    protected final ArgDecl printDecl  = new ArgDecl(ArgDecl.HasValue, "print") ;
     ModDataset    modDataset =  new ModAssembler() ;    // extends ModDataset
     ModResultsOut modResults =  new ModResultsOut() ;
     ModTime       modTime =     new ModTime() ;
+    
     String queryFilename = null ;
     String queryString   = null ;
+    boolean printOp      = false ;
+    boolean printPlan    = false ;
     
     public static void main (String [] argv)
     {
@@ -42,6 +55,7 @@ public class qexec extends CmdARQ
     {
         super(argv) ;
         super.add(queryFileDecl, "--query=FILE", "Algebra file to execute") ;
+        super.add(printDecl, "--print=op/plan",  "Print details") ;
         super.addModule(modResults) ;
         super.addModule(modDataset) ;
         super.addModule(modTime) ;
@@ -53,24 +67,39 @@ public class qexec extends CmdARQ
         if ( contains(queryFileDecl) )
             queryFilename = super.getValue(queryFileDecl) ;
         
+        for ( Iterator iter = getValues(printDecl).iterator() ; iter.hasNext() ; )
+        {
+            String arg = (String)iter.next() ;
+            if ( arg.equalsIgnoreCase("op") ||
+                      arg.equalsIgnoreCase("alg") || 
+                      arg.equalsIgnoreCase("algebra") ) { printOp = true ; }
+            else if ( arg.equalsIgnoreCase("plan"))     { printPlan = true ; }
+            else
+                throw new CmdException("Not a recognized print form: "+arg+" : Choices are: query, op, quad") ;
+        }
+        
     }
     
     protected String getCommandName() { return Utils.className(this) ; }
     
     protected String getSummary() { return getCommandName()+" --data=<file> --query=<query>" ; }
 
+    static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
+    //static final String divider = "" ;
+    boolean needDivider = false ;
+    private void divider()
+    {
+        if ( needDivider ) System.out.println(divider) ;
+        needDivider = true ;
+    }
+    
     protected void exec()
     {
+        
+        // This coudl all be neatened up and integrate with query/qparse.
+        // But I need the tool now!
     try {
         // ModAlgebra?
-        
-        Dataset dataset = modDataset.getDataset() ;
-        // Check there is a dataset
-        if ( dataset == null )
-        {
-            System.err.print("No dataset") ;
-            throw new TerminationException(1) ;
-        }
         
         Op op = null ;
         
@@ -97,6 +126,37 @@ public class qexec extends CmdARQ
             System.err.println("No query expression to execute") ;
             throw new TerminationException(9) ;
         }
+
+        if ( printOp || printPlan )
+        {
+            IndentedWriter out = new IndentedWriter(System.out) ;
+            if ( printOp )
+            {
+                divider() ;
+                op.output(out) ;
+            }
+            
+            if ( printPlan )
+            {
+                divider() ;
+                DataSourceGraph dsg = new DataSourceGraphImpl(ModelFactory.createDefaultModel()) ;
+                QueryIterator qIter = QueryEngineMain.eval(op, dsg) ;
+                Plan plan = new PlanOp(op, qIter) ;
+                plan.output(out) ;
+            }
+            out.flush();
+            return ;
+        }
+        
+        Dataset dataset = modDataset.getDataset() ;
+        // Check there is a dataset
+        if ( dataset == null )
+        {
+            System.err.print("No dataset") ;
+            throw new TerminationException(1) ;
+        }
+        
+
         
         modTime.startTimer() ;
         QueryExecUtils.executeAlgebra(op, dataset, modResults.getResultsFormat()) ;

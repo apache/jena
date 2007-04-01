@@ -42,6 +42,8 @@ public class PrintUtils
     
     public static void output(PrintSerializable item, IndentedWriter out)
     { 
+//        SerializationContext sCxt = new SerializationContext() ;
+//        item.output(out, sCxt) ;
         out.print(Plan.startMarker) ;
         out.print(Utils.className(item)) ;
         out.print(Plan.finishMarker) ;

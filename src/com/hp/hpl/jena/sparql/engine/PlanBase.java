@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
@@ -35,6 +36,12 @@ public abstract class PlanBase extends PrintSerializableBase implements Plan
         return iteratorOnce() ;
     }
 
+    public void output(IndentedWriter out)
+    {
+        SerializationContext sCxt = new SerializationContext(ARQConstants.getGlobalPrefixMap()) ;
+        output(out, sCxt) ;
+    }
+    
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         op.output(out, sCxt) ;

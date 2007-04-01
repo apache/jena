@@ -39,6 +39,9 @@ public class DataSourceGraphImpl implements DataSourceGraph
         namedGraphs = new HashMap() ;
     }
     
+    public DataSourceGraphImpl(Model model)
+    { this(model.getGraph()) ; }
+
     // Copy over to own structures for later modification
     public DataSourceGraphImpl(Dataset dataset)
     { cloneDataset(dataset) ; } 
