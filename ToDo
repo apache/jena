@@ -7,7 +7,7 @@ ARQ2-beta
 
 == Core
 
-+ Test for qexec evaluation => tests algebra
++ Test algebra using BuilderTable etc.
 
 + Alternative indexes
   LARQ idea - extracted.  Object ==> node/subject
@@ -30,25 +30,22 @@ ARQ2-beta
 + Commands
   + qtest to use modules (and qexpr)
     ModVersion
+  + qexec tidy/integration
 
 == Algebra
 
 + OpWalker  - only used for getting vars, and that needs to truncate a walk.
 + OpExt - is this still workable?
-+ Extensions:
-+ qexec tidy/integration
 + Tests
   
 == SSE
-  Builder tidying:
-    Build
+  Builder tidying and testing
 
   Expr: (exists (pattern ...))
   
   TableBase => .output/.toString etc as PrintSerializable
+  getVars()
   
-  undef and _
-
   (group (vars) aggregate)
   
   Assignment:
@@ -56,19 +53,6 @@ ARQ2-beta
      (project ...))
      (project (?x ?y (?z expr)) ...)
 
-   # TableBuilder for testing ASAP.
-  
-  (prefix (x: <x> y: <y>)
-  (table [(cols ?c1 ?c2)]		# Makes it like a results format
-  	(row (?x :x1) (?y :y1))
-  	(row ?x :x1 ?y :y1)
-	((?x :x2) (?y :y2))
-	)
-	
-  (binding) is a simplified table?  With exprs?
-  (binding (?x :x1) (?y :y1) (?z (+ 1 ?s))
-    which join of the single row table formed from the binding.
-  
 + Prefix writing.
 
 == LARQ
