@@ -23,6 +23,8 @@ public class PatternTableLoader
         // Transitive table. subject rdfs:subClassOf object
         
         //slotCompiler.processSlot(request, table, conditions, node, colName)
+        
+        // See the Single Triple Loader
     }
     
     public void start() {}
