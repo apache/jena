@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.Table;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 
 public class OpJoin extends Op2

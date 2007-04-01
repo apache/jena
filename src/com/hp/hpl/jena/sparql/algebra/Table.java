@@ -4,31 +4,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import java.util.List;
 
-public class OpUnion extends Op2
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+
+public interface Table
 {
-    public OpUnion(Op left, Op right) { super(left, right) ; }
-    
-    public Table eval_2(Table tableLeft, Table tableRight, Evaluator evaluator)
-    {
-        // Cope with a tableLeft == null ?  Works with Op2?
-        return evaluator.union(tableLeft, tableRight) ;
-    }
+    // Note - this table is the RIGHT table, and takes a LEFT binding.
+    public QueryIterator matchRightLeft(Binding bindingLeft, 
+                                        boolean includeOnNoMatch,
+                                        ExprList condition,
+                                        ExecutionContext execCxt) ;
 
-    public Op apply(Transform transform, Op left, Op right)
-    { return transform.transform(this, left, right) ; }
-
-    public String getName()                 { return "union" ; }
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op newLeft, Op newRight)
-    { return new OpUnion(newLeft, newRight) ; }
+    public void close() ;
+    public List getVars() ;
+    public List getVarNames() ;
+    public QueryIterator iterator(ExecutionContext execCxt) ;
+    public void addBinding(Binding binding) ;
 }
 
 /*

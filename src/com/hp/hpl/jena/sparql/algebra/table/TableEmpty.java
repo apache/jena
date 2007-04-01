@@ -4,31 +4,44 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.algebra.table;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import java.util.ArrayList;
+import java.util.List;
 
-public class OpUnion extends Op2
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+
+public class TableEmpty extends TableBase
 {
-    public OpUnion(Op left, Op right) { super(left, right) ; }
+    public TableEmpty()
+    { }
     
-    public Table eval_2(Table tableLeft, Table tableRight, Evaluator evaluator)
+    public QueryIterator createIterator(ExecutionContext execCxt)
     {
-        // Cope with a tableLeft == null ?  Works with Op2?
-        return evaluator.union(tableLeft, tableRight) ;
+        return new QueryIterNullIterator(execCxt) ;
     }
 
-    public Op apply(Transform transform, Op left, Op right)
-    { return transform.transform(this, left, right) ; }
+    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
+                                        ExprList conditions,
+                                        ExecutionContext execContext)
+    {
+        if ( includeOnNoMatch )
+            return new QueryIterSingleton(bindingLeft, execContext) ;
+        else
+            // No rows - no match
+            return new QueryIterNullIterator(execContext) ;
+    }
 
-    public String getName()                 { return "union" ; }
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op newLeft, Op newRight)
-    { return new OpUnion(newLeft, newRight) ; }
+    public void closeTable()    { }
+
+    public List getVarNames()   { return new ArrayList() ; }
+
+    public List getVars()       { return new ArrayList() ; }
 }
 
 /*
