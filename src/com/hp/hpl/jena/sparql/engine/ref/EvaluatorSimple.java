@@ -9,12 +9,14 @@ package com.hp.hpl.jena.sparql.engine.ref;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.algebra.TableFactory;
+import com.hp.hpl.jena.sparql.algebra.table.TableN;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
-import com.hp.hpl.jena.sparql.engine.table.TableN;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.util.Utils;
 

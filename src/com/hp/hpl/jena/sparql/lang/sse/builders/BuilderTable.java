@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sparql.lang.sse.builders;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.engine.Table;
-import com.hp.hpl.jena.sparql.engine.TableFactory;
+import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.ItemList;
