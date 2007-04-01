@@ -27,7 +27,7 @@ public class MainBuilder
 {
     public static void main(String[] argv)
     {
-        //mainExpr(argv) ;
+        mainExpr(argv) ;
         //System.out.println() ;
         mainOp(argv) ;
     }

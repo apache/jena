@@ -288,7 +288,7 @@ public class OpWriter
         private void formatTriple(Triple tp)
         {
             start() ;
-            out.print("Triple") ;
+            out.print("triple") ;
             out.print(" ") ;
             out.print(slotToString(tp.getSubject())) ;
             out.print(" ") ;
@@ -301,7 +301,7 @@ public class OpWriter
         private void formatQuad(Quad qp)
         {
             start() ;
-            out.print("Quad") ;
+            out.print("quad") ;
             out.print(" ") ;
             out.print(slotToString(qp.getGraph())) ;
             out.print(" ") ;
