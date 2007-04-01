@@ -1,7 +1,7 @@
 (prefix ((: <http://example/>))
    (project (?c)
      (filter (= ?c "world")
-       (bgp [triple ?s :p ()])
+       (bgp [triple ?s :p ?c])
        )
      )
    )
