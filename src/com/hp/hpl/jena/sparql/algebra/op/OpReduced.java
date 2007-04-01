@@ -23,7 +23,7 @@ public class OpReduced extends OpModifier
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
-    public String getName()                 { return "Reduced" ; }
+    public String getName()                 { return "reduced" ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpReduced(subOp) ; }

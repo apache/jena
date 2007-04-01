@@ -50,7 +50,6 @@ public class OpVars
         protected Set acc ;
 
         OpVarsPattern(Set acc) { this.acc = acc ; }
-        
 
         public void visit(OpBGP opBGP)
         {
@@ -79,6 +78,16 @@ public class OpVars
         {
             addVar(acc, dsNames.getGraphNode()) ;
         }
+        
+        public void visit(OpProject opProject) 
+        {   
+            // Seems a tad wasteful to do all that work then throw it away.
+            // But it needs the walker redone.
+            // TODO Rethink walker for part walks. 
+            // And note these two classes are the only ones using the walker.
+            acc.clear() ;
+            acc.addAll(opProject.getVars()) ;
+        }
     }
     
     private static class OpVarsQuery extends OpVarsPattern
@@ -102,6 +111,7 @@ public class OpVars
 
         public void visit(OpProject opProject)
         {
+            acc.clear() ;
             acc.addAll(opProject.getVars()) ;
         }
 

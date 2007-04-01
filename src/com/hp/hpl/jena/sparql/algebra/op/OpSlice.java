@@ -40,7 +40,7 @@ public class OpSlice extends OpModifier
 //    public Op apply(Transform transform, Op subOp)
 //    { return transform.transform(this, subOp) ; }
 
-    public String getName()                 { return "Slice" ; }
+    public String getName()                 { return "slice" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpSlice(subOp, start, length) ; }
 

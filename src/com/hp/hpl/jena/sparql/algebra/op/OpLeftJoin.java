@@ -41,7 +41,7 @@ public class OpLeftJoin extends Op2
 
     public ExprList getExprs() { return expressions ; } 
     
-    public String getName() { return "LeftJoin" ; }
+    public String getName() { return "leftjoin" ; }
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
         

@@ -1,9 +1,10 @@
 (prefix ((: <http://example/>))
-  (filter (= ?c "world")
-    (project (?s)
-      (bgp [triple ?s :p ?c])
-      ))
-  )
+   (project (?c)
+     (filter (= ?c "world")
+       (bgp [triple ?s :p ?c])
+       )
+     )
+   )
 
 ## (LeftJoin
 ##   (Join

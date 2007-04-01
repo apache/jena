@@ -25,7 +25,7 @@ public class OpUnion extends Op2
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
 
-    public String getName()                 { return "Union" ; }
+    public String getName()                 { return "union" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op newLeft, Op newRight)
     { return new OpUnion(newLeft, newRight) ; }

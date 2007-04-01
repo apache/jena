@@ -83,7 +83,7 @@ public class OpFilter extends Op1
     
     public ExprList getExprs() { return expressions ; }
     
-    public String getName() { return "Filter" ; }
+    public String getName() { return "filter" ; }
     
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }

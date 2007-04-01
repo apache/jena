@@ -39,7 +39,7 @@ public class OpJoin extends Op2
         return evaluator.join(tableLeft, tableRight) ;
     }
 
-    public String getName() { return "Join" ; }
+    public String getName() { return "join" ; }
 
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }

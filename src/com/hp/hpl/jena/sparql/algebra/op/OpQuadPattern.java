@@ -55,7 +55,7 @@ public class OpQuadPattern extends Op0
     public Node getGraphNode()              { return graphNode ; } 
     public BasicPattern getBasicPattern()   { return triples ; }
     
-    public String getName()                 { return "QuadPattern" ; }
+    public String getName()                 { return "quadpattern" ; }
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy()                        { return new OpQuadPattern(graphNode, triples) ; }

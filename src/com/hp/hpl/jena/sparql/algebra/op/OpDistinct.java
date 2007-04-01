@@ -23,7 +23,7 @@ public class OpDistinct extends OpModifier
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
-    public String getName()                 { return "Distinct" ; }
+    public String getName()                 { return "distinct" ; }
 
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpDistinct(subOp) ; }

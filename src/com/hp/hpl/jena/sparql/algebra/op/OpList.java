@@ -21,7 +21,7 @@ public class OpList extends OpModifier
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
-    public String getName() { return "ToList" ; }
+    public String getName() { return "tolist" ; }
 
     public Op apply(Transform transform, Op subOp) 
     { return transform.transform(this, subOp) ; }

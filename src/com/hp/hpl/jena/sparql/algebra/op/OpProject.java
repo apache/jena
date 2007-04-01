@@ -39,7 +39,7 @@ public class OpProject extends OpModifier
         return evaluator.project(table, vars) ;
     }
 
-    public String getName() { return "Project" ; }
+    public String getName() { return "project" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpProject(subOp, vars) ; }
 

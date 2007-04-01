@@ -10,7 +10,7 @@ ARQ2-beta
 + Test for qexec evaluation => tests algebra
 
 + Alternative indexes
-  LARQ idea - extracted.
+  LARQ idea - extracted.  Object ==> node/subject
   
 + REDUCED tests :-(
 
@@ -31,6 +31,17 @@ ARQ2-beta
   + qtest to use modules (and qexpr)
     ModVersion
 
+== Algebra & SSE
+
++ OpWalker  - only used for getting vars, and that needs to truncate a walk.
++ OpExt - is this still workable?
++ Extensions:
+  Expr: (exists (pattern ...))
+  (group ...)
+  (assign ?x expr) (is this SELECT/project?)
++ Prefix writing.
++ qexec tidy/integration
+
 == LARQ
 
 + LARQ assembler
@@ -45,7 +56,7 @@ ARQ2-beta
   	Query iterators
   	Bindings
 
-+ Writing filter functions
++ Writing filter functions [Done]
 + Writing property functions
 
 + Document making and using datasets

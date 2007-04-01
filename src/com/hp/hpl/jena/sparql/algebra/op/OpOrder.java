@@ -35,7 +35,7 @@ public class OpOrder extends OpModifier
         return evaluator.order(table, conditions) ;
     }
 
-    public String getName()                 { return "Order" ; }
+    public String getName()                 { return "order" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
 

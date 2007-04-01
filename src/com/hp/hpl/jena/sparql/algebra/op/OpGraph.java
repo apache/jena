@@ -24,7 +24,7 @@ public class OpGraph extends Op1
     
     public Node getNode() { return node ; }
     
-    public String getName()                         { return "Graph" ; }
+    public String getName()                         { return "graph" ; }
 
     public Op apply(Transform transform, Op op)     { return transform.transform(this, op) ; } 
     public void visit(OpVisitor opVisitor)          { opVisitor.visit(this) ; }

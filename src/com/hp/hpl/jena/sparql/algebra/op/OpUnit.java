@@ -16,7 +16,7 @@ public class OpUnit extends Op0
     
     private OpUnit() { }
     
-    public String getName() { return "Unit" ; }
+    public String getName() { return "unit" ; }
     
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }

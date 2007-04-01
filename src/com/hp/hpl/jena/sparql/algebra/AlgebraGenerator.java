@@ -152,7 +152,7 @@ public class AlgebraGenerator
         Op current = OpUnit.unit() ;
         
         // TriplesBlock => BGP
-        // Basically, if adjacent after filters extracted, then merge
+        // If adjacent triples blocks after filters extracted, then merge.
         // Simpler : extract filters first?
         
         BasicPattern currentPattern = null ;

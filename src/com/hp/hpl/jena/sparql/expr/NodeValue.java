@@ -733,6 +733,9 @@ public abstract class NodeValue extends ExprNode
     
     private static NodeValue nodeToNodeValue(Node node)
     {
+        if ( node.isVariable() )
+            log.warn("Variable passed to NodeValue.nodeToNodeValue") ;
+
         if ( ! node.isLiteral() )
             // Not a literal - no value to extract
             return new NodeValueNode(node) ;
@@ -757,7 +760,6 @@ public abstract class NodeValue extends ExprNode
 
         // Typed literal
         LiteralLabel lit = node.getLiteral() ;
-        
         
         // This includes type testing
         if ( ! lit.getDatatype().isValidLiteral(lit) )
