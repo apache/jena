@@ -39,12 +39,18 @@ ARQ2-beta
   Expr: (exists (pattern ...))
   (group ...)
   (assign ?x expr) (is this SELECT/project?)
+  (table ...) # TableBuilder for now!
+  (setq ?x :y)
+  (set (?x :y) (?z 1.5) ) -- set in current solution
+  (binding () (?x :y) (?y 1))  () ==> parent [or make "extend"] 
+  
+  Combine with assign (binding (other binding))
+  (join ...) to do assign
 + Prefix writing.
 + qexec tidy/integration
 + Tests
-  (setq ?x :y)  (binding () (?x :y) (?y 1))  () ==> parent
-  Combine with assign (binding (other binding))
-  (join ...) to do assign
++ Keywords: nil for () , true, false (c.f. Scheme's #f #t except # has gone _)
+  _t _f
 
 
 == LARQ

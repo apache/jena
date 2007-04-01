@@ -2,7 +2,7 @@
 # Parser builder
 
 GRAMMAR="${GRAMMAR:-"unisyn.jj"}"
-
+ROOT="../.."
 # --------------------------------------------------------
 
 function grammar
@@ -13,7 +13,7 @@ function grammar
 
     echo $1 $2 $3
 
-    DIR="../src/com/hp/hpl/jena/sparql/lang/$PKG"
+    DIR="$ROOT/src/com/hp/hpl/jena/sparql/lang/$PKG"
     echo "---- Process grammar -- $1"
 ##    javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.5 "${FILE}"
     javacc -OUTPUT_DIRECTORY=$DIR "${FILE}"
