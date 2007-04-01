@@ -4,82 +4,109 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.ref.table;
+package com.hp.hpl.jena.sparql.engine.table;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 
-public class Table1 extends TableBase
+public class TableSimple extends TableBase
 {
-    private Var var ;
-    private Node value ;
+    List rows = new ArrayList() ;
+    List vars = new ArrayList() ;
 
-    public Table1(Var var, Node value)
+    public TableSimple() {}
+    
+    public TableSimple(QueryIterator qIter)
     {
-        this.var = var ;
-        this.value = value ;
+        materialize(qIter) ;
+    }
+
+    public void materialize(QueryIterator qIter)
+    {
+        while ( qIter.hasNext() )
+        {
+            Binding binding = qIter.nextBinding() ;
+            addBinding(binding) ;
+        }
+        qIter.close() ;
+    }
+
+    public void addBinding(Binding binding)
+    {
+        for ( Iterator names = binding.vars() ; names.hasNext() ; )
+        {
+            Var v = (Var)names.next() ;
+            if ( ! vars.contains(v))
+                vars.add(v) ;
+        }
+        rows.add(binding) ;
     }
     
-    protected QueryIterator createIterator(ExecutionContext execCxt)
-    {
-        Binding b = new Binding1(null, var, value) ;
-        QueryIterator qIter = new QueryIterSingleton(b, execCxt) ;
-        return qIter ;
-    }
-
+    // Note - this table is the RIGHT table, and takes a LEFT binding.
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
                                         ExprList conditions,
                                         ExecutionContext execContext)
     {
-        boolean matches = true ;
-        Node other = bindingLeft.get(var) ;
-        
-        if ( other == null )
+        List out = new ArrayList() ;
+        for ( Iterator iter = rows.iterator() ; iter.hasNext() ; )
         {
-            // Not present - return the merge = the other binding + this (var/value)
-            Binding mergedBinding = new Binding1(bindingLeft, var, value) ;
-            return new QueryIterSingleton(mergedBinding, execContext) ;
+            Binding bindingRight = (Binding)iter.next() ;
+            
+            Binding r =  merge(bindingLeft, bindingRight) ;
+            if ( r == null )
+                continue ;
+            // This does the conditional part. Theta-join.
+            if ( conditions == null || conditions.isSatisfied(r, execContext) )
+                out.add(r) ;
         }
+                
+        if ( out.size() == 0 && includeOnNoMatch )
+            out.add(bindingLeft) ;
         
-        if ( ! other.equals(value) )
-            matches = false ;
-        else
-        {
-            if ( conditions != null )
-                matches = conditions.isSatisfied(bindingLeft, execContext) ;
-        }
-        
-        if ( ! matches && ! includeOnNoMatch)
+        if ( out.size() == 0 )
             return new QueryIterNullIterator(execContext) ;
-        // Matches, or does not match and it's a left join - return the left binding. 
-        return new QueryIterSingleton(bindingLeft, execContext) ;
+        return new QueryIterPlainWrapper(out.iterator(), execContext) ;
     }
 
-    public void closeTable()        {}
-
-    public List getVars()
+ 
+    public QueryIterator createIterator(ExecutionContext execCxt)
     {
-        List x = new ArrayList() ;
-        x.add(var) ;
-        return x ;
+        return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
     }
     
-    public List getVarNames()
+    public void closeTable()
     {
-        List x = new ArrayList() ;
-        x.add(var.getVarName()) ;
-        return x ;
+        rows = null ;
+        vars = null ;
+    }
+
+    public List getVarNames()   { return vars ; }
+
+    public List getVars()       { return Var.varNames(vars) ; }
+    
+    public String toString()
+    {
+        // XXX redo PrintSerialzable and as a (table ...)
+        StringBuffer buff = new StringBuffer() ;
+        QueryIterator qIter = createIterator(null) ;
+        for ( ; qIter.hasNext() ; )
+        {
+            Binding b = qIter.nextBinding() ;
+            buff.append(b) ;
+            buff.append("\n") ;
+        }
+        qIter.close() ;
+        return buff.toString() ;
     }
 }
 

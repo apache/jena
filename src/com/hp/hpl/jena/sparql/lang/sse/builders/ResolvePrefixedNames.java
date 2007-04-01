@@ -75,10 +75,10 @@ public class ResolvePrefixedNames
                  
             
             // It's (prefix ...)
-            BuilderUtils.checkLength(3, list, "List is "+list.size()+"not 3 :: (prefix ...)") ;
+            Builder.checkLength(3, list, "List is "+list.size()+"not 3 :: (prefix ...)") ;
             
             if ( ! list.get(1).isList() )
-                BuilderUtils.broken(list, "(prefix ...) is not list of prefix/IRI pairs") ;
+                Builder.broken(list, "(prefix ...) is not list of prefix/IRI pairs") ;
             
             ItemList prefixes = list.get(1).getList() ;
             Item body = list.get(2) ;
@@ -102,19 +102,19 @@ public class ResolvePrefixedNames
             {
                 Item pair = (Item)iter.next() ;
                 if ( !pair.isList() || pair.getList().size() != 2 )
-                    BuilderUtils.broken(pair, "Not a prefix/IRI pair") ;
+                    Builder.broken(pair, "Not a prefix/IRI pair") ;
                 Item prefixItem = pair.getList().get(0) ;
                 Item iriItem = pair.getList().get(1) ;
 
                 Node n = prefixItem.getNode() ;
                 if ( ! n.isURI() )
-                    BuilderUtils.broken(pair, "Prefix part is not a prefixed name: "+pair) ;
+                    Builder.broken(pair, "Prefix part is not a prefixed name: "+pair) ;
                 
                 String prefix = n.getURI();
                 Node iriNode = iriItem.getNode() ;
                 
                 if ( iriNode == null || ! iriNode.isURI() )
-                    BuilderUtils.broken(pair, "Not an IRI: "+iriItem) ;
+                    Builder.broken(pair, "Not an IRI: "+iriItem) ;
                 
                 String iri = iriNode.getURI();
                 // It will look like :x:
@@ -139,7 +139,7 @@ public class ResolvePrefixedNames
                 if ( pmap != null )
                     uri = pmap.expandPrefix(qname) ;
                 if ( uri == null || uri.equals(qname) )
-                    BuilderUtils.broken(item, "Can't resolve "+qname) ;
+                    Builder.broken(item, "Can't resolve "+qname) ;
                 return Item.createNode(Node.createURI(uri)) ;
             }
             else

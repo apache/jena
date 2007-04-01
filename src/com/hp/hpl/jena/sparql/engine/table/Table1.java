@@ -4,40 +4,83 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.ref.table;
+package com.hp.hpl.jena.sparql.engine.table;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding0;
+import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-public class TableUnit extends TableBase
+
+public class Table1 extends TableBase
 {
-    public TableUnit() {}
-    
-    public QueryIterator createIterator(ExecutionContext execCxt)
+    private Var var ;
+    private Node value ;
+
+    public Table1(Var var, Node value)
     {
-        return new QueryIterSingleton(new Binding0(), execCxt) ;
+        this.var = var ;
+        this.value = value ;
+    }
+    
+    protected QueryIterator createIterator(ExecutionContext execCxt)
+    {
+        Binding b = new Binding1(null, var, value) ;
+        QueryIterator qIter = new QueryIterSingleton(b, execCxt) ;
+        return qIter ;
     }
 
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
                                         ExprList conditions,
-                                        ExecutionContext execCxt)
+                                        ExecutionContext execContext)
     {
-        // We are one row of no entries - joins with anything
-        return new QueryIterSingleton(bindingLeft, execCxt) ;
+        boolean matches = true ;
+        Node other = bindingLeft.get(var) ;
+        
+        if ( other == null )
+        {
+            // Not present - return the merge = the other binding + this (var/value)
+            Binding mergedBinding = new Binding1(bindingLeft, var, value) ;
+            return new QueryIterSingleton(mergedBinding, execContext) ;
+        }
+        
+        if ( ! other.equals(value) )
+            matches = false ;
+        else
+        {
+            if ( conditions != null )
+                matches = conditions.isSatisfied(bindingLeft, execContext) ;
+        }
+        
+        if ( ! matches && ! includeOnNoMatch)
+            return new QueryIterNullIterator(execContext) ;
+        // Matches, or does not match and it's a left join - return the left binding. 
+        return new QueryIterSingleton(bindingLeft, execContext) ;
     }
 
-    public void closeTable()    { }
+    public void closeTable()        {}
 
-    public List getVarNames()   { return new ArrayList() ; }
-
-    public List getVars()       { return new ArrayList() ; }
+    public List getVars()
+    {
+        List x = new ArrayList() ;
+        x.add(var) ;
+        return x ;
+    }
+    
+    public List getVarNames()
+    {
+        List x = new ArrayList() ;
+        x.add(var.getVarName()) ;
+        return x ;
+    }
 }
 
 /*

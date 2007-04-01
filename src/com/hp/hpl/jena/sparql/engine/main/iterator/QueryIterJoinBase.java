@@ -9,10 +9,10 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.Table;
+import com.hp.hpl.jena.sparql.engine.TableFactory;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIter2;
-import com.hp.hpl.jena.sparql.engine.ref.Table;
-import com.hp.hpl.jena.sparql.engine.ref.TableFactory;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 /** Join or LeftJoin by calculating both sides, then doing the join

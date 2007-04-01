@@ -17,7 +17,9 @@ import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.engine.Table;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.lang.sse.SSE;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -27,15 +29,21 @@ public class Run
     {
         //runQExpr() ;
         //print() ;
-        //code() ;
+        code() ;
         //classifyJ() ;
         //classifyLJ() ;
         //execQuery("D.ttl", "Q.rq") ;
         exec("D.ttl", "SSE/op.sse") ;
     }
         
-    
     private static void code()
+    {
+        Table table = SSE.readTable("SSE/table.sse") ;
+        System.out.print(table.toString()) ;
+        System.exit(0) ;
+    }
+
+    private static void codeLARQ()
     {
         Model model = ModelFactory.createDefaultModel() ;
         IndexLARQ index = buildIndex(model, "D.ttl") ;

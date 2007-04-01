@@ -14,7 +14,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.SSE;
-import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
+import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
 
 import com.hp.hpl.jena.query.Dataset;
@@ -36,7 +36,7 @@ public class Algebra
     static public Op parse(Item item)
     {
         item = ResolvePrefixedNames.resolve(item) ;
-        Op op = OpBuilder.build(item) ;
+        Op op = BuilderOp.build(item) ;
         return op ;
     }
 

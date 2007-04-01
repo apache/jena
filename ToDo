@@ -31,27 +31,45 @@ ARQ2-beta
   + qtest to use modules (and qexpr)
     ModVersion
 
-== Algebra & SSE
+== Algebra
 
 + OpWalker  - only used for getting vars, and that needs to truncate a walk.
 + OpExt - is this still workable?
 + Extensions:
-  Expr: (exists (pattern ...))
-  (group ...)
-  (assign ?x expr) (is this SELECT/project?)
-  (table ...) # TableBuilder for now!
-  (setq ?x :y)
-  (set (?x :y) (?z 1.5) ) -- set in current solution
-  (binding () (?x :y) (?y 1))  () ==> parent [or make "extend"] 
-  
-  Combine with assign (binding (other binding))
-  (join ...) to do assign
-+ Prefix writing.
 + qexec tidy/integration
 + Tests
-+ Keywords: nil for () , true, false (c.f. Scheme's #f #t except # has gone _)
-  _t _f
+  
+== SSE
+  Builder tidying:
+    Build
 
+  Expr: (exists (pattern ...))
+  
+  TableBase => .output/.toString etc as PrintSerializable
+  
+  undef and _
+
+  (group (vars) aggregate)
+  
+  Assignment:
+  (assign ((?x expr) (?y expr)) --  (:= ?x expr) [is this SELECT/project?]
+     (project ...))
+     (project (?x ?y (?z expr)) ...)
+
+   # TableBuilder for testing ASAP.
+  
+  (prefix (x: <x> y: <y>)
+  (table [(cols ?c1 ?c2)]		# Makes it like a results format
+  	(row (?x :x1) (?y :y1))
+  	(row ?x :x1 ?y :y1)
+	((?x :x2) (?y :y2))
+	)
+	
+  (binding) is a simplified table?  With exprs?
+  (binding (?x :x1) (?y :y1) (?z (+ 1 ?s))
+    which join of the single row table formed from the binding.
+  
++ Prefix writing.
 
 == LARQ
 

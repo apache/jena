@@ -4,15 +4,14 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.ref;
+package com.hp.hpl.jena.sparql.engine;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ref.table.Table1;
-import com.hp.hpl.jena.sparql.engine.ref.table.TableEmpty;
-import com.hp.hpl.jena.sparql.engine.ref.table.TableSimple;
-import com.hp.hpl.jena.sparql.engine.ref.table.TableUnit;
+import com.hp.hpl.jena.sparql.engine.table.Table1;
+import com.hp.hpl.jena.sparql.engine.table.TableEmpty;
+import com.hp.hpl.jena.sparql.engine.table.TableSimple;
+import com.hp.hpl.jena.sparql.engine.table.TableUnit;
 
 public class TableFactory
 {

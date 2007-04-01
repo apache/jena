@@ -16,8 +16,10 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
+import com.hp.hpl.jena.sparql.engine.Table;
+import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
+import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderTable;
 import com.hp.hpl.jena.sparql.lang.sse.parser.ParseException;
 import com.hp.hpl.jena.sparql.lang.sse.parser.SSE_Parser;
 import com.hp.hpl.jena.sparql.lang.sse.parser.TokenMgrError;
@@ -42,7 +44,7 @@ public class SSE
         Item item = SSE.parseResolve(s, pmap) ;
         if ( !item.isList() )
             throw new ARQException("Not a list: "+s) ; 
-        return OpBuilder.buildQuad(item.getList()) ;
+        return BuilderOp.buildQuad(item.getList()) ;
     }
 
     public static Triple parseTriple(String s) { return parseTriple(s, null) ; }
@@ -52,7 +54,24 @@ public class SSE
         Item item = SSE.parseResolve(s, pmap) ;
         if ( !item.isList() )
             throw new ARQException("Not a list: "+s) ; 
-        return OpBuilder.buildTriple(item.getList()) ;
+        return BuilderOp.buildTriple(item.getList()) ;
+    }
+    
+    public static Table readTable(String filename) { return readTable(filename, null) ; }
+    
+    public static Table readTable(String filename, PrefixMapping pmap)
+    { 
+        Item item = parseFile(filename) ;
+        item = ResolvePrefixedNames.resolve(item, pmap) ;
+        return BuilderTable.build(item) ;
+    }
+    
+    public static Table parseTable(String s) { return parseTable(s, null) ; }
+    
+    public static Table parseTable(String s, PrefixMapping pmap)
+    { 
+        Item item = SSE.parseResolve(s, pmap) ;
+        return BuilderTable.build(item) ;
     }
     
     public static Item parseResolve(String string)

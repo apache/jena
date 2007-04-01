@@ -1,53 +1,47 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse.builders;
+package com.hp.hpl.jena.sparql.engine.table;
 
-import com.hp.hpl.jena.sparql.lang.sse.ItemList;
-import com.hp.hpl.jena.sparql.lang.sse.ItemLocation;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ExprBuildException;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding0;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.expr.ExprList;
 
-class BuilderUtils
+public class TableUnit extends TableBase
 {
-    protected static void warning(ItemLocation location, String msg)
+    public TableUnit() {}
+    
+    public QueryIterator createIterator(ExecutionContext execCxt)
     {
-        msg = msg(location, msg) ;
-        System.err.println(msg) ;
+        return new QueryIterSingleton(new Binding0(), execCxt) ;
     }
 
-    protected static void checkLength(int len1, int len2, ItemList list, String sym)
+    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
+                                        ExprList conditions,
+                                        ExecutionContext execCxt)
     {
-        if ( list.size() < len1 || list.size()> len2 )
-            broken(list, "Wrong number of arguments: want="+len1+" to "+len2+": actual="+list.size()) ;
+        // We are one row of no entries - joins with anything
+        return new QueryIterSingleton(bindingLeft, execCxt) ;
     }
-    
-    protected static void checkLength(int len, ItemList list, String sym)
-    {
-        if ( list.size() != len )
-            broken(list, "Wrong number of arguments: want="+len+" ; actual="+list.size()) ;
-    }
-    
-    protected static void broken(ItemLocation location, String msg)
-    {
-        msg = msg(location, msg) ;
-        System.err.println(msg) ;
-        throw new ExprBuildException(msg) ;
-    }
-    
-    private static String msg(ItemLocation location, String msg)
-    {
-        if ( location != null )
-            msg = location.location()+" "+msg ;
-        return msg ;
-    }
+
+    public void closeTable()    { }
+
+    public List getVarNames()   { return new ArrayList() ; }
+
+    public List getVars()       { return new ArrayList() ; }
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

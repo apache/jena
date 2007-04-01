@@ -16,19 +16,14 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.ItemList;
-import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderUtils;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ExprBuilder;
+import com.hp.hpl.jena.sparql.lang.sse.builders.Builder;
+import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderExpr;
 
-public class ExprBuilder extends BuilderUtils
+public class BuilderExpr
 {
     public static Expr build(Item item)
     {
-//        if (item.isNode() )
-//            broken(item, "Attempt to build expression from a plain node") ;
-//
-//        if (item.isWord() )
-//            broken(item, "Attempt to build expression from a bare word") ;
-        ExprBuilder bob = new ExprBuilder() ;
+        BuilderExpr bob = new BuilderExpr() ;
         return bob.buildItem(item) ;
     }
 
@@ -45,7 +40,7 @@ public class ExprBuilder extends BuilderUtils
             else if ( head.isWord() )
                 return buildKnownFunction(item.getList()) ;
             else if ( head.isList() )
-                broken(item, "Head is a list") ;
+                Builder.broken(item, "Head is a list") ;
         }
     
         if ( item.isNode() )
@@ -61,11 +56,11 @@ public class ExprBuilder extends BuilderUtils
         if ( w.equalsIgnoreCase(symFalse) )
             return NodeValue.FALSE ;
         
-        broken(item, "Not a list or a node or recognized word: "+item) ;
+        Builder.broken(item, "Not a list or a node or recognized word: "+item) ;
         return null ;
     }
 
-    public ExprBuilder()
+    public BuilderExpr()
     {
         dispatch.put(symRegex, buildRegex) ;
         
@@ -148,7 +143,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, 4, list, "Regex") ;
+            Builder.checkLength(3, 4, list, "Regex") ;
             Expr expr = build(list.get(1)) ;
             Expr pattern = build(list.get(2)) ;
             Expr flags = null ;
@@ -164,7 +159,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, 3, list, "+") ;
+            Builder.checkLength(2, 3, list, "+") ;
             if ( list.size() == 2 )
             {
                 Expr ex = build(list.get(1)) ;
@@ -181,7 +176,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, 3, list, "-") ;
+            Builder.checkLength(2, 3, list, "-") ;
             if ( list.size() == 2 )
             {
                 Expr ex = build(list.get(1)) ;
@@ -200,7 +195,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "=: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "=: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_Equals(left, right) ;
@@ -211,7 +206,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "!=: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "!=: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_NotEquals(left, right) ;
@@ -222,7 +217,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, ">: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, ">: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_GreaterThan(left, right) ;
@@ -233,7 +228,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "<: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "<: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_LessThan(left, right) ;
@@ -244,7 +239,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "<=: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "<=: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_LessThanOrEqual(left, right) ;
@@ -255,7 +250,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, ">=: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, ">=: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_GreaterThanOrEqual(left, right) ;
@@ -266,7 +261,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "or: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "or: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_LogicalOr(left, right) ;
@@ -277,7 +272,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "||: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "||: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_LogicalOr(left, right) ;
@@ -288,7 +283,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "and: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "and: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_LogicalAnd(left, right) ;
@@ -299,7 +294,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "&&: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "&&: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_LogicalAnd(left, right) ;
@@ -310,7 +305,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "*: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "*: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_Multiply(left, right) ;
@@ -321,7 +316,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "/: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "/: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_Divide(left, right) ;
@@ -332,7 +327,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "!: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "!: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_LogicalNot(ex) ;
         }
@@ -342,7 +337,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "not: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "not: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_LogicalNot(ex) ;
         }
@@ -352,7 +347,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "str: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "str: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_Str(ex) ;
         }
@@ -362,7 +357,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "lang: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "lang: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_Lang(ex) ;
         }
@@ -372,7 +367,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "langmatches: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "langmatches: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_LangMatches(left, right) ;
@@ -383,7 +378,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(3, list, "sameterm: wanted 2 arguments: got :"+list.size()) ;
+            Builder.checkLength(3, list, "sameterm: wanted 2 arguments: got :"+list.size()) ;
             Expr left = build(list.get(1)) ;
             Expr right = build(list.get(2)) ;
             return new E_SameTerm(left, right) ;
@@ -394,7 +389,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "datatype: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "datatype: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_Datatype(ex) ;
         }
@@ -404,7 +399,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "bound: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "bound: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_Bound(ex) ;
         }
@@ -414,7 +409,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "isIRI: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "isIRI: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_IsIRI(ex) ;
         }
@@ -424,7 +419,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "isURI: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "isURI: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_IsURI(ex) ;
         }
@@ -434,7 +429,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "isBlank: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "isBlank: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_IsBlank(ex) ;
         }
@@ -444,7 +439,7 @@ public class ExprBuilder extends BuilderUtils
     {
         public Expr make(ItemList list)
         {
-            BuilderUtils.checkLength(2, list, "isLiteral: wanted 1 arguments: got :"+list.size()) ;
+            Builder.checkLength(2, list, "isLiteral: wanted 1 arguments: got :"+list.size()) ;
             Expr ex = build(list.get(1)) ;
             return new E_IsLiteral(ex) ;
         }
@@ -454,17 +449,16 @@ public class ExprBuilder extends BuilderUtils
     protected Expr buildKnownFunction(ItemList list)
     {
         if ( list.size() == 0 )
-            broken(list, "Empty list for expression") ;
-
+            Builder.broken(list, "Empty list for expression") ;
 
         Item item = list.get(0) ;
         String tag = item.getWord() ;
         if ( tag == null )
-            broken(item, "Null tag") ;
+            Builder.broken(item, "Null tag") ;
 
         Build b = findBuild(tag) ;
         if ( b == null )
-            broken(item, "No known symbol for "+tag) ;
+            Builder.broken(item, "No known symbol for "+tag) ;
         return b.make(list) ;
     }
 
@@ -473,9 +467,9 @@ public class ExprBuilder extends BuilderUtils
         Item head = list.get(0) ;
         Node node = head.getNode() ;
         if ( node.isBlank() )
-            broken(head, "Blank node for function call!") ;
+            Builder.broken(head, "Blank node for function call!") ;
         if ( node.isLiteral() )
-            broken(head, "Literal node for function call!") ;
+            Builder.broken(head, "Literal node for function call!") ;
         ExprList args = buildArgs(list, 1) ;
         // Args
         return new E_Function(node.getURI(), args) ;

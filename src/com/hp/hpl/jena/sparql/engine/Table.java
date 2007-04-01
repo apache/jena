@@ -4,12 +4,10 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.ref;
+package com.hp.hpl.jena.sparql.engine;
 
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 

@@ -14,34 +14,30 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.ItemList;
-import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderUtils;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ExprBuilder;
-import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
 
 
-public class OpBuilder extends BuilderUtils
+public class BuilderOp
 {
+    // XXX Use BuilderUtils.checkList
     public static Op build(Item item)
     {
         if (item.isNode() )
-            broken(item, "Attempt to build op structure from a plain node") ;
+            Builder.broken(item, "Attempt to build op structure from a plain node") ;
 
         if (item.isWord() )
-            broken(item, "Attempt to build op structure from a bare word") ;
+            Builder.broken(item, "Attempt to build op structure from a bare word") ;
 
-        OpBuilder b = new OpBuilder();
+        BuilderOp b = new BuilderOp();
         return b.build(item.getList()) ;
     }
 
     protected Map dispatch = new HashMap() ;
     
-    public OpBuilder()
+    public BuilderOp()
     {
         dispatch.put(symBGP, buildBGP) ;
         //dispatch.put(symQuadPattern, buildQuadPattern) ;
@@ -72,9 +68,51 @@ public class OpBuilder extends BuilderUtils
         if ( bob != null )
             return bob.make(list) ;
         else
-            broken(head, "Unrecognized algebra operation: "+tag) ;
+            Builder.broken(head, "Unrecognized algebra operation: "+tag) ;
         return null ;
     }
+    
+    public static Expr buildExpr(Item item)
+    {
+        return BuilderExpr.build(item) ;
+    }
+
+    public static Triple buildTriple(ItemList list)
+    {
+        Builder.checkLength(4, list, symTriple) ;
+        Node s = BuilderNode.buildNode(list.get(1)) ;
+        Node p = BuilderNode.buildNode(list.get(2)) ;
+        Node o = BuilderNode.buildNode(list.get(3)) ;
+        return new Triple(s, p, o) ; 
+    }
+
+    public static Quad buildQuad(ItemList list)
+    {
+        Builder.checkLength(5, list, symQuad) ;
+        
+        Node g = null ;
+        if ( "_".equals(list.get(1).getWord()) )
+            g = Quad.defaultGraph ;
+        else
+            g = BuilderNode.buildNode(list.get(1)) ;
+        Node s = BuilderNode.buildNode(list.get(2)) ;
+        Node p = BuilderNode.buildNode(list.get(3)) ;
+        Node o = BuilderNode.buildNode(list.get(4)) ;
+        return new Quad(g, s, p, o) ; 
+    }
+
+    public static List buildExpr(ItemList list, int start)
+    {
+        List x = new ArrayList() ;
+        for ( int i = start ; i < list.size() ; i++ )
+        {
+            Item itemExpr = list.get(i) ;
+            Expr expr = buildExpr(itemExpr) ;
+            x.add(expr) ;
+        }
+        return x ;
+    }
+
 
     protected Op build(ItemList list, int idx)
     {
@@ -82,21 +120,25 @@ public class OpBuilder extends BuilderUtils
     }
 
     static protected final String symBase         = "" ;
-    static protected final String symBGP          = symBase + "BGP" ;
-    static protected final String symQuadPattern  = symBase + "Quad" ;
-    static protected final String symFilter       = symBase + "Filter" ;
-    static protected final String symGraph        = symBase + "Graph" ;
-    static protected final String symJoin         = symBase + "Join" ;
-    static protected final String symLeftJoin     = symBase + "LeftJoin" ;
-    static protected final String symUnion        = symBase + "Union" ;
-    // Diff
 
-    static protected final String symToList       = symBase + "ToList" ;
-    static protected final String symOrderBy      = symBase + "OrderBy" ;
-    static protected final String symProject      = symBase + "Project" ;
-    static protected final String symDistinct     = symBase + "Distinct" ;
-    static protected final String symReduced      = symBase + "Reduced" ;
-    static protected final String symSlice        = symBase + "Slice" ;
+    static protected final String symBGP          = symBase + "bgp" ;
+    static protected final String symQuadPattern  = symBase + "bqp" ;
+    
+    static protected final String symTriple       = symBase + "triple" ;
+    static protected final String symQuad         = symBase + "quad" ;
+    
+    static protected final String symFilter       = symBase + "filter" ;
+    static protected final String symGraph        = symBase + "graph" ;
+    static protected final String symJoin         = symBase + "join" ;
+    static protected final String symLeftJoin     = symBase + "leftjoin" ;
+    static protected final String symUnion        = symBase + "union" ;
+
+    static protected final String symToList       = symBase + "tolist" ;
+    static protected final String symOrderBy      = symBase + "order" ;
+    static protected final String symProject      = symBase + "project" ;
+    static protected final String symDistinct     = symBase + "distinct" ;
+    static protected final String symReduced      = symBase + "reduced" ;
+    static protected final String symSlice        = symBase + "dlice" ;
 
     protected Build findBuild(String str)
     {
@@ -120,7 +162,7 @@ public class OpBuilder extends BuilderUtils
             {
                 Item item = list.get(i) ;
                 if ( ! item.isList() )
-                    broken(item, "Not a triple structure") ;
+                    Builder.broken(item, "Not a triple structure") ;
                 Triple t = buildTriple(item.getList()) ;
                 triples.add(t) ; 
             }
@@ -132,7 +174,7 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            broken(null, "Quad pattern not implemented") ;
+            Builder.broken(null, "Quad pattern not implemented") ;
             return null ;
 //          Node g = null ;
 //          QuadPattern quads = new QuadPattern() ;
@@ -140,14 +182,14 @@ public class OpBuilder extends BuilderUtils
 //          {
 //          Item item = list.get(i) ;
 //          if ( ! item.isList() )
-//          broken(item, "Not a quad structure") ;
+//          BuilderUtils.broken(item, "Not a quad structure") ;
 //          Quad quad = buildQuad(item.getList()) ;
 //          if ( g == null )
 //          g = quad.getGraph() ;
 //          else
 //          {
 //          if ( !g.equals(quad.getGraph()) )
-//          broken(item, "Quad pattern is not using the same graph node everywhere") ;
+//          BuilderUtils.broken(item, "Quad pattern is not using the same graph node everywhere") ;
 //          }
 
 //          quads.add(quad) ; 
@@ -160,7 +202,7 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(3, list, "Malformed filter") ;
+            Builder.checkLength(3, list, "Malformed filter") ;
             Item itemExpr = list.get(1) ;
             Item itemOp = list.get(2) ;
 
@@ -178,7 +220,7 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(3, list, "Join") ;
+            Builder.checkLength(3, list, "Join") ;
             Op right = build(list, 1) ;
             Op left  = build(list, 2) ;
             Op op = OpJoin.create(left, right) ;
@@ -190,7 +232,7 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(3, 4, list, "leftJoin") ;
+            Builder.checkLength(3, 4, list, "leftjoin") ;
             Op right = build(list, 1) ;
             Op left  = build(list, 2) ;
             Expr expr = null ;
@@ -205,7 +247,7 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(3, list, "Union") ;
+            Builder.checkLength(3, list, "union") ;
             Op right = build(list, 1) ;
             Op left  = build(list, 2) ;
             Op op = new OpUnion(left, right) ;
@@ -217,8 +259,8 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(3, list, "Graph") ;
-            Node graph = buildNode(list.get(1)) ;
+            Builder.checkLength(3, list, "graph") ;
+            Node graph = BuilderNode.buildNode(list.get(1)) ;
             Op sub  = build(list, 2) ;
             return new OpGraph(graph, sub) ;
         }
@@ -230,7 +272,7 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(2, list, "ToList") ;
+            Builder.checkLength(2, list, "tolist") ;
             Op sub = build(list, 1) ;
             Op op = new OpList(sub) ;
             return op ;
@@ -253,9 +295,9 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(3, list, "Project") ;
+            Builder.checkLength(3, list, "project") ;
             Op sub = build(list, list.size()-1) ;
-            List x = buildVars(list.get(1).getList(), 0) ;
+            List x = BuilderNode.buildVars(list.get(1).getList(), 0) ;
             return new OpProject(sub, x) ;
         }
     } ;
@@ -264,7 +306,7 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(2, list, "Project") ;
+            Builder.checkLength(2, list, "distinct") ;
             Op sub = build(list, 1) ;
             return new OpDistinct(sub) ;
         }
@@ -274,7 +316,7 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(2, list, "Reduced") ;
+            Builder.checkLength(2, list, "reduced") ;
             Op sub = build(list, 1) ;
             return new OpReduced(sub) ;
         }
@@ -284,90 +326,13 @@ public class OpBuilder extends BuilderUtils
     {
         public Op make(ItemList list)
         {
-            checkLength(4, list, "Slice") ;
+            Builder.checkLength(4, list, "slice") ;
             Op sub = build(list, 1) ;
-            int start = buildInt(list, 2) ;
-            int length = buildInt(list, 3) ;
+            int start = BuilderNode.buildInt(list, 2) ;
+            int length = BuilderNode.buildInt(list, 3) ;
             return new OpSlice(sub, start, length) ;
         }
     } ;
-
-    public static Expr buildExpr(Item item)
-    {
-        return ExprBuilder.build(item) ;
-    }
-
-    public static Triple buildTriple(ItemList list)
-    {
-        checkLength(4, list, "triple") ;
-        Node s = buildNode(list.get(1)) ;
-        Node p = buildNode(list.get(2)) ;
-        Node o = buildNode(list.get(3)) ;
-        return new Triple(s, p, o) ; 
-    }
-
-    public static Quad buildQuad(ItemList list)
-    {
-        checkLength(5, list, "quad") ;
-        
-        Node g = null ;
-        if ( "_".equals(list.get(1).getWord()) )
-            g = Quad.defaultGraph ;
-        else
-            g = buildNode(list.get(1)) ;
-        Node s = buildNode(list.get(2)) ;
-        Node p = buildNode(list.get(3)) ;
-        Node o = buildNode(list.get(4)) ;
-        return new Quad(g, s, p, o) ; 
-    }
-
-    public static List buildExpr(ItemList list, int start)
-    {
-        List x = new ArrayList() ;
-        for ( int i = start ; i < list.size() ; i++ )
-        {
-            Item itemExpr = list.get(i) ;
-            Expr expr = buildExpr(itemExpr) ;
-            x.add(expr) ;
-        }
-        return x ;
-    }
-
-    public static Node buildNode(Item item)
-    {
-        if ( !item.isNode() )
-            broken(item, "Not a node: "+item) ;
-        return item.getNode() ;
-    }
-
-    protected static List buildVars(ItemList list, int start)
-    {
-        List x = new ArrayList() ;
-        for ( int i = start ; i < list.size() ; i++ )
-        {
-            Item item = list.get(i) ;
-            if ( ! item.isNode() || ! Var.isNamedVar(item.getNode()) )
-                broken(item, "Not a variable") ;
-            x.add(Var.alloc(item.getNode()));
-        }
-        return x ;
-    }
-
-    protected static int buildInt(ItemList list, int idx)
-    {
-        Item item = list.get(idx) ;
-        if ( !item.isNode() )
-            broken(item, "Not an integer: "+item) ;
-        Node node = item.getNode() ;
-        if ( ! node.isLiteral() )
-            broken(item, "Not an integer: "+item) ;
-
-        NodeValue nv = NodeValue.makeNode(node) ;
-        if ( ! nv.isInteger() )
-            broken(item, "Not an integer: "+item) ;
-        return nv.getInteger().intValue() ;
-    }
-
 }
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

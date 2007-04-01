@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.Table;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public interface Evaluator

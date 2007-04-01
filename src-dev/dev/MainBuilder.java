@@ -17,8 +17,8 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.SSE;
 import com.hp.hpl.jena.sparql.lang.sse.Writer;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ExprBuilder;
-import com.hp.hpl.jena.sparql.lang.sse.builders.OpBuilder;
+import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderExpr;
+import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.util.FileUtils;
@@ -45,7 +45,7 @@ public class MainBuilder
                 System.out.println() ;
             }
             
-            Expr expr = ExprBuilder.build(item) ;
+            Expr expr = BuilderExpr.build(item) ;
             System.out.println(expr) ;
             System.out.println() ;
         } catch (Exception ex)
@@ -88,7 +88,7 @@ public class MainBuilder
             pmap.setNsPrefix("", "http://example/") ;
             item = ResolvePrefixedNames.resolve(item, pmap) ;
 
-            Op op = OpBuilder.build(item) ;
+            Op op = BuilderOp.build(item) ;
             System.out.println("**** Algebra") ;
             System.out.print(op.toString()) ;
             System.out.println() ;

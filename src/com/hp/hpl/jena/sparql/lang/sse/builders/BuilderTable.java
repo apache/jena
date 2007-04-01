@@ -1,51 +1,55 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.ref.table;
+package com.hp.hpl.jena.sparql.lang.sse.builders;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.engine.Table;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.engine.table.TableSimple;
+import com.hp.hpl.jena.sparql.lang.sse.Item;
+import com.hp.hpl.jena.sparql.lang.sse.ItemList;
 
-public class TableEmpty extends TableBase
+public class BuilderTable
 {
-    public TableEmpty()
-    { }
+    static public interface Build { Op make(ItemList list) ; }
     
-    public QueryIterator createIterator(ExecutionContext execCxt)
+    public static Table build(Item item)
     {
-        return new QueryIterNullIterator(execCxt) ;
+        Builder.checkList(item, "Attempt to build a table from a non-list: "+item) ;
+        return buildTable(item.getList()) ;
+        //return null ;
     }
 
-    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
-                                        ExprList conditions,
-                                        ExecutionContext execContext)
+    private static Table buildTable(ItemList list)
     {
-        if ( includeOnNoMatch )
-            return new QueryIterSingleton(bindingLeft, execContext) ;
-        else
-            // No rows - no match
-            return new QueryIterNullIterator(execContext) ;
+        if ( list.size() == 0 )
+            Builder.broken(list, "Empty list") ;
+        if ( ! list.get(0).isWord())
+            Builder.broken(list, "Does not start with a tag: "+list.get(0)) ;
+        String tag = list.get(0).getWord() ;
+        
+        Builder.checkTag(list, "table") ;
+        
+        int start = 1 ;
+        // cols
+        
+        TableSimple table = new TableSimple() ;
+        for ( int i = start ; i < list.size() ; i++ )
+        {
+            Item item = list.get(i) ;
+            Binding b = BuilderBinding.build(item) ;
+            table.addBinding(b) ;
+        }
+        return table ;
     }
-
-    public void closeTable()    { }
-
-    public List getVarNames()   { return new ArrayList() ; }
-
-    public List getVars()       { return new ArrayList() ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

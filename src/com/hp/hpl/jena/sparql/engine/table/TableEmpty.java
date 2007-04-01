@@ -4,89 +4,44 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.ref.table;
+package com.hp.hpl.jena.sparql.engine.table;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-
-public class TableSimple extends TableBase
+public class TableEmpty extends TableBase
 {
-    List rows = new ArrayList() ;
-    List vars = new ArrayList() ;
-
-    public TableSimple(QueryIterator qIter)
-    {
-        materialize(qIter) ;
-    }
-
-    public void materialize(QueryIterator qIter)
-    {
-        while ( qIter.hasNext() )
-        {
-            Binding b = qIter.nextBinding() ;
-            for ( Iterator names = b.vars() ; names.hasNext() ; )
-            {
-                Var v = (Var)names.next() ;
-                if ( ! vars.contains(v))
-                    vars.add(v) ;
-            }
-            rows.add(b) ;
-        }
-        qIter.close() ;
-    }
-
+    public TableEmpty()
+    { }
     
-    // Note - this table is the RIGHT table, and takes a LEFT binding.
+    public QueryIterator createIterator(ExecutionContext execCxt)
+    {
+        return new QueryIterNullIterator(execCxt) ;
+    }
+
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
                                         ExprList conditions,
                                         ExecutionContext execContext)
     {
-        List out = new ArrayList() ;
-        for ( Iterator iter = rows.iterator() ; iter.hasNext() ; )
-        {
-            Binding bindingRight = (Binding)iter.next() ;
-            
-            Binding r =  merge(bindingLeft, bindingRight) ;
-            if ( r == null )
-                continue ;
-            // This does the conditional part. Theta-join.
-            if ( conditions == null || conditions.isSatisfied(r, execContext) )
-                out.add(r) ;
-        }
-                
-        if ( out.size() == 0 && includeOnNoMatch )
-            out.add(bindingLeft) ;
-        
-        if ( out.size() == 0 )
+        if ( includeOnNoMatch )
+            return new QueryIterSingleton(bindingLeft, execContext) ;
+        else
+            // No rows - no match
             return new QueryIterNullIterator(execContext) ;
-        return new QueryIterPlainWrapper(out.iterator(), execContext) ;
     }
 
- 
-    public QueryIterator createIterator(ExecutionContext execCxt)
-    {
-        return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
-    }
-    
-    public void closeTable()
-    {
-        rows = null ;
-        vars = null ;
-    }
+    public void closeTable()    { }
 
-    public List getVarNames()   { return vars ; }
+    public List getVarNames()   { return new ArrayList() ; }
 
-    public List getVars()       { return Var.varNames(vars) ; } 
+    public List getVars()       { return new ArrayList() ; }
 }
 
 /*

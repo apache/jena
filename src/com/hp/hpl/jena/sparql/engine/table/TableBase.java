@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine.ref.table;
+package com.hp.hpl.jena.sparql.engine.table;
 
 import java.util.Iterator;
 
@@ -12,10 +12,10 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.Table;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.engine.ref.Table;
 
 public abstract class TableBase implements Table
 {
