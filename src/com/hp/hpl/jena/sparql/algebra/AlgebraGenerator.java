@@ -96,6 +96,7 @@ public class AlgebraGenerator
     // (and test the full query compiler).
     boolean fixedFilterPosition = false ;
 
+    // An object so it has methods that the quad generator can override.
     protected AlgebraGenerator() {}
     
     // Compile any structural element
