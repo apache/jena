@@ -17,18 +17,18 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.resultset.PlainFormat;
 import com.hp.hpl.jena.sparql.resultset.ResultSetApply;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 
 /** Some utilities for query processing. 
  * 
@@ -65,14 +65,10 @@ public class QueryExecUtils
         queryExecution.close() ;
     }
 
-    public static void executeAlgebra(Op op, Dataset ds, ResultsFormat outputFormat)
+    public static void executeAlgebra(Op op, QueryIterator qIter, ResultsFormat outputFormat)
     {
-        DatasetGraph dsg = new DataSourceGraphImpl(ds) ;
-        
-        QueryIterator qIter = QueryEngineMain.eval(op, dsg) ;
-       
         List vars = null ;
-        if ( op instanceof OpProject )
+        if ( qIter instanceof OpProject )
             vars = Var.varNames(((OpProject)op).getVars()) ;
         else
             vars = Var.varNames(OpVars.allVars(op)) ;

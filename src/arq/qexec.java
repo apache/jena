@@ -13,13 +13,12 @@ import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.*;
 
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DataSourceGraph;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.PlanOp;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -126,27 +125,6 @@ public class qexec extends CmdARQ
             System.err.println("No query expression to execute") ;
             throw new TerminationException(9) ;
         }
-
-        if ( printOp || printPlan )
-        {
-            IndentedWriter out = new IndentedWriter(System.out) ;
-            if ( printOp )
-            {
-                divider() ;
-                op.output(out) ;
-            }
-            
-            if ( printPlan )
-            {
-                divider() ;
-                DataSourceGraph dsg = new DataSourceGraphImpl(ModelFactory.createDefaultModel()) ;
-                QueryIterator qIter = QueryEngineMain.eval(op, dsg) ;
-                Plan plan = new PlanOp(op, qIter) ;
-                plan.output(out) ;
-            }
-            out.flush();
-            return ;
-        }
         
         Dataset dataset = modDataset.getDataset() ;
         // Check there is a dataset
@@ -156,10 +134,34 @@ public class qexec extends CmdARQ
             throw new TerminationException(1) ;
         }
         
-
-        
         modTime.startTimer() ;
-        QueryExecUtils.executeAlgebra(op, dataset, modResults.getResultsFormat()) ;
+        DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
+        QueryIterator qIter = QueryEngineMain.eval(op, dsg) ;
+        
+        if ( printOp || printPlan )
+        {
+            
+            if ( printOp )
+            {
+                divider() ;
+                IndentedWriter out = new IndentedWriter(System.out, true) ;
+                op.output(out) ;
+                out.flush();
+            }
+            
+            if ( printPlan )
+            {
+                divider() ;
+                IndentedWriter out = new IndentedWriter(System.out, false) ;
+                Plan plan = new PlanOp(op, qIter) ;
+                plan.output(out) ;
+                out.flush();
+            }
+            return ;
+        }
+        
+        QueryExecUtils.executeAlgebra(op, qIter, modResults.getResultsFormat()) ;
+        
         long time = modTime.endTimer() ;
         if ( modTime.timingEnabled() )
             System.out.println("Time: "+modTime.timeStr(time)) ;
