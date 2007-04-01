@@ -41,6 +41,11 @@ ARQ2-beta
   (assign ?x expr) (is this SELECT/project?)
 + Prefix writing.
 + qexec tidy/integration
++ Tests
+  (setq ?x :y)  (binding () (?x :y) (?y 1))  () ==> parent
+  Combine with assign (binding (other binding))
+  (join ...) to do assign
+
 
 == LARQ
 
