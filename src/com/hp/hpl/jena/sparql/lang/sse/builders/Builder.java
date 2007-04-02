@@ -53,9 +53,7 @@ class Builder
     {
         if ( list.size() == 0 )
             broken(list, "Empty list") ;
-        if ( ! list.get(0).isWord() )
-            broken(list, "List does not start with a tag: "+Builder.shortPrint(list)) ;
-        if ( ! list.get(0).getWord().equalsIgnoreCase(tag) )
+        if ( ! list.get(0).isWordIgnoreCase(tag) )
             broken(list, "List does not start ("+tag+ "...) : "+Builder.shortPrint(list)) ;
     }
 

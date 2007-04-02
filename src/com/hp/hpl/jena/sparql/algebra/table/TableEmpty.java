@@ -42,6 +42,8 @@ public class TableEmpty extends TableBase
     public List getVarNames()   { return new ArrayList() ; }
 
     public List getVars()       { return new ArrayList() ; }
+    
+    public String toString()    { return "TableEmpty" ; }
 }
 
 /*

@@ -61,7 +61,7 @@ public class ResolvePrefixedNames
                 return item ; 
                 
             Item head = list.get(0) ;
-            if ( ! head.isWord() || ! head.getWord().equalsIgnoreCase("prefix") )
+            if ( ! head.isWordIgnoreCase("prefix") )
             {
                 ItemList newItemList = new ItemList(list.getLine(), list.getColumn()) ; 
                 for ( Iterator iter = list.iterator() ; iter.hasNext(); )

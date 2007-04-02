@@ -93,21 +93,8 @@ public class TableN extends TableBase
     public List getVarNames()   { return vars ; }
 
     public List getVars()       { return Var.varNames(vars) ; }
-    
-    public String toString()
-    {
-        // XXX redo PrintSerialzable and as a (table ...)
-        StringBuffer buff = new StringBuffer() ;
-        QueryIterator qIter = createIterator(null) ;
-        for ( ; qIter.hasNext() ; )
-        {
-            Binding b = qIter.nextBinding() ;
-            buff.append(b) ;
-            buff.append("\n") ;
-        }
-        qIter.close() ;
-        return buff.toString() ;
-    }
+
+ 
 }
 
 /*

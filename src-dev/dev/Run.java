@@ -39,7 +39,8 @@ public class Run
     private static void code()
     {
         Table table = SSE.readTable("SSE/table.sse") ;
-        System.out.print(table.toString()) ;
+        ResultSet rs = table.toResultSet() ;
+        ResultSetFormatter.out(rs) ;
         System.exit(0) ;
     }
 

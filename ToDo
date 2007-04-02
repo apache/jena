@@ -9,6 +9,8 @@ ARQ2-beta
 
 + Test algebra using BuilderTable etc.
 
++ A result set is like a table except with (cols)
+
 + Alternative indexes
   LARQ idea - extracted.  Object ==> node/subject
   

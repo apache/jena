@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.List;
 
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -26,6 +27,7 @@ public interface Table
     public List getVarNames() ;
     public QueryIterator iterator(ExecutionContext execCxt) ;
     public void addBinding(Binding binding) ;
+    public ResultSet toResultSet() ;
 }
 
 /*

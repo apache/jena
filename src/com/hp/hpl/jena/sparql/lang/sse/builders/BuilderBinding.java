@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.ItemList;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 class BuilderBinding
 {
@@ -26,12 +27,11 @@ class BuilderBinding
         // (row or (binding
         if ( list.size() == 0 )
             Builder.broken(list, "Empty list") ;
-        if ( ! list.get(0).isWord())
-            Builder.broken(list, "Does not start with a tag: "+list.get(0)) ;
         
-        String tag = list.get(0).getWord() ;
-        if ( ! tag.equalsIgnoreCase("row") && ! tag.equalsIgnoreCase("binding") )
-            Builder.broken(list, "Does not start (row ...) or (binding ...): "+tag) ;
+        Item head = list.get(0) ;
+        
+        if ( ! head.isWordIgnoreCase("row") && ! head.isWordIgnoreCase("binding") )
+            Builder.broken(list, "Does not start (row ...) or (binding ...): "+Builder.shortPrint(head)) ;
         
         Binding binding = new BindingMap() ;
         for ( int i = 1 ; i < list.size() ; i++ )
@@ -42,20 +42,20 @@ class BuilderBinding
             Builder.checkLength(2, pair, "Need a pair for a binding") ;
             
             Var v = BuilderNode.buildVar(pair.get(0)) ;
-            
+            Item cdr = pair.get(1) ;
             // undef
-            if ( pair.get(1).isWord() )
-            {
-                String w = pair.get(1).getWord() ;
-                if ( w.equalsIgnoreCase("undef") || w.equalsIgnoreCase("nil") )
-                    continue ;
-                Builder.broken(pair, "Not recognized: "+w) ;
-            }
+            if ( cdr.isWordIgnoreCase("undef") || cdr.isWordIgnoreCase("nil") )
+                continue ;
             
-            Builder.checkNode(pair.get(1)) ;
+            Builder.checkNode(cdr) ;
             Node node = BuilderNode.buildNode(item.getList().get(1)) ;
-            if ( node != null )
-                binding.add(v, node) ;
+            if ( node == null )
+                Builder.broken(item.getList().get(1), "Null node from "+item.getList().get(1)) ;
+            if ( node.isVariable() )
+                Builder.broken(item.getList().get(1), "No variables as table values: "+FmtUtils.stringForNode(node)) ;
+            if ( !node.isConcrete() )
+                Builder.broken(item.getList().get(1), "Ony concrete nodes as table values: "+FmtUtils.stringForNode(node)) ;
+            binding.add(v, node) ;
         }
         return binding ;
     }

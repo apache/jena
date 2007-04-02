@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding1;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 
 public class Table1 extends TableBase
@@ -81,6 +82,8 @@ public class Table1 extends TableBase
         x.add(var.getVarName()) ;
         return x ;
     }
+    
+    public String toString()    { return "Table1("+var+","+FmtUtils.stringForNode(value)+")" ; }
 }
 
 /*

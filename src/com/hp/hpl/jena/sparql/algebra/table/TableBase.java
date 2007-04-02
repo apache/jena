@@ -6,13 +6,18 @@
 
 package com.hp.hpl.jena.sparql.algebra.table;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFactory;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
@@ -74,6 +79,22 @@ public abstract class TableBase implements Table
     
     public void addBinding(Binding binding)
     { throw new UnsupportedOperationException("Table.add") ; }
+    
+    public ResultSet toResultSet()
+    {
+        QueryIterator qIter = iterator(null) ;
+        ResultSet rs = new ResultSetStream(getVars(), null, qIter) ;
+        rs = ResultSetFactory.makeRewindable(rs) ;
+        qIter.close() ;
+        return rs ;
+    }
+    
+    public String toString()
+    {
+        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+        ResultSetFormatter.out(out, toResultSet()) ;
+        return out.toString() ;
+    }
 }
 
 /*

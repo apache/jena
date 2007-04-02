@@ -287,7 +287,7 @@ public class OpWriter
         
         private void formatTriple(Triple tp)
         {
-            start() ;
+            out.print(Plan.startMarker2) ; 
             out.print("triple") ;
             out.print(" ") ;
             out.print(slotToString(tp.getSubject())) ;
@@ -295,12 +295,12 @@ public class OpWriter
             out.print(slotToString(tp.getPredicate())) ;
             out.print(" ") ;
             out.print(slotToString(tp.getObject())) ;
-            finish() ;
+            out.print(Plan.finishMarker2) ; 
         }
 
         private void formatQuad(Quad qp)
         {
-            start() ;
+            out.print(Plan.startMarker2) ; 
             out.print("quad") ;
             out.print(" ") ;
             out.print(slotToString(qp.getGraph())) ;
@@ -310,7 +310,7 @@ public class OpWriter
             out.print(slotToString(qp.getPredicate())) ;
             out.print(" ") ;
             out.print(slotToString(qp.getObject())) ;
-            finish() ;
+            out.print(Plan.finishMarker2) ;
         }
 
         private String slotToString(Node n)

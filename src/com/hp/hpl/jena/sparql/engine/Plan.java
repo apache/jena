@@ -11,9 +11,14 @@ import com.hp.hpl.jena.sparql.util.PrintSerializable;
 
 public interface Plan extends PrintSerializable
 {
+    // General markers, especially structural elements
     public static final String startMarker = "(" ;
     public static final String finishMarker = ")" ;
 
+    // Used for small things.
+    public static final String startMarker2 = "[" ;
+    public static final String finishMarker2 = "]" ;
+    
     public Op getOp() ;
     public QueryIterator iterator() ;
 }

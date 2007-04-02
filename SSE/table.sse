@@ -1,0 +1,5 @@
+(prefix ()
+  (table 
+   (row [?x 1] [?y 2])
+   (row [?x 1] [?y undef])
+   ))

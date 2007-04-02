@@ -50,10 +50,9 @@ public class BuilderExpr
             return NodeValue.makeNode(item.getNode()) ;
         }
     
-        String w = item.getWord() ;
-        if ( w.equalsIgnoreCase(symTrue) )
+        if ( item.isWordIgnoreCase(symTrue) )
             return NodeValue.TRUE ;
-        if ( w.equalsIgnoreCase(symFalse) )
+        if ( item.isWordIgnoreCase(symFalse) )
             return NodeValue.FALSE ;
         
         Builder.broken(item, "Not a list or a node or recognized word: "+item) ;

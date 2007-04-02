@@ -35,7 +35,21 @@ public class BuilderTable
         Builder.checkTag(list, "table") ;
         
         int start = 1 ;
-        // cols
+        if ( list.size() == 1 )
+            // Null table;
+            return TableFactory.createEmpty() ;
+
+        // Result set - cols.
+//      List vars = null ;
+//      Item itemCols = list.get(1) ;
+//      if ( itemCols.isList() && itemCols.getList().get(0).isWordIgnoreCase("cols") )
+//      {
+//          vars = BuilderNode.buildVars(list.get(1).getList(), 1) ;
+//          start++ ;
+//      }
+//          ....        
+//      if ( vars != null )
+//          table.setVars(vars) ;
         
         Table table = TableFactory.create() ;
         for ( int i = start ; i < list.size() ; i++ )

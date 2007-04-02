@@ -73,6 +73,20 @@ public class Item extends ItemLocation implements PrintSerializable
     public boolean isList()             { return list != null ; }
     public boolean isNode()             { return node != null ; }
     public boolean isWord()             { return word != null ; }
+    public boolean isWord(String testWord)
+    { 
+        if ( word == null )
+            return false ;
+        return word.equals(testWord) ;
+    }
+    
+    public boolean isWordIgnoreCase(String testWord)
+    { 
+        if ( word == null )
+            return false ;
+        return word.equalsIgnoreCase(testWord) ;
+    }
+    
     //public boolean isPrefixedName()     { return prefixedName != null ; }
 
     public ItemList getList()           { return list ; }
