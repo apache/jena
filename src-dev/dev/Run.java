@@ -18,8 +18,11 @@ import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.algebra.table.TableBase;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.lang.sse.SSE;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -41,6 +44,15 @@ public class Run
         Table table = SSE.readTable("SSE/table.sse") ;
         ResultSet rs = table.toResultSet() ;
         ResultSetFormatter.out(rs) ;
+        
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        IndentedWriter out = buff.getIndentedWriter() ;
+        TableBase.output(table,out, null) ;
+        System.out.println(buff.asString()) ;
+        
+        Table table2 = SSE.parseTable(buff.asString()) ;
+        ResultSet rs2 = table2.toResultSet() ;
+        ResultSetFormatter.out(rs2) ;
         System.exit(0) ;
     }
 

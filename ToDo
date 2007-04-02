@@ -7,6 +7,8 @@ ARQ2-beta
 
 == Core
 
++ OpUnit => OpTable.
+
 + Test algebra using BuilderTable etc.
 
 + A result set is like a table except with (cols)

@@ -6,21 +6,23 @@
 
 package com.hp.hpl.jena.sparql.algebra.table;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public abstract class TableBase implements Table
 {
@@ -89,11 +91,40 @@ public abstract class TableBase implements Table
         return rs ;
     }
     
-    public String toString()
+    
+    public static void output(Table table, IndentedWriter out, SerializationContext sCxt)
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        ResultSetFormatter.out(out, toResultSet()) ;
-        return out.toString() ;
+        if ( sCxt != null )
+        {}  // Prefix.  But then qnames are wrong.
+        out.print("(table") ;
+        out.incIndent() ;
+        QueryIterator qIter = table.iterator(null) ;
+        for ( ; qIter.hasNext() ; )
+        {
+            out.println() ;
+            Binding binding = qIter.nextBinding() ;
+            output(binding, out, sCxt) ;
+        }
+        out.decIndent() ;
+        
+        out.print(")") ;
+    }
+
+    private static void output(Binding binding, IndentedWriter out, SerializationContext sCxt)
+    {
+        out.print("(row") ;
+        for ( Iterator iter = binding.vars() ; iter.hasNext() ; )
+        {
+            Var v = (Var)iter.next();
+            Node n = binding.get(v) ;
+            out.print(" ") ;
+            out.print(Plan.startMarker2) ;
+            out.print(FmtUtils.stringForNode(v)) ; 
+            out.print(" ") ;
+            out.print(FmtUtils.stringForNode(n)) ;
+            out.print(Plan.finishMarker2) ;
+        }
+        out.print(")") ;
     }
 }
 
