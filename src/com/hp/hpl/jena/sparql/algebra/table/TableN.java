@@ -93,8 +93,6 @@ public class TableN extends TableBase
     public List getVarNames()   { return vars ; }
 
     public List getVars()       { return Var.varNames(vars) ; }
-
- 
 }
 
 /*
