@@ -17,6 +17,8 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 public class ResolvePrefixedNames
 {
+    public static String tagPrefix = "prefix" ;
+
     /*
      * (prefix LIST_PAIRS BODY ...)
      * 
@@ -25,128 +27,119 @@ public class ResolvePrefixedNames
      *      body
      *  ) => body with expansions
      */
-    
+
     public static Item resolve(Item item, PrefixMapping pmap)
     {
-        return new Resolver(pmap).resolve(item) ;
+        return process(item, pmap) ;
     }
-    
+
     public static Item resolve(Item item)
     {
-        return new Resolver().resolve(item) ;
+        return process(item, null) ;
     }
 
-    private static class Resolver
+    private static Item process(Item item, PrefixMapping pmap)
     {
-        private PrefixMapping pmap ;
-        Resolver(PrefixMapping pmap)    { this.pmap = pmap ; }
-        Resolver()                      { this.pmap = null ; }
-        
-        public Item resolve(Item item)
+        if ( item.isList() )
+            return process(item, item.getList(), pmap) ;
+        else if ( item.isNode() ) 
+            return process(item, item.getNode(), pmap) ;
+        else if ( item.isWord() )
+            return process(item, item.getWord(), pmap) ;
+        else
+            System.err.println("broken item") ;
+        return null ;
+    }
+
+    private static Item process(Item item, ItemList list, PrefixMapping pmap)
+    {
+        if ( list.isEmpty() )
+            return item ; 
+
+        Item head = list.get(0) ;
+        if ( ! head.isWordIgnoreCase(tagPrefix) )
         {
-            if ( item.isList() )
-                return resolve(item, item.getList()) ;
-            else if ( item.isNode() ) 
-                return resolve(item, item.getNode()) ;
-            else if ( item.isWord() )
-                return resolve(item, item.getWord()) ;
-            else
-                System.err.println("broken item") ;
-            return null ;
-        }
-        
-        public Item resolve(Item item, ItemList list)
-        {
-            if ( list.isEmpty() )
-                return item ; 
-                
-            Item head = list.get(0) ;
-            if ( ! head.isWordIgnoreCase("prefix") )
+            ItemList newItemList = new ItemList(list.getLine(), list.getColumn()) ; 
+            for ( Iterator iter = list.iterator() ; iter.hasNext(); )
             {
-                ItemList newItemList = new ItemList(list.getLine(), list.getColumn()) ; 
-                for ( Iterator iter = list.iterator() ; iter.hasNext(); )
-                {
-                    Item sub = (Item)iter.next();
-                    sub = resolve(sub) ;
-                    newItemList.add(sub) ;
-                }
-                return Item.createList(newItemList) ;
+                Item sub = (Item)iter.next();
+                sub = process(sub, pmap) ;
+                newItemList.add(sub) ;
             }
-                 
-            
-            // It's (prefix ...)
-            Builder.checkLength(3, list, "List is "+list.size()+"not 3 :: (prefix ...)") ;
-            
-            if ( ! list.get(1).isList() )
-                Builder.broken(list, "(prefix ...) is not list of prefix/IRI pairs") ;
-            
-            ItemList prefixes = list.get(1).getList() ;
-            Item body = list.get(2) ;
-
-            PrefixMapping2 ext = new PrefixMapping2(pmap) ;
-            PrefixMapping newMappings = ext.getLocalPrefixMapping() ;
-
-            parsePrefixes(newMappings, prefixes) ;
-            
-            // Push (on the current execution frame) the existing prefix map. 
-            PrefixMapping pmapPush = pmap ;
-            pmap = ext ;
-            Item result = resolve(body) ;
-            pmap = pmapPush ;
-            return result ;
-        }
-        
-        static private void parsePrefixes(PrefixMapping newMappings, ItemList prefixes)
-        {
-            for ( Iterator iter = prefixes.iterator() ; iter.hasNext() ; )
-            {
-                Item pair = (Item)iter.next() ;
-                if ( !pair.isList() || pair.getList().size() != 2 )
-                    Builder.broken(pair, "Not a prefix/IRI pair") ;
-                Item prefixItem = pair.getList().get(0) ;
-                Item iriItem = pair.getList().get(1) ;
-
-                Node n = prefixItem.getNode() ;
-                if ( ! n.isURI() )
-                    Builder.broken(pair, "Prefix part is not a prefixed name: "+pair) ;
-                
-                String prefix = n.getURI();
-                Node iriNode = iriItem.getNode() ;
-                
-                if ( iriNode == null || ! iriNode.isURI() )
-                    Builder.broken(pair, "Not an IRI: "+iriItem) ;
-                
-                String iri = iriNode.getURI();
-                // It will look like :x:
-                prefix = prefix.substring(1) ;
-                prefix = prefix.substring(0, prefix.length()-1) ;
-                
-                newMappings.setNsPrefix(prefix, iri) ;
-            }
+            return Item.createList(newItemList) ;
         }
 
-        public Item resolve(Item item, String word)
-        { return item ; }
-        
-        public Item resolve(Item item, Node node)
+        // It's (prefix ...)
+        Builder.checkLength(3, list, "List is "+list.size()+"not 3 :: (prefix PREFIXES BODY))") ;
+
+        if ( ! list.get(1).isList() )
+            Builder.broken(list, "("+tagPrefix+" ...) is not list of prefix/IRI pairs") ;
+
+        ItemList prefixes = list.get(1).getList() ;
+        Item body = list.get(2) ;
+
+        PrefixMapping2 ext = new PrefixMapping2(pmap) ;
+        PrefixMapping newMappings = ext.getLocalPrefixMapping() ;
+
+        parsePrefixes(newMappings, prefixes) ;
+
+        // Push (on the current execution frame) the existing prefix map.
+        PrefixMapping pmapPush = pmap ;
+        Item result = process(body, ext) ;
+        pmap = pmapPush ;
+        return result ;
+    }
+
+    private static void parsePrefixes(PrefixMapping newMappings, ItemList prefixes)
+    {
+        for ( Iterator iter = prefixes.iterator() ; iter.hasNext() ; )
         {
-            if ( ! node.isURI() )
-                return item ;
-            String uri = node.getURI() ;
-            if ( uri.startsWith(":") )
-            {
-                String qname = uri.substring(1) ;
-                if ( pmap != null )
-                    uri = pmap.expandPrefix(qname) ;
-                if ( uri == null || uri.equals(qname) )
-                    Builder.broken(item, "Can't resolve "+qname) ;
-                return Item.createNode(Node.createURI(uri)) ;
-            }
-            else
-            {
-                uri = RelURI.resolve(uri) ;
-                return Item.createNode(Node.createURI(uri)) ;
-            }
+            Item pair = (Item)iter.next() ;
+            if ( !pair.isList() || pair.getList().size() != 2 )
+                Builder.broken(pair, "Not a prefix/IRI pair") ;
+            Item prefixItem = pair.getList().get(0) ;
+            Item iriItem = pair.getList().get(1) ;
+
+            Node n = prefixItem.getNode() ;
+            if ( ! n.isURI() )
+                Builder.broken(pair, "Prefix part is not a prefixed name: "+pair) ;
+
+            String prefix = n.getURI();
+            Node iriNode = iriItem.getNode() ;
+
+            if ( iriNode == null || ! iriNode.isURI() )
+                Builder.broken(pair, "Not an IRI: "+iriItem) ;
+
+            String iri = iriNode.getURI();
+            // It will look like :x:
+            prefix = prefix.substring(1) ;
+            prefix = prefix.substring(0, prefix.length()-1) ;
+
+            newMappings.setNsPrefix(prefix, iri) ;
+        }
+    }
+
+    private static Item process(Item item, String word, PrefixMapping pmap)
+    { return item ; }
+
+    private static Item process(Item item, Node node, PrefixMapping pmap)
+    {
+        if ( ! node.isURI() )
+            return item ;
+        String uri = node.getURI() ;
+        if ( uri.startsWith(":") )
+        {
+            String qname = uri.substring(1) ;
+            if ( pmap != null )
+                uri = pmap.expandPrefix(qname) ;
+            if ( uri == null || uri.equals(qname) )
+                Builder.broken(item, "Can't resolve "+qname) ;
+            return Item.createNode(Node.createURI(uri)) ;
+        }
+        else
+        {
+            uri = RelURI.resolve(uri) ;
+            return Item.createNode(Node.createURI(uri)) ;
         }
     }
 }

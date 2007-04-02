@@ -16,6 +16,9 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 class BuilderBinding
 {
+    static final public String tagBinding = "binding" ;
+    static final public String tagRow = "row" ;
+    
     public static Binding build(Item item)
     {
         Builder.checkList(item, "Attempt to build a binding from non-list: "+item) ;
@@ -30,8 +33,8 @@ class BuilderBinding
         
         Item head = list.get(0) ;
         
-        if ( ! head.isWordIgnoreCase("row") && ! head.isWordIgnoreCase("binding") )
-            Builder.broken(list, "Does not start (row ...) or (binding ...): "+Builder.shortPrint(head)) ;
+        if ( ! head.isWordIgnoreCase(tagRow) && ! head.isWordIgnoreCase(tagBinding) )
+            Builder.broken(list, "Does not start ("+tagRow+" ...) or ("+tagBinding+" ...): "+Builder.shortPrint(head)) ;
         
         Binding binding = new BindingMap() ;
         for ( int i = 1 ; i < list.size() ; i++ )
@@ -44,7 +47,7 @@ class BuilderBinding
             Var v = BuilderNode.buildVar(pair.get(0)) ;
             Item cdr = pair.get(1) ;
             // undef
-            if ( cdr.isWordIgnoreCase("undef") || cdr.isWordIgnoreCase("nil") )
+            if ( cdr.isWordIgnoreCase(BuilderNode.tagUndef) || cdr.isWordIgnoreCase(BuilderNode.tagNull) )
                 continue ;
             
             Builder.checkNode(cdr) ;

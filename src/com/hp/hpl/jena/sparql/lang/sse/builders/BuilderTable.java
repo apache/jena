@@ -15,6 +15,8 @@ import com.hp.hpl.jena.sparql.lang.sse.ItemList;
 
 public class BuilderTable
 {
+    static final public String tagTable = "table" ;
+    
     static public interface Build { Op make(ItemList list) ; }
     
     public static Table build(Item item)
@@ -32,7 +34,7 @@ public class BuilderTable
             Builder.broken(list, "Does not start with a tag: "+list.get(0)) ;
         String tag = list.get(0).getWord() ;
         
-        Builder.checkTag(list, "table") ;
+        Builder.checkTag(list, tagTable) ;
         
         int start = 1 ;
         if ( list.size() == 1 )
