@@ -3,6 +3,15 @@ Release Notes
 
 Post 2.5.2
 
+GraphEvents
+    o GraphEvents objects had title & contents fields, but no 
+      accessors were defined for these, making them less useful
+      than intended. (Perhaps because of their original provision
+      only of removeAll, startRead, and finishRead events.)
+
+      The class now sports getTitle() and getContents() methods,
+      and a test class that checks that they work.
+      
 Assembler modification-and-fix
     o There was a bug with the behaviour of OntModelSpec assemblers.
       The "feature" that if a ja:OntModelSpec had no properties it
