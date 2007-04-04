@@ -11,48 +11,62 @@ import com.hp.hpl.jena.sparql.util.TranslationTable;
 
 public class ResultsFormat extends Symbol
 {
-    // TODO Merge with ResultSetFormat
+    /* Select formats - full names */
     
-    /* Select formats */
-    public final static ResultsFormat FMT_NONE    = new ResultsFormat("none") ;      /** No output */
-    public final static ResultsFormat FMT_TUPLES  = new ResultsFormat("tuples") ;    /** Output the triples for the query */ 
-    public final static ResultsFormat FMT_TEXT    = new ResultsFormat("text") ;      /** Output a text table */
-    public final static ResultsFormat FMT_COUNT   = new ResultsFormat("count") ;     /** Output the number of rows of a SELECT query */
-    
-    public final static ResultsFormat FMT_RS_RDF  = new ResultsFormat("rs/graph") ;  /** Output an RDF graph */
-    public final static ResultsFormat FMT_RS_TEXT = new ResultsFormat("rs/text") ;   /** Output results showing structure */
-    public final static ResultsFormat FMT_RS_XML  = new ResultsFormat("rs/xml") ;    /** Output as XML */
-    
-    public final static ResultsFormat FMT_RS_JSON    = new ResultsFormat("rs/json") ;   /** Output as JSON */
+    public final static ResultsFormat FMT_RS_RDF   = new ResultsFormat("rs/graph") ;  /** Format of result set is an RDF graph */
+    public final static ResultsFormat FMT_RS_XML   = new ResultsFormat("rs/xml") ;    /** Format of result set as XML */
+    public final static ResultsFormat FMT_RS_JSON  = new ResultsFormat("rs/json") ;   /** Format of result set as JSON */
+    public final static ResultsFormat FMT_RS_SSE   = new ResultsFormat("rs/sse") ;    /** Format of result set as SSE */ 
 
+    public final static ResultsFormat FMT_NONE     = new ResultsFormat("none") ;       /** No output */
+    public final static ResultsFormat FMT_TEXT     = new ResultsFormat("rs/text") ;   /** Any kind of text */
+    
+    public final static ResultsFormat FMT_TUPLES   = new ResultsFormat("tuples") ;     /** Format of results as dump of bindings */ 
+
+    public final static ResultsFormat FMT_COUNT    = new ResultsFormat("count") ;      /** Output the number of rows of a SELECT query */
+    
     /* Construct and describe formats as well */ 
     public final static ResultsFormat FMT_RDF_XML  = new ResultsFormat("RDF/XML-ABBREV") ;
     public final static ResultsFormat FMT_RDF_N3   = new ResultsFormat("N3") ;
     public final static ResultsFormat FMT_RDF_TTL  = new ResultsFormat("Turtle") ;
     public final static ResultsFormat FMT_RDF_NT   = new ResultsFormat("N-TRIPLES") ;
     
+    
+    
     public final static ResultsFormat FMT_UNKNOWN   = new ResultsFormat("unknown") ;
     
     static TranslationTable resultFormats =  new TranslationTable(true) ;
     
     static {
+        // Mapping of names to symbols.
+        // Common names.
+        
+        resultFormats.put("rs/text",   ResultsFormat.FMT_TEXT ) ;
         resultFormats.put("text" ,     ResultsFormat.FMT_TEXT ) ;
+        resultFormats.put("rs/raw",    ResultsFormat.FMT_TEXT ) ;
+
         resultFormats.put("none" ,     ResultsFormat.FMT_NONE ) ;
         resultFormats.put("count" ,    ResultsFormat.FMT_COUNT ) ;
-        resultFormats.put("tuples" ,   ResultsFormat.FMT_TUPLES  ) ;
         
-        resultFormats.put("rs/text",   ResultsFormat.FMT_RS_TEXT ) ;
-        resultFormats.put("rs/raw",    ResultsFormat.FMT_RS_TEXT ) ;
-
         // result set - XML result
+        resultFormats.put("rs/xml",    ResultsFormat.FMT_RS_XML ) ;
         resultFormats.put("rs",        ResultsFormat.FMT_RS_XML ) ;
         resultFormats.put("srx",       ResultsFormat.FMT_RS_XML ) ;
-        resultFormats.put("rs/xml",    ResultsFormat.FMT_RS_XML ) ;
         resultFormats.put("xml" ,      ResultsFormat.FMT_RS_XML ) ;
         
         // result set - JSON tables
-        resultFormats.put("json",      ResultsFormat.FMT_RS_JSON ) ;
         resultFormats.put("rs/json",   ResultsFormat.FMT_RS_JSON ) ;
+        resultFormats.put("srj",       ResultsFormat.FMT_RS_JSON ) ;
+        resultFormats.put("json",      ResultsFormat.FMT_RS_JSON ) ;
+
+        // result set - SSE tables
+        resultFormats.put("rs/sse",    ResultsFormat.FMT_RS_SSE ) ;
+        resultFormats.put("sse",       ResultsFormat.FMT_RS_SSE ) ;
+        
+        // Dump!
+        resultFormats.put("tuples",    ResultsFormat.FMT_TUPLES ) ;
+        resultFormats.put("dump",      ResultsFormat.FMT_TUPLES ) ;
+        resultFormats.put("debug",     ResultsFormat.FMT_TUPLES ) ;
 
         // result set - graph
         resultFormats.put("rs/graph",  ResultsFormat.FMT_RS_RDF ) ;

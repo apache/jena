@@ -121,24 +121,56 @@ public class NodeFunctions
         // See RFC 3066 (it's "tag (-tag)*)"
 
         String[] langElts = nodeLang.split("-") ;
-        String[] patternElts = langPattern.split("-") ;
+        String[] langRangeElts = langPattern.split("-") ;
         
-        if ( patternElts.length > langElts.length )
-            // Lang tag longer than pattern tag => can't match
-            return NodeValue.FALSE ;
 
         /*
          * Here is the logic to compare language code.
          * There is a match if the language matches the
          * parts of the pattern - the language may be longer than
-         * the pattern.  
+         * the pattern.
          */
         
-        for ( int i = 0 ; i < patternElts.length ; i++ )
+        /* RFC 4647 basic filtering.
+         * 
+         * To do extended:
+         * 1. Remove any -*- (but not *-)
+         * 2. Compare primary tags.
+         * 3. Is the remaining range a subsequence of the remaining language tag? 
+         */
+        
+//        // Step one: remove "-*-" (but not "*-")
+//        int j = 1 ;
+//        for ( int i = 1 ; i < langRangeElts.length ; i++ )
+//        {
+//            String range = langRangeElts[i] ;
+//            if ( range.equals("*") ) 
+//                continue ;
+//            langRangeElts[j] = range ;
+//            j++ ;
+//        }
+//
+//        // Null fill any free space.
+//        for ( int i = j ; i < langRangeElts.length ; i++ )
+//            langRangeElts[i] = null ;
+        
+        // This is basic specific.
+        
+        if ( langRangeElts.length > langElts.length )
+            // Lang tag longer than pattern tag => can't match
+            return NodeValue.FALSE ;
+        for ( int i = 0 ; i < langRangeElts.length ; i++ )
         {
-            String pat = patternElts[i] ;
+            String range = langRangeElts[i] ;
+            if ( range == null )
+                break ;
+            // Language longer than range
+            if ( i >= langElts.length )
+                break ;
             String lang = langElts[i] ;
-            if ( ! pat.equalsIgnoreCase(lang) )
+            if ( range.equals("*") )
+                continue ;
+            if ( ! range.equalsIgnoreCase(lang) )
                 return NodeValue.FALSE ;
         }
         return NodeValue.TRUE ;

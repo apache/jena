@@ -6,55 +6,69 @@
 
 package com.hp.hpl.jena.sparql.junit;
 
-import junit.framework.TestCase;
+import java.util.Iterator;
 
 import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.query.larq.IndexBuilderString;
+import com.hp.hpl.jena.query.larq.IndexBuilderModel;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
 import com.hp.hpl.jena.query.larq.LARQ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.sparql.util.StringUtils;
 import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
-public class TestCaseLARQ extends TestCase  
+public class TestLARQUtils
 {
-//  TODO Move in TestLARQ.test_textMatches_literal_*
-    
-    String queryFile ;
-    String dataFile ;
-    String resultsFile ;
-    
-    protected TestCaseLARQ(String name, String queryFile, String dataFile, String resultsFile)
-    { 
-        super(name) ;
-        this.queryFile = queryFile ;
-        this.dataFile = dataFile ;
-        this.resultsFile = resultsFile ;
-    }
-    
-    // See TestLARQ.
-    
-    protected void runTest()
+    public static QueryExecution query(Model model, String pattern)
+    { return query(model, pattern, null) ; }
+
+    public static QueryExecution query(Model model, String pattern, IndexLARQ index)
     {
-        IndexBuilderString larqBuilder = new IndexBuilderString() ;
-        Model model = ModelFactory.createDefaultModel() ; 
-        model.register(larqBuilder) ;    
-        FileManager.get().readModel(model, dataFile) ;
-        model.unregister(larqBuilder) ;
-        
-        IndexLARQ index = larqBuilder.getIndex() ;
-        LARQ.setDefaultIndex(index) ;
-        
-        Query query = QueryFactory.read(queryFile) ;
-        QueryExecution qe = QueryExecutionFactory.create(query, model) ;
-        ResultSet rsExpected = ResultSetFactory.load(resultsFile) ;
-        
-        ResultSet rsActual = qe.execSelect() ;
-        QueryTest.resultSetEquivalent(query, rsActual, rsExpected) ;
-        qe.close() ; 
-        LARQ.removeDefaultIndex() ;
+        String queryString = StringUtils.join("\n", new String[]{
+            "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
+            "PREFIX :       <http://example/>" ,
+            "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
+            "PREFIX  dc:    <http://purl.org/dc/elements/1.1/>",
+            "SELECT *",
+            pattern,
+        }) ;
+        Query query = QueryFactory.create(queryString) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
+        if ( index != null )
+            LARQ.setDefaultIndex(qExec.getContext(), index) ;
+        return qExec ;
     }
     
+    public static int count(ResultSet rs)
+    {
+        return ResultSetFormatter.consume(rs) ;
+    }
+    
+    public static int count(Iterator iter)
+    {
+        int count = 0 ; 
+        for ( ; iter.hasNext() ; )
+        {
+            iter.next();
+            count++ ;
+        }
+        NiceIterator.close(iter) ;
+        return count ;
+    }
+    
+    public static IndexLARQ createIndex(String datafile, IndexBuilderModel indexBuilder)
+    { return createIndex(ModelFactory.createDefaultModel(), datafile, indexBuilder) ; }
+    
+    public static IndexLARQ createIndex(Model model, String datafile, IndexBuilderModel indexBuilder)
+    {
+        model.register(indexBuilder) ;
+        FileManager.get().readModel(model, datafile) ;
+        model.unregister(indexBuilder) ;
+        indexBuilder.closeForWriting() ;
+        return indexBuilder.getIndex() ;
+    }
+
 }
 
 /*

@@ -28,9 +28,9 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        //runQExpr() ;
+        runQExpr() ;
         //print() ;
-        code() ;
+        //code() ;
         //classifyJ() ;
         //classifyLJ() ;
         //execQuery("D.ttl", "Q.rq") ;
@@ -185,7 +185,7 @@ public class Run
 
     static public void runQExpr()
     {
-        qexpr.main(new String[]{"--strict", "1 = :x"}) ;
+        qexpr.main(new String[]{"langMatches('en-uk', 'en-*-uk')"}) ;
 //        qexpr.main(new String[]{"(1+3)"}) ;
 //        qexpr.main(new String[]{"(?x+3)"}) ;
 //        System.exit(0) ;

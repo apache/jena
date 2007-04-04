@@ -84,7 +84,7 @@ public class QueryExecUtils
             prefixMapping = globalPrefixMap ;
 
         if ( outputFormat.equals(ResultsFormat.FMT_UNKNOWN) )
-            outputFormat = ResultsFormat.FMT_RS_TEXT ;
+            outputFormat = ResultsFormat.FMT_TEXT ;
         
         if ( outputFormat.equals(ResultsFormat.FMT_NONE) ||
              outputFormat.equals(ResultsFormat.FMT_COUNT) )
@@ -121,13 +121,7 @@ public class QueryExecUtils
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultsFormat.FMT_RS_TEXT) )
-        {
-            ResultSetFormatter.out(System.out, results, prefixMapping) ;
-            done = true ;
-        }
-
-        if ( outputFormat.equals(ResultsFormat.FMT_TEXT))
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) )
         {
             ResultSetFormatter.out(System.out, results, prefixMapping) ;
             done = true ;
@@ -151,7 +145,7 @@ public class QueryExecUtils
     private static void doSelectQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
     {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
-            outputFormat = ResultsFormat.FMT_RS_TEXT ; 
+            outputFormat = ResultsFormat.FMT_TEXT ; 
         ResultSet results = qe.execSelect() ;
         outputResultSet(results, query.getPrefixMapping(), outputFormat) ;
     }
@@ -179,7 +173,7 @@ public class QueryExecUtils
     private static void writeModel(Query query, Model model, ResultsFormat outputFormat)
     {
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
-            outputFormat = ResultsFormat.FMT_RS_TEXT ;
+            outputFormat = ResultsFormat.FMT_TEXT ;
 
         if ( outputFormat.equals(ResultsFormat.FMT_NONE) )
             return ;
