@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.util.List;
 
+import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -19,16 +20,10 @@ import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.resultset.PlainFormat;
 import com.hp.hpl.jena.sparql.resultset.ResultSetApply;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
-
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 
 /** Some utilities for query processing. 
  * 
@@ -72,8 +67,7 @@ public class QueryExecUtils
             vars = Var.varNames(((OpProject)op).getVars()) ;
         else
             vars = Var.varNames(OpVars.allVars(op)) ;
-        
-        ResultSet results = new ResultSetStream(vars, null, qIter) ;
+        ResultSet results = ResultSetFactory.create(qIter, vars) ;
         outputResultSet(results, null, outputFormat) ;
      }
     

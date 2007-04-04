@@ -146,8 +146,13 @@ public class Var extends Node_Variable
         List x = new ArrayList() ;
         for ( Iterator iter = vars.iterator() ; iter.hasNext() ; )
         {
-            Var v = (Var)iter.next() ;
-            x.add(v.getVarName()) ;
+            Object obj = iter.next(); 
+            if ( obj instanceof Var )
+                x.add(((Var)obj).getVarName()) ;
+            else if ( obj instanceof String )
+                x.add((String)obj) ;
+            else
+                throw new ARQInternalErrorException("Element of a var list is not a string or a var: "+obj) ;
         }
         return x ;
     }
