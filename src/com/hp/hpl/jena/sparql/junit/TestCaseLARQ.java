@@ -18,6 +18,8 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class TestCaseLARQ extends TestCase  
 {
+//  TODO Move in TestLARQ.test_textMatches_literal_*
+    
     String queryFile ;
     String dataFile ;
     String resultsFile ;

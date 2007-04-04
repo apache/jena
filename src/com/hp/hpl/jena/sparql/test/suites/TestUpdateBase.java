@@ -4,10 +4,11 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.test;
+package com.hp.hpl.jena.sparql.test.suites;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.test.UpdateTestSuite;
 import com.hp.hpl.jena.update.*;
 
 import junit.framework.TestCase;

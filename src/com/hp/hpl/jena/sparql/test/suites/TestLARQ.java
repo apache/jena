@@ -260,7 +260,6 @@ public class TestLARQ extends TestCase
             assertTrue(ARQ.getContext().isDefined(LARQ.indexKey)) ;
             
             QueryExecution qExec = query(model, "{ ?lit pf:textMatch '+document' }") ;
-            
             ResultSet rs = qExec.execSelect() ;
             assertEquals(3, count(rs)) ;
             qExec.close() ;
@@ -293,6 +292,8 @@ public class TestLARQ extends TestCase
         } finally { LARQ.removeDefaultIndex() ; }
     }
     
+    // TODO Move to scripted tests
+    
     public void test_textMatches_literal_1()
     {
         Model model = ModelFactory.createDefaultModel() ;
@@ -318,6 +319,8 @@ public class TestLARQ extends TestCase
         index.close() ;
         LARQ.removeDefaultIndex() ;
     }
+    
+    
 
     public void test_textMatches_literal_3()
     {
@@ -382,6 +385,8 @@ public class TestLARQ extends TestCase
         LARQ.removeDefaultIndex() ;
     }
 
+    // Check the LARQ examples at least run without problems.
+    
     public void test_larq_example_1() throws Exception
     { 
         PrintStream pOut = System.out ;

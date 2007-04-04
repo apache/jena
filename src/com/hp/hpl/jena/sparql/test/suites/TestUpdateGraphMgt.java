@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.test;
+package com.hp.hpl.jena.sparql.test.suites;
 
 import com.hp.hpl.jena.sparql.AlreadyExists;
 import com.hp.hpl.jena.sparql.DoesNotExist;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.GraphStoreFactory;
 
 
-public class TestGraphMgt extends TestUpdateBase
+public class TestUpdateGraphMgt extends TestUpdateBase
 {
     static final String graphIRI = "http://example/graph" ;
     
@@ -64,7 +64,7 @@ public class TestGraphMgt extends TestUpdateBase
     public void testCreateDrop3()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        script(gStore, "create-1.ru") ;
+        script(gStore, "create-1.rup") ;
         assertTrue(gStore.containsNamedGraph(graphIRI)) ;
         assertTrue(graphEmpty(gStore.getNamedGraph(graphIRI))) ;
     }
@@ -73,7 +73,7 @@ public class TestGraphMgt extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         gStore.addNamedGraph(graphIRI, GraphUtils.makeDefaultGraph()) ;
-        script(gStore, "drop-1.ru") ;
+        script(gStore, "drop-1.rup") ;
         assertFalse(gStore.containsNamedGraph(graphIRI)) ;
     }
 }

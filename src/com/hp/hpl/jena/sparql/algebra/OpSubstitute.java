@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
-
 public class OpSubstitute extends TransformCopy
 {
     private Binding binding ;

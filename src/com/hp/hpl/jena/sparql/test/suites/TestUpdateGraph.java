@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.test;
+package com.hp.hpl.jena.sparql.test.suites;
 
 
 import com.hp.hpl.jena.graph.Factory;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.update.GraphStoreFactory;
 
 import com.hp.hpl.jena.query.QueryFactory;
 
-public class TestGraphUpdate extends TestUpdateBase
+public class TestUpdateGraph extends TestUpdateBase
 {
     // TODO Tests fronm script files
     
@@ -163,14 +163,14 @@ public class TestGraphUpdate extends TestUpdateBase
     public void testUpdateScript1()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        script(gStore, "update-1.ru") ;
+        script(gStore, "update-1.rup") ;
         assertTrue(graphContains(gStore.getDefaultGraph(), new Triple(s,p,Node.create("123")))) ;
     }
     
     public void testUpdateScript2()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        script(gStore, "update-2.ru") ;
+        script(gStore, "update-2.rup") ;
         assertTrue(graphContains(gStore.getNamedGraph("http://example/g1"),
                                  new Triple(s,p,Node.create("123")))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
@@ -179,7 +179,7 @@ public class TestGraphUpdate extends TestUpdateBase
     public void testUpdateScript3()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        script(gStore, "update-3.ru") ;
+        script(gStore, "update-3.rup") ;
         assertTrue(graphEmpty(gStore.getNamedGraph("http://example/g1"))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }

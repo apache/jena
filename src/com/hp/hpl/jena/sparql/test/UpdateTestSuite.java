@@ -4,7 +4,10 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.test;
+package com.hp.hpl.jena.sparql.test;
+
+import com.hp.hpl.jena.sparql.test.suites.TestUpdateGraphMgt;
+import com.hp.hpl.jena.sparql.test.suites.TestUpdateGraph;
 
 import junit.framework.TestSuite;
 
@@ -15,8 +18,8 @@ public class UpdateTestSuite extends TestSuite
     static public TestSuite suite()
     {
         TestSuite ts = new UpdateTestSuite() ;
-        ts.addTestSuite(TestGraphMgt.class) ; 
-        ts.addTestSuite(TestGraphUpdate.class) ;
+        ts.addTestSuite(TestUpdateGraphMgt.class) ; 
+        ts.addTestSuite(TestUpdateGraph.class) ;
         return ts ;
     }
     
