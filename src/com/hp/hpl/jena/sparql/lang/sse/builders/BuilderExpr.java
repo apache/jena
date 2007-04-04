@@ -12,6 +12,7 @@ import java.util.Map;
 
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
@@ -34,13 +35,30 @@ public class BuilderExpr
     
         if ( item.isList() )
         {
-            Item head = item.getList().get(0) ;
+            ItemList list = item.getList() ;
+            
+            if ( list.size() == 0 )
+                Builder.broken(item, "Empty list for expression") ;
+            
+            Item head = list.get(0) ;
+            
             if ( head.isNode() )
-                return buildFunctionCall(item.getList()) ;
-            else if ( head.isWord() )
-                return buildKnownFunction(item.getList()) ;
+                return buildFunctionCall(list) ;
             else if ( head.isList() )
                 Builder.broken(item, "Head is a list") ;
+            else if ( head.isWord() )
+            {
+                if ( item.isTagged("expr") )
+                {
+                    Builder.checkLength(2, list, "Wrong length: "+Builder.shortPrint(item)) ;
+                    item = list.get(1) ;
+                    return buildItem(item) ;
+                }
+                
+                
+                return buildKnownFunction(list) ;                
+            }
+            throw new ARQInternalErrorException() ;
         }
     
         if ( item.isNode() )
