@@ -21,21 +21,22 @@ public class BuilderTable
     
     public static Table build(Item item)
     {
-        Builder.checkList(item, "Attempt to build a table from a non-list: "+item) ;
-        return buildTable(item.getList()) ;
-        //return null ;
-    }
-
-    private static Table buildTable(ItemList list)
-    {
-        if ( list.size() == 0 )
-            Builder.broken(list, "Empty list") ;
-        if ( ! list.get(0).isWord())
-            Builder.broken(list, "Does not start with a tag: "+list.get(0)) ;
-        String tag = list.get(0).getWord() ;
-        
-        Builder.checkTag(list, tagTable) ;
-        
+        Builder.checkTagged(item, tagTable, "Not a (table ...)") ;
+//        return buildTable(item.getList()) ;
+//        //return null ;
+//    }
+//
+//    private static Table buildTable(ItemList list)
+//    {
+//        if ( list.size() == 0 )
+//            Builder.broken(list, "Empty list") ;
+//        if ( ! list.get(0).isWord())
+//            Builder.broken(list, "Does not start with a tag: "+list.get(0)) ;
+//        String tag = list.get(0).getWord() ;
+//        
+//        Builder.checkTag(list, tagTable) ;
+//        
+        ItemList list = item.getList() ;
         int start = 1 ;
         if ( list.size() == 1 )
             // Null table;
@@ -56,8 +57,8 @@ public class BuilderTable
         Table table = TableFactory.create() ;
         for ( int i = start ; i < list.size() ; i++ )
         {
-            Item item = list.get(i) ;
-            Binding b = BuilderBinding.build(item) ;
+            Item itemRow = list.get(i) ;
+            Binding b = BuilderBinding.build(itemRow) ;
             table.addBinding(b) ;
         }
         return table ;

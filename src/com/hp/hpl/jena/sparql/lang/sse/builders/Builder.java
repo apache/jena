@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.lang.sse.builders.ExprBuildException;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 
-class Builder
+public class Builder
 {
     public static String shortPrint(Item item)
     {
@@ -49,13 +49,19 @@ class Builder
         broken(item, "Not a word: "+Builder.shortPrint(item)) ;
     }
     
-    public static void checkTag(ItemList list, String tag)
+    public static void checkTagged(Item item, String tag, String msg)
     {
-        if ( list.size() == 0 )
-            broken(list, "Empty list") ;
-        if ( ! list.get(0).isWordIgnoreCase(tag) )
-            broken(list, "List does not start ("+tag+ "...) : "+Builder.shortPrint(list)) ;
+        if ( item.isTagged(tag) ) return ;
+        broken(item, msg, item) ;
     }
+    
+//    public static void checkTag(ItemList list, String tag)
+//    {
+//        if ( list.size() == 0 )
+//            broken(list, "Empty list") ;
+//        if ( ! list.get(0).isWordIgnoreCase(tag) )
+//            broken(list, "List does not start ("+tag+ "...) : "+Builder.shortPrint(list)) ;
+//    }
 
     public static void checkList(Item item)
     {
@@ -95,6 +101,13 @@ class Builder
             broken(list, "Wrong number of arguments: want="+len+" ; actual="+list.size()+" : "+shortPrint(list)) ;
     }
     
+    public static void broken(ItemLocation location, String msg, Item item)
+    {
+        msg = msg(location, msg) ;
+        System.err.println(msg+": "+shortPrint(item)) ;
+        throw new ExprBuildException(msg) ;
+    }
+
     public static void broken(ItemLocation location, String msg)
     {
         msg = msg(location, msg) ;

@@ -119,6 +119,17 @@ public class BuilderOp
         return build(list.get(idx).getList()) ;
     }
 
+    protected Build findBuild(String str)
+    {
+        for ( Iterator iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
+        {
+            String key = (String)iter.next() ; 
+            if ( str.equalsIgnoreCase(key) )
+                return (Build)dispatch.get(key) ;
+        }
+        return null ;
+    }
+
     static protected final String symBase         = "" ;
 
     static protected final String symBGP          = symBase + "bgp" ;
@@ -140,17 +151,6 @@ public class BuilderOp
     static protected final String symReduced      = symBase + "reduced" ;
     static protected final String symSlice        = symBase + "dlice" ;
 
-    protected Build findBuild(String str)
-    {
-        for ( Iterator iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
-        {
-            String key = (String)iter.next() ; 
-            if ( str.equalsIgnoreCase(key) )
-                return (Build)dispatch.get(key) ;
-        }
-        return null ;
-    }
-    
     static public interface Build { Op make(ItemList list) ; }
 
     final protected Build buildBGP = new Build()

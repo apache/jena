@@ -70,6 +70,31 @@ public class Item extends ItemLocation implements PrintSerializable
     
     private Item() { super(noLine, noColumn) ; }
     
+    public boolean isTaggedIgnoreCase(String tag)
+    {
+        if ( ! isTaggable() ) return false ;
+        return getList().get(0).isWordIgnoreCase(tag) ;
+    }
+    
+    public boolean isTagged(String tag)
+    {
+        if ( ! isTaggable() ) return false ;
+        return getList().get(0).isWord(tag) ;
+    }
+    
+    public boolean isTagged()
+    {
+        if ( ! isTaggable() ) return false ;
+        return list.get(0).isWord() ; 
+    }
+    
+    private boolean isTaggable()
+    {
+        if ( ! isList() ) return false ;
+        if ( list.size() == 0 ) return false ;
+        return true ; 
+    }
+    
     public boolean isList()             { return list != null ; }
     public boolean isNode()             { return node != null ; }
     public boolean isWord()             { return word != null ; }

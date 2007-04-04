@@ -130,12 +130,53 @@ public class BuilderExpr
         for ( Iterator iter = dispatch.keySet().iterator() ; iter.hasNext() ; )
         {
             String key = (String)iter.next() ; 
-            if ( str.equalsIgnoreCase(key) )
+            if ( str.equalsIgnoreCase(key) )    // ???
                 return (Build)dispatch.get(key) ;
         }
         return null ;
     }
     
+    protected Expr buildKnownFunction(ItemList list)
+    {
+        if ( list.size() == 0 )
+            Builder.broken(list, "Empty list for expression") ;
+    
+        Item item = list.get(0) ;
+        String tag = item.getWord() ;
+        if ( tag == null )
+            Builder.broken(item, "Null tag") ;
+    
+        Build b = findBuild(tag) ;
+        if ( b == null )
+            Builder.broken(item, "No known symbol for "+tag) ;
+        return b.make(list) ;
+    }
+
+    protected static Expr buildFunctionCall(ItemList list)
+    {
+        Item head = list.get(0) ;
+        Node node = head.getNode() ;
+        if ( node.isBlank() )
+            Builder.broken(head, "Blank node for function call!") ;
+        if ( node.isLiteral() )
+            Builder.broken(head, "Literal node for function call!") ;
+        ExprList args = buildArgs(list, 1) ;
+        // Args
+        return new E_Function(node.getURI(), args) ;
+    }
+
+    protected static ExprList buildArgs(ItemList list, int idx)
+    {
+        ExprList exprList = new ExprList() ;
+        for ( int i = idx ; i < list.size() ; i++ )
+        {
+            Item item = list.get(i) ;
+            exprList.add(build(item)) ;
+        }
+        return exprList ;
+    }
+
+    // ---- Dispatch objects
     // Specials
     
     final protected Build buildRegex = new Build()
@@ -443,47 +484,6 @@ public class BuilderExpr
             return new E_IsLiteral(ex) ;
         }
     };
-
-
-    protected Expr buildKnownFunction(ItemList list)
-    {
-        if ( list.size() == 0 )
-            Builder.broken(list, "Empty list for expression") ;
-
-        Item item = list.get(0) ;
-        String tag = item.getWord() ;
-        if ( tag == null )
-            Builder.broken(item, "Null tag") ;
-
-        Build b = findBuild(tag) ;
-        if ( b == null )
-            Builder.broken(item, "No known symbol for "+tag) ;
-        return b.make(list) ;
-    }
-
-    protected static Expr buildFunctionCall(ItemList list)
-    {
-        Item head = list.get(0) ;
-        Node node = head.getNode() ;
-        if ( node.isBlank() )
-            Builder.broken(head, "Blank node for function call!") ;
-        if ( node.isLiteral() )
-            Builder.broken(head, "Literal node for function call!") ;
-        ExprList args = buildArgs(list, 1) ;
-        // Args
-        return new E_Function(node.getURI(), args) ;
-    }
-    
-    protected static ExprList buildArgs(ItemList list, int idx)
-    {
-        ExprList exprList = new ExprList() ;
-        for ( int i = idx ; i < list.size() ; i++ )
-        {
-            Item item = list.get(i) ;
-            exprList.add(build(item)) ;
-        }
-        return exprList ;
-    }
 }
 
 

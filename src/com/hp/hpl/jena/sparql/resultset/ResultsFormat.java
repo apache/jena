@@ -31,8 +31,6 @@ public class ResultsFormat extends Symbol
     public final static ResultsFormat FMT_RDF_TTL  = new ResultsFormat("Turtle") ;
     public final static ResultsFormat FMT_RDF_NT   = new ResultsFormat("N-TRIPLES") ;
     
-    
-    
     public final static ResultsFormat FMT_UNKNOWN   = new ResultsFormat("unknown") ;
     
     static TranslationTable resultFormats =  new TranslationTable(true) ;
