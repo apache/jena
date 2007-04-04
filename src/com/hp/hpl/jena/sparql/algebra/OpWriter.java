@@ -173,10 +173,12 @@ public class OpWriter
             finish(opGraph) ;
         }
 
-        public void visit(OpUnit opUnit)
+        public void visit(OpTable opTable)
         {
-            start(opUnit, NoNL) ;
-            finish(opUnit) ;
+            start(opTable, NoNL) ;
+            out.print("table") ;
+            //opTable.getTable().output(out) ;
+            finish(opTable) ;
         }
         
         public void visit(OpDatasetNames dsNames)

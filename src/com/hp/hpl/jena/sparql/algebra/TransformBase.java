@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sparql.algebra.op.*;
 
 public class TransformBase implements Transform
 {
-    public Op transform(OpUnit opUnit)              { return opUnit ; }
+    public Op transform(OpTable opTable)            { return opTable ; }
     public Op transform(OpBGP opBGP)                { return opBGP ; }
     public Op transform(OpDatasetNames dsNames)     { return dsNames ; }
     public Op transform(OpQuadPattern quadPattern)  { return quadPattern ; }

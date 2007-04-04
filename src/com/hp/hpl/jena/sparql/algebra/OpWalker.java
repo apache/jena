@@ -65,7 +65,7 @@ public class OpWalker
         public void visit(OpDatasetNames dsNames)
         { visitX(dsNames) ; }
 
-        public void visit(OpUnit opUnit)
+        public void visit(OpTable opUnit)
         { opUnit.visit(visitor) ; }
 
         public void visit(OpExt opExt)

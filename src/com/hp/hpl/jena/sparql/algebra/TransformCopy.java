@@ -18,7 +18,7 @@ public class TransformCopy implements Transform
     public TransformCopy() { this(COPY_ONLY_ON_CHANGE) ; }
     public TransformCopy(boolean alwaysDuplicate)   { this.alwaysCopy = alwaysDuplicate ; }
 
-    public Op transform(OpUnit opUnit)                              { return xform(opUnit) ; }
+    public Op transform(OpTable opTable)                            { return xform(opTable) ; }
     public Op transform(OpBGP opBGP)                                { return xform(opBGP) ; }
     public Op transform(OpDatasetNames dsNames)                     { return xform(dsNames) ; }
     public Op transform(OpQuadPattern quadPattern)                  { return xform(quadPattern) ; }

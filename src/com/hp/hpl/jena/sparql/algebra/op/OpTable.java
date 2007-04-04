@@ -6,17 +6,25 @@
 
 package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.algebra.*;
+import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
 
-public class OpUnit extends Op0
+public class OpTable extends Op0
 {
-    public static OpUnit unit() { return new OpUnit() ; }
+    //TODO OpTable
+    private Table table ;
+    public static OpTable unit() { return new OpTable(TableFactory.createUnit()) ; }
     
-    private OpUnit() { }
+    private OpTable(Table table) { this.table = table ; }
     
-    public String getName() { return "unit" ; }
+    public boolean isJoinIdentify()
+    { return (table instanceof TableUnit) ; }
+    // One row of no bindings.
+    
+    public Table getTable()
+    { return table ; }
+    
+    public String getName() { return "table" ; }
     
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
@@ -25,7 +33,7 @@ public class OpUnit extends Op0
     { return transform.transform(this) ; }
 
     public Op copy()
-    { return new OpUnit() ; }
+    { return new OpTable(table) ; }
 }
 
 /*

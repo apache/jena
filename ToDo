@@ -8,6 +8,13 @@ ARQ2-beta
 == Core
 
 + OpUnit => OpTable.
+  OpTable isJoinIdentity -- OpJoin.isJoinIdentify
+  OpTable and linearization
+    Input in, ?? out? Join?
+  
++ What is "OpDatasetNames" nowadays?
+	A table?  unnecessary?
+
 
 + Test algebra using BuilderTable etc.
 

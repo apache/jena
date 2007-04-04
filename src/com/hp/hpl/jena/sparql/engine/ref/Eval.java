@@ -129,9 +129,9 @@ public class Eval
             push(evalDS(dsNames, evaluator)) ;
         }
 
-        public void visit(OpUnit opUnit)
+        public void visit(OpTable opTable)
         {
-            push(TableFactory.createUnit()) ;
+            push(opTable.getTable()) ;
         }
 
         public void visit(OpExt opExt)

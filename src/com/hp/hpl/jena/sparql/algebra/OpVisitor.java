@@ -19,7 +19,7 @@ public interface OpVisitor
     public void visit(OpGraph opGraph) ;
     public void visit(OpDatasetNames dsNames) ;
 
-    public void visit(OpUnit opUnit) ;
+    public void visit(OpTable opTable) ;
     public void visit(OpExt opExt) ;
     
     public void visit(OpList opList) ;

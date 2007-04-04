@@ -220,10 +220,11 @@ public class OpCompiler
     QueryIterator compile(OpDatasetNames dsNames, QueryIterator input)
     { throw new ARQNotImplemented("OpDatasetNames") ; }
 
-    QueryIterator compile(OpUnit opUnit, QueryIterator input)
+    QueryIterator compile(OpTable opTable, QueryIterator input)
     { 
-        // Works for all the wrong reasons!
-        return input ;
+        if ( opTable.isJoinIdentify() )
+            return input ;
+        throw new ARQNotImplemented("compile(OpTable opTable, QueryIterator input) : Not identity") ;
     }
 
     QueryIterator compile(OpExt opExt, QueryIterator input)

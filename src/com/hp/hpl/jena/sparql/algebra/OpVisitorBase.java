@@ -36,7 +36,7 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpDatasetNames dsNames)
     {}
 
-    public void visit(OpUnit opUnit)
+    public void visit(OpTable opUnit)
     {}
 
     public void visit(OpExt opExt)

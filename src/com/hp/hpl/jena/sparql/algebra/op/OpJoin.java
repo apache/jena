@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 
 public class OpJoin extends Op2
@@ -29,7 +30,12 @@ public class OpJoin extends Op2
     
     private static boolean isJoinIdentify(Op op)
     {
-        return ( op instanceof OpUnit ) ; 
+        if ( ! ( op instanceof OpTable ) )
+            return false ;
+        Table t = ((OpTable)op).getTable() ;
+        // Safe answer.
+        return (t instanceof TableUnit) ;
+        
     }
     
     private OpJoin(Op left, Op right) { super(left, right) ; }

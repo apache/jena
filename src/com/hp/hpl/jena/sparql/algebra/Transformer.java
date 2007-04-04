@@ -71,8 +71,8 @@ public class Transformer
             push(opX) ;
         }
         
-        public void visit(OpUnit opUnit)
-        { visit0(opUnit) ; }
+        public void visit(OpTable opTable)
+        { visit0(opTable) ; }
         
         public void visit(OpQuadPattern quadPattern)
         { visit0(quadPattern) ; }

@@ -150,7 +150,7 @@ public class AlgebraGenerator
             return compileFixed(groupElt) ;
         
         ExprList filters = new ExprList() ;
-        Op current = OpUnit.unit() ;
+        Op current = OpTable.unit() ;
         
         // TriplesBlock => BGP
         // If adjacent triples blocks after filters extracted, then merge.
@@ -218,7 +218,7 @@ public class AlgebraGenerator
         if ( ! filters.isEmpty() )
         {
             if ( current == null )
-                current = OpUnit.unit() ;
+                current = OpTable.unit() ;
             current = OpFilter.filter(filters, current) ;
         }
         
@@ -258,7 +258,7 @@ public class AlgebraGenerator
 
     private Op compileFixed(ElementGroup groupElt)
     {
-        Op current = OpUnit.unit() ;
+        Op current = OpTable.unit() ;
         for (Iterator iter = groupElt.getElements().listIterator() ; iter.hasNext() ; )
         {
             Element elt = (Element)iter.next() ;
