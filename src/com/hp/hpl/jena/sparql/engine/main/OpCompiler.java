@@ -224,7 +224,11 @@ public class OpCompiler
     { 
         if ( opTable.isJoinIdentify() )
             return input ;
-        throw new ARQNotImplemented("compile(OpTable opTable, QueryIterator input) : Not identity") ;
+        //throw new ARQNotImplemented("Not identity table") ;
+        QueryIterator qIterT = opTable.getTable().iterator(execCxt) ;
+        //QueryIterator qIterT = root() ;
+        QueryIterator qIter = new QueryIterJoin(input, qIterT, execCxt) ;
+        return qIter ;
     }
 
     QueryIterator compile(OpExt opExt, QueryIterator input)

@@ -79,7 +79,7 @@ public class localname extends PFuncSimple
             // Object bound or a query constant.  Is it the same as the calculated value?
             if ( nodeLocalname.equals(localname) )
                 // Same
-                return new QueryIterSingleton(binding) ;
+                return new QueryIterSingleton(binding, execCxt) ;
             // No - different - no match.
             return new QueryIterNullIterator(execCxt) ;
         }
@@ -88,7 +88,7 @@ public class localname extends PFuncSimple
         Binding b = new Binding1(binding, Var.alloc(nodeLocalname), localname) ;
         
         // Return an iterator.
-        return new QueryIterSingleton(b) ;
+        return new QueryIterSingleton(b, execCxt) ;
     }
     
     // Unbound subject - work hard.

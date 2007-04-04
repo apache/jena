@@ -1,6 +1,9 @@
 (prefix ((x: <http://example/>))
-  (join (table (row [?x 1] [?y x:g])
-	       (row [?x 1] [?y undef]))
-	(table (row [?y x:g])
-	       (row [?x 1]))
-	))
+    (join
+      (table
+	(row [?x 1] [?y x:g] [?z undef] )
+	(row [?x 2] [?y undef]))
+      (table 
+	(row [?y x:g])
+	(row [?x 2] ))
+      ))

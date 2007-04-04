@@ -11,6 +11,9 @@ ARQ2-beta
   OpTable isJoinIdentity -- OpJoin.isJoinIdentify
   OpTable and linearization
     Input in, ?? out? Join?
+    
++ qexec : no datasets evaluation
+	 OpCompiler.compile(OpTable opTable, QueryIterator input) : Not identity
   
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?

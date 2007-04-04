@@ -26,10 +26,10 @@ public class QueryIterSingleton extends QueryIterYieldN
     public static QueryIterSingleton create(Binding parent, Var var, Node value, ExecutionContext context)
     {
         Binding b = new Binding1(parent, var, value) ;
-        return new QueryIterSingleton(b) ;
+        return new QueryIterSingleton(b, context) ;
     }
     
-    public QueryIterSingleton(Binding binding)
+    private QueryIterSingleton(Binding binding) // Not needed
     {
         this(binding, null) ;
     }

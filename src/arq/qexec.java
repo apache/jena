@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.PlanOp;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
@@ -130,13 +131,17 @@ public class qexec extends CmdARQ
         // Check there is a dataset
         if ( dataset == null )
         {
-            System.err.print("No dataset") ;
+            System.err.println("No dataset") ;
             throw new TerminationException(1) ;
         }
         
         modTime.startTimer() ;
         DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
-        QueryIterator qIter = QueryEngineMain.eval(op, dsg) ;
+        QueryIterator qIter = null ;
+        if ( true )
+            qIter = QueryEngineMain.eval(op, dsg) ;
+        else
+            qIter = QueryEngineRef.eval(op, dsg) ;
         
         if ( printOp || printPlan )
         {

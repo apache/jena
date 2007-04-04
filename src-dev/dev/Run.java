@@ -30,11 +30,11 @@ public class Run
     {
         //runQExpr() ;
         //print() ;
-        code() ;
+        //code() ;
         //classifyJ() ;
         //classifyLJ() ;
         //execQuery("D.ttl", "Q.rq") ;
-        exec("D.ttl", "SSE/op.sse") ;
+        exec("D.ttl", "SSE/test.sse") ;
     }
         
     private static void code()
@@ -161,7 +161,7 @@ public class Run
             //"-v",
             //"--engine=ref",
             "--data="+datafile,
-            "-query="+queryfile , 
+            "--file="+queryfile , 
         } ;
         
         qexec.main(a) ;

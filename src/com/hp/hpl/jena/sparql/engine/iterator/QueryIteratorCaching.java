@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 public 
 class QueryIteratorCaching extends QueryIteratorWrapper
 {
+    // Not tracked.
     List cache = new ArrayList() ;
     
     public QueryIteratorCaching(QueryIterator qIter)
@@ -48,7 +49,7 @@ class QueryIteratorCaching extends QueryIteratorWrapper
             // safe WRT additions outside the subList range.
             elements = new ArrayList(cache) ;
         
-        return new QueryIteratorCaching(new QueryIterPlainWrapper(elements.iterator())) ;
+        return new QueryIteratorCaching(new QueryIterPlainWrapper(elements.iterator(), null)) ;
     }
     
     public static QueryIterator reset(QueryIterator qIter)

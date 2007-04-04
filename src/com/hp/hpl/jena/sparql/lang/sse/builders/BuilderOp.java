@@ -11,6 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -53,6 +54,8 @@ public class BuilderOp
         dispatch.put(symDistinct, buildDistinct) ;
         dispatch.put(symReduced, buildReduced) ;
         dispatch.put(symSlice, buildSlice) ;
+        
+        dispatch.put(symTable, buildTable) ;
     }
 
     // The main recursive build operation.
@@ -149,10 +152,22 @@ public class BuilderOp
     static protected final String symProject      = symBase + "project" ;
     static protected final String symDistinct     = symBase + "distinct" ;
     static protected final String symReduced      = symBase + "reduced" ;
-    static protected final String symSlice        = symBase + "dlice" ;
+    static protected final String symSlice        = symBase + "slice" ;
+    
+    static protected final String symTable        = symBase + "table" ;
 
     static public interface Build { Op make(ItemList list) ; }
 
+    final protected Build buildTable = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            Item t = Item.createList(list) ;
+            Table table = BuilderTable.build(t) ; 
+            return OpTable.create(table) ;
+        }
+    } ;
+    
     final protected Build buildBGP = new Build()
     {
         public Op make(ItemList list)

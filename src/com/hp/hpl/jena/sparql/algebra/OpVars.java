@@ -12,9 +12,10 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Quad;
+
+import com.hp.hpl.jena.query.SortCondition;
 
 /** Get vars for a pattern  */ 
 
@@ -77,6 +78,14 @@ public class OpVars
         public void visit(OpDatasetNames dsNames)
         {
             addVar(acc, dsNames.getGraphNode()) ;
+        }
+        
+        public void visit(OpTable opTable)
+        {
+            // Only the variables with values in the tables
+            // (Whenbuilding, undefs didn't get into bindings so no variable mentioned) 
+            Table t = opTable.getTable() ;
+            acc.addAll(t.getVars());
         }
         
         public void visit(OpProject opProject) 

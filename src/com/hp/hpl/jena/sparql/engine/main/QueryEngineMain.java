@@ -64,7 +64,7 @@ public class QueryEngineMain extends QueryEngineOpBase
     
     private static QueryIterator eval(Op op, Binding b, ExecutionContext execCxt)
     {
-        QueryIterator qIter = new QueryIterSingleton(b) ;
+        QueryIterator qIter = new QueryIterSingleton(b, execCxt) ;
         qIter = OpCompiler.compile(op, qIter, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
