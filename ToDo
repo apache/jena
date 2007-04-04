@@ -44,12 +44,10 @@ ARQ2-beta
 + Tests
   
 == SSE
+  Tables as Ops.
   Builder tidying and testing
 
   Expr: (exists (pattern ...))
-  
-  TableBase => .output/.toString etc as PrintSerializable
-  getVars()
   
   (group (vars) aggregate)
   
