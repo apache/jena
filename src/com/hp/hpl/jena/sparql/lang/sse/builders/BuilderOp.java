@@ -26,10 +26,10 @@ public class BuilderOp
     public static Op build(Item item)
     {
         if (item.isNode() )
-            Builder.broken(item, "Attempt to build op structure from a plain node") ;
+            BuilderBase.broken(item, "Attempt to build op structure from a plain node") ;
 
         if (item.isWord() )
-            Builder.broken(item, "Attempt to build op structure from a bare word") ;
+            BuilderBase.broken(item, "Attempt to build op structure from a bare word") ;
 
         BuilderOp b = new BuilderOp();
         return b.build(item.getList()) ;
@@ -68,7 +68,7 @@ public class BuilderOp
         if ( bob != null )
             return bob.make(list) ;
         else
-            Builder.broken(head, "Unrecognized algebra operation: "+tag) ;
+            BuilderBase.broken(head, "Unrecognized algebra operation: "+tag) ;
         return null ;
     }
     
@@ -79,7 +79,7 @@ public class BuilderOp
 
     public static Triple buildTriple(ItemList list)
     {
-        Builder.checkLength(4, list, symTriple) ;
+        BuilderBase.checkLength(4, list, symTriple) ;
         Node s = BuilderNode.buildNode(list.get(1)) ;
         Node p = BuilderNode.buildNode(list.get(2)) ;
         Node o = BuilderNode.buildNode(list.get(3)) ;
@@ -88,7 +88,7 @@ public class BuilderOp
 
     public static Quad buildQuad(ItemList list)
     {
-        Builder.checkLength(5, list, symQuad) ;
+        BuilderBase.checkLength(5, list, symQuad) ;
         
         Node g = null ;
         if ( "_".equals(list.get(1).getWord()) )
@@ -162,7 +162,7 @@ public class BuilderOp
             {
                 Item item = list.get(i) ;
                 if ( ! item.isList() )
-                    Builder.broken(item, "Not a triple structure") ;
+                    BuilderBase.broken(item, "Not a triple structure") ;
                 Triple t = buildTriple(item.getList()) ;
                 triples.add(t) ; 
             }
@@ -174,7 +174,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.broken(null, "Quad pattern not implemented") ;
+            BuilderBase.broken(null, "Quad pattern not implemented") ;
             return null ;
 //          Node g = null ;
 //          QuadPattern quads = new QuadPattern() ;
@@ -202,7 +202,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(3, list, "Malformed filter") ;
+            BuilderBase.checkLength(3, list, "Malformed filter") ;
             Item itemExpr = list.get(1) ;
             Item itemOp = list.get(2) ;
 
@@ -220,7 +220,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(3, list, "Join") ;
+            BuilderBase.checkLength(3, list, "Join") ;
             Op right = build(list, 1) ;
             Op left  = build(list, 2) ;
             Op op = OpJoin.create(left, right) ;
@@ -232,7 +232,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(3, 4, list, "leftjoin") ;
+            BuilderBase.checkLength(3, 4, list, "leftjoin") ;
             Op right = build(list, 1) ;
             Op left  = build(list, 2) ;
             Expr expr = null ;
@@ -247,7 +247,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(3, list, "union") ;
+            BuilderBase.checkLength(3, list, "union") ;
             Op right = build(list, 1) ;
             Op left  = build(list, 2) ;
             Op op = new OpUnion(left, right) ;
@@ -259,7 +259,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(3, list, "graph") ;
+            BuilderBase.checkLength(3, list, "graph") ;
             Node graph = BuilderNode.buildNode(list.get(1)) ;
             Op sub  = build(list, 2) ;
             return new OpGraph(graph, sub) ;
@@ -272,7 +272,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(2, list, "tolist") ;
+            BuilderBase.checkLength(2, list, "tolist") ;
             Op sub = build(list, 1) ;
             Op op = new OpList(sub) ;
             return op ;
@@ -295,7 +295,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(3, list, "project") ;
+            BuilderBase.checkLength(3, list, "project") ;
             Op sub = build(list, list.size()-1) ;
             List x = BuilderNode.buildVars(list.get(1).getList(), 0) ;
             return new OpProject(sub, x) ;
@@ -306,7 +306,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(2, list, "distinct") ;
+            BuilderBase.checkLength(2, list, "distinct") ;
             Op sub = build(list, 1) ;
             return new OpDistinct(sub) ;
         }
@@ -316,7 +316,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(2, list, "reduced") ;
+            BuilderBase.checkLength(2, list, "reduced") ;
             Op sub = build(list, 1) ;
             return new OpReduced(sub) ;
         }
@@ -326,7 +326,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            Builder.checkLength(4, list, "slice") ;
+            BuilderBase.checkLength(4, list, "slice") ;
             Op sub = build(list, 1) ;
             int start = BuilderNode.buildInt(list, 2) ;
             int length = BuilderNode.buildInt(list, 3) ;

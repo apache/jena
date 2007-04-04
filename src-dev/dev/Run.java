@@ -28,9 +28,9 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        runQExpr() ;
+        //runQExpr() ;
         //print() ;
-        //code() ;
+        code() ;
         //classifyJ() ;
         //classifyLJ() ;
         //execQuery("D.ttl", "Q.rq") ;

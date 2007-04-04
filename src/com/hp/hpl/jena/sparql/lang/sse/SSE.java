@@ -17,6 +17,8 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderExpr;
 import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
 import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderTable;
@@ -31,7 +33,7 @@ public class SSE
     
     public static Node parseNode(String s, PrefixMapping pmap)
     { 
-        Item item = SSE.parseResolve(s, pmap) ;
+        Item item = parseResolve(s, pmap) ;
         if ( !item.isNode() )
             throw new ARQException("Not a node: "+s) ; 
         return item.getNode() ;
@@ -41,7 +43,7 @@ public class SSE
     
     public static Quad parseQuad(String s, PrefixMapping pmap)
     {
-        Item item = SSE.parseResolve(s, pmap) ;
+        Item item = parseResolve(s, pmap) ;
         if ( !item.isList() )
             throw new ARQException("Not a list: "+s) ; 
         return BuilderOp.buildQuad(item.getList()) ;
@@ -51,18 +53,26 @@ public class SSE
     
     public static Triple parseTriple(String s, PrefixMapping pmap)
     {
-        Item item = SSE.parseResolve(s, pmap) ;
+        Item item = parseResolve(s, pmap) ;
         if ( !item.isList() )
             throw new ARQException("Not a list: "+s) ; 
         return BuilderOp.buildTriple(item.getList()) ;
     }
     
+    public static Expr parseExpr(String s) { return parseExpr(s, null) ; }
+    
+    public static Expr parseExpr(String s, PrefixMapping pmap)
+    { 
+        Item item = parseResolve(s, pmap) ;
+        return BuilderExpr.build(item) ;
+    }
+    
+
     public static Table readTable(String filename) { return readTable(filename, null) ; }
     
     public static Table readTable(String filename, PrefixMapping pmap)
     { 
-        Item item = parseFile(filename) ;
-        item = ResolvePrefixedNames.resolve(item, pmap) ;
+        Item item = readResolve(filename) ;
         return BuilderTable.build(item) ;
     }
     
@@ -85,7 +95,15 @@ public class SSE
         return ResolvePrefixedNames.resolve(item, pmap) ;
     }
     
-    public static Item parseFile(String filename)
+    public static Item readResolve(String filename) { return readResolve(filename, null) ; }
+    
+    public static Item readResolve(String filename, PrefixMapping pmap)
+    {
+        Item item = SSE.readFile(filename) ;
+        return ResolvePrefixedNames.resolve(item, pmap) ;
+    }
+    
+    public static Item readFile(String filename)
     {
         try {
             InputStream in = new FileInputStream(filename) ;

@@ -23,23 +23,23 @@ public class BuilderNode
     public static Node buildNode(Item item)
     {
         if ( !item.isNode() )
-            Builder.broken(item, "Not a node: "+Builder.shortPrint(item)) ;
+            BuilderBase.broken(item, "Not a node: "+BuilderBase.shortPrint(item)) ;
         return item.getNode() ;
     }
     
     public static Var buildVar(Item item)
     {
         if ( ! item.isNode() || !Var.isVar(item.getNode()) )
-            Builder.broken(item, "Not a variable: "+Builder.shortPrint(item)) ;
+            BuilderBase.broken(item, "Not a variable: "+BuilderBase.shortPrint(item)) ;
         if ( ! Var.isNamedVar(item.getNode()) )
-            Builder.broken(item, "Not a named variable") ;
+            BuilderBase.broken(item, "Not a named variable") ;
         return Var.alloc(item.getNode()) ;
     }
     
     public static String buildWord(Item item)
     {
         if ( !item.isWord() )
-            Builder.broken(item, "Not a word: "+Builder.shortPrint(item)) ;
+            BuilderBase.broken(item, "Not a word: "+BuilderBase.shortPrint(item)) ;
         return item.getWord() ;
     }
     
@@ -60,14 +60,14 @@ public class BuilderNode
     {
         Item item = list.get(idx) ;
         if ( !item.isNode() )
-            Builder.broken(item, "Not an integer: "+item) ;
+            BuilderBase.broken(item, "Not an integer: "+item) ;
         Node node = item.getNode() ;
         if ( ! node.isLiteral() )
-            Builder.broken(item, "Not an integer: "+item) ;
+            BuilderBase.broken(item, "Not an integer: "+item) ;
 
         NodeValue nv = NodeValue.makeNode(node) ;
         if ( ! nv.isInteger() )
-            Builder.broken(item, "Not an integer: "+item) ;
+            BuilderBase.broken(item, "Not an integer: "+item) ;
         return nv.getInteger().intValue() ;
     }
 

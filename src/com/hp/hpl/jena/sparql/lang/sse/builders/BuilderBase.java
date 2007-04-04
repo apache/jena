@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.lang.sse.builders.ExprBuildException;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 
-public class Builder
+public class BuilderBase
 {
     public static String shortPrint(Item item)
     {
@@ -39,14 +39,14 @@ public class Builder
     {
         if ( item.isNode() ) 
             return ;
-        broken(item, "Not a node: "+Builder.shortPrint(item)) ;
+        broken(item, "Not a node: "+BuilderBase.shortPrint(item)) ;
     }
     
     public static void checkWord(Item item)
     {
         if ( item.isWord() ) 
             return ;
-        broken(item, "Not a word: "+Builder.shortPrint(item)) ;
+        broken(item, "Not a word: "+BuilderBase.shortPrint(item)) ;
     }
     
     public static void checkTagged(Item item, String tag, String msg)
@@ -67,7 +67,7 @@ public class Builder
     {
         if ( item.isList() ) 
             return ;
-        broken(item, "Not a list: "+Builder.shortPrint(item)) ;
+        broken(item, "Not a list: "+BuilderBase.shortPrint(item)) ;
     }
 
     public static void checkList(Item item, String msg)

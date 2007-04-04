@@ -30,6 +30,7 @@ public class MainBuilder
         mainExpr(argv) ;
         //System.out.println() ;
         mainOp(argv) ;
+        //mainTable(argv) ;
     }
     
     public static void mainExpr(String[] argv)

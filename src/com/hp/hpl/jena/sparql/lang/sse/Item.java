@@ -70,31 +70,38 @@ public class Item extends ItemLocation implements PrintSerializable
     
     private Item() { super(noLine, noColumn) ; }
     
+    public ItemList getList()           { return list ; }
+    public Node getNode()               { return node ; }
+    //public String getPrefixedName()     { return prefixedName ; }
+    public String getWord()             { return word ; }
+    
+    public String sniff()
+    {
+        if ( ! isTaggable() ) return null ;
+        return getList().get(0).getWord() ;
+    }
+    
     public boolean isTaggedIgnoreCase(String tag)
     {
         if ( ! isTaggable() ) return false ;
         return getList().get(0).isWordIgnoreCase(tag) ;
     }
-    
     public boolean isTagged(String tag)
     {
         if ( ! isTaggable() ) return false ;
         return getList().get(0).isWord(tag) ;
     }
-    
     public boolean isTagged()
     {
         if ( ! isTaggable() ) return false ;
         return list.get(0).isWord() ; 
     }
-    
     private boolean isTaggable()
     {
         if ( ! isList() ) return false ;
         if ( list.size() == 0 ) return false ;
         return true ; 
     }
-    
     public boolean isList()             { return list != null ; }
     public boolean isNode()             { return node != null ; }
     public boolean isWord()             { return word != null ; }
@@ -104,21 +111,12 @@ public class Item extends ItemLocation implements PrintSerializable
             return false ;
         return word.equals(testWord) ;
     }
-    
     public boolean isWordIgnoreCase(String testWord)
     { 
         if ( word == null )
             return false ;
         return word.equalsIgnoreCase(testWord) ;
     }
-    
-    //public boolean isPrefixedName()     { return prefixedName != null ; }
-
-    public ItemList getList()           { return list ; }
-    public Node getNode()               { return node ; }
-    //public String getPrefixedName()     { return prefixedName ; }
-    public String getWord()             { return word ; }
-    
     public void visit(ItemVisitor visitor)
     {
         if ( isList() )

@@ -21,7 +21,7 @@ class BuilderBinding
     
     public static Binding build(Item item)
     {
-        Builder.checkList(item, "Attempt to build a binding from non-list: "+item) ;
+        BuilderBase.checkList(item, "Attempt to build a binding from non-list: "+item) ;
         return buildBinding(item.getList()) ;
     }
     
@@ -29,20 +29,20 @@ class BuilderBinding
     {
         // (row or (binding
         if ( list.size() == 0 )
-            Builder.broken(list, "Empty list") ;
+            BuilderBase.broken(list, "Empty list") ;
         
         Item head = list.get(0) ;
         
         if ( ! head.isWordIgnoreCase(tagRow) && ! head.isWordIgnoreCase(tagBinding) )
-            Builder.broken(list, "Does not start ("+tagRow+" ...) or ("+tagBinding+" ...): "+Builder.shortPrint(head)) ;
+            BuilderBase.broken(list, "Does not start ("+tagRow+" ...) or ("+tagBinding+" ...): "+BuilderBase.shortPrint(head)) ;
         
         Binding binding = new BindingMap() ;
         for ( int i = 1 ; i < list.size() ; i++ )
         {
             Item item = list.get(i) ;
-            Builder.checkList(item, "Attempt to build a binding pair from non-list: "+item) ;
+            BuilderBase.checkList(item, "Attempt to build a binding pair from non-list: "+item) ;
             ItemList pair = item.getList() ;
-            Builder.checkLength(2, pair, "Need a pair for a binding") ;
+            BuilderBase.checkLength(2, pair, "Need a pair for a binding") ;
             
             Var v = BuilderNode.buildVar(pair.get(0)) ;
             Item cdr = pair.get(1) ;
@@ -50,14 +50,14 @@ class BuilderBinding
             if ( cdr.isWordIgnoreCase(BuilderNode.tagUndef) || cdr.isWordIgnoreCase(BuilderNode.tagNull) )
                 continue ;
             
-            Builder.checkNode(cdr) ;
+            BuilderBase.checkNode(cdr) ;
             Node node = BuilderNode.buildNode(item.getList().get(1)) ;
             if ( node == null )
-                Builder.broken(item.getList().get(1), "Null node from "+item.getList().get(1)) ;
+                BuilderBase.broken(item.getList().get(1), "Null node from "+item.getList().get(1)) ;
             if ( node.isVariable() )
-                Builder.broken(item.getList().get(1), "No variables as table values: "+FmtUtils.stringForNode(node)) ;
+                BuilderBase.broken(item.getList().get(1), "No variables as table values: "+FmtUtils.stringForNode(node)) ;
             if ( !node.isConcrete() )
-                Builder.broken(item.getList().get(1), "Ony concrete nodes as table values: "+FmtUtils.stringForNode(node)) ;
+                BuilderBase.broken(item.getList().get(1), "Ony concrete nodes as table values: "+FmtUtils.stringForNode(node)) ;
             binding.add(v, node) ;
         }
         return binding ;

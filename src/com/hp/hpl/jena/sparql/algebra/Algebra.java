@@ -23,7 +23,7 @@ public class Algebra
 {
     static public Op read(String filename)
     {
-        Item item = SSE.parseFile(filename) ;
+        Item item = SSE.readFile(filename) ;
         return parse(item) ;
     }
 
