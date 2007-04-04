@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.60 2007-02-19 14:21:12 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.61 2007-04-04 15:58:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.60 $ on $Date: 2007-02-19 14:21:12 $
+ * @version $Revision: 1.61 $ on $Date: 2007-04-04 15:58:48 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -1012,6 +1012,19 @@ public class TestTypedLiterals extends TestCase {
         if (testType) {
             assertEquals("Datatype round trip", dt, l2.getDatatype());
         }
+    }
+    
+    /**
+     * Test ability to override an apparent DateTime to be just a date
+     */
+    public void testDateOverride() {
+        Calendar date = new GregorianCalendar(2007, 3, 4);
+        date.setTimeZone( TimeZone.getTimeZone("GMT+0") );
+        XSDDateTime  xsdDate = new XSDDateTime( date );
+        Literal l1 = m.createTypedLiteral(xsdDate, XSDDatatype.XSDdate);
+        
+        assertEquals(XSDDatatype.XSDdate, l1.getDatatype());
+        assertEquals("2007-04-04", l1.getLexicalForm());
     }
     
     /**

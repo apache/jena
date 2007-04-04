@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.22 2007-01-02 11:53:12 andy_seaborne Exp $
+ * $Id: XSDDateTime.java,v 1.23 2007-04-04 15:58:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2007-01-02 11:53:12 $
+ * @version $Revision: 1.23 $ on $Date: 2007-04-04 15:58:45 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -91,6 +91,29 @@ public class XSDDateTime extends AbstractDateTime {
         default:
             return XSDDatatype.XSDdateTime;
         }
+    }
+    
+    /**
+     * Set the mask for this date/time to be that appropriate
+     * for the given XSD subtype. If the type is a subtype of XSDdateTime the 
+     * mask will be narrowed appropriately, other types will be silently ignored.
+     */
+    public void narrowType(XSDDatatype dt) {
+        if (dt.equals(XSDDatatype.XSDtime)) {
+            mask = TIME_MASK;
+        } else if (dt.equals(XSDDatatype.XSDgMonth)) {
+            mask = MONTH_MASK;
+        } else if (dt.equals(XSDDatatype.XSDgDay)) {
+            mask = DAY_MASK;
+        } else if (dt.equals(XSDDatatype.XSDgYear)) {
+            mask = YEAR_MASK;
+        } else if (dt.equals(XSDDatatype.XSDgMonthDay)) {
+            mask = MONTH_MASK | DAY_MASK;
+        } else if (dt.equals(XSDDatatype.XSDgYearMonth)) {
+            mask = YEAR_MASK | MONTH_MASK;
+        } else if (dt.equals(XSDDatatype.XSDdate)) {
+            mask = MONTH_MASK | YEAR_MASK | DAY_MASK;
+        }  
     }
     
     /**

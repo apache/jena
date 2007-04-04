@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.31 2007-03-07 15:54:28 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.32 2007-04-04 15:58:43 der Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -204,13 +204,14 @@ final public class LiteralLabel {
 	}
     
     /**
-     * Normalize the literal. In the future this may normalize
-     * the lexical value. At present this is used to 
-     * reduce datatypes to a minimal enclosing form when desired.
+     * Normalize the literal. If the value is narrower than the current data type
+     * (e.g. value is xsd:date but the time is xsd:datetime) it will narrow
+     * the type. If the type is narrower than the value then it may normalize
+     * the value (e.g. set the mask of an XSDDateTime)
      */
     protected void normalize() {
         if (dtype != null && value != null) {
-            dtype = dtype.getNarrowedDatatype(value);
+            dtype = dtype.normalizeSubType(value, dtype);
         }
     }
 

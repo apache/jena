@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFDatatype.java,v 1.12 2007-01-02 11:53:45 andy_seaborne Exp $
+ * $Id: RDFDatatype.java,v 1.13 2007-04-04 15:58:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * and value forms. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2007-01-02 11:53:45 $
+ * @version $Revision: 1.13 $ on $Date: 2007-04-04 15:58:33 $
  */
 public interface RDFDatatype {
 
@@ -99,14 +99,18 @@ public interface RDFDatatype {
     public Object extendedTypeDefinition();
     
     /**
-     * Return a minimal datatype for this object. Used to handle
-     * cases where a single java object can represent multiple
-     * specific types and where we want narrow the type used.
-     * For example, a BigDecimal may narrow to a simple xsd:int. 
+     * Normalization. If the value is narrower than the current data type
+     * (e.g. value is xsd:date but the time is xsd:datetime) returns
+     * the narrower type for the literal. 
+     * If the type is narrower than the value then it may normalize
+     * the value (e.g. set the mask of an XSDDateTime)
      * Currently only used to narrow gener XSDDateTime objects
      * to the minimal XSD date/time type.
+     * @param value the current object value
+     * @param dt the currently set data type
+     * @return a narrower version of the datatype based on the actual value range
      */
-    public RDFDatatype getNarrowedDatatype(Object value);
+    public RDFDatatype normalizeSubType(Object value, RDFDatatype dt);
 }
 
 /*

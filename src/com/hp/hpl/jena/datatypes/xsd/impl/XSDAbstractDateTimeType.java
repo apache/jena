@@ -6,7 +6,7 @@
  * (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: XSDAbstractDateTimeType.java,v 1.8 2007-01-02 11:48:24 andy_seaborne Exp $
+ * $Id: XSDAbstractDateTimeType.java,v 1.9 2007-04-04 15:58:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * Includes support functions for parsing and comparing dates.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2007-01-02 11:48:24 $
+ * @version $Revision: 1.9 $ on $Date: 2007-04-04 15:58:50 $
  */
 public class XSDAbstractDateTimeType extends XSDDatatype {
 
@@ -438,19 +438,27 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
 //  --------------------------------------------------------------------
      
      /**
-      * Return a minimal datatype for this object. Used to handle
-      * cases where a single java object can represent multiple
-      * specific types and where we want narrow the type used.
-      * For example, a BigDecimal may narrow to a simple xsd:int. 
-      * Currently only used to narrow gener XSDDateTime objects
-      * to the minimal XSD date/time type.
+     * Normalization. If the value is narrower than the current data type
+     * (e.g. value is xsd:date but the time is xsd:datetime) returns
+     * the narrower type for the literal. 
+     * If the type is narrower than the value then it may normalize
+     * the value (e.g. set the mask of an XSDDateTime)
+     * Currently only used to narrow gener XSDDateTime objects
+     * to the minimal XSD date/time type.
+     * @param value the current object value
+     * @param dt the currently set data type
+     * @return a narrower version of the datatype based on the actual value range
       */
-     public RDFDatatype getNarrowedDatatype(Object value) {
+     public RDFDatatype normalizeSubType(Object value, RDFDatatype dt) {
          if (value instanceof XSDDateTime) {
-             return ((XSDDateTime)value).getNarrowedDatatype();
-         } else {
-             return this;
+             if (dt.equals(XSDDatatype.XSDdateTime)) {
+                 return ((XSDDateTime)value).getNarrowedDatatype();
+             } else if (dt instanceof XSDDatatype){
+                 // We've externally narrowed the type, push this down to the date time
+                 ((XSDDateTime)value).narrowType((XSDDatatype)dt);
+             }
          }
+         return this;
      }
 
 }
