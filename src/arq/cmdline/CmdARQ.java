@@ -14,15 +14,13 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase;
 
 public abstract class CmdARQ extends CmdGeneral
 {
-    ModSymbol modSymbol = new ModSymbol() ;
-    ModEngine modEngine = new ModEngine() ;
+    protected ModSymbol modSymbol = new ModSymbol() ;
     ArgDecl  strictDecl = new ArgDecl(ArgDecl.NoValue, "strict", "basic") ;
     
     protected CmdARQ(String[] argv)
     {
         super(argv) ;
         addModule(modSymbol) ;
-        addModule(modEngine) ;
         super.add(strictDecl, "--strict", "Operate in strict mode (no extensions of any kind)") ;
     }
     

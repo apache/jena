@@ -11,10 +11,7 @@ import java.util.Iterator;
 
 import arq.cmd.CmdException;
 import arq.cmd.QueryUtils;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModQueryIn;
-import arq.cmdline.ModQueryOut;
+import arq.cmdline.*;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.shared.JenaException;
@@ -35,6 +32,7 @@ public class qparse extends CmdARQ
 {
     ModQueryIn    modQuery   =    new ModQueryIn() ;
     ModQueryOut   modOutput  =    new ModQueryOut() ; 
+    ModEngine     modEngine =   new ModEngine() ;
     protected final ArgDecl argDeclPrint  = new ArgDecl(ArgDecl.HasValue, "print") ;
     
     boolean printQuery = false ;
@@ -52,6 +50,7 @@ public class qparse extends CmdARQ
         super(argv) ;
         super.addModule(modQuery) ;
         super.addModule(modOutput) ;
+        super.addModule(modEngine) ;
         super.getUsage().startCategory(null) ;
         super.add(argDeclPrint, "--print", "Print in various forms [query, op, quad, plan]") ;
     }

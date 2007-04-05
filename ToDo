@@ -7,15 +7,16 @@ ARQ2-beta
 
 == Core
 
-+ OpUnit => OpTable.
-  OpTable isJoinIdentity -- OpJoin.isJoinIdentify
-    
 + qexec : no datasets evaluation
-  Single join, engine main, linearized, becomes (join(join(root,t1),t2))
-  Plan/engine ref looks silly  
 
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
+
+  Algebra... has many direct "Op exec" statics.
+  Need a registry approach to work with qexec.
+  QueryEngineOpBase should not inherit from QueryEngineBase.
+  But be an indirection to a QueryEngineOp thing which is (1) graph level and (2) standalone.
+  QueryExecution registry fun.
 
 + Test algebra using BuilderTable etc.
 
@@ -29,7 +30,6 @@ ARQ2-beta
 
 + Serilization: 
     redo "prefix" to be SSE compatible.
-    op: triples/quads as lists themselves (+builder)
 
 + Property function to property path expression
 
@@ -43,7 +43,8 @@ ARQ2-beta
 + Commands
   + qtest to use modules (and qexpr)
     ModVersion
-  + qexec tidy/integration
+  + qexec tidy/integration with qparse/query : need an "op" level.
+    Maybe QueryExecutionOp interface.
 
 == Algebra
 

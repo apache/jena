@@ -39,8 +39,7 @@ public class QueryEngineRef extends QueryEngineOpBase
         Table table = Eval.eval(eval, op) ;
         return table.iterator(execCxt) ;
     }
-
-
+    
     public static QueryIterator eval(Op op, Graph graph)
     {
         return eval(op, new DataSourceGraphImpl(graph)) ;

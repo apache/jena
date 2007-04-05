@@ -6,61 +6,14 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 
-public abstract class QueryEngineOpBase extends QueryEngineBase //implements QueryExecutionOp
+public interface QueryExecutionOp
 {
-    private Op queryOp = null ;
-
-    protected QueryEngineOpBase(Query q, Context context)
-    { super(q, context) ; }
-
-    final
-    protected Plan queryToPlan(Query query)
-    {
-        Op op = getOp() ;
-        QueryIterator qIter = createQueryIterator(op) ;
-        return new PlanOp(op, qIter) ;
-    }
-
-    /** Turn a SPARQL algebra expression into a QueryIterator */ 
-    protected abstract QueryIterator createQueryIterator(Op op) ;
-    
-    protected Op createOp()
-    {
-        Op op = createPatternOp() ;
-        op = modifyPatternOp(op) ;
-        op = AlgebraGenerator.compileModifiers(getQuery(), op) ;
-        op = modifyQueryOp(op) ;
-        return op ;
-    }
-    
-    protected Op createPatternOp()
-    {
-        return AlgebraGenerator.compile(query.getQueryPattern()) ;
-    }
-    
-    public Op getOp()
-    {
-        if ( queryOp == null )
-            queryOp = createOp() ; 
-        return queryOp ;
-    }
-
-    /** Allow the algebra expression to be modifed */
-    protected Op modifyQueryOp(Op op)
-    {
-        return op ;
-    }
-
-    /** Allow the algebra expression to be modifed */
-    protected Op modifyPatternOp(Op op)
-    {
-        return op ;
-    }
+    public QueryIterator eval(Op op, Graph graph) ;
+    public QueryIterator eval(Op op, DatasetGraph dsg) ;
 }
 
 /*

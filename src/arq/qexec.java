@@ -13,15 +13,17 @@ import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.*;
 
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.PlanOp;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
@@ -29,9 +31,6 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileUtils;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.QueryException;
 
 public class qexec extends CmdARQ
 {
@@ -45,6 +44,8 @@ public class qexec extends CmdARQ
     ModDataset    modDataset =  new ModAssembler() ;    // extends ModDataset
     ModResultsOut modResults =  new ModResultsOut() ;
     ModTime       modTime =     new ModTime() ;
+    ModEngine     modEngine =   new ModEngine() ;
+
     
     String queryFilename = null ;
     String queryString   = null ;
@@ -64,6 +65,7 @@ public class qexec extends CmdARQ
         super.addModule(modResults) ;
         super.addModule(modDataset) ;
         super.addModule(modTime) ;
+        super.addModule(modEngine) ;
     }
 
     protected void processModulesAndArgs()
@@ -136,19 +138,35 @@ public class qexec extends CmdARQ
         // Check there is a dataset
         if ( dataset == null )
         {
-            System.err.println("No dataset") ;
-            throw new TerminationException(1) ;
+            dataset = new DataSourceImpl();
+//            System.err.println("No dataset") ;
+//            throw new TerminationException(1) ;
         }
         
         modTime.startTimer() ;
         DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
+        
+        QueryExecutionGraph qe = QueryExecutionGraphFactory.create(new Query(), dsg) ;
+        
+//        if ( ! ( qe instanceof QueryExecutionOp ) )
+//        {
+//            System.err.println("Didn't find a query engine capable of dealing with an algebra expression directly") ;
+//            throw new TerminationException(1) ;
+//        }
+//        QueryExecutionOp qexec = (QueryExecutionOp)qe ;
+//        QueryIterator qIter = qexec.eval(op, dsg) ;
+        
         QueryIterator qIter = null ;
-        // Yuk.  QueryEngineOpBase needs to have object operations.
-        // QueryExecutionOpGraph interface?
-        if ( true )
+        // quick hack.
+        if ( qe instanceof QueryEngineMain )
             qIter = QueryEngineMain.eval(op, dsg) ;
-        else
+        else if ( qe instanceof QueryEngineRef )
             qIter = QueryEngineRef.eval(op, dsg) ;
+        else
+        {
+            System.err.println("Didn't find a query engine capable of dealing with an algebra expression directly") ;
+            throw new TerminationException(1) ;
+        }
         
         if ( printOp || printPlan )
         {
