@@ -11,7 +11,9 @@ ARQ2-beta
   OpTable isJoinIdentity -- OpJoin.isJoinIdentify
     
 + qexec : no datasets evaluation
-  
+  Single join, engine main, linearized, becomes (join(join(root,t1),t2))
+  Plan/engine ref looks silly  
+
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
 
