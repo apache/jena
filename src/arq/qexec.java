@@ -35,6 +35,11 @@ import com.hp.hpl.jena.query.QueryException;
 
 public class qexec extends CmdARQ
 {
+    // Merging with qparse/sparql
+    // 1 -  split those two into Query and QueryExecution parts
+    // 2 - This is then calls on the QueryExecution parts
+    // 
+    
     protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
     protected final ArgDecl printDecl  = new ArgDecl(ArgDecl.HasValue, "print") ;
     ModDataset    modDataset =  new ModAssembler() ;    // extends ModDataset
@@ -138,6 +143,8 @@ public class qexec extends CmdARQ
         modTime.startTimer() ;
         DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
         QueryIterator qIter = null ;
+        // Yuk.  QueryEngineOpBase needs to have object operations.
+        // QueryExecutionOpGraph interface?
         if ( true )
             qIter = QueryEngineMain.eval(op, dsg) ;
         else
