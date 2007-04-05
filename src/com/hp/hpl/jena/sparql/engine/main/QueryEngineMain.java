@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -48,7 +49,7 @@ public class QueryEngineMain extends QueryEngineOpBase
             // Substitute in the Op, and use this b as the root. 
             op = QC.substitute(op, b) ;
         }
-        return eval(op, b, getExecContext()) ;
+        return eval(op, new QueryIterSingleton(b,getExecContext()), getExecContext()) ;
     }
 
     public static QueryIterator eval(Op op, Graph graph)
@@ -59,13 +60,13 @@ public class QueryEngineMain extends QueryEngineOpBase
     public static QueryIterator eval(Op op, DatasetGraph dsg)
     {
         ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), null, dsg.getDefaultGraph(), dsg) ;
-        return eval(op, BindingRoot.create(), execCxt) ; 
+        QueryIterator qIter = QueryIterRoot.create(execCxt) ;
+        return eval(op, qIter, execCxt) ; 
     }
     
-    private static QueryIterator eval(Op op, Binding b, ExecutionContext execCxt)
+    private static QueryIterator eval(Op op, QueryIterator input, ExecutionContext execCxt)
     {
-        QueryIterator qIter = new QueryIterSingleton(b, execCxt) ;
-        qIter = OpCompiler.compile(op, qIter, execCxt) ;
+        QueryIterator qIter = OpCompiler.compile(op, input, execCxt) ;
         // Wrap with something to check for closed iterators.
         qIter = QueryIteratorCheck.check(qIter, execCxt) ;
         return qIter ;

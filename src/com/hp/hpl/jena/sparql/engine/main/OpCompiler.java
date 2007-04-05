@@ -222,8 +222,16 @@ public class OpCompiler
 
     QueryIterator compile(OpTable opTable, QueryIterator input)
     { 
+//        if ( input instanceof QueryIteratorBase )
+//        {
+//            String x = ((QueryIteratorBase)input).debug();
+//            System.out.println(x) ;
+//        }
+//        
         if ( opTable.isJoinIdentify() )
             return input ;
+        if ( input instanceof QueryIterRoot )
+            return opTable.getTable().iterator(execCxt) ;
         //throw new ARQNotImplemented("Not identity table") ;
         QueryIterator qIterT = opTable.getTable().iterator(execCxt) ;
         //QueryIterator qIterT = root() ;

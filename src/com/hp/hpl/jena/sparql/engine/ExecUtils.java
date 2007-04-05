@@ -14,9 +14,8 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 
 /**
  * @author     Andy Seaborne
@@ -29,9 +28,7 @@ public class ExecUtils
     
     public static QueryIterator makeRoot(ExecutionContext execCxt)
     {
-        Binding rootBinding = BindingRoot.create() ;
-        QueryIterator initialIter = new QueryIterSingleton(rootBinding, execCxt) ;
-        return initialIter ;
+        return QueryIterRoot.create(execCxt) ;
     }
   
     public static void compilePattern(com.hp.hpl.jena.graph.query.Query graphQuery,

@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.Jena;
 import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase;
 
 public abstract class CmdARQ extends CmdGeneral
 {
@@ -31,6 +32,8 @@ public abstract class CmdARQ extends CmdGeneral
             ModVersion.printVersionAndExit() ;
         if ( super.contains(strictDecl) ) 
             ARQ.setStrictMode() ;
+        if ( modGeneral.debug )
+            QueryIteratorBase.traceIterators = true ;
     }
     
     public void version(List items)

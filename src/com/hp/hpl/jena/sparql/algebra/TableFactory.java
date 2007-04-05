@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.algebra.table.TableN;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
 
 public class TableFactory
 {
@@ -26,7 +27,11 @@ public class TableFactory
     { return new TableN() ; }
     
     public static Table create(QueryIterator queryIterator)
-    { return new TableN(queryIterator) ; }
+    { 
+        if ( queryIterator instanceof QueryIterRoot )
+            return createUnit() ; 
+        
+        return new TableN(queryIterator) ; }
 
     public static Table create(Var var, Node value)
     { return new Table1(var, value) ; }

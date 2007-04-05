@@ -15,10 +15,10 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 public class IteratorTruncate implements ClosableIterator
 {
     static public interface Test { boolean accept(Object object) ; }
-    Test test ;
-    Object slot = null ;
-    boolean active = true ;
-    Iterator iter ;
+    private Test test ;
+    private Object slot = null ;
+    private boolean active = true ;
+    private Iterator iter ;
 
     public IteratorTruncate (Test test, Iterator iter)
     { this.test = test ; this.iter = iter ; }

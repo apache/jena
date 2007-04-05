@@ -22,11 +22,11 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class QueryIterSingleton extends QueryIterYieldN
 {
-    // A common usage.
-    public static QueryIterSingleton create(Binding parent, Var var, Node value, ExecutionContext context)
+    // A common usage?
+    public static QueryIterSingleton create(Binding parent, Var var, Node value, ExecutionContext execCxt)
     {
         Binding b = new Binding1(parent, var, value) ;
-        return new QueryIterSingleton(b, context) ;
+        return new QueryIterSingleton(b, execCxt) ;
     }
     
     private QueryIterSingleton(Binding binding) // Not needed

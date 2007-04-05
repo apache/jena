@@ -27,7 +27,7 @@ public class BindingMap extends BindingBase
     Map map = new HashMap() ;
     
     public BindingMap(Binding parent) { super(parent) ; }
-    public BindingMap() { super(BindingRoot.create()) ; }
+    public BindingMap() { super(BindingRoot.create()) ; } // null?
 
     /** Add a (name,value) */
     

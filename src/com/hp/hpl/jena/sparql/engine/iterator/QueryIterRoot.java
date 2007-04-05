@@ -1,50 +1,28 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.table;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.hp.hpl.jena.sparql.engine.iterator;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding0;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 
-public class TableUnit extends TableBase
+public class QueryIterRoot extends QueryIterSingleton
 {
-    public TableUnit() {}
+    public static QueryIterRoot create(ExecutionContext execCxt)
+    { return new QueryIterRoot(execCxt) ; }
     
-    public QueryIterator createIterator(ExecutionContext execCxt)
+    private QueryIterRoot(ExecutionContext execCxt)
     {
-        // BindingRoot?
-        return new QueryIterSingleton(new Binding0(), execCxt) ;
+        super(BindingRoot.create(), execCxt) ;
     }
 
-    public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
-                                        ExprList conditions,
-                                        ExecutionContext execCxt)
-    {
-        // We are one row of no entries - joins with anything
-        return new QueryIterSingleton(bindingLeft, execCxt) ;
-    }
-
-    public void closeTable()    { }
-
-    public List getVarNames()   { return new ArrayList() ; }
-
-    public List getVars()       { return new ArrayList() ; }
-    
-    public String toString()    { return "TableUnit" ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

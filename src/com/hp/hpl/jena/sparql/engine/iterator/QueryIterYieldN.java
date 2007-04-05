@@ -38,6 +38,8 @@ public class QueryIterYieldN extends QueryIter
         limitYielded = num ;
     }
     
+    public Binding getBinding() { return binding ; }
+    
     protected boolean hasNextBinding()
     {
         return countYielded < limitYielded ;

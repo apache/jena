@@ -59,14 +59,14 @@ public abstract class QueryIter2 extends QueryIter
         out.incIndent() ;
         getLeft().output(out, sCxt) ;
         out.decIndent() ;
-        out.ensureStartOfLine() ;
+        //out.ensureStartOfLine() ;
         out.println(Plan.finishMarker) ;
         
         out.print(Plan.startMarker) ;
         out.incIndent() ;
         getRight().output(out, sCxt) ;
         out.decIndent() ;
-        out.ensureStartOfLine() ;
+        //out.ensureStartOfLine() ;
         out.println(Plan.finishMarker) ;
         
         out.decIndent() ;

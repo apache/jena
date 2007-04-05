@@ -161,7 +161,8 @@ public class Run
             //"-v",
             //"--engine=ref",
             "--data="+datafile,
-            "--file="+queryfile , 
+            "--file="+queryfile ,
+            "--print=plan"
         } ;
         
         qexec.main(a) ;

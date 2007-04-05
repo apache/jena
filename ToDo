@@ -7,9 +7,6 @@ ARQ2-beta
 
 == Core
 
-+ Stacktraces for unclosed iterators
-  Internals done but accessing?
-  
 + OpUnit => OpTable.
   OpTable isJoinIdentity -- OpJoin.isJoinIdentify
     
