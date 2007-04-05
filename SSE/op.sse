@@ -6,13 +6,3 @@
     )
   )
 
-## (LeftJoin
-##   (Join
-##     (BGP (triple ?s ?p ?o))
-##     (BGP 
-##     	(triple _:b :q 123)
-##     	(triple _:b :q +123))
-##    	)
-##   (Filter (&& (str ?o) -3)
-##     (BGP (triple ?s ?p ?o))
-##     ))
