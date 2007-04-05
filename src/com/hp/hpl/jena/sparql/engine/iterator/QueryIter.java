@@ -10,7 +10,6 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.Utils;
 
 /**
  * This class provides the general machinary for iterators 
@@ -53,7 +52,7 @@ public abstract class QueryIter extends QueryIteratorBase
     public int getIteratorNumber() { return iteratorNumber ; }
     
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { out.println(getIteratorNumber()+"/"+Utils.className(this)) ; }
+    { out.println(getIteratorNumber()+"/"+debug()) ; }
     
     private void register()
     {

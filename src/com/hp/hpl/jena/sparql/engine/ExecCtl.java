@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -22,6 +25,8 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class ExecCtl
 {
+    private static Log log = LogFactory.getLog(ExecCtl.class) ;
+    
     private Context context       = null ;
     private DatasetGraph dataset  = null ;
     private Query query           = null ;
@@ -36,7 +41,7 @@ public class ExecCtl
         this.context = context ;
     }
 
-    /** Clone  - shares tracking */
+    /** Clone - shares tracking */
     protected ExecCtl(ExecCtl other) 
     {
         this.context = other.context ;
@@ -46,7 +51,7 @@ public class ExecCtl
         this.allIterators = other.allIterators ;
     }
 
-    /** Clone  - shares tracking */
+    /** Clone - shares tracking */
     protected ExecCtl(ExecCtl other, DatasetGraph dataset) 
     {
         this.context = other.context ;
@@ -111,7 +116,20 @@ public class ExecCtl
     
     private void warn(QueryIterator qIter, String str)
     {
-        LogFactory.getLog(ExecCtl.class).warn(str+Utils.className(qIter)) ;
+        str = str + Utils.className(this) ;
+        
+        if ( qIter instanceof QueryIteratorBase )
+        {
+            QueryIteratorBase qIterBase = (QueryIteratorBase)qIter ;
+            {
+                QueryIter qIterLN = (QueryIter)qIter ;
+                str = str+"/"+qIterLN.getIteratorNumber() ;
+            }
+            String x = qIterBase.debug() ;
+            if ( x.length() > 0 )
+                str = str+" : "+x ;
+        }
+        log.warn(str) ;
     }
 }
 

@@ -41,7 +41,7 @@ public class QueryIterSingleton extends QueryIterYieldN
     
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
-        out.println("QueryIterSingleton "+binding);
+        out.print("QueryIterSingleton "+binding);
     }
 }
 

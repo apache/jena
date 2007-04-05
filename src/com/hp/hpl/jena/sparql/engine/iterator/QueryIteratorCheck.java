@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Iterator;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -50,18 +48,27 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
     
     public static void checkForOpenIterators(ExecutionContext execContext)
     {
-        Iterator iter = execContext.listOpenIterators() ;
-        while(iter.hasNext())
-        {
-            QueryIterator qIterOpen = (QueryIterator)iter.next() ;
-            if ( qIterOpen instanceof QueryIter )
-            {
-                QueryIter qIterBase = (QueryIter)qIterOpen ;
-                log.warn("Open iterator: "+qIterBase.getIteratorNumber()+" "+qIterOpen) ;
-            }
-            else
-                log.warn("Open iterator: "+qIterOpen) ;
-        }
+        execContext.dump();
+//        Iterator iter = execContext.listOpenIterators() ;
+//        while(iter.hasNext())
+//        {
+//            QueryIterator qIterOpen = (QueryIterator)iter.next() ;
+//            if ( qIterOpen instanceof QueryIteratorBase )
+//            {
+//                if ( qIterOpen instanceof QueryIter )
+//                {
+//                    QueryIter qIterBase = (QueryIter)qIterOpen ;
+//                    log.warn("Open iterator: "+qIterBase.getIteratorNumber()+" "+qIterOpen+" "+qIterBase.debug()) ;
+//                }
+//                else 
+//                {
+//                    QueryIteratorBase qIterBase = (QueryIteratorBase)qIterOpen ;
+//                    log.warn("Open iterator: "+qIterOpen+" "+qIterBase.debug()) ;
+//                }
+//            }
+//            else
+//                log.warn("Open iterator: "+qIterOpen) ;
+//        }
     }
     
     public static QueryIteratorCheck check(QueryIterator qIter, ExecutionContext execCxt)

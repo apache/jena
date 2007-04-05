@@ -7,7 +7,8 @@
 package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.NoSuchElementException;
-import org.apache.commons.logging.*;
+
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFatalException;
@@ -31,10 +32,15 @@ public abstract class QueryIteratorBase
     extends PrintSerializableBase
     implements QueryIterator
 {
+    public static boolean traceIterators = false ; 
     private boolean finished = false ;
+    Throwable stackTrace = null ; 
 
     public QueryIteratorBase()
-    { }
+    {
+        if ( traceIterators )
+            stackTrace = new Throwable() ;
+    }
 
     // -------- The contract with the subclasses 
     
@@ -114,10 +120,7 @@ public abstract class QueryIteratorBase
             return ;
         try { closeIterator() ; }
         catch (QueryException ex)
-        { 
-            LogFactory.getLog(this.getClass()).warn("QueryException in close()", ex) ;
-        } 
-        
+        { LogFactory.getLog(this.getClass()).warn("QueryException in close()", ex) ; } 
         finished = true ;
     }
     
@@ -129,6 +132,31 @@ public abstract class QueryIteratorBase
         catch (QueryException ex) { } 
         
         finished = true ;
+    }
+    
+    public String debug()
+    {
+        String s = "" ;
+        // TODO Limit stacktrace to first non-constructor.
+        if ( stackTrace != null )
+        {
+            for ( int i = 0 ; i < stackTrace.getStackTrace().length ; i++ )
+            {
+                StackTraceElement e = stackTrace.getStackTrace()[i] ;
+                // <init> or <clinit>
+                // Find first non-constructor
+                if ( e.getMethodName().equals("<init>") )
+                    continue ;
+                // Use this so Eclipse can find the code
+                s = s + e.toString() ;
+                // Looks like:
+                //s = s + e.getClassName()+"."+e.getMethodName()+"("+e.getFileName()+":"+e.getLineNumber()+")" ;
+                // Too short for Eclipse.
+                //s = s +"("+e.getFileName()+":"+e.getLineNumber()+")" ;
+                break ;
+            }
+        }
+        return s ;
     }
 }
 
