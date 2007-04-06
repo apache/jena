@@ -6,36 +6,32 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
-import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineOpBase;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.util.Context;
 
-public class QueryEngineQuad extends QueryEngineRef
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+
+public class QueryEngineQuad extends QueryEngineOpBase
 {
+    public QueryEngineQuad(Query query) { this(query, null) ; }
+    
+    public QueryEngineQuad(Query query, Context context)
+    {
+        super(query, 
+              new AlgebraGeneratorQuad(context), 
+              context,
+              new OpExecRef()) ; 
+    }
+    
     static public QueryEngineFactory getFactory()   { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
     
-    public QueryEngineQuad(Query q)
-    {
-        this(q, null) ;
-    }
-
-    public QueryEngineQuad(Query q, Context context)
-    {
-        super(q, context) ;
-    }
-
-    protected Op createOp()
-    {
-        return AlgebraGeneratorQuad.compile(query) ;
-    }
-
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         public boolean accept(Query query, Dataset dataset) 
@@ -49,6 +45,7 @@ public class QueryEngineQuad extends QueryEngineRef
         }
     } ;
 }
+
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.

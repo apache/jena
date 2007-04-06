@@ -34,7 +34,9 @@ public class PlanDataset extends PlanElement1
     {
         ExecutionContext execCxt2 = execCxt ;
         if ( element.getDataset() != null )
-            execCxt2 = new ExecutionContext(execCxt, element.getDataset()) ;
+            execCxt2 = new ExecutionContext(execCxt.getContext(),
+                                            element.getDataset().getDefaultGraph(),
+                                            element.getDataset()) ;
         
         if ( getSubElement() == null )
         {

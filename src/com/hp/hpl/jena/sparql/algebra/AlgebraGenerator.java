@@ -20,87 +20,56 @@ import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.syntax.*;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 
 public class AlgebraGenerator 
 {
     /** Compile a query - pattern and modifiers */
-    public static Op compile(Query query)
+    public static Op compileQuery(Query query)
     {
         if ( query == null )
             return null ;
-        Op pattern = compile(query.getQueryPattern()) ;
-        Op op = compileModifiers(query, pattern) ;
-        return op ;
+        return new AlgebraGenerator().compile(query) ;
     }
 
     /** Compile a pattern */
-    public static Op compile(Element elt)
+    public static Op compilePattern(Element elt)
     {
         if ( elt == null )
             return null ;
-        return new AlgebraGenerator().compileGraphPattern(elt) ;
+        return new AlgebraGenerator().compile(elt) ;
     }
 
-    // ---- Wrapping an alrady compile algebra expression in solution modifiers.
+    // ---- Wrapping an already compiled algebra expression in solution modifiers.
     
-    /** Compile query modifiers */
-    public static Op compileModifiers(Query query, Op pattern)
-    {
-        Op op = pattern ;
-        Modifiers mods = new Modifiers(query) ;
-        
-        // ---- ToList
-        if ( ARQ.getContext().isTrue(ARQ.generateToList) )
-            // Listify it.
-            op = new OpList(op) ;
-        
-        // ---- ORDER BY
-        if ( mods.orderConditions != null )
-            op = new OpOrder(op, mods.orderConditions) ;
-        
-        // ---- PROJECT
-        // (ORDER may involve an unselected variable)
-        // No projection => initial variables are exposed.
-        // Needed for CONSTRUCT and initial bindings + SELECT *
-        
-        if ( mods.projectVars != null && ! query.isQueryResultStar())
-        {
-            // Don't project for QueryResultStar so initial bindings show through
-            // in SELECT *
-            if ( mods.projectVars.size() == 0 && query.isSelectType() )
-                LogFactory.getLog(AlgebraGenerator.class).warn("No project variables") ;
-            if ( mods.projectVars.size() > 0 ) 
-                op = new OpProject(op, mods.projectVars) ;
-        }
-        
-        // ---- DISTINCT
-        if ( query.isDistinct() )
-            op = new OpDistinct(op) ;
-        
-        // ---- REDUCED
-        if ( query.isReduced() )
-            op = new OpReduced(op) ;
-        
-        // ---- LIMIT/OFFSET
-        if ( query.hasLimit() || query.hasOffset() )
-            op = new OpSlice(op, mods.start, mods.length) ;
-        
-        return op ;
-    }
 
 
     // Fixed filter position means leave exactly where it is syntactically (illegal SPARQL)
     // Helpful only to write exactly what you mean
     // (and test the full query compiler).
     boolean fixedFilterPosition = false ;
+    private Context context ;
 
-    // An object so it has methods that the quad generator can override.
-    protected AlgebraGenerator() {}
+    public AlgebraGenerator(Context context)
+    { 
+        if ( context == null )
+            context = ARQ.getContext() ;
+        this.context = context ;
+    }
+    
+    public AlgebraGenerator() { this(ARQ.getContext()) ; } 
+    
+    public Op compile(Query query)
+    {
+        Op pattern = compile(query.getQueryPattern()) ;
+        Op op = compileModifiers(query, pattern) ;
+        return op ;
+    }
     
     // Compile any structural element
-    public Op compileGraphPattern(Element elt)
+    public Op compile(Element elt)
     {
       if ( elt instanceof ElementUnion )
           return compile((ElementUnion)elt) ;
@@ -200,7 +169,7 @@ public class AlgebraGenerator
                  elt instanceof ElementNamedGraph ||
                  elt instanceof ElementUnion )
             {
-                Op op = compileGraphPattern(elt) ;
+                Op op = compile(elt) ;
                 current = join(current, op) ;
                 continue ;
             }
@@ -228,7 +197,7 @@ public class AlgebraGenerator
     protected Op compile(ElementOptional eltOpt, Op current)
     {
         Element subElt = eltOpt.getOptionalElement() ;
-        Op op = compileGraphPattern(subElt) ;
+        Op op = compile(subElt) ;
         ExprList exprs = null ;
         if ( op instanceof OpFilter )
         {
@@ -252,7 +221,7 @@ public class AlgebraGenerator
     protected Op compile(ElementNamedGraph eltGraph)
     {
         Node graphNode = eltGraph.getGraphNameNode() ;
-        Op sub = compileGraphPattern(eltGraph.getElement()) ;
+        Op sub = compile(eltGraph.getElement()) ;
         return new OpGraph(graphNode, sub) ;
     }
 
@@ -293,12 +262,57 @@ public class AlgebraGenerator
              elt instanceof ElementNamedGraph ||
              elt instanceof ElementUnion )
         {
-            Op op = compileGraphPattern(elt) ;
+            Op op = compile(elt) ;
             return join(current, op) ;
         }
         
         broken("compileDirect/Element not recognized: "+Utils.className(elt)) ;
         return null ;
+    }
+    
+    /** Compile query modifiers */
+    public Op compileModifiers(Query query, Op pattern)
+    {
+        Op op = pattern ;
+        Modifiers mods = new Modifiers(query) ;
+        
+        // ---- ToList
+        if ( context.isTrue(ARQ.generateToList) )
+            // Listify it.
+            op = new OpList(op) ;
+        
+        // ---- ORDER BY
+        if ( mods.orderConditions != null )
+            op = new OpOrder(op, mods.orderConditions) ;
+        
+        // ---- PROJECT
+        // (ORDER may involve an unselected variable)
+        // No projection => initial variables are exposed.
+        // Needed for CONSTRUCT and initial bindings + SELECT *
+        
+        if ( mods.projectVars != null && ! query.isQueryResultStar())
+        {
+            // Don't project for QueryResultStar so initial bindings show through
+            // in SELECT *
+            if ( mods.projectVars.size() == 0 && query.isSelectType() )
+                LogFactory.getLog(AlgebraGenerator.class).warn("No project variables") ;
+            if ( mods.projectVars.size() > 0 ) 
+                op = new OpProject(op, mods.projectVars) ;
+        }
+        
+        // ---- DISTINCT
+        if ( query.isDistinct() )
+            op = new OpDistinct(op) ;
+        
+        // ---- REDUCED
+        if ( query.isReduced() )
+            op = new OpReduced(op) ;
+        
+        // ---- LIMIT/OFFSET
+        if ( query.hasLimit() || query.hasOffset() )
+            op = new OpSlice(op, mods.start, mods.length) ;
+        
+        return op ;
     }
 
     // -------- 

@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sparql.core.describe;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.util.Closure;
+import com.hp.hpl.jena.sparql.util.Context;
 
 /** DescribeHandler that calculates the bNode closure.
  *  Takes all the statements of this resource, and for every object that is
@@ -25,7 +25,7 @@ public class DescribeBNodeClosure implements DescribeHandler
     
     public DescribeBNodeClosure() {}
     
-    public void start(Model accumulateResultModel, ExecutionContext qCxt)
+    public void start(Model accumulateResultModel, Context cxt)
     {
         acc = accumulateResultModel ;
     }

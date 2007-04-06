@@ -8,12 +8,22 @@ package com.hp.hpl.jena.sparql.engine;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.util.Context;
 
-public interface QueryExecutionOp
+import com.hp.hpl.jena.query.ARQ;
+
+public abstract class OpExecBase implements OpExec
 {
-    public QueryIterator eval(Op op, Graph graph) ;
-    public QueryIterator eval(Op op, DatasetGraph dsg) ;
+    final
+    public QueryIterator eval(Op op, Graph graph)
+    { return eval(op, new DataSourceGraphImpl(graph), ARQ.getContext()) ; }
+    
+    final
+    public QueryIterator eval(Op op, DatasetGraph dsg, Context context)
+    { return eval(op, BindingRoot.create(), dsg, context) ; }
 }
 
 /*

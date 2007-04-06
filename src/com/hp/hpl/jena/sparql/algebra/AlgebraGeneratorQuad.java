@@ -14,30 +14,24 @@ import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
+import com.hp.hpl.jena.sparql.util.Context;
 
 public class AlgebraGeneratorQuad extends AlgebraGenerator 
 {
-    public static Op compile(Query query)
+    public static Op compileQuery(Query query)
     {
-        Op pattern = compile(query.getQueryPattern()) ;
-        return compileModifiers(query, pattern) ;
+        return new AlgebraGeneratorQuad().compile(query) ;
     }
 
-    public static Op compile(Element elt)
+    public static Op compilePattern(Element elt)
     {
-        return new AlgebraGeneratorQuad().compileGraphPattern(elt) ;
+        return new AlgebraGeneratorQuad().compile(elt) ;
     }
     
-    /** Compile query modifiers */
-    public static Op compileModifiers(Query query, Op pattern)
-    {
-        return AlgebraGenerator.compileModifiers(query, pattern) ;
-    }
-
     private Node currentGraph = Quad.defaultGraph ;
     
-    protected AlgebraGeneratorQuad()
-    { super() ; }
+    public AlgebraGeneratorQuad(Context context) { super(context) ; }
+    public AlgebraGeneratorQuad()                { super() ; }
     
     protected Op compile(BasicPattern pattern)
     {
@@ -58,7 +52,7 @@ public class AlgebraGeneratorQuad extends AlgebraGenerator
                 return new OpDatasetNames(graphNode) ;
             }
         }
-        Op sub = compileGraphPattern(eltGraph.getElement()) ;
+        Op sub = compile(eltGraph.getElement()) ;
         currentGraph = g ;
         return sub ;
     }

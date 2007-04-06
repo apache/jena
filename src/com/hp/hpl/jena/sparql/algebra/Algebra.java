@@ -11,12 +11,14 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.engine.main.OpExecMain;
+import com.hp.hpl.jena.sparql.engine.ref.OpExecRef;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
 import com.hp.hpl.jena.sparql.lang.sse.SSE;
 import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 
 public class Algebra
@@ -55,13 +57,13 @@ public class Algebra
     static public QueryIterator exec(Op op, DatasetGraph ds)
     {
         // QueryEngineRef.eval
-        QueryIterator qIter = QueryEngineMain.eval(op, ds) ;
+        QueryIterator qIter = new OpExecMain().eval(op, ds, ARQ.getContext()) ;
         return qIter ;
     }
 
     static public QueryIterator exec(Op op, Graph graph)
     {
-        QueryIterator qIter = QueryEngineMain.eval(op, graph) ;
+        QueryIterator qIter = new OpExecMain().eval(op, graph) ;
         return qIter ;
     }
 
@@ -82,13 +84,13 @@ public class Algebra
     static public QueryIterator execRef(Op op, DatasetGraph ds)
     {
         // QueryEngineRef.eval
-        QueryIterator qIter = QueryEngineMain.eval(op, ds) ;
+        QueryIterator qIter = new OpExecRef().eval(op, ds, ARQ.getContext()) ;
         return qIter ;
     }
 
     static public QueryIterator execRef(Op op, Graph graph)
     {
-        QueryIterator qIter = QueryEngineMain.eval(op, graph) ;
+        QueryIterator qIter = new OpExecRef().eval(op, graph) ;
         return qIter ;
     }
 }

@@ -6,23 +6,15 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineOpBase;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.util.Context;
+
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.*;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRoot;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
-import com.hp.hpl.jena.sparql.util.Context;
 
 public class QueryEngineMain extends QueryEngineOpBase
 {
@@ -31,46 +23,10 @@ public class QueryEngineMain extends QueryEngineOpBase
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
 
     public QueryEngineMain(Query query, Context context)
-    { super(query, context) ; }
+    { super(query, new AlgebraGenerator(context), context, new OpExecMain()) ; }
 
     public QueryEngineMain(Query query)
-    { super(query, ARQ.getContext()) ; }
-    
-    //@Override
-    protected QueryIterator createQueryIterator(Op op)
-    {
-        Binding b = BindingRoot.create() ;
-        
-        // If there is some initial bindings
-        if ( super.startBinding != null )
-        {
-            b = new BindingMap(b) ;
-            BindingUtils.addToBinding(b, startBinding) ;
-            // Substitute in the Op, and use this b as the root. 
-            op = QC.substitute(op, b) ;
-        }
-        return eval(op, new QueryIterSingleton(b,getExecContext()), getExecContext()) ;
-    }
-
-    public static QueryIterator eval(Op op, Graph graph)
-    {
-        return eval(op, new DataSourceGraphImpl(graph)) ;
-    }
-    
-    public static QueryIterator eval(Op op, DatasetGraph dsg)
-    {
-        ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), null, dsg.getDefaultGraph(), dsg) ;
-        QueryIterator qIter = QueryIterRoot.create(execCxt) ;
-        return eval(op, qIter, execCxt) ; 
-    }
-    
-    private static QueryIterator eval(Op op, QueryIterator input, ExecutionContext execCxt)
-    {
-        QueryIterator qIter = OpCompiler.compile(op, input, execCxt) ;
-        // Wrap with something to check for closed iterators.
-        qIter = QueryIteratorCheck.check(qIter, execCxt) ;
-        return qIter ;
-    }
+    { this(query, null) ; }
     
     // -------- Factory
     

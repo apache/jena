@@ -6,54 +6,32 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineOpBase;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.util.Context;
+
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.*;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
-import com.hp.hpl.jena.sparql.util.Context;
 
 
 public class QueryEngineRef extends QueryEngineOpBase
 {
+    public QueryEngineRef(Query query) { this(query, null) ; }
+    
+    public QueryEngineRef(Query query, Context context)
+    {
+        super(query, 
+              new AlgebraGenerator(context), 
+              context,
+              new OpExecRef()) ; 
+    }
+    
     static public QueryEngineFactory getFactory()   { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-    
-    public QueryEngineRef(Query q)
-    { this(q, null) ; }
-
-    public QueryEngineRef(Query q, Context context)
-    { super(q, context) ; }
-    
-    protected QueryIterator createQueryIterator(Op op)
-    {
-        ExecutionContext execCxt = getExecContext() ;
-        Evaluator eval = EvaluatorFactory.create(execCxt) ;
-        Table table = Eval.eval(eval, op) ;
-        return table.iterator(execCxt) ;
-    }
-    
-    public static QueryIterator eval(Op op, Graph graph)
-    {
-        return eval(op, new DataSourceGraphImpl(graph)) ;
-    }
-    
-    public static QueryIterator eval(Op op, DatasetGraph dsg)
-    {
-        ExecutionContext execCxt = new ExecutionContext(ARQ.getContext(), null, dsg.getDefaultGraph(), dsg) ;
-        Evaluator eval = EvaluatorFactory.create(execCxt) ;
-        Table table = Eval.eval(eval, op) ;
-        // If ref eval becomes non-iterator-ish, remove this.
-        return QueryIteratorCheck.check(table.iterator(execCxt), execCxt) ;
-        //return table.iterator(execCxt) ;
-    }
     
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
@@ -68,6 +46,7 @@ public class QueryEngineRef extends QueryEngineOpBase
         }
     } ;
 }
+
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.

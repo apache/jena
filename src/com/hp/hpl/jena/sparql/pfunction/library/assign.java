@@ -29,7 +29,7 @@ public class assign extends PFuncSimple
     public QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, Node object, ExecutionContext execCxt)
     {
         if ( subject.isVariable() && object.isVariable() )
-            throw new QueryExecException("Both subject and object are unbound variables: "+FmtUtils.stringForNode(predicate, execCxt.getQuery().getPrefixMapping())) ;
+            throw new QueryExecException("Both subject and object are unbound variables: "+FmtUtils.stringForNode(predicate)) ;
         if ( subject.isVariable() )
             // Object not a variable or already bound
             return PFLib.oneResult(binding, Var.alloc(subject), object, execCxt) ;

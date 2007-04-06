@@ -6,41 +6,62 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.util.Context;
 
-public abstract class QueryEngineOpBase extends QueryEngineBase //implements QueryExecutionOp
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QuerySolution;
+
+// This is the main adapter from the Query/syntax level to the algebra level. 
+
+public class QueryEngineOpBase extends QueryEngineBase
 {
     private Op queryOp = null ;
+    private AlgebraGenerator gen = null ;
+    private OpExec executor = null ; 
 
-    protected QueryEngineOpBase(Query q, Context context)
-    { super(q, context) ; }
-
+    public QueryEngineOpBase(Query q, 
+                             AlgebraGenerator gen, 
+                             Context context,
+                             OpExec executor) 
+    { 
+        super(q, context) ;
+        this.gen = gen ;
+        this.executor = executor ;
+    }  
+    // --------------------------------
+    
     final
-    protected Plan queryToPlan(Query query)
+    protected Plan queryToPlan(Query query, QuerySolution startSolution)
     {
         Op op = getOp() ;
-        QueryIterator qIter = createQueryIterator(op) ;
+        if ( startSolution == null )
+        {
+            QueryIterator qIter = executor.eval(op, getDatasetGraph(), getContext()) ;
+            return new PlanOp(op, qIter) ;
+        }
+        
+        //if ( executor instanceof OpExecInitial )
+        
+        Binding b = BindingRoot.create() ;
+          
+          // If there is some initial bindings
+          if ( startSolution != null )
+          {
+              b = new BindingMap(b) ;
+              BindingUtils.addToBinding(b, startSolution) ;
+              // Substitute in the Op, and use this b as the root. 
+              op = OpSubstitute.substitute(op, b) ;
+          }
+        QueryIterator qIter = executor.eval(op, b, getDatasetGraph(), getContext()) ;
+        // qIter add parent.  Tweak root?
         return new PlanOp(op, qIter) ;
-    }
-
-    /** Turn a SPARQL algebra expression into a QueryIterator */ 
-    protected abstract QueryIterator createQueryIterator(Op op) ;
-    
-    protected Op createOp()
-    {
-        Op op = createPatternOp() ;
-        op = modifyPatternOp(op) ;
-        op = AlgebraGenerator.compileModifiers(getQuery(), op) ;
-        op = modifyQueryOp(op) ;
-        return op ;
-    }
-    
-    protected Op createPatternOp()
-    {
-        return AlgebraGenerator.compile(query.getQueryPattern()) ;
     }
     
     public Op getOp()
@@ -50,6 +71,20 @@ public abstract class QueryEngineOpBase extends QueryEngineBase //implements Que
         return queryOp ;
     }
 
+    protected Op createOp()
+    {
+        Op op = createPatternOp() ;
+        op = modifyPatternOp(op) ;
+        op = gen.compileModifiers(getQuery(), op) ;
+        op = modifyQueryOp(op) ;
+        return op ;
+    }
+    
+    protected Op createPatternOp()
+    {
+        return gen.compile(query.getQueryPattern()) ;
+    }
+    
     /** Allow the algebra expression to be modifed */
     protected Op modifyQueryOp(Op op)
     {
@@ -61,6 +96,12 @@ public abstract class QueryEngineOpBase extends QueryEngineBase //implements Que
     {
         return op ;
     }
+}
+
+
+class QueryEngineOpFactory
+{
+    
 }
 
 /*

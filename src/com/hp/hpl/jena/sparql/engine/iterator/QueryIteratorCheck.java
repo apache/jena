@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.Iterator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -13,6 +15,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Query iterator that checks everything was closed correctly 
  * 
@@ -47,29 +50,7 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
     { iterator.output(out, sCxt) ; }
     
     public static void checkForOpenIterators(ExecutionContext execContext)
-    {
-        execContext.dump();
-//        Iterator iter = execContext.listOpenIterators() ;
-//        while(iter.hasNext())
-//        {
-//            QueryIterator qIterOpen = (QueryIterator)iter.next() ;
-//            if ( qIterOpen instanceof QueryIteratorBase )
-//            {
-//                if ( qIterOpen instanceof QueryIter )
-//                {
-//                    QueryIter qIterBase = (QueryIter)qIterOpen ;
-//                    log.warn("Open iterator: "+qIterBase.getIteratorNumber()+" "+qIterOpen+" "+qIterBase.debug()) ;
-//                }
-//                else 
-//                {
-//                    QueryIteratorBase qIterBase = (QueryIteratorBase)qIterOpen ;
-//                    log.warn("Open iterator: "+qIterOpen+" "+qIterBase.debug()) ;
-//                }
-//            }
-//            else
-//                log.warn("Open iterator: "+qIterOpen) ;
-//        }
-    }
+    { dump(execContext, false); }
     
     public static QueryIteratorCheck check(QueryIterator qIter, ExecutionContext execCxt)
     {
@@ -78,7 +59,44 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
         return new QueryIteratorCheck(qIter, execCxt) ;
     }
     
+    private static void dump(ExecutionContext execContext, boolean includeAll)
+    {
+        if ( includeAll )
+        {
+            Iterator iterAll = execContext.listAllIterators() ;
 
+            while(iterAll.hasNext())
+            {
+                QueryIterator qIter = (QueryIterator)iterAll.next() ;
+                warn(qIter, "Iterator: ") ;
+            }
+        }
+
+        Iterator iterOpen = execContext.listOpenIterators() ;
+        while(iterOpen.hasNext())
+        {
+            QueryIterator qIterOpen = (QueryIterator)iterOpen.next() ;
+            warn(qIterOpen, "Open iterator: ") ;
+        }
+    }
+
+    private static void warn(QueryIterator qIter, String str)
+    {
+        str = str + Utils.className(qIter) ;
+
+        if ( qIter instanceof QueryIteratorBase )
+        {
+            QueryIteratorBase qIterBase = (QueryIteratorBase)qIter ;
+            {
+                QueryIter qIterLN = (QueryIter)qIter ;
+                str = str+"/"+qIterLN.getIteratorNumber() ;
+            }
+            String x = qIterBase.debug() ;
+            if ( x.length() > 0 )
+                str = str+" : "+x ;
+        }
+        log.warn(str) ;
+    }
 }
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP

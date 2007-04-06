@@ -11,12 +11,32 @@ ARQ2-beta
 
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
+	
+	QueryEngineQuad => Direct from QueryEngineOpBase.
+	
+	OpExecRef == become a OpExecFactory
+	
+
+	Make the Query level separate from the Op level.
+	
+	QueryEngineOpBase.createQueryIterator(Op) is the downwards.
+	Chnage to eval(
+	
+	
+	
+	
+	QueryEngineBase (not abstract) takes an QueryEngineOp as constructore argument.
+	registry is of QueryExecutionOp 
+	  QueryEngine registry wraps one in a QueryEngineBase
+	QueryEngine1 is legacy only.  ToBeDeleted
 
   Algebra... has many direct "Op exec" statics.
   Need a registry approach to work with qexec.
   QueryEngineOpBase should not inherit from QueryEngineBase.
   But be an indirection to a QueryEngineOp thing which is (1) graph level and (2) standalone.
   QueryExecution registry fun.
+
++ Revisit arq.cmd.QuerUtils for printing.
 
 + Test algebra using BuilderTable etc.
 

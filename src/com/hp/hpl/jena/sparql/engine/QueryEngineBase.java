@@ -13,19 +13,19 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.n3.RelURI;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.*;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
 import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.*;
 
 /**
  * @author     Andy Seaborne
@@ -46,8 +46,8 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
     protected QueryIterator resultsIter ;
     private Context context ;
     protected Plan plan = null ;
-    private ExecutionContext execContext = null ; 
-    protected QuerySolution startBinding = null ; 
+//    private ExecutionContext execContext = null ; 
+    private QuerySolution startBinding = null ; 
     private FileManager fileManager = null ;
     private Dataset      dataset = null ;         // Set extenally
     private DatasetGraph datasetGraph = null ;    // The graph equivalent
@@ -101,9 +101,6 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
         
         if ( getDataset() == null )
             dataset = new DataSourceImpl(datasetGraph) ;
-
-        // Create query execution context
-        execContext = new ExecutionContext(context, getQuery(), datasetGraph.getDefaultGraph(), datasetGraph) ;
 
         queryExecutionInitialised = true ;
         finishInitializing() ;
@@ -184,9 +181,6 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
     
     /** @return Return the parameters associated with this QueryEngine */
     public Context getContext() { return context ; }
-
-    /** @return Return the parameters associated with this QueryEngine */
-    public ExecutionContext getExecContext() { return execContext ; }
 
     /** Execute the query and get back an iterator of bindings (graph level) */
     public QueryIterator exec()
@@ -295,7 +289,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
         for ( Iterator handlers = dhList.iterator() ; handlers.hasNext() ; )
         {
             DescribeHandler dh = (DescribeHandler)handlers.next() ;
-            dh.start(model, execContext) ;
+            dh.start(model, getContext()) ;
         }
         
         // Do describe for each resource found.
@@ -380,9 +374,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
         // init() ;
         Plan plan = getPlan() ;
         QueryIterator qIter = plan.iterator() ;
-        
-        resultsIter = QueryIteratorCheck.check(qIter, execContext) ;
-        return resultsIter ;
+        return qIter ;
     }
 //    private void build() { build(false) ; }
 //    
@@ -395,7 +387,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
      * been extracted for the query */
     
     protected abstract 
-    Plan queryToPlan(Query query) ;
+    Plan queryToPlan(Query query, QuerySolution startBinding) ;
     
     public Plan getPlan()
     {
@@ -404,10 +396,10 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
         
         if ( queryExecutionInitialised )
         {
-            plan = queryToPlan(query) ;
+            plan = queryToPlan(query, startBinding) ;
             return plan ;
         }
-        
+        log.warn("getPlan()/Uninitialized route") ;
         // Not initialized - fake initialization, do plan, unfake.
         DatasetGraph dsg = datasetGraph ;
         if ( dsg == null )
@@ -416,65 +408,30 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
             gsrc.setDefaultGraph(GraphUtils.makeJenaDefaultGraph()) ;
             dsg = gsrc ;
         }
-        execContext = new ExecutionContext(context, query, dsg.getDefaultGraph(), dsg) ;
-        Plan p = queryToPlan(query) ;
-        // need to fake:
-        // ExecutionContext
-        execContext = null ;
+        Plan p = queryToPlan(query, startBinding) ;
         return p ;
     }
-    
-//    private Plan queryToPlan()
-//    {
-//        Modifiers mods = getModifiers() ;
-//        Plan plan = queryToPlan(query, mods, query.getQueryPattern()) ;
-//        return plan ;
-//    }
     
     /** Abnormal end of this execution  */
     public void abort()
     {
         // The close operation below does not mind if the
         // query has not been exhausted.
-        close(true) ;
+        close() ;
     }
 
     /** Normal end of use of this execution  */
     public void close()
     {
-        close(true) ;
-    }
-    
-    /** End execution: if the iteration is already exhusted,
-     * the main iterator will already be closed (and also for 
-     * ASK, DESCRIBE, CONSTRUCT queries).  
-     * 
-     * @param forceClose Whether to shut the iterator anyway.
-     */
-    private void close(boolean forceClose)
-    {
-        if ( queryExecutionClosed )
-            return ;
-        
         if ( ! queryExecutionInitialised )
         {
             log.warn("Closing a query that has not been run") ;
             return ;
         }
         
-        // If not forced close, the results iterator should have autoclosed already.
-        if ( forceClose )
-        {
-            if ( resultsIter != null )
-                resultsIter.close() ;
-            resultsIter = null ;
-        }
-        
-        // Close it anyway
         if ( resultsIter != null )
             resultsIter.close() ;
         resultsIter = null ;
-        queryExecutionClosed = true ;
     }
     
     private void insertPrefixesInto(Model model)

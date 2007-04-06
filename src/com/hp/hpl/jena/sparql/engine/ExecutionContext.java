@@ -6,39 +6,60 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.Context;
 
-public class ExecutionContext extends ExecCtl implements FunctionEnv
+public class ExecutionContext implements FunctionEnv
 {
+    private Context context       = null ;
+    private DatasetGraph dataset  = null ;
+    
+    // Iterator tracking
+    private Collection openIterators      = null ;
+    private Collection allIterators       = null ;
     private Graph activeGraph     = null ;
-
-    /** For testing only */
-    private ExecutionContext(Context context) 
-    {
-        super(context) ;
-    }
 
     /** Clone and change active graph - shares tracking */
     public ExecutionContext(ExecutionContext other, Graph activeGraph) 
     {
-        super(other) ;
+        this.context = other.context ;
+        this.dataset = other.dataset ;
+        this.openIterators = other.openIterators ;
+        this.allIterators = other.allIterators ;
         this.activeGraph = activeGraph ;
     }
 
-    public ExecutionContext(Context params, Query query, Graph activeGraph, DatasetGraph dataset)
+    public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset)
     {
-        super(params, query, dataset) ;
+        this.context = params ;
+        this.dataset = dataset ;
+        openIterators = new ArrayList() ;
+        allIterators  = new ArrayList() ;
         this.activeGraph = activeGraph ;
     }
-    
-    public ExecutionContext(ExecutionContext other, DatasetGraph dataset)
+
+    public Context getContext()       { return context ; }
+    public DatasetGraph getDataset()  { return dataset ; }
+    public void openIterator(QueryIterator qIter)
     {
-        super(other, dataset) ;
+        openIterators.add(qIter) ;
+        allIterators.add(qIter) ;
     }
+
+    public void closedIterator(QueryIterator qIter)
+    {
+        openIterators.remove(qIter) ;
+    }
+
+    public Iterator listOpenIterators()  { return openIterators.iterator() ; }
+    public Iterator listAllIterators()   { return allIterators.iterator() ; }
+
     
     /** Return the active graph (the one matching is against at this point in the query.
      * May be null if unknown or not applicable - for example, doing quad store access or

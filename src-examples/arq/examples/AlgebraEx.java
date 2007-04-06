@@ -31,7 +31,7 @@ public class AlgebraEx
         System.out.println(query) ;
         
         // Generate algebra
-        Op op = AlgebraGenerator.compile(query) ;
+        Op op = AlgebraGenerator.compileQuery(query) ;
         System.out.println(op) ;
         
         // Execute it.

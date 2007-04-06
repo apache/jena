@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -33,12 +32,13 @@ import com.hp.hpl.jena.sparql.expr.NodeVar;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry;
-import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
 import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.query.*;
 
 /** Example extension or property function to show rewriting part of a query.
  *  A simpler, more driect way to implement property functions is to extends
@@ -144,7 +144,7 @@ public class labelSearch implements PropertyFunction
         // Compile it.
         // An alternative design is to build the Op structure programmatically,
         // 
-        Op op = AlgebraGenerator.compile((Element)elementGroup) ;
+        Op op = AlgebraGenerator.compilePattern(elementGroup) ;
         return OpCompiler.compile(op, input, execCxt) ;
     }
     

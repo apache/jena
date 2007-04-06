@@ -1,49 +1,26 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.core.describe;
+package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
 
-/** A DescribeHandler provides the description of a resource.
- *  DESCRIBE queries return RDF that describes the resource found, either
- *  from the query pattern or explicitly named in the DESCRIBE clause.
- *  For each resource, any handlers are called to builds the RDF model
- *  that is to be the result of the query.     
- * 
- * @author Andy Seaborne
- * @version $Id: DescribeHandler.java,v 1.5 2007/02/02 16:23:33 andy_seaborne Exp $
- */
-
-public interface DescribeHandler
+public interface OpExec
 {
-    /**
-     * Start the describe process, passing in the result model.
-     * @param accumulateResultModel
-     * @param qContext Query execution context
-     */
-    public void start(Model accumulateResultModel, Context qContext ) ;
-    
-    /** Called on everything resource found by a query.
-     *  Can add more RDF to the model provided.  May choose to add nothing.
-     * 
-     * @param resource               resource to describe
-     */
-    
-    public void describe(Resource resource) ;
-
-    /** Finish the description process for thsis query execution
-     */
-    public void finish() ;
+    public QueryIterator eval(Op op, Graph graph) ;
+    public QueryIterator eval(Op op, DatasetGraph dsg, Context context) ;
+    public QueryIterator eval(Op op, Binding binding, DatasetGraph dsg, Context context) ;
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

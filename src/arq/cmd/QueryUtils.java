@@ -48,7 +48,7 @@ public class QueryUtils
 
     public static void printOp(Query query)
     {
-        Op op = AlgebraGenerator.compile(query) ;
+        Op op = AlgebraGenerator.compileQuery(query) ;
         SerializationContext sCxt = new SerializationContext(query) ;
         IndentedWriter out = new IndentedWriter(System.out) ;
         op.output(out, sCxt) ;
@@ -56,7 +56,7 @@ public class QueryUtils
 
     public static void printQuad(Query query)
     {
-        Op op = AlgebraGeneratorQuad.compile(query) ;
+        Op op = AlgebraGeneratorQuad.compileQuery(query) ;
         SerializationContext sCxt = new SerializationContext(query) ;
         IndentedWriter out = new IndentedWriter(System.out) ;
         op.output(out, sCxt) ;

@@ -13,6 +13,7 @@ import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.*;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
@@ -24,7 +25,9 @@ import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.main.OpExecMain;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.engine.ref.OpExecRef;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -156,17 +159,18 @@ public class qexec extends CmdARQ
 //        QueryExecutionOp qexec = (QueryExecutionOp)qe ;
 //        QueryIterator qIter = qexec.eval(op, dsg) ;
         
-        QueryIterator qIter = null ;
-        // quick hack.
+        OpExec opExec = null ;
+        // TODO quick hack.  Wait for registry to be fixed
         if ( qe instanceof QueryEngineMain )
-            qIter = QueryEngineMain.eval(op, dsg) ;
+            opExec = new OpExecMain() ;
         else if ( qe instanceof QueryEngineRef )
-            qIter = QueryEngineRef.eval(op, dsg) ;
+            opExec = new OpExecRef() ;
         else
         {
             System.err.println("Didn't find a query engine capable of dealing with an algebra expression directly") ;
             throw new TerminationException(1) ;
         }
+        QueryIterator qIter = opExec.eval(op, dsg, ARQ.getContext()) ;
         
         if ( printOp || printPlan )
         {

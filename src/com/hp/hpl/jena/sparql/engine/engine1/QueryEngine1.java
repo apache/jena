@@ -12,8 +12,11 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QuerySolution;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -27,6 +30,7 @@ import com.hp.hpl.jena.sparql.engine.engine1.plan.PlanOrderBy;
 import com.hp.hpl.jena.sparql.engine.engine1.plan.PlanProject;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -45,6 +49,7 @@ public class QueryEngine1 extends QueryEngineBase
     
     private PlanElement plan = null ;           // The whole query
     private PlanElement planPattern = null ;    // Just the pattern (convenient).
+    private QuerySolution startSolution ;
     
     /** Create a QueryEngine.  The preferred mechanism is through QueryEngineFactory */
     
@@ -88,8 +93,9 @@ public class QueryEngine1 extends QueryEngineBase
     // ---- Interface to QueryEngineBase
     
     protected final
-    Plan queryToPlan(Query query)
+    Plan queryToPlan(Query query, QuerySolution startSolution)
     {
+        this.startSolution = startSolution ;
         if ( plan == null )
             plan = buildPlan(getModifiers(), query.getQueryPattern()) ;
         
@@ -182,6 +188,12 @@ public class QueryEngine1 extends QueryEngineBase
     // Turn a plan for the whole query into a results iterator.
     QueryIterator planToIterator(PlanElement pElt)
     {
+        // Create query execution context
+        DatasetGraph dsg = super.getDatasetGraph() ;
+        ExecutionContext execContext = new ExecutionContext(getContext(),
+                                                            dsg.getDefaultGraph(),
+                                                            dsg) ;
+
         QueryIterator qIter = null ;
         try {
             init() ;
@@ -189,18 +201,19 @@ public class QueryEngine1 extends QueryEngineBase
                 throw new ARQInternalErrorException("Query execution not initialized") ;
 
             Binding rootBinding = buildInitialBinding() ;
-            QueryIterator initialIter = new QueryIterSingleton(rootBinding, getExecContext()) ;
+            QueryIterator initialIter = new QueryIterSingleton(rootBinding, execContext) ;
             
             // Any WHERE clause ?
             if ( pElt == null )
             {
-                if ( startBinding != null )
+                if ( startSolution != null )
                     return initialIter ;
                 else
-                    return new QueryIterNullIterator(getExecContext()) ;
+                    return new QueryIterNullIterator(execContext) ;
             }
 
-            qIter = pElt.build(initialIter, getExecContext()) ;
+            qIter = pElt.build(initialIter, execContext) ;
+            qIter = QueryIteratorCheck.check(qIter, execContext) ;
             return qIter ;
         } catch (RuntimeException ex) {
             if ( qIter != null )
@@ -213,11 +226,11 @@ public class QueryEngine1 extends QueryEngineBase
     {
         Binding rootBinding = makeRootBinding() ;
         
-        if ( startBinding == null )
+        if ( startSolution == null )
             return rootBinding ;
 
         Binding b = new BindingMap(rootBinding) ;
-        BindingUtils.addToBinding(b, startBinding) ;
+        BindingUtils.addToBinding(b, startSolution) ;
         return b ;
     }
     
