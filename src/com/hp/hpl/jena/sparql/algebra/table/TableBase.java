@@ -9,16 +9,16 @@ package com.hp.hpl.jena.sparql.algebra.table;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFactory;
 
 public abstract class TableBase implements Table
 {
@@ -31,15 +31,6 @@ public abstract class TableBase implements Table
     }
     
     protected abstract void closeTable() ;
-
-    // TODO remove createIterator
-    final
-    public QueryIterator iterator(ExecutionContext execCxt)
-    {
-        return createIterator(execCxt) ;
-    }
-
-    protected abstract QueryIterator createIterator(ExecutionContext execCxt) ;
 
     final public Table eval(Evaluator evaluator)  { return this ; }
     

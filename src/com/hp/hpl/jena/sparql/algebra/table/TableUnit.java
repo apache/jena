@@ -20,7 +20,7 @@ public class TableUnit extends TableBase
 {
     public TableUnit() {}
     
-    public QueryIterator createIterator(ExecutionContext execCxt)
+    public QueryIterator iterator(ExecutionContext execCxt)
     {
         // BindingRoot?
         return new QueryIterSingleton(new Binding0(), execCxt) ;

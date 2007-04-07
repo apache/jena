@@ -32,7 +32,7 @@ public class Table1 extends TableBase
         this.value = value ;
     }
     
-    protected QueryIterator createIterator(ExecutionContext execCxt)
+    public QueryIterator iterator(ExecutionContext execCxt)
     {
         Binding b = new Binding1(null, var, value) ;
         QueryIterator qIter = new QueryIterSingleton(b, execCxt) ;

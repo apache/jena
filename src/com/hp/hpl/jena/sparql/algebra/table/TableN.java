@@ -79,7 +79,7 @@ public class TableN extends TableBase
     }
 
  
-    public QueryIterator createIterator(ExecutionContext execCxt)
+    public QueryIterator iterator(ExecutionContext execCxt)
     {
         return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
     }

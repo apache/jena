@@ -21,7 +21,7 @@ public class TableEmpty extends TableBase
     public TableEmpty()
     { }
     
-    public QueryIterator createIterator(ExecutionContext execCxt)
+    public QueryIterator iterator(ExecutionContext execCxt)
     {
         return new QueryIterNullIterator(execCxt) ;
     }

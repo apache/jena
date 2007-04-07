@@ -399,16 +399,18 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
             plan = queryToPlan(query, startBinding) ;
             return plan ;
         }
-        log.warn("getPlan()/Uninitialized route") ;
+        //log.warn("getPlan()/Uninitialized route") ;
         // Not initialized - fake initialization, do plan, unfake.
         DatasetGraph dsg = datasetGraph ;
         if ( dsg == null )
         {
             DataSourceGraph gsrc = new DataSourceGraphImpl() ;
             gsrc.setDefaultGraph(GraphUtils.makeJenaDefaultGraph()) ;
-            dsg = gsrc ;
+            setDatasetGraph(gsrc) ;
         }
         Plan p = queryToPlan(query, startBinding) ;
+        if ( dsg == null )
+            setDatasetGraph(dsg) ;
         return p ;
     }
     

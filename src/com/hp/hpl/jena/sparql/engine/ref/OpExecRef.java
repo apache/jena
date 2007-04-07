@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
@@ -18,12 +16,17 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
 
+import com.hp.hpl.jena.query.QueryExecException;
+
 public class OpExecRef extends OpExecBase
 {
     public QueryIterator eval(Op op, Binding binding, DatasetGraph dsg, Context context)
     {
         if ( binding.vars().hasNext() )
-            LogFactory.getLog(OpExecRef.class).warn("Initial bindings to ref evaluation - ignored") ;
+            // Easy ways to fix this limitation - use a wrapper to add the necessary bindings.
+            // Or mess with table to join in the binding.
+            // Or ...
+            throw new QueryExecException("Initial bindings to ref evaluation") ;
         
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
         Evaluator eval = EvaluatorFactory.create(execCxt) ;

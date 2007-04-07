@@ -31,6 +31,7 @@ public class Run
         //runQExpr() ;
         //print() ;
         //code() ;
+        //runQParse() ;
         //classifyJ() ;
         //classifyLJ() ;
         //execQuery("D.ttl", "Q.rq") ;
@@ -175,9 +176,9 @@ public class Run
     {
         qparse.main(new String[]{ //"--in=prefix", 
                                   //"--out=prefix",
-                                  "--print=op",
-                                  "--print=query",
-                                  "--engine=ref",
+                                  "--print=plan",
+                                  //"--print=query",
+                                  //"--engine=ref",
                                   "--query=Q.rq"
                                   //"--query=testing/ARQ/Serialization/syntax-general-13.rq" ,
                                   }) ;
