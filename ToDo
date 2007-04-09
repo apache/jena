@@ -20,6 +20,7 @@ Tidying up:
 + Revisit arq.cmd.QuerUtils for printing.
 
 + Test algebra using BuilderTable etc.
+  test scripts : (test (expression) (table))
 
 + A result set is like a table except with (cols)
   ResultsFormat.FMT_SSE!
@@ -52,6 +53,13 @@ Tidying up:
 + OpWalker  - only used for getting vars, and that needs to truncate a walk.
 + OpExt - is this still workable?
 + Tests
++ Complete operators
+	Grouping
+    Intersection, diff, exists filter and subqueries.
++ Left join as "join union diff"
++ Table equals (with and without order)
++ Binding equals
+
   
 == SSE
   Tables as Ops.
@@ -77,7 +85,7 @@ Tidying up:
 
 == Documentation
 
-+ Document list handling as a specific page.
++ list handling as a specific page.
   + Internals
   	Query iterators
   	Bindings
