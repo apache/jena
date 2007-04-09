@@ -1,7 +1,7 @@
 PREFIX :  <http://example/> 
 
-SELECT *
+SELECT ?x ?v
 {
-    ?s :p ?c
-    OPTIONAL { ?s :q ?d  FILTER(?c =  "world")}
+    ?x :p ?v 
+    OPTIONAL { ?v :q ?w }
 }

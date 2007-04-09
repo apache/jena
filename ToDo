@@ -8,13 +8,14 @@ ARQ2-beta
 == Core
 
 Tidying up: 
-+ qexec : no datasets evaluation [done with a dummy DSG]
 + QueryEngineFactory
     QueryEngineOpFactory to adapter QueryEngineOpBase subclasses?
     QueryEngineOpBase adapter to something.
 + Remove QueryExecutionGraphFactory
 + Remove QueryExecutionGraph - it's OpExec now.
     Registry for OpExec level.
+
++ qexec : no datasets evaluation [done with a dummy DSG]
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
 + Revisit arq.cmd.QuerUtils for printing.

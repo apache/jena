@@ -1,6 +1,6 @@
 @prefix   :         <http://example/> .
 
-:x1 :p "Hello world" .
-:x2 :p "Cruel world" .
-:x3 :p "Nice day" .
-:x4 :p "world" .
+:me :age 28 ;
+    :name "lee" .
+
+:you    :name "andy" .
