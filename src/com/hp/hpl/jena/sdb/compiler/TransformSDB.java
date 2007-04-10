@@ -119,10 +119,12 @@ public class TransformSDB extends TransformCopy
     }
     
     @Override
-    public Op transform(OpUnit opUnit)
+    public Op transform(OpTable opTable)
     {
+        if ( ! opTable.isJoinIdentity())
+            log.fatal("OpTable : Not join identity") ;
         //return new OpSQL(null, opUnit, request) ;
-        return super.transform(opUnit) ;
+        return super.transform(opTable) ;
     }
     
     private boolean translateConstraints = false ;

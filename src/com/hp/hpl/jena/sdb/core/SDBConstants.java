@@ -17,7 +17,7 @@ public class SDBConstants
     { 
         if ( shortName.matches("^[a-zA-Z]*:") )
             throw new SDBException("Symbol short name begins URI scheme") ;
-        return new Symbol(sdbSymbolSpace+shortName) ;
+        return Symbol.create(sdbSymbolSpace+shortName) ;
     }
 }
 

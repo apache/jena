@@ -10,21 +10,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.engine.QueryEngineOpQuadBase;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.engine.ref.EvaluatorFactory;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
+import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.engine.QueryEngineOpBase;
+import com.hp.hpl.jena.sparql.util.Context;
 
 
-public class QueryEngineSDB extends QueryEngineOpQuadBase
+public class QueryEngineSDB extends QueryEngineOpBase
 {
     private static Log log = LogFactory.getLog(QueryEngineSDB.class) ; 
     private Store store ;
@@ -38,7 +34,7 @@ public class QueryEngineSDB extends QueryEngineOpQuadBase
     
     public QueryEngineSDB(Store store, Query q, Context context)
     {
-        super(q, context) ;
+        super(q, new AlgebraGeneratorQuad(context), context, new OpExecSDB()) ;
         this.store = store ;
         request = new SDBRequest(store, query) ;
         if ( StoreUtils.isHSQL(store) )
@@ -47,26 +43,15 @@ public class QueryEngineSDB extends QueryEngineOpQuadBase
         queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
     }
 
+    
+    
     public SDBRequest getRequest()      { return request ; }
-
-    @Override
-    protected QueryIterator createQueryIterator(Op op)
-    {
-        if ( ! ( op instanceof OpSQL ) )
-        {
-            Evaluator eval = EvaluatorFactory.create(getExecContext()) ;
-            QueryIterator qIter = QueryEngineMain.eval(op, getExecContext().getDataset()) ;
-            return qIter ;
-        }
-        // Direct.
-        OpSQL opSQL = (OpSQL)op ;
-        // Does the SQL SELECT happen exactly now? 
-        return opSQL.exec(getExecContext()) ;
-    }
 
     @Override
     protected Op modifyPatternOp(Op op)
     {
+        // After turning into the quadded form of the algebra, 
+        // look for parts (or all of) we can turn into SQL.
         Op op2 =  queryCompiler.compile(op) ;
         return op2 ;
     }

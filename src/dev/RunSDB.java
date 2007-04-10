@@ -6,26 +6,30 @@
 
 package dev;
 
-import static sdb.SDBCmd.* ;
+import static sdb.SDBCmd.sdbconfig;
+import static sdb.SDBCmd.sdbload;
+import static sdb.SDBCmd.sdbprint;
+import static sdb.SDBCmd.sdbquery;
+import static sdb.SDBCmd.setSDBConfig;
+import static sdb.SDBCmd.sparql;
 import junit.framework.TestSuite;
 import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
-import com.hp.hpl.jena.sparql.util.QueryExecUtils;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.query.*;
-
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
-
-import dev.pattern.QBuilder;
+import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
+import com.hp.hpl.jena.sparql.util.QueryExecUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 
 public class RunSDB
@@ -35,8 +39,7 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         
-        QBuilder.main(null) ;
-        System.exit(0) ;
+        //QBuilder.main(null) ; System.exit(0) ;
         
         
         //runQuery() ;
@@ -44,15 +47,15 @@ public class RunSDB
         
         //runInMem("Q.rq", "D.ttl") ;
         //runQuery("Q.rq", "D.ttl") ;
-        //runQuery("Q.rq") ;
+        runQuery("Q.rq") ;
         
         //runQuad() ;
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
         
         //run() ;
-        runTest() ;
+        //runTest() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
@@ -94,6 +97,7 @@ public class RunSDB
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
         sdbquery("--sdb=sdb.ttl", "--query="+queryFile ) ;
+        System.exit(0) ;
      }
      
      public static void runInMem(String queryFile, String dataFile)
@@ -105,7 +109,7 @@ public class RunSDB
              Query query = QueryFactory.read(queryFile) ;
              Model model = FileManager.get().loadModel(dataFile) ;
              QueryExecution qExec = QueryExecutionFactory.create(query, model) ;
-             QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_RS_TEXT) ;
+             QueryExecUtils.executeQuery(query, qExec, ResultsFormat.FMT_TEXT) ;
          }
     }
     
