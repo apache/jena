@@ -10,10 +10,14 @@ package com.hp.hpl.jena.sparql.util;
 
 public class Symbol
 {
+    // TODO Need a intern table for symbols.
     private final static String nilSymbolName = "nil" ;
     String symbol ;
     
-    public Symbol(String symbol)
+    static public Symbol create(String symbolStr) { return new Symbol(symbolStr) ; }
+    static public Symbol create(Symbol other) {return new Symbol(other) ; }
+    
+    protected Symbol(String symbol)
     { 
         // Does interning a string cause there to be a permanently
         // registered version?  
@@ -24,7 +28,7 @@ public class Symbol
         this.symbol = symbol ;
     }
 
-    public Symbol(Symbol other)  { this.symbol = other.symbol ; }
+    protected Symbol(Symbol other)  { this.symbol = other.symbol ; }
     
     public int hashCode() { return symbol.hashCode() ; } 
     
@@ -38,7 +42,8 @@ public class Symbol
             return false ;
 
         Symbol otherSymbol = (Symbol)other ;
-        return this.symbol.equals(otherSymbol.symbol) ;
+        return this.symbol == otherSymbol.symbol ; // String interning.
+        //return this.symbol.equals(otherSymbol.symbol) ;
     }
 
     public String getSymbol() { return symbol ; }

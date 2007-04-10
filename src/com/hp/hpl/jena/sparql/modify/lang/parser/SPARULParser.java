@@ -49,14 +49,6 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         jj_consume_token(-1);
         throw new ParseException();
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SEMICOLON:
-        jj_consume_token(SEMICOLON);
-        break;
-      default:
-        jj_la1[2] = jj_gen;
-        ;
-      }
     }
     jj_consume_token(0);
   }
@@ -78,7 +70,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         upPat = Delete();
         break;
       default:
-        jj_la1[3] = jj_gen;
+        jj_la1[2] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -89,7 +81,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                                upPat.setPattern(el) ;
         break;
       default:
-        jj_la1[4] = jj_gen;
+        jj_la1[3] = jj_gen;
         ;
       }
           getRequest().addUpdate(upPat) ;
@@ -105,14 +97,14 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         up = Clear();
         break;
       default:
-        jj_la1[5] = jj_gen;
+        jj_la1[4] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
         getRequest().addUpdate(up) ;
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -128,7 +120,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[7] = jj_gen;
+        jj_la1[6] = jj_gen;
         break label_2;
       }
       iri = GraphIRI();
@@ -157,7 +149,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[8] = jj_gen;
+        jj_la1[7] = jj_gen;
         break label_3;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -165,7 +157,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         jj_consume_token(FROM);
         break;
       default:
-        jj_la1[9] = jj_gen;
+        jj_la1[8] = jj_gen;
         ;
       }
       iri = IRIref();
@@ -190,7 +182,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[10] = jj_gen;
+        jj_la1[9] = jj_gen;
         break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -198,7 +190,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         jj_consume_token(INTO);
         break;
       default:
-        jj_la1[11] = jj_gen;
+        jj_la1[10] = jj_gen;
         ;
       }
       iri = IRIref();
@@ -232,7 +224,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[12] = jj_gen;
+        jj_la1[11] = jj_gen;
         break label_5;
       }
     }
@@ -243,7 +235,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                              up.setGraphName(iri.getURI()) ;
       break;
     default:
-      jj_la1[13] = jj_gen;
+      jj_la1[12] = jj_gen;
       ;
     }
       {if (true) return up ;}
@@ -259,7 +251,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                          up.setGraphName(iri.getURI()) ;
       break;
     default:
-      jj_la1[14] = jj_gen;
+      jj_la1[13] = jj_gen;
       ;
     }
       {if (true) return up ;}
@@ -276,7 +268,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       mgt = Drop();
       break;
     default:
-      jj_la1[15] = jj_gen;
+      jj_la1[14] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -292,7 +284,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                 silent = true ;
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[15] = jj_gen;
       ;
     }
     iri = GraphIRI();
@@ -309,7 +301,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                 silent = true ;
       break;
     default:
-      jj_la1[17] = jj_gen;
+      jj_la1[16] = jj_gen;
       ;
     }
     iri = GraphIRI();
@@ -345,7 +337,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       BaseDecl();
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[17] = jj_gen;
       ;
     }
     label_6:
@@ -355,7 +347,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[18] = jj_gen;
         break label_6;
       }
       PrefixDecl();
@@ -385,7 +377,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       jj_consume_token(WHERE);
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[19] = jj_gen;
       ;
     }
     el = GroupGraphPattern();
@@ -431,7 +423,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       elg.addElement(el) ;
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[20] = jj_gen;
       ;
     }
     label_7:
@@ -444,7 +436,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[22] = jj_gen;
+        jj_la1[21] = jj_gen;
         break label_7;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -457,7 +449,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         el = Filter();
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[22] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -467,7 +459,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         jj_consume_token(DOT);
         break;
       default:
-        jj_la1[24] = jj_gen;
+        jj_la1[23] = jj_gen;
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -502,7 +494,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         elg.addElement(el) ;
         break;
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[24] = jj_gen;
         ;
       }
     }
@@ -548,12 +540,12 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         TriplesBlock(acc);
         break;
       default:
-        jj_la1[26] = jj_gen;
+        jj_la1[25] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[26] = jj_gen;
       ;
     }
       {if (true) return acc ;}
@@ -575,7 +567,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       el = GraphGraphPattern();
       break;
     default:
-      jj_la1[28] = jj_gen;
+      jj_la1[27] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -613,7 +605,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[29] = jj_gen;
+        jj_la1[28] = jj_gen;
         break label_8;
       }
       jj_consume_token(UNION);
@@ -662,7 +654,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       c = FunctionCall();
       break;
     default:
-      jj_la1[30] = jj_gen;
+      jj_la1[29] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -695,7 +687,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
           ;
           break;
         default:
-          jj_la1[31] = jj_gen;
+          jj_la1[30] = jj_gen;
           break label_9;
         }
         jj_consume_token(COMMA);
@@ -705,7 +697,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       jj_consume_token(RPAREN);
       break;
     default:
-      jj_la1[32] = jj_gen;
+      jj_la1[31] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -746,7 +738,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       ConstructTriples(g);
       break;
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[32] = jj_gen;
       ;
     }
     jj_consume_token(RBRACE);
@@ -788,12 +780,12 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ConstructTriples(acc);
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[33] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[35] = jj_gen;
+      jj_la1[34] = jj_gen;
       ;
     }
   }
@@ -835,7 +827,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       PropertyList(s, acc);
       break;
     default:
-      jj_la1[36] = jj_gen;
+      jj_la1[35] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -852,7 +844,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[37] = jj_gen;
+        jj_la1[36] = jj_gen;
         break label_10;
       }
       jj_consume_token(SEMICOLON);
@@ -867,7 +859,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ObjectList(s, p, acc);
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[37] = jj_gen;
         ;
       }
     }
@@ -884,7 +876,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       PropertyListNotEmpty(s, acc);
       break;
     default:
-      jj_la1[39] = jj_gen;
+      jj_la1[38] = jj_gen;
       ;
     }
   }
@@ -919,7 +911,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[40] = jj_gen;
+        jj_la1[39] = jj_gen;
         break label_11;
       }
       jj_consume_token(COMMA);
@@ -949,7 +941,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                                  p = nRDFtype ;
       break;
     default:
-      jj_la1[41] = jj_gen;
+      jj_la1[40] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -973,7 +965,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                                    {if (true) return n ;}
       break;
     default:
-      jj_la1[42] = jj_gen;
+      jj_la1[41] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1033,7 +1025,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[43] = jj_gen;
+        jj_la1[42] = jj_gen;
         break label_12;
       }
     }
@@ -1080,7 +1072,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                          {if (true) return n ;}
       break;
     default:
-      jj_la1[44] = jj_gen;
+      jj_la1[43] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1118,7 +1110,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       n = GraphTerm();
       break;
     default:
-      jj_la1[45] = jj_gen;
+      jj_la1[44] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1140,7 +1132,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       n = IRIref();
       break;
     default:
-      jj_la1[46] = jj_gen;
+      jj_la1[45] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1164,7 +1156,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       t = jj_consume_token(VAR2);
       break;
     default:
-      jj_la1[47] = jj_gen;
+      jj_la1[46] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1215,7 +1207,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
           {if (true) return nRDFnil ;}
       break;
     default:
-      jj_la1[48] = jj_gen;
+      jj_la1[47] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1240,7 +1232,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[49] = jj_gen;
+        jj_la1[48] = jj_gen;
         break label_13;
       }
       jj_consume_token(SC_OR);
@@ -1261,7 +1253,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[50] = jj_gen;
+        jj_la1[49] = jj_gen;
         break label_14;
       }
       jj_consume_token(SC_AND);
@@ -1321,13 +1313,13 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         expr1 = new E_GreaterThanOrEqual(expr1, expr2) ;
         break;
       default:
-        jj_la1[51] = jj_gen;
+        jj_la1[50] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[52] = jj_gen;
+      jj_la1[51] = jj_gen;
       ;
     }
       {if (true) return expr1 ;}
@@ -1358,7 +1350,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[53] = jj_gen;
+        jj_la1[52] = jj_gen;
         break label_15;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1389,7 +1381,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       expr1 = new E_Subtract(expr1, expr2) ;
         break;
       default:
-        jj_la1[54] = jj_gen;
+        jj_la1[53] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1409,7 +1401,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         ;
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[54] = jj_gen;
         break label_16;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1424,7 +1416,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       expr1 = new E_Divide(expr1, expr2) ;
         break;
       default:
-        jj_la1[56] = jj_gen;
+        jj_la1[55] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1487,7 +1479,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                                  {if (true) return expr ;}
       break;
     default:
-      jj_la1[57] = jj_gen;
+      jj_la1[56] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1551,7 +1543,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                  {if (true) return asExpr(gn) ;}
       break;
     default:
-      jj_la1[58] = jj_gen;
+      jj_la1[57] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1650,7 +1642,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                                {if (true) return expr ;}
       break;
     default:
-      jj_la1[59] = jj_gen;
+      jj_la1[58] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1670,7 +1662,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       flagsExpr = Expression();
       break;
     default:
-      jj_la1[60] = jj_gen;
+      jj_la1[59] = jj_gen;
       ;
     }
     jj_consume_token(RPAREN);
@@ -1689,7 +1681,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       a = ArgList();
       break;
     default:
-      jj_la1[61] = jj_gen;
+      jj_la1[60] = jj_gen;
       ;
     }
       if ( a == null ) {if (true) return asExpr(gn) ;}
@@ -1714,13 +1706,13 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
         uri = IRIref();
         break;
       default:
-        jj_la1[62] = jj_gen;
+        jj_la1[61] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[63] = jj_gen;
+      jj_la1[62] = jj_gen;
       ;
     }
       {if (true) return makeNode(lex, lang, uri) ;}
@@ -1746,7 +1738,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       n = NumericLiteralNegative();
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[63] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1770,7 +1762,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                  {if (true) return makeNodeDouble(t.image) ;}
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[64] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1793,7 +1785,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                           {if (true) return makeNodeDouble(t.image) ;}
       break;
     default:
-      jj_la1[66] = jj_gen;
+      jj_la1[65] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1816,7 +1808,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                           {if (true) return makeNodeDouble(t.image) ;}
       break;
     default:
-      jj_la1[67] = jj_gen;
+      jj_la1[66] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1834,7 +1826,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
             {if (true) return XSD_FALSE ;}
       break;
     default:
-      jj_la1[68] = jj_gen;
+      jj_la1[67] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1861,7 +1853,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[69] = jj_gen;
+      jj_la1[68] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1883,7 +1875,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                 {if (true) return n ;}
       break;
     default:
-      jj_la1[70] = jj_gen;
+      jj_la1[69] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1902,7 +1894,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
-      jj_la1[71] = jj_gen;
+      jj_la1[70] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1921,7 +1913,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
            {if (true) return createBNode() ;}
       break;
     default:
-      jj_la1[72] = jj_gen;
+      jj_la1[71] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1940,7 +1932,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[73];
+  final private int[] jj_la1 = new int[72];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -1952,16 +1944,16 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       jj_la1_3();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x17e,0x17e,0x0,0xe,0x0,0x30,0x3e,0x0,0x700000,0x0,0x700200,0x200,0x700000,0x200,0x0,0x140,0x80,0x80,0x40000000,0x80000000,0x0,0x3f00000,0x0,0x0,0x0,0x3f00000,0x3f00000,0x0,0x0,0x0,0x700000,0x0,0x0,0x3f00000,0x3f00000,0x0,0x3f00000,0x0,0x23700000,0x23700000,0x0,0x23700000,0x0,0x3f00000,0x3f00000,0x3f00000,0x3700000,0x3000000,0xf00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700000,0x3700000,0x0,0x0,0x0,0x4000000,0x4000000,0x0,0x0,0x0,0x0,0x0,0x0,0x700000,0x600000,0x800000,};
+      jj_la1_0 = new int[] {0x17e,0x17e,0xe,0x0,0x30,0x3e,0x0,0x700000,0x0,0x700200,0x200,0x700000,0x200,0x0,0x140,0x80,0x80,0x40000000,0x80000000,0x0,0x3f00000,0x0,0x0,0x0,0x3f00000,0x3f00000,0x0,0x0,0x0,0x700000,0x0,0x0,0x3f00000,0x3f00000,0x0,0x3f00000,0x0,0x23700000,0x23700000,0x0,0x23700000,0x0,0x3f00000,0x3f00000,0x3f00000,0x3700000,0x3000000,0xf00000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3700000,0x3700000,0x0,0x0,0x0,0x4000000,0x4000000,0x0,0x0,0x0,0x0,0x0,0x0,0x700000,0x600000,0x800000,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x8000,0x1000,0x1000,0x0,0x0,0x0,0x0,0x8000,0x0,0x0,0x0,0x0,0x0,0x2000,0xc0000000,0x58000,0x58000,0x0,0xc0000000,0xc0000000,0x0,0x18000,0x20000,0x3ff80000,0x0,0x0,0xc0000000,0xc0000000,0x0,0xc0000000,0x0,0x0,0x0,0x0,0x0,0x0,0xc0000000,0xc0000000,0xc0000000,0x0,0x0,0xc0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfff80000,0xfff80000,0x3ff80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0000000,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x2000,0x0,0x0,0x8000,0x1000,0x1000,0x0,0x0,0x0,0x0,0x8000,0x0,0x0,0x0,0x0,0x0,0x2000,0xc0000000,0x58000,0x58000,0x0,0xc0000000,0xc0000000,0x0,0x18000,0x20000,0x3ff80000,0x0,0x0,0xc0000000,0xc0000000,0x0,0xc0000000,0x0,0x0,0x0,0x0,0x0,0x0,0xc0000000,0xc0000000,0xc0000000,0x0,0x0,0xc0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfff80000,0xfff80000,0x3ff80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0000000,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x4000000,0x0,0x200000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x295e1ff,0x200000,0x200000,0x10000000,0x295e1ff,0x295e1ff,0x10000000,0x200000,0x0,0x40000,0x8000000,0x140000,0x295e1ff,0x295e1ff,0x10000000,0x295e1ff,0x4000000,0x0,0x0,0x8000000,0x0,0x840000,0x295e1ff,0x295e1ff,0x211e1ff,0x0,0x0,0x211e1ff,0x0,0x0,0xe0000000,0xe0000000,0x1f8,0x1f8,0x0,0x0,0x5e1ff,0x5e1ff,0x0,0x8000000,0x140000,0x0,0x0,0x1ff,0x7,0x38,0x1c0,0x0,0x1e000,0x0,0x0,0x2000000,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x200000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x295e1ff,0x200000,0x200000,0x10000000,0x295e1ff,0x295e1ff,0x10000000,0x200000,0x0,0x40000,0x8000000,0x140000,0x295e1ff,0x295e1ff,0x10000000,0x295e1ff,0x4000000,0x0,0x0,0x8000000,0x0,0x840000,0x295e1ff,0x295e1ff,0x211e1ff,0x0,0x0,0x211e1ff,0x0,0x0,0xe0000000,0xe0000000,0x1f8,0x1f8,0x0,0x0,0x5e1ff,0x5e1ff,0x0,0x8000000,0x140000,0x0,0x0,0x1ff,0x7,0x38,0x1c0,0x0,0x1e000,0x0,0x0,0x2000000,};
    }
    private static void jj_la1_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40,0x80,0x7,0x7,0x300,0x300,0xc00,0xc00,0x308,0x0,0x0,0x0,0x0,0x1000,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x40,0x80,0x7,0x7,0x300,0x300,0xc00,0xc00,0x308,0x0,0x0,0x0,0x0,0x1000,0x1000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public SPARULParser(java.io.InputStream stream) {
@@ -1973,7 +1965,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 72; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -1985,7 +1977,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 72; i++) jj_la1[i] = -1;
   }
 
   public SPARULParser(java.io.Reader stream) {
@@ -1994,7 +1986,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 72; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -2003,7 +1995,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 72; i++) jj_la1[i] = -1;
   }
 
   public SPARULParser(SPARULParserTokenManager tm) {
@@ -2011,7 +2003,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 72; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(SPARULParserTokenManager tm) {
@@ -2019,7 +2011,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 72; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -2074,7 +2066,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 73; i++) {
+    for (int i = 0; i < 72; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

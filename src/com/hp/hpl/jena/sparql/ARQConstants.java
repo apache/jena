@@ -82,7 +82,7 @@ public class ARQConstants
     { 
         if ( shortName.startsWith(ARQ.arqNS)) 
             throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace name: "+shortName) ;
-        return new Symbol(ARQ.arqNS+shortName) ;
+        return Symbol.create(ARQ.arqNS+shortName) ;
     }
     
     /** Marker for generated variables for bNodes in query patterns */ 
@@ -95,12 +95,12 @@ public class ARQConstants
     public static final String systemVarMarker = "http://jena.hpl.hp.com/ARQ/system#" ;
     
     /** Context key for the current time of query execution */
-    public static final Symbol sysCurrentTime  = new Symbol(systemVarMarker+"now") ;
+    public static final Symbol sysCurrentTime  = Symbol.create(systemVarMarker+"now") ;
     
     /** Context key for ARQ version */
-    public static final Symbol sysVersionARQ   = new Symbol(systemVarMarker+"version/ARQ") ;
+    public static final Symbol sysVersionARQ   = Symbol.create(systemVarMarker+"version/ARQ") ;
     /** Context key for Jena version */
-    public static final Symbol sysVersionJena  = new Symbol(systemVarMarker+"version/Jena") ;
+    public static final Symbol sysVersionJena  = Symbol.create(systemVarMarker+"version/Jena") ;
 
     /** Context key for making all SELECT queries have DISTINCt applied, whether stated ot not */
     public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;

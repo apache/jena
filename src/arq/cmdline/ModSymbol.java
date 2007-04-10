@@ -51,7 +51,7 @@ public class ModSymbol implements ArgModuleGeneral
             if ( ! symbolName.matches("^[a-zA-Z]*:") )
                 symbolName = namespace + symbolName ;
             
-            Symbol symbol = new Symbol(symbolName) ;
+            Symbol symbol = Symbol.create(symbolName) ;
             context.set(symbol, value) ;
         }
         

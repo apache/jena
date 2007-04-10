@@ -148,7 +148,7 @@ public class qtest
                 if ( ! symbolName.matches("^[a-zA-Z]*:") )
                     symbolName = "http://jena.hpl.hp.com/ARQ#" + symbolName ;
 
-                Symbol symbol = new Symbol(symbolName) ;
+                Symbol symbol = Symbol.create(symbolName) ;
                 ARQ.getContext().set(symbol, value) ;
             }
                 

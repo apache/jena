@@ -29,7 +29,7 @@ public class E_Regex extends ExprFunction
         if ( v instanceof Symbol )
             regexImpl = (Symbol)v ;
         if ( v instanceof String )
-            regexImpl = new Symbol((String)v) ;
+            regexImpl = Symbol.create((String)v) ;
         
         if ( regexImpl == null )
         {

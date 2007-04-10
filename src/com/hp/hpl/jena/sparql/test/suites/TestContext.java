@@ -29,8 +29,8 @@ public class TestContext extends TestCase
     
 
     
-    Symbol p1 = new Symbol("p1") ;
-    Symbol p2 = new Symbol("p2") ;
+    Symbol p1 = Symbol.create("p1") ;
+    Symbol p2 = Symbol.create("p2") ;
     
     public void testCxt1() { Context cxt = new Context(); }
     

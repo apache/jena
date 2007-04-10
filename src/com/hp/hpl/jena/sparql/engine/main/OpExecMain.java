@@ -25,7 +25,7 @@ public class OpExecMain extends OpExecBase
         return eval(op, qIter, execCxt) ; 
     }
     
-    private QueryIterator eval(Op op, QueryIterator input, ExecutionContext execCxt)
+    protected QueryIterator eval(Op op, QueryIterator input, ExecutionContext execCxt)
     {
         QueryIterator qIter = OpCompiler.compile(op, input, execCxt) ;
         // Wrap with something to check for closed iterators.

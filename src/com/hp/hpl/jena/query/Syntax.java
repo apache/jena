@@ -74,7 +74,7 @@ public class Syntax extends Symbol
         if ( uri == null )
             return null ;
         
-        Symbol sym = new Symbol(uri) ;
+        Symbol sym = Symbol.create(uri) ;
         
         if ( sym.equals(syntaxARQ) )         return syntaxARQ ;
         

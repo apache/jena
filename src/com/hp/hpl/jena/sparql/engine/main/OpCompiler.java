@@ -228,7 +228,7 @@ public class OpCompiler
 //            System.out.println(x) ;
 //        }
 //        
-        if ( opTable.isJoinIdentify() )
+        if ( opTable.isJoinIdentity() )
             return input ;
         if ( input instanceof QueryIterRoot )
             return opTable.getTable().iterator(execCxt) ;

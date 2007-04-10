@@ -22,7 +22,7 @@ public class OpTable extends Op0
     
     private OpTable(Table table) { this.table = table ; }
     
-    public boolean isJoinIdentify()
+    public boolean isJoinIdentity()
     { return (table instanceof TableUnit) ; }
     // One row of no bindings.
     

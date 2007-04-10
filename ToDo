@@ -65,6 +65,9 @@ Tidying up:
 == SSE
   Tables as Ops.
   Builder tidying and testing
+  
+  ItemLists : cons cells?!
+    Why?  Why not?
 
   Expr: (exists (pattern ...))
   

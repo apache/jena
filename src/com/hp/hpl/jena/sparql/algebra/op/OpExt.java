@@ -16,6 +16,8 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 public interface OpExt extends Op
 { 
     // TODO Have boolean linearSafe(???) - Join and LeftJoin separate?
+    // TODO Have explicit (from OpExtMain)
+    // public abstract QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
     
     /** A copy - immutable OpExt subclasses can return 'this' */
     public OpExt copy() ;
