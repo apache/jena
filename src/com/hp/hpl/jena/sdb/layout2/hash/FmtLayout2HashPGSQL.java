@@ -44,25 +44,12 @@ public class FmtLayout2HashPGSQL extends FmtLayout2
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.tableName+"'",ex) ; }
     }
-
-    @Override
-    protected void addIndexesTableTriples()
-    {
-        try {
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
-            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p);") ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
-    }
-    
     @Override
     protected void dropIndexesTableTriples()
     {
         try {
-            connection().exec("DROP INDEX IF EXISTS SubjObj ;") ;
-            connection().exec("DROP INDEX IF EXISTS ObjPred ;") ;
-            connection().exec("DROP INDEX IF EXISTS Pred ;") ;
+            connection().exec("DROP INDEX IF EXISTS PredObj ;") ;
+            connection().exec("DROP INDEX IF EXISTS ObjSubj ;") ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
     }

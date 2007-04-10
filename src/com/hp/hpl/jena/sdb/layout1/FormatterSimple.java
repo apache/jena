@@ -6,7 +6,12 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import java.sql.SQLException;
+
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.StoreFormatterBase;
 
 public abstract class FormatterSimple extends StoreFormatterBase
@@ -14,6 +19,26 @@ public abstract class FormatterSimple extends StoreFormatterBase
     public FormatterSimple(SDBConnection connection)
     { 
         super(connection) ;
+    }
+    
+    public void addIndexes()
+    {
+        try {
+            connection().exec("CREATE INDEX PredObj ON "+TableTriples.tableName+" (p, o)") ;
+            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.tableName+" (o, s)") ;
+        } catch (SQLException ex)
+        {
+            throw new SDBException("SQLException indexing table 'Triples'",ex) ;
+        }
+    }
+    
+    public void dropIndexes()
+    {
+        try {
+            connection().exec("DROP INDEX PredObj") ;
+            connection().exec("DROP INDEX ObjSubj") ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }
 }
 

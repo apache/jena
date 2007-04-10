@@ -107,24 +107,26 @@ public class FormatterSimpleMySQL extends FormatterSimple
         }
     }
     
-    public void addIndexes()
-    {
-        try {
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s(100),o(100))") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o(100),p(100))") ;
-            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p(100))") ;
-        } catch (SQLException ex)
-        {
-            throw new SDBException("SQLException indexing table 'Triples'",ex) ;
-        }
-    }
-
+    // Need this if we need to limit the index lengths 
+//    @Override
+//    public void addIndexes()
+//    {
+//        try {
+//            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s(100),o(100))") ;
+//            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o(100),p(100))") ;
+//            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p(100))") ;
+//        } catch (SQLException ex)
+//        {
+//            throw new SDBException("SQLException indexing table 'Triples'",ex) ;
+//        }
+//    }
+    
+    @Override
     public void dropIndexes()
     {
         try {
-            connection().exec("DROP INDEX SubjObj ON "+TableTriples.tableName) ;
-            connection().exec("DROP INDEX ObjPred ON "+TableTriples.tableName) ;
-            connection().exec("DROP INDEX Pred    ON "+TableTriples.tableName) ;
+            connection().exec("DROP INDEX PredObj ON "+TableTriples.tableName) ;
+            connection().exec("DROP INDEX ObjSubj ON "+TableTriples.tableName) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }

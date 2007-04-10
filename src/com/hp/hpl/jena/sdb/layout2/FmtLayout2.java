@@ -37,9 +37,26 @@ public abstract class FmtLayout2
     
     public void dropIndexes()
     { dropIndexesTableTriples() ; }
+
+    // Override this if the synatx is a bit different 
+    protected void addIndexesTableTriples()
+    {
+        try {
+            connection().exec("CREATE INDEX PredObj ON "+TableTriples.tableName+" (p, o)") ;
+            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.tableName+" (o, s)") ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
+    }
     
-    abstract protected void addIndexesTableTriples() ;
-    abstract protected void dropIndexesTableTriples() ;
+    // Override this if the syntax is a bit different (many are for DROP INDEX)
+    protected void dropIndexesTableTriples()
+    {
+        try {
+            connection().exec("DROP INDEX PredObj") ;
+            connection().exec("DROP INDEX ObjSubj") ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableTriples.tableName+"'",ex) ; }
+    }
     
     abstract protected void formatTableTriples() ;
     abstract protected void formatTableNodes() ;

@@ -14,7 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
@@ -96,24 +95,12 @@ public class FormatterSimpleHSQL extends FormatterSimple
         }
     }
     
-    public void addIndexes()
-    {
-        try {
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o,p)") ;
-            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
-        } catch (SQLException ex)
-        {
-            throw new SDBException("SQLException indexing table 'Triples'",ex) ;
-        }
-    }
-
+    @Override
     public void dropIndexes()
     {
         try {
-            connection().exec("DROP INDEX SubjObj IF EXISTS") ;
-            connection().exec("DROP INDEX ObjPred IF EXISTS") ;
-            connection().exec("DROP INDEX Pred    IF EXISTS") ;
+            connection().exec("DROP INDEX PredObj IF EXISTS") ;
+            connection().exec("DROP INDEX ObjSubj IF EXISTS") ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }
