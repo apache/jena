@@ -14,7 +14,6 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.lang.sse.Item;
@@ -23,7 +22,6 @@ import com.hp.hpl.jena.sparql.lang.sse.ItemList;
 
 public class BuilderOp
 {
-    // XXX Use BuilderUtils.checkList
     public static Op build(Item item)
     {
         if (item.isNode() )
@@ -80,30 +78,6 @@ public class BuilderOp
         return BuilderExpr.build(item) ;
     }
 
-    public static Triple buildTriple(ItemList list)
-    {
-        BuilderBase.checkLength(4, list, symTriple) ;
-        Node s = BuilderNode.buildNode(list.get(1)) ;
-        Node p = BuilderNode.buildNode(list.get(2)) ;
-        Node o = BuilderNode.buildNode(list.get(3)) ;
-        return new Triple(s, p, o) ; 
-    }
-
-    public static Quad buildQuad(ItemList list)
-    {
-        BuilderBase.checkLength(5, list, symQuad) ;
-        
-        Node g = null ;
-        if ( "_".equals(list.get(1).getWord()) )
-            g = Quad.defaultGraph ;
-        else
-            g = BuilderNode.buildNode(list.get(1)) ;
-        Node s = BuilderNode.buildNode(list.get(2)) ;
-        Node p = BuilderNode.buildNode(list.get(3)) ;
-        Node o = BuilderNode.buildNode(list.get(4)) ;
-        return new Quad(g, s, p, o) ; 
-    }
-
     public static List buildExpr(ItemList list, int start)
     {
         List x = new ArrayList() ;
@@ -137,9 +111,6 @@ public class BuilderOp
 
     static protected final String symBGP          = symBase + "bgp" ;
     static protected final String symQuadPattern  = symBase + "bqp" ;
-    
-    static protected final String symTriple       = symBase + "triple" ;
-    static protected final String symQuad         = symBase + "quad" ;
     
     static protected final String symFilter       = symBase + "filter" ;
     static protected final String symGraph        = symBase + "graph" ;
@@ -178,7 +149,7 @@ public class BuilderOp
                 Item item = list.get(i) ;
                 if ( ! item.isList() )
                     BuilderBase.broken(item, "Not a triple structure") ;
-                Triple t = buildTriple(item.getList()) ;
+                Triple t = BuilderGraph.buildTriple(item.getList()) ;
                 triples.add(t) ; 
             }
             return new OpBGP(triples) ;
@@ -247,7 +218,7 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderBase.checkLength(3, 4, list, "leftjoin") ;
+            BuilderBase.checkLength(3, 4, list, "leftjoin: wanted 2 or 3 arguments") ;
             Op right = build(list, 1) ;
             Op left  = build(list, 2) ;
             Expr expr = null ;

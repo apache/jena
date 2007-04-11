@@ -201,7 +201,7 @@ public class BuilderExpr
     {
         public Expr make(ItemList list)
         {
-            BuilderBase.checkLength(3, 4, list, "Regex") ;
+            BuilderBase.checkLength(3, 4, list, "Regex: wanted 2 or 3 arguments") ;
             Expr expr = build(list.get(1)) ;
             Expr pattern = build(list.get(2)) ;
             Expr flags = null ;
@@ -217,7 +217,7 @@ public class BuilderExpr
     {
         public Expr make(ItemList list)
         {
-            BuilderBase.checkLength(2, 3, list, "+") ;
+            BuilderBase.checkLength(2, 3, list, "+: wanted 1 or 2 arguments") ;
             if ( list.size() == 2 )
             {
                 Expr ex = build(list.get(1)) ;
@@ -234,7 +234,7 @@ public class BuilderExpr
     {
         public Expr make(ItemList list)
         {
-            BuilderBase.checkLength(2, 3, list, "-") ;
+            BuilderBase.checkLength(2, 3, list, "-: wanted 1 or 2 arguments") ;
             if ( list.size() == 2 )
             {
                 Expr ex = build(list.get(1)) ;

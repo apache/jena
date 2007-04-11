@@ -11,6 +11,7 @@ import arq.qexpr;
 import arq.qparse;
 import arq.sparql;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
@@ -30,7 +31,7 @@ public class Run
     {
         //runQExpr() ;
         //print() ;
-        //code() ;
+        code() ;
         //runQParse() ;
         //classifyJ() ;
         //classifyLJ() ;
@@ -40,6 +41,11 @@ public class Run
         
     private static void code()
     {
+        Graph graph = SSE.readGraph("SSE/graph.sse") ;
+        Model model = ModelFactory.createModelForGraph(graph) ;
+        model.write(System.out, "TTL") ;
+        System.exit(0) ;
+        // --------
         Table table = SSE.readTable("SSE/table.sse") ;
         ResultSet rs = table.toResultSet() ;
         ResultSetFormatter.out(rs) ;

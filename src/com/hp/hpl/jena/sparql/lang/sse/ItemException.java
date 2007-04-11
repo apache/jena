@@ -6,52 +6,10 @@
 
 package com.hp.hpl.jena.sparql.lang.sse;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-public class ItemList extends ItemLocation //implements Iterable<Item> 
+public class ItemException extends RuntimeException
 {
-    private List items = new ArrayList() ;
-
-    public ItemList(int line, int column)
-    { super(line, column) ; }
-
-    public ItemList() { super(noLine, noColumn) ; }
-
-    public int size() { return items.size() ; }
-    public boolean isEmpty() { return items.isEmpty() ; }
-
-    public void addAll(ItemList itemList) { items.addAll(itemList.items) ; }
-    public void add(Item item) { items.add(item) ; }
-    public Item get(int idx) { return (Item)items.get(idx) ; }
-//  public List getList() { return items ; }
-    public Iterator iterator() { return items.iterator() ; }
-    
-    public Item     car()
-    { 
-        if ( items.size() == 0 )
-            throw new ItemException("ItemList.car: list is zero length") ;
-        return (Item)items.get(0) ;
-    }
-    public ItemList cdr()
-    {
-        if ( items.size() == 0 )
-            throw new ItemException("ItemList.cdr: list is zero length") ;
-        ItemList x = new ItemList(super.getLine(), super.getColumn()) ;
-        if ( items.size() == 0 )
-            return x ; 
-        x.items = this.items.subList(1, size()) ;
-        return x ;
-    }
-    
-    public String toString()
-    { 
-        String str = "" ;
-        if ( hasLocation() )
-            str = str.concat(location()) ;
-
-        return str+items.toString() ; }
+    public ItemException(String msg) { super(msg); } 
+    public ItemException(String msg, Throwable t) { super(msg, t); }
 }
 
 /*

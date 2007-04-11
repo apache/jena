@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.lang.sse;
 
 import java.io.*;
 
-
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.NotFoundException;
@@ -18,10 +18,7 @@ import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderExpr;
-import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderOp;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
-import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderTable;
+import com.hp.hpl.jena.sparql.lang.sse.builders.*;
 import com.hp.hpl.jena.sparql.lang.sse.parser.ParseException;
 import com.hp.hpl.jena.sparql.lang.sse.parser.SSE_Parser;
 import com.hp.hpl.jena.sparql.lang.sse.parser.TokenMgrError;
@@ -46,7 +43,7 @@ public class SSE
         Item item = parseResolve(s, pmap) ;
         if ( !item.isList() )
             throw new ARQException("Not a list: "+s) ; 
-        return BuilderOp.buildQuad(item.getList()) ;
+        return BuilderGraph.buildQuad(item.getList()) ;
     }
 
     public static Triple parseTriple(String s) { return parseTriple(s, null) ; }
@@ -56,7 +53,7 @@ public class SSE
         Item item = parseResolve(s, pmap) ;
         if ( !item.isList() )
             throw new ARQException("Not a list: "+s) ; 
-        return BuilderOp.buildTriple(item.getList()) ;
+        return BuilderGraph.buildTriple(item.getList()) ;
     }
     
     public static Expr parseExpr(String s) { return parseExpr(s, null) ; }
@@ -67,12 +64,19 @@ public class SSE
         return BuilderExpr.build(item) ;
     }
     
-
+    public static Graph readGraph(String filename) { return readGraph(filename, null) ; }
+    
+    public static Graph readGraph(String filename, PrefixMapping pmap)
+    {
+        Item item = readResolve(filename, pmap) ;
+        return BuilderGraph.buildGraph(item) ;
+    }
+    
     public static Table readTable(String filename) { return readTable(filename, null) ; }
     
     public static Table readTable(String filename, PrefixMapping pmap)
     { 
-        Item item = readResolve(filename) ;
+        Item item = readResolve(filename, pmap) ;
         return BuilderTable.build(item) ;
     }
     

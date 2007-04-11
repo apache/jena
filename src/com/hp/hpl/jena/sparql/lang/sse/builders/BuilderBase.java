@@ -54,14 +54,22 @@ public class BuilderBase
         if ( item.isTagged(tag) ) return ;
         broken(item, msg, item) ;
     }
+
+    public static void checkTagged(Item item, int len, String tag, String msg)
+    {
+        if ( item.isTagged(tag) && item.getList().size() == len ) 
+            return ;
+        broken(item, msg, item) ;
+    }
+
     
-//    public static void checkTag(ItemList list, String tag)
-//    {
-//        if ( list.size() == 0 )
-//            broken(list, "Empty list") ;
-//        if ( ! list.get(0).isWordIgnoreCase(tag) )
-//            broken(list, "List does not start ("+tag+ "...) : "+Builder.shortPrint(list)) ;
-//    }
+    public static void checkTag(ItemList list, String tag)
+    {
+        if ( list.size() == 0 )
+            broken(list, "Empty list") ;
+        if ( ! list.get(0).isWordIgnoreCase(tag) )
+            broken(list, "List does not start ("+tag+ "...) : "+BuilderBase.shortPrint(list)) ;
+    }
 
     public static void checkList(Item item)
     {
@@ -89,17 +97,30 @@ public class BuilderBase
         System.err.println(msg) ;
     }
 
-    public static void checkLength(int len1, int len2, ItemList list, String sym)
+    public static void checkLength(int len1, int len2, ItemList list, String msg)
     {
-        if ( list.size() < len1 || list.size()> len2 )
-            broken(list, "Wrong number of arguments: want="+len1+" to "+len2+": actual="+list.size()+" : "+shortPrint(list)) ;
+        if ( list.size() >= len1 && list.size() <= len2 )
+            return ; 
+        if ( msg == null )
+            msg =  "Wrong number of arguments: ("+len1+"-"+len2+")/"+list.size()+" : "+shortPrint(list) ;
+        else
+            msg = msg+" : "+shortPrint(list) ;
+        broken(list, msg) ;
     }
     
-    public static void checkLength(int len, ItemList list, String sym)
+    public static void checkLength(int len, ItemList list, String msg)
     {
-        if ( list.size() != len )
-            broken(list, "Wrong number of arguments: want="+len+" ; actual="+list.size()+" : "+shortPrint(list)) ;
+        if ( list.size() == len )
+            return ;
+        
+        if ( msg == null )
+            msg =  "Wrong number of arguments: "+len+"/"+list.size()+" : "+shortPrint(list) ;
+        else
+            msg = msg+" : "+shortPrint(list) ;
+        broken(list, msg) ;
     }
+
+    
     
     public static void broken(ItemLocation location, String msg, Item item)
     {

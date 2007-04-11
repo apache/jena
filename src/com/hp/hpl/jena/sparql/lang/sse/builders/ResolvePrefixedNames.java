@@ -71,9 +71,7 @@ public class ResolvePrefixedNames
             return Item.createList(newItemList) ;
         }
 
-        // It's (prefix ...)
-        BuilderBase.checkLength(3, list, "List is "+list.size()+"not 3 :: (prefix PREFIXES BODY))") ;
-
+        BuilderBase.checkTagged(item, 3, tagPrefix, "Expected (prefix PREFIXES BODY)") ;
         if ( ! list.get(1).isList() )
             BuilderBase.broken(list, "("+tagPrefix+" ...) is not list of prefix/IRI pairs") ;
 
