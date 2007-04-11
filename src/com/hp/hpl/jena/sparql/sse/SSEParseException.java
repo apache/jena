@@ -4,45 +4,33 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse;
+package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Iterator;
-
-import com.hp.hpl.jena.graph.Node;
-
-public class ItemWalker
+public class SSEParseException extends RuntimeException
 {
-    static void walk(ItemVisitor visitor, Item item)
-    {
-        item.visit(new Worker(visitor)) ;
-    }
+    private int line ;
+    private int column ;
     
+    public SSEParseException(int line, int column)
+    { super() ; set(line, column) ; }
     
-    static class Worker implements ItemVisitor
-    {
-        private ItemVisitor visitor ;
-        Worker(ItemVisitor visitor) { this.visitor = visitor ; }
-        
-        public void visit(Item item, ItemList list)
-        {
-            for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
-            {
-                Item subItem = (Item)iter.next() ;
-                subItem.visit(this) ;
-            }
-            visitor.visit(item, list) ;
-        }
-        
-        public void visit(Item item, Node node)
-        {
-            visitor.visit(item, node) ;
-        }
-        
-        public void visit(Item item, String word)
-        {
-            visitor.visit(item, word) ;
-        }
-    }
+    public SSEParseException(Throwable cause, int line, int column)
+    { super(cause) ; set(line, column) ; }
+    
+    public SSEParseException(String msg, int line, int column)
+    { super(msg) ; set(line, column) ; }
+    
+    public SSEParseException(String msg, Throwable cause,int line, int column)
+    { super(msg, cause) ; set(line, column) ; }
+    
+    private void set(int line, int column)
+    { this.line = line ; this.column = column ; }
+
+    /** Column number where the parse exception occurred. */
+    public int getColumn() { return column ; }
+
+    /** Line number where the parse exception occurred. */
+    public int getLine()   { return line ; }
 }
 
 /*

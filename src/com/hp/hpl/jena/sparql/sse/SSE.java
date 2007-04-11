@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse;
+package com.hp.hpl.jena.sparql.sse;
 
 import java.io.*;
 
@@ -18,10 +18,10 @@ import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.lang.sse.builders.*;
-import com.hp.hpl.jena.sparql.lang.sse.parser.ParseException;
-import com.hp.hpl.jena.sparql.lang.sse.parser.SSE_Parser;
-import com.hp.hpl.jena.sparql.lang.sse.parser.TokenMgrError;
+import com.hp.hpl.jena.sparql.sse.builders.*;
+import com.hp.hpl.jena.sparql.sse.parser.ParseException;
+import com.hp.hpl.jena.sparql.sse.parser.SSE_Parser;
+import com.hp.hpl.jena.sparql.sse.parser.TokenMgrError;
 import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE

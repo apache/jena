@@ -14,12 +14,12 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.lang.sse.Item;
-import com.hp.hpl.jena.sparql.lang.sse.SSE;
-import com.hp.hpl.jena.sparql.lang.sse.Writer;
-import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderExpr;
-import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderOp;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.Writer;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
+import com.hp.hpl.jena.sparql.sse.builders.ResolvePrefixedNames;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.util.FileUtils;
 

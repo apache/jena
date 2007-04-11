@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.table.TableWriter;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.lang.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.util.FileManager;
 
 

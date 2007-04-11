@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse;
+package com.hp.hpl.jena.sparql.sse;
 
 import java.io.PrintStream;
 import java.util.Iterator;

@@ -13,10 +13,10 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpExecMain;
 import com.hp.hpl.jena.sparql.engine.ref.OpExecRef;
-import com.hp.hpl.jena.sparql.lang.sse.Item;
-import com.hp.hpl.jena.sparql.lang.sse.SSE;
-import com.hp.hpl.jena.sparql.lang.sse.builders.BuilderOp;
-import com.hp.hpl.jena.sparql.lang.sse.builders.ResolvePrefixedNames;
+import com.hp.hpl.jena.sparql.sse.Item;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
+import com.hp.hpl.jena.sparql.sse.builders.ResolvePrefixedNames;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;

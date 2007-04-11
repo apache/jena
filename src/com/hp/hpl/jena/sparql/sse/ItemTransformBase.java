@@ -4,15 +4,27 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse;
+package com.hp.hpl.jena.sparql.sse;
 
 import com.hp.hpl.jena.graph.Node;
 
-public interface ItemVisitor
+public class ItemTransformBase implements ItemTransform
 {
-    public void visit(Item item, ItemList list) ;
-    public void visit(Item item, Node node) ;
-    public void visit(Item item, String word) ;
+    public Item transform(Item item, ItemList list)
+    {
+        return Item.createList(list, item.getLine(), item.getColumn()) ;
+    }
+
+    public Item transform(Item item, Node node)
+    {
+        return Item.createNode(node, item.getLine(), item.getColumn()) ;
+    }
+    
+    public Item transform(Item item, String word)
+    {
+        return Item.createWord(word, item.getLine(), item.getColumn()) ;
+    }
+
 }
 
 /*

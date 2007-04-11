@@ -1,19 +1,52 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse;
+package com.hp.hpl.jena.sparql.sse;
 
-public class ItemException extends RuntimeException
+import java.util.Iterator;
+
+import com.hp.hpl.jena.graph.Node;
+
+public class ItemWalker
 {
-    public ItemException(String msg) { super(msg); } 
-    public ItemException(String msg, Throwable t) { super(msg, t); }
+    static void walk(ItemVisitor visitor, Item item)
+    {
+        item.visit(new Worker(visitor)) ;
+    }
+    
+    
+    static class Worker implements ItemVisitor
+    {
+        private ItemVisitor visitor ;
+        Worker(ItemVisitor visitor) { this.visitor = visitor ; }
+        
+        public void visit(Item item, ItemList list)
+        {
+            for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
+            {
+                Item subItem = (Item)iter.next() ;
+                subItem.visit(this) ;
+            }
+            visitor.visit(item, list) ;
+        }
+        
+        public void visit(Item item, Node node)
+        {
+            visitor.visit(item, node) ;
+        }
+        
+        public void visit(Item item, String word)
+        {
+            visitor.visit(item, word) ;
+        }
+    }
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -4,35 +4,18 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.lang.sse;
+package com.hp.hpl.jena.sparql.sse.builders;
 
-public class SSEParseException extends RuntimeException
-{
-    private int line ;
-    private int column ;
-    
-    public SSEParseException(int line, int column)
-    { super() ; set(line, column) ; }
-    
-    public SSEParseException(Throwable cause, int line, int column)
-    { super(cause) ; set(line, column) ; }
-    
-    public SSEParseException(String msg, int line, int column)
-    { super(msg) ; set(line, column) ; }
-    
-    public SSEParseException(String msg, Throwable cause,int line, int column)
-    { super(msg, cause) ; set(line, column) ; }
-    
-    private void set(int line, int column)
-    { this.line = line ; this.column = column ; }
+import com.hp.hpl.jena.sparql.sse.builders.BuildException;
 
-    /** Column number where the parse exception occurred. */
-    public int getColumn() { return column ; }
+class ExprBuildException extends BuildException
+    {
 
-    /** Line number where the parse exception occurred. */
-    public int getLine()   { return line ; }
-}
-
+//        public OpBuildException(Throwable cause) { super(cause) ; }
+//        public OpBuildException() { super() ; }
+        public ExprBuildException (String msg) { super(msg) ; }
+//        public OpBuildException (String msg, Throwable cause) { super(msg, cause) ; }
+    }
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
