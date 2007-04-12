@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 public class FmtLayout2HashMySQL extends FmtLayout2
 {
     static private Log log = LogFactory.getLog(FmtLayout2HashMySQL.class) ;
-    private MySQLEngineType engineType ;
+    protected MySQLEngineType engineType ;
     
     public FmtLayout2HashMySQL(SDBConnection connection, MySQLEngineType tableType)
     { 

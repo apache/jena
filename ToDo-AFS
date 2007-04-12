@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Derby - index version of testing/Algebra/two-nested-opt fails (
++ MySQL - is it's scoping wrong?  Different to other DBs!
+
 + --sdb=@ for global registration?
 
 + Prefixes : disable for ModelRDB only.
@@ -22,6 +25,8 @@ SDB ToDo list (and general notes)
   + SELECT/one table ==> move constraints out (it's just SPJ)
     Put in a SqlNode optimizer stage, just before generation
       IJ-R-T => IJ(r)-T is done specially 
+  + Generalize linearization of InnerJoin-only trees
+  + Be careful about code generation and a right complex expression (use SELECT for all brackets?)
     
 + Features:
   In desc file for now.

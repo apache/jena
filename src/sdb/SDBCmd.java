@@ -31,6 +31,7 @@ public class SDBCmd
     
     public static int sdbinfo(String... args)      { return exit(new sdb.sdbinfo(args(args))) ; } 
     public static int sdbmeta(String... args)      { return exit(new sdb.sdbmeta(args(args))) ; } 
+    public static int sdbsql(String... args)      { return exit(new sdb.sdbsql(args(args))) ; } 
     
     private static int exit(CmdMain cmd)
     {

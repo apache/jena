@@ -20,8 +20,6 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 
 public class FmtLayout2IndexMySQL extends FmtLayout2HashMySQL
 {
-    private MySQLEngineType engineType ;
-    
     public FmtLayout2IndexMySQL(SDBConnection connection, MySQLEngineType tableType)
     { 
         super(connection, tableType) ;

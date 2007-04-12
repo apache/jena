@@ -369,8 +369,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         annotate(join) ;
         out.println() ;
 
-        // XXX Better "need brackets test"
-        // XXX Aliasing and scoping.
+        // Aliasing and scoping - may need sub-SELECT - or just don't generate
+        // such SqlNode structures, leaving only COALESCE as the sub-SELECT case
         
         boolean bracketsRight = true ;
 //        if ( right.isInnerJoin() && join.isInnerJoin() && no conditions )

@@ -29,7 +29,7 @@ public class sdbsql extends CmdArgsDB
         new sdbsql(argv).main() ;
     }
 
-    private sdbsql(String... argv)
+    public sdbsql(String... argv)
     {
         super(argv) ;
         add(argDeclQuery, "--file=", "SQL command to execute (or positional arguments)") ;

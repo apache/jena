@@ -6,12 +6,7 @@
 
 package dev;
 
-import static sdb.SDBCmd.sdbconfig;
-import static sdb.SDBCmd.sdbload;
-import static sdb.SDBCmd.sdbprint;
-import static sdb.SDBCmd.sdbquery;
-import static sdb.SDBCmd.setSDBConfig;
-import static sdb.SDBCmd.sparql;
+import static sdb.SDBCmd.* ;
 import junit.framework.TestSuite;
 import arq.cmd.CmdUtils;
 
@@ -47,14 +42,14 @@ public class RunSDB
         
         //runInMem("Q.rq", "D.ttl") ;
         //runQuery("Q.rq", "D.ttl") ;
-        runQuery("Q.rq") ;
+        //runQuery("Q.rq") ;
         
         //runQuad() ;
         //runQuery() ;
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
         
-        //run() ;
+        run() ;
         //runTest() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
@@ -177,7 +172,6 @@ public class RunSDB
         
         conf.setModel(m) ;
         m2 = conf.getModel() ;
-
         
         m2.write(System.out, "N-TRIPLES") ;
         m2.write(System.out, "N3") ;
@@ -186,8 +180,23 @@ public class RunSDB
     
     public static void run()
     {
-        String[] a = new String[]{"--sdb=sdb.ttl", "--format=N3"} ;
-        sdb.sdbdump.main(a) ;
+        
+//        String args = "--sdb=sdb.ttl --layout=layout2/index --dbName=DB2-index --query=Q.rq" ;
+//        String [] a = args.split(" ") ;
+//        sdb.sdbquery.main(a) ;
+
+//        String[] a = new String[]{
+//            "--sdb=Store/sdb-mysql-innodb.ttl",
+//            "--layout=layout2/index",
+//            "--create",
+//            "--dbName=test2-index"} ;
+        
+        
+        
+        String args = "--sdb=sdb.ttl --dbName=DB2-index --file S" ;
+        String [] a = args.split(" ") ;
+        sdb.sdbsql.main(a) ;
+        System.exit(0) ;
     }
 }
 

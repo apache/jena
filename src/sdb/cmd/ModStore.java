@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.FileManager;
 public class ModStore extends ModBase
 {
     // -------- This ...
-    protected final ArgDecl argDeclSDBdesc       = new ArgDecl(true, "sdb");
+    protected final ArgDecl argDeclSDBdesc       = new ArgDecl(true, "sdb", "store");
     
     // ---- modified by these .... makes a connection description
     protected final ArgDecl argDeclJdbcURL      = new ArgDecl(true, "jdbc");

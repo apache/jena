@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
@@ -24,6 +25,9 @@ import com.hp.hpl.jena.sdb.store.Store;
 @RunWith(AllTests.class)
 public class SDBTestSuite2 extends TestSuite
 {
+    static boolean includeHash = true ;
+    static boolean includeIndex = false ;
+    
     static boolean includeDerby = true ;
     static boolean includeMySQL = false ;
     static boolean includeHSQL = false ;
@@ -42,42 +46,70 @@ public class SDBTestSuite2 extends TestSuite
         if ( includeDerby )
         {
             JDBC.loadDriverDerby() ;
+            if ( includeHash )
             {
                 String url = JDBC.makeURL("derby", "localhost", "DB/test2-hash") ;
                 SDBConnection sdb = new SDBConnection(url, null, null) ;
-                addTest(QueryTestSDBFactory.make(new StoreTriplesNodesHashDerby(sdb),
-                                                 SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                            "Schema 2 - hash : ")) ;
+                TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashDerby(sdb),
+                                                        SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                                        null) ;
+                ts.setName(ts.getName()+" (Derby/hash)") ;
+                addTest(ts) ;
             }
+            if ( includeIndex )
             {
                 String url = JDBC.makeURL("derby", "localhost", "DB/test2-index") ;
                 SDBConnection sdb = new SDBConnection(url, null, null) ;
-                addTest(QueryTestSDBFactory.make(new StoreTriplesNodesIndexDerby(sdb),
-                                                 SDBTest.testDirSDB+"manifest-sdb.ttl",
-                "Schema 2 - index : ")) ;
+                TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexDerby(sdb),
+                                                        SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                                        null) ;
+                ts.setName(ts.getName()+" (Derby/index)") ;
+                addTest(ts) ;
             }
         }
         
         if ( includeMySQL )
         {
             JDBC.loadDriverMySQL() ;
-            SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB2", Access.getUser(), Access.getPassword()) ;
-            addTest(QueryTestSDBFactory.make(new StoreTriplesNodesIndexMySQL(sdb),
-                                             SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                             "Schema 2 : ")) ;
+            if ( includeHash )
+            {
+                SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/test2-hash", Access.getUser(), Access.getPassword()) ;
+                TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashMySQL(sdb),
+                                                 SDBTest.testDirSDB+"manifest-sdb.ttl", null) ;
+                ts.setName(ts.getName()+" (MySQL/hash)") ;
+                addTest(ts) ;
+            }
+            if ( includeIndex )
+            {
+                SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/test2-index", Access.getUser(), Access.getPassword()) ;
+                TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexMySQL(sdb),
+                                         SDBTest.testDirSDB+"manifest-sdb.ttl", null) ;
+                ts.setName(ts.getName()+" (MySQL/index)") ;
+                addTest(ts) ;
+            }
         }
-        
+
         if ( includeHSQL )
         {
             JDBC.loadDriverHSQL() ;
-            SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
-            Store store = new StoreTriplesNodesIndexHSQL(sdb) ;
-            store.getTableFormatter().format() ;
-            TestSuite ts = QueryTestSDBFactory.make(store,
-                                                    SDBTest.testDirSDB+"/manifest-sdb.ttl",
-                                                    "Schema 2 : ") ; 
-            ts.setName(ts.getName()+"/HSQL-mem") ;
-            addTest(ts) ;
+            if ( includeHash )
+            {
+                SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
+                Store store = new StoreTriplesNodesIndexHSQL(sdb) ;
+                store.getTableFormatter().format() ;
+                TestSuite ts = QueryTestSDBFactory.make(store, SDBTest.testDirSDB+"/manifest-sdb.ttl",null) ;
+                ts.setName(ts.getName()+" (HSQL-mem-hash)") ;
+                addTest(ts) ;
+            }
+            if ( includeIndex )
+            {
+                SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
+                Store store = new StoreTriplesNodesIndexHSQL(sdb) ;
+                store.getTableFormatter().format() ;
+                TestSuite ts = QueryTestSDBFactory.make(store, SDBTest.testDirSDB+"/manifest-sdb.ttl", null) ;
+                ts.setName(ts.getName()+" (HSQL-mem-index)") ;
+                addTest(ts) ;
+            }
         }
 
     }
