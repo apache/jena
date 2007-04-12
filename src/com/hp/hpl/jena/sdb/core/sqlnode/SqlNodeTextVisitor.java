@@ -28,9 +28,12 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     
     final static boolean closeOnSameLine = true ;
     private IndentedWriter out ;
+    private boolean withAnnotations = false ;
     private static final int annotationColumn = 40 ; 
 
     public SqlNodeTextVisitor(IndentedWriter out) { this.out = out ; }
+    public SqlNodeTextVisitor(IndentedWriter out, boolean withAnnotations)
+    { this.out = out ; this.withAnnotations = withAnnotations ; }
     
     public void visit(SqlProject sqlNode)
     {
@@ -164,6 +167,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
     
     private void addAnnotations(Annotations n)
     {
+        if ( ! withAnnotations ) return ;
         if ( n == null || !n.hasNotes() ) return ;
         
         boolean first = true ;

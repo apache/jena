@@ -7,11 +7,11 @@
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import static com.hp.hpl.jena.sparql.util.StringUtils.str;
+
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;
@@ -21,6 +21,10 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.Pair;
+import com.hp.hpl.jena.sdb.util.SetUtils;
+import com.hp.hpl.jena.sdb.util.alg.Transform;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 // This is not a general purpose SQL writer - it needs only work with the
 // SQL node trees that the SDB compiler generate.
@@ -218,8 +222,71 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         annotate(table) ;
     }
 
-    public void visit(SqlJoinInner join)     { visitJoin(join, join.getJoinType().sqlOperator()) ; }
-    public void visit(SqlJoinLeftOuter join) { visitJoin(join, join.getJoinType().sqlOperator()) ; }
+    public void visit(SqlJoinInner join)
+    {
+        // if ( join(A, join(B, C)) ) rewrite as join(join(A,B),C)
+        // this then is written without brackets (and so scope changing)
+        // TODO abstract as organiseJoin(List<join elements>)
+        // and remember to do top down to find maximal join trees
+        
+        if ( join.getRight().isInnerJoin() )
+        {
+            SqlJoinInner right = join.getRight().asInnerJoin() ;
+
+            String alias1 = join.getAliasName() ;
+            String alias2 = right.getAliasName() ;
+            
+            SqlNode sn_a = join.getLeft() ;
+            SqlNode sn_b = right.getLeft() ;
+            SqlNode sn_c = right.getRight() ;
+            
+            SqlExprList conditions = new SqlExprList(join.getConditions()) ; 
+            conditions.addAll(right.getConditions()) ; 
+
+            Set<SqlTable> tables_ab = sn_a.tablesInvolved() ;
+            tables_ab.addAll(sn_b.tablesInvolved()) ;
+            
+            SqlExprList newCond_ab = new SqlExprList() ;  // Goes to new join(A,B)
+            SqlExprList newCond_c = new SqlExprList() ;   // Goes to new join(,C)
+            // Place conditions
+            for ( SqlExpr e : conditions )
+            {
+               Set<SqlColumn> cols = e.getColumnsNeeded() ;
+               // columns to tables.
+               Set<SqlTable> tables = tables(cols) ;
+               // Are the tables contained in tables_ab?
+               tables.removeAll(tables_ab) ;
+               
+               if ( tables.size() == 0 )
+                   newCond_ab.add(e) ;
+               else
+                   newCond_c.add(e) ;
+            }
+            if ( newCond_ab.size()+newCond_c.size() != conditions.size() )
+                log.fatal(String.format("Conditions mismatch: (%d,%d,%d)",
+                                        newCond_ab.size(), newCond_c.size(), conditions.size())) ;
+            
+            
+            SqlJoinInner join2 = new SqlJoinInner(sn_a, sn_b) ;
+            join2.addConditions(newCond_ab) ;
+            join2 = new SqlJoinInner(join2, sn_c) ;
+            join2.addConditions(newCond_c) ;
+            join = join2 ;
+        }
+        visitJoin(join) ;
+    }
+    
+    
+    static final Transform<SqlColumn, SqlTable> colToTable = new Transform<SqlColumn, SqlTable>() {
+        public SqlTable convert(SqlColumn item) { return item.getTable() ; }
+    } ;
+    
+    private static Set<SqlTable> tables(Set<SqlColumn> cols)
+    {
+        return SetUtils.convert(cols, colToTable) ;
+    }
+
+    public void visit(SqlJoinLeftOuter join)    { visitJoin(join) ; }
 
     public void visit(SqlCoalesce sqlNode)
     {
@@ -266,10 +333,22 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         // Alias and annotations handled by outputNode
     }
 
-    protected void visitJoin(SqlJoin join, String joinOperator)
+    protected void visitJoin(SqlJoin join) { visitJoin(join, join.getJoinType().sqlOperator()) ; }
+    protected void visitJoin(SqlJoin join, String joinOperatorName)
     {
         SqlNode left = join.getLeft() ;
         SqlNode right = join.getRight() ;
+        
+//        if ( left.isTable() || right.isTable() )
+//        {
+//            // Special cases  Join(Table, Join) and  Join(Join, Table)
+//            if ( left.isTable() && join.isInnerJoin() && right.isInnerJoin() )
+//            {
+//                join.getConditions() ;
+//            }
+//            
+//            if ( right.isTable() ) {}
+//        }
         
         // can we linearise the format? (drop the () and indentation)
         if ( left.isJoin() &&
@@ -286,13 +365,23 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         out.println() ;
         //out.print(" ") ;
         
-        out.print(joinOperator) ;
+        out.print(joinOperatorName) ;
         annotate(join) ;
         out.println() ;
 
-        out.incIndent() ;
-        outputNode(right, true) ;
-        out.decIndent() ;
+        // XXX Better "need brackets test"
+        // XXX Aliasing and scoping.
+        
+        boolean bracketsRight = true ;
+//        if ( right.isInnerJoin() && join.isInnerJoin() && no conditions )
+//            bracketsRight = false ;
+        
+        if ( bracketsRight )
+            // Why?
+            out.incIndent() ;
+        outputNode(right, bracketsRight) ;
+        if ( bracketsRight )
+            out.decIndent() ;
         out.println() ;
         out.print("ON ") ;
         if ( join.getConditions().size() > 0 )

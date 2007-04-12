@@ -6,12 +6,10 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import com.hp.hpl.jena.sparql.core.Quad;
-
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+import com.hp.hpl.jena.sparql.core.Quad;
 
 public class QuadBlockCompilerMain implements QuadBlockCompiler
 {
@@ -31,8 +29,6 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
     public SqlNode compile(QuadBlock quads)
     {
         SqlNode sqlNode = slotCompiler.start(quads) ;
-        SqlExprList conditions = new SqlExprList() ;
-        
         QuadBlock plainQuads = new QuadBlock() ;
         quads = new QuadBlock(quads) ;          // Copy it because it's modified.
         

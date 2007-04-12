@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
@@ -41,11 +42,20 @@ public class SDBTestSuite2 extends TestSuite
         if ( includeDerby )
         {
             JDBC.loadDriverDerby() ;
-            String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
-            SDBConnection sdb = new SDBConnection(url, null, null) ;
-            addTest(QueryTestSDBFactory.make(new StoreTriplesNodesHashDerby(sdb),
-                                             SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                             "Schema 2 : ")) ;
+            {
+                String url = JDBC.makeURL("derby", "localhost", "DB/test2-hash") ;
+                SDBConnection sdb = new SDBConnection(url, null, null) ;
+                addTest(QueryTestSDBFactory.make(new StoreTriplesNodesHashDerby(sdb),
+                                                 SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                            "Schema 2 - hash : ")) ;
+            }
+            {
+                String url = JDBC.makeURL("derby", "localhost", "DB/test2-index") ;
+                SDBConnection sdb = new SDBConnection(url, null, null) ;
+                addTest(QueryTestSDBFactory.make(new StoreTriplesNodesIndexDerby(sdb),
+                                                 SDBTest.testDirSDB+"manifest-sdb.ttl",
+                "Schema 2 - index : ")) ;
+            }
         }
         
         if ( includeMySQL )

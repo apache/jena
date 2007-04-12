@@ -51,7 +51,7 @@ public class RunSDB
         
         //runQuad() ;
         //runQuery() ;
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
         
         //run() ;
@@ -96,7 +96,7 @@ public class RunSDB
      {
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
-        sdbquery("--sdb=sdb.ttl", "--query="+queryFile ) ;
+        sdbquery("--layout=layout2/index", "--sdb=sdb.ttl", "--query="+queryFile ) ;
         System.exit(0) ;
      }
      

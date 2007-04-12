@@ -6,15 +6,14 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.hp.hpl.jena.sdb.core.AnnotationsBase;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.sdb.core.AnnotationsBase;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 
 
 public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
@@ -45,10 +44,10 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     public boolean      isCoalesce()  { return false ; }
     public SqlCoalesce  asCoalesce() { classError(SqlCoalesce.class) ; return null  ; }
     
-    public void output(IndentedWriter out)
-    {
-        this.visit(new SqlNodeTextVisitor(out)) ;
-    }
+    public void output(IndentedWriter out)  { output(out, true) ; }
+    
+    public void output(IndentedWriter out, boolean withAnnotations)
+    { this.visit(new SqlNodeTextVisitor(out, withAnnotations)) ; }
     
     // Scope
     
@@ -66,7 +65,7 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
         throw new ClassCastException("Wanted class: "+Utils.className(wanted)+" :: Actual class "+Utils.className(this) ) ;
     }
     
-    public Collection<SqlTable> tablesInvolved()
+    public Set<SqlTable> tablesInvolved()
     {
         TableFinder t = new TableFinder() ;
         SqlNodeWalker.walk(this, t) ;
@@ -76,7 +75,7 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     @Override public String toString()
     {
         IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        output(buff.getIndentedWriter()) ;
+        output(buff.getIndentedWriter(), false) ;
         return buff.asString() ;
     }
 }

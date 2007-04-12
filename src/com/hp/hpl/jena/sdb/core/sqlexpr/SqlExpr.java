@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import java.util.Collection;
+import java.util.Set;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
 
@@ -14,7 +14,7 @@ public interface SqlExpr extends Annotations
 {
     public abstract void visit(SqlExprVisitor visitor) ;
     public String asSQL() ;
-    public Collection<SqlColumn> getColumnsNeeded() ;
+    public Set<SqlColumn> getColumnsNeeded() ;
     
     // What we really want is "getPrecedence()"
     public boolean isColumn() ;

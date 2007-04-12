@@ -59,8 +59,6 @@ public class SlotCompilerIndex extends SlotCompiler2
         SqlNode sqlNode = insertConstantAccesses(constants) ;
         return sqlNode ;
     }
-   
-    
     
     @Override
     protected void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions)

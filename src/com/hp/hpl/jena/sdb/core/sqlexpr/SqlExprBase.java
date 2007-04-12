@@ -6,11 +6,11 @@
 
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 import com.hp.hpl.jena.sdb.core.AnnotationsBase;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
 
 public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
 {
@@ -30,9 +30,9 @@ public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
         return buff.toString() ; 
     }
     
-    public Collection<SqlColumn> getColumnsNeeded()
+    public Set<SqlColumn> getColumnsNeeded()
     {
-        Collection<SqlColumn> acc = new HashSet<SqlColumn>() ;
+        Set<SqlColumn> acc = new HashSet<SqlColumn>() ;
         SqlExprVisitor v = new SqlExprColumnsUsed(acc) ;
         SqlExprWalker.walk(this, v) ;
         return acc ;

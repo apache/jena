@@ -156,20 +156,20 @@ public class SQLBridge2 extends SQLBridgeBase
                 String codename = super.getSqlName(v) ;
                 try {
                     String lex = rs.getString(SQLUtils.gen(codename,"lex")) ;   // chars
-                    // Same as rs.wasNull() for things that can return Java nulls.
                     
-                    // byte bytes[] = rs.getBytes(codename+"$lex") ;      // bytes
+                    // byte bytes[] = rs.getBytes(SQLUtils.gen(codename,"lex")) ; // bytes
                     // try {
                     //     String $ = new String(bytes, "UTF-8") ;
                     //     log.info("lex bytes : "+$+"("+$.length()+")") ;
                     // } catch (Exception ex) {}
+                    // Same as rs.wasNull() for things that can return Java nulls.
                     if ( lex == null )
                         continue ;
-                    int type = rs.getInt(SQLUtils.gen(codename,"type")) ;
-                    String datatype =  rs.getString(SQLUtils.gen(codename,"datatype")) ;
-                    String lang =  rs.getString(SQLUtils.gen(codename,"lang")) ;
+                    int type        = rs.getInt(SQLUtils.gen(codename,"type")) ;
+                    String datatype = rs.getString(SQLUtils.gen(codename,"datatype")) ;
+                    String lang     = rs.getString(SQLUtils.gen(codename,"lang")) ;
                     ValueType vType = ValueType.lookup(type) ;
-                    Node r = makeNode(lex, datatype, lang, vType) ;
+                    Node r          = makeNode(lex, datatype, lang, vType) ;
                     b.add(v, r) ;
                 } catch (SQLException ex)
                 { // Unknown variable?

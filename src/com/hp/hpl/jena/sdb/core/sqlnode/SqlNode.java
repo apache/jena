@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.core.sqlnode;
 
+import java.util.Set;
+
 import com.hp.hpl.jena.sparql.util.Printable;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.Scope;
@@ -37,6 +39,8 @@ public interface SqlNode extends Printable, Annotations
 
     public Scope getIdScope() ;
     public Scope getNodeScope() ;
+    
+    public Set<SqlTable> tablesInvolved() ;
     
     public void visit(SqlNodeVisitor visitor) ;
 

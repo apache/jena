@@ -16,15 +16,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.SortCondition;
-
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
@@ -33,10 +26,14 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlCoalesce;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlJoin;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
-import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.util.ListUtils;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 public class QC
 {
@@ -46,6 +43,10 @@ public class QC
     {
         if ( left == null )
             return right ; 
+        
+        
+        // Try to make things a left tree join(join(table, table), table)
+        
         return join(request, INNER, left, right, null) ; 
     }
 
@@ -174,15 +175,14 @@ public class QC
         
         try {
             java.sql.ResultSet jdbcResultSet = request.getStore().getConnection().execQuery(sqlStmt) ;
-            if ( false )
-                // Destructive
-                RS.printResultSet(jdbcResultSet) ;
             try {
                 // And check this is called once per SQL.
                 if ( opSQL.getBridge() == null )
                     System.err.println("Null bridge") ;
+                // TODO "Ideally" stream this as a wrapper function on JDBC
+                // but. Relies on app closing queryExecution.  OR ELSE.
                 return opSQL.getBridge().assembleResults(jdbcResultSet, binding, execCxt) ;
-            } finally { jdbcResultSet.close() ; }
+            } finally { jdbcResultSet.close() ; jdbcResultSet = null ; }
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException in executing SQL statement", ex) ;
