@@ -23,7 +23,8 @@ SDB ToDo list (and general notes)
     Put in a SqlNode optimizer stage, just before generation
       IJ-R-T => IJ(r)-T is done specially 
   + Generalize linearization of InnerJoin-only trees
-  + Be careful about code generation and a right complex expression (use SELECT for all brackets?)
+  + Be careful about code generation and a right complex expression
+    Use a SELECT for nested expressions?  generalize from COALESCE code generation.
     
 + Features:
   In desc file for now.
