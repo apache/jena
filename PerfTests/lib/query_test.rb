@@ -9,11 +9,14 @@ class QueryTest
     DatasetFactory = com.hp.hpl.jena.query.DatasetFactory
     QueryExecutionFactory = com.hp.hpl.jena.query.QueryExecutionFactory
     ResultSetFactory = com.hp.hpl.jena.query.ResultSetFactory
+    DatasetStore = com.hp.hpl.jena.sdb.store.DatasetStore
+    QueryEngineFactorySDB = com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB
 
     def initialize
         @stores = []
         @queries = []
         @width = 0
+        @qef = QueryEngineFactorySDB.new
     end
     
     def store(store)
@@ -27,8 +30,8 @@ class QueryTest
     
     def run
         @stores.each do |store|
-            model = StoreFactory.create_model(store)
-            ds = DatasetFactory.create(model)
+            #model = StoreFactory.create_model(store)
+            ds = DatasetStore.new(StoreFactory.create(store))
             
             puts "\n\n**** #{store} ****\n\n" 
             
@@ -53,11 +56,11 @@ class QueryTest
     def do_query(dataset, queryfile)
         query = QueryFactory.read(queryfile)
         
-        qe = QueryExecutionFactory.create(query, dataset)
+        qe = @qef.create(query, dataset)
         
         results = qe.exec_select
         
-        if results.has_next # exhaust results
+        if results.has_next # ensure execution
             results.next
         end
         qe.close
