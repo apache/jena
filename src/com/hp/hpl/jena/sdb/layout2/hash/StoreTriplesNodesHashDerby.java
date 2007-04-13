@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDerby;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
@@ -20,7 +20,7 @@ public class StoreTriplesNodesHashDerby extends StoreBaseHash
               new LoaderHashDerby(connection),
               new QueryCompilerFactoryHash(), 
               new SQLBridgeFactory2(),
-              new GenerateSQL()) ;
+              new GenerateSQLDerby()) ;
     }
 }
 

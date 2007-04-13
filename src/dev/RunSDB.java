@@ -19,7 +19,9 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
@@ -42,10 +44,10 @@ public class RunSDB
         
         //runInMem("Q.rq", "D.ttl") ;
         //runQuery("Q.rq", "D.ttl") ;
-        //runQuery("Q.rq") ;
+        runQuery("Q.rq") ;
         
         //runQuad() ;
-        //runQuery() ;
+        //runQuery() ;      // Sets up data and runs query
         //runPrint() ;
         //runScript() ;
         
@@ -69,6 +71,7 @@ public class RunSDB
         runInMem(queryFile, dataFile) ;
         System.out.println("*** SDB") ;
         runQuery(queryFile, dataFile) ;
+        System.exit(0) ;
     }
         
      public static void runQuery(String queryFile, String dataFile)
@@ -91,7 +94,7 @@ public class RunSDB
      {
 //        SDBConnection.logSQLStatements = false ;
 //        SDBConnection.logSQLExceptions = true ;
-        sdbquery("--layout=layout2/index", "--sdb=sdb.ttl", "--query="+queryFile ) ;
+        sdbquery("--sdb=sdb.ttl", "--query="+queryFile) ;
         System.exit(0) ;
      }
      
@@ -190,6 +193,10 @@ public class RunSDB
 //            "--layout=layout2/index",
 //            "--create",
 //            "--dbName=test2-index"} ;
+        
+        Store store = StoreFactory.create("sdb.ttl") ;
+        
+        
         
         
         

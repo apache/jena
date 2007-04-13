@@ -4,25 +4,29 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2.index;
+package com.hp.hpl.jena.sdb.core.sqlnode;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDerby;
-import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class StoreTriplesNodesIndexDerby extends StoreBaseIndex
+public class GenerateSQLDerby extends GenerateSQL
 {
-
-    public StoreTriplesNodesIndexDerby(SDBConnection connection)
+    @Override
+    protected SqlNodeVisitor makeVisitor(IndentedLineBuffer buff)
     {
-        super(connection,
-              new FmtLayout2IndexDerby(connection) ,
-              //new LoaderOneTripleIndex(connection),
-              new LoaderIndexDerby(connection),
-              new QueryCompilerFactoryIndex(), 
-              new SQLBridgeFactory2(),
-              new GenerateSQLDerby()) ;
+        return new GeneratorVisitorMyDerby(buff.getIndentedWriter()) ;
     }
+}
+
+class GeneratorVisitorMyDerby extends GenerateSQLVisitor
+{
+    public GeneratorVisitorMyDerby(IndentedWriter out)
+    { super(out) ; }
+    
+    // No "true" in Derby
+    @Override
+    protected String leftJoinNoConditionsString()
+    { return "1=1" ; }
 }
 
 /*

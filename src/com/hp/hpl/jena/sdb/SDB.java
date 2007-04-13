@@ -33,14 +33,16 @@ public class SDB
         // + StoreFactory
         // + DatasetStore
         // Commands call AssemblerVocab.init() ;
+
         if ( initialized ) return ;
+        // Set this immediately in case code below causes init() to be called.
+        // (It's better if there are no dependences but ...)
+        initialized = true ;
         
         // Default is 1000 4Kpages.
         DerbyUtils.setDerbyPageCacheSize(10000) ;
-        
         AssemblerVocab.init() ;
         QueryEngineRegistry.get().add(new QueryEngineFactorySDB()) ;
-        initialized = true ;
     }
     
     /** RDF namespace prefix */

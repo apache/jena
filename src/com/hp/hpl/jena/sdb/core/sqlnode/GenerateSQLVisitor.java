@@ -387,9 +387,15 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         if ( join.getConditions().size() > 0 )
             conditionList(join.getConditions()) ;
         else
-            out.print(" ( true )") ;
+        {
+            out.print(" ( ") ;
+            out.print(leftJoinNoConditionsString()) ;
+            out.print(" )") ;
+        }
     }
 
+    protected String leftJoinNoConditionsString() { return "true" ; }
+    
     // Interaction with annotations
     static boolean allOnOneLine = false ;
     public void conditionList(SqlExprList conditions)

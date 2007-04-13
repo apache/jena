@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sdb.store.Store;
 public class SDBTestSuite2 extends TestSuite
 {
     static boolean includeHash = true ;
-    static boolean includeIndex = false ;
+    static boolean includeIndex = true ;
     
     static boolean includeDerby = true ;
     static boolean includeMySQL = false ;
@@ -43,6 +43,7 @@ public class SDBTestSuite2 extends TestSuite
         if ( true )     SDBConnection.logSQLExceptions = true ;
         if ( false )    QueryTestSDB.VERBOSE = true ;
         
+        //Note: make sure all tests have unuque names or else they may not run (Eclipse).  
         if ( includeDerby )
         {
             JDBC.loadDriverDerby() ;
@@ -52,7 +53,7 @@ public class SDBTestSuite2 extends TestSuite
                 SDBConnection sdb = new SDBConnection(url, null, null) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashDerby(sdb),
                                                         SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                                        null) ;
+                                                        "Derby/Hash - ") ;
                 ts.setName(ts.getName()+" (Derby/hash)") ;
                 addTest(ts) ;
             }
@@ -62,7 +63,7 @@ public class SDBTestSuite2 extends TestSuite
                 SDBConnection sdb = new SDBConnection(url, null, null) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexDerby(sdb),
                                                         SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                                        null) ;
+                                                        "Derby/Index - ") ;
                 ts.setName(ts.getName()+" (Derby/index)") ;
                 addTest(ts) ;
             }
@@ -75,7 +76,7 @@ public class SDBTestSuite2 extends TestSuite
             {
                 SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/test2-hash", Access.getUser(), Access.getPassword()) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashMySQL(sdb),
-                                                 SDBTest.testDirSDB+"manifest-sdb.ttl", null) ;
+                                                 SDBTest.testDirSDB+"manifest-sdb.ttl", "MySQL/Hash - ") ;
                 ts.setName(ts.getName()+" (MySQL/hash)") ;
                 addTest(ts) ;
             }
@@ -83,7 +84,7 @@ public class SDBTestSuite2 extends TestSuite
             {
                 SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/test2-index", Access.getUser(), Access.getPassword()) ;
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexMySQL(sdb),
-                                         SDBTest.testDirSDB+"manifest-sdb.ttl", null) ;
+                                         SDBTest.testDirSDB+"manifest-sdb.ttl", "MySQL/Index - ") ;
                 ts.setName(ts.getName()+" (MySQL/index)") ;
                 addTest(ts) ;
             }
@@ -97,7 +98,8 @@ public class SDBTestSuite2 extends TestSuite
                 SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
                 Store store = new StoreTriplesNodesIndexHSQL(sdb) ;
                 store.getTableFormatter().format() ;
-                TestSuite ts = QueryTestSDBFactory.make(store, SDBTest.testDirSDB+"/manifest-sdb.ttl",null) ;
+                TestSuite ts = QueryTestSDBFactory.make(store, 
+                                                        SDBTest.testDirSDB+"/manifest-sdb.ttl","HSQL/Hash - ") ;
                 ts.setName(ts.getName()+" (HSQL-mem-hash)") ;
                 addTest(ts) ;
             }
@@ -106,7 +108,8 @@ public class SDBTestSuite2 extends TestSuite
                 SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
                 Store store = new StoreTriplesNodesIndexHSQL(sdb) ;
                 store.getTableFormatter().format() ;
-                TestSuite ts = QueryTestSDBFactory.make(store, SDBTest.testDirSDB+"/manifest-sdb.ttl", null) ;
+                TestSuite ts = QueryTestSDBFactory.make(store,
+                                                        SDBTest.testDirSDB+"/manifest-sdb.ttl", "HSQL/Index - ") ;
                 ts.setName(ts.getName()+" (HSQL-mem-index)") ;
                 addTest(ts) ;
             }
