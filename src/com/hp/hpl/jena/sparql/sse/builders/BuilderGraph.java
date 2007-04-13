@@ -15,10 +15,13 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
+import com.hp.hpl.jena.util.FileManager;
 
 public class BuilderGraph
 {
     static protected final String symGraph        = "graph" ;
+    static protected final String symLoad         = "graph@" ;
     static protected final String symTriple       = "triple" ;
     static protected final String symQuad         = "quad" ;
     
@@ -30,9 +33,13 @@ public class BuilderGraph
         if (item.isWord() )
             BuilderBase.broken(item, "Attempt to build graph from a bare word") ;
 
-        return buildGraph(item.getList()) ;
-
+        if ( item.isTagged(symGraph) )
+            return buildGraph(item.getList()) ;
+        if ( item.isTagged(symLoad) )
+            return loadGraph(item.getList()) ;
+        throw new BuildException("Wanted ("+symGraph+"...) or ("+symLoad+"...) : got: "+BuilderBase.shortPrint(item));
     }
+    
     public static Graph buildGraph(ItemList list)
     {
         BuilderBase.checkTag(list, symGraph) ;
@@ -48,6 +55,19 @@ public class BuilderGraph
         }
         return graph ;
     }
+    
+    private static Graph loadGraph(ItemList list)
+    {
+        BuilderBase.checkLength(2, list, symLoad ) ;
+        Item item = list.get(1) ;
+        if ( ! item.isNode() )
+            BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename') : Got: "+BuilderBase.shortPrint(item)) ;
+        String s = NodeUtils.stringLiteral(item.getNode()) ;
+        if ( s == null )
+            BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename') : Got: "+BuilderBase.shortPrint(item)) ;
+        return FileManager.get().loadModel(s).getGraph() ;
+    }
+
     
     public static Triple buildTriple(ItemList list)
     {

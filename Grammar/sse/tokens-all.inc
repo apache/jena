@@ -3,6 +3,11 @@
 // SSE - SPARQL S-Expressions
 // Not the keywords.
 
+// ------------------------------------------
+// Tokens
+
+// Comments and whitespace
+
 SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
 
 TOKEN: { <#WS: " " | "\t" | "\n" | "\r" | "\f"> }
@@ -34,6 +39,15 @@ TOKEN :
         | (["0"-"9"])+ <EXPONENT>
       )
       >
+
+// | < INTEGER_POSITIVE: "+" <INTEGER> >
+// | < DECIMAL_POSITIVE: "+" <DECIMAL> >
+// | < DOUBLE_POSITIVE:  "+" <DOUBLE> >
+// 
+// | < INTEGER_NEGATIVE: "-" <INTEGER> >
+// | < DECIMAL_NEGATIVE: "-" <DECIMAL> >
+// | < DOUBLE_NEGATIVE:  "-" <DOUBLE> >
+
 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
@@ -68,10 +82,47 @@ TOKEN :
 | < RBRACKET:  "]" >
 
 | < DATATYPE: "^^">
-| < #AT: "@">
+| < AT: "@">
+
+//| < ANON:      <LBRACKET> (<WS>|<SINGLE_LINE_COMMENT>)* <RBRACKET> >
+//| < NIL: <LPAREN> (<WS>|<SINGLE_LINE_COMMENT>)* <RPAREN> >
 
 | < HOOK:      "?" >
+
+// | < SEMICOLON: ";" >
+// | < COMMA:     "," >
+// | < DOT:       "." >
 }
+
+// Operator - let this all drop through to Word
+
+// TOKEN :
+// {
+//   < EQ:      "=" >
+// | < NE:      "!=" >
+// | < GT:      ">" >
+// | < LT:      "<" >
+// | < LE:      "<=" >
+// | < GE:      ">=" >
+// 
+// | < BANG:    "!" >
+// | < TILDE:   "~" >
+// | < COLON:   ":" >
+// 
+// | < SC_OR:   "||" >
+// | < SC_AND:  "&&" >
+// 
+// | < PLUS:    "+" >
+// | < MINUS:   "-" >
+// | < STAR:    "*" >
+// | < SLASH:   "/" >
+// | < SEMICOLON: ";" >
+// | < COMMA:     "," >
+// | < DOT:       "." >
+// | < HOOK:      "?" >
+// | < AMP: "&" >
+// | < REM: "%" >
+// }
 
 TOKEN:
 {
@@ -105,7 +156,6 @@ TOKEN:
                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
 }
 
-// Can we add @foo?
 TOKEN:
 {
   <WORD: <VARNAME> >

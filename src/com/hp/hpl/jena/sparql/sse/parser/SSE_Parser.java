@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sparql.sse.parser ;
 
-import com.hp.hpl.jena.sparql.sse.*;
+import com.hp.hpl.jena.sparql.sse.* ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.sparql.core.Var;
 

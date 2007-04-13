@@ -19,9 +19,9 @@ PARSER_BEGIN(SSE_Parser)
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.lang.sse.parser ;
+package com.hp.hpl.jena.sparql.sse.parser ;
 
-import com.hp.hpl.jena.sparql.lang.sse.* ;
+import com.hp.hpl.jena.sparql.sse.* ;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.sparql.core.Var;   
     

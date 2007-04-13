@@ -133,7 +133,7 @@ public class BuilderBase
     {
         msg = msg(location, msg) ;
         System.err.println(msg) ;
-        throw new ExprBuildException(msg) ;
+        throw new BuildException(msg) ;
     }
     
     public static String msg(ItemLocation location, String msg)
