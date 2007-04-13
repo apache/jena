@@ -1,9 +1,6 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Derby - index version of testing/Algebra/two-nested-opt fails (
-+ MySQL - is it's scoping wrong?  Different to other DBs!
-
 + --sdb=@ for global registration?
 
 + Prefixes : disable for ModelRDB only.

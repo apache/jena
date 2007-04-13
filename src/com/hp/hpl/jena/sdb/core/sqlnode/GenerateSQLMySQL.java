@@ -31,7 +31,11 @@ class GeneratorVisitorMySQL extends GenerateSQLVisitor
     public GeneratorVisitorMySQL(IndentedWriter out) { super(out) ; }
 
     @Override
-    public void visit(SqlJoinInner join)     { visitJoin(join, InnerJoinOperatorDefault) ; }    
+    public void visit(SqlJoinInner join)
+    { 
+        join = rewrite(join) ;
+        visitJoin(join, InnerJoinOperatorDefault) ;
+    }    
 }
 
 /*

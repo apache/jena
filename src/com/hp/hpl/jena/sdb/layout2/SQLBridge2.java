@@ -43,6 +43,8 @@ import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 public class SQLBridge2 extends SQLBridgeBase 
 {
     private static Log log = LogFactory.getLog(SQLBridge2.class) ;
+    
+    // Result nodes tables 
     private static final String NodeBase = AliasesSql.NodesResultAliasBase ;
     //private Generator genNodeResultAlias = null ;
 

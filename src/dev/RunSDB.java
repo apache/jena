@@ -6,7 +6,12 @@
 
 package dev;
 
-import static sdb.SDBCmd.* ;
+import static sdb.SDBCmd.sdbconfig;
+import static sdb.SDBCmd.sdbload;
+import static sdb.SDBCmd.sdbprint;
+import static sdb.SDBCmd.sdbquery;
+import static sdb.SDBCmd.setSDBConfig;
+import static sdb.SDBCmd.sparql;
 import junit.framework.TestSuite;
 import arq.cmd.CmdUtils;
 
@@ -19,9 +24,7 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
@@ -44,7 +47,7 @@ public class RunSDB
         
         //runInMem("Q.rq", "D.ttl") ;
         //runQuery("Q.rq", "D.ttl") ;
-        runQuery("Q.rq") ;
+        //runQuery("Q.rq") ;
         
         //runQuad() ;
         //runQuery() ;      // Sets up data and runs query
@@ -193,17 +196,17 @@ public class RunSDB
 //            "--layout=layout2/index",
 //            "--create",
 //            "--dbName=test2-index"} ;
+
         
-        Store store = StoreFactory.create("sdb.ttl") ;
-        
-        
-        
-        
-        
-        String args = "--sdb=sdb.ttl --dbName=DB2-index --file S" ;
+        String args = "--sdb=tmp/sdb.ttl --file tmp/Q.rq" ;
         String [] a = args.split(" ") ;
-        sdb.sdbsql.main(a) ;
+        sdbquery(a) ;
         System.exit(0) ;
+        
+//        String args = "--sdb=sdb.ttl --dbName=DB2-index --file S" ;
+//        String [] a = args.split(" ") ;
+//        sdb.sdbsql.main(a) ;
+//        System.exit(0) ;
     }
 }
 

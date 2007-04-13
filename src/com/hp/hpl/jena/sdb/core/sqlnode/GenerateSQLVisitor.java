@@ -63,6 +63,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         
         // Put common prefix on same line
         String currentPrefix = null ; 
+        String splitMarker = SQLUtils.getSQLmark() ;
+        
         for ( Pair<Var, SqlColumn> c : sqlNode.getCols() )
         {
             out.print(sep) ;
@@ -72,7 +74,6 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
                 log.warn("Null SqlColumn for "+str(c.car())) ;    
 
             Var aliasVar = c.car() ;
-            String splitMarker = SQLUtils.getSQLmark() ;
             String p = null ;
             
             if ( aliasVar == null )
@@ -83,13 +84,14 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
                 p = aliasVar.getName() ;
             }
             // Var name formatting. 
-            String x[] = p.split("\\"+splitMarker) ;
-            p = x[0] ;
-            if ( currentPrefix != null && ! p.equals(currentPrefix) )
-            {
+            // V_1_lex, etc etc
+            
+            int j = p.lastIndexOf(splitMarker) ;
+            String x = p.substring(0, j) ;
+            if ( currentPrefix != null && ! x.equals(currentPrefix) )
                 out.println() ;
-            }
-            currentPrefix = p ;
+            
+            currentPrefix = x ;
             out.print(c.cdr().asString()) ;
             
             if ( aliasVar != null )
@@ -224,58 +226,62 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
     public void visit(SqlJoinInner join)
     {
+        join = rewrite(join) ;
+        visitJoin(join) ;
+    }
+
+    public SqlJoinInner rewrite(SqlJoinInner join)
+    {
+        if ( ! join.getRight().isInnerJoin() )
+            return join ;
+
         // if ( join(A, join(B, C)) ) rewrite as join(join(A,B),C)
         // this then is written without brackets (and so scope changing)
         // TODO abstract as organiseJoin(List<join elements>)
         // and remember to do top down to find maximal join trees
         
-        if ( join.getRight().isInnerJoin() )
+        SqlJoinInner right = join.getRight().asInnerJoin() ;
+
+        String alias1 = join.getAliasName() ;
+        String alias2 = right.getAliasName() ;
+
+        SqlNode sn_a = join.getLeft() ;
+        SqlNode sn_b = right.getLeft() ;
+        SqlNode sn_c = right.getRight() ;
+
+        SqlExprList conditions = new SqlExprList(join.getConditions()) ; 
+        conditions.addAll(right.getConditions()) ; 
+
+        Set<SqlTable> tables_ab = sn_a.tablesInvolved() ;
+        tables_ab.addAll(sn_b.tablesInvolved()) ;
+
+        SqlExprList newCond_ab = new SqlExprList() ;  // Goes to new join(A,B)
+        SqlExprList newCond_c = new SqlExprList() ;   // Goes to new join(,C)
+        // Place conditions
+        for ( SqlExpr e : conditions )
         {
-            SqlJoinInner right = join.getRight().asInnerJoin() ;
+            Set<SqlColumn> cols = e.getColumnsNeeded() ;
+            // columns to tables.
+            Set<SqlTable> tables = tables(cols) ;
+            // Are the tables contained in tables_ab?
+            tables.removeAll(tables_ab) ;
 
-            String alias1 = join.getAliasName() ;
-            String alias2 = right.getAliasName() ;
-            
-            SqlNode sn_a = join.getLeft() ;
-            SqlNode sn_b = right.getLeft() ;
-            SqlNode sn_c = right.getRight() ;
-            
-            SqlExprList conditions = new SqlExprList(join.getConditions()) ; 
-            conditions.addAll(right.getConditions()) ; 
-
-            Set<SqlTable> tables_ab = sn_a.tablesInvolved() ;
-            tables_ab.addAll(sn_b.tablesInvolved()) ;
-            
-            SqlExprList newCond_ab = new SqlExprList() ;  // Goes to new join(A,B)
-            SqlExprList newCond_c = new SqlExprList() ;   // Goes to new join(,C)
-            // Place conditions
-            for ( SqlExpr e : conditions )
-            {
-               Set<SqlColumn> cols = e.getColumnsNeeded() ;
-               // columns to tables.
-               Set<SqlTable> tables = tables(cols) ;
-               // Are the tables contained in tables_ab?
-               tables.removeAll(tables_ab) ;
-               
-               if ( tables.size() == 0 )
-                   newCond_ab.add(e) ;
-               else
-                   newCond_c.add(e) ;
-            }
-            if ( newCond_ab.size()+newCond_c.size() != conditions.size() )
-                log.fatal(String.format("Conditions mismatch: (%d,%d,%d)",
-                                        newCond_ab.size(), newCond_c.size(), conditions.size())) ;
-            
-            
-            SqlJoinInner join2 = new SqlJoinInner(sn_a, sn_b) ;
-            join2.addConditions(newCond_ab) ;
-            join2 = new SqlJoinInner(join2, sn_c) ;
-            join2.addConditions(newCond_c) ;
-            join = join2 ;
+            if ( tables.size() == 0 )
+                newCond_ab.add(e) ;
+            else
+                newCond_c.add(e) ;
         }
-        visitJoin(join) ;
+        if ( newCond_ab.size()+newCond_c.size() != conditions.size() )
+            log.fatal(String.format("Conditions mismatch: (%d,%d,%d)",
+                                    newCond_ab.size(), newCond_c.size(), conditions.size())) ;
+
+
+        SqlJoinInner join2 = new SqlJoinInner(sn_a, sn_b) ;
+        join2.addConditions(newCond_ab) ;
+        join2 = new SqlJoinInner(join2, sn_c) ;
+        join2.addConditions(newCond_c) ;
+        return join2 ;
     }
-    
     
     static final Transform<SqlColumn, SqlTable> colToTable = new Transform<SqlColumn, SqlTable>() {
         public SqlTable convert(SqlColumn item) { return item.getTable() ; }
