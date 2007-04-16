@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.63 2007-01-02 11:51:42 andy_seaborne Exp $
+ *  $Id: BaseXMLWriter.java,v 1.64 2007-04-16 15:28:23 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.63 $' Date='$Date: 2007-01-02 11:51:42 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.64 $' Date='$Date: 2007-04-16 15:28:23 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
@@ -495,7 +495,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             {
             String prefix = (String) it.next();
             if (!isPredefinedEntityName( prefix ) )
-                pw.print(  newline + "  <!ENTITY " + prefix + " '" + prefixes.get( prefix ) + "'>" );
+                pw.print(  newline + "  <!ENTITY " + prefix + " '" + Util.substituteEntitiesInEntityValue((String)prefixes.get( prefix )) + "'>" );
             }
         pw.print( "]>" + newline );
         }

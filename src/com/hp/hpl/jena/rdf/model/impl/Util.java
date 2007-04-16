@@ -39,7 +39,7 @@ import com.hp.hpl.jena.shared.*;
 /** Some utility functions.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2007-01-11 11:09:49 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2007-04-16 15:28:19 $'
  */
 public class Util extends Object {
 
@@ -105,6 +105,23 @@ public class Util extends Object {
             return s;
         }
     
+    protected static Pattern entityValueEntities = 
+ 	   Pattern.compile( "&|%|\'|\"" );
+ 
+   public static String substituteEntitiesInEntityValue( String s )
+     {
+     if (entityValueEntities.matcher( s ).find())
+         {
+         return s
+             .replaceAll( "&","&amp;" )
+             .replaceAll( "'", "&apos;" )
+             .replaceAll( "%", "&#37;" )
+             .replaceAll( "\"", "&quot;" )
+             ;
+         }
+     else
+         return s;
+     }
     protected static Pattern elementContentEntities = Pattern.compile( "<|>|&|[\0-\37&&[^\n\r\t]]|\uFFFF|\uFFFE" );
     /**
         Answer <code>s</code> modified to replace &lt;, &gt;, and &amp; by

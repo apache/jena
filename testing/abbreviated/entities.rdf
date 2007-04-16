@@ -1,0 +1,27 @@
+<!-- $Id: entities.rdf,v 1.1 2007-04-16 15:28:25 jeremy_carroll Exp $ -->
+<!-- A variety of URIs that cause problems when they are entities. -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:espace = "http://www.example.org/a%20space#"
+  xmlns:ampersand = "http://www.example.org/a?a&amp;b#"
+  xmlns:amp = "http://www.example.org/amp#"
+  xmlns:lt = "http://www.example.org/lt#"
+  xmlns:gt = "http://www.example.org/gt#"
+  xmlns:zz = "http://www.example.org/a&apos;b#"
+  xmlns:quot = "http://www.example.org/quot#"
+  xmlns:apos = "http://www.example.org/apos#"
+>
+
+<rdf:Description
+    espace:a=""
+    ampersand:a=""
+    amp:a=""
+    lt:a=""
+    gt:a=""
+    zz:a=""
+    quot:a=""
+    apos:a="" />
+
+
+</rdf:RDF>
