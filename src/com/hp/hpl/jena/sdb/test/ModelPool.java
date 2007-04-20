@@ -15,10 +15,12 @@ import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -41,6 +43,7 @@ public class ModelPool {
 		JDBC.loadDriverHSQL();
 		JDBC.loadDriverMySQL();
 		JDBC.loadDriverPGSQL();
+		JDBC.loadDriverSQLServer();
 	}
 
 	public static ModelPool get() {
@@ -177,6 +180,48 @@ public class ModelPool {
 			store.getTableFormatter().format();
 			
 			stores.put("PGSQLHASH", store);
+		}
+		
+		Model model = SDBFactory.connectModel(store);
+		model.removeAll();
+		return model;
+	}
+	
+	public Model getIndexSQLServer() {
+		Store store = stores.get("SQLSERVERINDEX");
+
+		if (store == null) {
+			JDBC.loadDriverSQLServer();
+
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:sqlserver://localhost;databaseName=sdb2", "mtx", "mtx01");
+
+			store = new StoreTriplesNodesIndexSQLServer(sdb);
+
+			store.getTableFormatter().format();
+			
+			stores.put("SQLSERVERINDEX", store);
+		}
+		
+		Model model = SDBFactory.connectModel(store);
+		model.removeAll();
+		return model;
+	}
+	
+	public Model getHashSQLServer() {
+		Store store = stores.get("SQLSERVERHASH");
+
+		if (store == null) {
+			JDBC.loadDriverSQLServer();
+
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:sqlserver://localhost;databaseName=sdb2", "mtx", "mtx01");
+
+			store = new StoreTriplesNodesHashSQLServer(sdb);
+
+			store.getTableFormatter().format();
+			
+			stores.put("SQLSERVERHASH", store);
 		}
 		
 		Model model = SDBFactory.connectModel(store);

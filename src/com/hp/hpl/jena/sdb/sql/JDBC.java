@@ -26,7 +26,7 @@ public class JDBC
         driver.put(DBtype.HSQL,        "org.hsqldb.jdbcDriver") ;
         driver.put(DBtype.Derby,       "org.apache.derby.jdbc.EmbeddedDriver") ;
         //driver.put(DBtype.Derby,       "org.apache.derby.jdbc.ClientDriver") ;
-        driver.put(DBtype.SQLserver,   "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
+        driver.put(DBtype.SQLServer,   "com.microsoft.sqlserver.jdbc.SQLServerDriver") ;
     }
     
     static public String getDriver(DBtype dbType) { return driver.get(dbType) ; }
@@ -35,6 +35,7 @@ public class JDBC
     static public void loadDriverMySQL() { loadDriver(driver.get(DBtype.MySQL)) ; }
     static public void loadDriverPGSQL() { loadDriver(driver.get(DBtype.PostgreSQL)); }
     static public void loadDriverDerby() { loadDriver(driver.get(DBtype.Derby)); }
+    static public void loadDriverSQLServer() { loadDriver(driver.get(DBtype.SQLServer)); }
     static public void loadDriver(String className) { loadClass(className) ; }
     
 //    static public void loadClass(String className)
@@ -94,6 +95,12 @@ public class JDBC
             return s ;
         }
         
+        if ( type.equals("sqlserver") )
+        {
+            //jdbc:sqlserver://localhost;databaseName=sdb_layout1
+            String s = String.format("jdbc:%s://%s;databaseName=%s", type, host, dbName) ;
+            return s ;
+         }
         
         if ( type.equalsIgnoreCase("none") )
             return jdbcNone ;

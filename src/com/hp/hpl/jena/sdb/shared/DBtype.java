@@ -14,7 +14,7 @@ public enum DBtype implements Named {
     PostgreSQL  { public String getName() { return "PostgreSQL" ; } } , 
     HSQL        { public String getName() { return "HSQL" ; } } ,
     Derby       { public String getName() { return "Derby" ; } } , 
-    SQLserver   { public String getName() { return "SQLserver" ; } } , 
+    SQLServer   { public String getName() { return "SQLServer" ; } } , 
     Oracle      { public String getName() { return "Oracle" ; } } , 
     DB2         { public String getName() { return "DB2" ; } } ,
 }

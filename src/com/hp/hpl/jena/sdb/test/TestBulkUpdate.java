@@ -42,6 +42,8 @@ public class TestBulkUpdate {
 		models.add(new Object[] { ModelPool.get().getHashHSQL() });
 		//models.add(new Object[] { ModelPool.get().getHashPgSQL() });
 		models.add(new Object[] { ModelPool.get().getHashDerby() });
+		//models.add(new Object[] { ModelPool.get().getHashSQLServer() });
+		models.add(new Object[] { ModelPool.get().getIndexSQLServer() });
 		
 		return models;
 	}

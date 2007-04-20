@@ -30,6 +30,8 @@ import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** 
@@ -112,12 +114,13 @@ public class StoreFactory
                     return new StoreSimplePGSQL(sdb) ;
                 case MySQL41:
                 case Oracle10:
-                case SQLServer:
                     throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
                 case HSQLDB:
                     return new StoreSimpleHSQL(sdb) ;
                 case Derby:
                     return new StoreSimpleDerby(sdb) ;
+                case SQLServer:
+                    return new StoreSimpleSQLServer(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;
@@ -136,10 +139,10 @@ public class StoreFactory
                     return new StoreTriplesNodesHashPGSQL(sdb) ;
                 case HSQLDB:
                     return new StoreTriplesNodesHashHSQL(sdb) ;
+                case SQLServer:
+                    return new StoreTriplesNodesHashSQLServer(sdb) ;
                 case MySQL41:
                 case Oracle10:
-                case SQLServer:
-                    throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;
@@ -161,7 +164,7 @@ public class StoreFactory
                 case MySQL41:
                 case Oracle10:
                 case SQLServer:
-                    throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
+                    return new StoreTriplesNodesIndexSQLServer(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, index variant]",
                                                   desc.dbType.getName(), desc.layout.getName())) ;

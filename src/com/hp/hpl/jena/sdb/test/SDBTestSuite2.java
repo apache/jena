@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -31,6 +32,7 @@ public class SDBTestSuite2 extends TestSuite
     static boolean includeDerby = true ;
     static boolean includeMySQL = false ;
     static boolean includeHSQL = false ;
+    static boolean includeSQLServer = false ;
     
     static public TestSuite suite() {
         return new SDBTestSuite2();
@@ -114,6 +116,15 @@ public class SDBTestSuite2 extends TestSuite
                 addTest(ts) ;
             }
         }
+        
+        if ( includeSQLServer )
+         {
+             JDBC.loadDriverSQLServer() ;
+             SDBConnection sdb = new SDBConnection("jdbc:sqlserver://localhost;databaseName=sdb2", "mtx", "mtx01") ;
+             addTest(QueryTestSDBFactory.make(new StoreTriplesNodesHashSQLServer(sdb),
+                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                              "Schema 2 : ")) ;
+         }
 
     }
 

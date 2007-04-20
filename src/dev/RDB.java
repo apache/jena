@@ -39,8 +39,8 @@ public class RDB
     public static void set_SQLserver(String dbName)
     {
         set("jena.db.url",         "jdbc:sqlserver://localhost\\SQLEXPRESS;database="+dbName) ;
-        set("jena.db.type",        DBtype.SQLserver.getName()) ;
-        set("jena.db.driver",      JDBC.getDriver(DBtype.SQLserver) ) ;
+        set("jena.db.type",        DBtype.SQLServer.getName()) ;
+        set("jena.db.driver",      JDBC.getDriver(DBtype.SQLServer) ) ;
         //set("jena.db.concurrent",  "false") ;
     }
     
