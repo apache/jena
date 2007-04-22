@@ -29,9 +29,9 @@ public class Run
 {
     public static void main(String[] argv)
     {
-        //runQExpr() ;
+        runQExpr() ;
         //print() ;
-        code() ;
+        //code() ;
         //runQParse() ;
         //classifyJ() ;
         //classifyLJ() ;
@@ -193,7 +193,7 @@ public class Run
 
     static public void runQExpr()
     {
-        qexpr.main(new String[]{"langMatches('en-uk', 'en-*-uk')"}) ;
+        qexpr.main(new String[]{"xsd:double('1.3e0')"}) ;
 //        qexpr.main(new String[]{"(1+3)"}) ;
 //        qexpr.main(new String[]{"(?x+3)"}) ;
 //        System.exit(0) ;

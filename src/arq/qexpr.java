@@ -20,10 +20,12 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.function.FunctionEnv;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
@@ -162,7 +164,8 @@ public class qexpr
                     else
                     {
                         // Default action
-                        NodeValue r = expr.eval(null, null) ;
+                        FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null) ; 
+                        NodeValue r = expr.eval(null, env) ;
                         //System.out.println(r.asQuotedString()) ;
                         Node n = r.asNode() ;
                         String s = FmtUtils.stringForNode(n) ;

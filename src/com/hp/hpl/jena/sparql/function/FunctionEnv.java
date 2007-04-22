@@ -15,7 +15,7 @@ public interface FunctionEnv
 {
     /** Return the active graph (the one matching is against at this point in the query.
      * May be null if unknown or not applicable - for example, doing quad store access or
-     * when sorting  
+     * when sorting.
      */ 
     public Graph getActiveGraph() ;
     
