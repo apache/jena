@@ -6,7 +6,6 @@
 
 package dev;
 
-import arq.qexec;
 import arq.qexpr;
 import arq.qparse;
 import arq.sparql;
