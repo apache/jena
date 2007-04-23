@@ -34,9 +34,9 @@ PARSER_END(Term_Parser)
 
 // --- Entry point
 
-Node term() : {Node node ; Var v ; }
+Node term() : {Node node ; Var v ; Token t ; }
 {
- ( node = GraphTerm()
+ ( node = RDFTerm()
     // Not quite right for line/col - this is the last token
     { return node ; }
  | ( t = <VAR1> | t = <VAR2> )
@@ -44,11 +44,12 @@ Node term() : {Node node ; Var v ; }
       return v ; }
  | t = <HOOK>
     { v = createVariable() ; return v ; }
+ )
 }
 
 // Abstract terminals (wrapped in grammar rules)
 
-Node GraphTerm() : { Node n ; }
+Node RDFTerm() : { Node n ; }
 {
   n = IRIref()          { return n ; }
 | n = RDFLiteral()      { return n ; }
@@ -119,9 +120,8 @@ Node BlankNode() :  { Token t = null ; }
 {
   t = <BLANK_NODE_LABEL>
     { return createBNode(t.image, t.beginLine, t.beginColumn) ; }  
-//|
-//  <LBRACKET> <RBRACKET> { return createBNode() ; }
-//  <ANON> { return createBNode() ; }
+|
+  <ANON> { return createBNode() ; }
 
 }
 
@@ -190,8 +190,10 @@ TOKEN :
 // | < LBRACE:    "{" >
 // | < RBRACE:    "}" >
 // 
-// | < LBRACKET:  "[" >
-// | < RBRACKET:  "]" >
+//  |  < LBRACKET:  "[" >
+//  | < RBRACKET:  "]" >
+
+  < ANON: "[]">
 
 | < DATATYPE: "^^">
 | < #AT: "@">

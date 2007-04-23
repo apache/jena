@@ -29,7 +29,8 @@ function grammar
     # Fix unnecessary imports
     echo "---- Fixing Java warnings in ${CLASS}TokenManager ..."
     F="$DIR/${CLASS}TokenManager.java"
-    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' < $F > F
+    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' \
+	-e 's!EOFLoop :!//EOFLoop :!' < $F > F
     mv F $F
 
 ##     # Java5+ fixups
