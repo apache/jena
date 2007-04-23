@@ -105,24 +105,24 @@ public class FormatterSimpleSQLServer extends FormatterSimple
         TableUtils.dropTable(connection(), tableName) ;
     }
     
+    @Override
     public void addIndexes()
     {
         try {
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o)") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o,p)") ;
-            connection().exec("CREATE INDEX Pred    ON "+TableTriples.tableName+" (p)") ;
+            connection().exec("CREATE INDEX PredObj ON "+TableTriples.tableName+" (p,o)") ;
+            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.tableName+" (o,s)") ;
         } catch (SQLException ex)
         {
             throw new SDBException("SQLException indexing table 'Triples'",ex) ;
         }
     }
 
+    @Override
     public void dropIndexes()
     {
         try {
-            connection().exec("DROP INDEX "+TableTriples.tableName+".SubjObj") ;
-            connection().exec("DROP INDEX "+TableTriples.tableName+".ObjPred") ;
-            connection().exec("DROP INDEX "+TableTriples.tableName+".Pred") ;
+            connection().exec("DROP INDEX "+TableTriples.tableName+".PredObj") ;
+            connection().exec("DROP INDEX "+TableTriples.tableName+".ObjSubj") ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }

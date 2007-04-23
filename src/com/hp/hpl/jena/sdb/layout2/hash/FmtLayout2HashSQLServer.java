@@ -49,9 +49,8 @@ public class FmtLayout2HashSQLServer extends FmtLayout2
     protected void addIndexesTableTriples()
     {
         try {
-            connection().exec("CREATE INDEX SubjObj ON "+TableTriples.tableName+" (s, o);") ;
-            connection().exec("CREATE INDEX ObjPred ON "+TableTriples.tableName+" (o, p);") ;
-            connection().exec("CREATE INDEX Pred ON "+TableTriples.tableName+" (p);") ;
+            connection().exec("CREATE INDEX PredObj ON "+TableTriples.tableName+" (p, o);") ;
+            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.tableName+" (o, s);") ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
     }
@@ -60,9 +59,8 @@ public class FmtLayout2HashSQLServer extends FmtLayout2
     protected void dropIndexesTableTriples()
     {
         try {
-            connection().exec("DROP INDEX "+TableTriples.tableName+".SubjObj") ;
-            connection().exec("DROP INDEX "+TableTriples.tableName+".ObjPred") ;
-            connection().exec("DROP INDEX "+TableTriples.tableName+".Pred") ;
+            connection().exec("DROP INDEX "+TableTriples.tableName+".PredObj") ;
+            connection().exec("DROP INDEX "+TableTriples.tableName+".ObjSubj") ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
     }
