@@ -37,6 +37,10 @@ class Instance extends FunctionBase1
     
     public NodeValue exec(NodeValue v)
     {
+        // TODO http://www.w3.org/TR/xpath-functions/#casting
+        // xsd:boolean() needs to be a special.
+        // casting from xsd:boolean is also special (get 0 or 1)
+        
         String s = null ;
         Node n = v.asNode() ;
         
@@ -62,6 +66,13 @@ class Instance extends FunctionBase1
         if ( s == null )
             throw new ExprEvalException("CastXSD: Can't cast: "+v+ "(has no string appearance)") ;
 
+//        // Special case - non-normalised xsd:booleans use 0 and 1.
+//        if ( v.isBoolean() )
+//        {
+//            if ( s.equals("0") ) s = "false" ;
+//            if ( s.equals("1") ) s = "true" ;
+//        }
+        
         // Unfortunately, this happens in NodeValue.makeNode as well.
         if ( ! castType.isValid(s) )
             throw new ExprEvalException("CastXSD: Not a valid literal form: "+s) ;
