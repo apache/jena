@@ -46,6 +46,7 @@ public class ParserTurtle
             parser.setTripleHandler(new TripleInserter(graph)) ;
             parser.setBaseURI(baseURI) ;
             parser.parse() ;
+            graph.getPrefixMapping().withDefaultMappings(parser.getPrefixMapping()) ;
         }
         catch (ParseException ex)
         { throw new TurtleParseException(ex.getMessage()) ; }
