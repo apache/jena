@@ -19,7 +19,6 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
-import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
@@ -30,6 +29,7 @@ import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.engine.ref.OpExecRef;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
+import com.hp.hpl.jena.sparql.sse.AlgSSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -125,11 +125,11 @@ public class qexec extends CmdARQ
                 { throw new CmdException("Error reading stdin", ex) ; }
             }
             else
-                op = Algebra.read(queryFilename) ;
+                op = AlgSSE.read(queryFilename) ;
         }
 
         if ( queryString != null )
-            op = Algebra.parse(queryString) ;
+            op = AlgSSE.parse(queryString) ;
         
         if ( op == null )
         {

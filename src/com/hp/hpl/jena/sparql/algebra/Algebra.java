@@ -13,34 +13,12 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpExecMain;
 import com.hp.hpl.jena.sparql.engine.ref.OpExecRef;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
-import com.hp.hpl.jena.sparql.sse.builders.ResolvePrefixedNames;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
 
 public class Algebra
 {
-    static public Op read(String filename)
-    {
-        Item item = SSE.readFile(filename) ;
-        return parse(item) ;
-    }
-
-    static public Op parse(String string)
-    {
-        Item item = SSE.parseString(string) ;
-        return parse(item) ;
-    }
-
-    static public Op parse(Item item)
-    {
-        item = ResolvePrefixedNames.resolve(item) ;
-        Op op = BuilderOp.build(item) ;
-        return op ;
-    }
 
     // Execute!
 
