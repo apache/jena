@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionResources.java,v 1.5 2007-01-02 11:49:22 andy_seaborne Exp $
+ 	$Id: NewRegressionResources.java,v 1.6 2007-04-24 10:37:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -150,11 +150,6 @@ public class NewRegressionResources extends NewRegressionBase
        //                       m.createSeq() );
         }
     
-    protected static final Map1 getSubject = new Map1() 
-        {
-        public Object map1( Object o ) { return ((Statement) o).getSubject(); }
-        };
-    
     protected Set setOf( Object x )
         {
         Set result = new HashSet();
@@ -186,13 +181,13 @@ public class NewRegressionResources extends NewRegressionBase
         catch (PropertyNotFoundException e) { pass(); }
     //
         assertEquals( 12, iteratorToSet( r.listProperties( RDF.value ) ).size() );
-        assertEquals( setOf( r ), iteratorToSet( r.listProperties( RDF.value ).mapWith( getSubject ) ) );
+        assertEquals( setOf( r ), iteratorToSet( r.listProperties( RDF.value ).mapWith( Statement.Util.getSubject ) ) );
     //
         assertEquals( 0, iteratorToSet( r.listProperties( p ) ).size() );
-        assertEquals( new HashSet(), iteratorToSet( r.listProperties( p ).mapWith( getSubject ) ) );
+        assertEquals( new HashSet(), iteratorToSet( r.listProperties( p ).mapWith( Statement.Util.getSubject ) ) );
     //
         assertEquals( 12 + numProps, iteratorToSet( r.listProperties() ).size() );
-        assertEquals( setOf( r ), iteratorToSet( r.listProperties().mapWith( getSubject ) ) );
+        assertEquals( setOf( r ), iteratorToSet( r.listProperties().mapWith( Statement.Util.getSubject ) ) );
     //
         r.removeProperties();
         assertEquals( 0, m.query( new SimpleSelector( r, null, (RDFNode) null ) ).size() );

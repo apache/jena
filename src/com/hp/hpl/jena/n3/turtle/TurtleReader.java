@@ -17,7 +17,7 @@ public class TurtleReader extends JenaReaderBase
     protected void readWorker(Model model, Reader reader, String base)
     {
         ParserTurtle p =  new ParserTurtle() ;
-        p.parse(model.getGraph(), base, reader) ;
+        p.parse( model.getGraph(), base, reader ) ;
     }
 }
 

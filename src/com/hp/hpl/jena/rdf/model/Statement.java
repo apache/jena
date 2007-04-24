@@ -1,13 +1,14 @@
 /*
 	(c) Copyright 2000-2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: Statement.java,v 1.15 2007-01-02 11:48:35 andy_seaborne Exp $
+	$Id: Statement.java,v 1.16 2007-04-24 10:37:11 chris-dollin Exp $
 */
 
 
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.iterator.Map1;
 
 /** An RDF Statement.
  *
@@ -27,7 +28,7 @@ import com.hp.hpl.jena.graph.*;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $ $Date: 2007-01-02 11:48:35 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.16 $ $Date: 2007-04-24 10:37:11 $
  */
 
 public interface Statement extends FrontsTriple
@@ -409,6 +410,27 @@ public interface Statement extends FrontsTriple
      * removes all four triples of the reification quad.
      */
     void removeReification();
+    
+    /**
+        Utility constants -- in a nested class for namespace reasons.
+    */
+    public static class Util
+        {
+        public static final Map1 getSubject = new Map1() 
+            {
+            public Object map1( Object o ) { return ((Statement) o).getSubject(); }
+            };
+            
+        public static final Map1 getPredicate = new Map1() 
+            {
+            public Object map1( Object o ) { return ((Statement) o).getPredicate(); }
+            };
+            
+        public static final Map1 getObject = new Map1() 
+            {
+            public Object map1( Object o ) { return ((Statement) o).getObject(); }
+            };
+        }
 }
 /*
 	  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP

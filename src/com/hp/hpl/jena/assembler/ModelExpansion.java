@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelExpansion.java,v 1.10 2007-01-02 11:52:47 andy_seaborne Exp $
+ 	$Id: ModelExpansion.java,v 1.11 2007-04-24 10:37:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler;
@@ -155,18 +155,13 @@ public class ModelExpansion
     private static Set subjectSet( Model result, Resource S, Property P, RDFNode O )
         {
         return IteratorCollection.iteratorToSet
-            ( result.listStatements( S, P, O ) .mapWith( getSubject ) );
+            ( result.listStatements( S, P, O ) .mapWith( Statement.Util.getSubject ) );
         }
 
     private static List asJavaList( Resource resource )
         {
         return ((RDFList) resource.as( RDFList.class )).asJavaList();
         }
-
-    public static final Map1 getSubject = new Map1() 
-        {
-        public Object map1( Object o ) { return ((Statement) o).getSubject(); }
-        };
     }
 
 
