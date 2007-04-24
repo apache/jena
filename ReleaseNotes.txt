@@ -3,6 +3,11 @@ Release Notes
 
 Post 2.5.2
 
+Statement.Util
+    o The interface Statement has grown a Util class containing
+      the three constants getSubject, getPredicate, and getObject,
+      which are Map1 objects with the obvious meanings.
+
 Assembler modification-and-fix
     o There was a bug with the behaviour of OntModelSpec assemblers.
       The "feature" that if a ja:OntModelSpec had no properties it
