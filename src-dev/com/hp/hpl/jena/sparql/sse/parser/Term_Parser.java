@@ -342,8 +342,8 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[34];
-    for (int i = 0; i < 34; i++) {
+    boolean[] la1tokens = new boolean[33];
+    for (int i = 0; i < 33; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -362,7 +362,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         }
       }
     }
-    for (int i = 0; i < 34; i++) {
+    for (int i = 0; i < 33; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

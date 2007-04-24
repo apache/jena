@@ -40,8 +40,7 @@ public interface Term_ParserConstants {
   int NCNAME = 29;
   int VARNAME = 30;
   int WORD = 31;
-  int OP = 32;
-  int UNKNOWN = 33;
+  int UNKNOWN = 32;
 
   int DEFAULT = 0;
 
@@ -78,7 +77,6 @@ public interface Term_ParserConstants {
     "<NCNAME>",
     "<VARNAME>",
     "<WORD>",
-    "<OP>",
     "<UNKNOWN>",
   };
 
