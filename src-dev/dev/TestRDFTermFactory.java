@@ -39,13 +39,17 @@ public class TestRDFTermFactory extends TestCase
     public void testNum_3() { test("1.0e6") ; }
     
     
-    public void testNum_5() { testBad("1+ 1") ; }
+    public void testNum_5() { testBad("1 1") ; }
  
     public void testURI_1() { test("<http://example/base>") ; }
     public void testURI_2() { testBad("http://example/baseNoDelimiters") ; }
     public void testURI_3() { testBad("<http://example/ space>") ; }
     
     public void testVar_1() { test("?x") ; }
+    
+    public void testWS_1() { test(" ?x ") ; }
+    
+    public void testBad_1() { testBad("+") ; }
     
     private void test(String str)
     {

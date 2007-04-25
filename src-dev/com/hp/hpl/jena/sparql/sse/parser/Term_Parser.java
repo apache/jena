@@ -16,6 +16,18 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
 // --- Entry point
   final public Node term() throws ParseException {
                Node node ; Var v ; Token t ;
+    label_1:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case WS:
+        ;
+        break;
+      default:
+        jj_la1[0] = jj_gen;
+        break label_1;
+      }
+      jj_consume_token(WS);
+    }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case Q_IRIref:
     case BLANK_NODE_LABEL:
@@ -39,7 +51,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         t = jj_consume_token(VAR2);
         break;
       default:
-        jj_la1[0] = jj_gen;
+        jj_la1[1] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -50,9 +62,21 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
       node = createVariable() ;
       break;
     default:
-      jj_la1[1] = jj_gen;
+      jj_la1[2] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
+    }
+    label_2:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case WS:
+        ;
+        break;
+      default:
+        jj_la1[3] = jj_gen;
+        break label_2;
+      }
+      jj_consume_token(WS);
     }
     jj_consume_token(0);
       {if (true) return node ;}
@@ -86,7 +110,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
                     {if (true) return n ;}
       break;
     default:
-      jj_la1[2] = jj_gen;
+      jj_la1[4] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -110,13 +134,13 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         uri = IRIref();
         break;
       default:
-        jj_la1[3] = jj_gen;
+        jj_la1[5] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[6] = jj_gen;
       ;
     }
       {if (true) return makeNode(lex, lang, uri) ;}
@@ -139,7 +163,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
                  {if (true) return makeNodeDouble(t.image) ;}
       break;
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[7] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -172,7 +196,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
                                  lex = stripQuotes3(t.image) ;
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[8] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -207,7 +231,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
            {if (true) return createBNode() ;}
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[9] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -226,7 +250,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[8];
+  final private int[] jj_la1 = new int[10];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -234,10 +258,10 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x30,0x13e1c3a,0x3e1c0a,0x400040,0x400040,0x1c00,0x1e0000,0x200008,};
+      jj_la1_0 = new int[] {0x2,0x60,0x27c3874,0x2,0x7c3814,0x800080,0x800080,0x3800,0x3c0000,0x400010,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public Term_Parser(java.io.InputStream stream) {
@@ -249,7 +273,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -261,7 +285,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
   }
 
   public Term_Parser(java.io.Reader stream) {
@@ -270,7 +294,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -279,7 +303,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
   }
 
   public Term_Parser(Term_ParserTokenManager tm) {
@@ -287,7 +311,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(Term_ParserTokenManager tm) {
@@ -295,7 +319,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 10; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -342,15 +366,15 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[33];
-    for (int i = 0; i < 33; i++) {
+    boolean[] la1tokens = new boolean[34];
+    for (int i = 0; i < 34; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 10; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -362,7 +386,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         }
       }
     }
-    for (int i = 0; i < 33; i++) {
+    for (int i = 0; i < 34; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
