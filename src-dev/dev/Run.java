@@ -11,8 +11,6 @@ import arq.qparse;
 import arq.sparql;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
 import com.hp.hpl.jena.query.larq.IndexLARQ;
@@ -22,10 +20,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.table.TableWriter;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.sse.RDFTermFactory;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -45,31 +40,6 @@ public class Run
         
     private static void code()
     {
-        // XXX Make into testcases
-        String a[] = {
-            //"'foo'", "<http://example/base>", "1",
-            //"[]", //"[ ]",
-            "\"foo\"@en",
-            "'foo' @en",
-            "'1'^^<urn:MyInteger>"
-        } ;
-            
-        
-        for ( int i = 0 ; i < a.length ; i++ )
-        {
-            String str = a[i] ;
-            try {
-                Node node = RDFTermFactory.parseString(str) ;
-                System.out.println(str+" => "+FmtUtils.stringForNode(node)) ;
-            } catch (SSEParseException ex)
-            {
-                System.out.println(str+" => parse exception ["+ex.getLine()+", "+ex.getColumn()+"]") ;
-                System.out.println(ex.getMessage()) ;
-            }
-        }
-        
-        System.exit(0) ;
-        
         Graph graph = SSE.readGraph("SSE/graph.sse") ;
         Model model = ModelFactory.createModelForGraph(graph) ;
         model.write(System.out, "TTL") ;
