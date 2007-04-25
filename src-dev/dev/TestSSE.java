@@ -20,7 +20,7 @@ public class TestSSE extends TestCase
     public static TestSuite suite()
     {
         TestSuite ts = new TestSuite(TestSSE.class) ;
-        ts.setName("TestMisc") ;
+        ts.setName("TestSSE") ;
         return ts ;
     }
     
@@ -39,24 +39,25 @@ public class TestSSE extends TestCase
     }
     
     public void testWord_1()
-    {
-        Item item = parse("word") ;
-        assertTrue(item.isWord()) ;
-        assertEquals(item.getWord(), "word") ;
-    }
+    { testWord("word") ; }
     
     public void testWord_2()
-    {
-        Item item = parse("+") ;
-        assertTrue(item.isWord()) ;
-        assertEquals(item.getWord(), "+") ;
-    }
+    { testWord("+") ; }
 
+
+    // ---- Workers
     
     private Item parse(String str)
     {
         Item item = SSE.parseString(str) ;
         return item ;
+    }
+    
+    private void testWord(String str)
+    {
+        Item item = parse(str) ;
+        assertTrue(item.isWord()) ;
+        assertEquals(item.getWord(), str) ;
     }
     
     private void testBad(String str)

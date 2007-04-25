@@ -18,7 +18,7 @@ public class TestRDFTermFactory extends TestCase
     public static TestSuite suite()
     {
         TestSuite ts = new TestSuite(TestRDFTermFactory.class) ;
-        ts.setName("TestMisc") ;
+        ts.setName("TestRDFTermFactory") ;
         return ts ;
     }
     
