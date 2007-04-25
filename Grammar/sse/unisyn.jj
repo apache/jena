@@ -36,10 +36,9 @@ PARSER_END(SSE_Parser)
 
 Item parse() : { Item list ; Item elt ; }
 {
-//    list = BareList()
-    list = List()
+    elt = WordOrList() // List()
     <EOF>
-    { return list ; }
+    { return elt ; }
 }
 
 Item List() : { Token t ; Item list ; }

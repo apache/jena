@@ -16,10 +16,9 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
 // --- Entry point
   final public Item parse() throws ParseException {
                  Item list ; Item elt ;
-    //    list = BareList()
-        list = List();
+    elt = WordOrList();
     jj_consume_token(0);
-      {if (true) return list ;}
+      {if (true) return elt ;}
     throw new Error("Missing return statement in function");
   }
 
