@@ -45,6 +45,7 @@ Node term() : {Node node ; Var v ; Token t ; }
  | t = <HOOK>
     { v = createVariable() ; return v ; }
  )
+// <EOF>
 }
 
 // Abstract terminals (wrapped in grammar rules)
@@ -134,7 +135,7 @@ Node Q_IRI_REF() : { Token t ; }
 
 // NO WHITESPACE SKIPPING
 // SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
-// TOKEN: { <#WS: " " | "\t" | "\n" | "\r" | "\f"> }
+TOKEN: { <WS: " " | "\t" | "\n" | "\r" | "\f"> }
 
 TOKEN:
 {

@@ -234,7 +234,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x30,0x13e1c3a,0x3e1c0a,0x400040,0x400040,0x1c00,0x1e0000,0x200008,};
+      jj_la1_0 = new int[] {0x60,0x27c3874,0x7c3814,0x800080,0x800080,0x3800,0x3c0000,0x400010,};
    }
    private static void jj_la1_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
@@ -342,8 +342,8 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[33];
-    for (int i = 0; i < 33; i++) {
+    boolean[] la1tokens = new boolean[35];
+    for (int i = 0; i < 35; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -362,7 +362,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         }
       }
     }
-    for (int i = 0; i < 33; i++) {
+    for (int i = 0; i < 35; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
