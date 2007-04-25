@@ -28,7 +28,6 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
     case STRING_LITERAL_LONG2:
     case ANON:
       node = RDFTerm();
-      {if (true) return node ;}
       break;
     case VAR1:
     case VAR2:
@@ -44,18 +43,19 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         jj_consume_token(-1);
         throw new ParseException();
       }
-      v = createVariable(t.image, t.beginLine, t.beginColumn) ;
-      {if (true) return v ;}
+      node = createVariable(t.image, t.beginLine, t.beginColumn) ;
       break;
     case HOOK:
       t = jj_consume_token(HOOK);
-      v = createVariable() ; {if (true) return v ;}
+      node = createVariable() ;
       break;
     default:
       jj_la1[1] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    jj_consume_token(0);
+      {if (true) return node ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -234,7 +234,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x60,0x27c3874,0x7c3814,0x800080,0x800080,0x3800,0x3c0000,0x400010,};
+      jj_la1_0 = new int[] {0x30,0x13e1c3a,0x3e1c0a,0x400040,0x400040,0x1c00,0x1e0000,0x200008,};
    }
    private static void jj_la1_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
@@ -342,8 +342,8 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[35];
-    for (int i = 0; i < 35; i++) {
+    boolean[] la1tokens = new boolean[33];
+    for (int i = 0; i < 33; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -362,7 +362,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         }
       }
     }
-    for (int i = 0; i < 35; i++) {
+    for (int i = 0; i < 33; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

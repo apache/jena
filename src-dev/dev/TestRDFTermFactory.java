@@ -39,11 +39,13 @@ public class TestRDFTermFactory extends TestCase
     public void testNum_3() { test("1.0e6") ; }
     
     
-    public void testNum_5() { testBad("1 1") ; }
+    public void testNum_5() { testBad("1+ 1") ; }
  
     public void testURI_1() { test("<http://example/base>") ; }
     public void testURI_2() { testBad("http://example/base") ; }
     public void testURI_3() { testBad("<http://example/ space>") ; }
+    
+    public void testVar_1() { test("?x") ; }
     
     private void test(String str)
     {
@@ -54,6 +56,7 @@ public class TestRDFTermFactory extends TestCase
     {
         try {
             Node node = RDFTermFactory.parseString(str) ;
+            //System.out.println(str+" => "+node) ;
             fail("Did not get a parse failure") ;
         } catch (SSEParseException ex)
         {}

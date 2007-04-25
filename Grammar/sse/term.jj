@@ -38,14 +38,13 @@ Node term() : {Node node ; Var v ; Token t ; }
 {
  ( node = RDFTerm()
     // Not quite right for line/col - this is the last token
-    { return node ; }
  | ( t = <VAR1> | t = <VAR2> )
-    { v = createVariable(t.image, t.beginLine, t.beginColumn) ;
-      return v ; }
+    { node = createVariable(t.image, t.beginLine, t.beginColumn) ; }
  | t = <HOOK>
-    { v = createVariable() ; return v ; }
+    { node = createVariable() ; }
  )
-// <EOF>
+ <EOF>
+    { return node ; }
 }
 
 // Abstract terminals (wrapped in grammar rules)
@@ -135,7 +134,7 @@ Node Q_IRI_REF() : { Token t ; }
 
 // NO WHITESPACE SKIPPING
 // SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
-TOKEN: { <WS: " " | "\t" | "\n" | "\r" | "\f"> }
+//TOKEN: { <WS: " " | "\t" | "\n" | "\r" | "\f"> }
 
 TOKEN:
 {
@@ -239,7 +238,7 @@ TOKEN:
 {
   <WORD: <VARNAME> >
   // Anything that isn't structural (LPAREN and RPAREN / LBRACKET/RBRACKET)
-| <OP: (~["(", ")", "[", "]", " ","\t","\n","\r","\f" ])+ >
+//| <OP: (~["(", ")", "[", "]", " ","\t","\n","\r","\f" ])+ >
 }
 
 // Catch-all tokens.  Must be last.  

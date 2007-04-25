@@ -9,46 +9,43 @@ package com.hp.hpl.jena.sparql.sse.parser ;
 public interface Term_ParserConstants {
 
   int EOF = 0;
-  int WS = 1;
-  int Q_IRIref = 2;
-  int QNAME = 3;
-  int BLANK_NODE_LABEL = 4;
-  int VAR1 = 5;
-  int VAR2 = 6;
-  int LANGTAG = 7;
-  int A2Z = 8;
-  int A2ZN = 9;
-  int DIGITS = 10;
-  int INTEGER = 11;
-  int DECIMAL = 12;
-  int DOUBLE = 13;
-  int EXPONENT = 14;
-  int QUOTE_3D = 15;
-  int QUOTE_3S = 16;
-  int ECHAR = 17;
-  int STRING_LITERAL1 = 18;
-  int STRING_LITERAL2 = 19;
-  int STRING_LITERAL_LONG1 = 20;
-  int STRING_LITERAL_LONG2 = 21;
-  int ANON = 22;
-  int DATATYPE = 23;
-  int AT = 24;
-  int HOOK = 25;
-  int NCCHAR1P = 26;
-  int NCCHAR1 = 27;
-  int NCCHAR = 28;
-  int NCNAME_PREFIX = 29;
-  int NCNAME = 30;
-  int VARNAME = 31;
-  int WORD = 32;
-  int OP = 33;
-  int UNKNOWN = 34;
+  int Q_IRIref = 1;
+  int QNAME = 2;
+  int BLANK_NODE_LABEL = 3;
+  int VAR1 = 4;
+  int VAR2 = 5;
+  int LANGTAG = 6;
+  int A2Z = 7;
+  int A2ZN = 8;
+  int DIGITS = 9;
+  int INTEGER = 10;
+  int DECIMAL = 11;
+  int DOUBLE = 12;
+  int EXPONENT = 13;
+  int QUOTE_3D = 14;
+  int QUOTE_3S = 15;
+  int ECHAR = 16;
+  int STRING_LITERAL1 = 17;
+  int STRING_LITERAL2 = 18;
+  int STRING_LITERAL_LONG1 = 19;
+  int STRING_LITERAL_LONG2 = 20;
+  int ANON = 21;
+  int DATATYPE = 22;
+  int AT = 23;
+  int HOOK = 24;
+  int NCCHAR1P = 25;
+  int NCCHAR1 = 26;
+  int NCCHAR = 27;
+  int NCNAME_PREFIX = 28;
+  int NCNAME = 29;
+  int VARNAME = 30;
+  int WORD = 31;
+  int UNKNOWN = 32;
 
   int DEFAULT = 0;
 
   String[] tokenImage = {
     "<EOF>",
-    "<WS>",
     "<Q_IRIref>",
     "<QNAME>",
     "<BLANK_NODE_LABEL>",
@@ -80,7 +77,6 @@ public interface Term_ParserConstants {
     "<NCNAME>",
     "<VARNAME>",
     "<WORD>",
-    "<OP>",
     "<UNKNOWN>",
   };
 
