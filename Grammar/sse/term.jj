@@ -8,8 +8,8 @@ options
    UNICODE_INPUT         = false ;
 
   STATIC                = false ;
-//   DEBUG_PARSER          = true ;
-//   DEBUG_TOKEN_MANAGER   = true ;
+//    DEBUG_PARSER          = true ;
+//    DEBUG_TOKEN_MANAGER   = true ;
 }
 
 PARSER_BEGIN(Term_Parser)
@@ -34,30 +34,31 @@ PARSER_END(Term_Parser)
 
 // --- Entry point
 
-Node term() : {Node node ; Var v ; Token t ; }
+Node term() : {Node node ; }
 {
- (<WS>)*
- ( node = RDFTerm()
-    // Not quite right for line/col - this is the last token
- | ( t = <VAR1> | t = <VAR2> )
-    { node = createVariable(t.image, t.beginLine, t.beginColumn) ; }
- | t = <HOOK>
-    { node = createVariable() ; }
- )
- (<WS>)*
- <EOF>
-    { return node ; }
+  node = RDFTerm()
+  <EOF>
+  { return node ; }
 }
 
-// Abstract terminals (wrapped in grammar rules)
+Node termStripWS() : {Node node ; }
+{
+ (<WS>)*
+ node = RDFTerm() 
+ (<WS>)*
+ <EOF>
+  { return node ; }
+}
 
 Node RDFTerm() : { Node n ; }
 {
   n = IRIref()          { return n ; }
+| n = Var()             { return n ; }
 | n = RDFLiteral()      { return n ; }
 | n = NumericLiteral()  { return n ; }
 // | n = BooleanLiteral()  { return n ; }
-| n = BlankNode()       { return n ; }   
+| n = BlankNode()       { return n ; }
+
 
 //| //  <LPAREN> <RPAREN>     { return nRDFnil ; }
 //  <NIL>  { return nRDFnil ; }
@@ -91,7 +92,14 @@ Node NumericLiteral() : { Token t ; }
 //   <FALSE> { return XSD_FALSE ; }
 // }
 
-
+Node Var() : { Token t ; Var v ; }
+{
+  ( t = <VAR1> | t = <VAR2> )
+  { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
+|
+  t = <HOOK>
+  { return createVariable() ; }
+}
 
 String String() : { Token t ; String lex ; }
 {

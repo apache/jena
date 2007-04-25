@@ -47,7 +47,8 @@ public class TestRDFTermFactory extends TestCase
     
     public void testVar_1() { test("?x") ; }
     
-    public void testWS_1() { test(" ?x ") ; }
+    public void testWS_1() { testBad("?x ") ; }
+    public void testWS_2() { testBad(" ?x") ; }
     
     public void testBad_1() { testBad("+") ; }
     

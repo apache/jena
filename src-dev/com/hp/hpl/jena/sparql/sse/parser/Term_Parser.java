@@ -15,7 +15,15 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
 
 // --- Entry point
   final public Node term() throws ParseException {
-               Node node ; Var v ; Token t ;
+               Node node ;
+    node = RDFTerm();
+    jj_consume_token(0);
+    {if (true) return node ;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Node termStripWS() throws ParseException {
+                      Node node ;
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -28,44 +36,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
       }
       jj_consume_token(WS);
     }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case BLANK_NODE_LABEL:
-    case INTEGER:
-    case DECIMAL:
-    case DOUBLE:
-    case STRING_LITERAL1:
-    case STRING_LITERAL2:
-    case STRING_LITERAL_LONG1:
-    case STRING_LITERAL_LONG2:
-    case ANON:
-      node = RDFTerm();
-      break;
-    case VAR1:
-    case VAR2:
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case VAR1:
-        t = jj_consume_token(VAR1);
-        break;
-      case VAR2:
-        t = jj_consume_token(VAR2);
-        break;
-      default:
-        jj_la1[1] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      node = createVariable(t.image, t.beginLine, t.beginColumn) ;
-      break;
-    case HOOK:
-      t = jj_consume_token(HOOK);
-      node = createVariable() ;
-      break;
-    default:
-      jj_la1[2] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+    node = RDFTerm();
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -73,23 +44,28 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         ;
         break;
       default:
-        jj_la1[3] = jj_gen;
+        jj_la1[1] = jj_gen;
         break label_2;
       }
       jj_consume_token(WS);
     }
     jj_consume_token(0);
-      {if (true) return node ;}
+    {if (true) return node ;}
     throw new Error("Missing return statement in function");
   }
 
-// Abstract terminals (wrapped in grammar rules)
   final public Node RDFTerm() throws ParseException {
                    Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case Q_IRIref:
       n = IRIref();
                  {if (true) return n ;}
+      break;
+    case VAR1:
+    case VAR2:
+    case HOOK:
+      n = Var();
+              {if (true) return n ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -110,7 +86,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
                     {if (true) return n ;}
       break;
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[2] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -134,13 +110,13 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
         uri = IRIref();
         break;
       default:
-        jj_la1[5] = jj_gen;
+        jj_la1[3] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[4] = jj_gen;
       ;
     }
       {if (true) return makeNode(lex, lang, uri) ;}
@@ -163,7 +139,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
                  {if (true) return makeNodeDouble(t.image) ;}
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -176,6 +152,37 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
 //  |
 //   <FALSE> { return XSD_FALSE ; }
 // }
+  final public Node Var() throws ParseException {
+               Token t ; Var v ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case VAR1:
+    case VAR2:
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case VAR1:
+        t = jj_consume_token(VAR1);
+        break;
+      case VAR2:
+        t = jj_consume_token(VAR2);
+        break;
+      default:
+        jj_la1[6] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    {if (true) return createVariable(t.image, t.beginLine, t.beginColumn) ;}
+      break;
+    case HOOK:
+      t = jj_consume_token(HOOK);
+    {if (true) return createVariable() ;}
+      break;
+    default:
+      jj_la1[7] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
   final public String String() throws ParseException {
                     Token t ; String lex ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -258,7 +265,7 @@ public class Term_Parser extends ParserTermBase implements Term_ParserConstants 
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x2,0x60,0x27c3874,0x2,0x7c3814,0x800080,0x800080,0x3800,0x3c0000,0x400010,};
+      jj_la1_0 = new int[] {0x2,0x2,0x27c3874,0x800080,0x800080,0x3800,0x60,0x2000060,0x3c0000,0x400010,};
    }
    private static void jj_la1_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};

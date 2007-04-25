@@ -80,12 +80,6 @@ Item Word() : { String str ; Token t ; Node node ; Var v ; }
  | node = GraphTerm()
     // Not quite right for line/col - this is the last token
     { return Item.createNode(node, token.beginLine, token.beginColumn) ; }
- | ( t = <VAR1> | t = <VAR2> )
-    { v = createVariable(t.image, t.beginLine, t.beginColumn) ;
-      return Item.createNode(v) ; }
- | t = <HOOK>
-    { v = createVariable() ; 
-      return Item.createNode(v, t.beginLine, t.beginColumn) ; }
 }
 
 Item WordOrList() : { Item item ; }
@@ -95,12 +89,12 @@ Item WordOrList() : { Item item ; }
 }
 
 
-
 // Abstract terminals (wrapped in grammar rules)
 
 Node GraphTerm() : { Node n ; }
 {
   n = IRIref()          { return n ; }
+| n = Var()             { return n ; }
 | n = RDFLiteral()      { return n ; }
 | n = NumericLiteral()  { return n ; }
 // | n = BooleanLiteral()  { return n ; }
@@ -108,6 +102,16 @@ Node GraphTerm() : { Node n ; }
 
 //| //  <LPAREN> <RPAREN>     { return nRDFnil ; }
 //  <NIL>  { return nRDFnil ; }
+}
+
+
+Node Var() : { Token t ; Var v ; }
+{
+  ( t = <VAR1> | t = <VAR2> )
+  { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
+|
+  t = <HOOK>
+  { return createVariable() ; }
 }
 
 Node RDFLiteral() : { Token t ; String lex = null ; }
