@@ -42,7 +42,7 @@ public class TestRDFTermFactory extends TestCase
     public void testNum_5() { testBad("1+ 1") ; }
  
     public void testURI_1() { test("<http://example/base>") ; }
-    public void testURI_2() { testBad("http://example/base") ; }
+    public void testURI_2() { testBad("http://example/baseNoDelimiters") ; }
     public void testURI_3() { testBad("<http://example/ space>") ; }
     
     public void testVar_1() { test("?x") ; }
