@@ -95,7 +95,7 @@ public class SSE
     {
         if ( pmap == null )
             pmap = ARQConstants.getGlobalPrefixMap() ;
-        Item item = parseString(string) ;
+        Item item = parse(string) ;
         return ResolvePrefixedNames.resolve(item, pmap) ;
     }
     
@@ -117,7 +117,7 @@ public class SSE
         { throw new NotFoundException("Not found: "+filename) ; }
     }
     
-    public static Item parseString(String str)
+    public static Item parse(String str)
     {
         return parse(new StringReader(str)) ;
     }

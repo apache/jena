@@ -11,6 +11,7 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
@@ -36,7 +37,7 @@ public class TestSSE extends TestCase
         return ts ;
     }
 
-    // ---- Parsing
+    // ---- Parsing : not check for the correct outcome
     public void testParseTerm_01() { parse("'xyz'") ; }
     public void testParseTerm_02() { parse("'xyz'@en") ; }
     public void testParseTerm_03() { parseBad("'xyz' @en") ; }
@@ -53,6 +54,34 @@ public class TestSSE extends TestCase
     
     public void testParse_10() { parseBad("'foo' @en") ; }
 
+    // ---- Terms 
+    // TODO Parse single item : testing for WS around it.
+    public void testLit_01() { testNode("'foo'") ; } 
+    public void testLit_02() { testNode("\"foo\"") ; } 
+    public void testLit_03() { testNode("''") ; }
+    public void testLit_04() { testNode("\"\"") ; }
+    public void testLit_05() { testNode("'foo'@en") ; } 
+    public void testLit_06() { parseBad("'foo' @en") ; } 
+    public void testLit_07() { parseBad("'") ; }
+    public void testLit_08() { parseBad("'\"") ; }
+    public void testLit_09() { parseBad("'''") ; } 
+    public void testLit_10() { parseBad("''@") ; }
+    
+    public void testNum_1() { testNode("1") ; }
+    public void testNum_2() { testNode("1.1") ; }
+    public void testNum_3() { testNode("1.0e6") ; }
+    
+    public void testNum_5() { parseBadNode("1 1") ; }
+ 
+    public void testURI_1() { testNode("<http://example/base>") ; }
+    public void testURI_2() { parseBadNode("http://example/baseNoDelimiters") ; }
+    public void testURI_3() { parseBadNode("<http://example/ space>") ; }
+    
+    public void testVar_1() { testNode("?x") ; }
+    
+    public void testWS_1() { parseBadNode("?x ") ; }
+    public void testWS_2() { parseBadNode(" ?x") ; }
+    
     // ---- Nodes
     
     public void testNode_1()    { testNode("3", int3) ; }
@@ -60,9 +89,8 @@ public class TestSSE extends TestCase
     // --- Words
     
     public void testWord_1()    { testWord("word") ; }
-    
     public void testWord_2()    { testWord("+") ; }
-
+    
     // ---- Lists
     
     public void testList_1()
@@ -90,7 +118,7 @@ public class TestSSE extends TestCase
     
     private Item parse(String str)
     {
-        Item item = SSE.parseString(str) ;
+        Item item = SSE.parse(str) ;
         return item ;
     }
     
@@ -130,22 +158,38 @@ public class TestSSE extends TestCase
         assertEquals(item.getList().get(2), item3) ;
     }
 
+    private void testNode(String str)
+    {
+        Node node = SSE.parseNode(str) ;
+    }
+    
     private void testNode(String str, Node result)
     {
-        Item item = parse(str) ;
-        assertTrue(item.isNode()) ;
-        assertEquals(result, item.getNode()) ;
+        Node node = SSE.parseNode(str) ;
+        assertEquals(result, node) ;
     }
 
     
     private void parseBad(String str)
     {
         try {
-            Item item = SSE.parseString(str) ;
+            Item item = SSE.parse(str) ;
             //System.out.println(str+" => "+item) ;
             fail("Did not get a parse failure") ;
-        } catch (SSEParseException ex)
-        {}
+        } 
+        catch (SSEParseException ex) {}
+        catch (ARQException ex) {}
+    }
+    
+    private void parseBadNode(String str)
+    {
+        try {
+            Node node = SSE.parseNode(str) ;
+            //System.out.println(str+" => "+item) ;
+            fail("Did not get a parse failure") ;
+        } 
+        catch (SSEParseException ex) {}
+        catch (ARQException ex) {}
     }
 
 }

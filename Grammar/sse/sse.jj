@@ -35,15 +35,31 @@ PARSER_END(SSE_Parser)
 // Now has explicit WS control in the grammar.
 // Policy - eat trailing WS
 
-// --- Entry point
+// ---- Entry points
 
 Item parse() : { Item list ; Item elt ; }
 {
     (<WS>)*
-    elt = WordOrList() // List()
+    elt = WordOrList()
     <EOF>
     { return elt ; }
 }
+
+Node node() : { Node n ; }
+{
+    n = GraphTerm()
+    <EOF>
+    { return n ; }
+}
+
+String word() : { String str ; Token t ; }
+{
+    ( t = <WORD> | t = <OP> )
+    <EOF>
+    { return t.image ; }
+}
+
+// ---- 
 
 Item List() : { Token t ; Item list ; }
 {
@@ -73,7 +89,7 @@ Item BareList(Item list) : { Item elt ; }
     { return list ; }
 }
 
-Item Word() : { String str ; Token t ; Node node ; Var v ; }
+Item Word() : { Token t ; Node node ; }
 {
   ( t = <WORD> | t = <OP> )
     { return Item.createWord(t.image, t.beginLine, t.beginColumn) ; }

@@ -98,7 +98,7 @@ public class MainBuilder
             // Parser broken?
             String str = op.toString() ; //.replace("[", "(").replace("]", ")") ;
 
-            item = SSE.parseString(str) ;
+            item = SSE.parse(str) ;
             System.out.print(item.toString()) ;
 
         } catch (Exception ex)

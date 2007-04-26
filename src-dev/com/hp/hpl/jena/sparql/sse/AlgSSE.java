@@ -21,7 +21,7 @@ public class AlgSSE
 
     static public Op parse(String string)
     {
-        Item item = SSE.parseString(string) ;
+        Item item = SSE.parse(string) ;
         return parse(item) ;
     }
 
