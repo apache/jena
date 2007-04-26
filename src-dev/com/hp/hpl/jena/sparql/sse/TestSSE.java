@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.sse;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -12,9 +12,6 @@ import junit.framework.TestSuite;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
 
 public class TestSSE extends TestCase
 {
