@@ -6,10 +6,12 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-public class SSEParseException extends RuntimeException
+import com.hp.hpl.jena.sparql.ARQException;
+
+public class SSEParseException extends ARQException
 {
-    private int line ;
-    private int column ;
+    private int line = -1 ;
+    private int column = -1 ;
     
     public SSEParseException(int line, int column)
     { super() ; set(line, column) ; }
