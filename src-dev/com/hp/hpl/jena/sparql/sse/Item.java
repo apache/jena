@@ -69,7 +69,56 @@ public class Item extends ItemLocation implements PrintSerializable
     }
     
     private Item() { super(noLine, noColumn) ; }
+
+    // ---- Equality and hashcode
     
+    static class ItemHashCode implements ItemVisitor
+    {
+        int hashCode = 0 ;
+        public void visit(Item item, ItemList list)
+        { hashCode = list.hashCode() ; }
+
+        public void visit(Item item, Node node)
+        { hashCode = node.hashCode() ; }
+
+        public void visit(Item item, String word)
+        { hashCode = word.hashCode() ; }
+    }
+    
+    public int hashCode()
+    {
+        ItemHashCode itemHashCode = new ItemHashCode() ;
+        this.visit(itemHashCode) ;
+        return itemHashCode.hashCode ;
+    }
+    
+    static class ItemEquals implements ItemVisitor
+    {
+        private Item other ;
+        ItemEquals(Item other) { this.other = other ; }
+        boolean result = false ;
+
+        public void visit(Item item, ItemList list)
+        { result = ( other.isList() && other.getList().equals(list) ) ; } 
+
+        public void visit(Item item, Node node)
+        { result = ( other.isNode() && other.getNode().equals(node) ) ; }
+
+        public void visit(Item item, String word)
+        { result = ( other.isWord() && other.getWord().equals(word) ) ; }
+    }
+    
+    public boolean equals(Object other)
+    { 
+        if ( ! ( other instanceof Item ) ) return false ;
+        
+        ItemEquals x = new ItemEquals((Item)other) ;
+        this.visit(x) ;
+        return x.result ;
+    }
+    
+    // ----
+
     public ItemList getList()           { return list ; }
     public Node getNode()               { return node ; }
     //public String getPrefixedName()     { return prefixedName ; }

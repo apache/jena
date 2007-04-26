@@ -17,10 +17,16 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException;
 
 public class TestSSE extends TestCase
 {
+    // TODO TestItem (esp hashCode and .equals)
+    
     static Node int1 = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
     static Node int2 = Node.createLiteral("2", null, XSDDatatype.XSDinteger) ;
     static Node int3 = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ;
     static Node strLangEN = Node.createLiteral("xyz", "en", null) ;
+    
+    static Item int1i = Item.createNode(int1) ;
+    static Item int3i = Item.createNode(int2) ;
+    static Item int2i = Item.createNode(int3) ;
 
     
     public static TestSuite suite()
@@ -45,9 +51,19 @@ public class TestSSE extends TestCase
     public void testParseList_05() { parse("(a )") ; }
     public void testParseList_06() { parse("(a) ") ; }
     
-    
-    
     public void testParse_10() { parseBad("'foo' @en") ; }
+
+    // ---- Nodes
+    
+    public void testNode_1()    { testNode("3", int3) ; }
+    
+    // --- Words
+    
+    public void testWord_1()    { testWord("word") ; }
+    
+    public void testWord_2()    { testWord("+") ; }
+
+    // ---- Lists
     
     public void testList_1()
     { 
@@ -56,19 +72,12 @@ public class TestSSE extends TestCase
         assertEquals(item.getList().size(), 0 ) ;
     }
 
-    public void testNode_1()
-    {
-        Item item = parse("3") ;
-        assertTrue(item.isNode()) ;
-        assertEquals(item.getNode(), int3) ;
+    public void testList_2()
+    { 
+        testList("(1)", int1i) ;
     }
-    
-    public void testWord_1()
-    { testWord("word") ; }
-    
-    public void testWord_2()
-    { testWord("+") ; }
 
+    
     public void XX_testList_1()
     {
         // ( 1  2 )
@@ -77,7 +86,7 @@ public class TestSSE extends TestCase
         // ( 1  2 )
     }
     
-    // ---- Workers
+    // ---- Workers ----
     
     private Item parse(String str)
     {
@@ -91,6 +100,43 @@ public class TestSSE extends TestCase
         assertTrue(item.isWord()) ;
         assertEquals(item.getWord(), str) ;
     }
+    
+    private void testList(String str, Item item1)
+    {
+        Item item = parse(str) ;
+        assertTrue(item.isList()) ;
+        
+        Item i = item.getList().get(0) ;
+        
+        i.equals(item1) ;
+        
+        assertEquals(item.getList().get(0), item1) ;
+    }
+
+    private void testList(String str, Item item1, Item item2)
+    {
+        Item item = parse(str) ;
+        assertTrue(item.isList()) ;
+        assertEquals(item.getList().get(0), item1) ;
+        assertEquals(item.getList().get(1), item2) ;
+    }
+
+    private void testList(String str, Item item1, Item item2, Item item3)
+    {
+        Item item = parse(str) ;
+        assertTrue(item.isList()) ;
+        assertEquals(item.getList().get(0), item1) ;
+        assertEquals(item.getList().get(1), item2) ;
+        assertEquals(item.getList().get(2), item3) ;
+    }
+
+    private void testNode(String str, Node result)
+    {
+        Item item = parse(str) ;
+        assertTrue(item.isNode()) ;
+        assertEquals(result, item.getNode()) ;
+    }
+
     
     private void parseBad(String str)
     {
