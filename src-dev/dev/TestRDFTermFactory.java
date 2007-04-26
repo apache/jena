@@ -38,7 +38,6 @@ public class TestRDFTermFactory extends TestCase
     public void testNum_2() { test("1.1") ; }
     public void testNum_3() { test("1.0e6") ; }
     
-    
     public void testNum_5() { testBad("1 1") ; }
  
     public void testURI_1() { test("<http://example/base>") ; }
@@ -66,7 +65,6 @@ public class TestRDFTermFactory extends TestCase
         } catch (SSEParseException ex)
         {}
     }
-
 }
 
 /*

@@ -63,6 +63,12 @@ Tidying up:
 
   
 == SSE
+  Use Term parser inside unisyn?
+  Use SSE only externally.
+    Call ParseTerm directly.
+  Or just one big parser now SSE is WS controlling?
+  
+  
   Tables as Ops.
   Builder tidying and testing
   

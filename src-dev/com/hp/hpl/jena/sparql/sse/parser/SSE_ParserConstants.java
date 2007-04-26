@@ -9,56 +9,51 @@ package com.hp.hpl.jena.sparql.sse.parser ;
 public interface SSE_ParserConstants {
 
   int EOF = 0;
-  int WS = 6;
-  int SINGLE_LINE_COMMENT = 7;
-  int Q_IRIref = 8;
-  int QNAME = 9;
-  int BLANK_NODE_LABEL = 10;
-  int VAR1 = 11;
-  int VAR2 = 12;
-  int LANGTAG = 13;
-  int A2Z = 14;
-  int A2ZN = 15;
-  int DIGITS = 16;
-  int INTEGER = 17;
-  int DECIMAL = 18;
-  int DOUBLE = 19;
-  int EXPONENT = 20;
-  int QUOTE_3D = 21;
-  int QUOTE_3S = 22;
-  int ECHAR = 23;
-  int STRING_LITERAL1 = 24;
-  int STRING_LITERAL2 = 25;
-  int STRING_LITERAL_LONG1 = 26;
-  int STRING_LITERAL_LONG2 = 27;
-  int LPAREN = 28;
-  int RPAREN = 29;
-  int LBRACE = 30;
-  int RBRACE = 31;
-  int LBRACKET = 32;
-  int RBRACKET = 33;
-  int DATATYPE = 34;
-  int AT = 35;
-  int HOOK = 36;
-  int NCCHAR1P = 37;
-  int NCCHAR1 = 38;
-  int NCCHAR = 39;
-  int NCNAME_PREFIX = 40;
-  int NCNAME = 41;
-  int VARNAME = 42;
-  int WORD = 43;
-  int OP = 44;
-  int UNKNOWN = 45;
+  int WS = 1;
+  int SINGLE_LINE_COMMENT = 2;
+  int Q_IRIref = 3;
+  int QNAME = 4;
+  int BLANK_NODE_LABEL = 5;
+  int VAR1 = 6;
+  int VAR2 = 7;
+  int LANGTAG = 8;
+  int A2Z = 9;
+  int A2ZN = 10;
+  int DIGITS = 11;
+  int INTEGER = 12;
+  int DECIMAL = 13;
+  int DOUBLE = 14;
+  int EXPONENT = 15;
+  int QUOTE_3D = 16;
+  int QUOTE_3S = 17;
+  int ECHAR = 18;
+  int STRING_LITERAL1 = 19;
+  int STRING_LITERAL2 = 20;
+  int STRING_LITERAL_LONG1 = 21;
+  int STRING_LITERAL_LONG2 = 22;
+  int LPAREN = 23;
+  int RPAREN = 24;
+  int LBRACE = 25;
+  int RBRACE = 26;
+  int LBRACKET = 27;
+  int RBRACKET = 28;
+  int DATATYPE = 29;
+  int AT = 30;
+  int HOOK = 31;
+  int NCCHAR1P = 32;
+  int NCCHAR1 = 33;
+  int NCCHAR = 34;
+  int NCNAME_PREFIX = 35;
+  int NCNAME = 36;
+  int VARNAME = 37;
+  int WORD = 38;
+  int OP = 39;
+  int UNKNOWN = 40;
 
   int DEFAULT = 0;
 
   String[] tokenImage = {
     "<EOF>",
-    "\" \"",
-    "\"\\t\"",
-    "\"\\n\"",
-    "\"\\r\"",
-    "\"\\f\"",
     "<WS>",
     "<SINGLE_LINE_COMMENT>",
     "<Q_IRIref>",

@@ -3,9 +3,11 @@
 // SSE - SPARQL S-Expressions
 // Not the keywords.
 
+#ifdef SKIP
 SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
-
-TOKEN: { <#WS: " " | "\t" | "\n" | "\r" | "\f"> }
+#else
+TOKEN: { <WS: " " | "\t" | "\n" | "\r" | "\f"> }
+#endif
 
 SPECIAL_TOKEN :
 { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
@@ -109,8 +111,10 @@ TOKEN:
 TOKEN:
 {
   <WORD: <VARNAME> >
-  // Anything that isn't structural (LPAREN and RPAREN / LBRACKET/RBRACKET)
-| <OP: (~["(", ")", "[", "]", " ","\t","\n","\r","\f" ])+ >
+  // Anything that isn't structural
+  // LPAREN and RPAREN / LBRACKET/RBRACKET
+  // Quotes
+| <OP: (~["(", ")", "[", "]", "'", "\"", "\t","\n","\r","\f" ])+ >
 }
 
 // Catch-all tokens.  Must be last.  

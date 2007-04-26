@@ -17,12 +17,37 @@ import com.hp.hpl.jena.sparql.sse.SSEParseException;
 
 public class TestSSE extends TestCase
 {
+    static Node int1 = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
+    static Node int2 = Node.createLiteral("2", null, XSDDatatype.XSDinteger) ;
+    static Node int3 = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ;
+    static Node strLangEN = Node.createLiteral("xyz", "en", null) ;
+
+    
     public static TestSuite suite()
     {
         TestSuite ts = new TestSuite(TestSSE.class) ;
         ts.setName("TestSSE") ;
         return ts ;
     }
+
+    // ---- Parsing
+    public void testParseTerm_01() { parse("'xyz'") ; }
+    public void testParseTerm_02() { parse("'xyz'@en") ; }
+    public void testParseTerm_03() { parseBad("'xyz' @en") ; }
+
+    public void testParseWord_01() { parse("a") ; }      
+    public void testParseWord_02() { parseBad("'a") ; }
+    
+    public void testParseList_01() { parse("()") ; }
+    public void testParseList_02() { parse("(a)") ; }
+    public void testParseList_03() { parse(" (a)") ; }
+    public void testParseList_04() { parse("( a)") ; }
+    public void testParseList_05() { parse("(a )") ; }
+    public void testParseList_06() { parse("(a) ") ; }
+    
+    
+    
+    public void testParse_10() { parseBad("'foo' @en") ; }
     
     public void testList_1()
     { 
@@ -33,9 +58,9 @@ public class TestSSE extends TestCase
 
     public void testNode_1()
     {
-        Item item = parse("123") ;
+        Item item = parse("3") ;
         assertTrue(item.isNode()) ;
-        assertEquals(item.getNode(), Node.createLiteral("123", null, XSDDatatype.XSDinteger)) ;
+        assertEquals(item.getNode(), int3) ;
     }
     
     public void testWord_1()
@@ -44,7 +69,14 @@ public class TestSSE extends TestCase
     public void testWord_2()
     { testWord("+") ; }
 
-
+    public void XX_testList_1()
+    {
+        // ( 1  2 )
+        // ( 1  'xyz'@en )
+        // ( 1  2 )
+        // ( 1  2 )
+    }
+    
     // ---- Workers
     
     private Item parse(String str)
@@ -60,7 +92,7 @@ public class TestSSE extends TestCase
         assertEquals(item.getWord(), str) ;
     }
     
-    private void testBad(String str)
+    private void parseBad(String str)
     {
         try {
             Item item = SSE.parseString(str) ;

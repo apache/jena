@@ -1,7 +1,7 @@
 #!/bin/bash
 # Parser builder
 
-GRAMMAR="${GRAMMAR:-"term.jj"}"
+GRAMMAR="${GRAMMAR:-"sse.jj"}"
 ROOT="../.."
 # --------------------------------------------------------
 
@@ -19,7 +19,7 @@ function grammar
     javacc -OUTPUT_DIRECTORY=$DIR "${FILE}"
     RC=$?
 
-    [ "$RC" = 0 ] || return
+    [ "$RC" = 0 ] || return $RC
 
 ##     echo "---- Create HTML"
 ##     jjdoc -OUTPUT_FILE=${FILE%%.jj}.html "${FILE}"
@@ -29,8 +29,7 @@ function grammar
     # Fix unnecessary imports
     echo "---- Fixing Java warnings in ${CLASS}TokenManager ..."
     F="$DIR/${CLASS}TokenManager.java"
-    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' \
-	-e 's!EOFLoop :!//EOFLoop :!' < $F > F
+    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' < $F > F
     mv F $F
 
 ##     # Java5+ fixups
@@ -74,15 +73,18 @@ function grammar
 
 if [ $# == 0 ]
 then
-    set -- term
+    set -- unisyn
+    ## echo "Usage: grammar [arq|sparql|rdql]" 1>&2
+    ## exit 1
     fi
 
 for G in "$@"
   do
   case "$G" in
-  term)
-    dos2unix < "$GRAMMAR" | cpp -P -C | unix2dos > tparser.jj
-    grammar tparser.jj sse/parser Term_Parser
+  unisyn)
+    dos2unix < "$GRAMMAR" | cpp -P -C | unix2dos > parser.jj
+    grammar parser.jj sse/parser SSE_Parser
+    [ "$RC" = 0 ] && rm parser.jj
     ;;
   *)    echo "**** Unknown grammar: $G" 1>&2
     ;;

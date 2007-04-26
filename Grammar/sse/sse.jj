@@ -32,10 +32,14 @@ public class SSE_Parser extends ParserSSEBase
 
 PARSER_END(SSE_Parser)
 
+// Now has explicit WS control in the grammar.
+// Policy - eat trailing WS
+
 // --- Entry point
 
 Item parse() : { Item list ; Item elt ; }
 {
+    (<WS>)*
     elt = WordOrList() // List()
     <EOF>
     { return elt ; }
@@ -44,20 +48,18 @@ Item parse() : { Item list ; Item elt ; }
 Item List() : { Token t ; Item list ; }
 {
     // The OP token must exclude these
-
 (    t = <LPAREN> 
+    (<WS>)*
     { list = Item.createList(t.beginLine, t.beginColumn) ; }
     BareList(list) 
-      <RPAREN>
+    <RPAREN>
  |  t = <LBRACKET> 
+    (<WS>)*
     { list = Item.createList(t.beginLine, t.beginColumn) ; }
-    list = BareList(list) 
+    list = BareList(list)
     <RBRACKET>
-//  | t = <LBRACE> 
-//     { list = Item.createList(t.beginLine, t.beginColumn) ; }
-//     list = BareList(list)
-//     <RBRACE>
 )
+    (<WS>)*
     { return list ; }
 }
 
@@ -66,11 +68,10 @@ Item BareList(Item list) : { Item elt ; }
     ( 
       elt = WordOrList()
       { list.getList().add(elt) ; }
+      // White space swallowed
     )*
     { return list ; }
 }
-
-
 
 Item Word() : { String str ; Token t ; Node node ; Var v ; }
 {
@@ -83,8 +84,9 @@ Item Word() : { String str ; Token t ; Node node ; Var v ; }
 
 Item WordOrList() : { Item item ; }
 {
-   item = Word()    { return item ; }
-|  item = List()    { return item ; }
+  ( item = Word() (<WS>)* |  item = List() )
+  { return item ; }
+    
 }
 
 
@@ -184,7 +186,8 @@ Node Q_IRI_REF() : { Token t ; }
   { return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ; }
 }
 
-
+// No whitespace skipping.
+#undef SKIP
 #include "tokens.inc"
 #include "copyright.inc"
 
