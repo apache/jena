@@ -15,8 +15,6 @@ import com.hp.hpl.jena.sparql.ARQException;
 
 public class TestSSE extends TestCase
 {
-    // TODO TestItem (esp hashCode and .equals)
-    
     static Node int1 = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
     static Node int2 = Node.createLiteral("2", null, XSDDatatype.XSDinteger) ;
     static Node int3 = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ;
