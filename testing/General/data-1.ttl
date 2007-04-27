@@ -19,8 +19,9 @@
 :x :p11    12.53e1 .
 
 :x :p20    "unknown"^^ex:type1 .
-:x :p21    "string"^^xsd:string .
-:x :p22    "2006-01-07T02:45:00+01:00"^^xsd:dateTime .
+:x :p21    "unknown"^^ex:TYPE1 .
+:x :p22    "string"^^xsd:string .
+:x :p23    "2006-01-07T02:45:00+01:00"^^xsd:dateTime .
 
 :x :p30    ex:uri .
 :x :p40    _:a .

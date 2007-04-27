@@ -6,8 +6,6 @@ SDB ToDo list (and general notes)
 + Prefixes : disable for ModelRDB only.
   Done?? Check
 
-= Case sensitive datatypoe URI test needed 
-
 + Prepared statement query cache?
   When will it be beneficial - GraphSDB and add/delete single triples?
 
