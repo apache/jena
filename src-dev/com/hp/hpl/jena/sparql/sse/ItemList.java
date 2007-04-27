@@ -22,6 +22,13 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     public int size() { return elements.size() ; }
     public boolean isEmpty() { return elements.isEmpty() ; }
 
+    public int hashCode() { return elements.hashCode() ; }
+    public boolean equals(Object other)
+    { 
+        if ( ! ( other instanceof ItemList) ) return false ;
+        return elements.equals(((ItemList)other).elements) ;
+    }
+    
     public void addAll(ItemList itemList) { elements.addAll(itemList.elements) ; }
     public void add(Item item){ elements.add(item) ; }
     public Item get(int idx) { return (Item)elements.get(idx) ; }

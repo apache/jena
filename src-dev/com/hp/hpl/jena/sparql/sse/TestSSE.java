@@ -52,7 +52,6 @@ public class TestSSE extends TestCase
     public void testParse_10() { parseBad("'foo' @en") ; }
 
     // ---- Terms 
-    // TODO Parse single item : testing for WS around it.
     public void testLit_01() { testNode("'foo'") ; } 
     public void testLit_02() { testNode("\"foo\"") ; } 
     public void testLit_03() { testNode("''") ; }
@@ -103,17 +102,40 @@ public class TestSSE extends TestCase
     public void testList_3()    { testList("(1 2)", int1i, int2i) ; }
     public void testList_4()    { testList("(1 a)", int1i, Item.createWord("a")) ; }
     
-
-    
-    public void XX_testList_1()
-    {
-        // ( 1  2 )
-        // ( 1  'xyz'@en )
-        // ( 1  2 )
-        // ( 1  2 )
+    public void testList_5()
+    { 
+        Item list = Item.createList() ;
+        list.getList().add(int1i) ;
+        testList("((1) a)", list, Item.createWord("a")) ;
     }
     
+    public void testList_6()
+    { testList("(+ 1)", Item.createWord("+"), int1i) ; }
+
+    
+    public void testMisc_01()    { testEquals("()") ; }
+    public void testMisc_02()    { testEquals("(a)") ; }
+    public void testMisc_10()    { testNotEquals("(a)", "a") ; }
+    public void testMisc_11()    { testNotEquals("(a)", "()") ; }
+    public void testMisc_12()    { testNotEquals("(a)", "(<a>)") ; }
+
     // ---- Workers ----
+    
+    private void testEquals(String x)
+    {
+        Item item1 = parse(x) ;
+        Item item2 = parse(x) ;
+        assertTrue(item1.equals(item2)) ;
+        assertTrue(item2.equals(item1)) ;
+    }
+    
+    private void testNotEquals(String x1, String x2)
+    {
+        Item item1 = parse(x1) ;
+        Item item2 = parse(x2) ;
+        assertFalse(item1.equals(item2)) ;
+        assertFalse(item2.equals(item1)) ;
+    }
     
     private Item parse(String str)
     {
