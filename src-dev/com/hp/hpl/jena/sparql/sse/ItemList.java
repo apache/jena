@@ -12,36 +12,36 @@ import java.util.List;
 
 public class ItemList extends ItemLocation //implements Iterable<Item> 
 {
-    private List items = new ArrayList() ;
+    private List elements = new ArrayList() ;
 
     public ItemList(int line, int column)
     { super(line, column) ; }
 
     public ItemList() { super(noLine, noColumn) ; }
 
-    public int size() { return items.size() ; }
-    public boolean isEmpty() { return items.isEmpty() ; }
+    public int size() { return elements.size() ; }
+    public boolean isEmpty() { return elements.isEmpty() ; }
 
-    public void addAll(ItemList itemList) { items.addAll(itemList.items) ; }
-    public void add(Item item) { items.add(item) ; }
-    public Item get(int idx) { return (Item)items.get(idx) ; }
+    public void addAll(ItemList itemList) { elements.addAll(itemList.elements) ; }
+    public void add(Item item){ elements.add(item) ; }
+    public Item get(int idx) { return (Item)elements.get(idx) ; }
 //  public List getList() { return items ; }
-    public Iterator iterator() { return items.iterator() ; }
+    public Iterator iterator() { return elements.iterator() ; }
     
     public Item     car()
     { 
-        if ( items.size() == 0 )
+        if ( elements.size() == 0 )
             throw new ItemException("ItemList.car: list is zero length") ;
-        return (Item)items.get(0) ;
+        return (Item)elements.get(0) ;
     }
     public ItemList cdr()
     {
-        if ( items.size() == 0 )
+        if ( elements.size() == 0 )
             throw new ItemException("ItemList.cdr: list is zero length") ;
         ItemList x = new ItemList(super.getLine(), super.getColumn()) ;
-        if ( items.size() == 0 )
+        if ( elements.size() == 0 )
             return x ; 
-        x.items = this.items.subList(1, size()) ;
+        x.elements = this.elements.subList(1, size()) ;
         return x ;
     }
     
@@ -51,7 +51,7 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
         if ( hasLocation() )
             str = str.concat(location()) ;
 
-        return str+items.toString() ; }
+        return str+elements.toString() ; }
 }
 
 /*

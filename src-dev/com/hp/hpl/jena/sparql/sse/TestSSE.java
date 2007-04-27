@@ -23,8 +23,8 @@ public class TestSSE extends TestCase
     static Node strLangEN = Node.createLiteral("xyz", "en", null) ;
     
     static Item int1i = Item.createNode(int1) ;
-    static Item int3i = Item.createNode(int2) ;
-    static Item int2i = Item.createNode(int3) ;
+    static Item int2i = Item.createNode(int2) ;
+    static Item int3i = Item.createNode(int3) ;
 
     
     public static TestSuite suite()
@@ -67,6 +67,8 @@ public class TestSSE extends TestCase
     public void testNum_1() { testNode("1") ; }
     public void testNum_2() { testNode("1.1") ; }
     public void testNum_3() { testNode("1.0e6") ; }
+
+    public void testNum_4() { parseBadNode("1 ") ; }
     
     public void testNum_5() { parseBadNode("1 1") ; }
  
@@ -97,10 +99,10 @@ public class TestSSE extends TestCase
         assertEquals(item.getList().size(), 0 ) ;
     }
 
-    public void testList_2()
-    { 
-        testList("(1)", int1i) ;
-    }
+    public void testList_2()    { testList("(1)", int1i) ; }
+    public void testList_3()    { testList("(1 2)", int1i, int2i) ; }
+    public void testList_4()    { testList("(1 a)", int1i, Item.createWord("a")) ; }
+    
 
     
     public void XX_testList_1()
@@ -133,8 +135,7 @@ public class TestSSE extends TestCase
         
         Item i = item.getList().get(0) ;
         
-        i.equals(item1) ;
-        
+        assertEquals(1, item.getList().size()) ;
         assertEquals(item.getList().get(0), item1) ;
     }
 
@@ -142,6 +143,7 @@ public class TestSSE extends TestCase
     {
         Item item = parse(str) ;
         assertTrue(item.isList()) ;
+        assertEquals(2, item.getList().size()) ;
         assertEquals(item.getList().get(0), item1) ;
         assertEquals(item.getList().get(1), item2) ;
     }
@@ -150,6 +152,7 @@ public class TestSSE extends TestCase
     {
         Item item = parse(str) ;
         assertTrue(item.isList()) ;
+        assertEquals(3, item.getList().size()) ;
         assertEquals(item.getList().get(0), item1) ;
         assertEquals(item.getList().get(1), item2) ;
         assertEquals(item.getList().get(2), item3) ;

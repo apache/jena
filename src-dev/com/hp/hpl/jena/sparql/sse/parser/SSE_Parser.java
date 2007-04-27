@@ -31,7 +31,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       }
       jj_consume_token(WS);
     }
-    elt = WordOrList();
+    elt = TermOrList();
     jj_consume_token(0);
       {if (true) return elt ;}
     throw new Error("Missing return statement in function");
@@ -83,7 +83,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
         jj_consume_token(WS);
       }
       list = Item.createList(t.beginLine, t.beginColumn) ;
-      BareList(list);
+      list = BareList(list);
       jj_consume_token(RPAREN);
       break;
     case LBRACKET:
@@ -153,14 +153,14 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
         jj_la1[6] = jj_gen;
         break label_5;
       }
-      elt = WordOrList();
+      elt = TermOrList();
         list.getList().add(elt) ;
     }
       {if (true) return list ;}
     throw new Error("Missing return statement in function");
   }
 
-  final public Item Word() throws ParseException {
+  final public Item Term() throws ParseException {
                 Token t ; Node node ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case WORD:
@@ -203,7 +203,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Item WordOrList() throws ParseException {
+  final public Item TermOrList() throws ParseException {
                       Item item ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case Q_IRIref:
@@ -221,7 +221,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     case HOOK:
     case WORD:
     case OP:
-      item = Word();
+      item = Term();
       label_6:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {

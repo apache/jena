@@ -40,7 +40,7 @@ PARSER_END(SSE_Parser)
 Item parse() : { Item list ; Item elt ; }
 {
     (<WS>)*
-    elt = WordOrList()
+    elt = TermOrList()
     <EOF>
     { return elt ; }
 }
@@ -67,7 +67,7 @@ Item List() : { Token t ; Item list ; }
 (    t = <LPAREN> 
     (<WS>)*
     { list = Item.createList(t.beginLine, t.beginColumn) ; }
-    BareList(list) 
+    list = BareList(list) 
     <RPAREN>
  |  t = <LBRACKET> 
     (<WS>)*
@@ -82,14 +82,14 @@ Item List() : { Token t ; Item list ; }
 Item BareList(Item list) : { Item elt ; }
 {
     ( 
-      elt = WordOrList()
+      elt = TermOrList()
       { list.getList().add(elt) ; }
       // White space swallowed
     )*
     { return list ; }
 }
 
-Item Word() : { Token t ; Node node ; }
+Item Term() : { Token t ; Node node ; }
 {
   ( t = <WORD> | t = <OP> )
     { return Item.createWord(t.image, t.beginLine, t.beginColumn) ; }
@@ -98,9 +98,9 @@ Item Word() : { Token t ; Node node ; }
     { return Item.createNode(node, token.beginLine, token.beginColumn) ; }
 }
 
-Item WordOrList() : { Item item ; }
+Item TermOrList() : { Item item ; }
 {
-  ( item = Word() (<WS>)* |  item = List() )
+  ( item = Term() (<WS>)* |  item = List() )
   { return item ; }
     
 }

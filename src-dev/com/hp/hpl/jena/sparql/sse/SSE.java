@@ -26,14 +26,17 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE
 {
-    public static Node parseNode(String s) { return parseNode(s, null) ; }
+    public static Node parseNode(String str) { return parseNode(str, null) ; }
     
-    public static Node parseNode(String s, PrefixMapping pmap)
+    public static Node parseNode(String str, PrefixMapping pmap)
     { 
-        Item item = parseResolve(s, pmap) ;
-        if ( !item.isNode() )
-            throw new ARQException("Not a node: "+s) ; 
-        return item.getNode() ;
+        Node node = parseNode(new StringReader(str)) ;
+        return ResolvePrefixedNames.resolve(node, pmap) ;
+//        
+//        Item item = parseResolve(s, pmap) ;
+//        if ( !item.isNode() )
+//            throw new ARQException("Not a node: "+s) ; 
+//        return item.getNode() ;
     }
     
     public static Quad parseQuad(String s) { return parseQuad(s, null) ; }
@@ -128,6 +131,43 @@ public class SSE
         return parse(reader) ;
     }
     
+    private static Node parseNode(Reader reader)
+    {
+        SSE_Parser p = new SSE_Parser(reader) ;
+        try
+        {
+            return p.node() ;
+       } 
+       catch (ParseException ex)
+       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
+       catch (TokenMgrError tErr)
+       { 
+           // Last valid token : not the same as token error message - but this should not happen
+           int col = p.token.endColumn ;
+           int line = p.token.endLine ;
+           throw new SSEParseException(tErr.getMessage(), line, col) ;
+       }
+       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+    }
+
+    private static String parseWord(Reader reader)
+    {
+        SSE_Parser p = new SSE_Parser(reader) ;
+        try
+        {
+            return p.word() ;
+       } 
+       catch (ParseException ex)
+       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
+       catch (TokenMgrError tErr)
+       { 
+           // Last valid token : not the same as token error message - but this should not happen
+           int col = p.token.endColumn ;
+           int line = p.token.endLine ;
+           throw new SSEParseException(tErr.getMessage(), line, col) ;
+       }
+       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+    }
     private static Item parse(Reader reader)
     {
         SSE_Parser p = new SSE_Parser(reader) ;
@@ -146,6 +186,7 @@ public class SSE
        }
        //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
     }
+
 }
 
 /*

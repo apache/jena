@@ -114,7 +114,7 @@ TOKEN:
   // Anything that isn't structural
   // LPAREN and RPAREN / LBRACKET/RBRACKET
   // Quotes
-| <OP: (~["(", ")", "[", "]", "'", "\"", "\t","\n","\r","\f" ])+ >
+| <OP: (~["(", ")", "[", "]", "'", "\"", " ", "\t","\n","\r","\f" ])+ >
 }
 
 // Catch-all tokens.  Must be last.  

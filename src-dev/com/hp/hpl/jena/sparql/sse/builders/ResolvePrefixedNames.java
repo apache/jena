@@ -40,6 +40,27 @@ public class ResolvePrefixedNames
         return process(item, null) ;
     }
 
+    public static Node resolve(Node node, PrefixMapping pmap)
+    {
+        if ( ! node.isURI() )
+            return node ;
+        String uri = node.getURI() ;
+        if ( uri.startsWith(":") )
+        {
+            String qname = uri.substring(1) ;
+            if ( pmap != null )
+                uri = pmap.expandPrefix(qname) ;
+            if ( uri == null || uri.equals(qname) )
+                return null ;
+            return Node.createURI(uri) ;
+        }
+        else
+        {
+            uri = RelURI.resolve(uri) ;
+            return Node.createURI(uri) ;
+        }
+    }
+
     private static Item process(Item item, PrefixMapping pmap)
     {
         if ( item.isList() )
@@ -126,21 +147,11 @@ public class ResolvePrefixedNames
     {
         if ( ! node.isURI() )
             return item ;
-        String uri = node.getURI() ;
-        if ( uri.startsWith(":") )
-        {
-            String qname = uri.substring(1) ;
-            if ( pmap != null )
-                uri = pmap.expandPrefix(qname) ;
-            if ( uri == null || uri.equals(qname) )
-                BuilderBase.broken(item, "Can't resolve "+qname) ;
-            return Item.createNode(Node.createURI(uri)) ;
-        }
-        else
-        {
-            uri = RelURI.resolve(uri) ;
-            return Item.createNode(Node.createURI(uri)) ;
-        }
+        
+        Node node2 = resolve(node, pmap) ;
+        if ( node2 == null )
+            BuilderBase.broken(item, "Can't resolve "+node.getURI()) ;
+        return Item.createNode(node2) ;
     }
 }
 
