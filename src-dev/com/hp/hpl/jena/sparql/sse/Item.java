@@ -15,12 +15,10 @@ import com.hp.hpl.jena.sparql.util.PrintSerializable;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
 
 public class Item extends ItemLocation implements PrintSerializable
-// ItemList to have line/column
-// SuperClass ItemLocation
 {
-    ItemList list = null ;
-    Node node = null ;
-    String word = null ;
+    protected ItemList list = null ;
+    protected Node node = null ;
+    protected String word = null ;
     
     public static Item createList() { return createList(noLine, noColumn) ; }
     public static Item createList(int line, int column)
@@ -55,13 +53,6 @@ public class Item extends ItemLocation implements PrintSerializable
         item.word = word;
         return item ;
     }
-    
-//    public static Item createPrefixedName(String prefixedName)
-//    {
-//        Item item = new Item() ;
-//        item.prefixedName = prefixedName;
-//        return item ;
-//    }
     
     private Item(int line, int column)
     {
