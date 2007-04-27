@@ -400,7 +400,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         }
     }
 
-    protected String leftJoinNoConditionsString() { return "true" ; }
+    protected String leftJoinNoConditionsString() { return "1 = 1" ; }
     
     // Interaction with annotations
     static boolean allOnOneLine = false ;

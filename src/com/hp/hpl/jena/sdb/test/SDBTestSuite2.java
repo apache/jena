@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -29,10 +30,10 @@ public class SDBTestSuite2 extends TestSuite
     static boolean includeHash = true ;
     static boolean includeIndex = true ;
     
-    static boolean includeDerby = true ;
+    static boolean includeDerby = false ;
     static boolean includeMySQL = false ;
     static boolean includeHSQL = false ;
-    static boolean includeSQLServer = false ;
+    static boolean includeSQLServer = true ;
     
     static public TestSuite suite() {
         return new SDBTestSuite2();
@@ -92,6 +93,33 @@ public class SDBTestSuite2 extends TestSuite
             }
         }
 
+        if ( includeSQLServer )
+        {
+            JDBC.loadDriverSQLServer() ;
+            String expressStr= "\\SQLEXPRESS" ;
+            
+            if ( includeHash )
+            {
+                String jdbc = String.format("jdbc:sqlserver://localhost%s;databaseName=test2-hash", expressStr) ;
+                SDBConnection sdb = new SDBConnection(jdbc, Access.getUser(), Access.getPassword()) ;
+                TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashSQLServer(sdb),
+                                                        SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                                        "MS SQL/Hash - ") ;
+                ts.setName(ts.getName()+" (MS SQL/hash)") ; 
+                addTest(ts) ;
+            }
+            if ( includeIndex )
+            {
+                String jdbc = String.format("jdbc:sqlserver://localhost%s;databaseName=test2-index", expressStr) ;
+                SDBConnection sdb = new SDBConnection(jdbc, Access.getUser(), Access.getPassword()) ;
+                TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexSQLServer(sdb),
+                                                        SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                                        "MS SQL/Index - ") ;
+                ts.setName(ts.getName()+" (MS SQL/index)") ; 
+                addTest(ts) ;
+            }
+        }
+        
         if ( includeHSQL )
         {
             JDBC.loadDriverHSQL() ;
@@ -105,6 +133,7 @@ public class SDBTestSuite2 extends TestSuite
                 ts.setName(ts.getName()+" (HSQL-mem-hash)") ;
                 addTest(ts) ;
             }
+            
             if ( includeIndex )
             {
                 SDBConnection sdb = new SDBConnection("jdbc:hsqldb:mem:testdb2", "sa", "") ;
@@ -117,15 +146,6 @@ public class SDBTestSuite2 extends TestSuite
             }
         }
         
-        if ( includeSQLServer )
-         {
-             JDBC.loadDriverSQLServer() ;
-             SDBConnection sdb = new SDBConnection("jdbc:sqlserver://localhost;databaseName=sdb2", "mtx", "mtx01") ;
-             addTest(QueryTestSDBFactory.make(new StoreTriplesNodesHashSQLServer(sdb),
-                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                              "Schema 2 : ")) ;
-         }
-
     }
 
 }

@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL_MS;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
@@ -19,7 +19,7 @@ public class StoreTriplesNodesIndexSQLServer extends StoreBaseIndex
               new LoaderIndexSQLServer(connection),
               new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2(),
-              new GenerateSQL()) ;
+              new GenerateSQL_MS()) ;
     }
 }
 

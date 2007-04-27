@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
 import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -27,6 +28,7 @@ public class SDBTestSuite1 extends TestSuite
     public static boolean includeDerby = true ;
     public static boolean includeMySQL = false ;
     public static boolean includeHSQL = false ;
+    public static boolean includeSQLServer = true ;
     
     // JUnit3 to JUnit4 adapter
 //    public static junit.framework.Test suite() { 
@@ -51,7 +53,7 @@ public class SDBTestSuite1 extends TestSuite
             SDBConnection sdb = new SDBConnection(url, null, null) ;
             addTest(QueryTestSDBFactory.make(new StoreSimpleDerby(sdb),
                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                             "Schema 1 : ")) ;
+                                             "Schema 1 - Derby: ")) ;
         }
 
         if ( includeMySQL )
@@ -60,7 +62,21 @@ public class SDBTestSuite1 extends TestSuite
             SDBConnection sdb = new SDBConnection("jdbc:mysql://localhost/SDB1", Access.getUser(), Access.getPassword()) ;
             addTest(QueryTestSDBFactory.make(new StoreSimpleMySQL(sdb),
                                              SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                             "Schema 1 : ")) ;
+                                             "Schema 1 - MySQL : ")) ;
+        }
+        
+        if ( includeSQLServer )
+        {
+            JDBC.loadDriverSQLServer() ;
+            String expressStr= "\\SQLEXPRESS" ;
+            
+            String jdbc = String.format("jdbc:sqlserver://localhost%s;databaseName=test1", expressStr) ;
+            SDBConnection sdb = new SDBConnection(jdbc, Access.getUser(), Access.getPassword()) ;
+            TestSuite ts = QueryTestSDBFactory.make(new StoreSimpleSQLServer(sdb),
+                                                    SDBTest.testDirSDB+"manifest-sdb.ttl",
+                                                    "Schema 1 - SQLServer : ") ;
+            ts.setName(ts.getName()+"/SQLServer") ;
+            addTest(ts) ;
         }
         
         if ( includeHSQL )
@@ -71,7 +87,7 @@ public class SDBTestSuite1 extends TestSuite
             store.getTableFormatter().format() ;
             TestSuite ts = QueryTestSDBFactory.make(store,
                                                     SDBTest.testDirSDB+"manifest-sdb.ttl",
-                                                    "Schema 1 : ") ; 
+                                                    "Schema 1 - HSQL : ") ; 
             ts.setName(ts.getName()+"/HSQL-mem") ;
             addTest(ts) ;
         }
@@ -83,7 +99,7 @@ public class SDBTestSuite1 extends TestSuite
             store.getTableFormatter().format() ;
             TestSuite ts = QueryTestSDBFactory.make(new StoreSimpleHSQL(sdb),
                                                     SDBTest.testDirSDB+"/manifest-sdb.ttl",
-                                                    "Schema 1 : ") ; 
+                                                    "Schema 1 HSQL : ") ; 
             ts.setName(ts.getName()+"/HSQL-file") ;
             addTest(ts) ;
         }

@@ -100,7 +100,14 @@ public class JDBC
             //jdbc:sqlserver://localhost;databaseName=sdb_layout1
             String s = String.format("jdbc:%s://%s;databaseName=%s", type, host, dbName) ;
             return s ;
-         }
+        }
+        
+        if ( type.equals("mssqlserver") || type.equals("sqlserver"))
+        {
+            //jdbc:sqlserver://${TESTHOST}\\SQLEXPRESS;databaseName=jenatest"
+            String s = String.format("jdbc:%s://%s\\SQLEXPRESS;databaseName=%s","sqlserver",host, dbName) ;
+            return s ;
+        }
         
         if ( type.equalsIgnoreCase("none") )
             return jdbcNone ;
