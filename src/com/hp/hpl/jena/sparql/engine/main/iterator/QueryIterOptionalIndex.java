@@ -42,6 +42,7 @@ public class QueryIterOptionalIndex extends QueryIterRepeatApply
         // Can lead to repeated substitutions, all the way down.
         // But depth is uncommon (except in artifical queries designed
         // to test the algebra or engine!)
+        // TODO Rethink and do better?
         
         Op op2 = QC.substitute(op, binding) ;
         

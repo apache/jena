@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class QueryIterTriplePattern extends QueryIterRepeatApply
 {
@@ -33,6 +34,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         return new TripleMapper(binding, pattern, getExecContext()) ;
     }
     
+    static int countMapper = 0 ; 
     static class TripleMapper extends QueryIter
     {
         private Node s ;
@@ -40,6 +42,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         private Node o ;
         private Binding binding ;
         private ClosableIterator graphIter ;
+        //private Iterator graphIter ;
 
         // This one-slot lookahead is common - but is it worth extracting?
         private Binding slot = null ;
@@ -56,6 +59,11 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             Node o2 = tripleNode(o) ;
             Graph graph = cxt.getActiveGraph() ;
             this.graphIter = graph.find(s2, p2, o2) ;
+            
+//            // TODO Special case : graphIter.hasNext() is false now.
+//            List x = graph.find(s2, p2, o2).toList() ;
+//            System.out.println("List("+(++countMapper)+"): "+x.size()) ;
+//            this.graphIter = x.iterator() ;
         }
 
         private Node tripleNode(Node node)
@@ -100,10 +108,59 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             Node x = results.get(v) ;
             if ( x != null )
                 return outputNode.equals(x) ;
+            
             results.add(v, outputNode) ;
             return true ;
         }
 
+        // TODO Test and swap to this code.
+        // Avoid allocaing a Binding.
+        private Binding _mapper(Triple r)
+        {
+            Binding results = new BindingMap(binding) ;
+
+            int z = 0 ; // Number of bindings that have occurred. 
+            
+            {
+                int x = _insert(s, r.getSubject(), results) ;
+                if ( x == -1 ) return null ;
+                z += x ;
+            }
+            
+            {
+                int x = _insert(p, r.getPredicate(), results) ;
+                if ( x == -1 ) return null ;
+                z += x ;
+            }
+            
+            {
+                int x = _insert(o, r.getObject(), results) ;
+                if ( x == -1 ) return null ;
+                z += x ;
+            }
+
+            if ( z == 0 )
+                // No binding occurred.
+                return binding ;
+            return results ;
+        }
+
+        // return -1 - no match ; 0 - OK, no binding chnage ; 1 - OK, binding happened
+        private static int _insert(Node inputNode, Node outputNode, Binding results)
+        {
+            if ( ! Var.isVar(inputNode) )
+                return 0 ;
+            
+            Var v = Var.alloc(inputNode) ;
+            Node x = results.get(v) ;
+            if ( x != null )
+                return outputNode.equals(x) ? 0 : -1 ;
+            
+            results.add(v, outputNode) ;
+            return 1 ;
+        }        
+        
+        
         protected boolean hasNextBinding()
         {
             if ( slot != null ) return true ;
@@ -127,7 +184,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         protected void closeIterator()
         {
             if ( graphIter != null )
-                graphIter.close() ;
+                NiceIterator.close(graphIter) ;
             graphIter = null ;
         }
     }

@@ -80,12 +80,15 @@ public class QueryIterProject extends QueryIterConvert
 
         protected boolean contains1(Var var)
         {
-            return projectionVars.contains(var) ; 
+            // In the projection set and the underlying
+            // binding (OPTIONAL means it may not be in this binding) 
+            return projectionVars.contains(var) && binding.contains(var) ;
+            //return projectionVars.contains(var) ; 
         }
 
         protected Node get1(Var var)
         {
-            if ( ! contains(var) )
+            if ( ! projectionVars.contains(var) )
                 return null ; 
             return binding.get(var) ;
         }
