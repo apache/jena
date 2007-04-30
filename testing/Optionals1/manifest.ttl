@@ -9,12 +9,18 @@
     mf:entries
     ( 
        [  mf:name    "Optional - 1" ;
-          mf:action [ qt:query <opt-1.rq> ; qt:data <../Data/data.ttl> ] ;
+          mf:action [ qt:query <opt-1.rq> ; qt:data <data-1.ttl> ] ;
        ]
        [  mf:name    "Optional - 2" ;
-          mf:action [ qt:query <opt-2.rq> ; qt:data <../Data/data.ttl> ] ;
+          mf:action [ qt:query <opt-2.rq> ; qt:data <data-1.ttl> ] ;
        ]
        [  mf:name    "Optional - 3" ;
-          mf:action [ qt:query <opt-3.rq> ; qt:data <../Data/data.ttl> ] ;
+          mf:action [ qt:query <opt-3.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name    "Coalesce - 1" ;
+          mf:action [ qt:query <opt-coalesce-1.rq> ; qt:data <data-2.ttl> ] ;
+       ]
+       [  mf:name    "Coalesce - 2" ;
+          mf:action [ qt:query <opt-coalesce-2.rq> ; qt:data <data-2.ttl> ] ;
        ]
     ).

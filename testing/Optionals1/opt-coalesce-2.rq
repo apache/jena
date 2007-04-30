@@ -1,0 +1,9 @@
+# Multiple optionals.
+PREFIX : <http://example/>
+
+SELECT *
+{ 
+    OPTIONAL { ?z :q1 ?a }
+    OPTIONAL { ?z :q2 ?a }
+}
+

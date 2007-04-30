@@ -6,12 +6,7 @@
 
 package dev;
 
-import static sdb.SDBCmd.sdbconfig;
-import static sdb.SDBCmd.sdbload;
-import static sdb.SDBCmd.sdbprint;
-import static sdb.SDBCmd.sdbquery;
-import static sdb.SDBCmd.setSDBConfig;
-import static sdb.SDBCmd.sparql;
+import static sdb.SDBCmd.* ;
 import junit.framework.TestSuite;
 import arq.cmd.CmdUtils;
 
@@ -42,7 +37,7 @@ public class RunSDB
         //QBuilder.main(null) ; System.exit(0) ;
         
         
-        //runQuery() ;
+        runQuery() ;
         //SDBConnection.logSQLStatements = true ;
         
         //runInMem("Q.rq", "D.ttl") ;
@@ -70,8 +65,8 @@ public class RunSDB
         
         System.out.println(QueryFactory.read(queryFile)) ;
         
-        System.out.println("*** Reference") ;
-        runInMem(queryFile, dataFile) ;
+//        System.out.println("*** Reference") ;
+//        runInMem(queryFile, dataFile) ;
         System.out.println("*** SDB") ;
         runQuery(queryFile, dataFile) ;
         System.exit(0) ;
@@ -86,9 +81,9 @@ public class RunSDB
 //        SDBConnection.logSQLExceptions = true ;
          setSDBConfig("sdb.ttl") ;
          //setExitOnError(true) ;
-         sdbconfig() ; 
+         sdbconfig("--create") ; 
          sdbload(dataFile) ;
-         sdbprint("--print=plan", "--file=Q.rq") ; 
+         //sdbprint("--print=plan", "--file=Q.rq") ; 
          sdbquery("--file=Q.rq") ;
          System.exit(0) ;
      }

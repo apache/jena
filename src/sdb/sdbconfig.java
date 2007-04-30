@@ -68,7 +68,7 @@ public class sdbconfig extends CmdArgsDB
             return ;
         }
         
-        if ( ! isQuiet() )
+        if ( isVerbose() )
             modConfig.enact(store, getModTime()) ;
         else
             modConfig.enact(store) ;
