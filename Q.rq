@@ -1,11 +1,8 @@
 PREFIX :    <http://example/>
 
-SELECT *
+SELECT ?a
 { 
-    :x1 :p ?v .
-    OPTIONAL
-    {
-      :x3 :q ?w .
-      OPTIONAL { :x2 :p ?v }
-    }
+#    ?x :p ?v .
+    OPTIONAL { ?x :p ?a }
+    OPTIONAL { ?x :q ?a }
 }

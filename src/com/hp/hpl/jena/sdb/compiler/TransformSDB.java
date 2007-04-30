@@ -88,7 +88,6 @@ public class TransformSDB extends TransformCopy
         Set<ScopeEntry> scopes = sqlLeft.getIdScope().findScopes() ;
         Set<ScopeEntry> scopes2 = filter(scopes, ScopeEntry.OptionalFilter) ;
 
-        //**** Wrong?
         // Separate and test!
         Set<Var> leftOptVars = convert(scopes2, ScopeEntry.ToVar) ;             // Vars from left optionals.
         
