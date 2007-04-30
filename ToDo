@@ -7,12 +7,7 @@
 QueryIterGraph.nextStageMultiple - delay creations?
 
 Improvements - are these measurable?
-1/ If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
-2/ Is the query plan right?
-  FILTER in LJ causes non-liearization (example: full c2.rq) - why?
-  Presumably because a var in the LJ filter is in the left anf right of the join.
-  But it should be fixed in the left of the LJ so safe.
-Need test for this
+  If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
 
 
 == Core

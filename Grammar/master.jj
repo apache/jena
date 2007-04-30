@@ -1120,7 +1120,6 @@ TOKEN :
   < LPAREN:    "(" >
 | < RPAREN:    ")" >
 
-// I don't know why white space is needed to be included here but not ANON
 | <NIL: <LPAREN> (<WS>|<SINGLE_LINE_COMMENT>)* <RPAREN> >
 
 | < LBRACE:    "{" >
@@ -1128,7 +1127,6 @@ TOKEN :
 
 | < LBRACKET:  "[" >
 | < RBRACKET:  "]" >
-// (<WS>)* is not needed but is in NIL
 | < ANON:      <LBRACKET> (<WS>|<SINGLE_LINE_COMMENT>)* <RBRACKET> >
 
 | < SEMICOLON: ";" >
