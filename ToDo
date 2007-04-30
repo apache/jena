@@ -4,6 +4,8 @@
 
 -----
 
+QueryIterGraph.nextStageMultiple - delay creations?
+
 Improvements - are these measurable?
 1/ If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
 2/ Is the query plan right?
@@ -22,6 +24,11 @@ Tidying up:
 + Remove QueryExecutionGraphFactory
 + Remove QueryExecutionGraph - it's OpExec now.
     Registry for OpExec level.
+
++ Binding - becomes BindingBase.
+  Add "Binding Binding.add(var, value)" for swicthing to a Binding Map IIF there is a binding added.
+  Check BindingMap uses?
+    
 
 + qexec : no datasets evaluation [done with a dummy DSG]
 + What is "OpDatasetNames" nowadays?
