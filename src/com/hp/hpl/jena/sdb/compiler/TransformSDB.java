@@ -16,18 +16,17 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.AliasesSql;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.ScopeEntry;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
-
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.AliasesSql;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.ScopeEntry;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public class TransformSDB extends TransformCopy
 {
@@ -89,6 +88,8 @@ public class TransformSDB extends TransformCopy
         Set<ScopeEntry> scopes = sqlLeft.getIdScope().findScopes() ;
         Set<ScopeEntry> scopes2 = filter(scopes, ScopeEntry.OptionalFilter) ;
 
+        //**** Wrong?
+        // Separate and test!
         Set<Var> leftOptVars = convert(scopes2, ScopeEntry.ToVar) ;             // Vars from left optionals.
         
         Set<Var> rightOptVars = sqlRight.getIdScope().getVars() ;               // Why is this the opt vars?

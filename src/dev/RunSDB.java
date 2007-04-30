@@ -51,10 +51,10 @@ public class RunSDB
         
         //runQuad() ;
         //runQuery() ;      // Sets up data and runs query
-        //runPrint() ;
+        runPrint() ;
         //runScript() ;
         
-        run() ;
+        //run() ;
         //runTest() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
