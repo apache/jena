@@ -8,20 +8,13 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.Binding1;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
-import com.hp.hpl.jena.sparql.engine.main.QC;
 
 
 public class QueryIterGraph extends QueryIterRepeatApply
@@ -43,38 +36,45 @@ public class QueryIterGraph extends QueryIterRepeatApply
         return nextStageSingle(binding, graphURI) ;
     }
         
+    // Could use an iterator of one. 
     private QueryIterator nextStageSingle(Binding binding, Node graphURI)
     {
-        if ( !graphURI.isURI() )
-            return null ;
-        ExecutionContext cxt = getExecContext() ;
-        Op op = OpSubstitute.substitute(opGraph.getSubOp(), binding) ;
-        Graph g = cxt.getDataset().getNamedGraph(graphURI.getURI()) ;
-        if ( g == null )
-            return null ;
-        
-        ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
-        QueryIterator subInput = new QueryIterSingleton(binding, cxt) ;
-        return QC.compile(op, subInput, cxt2) ;
+        return new QueryIterGraphInner(binding, graphURI, opGraph, getExecContext()) ;
+        //return makeOneStage(binding, graphURI, opGraph, getExecContext()) ; 
+//        if ( !graphURI.isURI() )
+//            return null ;
+//        ExecutionContext cxt = getExecContext() ;
+//        Op op = OpSubstitute.substitute(opGraph.getSubOp(), binding) ;
+//        Graph g = cxt.getDataset().getNamedGraph(graphURI.getURI()) ;
+//        if ( g == null )
+//            return null ;
+//        
+//        ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
+//        QueryIterator subInput = new QueryIterSingleton(binding, cxt) ;
+//        return QC.compile(op, subInput, cxt2) ;
     }
     
     private QueryIterator nextStageMultiple(Binding binding)
     {
         ExecutionContext cxt = getExecContext() ;
         Var graphVar = Var.alloc(opGraph.getNode()) ;
-        QueryIterConcat q = new QueryIterConcat(cxt) ;
-        for ( Iterator iter = cxt.getDataset().listNames() ; iter.hasNext() ; )
-        {
-            String uri =  (String)iter.next() ;
-            Node gn = Node.createURI(uri) ;
-            Binding b = new Binding1(binding, graphVar, gn) ;
-            QueryIterator gIter = nextStageSingle(b, gn) ;
-            if ( gIter != null )
-                q.add(gIter) ;
-        }
-        return q ;
+        Iterator graphURIs = cxt.getDataset().listNames() ;
+        return new QueryIterGraphInner(binding, graphVar, graphURIs, opGraph, cxt) ; 
+        
+        // No - delay the starting?
+        
+//        for ( Iterator iter = cxt.getDataset().listNames() ; iter.hasNext() ; )
+//        {
+//            String uri =  (String)iter.next() ;
+//            Node gn = Node.createURI(uri) ;
+//            Binding b = new Binding1(binding, graphVar, gn) ;
+//            QueryIterator gIter = nextStageSingle(b, gn) ;
+//            if ( gIter != null )
+//                q.add(gIter) ;
+//        }
+//        return q ;
     }
-
+    
     private static Node resolve(Binding b, Node n)
     {
 //        if (  b == null )

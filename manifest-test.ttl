@@ -1,0 +1,20 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Dataset" ;
+    mf:entries
+    (
+     [  mf:name    "graph-09" ;
+        mf:action
+            [ qt:query  <testing/ARQ/Dataset/graph-09.rq> ;
+              qt:data   <testing/ARQ/Dataset/dft.n3> ;
+              qt:graphData  <testing/ARQ/Dataset/a.n3> ;
+              qt:graphData  <testing/ARQ/Dataset/b.n3> ;
+            ] ;
+        mf:result  <testing/ARQ/Dataset/graph-09-result.srx> ;
+      ]
+   ).
