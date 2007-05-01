@@ -134,7 +134,8 @@ for $t (@t)
 	warn "Duplicate inline (token): $tokenname\n" if defined($inline{$tokenname}) ;
 	$tokenname =~ s/^\[//g ;
 	$tokenname =~ s/\]$//g ;
-	$tokenbody =~ s/"/'/g ; # '"
+	$tokenbody =~ s/"/'/g ; # '" -- But not literal " -- how?
+        $tokenbody =~ s/\<\>\'\{\}/\<\>\"\{\}/ ; # '" IRI fixup
 
 	$inline{$tokenname} = $tokenbody ;
 

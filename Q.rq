@@ -1,6 +1,6 @@
 PREFIX :  <http://example/> 
 
-SELECT ?x ?v
+SELECT ?x 
 {
-    ?x :p _:0a .
+    GRAPH <D.ttl> {}
 }

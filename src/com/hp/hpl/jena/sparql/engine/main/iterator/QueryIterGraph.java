@@ -36,7 +36,6 @@ public class QueryIterGraph extends QueryIterRepeatApply
         return nextStageSingle(binding, graphURI) ;
     }
         
-    // Could use an iterator of one. 
     private QueryIterator nextStageSingle(Binding binding, Node graphURI)
     {
         return new QueryIterGraphInner(binding, graphURI, opGraph, getExecContext()) ;
