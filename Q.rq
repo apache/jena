@@ -2,7 +2,7 @@ PREFIX :    <http://example/>
 
 SELECT *
 { 
-#    ?x :p ?v .
+    ?x :p ?v .
     OPTIONAL { ?x :p ?a }
     OPTIONAL { ?x :q ?a }
 }
