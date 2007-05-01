@@ -30,12 +30,12 @@ public class Run
     {
         //runQExpr() ;
         //print() ;
-        code() ;
+        //code() ;
         //runQParse() ;
         //classifyJ() ;
         //classifyLJ() ;
-        //execQuery("D.ttl", "Q.rq") ;
-        exec("D.ttl", "SSE/test.sse") ;
+        execQuery("D.ttl", "Q.rq") ;
+        //exec("D.ttl", "SSE/test.sse") ;
     }
         
     private static void code()
