@@ -11,9 +11,9 @@ public interface ARQParserConstants {
   int EOF = 0;
   int WS = 8;
   int SINGLE_LINE_COMMENT = 9;
-  int Q_IRIref = 10;
-  int QNAME_NS = 11;
-  int QNAME_LN = 12;
+  int IRIref = 10;
+  int PNAME_NS = 11;
+  int PNAME_LN = 12;
   int BLANK_NODE_LABEL = 13;
   int VAR1 = 14;
   int VAR2 = 15;
@@ -105,11 +105,11 @@ public interface ARQParserConstants {
   int SLASH = 101;
   int DATATYPE = 102;
   int AT = 103;
-  int NCCHAR1P = 104;
-  int NCCHAR1 = 105;
-  int NCCHAR = 106;
-  int NCNAME_PREFIX = 107;
-  int NCNAME = 108;
+  int PN_CHARS_BASE = 104;
+  int PN_CHARS_U = 105;
+  int PN_CHARS = 106;
+  int PN_PREFIX = 107;
+  int PN_LOCAL = 108;
   int VARNAME = 109;
   int UNKNOWN = 110;
 
@@ -126,9 +126,9 @@ public interface ARQParserConstants {
     "\"\\f\"",
     "<WS>",
     "<SINGLE_LINE_COMMENT>",
-    "<Q_IRIref>",
-    "<QNAME_NS>",
-    "<QNAME_LN>",
+    "<IRIref>",
+    "<PNAME_NS>",
+    "<PNAME_LN>",
     "<BLANK_NODE_LABEL>",
     "<VAR1>",
     "<VAR2>",
@@ -220,11 +220,11 @@ public interface ARQParserConstants {
     "\"/\"",
     "\"^^\"",
     "\"@\"",
-    "<NCCHAR1P>",
-    "<NCCHAR1>",
-    "<NCCHAR>",
-    "<NCNAME_PREFIX>",
-    "<NCNAME>",
+    "<PN_CHARS_BASE>",
+    "<PN_CHARS_U>",
+    "<PN_CHARS>",
+    "<PN_PREFIX>",
+    "<PN_LOCAL>",
     "<VARNAME>",
     "<UNKNOWN>",
   };

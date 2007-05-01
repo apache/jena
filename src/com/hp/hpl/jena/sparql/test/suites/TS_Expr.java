@@ -5,11 +5,10 @@
 
 package com.hp.hpl.jena.sparql.test.suites;
 
-import junit.framework.* ;
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-//import com.hp.hpl.jena.query.expr.NodeValue ;
-import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -331,7 +330,9 @@ public class TS_Expr extends TestSuite
         ts.addTest(new TestExprNumeric("1:b",  1)) ;
         
         // This is a negative test - it checks that the "2" is not part of the qname
-        ts.addTest(new TestExprURI("ex:2",    exNS,       query, null, TestExpr.NO_FAILURE )) ;
+        // SPARQL not allows this.
+        ts.addTest(new TestExprURI("ex:2",    exNS+"2",       query, null, TestExpr.NO_FAILURE )) ;
+        ts.addTest(new TestExprURI("ex:2ab_c",    exNS+"2ab_c",       query, null, TestExpr.NO_FAILURE )) ;
         
         return ts ;
     }    

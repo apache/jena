@@ -2,6 +2,5 @@ PREFIX :  <http://example/>
 
 SELECT ?x ?v
 {
-    ?x :p ?v 
-    OPTIONAL { ?v :q ?w }
+    ?x :p _:0a .
 }

@@ -1,10 +1,10 @@
 //Tokens in BNF
 // [] means will be inlined.
 [<EOF>]          ::=
-[<Q_IRIref>]   ::= '<' ([^<>"{}|^`]-[#x00-#x20])* '>'
-<QNAME_NS>   ::= <NCNAME_PREFIX>? ':'
-<QNAME_LN>   ::= <QNAME_NS> <NCNAME>
-<BLANK_NODE_LABEL>  ::= '_:' <NCNAME>
+[<IRIref>]   ::= '<' ([^<>"{}|^`\]-[#x00-#x20])* '>'
+<PNAME_NS>   ::= <PN_PREFIX>? ':'
+<PNAME_LN>   ::= <PNAME_NS> <PN_LOCAL>
+<BLANK_NODE_LABEL>  ::= '_:' <PN_LOCAL>
 <VAR1>       ::= '?' <VARNAME>
 <VAR2>       ::= '$' <VARNAME>
 <LANGTAG>    ::= '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*
@@ -133,14 +133,17 @@
 [<DATATYPE>]   ::= '^^'
 //[<AT>]         ::= '@'
 
-<#NCCHAR1P>     ::= [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-
-<#NCCHAR1>      ::= <NCCHAR1P> | '_'
 
 
-<#VARNAME>      ::=  ( <NCCHAR1>  | [0-9] ) ( <NCCHAR1> | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
+<#PN_CHARS_BASE>     ::= [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
 
-// Without trailing dots in qnames
-<#NCCHAR>      ::=  <NCCHAR1> | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-<#NCNAME_PREFIX> ::= <NCCHAR1P> ((<NCCHAR>|'.')* <NCCHAR>)?
-<#NCNAME>       ::= <NCCHAR1>  ((<NCCHAR>|'.')* <NCCHAR>)?
+<#PN_CHARS_U>      ::= <PN_CHARS_BASE> | '_'
+
+
+<#VARNAME>      ::=  ( <PN_CHARS_U>  | [0-9] ) ( <PN_CHARS_U> | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
+
+<#PN_CHARS>      ::=  <PN_CHARS_U> | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+
+<#PN_PREFIX> ::= <PN_CHARS_BASE> ((<PN_CHARS>|'.')* <PN_CHARS>)?
+
+<#PN_LOCAL>       ::= ( <PN_CHARS_U> | [0-9] ) ((<PN_CHARS>|'.')* <PN_CHARS>)?

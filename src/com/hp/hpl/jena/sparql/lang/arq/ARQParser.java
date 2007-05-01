@@ -66,15 +66,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public void BaseDecl() throws ParseException {
                     Node n ;
     jj_consume_token(BASE);
-    n = Q_IRI_REF();
+    n = IRI_REF();
     getQuery().setBaseURI(n.getURI()) ;
   }
 
   final public void PrefixDecl() throws ParseException {
                       Token t ; Node n ;
     jj_consume_token(PREFIX);
-    t = jj_consume_token(QNAME_NS);
-    n = Q_IRI_REF();
+    t = jj_consume_token(PNAME_NS);
+    n = IRI_REF();
         String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
         getQuery().setPrefix(s, n.getURI()) ;
   }
@@ -180,9 +180,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_consume_token(DESCRIBE);
       getQuery().setQueryDescribeType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
       label_5:
@@ -190,9 +190,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         n = VarOrIRIref();
                           getQuery().addDescribeNode(n) ;
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case Q_IRIref:
-        case QNAME_NS:
-        case QNAME_LN:
+        case IRIref:
+        case PNAME_NS:
+        case PNAME_LN:
         case VAR1:
         case VAR2:
           ;
@@ -259,9 +259,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public void DatasetClause() throws ParseException {
     jj_consume_token(FROM);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       DefaultGraphClause();
       break;
     case NAMED:
@@ -371,9 +371,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     while (true) {
       OrderCondition();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case VAR1:
       case VAR2:
       case ASC:
@@ -421,9 +421,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       }
       expr = BrackettedExpression();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
     case BOUND:
@@ -439,9 +439,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case SAME_TERM:
     case LPAREN:
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BOUND:
       case STR:
       case DTYPE:
@@ -499,9 +499,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         startGroup(elg) ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 1:
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -573,9 +573,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 1:
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -623,9 +623,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(DOT);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 1:
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -858,9 +858,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case SAME_TERM:
       c = BuiltInCall();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       c = FunctionCall();
       break;
     default:
@@ -921,9 +921,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 1:
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -964,9 +964,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(DOT);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 1:
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -1006,9 +1006,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public void TriplesSameSubject(TripleCollector acc) throws ParseException {
                                                  Node s ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -1049,9 +1049,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public void PropertyListNotEmpty(Node s, TripleCollector acc) throws ParseException {
                                                            Node p ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
     case KW_A:
@@ -1069,9 +1069,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         }
         jj_consume_token(SEMICOLON);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case Q_IRIref:
-        case QNAME_NS:
-        case QNAME_LN:
+        case IRIref:
+        case PNAME_NS:
+        case PNAME_LN:
         case VAR1:
         case VAR2:
         case KW_A:
@@ -1097,9 +1097,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public void PropertyList(Node s, TripleCollector acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 1:
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
     case KW_A:
@@ -1159,9 +1159,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Node Verb() throws ParseException {
                Node p ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
       p = VarOrIRIref();
@@ -1251,9 +1251,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 1:
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -1294,9 +1294,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Node GraphNode(TripleCollector acc) throws ParseException {
                                         Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -1341,9 +1341,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case VAR2:
       n = Var();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case TRUE:
     case FALSE:
@@ -1381,9 +1381,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case VAR2:
       n = Var();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       n = IRIref();
       break;
     default:
@@ -1422,9 +1422,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Node GraphTerm() throws ParseException {
                      Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       n = IRIref();
                  {if (true) return n ;}
       break;
@@ -1698,9 +1698,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       expr = PrimaryExpression();
                                          {if (true) return new E_UnaryMinus(expr) ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
     case BOUND:
@@ -1762,9 +1762,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       expr = BuiltInCall();
                            {if (true) return expr ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       expr = IRIrefOrFunction();
                                 {if (true) return expr ;}
       break;
@@ -2120,14 +2120,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Node IRIref() throws ParseException {
                   Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-      n = Q_IRI_REF();
-                    {if (true) return n ;}
+    case IRIref:
+      n = IRI_REF();
+                  {if (true) return n ;}
       break;
-    case QNAME_NS:
-    case QNAME_LN:
-      n = QName();
-                {if (true) return n ;}
+    case PNAME_NS:
+    case PNAME_LN:
+      n = PrefixedName();
+                       {if (true) return n ;}
       break;
     default:
       jj_la1[75] = jj_gen;
@@ -2137,15 +2137,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node QName() throws ParseException {
-                 Token t ;
+  final public Node PrefixedName() throws ParseException {
+                        Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case QNAME_LN:
-      t = jj_consume_token(QNAME_LN);
+    case PNAME_LN:
+      t = jj_consume_token(PNAME_LN);
       {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
       break;
-    case QNAME_NS:
-      t = jj_consume_token(QNAME_NS);
+    case PNAME_NS:
+      t = jj_consume_token(PNAME_NS);
       {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
@@ -2175,9 +2175,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node Q_IRI_REF() throws ParseException {
-                     Token t ;
-    t = jj_consume_token(Q_IRIref);
+  final public Node IRI_REF() throws ParseException {
+                   Token t ;
+    t = jj_consume_token(IRIref);
     {if (true) return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
