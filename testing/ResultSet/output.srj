@@ -3,8 +3,6 @@
     "vars": [ "x" , "hpage" , "name" , "mbox" , "age" , "blurb" , "friend" ]
   } ,
   "results": {
-    "distinct": false ,
-    "ordered": true ,
     "bindings": [
       {
         "x": { "type": "bnode" , "value": "b0" } ,

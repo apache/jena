@@ -84,7 +84,6 @@ public class SortedResultSet implements ResultSet
     }
 
     public boolean isOrdered() { return true ; }
-    public boolean isDistinct() { return resultSet.isDistinct() ; }
     
     public void remove()
     {

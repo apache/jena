@@ -5,8 +5,5 @@ PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?x
 { ?x :p ?v . 
-  FILTER(  datatype(?v) != <http://example/NotADataTypeIRI> ) 
+  FILTER( datatype(?v) != <http://example/NotADataTypeIRI> ) 
 }
-ORDER BY ?x
-
-

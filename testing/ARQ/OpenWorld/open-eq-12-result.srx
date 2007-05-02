@@ -9,7 +9,7 @@
     <variable name="y"/>
     <variable name="v2"/>
   </head>
-  <results ordered="true" distinct="false">
+  <results>
     <result>
       <binding name="x">
         <uri>http://example/x1</uri>

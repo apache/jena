@@ -7,4 +7,3 @@ SELECT ?x
 { ?x :p ?v . 
   FILTER( datatype(?v) = xsd:string ) 
 }
-ORDER BY ?x

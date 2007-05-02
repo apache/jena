@@ -15,8 +15,7 @@
     <link href="example.rq" />
   </head>
 
-  <results ordered="true" distinct="false">
-
+  <results>
     <result>
       <binding name="x"><bnode>r1</bnode></binding>
       <binding name="hpage"><uri>http://work.example.org/alice/</uri></binding>

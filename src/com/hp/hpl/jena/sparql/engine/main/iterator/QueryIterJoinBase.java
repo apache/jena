@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIter2;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 
 /** Join or LeftJoin by calculating both sides, then doing the join
- *  It almost always better to use substitute algorithm (not this
+ *  It usually better to use substitute algorithm (not this
  *  QueryIterator in other words) as that is effectively indexing
  *  from one side into the other.  
  * 

@@ -27,7 +27,6 @@ public class ResultSetMem implements ResultSetRewindable
     protected List rows = new ArrayList();
     protected List varNames = null ;
     protected boolean ordered = false ; 
-    protected boolean distinct = false ;
 
     private int rowNumber = 0 ;
     private Iterator iterator = null ;
@@ -52,7 +51,6 @@ public class ResultSetMem implements ResultSetRewindable
     {
         varNames = imrs2.varNames;
         ordered = imrs2.ordered ;
-        distinct = imrs2.distinct ;
         if ( takeCopy )
             rows.addAll(imrs2.rows) ;
         else
@@ -71,7 +69,6 @@ public class ResultSetMem implements ResultSetRewindable
     public ResultSetMem(ResultSet qr)
     {
         ordered = qr.isOrdered() ;
-        distinct = qr.isDistinct() ;
         if (qr instanceof ResultSetMem)
         {
             ResultSetMem qrm = (ResultSetMem) qr;
@@ -138,8 +135,6 @@ public class ResultSetMem implements ResultSetRewindable
     
     public boolean isOrdered() { return ordered ; }
     
-    public boolean isDistinct() { return distinct ; }
-
     /** Get the variable names for the projection
      */
     public List getResultVars() { return varNames ; }

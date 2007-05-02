@@ -326,15 +326,7 @@ class XMLInputStAX extends SPARQLResult
     // -------- Result Set
     
     private void processResults() throws XMLStreamException
-    {
-        // Should be at the start of results
-        String s = parser.getAttributeValue(null, XMLResults.dfAttrOrdered) ;
-        if ( s != null && s.equals("true") )
-            ordered = true ;
-        s = parser.getAttributeValue(null, XMLResults.dfAttrDistinct) ;
-        if ( s != null && s.equals("true") )
-            distinct = true ;
-    }
+    { return ; }
     
     private Binding getOneSolution() throws XMLStreamException
     {

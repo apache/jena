@@ -95,11 +95,7 @@ public class XMLOutputResultSet
         
         // Start results proper
         out.incIndent(INDENT) ;
-        out.print("<"+dfResults+" "+dfAttrOrdered+"=");
-        out.print( rs.isOrdered() ?  "\"true\"" : "\"false\"" ) ;
-        out.print(" "+dfAttrDistinct+"=") ;
-        out.print( rs.isDistinct() ? "\"true\"" : "\"false\"" ) ;
-        out.println(">") ;
+        out.println("<"+dfResults+">") ;
         out.incIndent(INDENT) ;
     }
 

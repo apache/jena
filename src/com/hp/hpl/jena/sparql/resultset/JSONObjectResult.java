@@ -81,8 +81,8 @@ public class JSONObjectResult implements ResultSetProcessor, JSONResults
             // ---- results
             JSONObject results = new JSONObject() ;
             json.put(dfResults, results) ;
-            results.put(dfOrdered, rs.isOrdered()) ;
-            results.put(dfDistinct,rs.isDistinct());
+            //results.put(dfOrdered, rs.isOrdered()) ;
+            //results.put(dfDistinct,rs.isDistinct());
             solutions = new JSONArray() ;
             results.put(dfBindings, solutions) ;
         } catch (JSONException ex) {

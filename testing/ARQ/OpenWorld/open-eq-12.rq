@@ -8,4 +8,3 @@ SELECT ?x ?v1 ?y ?v2
     OPTIONAL { ?y :p ?v3 . FILTER( ?v1 != ?v3 || ?v1 = ?v3 )}
     FILTER (!bound(?v3))
 }
-ORDER BY ?x ?y

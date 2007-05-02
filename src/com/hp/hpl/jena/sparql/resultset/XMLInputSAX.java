@@ -161,16 +161,7 @@ class XMLInputSAX extends SPARQLResult
             // ---- Results 
             
             if ( localName.equals(XMLResults.dfResults) )
-            {
-                String aOrdered = attrs.getValue(XMLResults.dfAttrOrdered) ;
-                String aDistinct = attrs.getValue(XMLResults.dfAttrDistinct) ;
-                
-                if ( aOrdered != null && aOrdered.equals("true") )
-                    ordered = true ;
-                if ( aDistinct != null && aDistinct.equals("true") )
-                    distinct = true ;
                 return ;
-            }
 
             // Boolean
             if ( localName.equals(XMLResults.dfBoolean) )

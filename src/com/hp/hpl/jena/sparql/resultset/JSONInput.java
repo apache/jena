@@ -243,14 +243,13 @@ public class JSONInput extends SPARQLResult
         // -------- Result Set
 
         private void processResults() {
-            try {
-                JSONObject results = json.getJSONObject(dfResults) ;
-                ordered = results.getBoolean(dfOrdered) ;
-                distinct = results.getBoolean(dfDistinct) ;
-            } catch (JSONException e) {
-                throw new ResultSetException(e.getMessage(), e) ;
-            }
-
+//            try {
+//                JSONObject results = json.getJSONObject(dfResults) ;
+//                ordered = results.getBoolean(dfOrdered) ;
+//                distinct = results.getBoolean(dfDistinct) ;
+//            } catch (JSONException e) {
+//                throw new ResultSetException(e.getMessage(), e) ;
+//            }
         }
 
         private Binding getOneSolution() {        

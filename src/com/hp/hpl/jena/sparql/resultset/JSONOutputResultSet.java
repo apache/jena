@@ -53,8 +53,8 @@ public class JSONOutputResultSet implements ResultSetProcessor, JSONResults
         doHead(rs) ;
         out.println(quoteName(dfResults)+": {") ;
         out.incIndent() ;
-        out.println(quoteName(dfDistinct)+": "+(rs.isDistinct()?"true":"false")+" ,") ;
-        out.println(quoteName(dfOrdered)+": " +(rs.isOrdered() ?"true":"false")+" ,") ;
+//        out.println(quoteName(dfDistinct)+": "+(rs.isDistinct()?"true":"false")+" ,") ;
+//        out.println(quoteName(dfOrdered)+": " +(rs.isOrdered() ?"true":"false")+" ,") ;
         out.println(quoteName(dfBindings)+": [") ;
         out.incIndent() ;
         firstSolution = true ;

@@ -21,8 +21,8 @@ public interface JSONResults
     public static final String dfBindings   = "bindings" ;
     public static final String dfBoolean    = "boolean" ;
     
-    public static final String dfOrdered    = "ordered" ;
-    public static final String dfDistinct   = "distinct" ;
+//    public static final String dfOrdered    = "ordered" ;
+//    public static final String dfDistinct   = "distinct" ;
     
     public static final String dfType       = "type" ;
     public static final String dfValue      = "value" ;

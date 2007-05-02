@@ -9,6 +9,6 @@
     <variable name="y"/>
     <variable name="v2"/>
   </head>
-  <results ordered="true" distinct="false">
+  <results>
   </results>
 </sparql>

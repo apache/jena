@@ -80,14 +80,14 @@
           mf:action
              [ qt:query  <q-seq-11.rq> ;
                qt:data   <data-2.ttl> ] ;
-         mf:result  <results-seq-11.srx>
+         mf:result  <results-seq-11.ttl>
        ]
 
        [  mf:name    "Modifier ORDER BY [duplicates due to blank nodes]" ;
           mf:action
              [ qt:query  <q-seq-12.rq> ;
                qt:data   <data-2.ttl> ] ;
-         mf:result  <results-seq-12.srx>
+         mf:result  <results-seq-12.ttl>
        ]
 
 

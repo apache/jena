@@ -8,6 +8,12 @@ This version uses the SPARQL algebra directly,
 then produces an execution scheme that uses streaming
 execution where possible.
 
++ SPARQL changes
+  + Prefixed names can now start with a digit.  ex:123 is now a legal prefix name.
+  + The working group has removed attributes "ordered" and "distinct" from the
+    XML Results format. These have been removed in this release.  ARQ will read
+    old style XML files (and ignore the attributes).
+
 + Multiple query engines:
   + Main query engine for optimization and efficient execution
   + Reference engine for checking functionality

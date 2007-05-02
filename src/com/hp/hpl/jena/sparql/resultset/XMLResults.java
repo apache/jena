@@ -18,9 +18,6 @@ public interface XMLResults
     
     public static final String dfAttrVarName   = "name" ;
     public static final String dfAttrDatatype  = "datatype" ;
-    public static final String dfAttrOrdered   = "ordered" ;
-    public static final String dfAttrDistinct  = "distinct" ;
-
     
     public static final String dfNamespace  = baseNamespace ;
     public static final String dfRootTag    = "sparql" ;

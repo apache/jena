@@ -49,13 +49,9 @@ public interface ResultSet extends Iterator
     /** Is this ResultSet known to be ordered? 
      * Usually, this means a query involved ORDER BY or a ResultSet read
      * from a serialization had indexing information.
-     * (The ordering does not necessaryly have to be total) */
-    public boolean isOrdered() ;
-    
-    /** Is this ResultSet known to be distinct? 
-     * Usually, this means a query involved DISTINCT
+     * (The ordering does not necessaryly have to be total)
      */
-    public boolean isDistinct() ;
+    public boolean isOrdered() ;
 }
 
 /*
