@@ -39,10 +39,10 @@ public class OpSubstitute extends TransformCopy
         BasicPattern triples = new BasicPattern() ;
         for ( Iterator iter = bgp.getPattern().iterator() ; iter.hasNext() ; )
         {
-            Triple quad = (Triple)iter.next() ;
-            Node s = substitute(binding, quad.getSubject()) ;
-            Node p = substitute(binding, quad.getPredicate()) ;
-            Node o = substitute(binding, quad.getObject()) ;
+            Triple triple = (Triple)iter.next() ;
+            Node s = substitute(binding, triple.getSubject()) ;
+            Node p = substitute(binding, triple.getPredicate()) ;
+            Node o = substitute(binding, triple.getObject()) ;
             Triple t = new Triple(s, p, o) ;
             triples.add(t) ;
         }
