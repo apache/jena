@@ -18,7 +18,6 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class QueryIterBlockTriples extends QueryIter1
 {
@@ -65,7 +64,7 @@ public class QueryIterBlockTriples extends QueryIter1
 
     protected void releaseResources()
     {
-        NiceIterator.close(output) ;
+        output.close() ;
         output = null ;
     }
 

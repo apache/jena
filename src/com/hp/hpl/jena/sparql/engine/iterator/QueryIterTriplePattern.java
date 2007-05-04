@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.List;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -15,7 +17,9 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.NiceIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 public class QueryIterTriplePattern extends QueryIterRepeatApply
 {
@@ -58,12 +62,20 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             Node p2 = tripleNode(p) ;
             Node o2 = tripleNode(o) ;
             Graph graph = cxt.getActiveGraph() ;
-            this.graphIter = graph.find(s2, p2, o2) ;
             
-//            // TODO Special case : graphIter.hasNext() is false now.
-//            List x = graph.find(s2, p2, o2).toList() ;
-//            System.out.println("List("+(++countMapper)+"): "+x.size()) ;
-//            this.graphIter = x.iterator() ;
+            ExtendedIterator iter = graph.find(s2, p2, o2) ;
+            
+            if ( false )
+            {
+                // Materialize the results now.
+                // DEBUGGING ONLY
+                List x = iter.toList() ;
+                this.graphIter = WrappedIterator.create(x.iterator()) ;
+                iter.close();
+            }
+            else
+                // Stream.
+                this.graphIter = iter ;
         }
 
         private Node tripleNode(Node node)
