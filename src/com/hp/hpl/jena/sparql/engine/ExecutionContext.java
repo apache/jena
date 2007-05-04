@@ -17,13 +17,16 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 public class ExecutionContext implements FunctionEnv
 {
+    private static boolean TrackAllIterators = false ;
+
     private Context context       = null ;
     private DatasetGraph dataset  = null ;
     
     // Iterator tracking
-    private Collection openIterators      = null ;
-    private Collection allIterators       = null ;
-    private Graph activeGraph     = null ;
+    private Collection openIterators    = null ;
+    // Tracking all iterators leads to a build up of state,
+    private Collection allIterators     = null ; 
+    private Graph activeGraph           = null ;
 
     /** Clone and change active graph - shares tracking */
     public ExecutionContext(ExecutionContext other, Graph activeGraph) 
@@ -40,7 +43,8 @@ public class ExecutionContext implements FunctionEnv
         this.context = params ;
         this.dataset = dataset ;
         openIterators = new ArrayList() ;
-        allIterators  = new ArrayList() ;
+        if ( TrackAllIterators )
+            allIterators  = new ArrayList() ;
         this.activeGraph = activeGraph ;
     }
 
@@ -49,7 +53,8 @@ public class ExecutionContext implements FunctionEnv
     public void openIterator(QueryIterator qIter)
     {
         openIterators.add(qIter) ;
-        allIterators.add(qIter) ;
+        if ( allIterators != null )
+            allIterators.add(qIter) ;
     }
 
     public void closedIterator(QueryIterator qIter)
@@ -58,7 +63,11 @@ public class ExecutionContext implements FunctionEnv
     }
 
     public Iterator listOpenIterators()  { return openIterators.iterator() ; }
-    public Iterator listAllIterators()   { return allIterators.iterator() ; }
+    public Iterator listAllIterators()
+    { 
+        if ( allIterators == null ) return null ;
+        return allIterators.iterator() ;
+    }
 
     
     /** Return the active graph (the one matching is against at this point in the query.

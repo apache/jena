@@ -65,11 +65,12 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
         {
             Iterator iterAll = execContext.listAllIterators() ;
 
-            while(iterAll.hasNext())
-            {
-                QueryIterator qIter = (QueryIterator)iterAll.next() ;
-                warn(qIter, "Iterator: ") ;
-            }
+            if ( iterAll != null )
+                while(iterAll.hasNext())
+                {
+                    QueryIterator qIter = (QueryIterator)iterAll.next() ;
+                    warn(qIter, "Iterator: ") ;
+                }
         }
 
         Iterator iterOpen = execContext.listOpenIterators() ;

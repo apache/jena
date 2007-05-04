@@ -45,8 +45,6 @@ public class QueryIterGraph extends QueryIterRepeatApply
         DatasetGraph ds = getExecContext().getDataset() ;
         Iterator graphURIs = makeSources(ds, outerBinding, opGraph.getNode());
         
-        
-        
         QueryIterator current = new QueryIterGraphInner(
                                                outerBinding, graphURIs, 
                                                opGraph, getExecContext()) ;
@@ -168,6 +166,8 @@ public class QueryIterGraph extends QueryIterRepeatApply
                 // e.g. variable bound to a literal or blank node.
                 throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator") ;
                 //return null ;
+            // TODO Think about avoiding substitution.
+            // If the subpattern does not involve the vars from the binding, avoid the substitute.  
             Op op = OpSubstitute.substitute(opGraph.getSubOp(), binding) ;
             Graph g = cxt.getDataset().getNamedGraph(graphURI.getURI()) ;
             if ( g == null )
