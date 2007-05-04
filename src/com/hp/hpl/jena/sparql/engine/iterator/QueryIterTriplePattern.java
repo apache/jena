@@ -67,8 +67,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             
             if ( false )
             {
-                // Materialize the results now.
-                // DEBUGGING ONLY
+                // Materialize the results now. Debugging only.
                 List x = iter.toList() ;
                 this.graphIter = WrappedIterator.create(x.iterator()) ;
                 iter.close();
