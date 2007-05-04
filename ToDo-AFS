@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Assemblers : { :type jas:assembler "classname"  } for autoloading.
+  ja:imports as well.?
+
 + --sdb=@ for global registration?
 
 + Prefixes : disable for ModelRDB only.
