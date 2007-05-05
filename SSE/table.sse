@@ -1,6 +1,6 @@
 
 (prefix ((x: <http://example/>))
-  (table 
+  (table
    (row [?x 1] [?y x:g])
    (row [?x 1] [?y undef])
    ))
