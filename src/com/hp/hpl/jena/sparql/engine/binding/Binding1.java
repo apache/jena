@@ -42,6 +42,7 @@ public class Binding1 extends BindingBase
         throw new UnsupportedOperationException("Binding1.add1") ;
     }
 
+    protected int size1() { return 1 ; }
     
     /** Iterate over all the names of variables.
      */

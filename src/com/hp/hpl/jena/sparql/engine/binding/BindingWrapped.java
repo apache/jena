@@ -49,6 +49,10 @@ public class BindingWrapped implements Binding
     }
     
     public String toString() { return binding.toString(); }
+
+    public int size()           { return binding.size() ; }
+
+    public boolean isEmpty()    { return binding.isEmpty() ; }
 }
 
 /*

@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -18,6 +19,9 @@ import com.hp.hpl.jena.sparql.expr.ExprList;
 
 public class TableUnit extends TableBase
 {
+    static public boolean isJoinUnit(Table table)
+    { return (table instanceof TableUnit) ; } 
+    
     public TableUnit() {}
     
     public QueryIterator iterator(ExecutionContext execCxt)

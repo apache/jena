@@ -25,6 +25,7 @@ public interface Table
     public void close() ;
     public List getVars() ;
     public List getVarNames() ;
+    public int size() ;
     public QueryIterator iterator(ExecutionContext execCxt) ;
     public void addBinding(Binding binding) ;
     public ResultSet toResultSet() ;

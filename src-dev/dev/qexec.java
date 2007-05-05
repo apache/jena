@@ -105,44 +105,43 @@ public class qexec extends CmdARQ
     
     protected void exec()
     {
-        
-        // This coudl all be neatened up and integrate with query/qparse.
+        // This could all be neatened up and integrate with query/qparse.
         // But I need the tool now!
-    try {
-        // ModAlgebra?
-        
-        Op op = null ;
-        
-        if ( queryFilename != null )
-        {
-            if ( queryFilename.equals("-") )
-            {
-                try {
-                    // Stderr?
-                    queryString  = FileUtils.readWholeFileAsUTF8(System.in) ;
-                    // And drop into next if
-                } catch (IOException ex)
-                { throw new CmdException("Error reading stdin", ex) ; }
-            }
-            else
-                op = AlgSSE.read(queryFilename) ;
-        }
+        try {
+            // ModAlgebra?
 
-        if ( queryString != null )
-            op = AlgSSE.parse(queryString) ;
-        
-        if ( op == null )
-        {
-            System.err.println("No query expression to execute") ;
-            throw new TerminationException(9) ;
-        }
-        
-        Dataset dataset = modDataset.getDataset() ;
-        // Check there is a dataset
-        if ( dataset == null )
-        {
-            dataset = new DataSourceImpl();
-//            System.err.println("No dataset") ;
+            Op op = null ;
+
+            if ( queryFilename != null )
+            {
+                if ( queryFilename.equals("-") )
+                {
+                    try {
+                        // Stderr?
+                        queryString  = FileUtils.readWholeFileAsUTF8(System.in) ;
+                        // And drop into next if
+                    } catch (IOException ex)
+                    { throw new CmdException("Error reading stdin", ex) ; }
+                }
+                else
+                    op = AlgSSE.read(queryFilename) ;
+            }
+
+            if ( queryString != null )
+                op = AlgSSE.parse(queryString) ;
+
+            if ( op == null )
+            {
+                System.err.println("No query expression to execute") ;
+                throw new TerminationException(9) ;
+            }
+
+            Dataset dataset = modDataset.getDataset() ;
+            // Check there is a dataset
+            if ( dataset == null )
+            {
+                dataset = new DataSourceImpl();
+//              System.err.println("No dataset") ;
 //            throw new TerminationException(1) ;
         }
         

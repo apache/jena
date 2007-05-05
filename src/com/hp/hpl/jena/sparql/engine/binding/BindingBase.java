@@ -78,6 +78,18 @@ abstract public class BindingBase implements Binding
     }
     protected abstract Iterator vars1() ;
     
+    final public int size()
+    {
+        int x = size1() ;
+        if ( parent != null )
+            x = x + parent.size() ;
+        return x ;
+    }
+    
+    protected abstract int size1() ;
+    
+    public boolean isEmpty() { return size() == 0 ; }
+    
     /** Test whether a name is bound to some object */
     public boolean contains(Var var)
     {

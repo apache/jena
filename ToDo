@@ -4,11 +4,8 @@
 
 -----
 
-QueryIterGraph.nextStageMultiple - delay creations?
-
 Improvements - are these measurable?
   If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
-
 
 == Core
 
@@ -21,7 +18,7 @@ Tidying up:
     Registry for OpExec level.
 
 + Binding - becomes BindingBase.
-  Add "Binding Binding.add(var, value)" for swicthing to a Binding Map IIF there is a binding added.
+  Add "Binding Binding.add(var, value)" for switching to a Binding Map IIF there is a binding added.
   Check BindingMap uses?
     
 

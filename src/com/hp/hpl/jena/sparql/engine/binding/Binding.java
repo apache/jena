@@ -32,6 +32,12 @@ public interface Binding
 
     /** Return the object bound to a variable, or null */
     public Node get(Var var) ;
+    
+    /** Number of (var, value) pairs. */
+    public int size() ;
+    
+    public boolean isEmpty() ;
+
 }
 
 /*

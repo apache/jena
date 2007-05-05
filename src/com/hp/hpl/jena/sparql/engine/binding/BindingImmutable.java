@@ -50,11 +50,13 @@ public class BindingImmutable extends BindingBase
             varSize ++ ;
         }
     }
-        
+     
     protected void add1(Var var, Node node)
     { throw new UnsupportedOperationException("BindingImmutable.add") ; }
 
     protected Iterator vars1()              { return binding.vars1() ; }
+
+    protected int size1()                   { return varSize ; }
     
     protected boolean contains1(Var var)    { return binding.contains1(var) ; }
 

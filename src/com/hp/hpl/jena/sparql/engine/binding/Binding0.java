@@ -31,6 +31,8 @@ public class Binding0 extends BindingBase
     /** Iterate over all the names of variables.
      */
     public Iterator vars1() { return new NullIterator() ; }
+
+    protected int size1() { return 0 ; }
     
     public boolean contains1(Var var) { return false ; }
     

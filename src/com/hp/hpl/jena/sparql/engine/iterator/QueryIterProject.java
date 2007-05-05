@@ -97,6 +97,11 @@ public class QueryIterProject extends QueryIterConvert
         {
             return projectionVars.iterator() ;
         }
+
+        protected int size1()
+        {
+            return projectionVars.size() ;
+        }
     }
 }
 

@@ -36,6 +36,9 @@ public class BindingMap extends BindingBase
         map.put(var, node) ;
     }
 
+    protected int size1() { return map.size() ; }
+    
+
     
     /** Iterate over all the names of variables.
      */

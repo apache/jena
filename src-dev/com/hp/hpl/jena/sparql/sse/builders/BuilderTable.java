@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.sse.builders;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
+import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.ItemList;
@@ -22,45 +23,42 @@ public class BuilderTable
     public static Table build(Item item)
     {
         BuilderBase.checkTagged(item, tagTable, "Not a (table ...)") ;
-//        return buildTable(item.getList()) ;
-//        //return null ;
-//    }
-//
-//    private static Table buildTable(ItemList list)
-//    {
-//        if ( list.size() == 0 )
-//            Builder.broken(list, "Empty list") ;
-//        if ( ! list.get(0).isWord())
-//            Builder.broken(list, "Does not start with a tag: "+list.get(0)) ;
-//        String tag = list.get(0).getWord() ;
-//        
-//        Builder.checkTag(list, tagTable) ;
-//        
+
         ItemList list = item.getList() ;
         int start = 1 ;
         if ( list.size() == 1 )
             // Null table;
             return TableFactory.createEmpty() ;
 
-        // Result set - cols.
-//      List vars = null ;
-//      Item itemCols = list.get(1) ;
-//      if ( itemCols.isList() && itemCols.getList().get(0).isWordIgnoreCase("cols") )
-//      {
-//          vars = BuilderNode.buildVars(list.get(1).getList(), 1) ;
-//          start++ ;
-//      }
-//          ....        
-//      if ( vars != null )
-//          table.setVars(vars) ;
+        if ( list.size() == 2 && list.get(1).isWord() )
+        {
+            //  Short hand for well known tables
+            String word = list.get(1).getWord() ;
+            if ( word.equals("unit") ) 
+                return new TableUnit() ;
+        }
         
         Table table = TableFactory.create() ;
+        
+        int count = 0 ;
+        Binding lastBinding = null ;
         for ( int i = start ; i < list.size() ; i++ )
         {
             Item itemRow = list.get(i) ;
             Binding b = BuilderBinding.build(itemRow) ;
             table.addBinding(b) ;
+            lastBinding = b ;
+            count++ ;
         }
+        // Was it the unit table?
+        
+        if ( table.size() == 1 )
+        {
+            // One row, no bindings.
+            if ( lastBinding.isEmpty() )
+                return TableFactory.createUnit() ;
+        }
+        
         return table ;
     }
 }

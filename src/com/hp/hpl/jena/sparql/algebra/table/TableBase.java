@@ -69,6 +69,9 @@ public abstract class TableBase implements Table
     public void addBinding(Binding binding)
     { throw new UnsupportedOperationException("Table.add") ; }
     
+    public int size()
+    { throw new UnsupportedOperationException("Table.size") ; }
+    
     public ResultSet toResultSet()
     {
         QueryIterator qIter = iterator(null) ;

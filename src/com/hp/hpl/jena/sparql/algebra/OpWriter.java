@@ -15,9 +15,12 @@ import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
@@ -175,10 +178,48 @@ public class OpWriter
 
         public void visit(OpTable opTable)
         {
-            start(opTable, NoNL) ;
-            out.print("table") ;
-            //opTable.getTable().output(out) ;
+            if ( TableUnit.isJoinUnit(opTable.getTable()) )
+            {
+                start(opTable, NoNL) ;
+                out.print(" unit") ;
+                finish(opTable) ;
+                return ;
+            }
+            
+            start(opTable, NL) ;
+            outputTable(opTable.getTable());
             finish(opTable) ;
+        }
+
+        private void outputTable(Table table)
+        {
+            QueryIterator qIter = table.iterator(null) ; 
+            for ( ; qIter.hasNext(); )
+            {
+                Binding b = qIter.nextBinding() ;
+                outputRow(b) ;
+                out.println() ;
+            }
+            qIter.close() ;
+        }
+        
+        private void outputRow(Binding binding)
+        {
+            out.print(Plan.startMarker) ;
+            out.print("row") ;
+            Iterator iter = binding.vars() ;
+            for ( ; iter.hasNext() ; )
+            {
+                Var v = (Var)iter.next() ;
+                Node n = binding.get(v) ;
+                out.print(" ") ;
+                out.print(Plan.startMarker2) ;
+                out.print(FmtUtils.stringForNode(v, sContext)) ;
+                out.print(" ") ;
+                out.print(FmtUtils.stringForNode(n, sContext)) ;
+                out.print(Plan.finishMarker2) ;
+            }
+            out.print(Plan.finishMarker) ;
         }
         
         public void visit(OpDatasetNames dsNames)
