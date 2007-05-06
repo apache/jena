@@ -6,10 +6,10 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescQuad;
 
 
-public class TripleTableDescRDB implements TripleTableDesc
+public class TripleTableDescRDB implements TableDescQuad
 {
     String tripleTable = "jena_g1t1_stmt" ;
     

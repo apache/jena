@@ -24,8 +24,8 @@ public abstract class FormatterSimple extends StoreFormatterBase
     public void addIndexes()
     {
         try {
-            connection().exec("CREATE INDEX PredObj ON "+TableTriples.tableName+" (p, o)") ;
-            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.tableName+" (o, s)") ;
+            connection().exec("CREATE INDEX PredObj ON "+TableTriples.name()+" (p, o)") ;
+            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.name()+" (o, s)") ;
         } catch (SQLException ex)
         {
             throw new SDBException("SQLException indexing table 'Triples'",ex) ;

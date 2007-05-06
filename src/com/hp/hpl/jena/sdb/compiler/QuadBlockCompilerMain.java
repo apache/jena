@@ -29,11 +29,9 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
     public SqlNode compile(QuadBlock quads)
     {
         SqlNode sqlNode = slotCompiler.start(quads) ;
-        QuadBlock plainQuads = new QuadBlock() ;
         quads = new QuadBlock(quads) ;          // Copy it because it's modified.
-        
-        // Why not get rid of SqlStageList and have .process return an SqlNode?
 
+        // ---- Stage builder 
         SqlStageList sList = new SqlStageList() ;
         // Potential concurrent modification - need to use an explicit index.
         for ( int i = 0 ; i < quads.size() ; )
@@ -55,8 +53,10 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
             i++ ;
         }
 
+        // ---- and now turn the stages into SqlNodes  
         SqlNode sqlStages = sList.build(request, slotCompiler) ;
-        // Join the initial node (constants). 
+        
+        // --- Join the initial node (constants). 
         sqlNode = QC.innerJoin(request, sqlNode, sqlStages) ;
         sqlNode = slotCompiler.finish(sqlNode, quads) ;
         return sqlNode ;

@@ -57,8 +57,12 @@ public interface Store
     /** Get the size of this store **/
     public long  getSize() ;
 
-    public TripleTableDesc getTripleTableDesc() ;
-    public NodeTableDesc   getNodeTableDesc() ;
+    /** The quads table - this maybe the same as the triples table */  
+    //public TripleTableDesc getQuadTableDesc() ;
+    
+    /** Where the default graph is store */ 
+    public TableDescQuad getTripleTableDesc() ;
+    public TableDescNode   getNodeTableDesc() ;
     
 //    // temp hack for Layout2.
 //    public String getNodeKeyColName() ;

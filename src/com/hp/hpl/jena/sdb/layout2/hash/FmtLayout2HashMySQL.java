@@ -42,10 +42,10 @@ public class FmtLayout2HashMySQL extends FmtLayout2
     @Override
     protected void formatTableTriples()
     {
-        dropTable(TableTriples.tableName) ;
+        dropTable(TableTriples.name()) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableTriples.tableName+" (",
+                                 "CREATE TABLE "+TableTriples.name()+" (",
                                  "    s BIGINT  NOT NULL ,",
                                  "    p BIGINT  NOT NULL ,",
                                  "    o BIGINT  NOT NULL ,",
@@ -54,7 +54,7 @@ public class FmtLayout2HashMySQL extends FmtLayout2
                     )) ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.name()+"'",ex) ;
         }
     }
 
@@ -62,19 +62,19 @@ public class FmtLayout2HashMySQL extends FmtLayout2
     protected void dropIndexesTableTriples()
     {
         try {
-            connection().exec("DROP INDEX PredObj ON "+TableTriples.tableName) ;
-            connection().exec("DROP INDEX ObjSubj ON "+TableTriples.tableName) ;
+            connection().exec("DROP INDEX PredObj ON "+TableTriples.name()) ;
+            connection().exec("DROP INDEX ObjSubj ON "+TableTriples.name()) ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException dropping indexes '"+TableTriples.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException dropping indexes '"+TableTriples.name()+"'",ex) ; }
     }
     
     @Override
     protected void formatTableNodes()
     {
-        dropTable(TableNodes.tableName) ;
+        dropTable(TableNodes.name()) ;
         try { 
             // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
-            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
+            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.name()+" (",
                                  "   hash BIGINT NOT NULL DEFAULT 0,",
                                  "   lex TEXT BINARY CHARACTER SET utf8 ,",
                                  "   lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
@@ -83,20 +83,20 @@ public class FmtLayout2HashMySQL extends FmtLayout2
                                  "   PRIMARY KEY Hash  (hash)",
                                  ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8;"  
                     )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.tableName+" (hash)") ;
+            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.name()+" (hash)") ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.name()+"'",ex) ;
         }
     }
 
     @Override
     protected void formatTablePrefixes()
     {
-        dropTable(TablePrefixes.tableName) ;
+        dropTable(TablePrefixes.name()) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TablePrefixes.tableName+" (",
+                                 "CREATE TABLE "+TablePrefixes.name()+" (",
                                  "    prefix VARCHAR("+TablePrefixes.prefixColWidth+") BINARY NOT NULL ,",
                                  "    uri VARCHAR("+TablePrefixes.uriColWidth+") BINARY NOT NULL ,", 
                                  "    PRIMARY KEY  (prefix)",
@@ -104,7 +104,7 @@ public class FmtLayout2HashMySQL extends FmtLayout2
                     )) ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.name()+"'",ex) ;
         }
     }
     

@@ -52,6 +52,13 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
         return new QuadBlock(this) ;
     }
     
+    static private Quad[] qArrayTemplate = new Quad[0] ;
+    
+    public Quad[] asArray()
+    {
+        return this.toArray(qArrayTemplate) ;
+    }
+    
     public Node getGraphNode() { return graphNode ; }
 
     public boolean contains(Quad pattern)

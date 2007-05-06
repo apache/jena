@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
-import com.hp.hpl.jena.sdb.layout2.TableTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -125,8 +124,8 @@ public class FormatterSimpleMySQL extends FormatterSimple
     public void dropIndexes()
     {
         try {
-            connection().exec("DROP INDEX PredObj ON "+TableTriples.tableName) ;
-            connection().exec("DROP INDEX ObjSubj ON "+TableTriples.tableName) ;
+            connection().exec("DROP INDEX PredObj ON "+TripleTableDescSPO.name()) ;
+            connection().exec("DROP INDEX ObjSubj ON "+TripleTableDescSPO.name()) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }

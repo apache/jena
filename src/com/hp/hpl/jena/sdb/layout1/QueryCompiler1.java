@@ -11,13 +11,13 @@ import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescQuad;
 
 
 public class QueryCompiler1 extends QueryCompilerMain 
 {
     private EncoderDecoder codec = null ;
-    private TripleTableDesc tripleTableDesc ;
+    private TableDescQuad tripleTableDesc ;
     
     
     public QueryCompiler1(SDBRequest request, EncoderDecoder codec)

@@ -113,7 +113,7 @@ public class LoaderOneTripleIndex
         long hash = NodeLayout2.hash(lex,lang,datatype,typeId);
         
         String sqlStmt = strjoinNL(
-                "INSERT INTO "+TableNodes.tableName+"(hash,lex,lang,datatype,type) VALUES",
+                "INSERT INTO "+TableNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
                 "  ("+hash+", ",
                 "   "+SQLUtils.quoteStr(lex)+", ",
                 "   "+SQLUtils.quoteStr(lang)+", ",

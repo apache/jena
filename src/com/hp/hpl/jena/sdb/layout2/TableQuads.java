@@ -1,28 +1,36 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.layout2;
 
-public interface NodeTableDesc
+import com.hp.hpl.jena.sdb.store.TableDescQuad;
+
+/**
+ * @author Andy Seaborne
+ * @version $Id: TableTriples.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
+ */
+
+public class TableQuads implements TableDescQuad
 {
-    public String getTableName() ;
+    private static final String graphCol      = "g" ;
+    private static final String subjectCol    = "s" ;
+    private static final String predicateCol  = "p" ;
+    private static final String objectCol     = "o" ;
+    private static final String tableName     = "Quads" ;
+    public static String name() { return tableName ; } 
     
-    /** Name of the column used to join with the triple table. */
-    public String getKeyColName() ;
-    
-    public String getIdColName() ;
-    public String getHashColName() ;
-    public String getLexColName() ;
-    public String getLangColName() ;
-    public String getDatatypeColName() ;
-    public String getTypeColName() ;
+    public String getTableName()        { return tableName ; }
+    public String getGraphColName()     { return graphCol ; }
+    public String getSubjectColName()   { return subjectCol ; }
+    public String getPredicateColName() { return predicateCol ; }
+    public String getObjectColName()    { return objectCol ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

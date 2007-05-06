@@ -24,8 +24,9 @@ public class StoreBase
     protected SQLBridgeFactory sqlBridgeF ;
     protected SQLGenerator sqlGenerator ;
     protected StoreConfig configuration ;
-    protected TripleTableDesc tripleTableDesc ;
-    protected NodeTableDesc nodeTableDesc ;
+    protected TableDescQuad tripleTableDesc ;
+    protected TableDescQuad quadTableDesc ;
+    protected TableDescNode nodeTableDesc ;
     
     public StoreBase(SDBConnection connection, 
                      StoreFormatter formatter ,
@@ -33,8 +34,8 @@ public class StoreBase
                      QueryCompilerFactory compilerF ,
                      SQLBridgeFactory sqlBridgeF,
                      SQLGenerator sqlGenerator,
-                     TripleTableDesc tripleTableDesc,
-                     NodeTableDesc nodeTableDesc)
+                     TableDescQuad tripleTableDesc,
+                     TableDescNode nodeTableDesc)
     {
         super(connection) ;
         this.formatter = formatter ;
@@ -74,8 +75,8 @@ public class StoreBase
     	return TableUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
     }
     
-    public NodeTableDesc getNodeTableDesc()                     { return nodeTableDesc ; }
-    public TripleTableDesc getTripleTableDesc()                 { return tripleTableDesc ; }
+    public TableDescNode getNodeTableDesc()                     { return nodeTableDesc ; }
+    public TableDescQuad getTripleTableDesc()                 { return tripleTableDesc ; }
 }
 
 /*

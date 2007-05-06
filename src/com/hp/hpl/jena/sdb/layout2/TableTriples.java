@@ -6,26 +6,22 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescQuad;
 
 /**
  * @author Andy Seaborne
  * @version $Id: TableTriples.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public class TableTriples implements TripleTableDesc
+public class TableTriples extends TableQuads implements TableDescQuad
 {
-    private static final String graphCol      = "g" ;
-    private static final String subjectCol    = "s" ;
-    private static final String predicateCol  = "p" ;
-    private static final String objectCol     = "o" ;
-    public static final String tableName     = "Triples" ;
-
+    private static final String tableName     = "Triples" ;
+    public static String name() { return tableName ; } 
+    
+    @Override
     public String getTableName()        { return tableName ; }
-    public String getGraphColName()     { return graphCol ; }
-    public String getSubjectColName()   { return subjectCol ; }
-    public String getPredicateColName() { return predicateCol ; }
-    public String getObjectColName()    { return objectCol ; }
+    @Override
+    public String getGraphColName()     { return null ; }
 }
 
 /*

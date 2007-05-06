@@ -27,8 +27,8 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.SlotCompiler2;
-import com.hp.hpl.jena.sdb.store.NodeTableDesc;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescNode;
+import com.hp.hpl.jena.sdb.store.TableDescQuad;
 
 public class SlotCompilerIndex extends SlotCompiler2
 {
@@ -42,8 +42,8 @@ public class SlotCompilerIndex extends SlotCompiler2
     private List<Node> constants = new ArrayList<Node>() ;
     private List<Var>  vars = new ArrayList<Var>() ;
     
-    protected TripleTableDesc tripleTableDesc ;
-    protected NodeTableDesc   nodeTableDesc ;
+    protected TableDescQuad tripleTableDesc ;
+    protected TableDescNode   nodeTableDesc ;
     
     public SlotCompilerIndex(SDBRequest request)
     { 

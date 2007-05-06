@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-public interface TripleTableDesc
+public interface TableDescQuad
 {
     public String getTableName() ; 
     public String getGraphColName() ;

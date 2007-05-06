@@ -26,10 +26,10 @@ public class FmtLayout2IndexDerby extends FmtLayout2HashDerby
     @Override
     protected void formatTableTriples()
     {
-        dropTable(TableTriples.tableName) ;
+        dropTable(TableTriples.name()) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableTriples.tableName+" (",
+                                 "CREATE TABLE "+TableTriples.name()+" (",
                                  "    s int NOT NULL,",
                                  "    p int NOT NULL,",
                                  "    o int NOT NULL,",
@@ -37,15 +37,15 @@ public class FmtLayout2IndexDerby extends FmtLayout2HashDerby
                                  ")"                
                     )) ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.name()+"'",ex) ; }
     }
 
     @Override
     protected void formatTableNodes()
     {
-        dropTable(TableNodes.tableName) ;
+        dropTable(TableNodes.name()) ;
         try { 
-            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.tableName+" (",
+            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.name()+" (",
                                        "   id int generated always as identity ,",
                                        "   hash BIGINT NOT NULL ,",
                                        "   lex CLOB NOT NULL ,",
@@ -55,10 +55,10 @@ public class FmtLayout2IndexDerby extends FmtLayout2HashDerby
                                        "   PRIMARY KEY (id)",
                                        ")"
                     )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.tableName + " (hash)");
+            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.name() + " (hash)");
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.name()+"'",ex) ;
         }
     }
 }

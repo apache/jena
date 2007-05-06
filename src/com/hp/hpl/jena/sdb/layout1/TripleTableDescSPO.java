@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescQuad;
 
 
 /**
@@ -14,13 +14,14 @@ import com.hp.hpl.jena.sdb.store.TripleTableDesc;
  * @version $Id: TripleTableDescSPO.java,v 1.1 2006/04/27 21:43:48 andy_seaborne Exp $
  */
 
-public class TripleTableDescSPO implements TripleTableDesc
+public class TripleTableDescSPO implements TableDescQuad
 {
-    public static final String tableName    = "Triples" ;
+    private static final String tableName    = "Triples" ;
+    public static String name() { return tableName ; } 
     
     public String getTableName()         { return tableName ; }
     
-    public String getGraphColName()     { return "g" ; }
+    public String getGraphColName()     { return null ; }
 
     public String getSubjectColName()    { return "s" ; }
 

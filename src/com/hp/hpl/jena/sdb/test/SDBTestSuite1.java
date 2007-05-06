@@ -28,7 +28,7 @@ public class SDBTestSuite1 extends TestSuite
     public static boolean includeDerby = true ;
     public static boolean includeMySQL = false ;
     public static boolean includeHSQL = false ;
-    public static boolean includeSQLServer = true ;
+    public static boolean includeSQLServer = false ;
     
     // JUnit3 to JUnit4 adapter
 //    public static junit.framework.Test suite() { 

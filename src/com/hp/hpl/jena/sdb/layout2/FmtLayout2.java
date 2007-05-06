@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.StoreFormatterBase;
 
 
@@ -42,10 +43,10 @@ public abstract class FmtLayout2
     protected void addIndexesTableTriples()
     {
         try {
-            connection().exec("CREATE INDEX PredObj ON "+TableTriples.tableName+" (p, o)") ;
-            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.tableName+" (o, s)") ;
+            connection().exec("CREATE INDEX PredObj ON "+TableTriples.name()+" (p, o)") ;
+            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.name()+" (o, s)") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.name()+"'",ex) ; }
     }
     
     // Override this if the syntax is a bit different (many are for DROP INDEX)
@@ -55,16 +56,16 @@ public abstract class FmtLayout2
             connection().exec("DROP INDEX PredObj") ;
             connection().exec("DROP INDEX ObjSubj") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableTriples.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableTriples.name()+"'",ex) ; }
     }
     
     abstract protected void formatTableTriples() ;
     abstract protected void formatTableNodes() ;
     abstract protected void formatTablePrefixes() ;
     
-    protected void truncateTableTriples()  { truncateTable(TableTriples.tableName) ; } 
-    protected void truncateTableNodes()    { truncateTable(TableNodes.tableName) ; }
-    protected void truncateTablePrefixes() { truncateTable(TablePrefixes.tableName) ; }
+    protected void truncateTableTriples()  { truncateTable(TableTriples.name()) ; } 
+    protected void truncateTableNodes()    { truncateTable(TableNodes.name()) ; }
+    protected void truncateTablePrefixes() { truncateTable(TablePrefixes.name()) ; }
     
     protected void truncateTable(String tableName)
     {
@@ -74,15 +75,10 @@ public abstract class FmtLayout2
         { throw new SDBExceptionSQL("SQLException truncating table: "+tableName,ex) ; }
     }
     
-    abstract protected void dropTable(String tableName) ;
-
-//    /** Drop whether it exists or not -- better to override*/
-//    protected void dropTable(String tableName)
-//    {
-//        try { 
-//            connection.execAny("DROP TABLE "+tableName) ;
-//        } catch (SQLException ex) {}
-//    }
+    protected void dropTable(String tableName)
+    {
+        TableUtils.dropTable(connection(), tableName) ;
+    }
 }
 
 /*

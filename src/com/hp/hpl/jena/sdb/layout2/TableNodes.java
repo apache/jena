@@ -6,18 +6,19 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.store.NodeTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescNode;
 
 /**
  * @author Andy Seaborne
  * @version $Id: TableNodes.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public abstract class TableNodes implements NodeTableDesc
+public abstract class TableNodes implements TableDescNode
 {
     // This table is different in Hash and Index versions
     
-    public static final String tableName        = "Nodes" ;
+    private static final String tableName        = "Nodes" ;
+    public static String name()                 { return tableName ; } 
     
     public static final String colId            = "id" ;
     public static final String colHash          = "hash" ;
@@ -39,7 +40,6 @@ public abstract class TableNodes implements NodeTableDesc
     public String getLangColName()          { return colLang ; }
     public String getTypeColName()          { return colType ; }
     public String getDatatypeColName()      { return colDatatype ; }
-
 }
 
 /*

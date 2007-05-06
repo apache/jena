@@ -17,7 +17,10 @@ import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableTriples;
-import com.hp.hpl.jena.sdb.sql.*;
+import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
+import com.hp.hpl.jena.sdb.sql.TableUtils;
 
 
 public class FmtLayout2HashHSQL extends FmtLayout2
@@ -33,10 +36,10 @@ public class FmtLayout2HashHSQL extends FmtLayout2
     @Override
     protected void formatTableTriples()
     {
-        dropTable(TableTriples.tableName) ;
+        dropTable(TableTriples.name()) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableTriples.tableName+" (",
+                                 "CREATE TABLE "+TableTriples.name()+" (",
                                  "    s BIGINT NOT NULL ,",
                                  "    p BIGINT NOT NULL ,",
                                  "    o BIGINT NOT NULL ,",
@@ -45,7 +48,7 @@ public class FmtLayout2HashHSQL extends FmtLayout2
                     )) ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.name()+"'",ex) ;
         }
     }
 
@@ -56,17 +59,17 @@ public class FmtLayout2HashHSQL extends FmtLayout2
             connection().exec("DROP INDEX PredObj IF EXIST") ;
             connection().exec("DROP INDEX ObjSubj IF EXIST") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableTriples.tableName+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableTriples.name()+"'",ex) ; }
     }
     
 
     @Override
     protected void formatTableNodes()
     {
-        dropTable(TableNodes.tableName) ;
+        dropTable(TableNodes.name()) ;
         try { 
             connection().exec(sqlStr (
-                     "CREATE TABLE "+TableNodes.tableName+" (",
+                     "CREATE TABLE "+TableNodes.name()+" (",
                      "   hash BIGINT NOT NULL ,",
                      "   lex VARCHAR NOT NULL ,",
                      "   lang VARCHAR(10) default '' NOT NULL ,",
@@ -75,20 +78,20 @@ public class FmtLayout2HashHSQL extends FmtLayout2
                      "   PRIMARY KEY (hash)",
                      ")"  
                 )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.tableName+" (hash)") ;
+            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.name()+" (hash)") ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException resetting table '"+TableNodes.name()+"'",ex) ;
         }
     }
 
     @Override
     protected void formatTablePrefixes()
     {
-        dropTable(TablePrefixes.tableName) ;
+        dropTable(TablePrefixes.name()) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TablePrefixes.tableName+" (",
+                                 "CREATE TABLE "+TablePrefixes.name()+" (",
                                  "    prefix  VARCHAR NOT NULL,",
                                  "    uri     VARCHAR NOT NULL,", 
                                  "    PRIMARY KEY  (prefix)",
@@ -96,7 +99,7 @@ public class FmtLayout2HashHSQL extends FmtLayout2
                     )) ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.tableName+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException resetting table '"+TablePrefixes.name()+"'",ex) ;
         }
     }
     
@@ -110,12 +113,6 @@ public class FmtLayout2HashHSQL extends FmtLayout2
         { throw new SDBExceptionSQL("SQLException : Can't truncate table: "+tableName, ex) ; }
     }
     
-    @Override
-    protected void dropTable(String tableName)
-    {
-        TableUtils.dropTable(connection(), tableName) ;
-    }
-
 }
 
 /*

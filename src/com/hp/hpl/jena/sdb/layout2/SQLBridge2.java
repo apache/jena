@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
-import com.hp.hpl.jena.sdb.store.NodeTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescNode;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 
 public class SQLBridge2 extends SQLBridgeBase 
@@ -122,7 +122,7 @@ public class SQLBridge2 extends SQLBridgeBase
         
         SqlColumn c1 = e1.getColumn() ;
         // Not in scope -- add a table to get it
-        NodeTableDesc nodeTableDesc = request.getStore().getNodeTableDesc() ;
+        TableDescNode nodeTableDesc = request.getStore().getNodeTableDesc() ;
         
         String tableAlias = request.genId(NodeBase) ; 
         SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), tableAlias) ;

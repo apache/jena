@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescQuad;
 
 public class SqlStageTripleTable implements SqlStage
 {
@@ -46,12 +46,12 @@ public class SqlStageTripleTable implements SqlStage
         SqlTable triples = accessTriplesTable(request, alias) ;
         triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
 
-        TripleTableDesc tripleTableDesc = request.getStore().getTripleTableDesc() ;
+        TableDescQuad tripleTableDesc = request.getStore().getTripleTableDesc() ;
         
         if ( false )
             slotCompiler.processSlot(request, triples, conditions, quad.getGraph(),
                                      tripleTableDesc.getGraphColName()) ;
-        slotCompiler.processSlot(request, triples, conditions,quad.getSubject(),
+        slotCompiler.processSlot(request, triples, conditions, quad.getSubject(),
                                  tripleTableDesc.getSubjectColName()) ; 
         slotCompiler.processSlot(request, triples, conditions, quad.getPredicate(),
                                  tripleTableDesc.getPredicateColName()) ;

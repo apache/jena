@@ -6,56 +6,19 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.util.HSQLUtils;
-import com.hp.hpl.jena.sdb.util.StoreUtils;
-
-
-
-public class StoreBaseHSQL extends StoreBase
+public interface TableDescNode
 {
-    protected boolean currentlyOpen = true ;
+    public String getTableName() ;
     
-    public StoreBaseHSQL(SDBConnection connection, 
-                         StoreFormatter formatter,
-                         StoreLoader loader,
-                         QueryCompilerFactory compilerF,
-                         SQLBridgeFactory sqlBridgeF,
-                         TableDescQuad tripleTableDesc,
-                         TableDescNode nodeTableDesc)
-    {
-        super(connection, formatter, loader, compilerF, sqlBridgeF, 
-              new GenerateSQL(), tripleTableDesc, nodeTableDesc) ;
-    }
-
-    @Override 
-    public void close()
-    { 
-        if ( currentlyOpen )
-            HSQLUtils.shutdown(getConnection()) ;
-        currentlyOpen = false ; 
-    }
-
-    public static void close(Store store)
-    {
-        if ( StoreUtils.isHSQL(store) )
-            ((StoreBaseHSQL)store).close() ;
-    }
+    /** Name of the column used to join with the triple table. */
+    public String getKeyColName() ;
     
-    public static void checkpoint(Store store)
-    {
-        if ( StoreUtils.isHSQL(store) )
-            ((StoreBaseHSQL)store).checkpoint() ;
-    }
-    
-    public void checkpoint()
-    { 
-        if ( currentlyOpen ) 
-            HSQLUtils.checkpoint(getConnection()) ;
-    }
-    
+    public String getIdColName() ;
+    public String getHashColName() ;
+    public String getLexColName() ;
+    public String getLangColName() ;
+    public String getDatatypeColName() ;
+    public String getTypeColName() ;
 }
 
 /*

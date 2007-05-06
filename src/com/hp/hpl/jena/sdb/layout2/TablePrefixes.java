@@ -11,9 +11,10 @@ import com.hp.hpl.jena.sdb.graph.PrefixMappingSDB;
 
 public class TablePrefixes
 {
-    public static final String tableName          = PrefixMappingSDB.prefixTableName ;
-    public static final int    prefixColWidth     = PrefixMappingSDB.prefixColWidth ;
-    public static final int    uriColWidth        = PrefixMappingSDB.uriColWidth ;
+    private static final String tableName       = PrefixMappingSDB.prefixTableName ;
+    public static String name()                 { return tableName; }
+    public static final int    prefixColWidth   = PrefixMappingSDB.prefixColWidth ;
+    public static final int    uriColWidth       = PrefixMappingSDB.uriColWidth ;
 
 }
 

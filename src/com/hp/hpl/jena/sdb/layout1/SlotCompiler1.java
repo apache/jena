@@ -12,13 +12,13 @@ import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.*;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.store.TripleTableDesc;
+import com.hp.hpl.jena.sdb.store.TableDescQuad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 public class SlotCompiler1 extends SlotCompiler
 {
     private EncoderDecoder codec ;
-    private TripleTableDesc tripleTableDesc ;
+    private TableDescQuad tripleTableDesc ;
 
     public SlotCompiler1(SDBRequest request, EncoderDecoder codec)
     {
