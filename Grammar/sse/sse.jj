@@ -176,13 +176,13 @@ String String() : { Token t ; String lex ; }
 
 Node IRIref() : { Node n ; }
 {
-  n = Q_IRI_REF() { return n ; }
-| n = QName() { return n ; }
+  n = IRI_REF() { return n ; }
+| n = PrefixedName() { return n ; }
 }
 
-Node QName() : { Token t ; Node n ; }
+Node PrefixedName() : { Token t ; Node n ; }
 {
-  t = <QNAME>
+  t = <PNAME>
     { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
 }
 
@@ -196,9 +196,9 @@ Node BlankNode() :  { Token t = null ; }
 
 }
 
-Node Q_IRI_REF() : { Token t ; }
+Node IRI_REF() : { Token t ; }
 {
-  t = <Q_IRIref>
+  t = <IRIref>
   { return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ; }
 }
 

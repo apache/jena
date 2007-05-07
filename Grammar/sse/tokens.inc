@@ -14,9 +14,9 @@ SPECIAL_TOKEN :
 
 TOKEN:
 {
-   <Q_IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
-|  <QNAME: (<NCNAME_PREFIX>)? ":" (<NCNAME>)? >
-|  <BLANK_NODE_LABEL: "_:" <NCNAME> >
+   <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
+|  <PNAME: (<PN_PREFIX>)? ":" (<PN_LOCAL>)? >
+|  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
 |  <VAR1: <HOOK> <VARNAME> >
 |  <VAR2: "$" <VARNAME> >
 |  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
@@ -78,7 +78,7 @@ TOKEN :
 TOKEN:
 {
   // XML 1.1 NCNameStartChar without "_"
-  <#NCCHAR1P:
+  <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
           ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
           ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
@@ -87,27 +87,24 @@ TOKEN:
           >
           // [#x10000-#xEFFFF]
 |
-  <#NCCHAR1: <NCCHAR1P> | "_" >
-
-// No trailing DOTs in qnames.
+  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
 |
-  // #NCCHAR without "."
-  <#NCCHAR: (<NCCHAR1> | "-" | ["0"-"9"] | "\u00B7" |
+// No DOT
+  <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |
               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
 |
-  // NCNAME but no leading "_", no trailing ".", can have dot inside prefix name.
-  <#NCNAME_PREFIX: <NCCHAR1P> ((<NCCHAR>|".")* <NCCHAR>)?  >
+  // No leading "_", no trailing ".", can have dot inside prefix name.
+  <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |
   // With a leading "_", no dot at end of local name.
-  <#NCNAME: <NCCHAR1> ((<NCCHAR>|".")* <NCCHAR>)?  >
+  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |
   // NCNAME without "-" and ".", allowing leading digits.
-  <#VARNAME: ( <NCCHAR1> | ["0"-"9"] )
-             ( <NCCHAR1> | ["0"-"9"] | "\u00B7" |
+  <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
+             ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
 }
 
-// Can we add @foo?
 TOKEN:
 {
   <WORD: <VARNAME> >

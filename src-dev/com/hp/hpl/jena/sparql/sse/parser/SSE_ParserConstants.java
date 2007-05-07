@@ -11,8 +11,8 @@ public interface SSE_ParserConstants {
   int EOF = 0;
   int WS = 1;
   int SINGLE_LINE_COMMENT = 2;
-  int Q_IRIref = 3;
-  int QNAME = 4;
+  int IRIref = 3;
+  int PNAME = 4;
   int BLANK_NODE_LABEL = 5;
   int VAR1 = 6;
   int VAR2 = 7;
@@ -40,11 +40,11 @@ public interface SSE_ParserConstants {
   int DATATYPE = 29;
   int AT = 30;
   int HOOK = 31;
-  int NCCHAR1P = 32;
-  int NCCHAR1 = 33;
-  int NCCHAR = 34;
-  int NCNAME_PREFIX = 35;
-  int NCNAME = 36;
+  int PN_CHARS_BASE = 32;
+  int PN_CHARS_U = 33;
+  int PN_CHARS = 34;
+  int PN_PREFIX = 35;
+  int PN_LOCAL = 36;
   int VARNAME = 37;
   int WORD = 38;
   int OP = 39;
@@ -56,8 +56,8 @@ public interface SSE_ParserConstants {
     "<EOF>",
     "<WS>",
     "<SINGLE_LINE_COMMENT>",
-    "<Q_IRIref>",
-    "<QNAME>",
+    "<IRIref>",
+    "<PNAME>",
     "<BLANK_NODE_LABEL>",
     "<VAR1>",
     "<VAR2>",
@@ -85,11 +85,11 @@ public interface SSE_ParserConstants {
     "\"^^\"",
     "\"@\"",
     "\"?\"",
-    "<NCCHAR1P>",
-    "<NCCHAR1>",
-    "<NCCHAR>",
-    "<NCNAME_PREFIX>",
-    "<NCNAME>",
+    "<PN_CHARS_BASE>",
+    "<PN_CHARS_U>",
+    "<PN_CHARS>",
+    "<PN_PREFIX>",
+    "<PN_LOCAL>",
     "<VARNAME>",
     "<WORD>",
     "<OP>",

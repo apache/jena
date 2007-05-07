@@ -130,8 +130,8 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME:
+      case IRIref:
+      case PNAME:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -179,8 +179,8 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       }
       {if (true) return Item.createWord(t.image, t.beginLine, t.beginColumn) ;}
       break;
-    case Q_IRIref:
-    case QNAME:
+    case IRIref:
+    case PNAME:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -206,8 +206,8 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
   final public Item TermOrList() throws ParseException {
                       Item item ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME:
+    case IRIref:
+    case PNAME:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -252,8 +252,8 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
   final public Node GraphTerm() throws ParseException {
                      Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME:
+    case IRIref:
+    case PNAME:
       n = IRIref();
                  {if (true) return n ;}
       break;
@@ -410,13 +410,13 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
   final public Node IRIref() throws ParseException {
                   Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-      n = Q_IRI_REF();
-                    {if (true) return n ;}
+    case IRIref:
+      n = IRI_REF();
+                  {if (true) return n ;}
       break;
-    case QNAME:
-      n = QName();
-                {if (true) return n ;}
+    case PNAME:
+      n = PrefixedName();
+                       {if (true) return n ;}
       break;
     default:
       jj_la1[18] = jj_gen;
@@ -426,9 +426,9 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node QName() throws ParseException {
-                 Token t ; Node n ;
-    t = jj_consume_token(QNAME);
+  final public Node PrefixedName() throws ParseException {
+                        Token t ; Node n ;
+    t = jj_consume_token(PNAME);
       {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
@@ -440,9 +440,9 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node Q_IRI_REF() throws ParseException {
-                     Token t ;
-    t = jj_consume_token(Q_IRIref);
+  final public Node IRI_REF() throws ParseException {
+                   Token t ;
+    t = jj_consume_token(IRIref);
     {if (true) return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }

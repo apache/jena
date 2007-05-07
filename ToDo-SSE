@@ -1,0 +1,21 @@
+==== SSE
+
++ Symbols : subclass of Node_Literal
+  But not a Literals.
+
++ Builder tidying and testing
+  
+  ItemLists : cons cells?!
+    Why?  Why not?
+
++ Expr: (exists (pattern ...))
+  
++  (group (vars) aggregate)
+  
++  Assignment:
+  (assign ((?x expr) (?y expr)) --  (:= ?x expr) [is this SELECT/project?]
+     (project ...))
+     (project (?x ?y (?z expr)) ...)
+
++ Prefix writing.
+
