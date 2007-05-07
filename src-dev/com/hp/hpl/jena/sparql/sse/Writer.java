@@ -78,18 +78,14 @@ public class Writer
         {
             boolean first = true ; 
             int indentlevel = out.getUnitIndent() ;
+            if ( list.size() >= 1 && list.get(0).isList() )
+                indentlevel = 1 ;
             
             for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
             {
                 Item subItem = (Item)iter.next() ;
                 if ( ! first ) 
                     out.println() ;
-                else
-                {
-                    if ( subItem.isList() )
-                        indentlevel = 1 ;
-                }
-                
                 subItem.visit(this) ;
                 if ( first )
                     out.incIndent(indentlevel) ;
