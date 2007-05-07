@@ -41,9 +41,13 @@ public class ResolvePrefixedNames
     }
 
     public static Node resolve(Node node, PrefixMapping pmap)
+    { return resolve(node, pmap) ; }
+    
+    public static Node resolve(Node node, PrefixMapping pmap, ItemLocation location)
     {
         if ( ! node.isURI() )
             return node ;
+        
         String uri = node.getURI() ;
         if ( uri.startsWith(":") )
         {
@@ -51,7 +55,7 @@ public class ResolvePrefixedNames
             if ( pmap != null )
                 uri = pmap.expandPrefix(qname) ;
             if ( uri == null || uri.equals(qname) )
-                return null ;
+                BuilderBase.broken(location, "Can't resolve prefixed name: "+uri) ;
             return Node.createURI(uri) ;
         }
         else
@@ -59,6 +63,26 @@ public class ResolvePrefixedNames
             uri = RelURI.resolve(uri) ;
             return Node.createURI(uri) ;
         }
+    }
+
+    // Returns a node if resolved - else null.
+    public static Node resolve(String word, PrefixMapping pmap, ItemLocation location)
+    {
+        if ( pmap == null )
+            return null ;
+        
+        if ( ! word.contains(":") )
+            return null ;
+        
+        String uri = pmap.expandPrefix(word) ;
+        if ( uri == null || uri.equals(word) )
+        {
+            // Unresolved in some way.  
+            BuilderBase.broken(location, "Can't resolve prefixed name: "+uri) ;
+            // OR Make into a funny node
+            return Node.createURI(":"+word) ;
+        }
+        return Node.createURI(uri) ;
     }
 
     private static Item process(Item item, PrefixMapping pmap)
@@ -121,34 +145,59 @@ public class ResolvePrefixedNames
             Item prefixItem = pair.getList().get(0) ;
             Item iriItem = pair.getList().get(1) ;
 
-            Node n = prefixItem.getNode() ;
-            if ( ! n.isURI() )
-                BuilderBase.broken(pair, "Prefix part is not a prefixed name: "+pair) ;
+            // Maybe a Node (fake prefixed name) or a Word, depending on parser set up.
+            
+            String prefix = null ;
 
-            String prefix = n.getURI();
+            // -- Prefix
+            if ( prefixItem.isWord() )
+                prefix = prefixItem.getWord() ;
+
+            if ( prefixItem.isNode())
+            {
+                Node n = prefixItem.getNode() ;
+                if ( ! n.isURI() )
+                    BuilderBase.broken(pair, "Prefix part is not a prefixed name: "+pair) ;
+
+                prefix = n.getURI();
+                // It will look like :x:
+                
+                if ( ! prefix.startsWith(":") )
+                    BuilderBase.broken(pair, "Prefix part is not a prefix name: "+pair) ;
+                prefix = prefix.substring(1) ;
+            }            
+
+            if ( ! prefix.endsWith(":") )
+                BuilderBase.broken(pair, "Prefix part does not end with a ':': "+pair) ;
+            prefix = prefix.substring(0, prefix.length()-1) ;
+            if ( prefix.contains(":") )
+                BuilderBase.broken(pair, "Prefix itseld contains a ':' : "+pair) ;
+            // -- /Prefix
             Node iriNode = iriItem.getNode() ;
 
             if ( iriNode == null || ! iriNode.isURI() )
                 BuilderBase.broken(pair, "Not an IRI: "+iriItem) ;
 
             String iri = iriNode.getURI();
-            // It will look like :x:
-            prefix = prefix.substring(1) ;
-            prefix = prefix.substring(0, prefix.length()-1) ;
 
             newMappings.setNsPrefix(prefix, iri) ;
         }
     }
 
     private static Item process(Item item, String word, PrefixMapping pmap)
-    { return item ; }
+    {
+        Node n = resolve(word, pmap, item) ;
+        if ( n == null )
+            return item ;
+        return Item.createNode(n) ; 
+    }
 
     private static Item process(Item item, Node node, PrefixMapping pmap)
     {
         if ( ! node.isURI() )
             return item ;
         
-        Node node2 = resolve(node, pmap) ;
+        Node node2 = resolve(node, pmap, item) ;
         if ( node2 == null )
             BuilderBase.broken(item, "Can't resolve "+node.getURI()) ;
         return Item.createNode(node2) ;

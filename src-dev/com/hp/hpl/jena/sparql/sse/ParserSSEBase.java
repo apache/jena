@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarAlloc;
@@ -22,6 +24,7 @@ public class ParserSSEBase extends ParserBase
     //@Override
     protected Node createNodeFromPrefixedName(String s, int line, int column)
     {
+        LogFactory.getLog(ParserSSEBase.class).warn("Call to createNodeFromPrefixedName") ;
         return Node.createURI(":"+s) ;
     }
     

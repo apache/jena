@@ -17,6 +17,8 @@ import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class Writer
 {
+    private static boolean CloseSameLine = true ;
+    
     public static void write(IndentedWriter out, Item item, SerializationContext sCxt)
     {
         item.visit(new Print(out, sCxt)) ;
@@ -75,19 +77,29 @@ public class Writer
         private void printAsList(ItemList list)
         {
             boolean first = true ; 
-
+            int indentlevel = out.getUnitIndent() ;
+            
             for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
             {
                 Item subItem = (Item)iter.next() ;
                 if ( ! first ) 
                     out.println() ;
+                else
+                {
+                    if ( subItem.isList() )
+                        indentlevel = 1 ;
+                }
+                
                 subItem.visit(this) ;
                 if ( first )
-                    out.incIndent() ;
+                    out.incIndent(indentlevel) ;
                 first = false ;
             }
-            out.decIndent() ;
-            out.println();
+            
+            if ( ! first )
+                out.decIndent(indentlevel) ;
+            if ( ! CloseSameLine )
+                out.println();
             out.print(")") ;
         }
         

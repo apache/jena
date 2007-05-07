@@ -19,18 +19,18 @@ import com.hp.hpl.jena.util.FileUtils ;
 public class IndentedWriter
 {
     // Note cases:
-    // 1/ incIndent - decIntent with no output should not cause any padding
+    // 1/ incIndent - decIndent with no output should not cause any padding
     // 2/ newline() then no text, then finish should not cause a line number.
     
-    PrintWriter out = null ;
+    protected PrintWriter out = null ;
     
-    static final int INDENT = 2 ;
-    int unitIndent = INDENT ;
-    int currentIndent = 0 ;
-    int column = 0 ;
-    int row = 1 ;
-    boolean lineNumbers = false ;
-    boolean startingNewLine = true ;
+    protected static final int INDENT = 2 ;
+    protected int unitIndent = INDENT ;
+    protected int currentIndent = 0 ;
+    protected int column = 0 ;
+    protected int row = 1 ;
+    protected boolean lineNumbers = false ;
+    protected boolean startingNewLine = true ;
     
     public IndentedWriter(OutputStream outStream) { this(outStream, false) ; }
     
@@ -183,7 +183,8 @@ public class IndentedWriter
     public void decIndent(int x) { currentIndent -= x ; }
     public void decIndent() { decIndent(unitIndent) ; }
     
-    public void setIndent(int x) { unitIndent = x ; }
+    public void setUnitIndent(int x) { unitIndent = x ; }
+    public int  getUnitIndent() { return unitIndent ; }
     public void setAbsoluteIndent(int x) { currentIndent = x ; }
     
     public boolean atLineStart() { return startingNewLine ; }

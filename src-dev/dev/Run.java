@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.table.TableWriter;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.util.FileManager;
 
@@ -30,20 +31,24 @@ public class Run
     {
         //runQExpr() ;
         //print() ;
-        //code() ;
+        codeSSE() ;
         //runQParse() ;
         //classifyJ() ;
         //classifyLJ() ;
-        execQuery("D.ttl", "Q.rq") ;
+        //execQuery("D.ttl", "Q.rq") ;
         //exec("D.ttl", "SSE/test.sse") ;
     }
         
-    private static void code()
+    private static void codeSSE()
     {
+        Item item = SSE.readFile("SSE/graph.sse") ;
+        System.out.println(item.toString()) ;
+        System.out.println() ;
+        
         Graph graph = SSE.readGraph("SSE/graph.sse") ;
         Model model = ModelFactory.createModelForGraph(graph) ;
         model.write(System.out, "TTL") ;
-        System.exit(0) ;
+        //System.exit(0) ;
         // --------
         Table table = SSE.readTable("SSE/table.sse") ;
         ResultSet rs = table.toResultSet() ;

@@ -161,7 +161,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
   }
 
   final public Item Term() throws ParseException {
-                Token t ; Node node ;
+                Token t ; Node node ; Item item ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case WORD:
     case OP:
@@ -180,7 +180,6 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       {if (true) return Item.createWord(t.image, t.beginLine, t.beginColumn) ;}
       break;
     case IRIref:
-    case PNAME:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -194,6 +193,10 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     case HOOK:
       node = GraphTerm();
       {if (true) return Item.createNode(node, token.beginLine, token.beginColumn) ;}
+      break;
+    case PNAME:
+      t = jj_consume_token(PNAME);
+     {if (true) return Item.createWord(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
       jj_la1[8] = jj_gen;
@@ -253,7 +256,6 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
                      Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
-    case PNAME:
       n = IRIref();
                  {if (true) return n ;}
       break;
@@ -409,30 +411,22 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
 
   final public Node IRIref() throws ParseException {
                   Node n ;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IRIref:
-      n = IRI_REF();
+    n = IRI_REF();
                   {if (true) return n ;}
-      break;
-    case PNAME:
-      n = PrefixedName();
-                       {if (true) return n ;}
-      break;
-    default:
-      jj_la1[18] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
     throw new Error("Missing return statement in function");
   }
 
-  final public Node PrefixedName() throws ParseException {
-                        Token t ; Node n ;
-    t = jj_consume_token(PNAME);
-      {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
-    throw new Error("Missing return statement in function");
-  }
-
+// Node IRIref() : { Node n ; }
+// {
+//   n = IRI_REF() { return n ; }
+// | n = PrefixedName() { return n ; }
+// }
+// 
+// String PrefixedName() : { Token t ; Node n ; }
+// {
+//   t = <PNAME>
+//     { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
+// }
   final public Node BlankNode() throws ParseException {
                      Token t = null ;
     t = jj_consume_token(BLANK_NODE_LABEL);
@@ -452,7 +446,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
   public Token token, jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[19];
+  final private int[] jj_la1 = new int[18];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -460,10 +454,10 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x2,0x0,0x2,0x2,0x8800000,0x2,0x88f870f8,0x0,0x807870f8,0x2,0x88f870f8,0x807870f8,0xc0,0x800000c0,0x20000100,0x20000100,0x7000,0x780000,0x18,};
+      jj_la1_0 = new int[] {0x2,0x0,0x2,0x2,0x8800000,0x2,0x88f870f8,0x0,0x807870f8,0x2,0x88f870f8,0x807870e8,0xc0,0x800000c0,0x20000100,0x20000100,0x7000,0x780000,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0xc0,0x0,0x0,0x0,0x0,0xc0,0xc0,0xc0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0xc0,0x0,0x0,0x0,0x0,0xc0,0xc0,0xc0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   public SSE_Parser(java.io.InputStream stream) {
@@ -475,7 +469,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -487,7 +481,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
   }
 
   public SSE_Parser(java.io.Reader stream) {
@@ -496,7 +490,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -505,7 +499,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
   }
 
   public SSE_Parser(SSE_ParserTokenManager tm) {
@@ -513,7 +507,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
   }
 
   public void ReInit(SSE_ParserTokenManager tm) {
@@ -521,7 +515,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 19; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 18; i++) jj_la1[i] = -1;
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
@@ -576,7 +570,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 19; i++) {
+    for (int i = 0; i < 18; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

@@ -89,13 +89,16 @@ Item BareList(Item list) : { Item elt ; }
     { return list ; }
 }
 
-Item Term() : { Token t ; Node node ; }
+Item Term() : { Token t ; Node node ; Item item ; }
 {
   ( t = <WORD> | t = <OP> )
     { return Item.createWord(t.image, t.beginLine, t.beginColumn) ; }
  | node = GraphTerm()
     // Not quite right for line/col - this is the last token
     { return Item.createNode(node, token.beginLine, token.beginColumn) ; }
+ | 
+   t = <PNAME>
+   { return Item.createWord(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 Item TermOrList() : { Item item ; }
@@ -177,14 +180,19 @@ String String() : { Token t ; String lex ; }
 Node IRIref() : { Node n ; }
 {
   n = IRI_REF() { return n ; }
-| n = PrefixedName() { return n ; }
 }
 
-Node PrefixedName() : { Token t ; Node n ; }
-{
-  t = <PNAME>
-    { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
-}
+// Node IRIref() : { Node n ; }
+// {
+//   n = IRI_REF() { return n ; }
+// | n = PrefixedName() { return n ; }
+// }
+// 
+// String PrefixedName() : { Token t ; Node n ; }
+// {
+//   t = <PNAME>
+//     { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
+// }
 
 Node BlankNode() :  { Token t = null ; }
 {
