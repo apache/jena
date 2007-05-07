@@ -1,11 +1,12 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ StoreConnection needs a StoreLayout indirection to get table names for formatting.
-
-
-+ Assemblers : { :type ja:assembler "classname"  } for autoloading.
-  ja:imports as well.?
++ StoreConnection needs a StoreLayout indirection
+  + to get table names for formatting
+  + to get the layout subtypes (1/2 ; index/hash ; triples/quads)
+  Connection -> Config "StoreControl" -> Store 
+  Store hasA "StoreControl" -- c.f. StoreFormatter
+   Features play into this
 
 + --sdb=@ for global registration?
 
@@ -32,10 +33,6 @@ SDB ToDo list (and general notes)
   + Be careful about code generation and a right complex expression
     Use a SELECT for nested expressions?  generalize from COALESCE code generation.
     
-+ Features:
-  In desc file for now.
-  Features are params to layout
-
 + Values and conditions : reactivate condition compilation.
   Need value access
   Isolate QC2.insertValueGetter
@@ -49,7 +46,3 @@ SDB ToDo list (and general notes)
     Full text indexing where available?
 
 + Graph pattern tables
-
-+ Abstract columns types then simple templating.
-        VARCHAR/TEXT/BLOB abstract syntax
-

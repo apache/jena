@@ -27,21 +27,27 @@ public class SDB
     public final static String symbolNamespace = "http://jena.hpl.hp.com/SDB/symbol#" ; 
     
     static boolean initialized = false ;
-    static public void init()
+    static synchronized public void init()
     {
         // Called from 
         // + StoreFactory
         // + DatasetStore
         // Commands call AssemblerVocab.init() ;
 
-        if ( initialized ) return ;
+        if ( initialized )
+            return ;
+        
         // Set this immediately in case code below causes init() to be called.
         // (It's better if there are no dependences but ...)
         initialized = true ;
         
         // Default is 1000 4Kpages.
         DerbyUtils.setDerbyPageCacheSize(10000) ;
+        
+        // Also done if the assember includes the righ ja:assembler property
         AssemblerVocab.init() ;
+        
+        // Wire in the SDB query engne
         QueryEngineRegistry.get().add(new QueryEngineFactorySDB()) ;
     }
     

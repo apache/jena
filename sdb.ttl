@@ -4,6 +4,12 @@
 @prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sdb:      <http://jena.hpl.hp.com/2006/sdb#> .
 
+# Works but SDB has to do other initialization anyway.
+# acmd:SDBConnection ja:assembler 
+#     "com.hp.hpl.jena.sdb.assembler.SDBConnectionDescAssembler" .
+# acmd:Store ja:assembler
+#     "com.hp.hpl.jena.sdb.assembler.StoreDescAssembler" .
+
 _:c rdf:type acmd:SDBConnection ;
     acmd:sdbType        "derby" ;
     acmd:sdbName        "DB/SDB2" ;
