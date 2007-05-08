@@ -128,7 +128,12 @@ public class qexec extends CmdARQ
             }
 
             if ( queryString != null )
+            {
                 op = AlgSSE.parse(queryString) ;
+                if ( op == null )
+                    System.err.println("Faile to parse : "+queryString) ;
+                throw new TerminationException(9) ;
+            }
 
             if ( op == null )
             {

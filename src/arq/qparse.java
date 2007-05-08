@@ -32,7 +32,7 @@ public class qparse extends CmdARQ
 {
     ModQueryIn    modQuery   =    new ModQueryIn() ;
     ModQueryOut   modOutput  =    new ModQueryOut() ; 
-    ModEngine     modEngine =   new ModEngine() ;
+    ModEngine     modEngine  =    new ModEngine() ;
     protected final ArgDecl argDeclPrint  = new ArgDecl(ArgDecl.HasValue, "print") ;
     
     boolean printQuery = false ;
