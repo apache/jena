@@ -8,6 +8,9 @@ SDB ToDo list (and general notes)
   Store hasA "StoreControl" -- c.f. StoreFormatter
    Features play into this
 
+  StoreConfig is the in-DB mapping.
+    Repurpose this name?
+
 + --sdb=@ for global registration?
 
 + Prefixes : disable for ModelRDB only.
