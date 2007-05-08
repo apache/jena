@@ -10,52 +10,54 @@ public interface SSE_ParserConstants {
 
   int EOF = 0;
   int WS = 1;
-  int SINGLE_LINE_COMMENT = 2;
-  int IRIref = 3;
-  int PNAME = 4;
-  int BLANK_NODE_LABEL = 5;
-  int VAR1 = 6;
-  int VAR2 = 7;
-  int LANGTAG = 8;
-  int A2Z = 9;
-  int A2ZN = 10;
-  int DIGITS = 11;
-  int INTEGER = 12;
-  int DECIMAL = 13;
-  int DOUBLE = 14;
-  int EXPONENT = 15;
-  int QUOTE_3D = 16;
-  int QUOTE_3S = 17;
-  int ECHAR = 18;
-  int STRING_LITERAL1 = 19;
-  int STRING_LITERAL2 = 20;
-  int STRING_LITERAL_LONG1 = 21;
-  int STRING_LITERAL_LONG2 = 22;
-  int LPAREN = 23;
-  int RPAREN = 24;
-  int LBRACE = 25;
-  int RBRACE = 26;
-  int LBRACKET = 27;
-  int RBRACKET = 28;
-  int DATATYPE = 29;
-  int AT = 30;
-  int HOOK = 31;
-  int PN_CHARS_BASE = 32;
-  int PN_CHARS_U = 33;
-  int PN_CHARS = 34;
-  int PN_PREFIX = 35;
-  int PN_LOCAL = 36;
-  int VARNAME = 37;
-  int WORD = 38;
-  int OP = 39;
-  int UNKNOWN = 40;
+  int SINGLE_LINE_COMMENT1 = 2;
+  int SINGLE_LINE_COMMENT2 = 3;
+  int IRIref = 4;
+  int PNAME = 5;
+  int BLANK_NODE_LABEL = 6;
+  int VAR1 = 7;
+  int VAR2 = 8;
+  int LANGTAG = 9;
+  int A2Z = 10;
+  int A2ZN = 11;
+  int DIGITS = 12;
+  int INTEGER = 13;
+  int DECIMAL = 14;
+  int DOUBLE = 15;
+  int EXPONENT = 16;
+  int QUOTE_3D = 17;
+  int QUOTE_3S = 18;
+  int ECHAR = 19;
+  int STRING_LITERAL1 = 20;
+  int STRING_LITERAL2 = 21;
+  int STRING_LITERAL_LONG1 = 22;
+  int STRING_LITERAL_LONG2 = 23;
+  int LPAREN = 24;
+  int RPAREN = 25;
+  int LBRACE = 26;
+  int RBRACE = 27;
+  int LBRACKET = 28;
+  int RBRACKET = 29;
+  int DATATYPE = 30;
+  int AT = 31;
+  int HOOK = 32;
+  int PN_CHARS_BASE = 33;
+  int PN_CHARS_U = 34;
+  int PN_CHARS = 35;
+  int PN_PREFIX = 36;
+  int PN_LOCAL = 37;
+  int VARNAME = 38;
+  int WORD = 39;
+  int OP = 40;
+  int UNKNOWN = 41;
 
   int DEFAULT = 0;
 
   String[] tokenImage = {
     "<EOF>",
     "<WS>",
-    "<SINGLE_LINE_COMMENT>",
+    "<SINGLE_LINE_COMMENT1>",
+    "<SINGLE_LINE_COMMENT2>",
     "<IRIref>",
     "<PNAME>",
     "<BLANK_NODE_LABEL>",

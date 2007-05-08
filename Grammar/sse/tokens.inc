@@ -10,7 +10,12 @@ TOKEN: { <WS: " " | "\t" | "\n" | "\r" | "\f"> }
 #endif
 
 SPECIAL_TOKEN :
-{ <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
+{
+    <SINGLE_LINE_COMMENT1: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > 
+|
+    // Lisp-style comments (makes Emacs lisp-mode more useful
+    <SINGLE_LINE_COMMENT2: ";" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+}
 
 TOKEN:
 {

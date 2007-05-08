@@ -454,10 +454,10 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x2,0x0,0x2,0x2,0x8800000,0x2,0x88f870f8,0x0,0x807870f8,0x2,0x88f870f8,0x807870e8,0xc0,0x800000c0,0x20000100,0x20000100,0x7000,0x780000,};
+      jj_la1_0 = new int[] {0x2,0x0,0x2,0x2,0x11000000,0x2,0x11f0e1f0,0x0,0xf0e1f0,0x2,0x11f0e1f0,0xf0e1d0,0x180,0x180,0x40000200,0x40000200,0xe000,0xf00000,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0xc0,0x0,0x0,0x0,0x0,0xc0,0xc0,0xc0,0x0,0xc0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x180,0x0,0x0,0x0,0x0,0x181,0x180,0x181,0x0,0x181,0x1,0x0,0x1,0x0,0x0,0x0,0x0,};
    }
 
   public SSE_Parser(java.io.InputStream stream) {
@@ -562,8 +562,8 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[41];
-    for (int i = 0; i < 41; i++) {
+    boolean[] la1tokens = new boolean[42];
+    for (int i = 0; i < 42; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -582,7 +582,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
         }
       }
     }
-    for (int i = 0; i < 41; i++) {
+    for (int i = 0; i < 42; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
