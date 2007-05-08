@@ -2,5 +2,5 @@ PREFIX :  <http://example/>
 
 SELECT ?x 
 {
-    GRAPH <D.ttl> {}
+    OPTIONAL{:x :p ?x}
 }

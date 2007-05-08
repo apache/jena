@@ -41,24 +41,36 @@ public class Run
         
     private static void codeSSE()
     {
-        Item item = SSE.readFile("SSE/graph.sse") ;
-        System.out.println(item.toString()) ;
-        System.out.println() ;
+        if ( false )
+        {
+            Item item = SSE.readFile("SSE/graph.sse") ;
+            System.out.println(item.toString()) ;
+            System.out.println() ;
+        }
         
-        Graph graph = SSE.readGraph("SSE/graph.sse") ;
-        Model model = ModelFactory.createModelForGraph(graph) ;
-        model.write(System.out, "TTL") ;
+        if ( false )
+        {
+            Graph graph = SSE.readGraph("SSE/graph.sse") ;
+            Model model = ModelFactory.createModelForGraph(graph) ;
+            model.write(System.out, "TTL") ;
+        }
         //System.exit(0) ;
         // --------
-        Table table = SSE.readTable("SSE/table.sse") ;
-        ResultSet rs = table.toResultSet() ;
-        ResultSetFormatter.out(rs) ;
-        System.out.println(table) ;
+        if ( false )
+        {
+            Table table = SSE.readTable("SSE/table.sse") ;
+            ResultSet rs = table.toResultSet() ;
+            ResultSetFormatter.out(rs) ;
+            System.out.println(table) ;
+            
+            Table table2 = SSE.parseTable(TableWriter.asSSE(table));
+            ResultSet rs2 = table2.toResultSet() ;
+            ResultSetFormatter.out(rs2) ;
+            System.exit(0) ;
+        }
         
-        Table table2 = SSE.parseTable(TableWriter.asSSE(table));
-        ResultSet rs2 = table2.toResultSet() ;
-        ResultSetFormatter.out(rs2) ;
-        System.exit(0) ;
+        dev.qexec.main(new String[]{"--data=D.ttl", "--query=Q.sse"}) ;
+        
     }
 
     private static void codeLARQ()

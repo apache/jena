@@ -1,7 +1,6 @@
 ==== SSE
 
-+ Words/Symbol
-  QNames could be Item/words?  Decide on 
++ Integrate?
 
 + Builder tidying and testing
   
@@ -19,3 +18,4 @@
 
 + Prefix writing.
 
++ qexec.

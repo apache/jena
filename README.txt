@@ -112,4 +112,3 @@ General questions and comments on SPARQL to jena-dev or
 Formal comments specific to the SPARQL query language,
 protocol or result set docuemnts to:
 	public-rdf-dawg-comments@w3.org
-v

@@ -25,7 +25,7 @@ public class OpLeftJoin extends Op2
     
     public static Op create(Op left, Op right, Expr expr)
     { 
-        return new OpLeftJoin(left, right, new ExprList(expr)) ;
+        return new OpLeftJoin(left, right, expr == null ? null : new ExprList(expr)) ;
     }
 
     protected OpLeftJoin(Op left, Op right, ExprList exprs) 

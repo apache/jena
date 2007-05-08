@@ -1,4 +1,4 @@
-==== Announcing ARQ 2.0
+==== ARQ 2.0
 
 ARQ 2.0 is a complete implementation of SPARQL including
 support for custom filter function, property functions
@@ -12,7 +12,7 @@ ARQ 2.0 provides the same external API as ARQ 1.5.  Internally,
 query execution follows the SPARQL algebra, in development by
 the RDF Data Access Working Group.  There has been significant
 reorganisation and renaming of implementation code to align with
-termininology of the SPARQL specification.
+terminology of the SPARQL specification.
 
 This version also makes it easier to reuse and extend ARQ.  
 ARQ can also be used just as a SPARQL parser, as a SPARQL algebra
@@ -22,7 +22,7 @@ As well as custom functions and custom property functions, the
 SPARQL algebra can be extended with new operators.  There is a 
 new internal language for reading and writing algebra expressions
 directly, allowing experimentation in query optimization or query
-features not avilable in SPARQL currently.  
+features not available in SPARQL currently.  
 
 Download:
     http://prdownloads.sourceforge.net/jena/ARQ-2.0.zip
@@ -35,6 +35,30 @@ https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
 
 SPARQL is described in:
   http://www.w3.org/TR/rdf-sparql-query/
+
+== New features
+
+Two new features in this release:
+
+1/ A first cut at a SPARQL/Update API in "com.hp.hpl.jena.update" 
+   This API is not considered stable.  Your comments will be gratefully received.
+   There is code to read and write SPARQL/Update requests.
+   It should meet the latest
+     http://jena.hpl.hp.com/~afs/SPARQL-Update.html
+   which has had a couple of grammar tweaks applied (version 2).
+
+2/ Additonal control for queries with ARQ/Lucene (LARQ)
+   Can now get back the hit score for each match
+   Can now specify limits on scoring and/or hit count just for the Lucene match.
+
+   e.g. all these propert function calls work:
+
+   ?literal pf:textMatch '+text' .
+   (?literal ?score) pf:textMatch '+text' .
+   (?literal ?score) pf:textMatch ('+text' 0.5) .
+   (?literal ?score) pf:textMatch ('+text' 1000 0.5) .
+
+    Either or both of the Lucene limits can be supplied.
 
 == Changes to SPARQL
 
@@ -49,10 +73,11 @@ this release to reflect the new SPARQL algebra:
     { :z : p ?v { FILTER (?v > 3) } } has no solutions.
     Any extraneous {} around FILTERs may cause different results.
   + Results from corner cases of doubly nested OPTIONALs change.
-  
++ Increased characters in prefixed names - leading digits in the local part.
+
 == Changes to applications
   
-The function library and property function libary have both moved:
+The function library and property function library have both moved:
 The correct base URIs are now:
     Functions: http://jena.hpl.hp.com/ARQ/function#
     Property functions: http://jena.hpl.hp.com/ARQ/property#

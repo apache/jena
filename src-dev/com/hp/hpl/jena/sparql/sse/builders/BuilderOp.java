@@ -207,8 +207,8 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderBase.checkLength(3, list, "Join") ;
-            Op right = build(list, 1) ;
-            Op left  = build(list, 2) ;
+            Op left = build(list, 1) ;
+            Op right  = build(list, 2) ;
             Op op = OpJoin.create(left, right) ;
             return op ;
         }
@@ -219,8 +219,8 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderBase.checkLength(3, 4, list, "leftjoin: wanted 2 or 3 arguments") ;
-            Op right = build(list, 1) ;
-            Op left  = build(list, 2) ;
+            Op left = build(list, 1) ;
+            Op right  = build(list, 2) ;
             Expr expr = null ;
             if ( list.size() == 4 ) 
                 expr = buildExpr(list.get(3)) ;
@@ -234,8 +234,8 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderBase.checkLength(3, list, "union") ;
-            Op right = build(list, 1) ;
-            Op left  = build(list, 2) ;
+            Op left = build(list, 1) ;
+            Op right  = build(list, 2) ;
             Op op = new OpUnion(left, right) ;
             return op ;
         }

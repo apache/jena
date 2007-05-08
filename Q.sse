@@ -1,0 +1,7 @@
+(prefix ((: <http://example/>))
+  (project (?x)
+    (leftjoin
+      (table unit)
+      (BGP [triple :x :p ?x])
+      )))
+
