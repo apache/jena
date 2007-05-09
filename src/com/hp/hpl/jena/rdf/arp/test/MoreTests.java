@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.43 2007-01-02 11:49:14 andy_seaborne Exp $
+ *  $Id: MoreTests.java,v 1.44 2007-05-09 17:19:31 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
@@ -64,6 +65,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		suite.addTest(new MoreTests("testIcu2"));
 		suite.addTest(new MoreTests("testEncodingMismatch1"));
 		suite.addTest(new MoreTests("testEncodingMismatch2"));
+		suite.addTest(new MoreTests("testEncodingMismatch3"));
 		suite.addTest(new MoreTests("testNullBaseParamOK"));
 		suite.addTest(new MoreTests("testNullBaseParamError"));
 		suite.addTest(new MoreTests("testEmptyBaseParamOK"));
@@ -244,16 +246,36 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	}
 
 	public void testEncodingMismatch2() throws IOException {
-		Model m = createMemModel();
-		RDFReader rdr = m.getReader();
 		FileReader r = new FileReader(
 				"testing/wg/rdf-charmod-literals/test001.rdf");
+
+		subTestEncodingMismatch2(r);
+	}
+
+
+	public void testEncodingMismatch3() throws IOException {
+		FileInputStream fin = new FileInputStream(
+				"testing/wg/rdf-charmod-literals/test001.rdf"
+				);
+		InputStreamReader r = new InputStreamReader(
+				fin,
+				"MS950"
+				);
+		
+		
+		subTestEncodingMismatch2(r);
+	}
+
+	private void subTestEncodingMismatch2(InputStreamReader r) {
 		if (r.getEncoding().startsWith("UTF")) {
 			// see above for warning message.
 			return;
 		}
+		Model m = createMemModel();
+		RDFReader rdr = m.getReader();
+		
 		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH };
+		expected = new int[] { WARN_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH };
 		rdr.read(m, r, "http://example.org/");
 
 		checkExpected();

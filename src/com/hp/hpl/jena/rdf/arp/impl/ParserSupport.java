@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.14 2007-01-11 11:48:15 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.15 2007-05-09 17:19:23 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -195,10 +195,12 @@ public class ParserSupport
 	public void checkEncoding(Taint taintMe, String s) throws SAXParseException {
 		if (arp.encodingProblems) {
 			for (int i = s.length() - 1; i >= 0; i--) {
-				if (s.charAt(i) > 127)
+				if (s.charAt(i) < 0 || s.charAt(i)> 127) {
 					warning(taintMe,
 						ERR_ENCODING_MISMATCH,
 						"Encoding error with non-ascii characters.");
+					break;
+				}
 			}
 		}
 	}
