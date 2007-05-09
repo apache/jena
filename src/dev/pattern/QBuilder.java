@@ -66,7 +66,6 @@ public class QBuilder
         QuadBlockCompilerMain builder = new QuadBlockCompilerMain(request, sComp) ;
         QuadBlock quadBlock = new QuadBlock() ;
         
-        System.err.println("SSE code removed") ;
         Quad qX = new Quad(Quad.defaultGraph,
                            SSE.parseTriple("(triple ?s rdf:type 'XYZ')")) ;
         

@@ -22,6 +22,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDBC"/>
 	<classpathentry kind="lib" path="lib/arq.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="lib" path="lib/arq-extra.jar" sourcepath="C:/home/afs/Projects/SDB/arq-src.zip"/>
-	<classpathentry kind="lib" path="lib/arq-sse.jar"/>
+	<classpathentry kind="lib" path="lib/arq-sse.jar" sourcepath="arq-src.zip"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
