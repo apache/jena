@@ -6,6 +6,7 @@
 
 package dev;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class sse extends CmdARQ
     protected final ArgDecl noPrintDecl     = new ArgDecl(ArgDecl.NoValue, "n") ;
 
     boolean print        = true ;
-    private boolean lineNumbers = true ;
+    private boolean lineNumbers = false ;
     List filenames ;
 
     public static void main (String [] argv)
@@ -38,11 +39,9 @@ public class sse extends CmdARQ
     public sse(String[] argv)
     {
         super(argv) ;
-        super.add(fileDecl, "--query=FILE", "Algebra file to execute") ;
-        super.add(noPrintDecl, "-n",  "Don't print the expression") ;
-        super.add(numberDecl,
-                    "--num [on|off]",
-                    "Numbers") ;
+        super.add(fileDecl,     "--file=FILE",      "Algebra file to parse") ;
+        super.add(noPrintDecl,  "-n",               "Don't print the expression") ;
+        super.add(numberDecl,   "--num [on|off]",   "Numbers") ;
     }
 
     protected void processModulesAndArgs()
@@ -50,6 +49,8 @@ public class sse extends CmdARQ
         super.processModulesAndArgs() ;
         if ( contains(fileDecl) )
             filenames = getValues(fileDecl) ;
+        if ( filenames == null )
+            filenames = new ArrayList() ;
 
         print = contains(noPrintDecl) ;
         if ( contains(numberDecl) )
@@ -122,6 +123,9 @@ public class sse extends CmdARQ
 
     protected void print(Item item)
     {
+        if ( ! print )
+            return ;
+        
         if ( item == null )
         {
             System.err.println("No expression") ;
