@@ -132,8 +132,9 @@
 
   <target name="make-jars" depends="make-jar-core,make-jar-extra"/>
   
-  <property name="arq.path"      value="com/hp/hpl/jena/query"/>
-  <property name="extra.classes" value="${arq.path}/**/test/*,${arq.path}/**/junit/*,arq/**"/>
+  <property name="arq.path.impl"      value="com/hp/hpl/jena/sparql"/>
+  <property name="extra.classes" 
+	    value="${arq.path.impl}/**/test/**,${arq.path.impl}/**/junit/**,arq/**"/>
 
   <target name="make-jar-core" depends="compile">
     <!-- Core jar -->
@@ -357,6 +358,43 @@
   <target name="clean-javadoc" description="Clean the javadoc directories">
     <delete dir="${javadoc.dir}"/>
     <mkdir  dir="${javadoc.all.dir}"/>
+  </target>
+
+  <!-- SSE -->
+
+  <property name="sse.src.dir" value="src-dev"/>
+  <property name="sse.jarfile" value="arq-sse.jar"/>
+
+  <path id="sse.classpath">
+    <fileset dir="${lib.dir}" includes="*.jar" excludes="${sse.jarfile}"/>
+  </path>
+
+  <target name="all-jars" depends="make-jars,make-sse-jar"/>
+
+  <target name="sse" depends="make-jar-core,sse-compile,make-sse-jar"
+	  description="Build arq-sse.jar">
+  </target>
+
+  <target name="sse-compile" depends="optimise-javac-flags">
+    <antcall target="clean-build-dirs"/>
+    <javac srcdir="${sse.src.dir}/"
+           destdir="${classes.build.dir}"
+           debug="${java.debug}"
+           debuglevel="${java.debuglevel}"
+           deprecation="${java.deprecation}"
+           optimize="${java.optimize}"
+           source="${java.source}"
+           target="${java.target}">
+      <include name="com/hp/hpl/jena/sparql/sse/**"/>
+      <classpath refid="sse.classpath" />
+    </javac>
+  </target>
+
+  <target name="make-sse-jar" depends="sse-compile">
+    <jar destfile="${lib.dir}/${sse.jarfile}" index="yes">
+        <fileset dir="${classes.build.dir}" 
+		 includes="${arq.path.impl}/sse/**"/>
+      </jar>
   </target>
 
 </project>

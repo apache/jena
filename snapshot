@@ -1,17 +1,19 @@
 #!/bin/bash
 
-ant jar
+ant all-jars
 
 for d in SDB Joseki3
 do
   echo "Moving ARQ jars to project $d"
   cp -u lib/arq.jar ../$d/lib
   cp -u lib/arq-extra.jar ../$d/lib
+  cp -u lib/arq-sse.jar ../$d/lib
   done
 
 ## Keep the JARs around for Eclipse libraries
 ## rm -f lib/arq.jar
 ## rm -f lib/arq-extra.jar
+## rm -f lib/arq-sse.jar
 
 rm -f arq-src.zip
 find src -name test -prune -o -name CVS -prune -o -print | \
