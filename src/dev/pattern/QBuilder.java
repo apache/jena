@@ -6,24 +6,25 @@
 
 package dev.pattern;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
-
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.layout2.hash.SlotCompilerHash;
 import com.hp.hpl.jena.sdb.layout2.index.SlotCompilerIndex;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class QBuilder
 {
@@ -66,30 +67,30 @@ public class QBuilder
         QuadBlock quadBlock = new QuadBlock() ;
         
         System.err.println("SSE code removed") ;
-//        Quad qX = new Quad(Quad.defaultGraph,
-//                           SSE.parseTriple("(triple ?s rdf:type 'XYZ')")) ;
-//        
-//        
-////        Quad qValue = new Quad(Quad.defaultGraph, 
-////                               Var.alloc("s"), RDF.value.asNode(), Node.createLiteral("XYZ") ) ;
-////        Quad qType  = new Quad(Quad.defaultGraph, 
-////                               Var.alloc("s"), RDF.type.asNode(), Node.createLiteral("XYZ") ) ;
-//        
-//        Quad qValue = SSE.parseQuad("(quad _ ?s rdf:value ?o)") ;
-//        Quad qType  = SSE.parseQuad("(quad _ ?s rdf:type  ?o)") ;
-//        
-//        Quad q1 = SSE.parseQuad("(quad _ ?s <http://host/p> ?o)") ;
-//        Quad q2 = SSE.parseQuad("(quad _ ?s <http://host/p> 'XYZ')") ;
-//        
-//        quadBlock.add(qType);
-//        quadBlock.add(q2);
-//        quadBlock.add(qValue);
-////        quadBlock.add(q1);
-//        
-//        //System.out.println(quadBlock) ;
-//        //System.out.println() ;
-//        SqlNode sqlNode = builder.compile(quadBlock) ;
-//        System.out.println(sqlNode) ;
+        Quad qX = new Quad(Quad.defaultGraph,
+                           SSE.parseTriple("(triple ?s rdf:type 'XYZ')")) ;
+        
+        
+//        Quad qValue = new Quad(Quad.defaultGraph, 
+//                               Var.alloc("s"), RDF.value.asNode(), Node.createLiteral("XYZ") ) ;
+//        Quad qType  = new Quad(Quad.defaultGraph, 
+//                               Var.alloc("s"), RDF.type.asNode(), Node.createLiteral("XYZ") ) ;
+        
+        Quad qValue = SSE.parseQuad("(quad _ ?s rdf:value ?o)") ;
+        Quad qType  = SSE.parseQuad("(quad _ ?s rdf:type  ?o)") ;
+        
+        Quad q1 = SSE.parseQuad("(quad _ ?s <http://host/p> ?o)") ;
+        Quad q2 = SSE.parseQuad("(quad _ ?s <http://host/p> 'XYZ')") ;
+        
+        quadBlock.add(qType);
+        quadBlock.add(q2);
+        quadBlock.add(qValue);
+//        quadBlock.add(q1);
+        
+        //System.out.println(quadBlock) ;
+        //System.out.println() ;
+        SqlNode sqlNode = builder.compile(quadBlock) ;
+        System.out.println(sqlNode) ;
     }
 }
 
