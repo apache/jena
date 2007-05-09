@@ -67,7 +67,6 @@ public class BuilderGraph
             BuilderBase.broken(item, "Expected: ("+symLoad+" 'filename') : Got: "+BuilderBase.shortPrint(item)) ;
         return FileManager.get().loadModel(s).getGraph() ;
     }
-
     
     public static Triple buildTriple(ItemList list)
     {
@@ -79,11 +78,7 @@ public class BuilderGraph
                 BuilderBase.broken(list, "Not a triple: "+BuilderBase.shortPrint(list)) ;
             list = list.cdr() ;
         }
-        
-        Node s = BuilderNode.buildNode(list.get(0)) ;
-        Node p = BuilderNode.buildNode(list.get(1)) ;
-        Node o = BuilderNode.buildNode(list.get(2)) ;
-        return new Triple(s, p, o) ; 
+        return _buildNode3(list) ;
     }
 
     public static Triple buildNode3(ItemList list)
@@ -99,8 +94,7 @@ public class BuilderGraph
         Node o = BuilderNode.buildNode(list.get(2)) ;
         return new Triple(s, p, o) ; 
     }
-    
-    
+   
     public static Triple buildTripleTagged(ItemList list)
     {
         BuilderBase.checkLength(4, list, symTriple) ;
@@ -109,27 +103,18 @@ public class BuilderGraph
         Node o = BuilderNode.buildNode(list.get(3)) ;
         return new Triple(s, p, o) ; 
     }
-
     
     public static Quad buildQuad(ItemList list)
     {
         if ( list.size() != 4 && list.size() != 5 )
-            BuilderBase.broken(list, "Not a triple: "+BuilderBase.shortPrint(list)) ;
+            BuilderBase.broken(list, "Not a quad: "+BuilderBase.shortPrint(list)) ;
         if ( list.size() == 5 )
         {
-            if ( ! list.get(0).isWord(symTriple) )
-                BuilderBase.broken(list, "Not a triple: "+BuilderBase.shortPrint(list)) ;
+            if ( ! list.get(0).isWord(symQuad) )
+                BuilderBase.broken(list, "Not a quad: "+BuilderBase.shortPrint(list)) ;
             list = list.cdr() ;
         }
-        Node g = null ;
-        if ( "_".equals(list.get(1).getWord()) )
-            g = Quad.defaultGraph ;
-        else
-            g = BuilderNode.buildNode(list.get(1)) ;
-        Node s = BuilderNode.buildNode(list.get(2)) ;
-        Node p = BuilderNode.buildNode(list.get(3)) ;
-        Node o = BuilderNode.buildNode(list.get(4)) ;
-        return new Quad(g, s, p, o) ; 
+        return _buildNode4(list) ;
     }
     
     public static Quad buildQuadTagged(ItemList list)
@@ -156,7 +141,7 @@ public class BuilderGraph
     private static Quad _buildNode4(ItemList list)
     {
         Node g = null ;
-        if ( "_".equals(list.get(1).getWord()) )
+        if ( "_".equals(list.get(0).getWord()) )
             g = Quad.defaultGraph ;
         else
             g = BuilderNode.buildNode(list.get(0)) ;

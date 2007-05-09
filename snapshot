@@ -1,8 +1,12 @@
 #!/bin/bash
 
-ant all-jars
+if [ ! -e "lib/arq.jar" -o ! -e "lib/arq-extra.jar" ]
+then
+    ant jars
+    fi
+ant sse-jar
 
-for d in SDB Joseki3
+for d in SDB # Joseki3
 do
   echo "Moving ARQ jars to project $d"
   cp -u lib/arq.jar ../$d/lib
@@ -16,7 +20,7 @@ do
 ## rm -f lib/arq-sse.jar
 
 rm -f arq-src.zip
-find src -name test -prune -o -name CVS -prune -o -print | \
+find src src-dev -name test -prune -o -name .svn -prune -o -print | \
     xargs -n 200 zip -q arq-src.zip
 
 for d in SDB

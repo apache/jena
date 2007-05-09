@@ -371,11 +371,11 @@
 
   <target name="all-jars" depends="make-jars,make-sse-jar"/>
 
-  <target name="sse" depends="make-jar-core,sse-compile,make-sse-jar"
+  <target name="sse-jar" depends="sse-compile,make-sse-jar"
 	  description="Build arq-sse.jar">
   </target>
 
-  <target name="sse-compile" depends="optimise-javac-flags">
+  <target name="sse-compile" depends="default-javac-flags">
     <antcall target="clean-build-dirs"/>
     <javac srcdir="${sse.src.dir}/"
            destdir="${classes.build.dir}"
