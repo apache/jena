@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerGroup.java,v 1.8 2007-01-02 11:52:55 andy_seaborne Exp $
+ 	$Id: AssemblerGroup.java,v 1.9 2007-05-09 15:28:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -24,6 +24,13 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
     
     public static AssemblerGroup create()
         { return new ExpandingAssemblerGroup(); }
+    
+    public AssemblerGroup copy()
+        {
+        ExpandingAssemblerGroup result = (ExpandingAssemblerGroup) create();
+        result.internal.mappings.putAll( ((ExpandingAssemblerGroup) this).internal.mappings );
+        return result;
+        }
     
     public static class ExpandingAssemblerGroup extends AssemblerGroup
         {

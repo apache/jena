@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestContentAssembler.java,v 1.7 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestContentAssembler.java,v 1.8 2007-05-09 15:28:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.ContentAssembler;
 import com.hp.hpl.jena.assembler.exceptions.UnknownEncodingException;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.*;
 
 public class TestContentAssembler extends AssemblerTestBase
     {
@@ -201,7 +201,39 @@ public class TestContentAssembler extends AssemblerTestBase
         assertIsoModels( model( expected ), m );
         }
     
+    /*
+        -- ContentAssembler FileManager tests ----------------------------------
+    */
     
+    public void testContentAssemblerHasNoDefaultFileManager()
+        {
+        assertNull( "by default, ContentAssemblers have no FileManager", new ContentAssembler().getFileManager() );
+        }    
+    
+    public void testContentAssemblerHasSuppliedFileManager()
+        {
+        FileManager fm = new FileManager();
+        assertSame( fm, new ContentAssembler( fm ).getFileManager() );
+        }
+    
+    public void testUsesSuppliedFileManager()
+        {
+        final boolean [] used = {false};
+        FileManager fm = new FileManager()
+            {
+            public Model loadModel( String filenameOrURI )
+                {
+                used[0] = true;
+                return FileManager.get().loadModel( filenameOrURI );
+                }
+            };
+        Assembler a = new ContentAssembler( fm );
+        String source = Testing + "/schema.n3";
+        Resource root = resourceInModel( "x rdf:type ja:Content; x rdf:type ja:ExternalContent; x ja:externalContent file:" + source );
+        Content c = (Content) a.open( root );
+        assertIsoModels( FileManager.get().loadModel( "file:" + source ), c.fill( model( "" ) ) );
+        assertTrue( "the supplied file manager must have been used", used[0] );
+        }
     }
 
 

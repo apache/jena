@@ -22,6 +22,13 @@ Assembler modification-and-fix
       that constant provides the default. This gives the intended
       behaviour of "I specified no properties" and additionally
       allows specs to be specified as tweaks-to-a-constant.
+      
+      ContentAssemblers can now be constructed with default FileManager
+      arguments. External content is loaded using that FileManager.
+      
+      AssemblerGroups (which includes the instance Assembler.general)
+      now support a `copy` method which makes a new group initialised
+      with the same mapping.
 
 ModelSpec and family REMOVED
     o the long-obsolete and recently-deprecated ModelSpec has been removed,

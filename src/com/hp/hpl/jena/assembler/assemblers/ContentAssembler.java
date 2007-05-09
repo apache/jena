@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ContentAssembler.java,v 1.7 2007-01-02 11:52:56 andy_seaborne Exp $
+ 	$Id: ContentAssembler.java,v 1.8 2007-05-09 15:28:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -17,13 +17,21 @@ import com.hp.hpl.jena.vocabulary.*;
 
 public class ContentAssembler extends AssemblerBase implements Assembler
     {
+    protected final FileManager defaultFileManager;
+    
+    public ContentAssembler()
+        { this( null ); }
+    
+    public ContentAssembler( FileManager fm )
+        { this.defaultFileManager = fm; }
+
     public Object open( Assembler a, Resource root, Mode irrelevant )
         {
         checkType( root, JA.Content );
         return new Content( loadContent( new ArrayList(), this, root ) );
         }
 
-    public static List loadContent( List contents, Assembler a, Resource root )
+    public List loadContent( List contents, Assembler a, Resource root )
         {
         addLiteralContent( contents, root );
         addQuotedContent( contents, root );
@@ -38,10 +46,10 @@ public class ContentAssembler extends AssemblerBase implements Assembler
         while (it.hasNext()) contents.add( a.open( getResource( it.nextStatement() ) ) );
         }
 
-    protected static void addExternalContents( List contents, Resource root )
+    protected void addExternalContents( List contents, Resource root )
         {
         StmtIterator it = root.listProperties( JA.externalContent );
-        while (it.hasNext()) contents.add( objectAsContent( it.nextStatement() ) );
+        while (it.hasNext()) contents.add( objectAsContent( root, it.nextStatement() ) );
         }
 
     private static void addQuotedContent( List contents, Resource root )
@@ -107,11 +115,16 @@ public class ContentAssembler extends AssemblerBase implements Assembler
             { public Model fill( Model x ) { x.setNsPrefixes( m ); return x.add( m ); } };
         }
 
-    protected static Content objectAsContent( Statement s )
+    protected Content objectAsContent( Resource root, Statement s )
         {
         Resource external = getResource( s );
-        final Model m = FileManager.get().loadModel( external.getURI() );
+        final Model m = getFileManager( root ).loadModel( external.getURI() );
         return newModelContent( m );
+        }
+
+    private FileManager getFileManager( Resource root )
+        {
+        return defaultFileManager == null ? FileManager.get() : defaultFileManager;
         }
 
     static final String preamble =
@@ -129,6 +142,9 @@ public class ContentAssembler extends AssemblerBase implements Assembler
         result.read( r, "", "N3" );
         return result;
         }
+
+    public Object getFileManager()
+        { return defaultFileManager; }
 
     }
 

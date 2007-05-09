@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestAssemblerGroup.java,v 1.6 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestAssemblerGroup.java,v 1.7 2007-05-09 15:28:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -127,6 +127,28 @@ public class TestAssemblerGroup extends AssemblerTestBase
             };
         group.implementWith( JA.Object, fake );
         assertSame( result, group.open( resourceInModel( "x rdf:type ja:Object" ) ) );
+        }
+    
+    public void testCopyPreservesMapping()
+        {
+        AssemblerGroup initial = AssemblerGroup
+            .create()
+            .implementWith(  JA.InfModel, new InfModelAssembler() )
+            ;
+        AssemblerGroup copy = initial.copy();
+        assertSame( initial.assemblerFor( JA.InfModel ), copy.assemblerFor( JA.InfModel ) );
+        assertNull( copy.assemblerFor( JA.Connection ) );
+        }
+    
+    public void testCopyHasOwnMapping()
+        {
+        AssemblerGroup initial = AssemblerGroup
+            .create()
+            .implementWith(  JA.InfModel, new InfModelAssembler() )
+            ;
+        AssemblerGroup copy = initial.copy();
+        copy.implementWith( JA.Connection, new ConnectionAssembler() );
+        assertNull( initial.assemblerFor( JA.Connection ) );
         }
     }
 

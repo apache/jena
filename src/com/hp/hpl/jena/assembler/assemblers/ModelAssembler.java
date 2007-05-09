@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ModelAssembler.java,v 1.6 2007-01-02 11:52:56 andy_seaborne Exp $
+ 	$Id: ModelAssembler.java,v 1.7 2007-05-09 15:28:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -58,7 +58,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
 
     protected Content getContent( Assembler a, Resource root )
         { 
-        return new Content( ContentAssembler.loadContent( new ArrayList(), a, root ) );
+        return new Content( new ContentAssembler().loadContent( new ArrayList(), a, root ) );
         }
 
     }
