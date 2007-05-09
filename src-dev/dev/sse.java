@@ -6,10 +6,9 @@
 
 package dev;
 
-import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
-import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
@@ -20,17 +19,16 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileUtils;
 
 public class sse extends CmdARQ
 {
-    protected final ArgDecl queryFileDecl   = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
-    protected final ArgDecl queryNumberDecl = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
+    protected final ArgDecl fileDecl   = new ArgDecl(ArgDecl.HasValue, "file") ;
+    protected final ArgDecl numberDecl = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
     protected final ArgDecl noPrintDecl     = new ArgDecl(ArgDecl.NoValue, "n") ;
 
-    String queryFilename = null ;
     boolean print        = true ;
     private boolean lineNumbers = true ;
+    List filenames ;
 
     public static void main (String [] argv)
     {
@@ -40,9 +38,9 @@ public class sse extends CmdARQ
     public sse(String[] argv)
     {
         super(argv) ;
-        super.add(queryFileDecl, "--query=FILE", "Algebra file to execute") ;
+        super.add(fileDecl, "--query=FILE", "Algebra file to execute") ;
         super.add(noPrintDecl, "-n",  "Don't print the expression") ;
-        super.add(queryNumberDecl,
+        super.add(numberDecl,
                     "--num [on|off]",
                     "Numbers") ;
     }
@@ -50,12 +48,12 @@ public class sse extends CmdARQ
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
-        if ( contains(queryFileDecl) )
-            queryFilename = super.getValue(queryFileDecl) ;
+        if ( contains(fileDecl) )
+            filenames = getValues(fileDecl) ;
 
         print = contains(noPrintDecl) ;
-        if ( contains(queryNumberDecl) )
-            lineNumbers = getValue(queryNumberDecl).equalsIgnoreCase("on") ;
+        if ( contains(numberDecl) )
+            lineNumbers = getValue(numberDecl).equalsIgnoreCase("on") ;
     }
 
     protected String getCommandName() { return Utils.className(this) ; }
@@ -74,42 +72,19 @@ public class sse extends CmdARQ
 
     protected void exec()
     {
-        if ( queryFilename != null )
-            exec1(queryFilename) ;
-        
-        for ( Iterator iter = super.getPositional().listIterator() ; iter.hasNext();)
-        {
-            String fn = (String)iter.next() ;
-            exec1(fn) ;
-        }
-    }
-    
-    protected void exec1(String filename)
-    {
         try {
 
-            Item item = null ;
-            if ( filename.equals("-") )
+            for ( Iterator iter = filenames.iterator() ; iter.hasNext() ; )
             {
-                try {
-                    String str = FileUtils.readWholeFileAsUTF8(System.in) ;
-                    item = SSE.parse(str) ;
-                } catch (IOException ex)
-                { throw new CmdException("Error reading stdin", ex) ; }
+                String fn = (String)iter.next() ;
+                execFilename(fn) ;
             }
-            else
-                item = SSE.readFile(filename) ;
 
-            if ( item == null )
+            for ( Iterator iter = super.getPositional().listIterator() ; iter.hasNext();)
             {
-                System.err.println("No expression from "+filename) ;
-                throw new TerminationException(9) ;
+                String str = (String)iter.next() ;
+                execString(str) ;
             }
-            divider() ;
-            IndentedWriter out = new IndentedWriter(System.out, lineNumbers) ;
-            item.output(out) ;
-            out.ensureStartOfLine() ;
-            out.flush();
         }
         catch (SSEParseException sseEx)
         {
@@ -127,6 +102,36 @@ public class sse extends CmdARQ
             }
             intEx.printStackTrace(System.err) ;
         }
+    }
+
+    protected void execFilename(String filename)
+    {
+        Item item = null ;
+        if ( filename.equals("-") )
+            item = SSE.parse(System.in) ;
+        else
+            item = SSE.readFile(filename) ;
+        print(item) ;
+    }
+
+    protected void execString(String string)
+    {
+        Item item = SSE.parse(string) ;
+        print(item) ;
+    }
+
+    protected void print(Item item)
+    {
+        if ( item == null )
+        {
+            System.err.println("No expression") ;
+            throw new TerminationException(9) ;
+        }
+        divider() ;
+        IndentedWriter out = new IndentedWriter(System.out, lineNumbers) ;
+        item.output(out) ;
+        out.ensureStartOfLine() ;
+        out.flush();
     }
 }
 
