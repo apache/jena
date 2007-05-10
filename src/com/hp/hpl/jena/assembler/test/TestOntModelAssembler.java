@@ -1,12 +1,13 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestOntModelAssembler.java,v 1.5 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestOntModelAssembler.java,v 1.6 2007-05-10 14:57:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import junit.framework.*;
 
@@ -90,6 +91,26 @@ public class TestOntModelAssembler extends AssemblerTestBase
         assertInstanceOf( OntModel.class, m );
         OntModel om = (OntModel) m;
         assertSame( baseModel.getGraph(), om.getBaseModel().getGraph() );
+        }
+    
+    public void testSubModels()
+        {
+        final Model baseModel = model( "a P b" );
+        Assembler a = new OntModelAssembler();
+        Assembler aa = new ModelAssembler()
+            {
+            protected Model openModel( Assembler a, Resource root, Mode irrelevant )
+                { 
+                assertEquals( resource( "y" ), root );
+                return baseModel;  
+                }
+            };
+        Object m = a.open( aa, resourceInModel( "x rdf:type ja:OntModel; x ja:subModel y" ) );
+        assertInstanceOf( OntModel.class, m );
+        OntModel om = (OntModel) m;
+        List subModels = om.listSubModels().toList();
+        assertEquals( 1, subModels.size() );
+        assertSame( baseModel.getGraph(), ((OntModel) subModels.get( 0 )).getBaseModel().getGraph() );
         }
     
     public void testDefaultDocumentManager()

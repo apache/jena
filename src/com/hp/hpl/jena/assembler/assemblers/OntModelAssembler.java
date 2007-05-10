@@ -1,10 +1,12 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: OntModelAssembler.java,v 1.6 2007-01-02 11:52:55 andy_seaborne Exp $
+ 	$Id: OntModelAssembler.java,v 1.7 2007-05-10 14:57:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
+
+import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.ontology.*;
@@ -17,7 +19,24 @@ public class OntModelAssembler extends InfModelAssembler implements Assembler
         checkType( root, JA.OntModel );
         Model baseModel = getBase( a, root, mode );
         OntModelSpec oms = getOntModelSpec( a, root );
-        return ModelFactory.createOntologyModel( oms, baseModel );
+        OntModel om = ModelFactory.createOntologyModel( oms, baseModel );
+        addSubModels( a, root, mode, om );
+        return om;
+        }
+
+    private void addSubModels( Assembler a, Resource root, Mode mode, OntModel om )
+        {
+        List subModels = getSubModels( a, root, mode );
+        for (Iterator it = subModels.iterator(); it.hasNext();)
+            om.addSubModel( (Model) it.next() );
+        }
+
+    private List getSubModels( Assembler a, Resource root, Mode mode )
+        {
+        List result = new ArrayList();
+        for (StmtIterator it = root.listProperties( JA.subModel ); it.hasNext();)
+            result.add( a.openModel( it.nextStatement().getResource(), mode ) );
+        return result;
         }
 
     private static final OntModelSpec defaultSpec = OntModelSpec.OWL_MEM_RDFS_INF;
