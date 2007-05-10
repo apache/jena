@@ -1,6 +1,10 @@
 
 Release Notes:
 
+iri-0.4: 
+  fixed mailto scheme rules
+  set file: to allow sameSchemeRelativeRefs in jenaImplementation
+
 iri-0.3:  First released version
 
 This version is released to provide a stable

@@ -12,15 +12,16 @@
 
 package com.hp.hpl.jena.iri;
 
-import com.hp.hpl.jena.iri.impl.Force;
-import com.hp.hpl.jena.iri.impl.SchemeSpecification;
-import com.hp.hpl.jena.iri.impl.Specification;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo;
-import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromAlso;
+
+import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.InSpec;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromSpec_iri;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromSpec_other;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromSpec_scheme;
-import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.InSpec;
+import com.hp.hpl.jena.iri.impl.ViolationCodeInfo.FromAlso;
+import com.hp.hpl.jena.iri.impl.Specification;
+import com.hp.hpl.jena.iri.impl.SchemeSpecification;
+import com.hp.hpl.jena.iri.impl.Force;
  
 /**
  * Detailed description of problems detected.
@@ -587,6 +588,8 @@ uchar = unreserved | escape
     
       The PORT component must be omitted.<br />
     
+      The PATH component is required.<br />
+    
       The AUTHORITY component is required.<br />
     
       The PATHQUERY component:
@@ -621,6 +624,8 @@ uchar = unreserved | escape
     
      <li>&lt;<code>file:/foo/bar</code>></li>
     
+     <li>&lt;<code>file://example.org</code>></li>
+    
      <li>&lt;<code>file://foo/bar;t</code>></li>
     
      <li>&lt;<code>file://foo/~jjc</code>></li>
@@ -646,8 +651,6 @@ uchar = unreserved | escape
       
       <dd>
       The AUTHORITY component must be omitted.<br />
-    
-      The PATH component is required.<br />
     
       </dd>
       
@@ -1568,10 +1571,6 @@ This class is not part of the API.
               IRIComponents.AUTHORITY
         );
     
-        spec.require(
-              IRIComponents.PATH
-        );
-    
      spec =
        new SchemeSpecification(
                 "news",
@@ -1782,6 +1781,8 @@ This class is not part of the API.
     
       "file:/foo/bar",
     
+      "file://example.org",
+    
       "file://foo/bar;t",
     
       "file://foo/~jjc",
@@ -1844,6 +1845,10 @@ This class is not part of the API.
     
         spec.prohibit(
               IRIComponents.PORT
+        );
+    
+        spec.require(
+              IRIComponents.PATH
         );
     
         spec.require(
@@ -5302,14 +5307,6 @@ This class is not part of the API.
             ),
     
        new FromSpec_scheme(
-                "mailto", 
-                PATH,
-                "http://www.apps.ietf.org/rfc/rfc2368.html",
-                "TODO",
-                "<p>TODO</p>"
-            ),
-    
-       new FromSpec_scheme(
                 "news", 
                 PATH,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
@@ -5334,6 +5331,21 @@ This class is not part of the API.
                 "nntp", 
                 HOST,
                 "http://www.apps.ietf.org/rfc/rfc1738.html#sec-3.7"
+            ),
+    
+       new FromSpec_scheme(
+                "file", 
+                PATH,
+                "http://www.apps.ietf.org/rfc/rfc1738.html#sec-5",
+                ""+
+  "\n"+
+    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
+    "",
+                "<p>"+
+     "</p><pre>\n"+
+    "fileurl = \"file://\" [ host | \"localhost\" ] \"/\" fpath\n"+
+    "</pre>"+
+     "<p></p>"
             ),
     
        new FromSpec_scheme(
@@ -5410,8 +5422,25 @@ This class is not part of the API.
                 "mailto", 
                 AUTHORITY,
                 "http://www.apps.ietf.org/rfc/rfc2368.html",
-                "TODO",
-                "<p>TODO</p>"
+                ""+
+  "\n"+
+    "     mailtoURL  =  \"mailto:\" [ to ] [ headers ]\n"+
+    "     to         =  #mailbox\n"+
+    "     headers    =  \"?\" header *( \"&\" header )\n"+
+    "     header     =  hname \"=\" hvalue\n"+
+    "     hname      =  *urlc\n"+
+    "     hvalue     =  *urlc\n"+
+    "",
+                "<p>"+
+     "</p><pre>\n"+
+    "     mailtoURL  =  \"mailto:\" [ to ] [ headers ]\n"+
+    "     to         =  #mailbox\n"+
+    "     headers    =  \"?\" header *( \"&\" header )\n"+
+    "     header     =  hname \"=\" hvalue\n"+
+    "     hname      =  *urlc\n"+
+    "     hvalue     =  *urlc\n"+
+    "</pre>"+
+     "<p></p>"
             ),
     
        new FromSpec_scheme(

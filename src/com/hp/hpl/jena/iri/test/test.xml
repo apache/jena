@@ -952,6 +952,42 @@
 <violation>NON_INITIAL_DOT_SEGMENT</violation>
 </violations>
 </IRI>
+<IRI iri='mailto:'>
+<getRawHost nullValue='true'/>
+<getRawPath value=''/>
+<getPort value='-1'/>
+<getRawQuery nullValue='true'/>
+<getScheme value='mailto'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment nullValue='true'/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='false'/>
+<toString value='mailto:'/>
+<toDisplayString value='‪mailto:‬'/>
+<isAbsolute value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='mailto:'/>
+<violations>
+</violations>
+</IRI>
+<IRI iri='mailto:?subject=test'>
+<getRawHost nullValue='true'/>
+<getRawPath value=''/>
+<getPort value='-1'/>
+<getRawQuery value='subject=test'/>
+<getScheme value='mailto'/>
+<getRawUserinfo nullValue='true'/>
+<getRawFragment nullValue='true'/>
+<getASCIIHost nullValue='true'/>
+<isRootless value='false'/>
+<toString value='mailto:?subject=test'/>
+<toDisplayString value='‪mailto:?subject=test‬'/>
+<isAbsolute value='true'/>
+<isRelative value='false'/>
+<toASCIIString value='mailto:?subject=test'/>
+<violations>
+</violations>
+</IRI>
 <IRI iri='file:C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf'>
 <getRawHost nullValue='true'/>
 <getRawPath value='C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf'/>

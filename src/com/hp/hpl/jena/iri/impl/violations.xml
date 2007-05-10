@@ -133,8 +133,15 @@ login = [ user [ ":" password ] "@" ] hostport
 
 <scheme id="mailto" type="scheme" rfc="2368">
   <name>Electronic mail address</name>
-  <prohibit component="AUTHORITY"><text>TODO</text></prohibit> 
-  <require component="PATH"><text>TODO</text></require>   
+  <prohibit component="AUTHORITY"><text>
+<pre>
+     mailtoURL  =  "mailto:" [ to ] [ headers ]
+     to         =  #mailbox
+     headers    =  "?" header *( "&amp;" header )
+     header     =  hname "=" hvalue
+     hname      =  *urlc
+     hvalue     =  *urlc
+</pre></text></prohibit> 
 </scheme>
 
 <scheme id="news" type="scheme" rfc="1738" section="3.6">

@@ -19,6 +19,10 @@
 
 <uri absolute='http://ex.org/c/./d/z?x=a'/>
 
+
+<uri absolute='mailto:'/>
+<uri absolute='mailto:?subject=test'/>
+
 <uri absolute='file:C:\DOCUME~1\jjchplb\LOCALS~1\Temp\hedgehog6739.rdf'/>
 <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test001.rdf' relative='http://example.org/#André'/>
 <uri base='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/test002.rdf' relative='http://example.org/#Andr%C3%A9'/>
