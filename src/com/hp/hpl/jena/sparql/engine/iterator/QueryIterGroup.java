@@ -1,32 +1,61 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.engine;
+package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.NoSuchElementException;
+
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.util.PrintSerializable;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
-/** Root of query iterators in ARQ.
- *
- * @author Andy Seaborne
- * @version $Id: QueryIterator.java,v 1.13 2007/02/06 17:05:47 andy_seaborne Exp $
- */
-
-public interface QueryIterator extends ClosableIterator, PrintSerializable
+public class QueryIterGroup extends QueryIter
 {
-    /** Get next binding - preferred over Iterator.next() */ 
-    public Binding nextBinding() ;
+    // Base implementation - single group over the whole result set.
     
-    /** Abort a query - may not clearup properly */
-    public void abort() ; 
+    private QueryIterator qIter ;
+    private boolean hasYieledGroup = false ;
+    
+    public QueryIterGroup(QueryIterator qIter, ExecutionContext execCxt)
+    {
+        super(execCxt) ;
+        this.qIter = qIter ;
+    }
+
+    public boolean hasNextGroup()
+    { return ! hasYieledGroup ; }
+
+    public QueryIterator nextGroup()
+    {
+        if ( ! hasNextGroup() )
+            throw new NoSuchElementException("QueryIterGroup.nextGroup") ;
+        hasYieledGroup = true ;
+        return qIter ;
+    }
+    
+    protected void closeIterator()
+    {
+        if ( qIter != null )
+            qIter.close() ;
+        qIter = null ;
+    }
+
+    protected boolean hasNextBinding()
+    {
+        return qIter.hasNext() ;
+    }
+
+    protected Binding moveToNextBinding()
+    {
+        return qIter.nextBinding() ;
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

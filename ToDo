@@ -1,8 +1,14 @@
 ==== ARQ ToDo
 
 ++ ** Document "stages"
-++ ** Document "update"
+++ ** Document "update API"
 -----
+
++ OpGroup
+  QueryIter(ator)Group
+    QueryIterator .nextGroup()
+    boolean .hasNextGroup()
+
 
 Improvements - are these measurable?
   If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
