@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -15,44 +17,57 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 public class QueryIterGroup extends QueryIter
 {
     // Base implementation - single group over the whole result set.
+    // Maybe this should not be a QueryIter at all.  Just the grouping 
+    private List groups ;
+    private Iterator groupIter ;
+    private QueryIterator current ;
     
-    private QueryIterator qIter ;
-    private boolean hasYieledGroup = false ;
-    
-    public QueryIterGroup(QueryIterator qIter, ExecutionContext execCxt)
+    public QueryIterGroup(List iterators, ExecutionContext execCxt)
     {
         super(execCxt) ;
-        this.qIter = qIter ;
+        this.groups = iterators ;
+        this.groupIter = iterators.iterator() ;
+        this.current = null ;
     }
 
     public boolean hasNextGroup()
-    { return ! hasYieledGroup ; }
+    { return groupIter.hasNext() ; }
 
     public QueryIterator nextGroup()
     {
         if ( ! hasNextGroup() )
             throw new NoSuchElementException("QueryIterGroup.nextGroup") ;
-        hasYieledGroup = true ;
-        return qIter ;
+        return (QueryIterator)groupIter.next();
     }
     
     protected void closeIterator()
     {
-        if ( qIter != null )
-            qIter.close() ;
-        qIter = null ;
+        if ( current != null )
+            current.close() ;
+        current = null ;
     }
 
     protected boolean hasNextBinding()
     {
-        return qIter.hasNext() ;
+        while ( ! current.hasNext() )
+        {
+            if ( current != null )
+                current.close() ;
+            if ( ! hasNextGroup() )
+                return false ;
+            current = nextGroup() ;
+        }
+        return true ;
     }
 
     protected Binding moveToNextBinding()
     {
-        return qIter.nextBinding() ;
+        if ( ! hasNextBinding() )
+            return null ;
+        return current.nextBinding() ;
     }
 }
+
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
