@@ -35,7 +35,6 @@ public class QBuilder
         patternTable.add(RDF.type.asNode(), "TYPE") ;
         patternTable.add(RDF.value.asNode(), "VALUE") ;
         QuadBlockCompilerMain.patternTable = patternTable ;
-            
         
         // Make getting a slot compiler easier for testing?
         
