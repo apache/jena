@@ -30,6 +30,9 @@ Assembler modification-and-fix
       now support a `copy` method which makes a new group initialised
       with the same mapping.
 
+      ReasonerFactoryAssembler now respects JA:reasonerClass properties,
+      which specify the factory by giving its class name.
+
 ModelSpec and family REMOVED
     o the long-obsolete and recently-deprecated ModelSpec has been removed,
       along with its related tests, descendants, registry, and references.
