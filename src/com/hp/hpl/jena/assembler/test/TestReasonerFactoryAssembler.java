@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestReasonerFactoryAssembler.java,v 1.5 2007-01-02 11:52:50 andy_seaborne Exp $
+ 	$Id: TestReasonerFactoryAssembler.java,v 1.6 2007-05-10 14:01:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -11,7 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.assemblers.*;
 import com.hp.hpl.jena.assembler.exceptions.*;
-import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.dig.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
@@ -58,6 +58,66 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
             { assertEquals( resource( "bad:URL" ), e.getURL() ); }
         }
 
+    public static class MockBase implements ReasonerFactory
+        {
+        public Reasoner create( Resource configuration )
+            { return null; }
+    
+        public Model getCapabilities()
+            { return null; }
+    
+        public String getURI()
+            { return null; }
+        }
+    
+    public static class MockFactory extends MockBase implements ReasonerFactory
+        {        
+        public static final MockFactory instance = new MockFactory();
+        
+        public static ReasonerFactory theInstance() { return instance; }
+        }
+
+    public void testReasonerClassThrowsIfClassNotFound()
+        {
+        String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:noSuchClass";
+        Resource root = resourceInModel( description );
+        try 
+            { ASSEMBLER.open( root ); fail( "should trap missing class noSuchClass" ); }
+        catch (CannotLoadClassException e)
+            { assertEquals( "noSuchClass", e.getClassName() ); }
+        }
+
+    public void testReasonerClassThrowsIfClassNotFactory()
+        {
+        String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:java.util.ArrayList";
+        Resource root = resourceInModel( description );
+        try 
+            { ASSEMBLER.open( root ); fail( "should trap non-ReasonerFactory ArrayList" ); }
+        catch (NotExpectedTypeException e)
+            { 
+            assertEquals( root, e.getRoot() );
+            assertEquals( ReasonerFactory.class, e.getExpectedType() ); 
+            assertEquals( ArrayList.class, e.getActualType() );
+            }
+        }
+    
+    public void testReasonerClassUsesTheInstance()
+        {
+        String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:";
+        String MockName = MockFactory.class.getName();
+        Resource root = resourceInModel( description + MockName );
+        assertEquals( MockFactory.instance, ASSEMBLER.open( root ) );
+        }
+    
+    public void testReasonerClassInstantiatesIfNoInstance()
+        {
+        String description = "x rdf:type ja:ReasonerFactory; x ja:reasonerClass java:";
+        String MockName = MockBase.class.getName();
+        Resource root = resourceInModel( description + MockName );
+        assertInstanceOf( MockBase.class, ASSEMBLER.open( root ) );
+        assertNotSame( MockFactory.instance, ASSEMBLER.open( root ) );
+        }
+    
     public void testMultipleURLsFails()
         {
         Resource root = resourceInModel( "x rdf:type ja:ReasonerFactory; x ja:reasonerURL bad:URL; x ja:reasonerURL another:bad/URL" );

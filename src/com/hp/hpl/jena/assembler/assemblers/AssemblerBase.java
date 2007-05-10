@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerBase.java,v 1.9 2007-01-02 11:52:56 andy_seaborne Exp $
+ 	$Id: AssemblerBase.java,v 1.10 2007-05-10 14:01:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -99,6 +99,14 @@ public abstract class AssemblerBase implements Assembler
         {
         Statement s = getUniqueStatement( root, property );
         return s == null ? null : AssemblerHelp.getString( s );
+        }
+
+    protected static Class loadClass( Resource root, String className )
+        {
+        try 
+            { return Class.forName( className ); }
+        catch (ClassNotFoundException e) 
+            { throw new CannotLoadClassException( root, className, e ); }
         }
     }
 
