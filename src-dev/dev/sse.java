@@ -52,7 +52,7 @@ public class sse extends CmdARQ
         if ( filenames == null )
             filenames = new ArrayList() ;
 
-        print = contains(noPrintDecl) ;
+        print = ! contains(noPrintDecl) ;
         if ( contains(numberDecl) )
             lineNumbers = getValue(numberDecl).equalsIgnoreCase("on") ;
     }
