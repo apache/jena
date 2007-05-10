@@ -18,10 +18,6 @@ http://example.org#foo
 with base
 http://example.org/somefolder/mybase.rdf
 
-[ 1665481 ] mailto IRI scheme
-mailto:
-mailto:?subject=test
-     
 
    
 

@@ -15,6 +15,7 @@ public class TestPackage extends TestCase{
         rslt.setName("IRI");
         rslt.addTest(TestExample.suite());
         rslt.addTest(TestMoreExamples.suite());
+        rslt.addTest(MoreTests.suite());
         
         return rslt;
     }

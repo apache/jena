@@ -384,6 +384,108 @@ abstract public class AbsIRIImpl extends  IRI implements
         }
     }
 
+/*
+ * Subroutine for relativize.
+ * 
+ * Relativizing path components is somewhat tricky.
+ * The code is in the method PathRelative.check
+ * which is invoked from relativizePaths
+ * 
+ * There are only three static stateless objects of this class, 
+ * each of which checks for a particular rule.
+ * 
+ * The child object behaves slightly differently, 
+ * with a helper method overridden, and one line of
+ * code specific to that object only.
+ * 
+ */
+    
+    static private final PathRelativize
+        child = new PathRelativize(CHILD, CHILD | PARENT | GRANDPARENT,
+        		"."){
+    	String descendentMatch(String descendent) {
+    		return maybeDotSlash( descendent);
+    	}
+    },
+        parent = new PathRelativize(PARENT, PARENT | GRANDPARENT,
+        		".."),
+        grandparent = new PathRelativize(GRANDPARENT, GRANDPARENT,
+                		"../..");
+
+    /**
+     * 
+     * @param in     The path from this IRI
+     * @param out    If successful, out[0] contains the answer
+     * @param flags  Currently applicable rules
+     * @param rel    The path to make relative
+     * @return True if the paths were relativized.
+     */
+    private boolean relativizePaths(String in, String[] out, int flags, String rel) {
+		if (child.check(in, out, flags, rel)) 
+			return true;
+		if (parent.check(out[0], out, flags, rel)) 
+			return true;
+		return grandparent.check(out[0], out, flags, rel);
+	}
+
+    static class PathRelativize {
+    	final private int flag;
+    	final private int allFlags;
+    	final private String replacement;
+    	/**
+    	 * 
+    	 * @param flag      If this flag is not present then this rule does not apply.
+    	 * @param allFlags  If none of these flags are present then this rule and subsequence rules do not apply.
+    	 * @param replacement     If there is a match, then use this as the relative path
+    	 */
+    	PathRelativize(int flag, int allFlags, String replacement) {
+    		this.flag = flag;
+    		this.replacement = replacement;
+    		this.allFlags = allFlags;
+    	}
+    	/**
+    	 * Return true if the rule applied.
+    	 * The result of the rule is returned in out[0]
+    	 * Return false if the rule did not apply.
+    	 * The input for the next rule is in out[0]
+    	 * @param in      Absolute path to use in match
+    	 * @param out     Result, as above.
+    	 * @param flags   controlling rule applicability
+    	 * @param rel     Relative path to use in match
+    	 * @return
+    	 */
+    	boolean  check(String in, String out[], int flags, String rel) {
+    		out[0] = null;
+    		if (in==null)
+    			return false;
+    		if ((flags & allFlags) == 0)
+    		     return false;
+    		int ix = in.lastIndexOf('/');
+    		if (ix==-1)
+    			return false;
+    		if (ix==0 && (flags & ABSOLUTE)!=0 && flag != CHILD)
+    			return false;
+    		in = in.substring(0,ix+1);
+    		out[0] = in.substring(0,ix);
+    		if ((flags & flag) == 0)
+   		         return false;
+    		if (!rel.startsWith(in))
+    			return false;
+    		if (rel.length() == ix+1) {
+    			out[0] = replacement;
+    			return true;
+    		}
+    		out[0] = descendentMatch(rel.substring(ix+1));
+    		return true;
+    	}
+    	
+    	String descendentMatch(String descendent) {
+    		return replacement + "/" + descendent;
+    	}
+    	
+    }
+    
+
     public IRI relativize(String abs, int flags) {
         return relativize(new IRIImpl(getFactory(), abs), flags);
     }
@@ -395,14 +497,6 @@ abstract public class AbsIRIImpl extends  IRI implements
     public IRI relativize(IRI abs) {
         return relativize(abs, defaultRelative);
     }
-
-    static private int prefs[][] = { { CHILD, CHILD | PARENT | GRANDPARENT },
-            { PARENT, PARENT | GRANDPARENT }, { GRANDPARENT, GRANDPARENT } };
-
-    static String exact[] = { ".", "..", "../.." };
-
-    static String sub[] = { "", "../", "../../" };
-
     /*
      * public String relativize(String abs, int flags) { return
      * relativize(factory.create(abs),abs,flags); }
@@ -411,7 +505,6 @@ abstract public class AbsIRIImpl extends  IRI implements
         String rslt = relativize(abs, null, flags);
         return rslt == null ? abs : getFactory().create(rslt);
     }
-
     /**
      * 
      * @param r
@@ -438,43 +531,31 @@ abstract public class AbsIRIImpl extends  IRI implements
 
         if (same && (flags & SAMEDOCUMENT) != 0)
             return rslt;
+
+    	String thisPath = getRawPath();
+    	String pathToRel = r.getRawPath();
         if (r.getRawQuery() != null) {
             rslt = "?" + r.getRawQuery() + rslt;
+        	if (equal(thisPath,pathToRel)
+            		&& (flags & CHILD)!=0 ) {
+            		return rslt;
+            	}
         }
         if (absl) {
-            // TODO: pretty disgusting code, should be rewritten.
-            // this array is stupid ...
-            String m_subPaths[] = new String[] {
-                    getRawPath() == null ? null : (getRawPath() + "a"), null,
-                    null, null };
-
-            if (m_subPaths[0] != null)
-                for (int i = 0; i < 3; i++) {
-                    if ((flags & prefs[i][1]) == 0)
-                        break;
-                    if (m_subPaths[i + 1] == null)
-                        m_subPaths[i + 1] = getLastSlash(m_subPaths[i]);
-                    if (m_subPaths[i + 1].length() == 0)
-                        break;
-                    if ((flags & prefs[i][0]) == 0)
-                        continue;
-                    if (!r.getRawPath().startsWith(m_subPaths[i + 1]))
-                        continue;
-                    // A relative path can be constructed.
-                    int lg = m_subPaths[i + 1].length();
-                    if (lg == r.getRawPath().length()) {
-                        return exact[i] + rslt;
-                    }
-                    rslt = maybeDotSlash(sub[i] + r.getRawPath().substring(lg) + rslt);
-
-                    // logger.info("<"+Util.substituteStandardEntities(rslt)+">["+i+"]");
+        	if (pathToRel.length()>0) {
+        		if (thisPath.length()>0) {
+        		  String out[] = new String[]{null};
+        		  if (relativizePaths(thisPath, out, flags, pathToRel)) {
+        			return out[0]+rslt;
+        		  }
+        		}
+                rslt = r.getRawPath() + rslt;
+                if (absl && (flags & ABSOLUTE) != 0) {
                     return rslt;
                 }
-        }
-        rslt = r.getRawPath() + rslt;
-        if (absl && (flags & ABSOLUTE) != 0) {
-            return rslt;
-        }
+        	}
+        } else 
+        	rslt = r.getRawPath() + rslt;
         if (net && (flags & NETWORK) != 0) {
             return "//"
                     + (r.getRawUserinfo() == null ? ""
@@ -485,7 +566,8 @@ abstract public class AbsIRIImpl extends  IRI implements
         return def;
     }
 
-    static private String maybeDotSlash(String path) {
+
+	static private String maybeDotSlash(String path) {
         int colon = path.indexOf(':');
         if (colon == -1)
             return path;
