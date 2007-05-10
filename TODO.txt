@@ -13,10 +13,6 @@ IRI.normalize()
 RFRC 2396 and opaque URIs
 
 Bugs:
-[ 1669256 ] #foo relativize
-http://example.org#foo
-with base
-http://example.org/somefolder/mybase.rdf
 
 
    
