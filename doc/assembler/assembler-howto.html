@@ -36,28 +36,29 @@
 <div class="toc-H2"><a href="#TOC-ID-5">RDB models and Connections</a></div>
 <div class="toc-H2"><a href="#TOC-ID-6">file models</a></div>
 <div class="toc-H2"><a href="#TOC-ID-7">inference models and reasoners</a></div>
-<div class="toc-H3"><a href="#TOC-ID-8">rulesets</a></div>
-<div class="toc-H2"><a href="#TOC-ID-9">ontology models</a></div>
-<div class="toc-H2"><a href="#TOC-ID-10">document managers</a></div>
-<div class="toc-H2"><a href="#TOC-ID-11">union models</a></div>
-<div class="toc-H2"><a href="#TOC-ID-12">prefix mappings</a></div>
-<div class="toc-H2"><a href="#TOC-ID-13">other Assembler directives</a></div>
-<div class="toc-H3"><a href="#TOC-ID-14">assembler</a></div>
-<div class="toc-H3"><a href="#TOC-ID-15">imports</a></div>
-<div class="toc-H1"><a href="#TOC-ID-16">inside Assemblers</a></div>
-<div class="toc-H1"><a href="#TOC-ID-17">basic assemblers</a></div>
-<div class="toc-H2"><a href="#TOC-ID-18">basic assembler ContentAssembler</a></div>
-<div class="toc-H2"><a href="#TOC-ID-19">basic assembler ConnectionAssembler</a></div>
-<div class="toc-H2"><a href="#TOC-ID-20">basic assembler RulesetAssembler</a></div>
-<div class="toc-H2"><a href="#TOC-ID-21">basic assembler DefaultModelAssembler</a></div>
-<div class="toc-H2"><a href="#TOC-ID-22">AssemblerGroup</a></div>
-<div class="toc-H3"><a href="#TOC-ID-23">loading assembler classes</a></div></div>
+<div class="toc-H3"><a href="#TOC-ID-8">ReasonerFactory</a></div>
+<div class="toc-H3"><a href="#TOC-ID-9">rulesets</a></div>
+<div class="toc-H2"><a href="#TOC-ID-10">ontology models</a></div>
+<div class="toc-H2"><a href="#TOC-ID-11">document managers</a></div>
+<div class="toc-H2"><a href="#TOC-ID-12">union models</a></div>
+<div class="toc-H2"><a href="#TOC-ID-13">prefix mappings</a></div>
+<div class="toc-H2"><a href="#TOC-ID-14">other Assembler directives</a></div>
+<div class="toc-H3"><a href="#TOC-ID-15">assembler</a></div>
+<div class="toc-H3"><a href="#TOC-ID-16">imports</a></div>
+<div class="toc-H1"><a href="#TOC-ID-17">inside Assemblers</a></div>
+<div class="toc-H1"><a href="#TOC-ID-18">basic assemblers</a></div>
+<div class="toc-H2"><a href="#TOC-ID-19">basic assembler ContentAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-20">basic assembler ConnectionAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-21">basic assembler RulesetAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-22">basic assembler DefaultModelAssembler</a></div>
+<div class="toc-H2"><a href="#TOC-ID-23">AssemblerGroup</a></div>
+<div class="toc-H3"><a href="#TOC-ID-24">loading assembler classes</a></div></div>
 
 <h1><a name="TOC-ID-1"></a>introduction</h1>
 
 <p>
-This document describes how to use the Assembler classes to construct models 
--- and other things -- from RDF descriptions that use the 
+This document describes how to use the Assembler classes to construct models
+-- and other things -- from RDF descriptions that use the
 Jena Assembler vocabulary. That vocabulary is available in
 <a href="../../vocabularies/assembler.n3">ja-vocabulary.n3</a> as an RDFS schema
 with conventional prefix <code>ja</code> for the URI
@@ -91,7 +92,7 @@ properties of that Resource describe what kind of object is to be
 assembled and what its components are: for example, an InfModel
 is constructed by specifying a base model and a reasoner. The
 specifications for the components are themselves Assembler specifications
-given by other Resources in the same Model.For example, to specify a 
+given by other Resources in the same Model.For example, to specify a
 memory model with data loaded from a file:
 </p>
 
@@ -108,12 +109,12 @@ that this file is to be read using the Jena N3 reader.
 </p>
 
 <p>
-Unless otherwise specified by an application, Assembler specifications 
-are interpreted after adding in the JA schema and doing (limited) RDFS inference. 
-In the example above, eg:model has to be given an explicit type, 
-but the externalContent bnode is implicitly typed by the domain of 
-ja:externalContent. In this document, we will usually leave out 
-inferrable types. 
+Unless otherwise specified by an application, Assembler specifications
+are interpreted after adding in the JA schema and doing (limited) RDFS inference.
+In the example above, eg:model has to be given an explicit type,
+but the externalContent bnode is implicitly typed by the domain of
+ja:externalContent. In this document, we will usually leave out
+inferrable types.
 </p>
 
 <p>
@@ -128,10 +129,10 @@ Resource root = spec.createResource( spec.expandPrefix( "eg:opening-example" ) )
 Model m = Assembler.general.openModel( root );
 </pre>
 
-<p>The model is constructed from the "root resource", 
+<p>The model is constructed from the "root resource",
 <code>eg:opening-example</code> in our example. <code>general</code>
 knows how to create all the kinds of objects -- not just Models --
-that we describe in the next sections. 
+that we describe in the next sections.
 </p>
 
 <h1><a name="TOC-ID-3"></a>specifications common to all models</h1>
@@ -163,11 +164,12 @@ for attaching content, prefix mappings, and reification modes.
 
 <div class="surrounding">
 <div class="show" id="1002A"><a href="javascript:exchange('1002')">&nabla; show as N3</a>
-<div class="show-class"><span class="keyword">class</span> ja:Model <span class="keyword">subClassOf</span> ja:Loadable
+<div class="show-class"><span class="keyword">class</span> ja:Model <span class="keyword">subClassOf</span> ja:ContentItem ja:Loadable
 <div class="show-property"><span class="keyword">domainOf</span> ja:reificationMode <span class="keyword">withRange</span> ja:ReificationMode</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:prefixMapping <span class="keyword">withRange</span> ja:PrefixMapping</div></div></div>
 <div class="hide" id="1002B"><a href="javascript:exchange('1002')">&nabla; show as condensed</a>
 <div class="show-class">ja:Model a rdfs:Class
+<div class="show-subclass"> ; rdfs:subClassOf ja:ContentItem</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Loadable</div>
 <div class="show-subclass">.</div>
 <div class="show-property">ja:reificationMode a rdf:Property
@@ -182,7 +184,7 @@ for attaching content, prefix mappings, and reification modes.
 <p>All of a model's <code>ja:content</code> property values are
 interpreted as specifying <code>Content</code> objects and a single
 composite <code>Content</code> object is constructed and used
-to initialise the model. 
+to initialise the model.
 See <a href="#spec-content">Content</a> for the description of Content
 specifications. For example:</p>
 
@@ -191,8 +193,8 @@ specifications. For example:</p>
     . 
 eg:common-example a ja:MemoryModel 
     ; ja:content eg:sharedContent 
-    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/A.rdf&gt;] 
     ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/B.rdf&gt;] 
+    ; ja:content [ja:externalContent &lt;file:///home/kers/projects/jena2/Data/A.rdf&gt;] 
     . </pre>
 
 <p>
@@ -201,8 +203,8 @@ contents of <code>Data/A.n3</code>, <code>Data/B.rdf</code>,
 and <code>http://somewhere/RDF/ont.owl</code>. If the model supports
 transactions, then the content is loaded inside a transaction; if the
 load fails, the transaction is aborted, and a
-<code>TransactionAbortedException</code> thrown. 
-If the content has any prefix mappings, then they are also added 
+<code>TransactionAbortedException</code> thrown.
+If the content has any prefix mappings, then they are also added
 to the model.
 </p>
 
@@ -210,7 +212,7 @@ to the model.
 and <code>ja:namespace</code> properties are
 interpreted as specifying a <code>PrefixMapping</code> object and
 a single composite <code>PrefixMapping</code> is constructed and used
-to set the prefixes of the model. 
+to set the prefixes of the model.
 See <a href="#spec-prefix-mapping">PrefixMapping</a> for the description of Content
 specifications.</p>
 
@@ -223,7 +225,7 @@ model's reification mode is set accordingly, if possible.
 <h2><a name="TOC-ID-4"></a><a name="spec-content">content</a></h2>
 
 A Content specification describes content that can be used to fill
-models. Content can be external (files and URLs) or literal 
+models. Content can be external (files and URLs) or literal
 (strings in the specification) or quotations (referring to RDF which
 is part of the specification).
 
@@ -237,9 +239,9 @@ is part of the specification).
 <div class="show-subclass">.</div></div></div></div>
 
 <p>
-A <code>ja:Content</code> specification may have zero or more 
+A <code>ja:Content</code> specification may have zero or more
 <code>ja:externalContent</code> property values. These are URI
-resources naming an external (file or http etc) RDF object. 
+resources naming an external (file or http etc) RDF object.
 The constructed Content object contains the union of the values of
 all such resources. For example:
 </p>
@@ -253,7 +255,7 @@ all such resources. For example:
 properties is interpreted as RDF in an appropriate language. The constructed
 Content object contains that RDF. The language is either specified by an
 explicit <code>ja:contentEncoding</code> property value, or guessed from
-the content of the string. The only encodings permitted are "N3" and "RDF/XML". 
+the content of the string. The only encodings permitted are "N3" and "RDF/XML".
 For example:
 </p>
 
@@ -261,7 +263,7 @@ For example:
     ja:literalContent "_:it dc:title 'Interesting Times'" 
     . </pre>
 
-<p>The literal content is wrapped so that prefix declarations for 
+<p>The literal content is wrapped so that prefix declarations for
 <b>rdf</b>, <b>rdfs</b>, <b>owl</b>, <b>dc</b>, and <b>xsd</b>
 apply before interpretation.</p>
 
@@ -329,7 +331,7 @@ eg:connection
 and shares the <code>ja:ModelName</code> property value naming the model
 within the database.</p>
 
-<p>The mandatory unique property value of <code>ja:connection</code> 
+<p>The mandatory unique property value of <code>ja:connection</code>
 specifies the connection to the database to be used.
 </p>
 
@@ -356,16 +358,16 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class="show-property"><span class="keyword">domainOf</span> ja:dbType <span class="keyword">maxCardinality</span> 1</div></div></div>
 <div class="hide" id="1007B"><a href="javascript:exchange('1007')">&nabla; show as condensed</a>
 <div class="show-class">ja:Connection a rdfs:Class
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]</div>
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
 <div class="show-property">ja:dbPasswordProperty a rdf:Property
@@ -400,7 +402,7 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div>.</div></div></div></div></div>
 
 <p>The <code>ja:dbURL</code> property value specifies the
-URL of the database to be connected to. If it is ommitted, the 
+URL of the database to be connected to. If it is ommitted, the
 <code>ja:dbURLProperty</code> value is the name of a Java system
 property whose value is the URL of the database.</p>
 
@@ -508,9 +510,9 @@ reason over. For example:</p>
     ; ja:reasoner [ja:reasonerURL &lt;http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner&gt;] 
     . </pre>
 
-<p>describes an inference model that uses RDFS reasoning. The 
+<p>describes an inference model that uses RDFS reasoning. The
 <i>reasonerURL</i> property value is the URI used to identify the
-reasoner (it is the value of the Jena constant 
+reasoner (it is the value of the Jena constant
 <code>RDFSRuleReasonerFactory.URI</code>). The base model is
 specified as a memory model; if it is left out, an empty memory
 model is used. Of course, you can specify a database model as a base
@@ -584,29 +586,11 @@ prefix <i>my</i> will have to be known to the rule parser, of course.)
 
 <div class="surrounding">
 <div class="show" id="1010A"><a href="javascript:exchange('1010')">&nabla; show as N3</a>
-<div class="show-class"><span class="keyword">class</span> ja:ReasonerFactory <span class="keyword">subClassOf</span> ja:HasRules
-<div class="show-property"><span class="keyword">domainOf</span> ja:reasonerURL</div>
-<div class="show-property"><span class="keyword">domainOf</span> ja:schema <span class="keyword">withRange</span> ja:Model</div></div></div>
-<div class="hide" id="1010B"><a href="javascript:exchange('1010')">&nabla; show as condensed</a>
-<div class="show-class">ja:ReasonerFactory a rdfs:Class
-<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:ReasonerURL; owl:maxCardinality 1]</div>
-<div class="show-subclass"> ; rdfs:subClassOf ja:HasRules</div>
-<div class="show-subclass">.</div>
-<div class="show-property">ja:reasonerURL a rdf:Property
-<div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
-<div>.</div></div>
-<div class="show-property">ja:schema a rdf:Property
-<div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
-<div class="show-property">; rdfs:range ja:Model</div>
-<div>.</div></div></div></div></div>
-
-<div class="surrounding">
-<div class="show" id="1011A"><a href="javascript:exchange('1011')">&nabla; show as N3</a>
 <div class="show-class"><span class="keyword">class</span> ja:HasRules <span class="keyword">subClassOf</span> ja:Object
 <div class="show-property"><span class="keyword">domainOf</span> ja:rule</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:rules <span class="keyword">withRange</span> ja:RuleSet</div>
 <div class="show-property"><span class="keyword">domainOf</span> ja:rulesFrom</div></div></div>
-<div class="hide" id="1011B"><a href="javascript:exchange('1011')">&nabla; show as condensed</a>
+<div class="hide" id="1010B"><a href="javascript:exchange('1010')">&nabla; show as condensed</a>
 <div class="show-class">ja:HasRules a rdfs:Class
 <div class="show-subclass"> ; rdfs:subClassOf ja:Object</div>
 <div class="show-subclass">.</div>
@@ -620,9 +604,10 @@ prefix <i>my</i> will have to be known to the rule parser, of course.)
 <div class="show-property">ja:rulesFrom a rdf:Property
 <div class="show-property">; rdfs:domain ja:HasRules</div>
 <div>.</div></div></div></div></div>
+
 <p>An InfModel's <code>ja:baseModel</code> property value specifies
 the base model for the inference model; if omitted, an empty memory model is
-used. </p> 
+used. </p>
 
 <p>An InfModel's <code>ja:ReasonerFactory</code> property value specifies
 the Reasoner for this inference model; if omitted, a GenericRuleReasoner
@@ -640,7 +625,60 @@ or <code>ja:rule</code>. The rules of the implied <code>RuleSet</code>
 are added to the <code>Reasoner</code>.
 </p>
 
-<h3><a name="TOC-ID-8"></a>rulesets</h3>
+<h3><a name="TOC-ID-8"></a>ReasonerFactory</h3>
+
+<p>
+A ReasonerFactory can be specified by URL or by class name (but not both).
+</p>
+
+
+<div class="surrounding">
+<div class="show" id="1011A"><a href="javascript:exchange('1011')">&nabla; show as N3</a>
+<div class="show-class"><span class="keyword">class</span> ja:ReasonerFactory <span class="keyword">subClassOf</span> ja:HasRules
+<div class="show-property"><span class="keyword">domainOf</span> ja:reasonerURL</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:schema <span class="keyword">withRange</span> ja:Model</div>
+<div class="show-property"><span class="keyword">domainOf</span> ja:reasonerClass</div></div></div>
+<div class="hide" id="1011B"><a href="javascript:exchange('1011')">&nabla; show as condensed</a>
+<div class="show-class">ja:ReasonerFactory a rdfs:Class
+<div class="show-subclass"> ; rdfs:subClassOf [owl:onProperty ja:ReasonerURL; owl:maxCardinality 1]</div>
+<div class="show-subclass"> ; rdfs:subClassOf ja:HasRules</div>
+<div class="show-subclass">.</div>
+<div class="show-property">ja:reasonerURL a rdf:Property
+<div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
+<div>.</div></div>
+<div class="show-property">ja:schema a rdf:Property
+<div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
+<div class="show-property">; rdfs:range ja:Model</div>
+<div>.</div></div>
+<div class="show-property">ja:reasonerClass a rdf:Property
+<div class="show-property">; rdfs:domain ja:ReasonerFactory</div>
+<div>.</div></div></div></div></div>
+
+<p>
+If the optional unique property <code>ja:reasonerURL</code> is specified,
+then its resource value is the URI of a reasoner in the Jena reasoner
+registry; the reasoner is the one with the given URI.
+</p>
+
+<p>
+If the optional unique property <code>ja:reasonerClass</code> is specified,
+its value names a class which implements <code>ReasonerFactory</code>. That
+class is loaded and an instance of it used as the factory.
+</p>
+
+<p>
+The class may be named by the lexical form of a literal, or by a URI
+with the (fake) "java:" scheme.
+</p>
+
+<p>
+If the class has a method <code>theInstance</code>, that method is called
+to supply the <code>ReasonerFactory</code> instance to use. Otherwise,
+a new instance of that class is constructed. Jena's reasoner factories come
+equipped with this method; for other factories, see the documentation.
+</p>
+
+<h3><a name="TOC-ID-9"></a>rulesets</h3>
 
 <p>
 A <code>RuleSet</code> specification allows rules (for ReasonerFactories)
@@ -669,7 +707,7 @@ loaded as Jena rules. All those rules are added to the <code>RuleSet</code>.</p>
 a resource which identifies another <code>RuleSet</code> in the specification model.
 All those rules from that <code>RuleSet</code> are added to this <code>RuleSet</code>.</p>
 
-<h2><a name="TOC-ID-9"></a>ontology models</h2>
+<h2><a name="TOC-ID-10"></a>ontology models</h2>
 
 <p>
 Ontology models can be specified in several ways. The simplest is to use
@@ -762,7 +800,7 @@ If absent, the default document manager is used.
 
 </li><li><code>ja:reasonerFactory</code>:
 The value of this optional unique property is the ReasonerFactory resource
-which will be used to construct this OntModelSpec's reasoner. A 
+which will be used to construct this OntModelSpec's reasoner. A
 <code>reasonerFactory</code> specification is the same as an InfModel's
 <code>reasoner</code> specification (the different properties are required
 for technical reasons).
@@ -786,7 +824,7 @@ of this <code>OntModelSpec</code>:
     </li><li>RDFS: http://www.w3.org/2000/01/rdf-schema#
     </li><li>DAML: http://www.daml.org/2001/03/daml+oil#
     </li></ul>
-    
+
 </li>
 </ul>
 </p>
@@ -795,10 +833,10 @@ of this <code>OntModelSpec</code>:
 from those of <code>OntModelSpec.OWL_MEM_RDFS_INF</code>. However,
 if the OntModelSpec resource is in the JA namespace, and its local
 name is the same as that of an OntModelSpec constant, then that
-constant is used as the default value. 
+constant is used as the default value.
 </p>
 
-<h2><a name="TOC-ID-10"></a>document managers</h2>
+<h2><a name="TOC-ID-11"></a>document managers</h2>
 
 <p>An <code>OntDocumentManager</code> can be specified by a
 <code>ja:DocumentManager</code> specification which describes the
@@ -814,8 +852,8 @@ eg:document-manager-example
     ; ja:meta [ dm:altURL &lt;http://localhost/RDF/my-alt.rdf&gt;] 
     . </pre>
 
-<p>In this example, <code>eg:document-manager-example</code> is a 
-<code>ja:DocumentManager</code> specification. It has its own 
+<p>In this example, <code>eg:document-manager-example</code> is a
+<code>ja:DocumentManager</code> specification. It has its own
 <code>FileManager specification</code>, the object of the
 <code>ja:fileManager property</code>; that <code>FileManager</code>
 has a location mapper, <code>eg:mapper</code>, that maps a single
@@ -825,7 +863,7 @@ filename.</p>
 The document manager also has an additional property to link it to
 document manager meta-data: the sub-model of the assembler specification
 reachable from <code>eg:document-manager-example</code> is passed to
-the document manager when it is created. For the meanings of the 
+the document manager when it is created. For the meanings of the
 <code>dm:</code> properties, see the Jena ontology documentation and
 the ontology.rdf ontology.
 </p>
@@ -863,7 +901,7 @@ which is a path to policy files as described in the Jena ontology documentation.
 If absent, the usual default path is applied.
 </p>
 
-<p>If the sub-model of the assembler specification reachable from the 
+<p>If the sub-model of the assembler specification reachable from the
 DocumentManager resource contains any OntDocumentManager DOC_MGR_POLICY
 or ONTOLOGY_SPEC objects, they will be interpreted by the constructed
 document manager object.
@@ -909,7 +947,7 @@ property values, describing the location mapping, as described in the
 FileManager documentation. (Note that the vocabulary for those items is
 in a different namespace than the JA properties and classes.)</p>
 
-<h2><a name="TOC-ID-11"></a>union models</h2>
+<h2><a name="TOC-ID-12"></a>union models</h2>
 
 <p>
 Union models can be constructed from any number of submodels and a
@@ -945,13 +983,13 @@ union is given an <i>immutable</i>, <i>empty</i> model as its root.
 </p>
 
 <p>
-Any <code>ja:subModel</code> property values have objects describing 
+Any <code>ja:subModel</code> property values have objects describing
 the remaining sub-models of the union. The order of the sub-models in the
 union is <i>undefined</i> (which is why there's a special rootModel
 property).
 </p>
 
-<h2><a name="TOC-ID-12"></a>prefix mappings</h2>
+<h2><a name="TOC-ID-13"></a>prefix mappings</h2>
 
 <p>The PrefixMappings of a model may be set from PrefixMapping specifications.
 </p>
@@ -996,13 +1034,13 @@ content of other specified PrefixMappings.
 allow the construction of a single element of a prefix mapping by specifying
 the prefix and namespace of the mapping.</p>
 
-<h2><a name="TOC-ID-13"></a>other Assembler directives</h2>
+<h2><a name="TOC-ID-14"></a>other Assembler directives</h2>
 
-<p>There are two more <code>Assembler</code> directives that can be 
+<p>There are two more <code>Assembler</code> directives that can be
 used in an Assembler specification: the <i>assembler</i> and <i>imports</i>
 directives.</p>
 
-<h3><a name="TOC-ID-14"></a>assembler</h3>
+<h3><a name="TOC-ID-15"></a>assembler</h3>
 
 <p>A specification may contain statements of the form:
 
@@ -1015,11 +1053,11 @@ When <code>someResource</code> is used as the type of a root object,
 the AssemblerGroup that processes the description will use an instance
 of the Java class named by the object of the statement. That class
 must implement the <code>Assembler</code> interface. See
-<a href="#loading-assembler-classes">loading assembler classes</a> 
+<a href="#loading-assembler-classes">loading assembler classes</a>
 for more details.
 </p>
 
-<h3><a name="TOC-ID-15"></a>imports</h3>
+<h3><a name="TOC-ID-16"></a>imports</h3>
 
 <p>If a specification contains statements of the form:
 
@@ -1027,18 +1065,18 @@ for more details.
 <code>anyResource owl:imports someURL</code>
 </blockquote>
 
-or, equivalently, 
+or, equivalently,
 
 <blockquote>
 <code>anyResource ja:imports someURL</code>
 </blockquote>
 
 then the specification is regarded as also containing the contents of the
-RDF at <code>someURL</code>. That RDF may in turn contain 
-<code>imports</code> referring to other RDF. 
+RDF at <code>someURL</code>. That RDF may in turn contain
+<code>imports</code> referring to other RDF.
 </p>
 
-<h1><a name="TOC-ID-16"></a>inside Assemblers</h1>
+<h1><a name="TOC-ID-17"></a>inside Assemblers</h1>
 
 <p><code>Assembler.general</code> is a particular implementation of
 the <code>Assembler</code> interface. An <code>Assembler</code> knows
@@ -1075,13 +1113,13 @@ method:
 </ul>
 
 passing in a suitable Assembler object. In fact the standard implementation
-of <code>open(root)</code> is just 
+of <code>open(root)</code> is just
 
 <ul>
 <li>open( this, root )</li>
 </ul>
 
-passing in itself as the sub-assembler and having 
+passing in itself as the sub-assembler and having
 <code>open(Assembler,Resource)</code> be the place where
 all the work is done. (Amongst other things, this makes testing
 easier.)
@@ -1122,7 +1160,7 @@ and denies the creation of new ones.
 There are four <code>Mode constants:</code>
 
 <ul>
-<li>Mode.DEFAULT - reuse existing objects</li> 
+<li>Mode.DEFAULT - reuse existing objects</li>
 <li>Mode.CREATE - create missing objects</li>
 <li>Mode.REUSE - reuse existing objects</li>
 <li>Mode.ANY - reuse existing objects, create missing ones</li>
@@ -1138,14 +1176,14 @@ Note that the Modes only apply to persistent objects, so <i>eg</i>
 MemoryModels or PrefixMappings ignore their Mode arguments.
 </p>
 
-<h1><a name="TOC-ID-17"></a>basic assemblers</h1>
+<h1><a name="TOC-ID-18"></a>basic assemblers</h1>
 
 <p>
 There is a family of <i>basic assemblers</i>, each of which knows how to
 assemble a specific kind of object so long as they're given an
 Assembler that can construct their sub-objects. There are defined constants
 in <code>Assembler</code> for (an instance of) each of these basic
-assembler classes. 
+assembler classes.
 </p>
 
 <table align="center" class="framed">
@@ -1242,9 +1280,9 @@ classes that return non-Model objects and conclude with a description
 of <code>AssemblerGroup</code>.
 </p>
 
-<h2><a name="TOC-ID-18"></a>basic assembler ContentAssembler</h2>
+<h2><a name="TOC-ID-19"></a>basic assembler ContentAssembler</h2>
 
-<p>The ContentAssembler constructs Content objects (using the 
+<p>The ContentAssembler constructs Content objects (using the
 <code>ja:Content</code> vocabulary) used to supply
 content to models. A Content object has the method:
 
@@ -1253,36 +1291,36 @@ content to models. A Content object has the method:
 </ul>
 
 Invoking the <code>fill</code> method adds the represented content to
-the model. The supplied ModelAssemblers automatically apply 
-the <code>Content</code> objects corresponding to 
+the model. The supplied ModelAssemblers automatically apply
+the <code>Content</code> objects corresponding to
 <code>ja:content</code> property values.
 </p>
 
-<h2><a name="TOC-ID-19"></a>basic assembler ConnectionAssembler</h2>
+<h2><a name="TOC-ID-20"></a>basic assembler ConnectionAssembler</h2>
 
-<p>A ConnectionAssembler constructs ConnectionDescriptions 
-according to the specification. An ConnectionDescription 
+<p>A ConnectionAssembler constructs ConnectionDescriptions
+according to the specification. An ConnectionDescription
 retains the information required to make a database connection,
 can constructs that connection on demand.</p>
 
 <p>When a ConnectionAssembler is constructed, it may optionally
-be given a Resource describing (using the JA vocabulary) default values 
-for any of the database properties. When that Assembler is used to 
-create a Connection, missing values are filled in from the defaults. 
+be given a Resource describing (using the JA vocabulary) default values
+for any of the database properties. When that Assembler is used to
+create a Connection, missing values are filled in from the defaults.
 This allows sensitive information to be left out of the RDF description.
 </p>
 
 <p>The ConnectionAssembler embedded in Assembler.general has
 defaults taken from the system properties <code>jena.dbUser</code>
-and <code>jena.dbType</code> 
+and <code>jena.dbType</code>
 </p>
 
-<h2><a name="TOC-ID-20"></a>basic assembler RulesetAssembler</h2>
+<h2><a name="TOC-ID-21"></a>basic assembler RulesetAssembler</h2>
 
 <p>A RulesetAssembler generates lists of Jena rules.
 </p>
 
-<h2><a name="TOC-ID-21"></a>basic assembler DefaultModelAssembler</h2>
+<h2><a name="TOC-ID-22"></a>basic assembler DefaultModelAssembler</h2>
 
 <p>A "default model" is a model of unspecified type which is implemented as
 whatever kind the assembler for <code>ja:DefaultModel</code> generates.
@@ -1290,7 +1328,7 @@ The default for a DefaultModel is to create a MemoryModel with no special
 properties.
 </p>
 
-<h2><a name="TOC-ID-22"></a>AssemblerGroup</h2>
+<h2><a name="TOC-ID-23"></a>AssemblerGroup</h2>
 
 <p>The AssemblerGroup class allows a bunch of other Assemblers to be
 bundled together and selected by RDF type. AssemblerGroup implements
@@ -1299,12 +1337,12 @@ Assembler and adds the methods:</p>
 <ul>
 <li>implementWith( Resource type, Assembler a ) ? this</li>
 <li>assemblerFor( Resource type ) ? Assembler</li>
-</ul> 
+</ul>
 
 <p>AssemblerGroup's implementation of <code>open(sub,root)</code>
 finds the <i>most specific type</i> of <code>root</code> that is a subclass
 of <code>ja:Object</code> and looks for the Assembler that has been
-associated with that type by a call of <code>implementWith</code>. 
+associated with that type by a call of <code>implementWith</code>.
 It then delegates construction to that
 Assembler, passing <i>itself</i> as the sub-assembler. Hence each
 component Assembler only needs to know how to assemble its own
@@ -1315,7 +1353,7 @@ particular objects.
 with the argument type by a previous call of <code>implementWith</code>,
 or <code>null</code> if there is no associated assembler.</p>
 
-<h3><a name="TOC-ID-23"></a><a id="loading-assembler-classes">loading assembler classes</a></h3>
+<h3><a name="TOC-ID-24"></a><a id="loading-assembler-classes">loading assembler classes</a></h3>
 
 <p>
 AssemblerGroups implement the <code>ja:assembler</code> functionality.

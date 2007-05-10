@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.9 2007-05-09 15:28:08 chris-dollin Exp $
+# $Id: assembler.n3,v 1.10 2007-05-10 14:02:53 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -332,7 +332,13 @@ ja:reasonerURL a rdf:Property
         in the reasoner registry; only one such property per reasoner."""
     ; rdfs:domain ja:ReasonerFactory
     .
-    
+   
+ja:reasonerClass a rdf:Property
+    ; rdfs:label "Assembler.reasonerClass"
+    ; rdfs:comment "property of a ReasonerFactory giving the class name"
+    ; rdfs:domain ja:ReasonerFactory
+    .
+
 ja:reasonerFactory a rdf:Property
 	; rdfs:label "Assembler.reasonerFactory"
 	; rdfs:comment "property of an OntModelSpec giving the reasoner for the spec"

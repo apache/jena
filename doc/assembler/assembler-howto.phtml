@@ -30,8 +30,8 @@
 <h1>introduction</h1>
 
 <p>
-This document describes how to use the Assembler classes to construct models 
--- and other things -- from RDF descriptions that use the 
+This document describes how to use the Assembler classes to construct models
+-- and other things -- from RDF descriptions that use the
 Jena Assembler vocabulary. That vocabulary is available in
 <a href="../../vocabularies/assembler.n3">ja-vocabulary.n3</a> as an RDFS schema
 with conventional prefix <code>ja</code> for the URI
@@ -65,7 +65,7 @@ properties of that Resource describe what kind of object is to be
 assembled and what its components are: for example, an InfModel
 is constructed by specifying a base model and a reasoner. The
 specifications for the components are themselves Assembler specifications
-given by other Resources in the same Model.For example, to specify a 
+given by other Resources in the same Model.For example, to specify a
 memory model with data loaded from a file:
 </p>
 
@@ -80,12 +80,12 @@ that this file is to be read using the Jena N3 reader.
 </p>
 
 <p>
-Unless otherwise specified by an application, Assembler specifications 
-are interpreted after adding in the JA schema and doing (limited) RDFS inference. 
-In the example above, eg:model has to be given an explicit type, 
-but the externalContent bnode is implicitly typed by the domain of 
-ja:externalContent. In this document, we will usually leave out 
-inferrable types. 
+Unless otherwise specified by an application, Assembler specifications
+are interpreted after adding in the JA schema and doing (limited) RDFS inference.
+In the example above, eg:model has to be given an explicit type,
+but the externalContent bnode is implicitly typed by the domain of
+ja:externalContent. In this document, we will usually leave out
+inferrable types.
 </p>
 
 <p>
@@ -100,10 +100,10 @@ Resource root = spec.createResource( spec.expandPrefix( "eg:opening-example" ) )
 Model m = Assembler.general.openModel( root );
 </pre>
 
-<p>The model is constructed from the "root resource", 
+<p>The model is constructed from the "root resource",
 <code>eg:opening-example</code> in our example. <code>general</code>
 knows how to create all the kinds of objects -- not just Models --
-that we describe in the next sections. 
+that we describe in the next sections.
 </p>
 
 <h1>specifications common to all models</h1>
@@ -120,7 +120,7 @@ for attaching content, prefix mappings, and reification modes.
 <p>All of a model's <code>ja:content</code> property values are
 interpreted as specifying <code>Content</code> objects and a single
 composite <code>Content</code> object is constructed and used
-to initialise the model. 
+to initialise the model.
 See <a href="#spec-content">Content</a> for the description of Content
 specifications. For example:</p>
 
@@ -132,8 +132,8 @@ contents of <code>Data/A.n3</code>, <code>Data/B.rdf</code>,
 and <code>http://somewhere/RDF/ont.owl</code>. If the model supports
 transactions, then the content is loaded inside a transaction; if the
 load fails, the transaction is aborted, and a
-<code>TransactionAbortedException</code> thrown. 
-If the content has any prefix mappings, then they are also added 
+<code>TransactionAbortedException</code> thrown.
+If the content has any prefix mappings, then they are also added
 to the model.
 </p>
 
@@ -141,7 +141,7 @@ to the model.
 and <code>ja:namespace</code> properties are
 interpreted as specifying a <code>PrefixMapping</code> object and
 a single composite <code>PrefixMapping</code> is constructed and used
-to set the prefixes of the model. 
+to set the prefixes of the model.
 See <a href="#spec-prefix-mapping">PrefixMapping</a> for the description of Content
 specifications.</p>
 
@@ -154,16 +154,16 @@ model's reification mode is set accordingly, if possible.
 <h2><a name="spec-content">content</a></h2>
 
 A Content specification describes content that can be used to fill
-models. Content can be external (files and URLs) or literal 
+models. Content can be external (files and URLs) or literal
 (strings in the specification) or quotations (referring to RDF which
 is part of the specification).
 
 <div class='insert-class' root='ja:Content' source='vocab'>ja:Content goes here</div>
 
 <p>
-A <code>ja:Content</code> specification may have zero or more 
+A <code>ja:Content</code> specification may have zero or more
 <code>ja:externalContent</code> property values. These are URI
-resources naming an external (file or http etc) RDF object. 
+resources naming an external (file or http etc) RDF object.
 The constructed Content object contains the union of the values of
 all such resources. For example:
 </p>
@@ -174,13 +174,13 @@ all such resources. For example:
 properties is interpreted as RDF in an appropriate language. The constructed
 Content object contains that RDF. The language is either specified by an
 explicit <code>ja:contentEncoding</code> property value, or guessed from
-the content of the string. The only encodings permitted are "N3" and "RDF/XML". 
+the content of the string. The only encodings permitted are "N3" and "RDF/XML".
 For example:
 </p>
 
 <div class='insert-example' root='eg:literal-content-example' source='examples'>example 1 goes here</div>
 
-<p>The literal content is wrapped so that prefix declarations for 
+<p>The literal content is wrapped so that prefix declarations for
 <b>rdf</b>, <b>rdfs</b>, <b>owl</b>, <b>dc</b>, and <b>xsd</b>
 apply before interpretation.</p>
 
@@ -207,7 +207,7 @@ the JDBC connection for the database the model is in. For example:
 and shares the <code>ja:ModelName</code> property value naming the model
 within the database.</p>
 
-<p>The mandatory unique property value of <code>ja:connection</code> 
+<p>The mandatory unique property value of <code>ja:connection</code>
 specifies the connection to the database to be used.
 </p>
 
@@ -221,7 +221,7 @@ to the values of the system properties <code>jena.dbUser</code> and
 <div class='insert-class' root='ja:Connection' source='vocab'>ja:Connection goes here</div>
 
 <p>The <code>ja:dbURL</code> property value specifies the
-URL of the database to be connected to. If it is ommitted, the 
+URL of the database to be connected to. If it is ommitted, the
 <code>ja:dbURLProperty</code> value is the name of a Java system
 property whose value is the URL of the database.</p>
 
@@ -297,9 +297,9 @@ reason over. For example:</p>
 
 <div class='insert-example' root='eg:inference-example' source='examples'>inference example goes here</div>
 
-<p>describes an inference model that uses RDFS reasoning. The 
+<p>describes an inference model that uses RDFS reasoning. The
 <i>reasonerURL</i> property value is the URI used to identify the
-reasoner (it is the value of the Jena constant 
+reasoner (it is the value of the Jena constant
 <code>RDFSRuleReasonerFactory.URI</code>). The base model is
 specified as a memory model; if it is left out, an empty memory
 model is used. Of course, you can specify a database model as a base
@@ -333,11 +333,11 @@ prefix <i>my</i> will have to be known to the rule parser, of course.)
 </p>
 
 <div class='insert-class' root='ja:InfModel' source='vocab'>ja:InfModel goes here</div>
-<div class='insert-class' root='ja:ReasonerFactory' source='vocab'>ja:ReasonerFactory goes here</div>
 <div class='insert-class' root='ja:HasRules' source='vocab'>ja:HasRules goes here</div>
+
 <p>An InfModel's <code>ja:baseModel</code> property value specifies
 the base model for the inference model; if omitted, an empty memory model is
-used. </p> 
+used. </p>
 
 <p>An InfModel's <code>ja:ReasonerFactory</code> property value specifies
 the Reasoner for this inference model; if omitted, a GenericRuleReasoner
@@ -353,6 +353,38 @@ be bound to. If omitted, no schema is used.
 RuleSet properties <code>ja:rules</code>, <code>ja:rulesFrom</code>,
 or <code>ja:rule</code>. The rules of the implied <code>RuleSet</code>
 are added to the <code>Reasoner</code>.
+</p>
+
+<h3>ReasonerFactory</h3>
+
+<p>
+A ReasonerFactory can be specified by URL or by class name (but not both).
+</p>
+
+<div class='insert-class' root='ja:ReasonerFactory' source='vocab'>ja:ReasonerFactory goes here</div>
+
+<p>
+If the optional unique property <code>ja:reasonerURL</code> is specified,
+then its resource value is the URI of a reasoner in the Jena reasoner
+registry; the reasoner is the one with the given URI.
+</p>
+
+<p>
+If the optional unique property <code>ja:reasonerClass</code> is specified,
+its value names a class which implements <code>ReasonerFactory</code>. That
+class is loaded and an instance of it used as the factory.
+</p>
+
+<p>
+The class may be named by the lexical form of a literal, or by a URI
+with the (fake) "java:" scheme.
+</p>
+
+<p>
+If the class has a method <code>theInstance</code>, that method is called
+to supply the <code>ReasonerFactory</code> instance to use. Otherwise,
+a new instance of that class is constructed. Jena's reasoner factories come
+equipped with this method; for other factories, see the documentation.
 </p>
 
 <h3>rulesets</h3>
@@ -425,7 +457,7 @@ If absent, the default document manager is used.
 
 <li><code>ja:reasonerFactory</code>:
 The value of this optional unique property is the ReasonerFactory resource
-which will be used to construct this OntModelSpec's reasoner. A 
+which will be used to construct this OntModelSpec's reasoner. A
 <code>reasonerFactory</code> specification is the same as an InfModel's
 <code>reasoner</code> specification (the different properties are required
 for technical reasons).
@@ -449,7 +481,7 @@ of this <code>OntModelSpec</code>:
     <li>RDFS: http://www.w3.org/2000/01/rdf-schema#
     <li>DAML: http://www.daml.org/2001/03/daml+oil#
     </ul>
-    
+
 </li>
 </ul>
 </p>
@@ -470,8 +502,8 @@ constant is used as the default value.
 
 <div class='insert-example' source='examples' root='eg:document-manager-example'>document-manager-example</div>
 
-<p>In this example, <code>eg:document-manager-example</code> is a 
-<code>ja:DocumentManager</code> specification. It has its own 
+<p>In this example, <code>eg:document-manager-example</code> is a
+<code>ja:DocumentManager</code> specification. It has its own
 <code>FileManager specification</code>, the object of the
 <code>ja:fileManager property</code>; that <code>FileManager</code>
 has a location mapper, <code>eg:mapper</code>, that maps a single
@@ -481,7 +513,7 @@ filename.</p>
 The document manager also has an additional property to link it to
 document manager meta-data: the sub-model of the assembler specification
 reachable from <code>eg:document-manager-example</code> is passed to
-the document manager when it is created. For the meanings of the 
+the document manager when it is created. For the meanings of the
 <code>dm:</code> properties, see the Jena ontology documentation and
 the ontology.rdf ontology.
 </p>
@@ -501,7 +533,7 @@ which is a path to policy files as described in the Jena ontology documentation.
 If absent, the usual default path is applied.
 </p>
 
-<p>If the sub-model of the assembler specification reachable from the 
+<p>If the sub-model of the assembler specification reachable from the
 DocumentManager resource contains any OntDocumentManager DOC_MGR_POLICY
 or ONTOLOGY_SPEC objects, they will be interpreted by the constructed
 document manager object.
@@ -540,7 +572,7 @@ union is given an <i>immutable</i>, <i>empty</i> model as its root.
 </p>
 
 <p>
-Any <code>ja:subModel</code> property values have objects describing 
+Any <code>ja:subModel</code> property values have objects describing
 the remaining sub-models of the union. The order of the sub-models in the
 union is <i>undefined</i> (which is why there's a special rootModel
 property).
@@ -564,7 +596,7 @@ the prefix and namespace of the mapping.</p>
 
 <h2>other Assembler directives</h2>
 
-<p>There are two more <code>Assembler</code> directives that can be 
+<p>There are two more <code>Assembler</code> directives that can be
 used in an Assembler specification: the <i>assembler</i> and <i>imports</i>
 directives.</p>
 
@@ -581,7 +613,7 @@ When <code>someResource</code> is used as the type of a root object,
 the AssemblerGroup that processes the description will use an instance
 of the Java class named by the object of the statement. That class
 must implement the <code>Assembler</code> interface. See
-<a href="#loading-assembler-classes">loading assembler classes</a> 
+<a href="#loading-assembler-classes">loading assembler classes</a>
 for more details.
 </p>
 
@@ -593,15 +625,15 @@ for more details.
 <code>anyResource owl:imports someURL</code>
 </blockquote>
 
-or, equivalently, 
+or, equivalently,
 
 <blockquote>
 <code>anyResource ja:imports someURL</code>
 </blockquote>
 
 then the specification is regarded as also containing the contents of the
-RDF at <code>someURL</code>. That RDF may in turn contain 
-<code>imports</code> referring to other RDF. 
+RDF at <code>someURL</code>. That RDF may in turn contain
+<code>imports</code> referring to other RDF.
 </p>
 
 <h1>inside Assemblers</h1>
@@ -641,13 +673,13 @@ method:
 </ul>
 
 passing in a suitable Assembler object. In fact the standard implementation
-of <code>open(root)</code> is just 
+of <code>open(root)</code> is just
 
 <ul>
 <li>open( this, root )</li>
 </ul>
 
-passing in itself as the sub-assembler and having 
+passing in itself as the sub-assembler and having
 <code>open(Assembler,Resource)</code> be the place where
 all the work is done. (Amongst other things, this makes testing
 easier.)
@@ -688,7 +720,7 @@ and denies the creation of new ones.
 There are four <code>Mode constants:</code>
 
 <ul>
-<li>Mode.DEFAULT - reuse existing objects</li> 
+<li>Mode.DEFAULT - reuse existing objects</li>
 <li>Mode.CREATE - create missing objects</li>
 <li>Mode.REUSE - reuse existing objects</li>
 <li>Mode.ANY - reuse existing objects, create missing ones</li>
@@ -711,7 +743,7 @@ There is a family of <i>basic assemblers</i>, each of which knows how to
 assemble a specific kind of object so long as they're given an
 Assembler that can construct their sub-objects. There are defined constants
 in <code>Assembler</code> for (an instance of) each of these basic
-assembler classes. 
+assembler classes.
 </p>
 
 <table class='framed' align='center'>
@@ -810,7 +842,7 @@ of <code>AssemblerGroup</code>.
 
 <h2>basic assembler ContentAssembler</h2>
 
-<p>The ContentAssembler constructs Content objects (using the 
+<p>The ContentAssembler constructs Content objects (using the
 <code>ja:Content</code> vocabulary) used to supply
 content to models. A Content object has the method:
 
@@ -819,28 +851,28 @@ content to models. A Content object has the method:
 </ul>
 
 Invoking the <code>fill</code> method adds the represented content to
-the model. The supplied ModelAssemblers automatically apply 
-the <code>Content</code> objects corresponding to 
+the model. The supplied ModelAssemblers automatically apply
+the <code>Content</code> objects corresponding to
 <code>ja:content</code> property values.
 </p>
 
 <h2>basic assembler ConnectionAssembler</h2>
 
-<p>A ConnectionAssembler constructs ConnectionDescriptions 
-according to the specification. An ConnectionDescription 
+<p>A ConnectionAssembler constructs ConnectionDescriptions
+according to the specification. An ConnectionDescription
 retains the information required to make a database connection,
 can constructs that connection on demand.</p>
 
 <p>When a ConnectionAssembler is constructed, it may optionally
-be given a Resource describing (using the JA vocabulary) default values 
-for any of the database properties. When that Assembler is used to 
-create a Connection, missing values are filled in from the defaults. 
+be given a Resource describing (using the JA vocabulary) default values
+for any of the database properties. When that Assembler is used to
+create a Connection, missing values are filled in from the defaults.
 This allows sensitive information to be left out of the RDF description.
 </p>
 
 <p>The ConnectionAssembler embedded in Assembler.general has
 defaults taken from the system properties <code>jena.dbUser</code>
-and <code>jena.dbType</code> 
+and <code>jena.dbType</code>
 </p>
 
 <h2>basic assembler RulesetAssembler</h2>
@@ -865,12 +897,12 @@ Assembler and adds the methods:</p>
 <ul>
 <li>implementWith( Resource type, Assembler a ) &rarr; this</li>
 <li>assemblerFor( Resource type ) &rarr; Assembler</li>
-</ul> 
+</ul>
 
 <p>AssemblerGroup's implementation of <code>open(sub,root)</code>
 finds the <i>most specific type</i> of <code>root</code> that is a subclass
 of <code>ja:Object</code> and looks for the Assembler that has been
-associated with that type by a call of <code>implementWith</code>. 
+associated with that type by a call of <code>implementWith</code>.
 It then delegates construction to that
 Assembler, passing <i>itself</i> as the sub-assembler. Hence each
 component Assembler only needs to know how to assemble its own
