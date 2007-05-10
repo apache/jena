@@ -1,0 +1,30 @@
+
+General:
+   document
+   assess compliance
+   document level of compliance
+   
+List unimplemented features:
+  
+  
+   
+Get file: stuff working well enough for Jena
+IRI.normalize()
+RFRC 2396 and opaque URIs
+
+Bugs:
+[ 1669256 ] #foo relativize
+http://example.org#foo
+with base
+http://example.org/somefolder/mybase.rdf
+
+[ 1665481 ] mailto IRI scheme
+mailto:
+mailto:?subject=test
+     
+
+   
+
+   
+
+
