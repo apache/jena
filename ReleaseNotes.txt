@@ -55,6 +55,10 @@ Typed literals
     o Fixed problem which prevented Calendars being used to instantiate 
       XSDDates rather than full XSDDateTimes
       
+IRI
+    o Fixed conformance problem with mailto:
+    o Rewrote relativize code, fixing a #frag bug.
+      
 ==== Jena 2.5.2
 
 RDQL support now in ARQ
