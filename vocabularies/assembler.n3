@@ -1,6 +1,6 @@
 # (c) Copyright 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: assembler.n3,v 1.10 2007-05-10 14:02:53 chris-dollin Exp $
+# $Id: assembler.n3,v 1.11 2007-05-11 14:26:54 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
@@ -466,7 +466,7 @@ ja:policyPath a rdf:Property
 #
 
 ja:OntModel a rdfs:Class
-    ; rdfs:subClassOf ja:InfModel
+    ; rdfs:subClassOf ja:InfModel, ja:UnionModel
     ; rdfs:label "Assembler.OntModel"
     ; rdfs:comment "the class of OntModel specifications"
     .

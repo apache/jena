@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: AssemblerBase.java,v 1.10 2007-05-10 14:01:43 chris-dollin Exp $
+ 	$Id: AssemblerBase.java,v 1.11 2007-05-11 14:26:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -11,6 +11,7 @@ import java.util.List;
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -107,6 +108,35 @@ public abstract class AssemblerBase implements Assembler
             { return Class.forName( className ); }
         catch (ClassNotFoundException e) 
             { throw new CannotLoadClassException( root, className, e ); }
+        }
+    
+    /**
+        Answer the string described by the value of the unique optional
+        <code>classProperty</code> property of <code>root</code>,
+        or null if there's no such property. The value may be a URI, in which case
+        it must be a <b>java:</b> URI with content the class name; or it may
+        be a literal, in which case its lexical form is its class name; otherwise,
+        BOOM.
+    */
+    public static String getOptionalClassName( Resource root, Property classProperty )
+        {
+        RDFNode classNode = getUnique( root, classProperty );
+        return
+            classNode == null ? null
+            : classNode.isLiteral() ? classNode.asNode().getLiteralLexicalForm()
+            : classNode.isResource() ? mustBeJava( classNode.asNode().getURI() )
+            : null
+            ;
+        }
+
+    /**
+        Throw an exception if <code>uri</code> doesn't start with "java:",
+        otherwise answer the string beyond the ":".
+    */
+    private static String mustBeJava( String uri )
+        { // TODO replace JenaException
+        if (uri.startsWith( "java:" )) return uri.substring( 5 );
+        throw new JenaException( "class name URI must start with 'java:': " + uri );
         }
     }
 
