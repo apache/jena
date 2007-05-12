@@ -582,21 +582,21 @@ EOF
 N=0
 
 N=$((N+1)) ; testGood $(fname "syntax-pat-" $N) <<EOF
-PREFIX : <http:/example.org/ns#> 
+PREFIX : <http://example.org/ns#> 
 SELECT *
 { }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-pat-" $N) <<EOF
 # No DOT after optional
-PREFIX : <http:/example.org/ns#> 
+PREFIX : <http://example.org/ns#> 
 SELECT *
 { ?a :b :c OPTIONAL{:x :y :z} :x ?y ?z }
 EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-pat-" $N) <<EOF
 # No DOT between non-triples patterns
-PREFIX : <http:/example.org/ns#> 
+PREFIX : <http://example.org/ns#> 
 SELECT *
 { ?a :b :c 
   OPTIONAL{:x :y :z} 
@@ -606,7 +606,7 @@ EOF
 
 N=$((N+1)) ; testGood $(fname "syntax-pat-" $N) <<EOF
 # No DOT between non-triples patterns
-PREFIX : <http:/example.org/ns#> 
+PREFIX : <http://example.org/ns#> 
 SELECT *
 {
   OPTIONAL{:x :y :z} 
@@ -619,7 +619,7 @@ EOF
 ## N=0
 ## 
 ## N=$((N+1)) ; testGood $(fname "syntax-query-pat-" $N) <<EOF
-## PREFIX : <http:/example.org/ns#> 
+## PREFIX : <http://example.org/ns#> 
 ## SELECT *
 ## WHERE
 ##   ?a ?b ?c
@@ -627,7 +627,7 @@ EOF
 ## 
 ## N=$((N+1)) ; testGood $(fname "syntax-query-pat-" $N) <<EOF
 ## # No trailing DOT in a query pattern
-## PREFIX : <http:/example.org/ns#> 
+## PREFIX : <http://example.org/ns#> 
 ## SELECT *
 ## WHERE
 ##   :a :p ?x .
@@ -637,7 +637,7 @@ EOF
 ## 
 ## N=$((N+1)) ; testGood $(fname "syntax-query-pat-" $N) <<EOF
 ## # Trailing DOT in a query pattern
-## PREFIX : <http:/example.org/ns#> 
+## PREFIX : <http://example.org/ns#> 
 ## SELECT *
 ## WHERE
 ##   :a :p ?x .
@@ -646,7 +646,7 @@ EOF
 ## EOF
 ## 
 ## N=$((N+1)) ; testGood $(fname "syntax-query-pat-" $N) <<EOF
-## PREFIX : <http:/example.org/ns#> 
+## PREFIX : <http://example.org/ns#> 
 ## SELECT *
 ## WHERE
 ##   ?a ?b ?c
@@ -654,7 +654,7 @@ EOF
 ## EOF
 ## 
 ## N=$((N+1)) ; testGood $(fname "syntax-query-pat-" $N) <<EOF
-## PREFIX : <http:/example.org/ns#> 
+## PREFIX : <http://example.org/ns#> 
 ## SELECT *
 ## WHERE
 ##   ?a ?b ?c .
