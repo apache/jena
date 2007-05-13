@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.*;
 
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -16,37 +17,22 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
 
-public class QueryIterGroup extends QueryIter
+public class QueryIterGroup extends QueryIterPlainWrapper
 {
-    private boolean hasYieledGroup = false ;
+    // Aggregators as subpackage of iterators?
     
     public QueryIterGroup(QueryIterator qIter, 
                           List groupVars,
                           List aggregators,
                           ExecutionContext execCxt)
     {
-        super(execCxt) ;
-        calc(qIter, groupVars, aggregators) ;
+        super(calc(qIter, groupVars, aggregators),
+              execCxt) ;
         throw new ARQNotImplemented("QueryIterGroup") ;
-        // Calculate
     }
 
-//    public boolean hasNextGroup()
-//    { return ! hasYieledGroup ; }
-//
-//    public QueryIterator nextGroup()
-//    {
-//        if ( ! hasNextGroup() )
-//            throw new NoSuchElementException("QueryIterGroup.nextGroup") ;
-//        hasYieledGroup = true ;
-//        return null ;
-//    }
-    
     protected void closeIterator()
     {
-//        if ( qIter != null )
-//            qIter.close() ;
-//        qIter = null ;
     }
 
     protected boolean hasNextBinding()
@@ -59,18 +45,16 @@ public class QueryIterGroup extends QueryIter
         return null ;
     }
     
-    private void calc(QueryIterator iter, List groupVars, List aggregators)
+    private static QueryIterator calc(QueryIterator iter, List groupVars, List aggregators)
     {
-        Map groups = new HashMap() ;    // Key ==> Binding being built.
+        if ( true )
+            throw new ARQNotImplemented("QueryIterGroup.calc: magic happens") ;
+        Map buckets = new HashMap() ;    // Key ==> Binding being built.
         Map aggregations = null ;       // Key ==> 
         
         for ( ; iter.hasNext() ; )
         {
             Binding b = iter.nextBinding() ;
-            
-            // Stored Binding is (groupVars, aggregates, other [first]) 
-            
-            // Better to do a space saving copy?
             Binding key = new BindingProject(groupVars, b) ;
             
             for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
@@ -78,8 +62,17 @@ public class QueryIterGroup extends QueryIter
                 Aggregator agg = (Aggregator)aggIter.next();
                 agg.accumulate(key, b) ;
             }
-            
+            Binding out = new BindingMap() ;
+            for ( Iterator gvIter = groupVars.iterator() ; gvIter.hasNext() ; )
+            {
+                Var v = (Var)gvIter.next();
+                // magic happens
+                out.add(v, null) ;
+            }
         }
+        
+        
+        return null ;
     }
 
     private Binding group(Map groups, Binding key)
