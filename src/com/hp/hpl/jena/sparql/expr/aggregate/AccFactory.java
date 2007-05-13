@@ -6,34 +6,9 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import java.util.Map;
-
-
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-
-public class AggregatorBase implements Aggregator
+public interface AccFactory
 {
-    private Map buckets ;       // Key => accumulator
-    private AccFactory accFactor ;
-
-    public AggregatorBase(AccFactory factory)
-    {
-        this.accFactor = factory ; 
-    }
-    
-    public void accumulate(Binding key, Binding binding)
-    {
-        if ( true )
-            throw new ARQNotImplemented("AggregatorBase.accumulator") ;
-        Accumulator acc = (Accumulator)buckets.get(key) ;
-        if ( acc == null )
-        {
-            acc = accFactor.create() ;
-            buckets.put(key, acc) ;
-        }
-        acc.accumulate(binding) ;
-    }
+     public Accumulator create() ;
 }
 
 /*
