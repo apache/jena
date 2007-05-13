@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.*;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
@@ -45,10 +46,13 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         return null ;
     }
     
-    private static QueryIterator calc(QueryIterator iter, List groupVars, List aggregators)
+    private static Iterator calc(QueryIterator iter, List groupVars, List aggregators)
     {
         if ( true )
             throw new ARQNotImplemented("QueryIterGroup.calc: magic happens") ;
+        
+        // Stage 1 : assign bindings to buckets and pump through the aggregrators.
+        
         Map buckets = new HashMap() ;    // Key ==> Binding being built.
         Map aggregations = null ;       // Key ==> 
         
@@ -62,17 +66,36 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 Aggregator agg = (Aggregator)aggIter.next();
                 agg.accumulate(key, b) ;
             }
-            Binding out = new BindingMap() ;
-            for ( Iterator gvIter = groupVars.iterator() ; gvIter.hasNext() ; )
+            List x = (List)buckets.get(key) ;
+            if ( x == null )
             {
-                Var v = (Var)gvIter.next();
-                // magic happens
-                out.add(v, null) ;
+                x = new ArrayList() ;   
+                // Array list might have problems with incremental growth.
+                // but LinkedList has worse constant overhead.
+                buckets.put(key, x) ;
             }
+            x.add(b) ;
         }
         
+        // Stage 2 : for each bucket, get binding, add aggregator values
         
-        return null ;
+        List output = new ArrayList(buckets.size()) ;
+        for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
+        {
+            Binding key = (Binding)bIter.next();
+            List x = (List)buckets.get(key) ;
+            Binding b = new BindingMap(key) ;
+            for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+            {
+                Aggregator agg = (Aggregator)aggIter.next();
+                Var v = agg.getVariable() ;
+                Node value =  agg.getValue(key) ;
+                b.add(v, value) ;
+            }
+            output.add(b) ;
+        }
+        
+        return output.iterator() ;
     }
 
     private Binding group(Map groups, Binding key)
@@ -80,7 +103,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         Binding x = (Binding)groups.get(key) ;
         if ( x == null )
         {
-            // Better o copy here to free the key (which is a wrapper)
+            // Better to copy here to free the key (which is a wrapper)
             x = new BindingMap() ;
             x.addAll(key) ;
         }

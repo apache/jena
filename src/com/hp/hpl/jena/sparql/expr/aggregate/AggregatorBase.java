@@ -9,16 +9,21 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import java.util.Map;
 
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
 public class AggregatorBase implements Aggregator
 {
     private Map buckets ;       // Key => accumulator
     private AccFactory accFactor ;
+    private Var var ;
 
-    public AggregatorBase(AccFactory factory)
+    public AggregatorBase(Var var, AccFactory factory)
     {
+        this.var = var ;
         this.accFactor = factory ; 
     }
     
@@ -34,6 +39,17 @@ public class AggregatorBase implements Aggregator
         }
         acc.accumulate(binding) ;
     }
+
+    public Node getValue(Binding key)
+    {
+        Accumulator acc = (Accumulator)buckets.get(key) ;
+        if ( acc == null )
+            throw new ARQInternalErrorException("Null for accumuator") ;
+        return acc.getValue().asNode() ;
+    }
+
+    public Var getVariable()
+    { return var ; }
 }
 
 /*
