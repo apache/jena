@@ -11,6 +11,7 @@ import java.util.Stack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor;
 import com.hp.hpl.jena.sparql.algebra.op.*;
@@ -153,6 +154,9 @@ class CompilerDispatch implements OpVisitor
         QueryIterator qIter = opCompiler.compile(opSlice, input) ;
         push(qIter) ;
     }
+    
+    public void visit(OpGroupAgg opGroupAgg)
+    { throw new ARQNotImplemented("Compile OpGroupAgg") ; }
     
     private void push(QueryIterator qIter)  { stack.push(qIter) ; }
     private QueryIterator pop()

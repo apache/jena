@@ -30,6 +30,7 @@ public interface Transform
     public Op transform(OpDistinct opDistinct, Op subOp) ;
     public Op transform(OpReduced opReduced, Op subOp) ;
     public Op transform(OpSlice opSlice, Op subOp) ;
+    public Op transform(OpGroupAgg opGroupAgg, Op subOp) ;
 }
 
 /*

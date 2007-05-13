@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -14,32 +14,34 @@ import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.Transform;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 
-public class OpOrder extends OpModifier
+public class OpGroupAgg extends OpModifier
 {
-    private List conditions ;
-    public OpOrder(Op subOp, List conditions)
+    private List groupVars ;
+    private List aggregators ;
+
+    public OpGroupAgg(Op subOp, List groupVars, List aggregators)
     { 
         super(subOp) ;
-        this.conditions = conditions ;
+        this.groupVars  = groupVars ;
+        this.aggregators = aggregators ;
     }
-    
-    public List getConditions() { return conditions ; }
     
     public Table eval_1(Table table, Evaluator evaluator)
     {
-        return evaluator.order(table, conditions) ;
+        return evaluator.groupBy(table, groupVars, aggregators) ;
     }
 
-    public String getName()                 { return "order" ; }
+    public String getName()                 { return "group" ; }
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
+    public Op copy(Op subOp)                { return new OpGroupAgg(subOp, groupVars, aggregators) ; }
 
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
+
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

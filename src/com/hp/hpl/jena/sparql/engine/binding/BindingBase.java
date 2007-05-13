@@ -68,6 +68,17 @@ abstract public class BindingBase implements Binding
         
     protected abstract void add1(Var name, Node node) ;
 
+    public void addAll(Binding other)
+    {
+        Iterator iter = other.vars() ;
+        for ( ; iter.hasNext(); )
+        {
+            Var v = (Var)iter.next();
+            Node n = other.get(v) ;
+            add(v, n) ;
+        }
+    }
+    
     /** Iterate over all the names of variables. */
     final public Iterator vars()
     {

@@ -243,6 +243,12 @@ public class OpWriter
             visitOp1(opList) ;
         }
         
+        public void visit(OpGroupAgg opGroupAgg)
+        {
+            start(opGroupAgg, NoNL) ;
+            finish(opGroupAgg) ;
+        }
+        
         public void visit(OpOrder opOrder)
         { 
             start(opOrder, NoNL) ;

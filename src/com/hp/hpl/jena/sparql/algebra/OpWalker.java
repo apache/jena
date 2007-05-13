@@ -88,6 +88,9 @@ public class OpWalker
 
         public void visit(OpSlice opSlice)
         { visitX(opSlice) ; }
+
+        public void visit(OpGroupAgg opGroupAgg)
+        { visitX(opGroupAgg) ; }
     }
 }
 

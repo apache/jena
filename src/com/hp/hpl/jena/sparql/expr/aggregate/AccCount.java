@@ -1,45 +1,33 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import java.util.List;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-
-public class OpOrder extends OpModifier
+public class AccCount implements Accumulator
 {
-    private List conditions ;
-    public OpOrder(Op subOp, List conditions)
-    { 
-        super(subOp) ;
-        this.conditions = conditions ;
-    }
+    long count = 0 ;
+    // Count rows indistinctly
+    // For distinct, feed with a distinct iterator 
+    public AccCount() 
+    { }
     
-    public List getConditions() { return conditions ; }
+    public void accumulate(Binding binding)
+    { count++ ; }
     
-    public Table eval_1(Table table, Evaluator evaluator)
+    public NodeValue getValue()
     {
-        return evaluator.order(table, conditions) ;
+        return NodeValue.makeInteger(count) ;
     }
-
-    public String getName()                 { return "order" ; }
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
-
-    public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

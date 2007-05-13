@@ -118,6 +118,9 @@ public class Transformer
         
         public void visit(OpSlice opSlice)
         { visit1(opSlice) ; }
+        
+        public void visit(OpGroupAgg opGroupAgg)
+        { visit1(opGroupAgg) ; }
     }
 }
 

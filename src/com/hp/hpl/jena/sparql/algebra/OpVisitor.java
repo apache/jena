@@ -28,6 +28,7 @@ public interface OpVisitor
     public void visit(OpReduced opReduced) ;
     public void visit(OpDistinct opDistinct) ;
     public void visit(OpSlice opSlice) ;
+    public void visit(OpGroupAgg opGroupAgg) ;
 }
 
 /*

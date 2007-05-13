@@ -114,6 +114,13 @@ class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    public Table groupBy(Table table, List groupVars, List aggregators)
+    {
+        QueryIterator qIter = table.iterator(getExecContext()) ;
+        qIter = new QueryIterGroup(qIter, groupVars, aggregators, getExecContext()) ;
+        return new TableN(qIter) ;
+    }
+    
     public Table project(Table table, List vars)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;

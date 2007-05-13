@@ -38,6 +38,8 @@ public interface Binding
     
     public boolean isEmpty() ;
 
+    public void addAll(Binding key) ;
+
 }
 
 /*

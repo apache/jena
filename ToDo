@@ -4,10 +4,13 @@
 ++ ** Document "update API"
 -----
 
-+ OpGroup
++ Aggregates
   QueryIter(ator)Group
-    QueryIterator .nextGroup()
-    boolean .hasNextGroup()
+  Parsing : 
+     SELECT list is expressions always (inv vars)
+     Ordered Map [LinkedHashMap] from name (generated if necessary) to expression.
+     Phase 2 detectes inconmsistences 
+         
 
 
 Improvements - are these measurable?

@@ -39,6 +39,7 @@ public class TransformCopy implements Transform
     public Op transform(OpDistinct opDistinct, Op subOp)    { return opDistinct.copy(subOp) ; }
     public Op transform(OpReduced opReduced, Op subOp)      { return opReduced.copy(subOp) ; }
     public Op transform(OpSlice opSlice, Op subOp)          { return opSlice.copy(subOp) ; }
+    public Op transform(OpGroupAgg opGroupAgg, Op subOp)    { return opGroupAgg.copy(subOp) ; }
 
     private Op xform(Op0 op)
     { 

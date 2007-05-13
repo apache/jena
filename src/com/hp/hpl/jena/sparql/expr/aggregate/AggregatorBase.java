@@ -1,45 +1,39 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import java.util.List;
+import java.util.Map;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 
-public class OpOrder extends OpModifier
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+
+public class AggregatorBase implements Aggregator
 {
-    private List conditions ;
-    public OpOrder(Op subOp, List conditions)
-    { 
-        super(subOp) ;
-        this.conditions = conditions ;
-    }
+    Map buckets ;       // Key => accumulator
+
+    public AggregatorBase(/*factory for accumulator*/)
+    {}
     
-    public List getConditions() { return conditions ; }
-    
-    public Table eval_1(Table table, Evaluator evaluator)
+    public void accumulate(Binding key, Binding binding)
     {
-        return evaluator.order(table, conditions) ;
+        Accumulator acc = (Accumulator)buckets.get(key) ;
+        if ( acc == null )
+        {
+            //acc = factory.create() ;
+            buckets.put(key, acc) ;
+            throw new ARQNotImplemented("AggregatorBase.accumulator") ;
+        }
+        acc.accumulate(binding) ;
     }
-
-    public String getName()                 { return "order" ; }
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
-
-    public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

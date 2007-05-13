@@ -28,6 +28,7 @@ public interface Evaluator
     public Table list(Table table) ;
     
     public Table order(Table table, List conditions) ;
+    public Table groupBy(Table table, List groupVars, List aggregators) ;
     public Table project(Table table, List vars) ; 
     public Table distinct(Table table) ;
     public Table reduced(Table table) ;

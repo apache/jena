@@ -28,6 +28,9 @@ public class BindingWrapped implements Binding
     public void add(Var var, Node node)
     { binding.add(var, node) ; }
 
+    public void addAll(Binding other)
+    { binding.addAll(other) ; }
+
     public boolean contains(Var var)
     {
         return binding.contains(var) ;

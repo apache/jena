@@ -7,14 +7,12 @@
 package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.Collection;
-import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingBase;
+import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
@@ -53,54 +51,8 @@ public class QueryIterProject extends QueryIterConvert
 
         public Binding convert(Binding bind)
         {
-            // Non-copying version
             Binding bind2 = new BindingProject(projectionVars, bind) ;
             return bind2 ;
-        }
-    }
-
-    static
-    class BindingProject extends BindingBase
-    {
-        Binding binding ;
-        Collection projectionVars ; 
-
-        public BindingProject(Collection vars, Binding bind)
-        { 
-            super(null) ;
-            binding = bind ;
-            this.projectionVars = vars ;
-        }
-
-        protected void add1(Var var, Node node)
-        { throw new UnsupportedOperationException("BindingProject.add1") ; }
-
-        protected void checkAdd1(Var var, Node node)
-        {}
-
-        protected boolean contains1(Var var)
-        {
-            // In the projection set and the underlying
-            // binding (OPTIONAL means it may not be in this binding) 
-            return projectionVars.contains(var) && binding.contains(var) ;
-            //return projectionVars.contains(var) ; 
-        }
-
-        protected Node get1(Var var)
-        {
-            if ( ! projectionVars.contains(var) )
-                return null ; 
-            return binding.get(var) ;
-        }
-
-        protected Iterator vars1()
-        {
-            return projectionVars.iterator() ;
-        }
-
-        protected int size1()
-        {
-            return projectionVars.size() ;
         }
     }
 }

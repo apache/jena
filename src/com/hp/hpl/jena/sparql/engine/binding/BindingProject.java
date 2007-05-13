@@ -1,45 +1,63 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra.op;
+package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
 
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Table;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.core.Var;
 
-public class OpOrder extends OpModifier
+public class BindingProject extends BindingBase
 {
-    private List conditions ;
-    public OpOrder(Op subOp, List conditions)
+    Binding binding ;
+    Collection projectionVars ; 
+
+    public BindingProject(Collection vars, Binding bind)
     { 
-        super(subOp) ;
-        this.conditions = conditions ;
+        super(null) ;
+        binding = bind ;
+        this.projectionVars = vars ;
     }
-    
-    public List getConditions() { return conditions ; }
-    
-    public Table eval_1(Table table, Evaluator evaluator)
+
+    protected void add1(Var var, Node node)
+    { throw new UnsupportedOperationException("BindingProject.add1") ; }
+
+    protected void checkAdd1(Var var, Node node)
+    {}
+
+    protected boolean contains1(Var var)
     {
-        return evaluator.order(table, conditions) ;
+        // In the projection set and the underlying
+        // binding (OPTIONAL means it may not be in this binding) 
+        return projectionVars.contains(var) && binding.contains(var) ;
+        //return projectionVars.contains(var) ; 
     }
 
-    public String getName()                 { return "order" ; }
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
-    public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
+    protected Node get1(Var var)
+    {
+        if ( ! projectionVars.contains(var) )
+            return null ; 
+        return binding.get(var) ;
+    }
 
-    public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
+    protected Iterator vars1()
+    {
+        return projectionVars.iterator() ;
+    }
+
+    protected int size1()
+    {
+        return projectionVars.size() ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

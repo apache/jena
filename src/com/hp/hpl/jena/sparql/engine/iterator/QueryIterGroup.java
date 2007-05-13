@@ -6,112 +6,96 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
 
 public class QueryIterGroup extends QueryIter
 {
-    // Base implementation - single group over the whole result set.
-    // Maybe this should not be a QueryIter at all.  Just the grouping 
-    
-    private QueryIterator qIter ;
     private boolean hasYieledGroup = false ;
     
-    public QueryIterGroup(QueryIterator qIter, ExecutionContext execCxt)
+    public QueryIterGroup(QueryIterator qIter, 
+                          List groupVars,
+                          List aggregators,
+                          ExecutionContext execCxt)
     {
         super(execCxt) ;
-        this.qIter = qIter ;
+        calc(qIter, groupVars, aggregators) ;
+        throw new ARQNotImplemented("QueryIterGroup") ;
+        // Calculate
     }
 
-    public boolean hasNextGroup()
-    { return ! hasYieledGroup ; }
-
-    public QueryIterator nextGroup()
-    {
-        if ( ! hasNextGroup() )
-            throw new NoSuchElementException("QueryIterGroup.nextGroup") ;
-        hasYieledGroup = true ;
-        return qIter ;
-    }
+//    public boolean hasNextGroup()
+//    { return ! hasYieledGroup ; }
+//
+//    public QueryIterator nextGroup()
+//    {
+//        if ( ! hasNextGroup() )
+//            throw new NoSuchElementException("QueryIterGroup.nextGroup") ;
+//        hasYieledGroup = true ;
+//        return null ;
+//    }
     
     protected void closeIterator()
     {
-        if ( qIter != null )
-            qIter.close() ;
-        qIter = null ;
+//        if ( qIter != null )
+//            qIter.close() ;
+//        qIter = null ;
     }
 
     protected boolean hasNextBinding()
     {
-        return qIter.hasNext() ;
+        return false ;
     }
 
     protected Binding moveToNextBinding()
     {
-        return qIter.nextBinding() ;
-    }
-}
-
-
-
-class QueryIterGroup2 extends QueryIter
-{
-    // Base implementation - single group over the whole result set.
-    // Maybe this should not be a QueryIter at all.  Just the grouping 
-    private List groups ;
-    private Iterator groupIter ;
-    private QueryIterator current ;
-    
-    public QueryIterGroup2(List iterators, ExecutionContext execCxt)
-    {
-        super(execCxt) ;
-        this.groups = iterators ;
-        this.groupIter = iterators.iterator() ;
-        this.current = null ;
-    }
-
-    public boolean hasNextGroup()
-    { return groupIter.hasNext() ; }
-
-    public QueryIterator nextGroup()
-    {
-        if ( ! hasNextGroup() )
-            throw new NoSuchElementException("QueryIterGroup.nextGroup") ;
-        return (QueryIterator)groupIter.next();
+        return null ;
     }
     
-    protected void closeIterator()
+    private void calc(QueryIterator iter, List groupVars, List aggregators)
     {
-        if ( current != null )
-            current.close() ;
-        current = null ;
-    }
-
-    protected boolean hasNextBinding()
-    {
-        while ( ! current.hasNext() )
+        Map groups = new HashMap() ;    // Key ==> Binding being built.
+        Map aggregations = null ;       // Key ==> 
+        
+        for ( ; iter.hasNext() ; )
         {
-            if ( current != null )
-                current.close() ;
-            if ( ! hasNextGroup() )
-                return false ;
-            current = nextGroup() ;
+            Binding b = iter.nextBinding() ;
+            
+            // Stored Binding is (groupVars, aggregates, other [first]) 
+            
+            // Better to do a space saving copy?
+            Binding key = new BindingProject(groupVars, b) ;
+            
+            for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
+            {
+                Aggregator agg = (Aggregator)aggIter.next();
+                agg.accumulate(key, b) ;
+            }
+            
         }
-        return true ;
     }
 
-    protected Binding moveToNextBinding()
+    private Binding group(Map groups, Binding key)
     {
-        if ( ! hasNextBinding() )
-            return null ;
-        return current.nextBinding() ;
+        Binding x = (Binding)groups.get(key) ;
+        if ( x == null )
+        {
+            // Better o copy here to free the key (which is a wrapper)
+            x = new BindingMap() ;
+            x.addAll(key) ;
+        }
+        return x ;
     }
+
 }
+
 
 
 /*

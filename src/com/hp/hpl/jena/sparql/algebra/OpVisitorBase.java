@@ -59,6 +59,9 @@ public class OpVisitorBase implements OpVisitor
 
     public void visit(OpSlice opSlice)
     {}
+
+    public void visit(OpGroupAgg opGroupAgg)
+    {}
 }
 
 /*
