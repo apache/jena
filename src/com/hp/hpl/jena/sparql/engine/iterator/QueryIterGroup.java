@@ -54,7 +54,6 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         // Stage 1 : assign bindings to buckets and pump through the aggregrators.
         
         Map buckets = new HashMap() ;    // Key ==> Binding being built.
-        Map aggregations = null ;       // Key ==> 
         
         for ( ; iter.hasNext() ; )
         {
@@ -78,6 +77,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         }
         
         // Stage 2 : for each bucket, get binding, add aggregator values
+        // Key is the first binding we saw for the group (projected to the group vars).
         
         List output = new ArrayList(buckets.size()) ;
         for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
@@ -97,19 +97,6 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         
         return output.iterator() ;
     }
-
-    private Binding group(Map groups, Binding key)
-    {
-        Binding x = (Binding)groups.get(key) ;
-        if ( x == null )
-        {
-            // Better to copy here to free the key (which is a wrapper)
-            x = new BindingMap() ;
-            x.addAll(key) ;
-        }
-        return x ;
-    }
-
 }
 
 
