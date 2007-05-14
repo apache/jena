@@ -11,12 +11,11 @@ import java.util.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.binding.BindingProject;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
 {
@@ -53,50 +52,64 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         
         // Stage 1 : assign bindings to buckets and pump through the aggregrators.
         
-        Map buckets = new HashMap() ;    // Key ==> Binding being built.
+        Set buckets = new HashSet() ;    // Set of bindings after grouping.
         
         for ( ; iter.hasNext() ; )
         {
             Binding b = iter.nextBinding() ;
-            Binding key = new BindingProject(groupVars, b) ;
+            Binding key = genKey(groupVars, b) ;
+            
+            if ( ! buckets.contains(key) )
+                buckets.add(key) ;
             
             for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
             {
                 Aggregator agg = (Aggregator)aggIter.next();
                 agg.accumulate(key, b) ;
             }
-            List x = (List)buckets.get(key) ;
-            if ( x == null )
-            {
-                x = new ArrayList() ;   
-                // Array list might have problems with incremental growth.
-                // but LinkedList has worse constant overhead.
-                buckets.put(key, x) ;
-            }
-            x.add(b) ;
         }
         
         // Stage 2 : for each bucket, get binding, add aggregator values
         // Key is the first binding we saw for the group (projected to the group vars).
         
-        List output = new ArrayList(buckets.size()) ;
-        for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
+        for ( Iterator bIter = buckets.iterator() ; bIter.hasNext(); )
         {
             Binding key = (Binding)bIter.next();
-            List x = (List)buckets.get(key) ;
-            Binding b = new BindingMap(key) ;
+            // Assumes the key was a copy and can be extended.
+            Binding binding2 = key ;
+            
             for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
             {
                 Aggregator agg = (Aggregator)aggIter.next();
                 Var v = agg.getVariable() ;
                 Node value =  agg.getValue(key) ;
-                b.add(v, value) ;
+                // Extend with the aggregations.
+                binding2.add(v, value) ;
             }
-            output.add(b) ;
         }
         
-        return output.iterator() ;
+        return buckets.iterator() ;
     }
+    
+    static private Binding genKey(List vars, Binding binding) 
+    {
+        //return new BindingProject(vars, binding) ;
+        return copyProject(vars, binding) ;
+    }
+    
+    static private Binding copyProject(List vars, Binding binding)
+    {
+        Binding x = new BindingMap() ;
+        for ( Iterator iter = vars.listIterator() ; iter.hasNext() ; )
+        {
+            Var var = (Var)iter.next() ;
+            Node node = binding.get(var) ;
+            if ( node != null )
+                x.add(var, node) ;
+        }
+        return x ;
+    }
+    
 }
 
 
