@@ -10,7 +10,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 
-/** A binding that is fixed - used in calculating DISTINCT and REDUCED result sets.
+/** A binding that is fixed - used in calculating DISTINCT result sets.
  *  .hashCode and .equals are overridden for content equality semantics (where
  *  "equality" means Node.equals, not Node.sameValueAs).
  * 
@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 public class BindingFixed extends BindingWrapped
 {
+    // TODO Merge with BindingKey 
     int varSize = 0 ;
     int calcHashCode = 0 ;
     private boolean haveDoneHashCode = false ; 
