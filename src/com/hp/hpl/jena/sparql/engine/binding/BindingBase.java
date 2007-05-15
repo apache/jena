@@ -33,7 +33,7 @@ abstract public class BindingBase implements Binding
     Binding parent ;
     
     // Tracking children is for flexiblity.
-
+    
     // It is not needed for flatten results sets (i.e. with nulls in)
     // but is needed for nested result set that record subqueries.
     // and have nested results.
@@ -155,10 +155,6 @@ abstract public class BindingBase implements Binding
             Object obj = iter.next() ;
             Var var = (Var)obj ;
             
-            //String name = (String)iter.next() ;
-            // Skip system variables.
-            if ( Var.isSystemVar(var) )
-                continue ;
             sbuff.append(sep) ;
             sep = " " ;
             format(sbuff, var) ;
