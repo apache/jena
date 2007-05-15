@@ -95,11 +95,8 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     
     static private BindingKey genKey(List vars, Binding binding) 
     {
-        //return new BindingProject(vars, binding) ;
-        //return copyProject(vars, binding) ;
-        
-        // Alternative is that BindingKey masks the non-groupVars but retains the orginal binding.
         return new BindingKey(copyProject(vars, binding)) ;
+        //return new BindingKey(copyProject(vars, binding), binding) ;
     }
     
     static private Binding copyProject(List vars, Binding binding)

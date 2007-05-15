@@ -11,24 +11,29 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 
 /** A binding helper that can be a key in a Set or Map.
- *  Adding while in such a structure is chnaging is not supported.  
+ *  Chnaging the key binding while in such a structure is  not supported.  
  * 
  * @author   Andy Seaborne
  * @version  $Id: BindingWrapped.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
-
 public class BindingKey
 {
-    public Binding binding ;
+    public Binding key ;
+    public Binding value ;
+    
     public BindingKey(Binding binding)
+    { this(binding, binding) ; }
+    
+    public BindingKey(Binding keyBinding, Binding valueBinding)
     { 
-        this.binding = binding ;
+        this.key = keyBinding ;
+        this.value = valueBinding ;
         hashCode() ;
     }
 
-    // Beware that changing the binding changes the .equals relationships.
-    public Binding getBinding() { return binding ; } 
+    public Binding getBinding() { return value ; } 
+    public Binding getKey()     { return key ; }
     
     private boolean validHashCode = false ;
     private int keyHashCode = 0 ;
@@ -37,7 +42,7 @@ public class BindingKey
     {
         if ( ! validHashCode )
         {
-            keyHashCode = calcHashCode(binding) ;
+            keyHashCode = calcHashCode(key) ;
             validHashCode = true ;
         }
         return keyHashCode ;
@@ -47,9 +52,9 @@ public class BindingKey
     {
         if ( ! ( other instanceof BindingKey ) )
             return false ;
-        Binding binding2 = ((BindingKey)other).getBinding() ;
+        Binding binding2 = ((BindingKey)other).getKey() ;
         
-        return BindingBase.same(binding, binding2) ;
+        return BindingBase.same(key, binding2) ;
     }
     
     private static final int EmptyBindingHashCode = 123 ;
