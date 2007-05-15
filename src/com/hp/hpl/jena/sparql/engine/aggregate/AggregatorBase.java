@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 
 public abstract class AggregatorBase implements Aggregator
 {
@@ -22,7 +23,7 @@ public abstract class AggregatorBase implements Aggregator
     { this.var = var ; }
     
     final
-    public void accumulate(Binding key, Binding binding)
+    public void accumulate(BindingKey key, Binding binding)
     {
         Accumulator acc = (Accumulator)buckets.get(key) ;
         if ( acc == null )
@@ -35,7 +36,7 @@ public abstract class AggregatorBase implements Aggregator
 
     protected abstract Accumulator createAccumulator() ;
 
-    public Node getValue(Binding key)
+    public Node getValue(BindingKey key)
     {
         Accumulator acc = (Accumulator)buckets.get(key) ;
         if ( acc == null )

@@ -31,7 +31,8 @@ public class QueryIterDistinct extends QueryIter1
     Set seen ; 
     Binding nextBinding = null ;
     
-    // Expects the input QueryIterator to be BindingImmutable. 
+    // Expects the input QueryIterator to be BindingImmutable.
+    // TODO Use BindingKey.
     
     public QueryIterDistinct(QueryIterator iter, ExecutionContext context)
     {

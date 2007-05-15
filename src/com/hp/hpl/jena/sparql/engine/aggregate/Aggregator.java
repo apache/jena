@@ -9,14 +9,15 @@ package com.hp.hpl.jena.sparql.engine.aggregate;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 
 
 public interface Aggregator
 {
-    public void accumulate(Binding key, Binding b) ;
+    public void accumulate(BindingKey key, Binding b) ;
 
-    public Var getVariable() ;
-    public Node getValue(Binding key) ; 
+    public Var  getVariable() ;
+    public Node getValue(BindingKey key) ; 
 }
 
 /*

@@ -10,6 +10,7 @@ import java.util.* ;
 import org.apache.commons.logging.*;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
@@ -32,7 +33,7 @@ abstract public class BindingBase implements Binding
     Binding parent ;
     
     // Tracking children is for flexiblity.
-    
+
     // It is not needed for flatten results sets (i.e. with nulls in)
     // but is needed for nested result set that record subqueries.
     // and have nested results.
@@ -41,20 +42,19 @@ abstract public class BindingBase implements Binding
     // to the GC until the parent is freed and hence the root is finished with -
     // which is all results.
     
-    
-    List children = new ArrayList() ; 
+//    private List children = new ArrayList() ; 
+//    protected void addChild(Binding child) {  children.add(child) ; }
+//    private Iterator getChildren() { return children.listIterator() ; }
     
     protected BindingBase(Binding _parent)
     {
         parent = _parent ;
+        //parent.addChild((BindingBase)this) ;
     }
         
-    public Iterator getChildren() { return children.listIterator() ; }
     public Binding getParent() { return parent ; }
-
-    private void addChild(BindingBase child) {  children.add(child) ; }
     
-    /** Add a (var,value) - the value is never null */
+    /** Add a (var,value) - the node value is never null */
     final public void add(Var var, Node node)
     { 
         if ( node == null )
@@ -65,7 +65,7 @@ abstract public class BindingBase implements Binding
         checkAdd(var, node) ;
         add1(var, node) ;
     }
-        
+
     protected abstract void add1(Var name, Node node) ;
 
     public void addAll(Binding other)
@@ -185,10 +185,12 @@ abstract public class BindingBase implements Binding
         if ( ! CHECKING )
             return ;
         if ( node == null )
-            log.warn("check("+var+", "+node+"): null node value" ) ;
-        if ( UNIQUE_NAMES_CHECK && get(var) != null )
-            log.warn("check("+var+", "+node+"): Duplicate variable: "+var) ;
-
+            throw new ARQInternalErrorException("check("+var+", "+node+"): null node value" ) ;
+        if ( UNIQUE_NAMES_CHECK && contains(var) )
+            throw new ARQInternalErrorException("Attempt to reassign '"+var+
+                                                "' from '"+FmtUtils.stringForNode(get(var))+
+                                                "' to '"+FmtUtils.stringForNode(node)+"'") ;
+        // Let the implementation do a check as well.
         checkAdd1(var, node) ;
     }
 
@@ -197,18 +199,22 @@ abstract public class BindingBase implements Binding
     public static boolean same(Binding bind1, Binding bind2)
     {
         // Same variables?
-        Iterator iter1 = bind1.vars() ;
         
+        if ( bind1.size() != bind2.size() )
+            return false ;
+        
+        Iterator iter1 = bind1.vars() ;
         for ( ; iter1.hasNext() ; )
         {
             Var var = (Var)iter1.next() ; 
             Node n1 = bind1.get(var) ;
             Node n2 = bind2.get(var) ;
             
-            if ( n1 == null && n2 == null )
-                continue ;
-            if (n1 == null )
-                return false ;      // n2 not null
+            // n1 is known not to be null
+//            if ( n1 == null && n2 == null )
+//                continue ;
+//            if (n1 == null )
+//                return false ;      // n2 not null
             if (n2 == null )
                 return false ;      // n1 not null
 
@@ -216,19 +222,9 @@ abstract public class BindingBase implements Binding
                 return false ;
         }
         
-        // Now check the other way round.
-        // Need only check the names match.
-        Iterator iter2 = bind2.vars() ;
-        for ( ; iter2.hasNext() ; )
-        {
-            Var var = (Var)iter1.next() ; 
-            if ( !  bind1.contains(var) )
-                return false ;
-        }
-        
+        // No need to check the other way round as the sizes matched. 
         return true ;
     }
-  
 }
 
 /*

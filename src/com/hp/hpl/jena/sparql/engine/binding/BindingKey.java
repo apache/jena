@@ -9,60 +9,69 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.util.iterator.SingletonIterator;
 
-
-/** Special purpose binding for adding just one name/value slot. 
+/** A binding helper that can be a key in a Set or Map.
+ *  Adding while in such a structure is chnaging is not supported.  
  * 
  * @author   Andy Seaborne
- * @version  $Id: Binding1.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
+ * @version  $Id: BindingWrapped.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
 
-public class Binding1 extends BindingBase
+public class BindingKey
 {
-    Var var ;
-    Node value ;
-    
-    public Binding1(Binding parent, Var _var, Node _node)
+    public Binding binding ;
+    public BindingKey(Binding binding)
     { 
-        super(parent) ;
-        checkAdd1(_var, _node) ;
-        var = _var ; 
-        value = _node ;
-    }
-    
-    protected void add1(Var v, Node node)
-    {
-        throw new UnsupportedOperationException("Binding1.add1") ;
+        this.binding = binding ;
+        hashCode() ;
     }
 
-    protected int size1() { return 1 ; }
+    // Beware that changing the binding changes the .equals relationships.
+    public Binding getBinding() { return binding ; } 
     
-    /** Iterate over all the names of variables.
-     */
-    public Iterator vars1() 
+    private boolean validHashCode = false ;
+    private int keyHashCode = 0 ;
+    
+    public int hashCode()
     {
-        return new SingletonIterator(var) ;
+        if ( ! validHashCode )
+        {
+            keyHashCode = calcHashCode(binding) ;
+            validHashCode = true ;
+        }
+        return keyHashCode ;
     }
     
-    public boolean contains1(Var n)
+    public boolean equals(Object other)
     {
-        return var.equals(n) ;
+        if ( ! ( other instanceof BindingKey ) )
+            return false ;
+        Binding binding2 = ((BindingKey)other).getBinding() ;
+        
+        return BindingBase.same(binding, binding2) ;
     }
     
-    public Node get1(Var v)
+    private static final int EmptyBindingHashCode = 123 ;
+    private static int calcHashCode(Binding binding)
     {
-        if ( v.equals(var) )
-            return value ;
-        return null ;
-    }
-
-    protected void checkAdd1(Var v, Node val) { }
+        int calcHashCode = EmptyBindingHashCode ;
+        for ( Iterator iter = binding.vars() ; iter.hasNext() ; )
+        {
+            Var var = (Var)iter.next() ;
+            Node n = binding.get(var) ;
+            if ( n == null )
+                continue ;
+            // Must be independent of variable order.
+            calcHashCode = calcHashCode^n.hashCode()^var.hashCode() ; 
+            binding.add(var, n) ;
+        }
+        return calcHashCode ;
+    }    
 }
 
 /*
- *  (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

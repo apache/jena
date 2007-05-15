@@ -15,6 +15,8 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.Binding0;
+import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
@@ -50,17 +52,18 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         if ( true )
             throw new ARQNotImplemented("QueryIterGroup.calc: magic happens") ;
         
-        // Stage 1 : assign bindings to buckets and pump through the aggregrators.
+        // Stage 1 : assign bindings to buckets by key and pump through the aggregrators.
         
-        Set buckets = new HashSet() ;    // Set of bindings after grouping.
+        Map buckets = new HashMap() ;    // MAp of teh group key to proto bindings after grouping.
         
         for ( ; iter.hasNext() ; )
         {
             Binding b = iter.nextBinding() ;
-            Binding key = genKey(groupVars, b) ;
+            BindingKey key = genKey(groupVars, b) ;
             
-            if ( ! buckets.contains(key) )
-                buckets.add(key) ;
+            // Assumes key binding has value based .equals/.hashCode. 
+            if ( ! buckets.containsKey(key) )
+                buckets.put(key, key.getBinding()) ;
             
             for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
             {
@@ -70,13 +73,12 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         }
         
         // Stage 2 : for each bucket, get binding, add aggregator values
-        // Key is the first binding we saw for the group (projected to the group vars).
+        // ?? Key is the first binding we saw for the group (projected to the group vars).
         
-        for ( Iterator bIter = buckets.iterator() ; bIter.hasNext(); )
+        for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
         {
-            Binding key = (Binding)bIter.next();
-            // Assumes the key was a copy and can be extended.
-            Binding binding2 = key ;
+            BindingKey key = (BindingKey)bIter.next();
+            Binding binding = (Binding)buckets.get(key) ;
             
             for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
             {
@@ -84,21 +86,28 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 Var v = agg.getVariable() ;
                 Node value =  agg.getValue(key) ;
                 // Extend with the aggregations.
-                binding2.add(v, value) ;
+                binding.add(v, value) ;
             }
         }
         
-        return buckets.iterator() ;
+        return buckets.values().iterator() ;
     }
     
-    static private Binding genKey(List vars, Binding binding) 
+    static private BindingKey genKey(List vars, Binding binding) 
     {
         //return new BindingProject(vars, binding) ;
-        return copyProject(vars, binding) ;
+        //return copyProject(vars, binding) ;
+        
+        // Alternative is that BindingKey masks the non-groupVars but retains the orginal binding.
+        return new BindingKey(copyProject(vars, binding)) ;
     }
     
     static private Binding copyProject(List vars, Binding binding)
     {
+        // No group vars (implicit or explicit) => working on whole result set. 
+        if ( vars.size() == 0 )
+        { return new Binding0() ; }
+        
         Binding x = new BindingMap() ;
         for ( Iterator iter = vars.listIterator() ; iter.hasNext() ; )
         {

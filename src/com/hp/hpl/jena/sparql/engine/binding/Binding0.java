@@ -17,7 +17,6 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * @version  $Id: Binding0.java,v 1.1 2007/02/06 17:06:05 andy_seaborne Exp $
  */
 
-
 public class Binding0 extends BindingBase
 {
     public Binding0() { super(null) ; }

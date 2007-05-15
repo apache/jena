@@ -36,7 +36,6 @@ public class AggregatorCount extends AggregatorBase
             return NodeValue.makeInteger(count) ;
         }
     }
-
 }
 
 /*
