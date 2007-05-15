@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sdb.util.Vocab;
 public class AssemblerVocab
 {
     // Vocabulary later
+    // Was: "http://jena.hpl.hp.com/2006/01/acmd#"
     private static final String NS = "http://jena.hpl.hp.com/2006/01/acmd#" ;
     public static String getURI() { return NS ; } 
     
