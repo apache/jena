@@ -33,85 +33,93 @@ public interface ARQParserConstants {
   int OFFSET = 29;
   int ORDER = 30;
   int BY = 31;
-  int AS = 32;
-  int ASC = 33;
-  int DESC = 34;
-  int NAMED = 35;
-  int FROM = 36;
-  int WHERE = 37;
-  int AND = 38;
-  int GRAPH = 39;
-  int OPTIONAL = 40;
-  int UNION = 41;
-  int UNSAID = 42;
-  int EXT = 43;
-  int FILTER = 44;
-  int BOUND = 45;
-  int STR = 46;
-  int DTYPE = 47;
-  int LANG = 48;
-  int LANGMATCHES = 49;
-  int IS_URI = 50;
-  int IS_IRI = 51;
-  int IS_BLANK = 52;
-  int IS_LITERAL = 53;
-  int REGEX = 54;
-  int SAME_TERM = 55;
-  int TRUE = 56;
-  int FALSE = 57;
-  int DIGITS = 58;
-  int INTEGER = 59;
-  int DECIMAL = 60;
-  int DOUBLE = 61;
-  int INTEGER_POSITIVE = 62;
-  int DECIMAL_POSITIVE = 63;
-  int DOUBLE_POSITIVE = 64;
-  int INTEGER_NEGATIVE = 65;
-  int DECIMAL_NEGATIVE = 66;
-  int DOUBLE_NEGATIVE = 67;
-  int EXPONENT = 68;
-  int QUOTE_3D = 69;
-  int QUOTE_3S = 70;
-  int ECHAR = 71;
-  int STRING_LITERAL1 = 72;
-  int STRING_LITERAL2 = 73;
-  int STRING_LITERAL_LONG1 = 74;
-  int STRING_LITERAL_LONG2 = 75;
-  int LPAREN = 76;
-  int RPAREN = 77;
-  int NIL = 78;
-  int LBRACE = 79;
-  int RBRACE = 80;
-  int LBRACKET = 81;
-  int RBRACKET = 82;
-  int ANON = 83;
-  int SEMICOLON = 84;
-  int COMMA = 85;
-  int DOT = 86;
-  int EQ = 87;
-  int NE = 88;
-  int GT = 89;
-  int LT = 90;
-  int LE = 91;
-  int GE = 92;
-  int BANG = 93;
-  int TILDE = 94;
-  int COLON = 95;
-  int SC_OR = 96;
-  int SC_AND = 97;
-  int PLUS = 98;
-  int MINUS = 99;
-  int STAR = 100;
-  int SLASH = 101;
-  int DATATYPE = 102;
-  int AT = 103;
-  int PN_CHARS_BASE = 104;
-  int PN_CHARS_U = 105;
-  int PN_CHARS = 106;
-  int PN_PREFIX = 107;
-  int PN_LOCAL = 108;
-  int VARNAME = 109;
-  int UNKNOWN = 110;
+  int ASC = 32;
+  int DESC = 33;
+  int NAMED = 34;
+  int FROM = 35;
+  int WHERE = 36;
+  int AND = 37;
+  int GRAPH = 38;
+  int OPTIONAL = 39;
+  int UNION = 40;
+  int AS = 41;
+  int EXT = 42;
+  int GROUP = 43;
+  int HAVING = 44;
+  int AGG = 45;
+  int COUNT = 46;
+  int MIN = 47;
+  int MAX = 48;
+  int SUM = 49;
+  int AVG = 50;
+  int STDDEV = 51;
+  int FILTER = 52;
+  int BOUND = 53;
+  int STR = 54;
+  int DTYPE = 55;
+  int LANG = 56;
+  int LANGMATCHES = 57;
+  int IS_URI = 58;
+  int IS_IRI = 59;
+  int IS_BLANK = 60;
+  int IS_LITERAL = 61;
+  int REGEX = 62;
+  int SAME_TERM = 63;
+  int TRUE = 64;
+  int FALSE = 65;
+  int DIGITS = 66;
+  int INTEGER = 67;
+  int DECIMAL = 68;
+  int DOUBLE = 69;
+  int INTEGER_POSITIVE = 70;
+  int DECIMAL_POSITIVE = 71;
+  int DOUBLE_POSITIVE = 72;
+  int INTEGER_NEGATIVE = 73;
+  int DECIMAL_NEGATIVE = 74;
+  int DOUBLE_NEGATIVE = 75;
+  int EXPONENT = 76;
+  int QUOTE_3D = 77;
+  int QUOTE_3S = 78;
+  int ECHAR = 79;
+  int STRING_LITERAL1 = 80;
+  int STRING_LITERAL2 = 81;
+  int STRING_LITERAL_LONG1 = 82;
+  int STRING_LITERAL_LONG2 = 83;
+  int LPAREN = 84;
+  int RPAREN = 85;
+  int NIL = 86;
+  int LBRACE = 87;
+  int RBRACE = 88;
+  int LBRACKET = 89;
+  int RBRACKET = 90;
+  int ANON = 91;
+  int SEMICOLON = 92;
+  int COMMA = 93;
+  int DOT = 94;
+  int EQ = 95;
+  int NE = 96;
+  int GT = 97;
+  int LT = 98;
+  int LE = 99;
+  int GE = 100;
+  int BANG = 101;
+  int TILDE = 102;
+  int COLON = 103;
+  int SC_OR = 104;
+  int SC_AND = 105;
+  int PLUS = 106;
+  int MINUS = 107;
+  int STAR = 108;
+  int SLASH = 109;
+  int DATATYPE = 110;
+  int AT = 111;
+  int PN_CHARS_BASE = 112;
+  int PN_CHARS_U = 113;
+  int PN_CHARS = 114;
+  int PN_PREFIX = 115;
+  int PN_LOCAL = 116;
+  int VARNAME = 117;
+  int UNKNOWN = 118;
 
   int DEFAULT = 0;
 
@@ -148,7 +156,6 @@ public interface ARQParserConstants {
     "\"offset\"",
     "\"order\"",
     "\"by\"",
-    "\"as\"",
     "\"asc\"",
     "\"desc\"",
     "\"named\"",
@@ -158,8 +165,17 @@ public interface ARQParserConstants {
     "\"graph\"",
     "\"optional\"",
     "\"union\"",
-    "\"unsaid\"",
+    "\"as\"",
     "\"ext\"",
+    "\"group\"",
+    "\"having\"",
+    "\"agg\"",
+    "\"count\"",
+    "\"min\"",
+    "\"max\"",
+    "\"sum\"",
+    "\"avg\"",
+    "\"stdev\"",
     "\"filter\"",
     "\"bound\"",
     "\"str\"",

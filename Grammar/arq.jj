@@ -170,22 +170,38 @@ void WhereClause() : { Element el ; }
 
 void SolutionModifier() : { }
 {
+
+  ( GroupClause() )?
+  ( HavingClause() )?
+
   ( OrderClause() )?
   ( LimitOffsetClauses() )?
 }
 
-void LimitOffsetClauses() : { }
+
+void GroupClause() : { }
 {
-  // SPARQL does not care about the order here.
-  // SQL (where implemented) does (it's LIMIT then OFFSET generally)
-  // But that is counter intuitive as it's applied the other way round
-  (
-    LimitClause() (OffsetClause())?
-  |
-    OffsetClause() (LimitClause())?
+  <GROUP> <BY> ( GroupCondition() )+
+}
+
+void GroupCondition() : { Node v = null ; Expr expr = null ; }
+{
+  ( expr = Constraint()
+    //{ getQuery().addOrderBy(expr) ; }
+  | v = Var()
+    //{ getQuery().addOrderBy(v) ; }
   )
 }
 
+void HavingClause() : { }
+{
+    <HAVING> (HavingCondition())+
+}
+
+void HavingCondition() : { Expr c ; }
+{
+   c = Constraint()
+}
 
 
 void OrderClause() : { }
@@ -212,6 +228,18 @@ void OrderCondition() :
           getQuery().addOrderBy(expr, direction) ;
       else
           getQuery().addOrderBy(v, direction) ; }
+}
+
+void LimitOffsetClauses() : { }
+{
+  // SPARQL does not care about the order here.
+  // SQL (where implemented) does (it's LIMIT then OFFSET generally)
+  // But that is counter intuitive as it's applied the other way round
+  (
+    LimitClause() (OffsetClause())?
+  |
+    OffsetClause() (LimitClause())?
+  )
 }
 
 void LimitClause() : { Token t ; }
@@ -367,10 +395,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GroupOrUnionGraphPattern()
  |
    el = GraphGraphPattern()
-
- |
-   el = UnsaidGraphPattern()
-
  )
   { return el ; }
 }
@@ -406,16 +430,6 @@ Element GroupOrUnionGraphPattern() :
   )*
     { return (el2==null)? el : el2 ; }
 }
-
-
-Element UnsaidGraphPattern() : { Element el ; }
-{
-  <UNSAID> el = GroupGraphPattern()
-    { el = new ElementUnsaid(el) ;
-      return el ;
-    }
-}
-
 
 Element Filter() : { Expr c ; }
 {
@@ -837,6 +851,24 @@ Expr RegexExpression() :
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
 
+
+void Aggregate() : { Expr expr ; ExprList args ; }
+{
+  ( <AGG> <LPAREN> IRIref()
+     { args = new ExprList() ; }
+     (<COMMA> expr = Expression() { args.add(expr) ; } )*
+     <RPAREN>
+  | <COUNT> <LPAREN> (<DISTINCT>)? (<STAR>| Var()) <RPAREN>
+  | <MIN> BrackettedExpression()
+  | <MAX> BrackettedExpression()
+  | <SUM> BrackettedExpression()
+  | <AVG> BrackettedExpression()
+  | <STDDEV> BrackettedExpression()
+  )
+}
+
+
+
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
 
@@ -1004,9 +1036,6 @@ TOKEN [IGNORE_CASE] :
 | < ORDER: "order" >
 | < BY: "by" >
 
-
-| < AS: "as" >
-
 | < ASC: "asc" >
 | < DESC: "desc" >
 
@@ -1022,8 +1051,17 @@ TOKEN [IGNORE_CASE] :
 | < UNION: "union" >
 
 
-| < UNSAID: "unsaid" >
+| < AS: "as" >
 | < EXT: "ext" >
+| < GROUP: "group" >
+| < HAVING: "having" >
+| < AGG: "agg" >
+| < COUNT: "count" >
+| < MIN: "min" >
+| < MAX: "max" >
+| < SUM: "sum" >
+| < AVG: "avg" >
+| < STDDEV: "stdev" >
 
 
 | < FILTER: "filter" >

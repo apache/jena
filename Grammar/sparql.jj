@@ -170,24 +170,13 @@ void WhereClause() : { Element el ; }
 
 void SolutionModifier() : { }
 {
+
+
+
+
   ( OrderClause() )?
   ( LimitOffsetClauses() )?
 }
-
-void LimitOffsetClauses() : { }
-{
-  // SPARQL does not care about the order here.
-  // SQL (where implemented) does (it's LIMIT then OFFSET generally)
-  // But that is counter intuitive as it's applied the other way round
-  (
-    LimitClause() (OffsetClause())?
-  |
-    OffsetClause() (LimitClause())?
-  )
-}
-
-
-
 void OrderClause() : { }
 {
   <ORDER> <BY> ( OrderCondition() )+
@@ -212,6 +201,18 @@ void OrderCondition() :
           getQuery().addOrderBy(expr, direction) ;
       else
           getQuery().addOrderBy(v, direction) ; }
+}
+
+void LimitOffsetClauses() : { }
+{
+  // SPARQL does not care about the order here.
+  // SQL (where implemented) does (it's LIMIT then OFFSET generally)
+  // But that is counter intuitive as it's applied the other way round
+  (
+    LimitClause() (OffsetClause())?
+  |
+    OffsetClause() (LimitClause())?
+  )
 }
 
 void LimitClause() : { Token t ; }
@@ -367,10 +368,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GroupOrUnionGraphPattern()
  |
    el = GraphGraphPattern()
-
-
-
-
  )
   { return el ; }
 }
@@ -406,6 +403,7 @@ Element GroupOrUnionGraphPattern() :
   )*
     { return (el2==null)? el : el2 ; }
 }
+
 Element Filter() : { Expr c ; }
 {
   <FILTER> c = Constraint()
@@ -800,7 +798,6 @@ Expr RegexExpression() :
     <RPAREN>
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
-
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
 
@@ -968,9 +965,6 @@ TOKEN [IGNORE_CASE] :
 | < ORDER: "order" >
 | < BY: "by" >
 
-
-
-
 | < ASC: "asc" >
 | < DESC: "desc" >
 
@@ -984,12 +978,6 @@ TOKEN [IGNORE_CASE] :
 | < GRAPH: "graph" >
 | < OPTIONAL: "optional" >
 | < UNION: "union" >
-
-
-
-
-
-
 | < FILTER: "filter" >
 
 // Expression operators

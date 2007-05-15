@@ -18,9 +18,9 @@ NON-TERMINALS
 	SourceSelector	:=	IRIref
 	WhereClause	:=	( <WHERE> )? GroupGraphPattern
 	SolutionModifier	:=	( OrderClause )? ( LimitOffsetClauses )?
-	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
 	OrderClause	:=	<ORDER> <BY> ( OrderCondition )+
 	OrderCondition	:=	( ( ( <ASC> | <DESC> ) BrackettedExpression ) | ( Constraint | Var ) )
+	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
 	LimitClause	:=	<LIMIT> <INTEGER>
 	OffsetClause	:=	<OFFSET> <INTEGER>
 // ---- General Graph Pattern 

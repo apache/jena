@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+SELECT ?x
+{ ?s ?p ?o }
+GROUP BY ?s ?p
+HAVING COUNT(?o) > 2
