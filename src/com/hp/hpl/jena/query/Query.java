@@ -158,6 +158,8 @@ public class Query extends Prologue implements Cloneable
     /** @param syntax The syntax to set. */
     public void setSyntax(Syntax syntax)  { this.syntax = syntax ; }
 
+    // ---- Limit/offset
+    
     public long getLimit()             { return resultLimit ; } 
     public void setLimit(long limit)   { resultLimit = limit ; }
     public boolean hasLimit()          { return resultLimit != NOLIMIT ; }
@@ -165,6 +167,8 @@ public class Query extends Prologue implements Cloneable
     public long getOffset()            { return resultOffset ; } 
     public void setOffset(long offset) { resultOffset = offset ; }
     public boolean hasOffset()         { return resultOffset != NOLIMIT ; }
+    
+    // ---- Order By
     
     public boolean hasOrderBy()        { return orderBy != null && orderBy.size() > 0 ; }
     
@@ -197,6 +201,8 @@ public class Query extends Prologue implements Cloneable
     }
 
     public List getOrderBy()           { return orderBy ; }
+    
+    
     
     /** Answer whether the query had SELECT/DESCRIBE/CONSTRUCT *
      * @return boolean as to whether a * result form was seen
@@ -301,8 +307,6 @@ public class Query extends Prologue implements Cloneable
         setResultVars() ;
         return resultVars ;
     }
-    
-    
     
     /** Add a projection variable to a SELECT query */
     public void addResultVar(String varName)

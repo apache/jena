@@ -18,6 +18,8 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding0;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.util.iterator.Map1Iterator;
 
 public class QueryIterGroup extends QueryIterPlainWrapper
 {
@@ -54,7 +56,8 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         
         // Stage 1 : assign bindings to buckets by key and pump through the aggregrators.
         
-        Map buckets = new HashMap() ;    // MAp of teh group key to proto bindings after grouping.
+        // Could also be a Map key=>binding. 
+        Set buckets = new HashSet() ;    
         
         for ( ; iter.hasNext() ; )
         {
@@ -62,8 +65,8 @@ public class QueryIterGroup extends QueryIterPlainWrapper
             BindingKey key = genKey(groupVars, b) ;
             
             // Assumes key binding has value based .equals/.hashCode. 
-            if ( ! buckets.containsKey(key) )
-                buckets.put(key, key.getBinding()) ;
+            if ( ! buckets.contains(key) )
+                buckets.add(key) ;
             
             for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
             {
@@ -75,10 +78,10 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         // Stage 2 : for each bucket, get binding, add aggregator values
         // ?? Key is the first binding we saw for the group (projected to the group vars).
         
-        for ( Iterator bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
+        for ( Iterator bIter = buckets.iterator() ; bIter.hasNext(); )
         {
             BindingKey key = (BindingKey)bIter.next();
-            Binding binding = (Binding)buckets.get(key) ;
+            Binding binding = key.getBinding() ;
             
             for ( Iterator aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
             {
@@ -89,14 +92,19 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 binding.add(v, value) ;
             }
         }
+
+        // Results - the binding modifed by the aggregations.
         
-        return buckets.values().iterator() ;
+        Map1 mapGetBinding = new Map1() {
+            public Object map1(Object obj) { return ((BindingKey)obj).getBinding() ; }
+        } ;
+        
+        return new Map1Iterator(mapGetBinding, buckets.iterator()) ;
     }
     
     static private BindingKey genKey(List vars, Binding binding) 
     {
         return new BindingKey(copyProject(vars, binding)) ;
-        //return new BindingKey(copyProject(vars, binding), binding) ;
     }
     
     static private Binding copyProject(List vars, Binding binding)
@@ -115,7 +123,6 @@ public class QueryIterGroup extends QueryIterPlainWrapper
         }
         return x ;
     }
-    
 }
 
 
