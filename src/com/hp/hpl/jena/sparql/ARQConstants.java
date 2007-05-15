@@ -85,24 +85,31 @@ public class ARQConstants
         return Symbol.create(ARQ.arqNS+shortName) ;
     }
     
-    /** Marker for generated variables for bNodes in query patterns */ 
-    public static String anonVarMarker = "=" ;
+    // If adding to the kinds of variable maker, then need to update tests in Var
     
-    /** Marker for general temporary variables (not blank node variables or system variables */
+    /** Marker for generated variables for bNodes in query patterns */ 
+    public static final String anonVarMarker = "%" ;
+    
+    /** Marker for general temporary variables (not blank node variables) */
     public static final String allocVarMarker = "@" ;
 
+    // Use alloc vars
+//    /** Marker for generated variables for aggregates and unnamed expressions */ 
+//    public static final String aggVarMarker = "=" ;
+    
+    
     /** Marker for system symbols */
-    public static final String systemVarMarker = "http://jena.hpl.hp.com/ARQ/system#" ;
+    public static final String systemVarNS = "http://jena.hpl.hp.com/ARQ/system#" ;
     
     /** Context key for the current time of query execution */
-    public static final Symbol sysCurrentTime  = Symbol.create(systemVarMarker+"now") ;
+    public static final Symbol sysCurrentTime  = Symbol.create(systemVarNS+"now") ;
     
     /** Context key for ARQ version */
-    public static final Symbol sysVersionARQ   = Symbol.create(systemVarMarker+"version/ARQ") ;
+    public static final Symbol sysVersionARQ   = Symbol.create(systemVarNS+"version/ARQ") ;
     /** Context key for Jena version */
-    public static final Symbol sysVersionJena  = Symbol.create(systemVarMarker+"version/Jena") ;
+    public static final Symbol sysVersionJena  = Symbol.create(systemVarNS+"version/Jena") ;
 
-    /** Context key for making all SELECT queries have DISTINCt applied, whether stated ot not */
+    /** Context key for making all SELECT queries have DISTINCT applied, whether stated ot not */
     public static final Symbol autoDistinct = ARQConstants.allocSymbol("autoDistinct") ;
     
     // Context keys : some here, some in ARQ - sort out

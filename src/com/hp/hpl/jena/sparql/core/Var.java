@@ -75,9 +75,7 @@ public class Var extends Node_Variable
 //    //@Override
 //    public String toString() { return node.toString() ; }
 
-    public boolean isNamedVar() { return isNamedVar(getName()) ; }
-    
-    public boolean isSystemVar() { return isSystemVarName(getName()) ; }
+    public boolean isNamedVar() { return isNamedVarName(getName()) ; }
     
     public boolean isBlankNodeVar() { return isBlankNodeVarName(getName()) ; }
     
@@ -95,30 +93,22 @@ public class Var extends Node_Variable
     }
 
     public static boolean isVar(Node node)
-//    { return node.isVariable() ; }
     {
-        
         if ( node instanceof Var ) return true ;
-        if ( node != null && node.isVariable() ) throw new NotAVariableException("Node_variable (not a Var) found") ;
+        if ( node != null && node.isVariable() )
+            throw new NotAVariableException("Node_variable (not a Var) found") ;
         return false ;
     }
-
     
     public static boolean isNamedVar(Node node)
-    { return node.isVariable() && isNamedVar(node.getName()) ; }
+    { return node.isVariable() && isNamedVarName(node.getName()) ; }
 
-    public static boolean isNamedVar(String x)
-    { return ! isSystemVarName(x) && ! isBlankNodeVarName(x) && ! isAllocVarName(x) ; }
+    public static boolean isNamedVarName(String x)
+    { return ! isBlankNodeVarName(x) && ! isAllocVarName(x) ; }
 
     public static boolean isBlankNodeVar(Node node)
     { return node.isVariable() && isBlankNodeVarName(node.getName()) ; }
 
-    public static boolean isSystemVar(Node node)
-    { return node.isVariable() && isSystemVarName(node.getName()) ; }
-
-    public static boolean isSystemVarName(String x)
-    { return x.startsWith(ARQConstants.systemVarMarker) ; }
-    
     public static boolean isBlankNodeVarName(String x)
     { return x.startsWith(ARQConstants.anonVarMarker) ; }
 
