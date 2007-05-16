@@ -6,44 +6,51 @@
 
 package arq.examples.execute;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
+/** Example skeleton for a query engine. */
 
-public class StageAltEngine extends QueryEngineMain
+public class MyQueryEngine extends QueryEngineMain
 {
-
-    public StageAltEngine(Query query, Context context)
+    // Do nothing template for a query engine.  
+    
+    public MyQueryEngine(Query query, Context context)
     {
         super(query, context) ;
-        // Hook in the stage generator to use
-        context.set(ARQ.stageGenerator, new StageGeneratorAlt()) ;
     }
 
-    public StageAltEngine(Query query)
-    { this(query, ARQ.getContext()) ; }
+    public MyQueryEngine(Query query)
+    { 
+        // Default to the global context. 
+        this(query, ARQ.getContext()) ;
+    }
+
+    // ---- Registration of the factory for this query engien class. 
     
-    // ---- Register this implementation
-    // call MyEngine.register() 
-    
+    // Query engine factory.
+    // Call MyQueryEngine.register() to add to the global query engine registry. 
+
     static public QueryEngineFactory getFactory() { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
-    
+
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
+        // Accept any dataset for query execution 
         public boolean accept(Query query, Dataset dataset) 
         { return true ; }
 
         public QueryExecution create(Query query, Dataset dataset)
         {
-            StageAltEngine engine = new StageAltEngine(query) ;
+            // Create a query engine instance.
+            MyQueryEngine engine = new MyQueryEngine(query) ;
             engine.setDataset(dataset) ;
             return engine ;
         }

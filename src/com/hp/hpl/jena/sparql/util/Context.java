@@ -37,6 +37,11 @@ public class Context
     // context changes after being made the default of this context?
 
     
+    /** Return a copy of this context.  Modifications of the copy 
+     * do not affect the original context.
+     */ 
+    public Context copy() { return new Context(this) ; }
+    
     // -- basic operations
     
     /** Get the object value of a property or null */ 

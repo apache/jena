@@ -56,7 +56,7 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
     {
         // System initialized by now : Query class ensures ARQ initialized.
         if ( context == null || context == ARQ.getContext())
-            context = new Context(ARQ.getContext()) ;
+            context = ARQ.getContext().copy() ;
         query = q ;
         idQueryExecution = (++queryCount) ;
         this.context = context ;
