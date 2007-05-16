@@ -4,6 +4,8 @@ ChangeLog for ARQ
 ARQ 2.1
 -------
 
+Legacy query engine1 removed.
+
 ARQ 2.0
 -------
 

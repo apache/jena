@@ -8,8 +8,8 @@ package com.hp.hpl.jena.sparql.test;
 
 import junit.framework.*;
 
-import com.hp.hpl.jena.sparql.engine.engine1.QueryEngine1;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
@@ -31,7 +31,7 @@ public class ARQTestSuite extends TestSuite
         if ( false )
         {
             QueryEngineMain.unregister() ;
-            QueryEngine1.register() ;
+            QueryEngineRef.register() ;
         }
         
         TestSuite ts = new ARQTestSuite() ;
