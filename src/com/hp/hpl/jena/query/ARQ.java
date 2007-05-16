@@ -167,20 +167,26 @@ public class ARQ
         if ( initialized )
             return ;
         initialized = true ;
+        globalContext = defaultSettings() ;
+    }
+    
+    private static Context defaultSettings()    
+    {
+        Context context = new Context() ;
         
-        globalContext = new Context() ;  
-        globalContext.setIfUndef(strictSPARQL,                  "false") ; 
-        globalContext.setIfUndef(constantBNodeLabels,           "true") ;
-        globalContext.setIfUndef(enablePropertyFunctions,       "true") ;
-        globalContext.setIfUndef(strictGraph,                   "false") ;
+        //context.set(hideNonDistiguishedVariables, true) ;
+        context.set(strictSPARQL,                  "false") ; 
+        context.set(constantBNodeLabels,           "true") ;
+        context.set(enablePropertyFunctions,       "true") ;
+        context.set(strictGraph,                   "false") ;
         
-        //globalContext.setIfUndef(useSAX,                        "false") ;
-        globalContext.setIfUndef(enableRomanNumerals,           "false") ;
+        //context.set(useSAX,                        "false") ;
+        context.set(enableRomanNumerals,           "false") ;
         // enableBlankNodeLabels() ;
-        globalContext.setIfUndef(regexImpl,                     javaRegex) ;
+        context.set(regexImpl,                     javaRegex) ;
 //        if (  getContext().isTrue(romanNumeralsAsFirstClassDatatypes) )
 //            RomanNumeralDatatype.enableAsFirstClassDatatype() ; // Wires into the TypeMapper.
-        return ;
+        return context ;
     }
     
     public static Context getContext() { return globalContext ; }

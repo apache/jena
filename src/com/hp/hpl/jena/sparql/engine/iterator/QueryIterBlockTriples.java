@@ -64,7 +64,8 @@ public class QueryIterBlockTriples extends QueryIter1
 
     protected void releaseResources()
     {
-        output.close() ;
+        if ( output != null )
+            output.close() ;
         output = null ;
     }
 
