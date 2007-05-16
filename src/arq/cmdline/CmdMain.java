@@ -7,6 +7,7 @@
 package arq.cmdline;
 
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.sparql.util.Utils;
 
 import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
@@ -50,7 +51,9 @@ public abstract class CmdMain extends CmdLineArgs
         try { mainMethod() ; }
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
         catch (JenaException ex)
-        { 
+        {
+            String s = Utils.className(ex) ;
+            System.err.println(s) ;
             System.err.println(ex.getMessage()) ;
             if ( exitOnFailure ) System.exit(2) ;
             return 2 ;
