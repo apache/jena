@@ -1,29 +1,4 @@
 // ARQ/SPARQL Grammar - native syntax for the query engine
-#if 0
-// (Run through cpp -P -C first)
-#endif
-
-#if !defined(ARQ) && !defined(SPARQL)
-#error Please define one of ARQ and SPARQL
-#endif
-
-#if defined(ARQ) && defined(SPARQL)
-#error Please define only one of ARQ and SPARQL
-#endif
-
-
-#ifdef SPARQL
-#define PACKAGE     lang.sparql
-#define CLASS       SPARQLParser
-#define PARSERBASE  SPARQLParserBase
-#endif
-
-#ifdef ARQ
-#define PACKAGE     lang.arq
-#define CLASS       ARQParser
-#define PARSERBASE  ARQParserBase
-#endif
-
 // Author:  Andy Seaborne andy.seaborne@hp.com
 // (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
 // All rights reserved.
@@ -35,31 +10,31 @@
 
 options
 {
-   JAVA_UNICODE_ESCAPE   = true ;
-   UNICODE_INPUT         = false ;
+   JAVA_UNICODE_ESCAPE = true ;
+   UNICODE_INPUT = false ;
 
-  STATIC                = false ;
+  STATIC = false ;
 //  DEBUG_PARSER          = true ;
 //  DEBUG_TOKEN_MANAGER   = true ;
 }
 
-PARSER_BEGIN(CLASS)
+PARSER_BEGIN(SPARQLParser)
 /*
  * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  */
 
-package com.hp.hpl.jena.sparql.PACKAGE ;
+package com.hp.hpl.jena.sparql.lang.sparql ;
 
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 
-public class CLASS extends PARSERBASE
+public class SPARQLParser extends SPARQLParserBase
 {
 }
-PARSER_END(CLASS)
+PARSER_END(SPARQLParser)
 
 void CompilationUnit(): { }
 {
@@ -95,12 +70,12 @@ void PrefixDecl() : { Token t ; Node n ; }
 // ---- Query type clauses
 
 void SelectQuery() : { Node v ; }
-{  
+{
   <SELECT>
     { getQuery().setQuerySelectType() ; }
-  ( <DISTINCT> { getQuery().setDistinct(true);} 
-  | <REDUCED>  { getQuery().setReduced(true); }
-  )? 
+  ( <DISTINCT> { getQuery().setDistinct(true);}
+  | <REDUCED> { getQuery().setReduced(true); }
+  )?
   (
     ( v = Var() { getQuery().addResultVar(v) ; } )+
     { getQuery().setQueryResultStar(false) ; }
@@ -118,7 +93,7 @@ void ConstructQuery() : { Template t ; }
   <CONSTRUCT>
     { getQuery().setQueryConstructType() ;
       setInConstructTemplate(true) ; }
-  t = ConstructTemplate() 
+  t = ConstructTemplate()
     { setInConstructTemplate(false) ;
       getQuery().setQueryResultStar(false) ;
       getQuery().setConstructTemplate(t) ; }
@@ -160,7 +135,7 @@ void DatasetClause() : {}
 
 void DefaultGraphClause() : { Node n ; }
 {
-  n = SourceSelector() 
+  n = SourceSelector()
   {
     // This checks for duplicates
     getQuery().addGraphURI(n.getURI()) ;
@@ -171,7 +146,7 @@ void NamedGraphClause() : { Node n ; }
 {
   <NAMED>
   n = SourceSelector()
-  { 
+  {
     // This checks for duplicates
     getQuery().addNamedGraphURI(n.getURI()) ;
   }
@@ -195,39 +170,23 @@ void WhereClause() : { Element el ; }
 
 void SolutionModifier() : { }
 {
-#if ARQ
-  ( GroupClause() )?
-  ( HavingClause() )?
-#endif
   ( OrderClause() )?
-  ( LimitOffsetClauses() )? 
+  ( LimitOffsetClauses() )?
 }
 
-#if ARQ
-void GroupClause() : { }
+void LimitOffsetClauses() : { }
 {
-  <GROUP> <BY> ( GroupCondition() )+
-}
-
-void GroupCondition() : { Node v = null ; Expr expr = null ; }
-{
-  ( expr = Constraint()
-    //{ getQuery().addOrderBy(expr) ; }
-  | v = Var()
-    //{ getQuery().addOrderBy(v) ; }
+  // SPARQL does not care about the order here.
+  // SQL (where implemented) does (it's LIMIT then OFFSET generally)
+  // But that is counter intuitive as it's applied the other way round
+  (
+    LimitClause() (OffsetClause())?
+  |
+    OffsetClause() (LimitClause())?
   )
 }
 
-void HavingClause() : { }
-{
-    <HAVING> (HavingCondition())+
-}
 
-void HavingCondition() : { Expr c ; }
-{
-   c = Constraint()
-}
-#endif
 
 void OrderClause() : { }
 {
@@ -240,31 +199,19 @@ void OrderCondition() :
   { direction = Query.ORDER_DEFAULT ; }
   (
     ( // These are for clarity in the HTML
-      ( <ASC>  { direction = Query.ORDER_ASCENDING ; }
-      | <DESC> { direction = Query.ORDER_DESCENDING ; } ) 
-      expr = BrackettedExpression() 
+      ( <ASC> { direction = Query.ORDER_ASCENDING ; }
+      | <DESC> { direction = Query.ORDER_DESCENDING ; } )
+      expr = BrackettedExpression()
     )
   |
     ( expr = Constraint()
     | v = Var() //{ expr = asExpr(v) ; } 
-    ) 
+    )
   )
   { if ( v == null )
           getQuery().addOrderBy(expr, direction) ;
       else
           getQuery().addOrderBy(v, direction) ; }
-}
-
-void LimitOffsetClauses() : { }
-{
-  // SPARQL does not care about the order here.
-  // SQL (where implemented) does (it's LIMIT then OFFSET generally)
-  // But that is counter intuitive as it's applied the other way round
-  (
-    LimitClause() (OffsetClause())? 
-  |
-    OffsetClause() (LimitClause())? 
-  )
 }
 
 void LimitClause() : { Token t ; }
@@ -293,7 +240,7 @@ Element GroupGraphPattern() : { Element el = null ; }
     { startTriplesBlock() ; }
     el = TriplesBlock(null)
     { endTriplesBlock() ;
-      elg.addElement(el) ; } 
+      elg.addElement(el) ; }
   )?
   (
     ( el = GraphPatternNotTriples() | el = Filter() )
@@ -304,7 +251,7 @@ Element GroupGraphPattern() : { Element el = null ; }
       { startTriplesBlock() ; }
       el = TriplesBlock(null)
       { endTriplesBlock() ;
-        elg.addElement(el) ; } 
+        elg.addElement(el) ; }
     )?
   )*
       { endGroup(elg) ; }
@@ -328,7 +275,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 {
  (
    el = OptionalGraphPattern()
- | 
+ |
    // "GroupPattern" or "GroupPattern" union "GroupPattern"
    el = GroupOrUnionGraphPattern()
  |
@@ -364,11 +311,10 @@ Element GroupOrUnionGraphPattern() :
       }
     }
   el = GroupGraphPattern()
-    { el2.addElement(el) ; } 
+    { el2.addElement(el) ; }
   )*
     { return (el2==null)? el : el2 ; }
 }
-
 Element Filter() : { Expr c ; }
 {
   <FILTER> c = Constraint()
@@ -377,7 +323,7 @@ Element Filter() : { Expr c ; }
 
 Expr Constraint() : { Expr c ; }
 {
-  ( c = BrackettedExpression() 
+  ( c = BrackettedExpression()
   | c = BuiltInCall()
   | c = FunctionCall()
   )
@@ -391,14 +337,14 @@ Expr FunctionCall() : { Node fname ; ExprList a ; }
     { return new E_Function(fname.getURI(), a) ; }
 }
 
-ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
-{ 
+ExprList ArgList() : { Expr expr ; ExprList args = new ExprList() ; }
+{
   (
     <NIL>
   |
    // Was <LPAREN> ( Expression() (<COMMA> Expression() )* )? <RPAREN>
-    <LPAREN> 
-      expr = Expression() { args.add(expr) ; } 
+    <LPAREN>
+      expr = Expression() { args.add(expr) ; }
       (<COMMA> expr = Expression() { args.add(expr) ; } )*
     <RPAREN>
    )
@@ -410,7 +356,7 @@ ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
 Template ConstructTemplate() : { }
 {
     { TemplateGroup g = new TemplateGroup() ; }
-  <LBRACE> 
+  <LBRACE>
     (ConstructTriples(g))?
   <RBRACE>
     { return g ; }
@@ -424,10 +370,10 @@ void ConstructTriples(TemplateGroup acc) : { }
 
 // -------- Triple lists with property and object lists
 
-void TriplesSameSubject(TripleCollector acc) : { Node s ; } 
+void TriplesSameSubject(TripleCollector acc) : { Node s ; }
 {
   s = VarOrTerm()
-  PropertyListNotEmpty(s, acc) 
+  PropertyListNotEmpty(s, acc)
 |
   // Any of the triple generating syntax elements
   s = TriplesNode(acc)
@@ -439,10 +385,10 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
   p = Verb()
   ObjectList(s, p, acc)
   (<SEMICOLON> (p = Verb() ObjectList(s, p, acc))? )*
-#ifdef ARQ
-  |
-  Reification(s, acc)
-#endif
+
+
+
+
 }
 
 void PropertyList(Node s, TripleCollector acc) : { }
@@ -450,7 +396,7 @@ void PropertyList(Node s, TripleCollector acc) : { }
   ( PropertyListNotEmpty(s, acc) ) ?
 }
 
-void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
+void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; }
 {
   Object(s, p, acc)
   ( <COMMA> Object(s, p, acc) )*
@@ -459,13 +405,12 @@ void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; }
 void Object(Node s, Node p, TripleCollector acc): { Node o ; }
 {
     { int mark = acc.mark() ; }
-  o = GraphNode(acc) 
+  o = GraphNode(acc)
   { insert(acc, mark, s, p, o) ; }
 }
 
 Node Verb() : {Node p ;}
 {
-//   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
   ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
     { return p ; }
 }
@@ -480,57 +425,28 @@ Node TriplesNode(TripleCollector acc) : { Node n ; }
   n = Collection(acc) { return n ; }
  |
   n = BlankNodePropertyList(acc) { return n ; }
-#ifdef ARQ
- |
-  n = Reification(null, acc) { return n ; }
-#endif
 }
 
 Node BlankNodePropertyList(TripleCollector acc) : { }
 {
-  <LBRACKET> 
+  <LBRACKET>
     { Node n = createBNode() ; }
   PropertyListNotEmpty(n, acc)
   <RBRACKET>
     { return n ; }
 }
-#ifdef ARQ
-Node Reification(Node id, TripleCollector acc) : 
-    { Node s , p , o ; int mark ; }
-{
-  // For generality, should be AndNode for s/p/o
-  // Insert reification triple before the resulting subtriples (if any)
-  "<<" 
-    { if ( id == null )
-        id = createBNode() ;
-      mark = acc.mark() ; }
-  s = GraphNode(acc)
-    { insert(acc, mark, id, nRDFsubject, s) ;
-      mark = acc.mark() ; 
-    }
-  p = GraphNode(acc)
-    { insert(acc, mark, id, nRDFpredicate, p) ;
-      mark = acc.mark() ;
-    }
-  o = GraphNode(acc)
-    { insert(acc, mark, id, nRDFobject, o) ; }
-  ">>"
-    { return id ; }
-}
-#endif
-
 // ------- RDF collections
 
-Node Collection(TripleCollector acc) : 
+Node Collection(TripleCollector acc) :
     { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; }
 {
-  <LPAREN> 
+  <LPAREN>
   (
     { Node cell = createListNode() ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
-        insert(acc, lastCell, nRDFrest,  cell) ;
+        insert(acc, lastCell, nRDFrest, cell) ;
       mark = acc.mark() ;
     }
     n = GraphNode(acc)
@@ -542,7 +458,7 @@ Node Collection(TripleCollector acc) :
   // Not * here - "()" is handled separately.
   <RPAREN>
    { if ( lastCell != null )
-       insert(acc, lastCell, nRDFrest,  nRDFnil) ;
+       insert(acc, lastCell, nRDFrest, nRDFnil) ;
      return listHead ; }
 }
 
@@ -576,13 +492,13 @@ Node Var() : { Token t ;}
 
 Node GraphTerm() : { Node n ; }
 {
-  n = IRIref()          { return n ; }
-| n = RDFLiteral()      { return n ; }
-| n = NumericLiteral()  { return n ; }
-| n = BooleanLiteral()  { return n ; }
-| n = BlankNode()       { return n ; }   
+  n = IRIref() { return n ; }
+| n = RDFLiteral() { return n ; }
+| n = NumericLiteral() { return n ; }
+| n = BooleanLiteral() { return n ; }
+| n = BlankNode() { return n ; }
   //  <LPAREN> <RPAREN>     { return nRDFnil ; }
-| <NIL>  { return nRDFnil ; }
+| <NIL> { return nRDFnil ; }
 }
 
 // -------- Constraint syntax
@@ -595,12 +511,12 @@ Expr Expression() : { Expr expr ; }
 
 Expr ConditionalOrExpression() : { Expr expr1, expr2 ; }
 {
-  expr1 = ConditionalAndExpression() 
+  expr1 = ConditionalAndExpression()
   ( <SC_OR> expr2 = ConditionalAndExpression()
-    { expr1 = new E_LogicalOr(expr1, expr2) ; } 
+    { expr1 = new E_LogicalOr(expr1, expr2) ; }
   )*
     { return expr1 ; }
-    
+
 }
 
 Expr ConditionalAndExpression() : { Expr expr1, expr2 ;}
@@ -638,7 +554,7 @@ Expr RelationalExpression() : { Expr expr1, expr2 ; }
     { return expr1 ; }
 }
 
-Expr NumericExpression ()  : { Expr expr ; }
+Expr NumericExpression () : { Expr expr ; }
 {
   expr = AdditiveExpression()
     { return expr ; }
@@ -652,17 +568,17 @@ Expr AdditiveExpression() : { Expr expr1, expr2 ; Node n ; }
   | <MINUS> expr2 = MultiplicativeExpression()
     { expr1 = new E_Subtract(expr1, expr2) ; }
   | n = NumericLiteralPositive()
-    { 
+    {
       n = stripSign(n) ;
       expr2 = asExpr(n) ;
-      expr1 = new E_Add(expr1, expr2) ; 
+      expr1 = new E_Add(expr1, expr2) ;
     }
   |
     n = NumericLiteralNegative()
-    { 
+    {
       n = stripSign(n) ;
       expr2 = asExpr(n) ;
-      expr1 = new E_Subtract(expr1, expr2) ; 
+      expr1 = new E_Subtract(expr1, expr2) ;
     }
   )*
     { return expr1 ; }
@@ -671,12 +587,10 @@ Expr AdditiveExpression() : { Expr expr1, expr2 ; Node n ; }
 Expr MultiplicativeExpression() : { Expr expr1, expr2 ; }
 {
   expr1 = UnaryExpression()
-  ( <STAR>  expr2 = UnaryExpression()
+  ( <STAR> expr2 = UnaryExpression()
     { expr1 = new E_Multiply(expr1, expr2) ; }
   | <SLASH> expr2 = UnaryExpression()
     { expr1 = new E_Divide(expr1, expr2) ; }
-//   | <REM>   expr2 = UnaryExpression()
-//     { expr1 = new E_Modulus(expr1, expr2) ; }
   )*
     { return expr1 ; }
 }
@@ -685,7 +599,7 @@ Expr UnaryExpression() : { Expr expr ; }
 {
   <BANG> expr = PrimaryExpression()
     { return new E_LogicalNot(expr) ; }
-  | <PLUS>  expr = PrimaryExpression() { return new E_UnaryPlus(expr) ; }
+  | <PLUS> expr = PrimaryExpression() { return new E_UnaryPlus(expr) ; }
   | <MINUS> expr = PrimaryExpression() { return new E_UnaryMinus(expr) ; }
   | expr = PrimaryExpression() { return expr ; }
 }
@@ -693,21 +607,21 @@ Expr UnaryExpression() : { Expr expr ; }
 Expr PrimaryExpression() : { Expr expr ; Node gn ; }
 {
   ( expr = BrackettedExpression() { return expr ; }
-  | expr = BuiltInCall() { return expr ; }  
-  | expr = IRIrefOrFunction()  { return expr ; }
+  | expr = BuiltInCall() { return expr ; }
+  | expr = IRIrefOrFunction() { return expr ; }
 
 // NOT  | gn = VarOrTerm()           { return asExpr(gn) ; }
 // Because of IRIrefOrFunction vs <NIL> and blank nodes
-  | gn = RDFLiteral()      { return asExpr(gn) ; }
-  | gn = NumericLiteral()  { return asExpr(gn) ; }
-  | gn = BooleanLiteral()  { return asExpr(gn) ; }
-  | gn = Var()             { return asExpr(gn) ; }
+  | gn = RDFLiteral() { return asExpr(gn) ; }
+  | gn = NumericLiteral() { return asExpr(gn) ; }
+  | gn = BooleanLiteral() { return asExpr(gn) ; }
+  | gn = Var() { return asExpr(gn) ; }
   )
 }
 
 Expr BrackettedExpression() : { Expr expr ; }
 {
-    <LPAREN> expr = Expression() <RPAREN>  { return expr ; }
+    <LPAREN> expr = Expression() <RPAREN> { return expr ; }
 }
 
 Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
@@ -719,7 +633,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
     <LANG> <LPAREN> expr = Expression() <RPAREN>
     { return new E_Lang(expr) ; }
   |// Langmatches
-    <LANGMATCHES> 
+    <LANGMATCHES>
        <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_LangMatches(expr1, expr2) ; }
 
@@ -752,32 +666,14 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1, expr2 ; Node gn ; Token t ;}
 Expr RegexExpression() :
 { Expr expr ; Expr patExpr = null ; Expr flagsExpr = null ; }
 {
-    <REGEX> <LPAREN> 
-      expr = Expression() 
+    <REGEX> <LPAREN>
+      expr = Expression()
       <COMMA>
       patExpr = Expression()
       ( <COMMA> flagsExpr = Expression() ) ?
     <RPAREN>
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
-
-#if ARQ
-void Aggregate() : { Expr expr ;  ExprList args ; }
-{
-  (  <AGG> <LPAREN> IRIref()
-     { args = new ExprList() ; }
-     (<COMMA> expr = Expression() { args.add(expr) ; } )*
-     <RPAREN>
-  |  <COUNT> <LPAREN> (<DISTINCT>)? (<STAR>| Var()) <RPAREN>
-  |  <MIN>  BrackettedExpression()
-  |  <MAX>  BrackettedExpression()
-  |  <SUM>  BrackettedExpression()
-  |  <AVG>  BrackettedExpression()
-  |  <STDDEV> BrackettedExpression()
-  )
-}
-#endif
-
 
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
@@ -797,12 +693,12 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
   // Optional lang tag and datatype.
   { String lang = null ; Node uri = null ; }
   (
-    ( t = <LANGTAG>  { lang = stripChars(t.image, 1) ; } )
+    ( t = <LANGTAG> { lang = stripChars(t.image, 1) ; } )
   |
     ( <DATATYPE> uri = IRIref() )
   )?
     { return makeNode(lex, lang, uri) ; }
-} 
+}
 
 
 Node NumericLiteral() : { Node n ; }
@@ -820,21 +716,21 @@ Node NumericLiteralUnsigned() : { Token t ; }
 {
   t = <INTEGER> { return makeNodeInteger(t.image) ; }
 | t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
-| t = <DOUBLE>  { return makeNodeDouble(t.image) ; }
+| t = <DOUBLE> { return makeNodeDouble(t.image) ; }
 }
 
 Node NumericLiteralPositive() : { Token t ; }
 {
   t = <INTEGER_POSITIVE> { return makeNodeInteger(t.image) ; }
 | t = <DECIMAL_POSITIVE> { return makeNodeDecimal(t.image) ; }
-| t = <DOUBLE_POSITIVE>  { return makeNodeDouble(t.image) ; }
+| t = <DOUBLE_POSITIVE> { return makeNodeDouble(t.image) ; }
 }
 
 Node NumericLiteralNegative() : { Token t ; }
 {
   t = <INTEGER_NEGATIVE> { return makeNodeInteger(t.image) ; }
 | t = <DECIMAL_NEGATIVE> { return makeNodeDecimal(t.image) ; }
-| t = <DOUBLE_NEGATIVE>  { return makeNodeDouble(t.image) ; }
+| t = <DOUBLE_NEGATIVE> { return makeNodeDouble(t.image) ; }
 }
 
 
@@ -853,7 +749,7 @@ String String() : { Token t ; String lex ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
     {
-      lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
+      lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
       return lex ;
     }
 }
@@ -875,10 +771,10 @@ Node PrefixedName() : { Token t ; }
   )
 }
 
-Node BlankNode() :  { Token t = null ; }
+Node BlankNode() : { Token t = null ; }
 {
   t = <BLANK_NODE_LABEL>
-    { return createBNode(t.image, t.beginLine, t.beginColumn) ; }  
+    { return createBNode(t.image, t.beginLine, t.beginColumn) ; }
 |
 //  <LBRACKET> <RBRACKET> { return createBNode() ; }
   <ANON> { return createBNode() ; }
@@ -908,16 +804,16 @@ SPECIAL_TOKEN :
 TOKEN:
 {
    // Includes # for relative URIs
-   <IRIref: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", 
+   <IRIref: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`",
                       "\u0000"-"\u0020"])* ">" >
-|  <PNAME_NS: (<PN_PREFIX>)? ":" >
-|  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
-|  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
-|  <VAR1: "?" <VARNAME> >
-|  <VAR2: "$" <VARNAME> >
-|  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
-|  <#A2Z: ["a"-"z","A"-"Z"]>
-|  <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
+| <PNAME_NS: (<PN_PREFIX>)? ":" >
+| <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
+| <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
+| <VAR1: "?" <VARNAME> >
+| <VAR2: "$" <VARNAME> >
+| <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
+| <#A2Z: ["a"-"z","A"-"Z"]>
+| <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
 }
 
 // -------------------------------------------------
@@ -925,74 +821,60 @@ TOKEN:
 // before general things like IDENTIFIER which swallow almost
 // anything
 
-TOKEN : { <KW_A:  "a" > }
+TOKEN : { <KW_A: "a" > }
 
 TOKEN [IGNORE_CASE] :
 {
 // Prologue
-   < BASE:        "base" >
-|  < PREFIX:      "prefix" >
+   < BASE: "base" >
+| < PREFIX: "prefix" >
 
 // Result forms
-|  < SELECT:      "select" >
-|  < DISTINCT:    "distinct" >
-|  < REDUCED:     "reduced" >
-|  < DESCRIBE:    "describe" >
-|  < CONSTRUCT:   "construct" >
-|  < ASK:         "ask" >
+| < SELECT: "select" >
+| < DISTINCT: "distinct" >
+| < REDUCED: "reduced" >
+| < DESCRIBE: "describe" >
+| < CONSTRUCT: "construct" >
+| < ASK: "ask" >
 
-|  < LIMIT:       "limit" >
-|  < OFFSET:      "offset" >
-|  < ORDER:       "order" >
-|  < BY:          "by" >
+| < LIMIT: "limit" >
+| < OFFSET: "offset" >
+| < ORDER: "order" >
+| < BY: "by" >
 
-|  < ASC:         "asc" >
-|  < DESC:        "desc" >
+| < ASC: "asc" >
+| < DESC: "desc" >
 
 // Dataset
-|  < NAMED:       "named" >
-|  < FROM:        "from" >
+| < NAMED: "named" >
+| < FROM: "from" >
 
 // Graph pattern operators 
-|  < WHERE:       "where" >
-|  < AND:         "and" >
-|  < GRAPH:       "graph" >
-|  < OPTIONAL:    "optional" >
-|  < UNION:       "union" >
+| < WHERE: "where" >
+| < AND: "and" >
+| < GRAPH: "graph" >
+| < OPTIONAL: "optional" >
+| < UNION: "union" >
 
-#ifdef ARQ
-|  < AS:          "as" >
-|  < EXT:         "ext" >
-|  < GROUP:       "group" >
-|  < HAVING:      "having" >
-|  < AGG:         "agg" >
-|  < COUNT:       "count" >
-|  < MIN:         "min" >
-|  < MAX:         "max" >
-|  < SUM:         "sum" >
-|  < AVG:         "avg" >
-|  < STDDEV:      "stdev" >
-#endif
-
-|  < FILTER:      "filter" >
+| < FILTER: "filter" >
 
 // Expression operators
-|  < BOUND:       "bound" >
-|  < STR:         "str" >
+| < BOUND: "bound" >
+| < STR: "str" >
 // |  < URI:         "uri" >
-|  < DTYPE:       "datatype" >
-|  < LANG:        "lang" >
-|  < LANGMATCHES: "langmatches" >
+| < DTYPE: "datatype" >
+| < LANG: "lang" >
+| < LANGMATCHES: "langmatches" >
 //|  < IS_IRI:      ("isIRI"|"isURI") >
-|  < IS_URI:      "isURI" >
-|  < IS_IRI:      "isIRI" >
-|  < IS_BLANK:    "isBlank" >
-|  < IS_LITERAL:  "isLiteral" >
-|  < REGEX:       "regex" >
-|  < SAME_TERM:   "sameTerm" >
+| < IS_URI: "isURI" >
+| < IS_IRI: "isIRI" >
+| < IS_BLANK: "isBlank" >
+| < IS_LITERAL: "isLiteral" >
+| < REGEX: "regex" >
+| < SAME_TERM: "sameTerm" >
 
-|  <TRUE:         "true" >
-|  <FALSE:        "false" >
+| <TRUE: "true" >
+| <FALSE: "false" >
 }
 
 // -------------------------------------------------
@@ -1002,7 +884,7 @@ TOKEN :
   < #DIGITS: (["0"-"9"])+>
 | < INTEGER: <DIGITS> >
 | < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
-| < DOUBLE:   // Required exponent.
+| < DOUBLE: // Required exponent.
       (
         (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
         | "." (["0"-"9"])+ (<EXPONENT>)
@@ -1012,74 +894,74 @@ TOKEN :
 
 | < INTEGER_POSITIVE: <PLUS> <INTEGER> >
 | < DECIMAL_POSITIVE: <PLUS> <DECIMAL> >
-| < DOUBLE_POSITIVE:  <PLUS> <DOUBLE> >
+| < DOUBLE_POSITIVE: <PLUS> <DOUBLE> >
 
 | < INTEGER_NEGATIVE: <MINUS> <INTEGER> >
 | < DECIMAL_NEGATIVE: <MINUS> <DECIMAL> >
-| < DOUBLE_NEGATIVE:  <MINUS> <DOUBLE> >
+| < DOUBLE_NEGATIVE: <MINUS> <DOUBLE> >
 
 | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 | < #QUOTE_3D: "\"\"\"">
 | < #QUOTE_3S: "'''">
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
-| < STRING_LITERAL1: 
+| < STRING_LITERAL1:
       // Single quoted string
-      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" > 
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" >
 | < STRING_LITERAL2:
     // Double quoted string
       "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
 | < STRING_LITERAL_LONG1:
-     <QUOTE_3S> 
+     <QUOTE_3S>
       ( ("'" | "''")? (~["'","\\"] | <ECHAR> ))*
      <QUOTE_3S> >
 
-| < STRING_LITERAL_LONG2: 
-     <QUOTE_3D> 
+| < STRING_LITERAL_LONG2:
+     <QUOTE_3D>
       ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
      <QUOTE_3D> >
 }
 
 TOKEN :
 {
-  < LPAREN:    "(" >
-| < RPAREN:    ")" >
+  < LPAREN: "(" >
+| < RPAREN: ")" >
 
 | <NIL: <LPAREN> (<WS>|<SINGLE_LINE_COMMENT>)* <RPAREN> >
 
-| < LBRACE:    "{" >
-| < RBRACE:    "}" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
 
-| < LBRACKET:  "[" >
-| < RBRACKET:  "]" >
-| < ANON:      <LBRACKET> (<WS>|<SINGLE_LINE_COMMENT>)* <RBRACKET> >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < ANON: <LBRACKET> (<WS>|<SINGLE_LINE_COMMENT>)* <RBRACKET> >
 
 | < SEMICOLON: ";" >
-| < COMMA:     "," >
-| < DOT:       "." >
+| < COMMA: "," >
+| < DOT: "." >
 }
 
 // Operator
 
 TOKEN :
 {
-  < EQ:      "=" >
-| < NE:      "!=" >
-| < GT:      ">" >
-| < LT:      "<" >
-| < LE:      "<=" >    // Maybe: | "=>" >
-| < GE:      ">=" >    // Maybe: | "=<" >
+  < EQ: "=" >
+| < NE: "!=" >
+| < GT: ">" >
+| < LT: "<" >
+| < LE: "<=" > // Maybe: | "=>" >
+| < GE: ">=" > // Maybe: | "=<" >
 
-| < BANG:    "!" >
-| < TILDE:   "~" >
-| < COLON:   ":" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < COLON: ":" >
 
-| < SC_OR:   "||" >
-| < SC_AND:  "&&" >
+| < SC_OR: "||" >
+| < SC_AND: "&&" >
 
-| < PLUS:    "+" >
-| < MINUS:   "-" >
-| < STAR:    "*" >
-| < SLASH:   "/" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
 
 //| < AMP: "&" >
 //| < REM: "%" >
@@ -1098,7 +980,7 @@ TOKEN:
           ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
           ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
           ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
-          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] 
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"]
           >
           // [#x10000-#xEFFFF]
 |
@@ -1109,10 +991,10 @@ TOKEN:
               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
 |
   // No leading "_", no trailing ".", can have dot inside prefix name.
-  <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
+  <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)? >
 |
   // With a leading "_", no dot at end of local name.
-  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
+  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)? >
 |
   // NCNAME without "-" and ".", allowing leading digits.
   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
@@ -1161,4 +1043,3 @@ TOKEN:
 # comment-default-style: "//"
 # End:
 */
-

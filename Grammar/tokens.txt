@@ -59,6 +59,18 @@
 [<ASC>]        ::= 'ASC'
 [<DESC>]       ::= 'DESC'
 
+[<AS>]         ::= 'AS'
+[<EXT>]        ::= 'EXT'
+[<GROUP>]      ::= 'GROUP'
+[<HAVING>]     ::= 'HAVING'
+[<AGG>]        ::= 'AGG'
+[<COUNT>]      ::= 'COUNT'
+[<MIN>]        ::= 'MIN'
+[<MAX>]        ::= 'MAX'
+[<SUM>]        ::= 'SUM'
+[<AVG>]        ::= 'AVG'
+[<STDDEV>]     ::= 'STDEV'
+
 [<FILTER>]     ::= 'FILTER'
 [<REGEXP>]     ::= 'REGEXP'
 [<GRAPH>]      ::= 'GRAPH'
