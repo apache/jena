@@ -1,22 +1,15 @@
-@prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
 @prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
-@prefix sdb:      <http://jena.hpl.hp.com/2006/sdb#> .
+@prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
-# Works but SDB has to do other initialization anyway.
-# acmd:SDBConnection ja:assembler 
-#     "com.hp.hpl.jena.sdb.assembler.SDBConnectionDescAssembler" .
-# acmd:Store ja:assembler
-#     "com.hp.hpl.jena.sdb.assembler.StoreDescAssembler" .
-
-_:c rdf:type acmd:SDBConnection ;
-    acmd:sdbType        "derby" ;
-    acmd:sdbName        "DB/SDB2" ;
-    acmd:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
+_:c rdf:type sdb:SDBConnection ;
+    sdb:sdbType        "derby" ;
+    sdb:sdbName        "DB/SDB2" ;
+    sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
     .
 
-[] rdf:type acmd:Store ;
-    acmd:layout         "layout2" ;
-    acmd:connection     _:c ;
+[] rdf:type sdb:Store ;
+    sdb:layout         "layout2" ;
+    sdb:connection     _:c ;
 .

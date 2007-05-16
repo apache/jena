@@ -1,19 +1,19 @@
-@prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
-@prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sdb:     <http://jena.hpl.hp.com/2007/sdb#> .
+@prefix rdfs:	 <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
-_:c rdf:type acmd:SDBConnection ;
-    acmd:sdbType      "hsqldb" ;
-    acmd:sdbHost      "mem" ;
-    acmd:sdbUser      "sa" ;
-    acmd:sdbPassword  "" ;
-    acmd:sdbName      "SDB2" ;
-    acmd:driver       "org.hsqldb.jdbcDriver" ;
+_:c rdf:type sdb:SDBConnection ;
+    sdb:sdbType      "hsqldb" ;
+    sdb:sdbHost      "mem" ;
+    sdb:sdbUser      "sa" ;
+    sdb:sdbPassword  "" ;
+    sdb:sdbName      "SDB2" ;
+    sdb:driver       "org.hsqldb.jdbcDriver" ;
     .
 
-[] rdf:type acmd:Store ;
-    acmd:layout     "layout2" ;
-    acmd:connection _:c ;
+[] rdf:type sdb:Store ;
+    sdb:layout     "layout2" ;
+    sdb:connection _:c ;
     .
 

@@ -21,11 +21,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class CmdDescAssembler extends AssemblerBase implements Assembler
 {
     
-    
-
-    
     /* This SPARQL query will process arguments 
-PREFIX acmd:     <http://jena.hpl.hp.com/2006/01/acmd#>
+PREFIX acmd:     <http://jena.hpl.hp.com/2007/sdb#>
 PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX list:    <http://jena.hpl.hp.com/ARQ/list#>
 

@@ -19,11 +19,15 @@ import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-
 public class SDB
 {
     /** SDB namespace */
-    public final static String namespace = "http://jena.hpl.hp.com/SDB#" ;
+    
+    public final static String namespace = "http://jena.hpl.hp.com/2007/sdb#" ;
+    
+    /** Assembler vocabulary */
+    private static final String NS = "http://jena.hpl.hp.com/2007/sdb#" ;
+    
     public final static String symbolNamespace = "http://jena.hpl.hp.com/SDB/symbol#" ; 
     
     static boolean initialized = false ;

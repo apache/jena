@@ -9,13 +9,15 @@ package com.hp.hpl.jena.sdb.assembler;
 import com.hp.hpl.jena.assembler.Assembler;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.util.Vocab;
 
 public class AssemblerVocab
 {
     // Vocabulary later
     // Was: "http://jena.hpl.hp.com/2006/01/acmd#"
-    private static final String NS = "http://jena.hpl.hp.com/2006/01/acmd#" ;
+    private static final String NS = SDB.namespace ;
+    
     public static String getURI() { return NS ; } 
     
     public static final Resource QueryAssemblerType             = Vocab.type(NS, "Query") ;
