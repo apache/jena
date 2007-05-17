@@ -11,8 +11,10 @@
      Ordered Map [LinkedHashMap] from name (generated if necessary) to expression.
      Phase 2 detectes inconmsistences 
          
-+ Make Dataset more formally a level chnaged between Models and Graphs.
++ Make Dataset more formally a level changed between Models and Graphs.
   Sort out with update as well.
+  Make the system DatasetGraph/QueryExecutionGraph-centric
+    with Dataset and QueryExecution just converters
   
 + Remote update over HTTP
 
