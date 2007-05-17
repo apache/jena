@@ -49,7 +49,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * 
  * 
  * @author Andy Seaborne
- * @version $Id: localname.java,v 1.1 2007-03-21 21:30:31 andy_seaborne Exp $
+ * @version $Id: localname.java,v 1.2 2007-05-17 16:44:20 andy_seaborne Exp $
  */ 
 
 public class localname extends PFuncSimple
@@ -79,7 +79,7 @@ public class localname extends PFuncSimple
             // Object bound or a query constant.  Is it the same as the calculated value?
             if ( nodeLocalname.equals(localname) )
                 // Same
-                return new QueryIterSingleton(binding) ;
+                return new QueryIterSingleton(binding, execCxt) ;
             // No - different - no match.
             return new QueryIterNullIterator(execCxt) ;
         }
@@ -88,7 +88,7 @@ public class localname extends PFuncSimple
         Binding b = new Binding1(binding, Var.alloc(nodeLocalname), localname) ;
         
         // Return an iterator.
-        return new QueryIterSingleton(b) ;
+        return new QueryIterSingleton(b, execCxt) ;
     }
     
     // Unbound subject - work hard.

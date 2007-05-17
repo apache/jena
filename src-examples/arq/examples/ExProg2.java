@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 /** Example : Build a query with a filter programmatically 
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg2.java,v 1.7 2007-03-21 21:36:01 andy_seaborne Exp $
+ * @version $Id: ExProg2.java,v 1.8 2007-05-17 16:44:14 andy_seaborne Exp $
  */
 
 public class ExProg2
