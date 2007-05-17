@@ -177,7 +177,7 @@ public class ModStore extends ModBase
         String f = cmdLine.getArg(argDeclSDBdesc).getValue() ;
         try {
             storeDesc = StoreDesc.read(f) ;
-            if ( storeDesc.layout == null )
+            if ( storeDesc.getLayout() == null )
             {
                 System.err.println("No layout or unrecognized layout");
                 throw new TerminationException(1);
@@ -197,22 +197,22 @@ public class ModStore extends ModBase
         
         // Overrides.
         if (cmdLine.contains(argDeclDbHost))
-            storeDesc.connDesc.host = cmdLine.getArg(argDeclDbHost).getValue();
+            storeDesc.connDesc.setHost(cmdLine.getArg(argDeclDbHost).getValue());
         
         if (cmdLine.contains(argDeclDbName))
-            storeDesc.connDesc.name = cmdLine.getArg(argDeclDbName).getValue();
+            storeDesc.connDesc.setName(cmdLine.getArg(argDeclDbName).getValue()) ;
         
         if (cmdLine.contains(argDeclDbType))
-            storeDesc.connDesc.type = cmdLine.getArg(argDeclDbType).getValue();
+            storeDesc.connDesc.setType(cmdLine.getArg(argDeclDbType).getValue()) ;
 
         if (cmdLine.contains(argDeclDbArgs))
-            storeDesc.connDesc.argStr = cmdLine.getArg(argDeclDbArgs).getValue();
+            storeDesc.connDesc.setArgStr(cmdLine.getArg(argDeclDbArgs).getValue()) ;
 
         if (cmdLine.contains(argDeclDbUser))
-            storeDesc.connDesc.user = cmdLine.getArg(argDeclDbUser).getValue();
+            storeDesc.connDesc.setUser(cmdLine.getArg(argDeclDbUser).getValue()) ;
 
         if (cmdLine.contains(argDeclDbPassword))
-            storeDesc.connDesc.password = cmdLine.getArg(argDeclDbPassword).getValue();
+            storeDesc.connDesc.setPassword(cmdLine.getArg(argDeclDbPassword).getValue()) ;
 
         if (cmdLine.contains(argDeclMySQLEngine))
             storeDesc.engineType = MySQLEngineType.convert(cmdLine.getArg(argDeclMySQLEngine).getValue());
@@ -220,9 +220,9 @@ public class ModStore extends ModBase
         if (cmdLine.contains(argDeclLayout))
         {
             String layoutName = cmdLine.getArg(argDeclLayout).getValue() ;
-            storeDesc.layout = LayoutType.convert(layoutName) ;
+            storeDesc.setLayout(LayoutType.convert(layoutName)) ;
 
-            if ( storeDesc.layout == null )
+            if ( storeDesc.getLayout() == null )
             {
                 System.err.println("Don't recognize layout name '"+layoutName+"'") ;
                 throw new TerminationException(2) ;
@@ -234,15 +234,15 @@ public class ModStore extends ModBase
         if ( false )
         {
             //System.out.println("URL       = " + storeDesc.connDesc.URL);
-            System.out.println("Type      = " + storeDesc.connDesc.type);
-            System.out.println("Host      = " + storeDesc.connDesc.host);
-            System.out.println("Database  = " + storeDesc.connDesc.name);
-            System.out.println("User      = " + storeDesc.connDesc.user);
-            System.out.println("Password  = " + storeDesc.connDesc.password);
-            if ( storeDesc.connDesc.argStr != null )
-                System.out.println("Args      = " + storeDesc.connDesc.argStr);
+            System.out.println("Type      = " + storeDesc.connDesc.getType());
+            System.out.println("Host      = " + storeDesc.connDesc.getHost());
+            System.out.println("Database  = " + storeDesc.connDesc.getName());
+            System.out.println("User      = " + storeDesc.connDesc.getUser());
+            System.out.println("Password  = " + storeDesc.connDesc.getPassword());
+            if ( storeDesc.connDesc.getArgStr() != null )
+                System.out.println("Args      = " + storeDesc.connDesc.getArgStr());
                 
-            System.out.println("Layout    = " + storeDesc.layout.getName()) ;
+            System.out.println("Layout    = " + storeDesc.getLayout().getName()) ;
             //System.out.println("Name      = " + argModelName);
 
             SDBConnection.logSQLExceptions = true ;
@@ -257,13 +257,13 @@ public class ModStore extends ModBase
 //        }
 
        
-        driverName = storeDesc.connDesc.driver ;
+        driverName = storeDesc.connDesc.getDriver() ;
         
         if (cmdLine.contains(argDeclJdbcDriver))
             driverName = cmdLine.getArg(argDeclJdbcDriver).getValue();
 
         if ( driverName == null )
-            driverName = jdbcDrivers.get(storeDesc.connDesc.type.toLowerCase());
+            driverName = jdbcDrivers.get(storeDesc.connDesc.getType().toLowerCase());
 
         if (driverName == null)
         {
@@ -306,7 +306,7 @@ public class ModStore extends ModBase
     public void setDbName(String dbName)
     {
         // used by truncate and format.
-        storeDesc.connDesc.name = dbName ;
+        storeDesc.connDesc.setName(dbName) ;
     }
     
     

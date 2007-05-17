@@ -98,15 +98,15 @@ public class StoreFactory
         if ( sdb == null ) 
             sdb = SDBFactory.createConnection(desc.connDesc) ;
 
-        if ( desc.layout == null )
+        if ( desc.getLayout() == null )
         {
             log.warn("Layout is null.") ; 
             throw new SDBException("No such layout") ;
         }
             
-        if ( desc.layout == LayoutType.LayoutSimple )
+        if ( desc.getLayout() == LayoutType.LayoutSimple )
         {
-            switch (desc.dbType)
+            switch (desc.getDbType())
             {
                 case MySQL5:
                     return new StoreSimpleMySQL(sdb, desc.engineType) ;
@@ -114,7 +114,7 @@ public class StoreFactory
                     return new StoreSimplePGSQL(sdb) ;
                 case MySQL41:
                 case Oracle10:
-                    throw new SDBException("Not supported (yet): "+desc.layout.getName()+" : "+desc.dbType.getName()) ;
+                    throw new SDBException("Not supported (yet): "+desc.getLayout().getName()+" : "+desc.getDbType().getName()) ;
                 case HSQLDB:
                     return new StoreSimpleHSQL(sdb) ;
                 case Derby:
@@ -123,13 +123,13 @@ public class StoreFactory
                     return new StoreSimpleSQLServer(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s]",
-                                                  desc.dbType.getName(), desc.layout.getName())) ;
+                                                  desc.getDbType().getName(), desc.getLayout().getName())) ;
             }
         }
 
-        if ( desc.layout == LayoutType.LayoutTripleNodesHash )
+        if ( desc.getLayout() == LayoutType.LayoutTripleNodesHash )
         {
-            switch (desc.dbType)
+            switch (desc.getDbType())
             {
                 case Derby:
                     return new StoreTriplesNodesHashDerby(sdb) ;
@@ -145,13 +145,13 @@ public class StoreFactory
                 case Oracle10:
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, hash variant]",
-                                                  desc.dbType.getName(), desc.layout.getName())) ;
+                                                  desc.getDbType().getName(), desc.getLayout().getName())) ;
             }
         }
         
-        if ( desc.layout == LayoutType.LayoutTripleNodesIndex )
+        if ( desc.getLayout() == LayoutType.LayoutTripleNodesIndex )
         {
-            switch (desc.dbType)
+            switch (desc.getDbType())
             {
                 case Derby:
                     return new StoreTriplesNodesIndexDerby(sdb) ;
@@ -167,11 +167,11 @@ public class StoreFactory
                     return new StoreTriplesNodesIndexSQLServer(sdb) ;
                 default:
                     throw new SDBException(format("Unknown DB type: %s [layout=%s, index variant]",
-                                                  desc.dbType.getName(), desc.layout.getName())) ;
+                                                  desc.getDbType().getName(), desc.getLayout().getName())) ;
             }
         }
         
-        if ( desc.layout == LayoutType.LayoutRDB )
+        if ( desc.getLayout() == LayoutType.LayoutRDB )
         {
             try { 
                 // TODO Cope with no real connection
@@ -192,7 +192,7 @@ public class StoreFactory
             }
         }
 
-        log.warn(format("Can't make (%s, %s)", desc.layout.getName(), desc.connDesc.type)) ; 
+        log.warn(format("Can't make (%s, %s)", desc.getLayout().getName(), desc.getDbType())) ; 
         return null ;
     }
 }

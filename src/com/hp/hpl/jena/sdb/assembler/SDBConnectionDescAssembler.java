@@ -25,21 +25,21 @@ public class SDBConnectionDescAssembler extends AssemblerBase implements Assembl
     {
         SDBConnectionDesc sDesc = new SDBConnectionDesc() ;
         
-        sDesc.type      = GraphUtils.getStringValue(root, AssemblerVocab.pSDBtype) ;
-        sDesc.host      = GraphUtils.getStringValue(root, AssemblerVocab.pSDBhost) ;
-        sDesc.argStr    = GraphUtils.getStringValue(root, AssemblerVocab.pSDBargStr) ;
-        sDesc.name      = GraphUtils.getStringValue(root, AssemblerVocab.pSDBname) ;
-        sDesc.user      = GraphUtils.getStringValue(root, AssemblerVocab.pSDBuser) ;
-        sDesc.password  = GraphUtils.getStringValue(root, AssemblerVocab.pSDBpassword) ;
-        sDesc.driver    = GraphUtils.getStringValue(root, AssemblerVocab.pDriver) ;
-        sDesc.jdbcURL   = GraphUtils.getStringValue(root, AssemblerVocab.pJDBC) ;
-        sDesc.rdbType   = GraphUtils.getStringValue(root, AssemblerVocab.pRDBtype) ;
-        sDesc.label     = GraphUtils.getStringValue(root, RDFS.label) ;
+        sDesc.setType(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBtype) ) ;
+        sDesc.setHost(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBhost) ) ;
+        sDesc.setArgStr(   GraphUtils.getStringValue(root, AssemblerVocab.pSDBargStr) ) ;
+        sDesc.setName(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBname) ) ;
+        sDesc.setUser(     GraphUtils.getStringValue(root, AssemblerVocab.pSDBuser) ) ;
+        sDesc.setPassword( GraphUtils.getStringValue(root, AssemblerVocab.pSDBpassword) ) ;
+        sDesc.setDriver(   GraphUtils.getStringValue(root, AssemblerVocab.pDriver) ) ;
+        sDesc.setJdbcURL(  GraphUtils.getStringValue(root, AssemblerVocab.pJDBC) ) ;
+        sDesc.setRdbType(  GraphUtils.getStringValue(root, AssemblerVocab.pRDBtype) ) ;
+        sDesc.setLabel(    GraphUtils.getStringValue(root, RDFS.label) ) ;
         
-        if ( sDesc.jdbcURL == null && sDesc.user == null )
-            sDesc.user = Access.getUser() ;
-        if ( sDesc.jdbcURL == null && sDesc.password == null )
-            sDesc.password = Access.getPassword() ;
+        if ( sDesc.getJdbcURL() == null && sDesc.getUser() == null )
+            sDesc.setUser(Access.getUser()) ;
+        if ( sDesc.getJdbcURL() == null && sDesc.getPassword() == null )
+            sDesc.setPassword(Access.getPassword()) ;
         return sDesc ;
     }
 }

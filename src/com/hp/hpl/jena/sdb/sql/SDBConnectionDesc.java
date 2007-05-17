@@ -22,15 +22,15 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class SDBConnectionDesc
 {
-    public String type      = null ;
-    public String host      = null ;
-    public String argStr    = null ;
-    public String name      = null ;
-    public String user      = null ;
-    public String password  = null ;
-    public String driver    = null ;
-    public String jdbcURL   = null ;
-    public String label     = null ;
+    private String type      = null ;
+    private String host      = null ;
+    private String argStr    = null ;
+    private String name      = null ;
+    private String user      = null ;
+    private String password  = null ;
+    private String driver    = null ;
+    private String jdbcURL   = null ;
+    private String label     = null ;
     
     public String rdbType   = null ;    // ModelRDB specific
     
@@ -86,6 +86,66 @@ public class SDBConnectionDesc
             throw new SDBException("SQL Exception while connecting to database: "+jdbcURL+" : "+e.getMessage()) ;
         }
     }
+
+    public String getArgStr()
+    { return argStr ; }
+
+    public void setArgStr(String argStr)
+    { this.argStr = argStr ; }
+
+    public String getDriver()
+    { return driver ; }
+
+    public void setDriver(String driver)
+    { this.driver = driver ; }
+
+    public String getHost()
+    { return host ; }
+
+    public void setHost(String host)
+    { this.host = host ; }
+
+    public String getJdbcURL()
+    { return jdbcURL ; }
+
+    public void setJdbcURL(String jdbcURL)
+    { this.jdbcURL = jdbcURL ; }
+
+    public String getLabel()
+    { return label ; }
+
+    public void setLabel(String label)
+    { this.label = label ; }
+
+    public String getName()
+    { return name ; }
+
+    public void setName(String name)
+    { this.name = name ; }
+
+    public String getPassword()
+    { return password ; }
+
+    public void setPassword(String password)
+    { this.password = password ; }
+
+    public String getRdbType()
+    { return rdbType ; }
+
+    public void setRdbType(String rdbType)
+    { this.rdbType = rdbType ; }
+
+    public String getType()
+    { return type ; }
+
+    public void setType(String type)
+    { this.type = type ; }
+
+    public String getUser()
+    { return user ; }
+
+    public void setUser(String user)
+    { this.user = user ; }
 }
 
 /*

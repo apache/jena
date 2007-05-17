@@ -14,8 +14,6 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 
 public class QExec
 {
-    
-    
     private Query query ;
     private QueryExecution exec ;
     private ResultsFormat format ;

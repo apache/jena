@@ -28,8 +28,8 @@ public class StoreDesc
     // Connection + DatabaseType + Layout + Configuration 
     
     public SDBConnectionDesc connDesc  = null ;
-    public DatabaseType dbType         = null ;
-    public LayoutType layout           = null ;
+    private DatabaseType dbType         = null ;
+    private LayoutType layout           = null ;
     public FeatureSet featureSet       = null ;
     
     // ModelRDB
@@ -73,6 +73,11 @@ public class StoreDesc
     
     public LayoutType getLayout() { return layout ; }
     
+    public void setLayout(LayoutType layout)
+    {
+        this.layout = layout ;
+    }
+
     private static StoreDesc extract(Model m)
     {
         Model mDup = ModelFactory.createDefaultModel() ;
@@ -85,6 +90,16 @@ public class StoreDesc
         if ( r == null )
             throw new SDBException("Can't find store description") ;
         return (StoreDesc)AssemblerBase.general.open(r) ;
+    }
+
+    public DatabaseType getDbType()
+    {
+        return dbType ;
+    }
+
+    public void setDbType(DatabaseType dbType)
+    {
+        this.dbType = dbType ;
     }
 }
 

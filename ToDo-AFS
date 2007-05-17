@@ -1,6 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Descriptions: StoreDesc needs a type
+   Check/test an external JDBC connection works.   Put in example.
+
 + StoreConnection needs a StoreLayout indirection
   + to get table names for formatting
   + to get the layout subtypes (1/2 ; index/hash ; triples/quads)

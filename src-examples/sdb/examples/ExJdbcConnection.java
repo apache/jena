@@ -7,6 +7,10 @@
 package sdb.examples;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
@@ -15,25 +19,42 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.sdb.Access;
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 
-/** Managed JDBC connections */ 
+/** Managed JDBC connections : creat */ 
 
 public class ExJdbcConnection
 {
-    StoreDesc storeDesc = null ;
-    public void init()
+    static { CmdUtils.setLog4j() ; }
+    
+    public static void main(String...argv)
     {
-        storeDesc = StoreDesc.read("sdb.ttl") ;
+        
+        String jdbcURL = String.format("jdbc:derby:%s", "DB/test2-hash") ;
+        JDBC.loadDriverDerby() ;
+        
+        // Setup - make the JDBC connection and read the store description once.
+        Connection jdbc = makeConnection(jdbcURL) ;
+        StoreDesc storeDesc = StoreDesc.read("sdb-store.ttl") ;
+        
+        // Make some calls to the store, using the same JDBC connection and store description.
+        System.out.println("Subjects: ") ;
+        query("SELECT DISTINCT ?s { ?s ?p ?o }", storeDesc, jdbc) ;
+        System.out.println("Predicates: ") ;
+        query("SELECT DISTINCT ?p { ?s ?p ?o }", storeDesc, jdbc) ;
+        System.out.println("Objects: ") ;
+        query("SELECT DISTINCT ?o { ?s ?p ?o }", storeDesc, jdbc) ;
     }
     
-    public void example3(Connection jdbcConnection)
+    public static void query(String queryString, StoreDesc storeDesc, Connection jdbcConnection)
     {
-        String queryString = "SELECT * { ?s ?p ?o }" ;
         Query query = QueryFactory.create(queryString) ;
 
         SDBConnection conn = new SDBConnection(jdbcConnection) ;
@@ -46,7 +67,21 @@ public class ExJdbcConnection
             ResultSet rs = qe.execSelect() ;
             ResultSetFormatter.out(rs) ;
         } finally { qe.close() ; }
+        // Does not close the JDBC connection.
+        // Do not call : store.getConnection().close() , which does close the underlying connection.
         store.close() ;
+    }
+    
+    public static Connection makeConnection(String jdbcURL)
+    { 
+        try {
+            return DriverManager.getConnection(jdbcURL,
+                                               Access.getUser(),
+                                               Access.getPassword()) ;
+        } catch (SQLException ex)
+        {
+            throw new SDBException("SQL Exception while connecting to database: "+jdbcURL+" : "+ex.getMessage()) ;
+        }
     }
 }
 

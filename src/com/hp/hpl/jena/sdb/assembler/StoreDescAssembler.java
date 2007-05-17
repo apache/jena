@@ -30,15 +30,15 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
+        SDBConnectionDesc sdbConnDesc = null ;
         Resource c = GraphUtils.getResourceValue(root, AssemblerVocab.pConnection) ;
-        if ( c == null )
-            return null ;
-        SDBConnectionDesc sdbConnDesc = (SDBConnectionDesc)a.open(c) ;
+        if ( c != null )
+            sdbConnDesc = (SDBConnectionDesc)a.open(c) ;
         
-        // Subversions?  Parameters?
         String layoutName = GraphUtils.getStringValue(root, AssemblerVocab.pLayout) ;
-        String dbType =  sdbConnDesc.type ;
+        String dbType = chooseDBType(root, sdbConnDesc) ;
         
+        // Features
         @SuppressWarnings("unchecked")
         List<Resource> x = GraphUtils.multiValue(root, AssemblerVocab.featureProperty) ;
         FeatureSet fSet = new FeatureSet() ;
@@ -64,6 +64,43 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
         storeDesc.rdbModelName = GraphUtils.getStringValue(root, AssemblerVocab.pModelRDBname) ;
         return storeDesc ;
     }
+    
+    private String chooseDBType(Resource root, SDBConnectionDesc sdbConnDesc)
+    {
+        // --- DB Type
+        // Two places the dbType can be (it's needed twice)
+        // The connection description and the store description
+        // Propagate one ot the other.
+        // If specified twice, make sure they are the same.
+        String dbTypeConn = (sdbConnDesc != null) ? sdbConnDesc.getType() : null ;
+        String dbType     = GraphUtils.getStringValue(root, AssemblerVocab.pSDBtype) ;
+
+        if ( dbTypeConn != null && dbType != null )
+        {
+            if ( ! dbTypeConn.equals(dbType) )
+            {
+                String $ = String.format(
+                  "Connection-specified DB type and store description dbtype are different : %s %s", dbTypeConn, dbType ) ; 
+                log.warn($) ;
+            }
+        }
+        
+        else if ( dbType != null )
+        {
+            if ( sdbConnDesc != null )
+                sdbConnDesc.setType(dbType) ;
+        }
+        else if ( dbTypeConn != null )
+            dbType = dbTypeConn ;
+        else
+        {
+            // Both null.
+            log.warn("Failed to determine the database type (not in store description, no connection description)") ;
+            throw new SDBException("No database type found") ;
+        }
+        return dbType ;
+    }
+    
 }
 
 /*
