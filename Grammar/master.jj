@@ -341,7 +341,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 
 Element OptionalGraphPattern() : { Element el ; }
 { <OPTIONAL> el = GroupGraphPattern()
-    { return new ElementOptional(null, el) ; }
+    { return new ElementOptional(el) ; }
 }
 
 Element GraphGraphPattern() : { Element el ; Node n ;}

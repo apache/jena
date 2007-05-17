@@ -580,7 +580,7 @@ public class SPARULParser extends SPARULParserBase implements SPARULParserConsta
                                    Element el ;
     jj_consume_token(OPTIONAL);
     el = GroupGraphPattern();
-      {if (true) return new ElementOptional(null, el) ;}
+      {if (true) return new ElementOptional(el) ;}
     throw new Error("Missing return statement in function");
   }
 

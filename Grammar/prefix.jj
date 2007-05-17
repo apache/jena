@@ -292,13 +292,11 @@ Triple TriplePattern() : { Node s , p , o ; }
 }
 
 Element OptionalGraphPattern() : 
-    { Element el1 = null ;
-      Element el2 = null ; }
+    { Element el = null ; }
 { 
    <OPTIONAL>
-//     el1 = GraphPattern()
-     el2 = GraphPattern()
-    { return new ElementOptional(el1, el2) ; }
+     el = GraphPattern()
+    { return new ElementOptional(el) ; }
 }
 
 Element GraphGraphPattern() : { Element el ; Node n ;}

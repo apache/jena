@@ -485,12 +485,10 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
   }
 
   final public Element OptionalGraphPattern() throws ParseException {
-      Element el1 = null ;
-      Element el2 = null ;
+      Element el = null ;
     jj_consume_token(OPTIONAL);
-    //     el1 = GraphPattern()
-         el2 = GraphPattern();
-      {if (true) return new ElementOptional(el1, el2) ;}
+    el = GraphPattern();
+      {if (true) return new ElementOptional(el) ;}
     throw new Error("Missing return statement in function");
   }
 

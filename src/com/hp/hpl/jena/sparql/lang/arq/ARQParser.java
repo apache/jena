@@ -776,93 +776,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// @@ Ready to be deleted
-// Element GroupGraphPattern() : { Element el = null ; ElementTriplesBlock acc = null ; }
-// {
-//     { ElementGroup elg = new ElementGroup() ; }
-//   <LBRACE>
-//       { startGroup(elg) ; }
-//   // Ensure two BGP's can't be next to each other
-//   // Done by seeing if there is a non-BGP and recursing
-//   // if there is an intermediate
-//   (
-//     { acc = new ElementTriplesBlock() ;
-//       startTriplesBlock(acc) ;
-//     }
-//     el = TriplesBlock(acc)
-//     { endTriplesBlock(acc) ;
-//       elg.addElement(el) ; } 
-//   )?
-//   (
-//     ( el = GraphPatternNotTriples() | el = Filter() )
-//     { elg.addElement(el) ; }
-//     (<DOT>)?
-// 
-//     (
-//       { acc = new ElementTriplesBlock() ;
-//         startTriplesBlock(acc) ;
-//       }
-//       el = TriplesBlock(acc)
-//       { endTriplesBlock(acc) ;
-//         elg.addElement(el) ; } 
-//     )?
-//   )*
-//       { endGroup(elg) ; }
-//   <RBRACE>
-//     { return elg ; }
-// }
-
-// Element GroupGraphPattern() : {}
-// {
-//     { ElementGroup elg = new ElementGroup() ; }
-//   <LBRACE>
-//       { startGroup(elg) ; }
-//     GraphPatternElement(elg)
-//       { endGroup(elg) ; }
-//   <RBRACE>
-//     { return elg ; }
-// }
-// 
-// 
-// // Without {}
-// // If the recusion is removed can roll GraphPatternElement into GroupGraphPattern()
-// 
-// void GraphPatternElement(ElementGroup elg) : 
-//     { Element el = null ; ElementTriplesBlock acc = null ; }
-// {
-//   // Ensure two BGP's can't be next to each other
-//   // Done by seeing if there is a non-BGP and recursing
-//   // if there is an intermediate
-//   (
-//     { acc = new ElementTriplesBlock() ;
-//       startTriplesBlock(acc) ;
-//     }
-//     el = TriplesBlock(acc)
-//     { endTriplesBlock(acc) ;
-//       elg.addElement(el) ; } 
-//   )?
-//   (
-//     ( el = GraphPatternNotTriples()
-//     | el = Filter()                 
-//     )
-//     { elg.addElement(el) ; }
-//     (<DOT>)?
-//     GraphPatternElement(elg)
-//   )?
-// }
-// 
-// 
-// Element TriplesBlock(ElementTriplesBlock acc) : { }
-// {
-//   { if ( acc == null )
-//       acc = new ElementTriplesBlock() ;
-//   }
-//   TriplesSameSubject(acc)
-//   ( <DOT> (TriplesBlock(acc))? )?
-//     { return acc ; }
-// }
-
-
 // -----
   final public Element GraphPatternNotTriples() throws ParseException {
                                      Element el = null ;
@@ -891,7 +804,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                    Element el ;
     jj_consume_token(OPTIONAL);
     el = GroupGraphPattern();
-      {if (true) return new ElementOptional(null, el) ;}
+      {if (true) return new ElementOptional(el) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1212,26 +1125,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
   }
 
-// // Recursive
-// void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
-// {
-//   p = Verb()
-//   ObjectList(s, p, acc)
-//   (<SEMICOLON> PropertyList(s, acc) ) ?
-// #ifdef ARQ
-//   |
-//   Reification(s, acc)
-// #endif
-// }
-
-// // Recursive
-// void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
-// {
-//     { int mark = acc.mark() ; }
-//   o = GraphNode(acc) 
-//     { insert(acc, mark, s, p, o) ; }
-//   ( <COMMA> ObjectList(s, p , acc) )?
-// }
   final public void ObjectList(Node s, Node p, TripleCollector acc) throws ParseException {
                                                         Node o ;
     Object(s, p, acc);
@@ -1496,12 +1389,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// // GRAPH and property if including blank nodes are properties.
-// Node VarOrBlankNodeOrIRIref() : {Node n = null ; }
-// {
-//   ( n = Var() | n = BlankNode() | n = IRIref() )
-//   { return n ; }
-// }
   final public Node Var() throws ParseException {
                Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {

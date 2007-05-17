@@ -297,93 +297,6 @@ Element TriplesBlock(ElementTriplesBlock acc) : { }
     { return acc ; }
 }
 
-// @@ Ready to be deleted
-// Element GroupGraphPattern() : { Element el = null ; ElementTriplesBlock acc = null ; }
-// {
-//     { ElementGroup elg = new ElementGroup() ; }
-//   <LBRACE>
-//       { startGroup(elg) ; }
-//   // Ensure two BGP's can't be next to each other
-//   // Done by seeing if there is a non-BGP and recursing
-//   // if there is an intermediate
-//   (
-//     { acc = new ElementTriplesBlock() ;
-//       startTriplesBlock(acc) ;
-//     }
-//     el = TriplesBlock(acc)
-//     { endTriplesBlock(acc) ;
-//       elg.addElement(el) ; } 
-//   )?
-//   (
-//     ( el = GraphPatternNotTriples() | el = Filter() )
-//     { elg.addElement(el) ; }
-//     (<DOT>)?
-// 
-//     (
-//       { acc = new ElementTriplesBlock() ;
-//         startTriplesBlock(acc) ;
-//       }
-//       el = TriplesBlock(acc)
-//       { endTriplesBlock(acc) ;
-//         elg.addElement(el) ; } 
-//     )?
-//   )*
-//       { endGroup(elg) ; }
-//   <RBRACE>
-//     { return elg ; }
-// }
-
-// Element GroupGraphPattern() : {}
-// {
-//     { ElementGroup elg = new ElementGroup() ; }
-//   <LBRACE>
-//       { startGroup(elg) ; }
-//     GraphPatternElement(elg)
-//       { endGroup(elg) ; }
-//   <RBRACE>
-//     { return elg ; }
-// }
-// 
-// 
-// // Without {}
-// // If the recusion is removed can roll GraphPatternElement into GroupGraphPattern()
-// 
-// void GraphPatternElement(ElementGroup elg) : 
-//     { Element el = null ; ElementTriplesBlock acc = null ; }
-// {
-//   // Ensure two BGP's can't be next to each other
-//   // Done by seeing if there is a non-BGP and recursing
-//   // if there is an intermediate
-//   (
-//     { acc = new ElementTriplesBlock() ;
-//       startTriplesBlock(acc) ;
-//     }
-//     el = TriplesBlock(acc)
-//     { endTriplesBlock(acc) ;
-//       elg.addElement(el) ; } 
-//   )?
-//   (
-//     ( el = GraphPatternNotTriples()
-//     | el = Filter()                 
-//     )
-//     { elg.addElement(el) ; }
-//     (<DOT>)?
-//     GraphPatternElement(elg)
-//   )?
-// }
-// 
-// 
-// Element TriplesBlock(ElementTriplesBlock acc) : { }
-// {
-//   { if ( acc == null )
-//       acc = new ElementTriplesBlock() ;
-//   }
-//   TriplesSameSubject(acc)
-//   ( <DOT> (TriplesBlock(acc))? )?
-//     { return acc ; }
-// }
-
-
 // -----
 
 Element GraphPatternNotTriples() : { Element el = null ; }
@@ -403,7 +316,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
 
 Element OptionalGraphPattern() : { Element el ; }
 { <OPTIONAL> el = GroupGraphPattern()
-    { return new ElementOptional(null, el) ; }
+    { return new ElementOptional(el) ; }
 }
 
 Element GraphGraphPattern() : { Element el ; Node n ;}
@@ -511,27 +424,6 @@ void PropertyList(Node s, TripleCollector acc) : { }
 {
   ( PropertyListNotEmpty(s, acc) ) ?
 }
-
-// // Recursive
-// void PropertyListNotEmpty(Node s, TripleCollector acc) : { Node p ; }
-// {
-//   p = Verb()
-//   ObjectList(s, p, acc)
-//   (<SEMICOLON> PropertyList(s, acc) ) ?
-// #ifdef ARQ
-//   |
-//   Reification(s, acc)
-// #endif
-// }
-
-// // Recursive
-// void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
-// {
-//     { int mark = acc.mark() ; }
-//   o = GraphNode(acc) 
-//     { insert(acc, mark, s, p, o) ; }
-//   ( <COMMA> ObjectList(s, p , acc) )?
-// }
 
 void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; }
 {
@@ -650,13 +542,6 @@ Node VarOrIRIref() : {Node n = null ; }
   ( n = Var() | n = IRIref() )
   { return n ; }
 }
-
-// // GRAPH and property if including blank nodes are properties.
-// Node VarOrBlankNodeOrIRIref() : {Node n = null ; }
-// {
-//   ( n = Var() | n = BlankNode() | n = IRIref() )
-//   { return n ; }
-// }
 
 Node Var() : { Token t ;}
 {

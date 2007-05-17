@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.sparql.core.LabelMap;
 
 /** An optional element in a query.
@@ -16,12 +18,18 @@ import com.hp.hpl.jena.sparql.core.LabelMap;
 
 public class ElementOptional extends Element
 {
-    Element fixedPart ;   // Optional part
     Element optionalPart ;   // Optional part
 
     public ElementOptional(Element fixedPart, Element optionalPart)
     {
-        this.fixedPart = fixedPart ; 
+        if ( fixedPart == null )
+            LogFactory.getLog(ElementOptional.class).warn("Old style call to ElementOptional - use the other constructor") ;
+        else
+            LogFactory.getLog(ElementOptional.class).fatal("Old style call to ElementOptional with non-null fixedPart") ;
+    }
+    
+    public ElementOptional(Element optionalPart)
+    {
         this.optionalPart = optionalPart ;
     }
 
