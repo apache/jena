@@ -1,8 +1,7 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Descriptions: StoreDesc needs a type
-   Check/test an external JDBC connection works.   Put in example.
++ Build accelerator tables?
 
 + StoreConnection needs a StoreLayout indirection
   + to get table names for formatting
