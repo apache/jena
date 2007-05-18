@@ -23,10 +23,7 @@ import com.hp.hpl.jena.sdb.Access;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatasetStore;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreDesc;
-import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.store.*;
 
 /** Managed JDBC connections : creat */ 
 
@@ -36,13 +33,16 @@ public class ExJdbcConnection
     
     public static void main(String...argv)
     {
-        
         String jdbcURL = String.format("jdbc:derby:%s", "DB/test2-hash") ;
         JDBC.loadDriverDerby() ;
         
         // Setup - make the JDBC connection and read the store description once.
         Connection jdbc = makeConnection(jdbcURL) ;
-        StoreDesc storeDesc = StoreDesc.read("sdb-store.ttl") ;
+        //StoreDesc storeDesc = StoreDesc.read("sdb-store.ttl") ;
+        
+        // Make a store description without any connection information. 
+        StoreDesc storeDesc = new StoreDesc(LayoutType.LayoutTripleNodesHash,
+                                            DatabaseType.Derby) ;
         
         // Make some calls to the store, using the same JDBC connection and store description.
         System.out.println("Subjects: ") ;
