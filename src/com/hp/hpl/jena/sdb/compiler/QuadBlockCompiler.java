@@ -10,7 +10,8 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 public interface QuadBlockCompiler
 {
-    SqlNode compile(QuadBlock quads) ;
+    public SqlNode compile(QuadBlock quads) ;
+    public SlotCompiler getSlotCompiler() ;
 }
 
 /*

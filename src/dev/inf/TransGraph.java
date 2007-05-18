@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/** In-memory structure to create a transitive closure over GNodes */
 
 public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>>
 {

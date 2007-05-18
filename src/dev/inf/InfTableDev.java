@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev;
+package dev.inf;
 
 
 
@@ -24,10 +24,6 @@ import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 
-import dev.inf.TransSubClassTable;
-import dev.inf.TransSubPropertyTable;
-import dev.inf.TransTable;
-import dev.inf.TransTableMgr;
 
 public class InfTableDev
 {

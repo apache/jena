@@ -138,6 +138,13 @@ public class SlotCompilerIndex extends SlotCompiler2
         log.fatal("Unknown Node type: "+node) ;
         throw new SDBException("Unknown Node type: "+node) ;
     }
+
+    @Override
+    public SqlConstant tableRef(Node node)
+    {
+        throw new SDBException("SlotCompiler.tableRef not implemented for SlotCompilerIndex") ;
+
+    }
 }
 
 /*

@@ -27,6 +27,8 @@ import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StrUtils;
 
+/** Transitive table mamanger */
+
 public class TransTableMgr
 {
     TransGraph<Integer> transEngine = new TransGraph<Integer>() ;

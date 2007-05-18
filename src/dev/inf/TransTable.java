@@ -9,6 +9,7 @@ package dev.inf;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
+/** Database table that is a transitive closure */
 
 public class TransTable
 {

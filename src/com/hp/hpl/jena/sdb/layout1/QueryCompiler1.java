@@ -27,7 +27,7 @@ public class QueryCompiler1 extends QueryCompilerMain
     }
     
     @Override
-    protected QuadBlockCompiler createQuadBlockCompiler()
+    public QuadBlockCompiler createQuadBlockCompiler()
     { 
         SlotCompiler sComp = new SlotCompiler1(request, codec) ;
         return new QuadBlockCompilerMain(request, sComp) ; 

@@ -6,25 +6,87 @@
 
 package dev.pattern;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
 
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
+import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
+import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.asSqlList; 
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sparql.sse.SSE;
 
 public class PatternTableLoader
 {
-    public void load(SlotCompiler slotCompiler)
+    // Need more complexity to allow a bunch of look ups in the node table.
+    
+    public static void main(String...argv)
     {
-        PatternTable pTable = new PatternTable() ;
-        Map<Node, String> cols = pTable.getCols() ;
+        SSE.parseNode("<http://example.org/>") ;
         
-        // Transitive table. subject rdfs:subClassOf object
+        Store store = StoreFactory.create("sdb.ttl") ;
         
-        //slotCompiler.processSlot(request, table, conditions, node, colName)
+        PatternTable pTable = new PatternTable("PAT") ;
+        Map<String,Node> row = new HashMap<String,Node>() ;
+        row.put("col1", Node.createLiteral("5")) ;
+        row.put("col2", SSE.parseNode("<http://example.org/>")) ;
+        row.put("col3", SSE.parseNode("<http://example.org/ns#>")) ;
+        String sql = load(store, pTable, row) ;
+        System.out.println(sql) ;
+    }
+    
+    public static String load(Store store, PatternTable pTable, Map<String,Node> row)
+    {
+        // Unnecessary creation each time.
+        // But let's get something working first!
+        Query query = QueryFactory.make() ;
+        SDBRequest request = new SDBRequest(store, query) ;
         
-        // See the Single Triple Loader
+        QueryCompiler qc = store.getQueryCompilerFactory().createQueryCompiler(request) ;
+        SlotCompiler slotCompiler = ((QueryCompilerMain)qc).createQuadBlockCompiler().getSlotCompiler() ;
+        return load(slotCompiler, pTable, row) ;
+    }
+    
+    public static String load(SlotCompiler slotCompiler, PatternTable pTable, Map<String,Node> row)
+    {
+        StringBuilder buff = new StringBuilder() ;
+        buff.append("INSERT INTO ") ;
+        buff.append(pTable.getTableName()) ;
+
+        int N = row.size() ;
+        List<String> cols = new ArrayList<String>(N) ;
+        List<String> vals = new ArrayList<String>(N) ;
+        /*
+        INSERT INTO table
+        (column-1, column-2, ... column-n)
+        VALUES
+        (value-1, value-2, ... value-n);
+         */
+
+        boolean first= true ;
+        for ( String colName : row.keySet() )
+        {
+            Node n = row.get(colName) ;
+            cols.add(colName) ;
+            SqlConstant val = slotCompiler.tableRef(n) ;
+            vals.add(val.asSqlString()) ;
+        }
+        
+        
+        buff.append(" (").append(asSqlList(cols)).append(")") ;
+        buff.append(" VALUES ") ;
+        buff.append("(").append(asSqlList(vals)).append(")") ;
+        return buff.toString() ;
     }
     
     public void start() {}

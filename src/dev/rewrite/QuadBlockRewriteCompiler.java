@@ -8,6 +8,7 @@ package dev.rewrite;
 
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompiler;
+import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
@@ -32,6 +33,9 @@ public class QuadBlockRewriteCompiler implements QuadBlockCompiler
         return baseCompiler.compile(quads) ;
         
     }
+
+    public SlotCompiler getSlotCompiler()
+    { return baseCompiler.getSlotCompiler() ; }
 
 }
 

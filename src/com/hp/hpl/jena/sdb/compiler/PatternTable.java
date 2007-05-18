@@ -24,12 +24,13 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 
 /** A (description of a) table that holds a cached/optimized
  * version of a pattern.
  */ 
 
-public class PatternTable
+public class PatternTable extends TableDesc
 {
     private static Log log = LogFactory.getLog(PatternTable.class) ;
     
@@ -38,7 +39,8 @@ public class PatternTable
     // Property => column name
     Map <Node, String> cols = new HashMap<Node, String>() ;
     
-    public PatternTable() {}
+    
+    public PatternTable(String tableName) { super(tableName, null) ; }    
     
     public void add(Node property, String colname)
     { cols.put(property, colname) ; }
@@ -137,7 +139,6 @@ public class PatternTable
                     
                     String colName = cols.get(pred) ;
                     SqlColumn col = new SqlColumn(sqlTable, colName) ;
-    
                     
                     Node obj = q.getObject() ;
     //                if ( Var.isVar(obj) )

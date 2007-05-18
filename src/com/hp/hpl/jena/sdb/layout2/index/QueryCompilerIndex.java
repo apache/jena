@@ -20,7 +20,7 @@ public class QueryCompilerIndex extends QueryCompilerMain
     }
     
     @Override
-    protected QuadBlockCompiler createQuadBlockCompiler()
+    public QuadBlockCompiler createQuadBlockCompiler()
     { return new QuadBlockCompiler2(request, new SlotCompilerIndex(request)) ; }
 }
 

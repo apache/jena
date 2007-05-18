@@ -19,7 +19,7 @@ public class QueryCompilerHash extends QueryCompilerMain
     }
     
     @Override
-    protected QuadBlockCompiler createQuadBlockCompiler()
+    public QuadBlockCompiler createQuadBlockCompiler()
     { 
         return new QuadBlockCompiler2(request, new SlotCompilerHash(request)) ;
     }

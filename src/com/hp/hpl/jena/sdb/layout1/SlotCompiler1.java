@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -42,6 +43,12 @@ public class SlotCompiler1 extends SlotCompiler
           c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
           conditions.add(c) ;
           return ;
+    }
+
+    @Override
+    public SqlConstant tableRef(Node node)
+    {
+        throw new SDBException("SlotCompiler.tableRef not implemented for SlotCompiler1") ;
     }
 }
 

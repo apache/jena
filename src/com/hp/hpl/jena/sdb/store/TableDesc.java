@@ -33,24 +33,24 @@ public abstract class TableDesc
     { return columnNames.iterator() ; } 
 }
 
-class TableDescNode2 extends TableDesc
-{
-    private static final String tableNodes          = "Nodes" ;
-    
-    private static final String colId               = "id" ;
-    private static final String colHash             = "hash" ;
-    private static final String colLex              = "lex" ;
-    private static final String colLang             = "lang" ;
-    private static final String colDatatype         = "datatype" ;
-    private static final String colType             = "type" ;
-    
-    protected TableDescNode2()
-    {
-        super(tableNodes,
-              colId, colHash, colLex, colLang, colDatatype, colType) ;
-    }
-    
-}
+//class TableDescNode2 extends TableDesc
+//{
+//    private static final String tableNodes          = "Nodes" ;
+//    
+//    private static final String colId               = "id" ;
+//    private static final String colHash             = "hash" ;
+//    private static final String colLex              = "lex" ;
+//    private static final String colLang             = "lang" ;
+//    private static final String colDatatype         = "datatype" ;
+//    private static final String colType             = "type" ;
+//    
+//    protected TableDescNode2()
+//    {
+//        super(tableNodes,
+//              colId, colHash, colLex, colLang, colDatatype, colType) ;
+//    }
+//    
+//}
 
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

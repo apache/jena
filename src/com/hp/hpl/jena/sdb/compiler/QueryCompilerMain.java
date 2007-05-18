@@ -52,13 +52,14 @@ public abstract class QueryCompilerMain implements QueryCompiler
         return op ;
     }
 
-    protected abstract QuadBlockCompiler createQuadBlockCompiler() ;
+    public abstract QuadBlockCompiler createQuadBlockCompiler() ;
     
     public ConditionCompiler getConditionCompiler()
     {
         return null ;
     }
     
+    // Find variables that need to be returned. 
     private class SqlNodesFinisher extends OpVisitorBase
     {
         
@@ -80,6 +81,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
             List<Var> projectVars = null ;
             
             if ( justProjectVars )
+                // Need project vars and also the ORDER BY (for external sorting)
                 projectVars = QC.queryOutVars(request.getQuery()) ;
             else
             {

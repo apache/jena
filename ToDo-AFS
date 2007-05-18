@@ -3,6 +3,8 @@ SDB ToDo list (and general notes)
 
 + Build accelerator tables?
 
++ TableDesc - better table description system
+
 + StoreConnection needs a StoreLayout indirection
   + to get table names for formatting
   + to get the layout subtypes (1/2 ; index/hash ; triples/quads)

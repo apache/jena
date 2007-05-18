@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-public interface TableDescNode
+public interface TableDescNode //extends TableDesc
 {
     public String getTableName() ;
     

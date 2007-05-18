@@ -11,6 +11,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
@@ -56,6 +57,8 @@ public abstract class SlotCompiler
  }
 
     protected abstract void constantSlot(SDBRequest request, Node node, SqlColumn thisCol, SqlExprList conditions) ;
+
+    public abstract SqlConstant tableRef(Node node) ;
 }
 
 /*

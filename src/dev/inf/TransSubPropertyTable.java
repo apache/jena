@@ -8,6 +8,8 @@ package dev.inf;
 
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+/** Transitive table for the subproperty hierarchy */ 
+
 public class TransSubPropertyTable extends TransTable
 {
     public static final String tableSubProperty = "Properties" ;

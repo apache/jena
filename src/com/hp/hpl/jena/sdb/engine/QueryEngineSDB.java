@@ -36,7 +36,7 @@ public class QueryEngineSDB extends QueryEngineOpBase
     {
         super(q, new AlgebraGeneratorQuad(context), context, new OpExecSDB()) ;
         this.store = store ;
-        request = new SDBRequest(store, query) ;
+        request = new SDBRequest(store, query, context) ;
         if ( StoreUtils.isHSQL(store) )
             request.LeftJoinTranslation = false ;
         

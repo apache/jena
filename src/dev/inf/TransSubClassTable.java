@@ -8,6 +8,8 @@ package dev.inf;
 
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+/** Transitive table for the subclass hierarchy */ 
+
 public class TransSubClassTable extends TransTable
 {
     public static final String tableSubClass = "Classes" ;

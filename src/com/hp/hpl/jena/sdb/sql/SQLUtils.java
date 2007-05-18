@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sdb.sql;
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -99,6 +100,21 @@ public class SQLUtils
     
     public static String gen(String first)
     { return first+SQLmark ; }
+    
+    public static String asSqlList(List<String> items)
+    {
+        // TODO Use this more widely.
+        StringBuilder buf = new StringBuilder() ;
+        boolean first = true ;
+        for ( String s : items )
+        {
+            if ( ! first )
+                buf.append(", ") ;
+            first = false ;
+            buf.append(s) ;
+        }
+        return buf.toString() ;
+    }
     
     // Not needed - we don't use the SPARQL name to generate the SQL name
     // anymore but instead allocate a plain name and remember the mapping (Dec 2006)

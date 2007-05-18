@@ -22,9 +22,11 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         //super(request, slotCompiler) ;
         this.request = request ;
         this.slotCompiler = slotCompiler ;
-        
     }
     
+    public SlotCompiler getSlotCompiler()
+    { return slotCompiler ; }
+
     //@Override
     public SqlNode compile(QuadBlock quads)
     {

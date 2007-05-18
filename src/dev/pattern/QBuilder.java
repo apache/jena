@@ -30,7 +30,7 @@ public class QBuilder
 {
     public static void main(String[] args)
     {
-        PatternTable patternTable = new PatternTable();
+        PatternTable patternTable = new PatternTable("TEST");
         
         patternTable.add(RDF.type.asNode(), "TYPE") ;
         patternTable.add(RDF.value.asNode(), "VALUE") ;
