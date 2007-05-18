@@ -23,8 +23,8 @@ function grammar
 
 ##     echo "---- Create HTML"
 ##     jjdoc -OUTPUT_FILE=${FILE%%.jj}.html "${FILE}"
-##     echo "---- Create text form"
-##     jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+    echo "---- Create text form"
+    jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
 
     # Fix unnecessary imports
     echo "---- Fixing Java warnings in ${CLASS}TokenManager ..."
