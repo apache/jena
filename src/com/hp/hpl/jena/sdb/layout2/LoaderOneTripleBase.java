@@ -126,19 +126,8 @@ public abstract class LoaderOneTripleBase
     public boolean getUseThreading()
     { return false ; }
     
-    // ----
-    
-//    public static int getIndex(SDBConnection conn, Node node) throws SQLException
-//    {
-//        return getIndex(conn, node, false) ;
-//    }
-    
-    // Abstraction:
-    //   long getRefForNode(SDBConnection conn, Node node)
-    //   long insertNode(SDBConnection conn, Node node)
-    
-    abstract protected long getRefForNode(Node node) throws SQLException ;
-    abstract protected long insertNode(Node node) throws SQLException ;
+    abstract public long getRefForNode(Node node) throws SQLException ;
+    abstract public long insertNode(Node node) throws SQLException ;
 }
 
 /*

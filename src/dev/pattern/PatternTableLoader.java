@@ -6,66 +6,97 @@
 
 package dev.pattern;
 
+import static com.hp.hpl.jena.sdb.sql.SQLUtils.asSqlList;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.sse.SSE;
 
-import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
-import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.compiler.QueryCompilerMain;
-import com.hp.hpl.jena.sdb.compiler.SlotCompiler;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
-import static com.hp.hpl.jena.sdb.sql.SQLUtils.asSqlList; 
+import com.hp.hpl.jena.sdb.layout2.LoaderOneTripleBase;
+import com.hp.hpl.jena.sdb.layout2.hash.LoaderHashLJ;
+import com.hp.hpl.jena.sdb.layout2.hash.LoaderOneTripleHash;
+import com.hp.hpl.jena.sdb.layout2.index.LoaderIndexLJ;
+import com.hp.hpl.jena.sdb.layout2.index.LoaderOneTripleIndex;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
-import com.hp.hpl.jena.sparql.sse.SSE;
 
 public class PatternTableLoader
 {
-    // Need more complexity to allow a bunch of look ups in the node table.
-    
     public static void main(String...argv)
     {
-        SSE.parseNode("<http://example.org/>") ;
-        
         Store store = StoreFactory.create("sdb.ttl") ;
         
         PatternTable pTable = new PatternTable("PAT") ;
-        Map<String,Node> row = new HashMap<String,Node>() ;
-        row.put("col1", Node.createLiteral("5")) ;
-        row.put("col2", SSE.parseNode("<http://example.org/>")) ;
-        row.put("col3", SSE.parseNode("<http://example.org/ns#>")) ;
-        String sql = load(store, pTable, row) ;
-        System.out.println(sql) ;
-    }
-    
-    public static String load(Store store, PatternTable pTable, Map<String,Node> row)
-    {
-        // Unnecessary creation each time.
-        // But let's get something working first!
-        Query query = QueryFactory.make() ;
-        SDBRequest request = new SDBRequest(store, query) ;
         
-        QueryCompiler qc = store.getQueryCompilerFactory().createQueryCompiler(request) ;
-        SlotCompiler slotCompiler = ((QueryCompilerMain)qc).createQuadBlockCompiler().getSlotCompiler() ;
-        return load(slotCompiler, pTable, row) ;
+        List<String> colNames = new ArrayList<String>() ;
+        colNames.add("col1") ;
+        colNames.add("col2") ;
+        colNames.add("col3") ;
+        
+        PatternTableLoader loader = new PatternTableLoader(store, "PAT", colNames) ;
+
+        List<Node> row = new ArrayList<Node>() ;
+        row.add(Node.createLiteral("5")) ;
+        row.add(SSE.parseNode("<http://example.org/>")) ;
+        row.add(SSE.parseNode("<http://example.org/ns#>")) ;
+
+        loader.prepareRow(row) ;
     }
     
-    public static String load(SlotCompiler slotCompiler, PatternTable pTable, Map<String,Node> row)
+    // Fake implemenetation.
+    // Sometime : convert to a batchloader
+    // Better - expose the bulk loader's node management
+    // Better, better - a N-wide Node loader.
+    
+    private LoaderOneTripleBase nodeControl = null ;
+    private String tableName ;
+    private List<String> colNames ;
+    private String colNamesStr ;
+    private Store store ;
+    
+    public PatternTableLoader(Store store, String tableName, List<String> colNames)
     {
-        StringBuilder buff = new StringBuilder() ;
-        buff.append("INSERT INTO ") ;
-        buff.append(pTable.getTableName()) ;
+        this.store = store ;
+        this.tableName = tableName ;
+        this.colNames = colNames ;
+        
+        if ( store.getLoader() instanceof LoaderHashLJ )
+            nodeControl = new LoaderOneTripleHash(store.getConnection()) ;
+        if ( store.getLoader() instanceof LoaderIndexLJ )
+            nodeControl = new LoaderOneTripleIndex(store.getConnection()) ;
+        if ( nodeControl == null )
+        {
+            System.err.println("Can't make LoaderOneTriple") ;
+            System.exit(1) ;
+        }
+        this.colNamesStr = asSqlList(colNames) ;
+        //exec("DROP TABLE "+tableName) ;
 
-        int N = row.size() ;
-        List<String> cols = new ArrayList<String>(N) ;
-        List<String> vals = new ArrayList<String>(N) ;
+        List<String> decls = new ArrayList<String>() ;
+        for (String x : colNames )
+            decls.add(x+" BIGINT") ;
+        exec("CREATE TABLE "+tableName+" ("+asSqlList(decls)+" )") ;
+    }
+    
+    private SqlConstant prepareNode(Node node)
+    { 
+        try {
+            long ref = nodeControl.insertNode(node) ;
+            return new SqlConstant(ref) ; 
+        } catch (SQLException ex){
+            throw new SDBExceptionSQL("PatternTableLoader.prepareNode", ex) ;
+        }
+    } 
+
+    public void prepareRow(List<Node> row)
+    {
         /*
         INSERT INTO table
         (column-1, column-2, ... column-n)
@@ -73,37 +104,39 @@ public class PatternTableLoader
         (value-1, value-2, ... value-n);
          */
 
-        boolean first= true ;
-        for ( String colName : row.keySet() )
+        String template = "INSERT INTO %s\n  (%s)\nVALUES\n  (%s)" ;
+        
+        int N = row.size() ;
+        final String NL = "\n"; 
+        List<String> vals = new ArrayList<String>(N) ;
+        for ( Node node : row  )
         {
-            Node n = row.get(colName) ;
-            cols.add(colName) ;
-            SqlConstant val = slotCompiler.tableRef(n) ;
+            SqlConstant val = prepareNode(node) ;
             vals.add(val.asSqlString()) ;
         }
         
-        
-        buff.append(" (").append(asSqlList(cols)).append(")") ;
-        buff.append(" VALUES ") ;
-        buff.append("(").append(asSqlList(vals)).append(")") ;
-        return buff.toString() ;
+        String sqlStmt = String.format(template, tableName, colNamesStr, asSqlList(vals)) ;
+        System.out.println(sqlStmt) ;
+        exec(sqlStmt) ;
     }
-    
-    public void start() {}
-    
-    // Column order
-    //public void add(List<Node> nodes) {}
-    public void add(Node subject, Node object)
-    {
-        long subj = slot(subject) ;
-        long obj = slot(object) ;
-    }
-    
-    public void finish() {}
 
-    private long slot(Node node)
+    private void exec(String sqlStmt)
     {
-        return 0L ;
+        try
+        {
+            store.getConnection().exec(sqlStmt) ;
+        } catch (SQLException ex)
+        {
+            throw new SDBExceptionSQL(ex) ;
+        }
+    }
+    
+    // Convert from Iterator to Iterable. 
+    private static class Iter<T>  implements Iterable<T>
+    {
+        private Iterator<T> iterator ;
+        Iter(Iterator<T> iterator) { this.iterator = iterator ; }
+        public Iterator<T>  iterator() { return iterator ; }
     }
 
 }

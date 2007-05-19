@@ -6,10 +6,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,13 +36,21 @@ public class PatternTable extends TableDesc
     // Property => column name
     Map <Node, String> cols = new HashMap<Node, String>() ;
     
-    
     public PatternTable(String tableName) { super(tableName, null) ; }    
     
     public void add(Node property, String colname)
     { cols.put(property, colname) ; }
     
     public Map <Node, String> getCols() { return cols ; }
+    
+    @Override
+    public boolean hasColumn(String colName)
+    { return cols.containsKey(colName) ; }
+   
+    @Override
+    public Iterator<String> colNames()
+    { return cols.values().iterator() ; }
+    
     
     // trigger if we see a prediate this table supports.
     public boolean trigger(Quad quad)

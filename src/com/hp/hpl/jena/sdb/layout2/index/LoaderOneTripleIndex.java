@@ -34,13 +34,13 @@ public class LoaderOneTripleIndex
     public LoaderOneTripleIndex(SDBConnection conn){ super(conn) ;}
     
     @Override
-    protected long getRefForNode(Node node) throws SQLException 
+    public long getRefForNode(Node node) throws SQLException 
     {
         return getIndex(connection(), node, false) ;
     }
 
     @Override
-    protected long insertNode(Node node) throws SQLException 
+    public long insertNode(Node node) throws SQLException 
     {
         return getIndex(connection(), node, true) ;
     }

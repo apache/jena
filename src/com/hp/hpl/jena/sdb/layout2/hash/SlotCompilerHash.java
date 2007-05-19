@@ -29,14 +29,6 @@ public class SlotCompilerHash extends SlotCompiler2
         conditions.add(c) ;
         return ;
     }
-    
-    @Override
-    public SqlConstant tableRef(Node node)
-    {
-        long hash = NodeLayout2.hash(node) ;
-        return new SqlConstant(hash) ;
-    }
-
 }
 
 /*

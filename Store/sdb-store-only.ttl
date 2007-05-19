@@ -3,6 +3,8 @@
 @prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
+# Store only - no connection detailsh
+
 [] rdf:type sdb:Store ;
     sdb:sdbType        "derby" ;
     sdb:layout         "layout2" ;

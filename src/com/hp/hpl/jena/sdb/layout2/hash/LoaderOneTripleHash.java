@@ -32,13 +32,13 @@ public class LoaderOneTripleHash
     public LoaderOneTripleHash(SDBConnection conn){ super(conn) ;}
     
     @Override
-    protected long getRefForNode(Node node) throws SQLException 
+    public long getRefForNode(Node node) throws SQLException 
     {
         return NodeLayout2.hash(node) ;
     }
 
     @Override
-    protected long insertNode(Node node) throws SQLException 
+    public long insertNode(Node node) throws SQLException 
     {
         int typeId  = NodeLayout2.nodeToType(node) ;
         String lex = NodeLayout2.nodeToLex(node) ;
