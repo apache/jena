@@ -168,6 +168,25 @@ public class SDBConnection
         }
     }
 
+    /** Execute a statement, return the result set if there was one, else null.  Runtime exception. */
+    public ResultSet execSilent(String sqlString)
+    {
+        if ( loggingSQLStatements() )
+            log.info("execNoEx\n\n"+sqlString+"\n") ;
+        
+        Connection conn = getSqlConnection() ;
+        
+        try {
+            Statement s = conn.createStatement() ;
+            boolean r = s.execute(sqlString) ;
+            if ( r )
+                return s.getResultSet() ; 
+            s.close() ;
+            return null ;
+        } catch (SQLException ex)
+        {  return null ; }
+    }
+    
     private void exception(String who, SQLException ex, String sqlString)
     {
         if ( this.loggingSQLExceptions() )

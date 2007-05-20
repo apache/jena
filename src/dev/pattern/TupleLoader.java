@@ -1,66 +1,38 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.util;
+package dev.pattern;
 
 import java.util.List;
-import java.util.Map;
+import com.hp.hpl.jena.graph.Node;
 
-import com.hp.hpl.jena.sparql.util.StringUtils;
-
-
-public class StrUtils
+public interface TupleLoader
 {
-    /** strjoin with a newline as the separator */
-    public static String strjoinNL(String... args)
-    {
-        return StringUtils.join("\n", args) ;
-    }
+    /** Notify the start of a sequence of rows to load */
+    public void start() ;
     
-    /** strjoin with a newline as the separator */
-    public static String strjoinNL(List<String> args)
-    {
-        return StringUtils.join("\n", args) ;
-    }
+    /** Load a row - may not take place immediately */
+    public void load(List<Node> row) ;
     
-    /** Concatentate string, using a separator */
-    public static String strjoin(String sep, String... args)
-    {
-        return StringUtils.join(sep, args) ;
-    }
-    
-    /** Concatentate string, using a separator */
-    public static String strjoin(String sep, List<String> args)
-    {
-        return StringUtils.join(sep, args) ;
-    }
+    /** Notify the finish of a sequence of rows to load.  
+     * All data will have been loaded by the time this returns */ 
+    public void finish() ;
 
-    public static String sqlList(List<String> args)
-    { return strjoin(", ", args) ; }
+    // Copied from StoreLoader but not called there currently.
+    // If one only type needs these, put on an implementation.  
+//    public void setChunkSize(int chunks) ;
+//    public int getChunkSize() ;
     
-    public static String substitute(String str, Map<String, String>subs)
-    {
-        for ( Map.Entry<String, String> e : subs.entrySet() )
-        {
-            String param = e.getKey() ;
-            if ( str.contains(param) ) 
-                str = str.replace(param, e.getValue()) ;
-        }
-        return str ;
-    }
-    
-    // A common combination
-    public static String strform(Map<String, String>subs, String... args)
-    {
-        return substitute(strjoinNL(args),subs) ;
-    }
+//    public void setUseThreading(boolean useThreading);
+//    public boolean getUseThreading();
+
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

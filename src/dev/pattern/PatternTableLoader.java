@@ -6,32 +6,36 @@
 
 package dev.pattern;
 
-import static com.hp.hpl.jena.sdb.sql.SQLUtils.asSqlList;
+import static com.hp.hpl.jena.sdb.util.StrUtils.sqlList;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
-import com.hp.hpl.jena.sdb.layout2.LoaderOneTripleBase;
 import com.hp.hpl.jena.sdb.layout2.hash.LoaderHashLJ;
-import com.hp.hpl.jena.sdb.layout2.hash.LoaderOneTripleHash;
 import com.hp.hpl.jena.sdb.layout2.index.LoaderIndexLJ;
-import com.hp.hpl.jena.sdb.layout2.index.LoaderOneTripleIndex;
-import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 
 public class PatternTableLoader
 {
+    static { CmdUtils.setLog4j() ; }
+    
     public static void main(String...argv)
     {
+        boolean reset = false ;
+        
         Store store = StoreFactory.create("sdb.ttl") ;
+        if ( reset )
+            store.getTableFormatter().create() ;
+        
+        //store.getConnection().setLogSQLStatements(true) ;
         
         PatternTable pTable = new PatternTable("PAT") ;
         
@@ -40,14 +44,24 @@ public class PatternTableLoader
         colNames.add("col2") ;
         colNames.add("col3") ;
         
+        if ( reset )
+        {
+            store.getConnection().execSilent("DROP TABLE "+pTable.getTableName()) ;
+            List<String> decls = new ArrayList<String>() ;
+            for (String x : colNames )
+                decls.add(x+" BIGINT") ;
+            store.getConnection().execSilent("CREATE TABLE "+pTable.getTableName()+" ("+sqlList(decls)+" )") ;
+        }
+        
         PatternTableLoader loader = new PatternTableLoader(store, "PAT", colNames) ;
-
+        
         List<Node> row = new ArrayList<Node>() ;
         row.add(Node.createLiteral("5")) ;
         row.add(SSE.parseNode("<http://example.org/>")) ;
         row.add(SSE.parseNode("<http://example.org/ns#>")) ;
-
+        
         loader.prepareRow(row) ;
+        System.out.println("**** Finished") ;
     }
     
     // Fake implemenetation.
@@ -55,82 +69,28 @@ public class PatternTableLoader
     // Better - expose the bulk loader's node management
     // Better, better - a N-wide Node loader.
     
-    private LoaderOneTripleBase nodeControl = null ;
-    private String tableName ;
-    private List<String> colNames ;
-    private String colNamesStr ;
-    private Store store ;
-    
+    private TupleLoader nodeControl = null ;
+
     public PatternTableLoader(Store store, String tableName, List<String> colNames)
     {
-        this.store = store ;
-        this.tableName = tableName ;
-        this.colNames = colNames ;
-        
         if ( store.getLoader() instanceof LoaderHashLJ )
-            nodeControl = new LoaderOneTripleHash(store.getConnection()) ;
+            nodeControl = new TupleLoaderOneHash(store, tableName, colNames) ;
         if ( store.getLoader() instanceof LoaderIndexLJ )
-            nodeControl = new LoaderOneTripleIndex(store.getConnection()) ;
+            nodeControl = new TupleLoaderOneIndex(store, tableName, colNames) ;
         if ( nodeControl == null )
         {
-            System.err.println("Can't make LoaderOneTriple") ;
+            System.err.println("Can't make TupleLoader") ;
             System.exit(1) ;
         }
-        this.colNamesStr = asSqlList(colNames) ;
-        //exec("DROP TABLE "+tableName) ;
-
-        List<String> decls = new ArrayList<String>() ;
-        for (String x : colNames )
-            decls.add(x+" BIGINT") ;
-        exec("CREATE TABLE "+tableName+" ("+asSqlList(decls)+" )") ;
     }
     
-    private SqlConstant prepareNode(Node node)
-    { 
-        try {
-            long ref = nodeControl.insertNode(node) ;
-            return new SqlConstant(ref) ; 
-        } catch (SQLException ex){
-            throw new SDBExceptionSQL("PatternTableLoader.prepareNode", ex) ;
-        }
-    } 
-
     public void prepareRow(List<Node> row)
     {
-        /*
-        INSERT INTO table
-        (column-1, column-2, ... column-n)
-        VALUES
-        (value-1, value-2, ... value-n);
-         */
-
-        String template = "INSERT INTO %s\n  (%s)\nVALUES\n  (%s)" ;
-        
-        int N = row.size() ;
-        final String NL = "\n"; 
-        List<String> vals = new ArrayList<String>(N) ;
-        for ( Node node : row  )
-        {
-            SqlConstant val = prepareNode(node) ;
-            vals.add(val.asSqlString()) ;
-        }
-        
-        String sqlStmt = String.format(template, tableName, colNamesStr, asSqlList(vals)) ;
-        System.out.println(sqlStmt) ;
-        exec(sqlStmt) ;
+        nodeControl.start() ;
+        nodeControl.load(row) ;
+        nodeControl.finish();
     }
 
-    private void exec(String sqlStmt)
-    {
-        try
-        {
-            store.getConnection().exec(sqlStmt) ;
-        } catch (SQLException ex)
-        {
-            throw new SDBExceptionSQL(ex) ;
-        }
-    }
-    
     // Convert from Iterator to Iterable. 
     private static class Iter<T>  implements Iterable<T>
     {

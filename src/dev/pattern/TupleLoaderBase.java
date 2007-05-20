@@ -1,66 +1,42 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.util;
+package dev.pattern;
 
-import java.util.List;
-import java.util.Map;
+import com.hp.hpl.jena.sdb.SDBException;
 
-import com.hp.hpl.jena.sparql.util.StringUtils;
+/** Track whether multiple loads overlap. */
 
-
-public class StrUtils
+public abstract class TupleLoaderBase implements TupleLoader
 {
-    /** strjoin with a newline as the separator */
-    public static String strjoinNL(String... args)
+    boolean active = false ;
+    private String tableName ;
+    
+    protected TupleLoaderBase(String tableName)
     {
-        return StringUtils.join("\n", args) ;
+        this.tableName = tableName ;
     }
     
-    /** strjoin with a newline as the separator */
-    public static String strjoinNL(List<String> args)
+    public String getTableName() { return tableName ; }
+    
+    public void start()
     {
-        return StringUtils.join("\n", args) ;
+        if ( active )
+            throw new SDBException("Bulk loader already active") ;
+        active = true ;
     }
     
-    /** Concatentate string, using a separator */
-    public static String strjoin(String sep, String... args)
+    public void finish()
     {
-        return StringUtils.join(sep, args) ;
-    }
-    
-    /** Concatentate string, using a separator */
-    public static String strjoin(String sep, List<String> args)
-    {
-        return StringUtils.join(sep, args) ;
-    }
-
-    public static String sqlList(List<String> args)
-    { return strjoin(", ", args) ; }
-    
-    public static String substitute(String str, Map<String, String>subs)
-    {
-        for ( Map.Entry<String, String> e : subs.entrySet() )
-        {
-            String param = e.getKey() ;
-            if ( str.contains(param) ) 
-                str = str.replace(param, e.getValue()) ;
-        }
-        return str ;
-    }
-    
-    // A common combination
-    public static String strform(Map<String, String>subs, String... args)
-    {
-        return substitute(strjoinNL(args),subs) ;
+        active = false ;
     }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
