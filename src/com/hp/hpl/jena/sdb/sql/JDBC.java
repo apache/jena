@@ -95,14 +95,14 @@ public class JDBC
             return s ;
         }
         
-        if ( type.equals("sqlserver") )
+        if ( type.equals("mssqlserver") || type.equals("sqlserver") )
         {
             //jdbc:sqlserver://localhost;databaseName=sdb_layout1
             String s = String.format("jdbc:%s://%s;databaseName=%s", type, host, dbName) ;
             return s ;
         }
         
-        if ( type.equals("mssqlserver") || type.equals("sqlserver"))
+        if ( type.equals("mssqlserverexpress") || type.equals("sqlserverexpress"))
         {
             //jdbc:sqlserver://${TESTHOST}\\SQLEXPRESS;databaseName=jenatest"
             String s = String.format("jdbc:%s://%s\\SQLEXPRESS;databaseName=%s","sqlserver",host, dbName) ;
