@@ -6,54 +6,41 @@
 
 package dev.pattern;
 
-import java.util.List;
+import java.sql.SQLException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
+import com.hp.hpl.jena.sdb.layout1.EncoderDecoder;
 import com.hp.hpl.jena.sdb.store.Store;
 
-public interface TupleLoader
+public class TupleLoaderSimple extends TupleLoaderOne
 {
-    public Store getStore() ;
+    private static Log log = LogFactory.getLog(TupleLoaderSimple.class);
+    private EncoderDecoder codec ;
     
-    /** Table name */
-    public void setTableName(String tableName) ;
-    
-    /** Table name */
-    public String getTableName() ;
-    
-    /** Table name */
-    public void setColumnNames(List<String> colNames) ;
-    
-    /** Table name */
-    public List<String> getColumnNames() ;
+    public TupleLoaderSimple(Store store, EncoderDecoder codec)
+    {
+        super(store) ;
+        this.codec = codec ;
+    }
 
-    /** Notify the start of a sequence of rows to load */
-    public void start() ;
-    
-    /** Load a row - may not take place immediately
-     *  but row object is free for reuse after calling this method.
-     * @param row
-     */
-    public void load(Node[] row) ;
-    
-    /** Remove a row - may not take place immediately
-     *  but row object is free for reuse after calling this method.
-     * @param row
-     */
-    public void unload(Node[] row) ;
+    @Override
+    public SqlConstant getRefForNode(Node node) throws SQLException
+    {
+        return new SqlConstant(codec.encode(node)) ;
+    }
 
-    /** Notify the finish of a sequence of rows to load.  
-     * All data will have been loaded by the time this returns */ 
-    public void finish() ;
-
-    // Copied from StoreLoader but not called there currently.
-    // If one only type needs these, put on an implementation.  
-//    public void setChunkSize(int chunks) ;
-//    public int getChunkSize() ;
+    @Override
+    public SqlConstant insertNode(Node node) throws SQLException
+    {
+        return new SqlConstant(codec.encode(node)) ;
+    }
     
-//    public void setUseThreading(boolean useThreading);
-//    public boolean getUseThreading();
-
+    
 }
 
 /*

@@ -43,7 +43,7 @@ public class SDBConnection
     // begin/commit/abort call-throughs
     
     // Defaults 
-    public static boolean logSQLExceptions = false ;
+    public static boolean logSQLExceptions = true ;
     public static boolean logSQLStatements = false ;
     public static boolean logSQLQueries    = false ;
     
@@ -161,7 +161,13 @@ public class SDBConnection
                 return s.getResultSet() ; 
             s.close() ;
             return null ;
-        } catch (SQLException ex)
+        }
+        catch (SQLSyntaxErrorException ex)
+        {
+            exception("execAny", ex, sqlString) ;
+            throw ex ;
+        }
+        catch (SQLException ex)
         {
             exception("execAny", ex, sqlString) ;
             throw ex ;

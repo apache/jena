@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
@@ -24,13 +25,13 @@ public class TupleLoaderOneHash extends TupleLoaderOne
     { super(store) ; }
 
     @Override
-    public long getRefForNode(Node node) throws SQLException 
+    public SqlConstant getRefForNode(Node node) throws SQLException 
     {
-        return NodeLayout2.hash(node) ;
+        return new SqlConstant(NodeLayout2.hash(node)) ;
     }
 
     @Override
-    public long insertNode(Node node) throws SQLException 
+    public SqlConstant insertNode(Node node) throws SQLException 
     {
         int typeId  = NodeLayout2.nodeToType(node) ;
         String lex = NodeLayout2.nodeToLex(node) ;
@@ -59,7 +60,7 @@ public class TupleLoaderOneHash extends TupleLoaderOne
         rs.close() ;
         if ( b )
             // Exists
-            return hash ;
+            return new SqlConstant(hash) ;
         
         String sqlStmt = strjoinNL(
                 "INSERT INTO "+TableNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
@@ -70,7 +71,7 @@ public class TupleLoaderOneHash extends TupleLoaderOne
                 "   "+typeId, 
                 ")" ) ;
         store.getConnection().execUpdate(sqlStmt) ;
-        return hash ;
+        return new SqlConstant(hash) ;
     }
 }
 

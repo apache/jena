@@ -38,30 +38,28 @@ public class StoreTupleLoader implements StoreLoader
         
     
     public void addTriple(Triple triple)
+    { loader.load(row(triple)) ; }
+
+    public void deleteTriple(Triple triple)
+    { loader.unload(row(triple)) ; }
+    
+    private static Node[] row(Triple triple)
     {
         Node[] nodes = new Node[3] ;
         nodes[0] = triple.getSubject() ;
         nodes[1] = triple.getPredicate() ;
         nodes[2] = triple.getObject() ;
-        loader.load(nodes) ;
+        return nodes ;
     }
 
     public void close()
     { loader.finish() ; }
 
-    public void deleteTriple(Triple triple)
-    { throw new SDBNotImplemented("StoreTupleLoader.getChunkSize") ; }
-
     public void startBulkUpdate()
-    {
-        loader.start() ;
-    }
-    
+    { loader.start() ; }
 
     public void finishBulkUpdate()
-    {
-        loader.finish() ;
-    }
+    { loader.finish() ; }
 
     public int getChunkSize()
     { throw new SDBNotImplemented("StoreTupleLoader.getChunkSize") ; }

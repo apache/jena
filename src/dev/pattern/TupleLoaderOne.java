@@ -32,7 +32,6 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
     public TupleLoaderOne(Store store)
     {
         super(store) ;
-        this.store = store ;
     }
     
     @Override
@@ -81,6 +80,18 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         
     }
 
+    public void unload(Node[] row)
+    {
+        String[] vals = new String[getTableWidth()] ;
+        for ( int i = 0 ; i < getTableWidth() ; i++ )
+            vals[i] = refNode(row[i]).asSqlString() ;
+        
+        String rowValues = whereRow(vals) ;
+        String deleteTemplate = "DELETE FROM %s WHERE %s" ;
+        String sqlStmt = String.format(deleteTemplate, getTableName(), rowValues) ; 
+        exec(sqlStmt) ;
+    }
+    
     private void exec(String sqlStmt)
     {
         try
@@ -94,33 +105,34 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         String[] vals = new String[getTableWidth()] ;
         for ( int i = 0 ; i < getTableWidth() ; i++ )
         {
-            vals[i] = prepareNode(row[i]).asSqlString() ;
+            vals[i] = ensureNode(row[i]).asSqlString() ;
         }
         return vals ;
     }
 
-    private SqlConstant prepareNode(Node node)
+    private SqlConstant ensureNode(Node node)
     { 
         try {
-            long ref = insertNode(node) ;
-            return new SqlConstant(ref) ; 
+            return insertNode(node) ;
         } catch (SQLException ex){
             throw new SDBExceptionSQL("PatternTableLoader.prepareNode", ex) ;
         }
     } 
     
+    private SqlConstant refNode(Node node)
+    { 
+        try {
+            return getRefForNode(node) ;
+        } catch (SQLException ex){
+            throw new SDBExceptionSQL("PatternTableLoader.getRefForNode", ex) ;
+        }
+    }
+    
     private boolean entryExists(String[] vals)
     {
-        List<String> rowValues = new ArrayList<String>(getTableWidth()) ;
-        for ( int i = 0 ; i < getTableWidth() ; i++ )
-        {
-            String x = getColumnNames().get(i)+"="+vals[i] ;
-            rowValues.add(x) ; 
-        }
+        String rowValues = whereRow(vals) ;
         String selectTemplate = "SELECT count(*) FROM %s WHERE %s\n" ;
-        String sqlStmt = String.format(selectTemplate,
-                                       getTableName(),
-                                       strjoin(" AND ", rowValues)) ;
+        String sqlStmt = String.format(selectTemplate, getTableName(), rowValues) ;
         
         try {
             ResultSet rs = store.getConnection().execQuery(sqlStmt) ;
@@ -141,8 +153,19 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         { throw new SDBExceptionSQL(ex) ; }
     }
     
-    abstract public long getRefForNode(Node node) throws SQLException ;
-    abstract public long insertNode(Node node) throws SQLException ;
+    private String whereRow(String[] vals)
+    {
+        List<String> rowValues = new ArrayList<String>(getTableWidth()) ;
+        for ( int i = 0 ; i < getTableWidth() ; i++ )
+        {
+            String x = getColumnNames().get(i)+"="+vals[i] ;
+            rowValues.add(x) ; 
+        }
+        return strjoin(" AND ", rowValues) ;
+    }
+    
+    abstract public SqlConstant getRefForNode(Node node) throws SQLException ;
+    abstract public SqlConstant insertNode(Node node) throws SQLException ;
 }
 
 /*

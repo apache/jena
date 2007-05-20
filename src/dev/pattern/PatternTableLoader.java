@@ -43,10 +43,13 @@ public class PatternTableLoader
         
         sLoader.startBulkUpdate() ;
         sLoader.addTriple(t) ;
+        sLoader.addTriple(SSE.parseTriple("(triple <http://host/foo> 2 4)")) ;
         sLoader.finishBulkUpdate() ;
+        
+        sLoader.deleteTriple(t) ;
+        sLoader.deleteTriple(SSE.parseTriple("(triple <http://host/foo> 2 5)")) ;
+        System.out.println("** Finished") ;
         System.exit(0) ;
-        
-        
         
         PatternTable pTable = new PatternTable("PAT") ;
         

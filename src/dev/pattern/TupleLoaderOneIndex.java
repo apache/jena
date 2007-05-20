@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableNodes;
 import com.hp.hpl.jena.sdb.sql.RS;
@@ -35,20 +36,20 @@ public class TupleLoaderOneIndex extends TupleLoaderOne
    { super(store) ; }
 
     @Override
-    public long getRefForNode(Node node) throws SQLException 
+    public SqlConstant getRefForNode(Node node) throws SQLException 
     {
-        return getIndex(store.getConnection(), node, false) ;
+        return new SqlConstant(getIndex(store.getConnection(), node, false)) ;
     }
 
     @Override
-    public long insertNode(Node node) throws SQLException 
+    public SqlConstant insertNode(Node node) throws SQLException 
     {
-        return getIndex(store.getConnection(), node, true) ;
+        return new SqlConstant(getIndex(store.getConnection(), node, true)) ;
     }
     
     /// ----------
     
-    private static long getIndex(SDBConnection conn, Node node, boolean create) throws SQLException
+    private static int getIndex(SDBConnection conn, Node node, boolean create) throws SQLException
     {
         try {
             long hash = NodeLayout2.hash(node) ;
