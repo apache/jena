@@ -1,11 +1,11 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ Build accelerator tables?
++ Tuple loader
 
 + TableDesc - better table description system
 
-+ StoreConnection needs a StoreLayout indirection
++ StoreConnection needs a StoreLayout indirection ??
   + to get table names for formatting
   + to get the layout subtypes (1/2 ; index/hash ; triples/quads)
   Connection -> Config "StoreControl" -> Store 
@@ -51,5 +51,3 @@ SDB ToDo list (and general notes)
   String value table
     With no URIs, much shorter.
     Full text indexing where available?
-
-+ Graph pattern tables
