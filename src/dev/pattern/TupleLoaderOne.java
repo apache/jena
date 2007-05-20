@@ -29,21 +29,10 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
 {
     private static Log log = LogFactory.getLog(TupleLoaderOne.class);
     
-    private String tableName ;
-    private int tableWidth ;
-    private List<String> colNames ;
-    private String colNamesStr ;
-    protected Store store ;
-
-    
-    public TupleLoaderOne(Store store, String tableName, List<String> colNames)
+    public TupleLoaderOne(Store store)
     {
-        super(tableName) ;
+        super(store) ;
         this.store = store ;
-        this.tableName = tableName ;
-        this.colNames = colNames ;
-        this.colNamesStr = sqlList(colNames) ;
-        this.tableWidth = colNames.size() ;
     }
     
     @Override
@@ -54,24 +43,24 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
     public void finish()
     { super.finish(); }
 
-    public void load(List<Node> row)
+    public void load(Node[] row)
     {
-        if ( row.size() != tableWidth )
+        if ( row.length != getTableWidth() )
         {
             String fmt = "PatternTableLoader(%s) Expected row length: %d but got %d" ;
-            String msg = String.format(fmt, tableName, tableWidth, row.size()) ;
+            String msg = String.format(fmt, getTableName(), getTableWidth(), row.length) ;
             throw new SDBException(msg) ;
         }
 
         // Process nodes.
-        List<String> vals = prepareNodes(row) ;
+        String[] vals = prepareNodes(row) ;
         
         // Load if not present.
         if ( ! entryExists(vals) )
             loadRow(vals) ;
     }
 
-    private void loadRow(List<String> vals)
+    private void loadRow(String[] vals)
     {
         /*
         INSERT INTO table
@@ -79,9 +68,17 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         VALUES
         (value-1, value-2, ... value-n);
          */
-        String insertTemplate = "INSERT INTO %s\n  (%s)\nVALUES\n  (%s)" ;
-        String sqlStmt = String.format(insertTemplate, tableName, colNamesStr, sqlList(vals)) ;
-        exec(sqlStmt) ;
+        
+//        String insertTemplate = "INSERT INTO %s\n  (%s)\nVALUES\n  (%s)" ;
+//        String colNameList = sqlList(getColumnNames()) ;
+//        String sqlStmt = String.format(insertTemplate, getTableName(), colNameList, sqlList(vals)) ;
+//        exec(sqlStmt) ;
+        
+      String insertTemplate = "INSERT INTO %s VALUES\n  (%s)" ;
+      
+      String sqlStmt = String.format(insertTemplate, getTableName(), sqlList(vals)) ;
+      exec(sqlStmt) ;
+        
     }
 
     private void exec(String sqlStmt)
@@ -92,13 +89,12 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         { throw new SDBExceptionSQL(ex) ; }
     }
     
-    private List<String> prepareNodes(List<Node> row)
+    private String[] prepareNodes(Node[] row)
     {
-        List<String> vals = new ArrayList<String>(tableWidth) ;
-        for ( Node node : row  )
+        String[] vals = new String[getTableWidth()] ;
+        for ( int i = 0 ; i < getTableWidth() ; i++ )
         {
-            SqlConstant val = prepareNode(node) ;
-            vals.add(val.asSqlString()) ;
+            vals[i] = prepareNode(row[i]).asSqlString() ;
         }
         return vals ;
     }
@@ -113,12 +109,12 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         }
     } 
     
-    private boolean entryExists(List<String> vals)
+    private boolean entryExists(String[] vals)
     {
-        List<String> rowValues = new ArrayList<String>(tableWidth) ;
-        for ( int i = 0 ; i < tableWidth ; i++ )
+        List<String> rowValues = new ArrayList<String>(getTableWidth()) ;
+        for ( int i = 0 ; i < getTableWidth() ; i++ )
         {
-            String x = colNames.get(i)+"="+vals.get(i) ;
+            String x = getColumnNames().get(i)+"="+vals[i] ;
             rowValues.add(x) ; 
         }
         String selectTemplate = "SELECT count(*) FROM %s WHERE %s\n" ;

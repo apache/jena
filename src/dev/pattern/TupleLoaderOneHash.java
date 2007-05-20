@@ -10,7 +10,6 @@ import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -21,8 +20,8 @@ import com.hp.hpl.jena.sdb.store.Store;
 
 public class TupleLoaderOneHash extends TupleLoaderOne
 {
-    public TupleLoaderOneHash(Store store, String tableName, List<String> colNames)
-    { super(store, tableName, colNames) ; }
+    public TupleLoaderOneHash(Store store)
+    { super(store) ; }
 
     @Override
     public long getRefForNode(Node node) throws SQLException 

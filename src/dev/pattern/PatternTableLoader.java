@@ -15,6 +15,7 @@ import java.util.List;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
@@ -29,13 +30,23 @@ public class PatternTableLoader
     
     public static void main(String...argv)
     {
-        boolean reset = false ;
+        boolean reset = true ;
         
         Store store = StoreFactory.create("sdb.ttl") ;
         if ( reset )
             store.getTableFormatter().create() ;
-        
+
         //store.getConnection().setLogSQLStatements(true) ;
+        
+        Triple t = SSE.parseTriple("(triple <http://host/foo> 2 3)") ;
+        StoreTupleLoader sLoader = new StoreTupleLoader(new TupleLoaderOneHash(store)) ;
+        
+        sLoader.startBulkUpdate() ;
+        sLoader.addTriple(t) ;
+        sLoader.finishBulkUpdate() ;
+        System.exit(0) ;
+        
+        
         
         PatternTable pTable = new PatternTable("PAT") ;
         
@@ -74,20 +85,22 @@ public class PatternTableLoader
     public PatternTableLoader(Store store, String tableName, List<String> colNames)
     {
         if ( store.getLoader() instanceof LoaderHashLJ )
-            nodeControl = new TupleLoaderOneHash(store, tableName, colNames) ;
+            nodeControl = new TupleLoaderOneHash(store) ;
         if ( store.getLoader() instanceof LoaderIndexLJ )
-            nodeControl = new TupleLoaderOneIndex(store, tableName, colNames) ;
+            nodeControl = new TupleLoaderOneIndex(store) ;
         if ( nodeControl == null )
         {
             System.err.println("Can't make TupleLoader") ;
             System.exit(1) ;
         }
+        nodeControl.setTableName(tableName) ;
+        nodeControl.setColumnNames(colNames) ;
     }
     
     public void prepareRow(List<Node> row)
     {
         nodeControl.start() ;
-        nodeControl.load(row) ;
+        nodeControl.load(row.toArray(new Node[0])) ;
         nodeControl.finish();
     }
 

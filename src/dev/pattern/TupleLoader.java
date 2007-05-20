@@ -9,13 +9,32 @@ package dev.pattern;
 import java.util.List;
 import com.hp.hpl.jena.graph.Node;
 
+import com.hp.hpl.jena.sdb.store.Store;
+
 public interface TupleLoader
 {
+    public Store getStore() ;
+    
+    /** Table name */
+    public void setTableName(String tableName) ;
+    
+    /** Table name */
+    public String getTableName() ;
+    
+    /** Table name */
+    public void setColumnNames(List<String> colNames) ;
+    
+    /** Table name */
+    public List<String> getColumnNames() ;
+
     /** Notify the start of a sequence of rows to load */
     public void start() ;
     
-    /** Load a row - may not take place immediately */
-    public void load(List<Node> row) ;
+    /** Load a row - may not take place immediately
+     *  but row object is free for reuse after calling this mehod.
+     * @param row
+     */
+    public void load(Node[] row) ;
     
     /** Notify the finish of a sequence of rows to load.  
      * All data will have been loaded by the time this returns */ 

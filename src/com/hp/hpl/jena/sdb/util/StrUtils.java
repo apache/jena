@@ -41,6 +41,9 @@ public class StrUtils
     public static String sqlList(List<String> args)
     { return strjoin(", ", args) ; }
     
+    public static String sqlList(String[] args)
+    { return strjoin(", ", args) ; }
+    
     public static String substitute(String str, Map<String, String>subs)
     {
         for ( Map.Entry<String, String> e : subs.entrySet() )

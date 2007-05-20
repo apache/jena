@@ -10,7 +10,6 @@ import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,8 +28,11 @@ public class TupleLoaderOneIndex extends TupleLoaderOne
 {
     private static Log log = LogFactory.getLog(TupleLoaderOneIndex.class);
     
-    public TupleLoaderOneIndex(Store store, String tableName, List<String> colNames)
-    { super(store, tableName, colNames) ; }
+//    public TupleLoaderOneIndex(Store store, String tableName, List<String> colNames)
+//    { super(store, tableName, colNames) ; }
+
+   public TupleLoaderOneIndex(Store store)
+   { super(store) ; }
 
     @Override
     public long getRefForNode(Node node) throws SQLException 
