@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ContentAssembler.java,v 1.8 2007-05-09 15:28:00 chris-dollin Exp $
+ 	$Id: ContentAssembler.java,v 1.9 2007-05-20 14:44:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -11,6 +11,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.assembler.*;
 import com.hp.hpl.jena.assembler.exceptions.UnknownEncodingException;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -117,9 +118,14 @@ public class ContentAssembler extends AssemblerBase implements Assembler
 
     protected Content objectAsContent( Resource root, Statement s )
         {
-        Resource external = getResource( s );
-        final Model m = getFileManager( root ).loadModel( external.getURI() );
+        final Model m = getFileManager( root ).loadModel( getModelName( s ) );
         return newModelContent( m );
+        }
+    
+    private String getModelName( Statement s )
+        {
+        Node o = s.getObject().asNode();
+        return o.isLiteral() ? o.getLiteralLexicalForm(): o.getURI();
         }
 
     private FileManager getFileManager( Resource root )
