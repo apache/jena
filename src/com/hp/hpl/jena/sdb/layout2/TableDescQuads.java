@@ -6,27 +6,46 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.store.TableDescQuad;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 
 /**
  * @author Andy Seaborne
  * @version $Id: TableTriples.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public class TableQuads implements TableDescQuad
+public class TableDescQuads extends TableDesc
 {
-    private static final String graphCol      = "g" ;
-    private static final String subjectCol    = "s" ;
-    private static final String predicateCol  = "p" ;
-    private static final String objectCol     = "o" ;
+    protected static final String graphCol      = "g" ;
+    protected static final String subjectCol    = "s" ;
+    protected static final String predicateCol  = "p" ;
+    protected static final String objectCol     = "o" ;
     private static final String tableName     = "Quads" ;
-    public static String name() { return tableName ; } 
     
-    public String getTableName()        { return tableName ; }
-    public String getGraphColName()     { return graphCol ; }
-    public String getSubjectColName()   { return subjectCol ; }
-    public String getPredicateColName() { return predicateCol ; }
-    public String getObjectColName()    { return objectCol ; }
+    private final String _graphCol ;
+    private final String _subjectCol;
+    private final String _predicateCol ;
+    private final String _objectCol ;
+    private final String _tableName ;
+    
+    public static String name() { return tableName ; }
+
+    public TableDescQuads()
+    { this(tableName, graphCol, subjectCol, predicateCol, objectCol) ; }
+
+    protected TableDescQuads(String tName, String gCol, String sCol, String pCol, String oCol)
+    { 
+        super(tName, gCol, sCol, pCol, oCol) ;
+        _tableName = tName ;
+        _graphCol = gCol ;
+        _subjectCol = sCol ;
+        _predicateCol = pCol ;
+        _objectCol = oCol ;
+    }
+    
+    public String getGraphColName()     { return _graphCol ; }
+    public String getSubjectColName()   { return _subjectCol ; }
+    public String getPredicateColName() { return _predicateCol ; }
+    public String getObjectColName()    { return _objectCol ; }
 }
 
 /*

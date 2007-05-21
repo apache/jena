@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
-import com.hp.hpl.jena.sdb.layout2.TableTriples;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
@@ -28,7 +28,8 @@ public class StoreTriplesNodesHashHSQL extends StoreBaseHSQL
               new LoaderHashHSQL(connection),
               new QueryCompilerFactoryHash(),
               new SQLBridgeFactory2(),
-              new TableTriples(), new TableNodesHash()) ; 
+              new TableDescTriples(),
+              new TableNodesHash()) ; 
     }
 }
 

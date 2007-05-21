@@ -124,8 +124,8 @@ public class FormatterSimpleMySQL extends FormatterSimple
     public void dropIndexes()
     {
         try {
-            connection().exec("DROP INDEX PredObj ON "+TripleTableDescSPO.name()) ;
-            connection().exec("DROP INDEX ObjSubj ON "+TripleTableDescSPO.name()) ;
+            connection().exec("DROP INDEX PredObj ON "+TableDescSPO.name()) ;
+            connection().exec("DROP INDEX ObjSubj ON "+TableDescSPO.name()) ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }

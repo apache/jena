@@ -4,6 +4,7 @@ SDB ToDo list (and general notes)
 + Tuple loader
 
 + TableDesc - better table description system
+  Paretly done: The formatters still know the column names.
 
 + StoreConnection needs a StoreLayout indirection ??
   + to get table names for formatting

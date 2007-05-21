@@ -15,9 +15,9 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
-import com.hp.hpl.jena.sdb.layout2.TableTriples;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -42,10 +42,10 @@ public class FmtLayout2HashMySQL extends FmtLayout2
     @Override
     protected void formatTableTriples()
     {
-        dropTable(TableTriples.name()) ;
+        dropTable(TableDescTriples.name()) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableTriples.name()+" (",
+                                 "CREATE TABLE "+TableDescTriples.name()+" (",
                                  "    s BIGINT  NOT NULL ,",
                                  "    p BIGINT  NOT NULL ,",
                                  "    o BIGINT  NOT NULL ,",
@@ -54,7 +54,7 @@ public class FmtLayout2HashMySQL extends FmtLayout2
                     )) ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.name()+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
         }
     }
 
@@ -62,31 +62,31 @@ public class FmtLayout2HashMySQL extends FmtLayout2
     protected void dropIndexesTableTriples()
     {
         try {
-            connection().exec("DROP INDEX PredObj ON "+TableTriples.name()) ;
-            connection().exec("DROP INDEX ObjSubj ON "+TableTriples.name()) ;
+            connection().exec("DROP INDEX PredObj ON "+TableDescTriples.name()) ;
+            connection().exec("DROP INDEX ObjSubj ON "+TableDescTriples.name()) ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException dropping indexes '"+TableTriples.name()+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException dropping indexes '"+TableDescTriples.name()+"'",ex) ; }
     }
     
     @Override
     protected void formatTableNodes()
     {
-        dropTable(TableNodes.name()) ;
+        dropTable(TableDescNodes.name()) ;
         try { 
             // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
-            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.name()+" (",
+            connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                  "   hash BIGINT NOT NULL DEFAULT 0,",
                                  "   lex TEXT BINARY CHARACTER SET utf8 ,",
                                  "   lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
-                                 "   datatype VARCHAR("+TableNodes.DatatypeUriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
+                                 "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
                                  "   type int unsigned NOT NULL default '0',",
                                  "   PRIMARY KEY Hash  (hash)",
                                  ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8;"  
                     )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.name()+" (hash)") ;
+            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableDescNodes.name()+" (hash)") ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.name()+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescNodes.name()+"'",ex) ;
         }
     }
 

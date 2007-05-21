@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.pattern;
+package dev.tuple;
 
 import static com.hp.hpl.jena.sdb.util.StrUtils.sqlList;
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin;
@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public abstract class TupleLoaderOne extends TupleLoaderBase
 {
@@ -34,8 +35,8 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         super(store) ;
     }
     
-    public TupleLoaderOne(Store store, String tableName, List<String> colNames)
-    { super(store, tableName, colNames) ; }
+    public TupleLoaderOne(Store store, TableDesc tableDesc)
+    { super(store, tableDesc) ; }
     
     @Override
     public void start()
@@ -49,7 +50,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
     {
         if ( row.length != getTableWidth() )
         {
-            String fmt = "PatternTableLoader(%s) Expected row length: %d but got %d" ;
+            String fmt = "TupleLoaderOne(%s) Expected row length: %d but got %d" ;
             String msg = String.format(fmt, getTableName(), getTableWidth(), row.length) ;
             throw new SDBException(msg) ;
         }
@@ -161,7 +162,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         List<String> rowValues = new ArrayList<String>(getTableWidth()) ;
         for ( int i = 0 ; i < getTableWidth() ; i++ )
         {
-            String x = getColumnNames().get(i)+"="+vals[i] ;
+            String x = getTableDesc().getColNames().get(i)+"="+vals[i] ;
             rowValues.add(x) ; 
         }
         return strjoin(" AND ", rowValues) ;

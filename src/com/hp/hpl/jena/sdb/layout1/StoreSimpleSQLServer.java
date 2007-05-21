@@ -7,8 +7,8 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL_MS;
+import com.hp.hpl.jena.sdb.layout2.StoreBase;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreBase;
 
 public class StoreSimpleSQLServer extends StoreBase
 {
@@ -27,7 +27,7 @@ public class StoreSimpleSQLServer extends StoreBase
               new QueryCompilerFactory1(codec), 
               new SQLBridgeFactory1(codec),
               new GenerateSQL_MS(),
-              new TripleTableDescSPO(), null) ;
+              new TableDescSPO(), null) ;
     }
 }
 

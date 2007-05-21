@@ -23,7 +23,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
-import com.hp.hpl.jena.sdb.store.TableDescQuad;
 
 /** A loader that works one triple at a time but is portable.
  * Two subvariants for hash and index based triple tables.
@@ -60,7 +59,7 @@ public abstract class LoaderOneTripleBase
             {
                 // Generic SQL
                 String sqlStmtCheck =
-                    "SELECT count(*) FROM "+TableTriples.name()+" WHERE\n"+
+                    "SELECT count(*) FROM "+TableDescTriples.name()+" WHERE\n"+
                     "Triples.s = "+sId+"\n"+
                     "AND\n"+
                     "Triples.p = "+pId+"\n"+
@@ -76,13 +75,13 @@ public abstract class LoaderOneTripleBase
                 
                 if ( count > 0 )
                     return ;
-                String sqlStmtIns = "INSERT INTO "+TableTriples.name()+" VALUES("+sId+", "+pId+", "+oId+")" ;
+                String sqlStmtIns = "INSERT INTO "+TableDescTriples.name()+" VALUES("+sId+", "+pId+", "+oId+")" ;
                 connection().execUpdate(sqlStmtIns) ;
             }
             else
             {
                 // MySQL :: IGNORE
-                String sqlStmtIns = "INSERT IGNORE INTO "+TableTriples.name()+" VALUES("+sId+", "+pId+", "+oId+")" ;
+                String sqlStmtIns = "INSERT IGNORE INTO "+TableDescTriples.name()+" VALUES("+sId+", "+pId+", "+oId+")" ;
                 connection().execUpdate(sqlStmtIns) ;
             }
                 
@@ -102,7 +101,7 @@ public abstract class LoaderOneTripleBase
                 long sId = getRefForNode(triple.getSubject()) ;
                 long pId = getRefForNode(triple.getPredicate()) ;
                 long oId = getRefForNode(triple.getObject()) ;
-                TableDescQuad d = new TableTriples() ;
+                TableDescTriples d = new TableDescTriples() ;
                 sqlStmtIns = "DELETE FROM "+d.getTableName()+" WHERE "+
                              d.getSubjectColName()+"="+sId+" AND "+
                              d.getPredicateColName()+"="+pId+" AND "+

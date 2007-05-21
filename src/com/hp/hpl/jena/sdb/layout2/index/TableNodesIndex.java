@@ -6,20 +6,20 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 
 /**
  * @author Andy Seaborne
  * @version $Id: TableNodes.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public class TableNodesIndex extends TableNodes
+public class TableNodesIndex extends TableDescNodes
 {
     @Override
-    public String getKeyColName()   { return TableNodes.colId ; }
+    public String getKeyColName()   { return TableDescNodes.colId ; }
     
     @Override
-    public String getIdColName()    { return TableNodes.colId ; }
+    public String getIdColName()    { return TableDescNodes.colId ; }
 }
 
 /*

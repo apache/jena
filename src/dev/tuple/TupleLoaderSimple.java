@@ -1,38 +1,50 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package dev.tuple;
 
-import com.hp.hpl.jena.sdb.store.TableDescQuad;
+import java.sql.SQLException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/**
- * @author Andy Seaborne
- * @version $Id: TripleTableDescSPO.java,v 1.1 2006/04/27 21:43:48 andy_seaborne Exp $
- */
+import com.hp.hpl.jena.graph.Node;
 
-public class TripleTableDescSPO implements TableDescQuad
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
+import com.hp.hpl.jena.sdb.layout1.EncoderDecoder;
+import com.hp.hpl.jena.sdb.store.Store;
+
+public class TupleLoaderSimple extends TupleLoaderOne
 {
-    private static final String tableName    = "Triples" ;
-    public static String name() { return tableName ; } 
+    private static Log log = LogFactory.getLog(TupleLoaderSimple.class);
+    private EncoderDecoder codec ;
     
-    public String getTableName()         { return tableName ; }
+    public TupleLoaderSimple(Store store, EncoderDecoder codec)
+    {
+        super(store) ;
+        this.codec = codec ;
+    }
+
+    @Override
+    public SqlConstant getRefForNode(Node node) throws SQLException
+    {
+        return new SqlConstant(codec.encode(node)) ;
+    }
+
+    @Override
+    public SqlConstant insertNode(Node node) throws SQLException
+    {
+        return new SqlConstant(codec.encode(node)) ;
+    }
     
-    public String getGraphColName()     { return null ; }
-
-    public String getSubjectColName()    { return "s" ; }
-
-    public String getPredicateColName()  { return "p" ; }
-
-    public String getObjectColName()     { return "o" ; }
-
+    
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

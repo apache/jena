@@ -10,7 +10,7 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 
@@ -33,7 +33,7 @@ public class LoaderIndexHSQL extends LoaderIndexLJ
                     "  hash BIGINT NOT NULL ,",
                     "  lex VARCHAR NOT NULL ,",
                     "  lang VARCHAR(10) NOT NULL ,",
-                    "  datatype VARCHAR("+ TableNodes.DatatypeUriLength+ ") NOT NULL ,",
+                    "  datatype VARCHAR("+ TableDescNodes.DatatypeUriLength+ ") NOT NULL ,",
                     "  type int NOT NULL ,",
                     "  vInt int,",
                     "  vDouble double,",

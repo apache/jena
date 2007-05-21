@@ -1,38 +1,33 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreBase;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
-public class StoreSimplePGSQL extends StoreBase
-{
-
-    public StoreSimplePGSQL(SDBConnection connection)
-    {
-        this(connection , new CodecSimple()) ;
-    }
-
-    private StoreSimplePGSQL(SDBConnection connection, 
-                             EncoderDecoder codec)
-    {
-        super(connection,
-              new FormatterSimplePGSQL(connection) ,
-              new LoaderSimple(connection, codec), 
-              new QueryCompilerFactory1(codec), 
-              new SQLBridgeFactory1(codec),
-              new GenerateSQL(), new TableDescSPO(), null) ;
-        
-    }
-}
+public class TableTriples {}
+//public class TableTriples extends TableDescTriples 
+//{
+//    private String subjectCol ;
+//    private String predicateCol ;
+//    private String objectCol ;
+//    
+//    protected TableTriples(String tableName, String subjCol, String predCol, String objCol)
+//    { 
+//        super(tableName, subjCol, predCol, objCol) ;
+//        this.subjectCol = subjCol ;
+//        this.predicateCol = predCol ;
+//    }
+//    
+//    public String getSubjectColName()   { return subjectCol ; }
+//    public String getPredicateColName() { return predicateCol ; }
+//    public String getObjectColName()    { return objectCol ; }
+//}
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

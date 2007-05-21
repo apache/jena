@@ -31,7 +31,7 @@ public class StoreSimpleHSQL extends StoreBaseHSQL
               new LoaderSimple(sdb, codec),
               new QueryCompilerFactory1(codec),
               new SQLBridgeFactory1(codec),
-              new TripleTableDescSPO(), null) ;
+              new TableDescSPO(), null) ;
     }
 }
 

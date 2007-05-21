@@ -4,56 +4,44 @@
  * [See end of file]
  */
 
-package dev.pattern;
+package dev.tuple;
 
-import java.util.List;
-import com.hp.hpl.jena.graph.Node;
+import arq.cmd.CmdUtils;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sparql.sse.SSE;
 
-public interface TupleLoader
-{
-    public Store getStore() ;
-    
-    /** Set table name */
-    public void setTableName(String tableName) ;
-    
-    /** Get the table name */
-    public String getTableName() ;
-    
-    /** Set the column names */
-    public void setColumnNames(List<String> colNames) ;
-    
-    /** Get the column names */
-    public List<String> getColumnNames() ;
 
-    /** Notify the start of a sequence of rows to load */
-    public void start() ;
-    
-    /** Load a row - may not take place immediately
-     *  but row object is free for reuse after calling this method.
-     * @param row
-     */
-    public void load(Node[] row) ;
-    
-    /** Remove a row - may not take place immediately
-     *  but row object is free for reuse after calling this method.
-     * @param row
-     */
-    public void unload(Node[] row) ;
+public class RunTuple
+{  
+    static { CmdUtils.setLog4j() ; }
 
-    /** Notify the finish of a sequence of rows to load.  
-     * All data will have been loaded by the time this returns */ 
-    public void finish() ;
+    public static void main(String...argv)
+    {
+        boolean reset = true ;
 
-    // Copied from StoreLoader but not called there currently.
-    // If one only type needs these, put on an implementation.  
-//    public void setChunkSize(int chunks) ;
-//    public int getChunkSize() ;
-    
-//    public void setUseThreading(boolean useThreading);
-//    public boolean getUseThreading();
+        Store store = StoreFactory.create("sdb.ttl") ;
+        if ( reset )
+            store.getTableFormatter().create() ;
 
+        //store.getConnection().setLogSQLStatements(true) ;
+
+        Triple t = SSE.parseTriple("(triple <http://host/foo> 2 3)") ;
+        StoreTupleLoader sLoader = new StoreTupleLoader(new TupleLoaderOneHash(store)) ;
+
+        sLoader.startBulkUpdate() ;
+        sLoader.addTriple(t) ;
+        sLoader.addTriple(SSE.parseTriple("(triple <http://host/foo> 2 4)")) ;
+        sLoader.finishBulkUpdate() ;
+
+        sLoader.deleteTriple(t) ;
+        sLoader.deleteTriple(SSE.parseTriple("(triple <http://host/foo> 2 5)")) ;
+        System.out.println("** Finished") ;
+        System.exit(0) ;
+
+    }
 }
 
 /*

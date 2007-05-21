@@ -10,7 +10,7 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** Interface to setting up the bulk loader environment.
@@ -31,7 +31,7 @@ public class LoaderHashMySQL extends LoaderHashLJ
         		"  hash BIGINT NOT NULL,",
         		"  lex TEXT BINARY CHARACTER SET utf8 NOT NULL,",
         		"  lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL,",
-        		"  datatype VARCHAR("+ TableNodes.DatatypeUriLength+ ") BINARY CHARACTER SET utf8 NOT NULL,",
+        		"  datatype VARCHAR("+ TableDescNodes.DatatypeUriLength+ ") BINARY CHARACTER SET utf8 NOT NULL,",
         		"  type int unsigned NOT NULL,",
         		"  vInt int,",
         		"  vDouble double,",

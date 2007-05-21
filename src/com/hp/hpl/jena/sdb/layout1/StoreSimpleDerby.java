@@ -8,9 +8,8 @@ package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDerby;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreBase;
 
-public class StoreSimpleDerby extends StoreBase
+public class StoreSimpleDerby extends StoreBase1
 {
 
     public StoreSimpleDerby(SDBConnection connection)
@@ -26,8 +25,7 @@ public class StoreSimpleDerby extends StoreBase
               new QueryCompilerFactory1(codec), 
               new SQLBridgeFactory1(codec),
               new GenerateSQLDerby(),
-              new TripleTableDescSPO(), null) ;
-        
+              new TableDescSPO()) ;
     }
 }
 

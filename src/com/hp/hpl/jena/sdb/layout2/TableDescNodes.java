@@ -6,33 +6,35 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-import com.hp.hpl.jena.sdb.store.TableDescNode;
-
 /**
  * @author Andy Seaborne
  * @version $Id: TableNodes.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public abstract class TableNodes implements TableDescNode
+public abstract class TableDescNodes
 {
+    // This is not a TableDesc - that onlt describes tables all of whose columns are Nodes.
+    // TODO The formatters know the column names as well - refactor
+    
     // This table is different in Hash and Index versions
     
-    private static final String tableName        = "Nodes" ;
+    protected static final String tableName        = "Nodes" ;
     public static String name()                 { return tableName ; } 
     
-    public static final String colId            = "id" ;
-    public static final String colHash          = "hash" ;
-    private static final String colLex           = "lex" ;
-    private static final String colLang          = "lang" ;
-    private static final String colDatatype      = "datatype" ;
-
-    private static final String colType          = "type" ;
+    protected static final String colId            = "id" ;
+    protected static final String colHash          = "hash" ;
+    protected static final String colLex           = "lex" ;
+    protected static final String colLang          = "lang" ;
+    protected static final String colDatatype      = "datatype" ;
+    protected static final String colType          = "type" ;
 
     public static final int DatatypeUriLength           = 200 ;
     
+    public TableDescNodes() {}
+    
     public String getTableName()            { return tableName ; }
+    
     public abstract String getKeyColName() ;
-
     public abstract String getIdColName() ; // Maybe null
 
     public String getHashColName()          { return colHash ; }

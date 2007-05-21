@@ -9,10 +9,6 @@ package com.hp.hpl.jena.sdb.compiler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -20,7 +16,10 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.store.TableDescQuad;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
 public class SqlStageTripleTable implements SqlStage
 {
@@ -34,31 +33,47 @@ public class SqlStageTripleTable implements SqlStage
 
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
-        String alias = request.genId(AliasesSql.TriplesTableBase) ;
         SqlExprList conditions = new SqlExprList() ;
+        boolean defaultGraph = quad.getGraph().equals(Quad.defaultGraph) ;
         
-        if ( ! quad.getGraph().equals(Quad.defaultGraph) )
+        // CHECKING
+        if ( ! defaultGraph )
         {
             log.fatal("Non-default graph") ;
             throw new SDBException("Non-default graph") ;
         }
         
-        SqlTable triples = accessTriplesTable(request, alias) ;
-        triples.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
+        // The default graph table may be a specialized quad table,
+        // or it may be the same as the quad table with a known name.
+        
+        TableDescQuads tableDesc = null ;
+        String alias = null ;
+        
+        if ( defaultGraph )
+        {
+            tableDesc = request.getStore().getTripleTableDesc() ;
+            alias = request.genId(AliasesSql.TriplesTableBase) ;
+        }
+        else
+        {
+            tableDesc = request.getStore().getQuadTableDesc() ;
+            alias = request.genId(AliasesSql.QuadTableBase) ;
+        }
+        
+        SqlTable table = new SqlTable(tableDesc.getTableName(), alias) ;
+        table.addNote(FmtUtils.stringForTriple(quad.getTriple(), request.getPrefixMapping())) ;
 
-        TableDescQuad tripleTableDesc = request.getStore().getTripleTableDesc() ;
+        if ( tableDesc.getGraphColName() != null )
+            slotCompiler.processSlot(request, table, conditions, quad.getGraph(),
+                                     tableDesc.getGraphColName()) ;
+        slotCompiler.processSlot(request, table, conditions, quad.getSubject(),
+                                 tableDesc.getSubjectColName()) ; 
+        slotCompiler.processSlot(request, table, conditions, quad.getPredicate(),
+                                 tableDesc.getPredicateColName()) ;
+        slotCompiler.processSlot(request, table, conditions, quad.getObject(),
+                                 tableDesc.getObjectColName()) ;
         
-        if ( false )
-            slotCompiler.processSlot(request, triples, conditions, quad.getGraph(),
-                                     tripleTableDesc.getGraphColName()) ;
-        slotCompiler.processSlot(request, triples, conditions, quad.getSubject(),
-                                 tripleTableDesc.getSubjectColName()) ; 
-        slotCompiler.processSlot(request, triples, conditions, quad.getPredicate(),
-                                 tripleTableDesc.getPredicateColName()) ;
-        slotCompiler.processSlot(request, triples, conditions, quad.getObject(),
-                                 tripleTableDesc.getObjectColName()) ;
-        
-        return SqlRestrict.restrict(triples, conditions) ;
+        return SqlRestrict.restrict(table, conditions) ;
     }
     
     private SqlTable accessTriplesTable(SDBRequest request, String alias)

@@ -1,30 +1,65 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package dev.tuple;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 
-/**
- * @author Andy Seaborne
- * @version $Id: TableTriples1.java,v 1.3 2006/04/27 21:43:48 andy_seaborne Exp $
- */
+/** Track whether multiple loads overlap. */
 
-public class TableTriples1 extends SqlTable
+public abstract class TupleLoaderBase implements TupleLoader
 {
-    public TableTriples1(String tableName, String aliasName)
-    { 
-        super(tableName, aliasName) ;
-        super.nodeScope = super.idScope ;
+    boolean active = false ;
+    protected Store store ;
+    private int tableWidth ;
+    private TableDesc tableDesc ;
+
+        protected TupleLoaderBase(Store store, TableDesc tableDesc)
+    {
+        this.store = store ;
+        setTableDesc(tableDesc) ;
     }
-        
+
+    protected TupleLoaderBase(Store store)
+    {
+        this.store = store ;
+    }
+    
+    public Store getStore() { return store ; }
+    
+    public String getTableName() { return tableDesc.getTableName() ; }
+
+    public TableDesc getTableDesc() { return tableDesc ; }
+    public void setTableDesc(TableDesc tDesc)
+    { 
+        this.tableDesc = tDesc ;
+        this.tableWidth = tableDesc.getColNames().size() ;
+    }
+    
+    //public List<String> getColumnNames() { return tableDesc.getColNames() ; }
+    
+    protected int getTableWidth() { return tableWidth ; }
+    
+    public void start()
+    {
+        if ( active )
+            throw new SDBException("Bulk loader already active") ;
+        active = true ;
+    }
+    
+    public void finish()
+    {
+        active = false ;
+    }
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

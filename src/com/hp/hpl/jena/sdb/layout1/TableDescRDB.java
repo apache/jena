@@ -6,27 +6,18 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
-import com.hp.hpl.jena.sdb.store.TableDescQuad;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 
-
-public class TripleTableDescRDB implements TableDescQuad
+public class TableDescRDB extends TableDescTriples
 {
-    String tripleTable = "jena_g1t1_stmt" ;
+    private static String tableName = "jena_g1t1_stmt" ;
+    public static String name() { return tableName ; } 
     
-    public TripleTableDescRDB() {}
-    public TripleTableDescRDB(String tableName) { tripleTable = tableName ; }
+    public TableDescRDB()
+    { super(tableName, "Subj", "Prop", "Obj") ; }
     
-    public String getTableName()         { return tripleTable ; }
-    
+    @Override
     public String getGraphColName()     { return "GraphID" ; }
-
-    public String getSubjectColName()    { return "Subj" ; }
-
-    public String getPredicateColName()  { return "Prop" ; }
-
-    public String getObjectColName()     { return "Obj" ; }
-
-
 }
 
 /*

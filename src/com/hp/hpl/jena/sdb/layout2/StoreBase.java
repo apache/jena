@@ -4,13 +4,19 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
+import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
+import com.hp.hpl.jena.sdb.store.SQLGenerator;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.store.StoreFormatter;
+import com.hp.hpl.jena.sdb.store.StoreLoader;
 
 
 
@@ -24,9 +30,9 @@ public class StoreBase
     protected SQLBridgeFactory sqlBridgeF ;
     protected SQLGenerator sqlGenerator ;
     protected StoreConfig configuration ;
-    protected TableDescQuad tripleTableDesc ;
-    protected TableDescQuad quadTableDesc ;
-    protected TableDescNode nodeTableDesc ;
+    protected TableDescTriples tripleTableDesc ;
+    protected TableDescQuads quadTableDesc = null ;
+    protected TableDescNodes nodeTableDesc ;
     
     public StoreBase(SDBConnection connection, 
                      StoreFormatter formatter ,
@@ -34,8 +40,8 @@ public class StoreBase
                      QueryCompilerFactory compilerF ,
                      SQLBridgeFactory sqlBridgeF,
                      SQLGenerator sqlGenerator,
-                     TableDescQuad tripleTableDesc,
-                     TableDescNode nodeTableDesc)
+                     TableDescTriples    tripleTableDesc,
+                     TableDescNodes      nodeTableDesc)
     {
         super(connection) ;
         this.formatter = formatter ;
@@ -75,9 +81,12 @@ public class StoreBase
     	return TableUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
     }
     
-    public TableDescNode getNodeTableDesc()                     { return nodeTableDesc ; }
-    public TableDescQuad getTripleTableDesc()                 { return tripleTableDesc ; }
+    public TableDescNodes   getNodeTableDesc()                 { return nodeTableDesc ; }
+    public TableDescTriples getTripleTableDesc()               { return tripleTableDesc ; }
+    public TableDescQuads   getQuadTableDesc()                 { return quadTableDesc ; }
 }
+
+
 
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

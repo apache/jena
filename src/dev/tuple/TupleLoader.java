@@ -1,22 +1,57 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
+package dev.tuple;
 
-public interface TableDescQuad //extends TableDesc
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.TableDesc;
+
+public interface TupleLoader
 {
-    public String getTableName() ; 
-    public String getGraphColName() ;
-    public String getSubjectColName() ;
-    public String getPredicateColName() ;
-    public String getObjectColName() ;
+    public Store getStore() ;
+    
+    /** Set table description */
+    public void setTableDesc(TableDesc tableDesc) ;
+    
+    /** Get the table description */
+    public TableDesc getTableDesc() ;
+    
+
+    /** Notify the start of a sequence of rows to load */
+    public void start() ;
+    
+    /** Load a row - may not take place immediately
+     *  but row object is free for reuse after calling this method.
+     * @param row
+     */
+    public void load(Node[] row) ;
+    
+    /** Remove a row - may not take place immediately
+     *  but row object is free for reuse after calling this method.
+     * @param row
+     */
+    public void unload(Node[] row) ;
+
+    /** Notify the finish of a sequence of rows to load.  
+     * All data will have been loaded by the time this returns */ 
+    public void finish() ;
+
+    // Copied from StoreLoader but not called there currently.
+    // If one only type needs these, put on an implementation.  
+//    public void setChunkSize(int chunks) ;
+//    public int getChunkSize() ;
+    
+//    public void setUseThreading(boolean useThreading);
+//    public boolean getUseThreading();
+
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

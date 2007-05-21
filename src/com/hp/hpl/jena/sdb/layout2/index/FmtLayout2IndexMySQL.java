@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
-import com.hp.hpl.jena.sdb.layout2.TableTriples;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashMySQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -28,10 +28,10 @@ public class FmtLayout2IndexMySQL extends FmtLayout2HashMySQL
     @Override
     protected void formatTableTriples()
     {
-        dropTable(TableTriples.name()) ;
+        dropTable(TableDescTriples.name()) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableTriples.name()+" (",
+                                 "CREATE TABLE "+TableDescTriples.name()+" (",
                                  "    s int  NOT NULL ,",
                                  "    p int  NOT NULL ,",
                                  "    o int  NOT NULL ,",
@@ -40,32 +40,32 @@ public class FmtLayout2IndexMySQL extends FmtLayout2HashMySQL
                     )) ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.name()+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
         }
     }
 
     @Override
     protected void formatTableNodes()
     {
-        dropTable(TableNodes.name()) ;
+        dropTable(TableDescNodes.name()) ;
         try { 
             // MySQL: VARCHAR BINARY = VARCHAR COLLATE utf8_bin 
-            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.name()+" (",
+            connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                  "   id int unsigned NOT NULL auto_increment,",
                                  "   hash BIGINT NOT NULL DEFAULT 0,",
                                  //"   lex VARCHAR("+LexicalLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
                                  // VARBINARY - better?  Manage char=>bytes in SDB, not the DB. 
                                  "   lex TEXT BINARY CHARACTER SET utf8 ,",
                                  "   lang VARCHAR(10) BINARY CHARACTER SET utf8 NOT NULL default '',",
-                                 "   datatype VARCHAR("+TableNodes.DatatypeUriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
+                                 "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+") BINARY CHARACTER SET utf8 NOT NULL default '',",
                                  "   type int unsigned NOT NULL default '0',",      // SDB built-in
                                  "   PRIMARY KEY Id  (id)",
                                  ") ENGINE="+engineType.getEngineName()+" DEFAULT CHARSET=utf8;"  
                     )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableNodes.name()+" (hash)") ;
+            connection().exec("CREATE UNIQUE INDEX Hash ON "+TableDescNodes.name()+" (hash)") ;
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.name()+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescNodes.name()+"'",ex) ;
         }
     }
 }

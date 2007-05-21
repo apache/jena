@@ -20,15 +20,11 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
-
 import com.hp.hpl.jena.sdb.compiler.QC;
-import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.AliasesSql;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.core.Scope;
+import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
@@ -37,8 +33,13 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
-import com.hp.hpl.jena.sdb.store.TableDescNode;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 
 public class SQLBridge2 extends SQLBridgeBase 
 {
@@ -122,7 +123,7 @@ public class SQLBridge2 extends SQLBridgeBase
         
         SqlColumn c1 = e1.getColumn() ;
         // Not in scope -- add a table to get it
-        TableDescNode nodeTableDesc = request.getStore().getNodeTableDesc() ;
+        TableDescNodes nodeTableDesc = request.getStore().getNodeTableDesc() ;
         
         String tableAlias = request.genId(NodeBase) ; 
         SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), tableAlias) ;

@@ -4,31 +4,15 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout1;
+package dev.tuple;
 
-import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreBase;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class StoreSimplePGSQL extends StoreBase
+public interface TupleLoaderFactory
 {
-
-    public StoreSimplePGSQL(SDBConnection connection)
-    {
-        this(connection , new CodecSimple()) ;
-    }
-
-    private StoreSimplePGSQL(SDBConnection connection, 
-                             EncoderDecoder codec)
-    {
-        super(connection,
-              new FormatterSimplePGSQL(connection) ,
-              new LoaderSimple(connection, codec), 
-              new QueryCompilerFactory1(codec), 
-              new SQLBridgeFactory1(codec),
-              new GenerateSQL(), new TableDescSPO(), null) ;
-        
-    }
+    public TupleLoader create(Store store) ; 
+    public TupleLoader create(Store store, TableDesc tableDesc) ;
 }
 
 /*

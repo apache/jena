@@ -36,7 +36,7 @@ public class PatternTable extends TableDesc
     // Property => column name
     Map <Node, String> cols = new HashMap<Node, String>() ;
     
-    public PatternTable(String tableName) { super(tableName, null) ; }    
+    public PatternTable(String tableName) { super(tableName) ; }    
     
     public void add(Node property, String colname)
     { cols.put(property, colname) ; }

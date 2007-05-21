@@ -4,61 +4,11 @@
  * [See end of file]
  */
 
-package dev.pattern;
+package com.hp.hpl.jena.sdb.compiler;
 
-import java.util.List;
-
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.store.Store;
-
-/** Track whether multiple loads overlap. */
-
-public abstract class TupleLoaderBase implements TupleLoader
+public class TableDescQuad
 {
-    boolean active = false ;
-    private String tableName ;
-    private List<String> colNames ;
-    protected Store store ;
-    private int tableWidth ;
 
-        protected TupleLoaderBase(Store store, String tableName, List<String> colNames)
-    {
-        this.store = store ;
-        setTableName(tableName) ;
-        setColumnNames(colNames) ;
-    }
-
-    protected TupleLoaderBase(Store store)
-    {
-        this.store = store ;
-    }
-    
-    public Store getStore() { return store ; }
-    
-    public String getTableName() { return tableName ; }
-    public void setTableName(String tableName) { this.tableName = tableName ; }
-    
-    public List<String> getColumnNames() { return colNames ; }
-    
-    public void setColumnNames(List<String> colNames)
-    { 
-        this.colNames = colNames ;
-        this.tableWidth = colNames.size() ;
-    }
-    
-    protected int getTableWidth() { return tableWidth ; }
-    
-    public void start()
-    {
-        if ( active )
-            throw new SDBException("Bulk loader already active") ;
-        active = true ;
-    }
-    
-    public void finish()
-    {
-        active = false ;
-    }
 }
 
 /*

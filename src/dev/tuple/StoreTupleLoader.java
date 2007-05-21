@@ -4,43 +4,63 @@
  * [See end of file]
  */
 
-package dev.pattern;
-
-import java.sql.SQLException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+package dev.tuple;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
-import com.hp.hpl.jena.sdb.layout1.EncoderDecoder;
-import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
+import com.hp.hpl.jena.sdb.store.StoreLoader;
+import com.hp.hpl.jena.sdb.store.TableDesc;
+ 
 
-public class TupleLoaderSimple extends TupleLoaderOne
+
+public class StoreTupleLoader implements StoreLoader
 {
-    private static Log log = LogFactory.getLog(TupleLoaderSimple.class);
-    private EncoderDecoder codec ;
+    private TupleLoader loader ;
+
+    public StoreTupleLoader(TupleLoader loader)
+    { 
+        this.loader = loader ;
+        TableDesc tDesc = loader.getStore().getTripleTableDesc() ;
+        loader.setTableDesc(tDesc) ;
+    }
+        
+    public void addTriple(Triple triple)
+    { loader.load(row(triple)) ; }
+
+    public void deleteTriple(Triple triple)
+    { loader.unload(row(triple)) ; }
     
-    public TupleLoaderSimple(Store store, EncoderDecoder codec)
+    private static Node[] row(Triple triple)
     {
-        super(store) ;
-        this.codec = codec ;
+        Node[] nodes = new Node[3] ;
+        nodes[0] = triple.getSubject() ;
+        nodes[1] = triple.getPredicate() ;
+        nodes[2] = triple.getObject() ;
+        return nodes ;
     }
 
-    @Override
-    public SqlConstant getRefForNode(Node node) throws SQLException
-    {
-        return new SqlConstant(codec.encode(node)) ;
-    }
+    public void close()
+    { loader.finish() ; }
 
-    @Override
-    public SqlConstant insertNode(Node node) throws SQLException
-    {
-        return new SqlConstant(codec.encode(node)) ;
-    }
+    public void startBulkUpdate()
+    { loader.start() ; }
+
+    public void finishBulkUpdate()
+    { loader.finish() ; }
+
+    public int getChunkSize()
+    { throw new SDBNotImplemented("StoreTupleLoader.getChunkSize") ; }
     
-    
+    public void setChunkSize(int chunks)
+    { throw new SDBNotImplemented("StoreTupleLoader.setChunkSize") ; }
+
+    public boolean getUseThreading()
+    { throw new SDBNotImplemented("StoreTupleLoader.getUseThreading") ; }
+
+    public void setUseThreading(boolean useThreading)
+    { throw new SDBNotImplemented("StoreTupleLoader.setUseThreading") ; }
 }
 
 /*

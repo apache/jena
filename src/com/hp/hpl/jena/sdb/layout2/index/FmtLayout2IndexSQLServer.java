@@ -10,8 +10,8 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
-import com.hp.hpl.jena.sdb.layout2.TableTriples;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashSQLServer;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
@@ -27,10 +27,10 @@ public class FmtLayout2IndexSQLServer extends FmtLayout2HashSQLServer
     @Override
     protected void formatTableTriples()
     {
-        dropTable(TableTriples.name()) ;
+        dropTable(TableDescTriples.name()) ;
         try { 
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableTriples.name()+" (",
+                                 "CREATE TABLE "+TableDescTriples.name()+" (",
                                  "    s INT NOT NULL,",
                                  "    p INT NOT NULL,",
                                  "    o INT NOT NULL,",
@@ -38,28 +38,28 @@ public class FmtLayout2IndexSQLServer extends FmtLayout2HashSQLServer
                                  ")"                
                     )) ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException formatting table '"+TableTriples.name()+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ; }
     }
 
     @Override
     protected void formatTableNodes()
     {
-        dropTable(TableNodes.name()) ;
+        dropTable(TableDescNodes.name()) ;
         try { 
-            connection().exec(sqlStr ("CREATE TABLE "+TableNodes.name()+" (",
+            connection().exec(sqlStr ("CREATE TABLE "+TableDescNodes.name()+" (",
                                        "   id INT IDENTITY (1, 1) NOT NULL ,",
                                        "   hash BIGINT NOT NULL,",
                                        "   lex TEXT NOT NULL,",
                                        "   lang VARCHAR(10) NOT NULL DEFAULT '',",
-                                       "   datatype VARCHAR("+TableNodes.DatatypeUriLength+") NOT NULL default '',",
+                                       "   datatype VARCHAR("+TableDescNodes.DatatypeUriLength+") NOT NULL default '',",
                                        "   type INT NOT NULL DEFAULT '0',",
                                        "   PRIMARY KEY (id)",
                                        ")"
                     )) ;
-            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableNodes.name() + " (hash)");
+            connection().exec("CREATE UNIQUE INDEX Hash ON " + TableDescNodes.name() + " (hash)");
         } catch (SQLException ex)
         {
-            throw new SDBExceptionSQL("SQLException formatting table '"+TableNodes.name()+"'",ex) ;
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescNodes.name()+"'",ex) ;
         }
     }
 }

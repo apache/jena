@@ -43,10 +43,10 @@ public abstract class FmtLayout2
     protected void addIndexesTableTriples()
     {
         try {
-            connection().exec("CREATE INDEX PredObj ON "+TableTriples.name()+" (p, o)") ;
-            connection().exec("CREATE INDEX ObjSubj ON "+TableTriples.name()+" (o, s)") ;
+            connection().exec("CREATE INDEX PredObj ON "+TableDescTriples.name()+" (p, o)") ;
+            connection().exec("CREATE INDEX ObjSubj ON "+TableDescTriples.name()+" (o, s)") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException indexing table '"+TableTriples.name()+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescTriples.name()+"'",ex) ; }
     }
     
     // Override this if the syntax is a bit different (many are for DROP INDEX)
@@ -56,15 +56,15 @@ public abstract class FmtLayout2
             connection().exec("DROP INDEX PredObj") ;
             connection().exec("DROP INDEX ObjSubj") ;
         } catch (SQLException ex)
-        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableTriples.name()+"'",ex) ; }
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescTriples.name()+"'",ex) ; }
     }
     
     abstract protected void formatTableTriples() ;
     abstract protected void formatTableNodes() ;
     abstract protected void formatTablePrefixes() ;
     
-    protected void truncateTableTriples()  { truncateTable(TableTriples.name()) ; } 
-    protected void truncateTableNodes()    { truncateTable(TableNodes.name()) ; }
+    protected void truncateTableTriples()  { truncateTable(TableDescTriples.name()) ; } 
+    protected void truncateTableNodes()    { truncateTable(TableDescNodes.name()) ; }
     protected void truncateTablePrefixes() { truncateTable(TablePrefixes.name()) ; }
     
     protected void truncateTable(String tableName)

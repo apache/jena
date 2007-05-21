@@ -7,6 +7,9 @@
 package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 
@@ -57,15 +60,11 @@ public interface Store
     /** Get the size of this store **/
     public long  getSize() ;
 
-    /** The quads table - this maybe the same as the triples table */  
-    //public TripleTableDesc getQuadTableDesc() ;
-    
     /** Where the default graph is store */ 
-    public TableDescQuad getTripleTableDesc() ;
-    public TableDescNode   getNodeTableDesc() ;
-    
-//    // temp hack for Layout2.
-//    public String getNodeKeyColName() ;
+    public TableDescTriples     getTripleTableDesc() ;
+    /** Where the named graphs are in is store */ 
+    public TableDescQuads       getQuadTableDesc() ;
+    public TableDescNodes       getNodeTableDesc() ;
 }
 
 /*

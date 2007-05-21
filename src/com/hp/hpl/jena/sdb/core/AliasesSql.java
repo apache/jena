@@ -11,6 +11,7 @@ public class AliasesSql
     // SQL name generation
     public static final String NodesConstantAliasBase   = "N" ;
     public static final String TriplesTableBase         = "T" ;
+    public static final String QuadTableBase            = "Q" ;
     public static final String CoalesceAliasBase        = "M" ;
     public static final String NodesResultAliasBase     = "R" ;
     public static final String VarBase                  = "V" ;

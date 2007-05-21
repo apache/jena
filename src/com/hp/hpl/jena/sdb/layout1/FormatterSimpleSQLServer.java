@@ -108,8 +108,8 @@ public class FormatterSimpleSQLServer extends FormatterSimple
     public void addIndexes()
     {
         try {
-            connection().exec("CREATE INDEX PredObj ON "+TripleTableDescSPO.name()+" (p,o)") ;
-            connection().exec("CREATE INDEX ObjSubj ON "+TripleTableDescSPO.name()+" (o,s)") ;
+            connection().exec("CREATE INDEX PredObj ON "+TableDescSPO.name()+" (p,o)") ;
+            connection().exec("CREATE INDEX ObjSubj ON "+TableDescSPO.name()+" (o,s)") ;
         } catch (SQLException ex)
         {
             throw new SDBException("SQLException indexing table 'Triples'",ex) ;
@@ -120,8 +120,8 @@ public class FormatterSimpleSQLServer extends FormatterSimple
     public void dropIndexes()
     {
         try {
-            connection().exec("DROP INDEX "+TripleTableDescSPO.name()+".PredObj") ;
-            connection().exec("DROP INDEX "+TripleTableDescSPO.name()+".ObjSubj") ;
+            connection().exec("DROP INDEX "+TableDescSPO.name()+".PredObj") ;
+            connection().exec("DROP INDEX "+TableDescSPO.name()+".ObjSubj") ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException dropping indexes for table 'Triples'",ex) ; }
     }

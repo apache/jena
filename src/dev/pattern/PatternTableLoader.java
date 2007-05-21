@@ -15,14 +15,17 @@ import java.util.List;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.sse.SSE;
-
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
 import com.hp.hpl.jena.sdb.layout2.hash.LoaderHashLJ;
 import com.hp.hpl.jena.sdb.layout2.index.LoaderIndexLJ;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sparql.sse.SSE;
+
+import dev.tuple.TupleLoader;
+import dev.tuple.TupleLoaderOneHash;
+import dev.tuple.TupleLoaderOneIndex;
 
 public class PatternTableLoader
 {
@@ -31,26 +34,9 @@ public class PatternTableLoader
     public static void main(String...argv)
     {
         boolean reset = true ;
-        
         Store store = StoreFactory.create("sdb.ttl") ;
         if ( reset )
             store.getTableFormatter().create() ;
-
-        //store.getConnection().setLogSQLStatements(true) ;
-        
-        Triple t = SSE.parseTriple("(triple <http://host/foo> 2 3)") ;
-        StoreTupleLoader sLoader = new StoreTupleLoader(new TupleLoaderOneHash(store)) ;
-        
-        sLoader.startBulkUpdate() ;
-        sLoader.addTriple(t) ;
-        sLoader.addTriple(SSE.parseTriple("(triple <http://host/foo> 2 4)")) ;
-        sLoader.finishBulkUpdate() ;
-        
-        sLoader.deleteTriple(t) ;
-        sLoader.deleteTriple(SSE.parseTriple("(triple <http://host/foo> 2 5)")) ;
-        System.out.println("** Finished") ;
-        System.exit(0) ;
-        
         PatternTable pTable = new PatternTable("PAT") ;
         
         List<String> colNames = new ArrayList<String>() ;
@@ -96,8 +82,8 @@ public class PatternTableLoader
             System.err.println("Can't make TupleLoader") ;
             System.exit(1) ;
         }
-        nodeControl.setTableName(tableName) ;
-        nodeControl.setColumnNames(colNames) ;
+        TableDesc tableDesc = new TableDesc(tableName, colNames) ;
+        nodeControl.setTableDesc(tableDesc) ;
     }
     
     public void prepareRow(List<Node> row)

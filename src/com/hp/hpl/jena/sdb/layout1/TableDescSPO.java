@@ -4,24 +4,22 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.layout2;
+package com.hp.hpl.jena.sdb.layout1;
 
-import com.hp.hpl.jena.sdb.store.TableDescQuad;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 
 /**
  * @author Andy Seaborne
- * @version $Id: TableTriples.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
+ * @version $Id: TripleTableDescSPO.java,v 1.1 2006/04/27 21:43:48 andy_seaborne Exp $
  */
 
-public class TableTriples extends TableQuads implements TableDescQuad
+public class TableDescSPO extends TableDescTriples
 {
-    private static final String tableName     = "Triples" ;
+    private static final String tableName    = "Triples" ;
     public static String name() { return tableName ; } 
     
-    @Override
-    public String getTableName()        { return tableName ; }
-    @Override
-    public String getGraphColName()     { return null ; }
+    public TableDescSPO()
+    { super("Triples", "s", "p", "o") ; }
 }
 
 /*

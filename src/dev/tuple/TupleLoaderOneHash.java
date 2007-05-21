@@ -4,21 +4,20 @@
  * [See end of file]
  */
 
-package dev.pattern;
+package dev.tuple;
 
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public class TupleLoaderOneHash extends TupleLoaderOne
 {
@@ -26,8 +25,8 @@ public class TupleLoaderOneHash extends TupleLoaderOne
     { super(store) ; }
 
     /* Convenience constructor */
-    public TupleLoaderOneHash(Store store, String tableName, List<String> colNames)
-    { super(store, tableName, colNames) ; }
+    public TupleLoaderOneHash(Store store, TableDesc tableDesc)
+    { super(store, tableDesc) ; }
 
     @Override
     public SqlConstant getRefForNode(Node node) throws SQLException 
@@ -56,7 +55,7 @@ public class TupleLoaderOneHash extends TupleLoaderOne
         // Existance check
         
         String sqlStmtTest = strjoinNL(
-                "SELECT hash FROM "+TableNodes.name(),
+                "SELECT hash FROM "+TableDescNodes.name(),
                 "WHERE hash = "+hash
                 ) ;
         
@@ -68,7 +67,7 @@ public class TupleLoaderOneHash extends TupleLoaderOne
             return new SqlConstant(hash) ;
         
         String sqlStmt = strjoinNL(
-                "INSERT INTO "+TableNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
+                "INSERT INTO "+TableDescNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
                 "  ("+hash+", ",
                 "   "+SQLUtils.quoteStr(lex)+", ",
                 "   "+SQLUtils.quoteStr(lang)+", ",

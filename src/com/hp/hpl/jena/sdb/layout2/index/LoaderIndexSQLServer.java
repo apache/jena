@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
 
@@ -38,7 +38,7 @@ public class LoaderIndexSQLServer extends LoaderIndexLJ
                     "  hash BIGINT NOT NULL ,",
                     "  lex TEXT NOT NULL ,",
                     "  lang VARCHAR(10) NOT NULL ,",
-                    "  datatype VARCHAR("+ TableNodes.DatatypeUriLength+ ") NOT NULL ,",
+                    "  datatype VARCHAR("+ TableDescNodes.DatatypeUriLength+ ") NOT NULL ,",
                     "  type int NOT NULL ,",
                     "  vInt INT,",
                     "  vDouble DOUBLE PRECISION,",

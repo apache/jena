@@ -6,17 +6,17 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 
 /**
  * @author Andy Seaborne
  * @version $Id: TableNodes.java,v 1.2 2006/04/19 17:23:32 andy_seaborne Exp $
  */
 
-public class TableNodesHash extends TableNodes
+public class TableNodesHash extends TableDescNodes
 {
     @Override
-    public String getKeyColName()   { return TableNodes.colHash ; }
+    public String getKeyColName()   { return TableDescNodes.colHash ; }
     
     @Override
     public String getIdColName()    { return null ; }

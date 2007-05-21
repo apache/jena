@@ -10,47 +10,42 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class TableDesc
+public class TableDesc
 {
     private String tableName ;
     private List<String> columnNames = new ArrayList<String>() ;
     
-    protected TableDesc(String tableName, String keyColName, String... colNames)
+    public TableDesc(String tableName) { this(tableName, (String[])null) ; } 
+    
+    public TableDesc(String tableName, String... colNames)
     { 
         this.tableName = tableName ;
         if ( colNames != null )
+            // Filter nulls.
             for ( int i = 0 ; i < colNames.length ; i++ )
-                columnNames.add(colNames[i]) ;
+                if ( colNames[i] != null )
+                    columnNames.add(colNames[i]) ;
     }
 
+    public TableDesc(String tableName, List<String> colNames)
+    {
+        this.tableName = tableName ;
+        this.columnNames = colNames ;
+    }
+    
     public String getTableName()
     { return tableName ; }
     
     public boolean hasColumn(String colName)
     { return columnNames.contains(colName) ; }
    
+    public List<String> getColNames() { return columnNames ; }
+    
+    public int getWidth() { return columnNames.size() ; }
+    
     public Iterator<String> colNames()
     { return columnNames.iterator() ; } 
 }
-
-//class TableDescNode2 extends TableDesc
-//{
-//    private static final String tableNodes          = "Nodes" ;
-//    
-//    private static final String colId               = "id" ;
-//    private static final String colHash             = "hash" ;
-//    private static final String colLex              = "lex" ;
-//    private static final String colLang             = "lang" ;
-//    private static final String colDatatype         = "datatype" ;
-//    private static final String colType             = "type" ;
-//    
-//    protected TableDescNode2()
-//    {
-//        super(tableNodes,
-//              colId, colHash, colLex, colLang, colDatatype, colType) ;
-//    }
-//    
-//}
 
 /*
  * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP

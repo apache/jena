@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sdb.layout2.LoaderOneTripleBase;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
@@ -58,7 +58,7 @@ public class LoaderOneTripleHash
         // Existance check
         
         String sqlStmtTest = strjoinNL(
-                "SELECT hash FROM "+TableNodes.name(),
+                "SELECT hash FROM "+TableDescNodes.name(),
                 "WHERE hash = "+hash
                 ) ;
         
@@ -70,7 +70,7 @@ public class LoaderOneTripleHash
             return hash ;
         
         String sqlStmt = strjoinNL(
-                "INSERT INTO "+TableNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
+                "INSERT INTO "+TableDescNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
                 "  ("+hash+", ",
                 "   "+SQLUtils.quoteStr(lex)+", ",
                 "   "+SQLUtils.quoteStr(lang)+", ",

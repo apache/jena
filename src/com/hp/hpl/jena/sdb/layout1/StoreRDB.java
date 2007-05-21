@@ -13,7 +13,6 @@ import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.StoreBase;
 
 /** Store class for the Jena2 databse layout : query-only,
  *  not update via this route (use ModelRDB as normal). 
@@ -22,7 +21,7 @@ import com.hp.hpl.jena.sdb.store.StoreBase;
  * @version $Id: StoreRDB.java,v 1.2 2006/04/27 21:43:48 andy_seaborne Exp $
  */
 
-public class StoreRDB extends StoreBase
+public class StoreRDB extends StoreBase1
 {
     private ModelRDB model ;
 
@@ -39,7 +38,7 @@ public class StoreRDB extends StoreBase
               new QueryCompilerFactory1(codec),
               new SQLBridgeFactory1(codec),
               new GenerateSQL(),
-              new TripleTableDescRDB(), null) ;
+              new TableDescRDB()) ;
         
         this.model = model ;
     }

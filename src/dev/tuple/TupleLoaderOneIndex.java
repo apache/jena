@@ -4,35 +4,34 @@
  * [See end of file]
  */
 
-package dev.pattern;
+package dev.tuple;
 
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public class TupleLoaderOneIndex extends TupleLoaderOne
 {
     private static Log log = LogFactory.getLog(TupleLoaderOneIndex.class);
     
     /* Convenience constructor */
-    public TupleLoaderOneIndex(Store store, String tableName, List<String> colNames)
-    { super(store, tableName, colNames) ; }
+    public TupleLoaderOneIndex(Store store, TableDesc tableDesc)
+    { super(store, tableDesc) ; }
 
    public TupleLoaderOneIndex(Store store)
    { super(store) ; }
@@ -117,7 +116,7 @@ public class TupleLoaderOneIndex extends TupleLoaderOne
         long hash = NodeLayout2.hash(lex,lang,datatype,typeId);
         
         String sqlStmt = strjoinNL(
-                "INSERT INTO "+TableNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
+                "INSERT INTO "+TableDescNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
                 "  ("+hash+", ",
                 "   "+SQLUtils.quoteStr(lex)+", ",
                 "   "+SQLUtils.quoteStr(lang)+", ",

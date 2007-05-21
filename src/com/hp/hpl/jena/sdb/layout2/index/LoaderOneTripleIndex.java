@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.layout2.LoaderOneTripleBase;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
-import com.hp.hpl.jena.sdb.layout2.TableNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
@@ -113,7 +113,7 @@ public class LoaderOneTripleIndex
         long hash = NodeLayout2.hash(lex,lang,datatype,typeId);
         
         String sqlStmt = strjoinNL(
-                "INSERT INTO "+TableNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
+                "INSERT INTO "+TableDescNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
                 "  ("+hash+", ",
                 "   "+SQLUtils.quoteStr(lex)+", ",
                 "   "+SQLUtils.quoteStr(lang)+", ",
