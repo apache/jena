@@ -22,14 +22,14 @@ public class RunTuple
     {
         boolean reset = true ;
 
-        Store store = StoreFactory.create("sdb.ttl") ;
+        Store store = StoreFactory.create("sdb1.ttl") ;
         if ( reset )
             store.getTableFormatter().create() ;
 
         //store.getConnection().setLogSQLStatements(true) ;
 
         Triple t = SSE.parseTriple("(triple <http://host/foo> 2 3)") ;
-        StoreTupleLoader sLoader = new StoreTupleLoader(new TupleLoaderOneHash(store)) ;
+        StoreTupleLoader sLoader = new StoreTupleLoader(new TupleLoaderSimple(store)) ;
 
         sLoader.startBulkUpdate() ;
         sLoader.addTriple(t) ;

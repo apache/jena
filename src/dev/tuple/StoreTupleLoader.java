@@ -12,8 +12,6 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
 import com.hp.hpl.jena.sdb.store.TableDesc;
- 
-
 
 public class StoreTupleLoader implements StoreLoader
 {

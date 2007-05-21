@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sdb.sql.SQLUtils;
 
 import com.hp.hpl.jena.sdb.store.StoreLoader;
 
-
+// TODO Remove - use the tuple loader instead
 public class LoaderSimple 
     extends SDBConnectionHolder
     implements StoreLoader

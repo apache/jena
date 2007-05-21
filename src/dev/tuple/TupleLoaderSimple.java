@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
+import com.hp.hpl.jena.sdb.layout1.CodecSimple;
 import com.hp.hpl.jena.sdb.layout1.EncoderDecoder;
 import com.hp.hpl.jena.sdb.store.Store;
 
@@ -21,6 +22,11 @@ public class TupleLoaderSimple extends TupleLoaderOne
 {
     private static Log log = LogFactory.getLog(TupleLoaderSimple.class);
     private EncoderDecoder codec ;
+    
+    public TupleLoaderSimple(Store store)
+    {
+        this(store, new CodecSimple()) ;
+    }
     
     public TupleLoaderSimple(Store store, EncoderDecoder codec)
     {
