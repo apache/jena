@@ -1,0 +1,14 @@
+{
+  "head": {
+    "vars": [ "lit" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "lit": { "type": "literal" , "value": "Document 1" }
+      }
+    ]
+  }
+}

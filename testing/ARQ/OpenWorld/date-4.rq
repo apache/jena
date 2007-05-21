@@ -6,4 +6,3 @@ SELECT ?x ?date
     ?x :s ?date .
     FILTER ( datatype(?date) = xsd:date )
 }
-ORDER BY ?date

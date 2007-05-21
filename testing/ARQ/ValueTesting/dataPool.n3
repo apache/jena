@@ -1,4 +1,4 @@
-# $Id: dataPool.n3,v 1.6 2007-03-21 21:26:30 andy_seaborne Exp $
+# $Id: dataPool.n3,v 1.7 2007-05-21 11:13:11 andy_seaborne Exp $
 # See DOCUMENT INFO below.
 
 # NAMESPACES
@@ -17,7 +17,7 @@
 
 # DOCUMENT INFO
 <> rdfs:comment "Some inspiration from http://www.w3.org/2003/01/geo/" ;
-   owl:versionInfo "$Id: dataPool.n3,v 1.6 2007-03-21 21:26:30 andy_seaborne Exp $".
+   owl:versionInfo "$Id: dataPool.n3,v 1.7 2007-05-21 11:13:11 andy_seaborne Exp $".
 
 # DOCUMENT
 <http://jibbering.com/rdf/airports?AUS>

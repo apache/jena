@@ -7,4 +7,3 @@ SELECT *
     ?x2 :p ?v2 .
     FILTER ( ?v1 = ?v2 )
 }
-ORDER BY ?x1 ?x2

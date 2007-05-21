@@ -1,0 +1,42 @@
+@prefix :        <http://example/> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix jfn:     <http://jena.hpl.hp.com/ARQ/function#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "p" ;
+      rs:resultVariable  "member" ;
+      rs:solution   [ rs:binding    [ rs:value      rdf:_10 ;
+                                      rs:variable   "p"
+                                    ] ;
+                      rs:binding    [ rs:value      10 ;
+                                      rs:variable   "member"
+                                    ] ;
+                      rs:index      4
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      rdf:_1 ;
+                                      rs:variable   "p"
+                                    ] ;
+                      rs:binding    [ rs:value      1 ;
+                                      rs:variable   "member"
+                                    ] ;
+                      rs:index      1
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      2 ;
+                                      rs:variable   "member"
+                                    ] ;
+                      rs:binding    [ rs:value      rdf:_2 ;
+                                      rs:variable   "p"
+                                    ] ;
+                      rs:index      2
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      3 ;
+                                      rs:variable   "member"
+                                    ] ;
+                      rs:binding    [ rs:value      rdf:_3 ;
+                                      rs:variable   "p"
+                                    ] ;
+                      rs:index      3
+                    ] .

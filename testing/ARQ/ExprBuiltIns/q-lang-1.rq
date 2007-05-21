@@ -7,4 +7,3 @@ SELECT ?x
 { ?x :p ?v . 
   FILTER ( lang(?v) != '@NotALangTag@' )
 }
-ORDER BY ?x

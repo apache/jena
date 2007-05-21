@@ -1,5 +1,5 @@
 # Opaque types can not be tested for != .
-# $Id: extendedType-ne-fail.rq,v 1.6 2007-03-21 21:26:30 andy_seaborne Exp $
+# $Id: extendedType-ne-fail.rq,v 1.7 2007-05-21 11:13:12 andy_seaborne Exp $
 
 PREFIX loc: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/extendedType-0#>
 PREFIX wgs: <http://www.w3.org/2003/01/geo/wgs84_pos#>

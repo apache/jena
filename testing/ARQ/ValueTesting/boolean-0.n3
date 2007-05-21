@@ -1,4 +1,4 @@
-# $Id: boolean-0.n3,v 1.6 2007-03-21 21:26:30 andy_seaborne Exp $
+# $Id: boolean-0.n3,v 1.7 2007-05-21 11:13:09 andy_seaborne Exp $
 
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .

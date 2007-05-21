@@ -12,51 +12,39 @@
          mf:action
             [ qt:query  <sort-1.rq> ;
               qt:data   <data-1.ttl> ] ;
-        mf:result  <sort-result-1.srx>
+        mf:result  <sort-result-1.ttl>
       ]
 
       [  mf:name    "Sort 2" ;
          mf:action
             [ qt:query  <sort-2.rq> ;
               qt:data   <data-3.ttl> ] ;
-        mf:result  <sort-result-2.srx>
+        mf:result  <sort-result-2.ttl>
       ]
 
       [  mf:name    "Sort 3" ;
          mf:action
             [ qt:query  <sort-3.rq> ;
               qt:data   <data-3.ttl> ] ;
-        mf:result  <sort-result-3.srx>
+        mf:result  <sort-result-3.ttl>
       ]
 
       [  mf:name    "Order 1" ;
          mf:action
             [ qt:query  <order-1.rq> ;
               qt:data   <data-2.ttl> ] ;
-        mf:result  <order-result-1.srx>
+        mf:result  <order-result-1.ttl>
       ]
       [  mf:name    "Order 2" ;
          mf:action
             [ qt:query  <order-2.rq> ;
               qt:data   <data-2.ttl> ] ;
-        mf:result  <order-result-2.srx>
+        mf:result  <order-result-2.ttl>
       ]
       [  mf:name    "Order 3" ;
          mf:action
             [ qt:query  <order-3.rq> ;
               qt:data   <data-2.ttl> ] ;
-        mf:result  <order-result-3.srx>
-      ]
-      [  mf:name    "Order 4" ;
-         mf:action
-            [ qt:query  <order-3.rq> ;
-              qt:data   <data-2.ttl> ] ;
-        mf:result  <order-result-3.srx>
-      ]
-      [  mf:name    "Order 5" ;
-         mf:action
-            [ qt:query  <order-3.rq> ;
-              qt:data   <data-2.ttl> ] ;
-        mf:result  <order-result-3.srx>
+        mf:result  <order-result-3.ttl>
       ]
     ).

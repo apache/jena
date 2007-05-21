@@ -1,5 +1,5 @@
 # Test graph match on extended type.
-# $Id: extendedType-graph.rq,v 1.6 2007-03-21 21:26:30 andy_seaborne Exp $
+# $Id: extendedType-graph.rq,v 1.7 2007-05-21 11:13:13 andy_seaborne Exp $
 
 PREFIX loc: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/extendedType-0#>
 PREFIX air: <http://www.daml.org/2001/10/html/airport-ont#>

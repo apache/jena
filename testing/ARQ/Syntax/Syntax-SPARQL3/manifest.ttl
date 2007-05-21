@@ -48,6 +48,10 @@
          rdf:type   mfx:TestSyntax ;
          mf:action  <syn-10.rq> ; 
       ]
+      [  mf:name    "syn-bad-11.rq" ;
+         rdf:type   mfx:TestBadSyntax ;
+         mf:action  <syn-bad-11.rq> ; 
+      ]
       [  mf:name    "syn-bad-01.rq" ;
          rdf:type   mfx:TestBadSyntax ;
          mf:action  <syn-bad-01.rq> ; 

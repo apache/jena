@@ -16,11 +16,6 @@
         "doc": { "type": "uri" , "value": "http://example/doc2" } ,
         "p": { "type": "uri" , "value": "http://purl.org/dc/elements/1.1/title" }
       } ,
-      {
-        "lit": { "type": "literal" , "value": "Label with the work document in it" } ,
-        "doc": { "type": "uri" , "value": "http://example/doc3" } ,
-        "p": { "type": "uri" , "value": "http://www.w3.org/2000/01/rdf-schema#label" }
-      }
     ]
   }
 }

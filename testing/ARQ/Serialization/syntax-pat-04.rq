@@ -1,5 +1,5 @@
 # No DOT between non-triples patterns
-PREFIX : <http:/example.org/ns#> 
+PREFIX : <http://example.org/ns#> 
 SELECT *
 {
   OPTIONAL{:x :y :z} 
