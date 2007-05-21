@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.14 2007-02-02 12:14:12 chris-dollin Exp $
+    $Id: PatternStageBase.java,v 1.15 2007-05-21 11:21:56 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -104,7 +104,7 @@ public abstract class PatternStageBase extends Stage
             { PatternStageBase.this.run( source, sink, e ); }
         }
     
-   public static boolean reuseThreads = JenaRuntime.getSystemProperty( "jena.reusepatternstage.threads", "no" ).equals( "yes" );
+   public static boolean reuseThreads = JenaRuntime.getSystemProperty( "jena.reusepatternstage.threads", "yes" ).equals( "yes" );
    
     public synchronized Pipe deliver( final Pipe sink )
         {

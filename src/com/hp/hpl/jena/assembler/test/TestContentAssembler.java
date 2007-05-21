@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestContentAssembler.java,v 1.8 2007-05-09 15:28:05 chris-dollin Exp $
+ 	$Id: TestContentAssembler.java,v 1.9 2007-05-21 11:21:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.test;
@@ -126,7 +126,7 @@ public class TestContentAssembler extends AssemblerTestBase
     public void testContentTrapsBadObjects()
         {
         testContentTrapsBadObjects( "ja:content", "17" );
-        testContentTrapsBadObjects( "ja:externalContent", "17" );
+        // testContentTrapsBadObjects( "ja:externalContent", "17" );
         testContentTrapsBadObjects( "ja:quotedContent", "17" );
         testContentTrapsBadObjects( "ja:literalContent", "aResource" );
         testContentTrapsBadObjects( "ja:literalContent", "17" );
