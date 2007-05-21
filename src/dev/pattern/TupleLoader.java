@@ -15,16 +15,16 @@ public interface TupleLoader
 {
     public Store getStore() ;
     
-    /** Table name */
+    /** Set table name */
     public void setTableName(String tableName) ;
     
-    /** Table name */
+    /** Get the table name */
     public String getTableName() ;
     
-    /** Table name */
+    /** Set the column names */
     public void setColumnNames(List<String> colNames) ;
     
-    /** Table name */
+    /** Get the column names */
     public List<String> getColumnNames() ;
 
     /** Notify the start of a sequence of rows to load */

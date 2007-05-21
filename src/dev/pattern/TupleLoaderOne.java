@@ -34,6 +34,9 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         super(store) ;
     }
     
+    public TupleLoaderOne(Store store, String tableName, List<String> colNames)
+    { super(store, tableName, colNames) ; }
+    
     @Override
     public void start()
     { super.start() ; }

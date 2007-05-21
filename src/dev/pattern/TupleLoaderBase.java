@@ -21,8 +21,7 @@ public abstract class TupleLoaderBase implements TupleLoader
     protected Store store ;
     private int tableWidth ;
 
-    
-    private TupleLoaderBase(Store store, String tableName, List<String> colNames)
+        protected TupleLoaderBase(Store store, String tableName, List<String> colNames)
     {
         this.store = store ;
         setTableName(tableName) ;

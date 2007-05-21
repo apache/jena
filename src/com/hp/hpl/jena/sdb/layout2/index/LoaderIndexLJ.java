@@ -48,8 +48,8 @@ public abstract class LoaderIndexLJ extends LoaderTriplesNodes
 	{
 		return
 			"INSERT INTO Triples" +
-			"	SELECT DISTINCT S.id, P.id, O.id FROM" +
-			"	  " + getTripleLoader() + " JOIN Nodes AS S ON (" + getTripleLoader() + ".s=S.hash)" +
+			"	SELECT DISTINCT S.id, P.id, O.id FROM " + getTripleLoader() +
+			"	  JOIN Nodes AS S ON (" + getTripleLoader() + ".s=S.hash)" +
 			"     JOIN Nodes AS P ON (" + getTripleLoader() + ".p=P.hash)" +
 			"     JOIN Nodes AS O ON (" + getTripleLoader() + ".o=O.hash)" +
 			"     LEFT JOIN Triples ON (S.id=Triples.s AND P.id=Triples.p AND O.id=Triples.o)" +
