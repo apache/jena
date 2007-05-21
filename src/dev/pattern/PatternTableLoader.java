@@ -17,15 +17,15 @@ import arq.cmd.CmdUtils;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
 import com.hp.hpl.jena.sdb.layout2.hash.LoaderHashLJ;
+import com.hp.hpl.jena.sdb.layout2.hash.TupleLoaderOneHash;
 import com.hp.hpl.jena.sdb.layout2.index.LoaderIndexLJ;
+import com.hp.hpl.jena.sdb.layout2.index.TupleLoaderOneIndex;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sdb.store.TupleLoader;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
-import dev.tuple.TupleLoader;
-import dev.tuple.TupleLoaderOneHash;
-import dev.tuple.TupleLoaderOneIndex;
 
 public class PatternTableLoader
 {
@@ -73,17 +73,17 @@ public class PatternTableLoader
 
     public PatternTableLoader(Store store, String tableName, List<String> colNames)
     {
+        TableDesc tableDesc = new TableDesc(tableName, colNames) ;
+
         if ( store.getLoader() instanceof LoaderHashLJ )
-            nodeControl = new TupleLoaderOneHash(store) ;
+            nodeControl = new TupleLoaderOneHash(store, tableDesc) ;
         if ( store.getLoader() instanceof LoaderIndexLJ )
-            nodeControl = new TupleLoaderOneIndex(store) ;
+            nodeControl = new TupleLoaderOneIndex(store, tableDesc) ;
         if ( nodeControl == null )
         {
             System.err.println("Can't make TupleLoader") ;
             System.exit(1) ;
         }
-        TableDesc tableDesc = new TableDesc(tableName, colNames) ;
-        nodeControl.setTableDesc(tableDesc) ;
     }
     
     public void prepareRow(List<Node> row)

@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLDerby;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 public class StoreSimpleDerby extends StoreBase1
@@ -14,18 +15,18 @@ public class StoreSimpleDerby extends StoreBase1
 
     public StoreSimpleDerby(SDBConnection connection)
     {
-        this(connection , new CodecSimple()) ;
+        this(connection , new TableDescSPO(), new CodecSimple()) ;
     }
 
-    private StoreSimpleDerby(SDBConnection connection, EncoderDecoder codec)
+    private StoreSimpleDerby(SDBConnection connection, TableDescTriples triples, EncoderDecoder codec)
     {
         super(connection,
               new FormatterSimpleDerby(connection) ,
-              new LoaderSimple(connection, codec), 
+              new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 
               new SQLBridgeFactory1(codec),
               new GenerateSQLDerby(),
-              new TableDescSPO()) ;
+              triples) ;
     }
 }
 

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.tuple;
+package com.hp.hpl.jena.sdb.store;
 
 import static com.hp.hpl.jena.sdb.util.StrUtils.sqlList;
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoin;
@@ -22,21 +22,20 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.sql.RS;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.TableDesc;
 
 public abstract class TupleLoaderOne extends TupleLoaderBase
 {
     private static Log log = LogFactory.getLog(TupleLoaderOne.class);
     
-    public TupleLoaderOne(Store store)
+    public TupleLoaderOne(SDBConnection connection)
     {
-        super(store) ;
+        super(connection) ;
     }
     
-    public TupleLoaderOne(Store store, TableDesc tableDesc)
-    { super(store, tableDesc) ; }
+    public TupleLoaderOne(SDBConnection connection, TableDesc tableDesc)
+    { super(connection, tableDesc) ; }
     
     @Override
     public void start()
@@ -99,7 +98,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
     private void exec(String sqlStmt)
     {
         try
-        { store.getConnection().exec(sqlStmt) ; } 
+        { connection().exec(sqlStmt) ; } 
         catch (SQLException ex)
         { throw new SDBExceptionSQL(ex) ; }
     }
@@ -139,7 +138,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         String sqlStmt = String.format(selectTemplate, getTableName(), rowValues) ;
         
         try {
-            ResultSet rs = store.getConnection().execQuery(sqlStmt) ;
+            ResultSet rs = connection().execQuery(sqlStmt) ;
             rs.next() ;
             int count = rs.getInt(1) ;
             RS.close(rs) ;

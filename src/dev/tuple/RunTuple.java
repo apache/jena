@@ -9,8 +9,15 @@ package dev.tuple;
 import arq.cmd.CmdUtils;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreBaseHash;
+import com.hp.hpl.jena.sdb.layout2.hash.TupleLoaderOneHash;
+import com.hp.hpl.jena.sdb.layout2.index.StoreBaseIndex;
+import com.hp.hpl.jena.sdb.layout2.index.TupleLoaderOneIndex;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
+import com.hp.hpl.jena.sdb.store.StoreLoader;
+import com.hp.hpl.jena.sdb.store.TupleGraphLoader;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
 
@@ -22,22 +29,27 @@ public class RunTuple
     {
         boolean reset = true ;
 
-        Store store = StoreFactory.create("sdb1.ttl") ;
+        Store store = StoreFactory.create("sdb.ttl") ;
         if ( reset )
             store.getTableFormatter().create() ;
 
         //store.getConnection().setLogSQLStatements(true) ;
 
         Triple t = SSE.parseTriple("(triple <http://host/foo> 2 3)") ;
-        StoreTupleLoader sLoader = new StoreTupleLoader(new TupleLoaderSimple(store)) ;
+        StoreLoader sLoader = store.getLoader() ;
+        
+        if ( store instanceof StoreBaseHash )
+            sLoader = new TupleGraphLoader(new TupleLoaderOneHash(store, new TableDescTriples())) ;
+        if ( store instanceof StoreBaseIndex )
+            sLoader = new TupleGraphLoader(new TupleLoaderOneIndex(store, new TableDescTriples())) ;
 
         sLoader.startBulkUpdate() ;
         sLoader.addTriple(t) ;
-        sLoader.addTriple(SSE.parseTriple("(triple <http://host/foo> 2 4)")) ;
-        sLoader.finishBulkUpdate() ;
+        sLoader.addTriple(SSE.parseTriple("(triple <http://host/foo> 2 99)")) ;
 
         sLoader.deleteTriple(t) ;
         sLoader.deleteTriple(SSE.parseTriple("(triple <http://host/foo> 2 5)")) ;
+        sLoader.finishBulkUpdate() ;
         System.out.println("** Finished") ;
         System.exit(0) ;
 

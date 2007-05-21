@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.tuple;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 
@@ -24,28 +24,35 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sdb.store.TupleLoaderOne;
 
 public class TupleLoaderOneIndex extends TupleLoaderOne
 {
     private static Log log = LogFactory.getLog(TupleLoaderOneIndex.class);
-    
+
+    public TupleLoaderOneIndex(SDBConnection connection)
+    { super(connection) ; }
+
+    /* Convenience constructor */
+    public TupleLoaderOneIndex(SDBConnection connection, TableDesc tableDesc)
+    { super(connection, tableDesc) ; }
+
     /* Convenience constructor */
     public TupleLoaderOneIndex(Store store, TableDesc tableDesc)
-    { super(store, tableDesc) ; }
+    { super(store.getConnection(), tableDesc) ; }
+    
 
-   public TupleLoaderOneIndex(Store store)
-   { super(store) ; }
 
     @Override
     public SqlConstant getRefForNode(Node node) throws SQLException 
     {
-        return new SqlConstant(getIndex(store.getConnection(), node, false)) ;
+        return new SqlConstant(getIndex(connection(), node, false)) ;
     }
 
     @Override
     public SqlConstant insertNode(Node node) throws SQLException 
     {
-        return new SqlConstant(getIndex(store.getConnection(), node, true)) ;
+        return new SqlConstant(getIndex(connection(), node, true)) ;
     }
     
     /// ----------

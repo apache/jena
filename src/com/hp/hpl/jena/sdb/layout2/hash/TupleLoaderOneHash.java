@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -11,34 +11,38 @@ import static com.hp.hpl.jena.sdb.util.StrUtils.strjoinNL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
-
-import com.hp.hpl.jena.sdb.layout2.LoaderOneTripleBase;
+import com.hp.hpl.jena.sdb.core.sqlexpr.SqlConstant;
 import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sdb.store.TupleLoaderOne;
 
-/** A loader that works one triple at a time but is portable (hash variant) */ 
-
-public class LoaderOneTripleHash
-    extends LoaderOneTripleBase
+public class TupleLoaderOneHash extends TupleLoaderOne
 {
-    private static Log log = LogFactory.getLog(LoaderOneTripleHash.class);
+    public TupleLoaderOneHash(SDBConnection connection)
+    { super(connection) ; }
+
+    /* Convenience constructor */
+    public TupleLoaderOneHash(SDBConnection connection, TableDesc tableDesc)
+    { super(connection, tableDesc) ; }
+
+    /* Convenience constructor */
+    public TupleLoaderOneHash(Store store, TableDesc tableDesc)
+    { super(store.getConnection(), tableDesc) ; }
     
-    public LoaderOneTripleHash(SDBConnection conn){ super(conn) ;}
     
     @Override
-    public long getRefForNode(Node node) throws SQLException 
+    public SqlConstant getRefForNode(Node node) throws SQLException 
     {
-        return NodeLayout2.hash(node) ;
+        return new SqlConstant(NodeLayout2.hash(node)) ;
     }
 
     @Override
-    public long insertNode(Node node) throws SQLException 
+    public SqlConstant insertNode(Node node) throws SQLException 
     {
         int typeId  = NodeLayout2.nodeToType(node) ;
         String lex = NodeLayout2.nodeToLex(node) ;
@@ -67,7 +71,7 @@ public class LoaderOneTripleHash
         rs.close() ;
         if ( b )
             // Exists
-            return hash ;
+            return new SqlConstant(hash) ;
         
         String sqlStmt = strjoinNL(
                 "INSERT INTO "+TableDescNodes.name()+"(hash,lex,lang,datatype,type) VALUES",
@@ -78,14 +82,12 @@ public class LoaderOneTripleHash
                 "   "+typeId, 
                 ")" ) ;
         connection().execUpdate(sqlStmt) ;
-        return hash ;
+        return new SqlConstant(hash) ;
     }
-
- 
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

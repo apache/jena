@@ -5,8 +5,10 @@
  */
 
 package com.hp.hpl.jena.sdb.layout1;
+import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
+import com.hp.hpl.jena.sdb.util.HSQLUtils;
 
 
 /** Store class for the simple layout (i.e. one triple table)
@@ -15,23 +17,32 @@ import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
  * @version $Id: StoreSimpleHSQL.java,v 1.2 2006/04/24 17:31:26 andy_seaborne Exp $
  */
 
-public class StoreSimpleHSQL extends StoreBaseHSQL
+public class StoreSimpleHSQL extends StoreBase1
 {
-    
+    boolean currentlyOpen = true ;
     
     public StoreSimpleHSQL(SDBConnection sdb)
     {
-        this(sdb, new CodecSimple()) ;
+        this(sdb, new TableDescSPO(), new CodecSimple()) ;
     }
     
-    private StoreSimpleHSQL(SDBConnection sdb, EncoderDecoder codec)
+    private StoreSimpleHSQL(SDBConnection sdb, TableDescTriples triples, EncoderDecoder codec)
     {
         super(sdb, 
               new FormatterSimpleHSQL(sdb) ,
-              new LoaderSimple(sdb, codec),
+              new TupleLoaderSimple(sdb, triples, codec),
               new QueryCompilerFactory1(codec),
               new SQLBridgeFactory1(codec),
-              new TableDescSPO(), null) ;
+              new GenerateSQL(),
+              triples) ;
+    }
+    
+    @Override
+    public void close()
+    {
+        if ( currentlyOpen )
+            HSQLUtils.shutdown(getConnection()) ;
+        currentlyOpen = false ; 
     }
 }
 

@@ -7,27 +7,28 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL_MS;
-import com.hp.hpl.jena.sdb.layout2.StoreBase;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
-public class StoreSimpleSQLServer extends StoreBase
+public class StoreSimpleSQLServer extends StoreBase1
 {
 
     public StoreSimpleSQLServer(SDBConnection connection)
     {
-        this(connection , new CodecSimple()) ;
+        this(connection , new TableDescSPO(), new CodecSimple()) ;
     }
 
     private StoreSimpleSQLServer(SDBConnection connection, 
-                             EncoderDecoder codec)
+                                 TableDescTriples triples,
+                                 EncoderDecoder codec)
     {
         super(connection,
               new FormatterSimpleSQLServer(connection) ,
-              new LoaderSimple(connection, codec), 
+              new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 
               new SQLBridgeFactory1(codec),
               new GenerateSQL_MS(),
-              new TableDescSPO(), null) ;
+              triples) ;
     }
 }
 

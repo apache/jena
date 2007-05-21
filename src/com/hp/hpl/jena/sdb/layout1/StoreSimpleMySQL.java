@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
-import com.hp.hpl.jena.sdb.layout2.StoreBase;
+import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
  * @version $Id: StoreSimpleMySQL.java,v 1.6 2006/04/24 17:31:26 andy_seaborne Exp $
  */
 
-public class StoreSimpleMySQL extends StoreBase
+public class StoreSimpleMySQL extends StoreBase1
 {
     public StoreSimpleMySQL(SDBConnection connection)
     {
@@ -27,18 +27,21 @@ public class StoreSimpleMySQL extends StoreBase
     
     public StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType)
     {
-        this(connection, engineType, new CodecSimple()) ;
+        this(connection, new TableDescSPO(), engineType, new CodecSimple()) ;
     }
 
-    private StoreSimpleMySQL(SDBConnection connection, MySQLEngineType engineType, 
+    private StoreSimpleMySQL(SDBConnection connection, 
+                             TableDescTriples triples, 
+                             MySQLEngineType engineType, 
                              EncoderDecoder codec)
     {
         super(connection,
               new FormatterSimpleMySQL(connection, engineType),
-              new LoaderSimple(connection, codec), 
+              new TupleLoaderSimple(connection, triples, codec), 
               new QueryCompilerFactory1(codec), 
               new SQLBridgeFactory1(codec),
-              new GenerateSQL(), new TableDescSPO(), null) ;
+              new GenerateSQL(),
+              triples) ;
     }
 }
 

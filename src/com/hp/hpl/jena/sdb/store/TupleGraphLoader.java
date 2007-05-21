@@ -4,24 +4,32 @@
  * [See end of file]
  */
 
-package dev.tuple;
+package com.hp.hpl.jena.sdb.store;
+//import java.lang.String.format
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 
+import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
-import com.hp.hpl.jena.sdb.store.StoreLoader;
-import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class StoreTupleLoader implements StoreLoader
+/** Adapter from a tuple loader to a graph loader.*/ 
+public class TupleGraphLoader implements StoreLoader
 {
     private TupleLoader loader ;
 
-    public StoreTupleLoader(TupleLoader loader)
+    /** The loader must be for a triple table of some kind */
+    public TupleGraphLoader(TupleLoader loader)
     { 
+        if ( loader.getTableDesc() == null )
+            throw new SDBException("No table description for loader") ;
+        if ( loader.getTableDesc().getWidth() != 3 ) 
+        {
+            String x = String.format("Table description width is %d, not 3",
+                                     loader.getTableDesc().getWidth()) ;
+            throw new SDBException(x) ;
+        }
         this.loader = loader ;
-        TableDesc tDesc = loader.getStore().getTripleTableDesc() ;
-        loader.setTableDesc(tDesc) ;
     }
         
     public void addTriple(Triple triple)
@@ -49,16 +57,16 @@ public class StoreTupleLoader implements StoreLoader
     { loader.finish() ; }
 
     public int getChunkSize()
-    { throw new SDBNotImplemented("StoreTupleLoader.getChunkSize") ; }
+    { throw new SDBNotImplemented("TupleGraphLoader.getChunkSize") ; }
     
     public void setChunkSize(int chunks)
-    { throw new SDBNotImplemented("StoreTupleLoader.setChunkSize") ; }
+    { throw new SDBNotImplemented("TupleGraphLoader.setChunkSize") ; }
 
     public boolean getUseThreading()
-    { throw new SDBNotImplemented("StoreTupleLoader.getUseThreading") ; }
+    { throw new SDBNotImplemented("TupleGraphLoader.getUseThreading") ; }
 
     public void setUseThreading(boolean useThreading)
-    { throw new SDBNotImplemented("StoreTupleLoader.setUseThreading") ; }
+    { throw new SDBNotImplemented("TupleGraphLoader.setUseThreading") ; }
 }
 
 /*

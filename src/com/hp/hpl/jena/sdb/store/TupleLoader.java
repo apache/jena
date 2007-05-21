@@ -4,58 +4,48 @@
  * [See end of file]
  */
 
-package dev.tuple;
+package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.graph.Node;
 
-/** Track whether multiple loads overlap. */
-
-public abstract class TupleLoaderBase implements TupleLoader
+public interface TupleLoader
 {
-    boolean active = false ;
-    protected Store store ;
-    private int tableWidth ;
-    private TableDesc tableDesc ;
+//    public Store getStore() ;
+    
+    /** Set table description */
+    public void setTableDesc(TableDesc tableDesc) ;
+    
+    /** Get the table description */
+    public TableDesc getTableDesc() ;
+    
 
-        protected TupleLoaderBase(Store store, TableDesc tableDesc)
-    {
-        this.store = store ;
-        setTableDesc(tableDesc) ;
-    }
+    /** Notify the start of a sequence of rows to load */
+    public void start() ;
+    
+    /** Load a row - may not take place immediately
+     *  but row object is free for reuse after calling this method.
+     * @param row
+     */
+    public void load(Node[] row) ;
+    
+    /** Remove a row - may not take place immediately
+     *  but row object is free for reuse after calling this method.
+     * @param row
+     */
+    public void unload(Node[] row) ;
 
-    protected TupleLoaderBase(Store store)
-    {
-        this.store = store ;
-    }
-    
-    public Store getStore() { return store ; }
-    
-    public String getTableName() { return tableDesc.getTableName() ; }
+    /** Notify the finish of a sequence of rows to load.  
+     * All data will have been loaded by the time this returns */ 
+    public void finish() ;
 
-    public TableDesc getTableDesc() { return tableDesc ; }
-    public void setTableDesc(TableDesc tDesc)
-    { 
-        this.tableDesc = tDesc ;
-        this.tableWidth = tableDesc.getColNames().size() ;
-    }
+    // Copied from StoreLoader but not called there currently.
+    // If one only type needs these, put on an implementation.  
+//    public void setChunkSize(int chunks) ;
+//    public int getChunkSize() ;
     
-    //public List<String> getColumnNames() { return tableDesc.getColNames() ; }
-    
-    protected int getTableWidth() { return tableWidth ; }
-    
-    public void start()
-    {
-        if ( active )
-            throw new SDBException("Bulk loader already active") ;
-        active = true ;
-    }
-    
-    public void finish()
-    {
-        active = false ;
-    }
+//    public void setUseThreading(boolean useThreading);
+//    public boolean getUseThreading();
+
 }
 
 /*

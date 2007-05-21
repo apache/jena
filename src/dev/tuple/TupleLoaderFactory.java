@@ -8,6 +8,7 @@ package dev.tuple;
 
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
+import com.hp.hpl.jena.sdb.store.TupleLoader;
 
 public interface TupleLoaderFactory
 {

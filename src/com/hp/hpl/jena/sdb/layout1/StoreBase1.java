@@ -14,12 +14,7 @@ import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 import com.hp.hpl.jena.sdb.sql.TableUtils;
-import com.hp.hpl.jena.sdb.store.SQLBridgeFactory;
-import com.hp.hpl.jena.sdb.store.SQLGenerator;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.StoreConfig;
-import com.hp.hpl.jena.sdb.store.StoreFormatter;
-import com.hp.hpl.jena.sdb.store.StoreLoader;
+import com.hp.hpl.jena.sdb.store.*;
 
 
 
@@ -37,15 +32,17 @@ public class StoreBase1
     
     public StoreBase1(SDBConnection connection, 
                      StoreFormatter formatter ,
-                     StoreLoader loader ,
+                     TupleLoaderSimple loader ,
                      QueryCompilerFactory compilerF ,
                      SQLBridgeFactory sqlBridgeF,
                      SQLGenerator sqlGenerator,
-                     TableDescTriples    tripleTable)
+                     TableDescTriples tripleTable)
     {
         super(connection) ;
         this.formatter = formatter ;
-        this.loader = loader ;
+        if ( loader.getTableDesc() == null )
+            loader.setTableDesc(tripleTable) ;
+        this.loader = new TupleGraphLoader(loader) ;
         this.compilerF = compilerF ;
         this.sqlBridgeF = sqlBridgeF ;
         if ( sqlGenerator == null )

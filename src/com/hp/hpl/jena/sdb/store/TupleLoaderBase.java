@@ -1,33 +1,64 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.sdb.SDBException;
+import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBConnectionHolder;
 
-public class TableTriples {}
-//public class TableTriples extends TableDescTriples 
-//{
-//    private String subjectCol ;
-//    private String predicateCol ;
-//    private String objectCol ;
-//    
-//    protected TableTriples(String tableName, String subjCol, String predCol, String objCol)
-//    { 
-//        super(tableName, subjCol, predCol, objCol) ;
-//        this.subjectCol = subjCol ;
-//        this.predicateCol = predCol ;
-//    }
-//    
-//    public String getSubjectColName()   { return subjectCol ; }
-//    public String getPredicateColName() { return predicateCol ; }
-//    public String getObjectColName()    { return objectCol ; }
-//}
+/** Track whether multiple loads overlap. */
+
+public abstract class TupleLoaderBase
+    extends SDBConnectionHolder
+    implements TupleLoader
+{
+    boolean active = false ;
+    private int tableWidth ;
+    private TableDesc tableDesc ;
+
+    protected TupleLoaderBase(SDBConnection connection, TableDesc tableDesc)
+    {
+        this(connection) ;
+        setTableDesc(tableDesc) ;
+    }
+
+    protected TupleLoaderBase(SDBConnection connection)
+    {
+        super(connection) ;
+    }
+    
+    public String getTableName() { return tableDesc.getTableName() ; }
+
+    public TableDesc getTableDesc() { return tableDesc ; }
+    public void setTableDesc(TableDesc tDesc)
+    { 
+        this.tableDesc = tDesc ;
+        this.tableWidth = tableDesc.getColNames().size() ;
+    }
+    
+    //public List<String> getColumnNames() { return tableDesc.getColNames() ; }
+    
+    protected int getTableWidth() { return tableWidth ; }
+    
+    public void start()
+    {
+        if ( active )
+            throw new SDBException("Bulk loader already active") ;
+        active = true ;
+    }
+    
+    public void finish()
+    {
+        active = false ;
+    }
+}
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
