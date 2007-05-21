@@ -25,6 +25,8 @@ Assembler modification-and-fix
       
       ContentAssemblers can now be constructed with default FileManager
       arguments. External content is loaded using that FileManager.
+      The object of an externalContent statement can be a string
+      literal or a URI.
       
       AssemblerGroups (which includes the instance Assembler.general)
       now support a `copy` method which makes a new group initialised
