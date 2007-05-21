@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.layout2.index;
 import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
-
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashDerby;
@@ -26,10 +25,24 @@ public class FmtLayout2IndexDerby extends FmtLayout2HashDerby
     @Override
     protected void formatTableTriples()
     {
-        dropTable(TableDescTriples.name()) ;
+        // TODO Generalize : return a template
+        TableDescTriples desc = new TableDescTriples() ;
+        dropTable(desc.getTableName()) ;
         try { 
+            String x = sqlStr(
+                              "CREATE TABLE %s (",
+                              "    %2$s int NOT NULL,",
+                              "    %3$s int NOT NULL,",
+                              "    %4$s int NOT NULL,",
+                              "    PRIMARY KEY (%2$s, %3$s, %4$s)",
+                              ")") ;
+            x = String.format(x, desc.getTableName(),
+                              desc.getSubjectColName(),
+                              desc.getPredicateColName(),
+                              desc.getObjectColName()) ;
+            
             connection().exec(sqlStr(
-                                 "CREATE TABLE "+TableDescTriples.name()+" (",
+                                 "CREATE TABLE "+desc.getTableName()+" (",
                                  "    s int NOT NULL,",
                                  "    p int NOT NULL,",
                                  "    o int NOT NULL,",
