@@ -51,7 +51,7 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
                     continue ;
                 }
             }
-            sList.add(new SqlStageTripleTable(q)) ; 
+            sList.add(new SqlStageBasicQuad(q)) ; 
             i++ ;
         }
 

@@ -10,10 +10,11 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoader;
 
-public interface TupleLoaderFactory
+public interface TupleLoaderManager
 {
-    public TupleLoader create(Store store) ; 
-    public TupleLoader create(Store store, TableDesc tableDesc) ;
+    public TupleLoader alloc(Store store, TableDesc tableDesc) ;
+    public void /*GraphLoader*/ allocNamedGraph(Store store, String uri) ;
+    public void /*GraphLoader*/ allocDefaultGraph(Store store) ;
 }
 
 /*

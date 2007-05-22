@@ -21,12 +21,12 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 
-public class SqlStageTripleTable implements SqlStage
+public class SqlStageBasicQuad implements SqlStage
 {
-    private static Log log = LogFactory.getLog(SqlStageTripleTable.class) ;
+    private static Log log = LogFactory.getLog(SqlStageBasicQuad.class) ;
     private Quad quad ;
 
-    public SqlStageTripleTable(Quad quad)
+    public SqlStageBasicQuad(Quad quad)
     {
         this.quad = quad ;
     }

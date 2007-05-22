@@ -18,9 +18,11 @@ import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
 import com.hp.hpl.jena.sparql.core.DataSourceGraph;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -44,6 +46,8 @@ public class GraphSDB extends GraphBase implements Graph
     
     // ARP buffers, which results in nested updates from our prespective
     protected int inBulkUpdate = 0 ;
+    
+    protected Node graphNode = Quad.defaultGraph ;
     
     public GraphSDB(Store store)
     { 
@@ -83,11 +87,54 @@ public class GraphSDB extends GraphBase implements Graph
             { log.warn("Failed to get prefixes: "+ex.getMessage()) ; }
         return pmap ;
     }
+    
+    private ExtendedIterator graphBaseFind2(TripleMatch m)
+    {
+        Quad q = quad(m) ;
+        
+        OpQuadPattern pat = null ; //new OpQuadPattern() ;
+        //pat.add(q) ;
+        //QueryEngineSDB qe = new QueryEngineSDB(getStore(), q, null) ;
+        //qe.setDataset(new DataSourceImpl(dsg)) ;
+        
+        return null ;
+    }
+    
+    private Quad quad(TripleMatch m)
+    {
+        Node s = m.getMatchSubject() ;
+        Var sVar = null ;
+        if ( s == null )
+        {
+            sVar = Var.alloc("s") ;
+            s = sVar ;
+        }
+        
+        Node p = m.getMatchPredicate() ;
+        Var pVar = null ;
+        if ( p == null )
+        {
+            pVar = Var.alloc("p") ;
+            p = pVar ;
+        }
+        
+        Node o = m.getMatchObject() ;
+        Var oVar = null ;
+        if ( o == null )
+        {
+            oVar = Var.alloc("o") ;
+            o = oVar ;
+        }
+        
+        return new Quad(graphNode, s, p ,o) ;
+    }
+
     @Override
     protected ExtendedIterator graphBaseFind(TripleMatch m)
     {
         // Fake a query.
         SDBRequest cxt = new SDBRequest(getStore(), new Query()) ;
+        
         
         Node s = m.getMatchSubject() ;
         Var sVar = null ;
