@@ -13,7 +13,9 @@
          
 + Make Dataset more formally a level changed between Models and Graphs.
   Sort out with update as well.
-  Make the system DatasetGraph/QueryExecutionGraph-centric
+  DatSourceImpl - done.
+
+  ** Make the system DatasetGraph/QueryExecutionGraph-centric
     with Dataset and QueryExecution just converters
   Clean DatasetUtils, DatasetFactory
 
