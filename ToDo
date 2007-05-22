@@ -15,7 +15,10 @@
   Sort out with update as well.
   Make the system DatasetGraph/QueryExecutionGraph-centric
     with Dataset and QueryExecution just converters
-  
+  Clean DatasetUtils, DatasetFactory
+
++ Quads - independent quads?  Or retain blocking structure?
+
 + Remote update over HTTP
 
 Improvements - are these measurable?

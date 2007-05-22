@@ -6,21 +6,19 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.*;
-
-import org.apache.commons.logging.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.shared.Lock; 
-import com.hp.hpl.jena.shared.LockMRSW;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.LabelExistsException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.shared.Lock;
 
-/** A implementation of a DataSource, which is a Dataset,
+/** A implementation of a DataSource, which is a mutable Dataset,
  *  a set of a single unnamed graph and a number (zero or
  *  more) named graphs with graphs as Models. 
  * 
@@ -30,139 +28,104 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class DataSourceImpl implements DataSource//, ModelGroup
 {
-    Model defaultModel = null ;
-    Map namedModels = new HashMap() ;
-    Lock lock = new LockMRSW() ;
+    protected DataSourceGraph dsg = null ;
+    // Cache graph => model so returned models are the same (==)
+    private Map cache = new HashMap() ;      
+
+    public DataSourceImpl()
+    { this.dsg = new DataSourceGraphImpl() ; }
+
+    public DataSourceImpl(DatasetGraph dSetGraph)
+    { this.dsg = new DataSourceGraphImpl(dSetGraph) ; }   // Clone structure
     
-    public DataSourceImpl() { this(GraphUtils.makeDefaultModel()) ; }
-    
-    // Clone
-    public DataSourceImpl(Dataset Dataset)
+    public DataSourceImpl(Model model)
     {
-        if ( ! ( Dataset instanceof DataSourceImpl ) )
-        {
-            LogFactory.getLog(DataSourceImpl.class).fatal("Clone Dataset: only DataSourceImpl supported") ;
-            return ;
-        }            
-        DataSourceImpl ds = (DataSourceImpl)Dataset ;
-        namedModels.putAll(ds.namedModels) ;
-        defaultModel = ds.defaultModel ;
+        addToCache(model) ;
+        this.dsg = new DataSourceGraphImpl(model.getGraph()) ;
     }
 
-    // Clone
-    public DataSourceImpl(DatasetGraph dataset)
+    public DataSourceImpl(Dataset ds)
     {
-        cloneFromDatasetGraph(dataset) ;
+        this.dsg = new DataSourceGraphImpl(ds) ;
     }
 
-    
-    public DataSourceImpl(Model m)
-    {
-        setDefaultModel(m) ;
+    //  Does it matter if this is not the same model each time?
+    public Model getDefaultModel() 
+    { 
+        return graph2model(dsg.getDefaultGraph()) ;
     }
-    
-    // ---- Dataset interface
-    
-    public Model getDefaultModel() { return defaultModel ; } 
-    
+
+    public Lock getLock() { return dsg.getLock() ; }
+
+    public DataSourceGraph getDataSourceGraph() { return dsg ; }
+
     public Model getNamedModel(String uri)
-    {
-        return (Model)namedModels.get(uri) ;
+    { 
+        return graph2model(dsg.getNamedGraph(uri)) ;
     }
-
-    public boolean containsNamedModel(String uri) { return namedModels.containsKey(uri) ; } 
-    
-    public Iterator listNames()
-    {
-        return namedModels.keySet().iterator() ;
-    }
-
-    public void close()
-    {
-        Iterator iter = listNames() ;
-        for ( ; iter.hasNext() ; )
-        {
-            Model m = (Model)iter.next() ;
-            m.close() ;
-        }
-
-        namedModels.clear() ;
-        
-        if ( defaultModel != null )
-            defaultModel.close() ;
-    }
-    
-    // ---- DataSource interface
-    
-    public void setDefaultModel(Model model)
-    {
-        defaultModel = model ;  
-    }
-
 
     public void addNamedModel(String uri, Model model) throws LabelExistsException
-    {
-        if ( namedModels.containsKey(uri))
-            throw new LabelExistsException("Duplicate URI for named graph: "+uri) ;
-        namedModels.put(uri, model) ;
+    { 
+        addToCache(model) ;
+        dsg.addNamedGraph(uri, model.getGraph()) ;
     }
 
     public void removeNamedModel(String uri)
-    {
-        removeNamedGraph(uri) ;
+    { 
+        removeFromCache(dsg.getNamedGraph(uri)) ;
+        dsg.removeNamedGraph(uri) ;
     }
 
-
-    public void removeNamedGraph(String uri)
-    {
-        namedModels.remove(uri) ;
-    }
 
 
     public void replaceNamedModel(String uri, Model model)
-    {
-        removeNamedModel(uri) ;
-        addNamedModel(uri, model) ;
+    { 
+        removeFromCache(dsg.getNamedGraph(uri)) ;
+        dsg.removeNamedGraph(uri) ;
+        addToCache(model) ;
+        dsg.addNamedGraph(uri, model.getGraph() ) ;
     }
 
-    public String toString()
+    public void setDefaultModel(Model model)
+    { 
+        removeFromCache(dsg.getDefaultGraph()) ;
+        cache.put(model.getGraph(), model) ;
+        dsg.setDefaultGraph(model.getGraph()) ;
+    }
+
+    public boolean containsNamedModel(String uri)
+    { 
+        return dsg.containsNamedGraph(uri) ;
+    }
+
+    public Iterator listNames()
+    { return dsg.listNames() ; }
+
+//  -------
+//  Cache models wrapping graph
+
+    private void removeFromCache(Graph graph)
     {
-        String s = "{" ;
-        if ( getDefaultModel() == null )
-            s = s+"<null>" ;
-        else
-            s = s+"["+getDefaultModel().size()+"]" ;
-        for ( Iterator iter = listNames() ; iter.hasNext() ; )
+        if ( graph == null )
+            return ;
+        cache.remove(graph) ;
+    }
+
+    private void addToCache(Model model)
+    {
+        cache.put(model.getGraph(), model) ;
+    }
+
+    private Model graph2model(Graph graph)
+    { 
+        Model model = (Model)cache.get(graph) ;
+        if ( model == null )
         {
-            String name = (String)iter.next() ;
-            s = s+", ("+name+", ["+getNamedModel(name).size()+"])" ;
+            model = ModelFactory.createModelForGraph(graph) ;
+            cache.put(graph, model) ;
         }
-        s = s + "}" ;
-        return s ;
+        return model ;
     }
-
-    public Lock getLock()
-    {
-        return lock ;
-    }
-    
-    private void cloneFromDatasetGraph(DatasetGraph dataset)
-    {
-        if ( dataset.getDefaultGraph() != null )
-            defaultModel = ModelFactory.createModelForGraph(dataset.getDefaultGraph()) ;
-        
-        Iterator iter = dataset.listNames() ;
-        while(iter.hasNext())
-        {
-            String uri = (String)iter.next() ;
-            Graph g = dataset.getNamedGraph(uri) ;
-            if ( g == null )
-                continue ;
-            Model m = ModelFactory.createModelForGraph(g) ;
-            addNamedModel(uri, m) ;
-        }
-    }
-
 }
 
 /*

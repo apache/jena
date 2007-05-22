@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
+import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 
 /** Graph-level dataset.
@@ -50,11 +51,15 @@ public class DataSourceGraphImpl implements DataSourceGraph
     { cloneDatasetGraph(dataset) ; } 
 
     public DataSourceGraphImpl()
-    { } 
+    { this(GraphUtils.makeDefaultGraph()) ; }
     
     /** Get the default graph as a Jena Graph */
     public Graph getDefaultGraph()
-    { return defaultGraph ; }
+    { 
+        if ( defaultGraph == null )
+            System.err.println("** NULL default graph") ;
+        return defaultGraph ;
+    }
 
     /** Set the default graph.  Set the active graph if it was null */ 
     public void setDefaultGraph(Graph g)

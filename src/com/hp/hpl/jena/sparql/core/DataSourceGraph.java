@@ -10,7 +10,6 @@ import com.hp.hpl.jena.graph.Graph ;
 
 public interface DataSourceGraph extends DatasetGraph 
 {
-
     /** Set the default graph.  Set the active graph if it was null */
     public void setDefaultGraph(Graph g) ;
 
