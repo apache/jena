@@ -6,7 +6,7 @@
 # Microsoft SQL Server
 
 _:c rdf:type sdb:SDBConnection ;
-    sdb:sdbType        "MSSQLServer" ;
+    sdb:sdbType        "MSSQLServerExpress" ;
     sdb:sdbHost        "localhost" ;
     sdb:sdbName        "SDB2" ;
     sdb:driver         "com.microsoft.sqlserver.jdbc.SQLServerDriver"
