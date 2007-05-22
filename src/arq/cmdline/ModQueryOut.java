@@ -6,6 +6,8 @@
 
 package arq.cmdline;
 
+import arq.cmd.QueryUtils;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -63,11 +65,23 @@ public class ModQueryOut implements ArgModuleGeneral
     }
 
     public void output(Query query)
-    {
-        IndentedWriter w = new IndentedWriter(System.out, lineNumbers) ;
-        query.serialize(w, outputSyntax) ;
-        w.flush() ;
-    }
+    { output(out(), query) ; }
+    
+    public void output(IndentedWriter out, Query query)
+    { QueryUtils.printQuery(out, query, outputSyntax) ; }
+    
+    public void outputOp(Query query)
+    { outputOp(out(), query) ; }
+
+    public void outputOp(IndentedWriter out, Query query)
+    { QueryUtils.printOp(out, query) ; }
+    
+    public void outputQuad(Query query)
+    { outputQuad(out(), query) ; }
+    
+    public void outputQuad(IndentedWriter out, Query query)
+    { QueryUtils.printQuad(out, query) ; }
+    
     
     public void checkParse(Query query)
     {
@@ -118,6 +132,10 @@ public class ModQueryOut implements ArgModuleGeneral
         }
     }
     
+    private IndentedWriter out()
+    {
+        return new IndentedWriter(System.out, lineNumbers) ;
+    }
     
 }
 

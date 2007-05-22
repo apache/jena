@@ -103,33 +103,17 @@ public class qparse extends CmdARQ
             
             // Print the query out in some syntax
             if ( printQuery )
-            {
-                divider() ;
-                modOutput.output(query) ;
-            }
+            { divider() ; modOutput.output(query) ; }
 
             // Print internal forms.
-            
             if ( printOp )
-            {
-                divider() ;
-                QueryUtils.printOp(query) ;
-            }
+            { divider() ; modOutput.outputOp(query) ; }
             
             if ( printQuad )
-            {
-                divider() ;
-                QueryUtils.printQuad(query) ;
-                //System.out.println() ;
-            }
+            { divider() ; modOutput.outputQuad(query) ; }
             
             if ( printPlan )
-            {
-                divider() ;
-                QueryUtils.printPlan(query, qExec) ;
-                //System.out.println() ;
-            }
-            
+            { divider() ; QueryUtils.printPlan(query, qExec) ; }
         }
         catch (ARQInternalErrorException intEx)
         {

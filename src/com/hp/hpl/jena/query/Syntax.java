@@ -62,7 +62,7 @@ public class Syntax extends Symbol
 
     /** The name of the default query language for query parsing.
      *  The default query language syntax must be capable of accepting
-     *  any SPARQL query but my also accept extensions. 
+     *  any SPARQL query but may also accept extensions. 
      */
     public static Syntax defaultSyntax = Syntax.syntaxSPARQL ;
     

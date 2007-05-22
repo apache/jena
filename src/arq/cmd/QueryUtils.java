@@ -8,6 +8,7 @@ package arq.cmd;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
@@ -46,19 +47,49 @@ public class QueryUtils
         System.err.println("printPlan: Unknown engine type: "+Utils.className(qe)) ;
     }
 
+    
+    
+    public static void printQuery(Query query)
+    {
+        IndentedWriter out = new IndentedWriter(System.out) ;
+        printQuery(out, query) ;
+    }
+    
+    public static void printQuery(IndentedWriter out, Query query)
+    {
+        printQuery(out, query, Syntax.defaultSyntax) ;
+    }
+    
+    public static void printQuery(IndentedWriter out, Query query, Syntax syntax)
+    {
+        query.serialize(out, syntax) ;
+        out.flush() ;
+    }
+
     public static void printOp(Query query)
+    {
+        IndentedWriter out = new IndentedWriter(System.out) ;
+        printOp(out, query) ;
+    }
+    
+    public static void printOp(IndentedWriter out, Query query)
     {
         Op op = AlgebraGenerator.compileQuery(query) ;
         SerializationContext sCxt = new SerializationContext(query) ;
-        IndentedWriter out = new IndentedWriter(System.out) ;
         op.output(out, sCxt) ;
+        out.flush();
     }    
 
     public static void printQuad(Query query)
     {
+        IndentedWriter out = new IndentedWriter(System.out) ;
+        printQuad(out, query) ;
+    }
+    
+    public static void printQuad(IndentedWriter out, Query query)
+    {
         Op op = AlgebraGeneratorQuad.compileQuery(query) ;
         SerializationContext sCxt = new SerializationContext(query) ;
-        IndentedWriter out = new IndentedWriter(System.out) ;
         op.output(out, sCxt) ;
     }    
     
