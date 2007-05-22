@@ -1,17 +1,17 @@
-@prefix acmd:     <http://jena.hpl.hp.com/2006/01/acmd#> .
+@prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 @prefix rdfs:	  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
 
 ## Layout 1 (simple form)
 
-_:c rdf:type acmd:SDBConnection ;
-    acmd:sdbType        "derby" ;
-    acmd:sdbName        "DB/SDB1" ;
-    acmd:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
+_:c rdf:type sdb:SDBConnection ;
+    sdb:sdbType        "derby" ;
+    sdb:sdbName        "DB/SDB1" ;
+    sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
     .
 
-[] rdf:type acmd:Store ;
-    acmd:layout         "layout1" ;
-    acmd:connection     _:c ;
+[] rdf:type sdb:Store ;
+    sdb:layout         "layout1" ;
+    sdb:connection     _:c ;
     .
