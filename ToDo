@@ -6,13 +6,13 @@
 -----
 
 + Aggregates
-  QueryIter(ator)Group
+  QueryIterGroup
   Parsing : 
      SELECT list is expressions always (inv vars)
      Ordered Map [LinkedHashMap] from name (generated if necessary) to expression.
-     Phase 2 detectes inconmsistences 
+     Phase 2 detects inconsistences 
          
-+ QueryExecution wrapes QueryExecutionGraph.
++ QueryExecution wraps/extends QueryExecutionGraph.
   QueryEngineRegistry isa QueryExecutionGraph factory
   Clean DatasetUtils, DatasetFactory
   Remove QueryExecutionGraphFactory
