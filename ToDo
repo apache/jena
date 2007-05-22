@@ -12,11 +12,12 @@
      Ordered Map [LinkedHashMap] from name (generated if necessary) to expression.
      Phase 2 detectes inconmsistences 
          
-+ Make Dataset more formally a level changed between Models and Graphs.
-  DataSourceImpl - done.
-  QueryExecution wrapes QueryExecutionGraph.
++ QueryExecution wrapes QueryExecutionGraph.
+  QueryEngineRegistry isa QueryExecutionGraph factory
   Clean DatasetUtils, DatasetFactory
-
+  Remove QueryExecutionGraphFactory
+  OpExec <== QueryExecutionGraph
+  
 + Quads - independent quads?  Or retain blocking structure?
 
 + Remote update over HTTP
@@ -25,14 +26,6 @@ Improvements - are these measurable?
   If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
 
 == Core
-
-Tidying up: 
-+ QueryEngineFactory
-    QueryEngineOpFactory to adapter QueryEngineOpBase subclasses?
-    QueryEngineOpBase adapter to something.
-+ Remove QueryExecutionGraphFactory
-+ Remove QueryExecutionGraph - it's OpExec now.
-    Registry for OpExec level.
 
 + Binding - becomes BindingBase.
   Add "Binding Binding.add(var, value)" for switching to a Binding Map IIF there is a binding added.
@@ -58,11 +51,6 @@ Tidying up:
 
 + Property function to property path expression
 
-+ Non-distinguished variable removal.
-   StageBuilder - strict place
-   In a project (or pseudo project) - does it once.
-      Need test case : { _:a :p ?v. ?v :splitIRI (?ns ?ln) . _a :p ?w } 
-      
 + testing QE1 and QE2 and QE3 in the same test run
 
 + Commands
