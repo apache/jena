@@ -2,6 +2,7 @@
 
 ++ ** Document "stages"
 ++ ** Document "update API"
+++ ** Make the system DatasetGraph/QueryExecutionGraph-centric
 -----
 
 + Aggregates
@@ -12,11 +13,8 @@
      Phase 2 detectes inconmsistences 
          
 + Make Dataset more formally a level changed between Models and Graphs.
-  Sort out with update as well.
-  DatSourceImpl - done.
-
-  ** Make the system DatasetGraph/QueryExecutionGraph-centric
-    with Dataset and QueryExecution just converters
+  DataSourceImpl - done.
+  QueryExecution wrapes QueryExecutionGraph.
   Clean DatasetUtils, DatasetFactory
 
 + Quads - independent quads?  Or retain blocking structure?
