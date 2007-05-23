@@ -1,0 +1,8 @@
+(prefix ((: <http://example/>))
+  (exec
+   (graph
+    (:x :p 1)
+    (:x :p 2))
+   (bgp (?x :p ?v))
+   ))
+    
