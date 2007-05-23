@@ -2,6 +2,8 @@
 
 + Integrate?
 
++ BuilderExec
+
 + Builder tidying and testing
   
   ItemLists : cons cells?!
@@ -18,4 +20,10 @@
 
 + Prefix writing.
 
-+ qexec.
++ qexec
+  See hack: QueryExecUtils.executeAlgebra(Op, DatasetGraph)
+   (query
+     (graph ..
+     (
+
+ + BuilderDataset.

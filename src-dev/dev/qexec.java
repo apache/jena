@@ -13,27 +13,24 @@ import arq.cmd.CmdException;
 import arq.cmd.TerminationException;
 import arq.cmdline.*;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.*;
-import com.hp.hpl.jena.sparql.engine.main.OpExecMain;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.engine.ref.OpExecRef;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionGraphFactory;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.sse.AlgSSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.util.FileUtils;
+
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryException;
 
 public class qexec extends CmdARQ
 {
@@ -163,19 +160,6 @@ public class qexec extends CmdARQ
 //        QueryExecutionOp qexec = (QueryExecutionOp)qe ;
 //        QueryIterator qIter = qexec.eval(op, dsg) ;
         
-        OpExec opExec = null ;
-        // TODO quick hack.  Wait for registry to be fixed
-        if ( qe instanceof QueryEngineMain )
-            opExec = new OpExecMain() ;
-        else if ( qe instanceof QueryEngineRef )
-            opExec = new OpExecRef() ;
-        else
-        {
-            System.err.println("Didn't find a query engine capable of dealing with an algebra expression directly") ;
-            throw new TerminationException(1) ;
-        }
-        QueryIterator qIter = opExec.eval(op, dsg, ARQ.getContext()) ;
-        
         if ( printOp || printPlan )
         {
             
@@ -189,16 +173,17 @@ public class qexec extends CmdARQ
             
             if ( printPlan )
             {
-                divider() ;
-                IndentedWriter out = new IndentedWriter(System.out, false) ;
-                Plan plan = new PlanOp(op, qIter) ;
-                plan.output(out) ;
-                out.flush();
+                System.err.println("print plan: Not implemented") ;
+//                divider() ;
+//                IndentedWriter out = new IndentedWriter(System.out, false) ;
+//                Plan plan = new PlanOp(op, qIter) ;
+//                plan.output(out) ;
+//                out.flush();
             }
             return ;
         }
         
-        QueryExecUtils.executeAlgebra(op, qIter, modResults.getResultsFormat()) ;
+        QueryExecUtils.executeAlgebra(op, dsg, modResults.getResultsFormat()) ;
         
         long time = modTime.endTimer() ;
         if ( modTime.timingEnabled() )

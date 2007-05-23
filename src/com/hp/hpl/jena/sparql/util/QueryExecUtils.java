@@ -9,21 +9,31 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.util.List;
 
-import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.ARQConstants;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.OpExec;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionGraphFactory;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.main.OpExecMain;
+import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.engine.ref.OpExecRef;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.resultset.PlainFormat;
 import com.hp.hpl.jena.sparql.resultset.ResultSetApply;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab;
+
+import com.hp.hpl.jena.query.*;
 
 /** Some utilities for query processing. 
  * 
@@ -60,13 +70,29 @@ public class QueryExecUtils
         queryExecution.close() ;
     }
 
-    public static void executeAlgebra(Op op, QueryIterator qIter, ResultsFormat outputFormat)
+    public static void executeAlgebra(Op op, DatasetGraph dsg, ResultsFormat outputFormat)
     {
+        // XXX Hack the first
+        QueryExecutionGraph qe = QueryExecutionGraphFactory.create(new Query(), dsg) ;
+
+        OpExec opExec = null ;
+        // XXX Hack the second: Wait for registry to be fixed
+        if ( qe instanceof QueryEngineMain )
+            opExec = new OpExecMain() ;
+        else if ( qe instanceof QueryEngineRef )
+            opExec = new OpExecRef() ;
+        else
+            throw new ARQInternalErrorException("Didn't find a query engine capable of dealing with an algebra expression directly") ;
+
+        QueryIterator qIter = opExec.eval(op, dsg, ARQ.getContext()) ;
+
+        // XXX Hack the third
         List vars = null ;
         if ( qIter instanceof OpProject )
             vars = Var.varNames(((OpProject)op).getVars()) ;
         else
             vars = Var.varNames(OpVars.allVars(op)) ;
+
         ResultSet results = ResultSetFactory.create(qIter, vars) ;
         outputResultSet(results, null, outputFormat) ;
      }
