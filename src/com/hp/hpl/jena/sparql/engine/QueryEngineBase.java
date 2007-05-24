@@ -32,25 +32,25 @@ import com.hp.hpl.jena.query.*;
  * @version    $Id: QueryEngineBase.java,v 1.12 2007/02/05 17:11:13 andy_seaborne Exp $
  */
  
-public abstract class QueryEngineBase implements QueryExecution, QueryExecutionGraph
+public abstract class QueryEngineBase implements QueryExecution//, QueryExecutionGraph
 {
-    private static Log log = LogFactory.getLog(QueryEngineBase.class) ;
-    
-    protected Query query ;
+    private static Log      log                       = LogFactory.getLog(QueryEngineBase.class) ;
 
-    static int queryCount = 0 ;
-    protected boolean queryExecutionInitialised = false ;
-    protected boolean queryExecutionClosed = false ;
-    protected int idQueryExecution ;
-    
+    protected Query         query ;
+
+    static int              queryCount                = 0 ;
+    protected boolean       queryExecutionInitialised = false ;
+    protected boolean       queryExecutionClosed      = false ;
+    protected int           idQueryExecution ;
+
     protected QueryIterator resultsIter ;
-    private Context context ;
-    protected Plan plan = null ;
-//    private ExecutionContext execContext = null ; 
-    private QuerySolution startBinding = null ; 
-    private FileManager fileManager = null ;
-    private Dataset      dataset = null ;         // Set extenally
-    private DatasetGraph datasetGraph = null ;    // The graph equivalent
+    private Context         context ;
+    protected Plan          plan                      = null ;
+    // private ExecutionContext execContext = null ;
+    private QuerySolution   startBinding              = null ;
+    private FileManager     fileManager               = null ;
+    private Dataset         dataset                   = null ;
+    private DatasetGraph    datasetGraph              = null ;
     
     protected QueryEngineBase(Query q, Context context)
     {
@@ -189,9 +189,6 @@ public abstract class QueryEngineBase implements QueryExecution, QueryExecutionG
     }
     
     
-    /** Execute a query and get back the results.
-     * @return ResultSet
-     */
     public ResultSet execSelect()
     {
         if ( ! query.isSelectType() )
