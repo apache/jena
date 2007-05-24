@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
@@ -66,8 +67,15 @@ public abstract class ExecutionBase
     public DatasetGraph getDatasetGraph() 
     { 
         if ( datasetGraph == null )
-            prepareDataset() ;
+            datasetGraph = prepareDataset(dataset, query, fileManager) ;
         return datasetGraph ;
+    }
+    
+    public Binding getInputBinding()
+    {
+        if ( startBinding == null )
+            return BindingRoot.create() ;
+        return startBinding ;
     }
     
     protected abstract Op getOp() ;
@@ -88,7 +96,7 @@ public abstract class ExecutionBase
     }
     
     // Call after setFM called.
-    private DatasetGraph prepareDataset()
+    private static DatasetGraph prepareDataset(Dataset dataset, Query query, FileManager fileManager)
     {
         if ( dataset != null )
             throw new ARQNotImplemented("dataset.asDatasetGraph()") ;
