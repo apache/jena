@@ -18,7 +18,9 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
@@ -27,6 +29,7 @@ import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.syntax.Template;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
 
@@ -34,7 +37,7 @@ import com.hp.hpl.jena.query.*;
 
 /** All the SPARQL query result forms made form a graph-level execution object */ 
 
-public abstract class QueryExecutionBase implements QueryExecution
+public class QueryExecutionBase implements QueryExecution
 {
     // Pull over the "build dataset code"
     // Initial bindings.
@@ -254,6 +257,17 @@ public abstract class QueryExecutionBase implements QueryExecution
         if ( q.isAskType() )        return "ASK" ;
         return "<<unknown>>" ;
     }
+
+    public Context getContext()
+    {
+        return null ;
+    }
+
+    public void setFileManager(FileManager fm)
+    { throw new ARQNotImplemented("setFileManager") ; }
+
+    public void setInitialBinding(QuerySolution binding)
+    { throw new ARQNotImplemented("setInitialBinding") ; }
 }
 
 /*

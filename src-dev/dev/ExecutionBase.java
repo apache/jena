@@ -44,7 +44,7 @@ public abstract class ExecutionBase
     private FileManager fileManager = FileManager.get();
     private Op queryOp = null ;
 
-    public ExecutionBase(Query query, Dataset dataset, Context context, QueryExecutionGraph execGraph)
+    public ExecutionBase(Query query, Dataset dataset, Context context)
     {
         this.query = query ;
         // Fixup query.
