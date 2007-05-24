@@ -6,32 +6,20 @@
 
 package dev;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.n3.RelURI;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
@@ -39,34 +27,33 @@ import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
-import com.hp.hpl.jena.util.FileManager;
 
-public class QueryExecutionBase implements QueryExecution
+import com.hp.hpl.jena.query.*;
+
+/** All the SPARQL query result forms made form a graph-level execution object */ 
+
+public abstract class QueryExecutionBase implements QueryExecution
 {
     // Pull over the "build dataset code"
     // Initial bindings.
+    // Split : QueryExecutionGraph already has the dataset.
     
     private static Log log = LogFactory.getLog(QueryExecutionBase.class) ;
 
     private Query query ;
     private Dataset dataset ;
-    private Context context ;
     private QueryExecutionGraph execGraph ;
     private QueryIterator queryIterator = null ;
-    private FileManager fileManager = FileManager.get();
+    private Op queryOp = null ;
 
-    public QueryExecutionBase(Query query, Dataset dataset, Context context, QueryExecutionGraph execGraph)
+    // Make this on the way out.
+    public QueryExecutionBase(Query query, Dataset dataset, QueryExecutionGraph execGraph)
     {
         this.query = query ;
-        // Fixup query.
-        query.setResultVars() ;
-        this.dataset = dataset ;    // Maybe null i.e. in query
-        this.context = context ;
         this.execGraph = execGraph ;
+        this.dataset = dataset ;
     }
     
     public void abort()
@@ -225,58 +212,21 @@ public class QueryExecutionBase implements QueryExecution
         return r ; 
     }
 
-    private void execInit()
-    {
-        prepareDataset() ;
-    }
-    
+    protected void execInit()
+    { }
+
     private ResultSet execInternal()
     {
-        return solutions(dataset.getDefaultModel()) ;
-    }
-
-    private ResultSet solutions(Model model)
-    { 
+        Model model = dataset.getDefaultModel() ;
         queryIterator = execGraph.exec() ;
         ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, queryIterator) ;
+        
         // Set flags (the plan has the elements for solution modifiers)
         if ( query.hasOrderBy() )
             rStream.setOrdered(true) ;
         if ( query.isDistinct() )
             rStream.setDistinct(true) ;
         return rStream ;
-    }
-
-    public Context getContext() { return context ; }
-
-    public void setFileManager(FileManager fm) { fileManager = fm ; }
-
-    public void setInitialBinding(QuerySolution binding)
-    {
-        throw new ARQNotImplemented() ;
-    }
-
-    // Call after setFM called.
-    private DatasetGraph prepareDataset()
-    {
-        if ( dataset != null )
-            throw new ARQNotImplemented("dataset.asDatasetGraph()") ;
-            //return dataset.asDatasetGraph() ;
-        
-        if ( ! query.hasDatasetDescription() ) 
-            //Query.log.warn("No data for query (no URL, no model)");
-            throw new QueryExecException("No dataset description for query");
-        
-        String baseURI = query.getBaseURI() ;
-        if ( baseURI == null )
-            baseURI = RelURI.chooseBaseURI() ;
-        log.debug("init: baseURI for query is: "+baseURI) ; 
-        
-        DatasetGraph dsg =
-            DatasetUtils.createDatasetGraph(query.getGraphURIs(),
-                                            query.getNamedGraphURIs(),
-                                            fileManager, baseURI ) ;
-        return dsg ;
     }
 
     private void insertPrefixesInto(Model model)

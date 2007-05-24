@@ -6,13 +6,12 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
+/** Interface to graph level execution of a SPARQL algebra expression */
 
 public interface QueryExecutionGraph
 {
     /** Execute the query and get back an iterator of bindings (graph level) */
     public QueryIterator exec() ;
-    public void setDatasetGraph(DatasetGraph dataset) ; 
     public void close() ;
     public void abort() ;
 }
