@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
 
-public class QueryEngineQuad extends QueryEngineOpBase
+public class QueryEngineQuad extends QueryEngineRef
 {
    public QueryEngineQuad(Query query, Context context) { this(query, null, null, context) ; }
     

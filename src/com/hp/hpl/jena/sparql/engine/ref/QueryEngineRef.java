@@ -7,12 +7,16 @@
 package com.hp.hpl.jena.sparql.engine.ref;
 
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
 
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecException;
 
 
 public class QueryEngineRef extends QueryEngineOpBase
@@ -27,6 +31,27 @@ public class QueryEngineRef extends QueryEngineOpBase
               new AlgebraGenerator(context), 
               input, 
               context) ; 
+    }
+    
+    protected QueryEngineRef(Query query, DatasetGraph dataset, AlgebraGenerator gen,
+                             Binding input, Context context)
+    {
+        super(query, dataset, gen, input, context) ;
+    }
+    
+    public QueryIterator eval(Op op, Binding binding, DatasetGraph dsg, Context context)
+    {
+        if ( binding.vars().hasNext() )
+            // Easy ways to fix this limitation - use a wrapper to add the necessary bindings.
+            // Or mess with table to join in the binding.
+            // Or ...
+            throw new QueryExecException("Initial bindings to ref evaluation") ;
+
+        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
+        Evaluator eval = EvaluatorFactory.create(execCxt) ;
+        Table table = Eval.eval(eval, op) ;
+        QueryIterator qIter = table.iterator(execCxt) ;
+        return QueryIteratorCheck.check(qIter, execCxt) ;
     }
     
     static public QueryEngineFactory getFactory()   { return factory ; } 

@@ -8,9 +8,12 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
 
 public class QueryEngineMain extends QueryEngineOpBase
@@ -25,6 +28,16 @@ public class QueryEngineMain extends QueryEngineOpBase
 //    public QueryEngineMain(Query query, Context context)
 //    { this(query, null, context) ; }
     
+    public QueryIterator eval(Op op, Binding input, DatasetGraph dsg, Context context)
+    {
+        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
+        QueryIterator qIter1 = new QueryIterSingleton(input, execCxt) ;
+        QueryIterator qIter = OpCompiler.compile(op, qIter1, execCxt) ;
+        // Wrap with something to check for closed iterators.
+        qIter = QueryIteratorCheck.check(qIter, execCxt) ;
+        return qIter ;
+    }
+    
     // -------- Factory
     
     private static QueryEngineFactory factory = new QueryEngineFactory()
@@ -38,6 +51,8 @@ public class QueryEngineMain extends QueryEngineOpBase
             return engine.getPlan() ;
         }
     } ;
+
+
 }
 
 /*

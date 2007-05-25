@@ -6,26 +6,20 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.graph.Graph;
 
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
-import com.hp.hpl.jena.sparql.engine.ref.Eval;
-import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
-import com.hp.hpl.jena.sparql.engine.ref.EvaluatorFactory;
 import com.hp.hpl.jena.sparql.util.Context;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 
-public class QueryEngineOpBase extends QueryEngineBase implements OpExec
+public abstract class QueryEngineOpBase extends QueryEngineBase implements OpExec
 {
     private Op queryOp = null ;
     private AlgebraGenerator gen = null ;
@@ -63,20 +57,7 @@ public class QueryEngineOpBase extends QueryEngineBase implements OpExec
     public QueryIterator eval(Op op, DatasetGraph dsg, Context context)
     { return eval(op, BindingRoot.create(), dsg, context) ; }
     
-    public QueryIterator eval(Op op, Binding binding, DatasetGraph dsg, Context context)
-    {
-        if ( binding.vars().hasNext() )
-            // Easy ways to fix this limitation - use a wrapper to add the necessary bindings.
-            // Or mess with table to join in the binding.
-            // Or ...
-            throw new QueryExecException("Initial bindings to ref evaluation") ;
-        
-        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
-        Evaluator eval = EvaluatorFactory.create(execCxt) ;
-        Table table = Eval.eval(eval, op) ;
-        QueryIterator qIter = table.iterator(execCxt) ;
-        return QueryIteratorCheck.check(qIter, execCxt) ;
-    }
+    public abstract QueryIterator eval(Op op, Binding binding, DatasetGraph dsg, Context context) ;
     
     public Op getOp()
     {
