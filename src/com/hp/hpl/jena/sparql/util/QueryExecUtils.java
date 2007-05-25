@@ -13,16 +13,17 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.OpExec;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraphFactory;
+import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.main.OpExecMain;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
@@ -72,9 +73,10 @@ public class QueryExecUtils
 
     public static void executeAlgebra(Op op, DatasetGraph dsg, ResultsFormat outputFormat)
     {
-        // XXX Hack the first
-        QueryExecutionGraph qe = QueryExecutionGraphFactory.create(new Query(), dsg) ;
-
+        if ( true )
+            throw new ARQNotImplemented("executeAlgebra") ;
+        Plan qe = null ;
+        
         OpExec opExec = null ;
         // XXX Hack the second: Wait for registry to be fixed
         if ( qe instanceof QueryEngineMain )

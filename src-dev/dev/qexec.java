@@ -14,23 +14,24 @@ import arq.cmd.TerminationException;
 import arq.cmdline.*;
 
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.util.FileUtils;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraphFactory;
+import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.sse.AlgSSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
 
 public class qexec extends CmdARQ
 {
@@ -150,15 +151,7 @@ public class qexec extends CmdARQ
         modTime.startTimer() ;
         DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
         
-        QueryExecutionGraph qe = QueryExecutionGraphFactory.create(new Query(), dsg) ;
-        
-//        if ( ! ( qe instanceof QueryExecutionOp ) )
-//        {
-//            System.err.println("Didn't find a query engine capable of dealing with an algebra expression directly") ;
-//            throw new TerminationException(1) ;
-//        }
-//        QueryExecutionOp qexec = (QueryExecutionOp)qe ;
-//        QueryIterator qIter = qexec.eval(op, dsg) ;
+        Plan plan = QueryExecutionFactory.createPlan(new Query(), dsg) ;
         
         if ( printOp || printPlan )
         {
@@ -173,12 +166,10 @@ public class qexec extends CmdARQ
             
             if ( printPlan )
             {
-                System.err.println("print plan: Not implemented") ;
-//                divider() ;
-//                IndentedWriter out = new IndentedWriter(System.out, false) ;
-//                Plan plan = new PlanOp(op, qIter) ;
-//                plan.output(out) ;
-//                out.flush();
+                divider() ;
+                IndentedWriter out = new IndentedWriter(System.out, false) ;
+                plan.output(out) ;
+                out.flush();
             }
             return ;
         }

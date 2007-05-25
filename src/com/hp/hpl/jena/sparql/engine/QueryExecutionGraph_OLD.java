@@ -12,7 +12,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 /** Interface to graph level execution of a SPARQL algebra expression */
 
-public interface QueryExecutionGraph
+public interface QueryExecutionGraph_OLD
 {
     /** Execute the query and get back an iterator of bindings (graph level) */
     public QueryIterator exec() ;

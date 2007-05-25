@@ -8,16 +8,21 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
+import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.util.FileManager;
 
 
 /** Place to make QueryExecution objects from Query objects or a string.   
@@ -370,6 +375,59 @@ public class QueryExecutionFactory
         return qe ;
     }
     
+    // ---------------- Graph level
+    
+    static public Plan createPlan(Query query, DatasetGraph dataset, Binding input, Context context)
+    {
+        return makePlan(query, dataset, input, context) ;
+    }
+    
+    public static Plan createPlan(String queryStr, Graph graph)
+    {
+        return createPlan(QueryFactory.create(queryStr), graph) ; 
+    }
+    
+    public static Plan createPlan(String queryStr, DatasetGraph dataset)
+    {
+        return createPlan(QueryFactory.create(queryStr), dataset) ; 
+    }
+     
+    public static Plan createPlan(Query query, Graph graph)
+    {
+        return makePlan(query, new DataSourceGraphImpl(graph), null, null) ; 
+    }
+    
+    public static Plan createPlan(Query query, DatasetGraph dataset)
+    {
+        return makePlan(query, dataset, null, null) ;
+    }
+
+    public static Plan createPlan(Element pattern, Graph graph)
+    {
+        return createPlan(toQuery(pattern), graph) ; 
+    }
+    
+    public static Plan createPlan(Element pattern, DatasetGraph dataset)
+    {
+        return createPlan(toQuery(pattern), dataset) ;
+    }
+    
+    private static Query toQuery(Element pattern)
+    {
+        Query query = QueryFactory.make() ;
+        query.setQueryPattern(pattern) ;
+        return query ;
+    }
+
+    private static Plan makePlan(Query query, DatasetGraph dataset, Binding input, Context context)
+    {
+        if ( context == null )
+            context = new Context(ARQ.getContext()) ;
+        QueryEngineFactory f = findFactory(query, dataset, context) ;
+        if ( f == null )
+            return null ;
+        return f.create(query, dataset, input, context) ;
+    }
     // ---------------- Internal routines
     
     // Make query
@@ -404,7 +462,7 @@ public class QueryExecutionFactory
         DatasetGraph dsg = null ;
         if ( dataset != null )
             dsg = dataset.asDatasetGraph() ;
-        QueryEngineFactory f = QueryEngineRegistry.get().find(query, dsg, context);
+        QueryEngineFactory f = findFactory(query, dsg, context);
         if ( f == null )
         {
             LogFactory
@@ -412,8 +470,12 @@ public class QueryExecutionFactory
                 .warn("Failed to find a QueryEngineFactory for query: "+query) ;
             return null ;
         }
-        QueryExecutionGraph qExec = f.create(query, dsg, context) ;
-        return new QueryExecutionBase(query, dataset, qExec) ;
+        return new QueryExecutionBase(query, dataset, context, f) ;
+    }
+    
+    static private QueryEngineFactory findFactory(Query query, DatasetGraph dataset, Context context)
+    {
+        return QueryEngineRegistry.get().find(query, dataset, context);
     }
     
     static private QueryEngineHTTP makeServiceRequest(String service, Query query)

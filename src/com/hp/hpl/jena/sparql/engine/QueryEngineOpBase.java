@@ -6,42 +6,76 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecException;
+
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
+import com.hp.hpl.jena.sparql.engine.ref.Eval;
+import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
+import com.hp.hpl.jena.sparql.engine.ref.EvaluatorFactory;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.util.FileManager;
 
-public abstract class QueryEngineOpBase extends QueryEngineBase
+import com.hp.hpl.jena.graph.Graph;
+
+public class QueryEngineOpBase extends QueryEngineBase implements OpExec
 {
     private Op queryOp = null ;
     private AlgebraGenerator gen = null ;
-    private OpExec opExec = null ;
+    private Plan plan = null ;
     
-    protected QueryEngineOpBase(Query query, DatasetGraph dataset, 
-                                AlgebraGenerator gen, Context context,
-                                OpExec opExec)
+    protected QueryEngineOpBase(Query query,
+                                DatasetGraph dataset, 
+                                AlgebraGenerator gen,
+                                Binding input,
+                                Context context)
     {
-        super(query, dataset, context) ;
+        super(query, dataset, input, context) ;
         this.gen = gen ;
-        this.opExec = opExec ;
+    }
+    
+    public Plan getPlan()
+    {
+        if ( plan == null )
+            plan = createPlan() ;
+        return plan ;
+    }
+    
+    public Plan createPlan()
+    {
+        QueryIterator queryIterator = eval(getOp(), getInputBinding(), 
+                                           getDatasetGraph(), context()) ;
+        return new PlanOp(getOp(), queryIterator) ;
     }
     
     final
-    public QueryExecutionGraph execution()
+    public QueryIterator eval(Op op, Graph graph)
+    { return eval(op, new DataSourceGraphImpl(graph), ARQ.getContext()) ; }
+    
+    final
+    public QueryIterator eval(Op op, DatasetGraph dsg, Context context)
+    { return eval(op, BindingRoot.create(), dsg, context) ; }
+    
+    public QueryIterator eval(Op op, Binding binding, DatasetGraph dsg, Context context)
     {
-        final QueryIterator queryIterator = opExec.eval(getOp(), getInputBinding(), 
-                                                        getDatasetGraph(), context()) ;
-        return new QueryExecutionGraph() {
-            public void abort()         { queryIterator.abort(); }
-            public void close()         { queryIterator.close(); }
-            public QueryIterator exec() { return queryIterator ; }
-            public void setFileManager(FileManager fileManager) { _setFileManager(fileManager) ; }
-            public void setInitialBinding(Binding inputBinding) { _setInitialBinding(inputBinding) ; }
-            public Context getContext() { return context() ; } 
-        } ;
+        if ( binding.vars().hasNext() )
+            // Easy ways to fix this limitation - use a wrapper to add the necessary bindings.
+            // Or mess with table to join in the binding.
+            // Or ...
+            throw new QueryExecException("Initial bindings to ref evaluation") ;
+        
+        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
+        Evaluator eval = EvaluatorFactory.create(execCxt) ;
+        Table table = Eval.eval(eval, op) ;
+        QueryIterator qIter = table.iterator(execCxt) ;
+        return QueryIteratorCheck.check(qIter, execCxt) ;
     }
     
     public Op getOp()

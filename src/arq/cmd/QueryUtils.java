@@ -6,18 +6,20 @@
 
 package arq.cmd;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryEngineBase;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.Syntax;
 
 /** Utilities for queries and plans
  * 
@@ -29,26 +31,17 @@ public class QueryUtils
 {
     public static void printPlan(Query query, QueryExecution qe)
     {
-        System.err.println("QueryUtils.printPlan: Need s converting") ;
-//        if ( qe instanceof QueryEngineBase )
-//        {
-//            QueryEngineBase qeb = (QueryEngineBase)qe ;
-//            // Ensure there is some kind of dataset
-//
-//            SerializationContext sCxt = new SerializationContext(query) ;
-//            IndentedWriter out = new IndentedWriter(System.out) ;
-//            
-//            if ( !qeb.hasDatasetOrDescription() )
-//                qeb.setDataset(new DataSourceImpl()) ;
-//            Plan plan = qeb.getPlan() ;
-//            plan.output(out, sCxt) ;
-//            out.flush();
-//            return ;
-//        }
-//        System.err.println("printPlan: Unknown engine type: "+Utils.className(qe)) ;
-    }
+        QueryEngineFactory f = QueryEngineRegistry.findFactory(query, qe.getDataset().asDatasetGraph(), ARQ.getContext()) ;
+        if ( f == null )
+            System.err.println("printPlan: Unknown engine type: "+Utils.className(qe)) ;
+        
+        Plan plan = f.create(query, qe.getDataset().asDatasetGraph(), null, ARQ.getContext()) ;
+        SerializationContext sCxt = new SerializationContext(query) ;
+        IndentedWriter out = new IndentedWriter(System.out) ;
 
-    
+        plan.output(out, sCxt) ;
+        out.flush();
+    }
     
     public static void printQuery(Query query)
     {

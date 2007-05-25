@@ -6,13 +6,15 @@
 
 package arq.examples.execute;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
+
+import com.hp.hpl.jena.query.Query;
 
 /** Example skeleton for a query engine. */
 
@@ -20,15 +22,15 @@ public class MyQueryEngine extends QueryEngineMain
 {
     // Do nothing template for a query engine.  
     
-    public MyQueryEngine(Query query, DatasetGraph dataset, Context context)
+    public MyQueryEngine(Query query, DatasetGraph dataset, Binding initial, Context context)
     {
-        super(query, dataset, context) ;
+        super(query, dataset, initial, context) ;
     }
 
     public MyQueryEngine(Query query, DatasetGraph dataset)
     { 
-        // This will default to the global context. 
-        this(query, dataset, null) ;
+        // This will default to the global context with no initial settings 
+        this(query, dataset, null, null) ;
     }
 
     // ---- Registration of the factory for this query engine class. 
@@ -46,11 +48,11 @@ public class MyQueryEngine extends QueryEngineMain
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
         { return true ; }
 
-        public QueryExecutionGraph create(Query query, DatasetGraph dataset, Context context)
+        public Plan create(Query query, DatasetGraph dataset, Binding initial, Context context)
         {
             // Create a query engine instance.
-            MyQueryEngine engine = new MyQueryEngine(query, dataset, context) ;
-            return engine.execution() ;
+            MyQueryEngine engine = new MyQueryEngine(query, dataset, initial, context) ;
+            return engine.getPlan() ;
         }
     } ;
 }

@@ -9,18 +9,16 @@ package com.hp.hpl.jena.sparql.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.n3.RelURI;
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.util.Context;
-import com.hp.hpl.jena.sparql.util.DatasetUtils;
-import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.Query;
 
 /** Build the graph level objects needed for query execution */
 
@@ -35,7 +33,7 @@ public abstract class QueryEngineBase
     private FileManager fileManager = FileManager.get();
     private Op queryOp = null ;
 
-    public QueryEngineBase(Query query, DatasetGraph dataset, Context context)
+    public QueryEngineBase(Query query, DatasetGraph dataset, Binding startBinding, Context context)
     {
         this.query = query ;
         // Fixup query.
@@ -44,56 +42,24 @@ public abstract class QueryEngineBase
         if ( context == null )      // Copy of global context to protect against chnage.
             context = new Context(ARQ.getContext()) ;
         this.context = context ;
-        startBinding = null ;
+        this.startBinding = startBinding ;
     }
     
     public DatasetGraph getDatasetGraph() 
     { 
-        if ( dataset == null )
-            dataset = prepareDataset(dataset, query, fileManager) ;
         return dataset ;
     }
     
     public Binding getInputBinding()
     {
         if ( startBinding == null )
-            return BindingRoot.create() ;
+            startBinding = BindingRoot.create() ;
         return startBinding ;
     }
     
-    protected abstract Op getOp() ;
-
     protected Query getQuery() { return query ; }
     
     protected Context context() { return context ; }
-
-    protected void _setFileManager(FileManager fm) { fileManager = fm ; }
-
-    protected void _setInitialBinding(Binding inputBinding)
-    { startBinding = inputBinding ; }
-    
-    // Call after setFM called.
-    private static DatasetGraph prepareDataset(DatasetGraph dataset, Query query, FileManager fileManager)
-    {
-        if ( dataset != null )
-            throw new ARQNotImplemented("dataset.asDatasetGraph()") ;
-            //return dataset.asDatasetGraph() ;
-        
-        if ( ! query.hasDatasetDescription() ) 
-            //Query.log.warn("No data for query (no URL, no model)");
-            throw new QueryExecException("No dataset description for query");
-        
-        String baseURI = query.getBaseURI() ;
-        if ( baseURI == null )
-            baseURI = RelURI.chooseBaseURI() ;
-        log.debug("init: baseURI for query is: "+baseURI) ; 
-        
-        DatasetGraph dsg =
-            DatasetUtils.createDatasetGraph(query.getGraphURIs(),
-                                            query.getNamedGraphURIs(),
-                                            fileManager, baseURI ) ;
-        return dsg ;
-    }
 }
 
 /*

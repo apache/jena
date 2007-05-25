@@ -8,19 +8,21 @@ package com.hp.hpl.jena.sparql.modify.op;
 
 import java.util.*;
 
-
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraphFactory;
+
+import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateException;
 
@@ -47,8 +49,8 @@ public abstract class UpdatePattern extends GraphUpdateN
     {
         if ( pattern != null )
         {
-            QueryExecutionGraph patExec = QueryExecutionGraphFactory.create(pattern, graphStore) ;
-            QueryIterator qIter = patExec.exec() ;
+            Plan plan = QueryExecutionFactory.createPlan(pattern, graphStore) ;
+            QueryIterator qIter = plan.iterator() ;
             
             for( ; qIter.hasNext() ; )
             {

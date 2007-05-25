@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.resultset.XMLInput;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -141,6 +142,11 @@ public class QueryEngineHTTP implements QueryExecution
     {
         HttpQuery httpQuery = makeHttpQuery() ;
         return "GET "+httpQuery.toString() ;
+    }
+
+    public Dataset getDataset()
+    {
+        return null ;
     }
 }
 

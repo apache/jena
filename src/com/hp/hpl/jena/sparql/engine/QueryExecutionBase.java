@@ -6,42 +6,34 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.FileManager;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
-import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.query.*;
 
 /** All the SPARQL query result forms made form a graph-level execution object */ 
 
@@ -53,18 +45,25 @@ public class QueryExecutionBase implements QueryExecution
     
     private static Log log = LogFactory.getLog(QueryExecutionBase.class) ;
 
-    private Query query ;
-    private Dataset dataset ;
-    private QueryExecutionGraph execGraph ;
-    private QueryIterator queryIterator = null ;
-    private Op queryOp = null ;
+    private Query              query ;
+    private Dataset            dataset ;
+    private QueryEngineFactory qeFactory ;
+    private QueryIterator      queryIterator = null ;
+    private Op                 queryOp       = null ;
+    private Context            context ;
+    private FileManager        fileManager = FileManager.get() ;
+    private QuerySolution      initialBinding = null ;      
 
     // Make this on the way out.
-    public QueryExecutionBase(Query query, Dataset dataset, QueryExecutionGraph execGraph)
+    public QueryExecutionBase(Query query, 
+                              Dataset dataset,
+                              Context context,
+                              QueryEngineFactory qeFactory)
     {
         this.query = query ;
-        this.execGraph = execGraph ;
         this.dataset = dataset ;
+        this.context = context ;
+        this.qeFactory = qeFactory ;
     }
     
     public void abort()
@@ -81,7 +80,6 @@ public class QueryExecutionBase implements QueryExecution
 
     public ResultSet execSelect()
     {
-        execInit() ;
         if ( ! query.isSelectType() )
             throw new QueryExecException("Attempt to have ResultSet from a "+labelForQuery(query)+" query") ; 
         return execInternal() ;
@@ -94,7 +92,6 @@ public class QueryExecutionBase implements QueryExecution
 
     public Model execConstruct(Model model)
     {
-        execInit() ;
         if ( ! query.isConstructType() )
             throw new QueryExecException("Attempt to get a CONSTRUCT model from a "+labelForQuery(query)+" query") ;
         // This causes there to be no PROJECT around the pattern.
@@ -136,7 +133,6 @@ public class QueryExecutionBase implements QueryExecution
 
     public Model execDescribe(Model model)
     {
-        execInit() ;
         if ( ! query.isDescribeType() )
             throw new QueryExecException("Attempt to get a DESCRIBE result from a "+labelForQuery(query)+" query") ; 
         query.setQueryResultStar(true) ;
@@ -214,7 +210,6 @@ public class QueryExecutionBase implements QueryExecution
 
     public boolean execAsk()
     {
-        execInit() ;
         if ( ! query.isAskType() )
             throw new QueryExecException("Attempt to have boolean from a "+labelForQuery(query)+" query") ; 
 
@@ -224,20 +219,35 @@ public class QueryExecutionBase implements QueryExecution
         return r ; 
     }
 
-    protected void execInit()
-    { }
+    protected void execInit() {}
 
     private ResultSet execInternal()
     {
+        execInit() ;
+        
         if ( query.getQueryPattern() == null )
             return null ;
+        
+        DatasetGraph dsg = prepareDataset(dataset, query, fileManager) ;
+        
+        Binding inputBinding = null ;
+        if ( initialBinding != null )
+        {
+            inputBinding = new BindingMap() ;
+            BindingUtils.addToBinding(inputBinding, initialBinding) ;
+        }
+        if ( inputBinding == null )
+            inputBinding = BindingRoot.create() ;
         
         Model model = null ;
         if ( dataset != null )
             model = dataset.getDefaultModel() ;
         else
             model = ModelFactory.createDefaultModel() ;
-        queryIterator = execGraph.exec() ;
+        
+        Plan plan = qeFactory.create(query, dsg, inputBinding, getContext()) ;
+        queryIterator = plan.iterator() ;
+        
         ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, queryIterator) ;
         
         // Set flags (the plan has the elements for solution modifiers)
@@ -274,29 +284,42 @@ public class QueryExecutionBase implements QueryExecution
         return "<<unknown>>" ;
     }
 
-    public Context getContext()
+    public Context getContext() { return context ; }
+    
+    public Dataset getDataset() { return dataset ; }
+    
+    // Call after setFM called.
+    private static DatasetGraph prepareDataset(Dataset dataset, Query query, FileManager fileManager)
     {
-        return execGraph.getContext() ;
+        if ( dataset != null )
+            return dataset.asDatasetGraph() ;
+        
+        if ( ! query.hasDatasetDescription() ) 
+            //Query.log.warn("No data for query (no URL, no model)");
+            throw new QueryExecException("No dataset description for query");
+        
+        String baseURI = query.getBaseURI() ;
+        if ( baseURI == null )
+            baseURI = RelURI.chooseBaseURI() ;
+        log.debug("init: baseURI for query is: "+baseURI) ; 
+        
+        DatasetGraph dsg =
+            DatasetUtils.createDatasetGraph(query.getGraphURIs(),
+                                            query.getNamedGraphURIs(),
+                                            fileManager, baseURI ) ;
+        return dsg ;
     }
 
-    private FileManager fileManager = FileManager.get();
-    private QuerySolution inputBindings = null ;
     
-    public void setFileManager(FileManager fm) { execGraph.setFileManager(fm) ; }
+    public void setFileManager(FileManager fm) { fileManager = fm ; }
     
     public void setInitialBinding(QuerySolution startSolution)
     { 
-        Binding inputBinding = null ;
-        if ( startSolution != null )
-        {
-            inputBinding = new BindingMap() ;
-            BindingUtils.addToBinding(inputBinding, startSolution) ;
-        }
-        execGraph.setInitialBinding(inputBinding) ;
+        initialBinding = startSolution ;
     }
 
     
-    protected QuerySolution getInputBindings() { return inputBindings ; }
+    protected QuerySolution getInputBindings() { return initialBinding ; }
 }
 
 /*

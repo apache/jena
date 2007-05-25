@@ -20,8 +20,8 @@ public interface QueryExecution
 {
     /** Set the FileManger that might be used to load files.
      *  May not be supported by all QueryExecution implementations.  
-    * @throws UnsupportedMethodException 
-    */
+     * @throws UnsupportedMethodException 
+     */
     public void setFileManager(FileManager fm) ;
     
     /** Set the initial association of variables and values.
@@ -31,9 +31,13 @@ public interface QueryExecution
      */
     public void setInitialBinding(QuerySolution binding) ;
 
-//    public void   setProperty(String name, String value) ;
-//    public Object getProperty(String name, Object defaultValue) ;
-
+    /**
+     * The dataset agisnt which the query will execute.
+     * May be null, implying it is expected that the query itself
+     * has a dataset description. 
+     */
+    public Dataset getDataset() ;
+    
     /** The properties associated with a query execution -  
      *  implementation specific parameters  This includes
      *  Java objects (so it is not an RDF graph).

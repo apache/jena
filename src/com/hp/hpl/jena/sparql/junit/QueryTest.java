@@ -182,11 +182,9 @@ public class QueryTest extends TestCaseARQ
             QueryExecution qe = null ;
             
             if ( dataset == null )
-                qe = QueryExecutionFactory.create(query) ;
+                qe = QueryExecutionFactory.create(query, queryFileManager) ;
             else
-                qe = QueryExecutionFactory.create(query,dataset) ;
-            if ( queryFileManager != null )
-                qe.setFileManager(queryFileManager) ;
+                qe = QueryExecutionFactory.create(query, dataset) ;
             
             try {
                 if ( query.isSelectType() )
