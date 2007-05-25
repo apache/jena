@@ -6,13 +6,15 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
+import com.hp.hpl.jena.sparql.util.Context;
 
 
 public class QueryEngineRegistry
@@ -44,8 +46,8 @@ public class QueryEngineRegistry
      * @return A QueryExecutionFactory or null if none accept the request
      */
     
-    public static QueryEngineFactory findFactory(Query query, Dataset dataset)
-    { return get().find(query, dataset) ; }
+    public static QueryEngineFactory findFactory(Query query, DatasetGraph dataset, Context context)
+    { return get().find(query, dataset, context) ; }
     
     /** Locate a suitable factory for this query and dataset
      * 
@@ -54,17 +56,26 @@ public class QueryEngineRegistry
      * @return A QueryExecutionFactory or null if none accept the request
      */
     
-    public QueryEngineFactory find(Query query, Dataset dataset)
+    public QueryEngineFactory find(Query query, DatasetGraph dataset)
+    { return find(query, dataset, ARQ.getContext()) ; }
+
+        /** Locate a suitable factory for this query and dataset
+     * 
+     * @param query   Query 
+     * @param dataset Dataset
+     * @return A QueryExecutionFactory or null if none accept the request
+     */
+    
+    public QueryEngineFactory find(Query query, DatasetGraph dataset, Context context)
     {
         for ( Iterator iter = factories.listIterator() ; iter.hasNext() ; )
         {
             QueryEngineFactory f = (QueryEngineFactory)iter.next() ;
-            if ( f.accept(query, dataset) )
+            if ( f.accept(query, dataset, context) )
                 return f ;
         }
         return null ;
     }
-    
     
     /** Add a QueryExecutionFactory to the default registry */
     public static void addFactory(QueryEngineFactory f) { get().add(f) ; }

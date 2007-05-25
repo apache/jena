@@ -29,22 +29,23 @@ public class QueryUtils
 {
     public static void printPlan(Query query, QueryExecution qe)
     {
-        if ( qe instanceof QueryEngineBase )
-        {
-            QueryEngineBase qeb = (QueryEngineBase)qe ;
-            // Ensure there is some kind of dataset
-
-            SerializationContext sCxt = new SerializationContext(query) ;
-            IndentedWriter out = new IndentedWriter(System.out) ;
-            
-            if ( !qeb.hasDatasetOrDescription() )
-                qeb.setDataset(new DataSourceImpl()) ;
-            Plan plan = qeb.getPlan() ;
-            plan.output(out, sCxt) ;
-            out.flush();
-            return ;
-        }
-        System.err.println("printPlan: Unknown engine type: "+Utils.className(qe)) ;
+        System.err.println("QueryUtils.printPlan: Need s converting") ;
+//        if ( qe instanceof QueryEngineBase )
+//        {
+//            QueryEngineBase qeb = (QueryEngineBase)qe ;
+//            // Ensure there is some kind of dataset
+//
+//            SerializationContext sCxt = new SerializationContext(query) ;
+//            IndentedWriter out = new IndentedWriter(System.out) ;
+//            
+//            if ( !qeb.hasDatasetOrDescription() )
+//                qeb.setDataset(new DataSourceImpl()) ;
+//            Plan plan = qeb.getPlan() ;
+//            plan.output(out, sCxt) ;
+//            out.flush();
+//            return ;
+//        }
+//        System.err.println("printPlan: Unknown engine type: "+Utils.className(qe)) ;
     }
 
     

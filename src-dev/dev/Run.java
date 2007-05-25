@@ -31,11 +31,11 @@ public class Run
     {
         //runQExpr() ;
         //print() ;
-        codeSSE() ;
+        //codeSSE() ;
         //runQParse() ;
         //classifyJ() ;
         //classifyLJ() ;
-        //execQuery("D.ttl", "Q.rq") ;
+        execQuery("D.ttl", "Q.rq") ;
         //exec("D.ttl", "SSE/test.sse") ;
     }
         

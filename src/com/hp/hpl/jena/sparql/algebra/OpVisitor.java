@@ -18,9 +18,10 @@ public interface OpVisitor
     public void visit(OpFilter opFilter) ;
     public void visit(OpGraph opGraph) ;
     public void visit(OpDatasetNames dsNames) ;
-
+    
     public void visit(OpTable opTable) ;
     public void visit(OpExt opExt) ;
+    public void visit(OpNull opNull) ;
     
     public void visit(OpList opList) ;
     public void visit(OpOrder opOrder) ;

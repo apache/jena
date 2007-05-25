@@ -9,13 +9,13 @@ package com.hp.hpl.jena.sparql.engine;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.util.Context;
 
 
 /** Factory to make QueryExecutionGraph objects from Query objects or a string.   
@@ -25,6 +25,8 @@ import com.hp.hpl.jena.sparql.syntax.Element;
  */
 public class QueryExecutionGraphFactory
 {
+    // XXX Merge into QueryExecutionFactory
+    
     public static QueryExecutionGraph create(String queryStr, Graph graph)
     {
         return create(QueryFactory.create(queryStr), graph) ; 
@@ -62,18 +64,14 @@ public class QueryExecutionGraphFactory
         return query ;
     }
 
-    private static QueryExecutionGraph make(Query query, DatasetGraph datasetGraph)
+    private static QueryExecutionGraph make(Query query, DatasetGraph dataset)
     {
-        Dataset dataset = new DataSourceImpl(datasetGraph) ;
+        Context context = ARQ.getContext() ;
         for ( Iterator iter = QueryEngineRegistry.get().factories().iterator() ; iter.hasNext() ; )
         {
             QueryEngineFactory f = (QueryEngineFactory)iter.next();
-            if ( f.accept(query, dataset) )
-            {
-                Object obj = f.create(query, dataset) ;
-                if ( obj instanceof QueryExecutionGraph )
-                    return (QueryExecutionGraph)obj ;
-            }
+            if ( f.accept(query, dataset, context) )
+                return f.create(query, dataset, context) ;
         }
         return null ;
     }

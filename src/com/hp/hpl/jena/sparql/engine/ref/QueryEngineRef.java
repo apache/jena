@@ -6,26 +6,26 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineOpBase;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
 import com.hp.hpl.jena.sparql.util.Context;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
 
 
 public class QueryEngineRef extends QueryEngineOpBase
 {
-    public QueryEngineRef(Query query) { this(query, null) ; }
+    public QueryEngineRef(Query query, Context context) { this(query, null, context) ; }
     
-    public QueryEngineRef(Query query, Context context)
+    public QueryEngineRef(Query query, DatasetGraph dataset, Context context)
     {
-        super(query, 
+        super(query,
+              dataset,
               new AlgebraGenerator(context), 
-              context,
+              context, 
               new OpExecRef()) ; 
     }
     
@@ -35,14 +35,13 @@ public class QueryEngineRef extends QueryEngineOpBase
     
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
-        public boolean accept(Query query, Dataset dataset) 
+        public boolean accept(Query query, DatasetGraph dataset, Context context) 
         { return true ; }
 
-        public QueryExecution create(Query query, Dataset dataset)
+        public QueryExecutionGraph create(Query query, DatasetGraph dataset, Context context)
         {
-            QueryEngineRef engine = new QueryEngineRef(query) ;
-            engine.setDataset(dataset) ;
-            return engine ;
+            QueryEngineRef engine = new QueryEngineRef(query, dataset, context) ;
+            return engine.execution() ;
         }
     } ;
 }

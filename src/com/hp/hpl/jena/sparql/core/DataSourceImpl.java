@@ -58,6 +58,8 @@ public class DataSourceImpl implements DataSource//, ModelGroup
     public Lock getLock() { return dsg.getLock() ; }
 
     public DataSourceGraph getDataSourceGraph() { return dsg ; }
+    
+    public DatasetGraph asDatasetGraph() { return dsg ; }
 
     public Model getNamedModel(String uri)
     { 

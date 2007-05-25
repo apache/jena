@@ -6,15 +6,18 @@
 package com.hp.hpl.jena.query;
 import java.util.List;
 
-import com.hp.hpl.jena.rdf.model.Model ;
+import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.util.FileManager;
-
-
-import org.apache.commons.logging.*;
 
 
 /** Place to make QueryExecution objects from Query objects or a string.   
@@ -282,8 +285,7 @@ public class QueryExecutionFactory
     {
         checkArg(query) ;
         QueryExecution qe = make(query, dataset) ;
-        if ( initialBinding != null )
-            qe.setInitialBinding(initialBinding) ;
+        qe.setInitialBinding(initialBinding) ;
         return qe ;
     }
 
@@ -391,8 +393,18 @@ public class QueryExecutionFactory
     }
 
     static private QueryExecution make(Query query, Dataset dataset)
+    { return make(query, dataset, null) ; }
+
+    
+    static private QueryExecution make(Query query, Dataset dataset, Context context)
     {
-        QueryEngineFactory f = QueryEngineRegistry.get().find(query, dataset);
+        // XXX Or pass through context without fixup?
+        if ( context == null )
+            context = new Context(ARQ.getContext()) ;
+        DatasetGraph dsg = null ;
+        if ( dataset != null )
+            dsg = dataset.asDatasetGraph() ;
+        QueryEngineFactory f = QueryEngineRegistry.get().find(query, dsg, context);
         if ( f == null )
         {
             LogFactory
@@ -400,7 +412,8 @@ public class QueryExecutionFactory
                 .warn("Failed to find a QueryEngineFactory for query: "+query) ;
             return null ;
         }
-        return f.create(query, dataset) ;
+        QueryExecutionGraph qExec = f.create(query, dsg, context) ;
+        return new QueryExecutionBase(query, dataset, qExec) ;
     }
     
     static private QueryEngineHTTP makeServiceRequest(String service, Query query)

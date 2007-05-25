@@ -84,8 +84,11 @@ public class AlgebraGenerator
       // (triple patterns not in a group) 
       if ( elt instanceof ElementTriplesBlock )
           return compile(((ElementTriplesBlock)elt).getTriples()) ;
-    
-      broken("compileFixedElement/Not a structural element: "+Utils.className(elt)) ;
+
+      if ( elt == null )
+          return new OpNull() ;
+
+      broken("compile(Element)/Not a structural element: "+Utils.className(elt)) ;
       return null ;
     }
 

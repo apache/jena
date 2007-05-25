@@ -238,6 +238,9 @@ public class OpWriter
             //finish() ;
         }
 
+        public void visit(OpNull opNull)
+        { start(opNull, NoNL) ; finish() ; } 
+
         public void visit(OpList opList)
         {
             visitOp1(opList) ;

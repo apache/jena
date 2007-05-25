@@ -6,62 +6,41 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.util.FileManager;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QuerySolution;
-
-// This is the main adapter from the Query/syntax level to the algebra level. 
-
-public class QueryEngineOpBase extends QueryEngineBase
+public abstract class QueryEngineOpBase extends QueryEngineBase
 {
     private Op queryOp = null ;
     private AlgebraGenerator gen = null ;
-    private OpExec executor = null ; 
-
-    public QueryEngineOpBase(Query q, 
-                             AlgebraGenerator gen, 
-                             Context context,
-                             OpExec executor) 
-    { 
-        super(q, context) ;
+    private OpExec opExec = null ;
+    
+    protected QueryEngineOpBase(Query query, DatasetGraph dataset, 
+                                AlgebraGenerator gen, Context context,
+                                OpExec opExec)
+    {
+        super(query, dataset, context) ;
         this.gen = gen ;
-        this.executor = executor ;
-    }  
-    // --------------------------------
+        this.opExec = opExec ;
+    }
     
     final
-    protected Plan queryToPlan(Query query, QuerySolution startSolution)
+    public QueryExecutionGraph execution()
     {
-        Op op = getOp() ;
-        if ( startSolution == null )
-        {
-            QueryIterator qIter = executor.eval(op, getDatasetGraph(), getContext()) ;
-            return new PlanOp(op, qIter) ;
-        }
-        
-        //if ( executor instanceof OpExecInitial )
-        
-        Binding b = BindingRoot.create() ;
-          
-          // If there is some initial bindings
-          if ( startSolution != null )
-          {
-              b = new BindingMap(b) ;
-              BindingUtils.addToBinding(b, startSolution) ;
-              // Substitute in the Op, and use this b as the root. 
-              op = OpSubstitute.substitute(op, b) ;
-          }
-        QueryIterator qIter = executor.eval(op, b, getDatasetGraph(), getContext()) ;
-        // qIter add parent.  Tweak root?
-        return new PlanOp(op, qIter) ;
+        final QueryIterator queryIterator = opExec.eval(getOp(), getInputBinding(), 
+                                                        getDatasetGraph(), getContext()) ;
+        return new QueryExecutionGraph() {
+            public void abort()         { queryIterator.abort(); }
+            public void close()         { queryIterator.close(); }
+            public QueryIterator exec() { return queryIterator ; }
+            public void setFileManager(FileManager fileManager) { _setFileManager(fileManager) ; }
+            public void setInitialBinding(Binding inputBinding) { _setInitialBinding(inputBinding) ; }
+        } ;
     }
     
     public Op getOp()
@@ -82,7 +61,7 @@ public class QueryEngineOpBase extends QueryEngineBase
     
     protected Op createPatternOp()
     {
-        return gen.compile(query.getQueryPattern()) ;
+        return gen.compile(getQuery().getQueryPattern()) ;
     }
     
     /** Allow the algebra expression to be modifed */
@@ -96,12 +75,6 @@ public class QueryEngineOpBase extends QueryEngineBase
     {
         return op ;
     }
-}
-
-
-class QueryEngineOpFactory
-{
-    
 }
 
 /*

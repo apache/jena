@@ -6,6 +6,14 @@ ARQ 2.1
 
 Legacy query engine1 removed.
 
+QueryEngine construction and extension:
+  QueryEngineFactory interface changed to be consistent with 
+  all engines working at the graph level.
+
+Add new Algebra operations
+  OpGroup
+  OpNull
+
 ARQ 2.0
 -------
 

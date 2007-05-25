@@ -42,6 +42,9 @@ public class OpVisitorBase implements OpVisitor
     public void visit(OpExt opExt)
     {}
 
+    public void visit(OpNull opNull)
+    {}
+
     public void visit(OpList opList)
     {}
 

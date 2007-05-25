@@ -8,6 +8,7 @@ package com.hp.hpl.jena.query;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 
 import java.util.* ;
 
@@ -35,6 +36,9 @@ public interface Dataset
     
     /** Get the lock for this dataset */
     public Lock getLock() ;
+    
+    /** Get the daatset in graph form */
+    public DatasetGraph asDatasetGraph() ; 
 }
 
 /*

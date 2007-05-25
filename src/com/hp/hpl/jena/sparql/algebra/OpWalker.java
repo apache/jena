@@ -71,6 +71,9 @@ public class OpWalker
         public void visit(OpExt opExt)
         { opExt.visit(visitor) ; }
 
+        public void visit(OpNull opNull)
+        { opNull.visit(visitor) ; }
+
         public void visit(OpList opList)
         { visitX(opList) ; }
 

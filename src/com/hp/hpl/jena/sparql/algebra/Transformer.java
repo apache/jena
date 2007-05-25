@@ -101,6 +101,9 @@ public class Transformer
         public void visit(OpExt opExt)
         { push(transform.transform(opExt)) ; }
         
+        public void visit(OpNull opNull)
+        { visit0(opNull) ; }
+        
         public void visit(OpList opList)
         { visit1(opList) ; }
         

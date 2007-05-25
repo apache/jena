@@ -5,6 +5,20 @@
 ++ ** Make the system DatasetGraph/QueryExecutionGraph-centric
 -----
 
++ Sorting out:
+  QueryExecutionGraphFactory => QueryExecutionFactory
+  QueryExecutionFactory => expose context operations.
+  Check all calls to ARQ.getContext to make sure
+      in one place
+      null ==> ARQ.getContext copy.
+      
+++ Where has Plan done? == QueryExecutionGraph??
+
+++ ChangeLog
+
++ DateTime arithmetic and durations
+  http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
+
 + Aggregates
   QueryIterGroup
   Parsing : 

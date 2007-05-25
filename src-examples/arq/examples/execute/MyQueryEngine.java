@@ -6,12 +6,11 @@
 
 package arq.examples.execute;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
 
@@ -21,18 +20,18 @@ public class MyQueryEngine extends QueryEngineMain
 {
     // Do nothing template for a query engine.  
     
-    public MyQueryEngine(Query query, Context context)
+    public MyQueryEngine(Query query, DatasetGraph dataset, Context context)
     {
-        super(query, context) ;
+        super(query, dataset, context) ;
     }
 
-    public MyQueryEngine(Query query)
+    public MyQueryEngine(Query query, DatasetGraph dataset)
     { 
-        // Default to the global context. 
-        this(query, ARQ.getContext()) ;
+        // This will default to the global context. 
+        this(query, dataset, null) ;
     }
 
-    // ---- Registration of the factory for this query engien class. 
+    // ---- Registration of the factory for this query engine class. 
     
     // Query engine factory.
     // Call MyQueryEngine.register() to add to the global query engine registry. 
@@ -44,15 +43,14 @@ public class MyQueryEngine extends QueryEngineMain
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
         // Accept any dataset for query execution 
-        public boolean accept(Query query, Dataset dataset) 
+        public boolean accept(Query query, DatasetGraph dataset, Context context) 
         { return true ; }
 
-        public QueryExecution create(Query query, Dataset dataset)
+        public QueryExecutionGraph create(Query query, DatasetGraph dataset, Context context)
         {
             // Create a query engine instance.
-            MyQueryEngine engine = new MyQueryEngine(query) ;
-            engine.setDataset(dataset) ;
-            return engine ;
+            MyQueryEngine engine = new MyQueryEngine(query, dataset, context) ;
+            return engine.execution() ;
         }
     } ;
 }

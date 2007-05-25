@@ -6,9 +6,9 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.util.Context;
 
 /** Additional QueryEngineFactory's 
  * can be dynamically added to the registry.
@@ -18,8 +18,8 @@ import com.hp.hpl.jena.query.QueryExecution;
  */ 
 public interface QueryEngineFactory
 {
-    public boolean accept(Query query, Dataset dataset) ;
-    public QueryExecution create(Query query, Dataset dataset) ;
+    public boolean accept(Query query, DatasetGraph dataset, Context context) ;
+    public QueryExecutionGraph create(Query query, DatasetGraph dataset, Context context) ;
 }
 
 /*

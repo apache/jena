@@ -138,6 +138,11 @@ public class Eval
         public void visit(OpExt opExt)
         { throw new QueryExecException("Encountered OpExt during execution of reference engine") ; }
 
+        public void visit(OpNull opNull)
+        { 
+            push(TableFactory.createEmpty()) ;
+        }
+
         public void visit(OpList opList)
         {
             Table table = eval(opList.getSubOp()) ;

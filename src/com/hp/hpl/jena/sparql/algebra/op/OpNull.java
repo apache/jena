@@ -4,40 +4,27 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.algebra.op;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
-import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Transform;
 
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-
-public class ExFactory
+public class OpNull extends Op0
 {
-    public static QueryExecution create(Query query, Dataset dataset, Context context)
-    {
-        QueryExecutionGraph qExec = make(query, dataset, context) ;
-        return new QueryExecutionBase(query, dataset, qExec) ;
-    }
-    
-    
-    
-    private static QueryExecutionGraph make(Query query, Dataset dataset, Context context)
-    {
-        ExecutionBase ex = new ExecutionBase(query, dataset, context) {
 
-            protected Op getOp()
-            {
-                return null ;
-            }} ;
-        
-        QueryEngineMain eng = new QueryEngineMain(query, context) ;
-        eng.setDataset(dataset) ;
-        return null ; 
+    public Op apply(Transform transform)
+    { return transform.transform(this) ; }
+
+    public Op copy() { return this ; }
+
+    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+
+    public String getName()
+    {
+        return "NullOp" ;
     }
+
 }
 
 /*

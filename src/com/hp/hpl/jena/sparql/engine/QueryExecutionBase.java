@@ -4,36 +4,44 @@
  * [See end of file]
  */
 
-package dev;
+package com.hp.hpl.jena.sparql.engine;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecException;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.ResultBinding;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionGraph;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
-
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.util.FileManager;
 
 /** All the SPARQL query result forms made form a graph-level execution object */ 
 
@@ -135,6 +143,7 @@ public class QueryExecutionBase implements QueryExecution
 
         Set set = new HashSet() ;
 
+        //May return null (no query pattern) 
         ResultSet qRes = execInternal() ;
 
         // Prefixes for result (after initialization)
@@ -220,7 +229,14 @@ public class QueryExecutionBase implements QueryExecution
 
     private ResultSet execInternal()
     {
-        Model model = dataset.getDefaultModel() ;
+        if ( query.getQueryPattern() == null )
+            return null ;
+        
+        Model model = null ;
+        if ( dataset != null )
+            model = dataset.getDefaultModel() ;
+        else
+            model = ModelFactory.createDefaultModel() ;
         queryIterator = execGraph.exec() ;
         ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, queryIterator) ;
         
@@ -263,11 +279,24 @@ public class QueryExecutionBase implements QueryExecution
         return null ;
     }
 
-    public void setFileManager(FileManager fm)
-    { throw new ARQNotImplemented("setFileManager") ; }
+    private FileManager fileManager = FileManager.get();
+    private QuerySolution inputBindings = null ;
+    
+    public void setFileManager(FileManager fm) { execGraph.setFileManager(fm) ; }
+    
+    public void setInitialBinding(QuerySolution startSolution)
+    { 
+        Binding inputBinding = null ;
+        if ( startSolution != null )
+        {
+            inputBinding = new BindingMap() ;
+            BindingUtils.addToBinding(inputBinding, startSolution) ;
+        }
+        execGraph.setInitialBinding(inputBinding) ;
+    }
 
-    public void setInitialBinding(QuerySolution binding)
-    { throw new ARQNotImplemented("setInitialBinding") ; }
+    
+    protected QuerySolution getInputBindings() { return inputBindings ; }
 }
 
 /*
