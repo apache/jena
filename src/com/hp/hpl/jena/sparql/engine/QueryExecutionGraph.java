@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sparql.engine;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.util.FileManager;
 
 /** Interface to graph level execution of a SPARQL algebra expression */
@@ -18,6 +19,7 @@ public interface QueryExecutionGraph
     public void close() ;
     public void abort() ;
     
+    public Context getContext() ;
     public void setFileManager(FileManager fileManager) ;
     public void setInitialBinding(Binding inputBinding) ;
 }

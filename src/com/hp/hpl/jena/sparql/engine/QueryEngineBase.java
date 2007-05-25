@@ -65,7 +65,7 @@ public abstract class QueryEngineBase
 
     protected Query getQuery() { return query ; }
     
-    public Context getContext() { return context ; }
+    protected Context context() { return context ; }
 
     protected void _setFileManager(FileManager fm) { fileManager = fm ; }
 

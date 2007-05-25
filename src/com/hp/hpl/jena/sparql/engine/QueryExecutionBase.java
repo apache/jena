@@ -276,7 +276,7 @@ public class QueryExecutionBase implements QueryExecution
 
     public Context getContext()
     {
-        return null ;
+        return execGraph.getContext() ;
     }
 
     private FileManager fileManager = FileManager.get();

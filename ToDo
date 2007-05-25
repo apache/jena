@@ -6,6 +6,8 @@
 -----
 
 + Sorting out:
+  QueryExecution.getContext() ==> ??
+
   QueryExecutionGraphFactory => QueryExecutionFactory
   QueryExecutionFactory => expose context operations.
   Check all calls to ARQ.getContext to make sure

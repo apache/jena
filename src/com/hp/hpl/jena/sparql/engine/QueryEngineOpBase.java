@@ -33,13 +33,14 @@ public abstract class QueryEngineOpBase extends QueryEngineBase
     public QueryExecutionGraph execution()
     {
         final QueryIterator queryIterator = opExec.eval(getOp(), getInputBinding(), 
-                                                        getDatasetGraph(), getContext()) ;
+                                                        getDatasetGraph(), context()) ;
         return new QueryExecutionGraph() {
             public void abort()         { queryIterator.abort(); }
             public void close()         { queryIterator.close(); }
             public QueryIterator exec() { return queryIterator ; }
             public void setFileManager(FileManager fileManager) { _setFileManager(fileManager) ; }
             public void setInitialBinding(Binding inputBinding) { _setInitialBinding(inputBinding) ; }
+            public Context getContext() { return context() ; } 
         } ;
     }
     
