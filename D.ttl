@@ -1,6 +1,5 @@
 @prefix   :         <http://example/> .
 
-:me :age 28 ;
-    :name "lee" .
+:x :p 1 .
+:x :p 2 .
 
-:you    :name "andy" .

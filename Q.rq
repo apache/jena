@@ -1,6 +1,4 @@
 PREFIX :  <http://example/> 
 
-SELECT ?x 
-{
-    OPTIONAL{:x :p ?x}
-}
+SELECT *
+{ ?s ?p ?o }
