@@ -38,6 +38,7 @@ public abstract class QueryEngineBase implements OpExec
     {
         this(dataset, input, context) ;
         // Build the Op.
+        query.setResultVars() ;
         queryOp = createOp(query, gen) ;
     }
     
@@ -70,14 +71,17 @@ public abstract class QueryEngineBase implements OpExec
     
     protected Plan createPlan()
     {
-        QueryIterator queryIterator = eval(queryOp, dataset, 
+        Op op = modifyOp(queryOp) ;
+        QueryIterator queryIterator = eval(op, dataset, 
                                            startBinding, context) ;
         return new PlanOp(getOp(), queryIterator) ;
     }
     
-    private Op createOp(Query query, AlgebraGenerator gen)
+    protected Op modifyOp(Op op)
+    { return op ; }
+    
+    protected Op createOp(Query query, AlgebraGenerator gen)
     {
-        query.setResultVars() ;
         Op op = gen.compile(query) ;
         return op ;
     }

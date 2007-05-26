@@ -42,6 +42,22 @@ public class Algebra
         return new AlgebraGenerator().compile(elt) ;
     }
 
+    /** Compile a query - pattern and modifiers - to quad form */
+    public static Op compileQuad(Query query)
+    {
+        if ( query == null )
+            return null ;
+        return new AlgebraGeneratorQuad().compile(query) ;
+    }
+
+    /** Compile a pattern - to quad form */
+    public static Op compileQuad(Element elt)
+    {
+        if ( elt == null )
+            return null ;
+        return new AlgebraGeneratorQuad().compile(elt) ;
+    }
+
     // -------- Execute
 
     static public QueryIterator exec(Op op, Dataset ds)
