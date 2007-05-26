@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -35,7 +36,7 @@ public class QueryUtils
         if ( f == null )
             System.err.println("printPlan: Unknown engine type: "+Utils.className(qe)) ;
         
-        Plan plan = f.create(query, qe.getDataset().asDatasetGraph(), null, ARQ.getContext()) ;
+        Plan plan = f.create(query, qe.getDataset().asDatasetGraph(), BindingRoot.create(), ARQ.getContext()) ;
         SerializationContext sCxt = new SerializationContext(query) ;
         IndentedWriter out = new IndentedWriter(System.out) ;
 
