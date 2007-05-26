@@ -22,7 +22,7 @@ import com.hp.hpl.jena.util.cache.Cache;
  * @version $Id: RelURI.java,v 1.34 2007/02/05 17:11:25 andy_seaborne Exp $
  */
 
-public class RelURI_X
+/*public*/ class RelURI_X
 {
     // "Pragmatic" is the polite way of describing this code.
     // "Hack", "kludge", "ugly", "bletch" are also heard 

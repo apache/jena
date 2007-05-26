@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -49,6 +50,17 @@ public class QueryEngineRegistry
     public static QueryEngineFactory findFactory(Query query, DatasetGraph dataset, Context context)
     { return get().find(query, dataset, context) ; }
     
+    /** Locate a suitable factory for this algebra expression
+     *  and dataset from the default registry
+     * 
+     * @param query   Query 
+     * @param dataset Dataset
+     * @return A QueryExecutionFactory or null if none accept the request
+     */
+    
+    public static QueryEngineFactory findFactory(Op op, DatasetGraph dataset, Context context)
+    { return get().find(op, dataset, context) ; }
+
     /** Locate a suitable factory for this query and dataset
      * 
      * @param query   Query 
@@ -59,7 +71,7 @@ public class QueryEngineRegistry
     public QueryEngineFactory find(Query query, DatasetGraph dataset)
     { return find(query, dataset, ARQ.getContext()) ; }
 
-        /** Locate a suitable factory for this query and dataset
+    /** Locate a suitable factory for this query and dataset
      * 
      * @param query   Query 
      * @param dataset Dataset
@@ -72,6 +84,24 @@ public class QueryEngineRegistry
         {
             QueryEngineFactory f = (QueryEngineFactory)iter.next() ;
             if ( f.accept(query, dataset, context) )
+                return f ;
+        }
+        return null ;
+    }
+    
+    /** Locate a suitable factory for this algebra expression and dataset
+     * 
+     * @param query   Query 
+     * @param dataset Dataset
+     * @return A QueryExecutionFactory or null if none accept the request
+     */
+    
+    public QueryEngineFactory find(Op op, DatasetGraph dataset, Context context)
+    {
+        for ( Iterator iter = factories.listIterator() ; iter.hasNext() ; )
+        {
+            QueryEngineFactory f = (QueryEngineFactory)iter.next() ;
+            if ( f.accept(op, dataset, context) )
                 return f ;
         }
         return null ;

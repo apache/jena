@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -423,6 +424,8 @@ public class QueryExecutionFactory
     {
         if ( context == null )
             context = new Context(ARQ.getContext()) ;
+        if ( input == null )
+            input = BindingRoot.create() ; 
         QueryEngineFactory f = findFactory(query, dataset, context) ;
         if ( f == null )
             return null ;

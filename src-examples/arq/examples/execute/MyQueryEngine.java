@@ -6,6 +6,8 @@
 
 package arq.examples.execute;
 
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
@@ -53,6 +55,16 @@ public class MyQueryEngine extends QueryEngineMain
             // Create a query engine instance.
             MyQueryEngine engine = new MyQueryEngine(query, dataset, initial, context) ;
             return engine.getPlan() ;
+        }
+
+        public boolean accept(Op op, DatasetGraph dataset, Context context)
+        {   // Refuse to accept algebra expressions directly.
+            return false ;
+        }
+
+        public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context)
+        {   // Shodul notbe called because acceept/Op is false
+            throw new ARQInternalErrorException("MyQueryEngine: factory calleddirectly with an algebra expression") ;
         }
     } ;
 }

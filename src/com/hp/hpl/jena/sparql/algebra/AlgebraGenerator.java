@@ -26,40 +26,19 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class AlgebraGenerator 
 {
-    /** Compile a query - pattern and modifiers */
-    public static Op compileQuery(Query query)
-    {
-        if ( query == null )
-            return null ;
-        return new AlgebraGenerator().compile(query) ;
-    }
-
-    /** Compile a pattern */
-    public static Op compilePattern(Element elt)
-    {
-        if ( elt == null )
-            return null ;
-        return new AlgebraGenerator().compile(elt) ;
-    }
-
-    // ---- Wrapping an already compiled algebra expression in solution modifiers.
-    
-
-
     // Fixed filter position means leave exactly where it is syntactically (illegal SPARQL)
-    // Helpful only to write exactly what you mean
-    // (and test the full query compiler).
+    // Helpful only to write exactly what you mean and test the full query compiler).
     boolean fixedFilterPosition = false ;
     private Context context ;
 
     public AlgebraGenerator(Context context)
     { 
         if ( context == null )
-            context = ARQ.getContext() ;
+            context = ARQ.getContext().copy() ;
         this.context = context ;
     }
     
-    public AlgebraGenerator() { this(ARQ.getContext()) ; } 
+    public AlgebraGenerator() { this(null) ; } 
     
     public Op compile(Query query)
     {

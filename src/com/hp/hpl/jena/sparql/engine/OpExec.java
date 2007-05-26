@@ -16,7 +16,7 @@ public interface OpExec
 {
     public QueryIterator eval(Op op, Graph graph) ;
     public QueryIterator eval(Op op, DatasetGraph dsg, Context context) ;
-    public QueryIterator eval(Op op, Binding binding, DatasetGraph dsg, Context context) ;
+    public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
 }
 
 /*

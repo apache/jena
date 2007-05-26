@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.ref;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.*;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
@@ -15,7 +16,11 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 public class QueryEngineQuad extends QueryEngineRef
 {
-   public QueryEngineQuad(Query query, Context context) { this(query, null, null, context) ; }
+    public QueryEngineQuad(Op op, DatasetGraph dataset, Context context)
+    { this(op, dataset, null, context) ; }
+    
+    public QueryEngineQuad(Op op, DatasetGraph dataset, Binding input, Context context)
+    { super(op, dataset, input, context) ; }
     
     public QueryEngineQuad(Query query, DatasetGraph dataset, Binding input, Context context)
     {
@@ -39,6 +44,16 @@ public class QueryEngineQuad extends QueryEngineRef
             QueryEngineQuad engine = new QueryEngineQuad(query, dataset, input, context) ;
             return engine.getPlan() ;
         }
+        
+        public boolean accept(Op op, DatasetGraph dataset, Context context) 
+        { return true ; }
+
+        public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
+        {
+            QueryEngineQuad engine = new QueryEngineQuad(op, dataset, binding, context) ;
+            return engine.getPlan() ;
+        }
+
     } ;
 }
 

@@ -8,23 +8,45 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
+
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.main.OpExecMain;
-import com.hp.hpl.jena.sparql.engine.ref.OpExecRef;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
+import com.hp.hpl.jena.sparql.syntax.Element;
 
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.query.Query;
 
 public class Algebra
 {
+    // -------- Compile
+    
+    /** Compile a query - pattern and modifiers */
+    public static Op compile(Query query)
+    {
+        if ( query == null )
+            return null ;
+        return new AlgebraGenerator().compile(query) ;
+    }
 
-    // Execute!
+    /** Compile a pattern */
+    public static Op compile(Element elt)
+    {
+        if ( elt == null )
+            return null ;
+        return new AlgebraGenerator().compile(elt) ;
+    }
+
+    // -------- Execute
 
     static public QueryIterator exec(Op op, Dataset ds)
     {
-        return exec(op, new DataSourceGraphImpl(ds)) ;
+        return exec(op, ds.asDatasetGraph()) ;
     }
 
     static public QueryIterator exec(Op op, Model model)
@@ -32,26 +54,23 @@ public class Algebra
         return exec(op, model.getGraph()) ;
     }
 
-    static public QueryIterator exec(Op op, DatasetGraph ds)
-    {
-        // QueryEngineRef.eval
-        QueryIterator qIter = new OpExecMain().eval(op, ds, ARQ.getContext()) ;
-        return qIter ;
-    }
-
     static public QueryIterator exec(Op op, Graph graph)
     {
-        QueryIterator qIter = new OpExecMain().eval(op, graph) ;
-        return qIter ;
+        return exec(op, new DataSourceGraphImpl(graph)) ;
+    }
+
+    static public QueryIterator exec(Op op, DatasetGraph ds)
+    {
+        QueryEngineFactory f = QueryEngineRegistry.findFactory(op, ds, null) ;
+        Plan plan = f.create(op, ds, BindingRoot.create(), null) ;
+        return plan.iterator() ;
     }
 
     //  Reference engine
-    //  Should we do the registery thing here?
-    //  Extends QueryExecutionGraph or a separate interface for exec(op)? 
 
     static public QueryIterator execRef(Op op, Dataset ds)
     {
-        return execRef(op, new DataSourceGraphImpl(ds)) ;
+        return execRef(op, ds.asDatasetGraph()) ;
     }
 
     static public QueryIterator execRef(Op op, Model model)
@@ -59,19 +78,18 @@ public class Algebra
         return execRef(op, model.getGraph()) ;
     }
 
-    static public QueryIterator execRef(Op op, DatasetGraph ds)
-    {
-        // QueryEngineRef.eval
-        QueryIterator qIter = new OpExecRef().eval(op, ds, ARQ.getContext()) ;
-        return qIter ;
-    }
-
     static public QueryIterator execRef(Op op, Graph graph)
     {
-        QueryIterator qIter = new OpExecRef().eval(op, graph) ;
-        return qIter ;
+        return execRef(op, new DataSourceGraphImpl(graph)) ;
+    }
+
+    static public QueryIterator execRef(Op op, DatasetGraph ds)
+    {
+        QueryEngineRef qe = new QueryEngineRef(op, ds, null) ;
+        return qe.getPlan().iterator() ;
     }
 }
+
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.

@@ -16,10 +16,12 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
-import com.hp.hpl.jena.sparql.algebra.Op;
+
+import com.hp.hpl.jena.sparql.algebra.*;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
@@ -110,6 +112,7 @@ public class labelSearch implements PropertyFunction
             // Old (ARQ 1) way - not recommended.
             return buildSyntax(input, nodeVar, pattern, execCxt) ;
         
+        // Better 
         // Build a SPARQL algebra expression
         Var var2 = createNewVar() ;                     // Hidden variable
         
@@ -120,7 +123,20 @@ public class labelSearch implements PropertyFunction
         
         Expr regex = new E_Regex(new NodeVar(var2.getName()), pattern, "i") ;
         OpFilter filter = OpFilter.filter(regex, op) ;
+
+        // ---- Evaluation
+        if ( true )
+        {
+            // Use the reference query engine
+            // Create a table for the input stream (so it uses working memory at this point, 
+            // which is why this is not the preferred way).  
+            // Then join to expression for this stage.
+            Table table = TableFactory.create(input) ;
+            Op op2 = OpJoin.create(OpTable.create(table), filter) ;
+            return Algebra.exec(op2, execCxt.getDataset()) ;
+        }        
         
+        // Use the default, optimizing query engine. 
         return OpCompiler.compile(filter, input, execCxt) ;
     }
 
@@ -144,7 +160,7 @@ public class labelSearch implements PropertyFunction
         // Compile it.
         // An alternative design is to build the Op structure programmatically,
         // 
-        Op op = AlgebraGenerator.compilePattern(elementGroup) ;
+        Op op = Algebra.compile(elementGroup) ;
         return OpCompiler.compile(op, input, execCxt) ;
     }
     

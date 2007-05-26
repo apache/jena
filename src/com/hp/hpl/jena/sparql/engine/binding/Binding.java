@@ -35,7 +35,8 @@ public interface Binding
     
     /** Number of (var, value) pairs. */
     public int size() ;
-    
+
+    /** Is this an empty bindign?  No variables. */
     public boolean isEmpty() ;
 
     public void addAll(Binding key) ;

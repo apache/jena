@@ -6,7 +6,6 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
@@ -16,19 +15,24 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
 
-public class QueryEngineMain extends QueryEngineOpBase
+import com.hp.hpl.jena.query.Query;
+
+public class QueryEngineMain extends QueryEngineBase
 {
     static public QueryEngineFactory getFactory() { return factory ; } 
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
 
+    public QueryEngineMain(Op op, DatasetGraph dataset, Binding input, Context context)
+    { super(op, dataset, input, context) ; }
+    
     public QueryEngineMain(Query query, DatasetGraph dataset, Binding input, Context context)
     { super(query, dataset, new AlgebraGenerator(context), input, context) ; }
 
 //    public QueryEngineMain(Query query, Context context)
 //    { this(query, null, context) ; }
     
-    public QueryIterator eval(Op op, Binding input, DatasetGraph dsg, Context context)
+    public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
         QueryIterator qIter1 = new QueryIterSingleton(input, execCxt) ;
@@ -50,6 +54,16 @@ public class QueryEngineMain extends QueryEngineOpBase
             QueryEngineMain engine = new QueryEngineMain(query, dataset, input, context) ;
             return engine.getPlan() ;
         }
+        
+        public boolean accept(Op op, DatasetGraph dataset, Context context) 
+        { return true ; }
+
+        public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
+        {
+            QueryEngineMain engine = new QueryEngineMain(op, dataset, binding, context) ;
+            return engine.getPlan() ;
+        }
+
     } ;
 
 

@@ -7,6 +7,8 @@
 package com.hp.hpl.jena.sparql.engine;
 
 import com.hp.hpl.jena.query.Query;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.util.Context;
@@ -21,6 +23,9 @@ public interface QueryEngineFactory
 {
     public boolean accept(Query query, DatasetGraph dataset, Context context) ;
     public Plan create(Query query, DatasetGraph dataset, Binding inputBinding, Context context) ;
+    
+    public boolean accept(Op op, DatasetGraph dataset, Context context) ;
+    public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context) ;
 }
 
 /*

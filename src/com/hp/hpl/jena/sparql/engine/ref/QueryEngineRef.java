@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.ref;
 
 import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.*;
@@ -16,21 +17,20 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
 import com.hp.hpl.jena.sparql.util.Context;
 
 import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
 
 
-public class QueryEngineRef extends QueryEngineOpBase
+public class QueryEngineRef extends QueryEngineBase
 {
-    public QueryEngineRef(Query query, Context context) { this(query, null, null, context) ; }
+    public QueryEngineRef(Op op, DatasetGraph dataset, Context context)
+    { this(op, dataset, null, context) ; }
     
+    public QueryEngineRef(Op op, DatasetGraph dataset, Binding input, Context context)
+    { super(op, dataset, input, context) ; }
+
     public QueryEngineRef(Query query, DatasetGraph dataset, 
                           Binding input, Context context)
     {
-        super(query,
-              dataset,
-              new AlgebraGenerator(context), 
-              input, 
-              context) ; 
+        this(query, dataset, new AlgebraGenerator(context), input, context) ; 
     }
     
     protected QueryEngineRef(Query query, DatasetGraph dataset, AlgebraGenerator gen,
@@ -39,13 +39,10 @@ public class QueryEngineRef extends QueryEngineOpBase
         super(query, dataset, gen, input, context) ;
     }
     
-    public QueryIterator eval(Op op, Binding binding, DatasetGraph dsg, Context context)
+    public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
         if ( binding.vars().hasNext() )
-            // Easy ways to fix this limitation - use a wrapper to add the necessary bindings.
-            // Or mess with table to join in the binding.
-            // Or ...
-            throw new QueryExecException("Initial bindings to ref evaluation") ;
+            op = OpSubstitute.substitute(op, binding) ;
 
         ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
         Evaluator eval = EvaluatorFactory.create(execCxt) ;
@@ -68,6 +65,16 @@ public class QueryEngineRef extends QueryEngineOpBase
             QueryEngineRef engine = new QueryEngineRef(query, dataset, binding, context) ;
             return engine.getPlan() ;
         }
+        
+        public boolean accept(Op op, DatasetGraph dataset, Context context) 
+        { return true ; }
+
+        public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
+        {
+            QueryEngineRef engine = new QueryEngineRef(op, dataset, binding, context) ;
+            return engine.getPlan() ;
+        }
+
     } ;
 }
 

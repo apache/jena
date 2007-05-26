@@ -6,12 +6,13 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.graph.Graph;
 
+import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
@@ -20,46 +21,77 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 
-/** Build the graph level objects needed for query execution */
-
-public abstract class QueryEngineBase
+public abstract class QueryEngineBase implements OpExec
 {
-    private static Log log = LogFactory.getLog(QueryEngineBase.class) ;
-
-    private Query query ;
     private DatasetGraph dataset = null ;
     private Context context ;
     private Binding startBinding ;
-    private FileManager fileManager = FileManager.get();
+    
     private Op queryOp = null ;
-
-    public QueryEngineBase(Query query, DatasetGraph dataset, Binding startBinding, Context context)
+    private Plan plan = null ;
+    
+    protected QueryEngineBase(Query query,
+                              DatasetGraph dataset, 
+                              AlgebraGenerator gen,
+                              Binding input,
+                              Context context)
     {
-        this.query = query ;
-        // Fixup query.
-        query.setResultVars() ;
+        this(dataset, input, context) ;
+        // Build the Op.
+        queryOp = createOp(query, gen) ;
+    }
+    
+    protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context context)
+    {
+        this(dataset, input, context) ;
+        queryOp = op ;
+    }
+    
+    private QueryEngineBase(DatasetGraph dataset, Binding input, Context context)
+    {
         this.dataset = dataset ;    // Maybe null i.e. in query
         if ( context == null )      // Copy of global context to protect against chnage.
-            context = new Context(ARQ.getContext()) ;
+            context = ARQ.getContext().copy() ;
         this.context = context ;
-        this.startBinding = startBinding ;
+        if ( input == null )
+        {
+            LogFactory.getLog(QueryEngineBase.class).warn("Null initial input") ;
+            input = BindingRoot.create() ;
+        }
+        this.startBinding = input ;
     }
     
-    public DatasetGraph getDatasetGraph() 
-    { 
-        return dataset ;
-    }
-    
-    public Binding getInputBinding()
+    public Plan getPlan()
     {
-        if ( startBinding == null )
-            startBinding = BindingRoot.create() ;
-        return startBinding ;
+        if ( plan == null )
+            plan = createPlan() ;
+        return plan ;
     }
     
-    protected Query getQuery() { return query ; }
+    protected Plan createPlan()
+    {
+        QueryIterator queryIterator = eval(queryOp, dataset, 
+                                           startBinding, context) ;
+        return new PlanOp(getOp(), queryIterator) ;
+    }
     
-    protected Context context() { return context ; }
+    private Op createOp(Query query, AlgebraGenerator gen)
+    {
+        query.setResultVars() ;
+        Op op = gen.compile(query) ;
+        return op ;
+    }
+    
+    public QueryIterator eval(Op op, Graph graph)
+    { return eval(op, new DataSourceGraphImpl(graph), ARQ.getContext()) ; }
+    
+    public QueryIterator eval(Op op, DatasetGraph dsg, Context context)
+    { return eval(op, dsg, BindingRoot.create(), context) ; }
+    
+    abstract 
+    public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
+    
+    protected Op getOp() { return queryOp ; }
 }
 
 /*

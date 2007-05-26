@@ -10,7 +10,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
@@ -88,7 +88,7 @@ public class TestClassify extends TestCase
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
         Query query = QueryFactory.create(qs) ;
-        Op op = AlgebraGenerator.compilePattern(query.getQueryPattern()) ;
+        Op op = Algebra.compile(query.getQueryPattern()) ;
         
         if ( ! ( op instanceof OpJoin ) )
             fail("Not a join: "+pattern) ;
@@ -115,7 +115,7 @@ public class TestClassify extends TestCase
         String qs1 = "PREFIX : <http://example/>\n" ;
         String qs = qs1+"SELECT * "+pattern;
         Query query = QueryFactory.create(qs) ;
-        Op op = AlgebraGenerator.compilePattern(query.getQueryPattern()) ;
+        Op op = Algebra.compile(query.getQueryPattern()) ;
         
         if ( ! ( op instanceof OpLeftJoin ) )
             fail("Not a leftjoin: "+pattern) ;
