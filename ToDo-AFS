@@ -5,8 +5,9 @@ SDB ToDo list (and general notes)
 + Graph => Quad
 + Graph => Tuple loader.
 
-
 + Tuple loader
+
++ QueryEngineSDB has duplication with QueryEngineMain - eliminate!
 
 + TableDesc - better table description system
   Partly done: The formatters still know the column names.
