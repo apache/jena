@@ -4,70 +4,36 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.op;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor;
+import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.algebra.Transform;
+import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 
-
-public class OpVisitorBase implements OpVisitor
+public class OpDiff extends Op2
 {
-
-    public void visit(OpBGP opBGP)
-    {}
-
-    public void visit(OpJoin opJoin)
-    {}
-
-    public void visit(OpLeftJoin opLeftJoin)
-    {}
-
-    public void visit(OpDiff opDiff)
-    {}
+    public static Op create(Op left, Op right)
+    { 
+        return new OpDiff(left, right) ;
+    }
     
-    public void visit(OpUnion opUnion)
-    {}
+    private OpDiff(Op left, Op right) { super(left, right) ; }
+    
+    public Table eval_2(Table tableLeft, Table tableRight, Evaluator evaluator)
+    {
+        return evaluator.join(tableLeft, tableRight) ;
+    }
 
-    public void visit(OpFilter opFilter)
-    {}
+    public String getName() { return "diff" ; }
 
-    public void visit(OpGraph opGraph)
-    {}
-
-    public void visit(OpQuadPattern quadPattern)
-    {}
-
-    public void visit(OpDatasetNames dsNames)
-    {}
-
-    public void visit(OpTable opUnit)
-    {}
-
-    public void visit(OpExt opExt)
-    {}
-
-    public void visit(OpNull opNull)
-    {}
-
-    public void visit(OpList opList)
-    {}
-
-    public void visit(OpOrder opOrder)
-    {}
-
-    public void visit(OpProject opProject)
-    {}
-
-    public void visit(OpDistinct opDistinct)
-    {}
-
-    public void visit(OpReduced opReduced)
-    {}
-
-    public void visit(OpSlice opSlice)
-    {}
-
-    public void visit(OpGroupAgg opGroupAgg)
-    {}
+    public Op apply(Transform transform, Op left, Op right)
+    { return transform.transform(this, left, right) ; }
+        
+    public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
+    public Op copy(Op newLeft, Op newRight)
+    { return new OpDiff(newLeft, newRight) ; }
 }
 
 /*

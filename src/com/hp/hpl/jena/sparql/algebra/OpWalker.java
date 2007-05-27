@@ -50,6 +50,9 @@ public class OpWalker
         public void visit(OpLeftJoin opLeftJoin)
         { visitX(opLeftJoin) ; }
 
+        public void visit(OpDiff opDiff)
+        { visitX(opDiff) ; }
+
         public void visit(OpUnion opUnion)
         { visitX(opUnion) ; }
 

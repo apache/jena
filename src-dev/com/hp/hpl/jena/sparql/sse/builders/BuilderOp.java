@@ -229,6 +229,18 @@ public class BuilderOp
         }
     } ;
 
+    final protected Build buildDiff = new Build()
+    {
+        public Op make(ItemList list)
+        {
+            BuilderBase.checkLength(3, 4, list, "diff: wanted 2 arguments") ;
+            Op left = build(list, 1) ;
+            Op right  = build(list, 2) ;
+            Op op = OpDiff.create(left, right) ;
+            return op ;
+        }
+    } ;
+
     final protected Build buildUnion = new Build()
     {
         public Op make(ItemList list)

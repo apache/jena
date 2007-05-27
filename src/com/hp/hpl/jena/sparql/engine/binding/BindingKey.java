@@ -54,7 +54,7 @@ public class BindingKey
             return false ;
         Binding binding2 = ((BindingKey)other).getKey() ;
         
-        return BindingBase.same(key, binding2) ;
+        return BindingBase.equals(key, binding2) ;
     }
     
     private static final int EmptyBindingHashCode = 123 ;

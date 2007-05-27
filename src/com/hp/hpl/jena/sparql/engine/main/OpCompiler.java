@@ -135,6 +135,9 @@ public class OpCompiler
         return qIter ;
     }
 
+    QueryIterator compile(OpDiff opLeftJoin, QueryIterator input)
+    { throw new ARQNotImplemented("OpCompile.compile/OpDiff") ; }
+    
     QueryIterator compile(OpUnion opUnion, QueryIterator input)
     {
         List x = new ArrayList() ;

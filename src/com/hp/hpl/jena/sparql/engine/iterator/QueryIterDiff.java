@@ -1,77 +1,63 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.engine.iterator;
 
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.Table;
+import com.hp.hpl.jena.sparql.algebra.TableFactory;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
-
-public class OpVisitorBase implements OpVisitor
+/** Diff by materializing the RHS - this is not streamed */
+public class QueryIterDiff extends QueryIter2
 {
-
-    public void visit(OpBGP opBGP)
-    {}
-
-    public void visit(OpJoin opJoin)
-    {}
-
-    public void visit(OpLeftJoin opLeftJoin)
-    {}
-
-    public void visit(OpDiff opDiff)
-    {}
+    Table tableRight ; 
+    Binding slot = null ;
     
-    public void visit(OpUnion opUnion)
+    public QueryIterDiff(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
+    {
+        super(left, right, qCxt) ;
+        // Externalized right - share with join.
+        tableRight = TableFactory.create(getRight()) ;
+        getRight().close();
+    }
+
+    protected void releaseResources()
     {}
 
-    public void visit(OpFilter opFilter)
-    {}
+    protected boolean hasNextBinding()
+    {
+        if ( slot != null )
+            return true ;
+        
+        while ( getLeft().hasNext() )
+        {
+            Binding b = getLeft().nextBinding() ;
+            if ( tableRight.contains(b) )
+            {
+                slot = b ; 
+                return true ;
+            }
+        }
+        return false ;
+    }
 
-    public void visit(OpGraph opGraph)
-    {}
-
-    public void visit(OpQuadPattern quadPattern)
-    {}
-
-    public void visit(OpDatasetNames dsNames)
-    {}
-
-    public void visit(OpTable opUnit)
-    {}
-
-    public void visit(OpExt opExt)
-    {}
-
-    public void visit(OpNull opNull)
-    {}
-
-    public void visit(OpList opList)
-    {}
-
-    public void visit(OpOrder opOrder)
-    {}
-
-    public void visit(OpProject opProject)
-    {}
-
-    public void visit(OpDistinct opDistinct)
-    {}
-
-    public void visit(OpReduced opReduced)
-    {}
-
-    public void visit(OpSlice opSlice)
-    {}
-
-    public void visit(OpGroupAgg opGroupAgg)
-    {}
+    protected Binding moveToNextBinding()
+    {
+        if ( ! hasNextBinding() )
+            return null ;
+        Binding x = slot ;
+        slot = null ;
+        return x ;
+    }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

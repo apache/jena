@@ -147,6 +147,9 @@ public class OpWriter
 
         public void visit(OpLeftJoin opLeftJoin)
         { visitOp2(opLeftJoin, opLeftJoin.getExprs()) ; }
+        
+        public void visit(OpDiff opDiff)
+        { visitOp2(opDiff, null) ; }
     
         public void visit(OpUnion opUnion)
         { visitOp2(opUnion, null) ; } 

@@ -7,8 +7,6 @@
 + DatasetImpl and DataSourceImpl 
     Revisit.
       
-+ ChangeLog
-
 + DateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
 
@@ -16,23 +14,17 @@
   QueryIterGroup
   Parsing : 
      SELECT list is expressions always (inv vars)
-     Ordered Map [LinkedHashMap] from name (generated if necessary) to expression.
+     Ordered Map [LinkedHashMap?] from name (generated if necessary) to expression.
      Phase 2 detects inconsistences 
          
-+ QueryExecution wraps/extends QueryExecutionGraph.
-  QueryEngineRegistry isa QueryExecutionGraph factory
-  Clean DatasetUtils, DatasetFactory
-  Remove QueryExecutionGraphFactory
-  OpExec <== QueryExecutionGraph
-  
 + Quads - independent quads?  Or retain blocking structure?
 
 + Remote update over HTTP
 
-Improvements - are these measurable?
++ Improvements - are these measurable?
   If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
 
-+ OpDiff, OpIntersection
++ OpDiff : Test ref and QueryIterDiff
 
 == Core
 

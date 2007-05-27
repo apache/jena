@@ -20,6 +20,7 @@ public class TransformBase implements Transform
 
     public Op transform(OpJoin opJoin, Op left, Op right)           { return opJoin ; }
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return opLeftJoin ; }
+    public Op transform(OpDiff opDiff, Op left, Op right)           { return opDiff ; }
     public Op transform(OpUnion opUnion, Op left, Op right)         { return opUnion ; }
     
     public Op transform(OpExt opExt)                        { return opExt ; }

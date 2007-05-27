@@ -14,6 +14,7 @@ public interface OpVisitor
     public void visit(OpQuadPattern quadPattern) ;
     public void visit(OpJoin opJoin) ;
     public void visit(OpLeftJoin opLeftJoin) ;
+    public void visit(OpDiff opDiff) ;
     public void visit(OpUnion opUnion) ;
     public void visit(OpFilter opFilter) ;
     public void visit(OpGraph opGraph) ;

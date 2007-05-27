@@ -192,7 +192,7 @@ abstract public class BindingBase implements Binding
 
     protected abstract void checkAdd1(Var var, Node node) ;
     
-    public static boolean same(Binding bind1, Binding bind2)
+    public static boolean equals(Binding bind1, Binding bind2)
     {
         // Same variables?
         

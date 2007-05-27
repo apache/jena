@@ -37,6 +37,8 @@ public class TableEmpty extends TableBase
             return new QueryIterNullIterator(execContext) ;
     }
 
+    public boolean contains(Binding binding) { return false ; }
+    
     public void closeTable()    { }
 
     public List getVarNames()   { return new ArrayList() ; }

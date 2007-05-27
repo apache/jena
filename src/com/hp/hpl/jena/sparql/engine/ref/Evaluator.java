@@ -21,6 +21,7 @@ public interface Evaluator
     
     public Table join(Table tableLeft, Table tableRight) ;
     public Table leftJoin(Table tableLeft, Table tableRight, ExprList expr) ;
+    public Table diff(Table tableLeft, Table tableRight) ;
     public Table union(Table tableLeft, Table tableRight) ;
     public Table filter(ExprList expressions, Table tableLeft) ;
 

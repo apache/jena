@@ -21,6 +21,7 @@ public interface Transform
 
     public Op transform(OpJoin opJoin, Op left, Op right) ;
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right) ;
+    public Op transform(OpDiff opDiff, Op left, Op right) ;
     public Op transform(OpUnion opUnion, Op left, Op right) ;
     
     public Op transform(OpExt opExt) ;

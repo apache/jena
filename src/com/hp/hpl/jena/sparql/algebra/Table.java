@@ -28,6 +28,7 @@ public interface Table
     public int size() ;
     public QueryIterator iterator(ExecutionContext execCxt) ;
     public void addBinding(Binding binding) ;
+    public boolean contains(Binding binding) ;
     public ResultSet toResultSet() ;
 }
 

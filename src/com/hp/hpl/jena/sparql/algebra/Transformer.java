@@ -89,6 +89,9 @@ public class Transformer
         public void visit(OpLeftJoin opLeftJoin)
         { visit2(opLeftJoin) ; }
 
+        public void visit(OpDiff opDiff)
+        { visit2(opDiff) ; }
+        
         public void visit(OpUnion opUnion)
         { visit2(opUnion) ; }
 

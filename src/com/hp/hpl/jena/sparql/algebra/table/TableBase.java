@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.engine.ref.Evaluator;
 
 import com.hp.hpl.jena.query.ResultSet;
@@ -68,6 +69,20 @@ public abstract class TableBase implements Table
     
     public void addBinding(Binding binding)
     { throw new UnsupportedOperationException("Table.add") ; }
+    
+    public boolean contains(Binding b)
+    {
+        QueryIterator qIter = iterator(null) ;
+        try {
+            for ( ; qIter.hasNext() ; )
+            {
+                Binding b2 = qIter.nextBinding() ;
+                if ( BindingUtils.equals(b,b2) )
+                    return true ;
+            }
+            return false ;
+        } finally { qIter.close() ; }
+    }
     
     public int size()
     { throw new UnsupportedOperationException("Table.size") ; }

@@ -83,9 +83,9 @@ public class ResultBinding extends QuerySolutionBase
         return binding.toString() ;
     }
 
-    public static boolean same(ResultBinding rb1, ResultBinding rb2)
+    public static boolean equals(ResultBinding rb1, ResultBinding rb2)
     {
-        return BindingBase.same(rb1.getBinding(), rb2.getBinding() ) ; 
+        return BindingBase.equals(rb1.getBinding(), rb2.getBinding() ) ; 
     }
 }
 

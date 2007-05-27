@@ -81,6 +81,11 @@ public class BindingUtils
             binding.add(Var.alloc(n), x.asNode()) ;
         }
     }
+    
+    public static boolean equals(Binding b1, Binding b2)
+    {
+        return BindingBase.equals(b1, b2) ; 
+    }
 }
 
 /*

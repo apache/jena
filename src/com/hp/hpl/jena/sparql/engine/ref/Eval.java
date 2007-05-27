@@ -105,6 +105,14 @@ public class Eval
             push(table) ;
         }
 
+        public void visit(OpDiff opDiff)
+        {
+            Table left = eval(opDiff.getLeft()) ;
+            Table right = eval(opDiff.getRight()) ;
+            Table table = evaluator.diff(left, right) ;
+            push(table) ;
+        }
+
         public void visit(OpUnion opUnion)
         {
             Table left = eval(opUnion.getLeft()) ;
