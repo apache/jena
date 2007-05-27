@@ -1,18 +1,5 @@
-(
- word
- x:p
- <:x:p>
- x;p
- x ;p
- x#p
- x@p
- "FRT"$$
-)
-
-
-## (prefix ((: <http://example/>))
-##   (project (?x)
-##     (leftjoin
-##       (table unit)
-##       (BGP [triple :x :p ?x])
-##       )))
+(prefix ((: <http://example/>))
+  (project (?v)
+    (filter (= ?v "world")
+      (BGP [triple :x :p ?v])
+      )))
