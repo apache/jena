@@ -39,13 +39,13 @@ public abstract class QueryEngineBase implements OpExec
         this(dataset, input, context) ;
         // Build the Op.
         query.setResultVars() ;
-        queryOp = createOp(query, gen) ;
+        setOp(createOp(query, gen)) ;
     }
     
     protected QueryEngineBase(Op op, DatasetGraph dataset, Binding input, Context context)
     {
         this(dataset, input, context) ;
-        queryOp = op ;
+        setOp(op) ;
     }
     
     private QueryEngineBase(DatasetGraph dataset, Binding input, Context context)
@@ -72,8 +72,12 @@ public abstract class QueryEngineBase implements OpExec
     protected Plan createPlan()
     {
         Op op = modifyOp(queryOp) ;
-        QueryIterator queryIterator = eval(op, dataset, 
-                                           startBinding, context) ;
+        
+        
+        QueryIterator queryIterator = null ;
+        if ( dataset != null )
+            // Null means setting up but not executing a query.
+            queryIterator = eval(op, dataset, startBinding, context) ;
         return new PlanOp(getOp(), queryIterator) ;
     }
     
@@ -96,6 +100,7 @@ public abstract class QueryEngineBase implements OpExec
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
     
     protected Op getOp() { return queryOp ; }
+    protected void setOp(Op op) { queryOp = op ; }
 }
 
 /*

@@ -49,6 +49,7 @@ public class QueryExecutionBase implements QueryExecution
     private Dataset            dataset ;
     private QueryEngineFactory qeFactory ;
     private QueryIterator      queryIterator = null ;
+    private Plan               plan = null ;
     private Op                 queryOp       = null ;
     private Context            context ;
     private FileManager        fileManager = FileManager.get() ;
@@ -228,25 +229,13 @@ public class QueryExecutionBase implements QueryExecution
         if ( query.getQueryPattern() == null )
             return null ;
         
-        DatasetGraph dsg = prepareDataset(dataset, query, fileManager) ;
-        
-        Binding inputBinding = null ;
-        if ( initialBinding != null )
-        {
-            inputBinding = new BindingMap() ;
-            BindingUtils.addToBinding(inputBinding, initialBinding) ;
-        }
-        if ( inputBinding == null )
-            inputBinding = BindingRoot.create() ;
-        
         Model model = null ;
         if ( dataset != null )
             model = dataset.getDefaultModel() ;
         else
             model = ModelFactory.createDefaultModel() ;
         
-        Plan plan = qeFactory.create(query, dsg, inputBinding, getContext()) ;
-        queryIterator = plan.iterator() ;
+        queryIterator = getPlan().iterator() ;
         
         ResultSetStream rStream = new ResultSetStream(query.getResultVars(), model, queryIterator) ;
         
@@ -258,6 +247,25 @@ public class QueryExecutionBase implements QueryExecution
         return rStream ;
     }
 
+    public Plan getPlan() 
+    {
+        if ( plan == null )
+        {
+            DatasetGraph dsg = prepareDataset(dataset, query, fileManager) ;
+            Binding inputBinding = null ;
+            if ( initialBinding != null )
+            {
+                inputBinding = new BindingMap() ;
+                BindingUtils.addToBinding(inputBinding, initialBinding) ;
+            }
+            if ( inputBinding == null )
+                inputBinding = BindingRoot.create() ;
+
+            plan = qeFactory.create(query, dsg, inputBinding, getContext()) ;
+        }            
+        return plan ;
+    }
+    
     private void insertPrefixesInto(Model model)
     {
         try {
