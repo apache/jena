@@ -44,6 +44,7 @@ public class BuilderOp
         dispatch.put(symGraph, buildGraph) ;
         dispatch.put(symJoin, buildJoin) ;
         dispatch.put(symLeftJoin, buildLeftJoin) ;
+        dispatch.put(symDiff, buildDiff) ;
         dispatch.put(symUnion, buildUnion) ;
 
         dispatch.put(symToList, buildToList) ;
@@ -116,6 +117,7 @@ public class BuilderOp
     static protected final String symGraph        = symBase + "graph" ;
     static protected final String symJoin         = symBase + "join" ;
     static protected final String symLeftJoin     = symBase + "leftjoin" ;
+    static protected final String symDiff         = symBase + "diff" ;
     static protected final String symUnion        = symBase + "union" ;
 
     static protected final String symToList       = symBase + "tolist" ;

@@ -69,7 +69,10 @@ public class Run
             System.exit(0) ;
         }
         
-        dev.qexec.main(new String[]{"--data=D.ttl", "--query=Q.sse"}) ;
+        dev.qexec.main(new String[]{
+            //"--engine=ref" ,
+            //--data=D.ttl",
+            "--query=Q.sse"}) ;
         System.exit(0) ;
         
     }

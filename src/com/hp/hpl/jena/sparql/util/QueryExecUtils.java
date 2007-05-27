@@ -74,7 +74,7 @@ public class QueryExecUtils
         QueryIterator qIter = plan.iterator() ;
 
         List vars = null ;
-        if ( qIter instanceof OpProject )
+        if ( op instanceof OpProject )
             vars = Var.varNames(((OpProject)op).getVars()) ;
         else
             vars = Var.varNames(OpVars.allVars(op)) ;

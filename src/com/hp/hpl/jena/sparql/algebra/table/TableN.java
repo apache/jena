@@ -89,7 +89,7 @@ public class TableN extends TableBase
     public void closeTable()
     {
         rows = null ;
-        vars = null ;
+        // Don't clear the vars in case code later asks for the variables. 
     }
 
     public List getVarNames()   { return vars ; }

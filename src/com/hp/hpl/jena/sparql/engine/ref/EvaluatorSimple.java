@@ -9,14 +9,15 @@ package com.hp.hpl.jena.sparql.engine.ref;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.TableFactory;
 import com.hp.hpl.jena.sparql.algebra.table.TableN;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.ExecUtils;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils;
 import com.hp.hpl.jena.sparql.engine.iterator.*;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -80,8 +81,7 @@ class EvaluatorSimple implements Evaluator
             dump(tableLeft) ;
             dump(tableRight) ;
         }
-        throw new ARQNotImplemented("EvaluatorSimple.diff") ;
-        //return null ;
+        return diffWorker(tableLeft, tableRight) ;
     }
 
     public Table filter(ExprList expressions, Table table)
@@ -196,25 +196,12 @@ class EvaluatorSimple implements Evaluator
         for ( ; left.hasNext() ; )
         {
             Binding b = left.nextBinding() ;
-            if ( tableContains(tableRight, b) )
+            if ( tableRight.contains(b) )
                 r.addBinding(b) ;
         }
         tableLeft.close() ;
         tableRight.close() ;
-
         return r ;
-    }
-    
-    private boolean tableContains(Table table, Binding b)
-    {
-        QueryIterator qIter = table.iterator(execCxt) ;
-        for ( ; qIter.hasNext() ; )
-        {
-            Binding b2 = qIter.nextBinding() ;
-            if ( BindingUtils.equals(b,b2) )
-                return true ;
-        }
-        return false ; 
     }
     
     private static void dump(Table table)

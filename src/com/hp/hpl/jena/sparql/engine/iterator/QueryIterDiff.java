@@ -27,7 +27,7 @@ public class QueryIterDiff extends QueryIter2
     }
 
     protected void releaseResources()
-    {}
+    { tableRight.close(); }
 
     protected boolean hasNextBinding()
     {
@@ -43,6 +43,7 @@ public class QueryIterDiff extends QueryIter2
                 return true ;
             }
         }
+        getLeft().close() ;
         return false ;
     }
 

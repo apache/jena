@@ -135,8 +135,12 @@ public class OpCompiler
         return qIter ;
     }
 
-    QueryIterator compile(OpDiff opLeftJoin, QueryIterator input)
-    { throw new ARQNotImplemented("OpCompile.compile/OpDiff") ; }
+    QueryIterator compile(OpDiff opDiff, QueryIterator input)
+    { 
+        QueryIterator left = compileOp(opDiff.getLeft(), input) ;
+        QueryIterator right = compileOp(opDiff.getRight(), root()) ;
+        return new QueryIterDiff(left, right, execCxt) ;
+    }
     
     QueryIterator compile(OpUnion opUnion, QueryIterator input)
     {
@@ -234,7 +238,10 @@ public class OpCompiler
         if ( opTable.isJoinIdentity() )
             return input ;
         if ( input instanceof QueryIterRoot )
+        {
+            input.close() ;
             return opTable.getTable().iterator(execCxt) ;
+        }
         //throw new ARQNotImplemented("Not identity table") ;
         QueryIterator qIterT = opTable.getTable().iterator(execCxt) ;
         //QueryIterator qIterT = root() ;
