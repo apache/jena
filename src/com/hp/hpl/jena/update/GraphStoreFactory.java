@@ -39,6 +39,7 @@ public class GraphStoreFactory
         
         public Dataset toDataset()
         {
+            // This is a shallow structure copy.
             return new DataSourceImpl(this) ;
         }
     }

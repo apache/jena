@@ -177,11 +177,11 @@ public class DatasetFactory
         return DatasetUtils.createDataset(uriList, namedSourceList, fileManager, baseURI) ;
     }
     
-    public static Dataset make(Dataset ds)
-    {
-        DataSourceImpl ds2 = new DataSourceImpl(ds) ;
-        return ds2 ; 
-    }
+//    public static Dataset make(Dataset ds)
+//    {
+//        DataSourceImpl ds2 = new DataSourceImpl(ds) ;
+//        return ds2 ; 
+//    }
 
 //    public static Dataset make(Dataset ds, Graph defaultGraph)
 //    {

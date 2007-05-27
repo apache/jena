@@ -44,7 +44,7 @@ public abstract class TestExpr extends TestCase
     boolean doEval ;
     
     // Global default enviromnent - including the function registry
-    Context context = new Context(ARQ.getContext()) ;
+    Context context = ARQ.getContext().copy();
 
     protected TestExpr(String label, String expression, Query queryCxt, Binding env, int failureOutcome) 
     {

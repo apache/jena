@@ -1,9 +1,11 @@
 #!/bin/bash
 
-if [ ! -e "lib/arq.jar" -o ! -e "lib/arq-extra.jar" ]
-then
-    ant jars
-    fi
+rm -f lib/arq.jar lib/arq-extra.jar
+## if [ ! -e "lib/arq.jar" -o ! -e "lib/arq-extra.jar" ]
+## then
+##     ant jars
+##     fi
+ant jar
 ant sse-jar
 
 for d in SDB # Joseki3

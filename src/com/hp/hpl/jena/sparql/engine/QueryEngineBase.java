@@ -91,7 +91,7 @@ public abstract class QueryEngineBase implements OpExec
     }
     
     public QueryIterator eval(Op op, Graph graph)
-    { return eval(op, new DataSourceGraphImpl(graph), ARQ.getContext()) ; }
+    { return eval(op, new DataSourceGraphImpl(graph), ARQ.getContext().copy()) ; }
     
     public QueryIterator eval(Op op, DatasetGraph dsg, Context context)
     { return eval(op, dsg, BindingRoot.create(), context) ; }
@@ -99,7 +99,7 @@ public abstract class QueryEngineBase implements OpExec
     abstract 
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) ;
     
-    protected Op getOp() { return queryOp ; }
+    public Op getOp() { return queryOp ; }
     protected void setOp(Op op) { queryOp = op ; }
 }
 

@@ -5,17 +5,12 @@
 ++ ** Make the system DatasetGraph/QueryExecutionGraph-centric
 -----
 
-+ Sorting out:
-  QueryExecution.getContext() ==> ??
++ Cechk all ARQ.getContext() for .copy as necessary
 
-  QueryExecutionGraphFactory => QueryExecutionFactory
-  QueryExecutionFactory => expose context operations.
-  Check all calls to ARQ.getContext to make sure
-      in one place
-      null ==> ARQ.getContext copy.
++ DatasetImpl and DataSourceImpl 
+  DatasetImpl can plain wrap a datasetgraph.
+  Can DataSourceImpl inherit from DatasetImpl? No (one hass mutable graph form)
       
-++ Where has Plan done? == QueryExecutionGraph??
-
 ++ ChangeLog
 
 + DateTime arithmetic and durations

@@ -11,50 +11,33 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.LabelExistsException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.Lock;
 
-/** A implementation of a DataSource, which is a mutable Dataset,
- *  a set of a single unnamed graph and a number (zero or
- *  more) named graphs with graphs as Models. 
+import com.hp.hpl.jena.query.Dataset;
+
+/**Wrapper around a DatasetGraph. See also DataSourceImpl.
  * 
  * @author Andy Seaborne
  * @version $Id: DataSourceImpl.java,v 1.14 2007/02/05 17:11:39 andy_seaborne Exp $
  */
 
-public class DataSourceImpl implements DataSource
+public class DatasetImpl implements Dataset
 {
-    protected DataSourceGraph dsg = null ;
+    protected DatasetGraph dsg = null ;
     // Cache graph => model so returned models are the same (==)
     private Map cache = new HashMap() ;      
 
-    public DataSourceImpl()
-    { this.dsg = new DataSourceGraphImpl() ; }
-
-    public DataSourceImpl(DataSourceGraph otherDSG)
+    public DatasetImpl(Model model)
     {
-        this.dsg = otherDSG ;
-    }
-    
-    public DataSourceImpl(DatasetGraph dSetGraph)
-    { 
-        // Must clone.
-        this.dsg = new DataSourceGraphImpl(dSetGraph) ; 
-    }
-    
-    public DataSourceImpl(Model model)
-    {
-        addToCache(model) ;
+        addToCache(model);
         this.dsg = new DataSourceGraphImpl(model.getGraph()) ;
     }
-
-    public DataSourceImpl(Dataset ds)
+    
+    public DatasetImpl(DatasetGraph dsg)
     {
-        this.dsg = new DataSourceGraphImpl(ds) ;
+        this.dsg = dsg ;
     }
 
     //  Does it matter if this is not the same model each time?
@@ -64,43 +47,12 @@ public class DataSourceImpl implements DataSource
     }
 
     public Lock getLock() { return dsg.getLock() ; }
-
-    public DataSourceGraph getDataSourceGraph() { return dsg ; }
     
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
     public Model getNamedModel(String uri)
     { 
         return graph2model(dsg.getNamedGraph(uri)) ;
-    }
-
-    public void addNamedModel(String uri, Model model) throws LabelExistsException
-    { 
-        addToCache(model) ;
-        dsg.addNamedGraph(uri, model.getGraph()) ;
-    }
-
-    public void removeNamedModel(String uri)
-    { 
-        removeFromCache(dsg.getNamedGraph(uri)) ;
-        dsg.removeNamedGraph(uri) ;
-    }
-
-
-
-    public void replaceNamedModel(String uri, Model model)
-    { 
-        removeFromCache(dsg.getNamedGraph(uri)) ;
-        dsg.removeNamedGraph(uri) ;
-        addToCache(model) ;
-        dsg.addNamedGraph(uri, model.getGraph() ) ;
-    }
-
-    public void setDefaultModel(Model model)
-    { 
-        removeFromCache(dsg.getDefaultGraph()) ;
-        cache.put(model.getGraph(), model) ;
-        dsg.setDefaultGraph(model.getGraph()) ;
     }
 
     public boolean containsNamedModel(String uri)

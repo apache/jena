@@ -15,6 +15,7 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetImpl;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
@@ -171,7 +172,7 @@ public class QueryExecutionFactory
     {
         checkArg(query) ;
         checkArg(model) ;
-        return make(query, new DataSourceImpl(model)) ;
+        return make(query, new DatasetImpl(model)) ;
     }
 
     /** Create a QueryExecution to execute over the Model.
@@ -459,7 +460,6 @@ public class QueryExecutionFactory
     
     static private QueryExecution make(Query query, Dataset dataset, Context context)
     {
-        // XXX Or pass through context without fixup?
         if ( context == null )
             context = new Context(ARQ.getContext()) ;
         DatasetGraph dsg = null ;
