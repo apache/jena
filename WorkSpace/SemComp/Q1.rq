@@ -1,7 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT * 
- {
-    { { ?x :p :o1 } UNION { ?y :p :o2 } }
-    { { ?x :p :o3 } UNION { ?y :p :o4 } }
-}

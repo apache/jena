@@ -2,16 +2,12 @@
 
 ++ ** Document "stages"
 ++ ** Document "update API"
-++ ** Make the system DatasetGraph/QueryExecutionGraph-centric
 -----
 
-+ Cechk all ARQ.getContext() for .copy as necessary
-
 + DatasetImpl and DataSourceImpl 
-  DatasetImpl can plain wrap a datasetgraph.
-  Can DataSourceImpl inherit from DatasetImpl? No (one hass mutable graph form)
+    Revisit.
       
-++ ChangeLog
++ ChangeLog
 
 + DateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
@@ -36,21 +32,13 @@
 Improvements - are these measurable?
   If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
 
-== Core
++ OpDiff, OpIntersection
 
-+ Binding - becomes BindingBase.
-  Add "Binding Binding.add(var, value)" for switching to a Binding Map IIF there is a binding added.
-  Check BindingMap uses?
+== Core
 
 + What is "OpDatasetNames" nowadays?
 	A table?  unnecessary?
 + Revisit arq.cmd.QueryUtils for printing.
-
-+ Test algebra using BuilderTable etc.
-  test scripts : (test (data) (expression) (table))
-
-+ A result set is like a table except with (cols)
-  ResultsFormat.FMT_SSE!
 
 + Alternative indexes
   LARQ idea - extracted.  Object ==> node/subject
@@ -67,17 +55,10 @@ Improvements - are these measurable?
 + Commands
   + qtest to use modules (and qexpr)
     ModVersion
-  + qexec tidy/integration with qparse/query : need an "op" level.
-    Maybe QueryExecutionOp interface.
 
 == Algebra
 
-+ OpWalker  - only used for getting vars, and that needs to truncate a walk.
-+ OpExt - is this still workable?
-+ Tests
-+ Complete operators
-	Grouping
-    Intersection, diff, exists filter and subqueries.
++ OpWalker - only used for getting vars, and that needs to truncate a walk.
 + Left join as "join union diff"
 + Table equals (with and without order)
 + Binding equals
@@ -102,7 +83,7 @@ Improvements - are these measurable?
 + Document making and using datasets
 + Location-mapping and FROM/FROM NAMED
   
-== Core
+== Other
 
 + XML results: process xml:lang on other elements than just <literal>
   Documentation for XML result set processing

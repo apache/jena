@@ -4,15 +4,15 @@ ChangeLog for ARQ
 ARQ 2.1
 -------
 
+Internal changes: the core engines are now Graph/DatasetGraph/Algebra-centric 
+  and there are classes to map betwen that and the Model/Dataset.
+  QueryEngine construction and extension need not know about
+  the upper layers now.
+
 Legacy query engine1 removed.
 
-QueryEngine construction and extension:
-  QueryEngineFactory interface changed to be consistent with 
-  all engines working at the graph level.
-
 Add new Algebra operations
-  OpGroup
-  OpNull
+  OpGroup, OpNull
 
 ARQ 2.0
 -------

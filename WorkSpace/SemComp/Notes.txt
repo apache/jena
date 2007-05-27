@@ -1,4 +1,0 @@
-Based on:
-
-http://arxiv.org/abs/cs.DB/0605124
-"Semantics and Complexity of SPARQL"
