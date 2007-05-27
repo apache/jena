@@ -33,9 +33,9 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
+        //SDBConnection.logSQLQueries = true ;
         
         //QBuilder.main(null) ; System.exit(0) ;
-        
         
         runQuery() ;
         //SDBConnection.logSQLStatements = true ;
@@ -46,7 +46,7 @@ public class RunSDB
         
         //runQuad() ;
         //runQuery() ;      // Sets up data and runs query
-        runPrint() ;
+        //runPrint() ;
         //runScript() ;
         
         //run() ;

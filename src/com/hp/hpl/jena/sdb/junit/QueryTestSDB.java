@@ -10,18 +10,23 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.shared.Command;
+import com.hp.hpl.jena.util.FileManager;
+
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
 import com.hp.hpl.jena.sparql.junit.TestItem;
 import com.hp.hpl.jena.sparql.resultset.RSCompare;
 import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
+
+import com.hp.hpl.jena.query.*;
+
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
-import com.hp.hpl.jena.shared.Command;
-import com.hp.hpl.jena.util.FileManager;
 
 public class QueryTestSDB extends TestCase
 {
@@ -117,16 +122,16 @@ public class QueryTestSDB extends TestCase
         ARQ.getContext().set(ARQ.strictGraph, oldValue) ;
         
         // ---- First, execute in-memory.
-        //QueryExecution qExec1 = QueryExecutionFactory.create(query, ds) ;
-        QueryExecution qExec1 = new QueryEngineRef(query) ;
-        ((QueryEngineRef)qExec1).setDataset(ds) ;
+        QueryEngineFactory f = QueryEngineRef.getFactory() ;
+        QueryExecution qExec1 = new QueryExecutionBase(query, ds, null, f) ;
         ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(qExec1.execSelect()) ;
         qExec1.close() ;
         
         // ---- Second, execute in DB
 
-        QueryEngineSDB qExec2 = new QueryEngineSDB(store, query, null) ;
-        qExec2.setDataset(new DatasetStore(store)) ; // Not used
+        QueryEngineFactory f2 = QueryEngineSDB.getFactory() ;
+        ds = DatasetStore.create(store) ;
+        QueryExecution qExec2 = new QueryExecutionBase(query, ds, null, f2) ;
         
         ResultSet rs = null;
         try {

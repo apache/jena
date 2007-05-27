@@ -6,9 +6,16 @@
 
 package dev.pattern;
 
-import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.vocabulary.RDF;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.sse.SSE;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
+
 import com.hp.hpl.jena.sdb.compiler.PatternTable;
 import com.hp.hpl.jena.sdb.compiler.QuadBlock;
 import com.hp.hpl.jena.sdb.compiler.QuadBlockCompilerMain;
@@ -19,12 +26,9 @@ import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.layout2.hash.SlotCompilerHash;
 import com.hp.hpl.jena.sdb.layout2.index.SlotCompilerIndex;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class QBuilder
 {
@@ -56,8 +60,8 @@ public class QBuilder
             //store.getQueryCompilerFactory().createQueryCompiler(request).
             String queryString = "SELECT * { ?s ?p ?o}" ;
             Query query = QueryFactory.create(queryString) ;
-            QueryEngineSDB qe = new QueryEngineSDB(store, query, ARQ.getContext()) ;
-            Op op = qe.getOp() ;
+            Plan plan = QueryEngineSDB.getFactory().create(query, new DatasetStoreGraph(store), null, null) ;
+            Op op = plan.getOp() ;
             PrintSDB.print(op) ;
             PrintSDB.printSQL(op) ;
         }

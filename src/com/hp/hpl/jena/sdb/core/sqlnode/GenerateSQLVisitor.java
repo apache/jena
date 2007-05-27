@@ -57,7 +57,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         String sep = "" ;
         if ( sqlNode.getCols().size() == 0 )
         {
-            log.info("No SELECT columns") ;
+            // Can happen - e.g. query with no variables.
+            //log.info("No SELECT columns") ;
             out.print("*") ;
         }
         

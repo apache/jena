@@ -30,6 +30,8 @@ import com.hp.hpl.jena.sdb.store.*;
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.util.FileManager;
 
+import com.hp.hpl.jena.query.Dataset;
+
 /** Construction of a store from a store description,
  * possibly modified by command line arguments.
  * @author Andy Seaborne
@@ -94,7 +96,7 @@ public class ModStore extends ModBase
     SDBConnection connection = null ;
     boolean connectionAttempted = false ;
     Store store = null ;
-    DatasetStore dataset = null ;
+    Dataset dataset = null ;
     Model model = null ;
     List<String> loadFiles = null ;
     boolean formatFirst = false ; 
@@ -310,11 +312,11 @@ public class ModStore extends ModBase
     }
     
     
-    public DatasetStore getDataset()
+    public Dataset getDataset()
     { 
         if ( dataset == null )
         {
-            dataset = new DatasetStore(getStore()) ;
+            dataset = DatasetStore.create(getStore()) ;
             initData(dataset.getDefaultModel()) ;
         }
         

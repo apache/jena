@@ -30,7 +30,7 @@ public class PrintSDB
     {
         if ( queryEngine == null )
             queryEngine = new QueryEngineSDB(store, query) ;
-        Op op = queryEngine.getOp() ;
+        Op op = queryEngine.getPlan().getOp() ;
         System.out.println(op.toString(query.getPrefixMapping())) ;
     }
 

@@ -71,7 +71,8 @@ public class TransTableMgr
                         String.format("SELECT * { ?c1 <%s> ?c2}", transTable.getProperty().getURI())
                         );
             Query query = QueryFactory.create(q) ;
-            QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(inputStore)) ;
+            QueryExecution qExec = QueryExecutionFactory.create(query, 
+                                                                DatasetStore.create(inputStore)) ;
             
             try {
                 ResultSet rs = qExec.execSelect() ;

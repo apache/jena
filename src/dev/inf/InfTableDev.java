@@ -118,7 +118,7 @@ public class InfTableDev
             query.serialize(System.out) ;
         }
         
-        QueryExecution qExec = QueryExecutionFactory.create(query, new DatasetStore(store)) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetStore.create(store)) ;
         try {
             ResultSetFormatter.out(qExec.execSelect(), query) ;
         } finally { qExec.close() ; }

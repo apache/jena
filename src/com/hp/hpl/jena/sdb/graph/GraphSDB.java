@@ -17,23 +17,26 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.mem.TrackingTripleIterator;
-import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.core.DataSourceGraph;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.core.BasicPattern;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
+
+import com.hp.hpl.jena.query.Query;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 
@@ -48,6 +51,7 @@ public class GraphSDB extends GraphBase implements Graph
     protected int inBulkUpdate = 0 ;
     
     protected Node graphNode = Quad.defaultGraph ;
+    protected DatasetStoreGraph datasetStore = null ;
     
     public GraphSDB(Store store)
     { 
@@ -57,6 +61,8 @@ public class GraphSDB extends GraphBase implements Graph
     public GraphSDB(Store store, boolean reset)
     {
         this.store = store ;
+        // Avoid looping here : DatasetStoreGraph can make GraphSDB's
+        datasetStore = new DatasetStoreGraph(store, this) ;
         
         if ( reset )
             store.getTableFormatter().format() ;
@@ -162,27 +168,30 @@ public class GraphSDB extends GraphBase implements Graph
         
         Triple triple = new Triple(s, p ,o) ;
         
-        // replace with a algebra expression
-        Query q = new Query() ;
-        if ( sVar != null ) q.addResultVar(sVar) ;
-        if ( pVar != null ) q.addResultVar(pVar) ;
-        if ( oVar != null ) q.addResultVar(oVar) ;
-
-        ElementTriplesBlock el = new ElementTriplesBlock() ;
-        el.addTriple(new Triple(s,p,o)) ;
-        q.setQueryPattern(el) ;
+        // Evaluate as an algebra expression
+        BasicPattern pattern = new BasicPattern() ;
+        pattern.add(triple) ;
+        Op op = new OpQuadPattern(Quad.defaultGraph, pattern) ;
         
-        DataSourceGraph dsg = new DataSourceGraphImpl() ;
-        dsg.setDefaultGraph(this) ;
+//        // replace with a algebra expression
+//        Query q = new Query() ;
+//        if ( sVar != null ) q.addResultVar(sVar) ;
+//        if ( pVar != null ) q.addResultVar(pVar) ;
+//        if ( oVar != null ) q.addResultVar(oVar) ;
+//
+//        ElementTriplesBlock el = new ElementTriplesBlock() ;
+//        el.addTriple(new Triple(s,p,o)) ;
+//        q.setQueryPattern(el) ;
+        
+//        DataSourceGraph dsg = new DataSourceGraphImpl() ;
+//        dsg.setDefaultGraph(this) ;
         
 //        if ( true )
 //            throw new SDBNotImplemented("GraphSDB: QueryEngineQuadSDB is not a graph-level engine yet.") ;
-        QueryEngineSDB qe = new QueryEngineSDB(getStore(), q, null) ;
-        qe.setDataset(new DataSourceImpl(dsg)) ;
         
-        //System.out.println( ((QueryEngineQuadSDB)qe).getOp().toString());
+        Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
         
-        QueryIterator qIter = qe.exec() ;
+        QueryIterator qIter = plan.iterator() ;
         List<Triple> triples = new ArrayList<Triple>() ;
         
         for (; qIter.hasNext() ; )
@@ -203,7 +212,6 @@ public class GraphSDB extends GraphBase implements Graph
             triples.add(resultTriple) ;
         }
         qIter.close() ;
-        qe.close() ;
         return new GraphIterator(triples.iterator()) ;
     }
 

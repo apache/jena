@@ -42,7 +42,10 @@ public class SDBRequest extends StoreHolder
     { 
         super(store) ;
         this.query = query ;
-        this.prefixMapping = query.getPrefixMapping() ;
+        
+        this.prefixMapping = null ;
+        if ( query != null )
+            prefixMapping = query.getPrefixMapping() ;
         if ( context == null )
             context = ARQ.getContext() ;
         this.context = new Context(context) ;

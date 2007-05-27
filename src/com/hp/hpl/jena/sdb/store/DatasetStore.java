@@ -6,70 +6,26 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.hp.hpl.jena.sparql.core.DataSourceImpl;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetImpl;
 
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
+
 import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.layout1.StoreRDB;
-import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
-import com.hp.hpl.jena.shared.Lock;
 
-
-public class DatasetStore implements Dataset
+/** Dataset around a Store - triggers SDB SQL processing when used in a query */
+public class DatasetStore extends DataSourceImpl
 {
     static { SDB.init() ; }
     
-    Store store ;
-    Model model ;
-    List<String> names = new ArrayList<String>() ;  // Just to fix things up.
-
-    public static DatasetStore create(Store store)
-    { return new DatasetStore(store) ; }
-    
-    public DatasetStore(Store store)
-    {
-        this.store = store ; 
-        this.model = SDBFactory.connectModel(store) ;
+    public static Dataset create(Store store)
+    { 
+        DatasetGraph dsg = new DatasetStoreGraph(store) ;
+        return new DatasetImpl(dsg) ;
     }
     
-    /** Use only with existing Jena RDB models */ 
-    
-    public DatasetStore(StoreRDB store)
-    {
-        this.store = store ; 
-        this.model = store.getModel() ;
-    }
-    
-    public Store getStore() { return store ; }
-    
-    public Model getDefaultModel()
-    {
-        return model ;
-    }
-
-    public Model getNamedModel(String uri)
-    {
-        throw new SDBNotImplemented("DatasetStore") ;
-    }
-
-    public boolean containsNamedModel(String uri)
-    {
-        throw new SDBNotImplemented("DatasetStore") ;
-    }
-
-    public Iterator listNames()
-    {
-        return names.iterator() ;
-    }
-
-    public Lock getLock()
-    {
-        throw new SDBNotImplemented("DatasetStore") ;
-    }
+    private DatasetStore() {}
 }
 
 /*

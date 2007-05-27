@@ -7,17 +7,18 @@
 package com.hp.hpl.jena.sdb;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sdb.core.SDBConstants;
-import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
-import com.hp.hpl.jena.sdb.util.DerbyUtils;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
-import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.sparql.util.Symbol;
+
+import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.sdb.core.SDBConstants;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
+import com.hp.hpl.jena.sdb.util.DerbyUtils;
 
 public class SDB
 {
@@ -52,7 +53,7 @@ public class SDB
         AssemblerVocab.init() ;
         
         // Wire in the SDB query engne
-        QueryEngineRegistry.get().add(new QueryEngineFactorySDB()) ;
+        QueryEngineSDB.register() ;
     }
     
     /** RDF namespace prefix */

@@ -6,7 +6,6 @@
 package sdb;
 
 
-import java.util.Iterator;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
@@ -14,8 +13,7 @@ import arq.cmdline.ArgDecl;
 import arq.cmdline.ModQueryIn;
 import arq.cmdline.ModResultsOut;
 
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -24,9 +22,8 @@ import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 
-import com.hp.hpl.jena.sdb.engine.QueryEngineFactorySDB;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.compiler.QC;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
  
@@ -90,14 +87,7 @@ public class sdbquery extends CmdArgsDB
     protected void execCmd(List<String> positionalArgs)
     {
         if ( contains(argDeclDirect) )
-        {
-            for ( Iterator iter = QueryEngineRegistry.get().factories().iterator() ; iter.hasNext() ; )
-            {
-                QueryEngineFactory f = (QueryEngineFactory)iter.next();
-                if ( f instanceof QueryEngineFactorySDB )
-                    iter.remove() ;
-            }
-        }
+            QueryEngineSDB.unregister() ;
         
         if ( isVerbose() )
         {
@@ -133,8 +123,9 @@ public class sdbquery extends CmdArgsDB
                 Query query = modQuery.getQuery() ;
                 QueryExecution qExec = QueryExecutionFactory.create(query, getModStore().getDataset()) ;
                 
+                
                 if ( isVerbose() )
-                    PrintSDB.print(((QueryEngineSDB)qExec).getOp()) ;
+                    PrintSDB.print(((QueryExecutionBase)qExec).getPlan().getOp()) ;
                 
                 if ( false )
                     System.err.println("Execute query for loop "+(i+1)+" "+memStr()) ;

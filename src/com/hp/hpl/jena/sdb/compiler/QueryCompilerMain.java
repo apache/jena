@@ -80,7 +80,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
 
             List<Var> projectVars = null ;
             
-            if ( justProjectVars )
+            if ( justProjectVars && request.getQuery() != null )
                 // Need project vars and also the ORDER BY (for external sorting)
                 projectVars = QC.queryOutVars(request.getQuery()) ;
             else

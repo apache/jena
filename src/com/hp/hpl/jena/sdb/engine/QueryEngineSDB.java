@@ -9,52 +9,145 @@ package com.hp.hpl.jena.sdb.engine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.util.StoreUtils;
 import com.hp.hpl.jena.sparql.algebra.AlgebraGeneratorQuad;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.engine.QueryEngineOpBase;
+import com.hp.hpl.jena.sparql.algebra.OpSubstitute;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.engine.*;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck;
+import com.hp.hpl.jena.sparql.engine.main.OpCompiler;
 import com.hp.hpl.jena.sparql.util.Context;
 
+import com.hp.hpl.jena.query.Query;
 
-public class QueryEngineSDB extends QueryEngineOpBase
+import com.hp.hpl.jena.sdb.compiler.OpSQL;
+import com.hp.hpl.jena.sdb.compiler.QueryCompiler;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.util.StoreUtils;
+
+
+public class QueryEngineSDB extends QueryEngineBase
 {
     private static Log log = LogFactory.getLog(QueryEngineSDB.class) ; 
     private Store store ;
     private SDBRequest request = null ;
     private QueryCompiler queryCompiler = null ;
+    private Op originalOp = null ;
 
     public QueryEngineSDB(Store store, Query q)
     {
-        this(store, q, null) ;
+        this(new DatasetStoreGraph(store), q, null) ;
     }
     
-    public QueryEngineSDB(Store store, Query q, Context context)
+    public QueryEngineSDB(DatasetStoreGraph dsg, Query query, Context context)
     {
-        super(q, new AlgebraGeneratorQuad(context), context, new OpExecSDB()) ;
-        this.store = store ;
+        super(query, dsg, new AlgebraGeneratorQuad(context), BindingRoot.create(), context) ;
+        this.store = dsg.getStore() ;
         request = new SDBRequest(store, query, context) ;
         if ( StoreUtils.isHSQL(store) )
             request.LeftJoinTranslation = false ;
-        
         queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
+
+        originalOp = getOp() ;
+        // Can compile now - makes it accessible for printing. 
+        Op op = queryCompiler.compile(originalOp) ;
+        setOp(op) ;
     }
 
+    public QueryEngineSDB(DatasetStoreGraph dsg, Op op, Context context)
+    {
+        super(op, dsg, BindingRoot.create(), context) ;
+        this.store = dsg.getStore() ;
+        request = new SDBRequest(store, null, context) ;
+        if ( StoreUtils.isHSQL(store) )
+            request.LeftJoinTranslation = false ;
+        queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
+        // Can compile now (better errors?)
+    }
     
-    
+//    @Override
+//    protected Op createOp(Query q, AlgebraGenerator gen)
+//    {
+//        // After turning into the quadded form of the algebra, 
+//        // look for parts (or all of) we can turn into SQL.
+//        Op op = gen.compile(q) ;
+//        Op op2 = queryCompiler.compile(op) ;    // Null :-(
+//        return op2 ;
+//    }
+
     public SDBRequest getRequest()      { return request ; }
 
     @Override
-    protected Op modifyPatternOp(Op op)
+    public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
-        // After turning into the quadded form of the algebra, 
-        // look for parts (or all of) we can turn into SQL.
-        Op op2 =  queryCompiler.compile(op) ;
-        return op2 ;
+        if ( ! binding.isEmpty() )
+        {
+            //op = OpSubstitute.substitute(originalOp, binding) ;
+            op = OpSubstitute.substitute(op, binding) ;
+            op = queryCompiler.compile(op) ;
+        }
+        
+        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg) ;
+        
+        // This pattern is common to QueryEngineMain - find a sharing pattern 
+        if ( ! ( op instanceof OpSQL ) )
+        {
+            // Not top - invoke the main query engine as a framework to
+            // put all the sub-opSQL parts together.
+            QueryIterator input = new QueryIterSingleton(binding, execCxt) ;
+            QueryIterator qIter = OpCompiler.compile(op, input, execCxt) ;
+            qIter = QueryIteratorCheck.check(qIter, execCxt) ;
+            return qIter ;
+          }
+          // Direct.
+          OpSQL opSQL = (OpSQL)op ;
+          QueryIterator qIter = opSQL.exec(binding, execCxt) ;
+          qIter = QueryIteratorCheck.check(qIter, execCxt) ;
+          return qIter ;
     }
+    
+    // -------- Factory
+    
+    static private QueryEngineFactory factory = new QueryEngineFactorySDB() ;
+    static public QueryEngineFactory getFactory()   { return factory ; } 
+    static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
+    static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
+    
+    
+    private static class QueryEngineFactorySDB implements QueryEngineFactory
+    {
+        public boolean accept(Query query, DatasetGraph dataset, Context context)
+        {
+            if ( dataset instanceof DatasetStoreGraph )
+                return true ;
+            return false ;
+        }
+
+        public Plan create(Query query, DatasetGraph dataset, Binding inputBinding, Context context)
+        {
+            QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset , query, context) ;
+            return qe.getPlan() ;
+        }
+
+        public boolean accept(Op op, DatasetGraph dataset, Context context)
+        {
+            if ( dataset instanceof DatasetStoreGraph )
+                return true ;
+            return false ;
+        }
+
+        public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context)
+        {
+            QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset , op, context) ;
+            return qe.getPlan() ;
+        }
+
+    } 
 }
 
 /*
