@@ -17,11 +17,14 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DataSourceImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.PlanOp;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.sse.AlgSSE;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -29,9 +32,7 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
 
 public class qexec extends CmdARQ
 {
@@ -145,70 +146,70 @@ public class qexec extends CmdARQ
             {
                 dataset = new DataSourceImpl();
 //              System.err.println("No dataset") ;
-//            throw new TerminationException(1) ;
-        }
-        
-        modTime.startTimer() ;
-        DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
-        
-        Plan plan = QueryExecutionFactory.createPlan(new Query(), dsg) ;
-        
-        if ( printOp || printPlan )
-        {
-            
-            if ( printOp )
-            {
-                divider() ;
-                IndentedWriter out = new IndentedWriter(System.out, true) ;
-                op.output(out) ;
-                out.flush();
+//              throw new TerminationException(1) ;
             }
-            
-            if ( printPlan )
+
+            modTime.startTimer() ;
+            DatasetGraph dsg = new DataSourceGraphImpl(dataset) ;
+
+
+            if ( printOp || printPlan )
             {
-                divider() ;
-                IndentedWriter out = new IndentedWriter(System.out, false) ;
-                plan.output(out) ;
-                out.flush();
+                if ( printOp )
+                {
+                    divider() ;
+                    IndentedWriter out = new IndentedWriter(System.out, true) ;
+                    op.output(out) ;
+                    out.flush();
+                }
+
+                if ( printPlan )
+                {
+                    QueryIterator qIter = Algebra.exec(op, dsg) ;
+                    Plan plan = new PlanOp(op, qIter) ;
+                    divider() ;
+                    IndentedWriter out = new IndentedWriter(System.out, false) ;
+                    plan.output(out) ;
+                    out.flush();
+                }
+                return ;
             }
-            return ;
+
+            QueryExecUtils.executeAlgebra(op, dsg, modResults.getResultsFormat()) ;
+
+            long time = modTime.endTimer() ;
+            if ( modTime.timingEnabled() )
+                System.out.println("Time: "+modTime.timeStr(time)) ;
+
         }
-        
-        QueryExecUtils.executeAlgebra(op, dsg, modResults.getResultsFormat()) ;
-        
-        long time = modTime.endTimer() ;
-        if ( modTime.timingEnabled() )
-            System.out.println("Time: "+modTime.timeStr(time)) ;
-        
-    }
-    catch (ARQInternalErrorException intEx)
-    {
-        System.err.println(intEx.getMessage()) ;
-        if ( intEx.getCause() != null )
+        catch (ARQInternalErrorException intEx)
         {
-            System.err.println("Cause:") ;
-            intEx.getCause().printStackTrace(System.err) ;
-            System.err.println() ;
+            System.err.println(intEx.getMessage()) ;
+            if ( intEx.getCause() != null )
+            {
+                System.err.println("Cause:") ;
+                intEx.getCause().printStackTrace(System.err) ;
+                System.err.println() ;
+            }
+            intEx.printStackTrace(System.err) ;
         }
-        intEx.printStackTrace(System.err) ;
-    }
-    catch (ResultSetException ex)
-    {
-        System.err.println(ex.getMessage()) ;
-        ex.printStackTrace(System.err) ;
-    }
-    catch (QueryException qEx)
-    {
-        //System.err.println(qEx.getMessage()) ;
-        throw new CmdException("Query Exeception", qEx) ;
-    }
-    catch (JenaException ex) { throw ex ; } 
-    catch (CmdException ex) { throw ex ; } 
-    catch (Exception ex)
-    {
-        throw new CmdException("Exception", ex) ;
-    }
-}    
+        catch (ResultSetException ex)
+        {
+            System.err.println(ex.getMessage()) ;
+            ex.printStackTrace(System.err) ;
+        }
+        catch (QueryException qEx)
+        {
+            //System.err.println(qEx.getMessage()) ;
+            throw new CmdException("Query Exeception", qEx) ;
+        }
+        catch (JenaException ex) { throw ex ; } 
+        catch (CmdException ex) { throw ex ; } 
+        catch (Exception ex)
+        {
+            throw new CmdException("Exception", ex) ;
+        }
+    }    
 
 }
 

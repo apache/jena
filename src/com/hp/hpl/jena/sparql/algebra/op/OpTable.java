@@ -11,7 +11,6 @@ import com.hp.hpl.jena.sparql.algebra.table.TableUnit;
 
 public class OpTable extends Op0
 {
-    //TODO OpTable
     private Table table ;
     public static OpTable unit()
     { return new OpTable(TableFactory.createUnit()) ; }

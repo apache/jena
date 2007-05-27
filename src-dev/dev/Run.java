@@ -31,7 +31,7 @@ public class Run
     {
         //runQExpr() ;
         //print() ;
-        //codeSSE() ;
+        codeSSE() ;
         //runQParse() ;
         //classifyJ() ;
         //classifyLJ() ;
@@ -70,6 +70,7 @@ public class Run
         }
         
         dev.qexec.main(new String[]{"--data=D.ttl", "--query=Q.sse"}) ;
+        System.exit(0) ;
         
     }
 

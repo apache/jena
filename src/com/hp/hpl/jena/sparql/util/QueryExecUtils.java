@@ -15,14 +15,16 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 import com.hp.hpl.jena.sparql.ARQConstants;
-import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.Plan;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
+import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.resultset.PlainFormat;
 import com.hp.hpl.jena.sparql.resultset.ResultSetApply;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
@@ -67,14 +69,10 @@ public class QueryExecUtils
 
     public static void executeAlgebra(Op op, DatasetGraph dsg, ResultsFormat outputFormat)
     {
-        if ( true )
-            throw new ARQNotImplemented("executeAlgebra") ;
-        
-        
-        Plan plan = null ;
+        QueryEngineFactory f = QueryEngineRegistry.findFactory(op, dsg, null) ;
+        Plan plan = f.create(op, dsg, BindingRoot.create(), null) ;
         QueryIterator qIter = plan.iterator() ;
 
-        // XXX Hack the third
         List vars = null ;
         if ( qIter instanceof OpProject )
             vars = Var.varNames(((OpProject)op).getVars()) ;

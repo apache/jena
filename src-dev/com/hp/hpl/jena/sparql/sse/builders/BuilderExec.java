@@ -44,7 +44,6 @@ public class BuilderExec
         Graph graph = BuilderGraph.buildGraph(list.get(1)) ;
         Op op = BuilderOp.build(list.get(2)) ;
         
-        // XXX Dataset, not graph builder
         DatasetGraph dsg = new DataSourceGraphImpl(graph) ;
         QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
     }
