@@ -45,7 +45,7 @@ public class TransformSDB extends TransformCopy
     public Op transform(OpBGP opBGP)
     { throw new SDBException("OpBGP should not appear") ; }
 
-@Override
+    @Override
     public Op transform(OpQuadPattern quadPattern)
     {
         QuadBlock qBlk = new QuadBlock(quadPattern) ;
