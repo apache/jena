@@ -26,6 +26,10 @@
 
 + OpDiff : Test ref and QueryIterDiff
 
++ testing QE/ref and QE/main in the same run
+  ?? use a factory list, including tests with no recorded results.
+  ?? Could simply factory to have .create() return null for "no".
+
 == Core
 
 + What is "OpDatasetNames" nowadays?
