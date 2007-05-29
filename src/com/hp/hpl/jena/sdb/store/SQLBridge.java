@@ -7,11 +7,11 @@
 package com.hp.hpl.jena.sdb.store;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
 /** Convert from whatever results a particular layout returns into
@@ -33,8 +33,7 @@ public interface SQLBridge
     /** Process a JDBC result set */
     public QueryIterator assembleResults(ResultSet jdbcResultSet, 
                                          Binding binding,
-                                         ExecutionContext execCtl)
-        throws SQLException; 
+                                         ExecutionContext execCtl) ;
 }
 
 /*

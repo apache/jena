@@ -69,30 +69,22 @@ public abstract class SQLBridgeBase implements SQLBridge
 
     final
     public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
-    throws SQLException
     {
-        // QC.exec closes the result set.  Until fixed, can't do this ...
-        // return new QueryIterSQL(rs, binding, execCxt) ;
+        if ( true )
+            // Stream
+            return new QueryIterSQL(rs, binding, execCxt) ;
         
+        // Debugging or problems with unrelease JDBC ResultSets - read all in now.
         QueryIterator qIter = new QueryIterSQL(rs, binding, execCxt) ;
-        // Exhaust :-(
         List<Binding> results = new ArrayList<Binding>() ;
         for ( ; qIter.hasNext() ; )
         {
             results.add(qIter.nextBinding()) ;
         }
+        qIter.close() ;
+//        try { rs.close(); }
+//        catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
         return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
-        
-//        if ( false )
-//            RS.printResultSet(rs) ;
-//
-//        List<Binding> results = new ArrayList<Binding>() ;
-//        while(rs.next())
-//        {
-//            Binding b = assembleBinding(rs, binding) ;
-//            results.add(b) ;
-//        }
-//        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
     }
 
     private void setProjectVars(Collection<Var> projectVars)

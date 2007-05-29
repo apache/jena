@@ -182,7 +182,13 @@ public class QC
                 // TODO "Ideally" stream this as a wrapper function on JDBC
                 // but. Relies on app closing queryExecution.  OR ELSE.
                 return opSQL.getBridge().assembleResults(jdbcResultSet, binding, execCxt) ;
-            } finally { jdbcResultSet.close() ; jdbcResultSet = null ; }
+            } finally {
+                // resultSet Now closed inside assembleResults
+                // or by the iterator returned.
+                // jdbcResultSet.close() -- 
+                
+                jdbcResultSet = null ;
+            }
         } catch (SQLException ex)
         {
             throw new SDBExceptionSQL("SQLException in executing SQL statement", ex) ;

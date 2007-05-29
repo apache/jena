@@ -1,7 +1,9 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ SQLBridgeBase/QC.exec - handling ResultSet close.
++ SQLBridgeBase
+  if statement is closed, result set is closed.
+  Does this matter?  We don't prepare query statements.
 
 + Tranasactions - cleanup.
 + Graph => Quad
