@@ -27,20 +27,14 @@ public class JoinClassifier
 
         if ( print )
             System.err.println(join) ;
-        // return check(left, right) && check(right, left) ;
-        
-        // New code.
-        // Doing the check in reverse means we preserve comunitivity.
-        
-        //return check2(left, right) && check2(right, left) ;
-        return check2(left, right) ;
+        // Assume somethign will not commute these later on. 
+        return check(left, right) ;
     }
     
     static final boolean print = false ; 
     
-    // Still to do : optional at top level and optional deeper are different.
-    // Assumes VarFinder is recursive.
-    static private boolean check2(Op op, Op other)
+    // Check left can stream into right
+    static private boolean check(Op op, Op other)
     {
         if ( print )
         {
@@ -106,79 +100,6 @@ public class JoinClassifier
         // Linear if both intersections are empty.
         return !bad1 && !bad2  ;
     }
-    
-//    static private boolean check(Op op, Op other)
-//    {
-//        ExprList exprs = null ;
-//        Set fixedFilterScope = null ;   // Vars in scope to the filter - fixed
-//        Set optFilterScope = null ;     // Vars in scope to the filter - optional
-//        
-//        if ( op instanceof OpFilter )
-//        {
-//            OpFilter f = (OpFilter)op ;    
-//            op = f.getSubOp() ;
-//            exprs = f.getExprs() ;
-//            VarFinder vf = new VarFinder(op) ;
-//            fixedFilterScope = vf.getFixed() ;
-//            optFilterScope = vf.getOpt() ;
-//        }
-//        
-//        if ( op instanceof OpLeftJoin )
-//        {
-//            OpLeftJoin j = (OpLeftJoin)op ;
-//            // Leave op
-//            exprs = j.getExprs() ;
-//            VarFinder vf1 = new VarFinder(j.getLeft()) ;
-//            VarFinder vf2 = new VarFinder(j.getRight()) ;
-//            // Both sides of the LeftJoin are in-scope to the filter. 
-//            fixedFilterScope = SetUtils.union(vf1.getFixed(), vf2.getFixed()) ;
-//            optFilterScope = SetUtils.union(vf1.getOpt(), vf2.getOpt()) ;
-//        }
-//        
-//        if ( exprs == null )
-//            return true ;
-//        
-//        if ( fixedFilterScope == null || optFilterScope == null )
-//            throw new ARQInternalErrorException("JoinClassifier: Failed to set up variable sets correctly") ;
-//        
-//        Set exprVars = exprs.getVarsMentioned() ;
-//        
-//        // remove variables that are safe:
-//        //   fixed mentioned here
-//        //   or optional and not mentioned in the other branch
-//        
-//        // **** If expr from a left join, then safe if filter var in LHS or RHS of LJ.  
-//        
-//        if ( print ) System.out.println("Expr vars:     "+exprVars) ;
-//        if ( print ) System.out.println("Fixed, here:   "+fixedFilterScope) ;
-//        if ( print ) System.out.println("Opt, here:     "+optFilterScope) ;
-//        
-//        Set allVarsOther = OpVars.patternVars(other) ;      // The other side.
-//        if ( print ) System.out.println("allVarsOther:  "+allVarsOther) ;
-//        
-//        // Remove variables in filter that are always set below it (hence safe) 
-//        exprVars.removeAll(fixedFilterScope) ;
-//        if ( print ) System.out.println("Expr vars:(\\F) "+exprVars) ;
-//        if ( exprVars.size() == 0 ) return true ;
-//
-//        // Ditto safe are any optionals vars IFF they not in other side 
-//        // (where they may have a value when they don't in the op below the filter)
-//        Set s = SetUtils.difference(optFilterScope, allVarsOther) ;
-//        // s is the set of optionals only on this side. 
-//        exprVars.removeAll(s) ;
-//        if ( exprVars.size() == 0 ) return true ;
-//        
-//        // At this point, an expr var is "dangerous" if it is mentioned in the other side.
-//        if ( print ) System.out.println("Diff           "+s) ;
-//        if ( print ) System.out.println("Expr vars:(\\s) "+exprVars) ;
-//        
-//        // Keep those in the other side : thien, if not empty, it's a dangerous variable.
-//        exprVars.retainAll(allVarsOther) ;
-//        if ( print ) System.out.println("Expr vars:(!!) "+exprVars) ;
-//        
-//        // Safe if nothing in the intersection of remaining exprVars and  
-//        return exprVars.size() == 0 ;
-//    }
 }
 
 /*
