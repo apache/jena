@@ -8,9 +8,7 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +18,11 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.AnonId;
+
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
+
 import com.hp.hpl.jena.sdb.compiler.QC;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
@@ -31,15 +34,8 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExpr;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
-import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 
 public class SQLBridge2 extends SQLBridgeBase 
 {
@@ -140,50 +136,42 @@ public class SQLBridge2 extends SQLBridgeBase
         return sqlNode2 ;
     }
     
-    public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
-        throws SQLException
+    @Override
+    protected Binding assembleBinding(ResultSet rs, Binding parent)
     {
-        if ( false )
-            RS.printResultSet(rs) ;
-        
-        List<Binding> results = new ArrayList<Binding>() ;
-        while(rs.next())
+        Binding b = new BindingMap(parent) ;
+        for ( Var v : super.getProject() )
         {
-            Binding b = new BindingMap(binding) ;
-            for ( Var v : super.getProject() )
-            {
-                if ( ! v.isNamedVar() )
-                    // Skip bNodes and system variables
+            if ( ! v.isNamedVar() )
+                // Skip bNodes and system variables
+                continue ;
+
+            String codename = super.getSqlName(v) ;
+            try {
+                String lex = rs.getString(SQLUtils.gen(codename,"lex")) ;   // chars
+                
+                // byte bytes[] = rs.getBytes(SQLUtils.gen(codename,"lex")) ; // bytes
+                // try {
+                //     String $ = new String(bytes, "UTF-8") ;
+                //     log.info("lex bytes : "+$+"("+$.length()+")") ;
+                // } catch (Exception ex) {}
+                // Same as rs.wasNull() for things that can return Java nulls.
+                if ( lex == null )
                     continue ;
-
-                String codename = super.getSqlName(v) ;
-                try {
-                    String lex = rs.getString(SQLUtils.gen(codename,"lex")) ;   // chars
-                    
-                    // byte bytes[] = rs.getBytes(SQLUtils.gen(codename,"lex")) ; // bytes
-                    // try {
-                    //     String $ = new String(bytes, "UTF-8") ;
-                    //     log.info("lex bytes : "+$+"("+$.length()+")") ;
-                    // } catch (Exception ex) {}
-                    // Same as rs.wasNull() for things that can return Java nulls.
-                    if ( lex == null )
-                        continue ;
-                    int type        = rs.getInt(SQLUtils.gen(codename,"type")) ;
-                    String datatype = rs.getString(SQLUtils.gen(codename,"datatype")) ;
-                    String lang     = rs.getString(SQLUtils.gen(codename,"lang")) ;
-                    ValueType vType = ValueType.lookup(type) ;
-                    Node r          = makeNode(lex, datatype, lang, vType) ;
-                    b.add(v, r) ;
-                } catch (SQLException ex)
-                { // Unknown variable?
-                    //log.warn("Not reconstructed: "+n) ;
-                } 
-            }
-            results.add(b) ;
+                int type        = rs.getInt(SQLUtils.gen(codename,"type")) ;
+                String datatype = rs.getString(SQLUtils.gen(codename,"datatype")) ;
+                String lang     = rs.getString(SQLUtils.gen(codename,"lang")) ;
+                ValueType vType = ValueType.lookup(type) ;
+                Node r          = makeNode(lex, datatype, lang, vType) ;
+                b.add(v, r) ;
+            } catch (SQLException ex)
+            { // Unknown variable?
+                //log.warn("Not reconstructed: "+n) ;
+            } 
         }
-        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+        return b ;
     }
-
+    
 
     private static Node makeNode(String lex, String datatype, String lang, ValueType vType)
     {

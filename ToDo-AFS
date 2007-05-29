@@ -1,6 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
++ SQLBridgeBase/QC.exec - handling ResultSet close.
+
 + Tranasactions - cleanup.
 + Graph => Quad
 + Graph => Tuple loader.

@@ -6,17 +6,16 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
@@ -57,32 +56,24 @@ public class SQLBridge1 extends SQLBridgeBase
         setAnnotation() ;
     }
     
-    public QueryIterator assembleResults(java.sql.ResultSet rs,
-                                         Binding binding,
-                                         ExecutionContext execCxt)
-        throws SQLException
+    @Override
+    protected Binding assembleBinding(ResultSet rs, Binding parent)
     {
-        List<Binding> results = new ArrayList<Binding>() ;
-        
-        while(rs.next())
+        Binding b = new BindingMap(parent) ;
+        for ( Var v : getProject() )
         {
-            Binding b = new BindingMap(binding) ;
-            for ( Var v : getProject() )
-            {
-                try {
-                    String sqlVarName = getSqlName(v) ;
-                    String s = rs.getString(sqlVarName) ; 
-                    // Same as rs.wasNull() for things that can return Java nulls.
-                    if ( s == null )
-                        continue ;
-                    Node n = codec.decode(s) ;
-                    b.add(v, n) ;
-                    // Ignore any access error (variable requested not in results)
-                } catch (SQLException ex) {}
-            }
-            results.add(b) ;
+            try {
+                String sqlVarName = getSqlName(v) ;
+                String s = rs.getString(sqlVarName) ; 
+                // Same as rs.wasNull() for things that can return Java nulls.
+                if ( s == null )
+                    continue ;
+                Node n = codec.decode(s) ;
+                b.add(v, n) ;
+                // Ignore any access error (variable requested not in results)
+            } catch (SQLException ex) {}
         }
-        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+        return b ;
     }
 }
 

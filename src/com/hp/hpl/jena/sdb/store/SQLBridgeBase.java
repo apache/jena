@@ -6,16 +6,25 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext;
+import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+
 import com.hp.hpl.jena.sdb.SDBException;
-import com.hp.hpl.jena.sdb.core.*;
+import com.hp.hpl.jena.sdb.core.AliasesSql;
+import com.hp.hpl.jena.sdb.core.Annotation1;
+import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlProject;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 /** Convert from whatever results a particular layout returns into
@@ -54,6 +63,37 @@ public abstract class SQLBridgeBase implements SQLBridge
     
     protected abstract void buildValues() ;
     protected abstract void buildProject() ;
+
+    // Build next row from the JDBC ResultSet
+    protected abstract Binding assembleBinding(ResultSet rs, Binding binding) ;
+
+    final
+    public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
+    throws SQLException
+    {
+        // QC.exec closes the result set.  Until fixed, can't do this ...
+        // return new QueryIterSQL(rs, binding, execCxt) ;
+        
+        QueryIterator qIter = new QueryIterSQL(rs, binding, execCxt) ;
+        // Exhaust :-(
+        List<Binding> results = new ArrayList<Binding>() ;
+        for ( ; qIter.hasNext() ; )
+        {
+            results.add(qIter.nextBinding()) ;
+        }
+        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+        
+//        if ( false )
+//            RS.printResultSet(rs) ;
+//
+//        List<Binding> results = new ArrayList<Binding>() ;
+//        while(rs.next())
+//        {
+//            Binding b = assembleBinding(rs, binding) ;
+//            results.add(b) ;
+//        }
+//        return new QueryIterPlainWrapper(results.iterator(), execCxt) ;
+    }
 
     private void setProjectVars(Collection<Var> projectVars)
     {
@@ -109,6 +149,52 @@ public abstract class SQLBridgeBase implements SQLBridge
     
     protected String getSqlName(Var v) { return varLabels.get(v) ; }
     
+    private class QueryIterSQL extends QueryIter
+    {
+        boolean ready = false ;
+        boolean hasNext = false ;
+        private ResultSet jdbcResultSet ;
+        private Binding parent ;
+        
+        QueryIterSQL(ResultSet rs, Binding binding, ExecutionContext execCxt)
+        {
+            super(execCxt) ;
+            this.jdbcResultSet = rs ;
+            this.parent = binding ;
+        }
+
+        @Override
+        protected void closeIterator()
+        {
+            if ( jdbcResultSet == null )
+                return ;
+            try { jdbcResultSet.close(); }
+            catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
+            jdbcResultSet = null ;
+        }
+
+        @Override
+        protected boolean hasNextBinding()
+        {
+            if ( ! ready )
+            {
+                try { hasNext = jdbcResultSet.next() ; }
+                catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
+                ready = true ;
+            }
+            return hasNext ;
+        }
+
+        @Override
+        protected Binding moveToNextBinding()
+        {
+//            if ( ! hasNextBinding() )
+//                return null ;
+            ready = false ; // Must set the state to 'unknown'.
+            return assembleBinding(jdbcResultSet, parent) ;
+        }
+        
+    }
 }
 
 /*
