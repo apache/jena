@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.util.SetUtils;
 public class LeftJoinClassifier
 {
     // Test for the "well-formed" criterion of left joins whereby they can
-    // be executed agains a current set of bindings.  If not, the left join
+    // be executed against a current set of bindings.  If not, the left join
     // has to be done by execution the left, executing the right without
     // the left (so no substitution/additional indexing), then
     // left-join-ed.  ANd that can be expensive - luckily, it only occurs

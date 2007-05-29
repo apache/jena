@@ -49,8 +49,20 @@ public class VarFinder
             return v ;
         }
 
-        Set defines = new HashSet() ;
-        Set optDefines = new HashSet() ;
+        Set defines = null ;
+        Set optDefines = null ;
+
+        VarUsageVisitor()
+        {
+            defines = new HashSet() ;   
+            optDefines = new HashSet() ;
+        }
+        
+        VarUsageVisitor(Set _defines, Set _optDefines) 
+        {
+            defines = _defines ;
+            optDefines = _optDefines ;
+        }
         
         //@Override
         public void visit(OpQuadPattern quadPattern)
