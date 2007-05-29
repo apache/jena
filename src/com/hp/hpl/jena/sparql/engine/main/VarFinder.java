@@ -35,9 +35,11 @@ public class VarFinder
    
     VarUsageVisitor varUsageVisitor ;
     
-    public VarFinder(Op op) { varUsageVisitor = VarUsageVisitor.apply(op) ; }
+    public VarFinder(Op op)
+    { varUsageVisitor = VarUsageVisitor.apply(op) ; }
     
     public Set getOpt() { return varUsageVisitor.optDefines ; }
+    public Set getFilter() { return varUsageVisitor.filterMentions ; }
     public Set getFixed() { return varUsageVisitor.defines ; }
     
     private static class VarUsageVisitor extends OpVisitorBase
@@ -51,17 +53,20 @@ public class VarFinder
 
         Set defines = null ;
         Set optDefines = null ;
+        Set filterMentions = null ;
 
         VarUsageVisitor()
         {
             defines = new HashSet() ;   
             optDefines = new HashSet() ;
+            filterMentions = new HashSet() ;
         }
         
-        VarUsageVisitor(Set _defines, Set _optDefines) 
+        VarUsageVisitor(Set _defines, Set _optDefines, Set _filterMentions)
         {
             defines = _defines ;
             optDefines = _optDefines ;
+            filterMentions = _filterMentions ;
         }
         
         //@Override
@@ -109,10 +114,14 @@ public class VarFinder
         {
             VarUsageVisitor leftUsage = VarUsageVisitor.apply(opJoin.getLeft()) ;
             VarUsageVisitor rightUsage = VarUsageVisitor.apply(opJoin.getRight()) ;
+
             defines.addAll(leftUsage.defines) ;
             optDefines.addAll(leftUsage.optDefines) ;
+            filterMentions.addAll(leftUsage.filterMentions) ;
+            
             defines.addAll(rightUsage.defines) ;
             optDefines.addAll(rightUsage.optDefines) ;
+            filterMentions.addAll(rightUsage.filterMentions) ;
         }
 
         //@Override
@@ -123,12 +132,20 @@ public class VarFinder
             
             defines.addAll(leftUsage.defines) ;
             optDefines.addAll(leftUsage.optDefines) ;
+            filterMentions.addAll(leftUsage.filterMentions) ;
+            
             optDefines.addAll(rightUsage.defines) ;     // Asymmetric.
             optDefines.addAll(rightUsage.optDefines) ;
+            filterMentions.addAll(rightUsage.filterMentions) ;
             
-            // Remove any definites that are in the optionals 
-            // as, overall, they are definites 
-            optDefines.removeAll(leftUsage.defines) ;
+//            // Remove any definites that are in the optionals 
+//            // as, overall, they are definites 
+//            // Don't do this?
+//            optDefines.removeAll(leftUsage.defines) ;
+
+            // And the associated filter.
+            if ( opLeftJoin.getExprs() != null )
+                opLeftJoin.getExprs().varsMentioned(filterMentions);
         }
 
         //@Override
@@ -140,14 +157,23 @@ public class VarFinder
             // Can be both definite and optional (different sides).
             defines.addAll(leftUsage.defines) ;
             optDefines.addAll(leftUsage.optDefines) ;
+            filterMentions.addAll(leftUsage.filterMentions) ;
             defines.addAll(rightUsage.defines) ;
             optDefines.addAll(rightUsage.optDefines) ;
+            filterMentions.addAll(rightUsage.filterMentions) ;
         }
 
         //@Override
         public void visit(OpGraph opGraph)
         {
             slot(opGraph.getNode()) ;
+        }
+        
+        // @Override
+        public void visit(OpFilter opFilter)
+        {
+            opFilter.getExprs().varsMentioned(filterMentions);
+            opFilter.getSubOp().visit(this) ;
         }
     }
     

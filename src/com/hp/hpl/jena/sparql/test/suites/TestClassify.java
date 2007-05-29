@@ -57,32 +57,35 @@ public class TestClassify extends TestCase
 	public void testClassify_Join_09() 
 	{ classifyJ("{ { ?s :p :o FILTER(?o) }   ?s :p :o }", true) ; }
 
+    // Actually, this is safe IF executed left, then streamed to right.
 	public void testClassify_Join_10() 
-	{ classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", false) ; }
+	{ classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", true) ; }
 
+    // Not safe: ?s
+    // Other parts of RHS may restrict ?s to thins that can't match the LHS.
 	public void testClassify_Join_11() 
-	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(true) } } }", true) ; }
+	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", false) ; }
 
+    // Not safe: ?s
 	public void testClassify_Join_12() 
-	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?s) } } }", true) ; }
+	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?s) } } }", false) ; }
 
 	public void testClassify_Join_13() 
-	{ classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { ?s :p :o FILTER(?x) } } }", true) ; }
+	{ classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { :s :p :o FILTER(?x) } } }", true) ; }
 
 	public void testClassify_Join_14() 
-	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p ?o FILTER(?o) } } }", true) ; }
+	{ classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", true) ; }
 
 	public void testClassify_Join_15() 
-	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?o) } } }", true) ; }
-
-	public void testClassify_Join_16() 
 	{ classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ; }
 
-	public void testClassify_Join_17() 
-	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", true) ; }
-
+    public void testClassify_Join_20() 
+    { classifyJ("{ {?s :p ?x } . { {} OPTIONAL { :s :p ?x } } }", false) ; }
     
-        
+    // Assuming left-right execution, this is safe.
+    public void testClassify_Join_21() 
+    { classifyJ("{ { {} OPTIONAL { :s :p ?x } } {?s :p ?x } }", true) ; }
+
     private void classifyJ(String pattern, boolean expected)
     {
         String qs1 = "PREFIX : <http://example/>\n" ;

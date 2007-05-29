@@ -83,4 +83,12 @@
         mf:result  <filter-scope-1.srx>
       ]
 
+     [ mf:name      "Join scope - 1" ;
+       rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <var-scope-join-1.rq> ;
+              qt:data   <var-scope-join-1.ttl> ] ;
+        mf:result  <var-scope-join-1.srx>
+     ] 
+
     ).
