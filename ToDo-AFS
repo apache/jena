@@ -1,9 +1,6 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ SQLBridge2
-  Streaming version.
-
 + Tranasactions - cleanup.
 + Graph => Quad
 + Graph => Tuple loader.
@@ -25,6 +22,8 @@ SDB ToDo list (and general notes)
 + Store config
     in sdb.ttl // in DB // rebuildable?
     Current description + "features"
+
++ StoreFactory : have an open registry.
 
 + StoreConnection needs a StoreLayout indirection ??
   + to get table names for formatting
