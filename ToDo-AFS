@@ -1,9 +1,8 @@
 SDB ToDo list (and general notes)
 =================================
 
-+ SQLBridgeBase
-  if statement is closed, result set is closed.
-  Does this matter?  We don't prepare query statements.
++ SQLBridge2
+  Streaming version.
 
 + Tranasactions - cleanup.
 + Graph => Quad
