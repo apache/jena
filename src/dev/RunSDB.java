@@ -34,21 +34,20 @@ public class RunSDB
     {
         SDBConnection.logSQLExceptions = true ;
         //SDBConnection.logSQLQueries = true ;
+        //SDBConnection.logSQLStatements = true ;
         
         //QBuilder.main(null) ; System.exit(0) ;
         
-        runQuery() ;
-        //SDBConnection.logSQLStatements = true ;
+        //runQuery() ;
         
-        //runInMem("Q.rq", "D.ttl") ;
-        //runQuery("Q.rq", "D.ttl") ;
+        runQuery("Q.rq", null, "Store/sdb-hsqldb-file.ttl") ;
         //runQuery("Q.rq") ;
         
         //runQuad() ;
-        //runQuery() ;      // Sets up data and runs query
         //runPrint() ;
         //runScript() ;
         
+        //runInMem("Q.rq", "D.ttl") ;
         //run() ;
         //runTest() ;
         System.err.println("Nothing ran!") ;
@@ -57,45 +56,47 @@ public class RunSDB
 
     public static void runQuery()
     {
-        String queryFile = "Q.rq" ;
-        String dataFile = "D.ttl" ;
-        
-//        queryFile = "testing/Algebra/filter-nested-2.rq" ;
-//        dataFile  = "testing/Algebra/data.ttl" ;
-        
-        System.out.println(QueryFactory.read(queryFile)) ;
-        
-//        System.out.println("*** Reference") ;
-//        runInMem(queryFile, dataFile) ;
-        System.out.println("*** SDB") ;
-        runQuery(queryFile, dataFile) ;
+        runQuery("Q.rq") ;
         System.exit(0) ;
     }
         
-     public static void runQuery(String queryFile, String dataFile)
-     {
-        //String a[] = {"-v", "--time","--sdb=Store/sdb-hsqldb-file.ttl", "--query=Q.rq" } ;
-//        String a[] = {"--format", "--load="+dataFile,"--sdb=sdb.ttl", "--query="+queryFile } ;
+    public static void runQuery(String queryFile)
+    {
+        runQuery(queryFile, null) ;
+        System.exit(0) ;
+    }
         
-//        SDBConnection.logSQLStatements = false ;
-//        SDBConnection.logSQLExceptions = true ;
-         setSDBConfig("sdb.ttl") ;
-         //setExitOnError(true) ;
-         sdbconfig("--create") ; 
-         sdbload(dataFile) ;
+
+    public static void runQuery(String queryFile, String dataFile)
+    {
+        runQuery(queryFile, dataFile, "sdb.ttl") ;
+        System.exit(0) ;
+    }
+    
+    public static void runQuery(String queryFile, String dataFile, String sdbFile)
+    {
+        _runQuery(queryFile, dataFile, sdbFile) ;
+        System.exit(0) ;
+    }
+     
+    private static void _runQuery(String queryFile, String dataFile, String sdbFile)
+        {
+
+        // SDBConnection.logSQLStatements = false ;
+         // SDBConnection.logSQLExceptions = true ;
+         
+         setSDBConfig(sdbFile) ;
+         
+         if ( dataFile != null  )
+         {
+             setExitOnError(true) ;
+             sdbconfig("--create") ; 
+             sdbload(dataFile) ;
+         }
          //sdbprint("--print=plan", "--file=Q.rq") ; 
          sdbquery("--file=Q.rq") ;
-         System.exit(0) ;
      }
 
-     public static void runQuery(String queryFile)
-     {
-//        SDBConnection.logSQLStatements = false ;
-//        SDBConnection.logSQLExceptions = true ;
-        sdbquery("--sdb=sdb.ttl", "--query="+queryFile) ;
-        System.exit(0) ;
-     }
-     
      public static void runInMem(String queryFile, String dataFile)
      {
          if ( true )

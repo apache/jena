@@ -37,11 +37,11 @@ public class SDBTestSuite2 extends TestSuite
     static boolean includeHash      = true ;
     static boolean includeIndex     = true ;
     
-    static boolean includeDerby     = true ;
+    static boolean includeDerby     = false ;
     
     static boolean includeMySQL     = false ;
     static boolean includePGSQL     = false ;
-    static boolean includeHSQL      = false ;
+    static boolean includeHSQL      = true ;
     static boolean includeSQLServer = false ;
     
     
