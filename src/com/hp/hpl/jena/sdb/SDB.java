@@ -7,12 +7,14 @@
 package com.hp.hpl.jena.sdb;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.util.Symbol;
 
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
@@ -30,6 +32,11 @@ public class SDB
     private static final String NS = "http://jena.hpl.hp.com/2007/sdb#" ;
     
     public final static String symbolNamespace = "http://jena.hpl.hp.com/SDB/symbol#" ; 
+    
+    // ----------------------------------
+    public static final Symbol useQuadRewrite           = SDBConstants.allocSymbol("useQuadRewrite") ;
+    public static final Symbol streamJDBC               = SDBConstants.allocSymbol("streamJDBC") ;
+    public static final Symbol annotateGeneratedSQL     = SDBConstants.allocSymbol("annotateGeneratedSQL") ;
     
     static boolean initialized = false ;
     static synchronized public void init()
@@ -54,6 +61,11 @@ public class SDB
         
         // Wire in the SDB query engne
         QueryEngineSDB.register() ;
+        
+        ARQ.getContext().setIfUndef(useQuadRewrite,        false) ;
+        ARQ.getContext().setIfUndef(streamJDBC,            true) ;
+        ARQ.getContext().setIfUndef(annotateGeneratedSQL,  true) ;
+        
     }
     
     /** RDF namespace prefix */
@@ -81,8 +93,13 @@ public class SDB
     }
     public static PrefixMapping getGlobalPrefixMapping() { return globalPrefixMap ; }
     
-    // ----------------------------------
-    public static final Symbol useQuadRewrite = SDBConstants.allocSymbol("useQuadRewrite") ;
+    
+    public static Symbol allocSymbol(String shortName)
+    { 
+        if ( shortName.startsWith(ARQ.arqNS)) 
+            throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace name: "+shortName) ;
+        return Symbol.create(ARQ.arqNS+shortName) ;
+    }
     
     // ----------------------------------
     

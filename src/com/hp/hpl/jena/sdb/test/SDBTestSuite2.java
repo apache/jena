@@ -10,16 +10,20 @@ import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
+import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sdb.Access;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -27,13 +31,20 @@ import com.hp.hpl.jena.sdb.store.Store;
 @RunWith(AllTests.class)
 public class SDBTestSuite2 extends TestSuite
 {
-    static boolean includeHash = true ;
-    static boolean includeIndex = true ;
+    // This NEEDS tidying up!
+    // Use Store/test/sdb-???.ttl files
     
-    static boolean includeDerby = true ;
-    static boolean includeMySQL = false ;
-    static boolean includeHSQL = false ;
+    static boolean includeHash      = true ;
+    static boolean includeIndex     = true ;
+    
+    static boolean includeDerby     = true ;
+    
+    static boolean includeMySQL     = false ;
+    static boolean includePGSQL     = false ;
+    static boolean includeHSQL      = false ;
     static boolean includeSQLServer = false ;
+    
+    
     
     static public TestSuite suite() {
         return new SDBTestSuite2();
@@ -45,6 +56,11 @@ public class SDBTestSuite2 extends TestSuite
         
         if ( true )     SDBConnection.logSQLExceptions = true ;
         if ( false )    QueryTestSDB.VERBOSE = true ;
+        
+        // PostgreSQL seems to have problems with unmatched quotes in comments.
+        // Might well 
+        if ( true )
+            ARQ.getContext().setFalse(SDB.annotateGeneratedSQL) ;
         
         //Note: make sure all tests have unuque names or else they may not run (Eclipse).  
         if ( includeDerby )
@@ -89,6 +105,27 @@ public class SDBTestSuite2 extends TestSuite
                 TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexMySQL(sdb),
                                          SDBTest.testDirSDB+"manifest-sdb.ttl", "MySQL/Index - ") ;
                 ts.setName(ts.getName()+" (MySQL/index)") ;
+                addTest(ts) ;
+            }
+        }
+
+        if ( includePGSQL )
+        {
+            JDBC.loadDriverPGSQL() ;
+            if ( includeHash )
+            {
+                SDBConnection sdb = new SDBConnection("jdbc:postgresql://localhost/test2-hash", Access.getUser(), Access.getPassword()) ;
+                TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesHashPGSQL(sdb),
+                                                 SDBTest.testDirSDB+"manifest-sdb.ttl", "PostgreSQL/Hash - ") ;
+                ts.setName(ts.getName()+" (PostgreSQL/hash)") ;
+                addTest(ts) ;
+            }
+            if ( includeIndex )
+            {
+                SDBConnection sdb = new SDBConnection("jdbc:postgresql://localhost/test2-index", Access.getUser(), Access.getPassword()) ;
+                TestSuite ts = QueryTestSDBFactory.make(new StoreTriplesNodesIndexPGSQL(sdb),
+                                         SDBTest.testDirSDB+"manifest-sdb.ttl", "PostgreSQL/Index - ") ;
+                ts.setName(ts.getName()+" (PostgreSQL/index)") ;
                 addTest(ts) ;
             }
         }

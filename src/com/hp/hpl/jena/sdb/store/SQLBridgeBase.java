@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIter;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.Annotation1;
@@ -70,11 +71,11 @@ public abstract class SQLBridgeBase implements SQLBridge
     final
     public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
     {
-        if ( true )
+        if ( execCxt.getContext().isTrueOrUndef(SDB.streamJDBC) )
             // Stream
             return new QueryIterSQL(rs, binding, execCxt) ;
         
-        // Debugging or problems with unrelease JDBC ResultSets - read all in now.
+        // Debugging or problems with unreleasing JDBC ResultSets - read all in now.
         QueryIterator qIter = new QueryIterSQL(rs, binding, execCxt) ;
         List<Binding> results = new ArrayList<Binding>() ;
         for ( ; qIter.hasNext() ; )

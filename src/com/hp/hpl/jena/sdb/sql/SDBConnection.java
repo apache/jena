@@ -112,6 +112,8 @@ public class SDBConnection
             exception("execQuery", ex, sqlString) ;
             throw ex ;
         }
+        catch (RuntimeException ex)
+        { throw ex ; }
     }
 
     public Object executeInTransaction(Command c) { return getTransactionHandler().executeInTransaction(c) ; }
@@ -162,11 +164,11 @@ public class SDBConnection
             s.close() ;
             return null ;
         }
-        catch (SQLSyntaxErrorException ex)
-        {
-            exception("execAny", ex, sqlString) ;
-            throw ex ;
-        }
+//        catch (SQLSyntaxErrorException ex)  // Java 6
+//        {
+//            exception("execAny", ex, sqlString) ;
+//            throw ex ;
+//        }
         catch (SQLException ex)
         {
             exception("execAny", ex, sqlString) ;

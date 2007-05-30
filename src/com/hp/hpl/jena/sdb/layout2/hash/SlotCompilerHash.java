@@ -25,7 +25,8 @@ public class SlotCompilerHash extends SlotCompiler2
     {
         long hash = NodeLayout2.hash(node) ;
         SqlExpr c = new S_Equal(thisCol, new SqlConstant(hash)) ;
-        c.addNote("Const: "+FmtUtils.stringForNode(node)) ;
+        String x = FmtUtils.stringForNode(node, request.getPrefixMapping()) ;
+        c.addNote("Const: "+x) ;
         conditions.add(c) ;
         return ;
     }

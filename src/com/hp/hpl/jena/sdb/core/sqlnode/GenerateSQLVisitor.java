@@ -13,6 +13,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.JoinType;
 import com.hp.hpl.jena.sdb.core.sqlexpr.S_Equal;
@@ -40,7 +42,8 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     private IndentedWriter out ;
     int level = 0 ;
     
-    public static boolean outputAnnotations = true ;
+    // Per Generator
+    public boolean outputAnnotations = ARQ.getContext().isTrueOrUndef(SDB.annotateGeneratedSQL) ;
     private static final int annotationColumn = 40 ;
     private static boolean commentSQLStyle = true ;
     
