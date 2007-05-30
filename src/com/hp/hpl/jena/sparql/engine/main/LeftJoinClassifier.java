@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import java.util.Set;
 
+import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
 import com.hp.hpl.jena.sparql.util.SetUtils;
@@ -27,8 +28,10 @@ public class LeftJoinClassifier
 
     static public boolean isLinear(OpLeftJoin op)
     {
-        Set leftVars = OpVars.patternVars(op.getLeft()) ;
-        Set optRight = VarFinder.optDefined(op.getRight()) ;
+        Op left = JoinClassifier.effectiveOp(op.getLeft()) ;
+        Op right = JoinClassifier.effectiveOp(op.getRight()) ;
+        Set leftVars = OpVars.patternVars(left) ;
+        Set optRight = VarFinder.optDefined(right) ;
 
         // Safe for linear execution if there are no  
         return ! SetUtils.intersectionP(leftVars, optRight) ;
@@ -36,9 +39,11 @@ public class LeftJoinClassifier
     
     static public Set nonLinearVars(OpLeftJoin op)
     {
-        Set leftVars = OpVars.patternVars(op.getLeft()) ;
-        
-        Set optRight = VarFinder.optDefined(op.getRight()) ;
+        Op left = JoinClassifier.effectiveOp(op.getLeft()) ;
+        Op right = JoinClassifier.effectiveOp(op.getRight()) ;
+        Set leftVars = OpVars.patternVars(left) ;
+        Set optRight = VarFinder.optDefined(right) ;
+
         return SetUtils.intersection(leftVars, optRight) ;
     }
 

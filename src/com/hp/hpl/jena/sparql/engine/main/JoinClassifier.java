@@ -17,13 +17,8 @@ public class JoinClassifier
 {
     static public boolean isLinear(OpJoin join)
     {
-        Op left = join.getLeft() ;
-        Op right = join.getRight() ;
-        if ( left instanceof OpExt )
-            left = ((OpExt)left).effectiveOp() ;
-        
-        if ( right instanceof OpExt )
-            right = ((OpExt)right).effectiveOp() ;
+        Op left = effectiveOp(join.getLeft()) ;
+        Op right = effectiveOp(join.getRight()) ;
 
         if ( print )
             System.err.println(join) ;
@@ -100,6 +95,16 @@ public class JoinClassifier
         // Linear if both intersections are empty.
         return !bad1 && !bad2  ;
     }
+    
+    static public Op effectiveOp(Op op)
+    {
+        if ( op instanceof OpExt )
+            op = ((OpExt)op).effectiveOp() ;
+        return op ;
+    }
+    
+
+    
 }
 
 /*
