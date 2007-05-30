@@ -37,9 +37,10 @@ public class SDB
     public static final Symbol useQuadRewrite           = SDBConstants.allocSymbol("useQuadRewrite") ;
     public static final Symbol streamJDBC               = SDBConstants.allocSymbol("streamJDBC") ;
     public static final Symbol annotateGeneratedSQL     = SDBConstants.allocSymbol("annotateGeneratedSQL") ;
+    // ----------------------------------
     
-    static boolean initialized = false ;
-    static synchronized public void init()
+    private static boolean initialized = false ;
+    public static synchronized void init()
     {
         // Called from 
         // + StoreFactory

@@ -1,8 +1,1 @@
-PREFIX :    <http://example/>
-
-SELECT *
-{ 
-    ?x :p ?v .
-    OPTIONAL { ?x :p ?a }
-    OPTIONAL { ?x :q ?a }
-}
+SELECT * { ?s ?p 'double " quote' }
