@@ -4,6 +4,9 @@
 ++ ** Document "update API"
 -----
 
++ GRAPH and quads - check scoping of any filter in the pattern part that involves the graph variable.
+  Couple to linearize with masked variables for increased indexing performance?
+
 + DatasetImpl and DataSourceImpl 
     Revisit.
       
@@ -23,8 +26,6 @@
 
 + Improvements - are these measurable?
   If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
-
-+ OpDiff : Test ref and QueryIterDiff
 
 + testing QE/ref and QE/main in the same run
   ?? use a factory list, including tests with no recorded results.

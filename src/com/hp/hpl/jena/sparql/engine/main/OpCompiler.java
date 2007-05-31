@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.op.*;
 import com.hp.hpl.jena.sparql.core.BasicPattern;
+import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.ExecUtils;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
@@ -78,8 +79,16 @@ public class OpCompiler
 
     QueryIterator compile(OpQuadPattern quadPattern, QueryIterator input)
     {
+        if ( false )
+        {
+            if ( quadPattern.getGraphNode().equals(Quad.defaultGraph) )
+            {
+                // Easy case.
+                OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
+                return compile(opBGP, input) ;  
+            }
+        }        
         // Turn into a OpGraph/OpBGP.
-        // First, separate out OpBGP's dependency on ElementBasicGraphPattern.
         throw new ARQNotImplemented("compile/OpQuadPattern") ;
     }
 
