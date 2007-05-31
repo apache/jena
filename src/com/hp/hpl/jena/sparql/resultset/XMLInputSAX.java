@@ -345,8 +345,17 @@ class XMLInputSAX extends SPARQLResult
         {
             endAccumulate() ;
             String result = buff.toString() ;
-            if ( result.equals("true") ) 
+            if ( result.equals("true") )
+            {
                 this.askResult = true ;
+                return ;
+            }
+            if ( result.equalsIgnoreCase("false") )
+            {
+                askResult = false ;
+                return ;
+            }
+            throw new ResultSetException("Unknown boolean value: "+result) ;
         }
         
         private void startElementBNode(String ns, String localName, String name, Attributes attrs)

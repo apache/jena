@@ -216,7 +216,7 @@ class XMLInputStAX extends SPARQLResult
         }
         if ( s.equalsIgnoreCase("false") )
         {
-            askResult = true ;
+            askResult = false ;
             return ;
         }
         throw new ResultSetException("Unknown boolean value: "+s) ;
