@@ -172,23 +172,6 @@ public class GraphSDB extends GraphBase implements Graph
         BasicPattern pattern = new BasicPattern() ;
         pattern.add(triple) ;
         Op op = new OpQuadPattern(Quad.defaultGraph, pattern) ;
-        
-//        // replace with a algebra expression
-//        Query q = new Query() ;
-//        if ( sVar != null ) q.addResultVar(sVar) ;
-//        if ( pVar != null ) q.addResultVar(pVar) ;
-//        if ( oVar != null ) q.addResultVar(oVar) ;
-//
-//        ElementTriplesBlock el = new ElementTriplesBlock() ;
-//        el.addTriple(new Triple(s,p,o)) ;
-//        q.setQueryPattern(el) ;
-        
-//        DataSourceGraph dsg = new DataSourceGraphImpl() ;
-//        dsg.setDefaultGraph(this) ;
-        
-//        if ( true )
-//            throw new SDBNotImplemented("GraphSDB: QueryEngineQuadSDB is not a graph-level engine yet.") ;
-        
         Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
         
         QueryIterator qIter = plan.iterator() ;

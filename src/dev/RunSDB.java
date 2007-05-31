@@ -40,7 +40,7 @@ public class RunSDB
         
         //runQuery() ;
         
-        runQuery("Q.rq", null, "Store/sdb-hsqldb-file.ttl") ;
+        //runQuery("Q.rq", null, "Store/sdb-hsqldb-file.ttl") ;
         //runQuery("Q.rq") ;
         
         //runQuad() ;
@@ -48,7 +48,7 @@ public class RunSDB
         //runScript() ;
         
         //runInMem("Q.rq", "D.ttl") ;
-        //run() ;
+        run() ;
         //runTest() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
@@ -182,27 +182,9 @@ public class RunSDB
     
     public static void run()
     {
-        
-//        String args = "--sdb=sdb.ttl --layout=layout2/index --dbName=DB2-index --query=Q.rq" ;
-//        String [] a = args.split(" ") ;
-//        sdb.sdbquery.main(a) ;
-
-//        String[] a = new String[]{
-//            "--sdb=Store/sdb-mysql-innodb.ttl",
-//            "--layout=layout2/index",
-//            "--create",
-//            "--dbName=test2-index"} ;
-
-        
-        String args = "--sdb=tmp/sdb.ttl --file tmp/Q.rq" ;
-        String [] a = args.split(" ") ;
-        sdbquery(a) ;
+        String args = "--sdb=sdb.ttl" ;
+        sdbdump(args) ;
         System.exit(0) ;
-        
-//        String args = "--sdb=sdb.ttl --dbName=DB2-index --file S" ;
-//        String [] a = args.split(" ") ;
-//        sdb.sdbsql.main(a) ;
-//        System.exit(0) ;
     }
 }
 

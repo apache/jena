@@ -47,27 +47,28 @@ public class QueryEngineSDB extends QueryEngineBase
     public QueryEngineSDB(DatasetStoreGraph dsg, Query query, Context context)
     {
         super(query, dsg, new AlgebraGeneratorQuad(context), BindingRoot.create(), context) ;
-        this.store = dsg.getStore() ;
-        request = new SDBRequest(store, query, context) ;
-        if ( StoreUtils.isHSQL(store) )
-            request.LeftJoinTranslation = false ;
-        queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
-
-        originalOp = getOp() ;
-        // Can compile now - makes it accessible for printing. 
-        Op op = queryCompiler.compile(originalOp) ;
-        setOp(op) ;
+        init(dsg, query, context) ;
     }
 
     public QueryEngineSDB(DatasetStoreGraph dsg, Op op, Context context)
     {
         super(op, dsg, BindingRoot.create(), context) ;
+        init(dsg, null, context) ;
+    }
+    
+    private void init(DatasetStoreGraph dsg, Query query, Context context)
+    {
         this.store = dsg.getStore() ;
-        request = new SDBRequest(store, null, context) ;
+        this.request = new SDBRequest(store, query, context) ;
         if ( StoreUtils.isHSQL(store) )
-            request.LeftJoinTranslation = false ;
-        queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
-        // Can compile now (better errors?)
+            this.request.LeftJoinTranslation = false ;
+        this.queryCompiler = store.getQueryCompilerFactory().createQueryCompiler(request) ;
+
+        this.originalOp = getOp() ;
+        // Can compile now - makes it accessible for printing. 
+        Op op = queryCompiler.compile(originalOp) ;
+        setOp(op) ;
+
     }
     
 //    @Override
