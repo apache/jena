@@ -68,19 +68,8 @@ public class QueryEngineSDB extends QueryEngineBase
         // Can compile now - makes it accessible for printing. 
         Op op = queryCompiler.compile(originalOp) ;
         setOp(op) ;
-
     }
     
-//    @Override
-//    protected Op createOp(Query q, AlgebraGenerator gen)
-//    {
-//        // After turning into the quadded form of the algebra, 
-//        // look for parts (or all of) we can turn into SQL.
-//        Op op = gen.compile(q) ;
-//        Op op2 = queryCompiler.compile(op) ;    // Null :-(
-//        return op2 ;
-//    }
-
     public SDBRequest getRequest()      { return request ; }
 
     @Override
@@ -88,8 +77,8 @@ public class QueryEngineSDB extends QueryEngineBase
     {
         if ( ! binding.isEmpty() )
         {
-            //op = OpSubstitute.substitute(originalOp, binding) ;
-            op = OpSubstitute.substitute(op, binding) ;
+            // Assumes we compiled in the constructor.
+            op = OpSubstitute.substitute(originalOp, binding) ;
             op = queryCompiler.compile(op) ;
         }
         
