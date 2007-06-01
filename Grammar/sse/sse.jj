@@ -45,19 +45,19 @@ Item parse() : { Item list ; Item elt ; }
     { return elt ; }
 }
 
-Node node() : { Node n ; }
-{
-    n = GraphTerm()
-    <EOF>
-    { return n ; }
-}
-
-String word() : { String str ; Token t ; }
-{
-    ( t = <WORD> | t = <OP> )
-    <EOF>
-    { return t.image ; }
-}
+// Node node() : { Node n ; }
+// {
+//     n = GraphTerm()
+//     <EOF>
+//     { return n ; }
+// }
+// 
+// String word() : { String str ; Token t ; }
+// {
+//     ( t = <WORD> | t = <OP> )
+//     <EOF>
+//     { return t.image ; }
+// }
 
 // ---- 
 
@@ -66,13 +66,19 @@ Item List() : { Token t ; Item list ; }
     // The OP token must exclude these
 (    t = <LPAREN> 
     (<WS>)*
-    { list = Item.createList(t.beginLine, t.beginColumn) ; }
+    { list = Item.createList(t.beginLine, t.beginColumn) ;
+      listStart(list) ; 
+    }
     list = BareList(list) 
+    { listFinish(list) ; }
     <RPAREN>
  |  t = <LBRACKET> 
     (<WS>)*
-    { list = Item.createList(t.beginLine, t.beginColumn) ; }
+    { list = Item.createList(t.beginLine, t.beginColumn) ;
+      listStart(list) ;
+    }
     list = BareList(list)
+    { listFinish(list) ; }
     <RBRACKET>
 )
     (<WS>)*
@@ -83,7 +89,9 @@ Item BareList(Item list) : { Item elt ; }
 {
     ( 
       elt = TermOrList()
-      { list.getList().add(elt) ; }
+      {  listAdd(list, elt) ;
+         list.getList().add(elt) ;
+      }
       // White space swallowed
     )*
     { return list ; }
@@ -92,13 +100,23 @@ Item BareList(Item list) : { Item elt ; }
 Item Term() : { Token t ; Node node ; Item item ; }
 {
   ( t = <WORD> | t = <OP> )
-    { return Item.createWord(t.image, t.beginLine, t.beginColumn) ; }
+    { item = Item.createWord(t.image, t.beginLine, t.beginColumn) ;
+      item = itemWord(item) ;
+      return item ;
+    }
  | node = GraphTerm()
     // Not quite right for line/col - this is the last token
-    { return Item.createNode(node, token.beginLine, token.beginColumn) ; }
+
+    { item = Item.createNode(node, token.beginLine, token.beginColumn) ;
+      item = itemNode(item) ;
+      return item ;
+    }
  | 
    t = <PNAME>
-   { return Item.createWord(t.image, t.beginLine, t.beginColumn) ; }
+   { item = Item.createWord(t.image, t.beginLine, t.beginColumn) ;
+     item = itemPName(item) ;
+     return item ;
+   }
 }
 
 Item TermOrList() : { Item item ; }
