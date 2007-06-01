@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.Lock;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
@@ -25,7 +26,7 @@ public class DatasetStoreGraph implements DatasetGraph
 {
     Store store ;
     Graph graph = null ;       // used for graph level access via standard query engine
-    List<String> names = new ArrayList<String>() ;
+    List<Node> names = new ArrayList<Node>() ;
     
     public DatasetStoreGraph(Store store)
     {
@@ -50,7 +51,7 @@ public class DatasetStoreGraph implements DatasetGraph
     public Store getStore() { return store ; }
     
 
-    public Iterator listNames()
+    public Iterator<Node> listGraphNodes()
     {
         return names.iterator() ;
     }
@@ -60,7 +61,7 @@ public class DatasetStoreGraph implements DatasetGraph
         throw new SDBNotImplemented("DatasetStore") ;
     }
 
-    public boolean containsNamedGraph(String uri)
+    public boolean containsGraph(Node gn)
     {
         return false ;
     }
@@ -72,15 +73,12 @@ public class DatasetStoreGraph implements DatasetGraph
         return graph ;
     }
 
-    public Graph getNamedGraph(String uri)
+    public Graph getGraph(Node gn)
     {
         return null ;
     }
-
-    public DatasetGraph asDatasetGraph()
-    {
-        return null ;
-    }
+    
+    public int size() { return -1 ; }
 }
 
 /*
