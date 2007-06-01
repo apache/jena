@@ -71,7 +71,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       }
       list = Item.createList(t.beginLine, t.beginColumn) ;
       listStart(list) ;
-      list = BareList(list);
+      BareList(list);
       listFinish(list) ;
       jj_consume_token(RPAREN);
       break;
@@ -91,7 +91,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       }
       list = Item.createList(t.beginLine, t.beginColumn) ;
       listStart(list) ;
-      list = BareList(list);
+      BareList(list);
       listFinish(list) ;
       jj_consume_token(RBRACKET);
       break;
@@ -116,7 +116,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Item BareList(Item list) throws ParseException {
+  final public void BareList(Item list) throws ParseException {
                              Item elt ;
     label_5:
     while (true) {
@@ -146,10 +146,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       }
       elt = TermOrList();
         listAdd(list, elt) ;
-         list.getList().add(elt) ;
     }
-      {if (true) return list ;}
-    throw new Error("Missing return statement in function");
   }
 
   final public Item Term() throws ParseException {

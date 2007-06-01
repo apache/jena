@@ -8,10 +8,10 @@ package com.hp.hpl.jena.sparql.sse;
 
 public interface ParseHandler
 {
-    public void listStart(Item item) ;
-    public void listFinish(Item item) ;
+    public void listStart(Item list) ;
+    public void listFinish(Item list) ;
     
-    public void listAdd(Item item, Item elt) ;
+    public void listAdd(Item list, Item elt) ;
     
     public Item itemWord(Item item) ;
     public Item itemNode(Item item) ;

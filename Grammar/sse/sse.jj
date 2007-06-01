@@ -69,7 +69,7 @@ Item List() : { Token t ; Item list ; }
     { list = Item.createList(t.beginLine, t.beginColumn) ;
       listStart(list) ; 
     }
-    list = BareList(list) 
+    BareList(list) 
     { listFinish(list) ; }
     <RPAREN>
  |  t = <LBRACKET> 
@@ -77,7 +77,7 @@ Item List() : { Token t ; Item list ; }
     { list = Item.createList(t.beginLine, t.beginColumn) ;
       listStart(list) ;
     }
-    list = BareList(list)
+    BareList(list)
     { listFinish(list) ; }
     <RBRACKET>
 )
@@ -85,16 +85,13 @@ Item List() : { Token t ; Item list ; }
     { return list ; }
 }
 
-Item BareList(Item list) : { Item elt ; }
+void BareList(Item list) : { Item elt ; }
 {
     ( 
       elt = TermOrList()
-      {  listAdd(list, elt) ;
-         list.getList().add(elt) ;
-      }
+      { listAdd(list, elt) ; }
       // White space swallowed
     )*
-    { return list ; }
 }
 
 Item Term() : { Token t ; Node node ; Item item ; }

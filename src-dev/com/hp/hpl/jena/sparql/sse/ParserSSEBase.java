@@ -32,22 +32,24 @@ public class ParserSSEBase extends ParserBase
         return Node.createURI(":"+s) ;
     }
     
-    protected void listStart(Item item)
+    protected void listStart(Item list)
     { 
         if ( handler == null ) return ;
-        handler.listStart(item) ;
+        handler.listStart(list) ;
     }
     
-    protected void listFinish(Item item)
+    protected void listFinish(Item list)
     {
         if ( handler == null ) return ;
-        handler.listFinish(item) ;
+        handler.listFinish(list) ;
     }
 
-    protected void listAdd(Item item, Item elt)
+    protected void listAdd(Item list, Item elt)
     {
         if ( handler == null ) return ;
-        handler.listAdd(item, elt) ;
+        handler.listAdd(list, elt) ;
+        list.getList().add(elt) ;
+        
     }
     
     protected Item itemWord(Item item)

@@ -133,7 +133,7 @@ public class SSE
     
     private static Node parseNode(Reader reader)
     {
-        Item item = parseEOF(reader) ;
+        Item item = parseTermEOF(reader) ;
         if ( ! item.isNode() )
             throw new SSEParseException("Not a node: "+item, item.getLine(), item.getColumn()) ;
         return item.getNode() ;
@@ -141,7 +141,7 @@ public class SSE
 
     private static String parseWord(Reader reader)
     {
-        Item item = parseEOF(reader) ;
+        Item item = parseTermEOF(reader) ;
         if ( ! item.isWord() )
             throw new SSEParseException("Not a word: "+item, item.getLine(), item.getColumn()) ;
         return item.getWord() ;
@@ -167,15 +167,30 @@ public class SSE
        //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
     }
     
-    private static Item parseEOF(Reader reader)
+    // --- Parse single elements. 
+    
+    private static Item parseTermEOF(Reader reader)
     {
-        Item item = parse(reader) ;
-        try {
-            if ( reader.ready() )
+        // To avoid putting special rules for word/node in the grammar.
+        SSE_Parser p = new SSE_Parser(reader) ;
+        try
+        {
+            Item item = p.Term() ;
+            //<EOF> test : EOF is always token 0.
+            if ( p.token_source.getNextToken().kind != 0 )
                 throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
-        } catch (IOException ex)
-        { ex.printStackTrace(); }
-        return item ;
+            return item ;
+       } 
+       catch (ParseException ex)
+       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
+       catch (TokenMgrError tErr)
+       { 
+           // Last valid token : not the same as token error message - but this should not happen
+           int col = p.token.endColumn ;
+           int line = p.token.endLine ;
+           throw new SSEParseException(tErr.getMessage(), line, col) ;
+       }
+       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
     }
 
 }
