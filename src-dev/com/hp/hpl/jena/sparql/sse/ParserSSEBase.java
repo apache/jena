@@ -28,6 +28,15 @@ public class ParserSSEBase extends ParserBase
         return Node.createURI(":"+s) ;
     }
     
+    protected void listStart(Item item)         {}
+    protected void listFinish(Item item)        {}
+    
+    protected void listAdd(Item item, Item elt) {}
+    
+    protected Item itemWord(Item item)          { return item ; }
+    protected Item itemNode(Item item)          { return item ; }
+    protected Item itemPName(Item item)         { return item ; }
+    
     protected void throwParseException(String msg, int line, int column)
     {
         throw new SSEParseException("Line " + line + ", column " + column + ": " + msg,

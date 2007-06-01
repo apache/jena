@@ -136,8 +136,17 @@ public class SSE
         SSE_Parser p = new SSE_Parser(reader) ;
         try
         {
-            return p.node() ;
-       } 
+            Item item = p.Term() ;
+            try {
+                if ( reader.ready() )
+                    throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
+            } catch (IOException ex)
+            { ex.printStackTrace(); }
+
+            if ( ! item.isNode() )
+                throw new SSEParseException("Not a node: "+item, item.getLine(), item.getColumn()) ;
+            return item.getNode() ;
+        } 
        catch (ParseException ex)
        { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
        catch (TokenMgrError tErr)
@@ -155,7 +164,16 @@ public class SSE
         SSE_Parser p = new SSE_Parser(reader) ;
         try
         {
-            return p.word() ;
+            Item item = p.Term() ;
+            try {
+                if ( reader.ready() )
+                    throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
+            } catch (IOException ex)
+            { ex.printStackTrace(); }
+                
+            if ( ! item.isWord() )
+                throw new SSEParseException("Not a word: "+item, item.getLine(), item.getColumn()) ;
+            return item.getWord() ;
        } 
        catch (ParseException ex)
        { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
