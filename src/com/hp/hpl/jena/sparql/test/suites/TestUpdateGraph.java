@@ -34,7 +34,7 @@ public class TestUpdateGraph extends TestUpdateBase
     protected static Node o2 = Node.create("1066") ;
     protected static Triple triple2 =  new Triple(s,p,o2) ;
     protected static Graph graph1 = data1() ;
-    protected static String graphIRI = "http://example/graph" ;
+    protected static Node graphIRI = Node.createURI("http://example/graph") ;
     
     public void testInsert1()
     {
@@ -65,11 +65,11 @@ public class TestUpdateGraph extends TestUpdateBase
     public void testInsert4()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.addNamedGraph(graphIRI, Factory.createDefaultGraph()) ;
+        gStore.addGraph(graphIRI, Factory.createDefaultGraph()) ;
         UpdateInsert insert = new UpdateInsert(triple1) ;
         insert.addGraphName(graphIRI) ;
         insert.exec(gStore) ;
-        assertTrue(graphContains(gStore.getNamedGraph(graphIRI), triple1)) ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
     }
 
     public void testInsert5()
@@ -119,11 +119,11 @@ public class TestUpdateGraph extends TestUpdateBase
     public void testDelete4()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.addNamedGraph(graphIRI, data1()) ;
+        gStore.addGraph(graphIRI, data1()) ;
         UpdateDelete delete = new UpdateDelete(triple1) ;
         delete.addGraphName(graphIRI) ;
         delete.exec(gStore) ;
-        assertTrue(graphEmpty(gStore.getNamedGraph(graphIRI))) ;
+        assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
@@ -131,7 +131,7 @@ public class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         gStore.setDefaultGraph(data2()) ;
-        gStore.addNamedGraph(graphIRI, data1()) ;
+        gStore.addGraph(graphIRI, data1()) ;
         
         UpdateDelete delete = new UpdateDelete() ;
         delete.setPattern("{ ?s <http://example/p> ?o } ") ;
@@ -140,7 +140,7 @@ public class TestUpdateGraph extends TestUpdateBase
         delete.addGraphName(graphIRI) ;
         delete.exec(gStore) ;
 
-        assertTrue(graphEmpty(gStore.getNamedGraph(graphIRI))) ;
+        assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
     }
     
@@ -148,16 +148,16 @@ public class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         gStore.setDefaultGraph(data2()) ;
-        gStore.addNamedGraph(graphIRI, Factory.createDefaultGraph()) ;
+        gStore.addGraph(graphIRI, Factory.createDefaultGraph()) ;
         UpdateModify modify = new UpdateModify() ;
         modify.addGraphName(graphIRI) ;
         modify.setPattern("{ ?s <http://example/p> ?o } ") ;
         modify.setDeleteTemplate("{ ?s <http://example/p> ?o}") ;
         modify.setInsertTemplate(new TemplateTriple(triple1)) ;
         modify.exec(gStore) ;
-        assertFalse(graphEmpty(gStore.getNamedGraph(graphIRI))) ;
+        assertFalse(graphEmpty(gStore.getGraph(graphIRI))) ;
         assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
-        assertTrue(graphContains(gStore.getNamedGraph(graphIRI), triple1)) ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
     }
     
     public void testUpdateScript1()
@@ -171,7 +171,7 @@ public class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         script(gStore, "update-2.rup") ;
-        assertTrue(graphContains(gStore.getNamedGraph("http://example/g1"),
+        assertTrue(graphContains(gStore.getGraph(Node.createURI("http://example/g1")),
                                  new Triple(s,p,Node.create("123")))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
@@ -180,7 +180,7 @@ public class TestUpdateGraph extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         script(gStore, "update-3.rup") ;
-        assertTrue(graphEmpty(gStore.getNamedGraph("http://example/g1"))) ;
+        assertTrue(graphEmpty(gStore.getGraph(Node.createURI("http://example/g1")))) ;
         assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
     }
 

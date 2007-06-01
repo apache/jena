@@ -11,11 +11,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.Lock;
 import com.hp.hpl.jena.shared.LockMRSW;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 
 import com.hp.hpl.jena.query.Dataset;
@@ -67,38 +69,43 @@ public class DataSourceGraphImpl implements DataSourceGraph
         defaultGraph = g ;
     }
 
-    public Graph getNamedGraph(String uri)
+    public Graph getGraph(Node graphName)
     { 
         if ( namedGraphs == null )
             return null ;
-        return (Graph)namedGraphs.get(uri) ;
+        return (Graph)namedGraphs.get(graphName) ;
     }
 
-    public void addNamedGraph(String uri, Graph graph)
+    public void addGraph(Node graphName, Graph graph)
     {
         if ( namedGraphs== null )
             namedGraphs = new HashMap() ;
-        namedGraphs.put(uri, graph) ;
+        namedGraphs.put(graphName, graph) ;
     }
      
-    public Graph removeNamedGraph(String uri)
+    public Graph removeGraph(Node graphName)
     {
         if ( namedGraphs == null )
             return null ;
-        return (Graph)namedGraphs.remove(uri) ;
+        return (Graph)namedGraphs.remove(graphName) ;
     }
 
-    public boolean containsNamedGraph(String uri)
+    public boolean containsGraph(Node graphName)
     { 
         if ( namedGraphs == null ) return false ;
-        return namedGraphs.containsKey(uri) ;
+        return namedGraphs.containsKey(graphName) ;
     }
 
-    public Iterator listNames()
+    public Iterator listGraphNodes()
     { 
         if ( namedGraphs == null )
             return new NullIterator() ; 
         return namedGraphs.keySet().iterator() ;
+    }
+    
+    public int size()
+    {
+        return namedGraphs.size() ;
     }
     
     public Lock getLock()
@@ -120,10 +127,11 @@ public class DataSourceGraphImpl implements DataSourceGraph
         while(iter.hasNext())
         {
             String uri = (String)iter.next() ;
+            Node graphRef = Node.createURI(uri) ;
             Model m = dataset.getNamedModel(uri) ;
             if ( m == null )
                 continue ;
-            addNamedGraph(uri, m.getGraph()) ;
+            addGraph(graphRef, m.getGraph()) ;
         }
     }
     
@@ -141,10 +149,10 @@ public class DataSourceGraphImpl implements DataSourceGraph
         {
             defaultGraph = dataset.getDefaultGraph() ;
             namedGraphs = new HashMap() ;
-            for ( Iterator iter = dataset.listNames() ; iter.hasNext(); )
+            for ( Iterator iter = dataset.listGraphNodes() ; iter.hasNext(); )
             {
-                String uri = (String)iter.next();
-                this.addNamedGraph(uri, dataset.getNamedGraph(uri)) ;
+                Node name = (Node)iter.next();
+                this.addGraph(name, dataset.getGraph(name)) ;
             }
             return ;
         }            
@@ -161,10 +169,11 @@ public class DataSourceGraphImpl implements DataSourceGraph
             s = s+"<null>" ;
         else
             s = s+"["+getDefaultGraph().size()+"]" ;
-        for ( Iterator iter = listNames() ; iter.hasNext() ; )
+        for ( Iterator iter = listGraphNodes() ; iter.hasNext() ; )
         {
-            String name = (String)iter.next() ;
-            s = s+", ("+name+", ["+getNamedGraph(name).size()+"])" ;
+            Node graphName = (Node)iter.next() ;
+            String x = FmtUtils.stringForNode(graphName) ;
+            s = s+", ("+x+", ["+getGraph(graphName).size()+"])" ;
         }
         s = s + "}" ;
         return s ;

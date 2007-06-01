@@ -13,6 +13,7 @@ import java.util.Iterator;
 
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.update.GraphStore;
 import com.hp.hpl.jena.update.UpdateException;
 
@@ -23,11 +24,12 @@ import com.hp.hpl.jena.update.UpdateException;
 
 public abstract class GraphUpdateN extends Update
 {
-    protected List graphURIs = new ArrayList() ; // Empty means default graph.
+    protected List graphNodes = new ArrayList() ; // List<Node> : Empty means default graph.
     
-    public boolean hasGraphNames() { return ! graphURIs.isEmpty() ; } 
-    public void addGraphName(String uri) { graphURIs.add(uri) ; }
-    public List getGraphNames() { return graphURIs ; }
+    public boolean hasGraphNames() { return ! graphNodes.isEmpty() ; } 
+    public void addGraphName(Node node) { graphNodes.add(node) ; }
+    public void addGraphName(String uri) { graphNodes.add(Node.createURI(uri)) ; }
+    public List getGraphNames() { return graphNodes ; }
     
     protected abstract void startExec(GraphStore graphStore) ;
     protected abstract void finishExec() ;
@@ -39,12 +41,12 @@ public abstract class GraphUpdateN extends Update
         startExec(graphStore) ;
         if ( hasGraphNames() )
         {
-            for ( Iterator iter = graphURIs.iterator() ; iter.hasNext() ; )
+            for ( Iterator iter = graphNodes.iterator() ; iter.hasNext() ; )
             {
-                String uri = (String)iter.next() ;
-                Graph g = graphStore.getNamedGraph(uri) ;
+                Node gn = (Node)iter.next() ;
+                Graph g = graphStore.getGraph(gn) ;
                 if ( g == null )
-                    throw new UpdateException("No such graph: "+uri) ; 
+                    throw new UpdateException("No such graph: "+gn) ; 
                 exec(g) ;
             }
         }

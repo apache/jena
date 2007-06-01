@@ -6,14 +6,21 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.MapFilter;
+import com.hp.hpl.jena.util.iterator.MapFilterIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 import com.hp.hpl.jena.query.Dataset;
 
@@ -52,16 +59,28 @@ public class DatasetImpl implements Dataset
 
     public Model getNamedModel(String uri)
     { 
-        return graph2model(dsg.getNamedGraph(uri)) ;
+        return graph2model(dsg.getGraph(Node.createURI(uri))) ;
     }
 
     public boolean containsNamedModel(String uri)
     { 
-        return dsg.containsNamedGraph(uri) ;
+        return dsg.containsGraph(Node.createURI(uri)) ;
     }
 
     public Iterator listNames()
-    { return dsg.listNames() ; }
+    { 
+        List x = new ArrayList(dsg.size()) ;
+        MapFilter mapper = new MapFilter(){
+            public Object accept(Object x)
+            {
+                Node n = (Node)x ;
+                return n.getURI() ;  
+            }} ;
+        
+        ExtendedIterator eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
+        MapFilterIterator conv = new MapFilterIterator(mapper, eIter) ;
+        return conv ;
+    }
 
 //  -------
 //  Cache models wrapping graph

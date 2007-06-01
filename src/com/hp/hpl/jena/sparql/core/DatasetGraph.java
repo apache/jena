@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.core ;
 import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.Lock;
 
 public interface DatasetGraph
@@ -16,13 +17,16 @@ public interface DatasetGraph
     /** Get the default graph as a Jena Graph */
     public Graph getDefaultGraph() ;
 
-    public Graph getNamedGraph(String uri) ;
+    public Graph getGraph(Node graphNode) ;
 
-    public boolean containsNamedGraph(String uri) ;
+    public boolean containsGraph(Node graphNode) ;
 
-    public Iterator listNames() ;
+    public Iterator listGraphNodes() ;
 
     public Lock getLock() ;
+    
+    /** Get the size (number of graphs) - maybe -1 for unknown */ 
+    public int size() ;
 
 }
 /*

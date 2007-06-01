@@ -1,45 +1,22 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sparql.modify.op;
+package com.hp.hpl.jena.sparql.resultset;
+
+import com.hp.hpl.jena.query.QueryException;
 
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.DoesNotExist;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitor;
-import com.hp.hpl.jena.update.GraphStore;
-
-
-
-public class UpdateDrop extends GraphMgt
+public class DataException extends QueryException
 {
-    public UpdateDrop(Node iri, boolean silent) {  super(iri, silent) ; }
-    public UpdateDrop(Node iri) { super(iri, false) ; }
-
-    public UpdateDrop(String iri, boolean silent) {  this(Node.createURI(iri), silent) ; }
-    public UpdateDrop(String iri) { this(iri, false) ; }
-
-    //@Override
-    public void exec(GraphStore graphStore, Node iri)
-    {
-        if ( ! graphStore.containsGraph(iri) )
-        {
-            if ( isSilent() )
-                return ; 
-            throw new DoesNotExist("Named graph: "+iri) ;
-        }
-        graphStore.removeGraph(iri) ;
-    }
-    
-    //@Override
-    public void visit(UpdateVisitor visitor) { visitor.visit(this) ; }
+    public DataException(String msg) { super(msg) ; }
+    public DataException(String msg, Throwable cause) { super(msg, cause) ; }
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

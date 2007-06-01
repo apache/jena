@@ -6,17 +6,24 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.LabelExistsException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.MapFilter;
+import com.hp.hpl.jena.util.iterator.MapFilterIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 /** A implementation of a DataSource, which is a mutable Dataset,
  *  a set of a single unnamed graph and a number (zero or
@@ -71,29 +78,33 @@ public class DataSourceImpl implements DataSource
 
     public Model getNamedModel(String uri)
     { 
-        return graph2model(dsg.getNamedGraph(uri)) ;
+        Node n = Node.createURI(uri) ;
+        return graph2model(dsg.getGraph(n)) ;
     }
 
     public void addNamedModel(String uri, Model model) throws LabelExistsException
     { 
         addToCache(model) ;
-        dsg.addNamedGraph(uri, model.getGraph()) ;
+        Node n = Node.createURI(uri) ;
+        dsg.addGraph(n, model.getGraph()) ;
     }
 
     public void removeNamedModel(String uri)
     { 
-        removeFromCache(dsg.getNamedGraph(uri)) ;
-        dsg.removeNamedGraph(uri) ;
+        Node n = Node.createURI(uri) ;
+        removeFromCache(dsg.getGraph(n)) ;
+        dsg.removeGraph(n) ;
     }
 
 
 
     public void replaceNamedModel(String uri, Model model)
-    { 
-        removeFromCache(dsg.getNamedGraph(uri)) ;
-        dsg.removeNamedGraph(uri) ;
+    {
+        Node n = Node.createURI(uri) ;
+        removeFromCache(dsg.getGraph(n)) ;
+        dsg.removeGraph(n) ;
         addToCache(model) ;
-        dsg.addNamedGraph(uri, model.getGraph() ) ;
+        dsg.addGraph(n, model.getGraph() ) ;
     }
 
     public void setDefaultModel(Model model)
@@ -105,11 +116,26 @@ public class DataSourceImpl implements DataSource
 
     public boolean containsNamedModel(String uri)
     { 
-        return dsg.containsNamedGraph(uri) ;
+        Node n = Node.createURI(uri) ;
+        return dsg.containsGraph(n) ;
     }
 
+    // How to share with DatasetImpl
     public Iterator listNames()
-    { return dsg.listNames() ; }
+    { 
+        List x = new ArrayList(dsg.size()) ;
+        MapFilter mapper = new MapFilter(){
+            public Object accept(Object x)
+            {
+                Node n = (Node)x ;
+                return n.getURI() ;  
+            }} ;
+        
+        ExtendedIterator eIter = WrappedIterator.create(dsg.listGraphNodes()) ;
+        MapFilterIterator conv = new MapFilterIterator(mapper, eIter) ;
+        return conv ;
+    }
+
 
 //  -------
 //  Cache models wrapping graph

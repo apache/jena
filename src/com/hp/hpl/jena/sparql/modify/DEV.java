@@ -101,11 +101,11 @@ public class DEV
         printGraph(out, gStore.getDefaultGraph()) ;
         
 //        for ( String n : gStore.graphNames() )
-        for ( Iterator iter = gStore.listNames() ; iter.hasNext() ; )
+        for ( Iterator iter = gStore.listGraphNodes(); iter.hasNext() ; )
         {
-            String n = (String)iter.next() ;
-            out.println("**** Graph: "+FmtUtils.stringForURI(n, update.getPrefixMapping())) ;
-            printGraph(out, gStore.getNamedGraph(n)) ;
+            Node n = (Node)iter.next() ;
+            out.println("**** Graph: "+FmtUtils.stringForNode(n, update.getPrefixMapping())) ;
+            printGraph(out, gStore.getGraph(n)) ;
         }
     }
     

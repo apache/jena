@@ -213,7 +213,7 @@ public class Eval
         Node graphNode = opDSN.getGraphNode() ;
         if ( graphNode.isURI() )
         {
-            if ( evaluator.getExecContext().getDataset().containsNamedGraph(graphNode.getURI()))
+            if ( evaluator.getExecContext().getDataset().containsGraph(graphNode) )
             { return new TableUnit() ; } 
             else
                 // WRONG
@@ -223,12 +223,13 @@ public class Eval
         if ( ! Var.isVar(graphNode) )
             throw new ARQInternalErrorException("OpDatasetNames: Not a URI or variable: "+graphNode) ; 
 
-        Iterator iter = evaluator.getExecContext().getDataset().listNames() ;
-        List list = new ArrayList() ;
+        DatasetGraph dsg = evaluator.getExecContext().getDataset() ;
+        Iterator iter = dsg.listGraphNodes() ;
+        List list = new ArrayList(dsg.size()) ;
         for ( ; iter.hasNext(); )
         {
-            String uri = (String)iter.next();
-            Binding b = new Binding1(null, Var.alloc(graphNode), Node.createURI(uri)) ;
+            Node gn = (Node)iter.next();
+            Binding b = new Binding1(null, Var.alloc(graphNode), gn) ;
             list.add(b) ;
         }
 
@@ -245,7 +246,7 @@ public class Eval
         
         if ( ! Var.isVar(opGraph.getNode()) )
         {
-            Graph graph = execCxt.getDataset().getNamedGraph(opGraph.getNode().getURI()) ;
+            Graph graph = execCxt.getDataset().getGraph(opGraph.getNode()) ;
             if ( graph == null )
                 // No such name in the dataset
                 return new TableEmpty() ;
@@ -257,14 +258,14 @@ public class Eval
         // Graph node is a variable.
         Var gVar = Var.alloc(opGraph.getNode()) ;
         Table current = null ;
-        for ( Iterator iter = execCxt.getDataset().listNames() ; iter.hasNext() ; )
+        for ( Iterator iter = execCxt.getDataset().listGraphNodes() ; iter.hasNext() ; )
         {
-            String uri = (String)iter.next();
-            Graph graph = execCxt.getDataset().getNamedGraph(uri) ;
+            Node gn = (Node)iter.next();
+            Graph graph = execCxt.getDataset().getGraph(gn) ;
             ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph) ;
             Evaluator e2 = EvaluatorFactory.create(execCxt2) ;
             
-            Table tableVarURI = TableFactory.create(gVar, Node.createURI(uri)) ;
+            Table tableVarURI = TableFactory.create(gVar, gn) ;
             // Evaluate the pattern, join with this graph node possibility.
             
             Table patternTable = eval(e2, opGraph.getSubOp()) ;
@@ -300,7 +301,7 @@ public class Eval
             if ( opQuad.getGraphNode().equals(Quad.defaultGraph) )
                 g = ds.getDefaultGraph() ;
             else
-                g = ds.getNamedGraph(opQuad.getGraphNode().getURI()) ;
+                g = ds.getGraph(opQuad.getGraphNode()) ;
             if ( g == null )
                 return new TableEmpty() ;
             ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
@@ -313,18 +314,18 @@ public class Eval
             Var gVar = Var.alloc(opQuad.getGraphNode()) ;
             // Or just just devolve to OpGraph and get OpUnion chain of OpJoin
             QueryIterConcat concat = new QueryIterConcat(cxt) ;
-            for ( Iterator graphURIs = cxt.getDataset().listNames() ; graphURIs.hasNext(); )
+            for ( Iterator graphNodes = cxt.getDataset().listGraphNodes() ; graphNodes.hasNext(); )
             {
-                String uri = (String)graphURIs.next() ;
+                Node gn = (Node)graphNodes.next() ;
                 //Op tableVarURI = TableFactory.create(gn.getName(), Node.createURI(uri)) ;
                 
-                Graph g = cxt.getDataset().getNamedGraph(uri) ;
-                Binding b = new Binding1(BindingRoot.create(), gVar, Node.createURI(uri)) ;
+                Graph g = cxt.getDataset().getGraph(gn) ;
+                Binding b = new Binding1(BindingRoot.create(), gVar, gn) ;
                 ExecutionContext cxt2 = new ExecutionContext(cxt, g) ;
 
                 // Eval the pattern, eval the variable, join.
                 // Pattern may be non-linear in tehvariable - do a pure execution.  
-                Table t1 = TableFactory.create(gVar, Node.createURI(uri)) ;
+                Table t1 = TableFactory.create(gVar, gn) ;
                 QueryIterator qIter = StageBuilder.compile(pattern, ExecUtils.makeRoot(cxt2), cxt2) ;
                 Table t2 = TableFactory.create(qIter) ;
                 Table t3 = evaluator.join(t1, t2) ;

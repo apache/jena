@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.test.suites;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.AlreadyExists;
 import com.hp.hpl.jena.sparql.DoesNotExist;
 import com.hp.hpl.jena.sparql.modify.op.*;
@@ -16,15 +17,15 @@ import com.hp.hpl.jena.update.GraphStoreFactory;
 
 public class TestUpdateGraphMgt extends TestUpdateBase
 {
-    static final String graphIRI = "http://example/graph" ;
+    static final Node graphIRI = Node.createURI("http://example/graph") ;
     
     public void testCreateDrop1()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         Update u = new UpdateCreate(graphIRI) ;
         u.exec(gStore) ;
-        assertTrue(gStore.containsNamedGraph(graphIRI)) ;
-        assertTrue(graphEmpty(gStore.getNamedGraph(graphIRI))) ;
+        assertTrue(gStore.containsGraph(graphIRI)) ;
+        assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
 
         try {
             u.exec(gStore) ;
@@ -33,7 +34,7 @@ public class TestUpdateGraphMgt extends TestUpdateBase
         
         u = new UpdateDrop(graphIRI) ;
         u.exec(gStore) ;
-        assertFalse(gStore.containsNamedGraph(graphIRI)) ;
+        assertFalse(gStore.containsGraph(graphIRI)) ;
         
         try {
             u.exec(gStore) ;
@@ -51,12 +52,12 @@ public class TestUpdateGraphMgt extends TestUpdateBase
         u = new UpdateCreate(graphIRI, true) ;
         u.exec(gStore) ;
         
-        assertTrue(gStore.containsNamedGraph(graphIRI)) ;
-        assertTrue(graphEmpty(gStore.getNamedGraph(graphIRI))) ;
+        assertTrue(gStore.containsGraph(graphIRI)) ;
+        assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
         
         u = new UpdateDrop(graphIRI) ;
         u.exec(gStore) ;
-        assertFalse(gStore.containsNamedGraph(graphIRI)) ;
+        assertFalse(gStore.containsGraph(graphIRI)) ;
         u = new UpdateDrop(graphIRI, true) ;
         u.exec(gStore) ;
     }
@@ -65,16 +66,16 @@ public class TestUpdateGraphMgt extends TestUpdateBase
     {
         GraphStore gStore = GraphStoreFactory.create() ;
         script(gStore, "create-1.rup") ;
-        assertTrue(gStore.containsNamedGraph(graphIRI)) ;
-        assertTrue(graphEmpty(gStore.getNamedGraph(graphIRI))) ;
+        assertTrue(gStore.containsGraph(graphIRI)) ;
+        assertTrue(graphEmpty(gStore.getGraph(graphIRI))) ;
     }
 
     public void testCreateDrop4()
     {
         GraphStore gStore = GraphStoreFactory.create() ;
-        gStore.addNamedGraph(graphIRI, GraphUtils.makeDefaultGraph()) ;
+        gStore.addGraph(graphIRI, GraphUtils.makeDefaultGraph()) ;
         script(gStore, "drop-1.rup") ;
-        assertFalse(gStore.containsNamedGraph(graphIRI)) ;
+        assertFalse(gStore.containsGraph(graphIRI)) ;
     }
 }
 

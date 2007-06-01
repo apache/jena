@@ -13,6 +13,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
@@ -178,7 +179,7 @@ public class DatasetUtils
         {
             for (Iterator iter = namedSourceList.iterator() ; iter.hasNext() ; )
             {
-                String sourceURI = (String)iter.next() ;
+                String sourceURI = (String)iter.next();
                 String absURI = null ;
                 if ( baseURI != null )
                     absURI = RelURI.resolve(sourceURI, baseURI) ;
@@ -186,11 +187,19 @@ public class DatasetUtils
                     absURI = RelURI.resolve(sourceURI) ;
                 log.debug("Load(named): "+sourceURI+" as "+absURI) ;
                 Model m = fileManager.loadModel(sourceURI, absURI, null) ;
-                ds.addNamedGraph(absURI, m.getGraph()) ;
+                Node gn = Node.createURI(sourceURI) ;
+                ds.addGraph(gn, m.getGraph()) ;
             }
         }
         return ds ;
     }
+    
+//    private static Node nodeOrStr(Object obj)
+//    {
+//        if ( obj instanceof Node) return (Node)obj ;
+//        if ( obj instanceof String) return Node.createURI((String)obj) ;
+//        throw new DataException("Not a string nor a Node: ("+Utils.className(obj)+") "+obj) ;
+//    }
 }
  
 /*

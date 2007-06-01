@@ -7,15 +7,16 @@
 package com.hp.hpl.jena.sparql.core ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node;
 
 public interface DataSourceGraph extends DatasetGraph 
 {
     /** Set the default graph.  Set the active graph if it was null */
     public void setDefaultGraph(Graph g) ;
 
-    public void addNamedGraph(String uri, Graph graph) ;
+    public void addGraph(Node graphName, Graph graph) ;
     
-    public Graph removeNamedGraph(String uri) ;
+    public Graph removeGraph(Node graphName) ;
 }
 /*
  * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP

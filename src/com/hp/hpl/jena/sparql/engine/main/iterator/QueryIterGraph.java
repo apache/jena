@@ -43,10 +43,10 @@ public class QueryIterGraph extends QueryIterRepeatApply
     protected QueryIterator nextStage(Binding outerBinding)
     {
         DatasetGraph ds = getExecContext().getDataset() ;
-        Iterator graphURIs = makeSources(ds, outerBinding, opGraph.getNode());
+        Iterator graphNameNodes = makeSources(ds, outerBinding, opGraph.getNode());
         
         QueryIterator current = new QueryIterGraphInner(
-                                               outerBinding, graphURIs, 
+                                               outerBinding, graphNameNodes, 
                                                opGraph, getExecContext()) ;
         return current ;
     }
@@ -65,6 +65,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
         return b.get(Var.alloc(n)) ;
     }
 
+    // Iterator<Node>
     private static Iterator makeSources(DatasetGraph data, Binding b, Node graphVar)
     {
         Node n2 = resolve(b, graphVar) ;
@@ -77,23 +78,23 @@ public class QueryIterGraph extends QueryIterRepeatApply
         
         if ( n2 == null )
             // Do all submodels.
-            return data.listNames() ;
-        return new SingletonIterator(n2.getURI()) ;
+            return data.listGraphNodes() ;
+        return new SingletonIterator(n2) ;
     }
     
 
     private static class QueryIterGraphInner extends QueryIter
     {
         private Binding parentBinding ;
-        private Iterator graphURIs ;
+        private Iterator graphNames ;       // Names as Nodes
         private OpGraph opGraph ;
         private QueryIterator subIter = null ;
 
-        public QueryIterGraphInner(Binding parent, Iterator graphURIs, OpGraph opGraph, ExecutionContext execCxt)
+        public QueryIterGraphInner(Binding parent, Iterator graphNames, OpGraph opGraph, ExecutionContext execCxt)
         {
             super(execCxt) ;
             this.parentBinding = parent ;
-            this.graphURIs = graphURIs ;
+            this.graphNames = graphNames ;
             this.opGraph = opGraph ;
         }
 
@@ -138,15 +139,14 @@ public class QueryIterGraph extends QueryIterRepeatApply
         
         private QueryIterator nextIterator()
         {
-            if ( ! graphURIs.hasNext() )
+            if ( ! graphNames.hasNext() )
                 return null ;
-            String uri = (String)graphURIs.next() ;
+            Node gn = (Node)graphNames.next() ;
 
-            Graph g = getExecContext().getDataset().getNamedGraph(uri) ;
+            Graph g = getExecContext().getDataset().getGraph(gn) ;
             if ( g == null )
                 return null ;
                 
-            Node gn = Node.createURI(uri) ;
             // Create a new context with a different active graph
             ExecutionContext execCxt2 = new ExecutionContext(getExecContext(), g) ;
                 
@@ -160,16 +160,18 @@ public class QueryIterGraph extends QueryIterRepeatApply
         }
         
 
-        private static QueryIterator buildIterator(Binding binding, Node graphURI, OpGraph opGraph, ExecutionContext cxt)
+        private static QueryIterator buildIterator(Binding binding, Node graphNode, OpGraph opGraph, ExecutionContext cxt)
         {
-            if ( !graphURI.isURI() )
+            if ( !graphNode.isURI() )
                 // e.g. variable bound to a literal or blank node.
+                // Alow this?
                 throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator") ;
                 //return null ;
+            
             // TODO Think about avoiding substitution.
             // If the subpattern does not involve the vars from the binding, avoid the substitute.  
             Op op = OpSubstitute.substitute(opGraph.getSubOp(), binding) ;
-            Graph g = cxt.getDataset().getNamedGraph(graphURI.getURI()) ;
+            Graph g = cxt.getDataset().getGraph(graphNode) ;
             if ( g == null )
                 return null ;
             

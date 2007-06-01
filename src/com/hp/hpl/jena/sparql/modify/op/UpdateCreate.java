@@ -25,7 +25,7 @@ public class UpdateCreate extends GraphMgt
     //@Override
     public void exec(GraphStore graphStore, Node iri)
     {
-        if ( graphStore.containsNamedGraph(iri.getURI()) )
+        if ( graphStore.containsGraph(iri) )
         {
             if ( isSilent() )
                 return ; 
@@ -33,7 +33,7 @@ public class UpdateCreate extends GraphMgt
         }
         
         Graph graph = Factory.createDefaultGraph() ;
-        graphStore.addNamedGraph(iri.getURI(), graph) ;
+        graphStore.addGraph(iri, graph) ;
     }
     
     //@Override

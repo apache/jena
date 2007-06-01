@@ -18,14 +18,14 @@ import com.hp.hpl.jena.update.GraphStore;
 
 public abstract class GraphUpdate1 extends Update
 {
-    private Node graphIRI = null ;
+    private Node graphName = null ;
     protected GraphUpdate1() { }
     protected GraphUpdate1(String iri) { setGraphName(iri) ; }
-    protected GraphUpdate1(Node iri) { graphIRI = iri ; }
+    protected GraphUpdate1(Node iri) { graphName = iri ; }
     
-    public boolean hasGraphName() { return graphIRI != null ; }
-    public void setGraphName(String iri) { graphIRI = Node.createURI(iri) ; }
-    public String getGraphName() { return graphIRI.getURI() ; }
+    public boolean hasGraphName() { return graphName != null ; }
+    public void setGraphName(String iri) { graphName = Node.createURI(iri) ; }
+    public Node getGraphName() { return graphName ; }
     
     protected abstract void exec(GraphStore graphStore, Graph graph) ;
     
@@ -34,7 +34,7 @@ public abstract class GraphUpdate1 extends Update
     {
         Graph g = null ;
         if ( hasGraphName() )
-            g = graphStore.getNamedGraph(getGraphName()) ;
+            g = graphStore.getGraph(getGraphName()) ;
         else
             g = graphStore.getDefaultGraph() ;
         exec(graphStore, g) ;

@@ -86,7 +86,7 @@ public class UpdateSerializer implements UpdateVisitor
         if ( clear.hasGraphName() )
         {
             out.print(" ") ;
-            FmtUtils.stringForURI(clear.getGraphName(), sCxt) ;
+            FmtUtils.stringForNode(clear.getGraphName(), sCxt) ;
         }
         out.println() ;
     }
@@ -106,7 +106,7 @@ public class UpdateSerializer implements UpdateVisitor
             out.print(" ") ;
             out.print("INTO") ;
             out.print(" ") ;
-            String s = FmtUtils.stringForURI(load.getGraphName(), sCxt) ; 
+            String s = FmtUtils.stringForNode(load.getGraphName(), sCxt) ; 
             out.print(s) ;
         }
         out.println() ;
