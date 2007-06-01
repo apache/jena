@@ -15,6 +15,10 @@ import com.hp.hpl.jena.sparql.lang.ParserBase;
 
 public class ParserSSEBase extends ParserBase
 {
+    private ParseHandler handler = new ParseHandlerNull() ;
+    
+    public void setHandler(ParseHandler handler) { this.handler = handler ; }
+    
     private VarAlloc varAlloc = new VarAlloc("") ;
     protected Var createVariable()
     {
@@ -28,19 +32,59 @@ public class ParserSSEBase extends ParserBase
         return Node.createURI(":"+s) ;
     }
     
-    protected void listStart(Item item)         {}
-    protected void listFinish(Item item)        {}
+    protected void listStart(Item item)
+    { 
+        if ( handler == null ) return ;
+        handler.listStart(item) ;
+    }
     
-    protected void listAdd(Item item, Item elt) {}
+    protected void listFinish(Item item)
+    {
+        if ( handler == null ) return ;
+        handler.listFinish(item) ;
+    }
+
+    protected void listAdd(Item item, Item elt)
+    {
+        if ( handler == null ) return ;
+        handler.listAdd(item, elt) ;
+    }
     
-    protected Item itemWord(Item item)          { return item ; }
-    protected Item itemNode(Item item)          { return item ; }
-    protected Item itemPName(Item item)         { return item ; }
+    protected Item itemWord(Item item)
+    { 
+        if ( handler == null ) return item ;
+        Item item2 = handler.itemWord(item) ; 
+        return item2 != null ? item2 : item ; 
+    }
+    
+    protected Item itemNode(Item item)
+    { 
+        if ( handler == null ) return item ;
+        Item item2 = handler.itemNode(item) ; 
+        return item2 != null ? item2 : item ; 
+    }
+
+    protected Item itemPName(Item item)
+    { 
+        if ( handler == null ) return item ;
+        Item item2 = handler.itemPName(item) ; 
+        return item2 != null ? item2 : item ; 
+    }
     
     protected void throwParseException(String msg, int line, int column)
     {
         throw new SSEParseException("Line " + line + ", column " + column + ": " + msg,
                                     line, column) ;
+    }
+    
+    static class ParseHandlerNull implements ParseHandler
+    {
+        public Item itemNode(Item item)             { return item ; }
+        public Item itemPName(Item item)            { return item ; }
+        public Item itemWord(Item item)             { return item ; }
+        public void listAdd(Item item, Item elt)    { return ; }
+        public void listFinish(Item item)           { return ; }
+        public void listStart(Item item)            { return ; }
     }
 }
 
