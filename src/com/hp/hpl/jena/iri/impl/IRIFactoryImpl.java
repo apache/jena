@@ -119,6 +119,8 @@ public static final int UNKNOWN_SYNTAX = -4;
         */
     protected long errors;
     protected long warnings;
+    
+    protected Set specs = new HashSet();
 
     public IRIFactoryImpl() {
     }
@@ -265,6 +267,7 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
     protected void useSpec(String name, boolean asErr) {
         initializing();
         Specification spec = Specification.get(name);
+        specs.add(spec);
         for (int i=0; i<Force.SIZE; i++) {
             if (asErrors[i] || (asWarnings[i] && asErr)) {
                 errors |= spec.getErrors(i);

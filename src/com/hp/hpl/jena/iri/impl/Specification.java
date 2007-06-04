@@ -149,6 +149,10 @@ public class Specification extends IRIExamples {
         return this.isScheme;
     }
 
+	public boolean applies(String scheme) {
+		return true;
+	}
+
 }
 
 

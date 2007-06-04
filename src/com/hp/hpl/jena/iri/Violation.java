@@ -86,8 +86,11 @@ public abstract class  Violation implements ViolationCodes, IRIComponents {
      * @return true if this condition is an error, false if it is a warning.
      */
     public abstract boolean isError();
-    
-   
+    /**
+     * The name of the component in which the problem occurred.
+     * @return A component name.
+     */
+    abstract public String component();
 }
 
 

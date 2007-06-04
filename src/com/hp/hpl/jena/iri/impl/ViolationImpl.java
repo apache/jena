@@ -6,11 +6,18 @@
 package com.hp.hpl.jena.iri.impl;
 
 import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIComponents;
 import com.hp.hpl.jena.iri.Violation;
 
-public class ViolationImpl extends Violation {
 
-    private static final long serialVersionUID = 2281176551632614471L;
+public class ViolationImpl extends Violation {
+	static String componentNames[];
+    static String componentName(int j) {
+		if (componentNames == null) {
+			componentNames = PatternCompiler.constantsFromClass(IRIComponents.class, 40);
+        }
+        return componentNames[j];
+    }
     final private int code;
     final private int slot;
 //    int index;
@@ -41,6 +48,10 @@ public class ViolationImpl extends Violation {
     public int getComponent() {
         return slot;
     }
+    
+    public String component() {
+    	return componentName(slot);
+    }
 
     public String codeName() {
         return PatternCompiler.errorCodeName(code);
@@ -51,17 +62,34 @@ public class ViolationImpl extends Violation {
     }
 
     public String getShortMessage() {
-        // TODO Auto-generated method stub
-        return "Error: " + code + "/"+ codeName() + " in slot "+slot;
+        return "Code: " + code + "/"+ codeName() + " in "+component() +": " +
+              description();
 
     }
 
-    public String getLongMessage() {
-        // TODO Auto-generated method stub
-        return "Error: " + code + "/"+ codeName() + " in slot "+slot;
+    private String description() {
+		ViolationCodeInfo info = ViolationCodeInfo.all[code];
+		if (info==null)
+			return "internal error: description of error not found";
+		return info.description(slot,iri.getFactory());
+	}
+
+
+	public String getLongMessage() {
+        return "<" + getIRI() + "> Code: " + code + "/"+ codeName()  +
+        " in "+component() + ": " +description() +
+        " see: "
+        + specs();
     }
 
-    public String getSpecificationURL() {
+    private String specs() {
+		ViolationCodeInfo info = ViolationCodeInfo.all[code];
+		if (info==null)
+			return "(null)";
+		return info.specs(slot,iri.getFactory(), iri.getScheme());
+	}
+
+	public String getSpecificationURL() {
         // TODO Auto-generated method stub
         return null;
     }

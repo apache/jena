@@ -424,20 +424,26 @@ static VarPattern unreservedDNSLabel[] = {
     static String eCodeNames[];
 
     static String errorCodeName(int j) {
-        if (eCodeNames == null) {
-            eCodeNames = new String[200];
-            Field f[] = ViolationCodes.class.getDeclaredFields();
-            for (int i = 0; i < f.length; i++)
-                try {
-                    eCodeNames[f[i].getInt(null)] = f[i].getName();
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+		if (eCodeNames == null) {
+            eCodeNames = constantsFromClass(ViolationCodes.class, 200);
         }
         return eCodeNames[j];
     }
+
+	static String[] constantsFromClass(Class cl, int cnt) {
+		String[] names;
+		names = new String[cnt];
+		Field f[] = cl.getDeclaredFields();
+		for (int i = 0; i < f.length; i++)
+		    try {
+		        names[f[i].getInt(null)] = f[i].getName();
+		    } catch (IllegalArgumentException e) {
+		        e.printStackTrace();
+		    } catch (IllegalAccessException e) {
+		        e.printStackTrace();
+		    }
+		return names;
+	}
     
     public static int errorCode(String s) throws NoSuchFieldException {
         Field f;

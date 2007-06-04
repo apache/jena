@@ -8,7 +8,7 @@ package com.hp.hpl.jena.iri.impl;
 public class ViolationCodeInfo extends IRIExamples {
 
     static abstract public class InSpec {
-        final private Specification spec;
+        protected final Specification spec;
         final private String uri;
         public InSpec(String name, String uri) {
             spec = Specification.get(name);
@@ -21,6 +21,21 @@ public class ViolationCodeInfo extends IRIExamples {
         public void add(ViolationCodeInfo info) {
             spec.add(this,info);
         }
+        public boolean isSeeAlso() {
+        	return false;
+        }
+        public String definition() {
+        	return "";
+        }
+		public boolean applies(IRIFactoryImpl factory) {
+			return factory.specs.contains(spec);
+		}
+		public boolean applies(int slot, String scheme) {
+			return false;
+		}
+		public boolean isIRISpec() {
+			return true;
+		}
         
     }
     static abstract public class FromSpec extends InSpec {
@@ -28,50 +43,58 @@ public class ViolationCodeInfo extends IRIExamples {
         final private int component;
         final private String definition;
         final private String definitionHtml;
+		public boolean applies(int slot, String scheme) {
+			if (component != -1 && component != slot)
+			   return false;
+			return spec.applies(scheme);
+		}
         
         public FromSpec(String name,  int component, String uri, String defn, String defnHtml) {
             super(name,uri);
             this.component = component;
             definition = defn;
+            if (definition == null) 
+            	System.err.println(name);
             definitionHtml = defnHtml;
+        }
+
+        public String definition() {
+        	return "[[ " + definition + " ]]";
         }
         
     }
     static public class FromSpec_other extends FromSpec {
-
         public FromSpec_other(String name, int component, String uri, String defn, String defnHtml) {
             super(name,component,uri,defn,defnHtml);
         }
-
-        
-        
     }
     static public class FromSpec_scheme extends FromSpec {
-
         public FromSpec_scheme(String name, int component, String uri, String defn, String defnHtml) {
             super(name,component,uri,defn,defnHtml);
           }
-
         public FromSpec_scheme(String name, int component, String uri) {
             this(name,component,uri,null,null);
         }
-        
-        
+		public boolean isIRISpec() {
+			return false;
+		}
     }
     static public class FromSpec_iri extends FromSpec {
-
         public FromSpec_iri(String name, int component, String uri, String defn, String defnHtml) {
             super(name,component,uri,defn,defnHtml);
         }
-
-        
-        
     }
     static public class FromAlso extends InSpec {
 
         public FromAlso(String spec, String uri) {
             super(spec,uri);
         }
+        public boolean isSeeAlso() {
+        	return true;
+        }
+		public boolean applies(int slot, String scheme) {
+			return false;
+		}
         
     }
     
@@ -153,6 +176,41 @@ public class ViolationCodeInfo extends IRIExamples {
     public boolean isImplemented() {
         return !unimplemented;
     }
+
+	public String description(int slot, IRIFactoryImpl impl) {
+		return description;
+	}
+
+	public String specs(int slot, IRIFactoryImpl factory, String scheme) {
+		String result = "";
+        boolean iriSpecApplies = false;
+		for (int i=0; i<specifications.length;i++) {
+			InSpec inSpec = specifications[i];
+			if (inSpec.isIRISpec() &&
+					inSpec.applies(factory)) 
+				iriSpecApplies = true;
+				
+			
+		}
+		for (int i=0; i<specifications.length;i++) {
+			InSpec inSpec = specifications[i];
+			if (inSpec.isSeeAlso())
+				continue;
+			if (inSpec.isIRISpec() && !iriSpecApplies)
+				continue;
+			if (!inSpec.applies(slot, scheme) )
+				continue;
+			Specification spec = inSpec.spec;
+			String uri = inSpec.uri;
+			if (uri == null)
+				uri = spec.getUri();
+			result = result + spec.name()
+			   + " <" + uri + "> " + inSpec.definition();
+			
+			
+		}
+		return result;
+	}
 
 }
 

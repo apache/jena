@@ -64,20 +64,12 @@ abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRI
      * standards associated with its factory.
       @param includeWarnings If true then warnings are returned as well as errors.
     
-     * @return The {@link IRIException}s found which violate the
+     * @return The {@link Violation}s found which violate the
      *         factory's standards.
      */
     abstract public Iterator violations(boolean includeWarnings);
     
-    /**
-     * The error and warning conditions
-     * associated with this IRI violating the
-     * given standards.
-     * @return The {@link IRIException}s found which violate the
-     *         <code>conformance</code>.
-     * @param conformance The standards to report against.
-     */
-//    Iterator exceptions(int conformance);
+    
     /**
      * The authority component, found between
      * the first "//" and the next "/".

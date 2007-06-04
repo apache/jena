@@ -24,6 +24,11 @@ IRIComponents {
         violations[Force.MINTING] |= (1l<<SCHEME_PREFERS_LOWERCASE);
     }
 
+
+	public boolean applies(String scheme) {
+		return name().equalsIgnoreCase(scheme);
+	}
+	
     private ArrayList dUris = new ArrayList();
     private ArrayList dDefnText = new ArrayList();
     private ArrayList dDefnHtml = new ArrayList();
