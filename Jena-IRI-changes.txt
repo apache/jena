@@ -1,4 +1,6 @@
 
+This is an OLD file, relevant to version 0.3 and earlier.
+
 This is a list of changes to the Jena code base
 motivated by the new IRI code.
 ================================================

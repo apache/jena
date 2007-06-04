@@ -20,7 +20,7 @@ public class IRIImplException extends IRIException {
         violation = e;
     }
     public String getMessage() {
-        return getViolation().getLongMessage();
+        return getViolation().getShortMessage();
     }
     
 

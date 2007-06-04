@@ -700,13 +700,13 @@ abstract public class AbsIRIImpl extends  IRI implements
     }
 
     private String getCooked(int component) {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO getCooked
+    	throw new UnsupportedOperationException("not yet implemented");
     }
 
     public IRI normalize(boolean useDns) {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO normalize
+    	throw new UnsupportedOperationException("not yet implemented");
     }
 
     /*
@@ -734,13 +734,13 @@ abstract public class AbsIRIImpl extends  IRI implements
     }
 
     public boolean ladderEquals(IRI iri, int other) {
-        // TODO Auto-generated method stub
-        return false;
+        // TODO ladderEquals
+    	throw new UnsupportedOperationException("not yet implemented");
     }
 
     public int ladderEquals(IRI iri) {
-        // TODO Auto-generated method stub
-        return 0;
+        // TODO ladderEquals
+    	throw new UnsupportedOperationException("not yet implemented");
     }
 }
 

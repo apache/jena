@@ -363,6 +363,7 @@ characters ("[", "]") are not part of the above list
      */
     public void setQueryCharacterRestrictions(boolean restrict){
         // TODO setQueryCharacterRestrictions
+    	throw new UnsupportedOperationException("unimplemented");
     }
     /**
      * Sets the character encoding to use

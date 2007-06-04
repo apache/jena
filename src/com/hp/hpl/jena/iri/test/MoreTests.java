@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.1 2007-05-10 16:49:33 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.2 2007-06-04 18:39:12 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.iri.test;
@@ -12,7 +12,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.iri.*;
+import com.hp.hpl.jena.iri.IRI;
+import com.hp.hpl.jena.iri.IRIFactory;
 
 /**
  * @author jjc

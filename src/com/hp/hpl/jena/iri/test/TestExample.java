@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIException;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.iri.ViolationCodes;

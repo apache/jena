@@ -385,8 +385,8 @@ private Set backwardCompatibleRelativeRefs = new HashSet();
             return scheme.port;
         }
         public boolean withScheme() {
-            // TODO Auto-generated method stub
-            return false;
+            // TODO withScheme()
+            throw new UnsupportedOperationException("Not yet implemented.");
         }
         
     }

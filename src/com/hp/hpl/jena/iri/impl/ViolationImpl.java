@@ -62,7 +62,7 @@ public class ViolationImpl extends Violation {
     }
 
     public String getShortMessage() {
-        return "Code: " + code + "/"+ codeName() + " in "+component() +": " +
+        return  "<" + getIRI() + "> Code: " + code + "/"+ codeName() + " in "+component() +": " +
               description();
 
     }
@@ -90,8 +90,8 @@ public class ViolationImpl extends Violation {
 	}
 
 	public String getSpecificationURL() {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO getSpecificationURL
+        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
 }

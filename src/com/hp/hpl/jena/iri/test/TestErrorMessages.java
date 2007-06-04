@@ -11,11 +11,9 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIException;
 import com.hp.hpl.jena.iri.IRIFactory;
 import com.hp.hpl.jena.iri.Violation;
 import com.hp.hpl.jena.iri.ViolationCodes;
-import com.hp.hpl.jena.iri.impl.Force;
 import com.hp.hpl.jena.iri.impl.IRIExamples;
 import com.hp.hpl.jena.iri.impl.Specification;
 import com.hp.hpl.jena.iri.impl.ViolationCodeInfo;
@@ -69,7 +67,7 @@ public class TestErrorMessages extends TestCase
    
 
 	private void printErrorMessages(Violation v) {
-			System.err.println(v.getLongMessage());
+			System.err.println(v.getShortMessage());
 		
 	}
 
