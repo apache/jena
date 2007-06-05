@@ -53,8 +53,9 @@ public class ViolationCodeInfo extends IRIExamples {
             super(name,uri);
             this.component = component;
             definition = defn;
-            if (definition == null) 
-            	System.err.println(name);
+            // TODO: definitions of schemes etc.
+//            if (definition == null) 
+//            	System.err.println(name);
             definitionHtml = defnHtml;
         }
 
