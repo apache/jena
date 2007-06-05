@@ -233,7 +233,6 @@ public class Query extends Prologue implements Cloneable
     {
         if ( graphURIs == null )
             graphURIs = new ArrayList() ;
-        //RelURI.resolve(s, getBaseURI()) ;
         graphURIs.add(s) ;
     }
 
@@ -245,7 +244,6 @@ public class Query extends Prologue implements Cloneable
     {
         if ( namedGraphURIs == null )
             namedGraphURIs = new ArrayList() ;
-        //RelURI.resolve(s, getBaseURI()) ;
         if ( namedGraphURIs.contains(uri) )
         {
             //log.warn("URI already in named graph set: "+uri) ;

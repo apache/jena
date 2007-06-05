@@ -14,7 +14,6 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Prologue;
@@ -27,6 +26,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.JenaURIException;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.RefBoolean;
+import com.hp.hpl.jena.sparql.util.Resolver;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import com.hp.hpl.jena.query.ARQ;
@@ -236,7 +236,7 @@ public class ParserBase
         {
             if ( getPrologue().getBaseURI() != null )
                 try {
-                    uriStr = RelURI.resolve(uriStr, getPrologue().getBaseURI()) ;
+                    uriStr = Resolver.resolve(getPrologue().getBaseURI(), uriStr) ;
                 } catch (JenaURIException ex)
                 { throwParseException(ex.getMessage(), line, column) ; }
         }

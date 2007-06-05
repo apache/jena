@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sparql.lang;
 import java.io.Reader;
 import java.io.StringReader;
 
-import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryParseException;
@@ -19,6 +18,7 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.lang.rdql.Q_Query;
 import com.hp.hpl.jena.sparql.lang.rdql.RDQLParser;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
+import com.hp.hpl.jena.sparql.util.Resolver;
 
 
 class ParserRDQL extends Parser
@@ -46,7 +46,7 @@ class ParserRDQL extends Parser
                 for ( int i = 0 ; i < q.getGraphURIs().size() ; i++ )
                 {
                     String u = (String)q.getGraphURIs().get(i) ;
-                    u = RelURI.resolve(u, q.getBaseURI()) ;
+                    u = Resolver.resolve(q.getBaseURI(), u) ;
                     q.getGraphURIs().set(i, u) ;
                 }
             }

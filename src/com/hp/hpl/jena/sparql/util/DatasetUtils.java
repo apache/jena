@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.sparql.util.Resolver;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -93,9 +93,9 @@ public class DatasetUtils
                 String sourceURI = (String)iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = RelURI.resolve(sourceURI, baseURI) ;
+                    absURI = Resolver.resolve(baseURI, sourceURI) ;
                 else
-                    absURI = RelURI.resolve(sourceURI) ;
+                    absURI = Resolver.resolveGlobalBase(sourceURI) ;
                 log.debug("Load(unnamed): "+sourceURI) ;
                 fileManager.readModel(ds.getDefaultModel(), sourceURI, absURI, null) ;
             }
@@ -109,9 +109,9 @@ public class DatasetUtils
                 String sourceURI = (String)iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = RelURI.resolve(sourceURI, baseURI) ;
+                    absURI = Resolver.resolve(baseURI, sourceURI) ;
                 else
-                    absURI = RelURI.resolve(sourceURI) ;
+                    absURI = Resolver.resolveGlobalBase(sourceURI) ;
                 log.debug("Load(named): "+sourceURI+" as "+absURI) ;
                 Model m = GraphUtils.makeDefaultModel() ;
                 fileManager.readModel(m, sourceURI, absURI, null) ;
@@ -161,9 +161,9 @@ public class DatasetUtils
                 String sourceURI = (String)iter.next() ;
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = RelURI.resolve(sourceURI, baseURI) ;
+                    absURI = Resolver.resolve(baseURI, sourceURI) ;
                 else
-                    absURI = RelURI.resolve(sourceURI) ;
+                    absURI = Resolver.resolveGlobalBase(sourceURI) ;
                 log.debug("Load(unnamed): "+sourceURI) ;
                 // FileManager.readGraph?
                 fileManager.readModel(m, sourceURI, absURI, null) ;
@@ -182,9 +182,9 @@ public class DatasetUtils
                 String sourceURI = (String)iter.next();
                 String absURI = null ;
                 if ( baseURI != null )
-                    absURI = RelURI.resolve(sourceURI, baseURI) ;
+                    absURI = Resolver.resolve(baseURI, sourceURI) ;
                 else
-                    absURI = RelURI.resolve(sourceURI) ;
+                    absURI = Resolver.resolveGlobalBase(sourceURI) ;
                 log.debug("Load(named): "+sourceURI+" as "+absURI) ;
                 Model m = fileManager.loadModel(sourceURI, absURI, null) ;
                 Node gn = Node.createURI(sourceURI) ;

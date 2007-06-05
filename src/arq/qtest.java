@@ -16,7 +16,6 @@ import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdLineArgs;
 
-import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineQuad;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
@@ -25,6 +24,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.test.ARQTestSuite;
+import com.hp.hpl.jena.sparql.util.Resolver;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -203,7 +203,7 @@ public class qtest
             argError("No manifest file") ;
         String testfile = cl.getPositionalArg(0) ;
         
-        String testfileAbs = RelURI.resolve(testfile) ;
+        String testfileAbs = Resolver.resolveGlobalBase(testfile) ;
         
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;

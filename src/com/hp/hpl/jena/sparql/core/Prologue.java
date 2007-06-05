@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.util.*;
@@ -63,7 +62,7 @@ public class Prologue implements Printable
         if ( baseURI != null )
             return ;
         
-        baseURI = RelURI.chooseBaseURI(base) ;
+        baseURI = Resolver.chooseBaseURI(base) ;
     }
     
     // ---- Query prefixes

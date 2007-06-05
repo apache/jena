@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.n3.RelURI;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.FileManager;
@@ -32,6 +31,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
+import com.hp.hpl.jena.sparql.util.Resolver;
 
 import com.hp.hpl.jena.query.*;
 
@@ -308,7 +308,7 @@ public class QueryExecutionBase implements QueryExecution
         
         String baseURI = query.getBaseURI() ;
         if ( baseURI == null )
-            baseURI = RelURI.chooseBaseURI() ;
+            baseURI = Resolver.chooseBaseURI() ;
         log.debug("init: baseURI for query is: "+baseURI) ; 
         
         DatasetGraph dsg =
