@@ -4,6 +4,9 @@ SDB ToDo list (and general notes)
 + Tranasactions - cleanup.
 + Graph => Quad
 + Graph => Tuple loader.
++ Sort out StoreFactory and SDBFactory
+
++ GraphSDB : query handler
 
 + Tuple loader
 
