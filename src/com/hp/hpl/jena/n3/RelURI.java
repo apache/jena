@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.cache.Cache;
 /** RelURI.  To be replaced by the IRI library.
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.13 2007-03-21 16:09:34 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.14 2007-06-05 17:30:35 andy_seaborne Exp $
  */
 
 public class RelURI
@@ -133,7 +133,7 @@ public class RelURI
             // Corner case : relStr is the strictly absolute URI with an incomplete 
             // scheme specific part -- example: "file:x"
             if ( rel.getScheme().equals("file") )
-                return resolveFileURL(relStr) ;
+                return _resolveFileURL(relStr) ;
             return relStr ;
         }
         
@@ -223,7 +223,7 @@ public class RelURI
         String s = abs.toString() ;
 
         if ( s.startsWith("file:") )
-            s = resolveFileURL(s) ;
+            s = _resolveFileURL(s) ;
         return s ;
     }
 
@@ -326,6 +326,14 @@ public class RelURI
         return baseURI ;
     }
     
+    // Input, output in _  encoded space
+    static private String _resolveFileURL(String fn)
+    {
+        fn = CodecHex.decode(fn) ;
+        fn = resolveFileURL(fn) ;
+        fn = CodecHex.encode(fn) ;
+        return fn ;
+    }
     
     /**
      * Turn a filename into a well-formed file: URL relative to the working directory.
@@ -335,56 +343,61 @@ public class RelURI
     
     static public String resolveFileURL(String filename)
     {
+        // Works in unencoded space
         String s = filename ;
-        try {
-            // Pragmatic windows hack.
-            if ( s.indexOf('\\') > -1 )
-                s = s.replace('\\', '/') ;
-            
-            // Absolute path names
-            if ( s.startsWith("file:///"))
-                return s ;
-            
-            if ( s.startsWith("file://"))
-                // Strictly legal but the next thing is the host
-                // file://C:/ means host C, default port!
-                return s ;
-            
-            if ( s.startsWith("file:/") )
-            {
-                // This converts Java's idea of file: URL
-                // to one with ///
-                s = filename.substring("file:/".length()) ;
-                return "file:///"+s ;
-            }
-
-            // Relative path name.
-            if ( s.startsWith("file:") )
-                s = filename.substring("file:".length()) ;
-            
-            File f = new File(s) ;
-            // If it ends in "/" keep it
-            // (don't test for a directory - may not exist, and it costs more)
-            if ( s.endsWith("/") )
-                s = f.getAbsolutePath()+"/" ;
-            else
-                s = f.getCanonicalPath() ;
-            // Windows file name to URI hierarchical paths
+        // Pragmatic windows hack.
+        if ( s.indexOf('\\') > -1 )
             s = s.replace('\\', '/') ;
 
-            // java.net.URI messes up file:/// 
-            if ( s.startsWith("/"))
-                // Already got one / - UNIX-like
-                s = "file://"+s ;
-            else
-                // Absolute name does not start with / - Windows like
-                s = "file:///"+s ;
+        // Absolute path names
+        if ( s.startsWith("file:///"))
             return s ;
-        } catch (IOException ex)
+
+        if ( s.startsWith("file://"))
+            // Strictly legal but the next thing is the host
+            // file://C:/ means host C, default port!
+            return s ;
+
+        if ( s.startsWith("file:/") )
         {
-            return null ;
+            // This converts Java's idea of file: URL
+            // to one with ///
+            s = filename.substring("file:/".length()) ;
+            return "file:///"+s ;
         }
 
+        // Relative path name.
+        if ( s.startsWith("file:") )
+            s = filename.substring("file:".length()) ;
+
+        s = absFileNameURL(s) ;
+        return s ;
+    }
+    
+    /** Absolute file name */
+    public static String absFileNameURL(String fn)
+    {
+        File f = new File(fn) ;
+        // If it ends in "/" keep it
+        // (don't test for a directory - may not exist, and it costs more)
+        if ( fn.endsWith("/") )
+            fn = f.getAbsolutePath()+"/" ;
+        else
+            try { fn = f.getCanonicalPath() ; }
+            catch (IOException ex)
+            { return null ; }
+                
+        // Windows file name to URI hierarchical paths
+        fn = fn.replace('\\', '/') ;
+
+        // java.net.URI messes up file:/// 
+        if ( fn.startsWith("/"))
+            // Already got one / - UNIX-like
+            fn = "file://"+fn ;
+        else
+            // Absolute name does not start with / - Windows like
+            fn = "file:///"+fn ;
+        return fn ;
     }
     
     /** Like URL encoding but settable char.  Default '_' */ 
