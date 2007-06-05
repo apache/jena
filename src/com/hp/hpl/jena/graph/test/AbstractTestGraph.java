@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.73 2007-03-07 15:54:30 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.74 2007-06-05 09:43:20 jeremy_carroll Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -136,6 +136,8 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testMatchLanguagedLiteralCaseInsensitive()
         {
         Graph m = graphWith( "a p 'chat'en" );
+
+  // TODO: should be Graph m = getGraphWith( "a p 'chat'en" );
         if (m.getCapabilities().handlesLiteralTyping())
             {
             Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
@@ -150,6 +152,8 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testMatchBothLanguagedLiteralsCaseInsensitive()
         {
         Graph m = graphWith( "a p 'chat'en; a p 'chat'EN" );
+        
+   // TODO: should be Graph m = getGraphWith( "a p 'chat'en; a p 'chat'EN" );
         if (m.getCapabilities().handlesLiteralTyping())
             {
             Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
@@ -164,6 +168,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testNoMatchAgainstUnlanguagesLiteral()
         {
         Graph m = graphWith( "a p 'chat'en; a p 'chat'" );
+    // TODO: should be    Graph m = getGraphWith( "a p 'chat'en; a p 'chat'" );
         if (m.getCapabilities().handlesLiteralTyping())
             {
             Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
