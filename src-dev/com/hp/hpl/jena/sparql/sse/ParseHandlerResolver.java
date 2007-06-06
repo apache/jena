@@ -14,7 +14,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 public class  ParseHandlerResolver implements ParseHandler 
 {
     static final String prefixTag = "prefix" ;
-    Stack listStack = new Stack() ;
+    Stack prefixTags = new Stack() ;
     Stack pmapStack = new Stack() ;
     PrefixMapping currentMap = new PrefixMappingImpl() ;
     
@@ -24,60 +24,86 @@ public class  ParseHandlerResolver implements ParseHandler
     // 2 : Seeing prefix pairs
     // 3 : In
     
-    private static int  STATE_OUTSIDE     = 0 ;
-    private static int  STATE_DECL_START  = 1 ;
-    private static int  STATE_DECL_ELTS   = 2 ;
-    private static int  STATE_DECL_FINISH = 3 ;
-    private static int  STATE_BODY        = 4 ;
-    private int prefixDecl = 0 ;
+    private static final int  STATE_OUTSIDE         = 10 ;
+    private static final int  STATE_PROCESS_DECL    = 20 ;
+    private static final int  STATE_SEEN_DECL       = 30 ;
+    private static final int  STATE_BODY            = 40 ;
+    private int state = 0 ;
+    int depth = 0 ;
     
     public void listStart(Item listItem)
     {
-        listStack.push(listItem) ;
+        if ( state == STATE_PROCESS_DECL )
+            depth++ ;
     }
     
     public void listFinish(Item listItem)
     {
+        if ( state == STATE_PROCESS_DECL )
+            --depth ;
+        
         if ( listItem.isTagged(prefixTag) )
         {
             pmapStack.pop() ;
             currentMap = (PrefixMapping)pmapStack.peek() ;
         }
-        listStack.pop() ;
     }
     
     public void listAdd(Item listItem, Item elt)
     {
-        if ( prefixDecl != STATE_OUTSIDE )
-        {
-            // Start of pair: PNAME, URI
-            if ( ! elt.isWord() )
-            {}
-            
-            
-        }
+        // Prefix.
+        // 1 - spot the tag (do not add elements to list)
+        // 2 - Get prefix mappings s(do not add elements to list)
+        // 3 - process body
         
-        if ( listItem.getList().size() == 0 
-            && elt.isWord(prefixTag) )
+        if ( state == STATE_OUTSIDE &&
+             listItem.getList().size() == 0 &&
+             elt.isWord(prefixTag) )
         {
-            // wait for first thing which must be a 'prefix' tag.
-            prefixDecl = STATE_DECL_START ;
+            // It's  (prefix ...)
+            state = STATE_PROCESS_DECL ;
+            // Remember this list 
+            prefixTags.push(listItem) ;
             return ;
         }
-        
-        
-        
-        // And skip this?
+
+        if ( listItem == prefixTags.peek() &&
+             state == STATE_PROCESS_DECL )
+        {
+            // Adding the decls.
+            PrefixMapping pm = parseDecls(elt) ;
+            pmapStack.push(pm) ;
+            state = STATE_BODY ;
+            return ;
+        }
+
+        // Body, first element, clear up.
+        // ?? If body missing/empty?
+        if ( listItem == prefixTags.peek() &&
+             state == STATE_BODY )
+        {
+            prefixTags.pop() ; 
+            state = STATE_OUTSIDE ;
+            // And next step will make list!=0 so no later tag detection at start of body 
+        }
+
+        listItem.getList().add(listItem) ;
     }
     
+    // Process a prefix declaration list
+    private PrefixMapping parseDecls(Item elt)
+    {
+        return null ;
+    }
+
     public Item itemWord(Item item)     { return item ; }
     public Item itemNode(Item item)     { return item ; }
     public Item itemPName(Item item)    { return item ; }
     
-    private static void isPrefix(Item item)
-    {
-        item.isTagged(prefixTag) ;
-    }
+//    private static void isPrefix(Item item)
+//    {
+//        item.isTagged(prefixTag) ;
+//    }
     
 }
 
