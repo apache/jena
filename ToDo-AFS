@@ -6,6 +6,8 @@ SDB ToDo list (and general notes)
 + Graph => Tuple loader.
 + Sort out StoreFactory and SDBFactory
 
++ Do OpSlice - test out a modifier code path.
+
 + GraphSDB : query handler
 
 + Tuple loader
