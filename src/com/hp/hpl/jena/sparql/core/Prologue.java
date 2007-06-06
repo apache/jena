@@ -62,7 +62,7 @@ public class Prologue implements Printable
         if ( baseURI != null )
             return ;
         
-        baseURI = Resolver.chooseBaseURI(base) ;
+        baseURI = IRIResolver.chooseBaseURI(base) ;
     }
     
     // ---- Query prefixes

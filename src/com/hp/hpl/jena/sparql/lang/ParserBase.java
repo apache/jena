@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.JenaURIException;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.RefBoolean;
-import com.hp.hpl.jena.sparql.util.Resolver;
+import com.hp.hpl.jena.sparql.util.IRIResolver;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import com.hp.hpl.jena.query.ARQ;
@@ -236,7 +236,7 @@ public class ParserBase
         {
             if ( getPrologue().getBaseURI() != null )
                 try {
-                    uriStr = Resolver.resolve(getPrologue().getBaseURI(), uriStr) ;
+                    uriStr = IRIResolver.resolve(getPrologue().getBaseURI(), uriStr) ;
                 } catch (JenaURIException ex)
                 { throwParseException(ex.getMessage(), line, column) ; }
         }

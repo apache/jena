@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.util.Context;
 import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.ModelUtils;
-import com.hp.hpl.jena.sparql.util.Resolver;
+import com.hp.hpl.jena.sparql.util.IRIResolver;
 
 import com.hp.hpl.jena.query.*;
 
@@ -308,7 +308,7 @@ public class QueryExecutionBase implements QueryExecution
         
         String baseURI = query.getBaseURI() ;
         if ( baseURI == null )
-            baseURI = Resolver.chooseBaseURI() ;
+            baseURI = IRIResolver.chooseBaseURI() ;
         log.debug("init: baseURI for query is: "+baseURI) ; 
         
         DatasetGraph dsg =

@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.junit.QueryTestSuiteFactory;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.test.ARQTestSuite;
-import com.hp.hpl.jena.sparql.util.Resolver;
+import com.hp.hpl.jena.sparql.util.IRIResolver;
 import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -203,7 +203,7 @@ public class qtest
             argError("No manifest file") ;
         String testfile = cl.getPositionalArg(0) ;
         
-        String testfileAbs = Resolver.resolveGlobalBase(testfile) ;
+        String testfileAbs = IRIResolver.resolveGlobalBase(testfile) ;
         
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
