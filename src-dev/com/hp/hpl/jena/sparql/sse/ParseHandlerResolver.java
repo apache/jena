@@ -18,6 +18,19 @@ public class  ParseHandlerResolver implements ParseHandler
     Stack pmapStack = new Stack() ;
     PrefixMapping currentMap = new PrefixMappingImpl() ;
     
+    // States 
+    // 0 : Nothing
+    // 1 : Waiting for list to start
+    // 2 : Seeing prefix pairs
+    // 3 : In
+    
+    private static int  STATE_OUTSIDE     = 0 ;
+    private static int  STATE_DECL_START  = 1 ;
+    private static int  STATE_DECL_ELTS   = 2 ;
+    private static int  STATE_DECL_FINISH = 3 ;
+    private static int  STATE_BODY        = 4 ;
+    private int prefixDecl = 0 ;
+    
     public void listStart(Item listItem)
     {
         listStack.push(listItem) ;
@@ -35,19 +48,31 @@ public class  ParseHandlerResolver implements ParseHandler
     
     public void listAdd(Item listItem, Item elt)
     {
+        if ( prefixDecl != STATE_OUTSIDE )
+        {
+            // Start of pair: PNAME, URI
+            if ( ! elt.isWord() )
+            {}
+            
+            
+        }
+        
         if ( listItem.getList().size() == 0 
             && elt.isWord(prefixTag) )
         {
-            // wait for first thing which must be a 
+            // wait for first thing which must be a 'prefix' tag.
+            prefixDecl = STATE_DECL_START ;
+            return ;
         }
+        
         
         
         // And skip this?
     }
     
-    public Item itemWord(Item item) { return item ; }
-    public Item itemNode(Item item) { return item ; }
-    public Item itemPName(Item item) { return item ; }
+    public Item itemWord(Item item)     { return item ; }
+    public Item itemNode(Item item)     { return item ; }
+    public Item itemPName(Item item)    { return item ; }
     
     private static void isPrefix(Item item)
     {

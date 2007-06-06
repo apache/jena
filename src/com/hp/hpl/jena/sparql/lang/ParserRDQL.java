@@ -18,8 +18,6 @@ import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.lang.rdql.Q_Query;
 import com.hp.hpl.jena.sparql.lang.rdql.RDQLParser;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
-import com.hp.hpl.jena.sparql.util.IRIResolver;
-
 
 class ParserRDQL extends Parser
 {
@@ -45,8 +43,10 @@ class ParserRDQL extends Parser
             {
                 for ( int i = 0 ; i < q.getGraphURIs().size() ; i++ )
                 {
+                    // SPARQL resolves FROM IRIs during parsing.
+                    // This is the old RDQL parser ...
                     String u = (String)q.getGraphURIs().get(i) ;
-                    u = IRIResolver.resolve(q.getBaseURI(), u) ;
+                    u = q.getResolver().resolve(u) ;
                     q.getGraphURIs().set(i, u) ;
                 }
             }

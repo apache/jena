@@ -10,6 +10,8 @@ import com.hp.hpl.jena.sparql.lang.Parser;
 import com.hp.hpl.jena.sparql.lang.ParserSPARQL;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
+import com.hp.hpl.jena.sparql.util.IRIResolver;
+
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -113,8 +115,7 @@ public class QueryFactory
         
         if ( parser == null )
             throw new UnsupportedOperationException("Unrecognized syntax for parsing: "+syntaxURI) ;
-        
-        query.initParserBaseURI(baseURI) ;
+        query.setResolver(new IRIResolver(baseURI)) ;
         return parser.parse(query, queryString) ;
     }
     

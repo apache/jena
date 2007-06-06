@@ -12,30 +12,34 @@ import java.io.IOException;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.n3.RelURI;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 
 /** A simple class to access IRI resolution */ 
 
 public class IRIResolver
 {
-    public static class JenaURIException extends JenaException
-    {
-        public JenaURIException(String msg) { super(msg) ; }
-    }
-
-    public static class RelativeURIException extends JenaURIException
-    {
-        public RelativeURIException(String msg) { super(msg) ; }
-    }
+//    public static class JenaURIException extends JenaException
+//    {
+//        public JenaURIException(String msg) { super(msg) ; }
+//    }
+//
+//    public static class RelativeURIException extends JenaURIException
+//    {
+//        public RelativeURIException(String msg) { super(msg) ; }
+//    }
 
     String baseStr = null ;
 
+    public IRIResolver()
+    { this(null) ; }
+    
     public IRIResolver(String base)
     {
-        baseStr = base ;
         if ( base == null )
-            throw new JenaURIException("Null base IRI") ;
+            base = chooseBaseURI() ;
+        baseStr = base ;
+//        if ( base == null )
+//            throw new JenaURIException("Null base IRI") ;
     }
 
     public String resolve(String relURI)

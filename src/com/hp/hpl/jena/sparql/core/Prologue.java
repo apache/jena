@@ -26,12 +26,15 @@ public class Prologue implements Printable
 
     // Prefixes
     protected PrefixMapping prefixMap = new PrefixMappingImpl() ;
+    protected IRIResolver resolver = new IRIResolver() ;
     
     public Prologue() {}
     
-    public Prologue(PrefixMapping pmap) { this.prefixMap = pmap ; }
+    public Prologue(PrefixMapping pmap)
+    { this.prefixMap = pmap ; }
     
-    public Prologue(PrefixMapping pmap, String base) { this.prefixMap = pmap ; setBaseURI(base) ; }
+    public Prologue(PrefixMapping pmap, String base)
+    { this.prefixMap = pmap ; setBaseURI(base) ; }
     
     /**
      * @return True if the query has an explicitly set base URI. 
@@ -39,12 +42,12 @@ public class Prologue implements Printable
     public boolean explicitlySetBaseURI() { return seenBaseURI ; }
 
     /**
-     * @return Returns the baseURI.
+     * @return Returns the baseURI, if set.
      */
     public String getBaseURI()
     {
         if ( baseURI == null )
-            initParserBaseURI() ;
+            setDefaultBaseIRI() ;
         return baseURI;
     }
     /**
@@ -54,10 +57,12 @@ public class Prologue implements Printable
     {
         this.baseURI = baseURI;
         this.seenBaseURI = true ;
+        this.resolver = new IRIResolver(baseURI) ; 
     }
     
-    public void initParserBaseURI() { initParserBaseURI(null) ; }
-    public void initParserBaseURI(String base)
+    protected void setDefaultBaseIRI() { setDefaultBaseIRI(null) ; }
+    
+    protected void setDefaultBaseIRI(String base)
     {
         if ( baseURI != null )
             return ;
@@ -88,6 +93,12 @@ public class Prologue implements Printable
     {
         return prefixMap.getNsPrefixURI(prefix) ;
     }
+
+    /** Get the IRI resolver */
+    public IRIResolver getResolver() { return resolver ; }
+    
+    /** Set the IRI resolver */
+    public void setResolver(IRIResolver resolver) { this.resolver = resolver; }
     
     /**
      * @deprecated use expandPrefixedName instead
@@ -112,7 +123,6 @@ public class Prologue implements Printable
             return null ;
         return s ;
     }
-    
     
     /** Use the prefix map to turn a URI into a qname, or return the original URI */
     
