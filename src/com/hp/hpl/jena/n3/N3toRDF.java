@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.36 2007-01-28 16:04:13 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.37 2007-06-07 12:56:22 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -46,13 +46,14 @@ public class N3toRDF implements N3ParserEventHandler
 
     static final String XMLLiteralURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral" ;
 
-	private String base = null ;
+	//private String base = null ;
+    private IRIResolver resolver = null ;
     //private String basedir = null ;
 	final String anonPrefix = "_" ;
 	
     public N3toRDF(Model model, String base)
     {
-        this.base = base ;
+        resolver = new IRIResolver(base) ;
         this.model = model ;
     }
 
@@ -360,7 +361,7 @@ public class N3toRDF implements N3ParserEventHandler
     private String expandURIRef(String text, int line)
     {
         try {
-            return RelURI.resolve(text, base) ;
+            return resolver.resolve(text) ;
         } catch (Exception ex)
         { 
             error("Line "+line+": N3toRDF: Bad URI: "+text+ " ("+ex.getMessage()+")") ;

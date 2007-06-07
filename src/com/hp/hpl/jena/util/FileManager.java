@@ -53,7 +53,7 @@ import com.hp.hpl.jena.shared.*;
  * 
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.38 2007-06-05 21:23:51 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.39 2007-06-07 12:56:29 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -384,8 +384,6 @@ public class FileManager
 
     private static String chooseBaseURI(String baseURI)
     {
-//        return RelURI.chooseBaseURI(baseURI) ;
-
         String scheme = FileUtils.getScheme(baseURI) ;
         
         if ( scheme != null )

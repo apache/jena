@@ -9,14 +9,14 @@ package com.hp.hpl.jena.n3.test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import com.hp.hpl.jena.n3.JenaURIException;
 import com.hp.hpl.jena.n3.RelURI;
-import com.hp.hpl.jena.n3.RelURI.JenaURIException;
-import com.hp.hpl.jena.n3.RelURI.RelativeURIException;
+import com.hp.hpl.jena.n3.RelativeURIException;
 
 /** com.hp.hpl.jena.query.util.test.TestCaseURI
  * 
  * @author Andy Seaborne
- * @version $Id: TestRelURI.java,v 1.2 2007-03-21 16:52:51 andy_seaborne Exp $
+ * @version $Id: TestRelURI.java,v 1.3 2007-06-07 12:56:34 andy_seaborne Exp $
  */
 
 public class TestRelURI extends TestCase

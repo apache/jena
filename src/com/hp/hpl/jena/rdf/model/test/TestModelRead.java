@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRead.java,v 1.11 2007-01-02 11:48:26 andy_seaborne Exp $
+  $Id: TestModelRead.java,v 1.12 2007-06-07 12:56:30 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -13,9 +13,8 @@ import java.net.UnknownHostException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.regression.testReaderInterface;
 import com.hp.hpl.jena.shared.ConfigException;
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -78,7 +77,7 @@ public class TestModelRead extends ModelTestBase
     public void testSimpleLoadImplictBase()
         {
         Model mBasedImplicit = ModelFactory.createDefaultModel();
-        String fn = RelURI.resolveFileURL( "file:testing/modelReading/based.n3" );
+        String fn = IRIResolver.resolveFileURL("file:testing/modelReading/based.n3" );
         Model wanted = 
             ModelFactory.createDefaultModel()
             .add( resource( fn ), property( "jms:predicate" ), resource( "jms:object" ) );

@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.FileUtils;
  * single worker function with model, UTF8 reader and visated base  
  *   
  * @author		Andy Seaborne
- * @version 	$Id: JenaReaderBase.java,v 1.1 2007-01-28 16:04:13 andy_seaborne Exp $
+ * @version 	$Id: JenaReaderBase.java,v 1.2 2007-06-07 12:56:22 andy_seaborne Exp $
  */
 
 public abstract class JenaReaderBase implements RDFReader
@@ -95,7 +95,7 @@ public abstract class JenaReaderBase implements RDFReader
         // The reader has been checked, if possible, by now or
         // constructed correctly by code here. 
         if ( base != null )
-            base = RelURI.resolve(base) ;
+            base = IRIResolver.resolveGlobal(base) ;
         try {
             model.notifyEvent( GraphEvents.startRead );
             readWorker(model, reader,  base) ;

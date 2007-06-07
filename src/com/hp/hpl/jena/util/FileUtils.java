@@ -6,16 +6,15 @@
 package com.hp.hpl.jena.util;
 
 import java.io.*;
-
 import java.net.URL;
-import java.nio.charset.Charset ;
+import java.nio.charset.Charset;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.JenaRuntime;
+import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.WrappedIOException;
-import com.hp.hpl.jena.JenaRuntime ;
 
 public class FileUtils
 {
@@ -191,7 +190,7 @@ public class FileUtils
         if ( filename.startsWith("file:") )
             return filename ;
         filename = encodeFileName(filename) ;
-        return RelURI.resolveFileURL(filename) ;
+        return IRIResolver.resolveFileURL(filename) ;
     }
     
     public static String encodeFileName(String s)

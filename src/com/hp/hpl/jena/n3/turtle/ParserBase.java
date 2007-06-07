@@ -6,14 +6,13 @@
 
 package com.hp.hpl.jena.n3.turtle;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.* ;
-
-import com.hp.hpl.jena.n3.RelURI;
-import com.hp.hpl.jena.n3.RelURI.JenaURIException;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.n3.IRIResolver;
+import com.hp.hpl.jena.n3.JenaURIException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -39,10 +38,12 @@ public class ParserBase
     
     protected boolean strictTurtle = true ;
     
-    protected String baseURI = null ;
-    protected String getBaseURI() { return baseURI ; }
+    // Resolver
+    protected IRIResolver resolver = null ;
+//    protected String baseURI = null ;
+//    protected String getBaseURI() { return baseURI ; }
     
-    public void   setBaseURI(String u) { baseURI = u ; }
+    public void   setBaseURI(String u) { resolver = new IRIResolver(u) ; }
     
     protected PrefixMapping pmap = new PrefixMappingImpl() ; 
     public    PrefixMapping getPrefixMapping() { return pmap ; }
@@ -169,7 +170,7 @@ public class ParserBase
         String uriStr = s ;     // Mutated
         
         try {
-            uriStr = RelURI.resolve(uriStr, getBaseURI()) ;
+            uriStr = resolver.resolve(uriStr) ;
         } catch (JenaURIException ex)
         {
             throw new TurtleParseException(exMsg(ex.getMessage(), line, column)) ;

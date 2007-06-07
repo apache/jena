@@ -13,7 +13,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.n3.RelURI;
+import com.hp.hpl.jena.n3.IRIResolver; 
 import com.hp.hpl.jena.rdf.model.*;
 //import com.hp.hpl.jena.sparql.vocabulary.TestManifest;
 //import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.vocabulary.TestManifestX;
  * A test manifest for a single manifest file.
  * 
  * @author Andy Seaborne
- * @version $Id: Manifest.java,v 1.1 2007-03-23 11:59:47 andy_seaborne Exp $
+ * @version $Id: Manifest.java,v 1.2 2007-06-07 12:56:26 andy_seaborne Exp $
  */
 
 public class Manifest
@@ -43,7 +43,7 @@ public class Manifest
     public Manifest(String fn)
     {
         log.debug("Manifest = "+fn ) ;
-        filename = RelURI.resolve(fn) ;
+        filename = IRIResolver.resolveGlobal(fn) ;
         log.debug("         = "+filename ) ;
         manifest = FileManager.get().loadModel(filename) ;
         parseIncludes() ;

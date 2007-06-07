@@ -19,28 +19,17 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.cache.Cache;
 
 /** RelURI.  To be replaced by the IRI library.
  * 
  * @author Andy Seaborne
- * @version $Id: RelURI.java,v 1.14 2007-06-05 17:30:35 andy_seaborne Exp $
+ * @version $Id: RelURI.java,v 1.15 2007-06-07 12:56:22 andy_seaborne Exp $
  */
 
 public class RelURI
 {
-    public static class JenaURIException extends JenaException
-    {
-        public JenaURIException(String msg) { super(msg) ; }
-    }
-
-    public static class RelativeURIException extends JenaURIException
-    {
-        public RelativeURIException(String msg) { super(msg) ; }
-    }
-    
     static private String globalBase = null ;
     
     static Cache baseCache = new Cache1() ;
