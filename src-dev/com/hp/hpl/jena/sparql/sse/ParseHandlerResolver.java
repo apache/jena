@@ -97,15 +97,9 @@ public class  ParseHandlerResolver implements ParseHandler
         if ( state == STATE_DECL &&
              isCurrent(prefixTags, listItem) )
         {
-            if ( ! elt.isList() )
-            {
-                System.err.println("Not a list") ;  
-                return ;
-            }
-            
             PrefixMapping2 ext = new PrefixMapping2(currentMap) ;
             PrefixMapping newMappings = ext.getLocalPrefixMapping() ;
-            parsePrefixes(newMappings, elt.getList()) ;
+            parsePrefixes(newMappings, elt) ;
             pmapStack.push(ext) ;
             currentMap = ext ;
             state = STATE_NORMAL ;
@@ -193,8 +187,12 @@ public class  ParseHandlerResolver implements ParseHandler
         return Node.createURI(uri) ;
     }
     
-    private static void parsePrefixes(PrefixMapping newMappings, ItemList prefixes)
+    private static void parsePrefixes(PrefixMapping newMappings, Item elt)
     {
+        if ( ! elt.isList() )
+            BuilderBase.broken(elt, "Prefixes must be a list: "+elt) ;
+        
+        ItemList prefixes = elt.getList() ; 
         for ( Iterator iter = prefixes.iterator() ; iter.hasNext() ; )
         {
             Item pair = (Item)iter.next() ;
@@ -226,6 +224,9 @@ public class  ParseHandlerResolver implements ParseHandler
 //                prefix = prefix.substring(1) ;
 //            }            
 
+            if ( prefix == null )
+                BuilderBase.broken(pair, "Prefix part nor recognized: "+prefixItem) ;
+            
             if ( ! prefix.endsWith(":") )
                 BuilderBase.broken(pair, "Prefix part does not end with a ':': "+pair) ;
             prefix = prefix.substring(0, prefix.length()-1) ;
