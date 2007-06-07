@@ -19,7 +19,7 @@ import com.hp.hpl.jena.vocabulary.DC;
 /** Example : Build a query programmatically.
  * 
  * @author Andy Seaborne
- * @version $Id: ExProg1.java,v 1.8 2007-05-17 16:44:14 andy_seaborne Exp $
+ * @version $Id: ExProg1.java,v 1.9 2007-06-07 13:09:41 andy_seaborne Exp $
  */
 
 public class ExProg1

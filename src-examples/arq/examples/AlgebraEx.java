@@ -6,19 +6,18 @@
 
 package arq.examples;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
-import com.hp.hpl.jena.sparql.algebra.AlgebraGenerator;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
 /** Simple example to show parsing a query and producing the
  *  SPARQL agebra expression for the query.
  * @author Andy Seaborne
- * @version $Id: AlgebraEx.java,v 1.1 2007-05-17 16:44:14 andy_seaborne Exp $
+ * @version $Id: AlgebraEx.java,v 1.2 2007-06-07 13:09:41 andy_seaborne Exp $
  */
 public class AlgebraEx
 {
@@ -31,11 +30,13 @@ public class AlgebraEx
         System.out.println(query) ;
         
         // Generate algebra
-        Op op = AlgebraGenerator.compileQuery(query) ;
+        Op op = Algebra.compile(query) ;
         System.out.println(op) ;
         
         // Execute it.
         QueryIterator qIter = Algebra.exec(op, Ex1.createModel()) ;
+        
+        // Results
         for ( ; qIter.hasNext() ; )
         {
             Binding b = qIter.nextBinding() ;

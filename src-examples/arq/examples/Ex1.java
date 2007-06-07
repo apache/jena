@@ -17,7 +17,7 @@ import com.hp.hpl.jena.vocabulary.DC;
  *  to find the DC titles contained in a model. 
  * 
  * @author Andy Seaborne
- * @version $Id: Ex1.java,v 1.8 2007-05-17 16:44:14 andy_seaborne Exp $
+ * @version $Id: Ex1.java,v 1.9 2007-06-07 13:09:41 andy_seaborne Exp $
  */
 
 public class Ex1
