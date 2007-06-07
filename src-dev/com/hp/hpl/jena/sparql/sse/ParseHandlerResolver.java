@@ -6,13 +6,18 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
+import java.util.Iterator;
 import java.util.Stack;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderBase;
+import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 public class  ParseHandlerResolver implements ParseHandler 
 {
+    ParseHandler other = new ParseHandlerDebug() ;
     static final String prefixTag = "prefix" ;
     Stack prefixTags = new Stack() ;
     Stack pmapStack = new Stack() ;
@@ -24,28 +29,27 @@ public class  ParseHandlerResolver implements ParseHandler
     // 2 : Seeing prefix pairs
     // 3 : In
     
-    private static final int  STATE_OUTSIDE         = 10 ;
-    private static final int  STATE_PROCESS_DECL    = 20 ;
-    private static final int  STATE_SEEN_DECL       = 30 ;
-    private static final int  STATE_BODY            = 40 ;
-    private int state = 0 ;
-    int depth = 0 ;
+    private static final int  STATE_NORMAL          = 10 ;
+    private static final int  STATE_DECL            = 20 ;
+    private int state = STATE_NORMAL ;
+    
+    public ParseHandlerResolver()
+    {
+        pmapStack.push(currentMap) ;
+    }
     
     public void listStart(Item listItem)
-    {
-        if ( state == STATE_PROCESS_DECL )
-            depth++ ;
-    }
+    { if ( other != null ) other.listStart(listItem) ; }
     
     public void listFinish(Item listItem)
     {
-        if ( state == STATE_PROCESS_DECL )
-            --depth ;
+        if ( other != null ) other.listFinish(listItem) ;
         
-        if ( listItem.isTagged(prefixTag) )
+        if ( isCurrent(prefixTags, listItem) )
         {
             pmapStack.pop() ;
             currentMap = (PrefixMapping)pmapStack.peek() ;
+            prefixTags.pop();
         }
     }
     
@@ -70,60 +74,177 @@ public class  ParseHandlerResolver implements ParseHandler
     
     public void listAdd(Item listItem, Item elt)
     {
-        // Prefix.
-        // 1 - spot the tag (do not add elements to list)
-        // 2 - Get prefix mappings s(do not add elements to list)
-        // 3 - process body
+        if ( other != null ) other.listAdd(listItem, elt) ;
         
-        if ( state == STATE_OUTSIDE &&
+        // Spot the tag
+        if ( state == STATE_NORMAL &&
              listItem.getList().size() == 0 &&
-             elt.isWord(prefixTag) )
+             elt.isWord(prefixTag) &&
+             // Special case - could be (prefix (...) prefix ...) 
+             // because we are not pushing elements until the body.
+             ! isCurrent(prefixTags, listItem) )
         {
             // It's  (prefix ...)
-            state = STATE_PROCESS_DECL ;
+            state = STATE_DECL ;
             // Remember this list 
             prefixTags.push(listItem) ;
             return ;
         }
 
-        if ( listItem == prefixTags.peek() &&
-             state == STATE_PROCESS_DECL )
+        // NB There may not be a body
+        
+        // Spot the end of decls.
+        if ( state == STATE_DECL &&
+             isCurrent(prefixTags, listItem) )
         {
-            // Adding the decls.
-            PrefixMapping pm = parseDecls(elt) ;
-            pmapStack.push(pm) ;
-            state = STATE_BODY ;
+            if ( ! elt.isList() )
+            {
+                System.out.println("Not a list") ;  
+                return ;
+            }
+            
+            PrefixMapping2 ext = new PrefixMapping2(currentMap) ;
+            PrefixMapping newMappings = ext.getLocalPrefixMapping() ;
+            parsePrefixes(newMappings, elt.getList()) ;
+            pmapStack.push(ext) ;
+            currentMap = ext ;
+            state = STATE_NORMAL ;
+            // Leave listItem on the stack
             return ;
         }
 
-        // Body, first element, clear up.
-        // ?? If body missing/empty?
-        if ( listItem == prefixTags.peek() &&
-             state == STATE_BODY )
+        // Just add it to the list
+        listItem.getList().add(elt) ;
+    }
+    
+    public Item itemWord(Item item)     //{ return item ; }
+    { 
+        if ( other != null ) other.itemWord(item) ;
+        return item ;
+    }
+    
+    public Item itemNode(Item item)     //{ return item ; }
+    { 
+        if ( other != null ) other.itemNode(item) ;
+        return item ;
+    }
+
+    public Item itemPName(Item item)
+    { 
+        if ( other != null ) other.itemPName(item) ;
+        System.out.println("PName: "+item+ "("+state+")") ;
+        if ( state == STATE_NORMAL )
         {
-            prefixTags.pop() ; 
-            state = STATE_OUTSIDE ;
-            // And next step will make list!=0 so no later tag detection at start of body 
+            String lex = item.getWord() ;
+            Node node = resolve(lex, currentMap, item) ;
+            if ( node == null )
+            {}
+            item = Item.createNode(node, item.getLine(), item.getColumn()) ;
         }
-
-        listItem.getList().add(listItem) ;
+        
+        return item ;
+        
     }
     
-    // Process a prefix declaration list
-    private PrefixMapping parseDecls(Item elt)
+    private boolean isCurrent(Stack stack, Item item)
     {
-        return null ;
+        return stack.size() != 0 && (Item)stack.peek() == item ;
     }
-
-    public Item itemWord(Item item)     { return item ; }
-    public Item itemNode(Item item)     { return item ; }
-    public Item itemPName(Item item)    { return item ; }
     
-//    private static void isPrefix(Item item)
+//    // Resolve from a node (prefix name encoded) 
+//    private static Node resolve(Node node, PrefixMapping pmap, ItemLocation location)
 //    {
-//        item.isTagged(prefixTag) ;
+//        if ( ! node.isURI() )
+//            return node ;
+//        
+//        String uri = node.getURI() ;
+//        if ( uri.startsWith(":") )
+//        {
+//            String qname = uri.substring(1) ;
+//            if ( pmap != null )
+//                uri = pmap.expandPrefix(qname) ;
+//            if ( uri == null || uri.equals(qname) )
+//                BuilderBase.broken(location, "Can't resolve prefixed name: "+uri) ;
+//            return Node.createURI(uri) ;
+//        }
+//        else
+//        {
+//            uri = RelURI.resolve(uri) ;
+//            return Node.createURI(uri) ;
+//        }
 //    }
+
+    // Returns a word if resolved - else null.
+    private static Node resolve(String word, PrefixMapping pmap, ItemLocation location)
+    {
+        if ( pmap == null )
+            return null ;
+        
+        if ( ! word.contains(":") )
+            return null ;
+        
+        String uri = pmap.expandPrefix(word) ;
+        if ( uri == null || uri.equals(word) )
+        {
+            // Unresolved in some way.  
+            BuilderBase.broken(location, "Can't resolve prefixed name: "+uri) ;
+            // OR Make into a funny node
+            return Node.createURI(":"+word) ;
+        }
+        return Node.createURI(uri) ;
+    }
     
+    private static void parsePrefixes(PrefixMapping newMappings, ItemList prefixes)
+    {
+        for ( Iterator iter = prefixes.iterator() ; iter.hasNext() ; )
+        {
+            Item pair = (Item)iter.next() ;
+            System.out.println("Pair: "+pair);
+            if ( !pair.isList() || pair.getList().size() != 2 )
+                BuilderBase.broken(pair, "Not a prefix/IRI pair") ;
+            Item prefixItem = pair.getList().get(0) ;
+            Item iriItem = pair.getList().get(1) ;
+
+            // Maybe a Node (fake prefixed name) or a Word, depending on parser set up.
+            
+            String prefix = null ;
+
+            // -- Prefix as word
+            if ( prefixItem.isWord() )
+                prefix = prefixItem.getWord() ;
+
+            // -- Prefix as Node
+//            if ( prefixItem.isNode())
+//            {
+//                Node n = prefixItem.getNode() ;
+//                if ( ! n.isURI() )
+//                    BuilderBase.broken(pair, "Prefix part is not a prefixed name: "+pair) ;
+//
+//                prefix = n.getURI();
+//                // It will look like :x:
+//                
+//                if ( ! prefix.startsWith(":") )
+//                    BuilderBase.broken(pair, "Prefix part is not a prefix name: "+pair) ;
+//                prefix = prefix.substring(1) ;
+//            }            
+
+            if ( ! prefix.endsWith(":") )
+                BuilderBase.broken(pair, "Prefix part does not end with a ':': "+pair) ;
+            prefix = prefix.substring(0, prefix.length()-1) ;
+            if ( prefix.contains(":") )
+                BuilderBase.broken(pair, "Prefix itseld contains a ':' : "+pair) ;
+            // -- /Prefix
+            
+            Node iriNode = iriItem.getNode() ;
+
+            if ( iriNode == null || ! iriNode.isURI() )
+                BuilderBase.broken(pair, "Not an IRI: "+iriItem) ;
+
+            String iri = iriNode.getURI();
+
+            newMappings.setNsPrefix(prefix, iri) ;
+        }
+    }
 }
 
 /*

@@ -42,7 +42,8 @@ public class ResolvePrefixedNames
 
     public static Node resolve(Node node, PrefixMapping pmap)
     { return resolve(node, pmap, null) ; }
-    
+
+    // Resolve from a node (prefix name encoded) 
     public static Node resolve(Node node, PrefixMapping pmap, ItemLocation location)
     {
         if ( ! node.isURI() )

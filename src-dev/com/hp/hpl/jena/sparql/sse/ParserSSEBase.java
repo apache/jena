@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.lang.ParserBase;
 
 public class ParserSSEBase extends ParserBase
 {
-    private ParseHandler handler = new ParseHandlerNull() ;
+    private ParseHandler handler = new ParseHandlerPlain() ;
     
     public void setHandler(ParseHandler handler) { this.handler = handler ; }
     
@@ -46,10 +46,9 @@ public class ParserSSEBase extends ParserBase
 
     protected void listAdd(Item list, Item elt)
     {
-        if ( handler == null ) return ;
+        if ( handler == null )
+            list.getList().add(elt) ;
         handler.listAdd(list, elt) ;
-        list.getList().add(elt) ;
-        
     }
     
     protected Item itemWord(Item item)
