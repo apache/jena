@@ -49,6 +49,25 @@ public class  ParseHandlerResolver implements ParseHandler
         }
     }
     
+    /* Processing (prefix ...)
+     * Step 1 : spot (prefix ....) [listAdd]
+     *   Do not add this tag to the list - this list will be the body.
+     *     Turn off resolution, and get the next item (the prefix decls).
+     *       Presence of (prefix...) is illegal
+     *     At end of this list [listAdd or listFinish]
+              End of list: count by dept returning to zero: no nested decls 
+     * Step 2:
+     *   Decls to prefix.
+     *   Push new prefix mapping, set the current prefix mapping.
+     *   Push the list item onto the prefix stack.
+     *   
+     * Step 3: Process body
+     * 
+     * Step 4:
+     *   [listFinish]
+     *   When we see the body end, pop the prefix mapping, and pop the list item 
+     */
+    
     public void listAdd(Item listItem, Item elt)
     {
         // Prefix.

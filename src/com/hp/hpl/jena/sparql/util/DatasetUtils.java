@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.util.IRIResolver;
+import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -95,7 +95,7 @@ public class DatasetUtils
                 if ( baseURI != null )
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
                 else
-                    absURI = IRIResolver.resolveGlobalBase(sourceURI) ;
+                    absURI = IRIResolver.resolveGlobal(sourceURI) ;
                 log.debug("Load(unnamed): "+sourceURI) ;
                 fileManager.readModel(ds.getDefaultModel(), sourceURI, absURI, null) ;
             }
@@ -111,7 +111,7 @@ public class DatasetUtils
                 if ( baseURI != null )
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
                 else
-                    absURI = IRIResolver.resolveGlobalBase(sourceURI) ;
+                    absURI = IRIResolver.resolveGlobal(sourceURI) ;
                 log.debug("Load(named): "+sourceURI+" as "+absURI) ;
                 Model m = GraphUtils.makeDefaultModel() ;
                 fileManager.readModel(m, sourceURI, absURI, null) ;
@@ -163,7 +163,7 @@ public class DatasetUtils
                 if ( baseURI != null )
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
                 else
-                    absURI = IRIResolver.resolveGlobalBase(sourceURI) ;
+                    absURI = IRIResolver.resolveGlobal(sourceURI) ;
                 log.debug("Load(unnamed): "+sourceURI) ;
                 // FileManager.readGraph?
                 fileManager.readModel(m, sourceURI, absURI, null) ;
@@ -184,7 +184,7 @@ public class DatasetUtils
                 if ( baseURI != null )
                     absURI = IRIResolver.resolve(baseURI, sourceURI) ;
                 else
-                    absURI = IRIResolver.resolveGlobalBase(sourceURI) ;
+                    absURI = IRIResolver.resolveGlobal(sourceURI) ;
                 log.debug("Load(named): "+sourceURI+" as "+absURI) ;
                 Model m = fileManager.loadModel(sourceURI, absURI, null) ;
                 Node gn = Node.createURI(sourceURI) ;
