@@ -17,6 +17,8 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 public class  ParseHandlerResolver implements ParseHandler 
 {
+    //  XXX Should be one element for the body  
+    
     ParseHandler other = null ; //new ParseHandlerDebug() ;
     static final String prefixTag = "prefix" ;
     Stack prefixTags = new Stack() ;
@@ -91,8 +93,6 @@ public class  ParseHandlerResolver implements ParseHandler
             return ;
         }
 
-        // NB There may not be a body
-        
         // Spot the end of decls.
         if ( state == STATE_DECL &&
              isCurrent(prefixTags, listItem) )
@@ -107,6 +107,8 @@ public class  ParseHandlerResolver implements ParseHandler
             return ;
         }
 
+        // XXX Should be one element for the body   
+        
         // Just add it to the list
         listItem.getList().add(elt) ;
     }
