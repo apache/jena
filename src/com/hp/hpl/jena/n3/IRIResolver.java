@@ -18,17 +18,7 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class IRIResolver
 {
-//    public static class JenaURIException extends JenaException
-//    {
-//        public JenaURIException(String msg) { super(msg) ; }
-//    }
-//
-//    public static class RelativeURIException extends JenaURIException
-//    {
-//        public RelativeURIException(String msg) { super(msg) ; }
-//    }
-
-    String baseStr = null ;
+    private String baseStr = null ;
 
     public IRIResolver()
     { this(null) ; }
