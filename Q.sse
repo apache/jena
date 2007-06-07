@@ -1,12 +1,11 @@
-(prefix ((: <http://example/>))
-  (diff
-    (table 
-      (row [?x 1] [?y 2])
-      (row [?x 1] [?y 2] [?z 4])
-      (row [?x 1]))
-    (table 
-      (row [?x 1] [?y 2])
-      (row [?x 1] [?y 2] [?z 4])
-      (row [?x 3] [?z 4]))
-    ))
-    
+(
+ (prefix ((: <http://example/ns1#>))
+   (triple :x :p 1)
+   )
+ (prefix ((: <http://example/ns2#>))
+   :x
+   )
+ (prefix ((: <http://example/ns3#>))
+   )
+ )
+ 

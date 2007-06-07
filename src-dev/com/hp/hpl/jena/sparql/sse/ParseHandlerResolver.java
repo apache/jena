@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 public class  ParseHandlerResolver implements ParseHandler 
 {
-    ParseHandler other = new ParseHandlerDebug() ;
+    ParseHandler other = null ; //new ParseHandlerDebug() ;
     static final String prefixTag = "prefix" ;
     Stack prefixTags = new Stack() ;
     Stack pmapStack = new Stack() ;
@@ -99,7 +99,7 @@ public class  ParseHandlerResolver implements ParseHandler
         {
             if ( ! elt.isList() )
             {
-                System.out.println("Not a list") ;  
+                System.err.println("Not a list") ;  
                 return ;
             }
             
@@ -132,7 +132,6 @@ public class  ParseHandlerResolver implements ParseHandler
     public Item itemPName(Item item)
     { 
         if ( other != null ) other.itemPName(item) ;
-        System.out.println("PName: "+item+ "("+state+")") ;
         if ( state == STATE_NORMAL )
         {
             String lex = item.getWord() ;
@@ -199,7 +198,6 @@ public class  ParseHandlerResolver implements ParseHandler
         for ( Iterator iter = prefixes.iterator() ; iter.hasNext() ; )
         {
             Item pair = (Item)iter.next() ;
-            System.out.println("Pair: "+pair);
             if ( !pair.isList() || pair.getList().size() != 2 )
                 BuilderBase.broken(pair, "Not a prefix/IRI pair") ;
             Item prefixItem = pair.getList().get(0) ;
