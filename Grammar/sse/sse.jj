@@ -70,7 +70,6 @@ Item List() : { Token t ; Item list ; }
       listStart(list) ; 
     }
     BareList(list) 
-    { listFinish(list) ; }
     <RPAREN>
  |  t = <LBRACKET> 
     (<WS>)*
@@ -78,11 +77,10 @@ Item List() : { Token t ; Item list ; }
       listStart(list) ;
     }
     BareList(list)
-    { listFinish(list) ; }
     <RBRACKET>
 )
     (<WS>)*
-    { return list ; }
+    { return listFinish(list) ; }
 }
 
 void BareList(Item list) : { Item elt ; }

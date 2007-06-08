@@ -75,7 +75,10 @@ public class QuerySerializer implements QueryVisitor
     public void visitResultForm(Query query)  {}
 
     public void visitPrologue(Prologue prologue)
-    { prologue.output(out) ; out.newline() ; }
+    { 
+        PrologueSerializer.output(out, prologue) ;
+        out.newline() ;
+    }
     
     public void visitSelectResultForm(Query query)
     {

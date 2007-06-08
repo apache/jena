@@ -6,22 +6,14 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.util.IndentedLineBuffer;
-import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.PrefixMapping2;
-import com.hp.hpl.jena.sparql.util.PrintUtils;
-import com.hp.hpl.jena.sparql.util.Printable;
 
-public class Prologue implements Printable
+public class Prologue
 {
     private static Log log = LogFactory.getLog(Prologue.class) ;
 
@@ -134,63 +126,6 @@ public class Prologue implements Printable
     public String shortForm(String uri)
     {
         return prefixMap.shortForm(uri) ;
-    }
-
-    public String toString()
-    { return PrintUtils.toString(this) ; }
-    
-    public String toString(PrefixMapping pmap)
-    {
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        IndentedWriter out = buff.getIndentedWriter() ;
-        this.output(out) ;
-        return buff.toString() ;
-    }
-
-    public void output(IndentedWriter out)
-    {
-        printBase(out) ;
-        printPrefixes(out) ;
-    }
-    
-    private void printBase(IndentedWriter out)
-    {
-        if ( getBaseURI() != null && explicitlySetBaseURI() )
-        {
-            out.print("BASE    ") ;
-            out.print("<"+getBaseURI()+">") ;
-            out.newline() ;
-        }
-    }
-    
-    public void printPrefixes(IndentedWriter out)
-    {
-        Map pmap = null ;
-        
-        if ( getPrefixMapping() instanceof PrefixMapping2 )
-        {
-            PrefixMapping2 pm2 = (PrefixMapping2)getPrefixMapping() ;
-            pmap = pm2.getNsPrefixMap(false) ;
-        }
-        else
-            pmap = getPrefixMapping().getNsPrefixMap() ;
-        
-        if ( pmap.size() > 0 )
-        {
-            //boolean first = true ;
-            for ( Iterator iter = pmap.keySet().iterator() ; iter.hasNext() ; )
-            {
-                String k = (String)iter.next() ;
-                String v = (String)pmap.get(k) ;
-                out.print("PREFIX  ") ;
-                out.print(k) ;
-                out.print(':') ;
-                out.print(' ', -k.length()) ;
-                // Include at least one space 
-                out.print(" <"+v+">") ;
-                out.newline() ;
-            }
-        }
     }
 }
 

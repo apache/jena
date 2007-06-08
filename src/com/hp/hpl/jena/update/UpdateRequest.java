@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.modify.op.Update;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrintUtils;
@@ -44,8 +45,7 @@ public class UpdateRequest extends Prologue
     //@Override
     public void output(IndentedWriter out)
     {  
-        // Output prologue.
-        super.output(out) ;
+        PrologueSerializer.output(out, this) ;
         SerializationContext sCxt = new SerializationContext(this) ;
         boolean first = true ;
         out.println() ;
