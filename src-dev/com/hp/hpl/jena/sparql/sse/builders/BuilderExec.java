@@ -21,7 +21,6 @@ public class BuilderExec
     static public void main(String[] argv)
     {
         Item item = SSE.readFile("SSE/all.sse") ;
-        item = ResolvePrefixedNames.resolve(item) ;
         exec(item) ;
     }
     
@@ -47,7 +46,6 @@ public class BuilderExec
         DatasetGraph dsg = new DataSourceGraphImpl(graph) ;
         QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
     }
-    
 }
 
 /*
