@@ -16,6 +16,8 @@ import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 class BuilderBinding
 {
+    static final public String tagUndef = "undef" ;
+    static final public String tagNull =  "null" ;
     static final public String tagBinding = "binding" ;
     static final public String tagRow = "row" ;
     
@@ -47,7 +49,7 @@ class BuilderBinding
             Var v = BuilderNode.buildVar(pair.get(0)) ;
             Item cdr = pair.get(1) ;
             // undef
-            if ( cdr.isWordIgnoreCase(BuilderNode.tagUndef) || cdr.isWordIgnoreCase(BuilderNode.tagNull) )
+            if ( cdr.isWordIgnoreCase(tagUndef) || cdr.isWordIgnoreCase(tagNull) )
                 continue ;
             
             BuilderBase.checkNode(cdr) ;

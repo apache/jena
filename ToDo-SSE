@@ -1,14 +1,7 @@
 ==== SSE
 
-+ Integrate?
-
-+ BuilderExec
-
 + Builder tidying and testing
   
-  ItemLists : cons cells?!
-    Why?  Why not?
-
 + Expr: (exists (pattern ...))
   
 +  (group (vars) aggregate)
@@ -20,10 +13,4 @@
 
 + Prefix writing.
 
-+ qexec
-  See hack: QueryExecUtils.executeAlgebra(Op, DatasetGraph)
-   (query
-     (graph ..
-     (
-
- + BuilderDataset.
++ BuilderDataset

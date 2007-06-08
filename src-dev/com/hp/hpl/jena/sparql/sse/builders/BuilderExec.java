@@ -6,9 +6,7 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.core.DataSourceGraphImpl;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.sse.Item;
@@ -40,10 +38,11 @@ public class BuilderExec
         ItemList list = item.getList() ;  // Loose the tag.
         if ( list.size() != 3 )
             throw new BuildException(BuilderBase.shortPrint(item)+ " does have 2 components");
-        Graph graph = BuilderGraph.buildGraph(list.get(1)) ;
-        Op op = BuilderOp.build(list.get(2)) ;
         
-        DatasetGraph dsg = new DataSourceGraphImpl(graph) ;
+        DatasetGraph dsg = BuilderGraph.buildDataset(list.get(1)) ;
+//        Graph graph = BuilderGraph.buildGraph(list.get(1)) ;
+        Op op = BuilderOp.build(list.get(2)) ;
+//        DatasetGraph dsg = new DataSourceGraphImpl(graph) ;
         QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
     }
 }

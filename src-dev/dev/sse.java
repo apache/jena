@@ -23,13 +23,13 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 public class sse extends CmdARQ
 {
-    protected final ArgDecl fileDecl   = new ArgDecl(ArgDecl.HasValue, "file") ;
-    protected final ArgDecl numberDecl = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
-    protected final ArgDecl noPrintDecl     = new ArgDecl(ArgDecl.NoValue, "n") ;
+    protected final ArgDecl fileDecl    = new ArgDecl(ArgDecl.HasValue, "file") ;
+    protected final ArgDecl numberDecl  = new ArgDecl(ArgDecl.HasValue, "num", "number") ;
+    protected final ArgDecl noPrintDecl = new ArgDecl(ArgDecl.NoValue, "n") ;
 
-    boolean print        = true ;
-    private boolean lineNumbers = false ;
-    List filenames ;
+    private boolean         print       = true ;
+    private boolean         lineNumbers = false ;
+    private List            filenames ;
 
     public static void main (String [] argv)
     {

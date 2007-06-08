@@ -58,8 +58,8 @@ public class DataSourceGraphImpl implements DataSourceGraph
     /** Get the default graph as a Jena Graph */
     public Graph getDefaultGraph()
     { 
-        if ( defaultGraph == null )
-            System.err.println("** NULL default graph") ;
+//        if ( defaultGraph == null )
+//            System.err.println("** NULL default graph") ;
         return defaultGraph ;
     }
 

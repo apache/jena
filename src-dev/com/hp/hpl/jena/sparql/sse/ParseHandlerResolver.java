@@ -17,24 +17,34 @@ import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderBase;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
+/** Resolve prefixed names in a prefix map and IRIs relative to a base.
+ *  Forms: 
+ *    (prefix (DECL) TERM) => TERM with prefix names expanded
+ *    (base IRI TERM) => TERM with IRIs resolved to absolute IRIs
+ * 
+ * @author Andy Seaborne
+ * @version $Id$
+ */
+
 public class  ParseHandlerResolver implements ParseHandler 
 {
-    // TODO: (base ...)
-    // TODO: returning/setting the top PrefixMapping. 
+    // TODO: returning/setting the top PrefixMapping/Base 
+    // recognize outer
+    //  (base IRI (prefix (..) ...))
+          
     
-    /* Prefix tag.
-     * Form: (prefix (DECLS) TERM)
-     *   where 
-     *      (DECLS) is a list of pairs, each pair being PNAME and URI.
-     *      TERM is one SSE expression.
-     *  That is, a prefix element is exactly 3 items long. 
-     *  During DECL processing, we flag that no prefix processing should be done.
-     *  This is the flag of the previous Frame.
+    /*  Both fomrs have a common structure.
+     *    Exactly 3 items long.
+     *    There is a stack of previous settings (i.e things always nest) 
+     *  During DECL (2nd term) processing, we flag that no prefix processing should be done.
      */
     
     private static final String prefixTag  = "prefix" ;
     private static final String baseTag    = "base" ;
 
+    private PrefixMapping       topMap = null ;
+    private String              topBase = null ;
+    
     private boolean             inDecl     = false ;
     private PrefixMapping       prefixMap ;
     private IRIResolver         resolver ;
@@ -62,8 +72,9 @@ public class  ParseHandlerResolver implements ParseHandler
 
     public Item listFinish(Item listItem)
     {
-        // At end of a lits, if it's a (prefix ...) or (base ...)
-        // pop the stack and return the inner form instead. 
+        // At end of a list,
+        // If it's the current (prefix ...) or (base ...)
+        //   pop the stack and return the inner form instead. 
         if ( frameStack.isCurrent(listItem) )
         {
             // End of prefix item.  Pop state.
@@ -87,10 +98,12 @@ public class  ParseHandlerResolver implements ParseHandler
         // Spot the start of a (prefix ...) or (base ...)
         if ( ! inDecl && listItem.getList().size() == 1 )
         {
-            if ( elt.isWord(prefixTag) || elt.isWord(baseTag))
+            if ( elt.isWordIgnoreCase(prefixTag) || elt.isWordIgnoreCase(baseTag))
             {
                 // It's  (prefix ...) or (base...), not inside the delaration of an outer prefix/base
-                inDecl = true ;
+                // For base, leave processing of qnames on.
+                if ( elt.isWordIgnoreCase(prefixTag) )
+                    inDecl = true ;
                 Frame f = new Frame(listItem, prefixMap, resolver) ;
                 frameStack.push(f) ;
                 return ;
@@ -105,13 +118,13 @@ public class  ParseHandlerResolver implements ParseHandler
         // (base <IRI> ...)
         if ( listItem.getList().size() == 2 )
         {
-            if ( listItem.isTagged(baseTag) )
+            if ( listItem.isTaggedIgnoreCase(baseTag) )
             {
                 if ( !elt.isNode() )
-                    BuilderBase.broken(elt, "(base  ...): not a URI for the base.") ;
+                    BuilderBase.broken(elt, "(base  ...): not a IRI for the base.") ;
                 Node n = elt.getNode() ; 
                 if ( ! n.isURI() )
-                    BuilderBase.broken(elt, "(base  ...): not a URI for the base.") ;
+                    BuilderBase.broken(elt, "(base  ...): Node not a IRI for the base.") ;
                 resolver = new IRIResolver(n.getURI()) ;
             }
             else

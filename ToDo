@@ -4,9 +4,6 @@
 ++ ** Document "update API"
 -----
 
-+ util.Resolver
-  Notre flip of args when integrting into Jena
-
 + GRAPH and quads - check scoping of any filter in the pattern part that involves the graph variable.
   Couple to linearize with masked variables for increased indexing performance?
 
@@ -61,7 +58,6 @@
 + OpWalker - only used for getting vars, and that needs to truncate a walk.
 + Left join as "join union diff"
 + Table equals (with and without order)
-+ Binding equals
   
 == LARQ
 

@@ -17,9 +17,6 @@ import com.hp.hpl.jena.sparql.sse.ItemList;
 
 public class BuilderNode
 {
-    static final public String tagUndef = "undef" ;
-    static final public String tagNull =  "null" ;
-    
     public static Node buildNode(Item item)
     {
         if ( !item.isNode() )
