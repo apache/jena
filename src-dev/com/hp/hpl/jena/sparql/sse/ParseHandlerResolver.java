@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderBase;
@@ -27,12 +28,25 @@ public class  ParseHandlerResolver implements ParseHandler
      *  This is the flag of the previous Frame.
      */
     
-    
-    static final String prefixTag = "prefix" ;
-    Stack frames = new Stack() ;
-    boolean inDecl = false ;
-    
-    PrefixMapping currentMap = new PrefixMappingImpl() ;
+    private static class Frame
+    {
+        Item listItem ;
+        int state = 0 ;     // Count of location in (prefix ...) 
+        Item result ;
+        PrefixMapping previous ;
+        
+        Frame(Item listItem, PrefixMapping previous )
+        {
+            this.listItem = listItem ;
+            this.previous = previous ;
+        }
+    }
+
+    private IRIResolver         resolver   = new IRIResolver() ;
+    private static final String prefixTag  = "prefix" ;
+    private Stack               frames     = new Stack() ;
+    private boolean             inDecl     = false ;
+    private PrefixMapping       currentMap = new PrefixMappingImpl() ;
     
     public ParseHandlerResolver() {}
     
@@ -40,6 +54,8 @@ public class  ParseHandlerResolver implements ParseHandler
 
     public Item listFinish(Item listItem)
     {
+        // At end of a lits, if it's a (prefix ...)
+        // pop the stack and return the inner form instead. 
         if ( isCurrent(listItem) )
         {
             // End of prefix item.
@@ -54,27 +70,13 @@ public class  ParseHandlerResolver implements ParseHandler
         return listItem ;
     }
     
-    private static class Frame
-    {
-        Item listItem ;
-        int state = 0 ;     // Count of location in (prefix ...) 
-        Item result ;
-        PrefixMapping previous ;
-        
-        Frame(Item listItem, PrefixMapping previous )
-        {
-            this.listItem = listItem ;
-            this.previous = previous ;
-        }
-    }
-    
     public void listAdd(Item listItem, Item elt)
     {
-        // Always add to the listItem.
+        // Always add to the listItem: keeps the tracking of the (prefix ..) terms easier.
         listItem.getList().add(elt) ;
         
-        // Is it (prefix ...)?
-        if ( listItem.getList().size() == 1 && elt.isWord(prefixTag) )
+        // Spot the start of a (prefix ...)?
+        if ( ! inDecl && listItem.getList().size() == 1 && elt.isWord(prefixTag) )
         {
             if ( inDecl )
                 // Occurrance of (prefix ..) in DECLS handled without special processing.
@@ -115,7 +117,18 @@ public class  ParseHandlerResolver implements ParseHandler
     
     public Item itemWord(Item item)     { return item ; }
     
-    public Item itemNode(Item item)     { return item ; }
+    public Item itemNode(Item item)
+    {
+        Node n = item.getNode() ; 
+        if ( n.isURI() )
+        {
+            String x = n.getURI() ;
+            x = resolver.resolve(x) ;
+            n = Node.createURI(x) ;
+            return Item.createNode(n, item.getLine(), item.getColumn()) ;
+        }
+        return item ;
+    }
 
     public Item itemPName(Item item)
     { 
