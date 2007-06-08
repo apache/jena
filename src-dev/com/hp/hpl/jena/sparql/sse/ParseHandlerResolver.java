@@ -18,6 +18,9 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 public class  ParseHandlerResolver implements ParseHandler 
 {
+    // TODO: (base ...)
+    // TODO: returning/setting the top PrefixMapping. 
+    
     /* Prefix tag.
      * Form: (prefix (DECLS) TERM)
      *   where 
@@ -28,27 +31,21 @@ public class  ParseHandlerResolver implements ParseHandler
      *  This is the flag of the previous Frame.
      */
     
-    private static class Frame
-    {
-        Item listItem ;
-        int state = 0 ;     // Count of location in (prefix ...) 
-        Item result ;
-        PrefixMapping previous ;
-        
-        Frame(Item listItem, PrefixMapping previous )
-        {
-            this.listItem = listItem ;
-            this.previous = previous ;
-        }
-    }
-
     private IRIResolver         resolver   = new IRIResolver() ;
     private static final String prefixTag  = "prefix" ;
-    private Stack               frames     = new Stack() ;
+
     private boolean             inDecl     = false ;
-    private PrefixMapping       currentMap = new PrefixMappingImpl() ;
+    private PrefixMapping       currentMap ;
+    private FrameStack          frameStack = new FrameStack() ;
     
-    public ParseHandlerResolver() {}
+    public ParseHandlerResolver() { this(null) ; }
+    
+    public ParseHandlerResolver(PrefixMapping pmap)
+    { 
+        if ( pmap == null )
+            pmap = new PrefixMappingImpl() ;
+        currentMap = pmap ;
+    }
     
     public void listStart(Item listItem) {}
 
@@ -56,10 +53,10 @@ public class  ParseHandlerResolver implements ParseHandler
     {
         // At end of a lits, if it's a (prefix ...)
         // pop the stack and return the inner form instead. 
-        if ( isCurrent(listItem) )
+        if ( frameStack.isCurrent(listItem) )
         {
             // End of prefix item.
-            Frame f = (Frame)frames.pop() ;
+            Frame f = frameStack.pop() ;
             currentMap = f.previous ;
             Item result = f.result ;
             if ( result == null )
@@ -78,18 +75,15 @@ public class  ParseHandlerResolver implements ParseHandler
         // Spot the start of a (prefix ...)?
         if ( ! inDecl && listItem.getList().size() == 1 && elt.isWord(prefixTag) )
         {
-            if ( inDecl )
-                // Occurrance of (prefix ..) in DECLS handled without special processing.
-                return ;
-            
-            // It's  (prefix ...)
+            // It's  (prefix ...), not inside an outer (prefix (DECL) ...)
             inDecl = true ;
             Frame f = new Frame(listItem, currentMap) ;
-            frames.push(f) ;
+            frameStack.push(f) ;
             return ;
         }
 
-        if ( ! isCurrent(listItem) )
+        // If not a (prefix ...), nothing to do, already added element.
+        if ( ! frameStack.isCurrent(listItem) )
             return ;
         
         // (prefix (DECLS) ...)
@@ -106,13 +100,12 @@ public class  ParseHandlerResolver implements ParseHandler
         // (prefix (DECLS) TERM)
         if ( listItem.getList().size() == 3 )
         {
-            Frame f = (Frame)frames.peek();
+            Frame f = frameStack.getCurrent() ;
             f.result = elt ;
             return ;
         }
         
         BuilderBase.broken(listItem, "(prefix ...) has too many terms") ;
-        
     }
     
     public Item itemWord(Item item)     { return item ; }
@@ -142,39 +135,8 @@ public class  ParseHandlerResolver implements ParseHandler
         return item ;
     }
     
-    private boolean isCurrent(Item item)
-    {
-        if ( frames.size() == 0 )
-            return false ;
-        
-        Frame f = (Frame)frames.peek();
-
-        return f.listItem == item ;
-    }
+    // ----------------
     
-//    // Resolve from a node (prefix name encoded) 
-//    private static Node resolve(Node node, PrefixMapping pmap, ItemLocation location)
-//    {
-//        if ( ! node.isURI() )
-//            return node ;
-//        
-//        String uri = node.getURI() ;
-//        if ( uri.startsWith(":") )
-//        {
-//            String qname = uri.substring(1) ;
-//            if ( pmap != null )
-//                uri = pmap.expandPrefix(qname) ;
-//            if ( uri == null || uri.equals(qname) )
-//                BuilderBase.broken(location, "Can't resolve prefixed name: "+uri) ;
-//            return Node.createURI(uri) ;
-//        }
-//        else
-//        {
-//            uri = RelURI.resolve(uri) ;
-//            return Node.createURI(uri) ;
-//        }
-//    }
-
     // Returns a word if resolved - else null.
     private static Node resolve(String word, PrefixMapping pmap, ItemLocation location)
     {
@@ -251,6 +213,48 @@ public class  ParseHandlerResolver implements ParseHandler
 
             newMappings.setNsPrefix(prefix, iri) ;
         }
+    }
+
+    // ----------------
+    
+    private static class Frame
+    {
+        Item listItem ;
+        Item result ;
+        PrefixMapping previous ;
+        
+        Frame(Item listItem, PrefixMapping previous )
+        {
+            this.listItem = listItem ;
+            this.previous = previous ;
+        }
+    }
+
+    // ----------------
+    
+    private static class FrameStack
+    {
+        private Stack frames    = new Stack() ;
+    
+        boolean isCurrent(Item item)
+        {
+            if ( frames.size() == 0 )
+                return false ;
+    
+            Frame f = (Frame)frames.peek();
+    
+            return f.listItem == item ;
+        }
+    
+        Frame getCurrent()
+        {
+            if ( frames.size() == 0 )
+                return null ;
+            return (Frame)frames.peek() ;
+        }
+    
+        void push(Frame f) { frames.push(f) ; }
+        Frame pop() { return (Frame)frames.pop() ; }
     }
 }
 

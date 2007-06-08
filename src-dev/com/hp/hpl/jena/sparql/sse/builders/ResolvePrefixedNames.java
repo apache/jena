@@ -15,7 +15,9 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 /** Resolve URIs, expand any prefixed names */
 
-public class ResolvePrefixedNames
+// Old code - to be removed.
+
+class ResolvePrefixedNames
 {
     public static String tagPrefix = "prefix" ;
 

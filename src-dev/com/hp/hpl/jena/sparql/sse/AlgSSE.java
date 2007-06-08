@@ -8,7 +8,6 @@ package com.hp.hpl.jena.sparql.sse;
 
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
-import com.hp.hpl.jena.sparql.sse.builders.ResolvePrefixedNames;
 
 public class AlgSSE
 {
@@ -27,7 +26,6 @@ public class AlgSSE
 
     static public Op parse(Item item)
     {
-        item = ResolvePrefixedNames.resolve(item) ;
         Op op = BuilderOp.build(item) ;
         return op ;
     }

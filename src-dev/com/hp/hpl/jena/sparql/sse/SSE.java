@@ -13,7 +13,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -26,24 +25,20 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class SSE
 {
+    private static boolean ResolveIRIs = true ;
+    
     public static Node parseNode(String str) { return parseNode(str, null) ; }
     
     public static Node parseNode(String str, PrefixMapping pmap)
     { 
-        Node node = parseNode(new StringReader(str)) ;
-        return ResolvePrefixedNames.resolve(node, pmap) ;
-//        
-//        Item item = parseResolve(s, pmap) ;
-//        if ( !item.isNode() )
-//            throw new ARQException("Not a node: "+s) ; 
-//        return item.getNode() ;
+        return parseNode(new StringReader(str), pmap) ;
     }
     
     public static Quad parseQuad(String s) { return parseQuad(s, null) ; }
     
     public static Quad parseQuad(String s, PrefixMapping pmap)
     {
-        Item item = parseResolve(s, pmap) ;
+        Item item = parse(s, pmap) ;
         if ( !item.isList() )
             throw new ARQException("Not a list: "+s) ; 
         return BuilderGraph.buildQuad(item.getList()) ;
@@ -53,7 +48,7 @@ public class SSE
     
     public static Triple parseTriple(String s, PrefixMapping pmap)
     {
-        Item item = parseResolve(s, pmap) ;
+        Item item = parse(s, pmap) ;
         if ( !item.isList() )
             throw new ARQException("Not a list: "+s) ; 
         return BuilderGraph.buildTriple(item.getList()) ;
@@ -63,7 +58,7 @@ public class SSE
     
     public static Expr parseExpr(String s, PrefixMapping pmap)
     { 
-        Item item = parseResolve(s, pmap) ;
+        Item item = parse(s, pmap) ;
         return BuilderExpr.build(item) ;
     }
     
@@ -87,27 +82,23 @@ public class SSE
     
     public static Table parseTable(String s, PrefixMapping pmap)
     { 
-        Item item = SSE.parseResolve(s, pmap) ;
+        Item item = parse(s, pmap) ;
         return BuilderTable.build(item) ;
     }
     
-    public static Item parseResolve(String string)
-    { return parseResolve(string, null) ; }
-    
-    public static Item parseResolve(String string, PrefixMapping pmap)
-    {
-        if ( pmap == null )
-            pmap = ARQConstants.getGlobalPrefixMap() ;
-        Item item = parse(string) ;
-        return ResolvePrefixedNames.resolve(item, pmap) ;
-    }
+//    public static Item parseResolve(String string)
+//    { return parseResolve(string, null) ; }
+//    
+//    public static Item parseResolve(String string, PrefixMapping pmap)
+//    {
+//        return parse(string, pmap) ;
+//    }
     
     public static Item readResolve(String filename) { return readResolve(filename, null) ; }
     
     public static Item readResolve(String filename, PrefixMapping pmap)
     {
-        Item item = SSE.readFile(filename) ;
-        return ResolvePrefixedNames.resolve(item, pmap) ;
+        return SSE.readFile(filename) ;
     }
     
     public static Item readFile(String filename)
@@ -120,36 +111,43 @@ public class SSE
         { throw new NotFoundException("Not found: "+filename) ; }
     }
     
-    public static Item parse(String str)
+    public static Item parse(String str) { return parse(str, null) ; }
+    public static Item parse(String str, PrefixMapping pmap)
     {
-        return parse(new StringReader(str)) ;
+        return parse(new StringReader(str), null) ;
     }
-    
-    public static Item parse(InputStream in)
+
+    public static Item parse(InputStream in) { return parse(in, null) ; }
+
+    public static Item parse(InputStream in, PrefixMapping pmap)
     {
         Reader reader = FileUtils.asBufferedUTF8(in) ;
-        return parse(reader) ;
+        return parse(reader, pmap) ;
     }
     
-    private static Node parseNode(Reader reader)
+    // ---- Workers
+    
+    private static Node parseNode(Reader reader, PrefixMapping pmap)
     {
-        Item item = parseTermEOF(reader) ;
+        Item item = parseTermEOF(reader, pmap) ;
         if ( ! item.isNode() )
             throw new SSEParseException("Not a node: "+item, item.getLine(), item.getColumn()) ;
         return item.getNode() ;
     }
 
-    private static String parseWord(Reader reader)
+    private static String parseWord(Reader reader, PrefixMapping pmap)
     {
-        Item item = parseTermEOF(reader) ;
+        Item item = parseTermEOF(reader, pmap) ;
         if ( ! item.isWord() )
             throw new SSEParseException("Not a word: "+item, item.getLine(), item.getColumn()) ;
         return item.getWord() ;
     }
     
-    private static Item parse(Reader reader)
+    private static Item parse(Reader reader, PrefixMapping pmap)
     {
         SSE_Parser p = new SSE_Parser(reader) ;
+        if ( ResolveIRIs )
+            p.setHandler(new ParseHandlerResolver(pmap)) ;
         try
         {
             //p.setHandler(null) ;
@@ -169,10 +167,12 @@ public class SSE
     
     // --- Parse single elements. 
     
-    private static Item parseTermEOF(Reader reader)
+    private static Item parseTermEOF(Reader reader, PrefixMapping pmap)
     {
         // To avoid putting special rules for word/node in the grammar.
         SSE_Parser p = new SSE_Parser(reader) ;
+        if ( ResolveIRIs )
+            p.setHandler(new ParseHandlerResolver(pmap)) ;
         try
         {
             Item item = p.Term() ;

@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.Writer;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
-import com.hp.hpl.jena.sparql.sse.builders.ResolvePrefixedNames;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.util.FileUtils;
 
@@ -72,7 +71,9 @@ public class MainBuilder
             }
 
             InputStream in = new FileInputStream("SSE/op.sse") ;
-            Item item = SSE.parse(in) ;
+            PrefixMapping pmap = new PrefixMappingImpl() ;
+            pmap.setNsPrefix("", "http://example/") ;
+            Item item = SSE.parse(in, pmap) ;
 
             if ( true )
             {
@@ -85,9 +86,6 @@ public class MainBuilder
 
 
             System.out.println() ;
-            PrefixMapping pmap = new PrefixMappingImpl() ;
-            pmap.setNsPrefix("", "http://example/") ;
-            item = ResolvePrefixedNames.resolve(item, pmap) ;
 
             Op op = BuilderOp.build(item) ;
             System.out.println("**** Algebra") ;
