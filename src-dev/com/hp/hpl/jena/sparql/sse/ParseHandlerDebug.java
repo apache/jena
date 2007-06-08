@@ -42,11 +42,12 @@ public class  ParseHandlerDebug implements ParseHandler
         count++ ; 
     }
     
-    public void listFinish(Item item)
+    public Item listFinish(Item item)
     {   
         count-- ; 
         indent() ;
         System.out.println(">>") ;
+        return item ;
     }
     
 

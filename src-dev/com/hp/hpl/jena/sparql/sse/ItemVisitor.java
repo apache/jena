@@ -13,6 +13,7 @@ public interface ItemVisitor
     public void visit(Item item, ItemList list) ;
     public void visit(Item item, Node node) ;
     public void visit(Item item, String word) ;
+    public void visitNil() ;              // Nil
 }
 
 /*

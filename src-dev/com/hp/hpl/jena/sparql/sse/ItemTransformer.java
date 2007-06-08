@@ -85,6 +85,8 @@ public class ItemTransformer
             Item newItem = transform.transform(item, word) ;
             push(newItem) ;
         }
+        public void visitNil()
+        { push(Item.createNil()) ; }
     }
 }
 

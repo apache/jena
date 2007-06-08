@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.sse;
 public interface ParseHandler
 {
     public void listStart(Item list) ;
-    public void listFinish(Item list) ;
+    public Item listFinish(Item list) ;
     
     public void listAdd(Item list, Item elt) ;
     

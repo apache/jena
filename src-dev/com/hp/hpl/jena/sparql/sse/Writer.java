@@ -74,6 +74,9 @@ public class Writer
         }
         
  
+        public void visitNil()
+        { out.print("NIL") ; }
+
         private void printAsList(ItemList list)
         {
             boolean first = true ; 

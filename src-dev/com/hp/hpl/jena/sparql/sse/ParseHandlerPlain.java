@@ -6,29 +6,14 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-
-
 public class  ParseHandlerPlain implements ParseHandler 
 {
-    int count = 0 ;
-    
-    public Item itemNode(Item item)
-    { return item ; }
-
-    public Item itemPName(Item item)
-    { return item ; }
-
-    public Item itemWord(Item item)
-    { return item ; }
-
-    public void listAdd(Item item, Item elt)
-    { item.getList().add(elt) ; }
-
-    public void listStart(Item item)
-    { }   
-    
-    public void listFinish(Item item)
-    { }   
+    public Item itemNode(Item item)             { return item ; }
+    public Item itemPName(Item item)            { return item ; }
+    public Item itemWord(Item item)             { return item ; }
+    public void listAdd(Item item, Item elt)    { item.getList().add(elt); }
+    public Item listFinish(Item item)           { return item ; }
+    public void listStart(Item item)            { return ; }
 }
 
 /*

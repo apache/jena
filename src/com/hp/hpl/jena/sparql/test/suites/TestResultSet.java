@@ -61,6 +61,15 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
     
+    public void test_RS_1_str()
+    {
+        ResultSetRewindable rs1 = new ResultSetMem() ;
+        String x = ResultSetFormatter.asXMLString(rs1) ;
+        rs1.reset() ;
+        ResultSet rs2 = ResultSetFactory.fromXML(x) ;
+        assertTrue(RSCompare.same(rs1, rs2)) ;
+    }
+
     public void test_RS_2()
     {
         ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
@@ -72,6 +81,15 @@ public class TestResultSet extends TestCase
         assertTrue(RSCompare.same(rs1, rs2)) ;
     }
     
+    public void test_RS_2_str()
+    {
+        ResultSetRewindable rs1 = makeRewindable("x", Node.createURI("tag:local")) ;
+        String x = ResultSetFormatter.asXMLString(rs1) ;
+        rs1.reset() ;
+        ResultSet rs2 = ResultSetFactory.fromXML(x) ;
+        assertTrue(RSCompare.same(rs1, rs2)) ;
+    }
+
     // RDF
     
     public void test_RS_3()

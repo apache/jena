@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -55,10 +57,30 @@ class XMLInputStAX extends SPARQLResult
             throw new ResultSetException("Not a result set") ;
         return x.getResultSet() ;
     }
+
+    public static ResultSet fromXML(String str)
+    {
+        return fromXML(str, null) ;
+        
+    }
     
+    public static ResultSet fromXML(String str, Model model)
+    {
+        XMLInputStAX x =  new XMLInputStAX(str, model) ;
+        if ( !x.isResultSet() )
+            throw new ResultSetException("Not a result set") ;
+        return x.getResultSet() ;
+    }
+
     public static boolean booleanFromXML(InputStream in)
     {
         XMLInputStAX x =  new XMLInputStAX(in) ;
+        return x.getBooleanResult() ;
+    }
+
+    public static boolean booleanFromXML(String str)
+    {
+        XMLInputStAX x =  new XMLInputStAX(str) ;
         return x.getBooleanResult() ;
     }
     
@@ -67,25 +89,49 @@ class XMLInputStAX extends SPARQLResult
 
     public XMLInputStAX(InputStream in, Model model)
     {
-        if ( model == null )
-            model = GraphUtils.makeJenaDefaultModel() ;
-        
         XMLInputFactory xf = XMLInputFactory.newInstance() ;
-
         try
         {
-            ResultSetStAX rss = new ResultSetStAX(xf.createXMLStreamReader(in), model) ;
-            if ( rss.isResultSet )
-                set(rss) ;
-            else
-                set(rss.askResult) ;
+            XMLStreamReader xReader = xf.createXMLStreamReader(in) ;
+            worker(xReader, model) ;
         } catch (XMLStreamException e)
         {
             throw new ResultSetException("Can't initialize StAX parsing engine") ;
         }
-
     }
 
+    public XMLInputStAX(String str)
+    { this(str, null) ; }
+    
+    public XMLInputStAX(String str, Model model)
+    {
+        XMLInputFactory xf = XMLInputFactory.newInstance() ;
+        try
+        {
+            Reader r = new StringReader(str) ;
+            XMLStreamReader xReader = xf.createXMLStreamReader(r) ;
+            worker(xReader, model) ;
+        } catch (XMLStreamException e)
+        {
+            throw new ResultSetException("Can't initialize StAX parsing engine") ;
+        }
+        
+    }
+
+    private void worker(XMLStreamReader xReader, Model model)
+    {
+        if ( model == null )
+            model = GraphUtils.makeJenaDefaultModel() ;
+        
+        ResultSetStAX rss = new ResultSetStAX(xReader, model) ;
+        if ( rss.isResultSet )
+            set(rss) ;
+        else
+            set(rss.askResult) ;
+    }
+    
+    //private XMLInputStAX()
+    
     // -------- Result Set
 
     

@@ -1,55 +1,71 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Iterator;
+/** Spliter for parser handlers.
+ *  Any results come from the second handler.
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 
-import com.hp.hpl.jena.graph.Node;
-
-public class ItemWalker
+public class ParseHandler2
 {
-    static void walk(ItemVisitor visitor, Item item)
+    private ParseHandler handler1 ;
+    private ParseHandler handler2 ;
+    
+    public ParseHandler2(ParseHandler handler1, ParseHandler handler2)
     {
-        item.visit(new Worker(visitor)) ;
+        this.handler1 = handler1 ;
+        this.handler2 = handler2 ;
     }
     
-    
-    static class Worker implements ItemVisitor
+    public void listStart(Item list)
     {
-        private ItemVisitor visitor ;
-        Worker(ItemVisitor visitor) { this.visitor = visitor ; }
-        
-        public void visit(Item item, ItemList list)
-        {
-            for ( Iterator iter = list.iterator() ; iter.hasNext() ; )
-            {
-                Item subItem = (Item)iter.next() ;
-                subItem.visit(this) ;
-            }
-            visitor.visit(item, list) ;
-        }
-        
-        public void visit(Item item, Node node)
-        {
-            visitor.visit(item, node) ;
-        }
-        
-        public void visit(Item item, String word)
-        {
-            visitor.visit(item, word) ;
-        }
+        handler1.listStart(list) ;
+        handler2.listStart(list) ;
+    }
+    
+    public void listFinish(Item list)
+    {
+        handler1.listFinish(list) ;
+        handler2.listFinish(list) ;
+    }
+    
+    public void listAdd(Item list, Item elt)
+    {
+        handler1.listAdd(list, elt) ;
+        handler2.listAdd(list, elt) ;
+    }
+    
+    public Item itemNode(Item item)
+    {
+        handler1.itemNode(item) ;
+        return handler2.itemNode(item) ;
+    }
+    
 
-        public void visitNil()
-        { visitor.visitNil() ; }
+    public Item itemWord(Item item)
+    {
+        handler1.itemWord(item) ;
+        return handler2.itemWord(item) ;
     }
+    
+
+    public Item itemPName(Item item)
+    {
+        handler1.itemPName(item) ;
+        return handler2.itemPName(item) ;
+    }
+    
+
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

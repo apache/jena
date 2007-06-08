@@ -237,6 +237,16 @@ public class ResultSetFactory
         return XMLInput.fromXML(in) ;
     }
     
+    /** Read XML which is the format of the SPARQL result set format.
+     * 
+     * @param in    String
+     * @return      ResultSet
+     */  
+    public static ResultSet fromXML(String str)
+    {
+        return XMLInput.fromXML(str) ;
+    }
+
     /** Turns an RDF model, with properties and classses from the
      * result set vocabulary, into a SPARQL result set.
      * The result set formed is a copy in memory.

@@ -34,40 +34,33 @@ public class ParserSSEBase extends ParserBase
     
     protected void listStart(Item list)
     { 
-        if ( handler == null ) return ;
         handler.listStart(list) ;
     }
     
-    protected void listFinish(Item list)
+    protected Item listFinish(Item list)
     {
-        if ( handler == null ) return ;
-        handler.listFinish(list) ;
+        return handler.listFinish(list) ;
     }
 
     protected void listAdd(Item list, Item elt)
     {
-        if ( handler == null )
-            list.getList().add(elt) ;
         handler.listAdd(list, elt) ;
     }
     
     protected Item itemWord(Item item)
     { 
-        if ( handler == null ) return item ;
         Item item2 = handler.itemWord(item) ; 
         return item2 != null ? item2 : item ; 
     }
     
     protected Item itemNode(Item item)
     { 
-        if ( handler == null ) return item ;
         Item item2 = handler.itemNode(item) ; 
         return item2 != null ? item2 : item ; 
     }
 
     protected Item itemPName(Item item)
     { 
-        if ( handler == null ) return item ;
         Item item2 = handler.itemPName(item) ; 
         return item2 != null ? item2 : item ; 
     }
@@ -76,16 +69,6 @@ public class ParserSSEBase extends ParserBase
     {
         throw new SSEParseException("Line " + line + ", column " + column + ": " + msg,
                                     line, column) ;
-    }
-    
-    static class ParseHandlerNull implements ParseHandler
-    {
-        public Item itemNode(Item item)             { return item ; }
-        public Item itemPName(Item item)            { return item ; }
-        public Item itemWord(Item item)             { return item ; }
-        public void listAdd(Item item, Item elt)    { return ; }
-        public void listFinish(Item item)           { return ; }
-        public void listStart(Item item)            { return ; }
     }
 }
 

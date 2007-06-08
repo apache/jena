@@ -72,7 +72,6 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       list = Item.createList(t.beginLine, t.beginColumn) ;
       listStart(list) ;
       BareList(list);
-      listFinish(list) ;
       jj_consume_token(RPAREN);
       break;
     case LBRACKET:
@@ -92,7 +91,6 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       list = Item.createList(t.beginLine, t.beginColumn) ;
       listStart(list) ;
       BareList(list);
-      listFinish(list) ;
       jj_consume_token(RBRACKET);
       break;
     default:
@@ -112,7 +110,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
       }
       jj_consume_token(WS);
     }
-      {if (true) return list ;}
+      {if (true) return listFinish(list) ;}
     throw new Error("Missing return statement in function");
   }
 

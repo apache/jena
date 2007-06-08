@@ -19,6 +19,7 @@ public class Item extends ItemLocation implements PrintSerializable
     protected ItemList list = null ;
     protected Node node = null ;
     protected String word = null ;
+    protected boolean isNil = false ;
     
     public static Item createList() { return createList(noLine, noColumn) ; }
     public static Item createList(int line, int column)
@@ -49,10 +50,22 @@ public class Item extends ItemLocation implements PrintSerializable
     public static Item createWord(String word) { return createWord(word, noLine, noColumn) ; }
     public static Item createWord(String word, int line, int column)
     {
+        if ( word.equals("nil") )
+            return createNil(line, column) ;
         Item item = new Item(line, column) ;
         item.word = word;
         return item ;
     }
+    
+
+    public static Item createNil() { return createNil(noLine, noColumn) ; }
+    public static Item createNil(int line, int column)
+    { 
+        Item item = new Item(noLine, noColumn) ;
+        item.isNil = true ;
+        return item ;
+    }
+    
     
     private Item(int line, int column)
     {
@@ -74,6 +87,9 @@ public class Item extends ItemLocation implements PrintSerializable
 
         public void visit(Item item, String word)
         { hashCode = word.hashCode() ; }
+        
+        public void visitNil()
+        { hashCode = -99 ; }
     }
     
     public int hashCode()
@@ -97,6 +113,10 @@ public class Item extends ItemLocation implements PrintSerializable
 
         public void visit(Item item, String word)
         { result = ( other.isWord() && other.getWord().equals(word) ) ; }
+
+        public void visitNil()
+        { result = other.isNil() ; }
+
     }
     
     public boolean equals(Object other)
@@ -142,6 +162,8 @@ public class Item extends ItemLocation implements PrintSerializable
         if ( list.size() == 0 ) return false ;
         return true ; 
     }
+    
+    public boolean isNil()              { return isNil ; } 
     public boolean isList()             { return list != null ; }
     public boolean isNode()             { return node != null ; }
     public boolean isWord()             { return word != null ; }
@@ -165,6 +187,8 @@ public class Item extends ItemLocation implements PrintSerializable
             visitor.visit(this, getNode()) ;
         else if ( isWord() )
             visitor.visit(this, getWord()) ;
+        else if ( isNil() )
+            visitor.visitNil() ;
         else
             System.err.println("broken item") ;
     }

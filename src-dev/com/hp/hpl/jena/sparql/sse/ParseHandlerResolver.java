@@ -17,133 +17,126 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 public class  ParseHandlerResolver implements ParseHandler 
 {
-    //  XXX Should be one element for the body  
+    /* Prefix tag.
+     * Form: (prefix (DECLS) TERM)
+     *   where 
+     *      (DECLS) is a list of pairs, each pair being PNAME and URI.
+     *      TERM is one SSE expression.
+     *  That is, a prefix element is exactly 3 items long. 
+     *  During DECL processing, we flag that no prefix processing should be done.
+     *  This is the flag of the previous Frame.
+     */
     
-    ParseHandler other = null ; //new ParseHandlerDebug() ;
+    
     static final String prefixTag = "prefix" ;
-    Stack prefixTags = new Stack() ;
-    Stack pmapStack = new Stack() ;
+    Stack frames = new Stack() ;
+    boolean inDecl = false ;
+    
     PrefixMapping currentMap = new PrefixMappingImpl() ;
     
-    // States 
-    // 0 : Nothing
-    // 1 : Waiting for list to start
-    // 2 : Seeing prefix pairs
-    // 3 : In
+    public ParseHandlerResolver() {}
     
-    private static final int  STATE_NORMAL          = 10 ;
-    private static final int  STATE_DECL            = 20 ;
-    private int state = STATE_NORMAL ;
-    
-    public ParseHandlerResolver()
+    public void listStart(Item listItem) {}
+
+    public Item listFinish(Item listItem)
     {
-        pmapStack.push(currentMap) ;
+        if ( isCurrent(listItem) )
+        {
+            // End of prefix item.
+            Frame f = (Frame)frames.pop() ;
+            currentMap = f.previous ;
+            Item result = f.result ;
+            if ( result == null )
+                result = Item.createNil(listItem.line, listItem.column) ;
+            return result ;
+        }
+
+        return listItem ;
     }
     
-    public void listStart(Item listItem)
-    { if ( other != null ) other.listStart(listItem) ; }
-    
-    public void listFinish(Item listItem)
+    private static class Frame
     {
-        if ( other != null ) other.listFinish(listItem) ;
+        Item listItem ;
+        int state = 0 ;     // Count of location in (prefix ...) 
+        Item result ;
+        PrefixMapping previous ;
         
-        if ( isCurrent(prefixTags, listItem) )
+        Frame(Item listItem, PrefixMapping previous )
         {
-            pmapStack.pop() ;
-            currentMap = (PrefixMapping)pmapStack.peek() ;
-            prefixTags.pop();
+            this.listItem = listItem ;
+            this.previous = previous ;
         }
     }
-    
-    /* Processing (prefix ...)
-     * Step 1 : spot (prefix ....) [listAdd]
-     *   Do not add this tag to the list - this list will be the body.
-     *     Turn off resolution, and get the next item (the prefix decls).
-     *       Presence of (prefix...) is illegal
-     *     At end of this list [listAdd or listFinish]
-              End of list: count by dept returning to zero: no nested decls 
-     * Step 2:
-     *   Decls to prefix.
-     *   Push new prefix mapping, set the current prefix mapping.
-     *   Push the list item onto the prefix stack.
-     *   
-     * Step 3: Process body
-     * 
-     * Step 4:
-     *   [listFinish]
-     *   When we see the body end, pop the prefix mapping, and pop the list item 
-     */
     
     public void listAdd(Item listItem, Item elt)
     {
-        if ( other != null ) other.listAdd(listItem, elt) ;
+        // Always add to the listItem.
+        listItem.getList().add(elt) ;
         
-        // Spot the tag
-        if ( state == STATE_NORMAL &&
-             listItem.getList().size() == 0 &&
-             elt.isWord(prefixTag) &&
-             // Special case - could be (prefix (...) prefix ...) 
-             // because we are not pushing elements until the body.
-             ! isCurrent(prefixTags, listItem) )
+        // Is it (prefix ...)?
+        if ( listItem.getList().size() == 1 && elt.isWord(prefixTag) )
         {
+            if ( inDecl )
+                // Occurrance of (prefix ..) in DECLS handled without special processing.
+                return ;
+            
             // It's  (prefix ...)
-            state = STATE_DECL ;
-            // Remember this list 
-            prefixTags.push(listItem) ;
+            inDecl = true ;
+            Frame f = new Frame(listItem, currentMap) ;
+            frames.push(f) ;
             return ;
         }
 
-        // Spot the end of decls.
-        if ( state == STATE_DECL &&
-             isCurrent(prefixTags, listItem) )
+        if ( ! isCurrent(listItem) )
+            return ;
+        
+        // (prefix (DECLS) ...)
+        if ( listItem.getList().size() == 2 )
         {
             PrefixMapping2 ext = new PrefixMapping2(currentMap) ;
             PrefixMapping newMappings = ext.getLocalPrefixMapping() ;
             parsePrefixes(newMappings, elt) ;
-            pmapStack.push(ext) ;
             currentMap = ext ;
-            state = STATE_NORMAL ;
-            // Leave listItem on the stack
+            inDecl = false ;
             return ;
         }
 
-        // XXX Should be one element for the body   
+        // (prefix (DECLS) TERM)
+        if ( listItem.getList().size() == 3 )
+        {
+            Frame f = (Frame)frames.peek();
+            f.result = elt ;
+            return ;
+        }
         
-        // Just add it to the list
-        listItem.getList().add(elt) ;
+        BuilderBase.broken(listItem, "(prefix ...) has too many terms") ;
+        
     }
     
-    public Item itemWord(Item item)     //{ return item ; }
-    { 
-        if ( other != null ) other.itemWord(item) ;
-        return item ;
-    }
+    public Item itemWord(Item item)     { return item ; }
     
-    public Item itemNode(Item item)     //{ return item ; }
-    { 
-        if ( other != null ) other.itemNode(item) ;
-        return item ;
-    }
+    public Item itemNode(Item item)     { return item ; }
 
     public Item itemPName(Item item)
     { 
-        if ( other != null ) other.itemPName(item) ;
-        if ( state == STATE_NORMAL )
-        {
-            String lex = item.getWord() ;
-            Node node = resolve(lex, currentMap, item) ;
-            if ( node == null )
-            {}
-            item = Item.createNode(node, item.getLine(), item.getColumn()) ;
-        }
-        
+        if ( inDecl ) return item ;
+
+        String lex = item.getWord() ;
+        Node node = resolve(lex, currentMap, item) ;
+        if ( node == null )
+            BuilderBase.broken(item, "Internal error") ;
+        item = Item.createNode(node, item.getLine(), item.getColumn()) ;
         return item ;
-        
     }
     
-    private boolean isCurrent(Stack stack, Item item)
+    private boolean isCurrent(Item item)
     {
-        return stack.size() != 0 && (Item)stack.peek() == item ;
+        if ( frames.size() == 0 )
+            return false ;
+        
+        Frame f = (Frame)frames.peek();
+
+        return f.listItem == item ;
     }
     
 //    // Resolve from a node (prefix name encoded) 

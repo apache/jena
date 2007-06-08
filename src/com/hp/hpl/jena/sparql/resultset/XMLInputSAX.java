@@ -50,28 +50,38 @@ class XMLInputSAX extends SPARQLResult
     // need to be inside the code path of the SAX handler).  
     
     static Log log = LogFactory.getLog(XMLInputSAX.class) ;
-    
+
     public XMLInputSAX(InputStream in, Model model)
+    {
+        worker(new InputSource(in), model) ;
+    }
+
+    public XMLInputSAX(String str, Model model)
+    {
+        worker(new InputSource(str), model) ;
+    }
+
+    private void worker(InputSource in, Model model)
     {
         if ( model == null )
             model = GraphUtils.makeJenaDefaultModel() ;
+
         try {
-            InputSource input = new InputSource(in) ;
             XMLReader xr = XMLReaderFactory.createXMLReader() ;
             xr.setFeature("http://xml.org/sax/features/namespace-prefixes", true) ;
             //ResultSetXMLHandler1 handler = new ResultSetXMLHandler1() ;
             ResultSetXMLHandler2 handler = new ResultSetXMLHandler2() ;
             xr.setContentHandler(handler) ;
-            xr.parse(input) ;
+            xr.parse(in) ;
             if ( handler.isBooleanResult )
             {
                 // Set superclass member
                 set(handler.askResult) ;
                 return ;
             }
-            
+
             ResultSetStream rss = new ResultSetStream(handler.variables, model,
-                                       new QueryIterPlainWrapper(handler.results.iterator())) ;
+                                                      new QueryIterPlainWrapper(handler.results.iterator())) ;
             rss.setDistinct(handler.distinct) ;
             rss.setDistinct(handler.ordered) ;
             // Set superclass member

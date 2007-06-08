@@ -11,7 +11,6 @@ import java.io.InputStream;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.RefBoolean;
 
 /** Code that reads an XML Result Set and builds the ARQ structure for the same.
@@ -27,7 +26,7 @@ public class XMLInput
     
     public static ResultSet fromXML(InputStream in) 
     {
-        return fromXML(in, GraphUtils.makeJenaDefaultModel()) ;
+        return fromXML(in, null) ;
     }
     
     public static ResultSet fromXML(InputStream in, Model model) 
@@ -35,11 +34,26 @@ public class XMLInput
         return make(in, model).getResultSet() ;
     }
     
+    public static ResultSet fromXML(String str) 
+    {
+        return fromXML(str, null) ;
+    }
+
+    public static ResultSet fromXML(String str, Model model) 
+    {
+        return make(str, model).getResultSet() ;
+    }
+
     public static boolean booleanFromXML(InputStream in)
     {
         return make(in, null).getBooleanResult() ;
     }
-    
+
+    public static boolean booleanFromXML(String str)
+    {
+        return make(str, null).getBooleanResult() ;
+    }
+
     // Low level operations
     
     public static SPARQLResult make(InputStream in) { return make(in, null) ; }
@@ -50,7 +64,16 @@ public class XMLInput
             return new XMLInputSAX(in, model) ;
         return new XMLInputStAX(in, model) ;
     }
+
+    public static SPARQLResult make(String str) { return make(str, null) ; }
     
+    public static SPARQLResult make(String str, Model model)
+    {
+        if ( useSAX.getValue() )
+            return new XMLInputSAX(str, model) ;
+        return new XMLInputStAX(str, model) ;
+    }
+
 }
 
 /*
