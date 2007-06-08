@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.sparql.core.Prologue;
@@ -35,9 +36,8 @@ public class  ParseHandlerResolver implements ParseHandler
     private static final String baseTag    = "base" ;
 
     private boolean             inDecl     = false ;
-    private Prologue            prologue ;
-//    private PrefixMapping       currentMap ;
-//    private String              currentBase ;
+    private PrefixMapping       prefixMap ;
+    private IRIResolver         resolver ;
     private FrameStack          frameStack = new FrameStack() ;
     
     public ParseHandlerResolver() { this(null, null) ; }
@@ -48,12 +48,14 @@ public class  ParseHandlerResolver implements ParseHandler
     { 
         if ( pmap == null )
             pmap = new PrefixMappingImpl() ;
-        prologue = new Prologue(pmap, base) ;
+        prefixMap = pmap ;
+        resolver = new IRIResolver(base) ;
     }
     
     public ParseHandlerResolver(Prologue prologue)
     {
-        this.prologue = prologue ;
+        prefixMap = prologue.getPrefixMapping() ;
+        resolver = prologue.getResolver() ;
     }
     
     public void listStart(Item listItem) {}
@@ -64,9 +66,10 @@ public class  ParseHandlerResolver implements ParseHandler
         // pop the stack and return the inner form instead. 
         if ( frameStack.isCurrent(listItem) )
         {
-            // End of prefix item.
+            // End of prefix item.  Pop state.
             Frame f = frameStack.pop() ;
-            prologue = f.previous ;
+            prefixMap = f.prefixMap ;
+            resolver = f.resolver ;
             Item result = f.result ;
             if ( result == null )
                 result = Item.createNil(listItem.line, listItem.column) ;
@@ -88,7 +91,7 @@ public class  ParseHandlerResolver implements ParseHandler
             {
                 // It's  (prefix ...) or (base...), not inside the delaration of an outer prefix/base
                 inDecl = true ;
-                Frame f = new Frame(listItem, prologue) ;
+                Frame f = new Frame(listItem, prefixMap, resolver) ;
                 frameStack.push(f) ;
                 return ;
             }
@@ -102,10 +105,6 @@ public class  ParseHandlerResolver implements ParseHandler
         // (base <IRI> ...)
         if ( listItem.getList().size() == 2 )
         {
-            Prologue newPrologue = null ;
-            
-            // Hmm - creates resolvers for all (prefix ...)
-            // Deal with separately for efficiency?
             if ( listItem.isTagged(baseTag) )
             {
                 if ( !elt.isNode() )
@@ -113,16 +112,15 @@ public class  ParseHandlerResolver implements ParseHandler
                 Node n = elt.getNode() ; 
                 if ( ! n.isURI() )
                     BuilderBase.broken(elt, "(base  ...): not a URI for the base.") ;
-                newPrologue = new Prologue(prologue.getPrefixMapping(), n.getURI()) ;
+                resolver = new IRIResolver(n.getURI()) ;
             }
             else
             {
-                PrefixMapping2 ext = new PrefixMapping2(prologue.getPrefixMapping()) ;
+                PrefixMapping2 ext = new PrefixMapping2(prefixMap) ;
                 PrefixMapping newMappings = ext.getLocalPrefixMapping() ;
                 parsePrefixes(newMappings, elt) ;
-                newPrologue = new Prologue(ext, prologue.getBaseURI()) ;
+                prefixMap = ext ;
             }
-            prologue = newPrologue ;
             inDecl = false ;
             return ;
         }
@@ -147,7 +145,7 @@ public class  ParseHandlerResolver implements ParseHandler
         if ( n.isURI() )
         {
             String x = n.getURI() ;
-            x = prologue.getResolver().resolve(x) ;
+            x = resolver.resolve(x) ;
             n = Node.createURI(x) ;
             return Item.createNode(n, item.getLine(), item.getColumn()) ;
         }
@@ -159,7 +157,7 @@ public class  ParseHandlerResolver implements ParseHandler
         if ( inDecl ) return item ;
 
         String lex = item.getWord() ;
-        Node node = resolve(lex, prologue.getPrefixMapping(), item) ;
+        Node node = resolve(lex, prefixMap, item) ;
         if ( node == null )
             BuilderBase.broken(item, "Internal error") ;
         item = Item.createNode(node, item.getLine(), item.getColumn()) ;
@@ -252,13 +250,14 @@ public class  ParseHandlerResolver implements ParseHandler
     {
         Item listItem ;
         Item result ;
-        Prologue previous ;
-        String base ;
+        PrefixMapping prefixMap;
+        IRIResolver resolver ;
         
-        Frame(Item listItem, Prologue prev)
+        Frame(Item listItem, PrefixMapping pmap, IRIResolver resolver)
         {
             this.listItem = listItem ;
-            this.previous = prev ;
+            this.prefixMap = pmap ;
+            this.resolver = resolver ;
         }
     }
 
