@@ -1,10 +1,15 @@
 SDB ToDo list (and general notes)
 =================================
 
++ Web site (on jena.hpl?)
 + Tranasactions - cleanup.
 + Graph => Quad
 + Graph => Tuple loader.
 + Sort out StoreFactory and SDBFactory
+
++ Add a formatter option to test if DB setup already
+
++ canonicalise literals on input?
 
 + Do OpSlice - test out a modifier code path.
 
