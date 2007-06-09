@@ -72,10 +72,9 @@ public class Writer
             else
                 printOneLine(list) ;
         }
-        
  
         public void visitNil()
-        { out.print("NIL") ; }
+        { out.print("nil") ; }
 
         private void printAsList(ItemList list)
         {

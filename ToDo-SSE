@@ -1,10 +1,12 @@
 ==== SSE
 
 + Builder tidying and testing
+
++ (base (prefix ...)) form 
   
 + Expr: (exists (pattern ...))
   
-+  (group (vars) aggregate)
++ (group (vars) aggregate)
   
 +  Assignment:
   (assign ((?x expr) (?y expr)) --  (:= ?x expr) [is this SELECT/project?]

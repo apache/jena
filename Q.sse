@@ -1,12 +1,12 @@
 (
  (prefix ((: <http://example/ns1#>))
    (tag 
-   (triple :x :p 1)
-   (triple :x :p 2)
-   (prefix ((: <http://example/INNER#>)
-	     (x: <http://example/X#>))
-     (triple x:x :p 2)
-     )
+     (triple :x :p 1)
+     (triple :x :p 2)
+     (prefix ((: <http://example/INNER#>)
+	       (x: <http://example/X#>))
+       (triple x:x :p 2)
+       ))
    )
  (prefix ((: <http://example/ns2#>))
    :x

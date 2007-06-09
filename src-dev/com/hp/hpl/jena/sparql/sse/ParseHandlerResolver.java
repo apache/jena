@@ -6,15 +6,16 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Iterator;
 import java.util.Stack;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderBase;
+import com.hp.hpl.jena.sparql.sse.builders.BuilderPrefixMapping;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 /** Resolve prefixed names in a prefix map and IRIs relative to a base.
@@ -28,23 +29,22 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
 public class  ParseHandlerResolver implements ParseHandler 
 {
-    // TODO: returning/setting the top PrefixMapping/Base 
-    // recognize outer
-    //  (base IRI (prefix (..) ...))
-          
-    
-    /*  Both fomrs have a common structure.
+    /*  Both forms have a common structure.
      *    Exactly 3 items long.
-     *    There is a stack of previous settings (i.e things always nest) 
-     *  During DECL (2nd term) processing, we flag that no prefix processing should be done.
+     *    There is a stack of previous settings (i.e. things always nest) 
+     *  During DECL, for prefix, (the 2nd term) processing, we flag that no prefix processing should be done.
+     *  Base can include prefixes, and relative URIs.
+     *  
+     *  The first base and first prefix mapping are remembered.
+     *  Better: look at the first thing ever seen. 
      */
     
     private static final String prefixTag  = "prefix" ;
     private static final String baseTag    = "base" ;
 
-    private PrefixMapping       topMap = null ;
-    private String              topBase = null ;
-    
+    private PrefixMapping       topMap     = null ;
+    private String              topBase    = null ;
+
     private boolean             inDecl     = false ;
     private PrefixMapping       prefixMap ;
     private IRIResolver         resolver ;
@@ -92,11 +92,12 @@ public class  ParseHandlerResolver implements ParseHandler
     
     public void listAdd(Item listItem, Item elt)
     {
+        ItemList list = listItem.getList() ;
         // Always add to the listItem: keeps the tracking of the (prefix ..) terms easier.
-        listItem.getList().add(elt) ;
+        list.add(elt) ;
         
         // Spot the start of a (prefix ...) or (base ...)
-        if ( ! inDecl && listItem.getList().size() == 1 )
+        if ( ! inDecl && list.size() == 1 )
         {
             if ( elt.isWordIgnoreCase(prefixTag) || elt.isWordIgnoreCase(baseTag))
             {
@@ -116,7 +117,7 @@ public class  ParseHandlerResolver implements ParseHandler
         
         // (prefix (DECLS) ...)
         // (base <IRI> ...)
-        if ( listItem.getList().size() == 2 )
+        if ( list.size() == 2 )
         {
             if ( listItem.isTaggedIgnoreCase(baseTag) )
             {
@@ -126,13 +127,19 @@ public class  ParseHandlerResolver implements ParseHandler
                 if ( ! n.isURI() )
                     BuilderBase.broken(elt, "(base  ...): Node not a IRI for the base.") ;
                 resolver = new IRIResolver(n.getURI()) ;
+                // Remember the first base seen
+                if ( topBase == null )
+                    topBase = n.getURI() ;
             }
             else
             {
-                PrefixMapping2 ext = new PrefixMapping2(prefixMap) ;
-                PrefixMapping newMappings = ext.getLocalPrefixMapping() ;
-                parsePrefixes(newMappings, elt) ;
+                PrefixMapping newMappings = BuilderPrefixMapping.build(elt) ; 
+                PrefixMapping2 ext = new PrefixMapping2(prefixMap, newMappings) ;
+                
                 prefixMap = ext ;
+                // Remember first prefix mapping seen. 
+                if( topMap == null )
+                    topMap = newMappings ;
             }
             inDecl = false ;
             return ;
@@ -140,14 +147,14 @@ public class  ParseHandlerResolver implements ParseHandler
 
         // (prefix (DECLS) TERM)
         // (base <IRI> TERM)
-        if ( listItem.getList().size() == 3 )
+        if ( list.size() == 3 )
         {
             Frame f = frameStack.getCurrent() ;
             f.result = elt ;
             return ;
         }
         
-        BuilderBase.broken(listItem, "("+listItem.getWord()+" ...) has too many terms") ;
+        BuilderBase.broken(listItem, BuilderBase.shortPrint(listItem)+" has too many terms ("+list.size()+")") ;
     }
     
     public Item itemWord(Item item)     { return item ; }
@@ -199,63 +206,6 @@ public class  ParseHandlerResolver implements ParseHandler
         return Node.createURI(uri) ;
     }
     
-    private static void parsePrefixes(PrefixMapping newMappings, Item elt)
-    {
-        if ( ! elt.isList() )
-            BuilderBase.broken(elt, "Prefixes must be a list: "+elt) ;
-        
-        ItemList prefixes = elt.getList() ; 
-        for ( Iterator iter = prefixes.iterator() ; iter.hasNext() ; )
-        {
-            Item pair = (Item)iter.next() ;
-            if ( !pair.isList() || pair.getList().size() != 2 )
-                BuilderBase.broken(pair, "Not a prefix/IRI pair") ;
-            Item prefixItem = pair.getList().get(0) ;
-            Item iriItem = pair.getList().get(1) ;
-
-            // Maybe a Node (fake prefixed name) or a Word, depending on parser set up.
-            
-            String prefix = null ;
-
-            // -- Prefix as word
-            if ( prefixItem.isWord() )
-                prefix = prefixItem.getWord() ;
-
-            // -- Prefix as Node
-//            if ( prefixItem.isNode())
-//            {
-//                Node n = prefixItem.getNode() ;
-//                if ( ! n.isURI() )
-//                    BuilderBase.broken(pair, "Prefix part is not a prefixed name: "+pair) ;
-//
-//                prefix = n.getURI();
-//                // It will look like :x:
-//                
-//                if ( ! prefix.startsWith(":") )
-//                    BuilderBase.broken(pair, "Prefix part is not a prefix name: "+pair) ;
-//                prefix = prefix.substring(1) ;
-//            }            
-
-            if ( prefix == null )
-                BuilderBase.broken(pair, "Prefix part nor recognized: "+prefixItem) ;
-            
-            if ( ! prefix.endsWith(":") )
-                BuilderBase.broken(pair, "Prefix part does not end with a ':': "+pair) ;
-            prefix = prefix.substring(0, prefix.length()-1) ;
-            if ( prefix.contains(":") )
-                BuilderBase.broken(pair, "Prefix itseld contains a ':' : "+pair) ;
-            // -- /Prefix
-            
-            Node iriNode = iriItem.getNode() ;
-
-            if ( iriNode == null || ! iriNode.isURI() )
-                BuilderBase.broken(pair, "Not an IRI: "+iriItem) ;
-
-            String iri = iriNode.getURI();
-
-            newMappings.setNsPrefix(prefix, iri) ;
-        }
-    }
 
     // ----------------
     
