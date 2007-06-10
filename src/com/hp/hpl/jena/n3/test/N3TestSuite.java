@@ -9,7 +9,7 @@ import junit.framework.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3TestSuite.java,v 1.11 2007-03-21 16:09:30 andy_seaborne Exp $
+ * @version 	$Id: N3TestSuite.java,v 1.12 2007-06-10 13:51:13 andy_seaborne Exp $
  */
 public class N3TestSuite extends TestSuite
 {
@@ -23,6 +23,7 @@ public class N3TestSuite extends TestSuite
 	{
 		super("N3") ;
         addTest(TestRelURI.suite()) ;
+        addTest(TestResolver.suite()) ;
 		addTest(new N3InternalTests()) ;
 		addTest(new N3ExternalTests()) ;
 		addTest(new N3JenaReaderTests()) ;
