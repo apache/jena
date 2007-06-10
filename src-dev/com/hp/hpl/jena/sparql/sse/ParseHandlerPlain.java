@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.sse;
 
 public class  ParseHandlerPlain implements ParseHandler 
 {
+    public void parseStart()                    { return ; }
+    public void parseFinish()                   { return ; }
     public Item itemNode(Item item)             { return item ; }
     public Item itemPName(Item item)            { return item ; }
     public Item itemWord(Item item)             { return item ; }

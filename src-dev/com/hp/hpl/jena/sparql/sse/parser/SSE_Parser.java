@@ -18,7 +18,8 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
 
 // ---- Entry points
   final public Item parse() throws ParseException {
-                 Item list ; Item elt ;
+                 Item elt ;
+      parseStart() ;
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -33,6 +34,17 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
     }
     elt = TermOrList();
     jj_consume_token(0);
+      parseFinish() ;
+      {if (true) return elt ;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Item term() throws ParseException {
+                Item elt ;
+      parseStart() ;
+    elt = Term();
+    jj_consume_token(0);
+      parseFinish() ;
       {if (true) return elt ;}
     throw new Error("Missing return statement in function");
   }

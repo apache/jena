@@ -12,6 +12,12 @@ public class  ParseHandlerDebug implements ParseHandler
 {
     int count = 0 ;
     
+    public void parseStart()
+    { System.out.println("<<<<") ; }
+
+    public void parseFinish()
+    { System.out.println(">>>>") ; }
+
     public Item itemNode(Item item)
     {
         return null ;

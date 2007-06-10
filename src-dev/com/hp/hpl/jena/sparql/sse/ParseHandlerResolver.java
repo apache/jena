@@ -8,6 +8,8 @@ package com.hp.hpl.jena.sparql.sse;
 
 import java.util.Stack;
 
+import org.apache.commons.logging.LogFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -23,6 +25,7 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
  *    (prefix (DECL) TERM) => TERM with prefix names expanded
  *    (base IRI TERM) => TERM with IRIs resolved to absolute IRIs
  * 
+ *    
  * @author Andy Seaborne
  * @version $Id$
  */
@@ -39,6 +42,8 @@ public class  ParseHandlerResolver implements ParseHandler
      *  Better: look at the first thing ever seen. 
      */
     
+    // Maybe more restrictive.  Spot the special form (base BASE (prefix ....))
+    
     private static final String prefixTag  = "prefix" ;
     private static final String baseTag    = "base" ;
 
@@ -49,6 +54,7 @@ public class  ParseHandlerResolver implements ParseHandler
     private PrefixMapping       prefixMap ;
     private IRIResolver         resolver ;
     private FrameStack          frameStack = new FrameStack() ;
+    private int                 depth      = 0 ;
     
     public ParseHandlerResolver() { this(null, null) ; }
 
@@ -67,11 +73,24 @@ public class  ParseHandlerResolver implements ParseHandler
         prefixMap = prologue.getPrefixMapping() ;
         resolver = prologue.getResolver() ;
     }
+
+    public void parseStart()
+    {}
+
+    public void parseFinish()
+    {
+        if ( depth != 0 )
+        {
+            LogFactory.getLog(ParseHandlerResolver.class).warn("Stack error: depth ="+depth+" at end of parse run") ;
+        }
+    }
     
-    public void listStart(Item listItem) {}
+
+    public void listStart(Item listItem) { depth++ ; }
 
     public Item listFinish(Item listItem)
     {
+        --depth ;
         // At end of a list,
         // If it's the current (prefix ...) or (base ...)
         //   pop the stack and return the inner form instead. 

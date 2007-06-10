@@ -129,7 +129,7 @@ public class SSE
     
     private static Node parseNode(Reader reader, PrefixMapping pmap)
     {
-        Item item = parseTermEOF(reader, pmap) ;
+        Item item = parseTerm(reader, pmap) ;
         if ( ! item.isNode() )
             throw new SSEParseException("Not a node: "+item, item.getLine(), item.getColumn()) ;
         return item.getNode() ;
@@ -137,12 +137,40 @@ public class SSE
 
     private static String parseWord(Reader reader, PrefixMapping pmap)
     {
-        Item item = parseTermEOF(reader, pmap) ;
+        Item item = parseTerm(reader, pmap) ;
         if ( ! item.isWord() )
             throw new SSEParseException("Not a word: "+item, item.getLine(), item.getColumn()) ;
         return item.getWord() ;
     }
     
+    // --- Parse single elements. 
+    
+    private static Item parseTerm(Reader reader, PrefixMapping pmap)
+    {
+        SSE_Parser p = new SSE_Parser(reader) ;
+        if ( ResolveIRIs )
+            p.setHandler(new ParseHandlerResolver(pmap)) ;
+        try
+        {
+            Item item = p.term() ;
+            // Checks for EOF 
+//            //<EOF> test : EOF is always token 0.
+//            if ( p.token_source.getNextToken().kind != 0 )
+//                throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
+            return item ;
+       } 
+       catch (ParseException ex)
+       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
+       catch (TokenMgrError tErr)
+       { 
+           // Last valid token : not the same as token error message - but this should not happen
+           int col = p.token.endColumn ;
+           int line = p.token.endLine ;
+           throw new SSEParseException(tErr.getMessage(), line, col) ;
+       }
+       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+    }
+
     private static Item parse(Reader reader, PrefixMapping pmap)
     {
         SSE_Parser p = new SSE_Parser(reader) ;
@@ -165,34 +193,6 @@ public class SSE
        //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
     }
     
-    // --- Parse single elements. 
-    
-    private static Item parseTermEOF(Reader reader, PrefixMapping pmap)
-    {
-        // To avoid putting special rules for word/node in the grammar.
-        SSE_Parser p = new SSE_Parser(reader) ;
-        if ( ResolveIRIs )
-            p.setHandler(new ParseHandlerResolver(pmap)) ;
-        try
-        {
-            Item item = p.Term() ;
-            //<EOF> test : EOF is always token 0.
-            if ( p.token_source.getNextToken().kind != 0 )
-                throw new SSEParseException("Trailing characters after "+item, item.getLine(), item.getColumn()) ;
-            return item ;
-       } 
-       catch (ParseException ex)
-       { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-       catch (TokenMgrError tErr)
-       { 
-           // Last valid token : not the same as token error message - but this should not happen
-           int col = p.token.endColumn ;
-           int line = p.token.endLine ;
-           throw new SSEParseException(tErr.getMessage(), line, col) ;
-       }
-       //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
-    }
-
 }
 
 /*

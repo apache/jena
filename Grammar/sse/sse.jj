@@ -37,11 +37,23 @@ PARSER_END(SSE_Parser)
 
 // ---- Entry points
 
-Item parse() : { Item list ; Item elt ; }
+Item parse() : { Item elt ; }
 {
+    { parseStart() ; }
     (<WS>)*
     elt = TermOrList()
     <EOF>
+    { parseFinish() ; }
+    { return elt ; }
+
+}
+
+Item term() : { Item elt ; }
+{
+    { parseStart() ; }
+    elt = Term()
+    <EOF>
+    { parseFinish() ; }
     { return elt ; }
 }
 

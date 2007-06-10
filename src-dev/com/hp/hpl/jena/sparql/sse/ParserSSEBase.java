@@ -32,6 +32,12 @@ public class ParserSSEBase extends ParserBase
         return Node.createURI(":"+s) ;
     }
     
+    public void parseStart()
+    { handler.parseStart() ; }
+    
+    public void parseFinish()
+    { handler.parseFinish() ; }
+    
     protected void listStart(Item list)
     { 
         handler.listStart(list) ;
