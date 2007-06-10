@@ -220,7 +220,7 @@ public class Item extends ItemLocation implements PrintSerializable
     
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
-        Writer.write(out, this, sCxt) ;
+        ItemWriter.write(out, this, sCxt) ;
     }
 }
 

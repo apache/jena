@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.Writer;
+import com.hp.hpl.jena.sparql.sse.ItemWriter;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderOp;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
@@ -41,7 +41,7 @@ public class MainBuilder
             if ( true )
             {
                 System.out.println("**** SSE expression") ;
-                Writer.write(System.out, item) ;
+                ItemWriter.write(System.out, item) ;
                 System.out.println() ;
             }
             
@@ -78,7 +78,7 @@ public class MainBuilder
             if ( true )
             {
                 System.out.println("**** SSE expression") ;
-                Writer.write(System.out, item) ;
+                ItemWriter.write(System.out, item) ;
             }
 
 //          item = ItemTransformer.transform(new ItemTransformBase(), item) ;

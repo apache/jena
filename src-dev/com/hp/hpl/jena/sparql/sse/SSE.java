@@ -13,6 +13,9 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -26,6 +29,17 @@ import com.hp.hpl.jena.util.FileUtils;
 public class SSE
 {
     private static boolean ResolveIRIs = true ;
+    
+    // Short prefix map for convenience
+    protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
+    static {
+        globalPrefixMap.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
+        globalPrefixMap.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
+        globalPrefixMap.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
+        globalPrefixMap.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
+        globalPrefixMap.setNsPrefix("fn" ,  ARQConstants.fnPrefix) ; 
+    }
+    public static PrefixMapping getPrefixMap() { return globalPrefixMap ; }
     
     public static Node parseNode(String str) { return parseNode(str, null) ; }
     

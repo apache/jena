@@ -7,13 +7,15 @@
 package com.hp.hpl.jena.sparql;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
+
+import com.hp.hpl.jena.sparql.util.Symbol;
+
+import com.hp.hpl.jena.query.ARQ;
 
 /**
  * Internal constants - configuration is in class ARQ
@@ -67,7 +69,7 @@ public class ARQConstants
     /** Common prefixes */
     protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
-        globalPrefixMap.setNsPrefixes(PrefixMapping.Standard) ;
+        //globalPrefixMap.setNsPrefixes(PrefixMapping.Standard) ;
         globalPrefixMap.setNsPrefix("rdf",  rdfPrefix) ;
         globalPrefixMap.setNsPrefix("rdfs", rdfsPrefix) ;
         globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;

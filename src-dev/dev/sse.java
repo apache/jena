@@ -14,10 +14,14 @@ import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 import arq.cmdline.CmdARQ;
 
+import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.sse.SSEParseException;
+import com.hp.hpl.jena.sparql.sse.ItemWriter;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Utils;
 
@@ -133,7 +137,11 @@ public class sse extends CmdARQ
         }
         divider() ;
         IndentedWriter out = new IndentedWriter(System.out, lineNumbers) ;
-        item.output(out) ;
+        PrefixMapping pmap = SSE.getPrefixMap() ;
+        //pmap = null ;
+        SerializationContext sCxt = new SerializationContext(pmap) ;
+        ItemWriter.write(out, item, sCxt) ;
+        //item.output(out) ;
         out.ensureStartOfLine() ;
         out.flush();
     }

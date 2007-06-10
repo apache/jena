@@ -264,6 +264,9 @@ public class FmtUtils
         return n.toString() ;
     }
 
+    static public String stringForURI(String uri)
+    { return "<"+stringEsc(uri)+">" ; }
+
     static public String stringForURI(String uri, SerializationContext context)
     {
         if ( context == null )
@@ -271,7 +274,6 @@ public class FmtUtils
         return stringForURI(uri, context.getPrefixMapping()) ;
     }
 
-    
     static public String stringForURI(String uri, PrefixMapping mapping)
     {
         if ( mapping != null )
@@ -290,7 +292,7 @@ public class FmtUtils
             // No match - fall through
         }
         
-        return "<"+stringEsc(uri)+">" ; 
+        return stringForURI(uri) ; 
     }
     
 //    private static String prefixFor(String uri, PrefixMapping mapping)

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.PrefixMapping2;
 
@@ -39,46 +40,46 @@ public class PrologueSerializer
 //  }
 //  
     
-  private static void printBase(Prologue prologue, IndentedWriter out)
-  {
-      if ( prologue.getBaseURI() != null && prologue.explicitlySetBaseURI() )
-      {
-          out.print("BASE    ") ;
-          out.print("<"+prologue.getBaseURI()+">") ;
-          out.newline() ;
-      }
-  }
-  
-  public static void printPrefixes(Prologue prologue, IndentedWriter out)
-  {
-      Map pmap = null ;
-      
-      if ( prologue.getPrefixMapping() instanceof PrefixMapping2 )
-      {
-          PrefixMapping2 pm2 = (PrefixMapping2)prologue.getPrefixMapping() ;
-          pmap = pm2.getNsPrefixMap(false) ;
-      }
-      else
-          pmap = prologue.getPrefixMapping().getNsPrefixMap() ;
-      
-      if ( pmap.size() > 0 )
-      {
-          //boolean first = true ;
-          for ( Iterator iter = pmap.keySet().iterator() ; iter.hasNext() ; )
-          {
-              String k = (String)iter.next() ;
-              String v = (String)pmap.get(k) ;
-              out.print("PREFIX  ") ;
-              out.print(k) ;
-              out.print(':') ;
-              out.print(' ', -k.length()) ;
-              // Include at least one space 
-              out.print(" <"+v+">") ;
-              out.newline() ;
-          }
-      }
-  }
+    private static void printBase(Prologue prologue, IndentedWriter out)
+    {
+        if ( prologue.getBaseURI() != null && prologue.explicitlySetBaseURI() )
+        {
+            out.print("BASE    ") ;
+            out.print("<"+prologue.getBaseURI()+">") ;
+            out.newline() ;
+        }
+    }
 
+    public static void printPrefixes(Prologue prologue, IndentedWriter out)
+    {
+        Map pmap = null ;
+
+        if ( prologue.getPrefixMapping() instanceof PrefixMapping2 )
+        {
+            PrefixMapping2 pm2 = (PrefixMapping2)prologue.getPrefixMapping() ;
+            pmap = pm2.getNsPrefixMap(false) ;
+        }
+        else
+            pmap = prologue.getPrefixMapping().getNsPrefixMap() ;
+
+        if ( pmap.size() > 0 )
+        {
+            //boolean first = true ;
+            for ( Iterator iter = pmap.keySet().iterator() ; iter.hasNext() ; )
+            {
+                String k = (String)iter.next() ;
+                String v = (String)pmap.get(k) ;
+                out.print("PREFIX  ") ;
+                out.print(k) ;
+                out.print(':') ;
+                out.print(' ', 4-k.length()) ;
+                // Include at least one space 
+                out.print(' ') ;
+                out.print(FmtUtils.stringForURI(v)) ;
+                out.newline() ;
+            }
+        }
+    }
 }
 
 /*

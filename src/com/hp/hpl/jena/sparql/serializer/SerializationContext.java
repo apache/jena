@@ -86,6 +86,11 @@ public class SerializationContext
         prologue.setPrefixMapping(prefixMap) ;
     }
     
+    /** @param base Set the base IRI */
+    public void setBaseIRI(String iri) { prologue.setBaseURI(iri) ; }
+    
+    public String getBaseIRI() { return prologue.getBaseURI() ; }
+    
 //    /**
 //     * @return Returns the query.
 //     */
