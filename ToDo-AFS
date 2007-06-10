@@ -5,7 +5,8 @@ SDB ToDo list (and general notes)
 + Tranasactions - cleanup.
 + Graph => Quad
 + Graph => Tuple loader.
-+ Sort out StoreFactory and SDBFactory
++ Sort out StoreFactory and SDBFactory. 
+  StoreFactory : have an open registry?
 
 + Add a formatter option to test if DB setup already
 
@@ -19,33 +20,20 @@ SDB ToDo list (and general notes)
 
 + QueryEngineSDB has duplication with QueryEngineMain - eliminate!
 
-+ TableDesc - better table description system
-  Partly done: The formatters still know the column names.
-  See index/FmtDerby
-
 + Pattern/Inf tables:
   Data:
     Q: { :s a ?t }  D: :s a :C1 . :s a :C2 .  : SC: (:C1, :C2) => duplicates
   Reduce data?  is there always a minimum?  No - but synthetic?
-  Or nestes SELECT DISTINCT in SQL.
+  Or nested SELECT DISTINCT in SQL.
 
 + Store config
     in sdb.ttl // in DB // rebuildable?
     Current description + "features"
 
-+ StoreFactory : have an open registry.
-
 + StoreConnection needs a StoreLayout indirection ??
-  + to get table names for formatting
-  + to get the layout subtypes (1/2 ; index/hash ; triples/quads)
   Connection -> Config "StoreControl" -> Store 
   Store hasA "StoreControl" -- c.f. StoreFormatter
    Features play into this
-
-  StoreConfig is the in-DB mapping.
-    Repurpose this name?
-
-+ --sdb=@ for global registration?
 
 + Prefixes : disable for ModelRDB only.
   Done?? Check
@@ -57,10 +45,6 @@ SDB ToDo list (and general notes)
   String version - and have fixed choice of xsd:string or plain string for terms.
   Partial alternative: condition is "T.o = hash1 OR T.o = hash2"
 
-+ Features: more general config setting?
-  Or really use properties?
-  layout; layout/index; layout/hash for now.
-
 + Generating SQL:
   + Precedence-driven output for SqlExpr // SqlExprGenerateSQL, not lots of nesting.
   + SELECT/one table ==> move constraints out (it's just SPJ)
@@ -69,15 +53,15 @@ SDB ToDo list (and general notes)
   + Generalize linearization of InnerJoin-only trees
   + Be careful about code generation and a right complex expression
     Use a SELECT for nested expressions?  generalize from COALESCE code generation.
-    
-+ Values and conditions : reactivate condition compilation.
-  Need value access
-  Isolate QC2.insertValueGetter
+   
 
 + Add query tests :
   /Structure/ { opt ... } JOIN { opt ... } 
   
 + ValueTables
+  Values and conditions : reactivate condition compilation.
   String value table
     With no URIs, much shorter.
     Full text indexing where available?
+  Isolate QC2.insertValueGetter
+    
