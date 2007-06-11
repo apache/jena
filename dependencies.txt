@@ -4,7 +4,11 @@ Runtime:
    
 Compile-time, Build-time:
    junit.jar
-   JFlex.jar
+   JFlex.jar  (version 1.4.1) 
+   
+See license information under the doc directory, or on the web 
+site for more information concerning the JFlex dependency.
+
    
 
 

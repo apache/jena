@@ -3,6 +3,7 @@ General:
    document
    assess compliance
    document level of compliance
+   document how to use JFlex to produce Lexer files.
    
 Unimplemented features:
   IRI.ladderEquals

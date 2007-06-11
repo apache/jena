@@ -101,8 +101,6 @@
     	<copy todir="${dist.dir}" file="build.xml"/>
 
         <copy todir="${dist.dir}" file="copyright.txt"/>
-    	<copy todir="${dist.dir}" file="test.bat"/>
-    	<copy todir="${dist.dir}" file="test.sh"/>
     	
         <copy todir="${dist.dir}/src">
             <fileset dir="${src.dir}" includes="**"/>
