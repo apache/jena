@@ -78,7 +78,7 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 			}
 			insertTupleLoader.addBatch();
 		} catch (SQLException e) {
-			throw new SDBException("Problem adding to prepared loader statements");
+			throw new SDBException("Problem adding to prepared loader statements", e);
 		}
 		
 		tupleNum++;
@@ -138,7 +138,7 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 	/** These are the SQL 'bits' we use to construct the loader statements **/
 	
 	public String[] getNodeColTypes() {
-		return new String[] {"BIGINT", "TEXT", "VARCHAR(10)", "  datatype VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
+		return new String[] {"BIGINT", "VARCHAR", "VARCHAR(10)", "VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
 	}
 	
 	public String getTupleColType() {
