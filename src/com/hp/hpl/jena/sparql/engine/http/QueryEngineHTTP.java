@@ -22,7 +22,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 public class QueryEngineHTTP implements QueryExecution
 {
-    //TODO Check return content type.
+    public static final String QUERY_MIME_TYPE = "application/sparql-query" ;
     String queryString ;
     String service ;
     Context parameters = new Context() ;
