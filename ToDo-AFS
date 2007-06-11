@@ -1,6 +1,10 @@
 SDB ToDo list (and general notes)
 =================================
 
+** StoreLoader interface
+** Subclass loading.
+** OpSlice
+
 + Web site (on jena.hpl?)
 + Tranasactions - cleanup.
 + Graph => Quad
