@@ -52,8 +52,8 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 		connection().exec(getCreateTempTuples());
 		
 		// Prepare those statements
-		insertNodeLoader = conn.prepareStatement(getInsertTempTuples());
-		insertTupleLoader = conn.prepareStatement(getInsertTempNodes());
+		insertNodeLoader = conn.prepareStatement(getInsertTempNodes());
+		insertTupleLoader = conn.prepareStatement(getInsertTempTuples());
 		insertNodes = conn.prepareStatement(getLoadNodes());
 		insertTuples = conn.prepareStatement(getLoadTuples());
 		if (getClearTempNodes() != null) clearNodeLoader = conn.prepareStatement(getClearTempNodes());
@@ -74,7 +74,7 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 				PreparedNode pNode = new PreparedNode(row[i]);
 				if (seenNodes.add(pNode.hash)) // if true, this is new...
 					pNode.addToStatement(insertNodeLoader);
-				insertTupleLoader.setLong(i, pNode.hash);
+				insertTupleLoader.setLong(i + 1, pNode.hash);
 			}
 			insertTupleLoader.addBatch();
 		} catch (SQLException e) {
@@ -101,20 +101,26 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 			}
 			deleteTuples.addBatch();
 		} catch (SQLException e) {
-			throw new SDBException("Problem adding to prepared delete statements");
+			throw new SDBException("Problem adding to prepared delete statements", e);
 		}
 		
 		tupleNum++;
 		if (tupleNum >= chunkSize) flush();
 	}
 	
+	@Override
+	public void finish() {
+		flush();
+	}
+	
 	public void flush() {
-		if (tupleNum == 0)
-			return;
+		if (tupleNum == 0) return;
 		try {
+			boolean autoCommitState = connection().getSqlConnection().getAutoCommit();
+			if (autoCommitState) connection().getSqlConnection().setAutoCommit(false); // turn off if needed
 			if (amLoading) {
-				insertNodeLoader.execute();
-				insertTupleLoader.execute();
+				insertNodeLoader.executeBatch();
+				insertTupleLoader.executeBatch();
 				insertNodes.execute();
 				insertTuples.execute();
 				if (clearNodeLoader != null) clearNodeLoader.execute();
@@ -123,6 +129,7 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 				deleteTuples.execute();
 			}
 			connection().getSqlConnection().commit();
+			if (autoCommitState) connection().getSqlConnection().setAutoCommit(true); // back on if we changed it
 		} catch (SQLException e) {
 			try {
 				connection().getSqlConnection().rollback();
@@ -353,7 +360,6 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
         		s.setTimestamp(8, valDateTime);
         	else
         		s.setNull(8, Types.TIMESTAMP);*/
-        
         	s.addBatch();
         }
         
