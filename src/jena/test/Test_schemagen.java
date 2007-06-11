@@ -6,11 +6,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            8 Sep 2006
  * Filename           $RCSfile: Test_schemagen.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:52:43 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-06-11 13:34:44 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.FileUtils;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.4 2007-01-02 11:52:43 andy_seaborne Exp $
+ * @version CVS $Id: Test_schemagen.java,v 1.5 2007-06-11 13:34:44 chris-dollin Exp $
  */
 public class Test_schemagen
     extends TestCase
@@ -499,7 +499,7 @@ public class Test_schemagen
 
         for (int i = 0; i < posPatterns.length; i++) {
             String msg = "Expecting a positive match to pattern: ||" + posPatterns[i] + "||";
-            assertTrue( msg, foundPos[i] );
+            assertTrue( msg + " in:\n" + result, foundPos[i] );
         }
 
         // check that the file compiles with javac

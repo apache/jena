@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ReasonerFactoryAssembler.java,v 1.9 2007-05-11 14:26:47 chris-dollin Exp $
+ 	$Id: ReasonerFactoryAssembler.java,v 1.10 2007-06-11 13:34:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.assembler.assemblers;
@@ -110,10 +110,8 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     */
     private static void mustBeReasonerFactory( Resource root, Class c )
         {
-        try 
-            { c.asSubclass( ReasonerFactory.class ); }
-        catch (ClassCastException e) 
-            { throw new NotExpectedTypeException( root, ReasonerFactory.class, c ); }
+        if (!ReasonerFactory.class.isAssignableFrom( c ))
+            throw new NotExpectedTypeException( root, ReasonerFactory.class, c );
         }
 
     /**

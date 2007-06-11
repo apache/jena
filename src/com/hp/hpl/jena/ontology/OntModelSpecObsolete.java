@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2006 Hewlett-Packard Development Company, LP
  	All rights reserved.
- 	$Id: OntModelSpecObsolete.java,v 1.2 2007-02-21 09:17:01 chris-dollin Exp $
+ 	$Id: OntModelSpecObsolete.java,v 1.3 2007-06-11 13:34:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.ontology;
@@ -62,7 +62,7 @@ public abstract class OntModelSpecObsolete extends ModelSpecImpl
     /**
         Answer the unique subject with the given rdf:type.
         
-        @param m the model in which the typed subject is sought
+        @param description the model in which the typed subject is sought
         @param type the RDF type the subject must have
         @return the unique S such that (S rdf:type type)
         @exception BadDescriptionException if there's not exactly one subject

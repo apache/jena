@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.49 $
+ * Revision           $Revision: 1.50 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2007-01-02 11:51:15 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2007-06-11 13:34:47 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.49 2007-01-02 11:51:15 andy_seaborne Exp $
+ * @version CVS $Id: schemagen.java,v 1.50 2007-06-11 13:34:47 chris-dollin Exp $
  */
 public class schemagen {
     // Constants
@@ -429,7 +429,6 @@ public class schemagen {
     /** Identify the file we are to write the output to */
     protected void selectOutput() {
         String outFile = getValue( OPT_OUTPUT );
-
         if (outFile == null) {
             m_output = System.out;
         }
@@ -446,7 +445,7 @@ public class schemagen {
                 m_output = new PrintStream( new FileOutputStream( out ) );
             }
             catch (Exception e) {
-                abort( "I/O error while trying to open file for writing: " + outFile, null );
+                abort( "I/O error while trying to open file for writing: " + outFile, e );
             }
         }
 
