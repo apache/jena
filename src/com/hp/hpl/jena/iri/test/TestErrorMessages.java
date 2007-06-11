@@ -94,8 +94,11 @@ public class TestErrorMessages extends TestCase
     }
 
     private static void addAllTestsFromExamples( TestSuite spec) {
-        for (int i = 0; i < ViolationCodeInfo.all.length; i++)
+        for (int i = 0; i < ViolationCodeInfo.all.length; i++) {
             addTestsFromExamples(spec,  ViolationCodeInfo.all[i]);
+        }
+        for (int i = 0; i< specs.length; i++)
+        	addExamples(null,specs[i],spec);
     }
 
     private static void addTestsFromExamples(TestSuite rslt,  ViolationCodeInfo violationCodeInfo) {

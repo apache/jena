@@ -1,0 +1,183 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- $Id: documentation.content.html,v 1.1 2007-06-11 14:11:13 jeremy_carroll Exp $ -->
+<!-- (c) Copyright  2007 Hewlett-Packard Development Company L.P.  All rights reserved -->
+<head>
+  <title>The Jena GRDDL Reader - Documentation</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="DC.Creator"    content="Jeremy J. Carroll"/>
+  <meta name="DC.Title"      content="The Jena GRDDL Reader - Documentation"/>
+  <meta name="DC.Rights"
+        content="Copyright 2007 Hewlett-Packard Development Company LP"/>
+  <meta name="DC.Identifier" content="http://jena.sourcefrge.net/grddl/license.html"/>
+  <meta name="DC.Format"     content="text/html;charset=utf-8"/>
+  <meta name="DC.Date"       content="$Date: 2007-06-11 14:11:13 $"/>
+  <meta name="DC.Type"       content="web page"/>
+  <link rel="stylesheet" type="text/css" href="styles/site.css" />
+</head>
+
+<body>
+
+<div id="header">
+The Jena GRDDL Reader - Documentation
+</div>
+
+
+<div id="main">
+
+<div id="trail">
+<a href="index.html">home</a>
+&raquo; <a href="documentation.html">documentation</a>
+</div>
+
+<div id="content">
+
+<h2>Javadoc</h2>
+<p>
+The javadoc specifies
+the legal properties that can be set with
+<code>RDFReader.setProperty</code>.
+This method can be used to modify the behviour of
+the HTML parser and the RDF/XML parser
+It also documents <code>GRDDLSecurityException</code>
+that is thrown whenever a transform attempts an operation
+that has been blocked for security reasons.
+</p>
+<p><a href="javadoc/index.html">The GRDDL Reader Javadoc (Public APIs)</a></p>
+
+<h2>Suppressing the License Dialog</h2>
+<p>
+The dialog concerning acceptance of the license
+may not always be appropriate.
+In certain uses of the Jena GRDDL Reader, it may not
+be possible for the license
+dialog to be displayed, and the system may hang, or exit,
+unexpectedly: e.g.
+within tomcat; in a headless configuration;
+on a command-line only system; or
+in a system which does not support Java Swing .
+</p>
+<p>
+If the user has agreed to the license terms,
+aware of the risks associated with the software,
+then the license dialog may be suppressed.
+</p>
+<p>
+There are two methods for doing so.
+</p>
+<h3>Copying or Reusing the Configuration File</h3>
+<p>
+The first method, is for the user to first agree to the license,
+using a configuration which does support Swing.
+</p>
+<p>
+If the same home directory is used for both the initial use
+and the problematic use, then the software should be able
+to read the configuration file and see that the license has
+been accepted, and the dialog will not be displayed.
+</p>
+<p>
+If the user is using a different home directory,
+then the configuration file will need to be copied
+from one home directory to the other.
+</p>
+<p>
+If the user is using a different user name on the second
+system, then the configuration file will also need to be
+edited.
+</p>
+<p>
+The configuration file location is:
+</p>
+<table>
+<tr>
+<th>OS</th>
+<th>File</th>
+</tr>
+<tr>
+<td>
+Windows
+</td>
+<td>${HOME}/Local Settings/Application Data/Jena/license.rdf</td>
+</tr>
+<tr>
+<td>
+Mac
+</td>
+<td>${HOME}/Library/Jena/license.rdf</td>
+</tr>
+<tr>
+<td>
+Linux
+</td>
+<td>${HOME}/.jena/license.rdf</td>
+</tr>
+<tr>
+<td>
+Unix
+</td>
+<td>${HOME}/.jena/license.rdf</td>
+</tr>
+<tr>
+<td>
+Other
+</td>
+<td>${HOME}/.jena/license.rdf</td>
+</tr>
+</table>
+<h3>Using a System Property</h3>
+<p>
+It is also possible to suppress the license check by
+telling the system that the user has agreed to the license
+by means of a system property.
+</p>
+<p>
+The system property <code>"jena.grddl.license"</code>
+may be set to the value (all one line) <code>"The end-user understands the risks associated with running GRDDL software. The end-user agrees to the BSD license for the Jena GRDDL Reader."</code>
+This is intended for the cases in which these sentences are in fact true!
+</p>
+<h2>Running Inside Tomcat</h2>
+<p>
+This has not been tested, and will probably not work.
+However, if you want to try, please send e-mail to 
+jena-dev, and I'll try to help if I have the time. 
+Note that this is, for this release at least,
+likely to be less secure than might be expected, due to 
+unfortunate interactions between the Tomcat security code
+and the Jena GRDDL Reader security code.
+</p>
+<!--
+<p>
+It is necessary to permit the GRDDL software to read
+various system properties, specifically:
+</p>
+<ul>
+<li>
+jena.grddl.license
+</li>
+<li>
+user.home
+</li>
+<li>
+user.name
+</li>
+<li>
+...more todo...
+</li>
+</ul>
+<p>
+It's very unclear what other operations should be permitted.
+Also, the sandboxing provided with the Jena GRDDL Reader will
+probably not operate, giving additional security risks.
+</p>
+-->
+
+
+</div><!-- end #content -->
+</div> <!-- end #main -->
+
+<div id="footer">
+&nbsp;
+</div>
+
+</body>
+</html>

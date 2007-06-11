@@ -27,6 +27,8 @@ IRI.normalize()
 RFRC 2396 and opaque URIs
 
 Bugs:
+   I think some of the specs have been revved since the initial design,
+   
 
 
    

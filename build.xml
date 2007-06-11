@@ -18,7 +18,10 @@
     <property name="dist.dir" value="${dist.root}/${dist.name}"/>
     <property name="mirror.dir" value="mirror/"/>
     <property name="build.dir" value="bin-build"/>
-
+		<property name="webdoc.dest.dir" value="iri/"/>
+		<property name="otherpages.dest.dir" value="/home/groups/j/je/jena/OtherPages/"/>
+		<property name="website.dest.dir" value="/home/groups/j/je/jena/htdocs/"/>
+		
     <path id="classpath">
       <fileset dir="${lib.dir}" 
       	includes="*.jar"/>
@@ -88,14 +91,19 @@
         />
     </target>
 
+		
     <target name="dist" depends="init, build, jar, javadoc">
         <mkdir dir="${dist.root}"/>
         <mkdir dir="${dist.dir}"/>
         <mkdir dir="${dist.dir}/lib"/>
         <copy todir="${dist.dir}" file="dependencies.txt"/>
-        <copy todir="${dist.dir}" file="Jena-IRI-changes.txt"/>
-    	<copy todir="${dist.dir}" file="RELEASE_NOTES.txt"/>
+        <copy todir="${dist.dir}" file="RELEASE_NOTES.txt"/>
     	<copy todir="${dist.dir}" file="build.xml"/>
+
+        <copy todir="${dist.dir}" file="copyright.txt"/>
+    	<copy todir="${dist.dir}" file="test.bat"/>
+    	<copy todir="${dist.dir}" file="test.sh"/>
+    	
         <copy todir="${dist.dir}/src">
             <fileset dir="${src.dir}" includes="**"/>
         </copy>
@@ -108,42 +116,118 @@
             <fileset dir="${dist.root}" includes="${dist.name}/**"/>
         </zip>
     </target>
+	<!--
+	<taskdef name="scp" classname="org.apache.tools.ant.taskdefs.optional.ssh.Scp"/>
+	-->
+	<!--
+	Getting scp to work under eclipse:
+	Either:
+	1) Local config
+	a) right click on build file
+	   select Run As => Ant Build ...
+	b) select classpath Tab and add com.jcraft.jsch????.jar from
+	   the eclipse plugin directory (an external jar). It's in 
+	   the directory at the top-level
+	c) select properties tab and add properties as used below
+	
+	Or:
+	2) Global config
+	a) Window/Preferences/Ant/Runtime
+	b) select classpath tab and add com.jcraft.jsch????.jar from
+	   the eclipse plugin directory
+	c) select properties tab and add properties
+	
+	sf.user      Source forge user name
+	sf.keyfile   Private key file
+	sf.pass      Passphrase (in clear text| :( )
+	
+	   
+	-->
 
     <target name="upload" depends="upload-A, upload-B"/>
 
     <target name="upload-A">
-        <scp todir="jeremy_carroll@shell.sourceforge.net:/home/groups/j/je/jena/htdocs/iri/" >
+        <scp todir="${sf.user}@shell.sourceforge.net:/home/groups/j/je/jena/htdocs/iri/" >
             <fileset dir="${doc.dir}" includes="*.*"/>
         </scp>
-    	<!--
-        <scp todir="${shell.user}@shell.sourceforge.net:/home/groups/j/je/jena/htdocs/Eyeball/styles" password="${password}">
-            <fileset dir="${doc.dir}/styles" includes="*.*"/>
-        </scp>
-        -->
+    	
     </target>
 
     <target name="upload-B">
-        <scp todir="jeremy_carroll@shell.sourceforge.net:/home/groups/j/je/jena/OtherPages/iri/" >
+        <scp todir="${sf.user}@shell.sourceforge.net:/home/users/j/je/jeremy_carroll/iri/" 
+        	 passphrase="${sf.pass}" trust="yes"
+        	keyfile="${sf.keyfile}">
             <fileset dir="${doc.dir}" includes="*.*"/>
         </scp>
-    	<!--
-        <scp todir="${shell.user}@shell.sourceforge.net:/home/groups/j/je/jena/OtherPages/Eyeball/styles" password="${password}">
-            <fileset dir="${doc.dir}/styles" includes="*.*"/>
-        </scp>
-    	-->
     </target>
+    
+	<target name="ssh-exec-on-sf" if="ssh-command">
+		<echo message="ssh ${ssh-command}"/>
+		<sshexec host="shell.sourceforge.net"
+				username="${sf.user}"
+				keyfile="${sf.keyfile}"
+			    trust="yes"
+			    passphrase="${sf.pass}" 
+				command="${ssh-command}"/>  
+	</target>
+	
+    <target name="copy-to-sf" if="sf.copy.dest.dir">
+    	<echo message="copying to ${sf.copy.dest.dir}"/>
+    	<echo message="copying from ${sf.copy.src.dir}"/>
+		<antcall target="ssh-exec-on-sf">
+			<param name="ssh-command" 
+				value="rm -rf ${sf.copy.dest.dir}*"/>
+		</antcall>
+        <scp todir="${sf.user}@shell.sourceforge.net:${sf.copy.dest.dir}" 
+        	 passphrase="${sf.pass}" trust="yes"
+        	keyfile="${sf.keyfile}">
+            <fileset dir="${sf.copy.src.dir}" >
+	  	      <include name="**"/>
+  	  	      <include name="**/.htacess"/>
+    	  	  <exclude name="**/produce"/>
+	  	      <exclude name="**/merge" />
+              <exclude name="**/*.content.html"/>
+            </fileset>
+         </scp>
 
-	<!--
-    <target name="test" depends="build">
-        <junit haltonfailure="true" fork="yes" printsummary="no">
-            <classpath>
-                <fileset dir="${lib.dir}" includes="*jar"/>
-                <!- - <fileset dir="${jena.home}/lib" includes="*jar"/> - ->
-            </classpath>
-            <formatter type="brief" usefile="false"/>
-            <test name="com.hp.hpl.jena.eyeball.test.EyeballTestAll"/>
-        </junit>
+		<antcall target="ssh-exec-on-sf">
+			<param name="ssh-command" 
+				value="chgrp -R jena ${sf.copy.dest.dir}"/>
+		</antcall> 
+		<antcall target="ssh-exec-on-sf">
+			<param name="ssh-command" 
+				value="chmod -R g+w ${sf.copy.dest.dir}"/>
+		</antcall>
     </target>
-	-->
+	<target name="copy-to-sf-A" if="sf.copy.src.dir">
+		<antcall target="copy-to-sf"/>
+	</target>
+	<target name="copy-to-sf-otherpages-and-web" if="sf.copy.web.path">
+		<antcall target="copy-to-sf-A">
+		    <param name="sf.copy.dest.dir" value="${otherpages.dest.dir}${sf.copy.web.path}"/>
+		</antcall> 
+		<antcall target="ssh-exec-on-sf">
+			<param name="ssh-command" 
+				value="rm -rf ${website.dest.dir}${sf.copy.web.path}*"/>
+		</antcall> 
+		<antcall target="ssh-exec-on-sf">
+			<param name="ssh-command" 
+				value="cp -pr ${otherpages.dest.dir}${sf.copy.web.path}* ${website.dest.dir}${sf.copy.web.path}"/>
+		</antcall> 
+    </target>
+	<target name="upload-doc">
+		<antcall target="copy-to-sf-otherpages-and-web">
+		    <param name="sf.copy.web.path" value="${webdoc.dest.dir}"/>
+		    <param name="sf.copy.src.dir" value="${doc.dir}"/>
+	   </antcall>      
+	</target>
+	
+	<target name="test-ssh">
+		<antcall target="ssh-exec-on-sf">
+			<param name="ssh-command" 
+				value="ls"/>
+		</antcall> 
+ 
+    </target>
 
 </project>
