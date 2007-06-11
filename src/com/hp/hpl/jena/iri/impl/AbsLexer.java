@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.*;
 
 import com.hp.hpl.jena.iri.ViolationCodes;
 import com.ibm.icu.lang.UCharacter;
@@ -266,11 +267,32 @@ abstract class AbsLexer implements ViolationCodes {
             copy("src/com/hp/hpl/jena/iri/impl/xchar.jflex");
             out.close();
         }
-        JFlex.Main
-                .main(new String[] { "-d", "src/com/hp/hpl/jena/iri/impl", jflexFile });
+        runJFlex(
+//        JFlex.Main
+//                .main(
+                		new String[] { "-d", "src/com/hp/hpl/jena/iri/impl", jflexFile });
         System.out.println(System.currentTimeMillis() - start);
 
     }
+	static void runJFlex(String[] strings) {
+		Method main = null;
+		try {
+			Class jflex = Class.forName("JFlex.Main");
+			main = jflex.getMethod("main", new Class[]{
+					strings.getClass()});
+		} catch (Exception e) {
+			System.err.println("Please include JFlex.jar on the classpath.");
+			System.exit(1);
+		} 
+		try {
+			main.invoke(null, new Object[]{strings});
+		} catch (Exception e) {
+			System.err.println("Problem interacting with JFlex");
+			e.printStackTrace();
+			System.exit(2);
+		} 
+		
+	}
 
 
 

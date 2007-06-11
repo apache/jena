@@ -492,8 +492,7 @@ static VarPattern unreservedDNSLabel[] = {
         System.out.println(name + ": " + count + " expansions");
         out.close();
 
-        JFlex.Main
-                .main(new String[] { "src/com/hp/hpl/jena/iri/impl/"+name+".jflex" });
+        AbsLexer.runJFlex(new String[] { "src/com/hp/hpl/jena/iri/impl/"+name+".jflex" });
         System.out.println(System.currentTimeMillis() - start);
 
     }
