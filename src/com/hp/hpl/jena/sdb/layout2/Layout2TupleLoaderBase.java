@@ -56,6 +56,7 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 		insertTupleLoader = conn.prepareStatement(getInsertTempTuples());
 		insertNodes = conn.prepareStatement(getLoadNodes());
 		insertTuples = conn.prepareStatement(getLoadTuples());
+		deleteTuples = conn.prepareStatement(getDeleteTuples());
 		if (getClearTempNodes() != null) clearNodeLoader = conn.prepareStatement(getClearTempNodes());
 		if (getClearTempTuples() != null) clearTupleLoader = conn.prepareStatement(getClearTempTuples());
 	}
@@ -97,7 +98,7 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 		try {
 			for (int i = 0; i < row.length; i++) {
 				PreparedNode pNode = new PreparedNode(row[i], false);
-				deleteTuples.setLong(i, pNode.hash);
+				deleteTuples.setLong(i + 1, pNode.hash);
 			}
 			deleteTuples.addBatch();
 		} catch (SQLException e) {
@@ -265,8 +266,7 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 	public String getDeleteTuples() {
 		StringBuilder stmt = new StringBuilder();
 		
-		stmt.append("DELETE FROM ").append(this.getTableName()).append(" \nWHERE ");
-		stmt.append("\nWHERE\n");
+		stmt.append("DELETE FROM ").append(this.getTableName()).append(" \nWHERE\n");
 		for (int i = 0; i < this.getTableWidth(); i++) {
 			if (i != 0) stmt.append(" AND\n");
 			stmt.append(this.getTableDesc().getColNames().get(i)).append(" = ?");
