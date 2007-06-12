@@ -1,6 +1,7 @@
-@prefix   :         <http://example/> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example/> .
 
-:x1 :p 1 .
-:x2 :p 2 .
-:x3 :q 3 .
-:x3 :q 4 .
+:C1 rdfs:subClassOf :C2 .
+:C2 rdfs:subClassOf :C3 .
+:C8 rdfs:subClassOf :C9 .

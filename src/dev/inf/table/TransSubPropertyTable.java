@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.inf;
+package dev.inf.table;
 
 import com.hp.hpl.jena.vocabulary.RDFS;
 

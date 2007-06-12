@@ -1,61 +1,27 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package dev.inf;
+package com.hp.hpl.jena.sdb.util;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
+import java.util.Iterator;
 
-/** Database table that is a transitive closure */
-
-public class TransTable
+public class Iter<T> implements Iterable<T>
 {
-    private String tableName ;
-    private String colLeft ;
-    private String colRight ;
-    private Node property ;
+    public static <T> Iter<T> wrap(Iterator<T> iterator) { return new Iter<T>(iterator) ; }
     
-    protected TransTable(String tableName,
-                         String colLeft, String colRight,
-                         Node property)
-    {
-        this.tableName = tableName ;
-        this.colLeft   = colLeft ;
-        this.colRight  = colRight ;
-        this.property = property ;
-    }
-
-    public String getColLeft()
-    {
-        return colLeft ;
-    }
-
-    public String getColRight()
-    {
-        return colRight ;
-    }
-
-    public String getTableName()
-    {
-        return tableName ;
-    }
-
-    public Node getProperty()
-    {
-        return property ;
-    }
+    @SuppressWarnings("unchecked")
+    public static <T> Iter<T> convert(Iterator iterator) { return new Iter<T>((Iterator<T>)iterator) ; }
     
-    public SqlTable createSqlTable(String alias)
-    {
-        return new SqlTable(getTableName(), alias) ;
-    }
+    private Iterator<T> iterator ;
+    public Iter(Iterator<T> iterator) { this.iterator = iterator ; }
+    public Iterator<T>  iterator() { return iterator ; }
 }
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

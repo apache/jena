@@ -9,7 +9,6 @@ package dev.pattern;
 import static com.hp.hpl.jena.sdb.util.StrUtils.sqlList;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import arq.cmd.CmdUtils;
@@ -26,7 +25,7 @@ import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoader;
 import com.hp.hpl.jena.sparql.sse.SSE;
 
-
+/// OLD code - to go
 public class PatternTableLoader
 {
     static { CmdUtils.setLog4j() ; }
@@ -91,14 +90,6 @@ public class PatternTableLoader
         nodeControl.start() ;
         nodeControl.load(row.toArray(new Node[0])) ;
         nodeControl.finish();
-    }
-
-    // Convert from Iterator to Iterable. 
-    private static class Iter<T>  implements Iterable<T>
-    {
-        private Iterator<T> iterator ;
-        Iter(Iterator<T> iterator) { this.iterator = iterator ; }
-        public Iterator<T>  iterator() { return iterator ; }
     }
 
 }

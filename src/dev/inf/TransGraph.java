@@ -6,13 +6,18 @@
 
 package dev.inf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+
+import com.hp.hpl.jena.sdb.util.Pair;
 
 /** In-memory structure to create a transitive closure over GNodes */
 
-public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>>
+public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>> implements Iterable<Pair<GNode, GNode>>
 {
     public interface LinkApply<T> { public void apply(T i, T j) ; }
     public interface NodeApply<T> { public void apply(T i) ; }
@@ -45,7 +50,7 @@ public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>>
     {
         return contains(i) ;
     }
-
+    
     /*  
         http://www.cs.duke.edu/~reynolds/149/warshall.c.html
        15: void warshall(int size) {
@@ -92,6 +97,17 @@ public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>>
         for ( GNode i : keySet() )
             add(i,i) ;
     }
+
+    public Iterator<Pair<GNode, GNode>>iterator()
+    {
+        List<Pair<GNode, GNode>> x = new ArrayList<Pair<GNode, GNode>>() ;
+        for ( GNode k : keySet() )
+            for ( GNode v : get(k) )
+                x.add(new Pair<GNode, GNode>(k, v)) ; 
+        return x.iterator() ;
+    }
+    
+    
 
     public void linkApply(LinkApply<GNode> a)
     {

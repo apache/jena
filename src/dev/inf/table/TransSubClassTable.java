@@ -1,24 +1,32 @@
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package dev.tuple;
+package dev.inf.table;
 
-import com.hp.hpl.jena.sdb.store.Store;
-import com.hp.hpl.jena.sdb.store.TableDesc;
-import com.hp.hpl.jena.sdb.store.TupleLoader;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
-public interface TupleLoaderManager
+/** Transitive table for the subclass hierarchy */ 
+
+public class TransSubClassTable extends TransTable
 {
-    public TupleLoader alloc(Store store, TableDesc tableDesc) ;
-    public void /*GraphLoader*/ allocNamedGraph(Store store, String uri) ;
-    public void /*GraphLoader*/ allocDefaultGraph(Store store) ;
+    public static final String tableSubClass = "Classes" ;
+    public static final String colSubClass =   "SubClass" ;
+    public static final String colSuperClass = "SuperClass" ;
+
+    public TransSubClassTable()
+    {
+        super(tableSubClass, colSubClass, colSuperClass, RDFS.subClassOf.asNode()) ;
+        
+    }
+    
+
 }
 
 /*
- * (c) Copyright 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

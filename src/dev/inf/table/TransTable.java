@@ -4,25 +4,54 @@
  * [See end of file]
  */
 
-package dev.inf;
+package dev.inf.table;
 
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 
-/** Transitive table for the subclass hierarchy */ 
+/** Database table that is a transitive closure */
 
-public class TransSubClassTable extends TransTable
+public class TransTable
 {
-    public static final String tableSubClass = "Classes" ;
-    public static final String colSubClass =   "SubClass" ;
-    public static final String colSuperClass = "SuperClass" ;
-
-    public TransSubClassTable()
+    private String tableName ;
+    private String colLeft ;
+    private String colRight ;
+    private Node property ;
+    
+    protected TransTable(String tableName,
+                         String colLeft, String colRight,
+                         Node property)
     {
-        super(tableSubClass, colSubClass, colSuperClass, RDFS.subClassOf.asNode()) ;
-        
+        this.tableName = tableName ;
+        this.colLeft   = colLeft ;
+        this.colRight  = colRight ;
+        this.property = property ;
+    }
+
+    public String getColLeft()
+    {
+        return colLeft ;
+    }
+
+    public String getColRight()
+    {
+        return colRight ;
+    }
+
+    public String getTableName()
+    {
+        return tableName ;
+    }
+
+    public Node getProperty()
+    {
+        return property ;
     }
     
-
+    public SqlTable createSqlTable(String alias)
+    {
+        return new SqlTable(getTableName(), alias) ;
+    }
 }
 
 /*

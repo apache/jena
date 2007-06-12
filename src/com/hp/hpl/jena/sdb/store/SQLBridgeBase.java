@@ -71,7 +71,7 @@ public abstract class SQLBridgeBase implements SQLBridge
     final
     public QueryIterator assembleResults(ResultSet rs, Binding binding, ExecutionContext execCxt)
     {
-        if ( execCxt.getContext().isTrueOrUndef(SDB.streamJDBC) )
+        if ( execCxt == null || execCxt.getContext().isTrueOrUndef(SDB.streamJDBC) )
             // Stream
             return new QueryIterSQL(rs, binding, execCxt) ;
         

@@ -30,6 +30,8 @@ import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
 
+// Dev code - to go.
+
 public class QBuilder
 {
     public static void main(String[] args)

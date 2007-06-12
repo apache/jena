@@ -9,11 +9,33 @@ package com.hp.hpl.jena.sdb.sql;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TableUtils
 {
+    public static void dump(SDBConnection conn, String tableName)
+    {
+        try {
+            ResultSet tableData = conn.execQuery("SELECT * FROM "+tableName) ;
+            RS.printResultSet(tableData) ;
+            tableData.close() ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL(ex) ; }
+    }
+    
+    public static void dump(Connection conn, String tableName)
+    {
+        try {
+            Statement s = conn.createStatement() ; // Not closed - happens when result set closed
+            ResultSet tableData = s.executeQuery("SELECT * FROM "+tableName) ;
+            RS.printResultSet(tableData) ;
+            tableData.close() ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL(ex) ; }
+    }
+    
 
     /** Does this table exist? 
      * 

@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package dev.inf;
+package dev.inf.table;
 
 import java.sql.SQLException;
 
@@ -26,6 +26,8 @@ import com.hp.hpl.jena.sdb.sql.TableUtils;
 import com.hp.hpl.jena.sdb.store.DatasetStore;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.util.StrUtils;
+
+import dev.inf.TransGraph;
 
 /** Transitive table mamanger */
 
