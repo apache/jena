@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.engine.Plan;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 
@@ -38,7 +37,7 @@ public class PrintUtils
     }
 
     public static String toString(PrintSerializable item)
-    { return toString(item, ARQConstants.getGlobalPrefixMap()) ; }
+    { return toString(item, null) ; }
     
     public static void output(PrintSerializable item, IndentedWriter out)
     { 

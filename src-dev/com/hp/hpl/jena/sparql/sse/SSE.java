@@ -31,15 +31,18 @@ public class SSE
     private static boolean ResolveIRIs = true ;
     
     // Short prefix map for convenience
-    protected static PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
+    protected static PrefixMapping defaultDefaultPrefixMap = new PrefixMappingImpl() ;
     static {
-        globalPrefixMap.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
-        globalPrefixMap.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
-        globalPrefixMap.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
-        globalPrefixMap.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
-        globalPrefixMap.setNsPrefix("fn" ,  ARQConstants.fnPrefix) ; 
+        defaultDefaultPrefixMap.setNsPrefix("rdf",  ARQConstants.rdfPrefix) ;
+        defaultDefaultPrefixMap.setNsPrefix("rdfs", ARQConstants.rdfsPrefix) ;
+        defaultDefaultPrefixMap.setNsPrefix("xsd",  ARQConstants.xsdPrefix) ;
+        defaultDefaultPrefixMap.setNsPrefix("owl" , ARQConstants.owlPrefix) ;
+        defaultDefaultPrefixMap.setNsPrefix("fn" ,  ARQConstants.fnPrefix) ; 
     }
-    public static PrefixMapping getPrefixMap() { return globalPrefixMap ; }
+    
+    public static PrefixMapping defaultPrefixMap = defaultDefaultPrefixMap ;
+    public static PrefixMapping getDefaultPrefixMap() { return defaultPrefixMap ; }
+    public static void setDefaultPrefixMap(PrefixMapping pmap) { defaultPrefixMap =  pmap ; }
     
     public static Node parseNode(String str) { return parseNode(str, null) ; }
     
@@ -128,7 +131,7 @@ public class SSE
     public static Item parse(String str) { return parse(str, null) ; }
     public static Item parse(String str, PrefixMapping pmap)
     {
-        return parse(new StringReader(str), null) ;
+        return parse(new StringReader(str), pmap) ;
     }
 
     public static Item parse(InputStream in) { return parse(in, null) ; }
@@ -187,6 +190,8 @@ public class SSE
 
     private static Item parse(Reader reader, PrefixMapping pmap)
     {
+        if ( pmap == null )
+            pmap = getDefaultPrefixMap() ;
         SSE_Parser p = new SSE_Parser(reader) ;
         if ( ResolveIRIs )
             p.setHandler(new ParseHandlerResolver(pmap)) ;

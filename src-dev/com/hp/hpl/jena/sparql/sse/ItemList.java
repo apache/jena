@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
+
 public class ItemList extends ItemLocation //implements Iterable<Item> 
 {
     private List elements = new ArrayList() ;
@@ -18,7 +20,7 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     { super(line, column) ; }
 
     public ItemList() { super(noLine, noColumn) ; }
-
+    
     public int size() { return elements.size() ; }
     public boolean isEmpty() { return elements.isEmpty() ; }
 
@@ -30,12 +32,16 @@ public class ItemList extends ItemLocation //implements Iterable<Item>
     }
     
     public void addAll(ItemList itemList) { elements.addAll(itemList.elements) ; }
+    
     public void add(Item item){ elements.add(item) ; }
+    public void add(Node node){ elements.add(Item.createNode(node)) ; }
+    public void add(String word){ elements.add(Item.createWord(word)) ; }
+    
     public Item get(int idx) { return (Item)elements.get(idx) ; }
 //  public List getList() { return items ; }
     public Iterator iterator() { return elements.iterator() ; }
     
-    public Item     car()
+    public Item car()
     { 
         if ( elements.size() == 0 )
             throw new ItemException("ItemList.car: list is zero length") ;

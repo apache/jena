@@ -67,13 +67,15 @@ public class ItemWriter
                 PrefixMapping pmap = sCxt.getPrefixMapping() ;
                 if ( pmap != null )
                 {
-                    out.println("(prefix") ;
-                    out.incIndent() ;
                     Map pm = pmap.getNsPrefixMap() ;
-                    printPrefixes(pm, out) ;
                     donePrefix = ( pm.size() != 0 ) ;
-                    if ( donePrefix )
+                    if ( pm.size() != 0 )
+                    {
+                        out.println("(prefix") ;
+                        out.incIndent() ;
+                        printPrefixes(pm, out) ;
                         out.println();
+                    }
                 }
             }
         }
