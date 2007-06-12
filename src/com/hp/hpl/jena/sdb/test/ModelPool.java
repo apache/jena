@@ -43,7 +43,7 @@ public class ModelPool {
 		JDBC.loadDriverHSQL();
 		JDBC.loadDriverMySQL();
 		JDBC.loadDriverPGSQL();
-		JDBC.loadDriverSQLServer();
+		//JDBC.loadDriverSQLServer();
 	}
 
 	public static ModelPool get() {
@@ -131,7 +131,7 @@ public class ModelPool {
 			JDBC.loadDriverHSQL();
 
 			SDBConnection sdb = SDBFactory.createConnection(
-					"jdbc:hsqldb:mem:aname", "sa", "");
+					"jdbc:hsqldb:mem:bname", "sa", "");
 
 			store = new StoreTriplesNodesHashHSQL(sdb);
 

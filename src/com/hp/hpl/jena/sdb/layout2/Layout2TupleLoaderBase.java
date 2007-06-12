@@ -2,6 +2,7 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -14,7 +15,7 @@ import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoaderBase;
 
-public class Layout2TupleLoaderBase extends TupleLoaderBase {
+public abstract class Layout2TupleLoaderBase extends TupleLoaderBase implements Layout2TupleLoaderBasics {
 	
 	PreparedStatement insertTupleLoader;
     PreparedStatement insertNodeLoader;
@@ -127,7 +128,7 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 				if (clearNodeLoader != null) clearNodeLoader.execute();
 				if (clearTupleLoader != null) clearTupleLoader.execute();
 			} else {
-				deleteTuples.execute();
+				deleteTuples.executeBatch();
 			}
 			connection().getSqlConnection().commit();
 			if (autoCommitState) connection().getSqlConnection().setAutoCommit(true); // back on if we changed it
@@ -143,19 +144,24 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 		}
 	}
 	
+	public void dump(String table) {
+		try {
+			ResultSet res = connection().exec("SELECT * FROM " + table);
+			System.out.println("== " + table + "==");
+			while (res.next()) {
+				for (int i = 0; i < res.getMetaData().getColumnCount(); i++) {
+					System.out.print("\t");
+					System.out.print(res.getObject(i + 1));
+				}
+				System.out.println();
+			}
+			System.out.println("\n====");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/** These are the SQL 'bits' we use to construct the loader statements **/
-	
-	public String[] getNodeColTypes() {
-		return new String[] {"BIGINT", "VARCHAR", "VARCHAR(10)", "VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
-	}
-	
-	public String getTupleColType() {
-		return "BIGINT";
-	}
-	
-	public String[] getCreateTempTable() {
-		return new String[] { "CREATE TEMPORARY TABLE" , "" };
-	}
 	
 	public String getNodeLoader() {
 		return "NNode" + hashCode();
@@ -237,29 +243,6 @@ public class Layout2TupleLoaderBase extends TupleLoaderBase {
 		}
 		stmt.append("\nFROM ").append(getNodeLoader()).append(" LEFT JOIN Nodes ON (");
 		stmt.append(getNodeLoader()).append(".n0=Nodes.hash) \nWHERE Nodes.hash IS NULL"); 
-		return stmt.toString();
-	}
-	
-	public String getLoadTuples() {
-		StringBuilder stmt = new StringBuilder();
-		
-		stmt.append("INSERT INTO ").append(this.getTableName()).append(" \nSELECT DISTINCT ");
-		for (int i = 0; i < this.getTableWidth(); i++) {
-			if (i != 0) stmt.append(" , ");
-			stmt.append(getTupleLoader()).append(".").append("t").append(i);
-		}
-		stmt.append("\nFROM ").append(getTupleLoader()).append("\n");
-		for (int i = 0; i < this.getTableWidth(); i++) {
-			if (i != 0) stmt.append("\n");
-			stmt.append("LEFT JOIN ").append(this.getTableName()).append(" ON (t").append(i);
-			stmt.append("=").append(this.getTableName()).append(".").append(this.getTableDesc().getColNames().get(i)).append(")");
-		}
-		stmt.append("\nWHERE\n");
-		for (int i = 0; i < this.getTableWidth(); i++) {
-			if (i != 0) stmt.append(" OR\n");
-			stmt.append(this.getTableName()).append(".").append(this.getTableDesc().getColNames().get(i)).append(" IS NULL");
-		}
-		
 		return stmt.toString();
 	}
 	

@@ -36,14 +36,14 @@ public class TestBulkUpdate {
 		
 		//models.add(new Object[] { ModelPool.get().getIndexMySQL() } );
 		//models.add(new Object[] { ModelPool.get().getIndexHSQL() });
-		models.add(new Object[] { ModelPool.get().getIndexPgSQL() });
-		models.add(new Object[] { ModelPool.get().getIndexDerby() });
-		models.add(new Object[] { ModelPool.get().getHashMySQL() } );
+		//models.add(new Object[] { ModelPool.get().getIndexPgSQL() });
+		//models.add(new Object[] { ModelPool.get().getIndexDerby() });
+		//models.add(new Object[] { ModelPool.get().getHashMySQL() } );
 		models.add(new Object[] { ModelPool.get().getHashHSQL() });
 		//models.add(new Object[] { ModelPool.get().getHashPgSQL() });
-		models.add(new Object[] { ModelPool.get().getHashDerby() });
+		//models.add(new Object[] { ModelPool.get().getHashDerby() });
 		//models.add(new Object[] { ModelPool.get().getHashSQLServer() });
-		models.add(new Object[] { ModelPool.get().getIndexSQLServer() });
+		//models.add(new Object[] { ModelPool.get().getIndexSQLServer() });
 		
 		return models;
 	}

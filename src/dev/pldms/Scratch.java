@@ -7,6 +7,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.layout2.Layout2TupleLoaderBase;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.TupleLoaderHashHSQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -31,12 +32,12 @@ public class Scratch {
                 store.getTableFormatter().format();
                 TableDesc desc = store.getTripleTableDesc();
                 
-                Layout2TupleLoaderBase tl = new Layout2TupleLoaderBase(sdb, desc, 50);
+                Layout2TupleLoaderBase tl = new TupleLoaderHashHSQL(sdb, desc, 50);
                 
                 System.out.println("-------------");
                 System.out.println(tl.getCreateTempNodes());
                 System.out.println("-------------");
-                System.out.println(tl.getLoadNodes());
+                System.out.println(tl.getLoadTuples());
                 System.out.println("-------------");
                 System.out.println(tl.getDeleteTuples());
                 System.out.println("-------------");
@@ -47,11 +48,13 @@ public class Scratch {
                 Node[] s1 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon()};
                 Node[] s2 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon()};
                 tl.load(s1);
+                tl.finish();
                 tl.load(s2);
                 tl.finish();
                 System.out.println("Node count: " + getSize("Nodes", sdb));
                 System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
                 tl.unload(s1);
+                tl.unload(s2);
                 tl.finish();
                 System.out.println("Node count: " + getSize("Nodes", sdb));
                 System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
