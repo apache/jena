@@ -6,7 +6,7 @@
   <head>
     <variable name="v"/>
   </head>
-  <results ordered="false" distinct="false">
+  <results>
     <result>
       <binding name="v">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>

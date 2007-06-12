@@ -7,88 +7,121 @@
 <>  rdf:type mf:Manifest ;
     rdfs:label "Algebra" ;
     mf:entries
-    ( 
-      [  mf:name    "Nested Optionals - 1" ;
-         rdf:type   mfx:TestQuery ; 
+    (   <#nested-opt-1> 
+        <#nested-opt-2> 
+        <#opt-filter-1> 
+        <#opt-filter-2> 
+        <#opt-filter-3> 
+        <#filter-place-1> 
+        <#filter-place-2> 
+        <#filter-place-3> 
+        <#filter-nested-1> 
+        <#filter-nested-2> 
+        <#filter-scope-1> 
+        <#join-scope-1> 
+    ) .
+
+
+<#nested-opt-1> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Nested Optionals - 1" ;
          mf:action
             [ qt:query  <two-nested-opt.rq> ;
               qt:data   <two-nested-opt.ttl> ] ;
-        mf:result  <two-nested-opt.srx>
-      ]
-      [  mf:name    "Nested Optionals - 2" ;
+         mf:result  <two-nested-opt.srx> .
+
+<#nested-opt-2> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Nested Optionals - 2" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <two-nested-opt-alt.rq> ;
-              qt:data   <two-nested-opt.ttl> ] ;
-        mf:result  <two-nested-opt-alt.srx>
-      ]
-      [  mf:name    "Optional-filter - 1" ;
+              qt:data   <two-nested-opt.ttl>  ] ;
+        mf:result  <two-nested-opt-alt.srx> .
+      
+
+<#opt-filter-1> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Optional-filter - 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <opt-filter-1.rq> ;
-              qt:data   <opt-filter-1.ttl> ] ;
-        mf:result  <opt-filter-1.srx>
-      ]
+              qt:data   <opt-filter-1.ttl>  ] ;
+        mf:result  <opt-filter-1.srx> .
+      
 
-      [  mf:name    "Optional-filter - 2 filters" ;
+<#opt-filter-2> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Optional-filter - 2 filters" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <opt-filter-2.rq> ;
-              qt:data   <opt-filter-2.ttl> ] ;
-        mf:result  <opt-filter-2.srx>
-      ]
+              qt:data   <opt-filter-2.ttl>  ] ;
+        mf:result  <opt-filter-2.srx> .
 
-      [  mf:name    "Filter-placement - 1" ;
+<#opt-filter-3> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Optional-filter - scope of variable" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-filter-3.rq> ;
+              qt:data   <opt-filter-3.ttl>  ] ;
+        mf:result  <opt-filter-3.srx> .
+      
+
+<#filter-place-1> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-placement - 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <filter-placement-1.rq> ;
-              qt:data   <data-2.ttl> ] ;
-        mf:result  <filter-placement-1.srx>
-      ]
-      [  mf:name    "Filter-placement - 2" ;
+              qt:data   <data-2.ttl>  ] ;
+        mf:result  <filter-placement-1.srx> .
+      
+
+<#filter-place-2> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-placement - 2" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <filter-placement-2.rq> ;
-              qt:data   <data-2.ttl> ] ;
-        mf:result  <filter-placement-2.srx>
-      ]
-      [  mf:name    "Filter-placement - 3" ;
+              qt:data   <data-2.ttl>  ] ;
+        mf:result  <filter-placement-2.srx> .
+      
+
+<#filter-place-3> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-placement - 3" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <filter-placement-3.rq> ;
-              qt:data   <data-2.ttl> ] ;
-        mf:result  <filter-placement-3.srx>
-      ]
+              qt:data   <data-2.ttl>  ] ;
+        mf:result  <filter-placement-3.srx> .
+      
 
-      [  mf:name    "Filter-nested - 1" ;
+<#filter-nested-1> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-nested - 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <filter-nested-1.rq> ;
-              qt:data   <data-1.ttl> ] ;
-        mf:result  <filter-nested-1.srx>
-      ]
-      [  mf:name    "Filter-nested - 2" ;
+              qt:data   <data-1.ttl>  ] ;
+        mf:result  <filter-nested-1.srx> .
+      
+
+<#filter-nested-2> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-nested - 2" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <filter-nested-2.rq> ;
-              qt:data   <data-1.ttl> ] ;
-        mf:result  <filter-nested-2.srx>
-       ]
+              qt:data   <data-1.ttl>  ] ;
+        mf:result  <filter-nested-2.srx> .
+       
 
-      [  mf:name    "Filter-scope - 1" ;
+<#filter-scope-1> rdf:type mf:QueryEvaluationTest ;
+         mf:name    "Filter-scope - 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <filter-scope-1.rq> ;
-              qt:data   <data-2.ttl> ] ;
-        mf:result  <filter-scope-1.srx>
-      ]
+              qt:data   <data-2.ttl>  ] ;
+        mf:result  <filter-scope-1.srx> .
+      
 
-     [ mf:name      "Join scope - 1" ;
+<#join-scope-1> rdf:type mf:QueryEvaluationTest ;
+       mf:name      "Join scope - 1" ;
        rdf:type   mfx:TestQuery ; 
          mf:action
             [ qt:query  <var-scope-join-1.rq> ;
-              qt:data   <var-scope-join-1.ttl> ] ;
-        mf:result  <var-scope-join-1.srx>
-     ] 
-
-    ).
+              qt:data   <var-scope-join-1.ttl>  ] ;
+       mf:result  <var-scope-join-1.srx> .
