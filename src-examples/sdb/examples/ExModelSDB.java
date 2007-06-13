@@ -21,7 +21,7 @@ public class ExModelSDB
     static public void main(String...argv)
     {
         Store store = StoreFactory.create("sdb.ttl") ;
-        Model model = SDBFactory.connectModel(store) ;
+        Model model = SDBFactory.connectDefaultModel(store) ;
         
         StmtIterator sIter = model.listStatements() ;
         for ( ; sIter.hasNext() ; )

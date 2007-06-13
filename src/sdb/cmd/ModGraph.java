@@ -4,82 +4,55 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.store;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+package sdb.cmd;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.shared.Lock;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.graph.GraphSDB;
-import com.hp.hpl.jena.sdb.layout1.StoreRDB;
-import com.hp.hpl.jena.sdb.shared.SDBNotImplemented;
+import com.hp.hpl.jena.sdb.store.Store;
 
+import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdArgModule;
+import arq.cmdline.CmdGeneral;
+import arq.cmdline.ModBase;
 
-public class DatasetStoreGraph implements DatasetGraph
+public class ModGraph extends ModBase
 {
-    Store store ;
-    Graph defaultGraph = null ;
-    List<Node> names = new ArrayList<Node>() ;
+    private static ArgDecl argDeclGraphName = new ArgDecl(true, "graph") ;
+    private static ArgDecl argDeclGraphDeafult = new ArgDecl(false, "default") ;
+
+    private Graph graph = null ;
+    private String graphName = null ;
     
-    public DatasetStoreGraph(Store store)
-    {
-        this.store = store ; 
-    }
+    public ModGraph() {}
     
-    public DatasetStoreGraph(Store store, GraphSDB graph)
+    public void registerWith(CmdGeneral cmdLine)
     {
-        this.store = store ; 
-        this.defaultGraph = graph ;
+        cmdLine.add(argDeclGraphName,
+                    "--graph", "Graph name") ;
     }
 
-    /** Use only with existing Jena RDB models */ 
-    
-    public DatasetStoreGraph(StoreRDB store)
+    public void processArgs(CmdArgModule cmdLine)
     {
-        this.store = store ; 
-        this.defaultGraph = SDBFactory.connectDefaultGraph(store) ;
-    }
-    
-    public Store getStore() { return store ; }
-    
-
-    public Iterator<Node> listGraphNodes()
-    {
-        return names.iterator() ;
+        graphName = cmdLine.getValue(argDeclGraphName) ;
     }
 
-    public Lock getLock()
-    {
-        throw new SDBNotImplemented("DatasetStore") ;
-    }
-
-    public boolean containsGraph(Node gn)
-    {
-        // Think about this ... 
-        throw new SDBNotImplemented("DatasetStore.containsGraph") ;
-        //return false ;
-    }
-
-    public Graph getDefaultGraph()
-    {
-        if ( defaultGraph == null )
-            defaultGraph = new GraphSDB(store) ;
-        return defaultGraph ;
-    }
-
-    public Graph getGraph(Node gn)
-    {
-        return new GraphSDB(store, gn) ;
+    public Graph getGraph(Store store)
+    { 
+        if ( graphName == null )
+            return SDBFactory.connectDefaultGraph(store) ;
+        else
+            return SDBFactory.connectNamedGraph(store, graphName) ;
     }
     
-    public int size() { return -1 ; }
+    public Model getModel(Store store)
+    { 
+        if ( graphName == null )
+            return SDBFactory.connectDefaultModel(store) ;
+        else
+            return SDBFactory.connectNamedModel(store, graphName) ;
+    }
+    
 }
 
 /*

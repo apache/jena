@@ -19,6 +19,8 @@ public class ModData extends ModBase
     ArgDecl argDeclLoad = new ArgDecl(ArgDecl.HasValue, "data", "load") ;
     List <String> filesToLoad = new ArrayList<String>() ;
     
+    public ModData() {}
+    
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclLoad,
@@ -31,7 +33,6 @@ public class ModData extends ModBase
     {
         filesToLoad = cmdLine.getValues(argDeclLoad) ;
     }
-    // TODO See sdbload.
 }
 
 /*

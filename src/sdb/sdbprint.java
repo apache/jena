@@ -97,9 +97,7 @@ public class sdbprint extends CmdArgsDB
     protected void execCmd(List<String> positionalArgs)
     {
         Query query = modQuery.getQuery() ;
-        Store store = getModStore().getStore() ; 
-
-        compilePrint(store, query) ;
+        compilePrint(getStore(), query) ;
     }
 
     boolean needDivider = false ;

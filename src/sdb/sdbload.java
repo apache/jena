@@ -10,11 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
+import sdb.cmd.ModGraph;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sparql.util.Utils;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.util.FileUtils;
@@ -34,8 +37,9 @@ import com.hp.hpl.jena.util.FileUtils;
  
 public class sdbload extends CmdArgsDB
 {
-    private static final String usage = "sdbload --sdb <SPEC> file" ;
+    private static final String usage = "sdbload --sdb <SPEC> [--graph=IRI] file" ;
     
+    private static ModGraph modGraph = new ModGraph() ;
     private static ArgDecl argDeclTruncate = new ArgDecl(false, "truncate") ;
     
     public static void main(String... argv)
@@ -48,6 +52,7 @@ public class sdbload extends CmdArgsDB
     public sdbload(String... args)
     {
         super(args);
+        addModule(modGraph) ;
         add(argDeclTruncate) ;
     }
 
@@ -55,7 +60,7 @@ public class sdbload extends CmdArgsDB
     protected String getCommandName() { return Utils.className(this) ; }
     
     @Override
-    protected String getSummary()  { return getCommandName()+" <SPEC> file ..."; }
+    protected String getSummary()  { return getCommandName()+" <SPEC> [--graph IRI] file ..."; }
     
     @Override
     protected void processModulesAndArgs()
@@ -68,22 +73,24 @@ public class sdbload extends CmdArgsDB
     protected void execCmd(List<String> args)
     {
         if ( contains(argDeclTruncate) ) 
-            getModStore().getStore().getTableFormatter().truncate() ;
+            getStore().getTableFormatter().truncate() ;
         for ( String x : args )
             loadOne(x) ;
-        StoreBaseHSQL.close(getModStore().getStore()) ;
+        StoreBaseHSQL.close(getStore()) ;
     }
     
     private void loadOne(String filename)
     {
         Monitor monitor = null ;
         
+        Graph graph = modGraph.getGraph(getStore()) ;
+        Model model = ModelFactory.createModelForGraph(graph) ;
+        
         if ( isVerbose() )
         {
-        	//System.out.println(TableUtils.dumpDB(getConnection().getSqlConnection()));
             System.out.println("Start load: "+filename) ;
-            monitor = new Monitor(getModStore().getStore().getLoader().getChunkSize()) ;
-            getModStore().getGraph().getEventManager().register(monitor) ;
+            monitor = new Monitor(getStore().getLoader().getChunkSize()) ;
+            graph.getEventManager().register(monitor) ;
         }
 
         // Crude but convenient
@@ -94,7 +101,7 @@ public class sdbload extends CmdArgsDB
         getModTime().startTimer() ;
         
         // Load here
-        getModStore().getModel().read(filename, lang) ;
+        model.read(filename, lang) ;
 
         long timeMilli = getModTime().endTimer() ;
             
@@ -105,7 +112,7 @@ public class sdbload extends CmdArgsDB
             if ( getModTime().timingEnabled() && !isQuiet() )
                 System.out.printf("Loaded in %.3f seconds [%d triples/s]\n", 
                                   timeMilli/1000.0, (1000*monitor.addCount/timeMilli)) ;
-            getModStore().getGraph().getEventManager().unregister(monitor) ;
+            graph.getEventManager().unregister(monitor) ;
         }
     }
         

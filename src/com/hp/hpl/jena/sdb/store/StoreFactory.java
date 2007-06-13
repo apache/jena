@@ -14,27 +14,28 @@ import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.graph.GraphSDB;
-import com.hp.hpl.jena.sdb.layout1.*;
+import com.hp.hpl.jena.sdb.layout1.StoreRDB;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleDerby;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleHSQL;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleMySQL;
+import com.hp.hpl.jena.sdb.layout1.StoreSimplePGSQL;
+import com.hp.hpl.jena.sdb.layout1.StoreSimpleSQLServer;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashDerby;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashMySQL;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashPGSQL;
+import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexDerby;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexMySQL;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexPGSQL;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashSQLServer;
 import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexSQLServer;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
-/** 
+/** Construct Stores
  * @author Andy Seaborne
  * @version $Id: StoreFactory.java,v 1.5 2006/04/22 19:51:12 andy_seaborne Exp $
  */
@@ -57,42 +58,6 @@ public class StoreFactory
         return store ;
     }
     
-    public static Graph createGraph(String filename)
-    {
-        return createGraph(StoreDesc.read(filename)) ;
-    }
-
-    public static Graph createGraph(StoreDesc storeDesc)
-    {
-        return createGraph(create(storeDesc)) ;
-    }
-    
-    public static Graph createGraph(Store store)
-    {
-        return createGraphSDB(store) ;
-    }
-
-    public static GraphSDB createGraphSDB(Store store)
-    {
-        return new GraphSDB(store) ;
-    }
-
-    
-    public static Model createModel(String filename)
-    {
-        return createModel(StoreDesc.read(filename)) ;
-    }
-
-    public static Model createModel(StoreDesc storeDesc)
-    {
-        return createModel(create(storeDesc)) ;
-    }
-
-    public static Model createModel(Store store)
-    {
-        return ModelFactory.createModelForGraph(new GraphSDB(store)) ;
-    }
-
     private static Store _create(StoreDesc desc, SDBConnection sdb)
     {    
         if ( sdb == null ) 

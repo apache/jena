@@ -17,7 +17,7 @@ import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModBase;
 
-import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -26,11 +26,13 @@ import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.*;
+import com.hp.hpl.jena.sdb.store.DatasetStore;
+import com.hp.hpl.jena.sdb.store.LayoutType;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.StoreDesc;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.query.Dataset;
 
 /** Construction of a store from a store description,
  * possibly modified by command line arguments.
@@ -294,8 +296,7 @@ public class ModStore extends ModBase
             if ( formatFirst )
                 getStore().getTableFormatter().format() ;
         }
-            
-        return store ; 
+        return store ;
     }
 
     public boolean hasStore() { return store != null ; }
@@ -323,15 +324,15 @@ public class ModStore extends ModBase
         return dataset ;
     }
     
-    public Model getModel()
-    {
-        if ( model == null )
-        {
-            model = SDBFactory.connectModel(getStore()) ;
-            initData(model) ;
-        }
-        return model ;
-    }
+//    public Model getModel()
+//    {
+//        if ( model == null )
+//        {
+//            model = SDBFactory.connectDefaultModel(getStore()) ;
+//            initData(model) ;
+//        }
+//        return model ;
+//    }
     
     private void initData(Model model)
     {
@@ -344,10 +345,10 @@ public class ModStore extends ModBase
         loadFiles = null ;
     }
     
-    public Graph getGraph()
-    {
-        return getModel().getGraph() ;
-    }
+//    public Graph getGraph()
+//    {
+//        return getModel().getGraph() ;
+//    }
     
     public boolean isConnected() { return connection != null ; }
     public SDBConnection getConnection()

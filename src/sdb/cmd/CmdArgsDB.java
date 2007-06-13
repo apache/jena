@@ -14,6 +14,7 @@ import arq.cmdline.ModTime;
 
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.sdb.store.Store;
 
 public abstract class CmdArgsDB extends CmdGeneral
 {
@@ -26,8 +27,8 @@ public abstract class CmdArgsDB extends CmdGeneral
     }
     
     private ModSymbol modSymbol = new ModSymbol(SDB.symbolNamespace) ;
-    private ModStore modStore = new ModStore() ;
-    private ModTime  modTime  = new ModTime() ;
+    private ModStore modStore   = new ModStore() ;
+    private ModTime  modTime    = new ModTime() ;
 
     protected CmdArgsDB(String argv[])
     {
@@ -41,10 +42,10 @@ public abstract class CmdArgsDB extends CmdGeneral
     
     protected ModStore getModStore() { return modStore  ; }
     protected ModTime  getModTime()  { return modTime  ; }
+    protected Store getStore() { return modStore.getStore()  ; }
     
     protected abstract void execCmd(List<String> positionalArgs) ;
     
-//    @SuppressWarnings("unchecked")
     @Override
     final
     protected void exec()

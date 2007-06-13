@@ -62,7 +62,7 @@ public abstract class Layout2TupleLoaderBase extends TupleLoaderBase implements 
 		if (getClearTempTuples() != null) clearTupleLoader = conn.prepareStatement(getClearTempTuples());
 	}
 	
-	public void load(Node[] row) {
+	public void load(Node... row) {
 		if (!amLoading) {
 			flush();
 			amLoading = true;
@@ -87,7 +87,7 @@ public abstract class Layout2TupleLoaderBase extends TupleLoaderBase implements 
 		if (tupleNum >= chunkSize) flush();
 	}
 
-	public void unload(Node[] row) {
+	public void unload(Node... row) {
 		if (amLoading) {
 			flush();
 			amLoading = false;

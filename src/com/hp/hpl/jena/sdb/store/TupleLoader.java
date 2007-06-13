@@ -26,13 +26,13 @@ public interface TupleLoader
      *  but row object is free for reuse after calling this method.
      * @param row
      */
-    public void load(Node[] row) ;
+    public void load(Node... row) ;
     
     /** Remove a row - may not take place immediately
      *  but row object is free for reuse after calling this method.
      * @param row
      */
-    public void unload(Node[] row) ;
+    public void unload(Node... row) ;
 
     /** Notify the finish of a sequence of rows to load.  
      * All data will have been loaded by the time this returns */ 

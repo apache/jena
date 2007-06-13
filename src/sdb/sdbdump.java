@@ -8,6 +8,7 @@ package sdb;
 import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
+import sdb.cmd.ModGraph;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -32,6 +33,7 @@ public class sdbdump extends CmdArgsDB
 {
     public static final String usage = "sdbdump --sdb <SPEC> [--out syntax]" ;
 
+    private static ModGraph modGraph = new ModGraph() ;
     static ArgDecl argDeclSyntax = new ArgDecl(true, "out") ;
 
     public static void main(String ... argv)
@@ -42,6 +44,7 @@ public class sdbdump extends CmdArgsDB
     protected sdbdump(String ... args)
     {
         super(args);
+        addModule(modGraph) ;
         add(argDeclSyntax) ;
     }
     
@@ -69,7 +72,7 @@ public class sdbdump extends CmdArgsDB
             System.out.println("Debug: syntax is "+syntax) ;
         
         try {
-            getModStore().getModel().write(System.out, syntax) ;
+            modGraph.getModel(getStore()).write(System.out, syntax) ;
         } catch (Exception ex)
         {
             System.err.println("Exception: "+ex+" :: "+ex.getMessage()) ;

@@ -58,7 +58,7 @@ public class sdbtruncate extends CmdArgsDB
     @Override
     protected void execCmd(List<String> args)
     {
-        getModStore().getStore().getTableFormatter().truncate() ;
+        getStore().getTableFormatter().truncate() ;
     }
 }
 

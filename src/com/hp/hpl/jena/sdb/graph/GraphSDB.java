@@ -53,19 +53,27 @@ public class GraphSDB extends GraphBase implements Graph
     protected Node graphNode = Quad.defaultGraph ;
     protected DatasetStoreGraph datasetStore = null ;
     
+    public GraphSDB(Store store, String uri)
+    { 
+        this(store, Node.createURI(uri)) ;
+        
+    }
+    
     public GraphSDB(Store store)
     { 
-        this(store, false) ;
+        this(store, (Node)null) ;
     }
 
-    public GraphSDB(Store store, boolean reset)
+    public GraphSDB(Store store, Node graphNode)
     {
         this.store = store ;
+        this.graphNode = graphNode ;
+        if ( graphNode == null )
+            graphNode = Quad.defaultGraph ;
+        
         // Avoid looping here : DatasetStoreGraph can make GraphSDB's
         datasetStore = new DatasetStoreGraph(store, this) ;
         
-        if ( reset )
-            store.getTableFormatter().format() ;
         //readPrefixMapping() ;
     }
     

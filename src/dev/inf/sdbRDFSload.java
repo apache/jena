@@ -9,36 +9,21 @@ package dev.inf;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
 import com.hp.hpl.jena.sdb.layout2.hash.TupleLoaderOneHash;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.store.SQLBridge;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleLoader;
-import com.hp.hpl.jena.sdb.util.Iter;
 import com.hp.hpl.jena.sdb.util.Pair;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
 import com.hp.hpl.jena.sparql.sse.Item;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.Context;
 
 public class sdbRDFSload
 {
@@ -53,59 +38,30 @@ public class sdbRDFSload
         Store store = makeMemHash() ;
         TupleLoader loader = new TupleLoaderOneHash(store.getConnection()) ;
 
-        // ---- Create auxillary table
+        // ---- Config
         String tableName = "classes" ;
+
+        // ---- Load auxillary table
+        String subColName = "sub" ;
+        String superColName = "super" ;
+        TableDesc tableDesc = new TableDesc(tableName, subColName, superColName) ;
+        TupleTable tuples = new TupleTable(store, tableDesc) ;
+        
+        // ---- Create auxillary table
         try {
             String sqlCreateStr = "CREATE TABLE "+tableName+"( sub bigint not null, super bigint not null )" ;
             store.getConnection().execUpdate(sqlCreateStr) ;
         } catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
         
-        // ---- Load auxillary table
-        String subColName = "sub" ;
-        String superColName = "super" ;
-        TableDesc tableDesc = new TableDesc(tableName, subColName, superColName) ;
         loader.setTableDesc(tableDesc) ;
         
         loader.start() ;
         for (Pair<Node, Node> p : tg )
-            loader.load(new Node[]{p.getLeft(), p.getRight()}) ;
+            loader.load(p.getLeft(), p.getRight()) ;
         loader.finish() ;
         
         // ---- Dump it.
-        dumpTupleTable(store, tableDesc) ;
-//        
-//        SDBRequest request = new SDBRequest(store, null) ;
-//
-////        TableUtils.dump(store.getConnection(), tableName) ;
-////        TableUtils.dump(store.getConnection(), nodeTable) ;
-//        
-//        // -- Dump as Nodes.
-//        Var var1 = Var.alloc("var1") ;
-//        Var var2 = Var.alloc("var2") ;
-//        
-//        SqlTable sqlTable = new SqlTable(tableName, "X") ;
-//        sqlTable.setIdColumnForVar(var1, new SqlColumn(sqlTable, subColName)) ;
-//        sqlTable.setIdColumnForVar(var2, new SqlColumn(sqlTable, superColName)) ;
-//
-//        List<Var> vars = new ArrayList<Var>() ;
-//        vars.add(var1) ;
-//        vars.add(var2) ;
-//
-//        
-//        SQLBridge b = store.getSQLBridgeFactory().create(request, sqlTable, vars) ;
-//        b.build() ;
-//        
-//        QueryIterator qIter = null ;
-//        try {
-//            String sqlStr = store.getSQLGenerator().generateSQL(b.getSqlNode()) ;
-//            //System.out.println(sqlStr) ;
-//            ResultSet tableData = store.getConnection().execQuery(sqlStr) ;
-//            ExecutionContext execCxt = new ExecutionContext(new Context(), null, null) ;
-//            qIter = b.assembleResults(tableData, BindingRoot.create(), execCxt) ;
-//        } catch (SQLException ex)
-//        { throw new SDBExceptionSQL(ex) ; }
-//        
-//        ResultSetFormatter.out(ResultSetFactory.create(qIter, vars)) ;
+        tuples.dump() ;
         store.close() ;
     }
     
@@ -122,41 +78,6 @@ public class sdbRDFSload
         Store store = new StoreTriplesNodesHashHSQL(sdb);
         store.getTableFormatter().format();
         return store ;
-    }
-    
-    // Move to TupleTable.
-    static void dumpTupleTable(Store store, TableDesc tableDesc)
-    {
-        SDBRequest request = new SDBRequest(store, null) ;
-        String tableName = tableDesc.getTableName() ;
-
-//      TableUtils.dump(store.getConnection(), tableName) ;
-//      TableUtils.dump(store.getConnection(), nodeTable) ;
-
-        SqlTable sqlTable = new SqlTable(tableName, tableName) ;
-        List<Var> vars = new ArrayList<Var>() ;
-        for (String colName : Iter.wrap(tableDesc.colNames()) )
-        {
-            Var var = Var.alloc(colName) ;
-            vars.add(var) ;
-            sqlTable.setIdColumnForVar(var, new SqlColumn(sqlTable, colName)) ;
-        }
-
-        SQLBridge b = store.getSQLBridgeFactory().create(request, sqlTable, vars) ;
-        b.build() ;
-
-        QueryIterator qIter = null ;
-        try {
-            String sqlStr = store.getSQLGenerator().generateSQL(b.getSqlNode()) ;
-            //System.out.println(sqlStr) ;
-            ResultSet tableData = store.getConnection().execQuery(sqlStr) ;
-            ExecutionContext execCxt = new ExecutionContext(new Context(), null, null) ;
-            qIter = b.assembleResults(tableData, BindingRoot.create(), execCxt) ;
-        } catch (SQLException ex)
-        { throw new SDBExceptionSQL(ex) ; }
-
-        ResultSetFormatter.out(ResultSetFactory.create(qIter, vars)) ;
-
     }
 }
 

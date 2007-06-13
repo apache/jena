@@ -77,7 +77,7 @@ public class ModelPool {
 			stores.put("MYSQLINDEX", store);
 		}
 		
-		Model model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectDefaultModel(store);
 		model.removeAll();
 		return model;
 	}
@@ -98,7 +98,7 @@ public class ModelPool {
 			stores.put("MYSQLHASH", store);
 		}
 		
-		Model model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectDefaultModel(store);
 		model.removeAll();
 		return model;
 	}
@@ -119,7 +119,7 @@ public class ModelPool {
 			stores.put("HSQLINDEX", store);
 		}
 		
-		Model model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectDefaultModel(store);
 		model.removeAll();
 		return model;
 	}
@@ -140,7 +140,7 @@ public class ModelPool {
 			stores.put("HSQLHASH", store);
 		}
 		
-		Model model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectDefaultModel(store);
 		model.removeAll();
 		return model;
 	}
@@ -161,7 +161,7 @@ public class ModelPool {
 			stores.put("PGSQLINDEX", store);
 		}
 		
-		Model model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectDefaultModel(store);
 		model.removeAll();
 		return model;
 	}
@@ -182,7 +182,7 @@ public class ModelPool {
 			stores.put("PGSQLHASH", store);
 		}
 		
-		Model model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectDefaultModel(store);
 		model.removeAll();
 		return model;
 	}
@@ -203,7 +203,7 @@ public class ModelPool {
 			stores.put("SQLSERVERINDEX", store);
 		}
 		
-		Model model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectDefaultModel(store);
 		model.removeAll();
 		return model;
 	}
@@ -224,7 +224,7 @@ public class ModelPool {
 			stores.put("SQLSERVERHASH", store);
 		}
 		
-		Model model = SDBFactory.connectModel(store);
+		Model model = SDBFactory.connectDefaultModel(store);
 		model.removeAll();
 		return model;
 	}
@@ -244,7 +244,7 @@ public class ModelPool {
 			stores.put("DERBYHASH", store);
 		}
         
-        Model model = SDBFactory.connectModel(store);
+        Model model = SDBFactory.connectDefaultModel(store);
         model.removeAll();
         return model;
 	}
@@ -264,7 +264,7 @@ public class ModelPool {
 			stores.put("DERBYINDEX", store);
 		}
         
-        Model model = SDBFactory.connectModel(store);
+        Model model = SDBFactory.connectDefaultModel(store);
         model.removeAll();
         return model;
 	}

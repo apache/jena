@@ -65,7 +65,7 @@ public class sdbinfo extends CmdArgsDB
     @Override
     protected void execCmd(List args)
     {
-        StoreConfig sConf = getModStore().getStore().getConfiguration() ;
+        StoreConfig sConf = getStore().getConfiguration() ;
         if ( sConf == null )
         {
             System.out.println("Configuration is null") ;

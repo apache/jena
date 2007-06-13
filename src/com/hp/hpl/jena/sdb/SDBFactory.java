@@ -9,10 +9,13 @@ package com.hp.hpl.jena.sdb;
 import java.sql.Connection;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 import com.hp.hpl.jena.query.Dataset;
 
+import com.hp.hpl.jena.sdb.graph.GraphSDB;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
@@ -21,14 +24,18 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreDesc;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 
-/** Various operations to create or connect: SDBConnections, Stores, Models, Graphs.
- *  Convenience calls to other factories.
+/** Various operations to create or connect objects to do with SDB:
+ *  SDBConnections, Stores, Models, Graphs.
+ *  Convenience calls.
+ *  
  * @author Andy Seaborne
  * @version $Id$
  */
 
 public class SDBFactory
 {
+    // ---- Connections
+    
     public static SDBConnection createConnection(String jdbcURL, String user, String password)
     { return new SDBConnection(jdbcURL, user, password) ; }
     
@@ -47,6 +54,9 @@ public class SDBFactory
     public static Store connectStore(String configFile) 
     { return StoreFactory.create(configFile) ; }
     
+    public static Store connectStore(StoreDesc desc) 
+    { return StoreFactory.create(desc) ; }
+
     public static Store connectStore(SDBConnection sdbConnection, StoreDesc desc) 
     { return StoreFactory.create(sdbConnection, desc) ; }
     
@@ -56,6 +66,8 @@ public class SDBFactory
         return StoreFactory.create(sdb, desc) ;
     }
 
+    // ---- Dataset
+    
     public static Dataset connectDataset(Store store)
     { return DatasetStore.create(store) ; }
 
@@ -65,26 +77,67 @@ public class SDBFactory
     public static Dataset connectDataset(String configFile)
     { return DatasetStore.create(connectStore(configFile)) ; }
     
-    public static Graph connectGraph(Store store)
-    { return StoreFactory.createGraph(store) ; }
-
-    public static Graph connectGraph(StoreDesc storeDesc)
-    { return StoreFactory.createGraph(storeDesc) ; }
+    // ---- Graph
     
-    public static Graph connectGraph(String configFile)
-    { return StoreFactory.createGraph(configFile) ; }
+    public static Graph connectDefaultGraph(String configFile)
+    { return connectDefaultGraph(StoreFactory.create(configFile)) ; }
+
+    public static Graph connectDefaultGraph(StoreDesc desc)
+    { return connectDefaultGraph(StoreFactory.create(desc)) ; }
+
+    public static Graph connectDefaultGraph(Store store)
+    { return new GraphSDB(store) ; }
+
     
-    public static Model connectModel(Store store)
-    { return StoreFactory.createModel(store) ; }
+    public static Graph connectNamedGraph(String configFile, String iri)
+    { return connectNamedGraph(StoreFactory.create(configFile), iri) ; }
 
-    public static Model connectModel(StoreDesc storeDesc)
-    { return StoreFactory.createModel(storeDesc) ; }
+    public static Graph connectNamedGraph(StoreDesc desc, String iri)
+    { return connectNamedGraph(StoreFactory.create(desc), iri) ; }
 
-    public static Model connectModel(String configFile)
-    { return StoreFactory.createModel(configFile) ; }
+    public static Graph connectNamedGraph(Store store, String iri)
+    { return new GraphSDB(store, iri) ; }
 
-    //public static ModelSDB modelForGraph(GraphSDB graph) { return new ModelSDB(graph) ; }
+    // ---- Model
+
+    public static Model connectDefaultModel(String configFile)
+    { return connectDefaultModel(StoreFactory.create(configFile)) ; }
+
+    public static Model connectDefaultModel(StoreDesc desc)
+    { return connectDefaultModel(StoreFactory.create(desc)) ; }
+
+    public static Model connectDefaultModel(Store store)
+    { return createModelSDB(store) ; }
+
     
+    public static Model connectNamedModel(StoreDesc desc, String iri)
+    { return connectNamedModel(StoreFactory.create(desc), iri) ; }
+
+    public static Model connectNamedModel(Store store, String iri)
+    { return createModelSDB(store, iri) ; }
+
+    public static Model connectNamedModel(String configFile, String iri)
+    { return connectNamedModel(StoreFactory.create(configFile), iri) ; }
+
+    public static Model connectNamedModel(StoreDesc desc, Node gn)
+    { return connectNamedModel(StoreFactory.create(desc), gn) ; }
+
+    public static Model connectNamedModel(Store store, Node gn)
+    { return createModelSDB(store, gn) ; }
+
+    public static Model connectNamedModel(String configFile, Node gn)
+    { return connectNamedModel(StoreFactory.create(configFile), gn) ; }
+
+    // ----
+    
+    private static Model createModelSDB(Store store)
+    { return ModelFactory.createModelForGraph(new GraphSDB(store)) ; }
+    
+    private static Model createModelSDB(Store store, String iri)
+    { return ModelFactory.createModelForGraph(new GraphSDB(store, iri)) ; }
+
+    private static Model createModelSDB(Store store, Node gn)
+    { return ModelFactory.createModelForGraph(new GraphSDB(store, gn)) ; }
 }
 
 /*

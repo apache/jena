@@ -97,12 +97,11 @@ public class sdbquery extends CmdArgsDB
         }
         
         // Force setup
-        getModStore().getStore() ;
+        getStore() ;
         if ( getModTime().timingEnabled() )
         {
             // Setup costs : flush classes into memory and establish connection
             getModTime().startTimer() ;
-            getModStore().getStore() ;
             long connectTime =  getModTime().endTimer() ;
             //System.out.println("Connect time:    "+timeStr(connectTime)) ;
             
