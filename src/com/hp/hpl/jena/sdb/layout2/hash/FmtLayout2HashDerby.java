@@ -12,6 +12,7 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.sdb.layout2.FmtLayout2;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TablePrefixes;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -45,7 +46,27 @@ public class FmtLayout2HashDerby extends FmtLayout2
             throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
         }
     }
-
+    
+    @Override
+    protected void formatTableQuads()
+    {
+        dropTable(TableDescQuads.name()) ;
+        try { 
+            connection().exec(sqlStr(
+                                 "CREATE TABLE "+TableDescQuads.name()+" (",
+                                 "    g BIGINT NOT NULL,",
+                                 "    s BIGINT NOT NULL,",
+                                 "    p BIGINT NOT NULL,",
+                                 "    o BIGINT NOT NULL,",
+                                 "    PRIMARY KEY (g, s, p, o)",
+                                 ")"                
+                    )) ;
+        } catch (SQLException ex)
+        {
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
+        }
+    }
+    
     @Override
     protected void formatTableNodes()
     {

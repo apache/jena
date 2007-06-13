@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL_MS;
+import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
@@ -16,10 +17,13 @@ public class StoreTriplesNodesHashSQLServer extends StoreBaseHash
     {
         super(connection,
               new FmtLayout2HashSQLServer(connection),
-              new LoaderHashSQLServer(connection),
+              //new LoaderHashSQLServer(connection),
+              new LoaderTuplesNodes(connection, TupleLoaderHashSQLServer.class),
               new QueryCompilerFactoryHash(),
               new SQLBridgeFactory2(),
               new GenerateSQL_MS()) ;
+        
+        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
 }
 

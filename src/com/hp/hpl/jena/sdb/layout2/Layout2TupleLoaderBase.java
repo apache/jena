@@ -112,10 +112,11 @@ public abstract class Layout2TupleLoaderBase extends TupleLoaderBase implements 
 	
 	@Override
 	public void finish() {
+		super.finish();
 		flush();
 	}
 	
-	public void flush() {
+	protected void flush() {
 		if (tupleNum == 0) return;
 		try {
 			boolean autoCommitState = connection().getSqlConnection().getAutoCommit();

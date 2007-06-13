@@ -55,6 +55,11 @@ public abstract class TupleLoaderBase
     {
         active = false ;
     }
+    
+    public void close()
+    {
+    	finish(); // make sure we're done
+    }
 }
 
 /*

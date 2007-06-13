@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sdb.layout2.hash;
 
+import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -25,14 +27,15 @@ public class StoreTriplesNodesHashHSQL extends StoreBaseHSQL
         // HSQL can't handle complex RHS of a left join so no optional spotting. 
         super(connection,
               new FmtLayout2HashHSQL(connection),
-              new LoaderHashHSQL(connection),
-              //new LoaderTuplesNodes(connection, TupleLoaderHashHSQL.class),
+              //new LoaderHashHSQL(connection),
+              new LoaderTuplesNodes(connection, TupleLoaderHashHSQL.class),
               new QueryCompilerFactoryHash(),
               new SQLBridgeFactory2(),
               new TableDescTriples(),
+              new TableDescQuads(),
               new TableNodesHash()) ; 
         
-        //((LoaderTuplesNodes) this.getLoader()).setStore(this);
+        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
 }
 

@@ -283,7 +283,7 @@ public class LoaderTuplesNodes
 				} catch (Exception e) {
 					throw new SDBException("Problem making new tupleloader", e);
 				}
-				
+				currentLoader.start();
 				tupleLoaders.put(tuple.table.getTableName(), currentLoader);
     		}
     	}

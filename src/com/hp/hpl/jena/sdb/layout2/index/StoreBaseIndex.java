@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.layout2.StoreBase;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -19,6 +20,7 @@ public class StoreBaseIndex extends StoreBase
     {
         super(connection, formatter, loader, compilerF, sqlBridgeF, sqlGenerator,
               new TableDescTriples(),
+              new TableDescQuads(),
               new TableNodesIndex()) ;
     }
 }

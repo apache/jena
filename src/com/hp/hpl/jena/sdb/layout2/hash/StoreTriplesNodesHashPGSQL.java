@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
@@ -16,10 +17,13 @@ public class StoreTriplesNodesHashPGSQL extends StoreBaseHash
     {
         super(connection,
               new FmtLayout2HashPGSQL(connection),
-              new LoaderHashPGSQL(connection),
+              //new LoaderHashPGSQL(connection),
+              new LoaderTuplesNodes(connection, TupleLoaderHashPGSQL.class),
               new QueryCompilerFactoryHash(),
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;
+        
+        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
 }
 

@@ -41,6 +41,7 @@ public class StoreBase
                      SQLBridgeFactory sqlBridgeF,
                      SQLGenerator sqlGenerator,
                      TableDescTriples    tripleTableDesc,
+                     TableDescQuads      quadTableDesc,
                      TableDescNodes      nodeTableDesc)
     {
         super(connection) ;
@@ -52,6 +53,7 @@ public class StoreBase
             sqlGenerator = new GenerateSQL() ;
         this.sqlGenerator = sqlGenerator ;
         this.tripleTableDesc = tripleTableDesc ;
+        this.quadTableDesc = quadTableDesc ;
         this.nodeTableDesc = nodeTableDesc ;
         
         configuration = new StoreConfig(connection()) ;

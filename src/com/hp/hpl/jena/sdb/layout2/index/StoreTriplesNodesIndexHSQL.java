@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -28,7 +29,7 @@ public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
               new FmtLayout2IndexHSQL(connection),
               new LoaderIndexHSQL(connection),
               new QueryCompilerFactoryIndex(),
-              new SQLBridgeFactory2(), new TableDescTriples(), new TableNodesIndex()) ;
+              new SQLBridgeFactory2(), new TableDescTriples(), new TableDescQuads(), new TableNodesIndex()) ;
     }
 }
 

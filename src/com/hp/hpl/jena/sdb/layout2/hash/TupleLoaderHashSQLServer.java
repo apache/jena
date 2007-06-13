@@ -4,9 +4,9 @@ import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class TupleLoaderHashHSQL extends Layout2TupleLoaderHashBase {
+public class TupleLoaderHashSQLServer extends Layout2TupleLoaderHashBase {
 
-	public TupleLoaderHashHSQL(SDBConnection connection, TableDesc tableDesc,
+	public TupleLoaderHashSQLServer(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {
 		super(connection, tableDesc, chunkSize);
 	}
@@ -20,16 +20,18 @@ public class TupleLoaderHashHSQL extends Layout2TupleLoaderHashBase {
 	}
 	
 	public String[] getCreateTempTable() {
-		return new String[] { "CREATE TEMPORARY TABLE" , "ON COMMIT DELETE ROWS" };
+		return new String[] { "CREATE TABLE" , "" };
 	}
 	
 	@Override
-	public String getClearTempNodes() {
-		return null;
+	public String getNodeLoader() {
+		// In SQL Server temp tables start with a #
+		return "#"+super.getNodeLoader();
 	}
-	
+
 	@Override
-	public String getClearTempTuples() {
-		return null;
+	public String getTupleLoader() {
+		// In SQL Server temp tables start with a #
+		return "#"+super.getTupleLoader();
 	}
 }

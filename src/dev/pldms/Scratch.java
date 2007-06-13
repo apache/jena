@@ -30,6 +30,7 @@ public class Scratch {
                 Store store = new StoreTriplesNodesHashHSQL(sdb);
 
                 store.getTableFormatter().format();
+                store.getTableFormatter().addIndexes();
                 TableDesc desc = store.getTripleTableDesc();
                 
                 Layout2TupleLoaderBase tl = new TupleLoaderHashHSQL(sdb, desc, 50);
@@ -55,6 +56,24 @@ public class Scratch {
                 System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
                 tl.unload(s1);
                 tl.unload(s2);
+                tl.finish();
+                System.out.println("Node count: " + getSize("Nodes", sdb));
+                System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
+                
+                desc = store.getQuadTableDesc();
+                
+                Node[] q1 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon(), Node.createAnon()};
+                Node[] q2 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon(), Node.createAnon()};
+                
+                tl = new TupleLoaderHashHSQL(sdb, desc, 50);
+                
+                tl.load(q1);
+                tl.load(q2);
+                tl.finish();
+                System.out.println("Node count: " + getSize("Nodes", sdb));
+                System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
+                tl.unload(q1);
+                tl.unload(q2);
                 tl.finish();
                 System.out.println("Node count: " + getSize("Nodes", sdb));
                 System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));

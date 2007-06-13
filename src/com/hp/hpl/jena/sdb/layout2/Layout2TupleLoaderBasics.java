@@ -5,4 +5,6 @@ public interface Layout2TupleLoaderBasics {
 	public String getTupleColType();
 	public String[] getCreateTempTable();
 	public String getLoadTuples();
+	public String getClearTempNodes();
+	public String getClearTempTuples();
 }

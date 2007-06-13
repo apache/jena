@@ -4,15 +4,15 @@ import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class TupleLoaderHashHSQL extends Layout2TupleLoaderHashBase {
+public class TupleLoaderHashPGSQL extends Layout2TupleLoaderHashBase {
 
-	public TupleLoaderHashHSQL(SDBConnection connection, TableDesc tableDesc,
+	public TupleLoaderHashPGSQL(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {
 		super(connection, tableDesc, chunkSize);
 	}
 	
 	public String[] getNodeColTypes() {
-		return new String[] {"BIGINT", "VARCHAR", "VARCHAR(10)", "VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
+		return new String[] {"BIGINT", "TEXT", "VARCHAR(10)", "VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
 	}
 	
 	public String getTupleColType() {

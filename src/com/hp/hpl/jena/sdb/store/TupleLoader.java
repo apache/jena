@@ -37,7 +37,11 @@ public interface TupleLoader
     /** Notify the finish of a sequence of rows to load.  
      * All data will have been loaded by the time this returns */ 
     public void finish() ;
-
+    
+    /** This TupleLoader is done with.
+     * Do not use a TupleLoader after calling close().
+     */
+    public void close() ;
     // Copied from StoreLoader but not called there currently.
     // If one only type needs these, put on an implementation.  
 //    public void setChunkSize(int chunks) ;

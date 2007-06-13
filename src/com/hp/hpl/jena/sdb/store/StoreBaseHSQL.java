@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.StoreBase;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.util.HSQLUtils;
@@ -27,10 +28,11 @@ public class StoreBaseHSQL extends StoreBase
                          QueryCompilerFactory compilerF,
                          SQLBridgeFactory sqlBridgeF,
                          TableDescTriples tripleTableDesc,
+                         TableDescQuads quadTableDesc,
                          TableDescNodes nodeTableDesc)
     {
         super(connection, formatter, loader, compilerF, sqlBridgeF, 
-              new GenerateSQL(), tripleTableDesc, nodeTableDesc) ;
+              new GenerateSQL(), tripleTableDesc, quadTableDesc, nodeTableDesc) ;
     }
 
     @Override 

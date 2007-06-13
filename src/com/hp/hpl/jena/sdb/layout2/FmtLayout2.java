@@ -24,6 +24,7 @@ public abstract class FmtLayout2
         formatTablePrefixes() ;
         formatTableNodes() ;
         formatTableTriples() ;
+        formatTableQuads() ;
     }
     
     public void truncate()
@@ -31,13 +32,20 @@ public abstract class FmtLayout2
         truncateTablePrefixes() ;
         truncateTableNodes() ;
         truncateTableTriples() ;
+        truncateTableQuads() ;
     }
     
     public void addIndexes()
-    { addIndexesTableTriples() ; }
+    {
+    	addIndexesTableTriples() ;
+    	addIndexesTableQuads() ;
+    }
     
     public void dropIndexes()
-    { dropIndexesTableTriples() ; }
+    {
+    	dropIndexesTableTriples() ;
+    	dropIndexesTableQuads() ;
+    }
 
     // Override this if the synatx is a bit different 
     protected void addIndexesTableTriples()
@@ -47,6 +55,19 @@ public abstract class FmtLayout2
             connection().exec("CREATE INDEX ObjSubj ON "+TableDescTriples.name()+" (o, s)") ;
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescTriples.name()+"'",ex) ; }
+    }
+    
+ // Override this if the synatx is a bit different 
+    protected void addIndexesTableQuads()
+    {
+        try {
+            connection().exec("CREATE INDEX SubjPredObjQ ON "+TableDescQuads.name()+" (s, p, o)") ;
+            connection().exec("CREATE INDEX ObjSubjQ ON "+TableDescQuads.name()+" (o, s)") ;
+            connection().exec("CREATE INDEX PredObjQ ON "+TableDescQuads.name()+" (p, o)") ;
+            connection().exec("CREATE INDEX GraPredObj ON "+TableDescQuads.name()+" (g, p, o)") ;
+            connection().exec("CREATE INDEX GraObjSubj ON "+TableDescQuads.name()+" (g, o, s)") ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException indexing table '"+TableDescQuads.name()+"'",ex) ; }
     }
     
     // Override this if the syntax is a bit different (many are for DROP INDEX)
@@ -59,11 +80,26 @@ public abstract class FmtLayout2
         { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescTriples.name()+"'",ex) ; }
     }
     
+    // Override this if the syntax is a bit different (many are for DROP INDEX)
+    protected void dropIndexesTableQuads()
+    {
+        try {
+            connection().exec("DROP INDEX SubjPredObjQ") ;
+            connection().exec("DROP INDEX ObjSubjQ") ;
+            connection().exec("DROP INDEX PredObjQ") ;
+            connection().exec("DROP INDEX GraPredObj") ;
+            connection().exec("DROP INDEX GraObjSubj") ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException dropping indexes for table '"+TableDescQuads.name()+"'",ex) ; }
+    }
+    
     abstract protected void formatTableTriples() ;
     abstract protected void formatTableNodes() ;
+    abstract protected void formatTableQuads() ;
     abstract protected void formatTablePrefixes() ;
     
-    protected void truncateTableTriples()  { truncateTable(TableDescTriples.name()) ; } 
+    protected void truncateTableTriples()  { truncateTable(TableDescTriples.name()) ; }
+    protected void truncateTableQuads() { truncateTable(TableDescQuads.name()) ; }
     protected void truncateTableNodes()    { truncateTable(TableDescNodes.name()) ; }
     protected void truncateTablePrefixes() { truncateTable(TablePrefixes.name()) ; }
     
