@@ -21,7 +21,7 @@ public class TableNodesIndex extends TableDescNodes
     public String getNodeRefColName()       { return TableDescNodes.colId ; }
     
     @Override
-    public String getIdColName()        { return TableDescNodes.colId ; }
+    public String getIdColName()            { return TableDescNodes.colId ; }
     
     @Override
     public String getNodeRefTypeString()    { return "integer" ; }
