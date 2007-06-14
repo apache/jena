@@ -16,10 +16,16 @@ import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 public class TableNodesHash extends TableDescNodes
 {
     @Override
-    public String getKeyColName()   { return TableDescNodes.colHash ; }
+    public String getNodeRefColName()   { return TableDescNodes.colHash ; }
     
     @Override
     public String getIdColName()    { return null ; }
+
+    @Override
+    public String getNodeRefTypeString()      { return "bigint" ; }
+
+    @Override
+    public int getNodeRefTypeNum()      { return java.sql.Types.BIGINT ; } 
 }
 
 /*

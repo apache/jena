@@ -123,7 +123,7 @@ public class SQLBridge2 extends SQLBridgeBase
         
         String tableAlias = request.genId(NodeBase) ; 
         SqlTable nTable = new SqlTable(nodeTableDesc.getTableName(), tableAlias) ;
-        String nodeKeyColName = nodeTableDesc.getKeyColName() ;
+        String nodeKeyColName = nodeTableDesc.getNodeRefColName() ;
         SqlColumn c2 = new SqlColumn(nTable, nodeKeyColName) ;
 
         nTable.setValueColumnForVar(var, c2) ;

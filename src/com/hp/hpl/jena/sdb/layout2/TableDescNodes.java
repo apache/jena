@@ -13,7 +13,7 @@ package com.hp.hpl.jena.sdb.layout2;
 
 public abstract class TableDescNodes
 {
-    // This is not a TableDesc - that onlt describes tables all of whose columns are Nodes.
+    // This is not a TableDesc - that only describes tables all of whose columns are Nodes.
     // TODO The formatters know the column names as well - refactor
     
     // This table is different in Hash and Index versions
@@ -34,8 +34,17 @@ public abstract class TableDescNodes
     
     public String getTableName()            { return tableName ; }
     
-    public abstract String getKeyColName() ;
-    public abstract String getIdColName() ; // Maybe null
+    // Details of the column that indexes nodes. 
+    // The SQL type of the primary key column is the column type for all
+    // tuple tables including triples and quads.
+    
+    public abstract String getNodeRefTypeString() ;         // As a string.
+    public abstract int getNodeRefTypeNum() ;               // As the java.sql.type number
+    // The name of the column which is the primary key of the node table. 
+    public abstract String getNodeRefColName() ;
+    
+    // The name of the id column (may be null if there isn't one) 
+    public abstract String getIdColName() ;
 
     public String getHashColName()          { return colHash ; }
     public String getLexColName()           { return colLex ; }

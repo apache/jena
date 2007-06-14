@@ -15,11 +15,20 @@ import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 
 public class TableNodesIndex extends TableDescNodes
 {
-    @Override
-    public String getKeyColName()   { return TableDescNodes.colId ; }
+    
     
     @Override
-    public String getIdColName()    { return TableDescNodes.colId ; }
+    public String getNodeRefColName()       { return TableDescNodes.colId ; }
+    
+    @Override
+    public String getIdColName()        { return TableDescNodes.colId ; }
+    
+    @Override
+    public String getNodeRefTypeString()    { return "integer" ; }
+
+    @Override
+    public int getNodeRefTypeNum()          { return java.sql.Types.INTEGER ; } 
+
 }
 
 /*

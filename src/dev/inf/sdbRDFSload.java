@@ -48,8 +48,12 @@ public class sdbRDFSload
         TupleTable tuples = new TupleTable(store, tableDesc) ;
         
         // ---- Create auxillary table
+        
+        String colType = store.getNodeTableDesc().getNodeRefTypeString() ;
         try {
-            String sqlCreateStr = "CREATE TABLE "+tableName+"( sub bigint not null, super bigint not null )" ;
+            String sqlCreateStr = 
+                String.format("CREATE TABLE %s ( sub %s not null, super %s not null )",
+                              tableName, colType, colType) ;
             store.getConnection().execUpdate(sqlCreateStr) ;
         } catch (SQLException ex) { throw new SDBExceptionSQL(ex) ; }
         
