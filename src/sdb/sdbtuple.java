@@ -24,6 +24,10 @@ public class sdbtuple extends CmdArgsDB
     
     private static ArgDecl argDeclCmdTable= new ArgDecl(true, "table") ;
     
+    boolean cmdPrint = false ;
+    boolean cmdLoad = false ;
+    String loadFile = null ;
+    
     public static void main(String ... args) { new sdbtuple(args).main() ; }
     
     public List<String> tables = new ArrayList<String>() ;
@@ -54,6 +58,13 @@ public class sdbtuple extends CmdArgsDB
         @SuppressWarnings("unchecked")
         List<String>y = (List<String>)getValues(argDeclCmdTable) ;
         tables.addAll(y) ;
+        
+        cmdLoad = contains(argDeclCmdLoad) ;
+        if ( cmdLoad )
+            loadFile = getValue(argDeclCmdLoad) ;
+        
+        cmdPrint = contains(argDeclCmdPrint) ;
+        
     }
 
     @Override
@@ -63,11 +74,6 @@ public class sdbtuple extends CmdArgsDB
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
 
-    private void execOne(String tableName)
-    {
-        execPrint(tableName) ;
-    }
-
     static final String divider = "- - - - - - - - - - - - - -" ;
     boolean needDivider = false ;
     private void divider()
@@ -76,6 +82,17 @@ public class sdbtuple extends CmdArgsDB
         needDivider = true ;
     }
     
+    // ---- Execution
+    
+    private void execOne(String tableName)
+    {
+        if ( ! cmdPrint & ! cmdLoad )
+            cmdError("Nothing to do!", true) ;
+        
+        if ( cmdPrint ) execPrint(tableName) ;
+        if ( cmdLoad ) execLoad(tableName) ;
+    }
+
     private void execPrint(String tableName)
     {
         Store store = getStore() ;
@@ -83,6 +100,15 @@ public class sdbtuple extends CmdArgsDB
         divider() ;
         table.dump() ;
     }
+
+    private void execLoad(String tableName)
+    {
+        cmdError("Tuple load - not implemented (yet)", true) ;
+        Store store = getStore() ;
+        TupleTable table = new TupleTable(store, tableName) ;
+        
+    }
+
 }
 
 /*
