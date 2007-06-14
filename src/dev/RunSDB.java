@@ -33,6 +33,11 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
+        
+        //sdb.sdbload.main("--sdb=sdb.ttl", "--graph=http://example/g1", "D.ttl") ;
+        sdb.sdbdump.main("--sdb=sdb.ttl", "--graph=http://ex/g1") ;
+        System.exit(0) ;
+        
         //SDBConnection.logSQLQueries = true ;
         //SDBConnection.logSQLStatements = true ;
         

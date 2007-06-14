@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
+import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
 
 
 
@@ -66,10 +67,11 @@ public class GraphSDB extends GraphBase implements Graph
 
     public GraphSDB(Store store, Node graphNode)
     {
-        this.store = store ;
-        this.graphNode = graphNode ;
         if ( graphNode == null )
             graphNode = Quad.defaultGraph ;
+
+        this.store = store ;
+        this.graphNode = graphNode ;
         
         // Avoid looping here : DatasetStoreGraph can make GraphSDB's
         datasetStore = new DatasetStoreGraph(store, this) ;
@@ -179,7 +181,7 @@ public class GraphSDB extends GraphBase implements Graph
         // Evaluate as an algebra expression
         BasicPattern pattern = new BasicPattern() ;
         pattern.add(triple) ;
-        Op op = new OpQuadPattern(Quad.defaultGraph, pattern) ;
+        Op op = new OpQuadPattern(graphNode, pattern) ;
         Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
         
         QueryIterator qIter = plan.iterator() ;
@@ -235,7 +237,15 @@ public class GraphSDB extends GraphBase implements Graph
     public void performAdd( Triple triple )
     {
     	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
-        store.getLoader().addTriple(triple) ;
+        
+        if ( graphNode == Quad.defaultGraph )
+            store.getLoader().addTriple(triple) ;
+        else
+        {
+            // XXX
+            StoreLoaderPlus x = (StoreLoaderPlus)store.getLoader() ;
+            x.addQuad(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        }
         if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();
     }
     
@@ -243,7 +253,14 @@ public class GraphSDB extends GraphBase implements Graph
     public void performDelete( Triple triple ) 
     {
     	if (inBulkUpdate == 0) store.getLoader().startBulkUpdate();
-        store.getLoader().deleteTriple(triple) ;
+        if ( graphNode == Quad.defaultGraph )
+            store.getLoader().deleteTriple(triple) ;
+        else
+        {
+            // XXX
+            StoreLoaderPlus x = (StoreLoaderPlus)store.getLoader() ;
+            x.deleteQuad(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+        }
         if (inBulkUpdate == 0) store.getLoader().finishBulkUpdate();
     }
     

@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.StoreLoader;
 
-
+// TODO To be removed
 public abstract class LoaderTriplesNodes
     extends SDBConnectionHolder
     implements StoreLoader, LoaderFmt
