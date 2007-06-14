@@ -35,6 +35,12 @@ public class TupleTable
     private SqlTable sqlTable ;
 
     // Column type?
+    
+    public TupleTable(Store store, String tableName)
+    {
+        this(store, getDesc(store, tableName)) ;
+    }
+    
     public TupleTable(Store store, TableDesc desc)
     { 
         this.store = store ;
@@ -50,7 +56,24 @@ public class TupleTable
             vars.add(var) ;
             sqlTable.setIdColumnForVar(var, new SqlColumn(sqlTable, colName)) ;
         }
-
+    }
+    
+    private static TableDesc getDesc(Store store, String tableName)
+    {
+        List<String> colVars = new ArrayList<String>() ;
+        try {
+            java.sql.ResultSet tableData = 
+                store.getConnection().execQuery("SELECT * FROM "+tableName+" LIMIT 1") ;
+            java.sql.ResultSetMetaData meta = tableData.getMetaData() ;
+            int N = meta.getColumnCount() ;
+            for ( int i = 1 ; i <= N ; i++ )
+            {
+                String colName = meta.getColumnName(i) ;
+                colVars.add(colName) ;
+            }
+            return new TableDesc(tableName, colVars) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL(ex) ; }
     }
     
     //public void format
@@ -82,7 +105,7 @@ public class TupleTable
     }
     
     // Dump, using SQL.
-    void dump()
+    public void dump()
     {
         QueryIterator qIter = iterator() ;
         ResultSetFormatter.out(ResultSetFactory.create(qIter, vars)) ;
