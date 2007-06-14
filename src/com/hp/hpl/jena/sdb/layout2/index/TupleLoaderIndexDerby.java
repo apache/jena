@@ -1,4 +1,4 @@
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import java.sql.SQLException;
 
@@ -8,11 +8,11 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class TupleLoaderHashDerby extends TupleLoaderHashBase {
+public class TupleLoaderIndexDerby extends TupleLoaderIndexBase {
 	
-	private static Log log = LogFactory.getLog(TupleLoaderHashDerby.class);
+	private static Log log = LogFactory.getLog(TupleLoaderIndexDerby.class);
 	
-	public TupleLoaderHashDerby(SDBConnection connection, TableDesc tableDesc,
+	public TupleLoaderIndexDerby(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {
 		super(connection, tableDesc, chunkSize);
 	}

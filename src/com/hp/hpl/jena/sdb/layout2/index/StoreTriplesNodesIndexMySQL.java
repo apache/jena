@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQLMySQL;
+import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -23,10 +24,12 @@ public class StoreTriplesNodesIndexMySQL extends StoreBaseIndex
         super(connection,
               new FmtLayout2IndexMySQL(connection, 
                                   (tableType!=null)? tableType : MySQLEngineType.InnoDB),
-              new LoaderIndexMySQL(connection),
+              new LoaderTuplesNodes(connection, TupleLoaderIndexMySQL.class),
               new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2(),
               new GenerateSQLMySQL()) ;
+        
+        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
 }
 

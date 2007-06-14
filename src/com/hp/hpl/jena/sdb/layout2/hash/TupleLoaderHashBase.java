@@ -1,12 +1,12 @@
 package com.hp.hpl.jena.sdb.layout2.hash;
 
-import com.hp.hpl.jena.sdb.layout2.Layout2TupleLoaderBase;
+import com.hp.hpl.jena.sdb.layout2.TupleLoaderBase;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public abstract class Layout2TupleLoaderHashBase extends Layout2TupleLoaderBase {
+public abstract class TupleLoaderHashBase extends TupleLoaderBase {
 
-	public Layout2TupleLoaderHashBase(SDBConnection connection,
+	public TupleLoaderHashBase(SDBConnection connection,
 			TableDesc tableDesc, int chunkSize) {
 		super(connection, tableDesc, chunkSize);
 	}
@@ -33,5 +33,16 @@ public abstract class Layout2TupleLoaderHashBase extends Layout2TupleLoaderBase 
 		
 		return stmt.toString();
 	}
-
+	
+	public String getDeleteTuples() {
+		StringBuilder stmt = new StringBuilder();
+		
+		stmt.append("DELETE FROM ").append(this.getTableName()).append(" \nWHERE\n");
+		for (int i = 0; i < this.getTableWidth(); i++) {
+			if (i != 0) stmt.append(" AND\n");
+			stmt.append(this.getTableDesc().getColNames().get(i)).append(" = ?");
+		}
+		
+		return stmt.toString();
+	}
 }

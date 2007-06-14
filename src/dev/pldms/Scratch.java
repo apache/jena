@@ -5,9 +5,9 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.SDBFactory;
-import com.hp.hpl.jena.sdb.layout2.Layout2TupleLoaderBase;
-import com.hp.hpl.jena.sdb.layout2.hash.StoreTriplesNodesHashHSQL;
-import com.hp.hpl.jena.sdb.layout2.hash.TupleLoaderHashHSQL;
+import com.hp.hpl.jena.sdb.layout2.TupleLoaderBase;
+import com.hp.hpl.jena.sdb.layout2.index.StoreTriplesNodesIndexHSQL;
+import com.hp.hpl.jena.sdb.layout2.index.TupleLoaderIndexHSQL;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
@@ -27,13 +27,13 @@ public class Scratch {
                 SDBConnection sdb = SDBFactory.createConnection(
                                 "jdbc:hsqldb:mem:aname", "sa", "");
 
-                Store store = new StoreTriplesNodesHashHSQL(sdb);
+                Store store = new StoreTriplesNodesIndexHSQL(sdb);
 
                 store.getTableFormatter().format();
                 store.getTableFormatter().addIndexes();
                 TableDesc desc = store.getTripleTableDesc();
                 
-                Layout2TupleLoaderBase tl = new TupleLoaderHashHSQL(sdb, desc, 50);
+                TupleLoaderBase tl = new TupleLoaderIndexHSQL(sdb, desc, 50);
                 
                 System.out.println("-------------");
                 System.out.println(tl.getCreateTempNodes());
@@ -54,7 +54,7 @@ public class Scratch {
                 tl.finish();
                 System.out.println("Node count: " + getSize("Nodes", sdb));
                 System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
-                tl.unload(s1);
+                //tl.unload(s1);
                 tl.unload(s2);
                 tl.finish();
                 System.out.println("Node count: " + getSize("Nodes", sdb));
@@ -65,7 +65,7 @@ public class Scratch {
                 Node[] q1 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon(), Node.createAnon()};
                 Node[] q2 = new Node[] {Node.createAnon(), Node.createAnon(), Node.createAnon(), Node.createAnon()};
                 
-                tl = new TupleLoaderHashHSQL(sdb, desc, 50);
+                tl = new TupleLoaderIndexHSQL(sdb, desc, 50);
                 
                 tl.load(q1);
                 tl.load(q2);
@@ -73,7 +73,7 @@ public class Scratch {
                 System.out.println("Node count: " + getSize("Nodes", sdb));
                 System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));
                 tl.unload(q1);
-                tl.unload(q2);
+                //tl.unload(q2);
                 tl.finish();
                 System.out.println("Node count: " + getSize("Nodes", sdb));
                 System.out.println("Tuple count: " + getSize(desc.getTableName(), sdb));

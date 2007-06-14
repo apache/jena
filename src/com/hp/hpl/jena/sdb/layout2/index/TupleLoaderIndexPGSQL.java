@@ -1,18 +1,18 @@
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class TupleLoaderHashHSQL extends TupleLoaderHashBase {
+public class TupleLoaderIndexPGSQL extends TupleLoaderIndexBase {
 
-	public TupleLoaderHashHSQL(SDBConnection connection, TableDesc tableDesc,
+	public TupleLoaderIndexPGSQL(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {
 		super(connection, tableDesc, chunkSize);
 	}
 	
 	public String[] getNodeColTypes() {
-		return new String[] {"BIGINT", "VARCHAR", "VARCHAR(10)", "VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
+		return new String[] {"BIGINT", "TEXT", "VARCHAR(10)", "VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
 	}
 	
 	public String getTupleColType() {

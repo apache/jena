@@ -11,6 +11,7 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 import java.sql.SQLException;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashMySQL;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
@@ -36,6 +37,26 @@ public class FmtLayout2IndexMySQL extends FmtLayout2HashMySQL
                                  "    p int  NOT NULL ,",
                                  "    o int  NOT NULL ,",
                                  "    PRIMARY KEY (s, p, o)",
+                                 ") ENGINE="+engineType.getEngineName()                
+                    )) ;
+        } catch (SQLException ex)
+        {
+            throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ;
+        }
+    }
+    
+    @Override
+    protected void formatTableQuads()
+    {
+        dropTable(TableDescQuads.name()) ;
+        try { 
+            connection().exec(sqlStr(
+                                 "CREATE TABLE "+TableDescQuads.name()+" (",
+                                 "    g int  NOT NULL ,",
+                                 "    s int  NOT NULL ,",
+                                 "    p int  NOT NULL ,",
+                                 "    o int  NOT NULL ,",
+                                 "    PRIMARY KEY (g, s, p, o)",
                                  ") ENGINE="+engineType.getEngineName()                
                     )) ;
         } catch (SQLException ex)

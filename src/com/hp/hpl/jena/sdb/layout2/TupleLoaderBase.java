@@ -13,9 +13,8 @@ import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.TableDesc;
-import com.hp.hpl.jena.sdb.store.TupleLoaderBase;
 
-public abstract class Layout2TupleLoaderBase extends TupleLoaderBase implements Layout2TupleLoaderBasics {
+public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoaderBase implements TupleLoaderBasics {
 	
 	PreparedStatement insertTupleLoader;
     PreparedStatement insertNodeLoader;
@@ -31,7 +30,7 @@ public abstract class Layout2TupleLoaderBase extends TupleLoaderBase implements 
     
     Set<Long> seenNodes; // For supressing duplicate nodes
     
-	public Layout2TupleLoaderBase(SDBConnection connection,
+	public TupleLoaderBase(SDBConnection connection,
 			TableDesc tableDesc, int chunkSize) {
 		super(connection, tableDesc);
 		this.chunkSize = chunkSize;
@@ -244,18 +243,6 @@ public abstract class Layout2TupleLoaderBase extends TupleLoaderBase implements 
 		}
 		stmt.append("\nFROM ").append(getNodeLoader()).append(" LEFT JOIN Nodes ON (");
 		stmt.append(getNodeLoader()).append(".n0=Nodes.hash) \nWHERE Nodes.hash IS NULL"); 
-		return stmt.toString();
-	}
-	
-	public String getDeleteTuples() {
-		StringBuilder stmt = new StringBuilder();
-		
-		stmt.append("DELETE FROM ").append(this.getTableName()).append(" \nWHERE\n");
-		for (int i = 0; i < this.getTableWidth(); i++) {
-			if (i != 0) stmt.append(" AND\n");
-			stmt.append(this.getTableDesc().getColNames().get(i)).append(" = ?");
-		}
-		
 		return stmt.toString();
 	}
 	

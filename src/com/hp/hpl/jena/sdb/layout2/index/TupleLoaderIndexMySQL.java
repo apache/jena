@@ -1,12 +1,12 @@
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class TupleLoaderHashMySQL extends TupleLoaderHashBase {
+public class TupleLoaderIndexMySQL extends TupleLoaderIndexBase {
 
-	public TupleLoaderHashMySQL(SDBConnection connection, TableDesc tableDesc,
+	public TupleLoaderIndexMySQL(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {
 		super(connection, tableDesc, chunkSize);
 	}
@@ -44,9 +44,13 @@ public class TupleLoaderHashMySQL extends TupleLoaderHashBase {
 		stmt.append("INSERT IGNORE INTO ").append(this.getTableName()).append(" \nSELECT ");
 		for (int i = 0; i < this.getTableWidth(); i++) {
 			if (i != 0) stmt.append(" , ");
-			stmt.append("t").append(i);
+			stmt.append("NI").append(i).append(".id");
 		}
-		stmt.append("\nFROM ").append(getTupleLoader());
+		stmt.append("\nFROM ").append(getTupleLoader()).append(" ");
+		for (int i = 0; i < this.getTableWidth(); i++) {
+			stmt.append("JOIN Nodes AS NI").append(i).append(" ON (");
+			stmt.append(getTupleLoader()).append(".t").append(i).append("=NI").append(i).append(".hash)\n");
+		}
 		
 		return stmt.toString();
 	}

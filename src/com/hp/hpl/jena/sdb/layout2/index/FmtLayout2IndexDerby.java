@@ -10,6 +10,7 @@ import static com.hp.hpl.jena.sdb.sql.SQLUtils.sqlStr;
 
 import java.sql.SQLException;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
+import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.layout2.hash.FmtLayout2HashDerby;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
@@ -52,7 +53,41 @@ public class FmtLayout2IndexDerby extends FmtLayout2HashDerby
         } catch (SQLException ex)
         { throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ; }
     }
-
+    
+    @Override
+    protected void formatTableQuads()
+    {
+        // TODO Generalize : return a template
+        TableDescQuads desc = new TableDescQuads() ;
+        dropTable(desc.getTableName()) ;
+        try { 
+            String x = sqlStr(
+                              "CREATE TABLE %s (",
+                              "    %2$s int NOT NULL,",
+                              "    %3$s int NOT NULL,",
+                              "    %4$s int NOT NULL,",
+                              "    %5$s int NOT NULL,",
+                              "    PRIMARY KEY (%2$s, %3$s, %4$s, %5$s)",
+                              ")") ;
+            x = String.format(x, desc.getTableName(),
+            		          desc.getGraphColName(),
+                              desc.getSubjectColName(),
+                              desc.getPredicateColName(),
+                              desc.getObjectColName()) ;
+            
+            connection().exec(sqlStr(
+                                 "CREATE TABLE "+desc.getTableName()+" (",
+                                 "    g int NOT NULL,",
+                                 "    s int NOT NULL,",
+                                 "    p int NOT NULL,",
+                                 "    o int NOT NULL,",
+                                 "    PRIMARY KEY (g, s, p, o)",
+                                 ")"                
+                    )) ;
+        } catch (SQLException ex)
+        { throw new SDBExceptionSQL("SQLException formatting table '"+TableDescTriples.name()+"'",ex) ; }
+    }
+    
     @Override
     protected void formatTableNodes()
     {

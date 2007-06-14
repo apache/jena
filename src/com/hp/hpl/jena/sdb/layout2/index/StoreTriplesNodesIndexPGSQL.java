@@ -7,6 +7,7 @@
 package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
+import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
@@ -16,10 +17,12 @@ public class StoreTriplesNodesIndexPGSQL extends StoreBaseIndex
     {
         super(connection,
               new FmtLayout2IndexPGSQL(connection),
-              new LoaderIndexPGSQL(connection),
+              new LoaderTuplesNodes(connection, TupleLoaderIndexPGSQL.class),
               new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2(),
               new GenerateSQL()) ;
+        
+        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
 }
 

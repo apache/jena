@@ -1,12 +1,12 @@
-package com.hp.hpl.jena.sdb.layout2.hash;
+package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class TupleLoaderHashSQLServer extends TupleLoaderHashBase {
+public class TupleLoaderIndexSQLServer extends TupleLoaderIndexBase {
 
-	public TupleLoaderHashSQLServer(SDBConnection connection, TableDesc tableDesc,
+	public TupleLoaderIndexSQLServer(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {
 		super(connection, tableDesc, chunkSize);
 	}

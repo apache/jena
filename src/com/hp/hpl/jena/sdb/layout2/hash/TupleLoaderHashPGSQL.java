@@ -4,7 +4,7 @@ import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-public class TupleLoaderHashPGSQL extends Layout2TupleLoaderHashBase {
+public class TupleLoaderHashPGSQL extends TupleLoaderHashBase {
 
 	public TupleLoaderHashPGSQL(SDBConnection connection, TableDesc tableDesc,
 			int chunkSize) {

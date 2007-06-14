@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
@@ -27,9 +28,11 @@ public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
         // HSQL can't handle complex RHS of a left join so no optional spotting. 
         super(connection,
               new FmtLayout2IndexHSQL(connection),
-              new LoaderIndexHSQL(connection),
+              new LoaderTuplesNodes(connection, TupleLoaderIndexHSQL.class),
               new QueryCompilerFactoryIndex(),
               new SQLBridgeFactory2(), new TableDescTriples(), new TableDescQuads(), new TableNodesIndex()) ;
+        
+        ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
 }
 
