@@ -91,6 +91,10 @@ public class LoaderTuplesNodes
     			queue.put(finishSignal);
     			commitThread.join();
     		}
+    		else
+    		{
+    			flushTriples();
+    		}
     	}
     	catch (Exception e)
     	{
@@ -99,9 +103,11 @@ public class LoaderTuplesNodes
     	}
     	finally
     	{
+    		for (TupleLoader loader: this.tupleLoaders.values()) loader.close();
     		this.initialized = false;
     		this.commitThread = null;
     		this.queue = null;
+    		this.tupleLoaderClass = null;
     	}
     }
     
