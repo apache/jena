@@ -11,6 +11,9 @@ import java.util.List;
 
 import sdb.cmd.CmdArgsDB;
 import arq.cmdline.ArgDecl;
+import arq.cmdline.CmdArgModule;
+import arq.cmdline.CmdGeneral;
+import arq.cmdline.ModBase;
 
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -19,13 +22,34 @@ import dev.inf.TupleTable;
 
 public class sdbtuple extends CmdArgsDB
 {
+    static class ModTuple extends ModBase
+    {
+        
+        public void registerWith(CmdGeneral cmdLine)
+        {}
+
+        public void processArgs(CmdArgModule cmdLine)
+        {}
+        
+    }
+    
+    private static ModTuple modTuple = new ModTuple() ;
+    
+    // Commands
     private static ArgDecl argDeclCmdPrint = new ArgDecl(false, "print") ;
     private static ArgDecl argDeclCmdLoad = new ArgDecl(true, "load") ;
+    private static ArgDecl argDeclCmdCreate = new ArgDecl(true, "create") ;
+    private static ArgDecl argDeclCmdDrop = new ArgDecl(true, "drop") ;
+
+    // Indexes?
     
     private static ArgDecl argDeclCmdTable= new ArgDecl(true, "table") ;
     
     boolean cmdPrint = false ;
     boolean cmdLoad = false ;
+    boolean cmdCreate = false ;
+    boolean cmdDrop = false ;
+    
     String loadFile = null ;
     
     public static void main(String ... args) { new sdbtuple(args).main() ; }
@@ -34,15 +58,35 @@ public class sdbtuple extends CmdArgsDB
     public sdbtuple(String... argv)
     {
         super(argv) ;
+        getUsage().startCategory("Tuple") ;
         add(argDeclCmdTable, "--table=TableName", "Tuple table to operate on (incldues positional arguments as well)") ;
+        
         add(argDeclCmdPrint, "--print", "Print a tuple table") ;
+        add(argDeclCmdPrint, "--load", "Load a tuple table") ;
+        add(argDeclCmdPrint, "--create", "Create a tuple table") ;
+        add(argDeclCmdPrint, "--drop", "Drop a tuple table") ;
     }
     
     @Override
     protected void execCmd(List<String> positionalArgs)
     {
+        int count = countBool(cmdPrint, cmdLoad, cmdCreate, cmdDrop) ;
+
+        if ( count == 0 )
+            cmdError("Nothing to do!", true) ;
+        if ( count > 1 )
+            cmdError("Too much to do!", true) ;
+        
         for ( String tableName : tables )
             execOne(tableName) ;
+    }
+    
+    private int countBool(boolean...bools)
+    {
+        int count = 0 ; 
+        for ( int i = 0 ; i < bools.length ; i++ )
+            if ( bools[i] ) count++ ;
+        return count ;
     }
     
     @Override
@@ -59,12 +103,14 @@ public class sdbtuple extends CmdArgsDB
         List<String>y = (List<String>)getValues(argDeclCmdTable) ;
         tables.addAll(y) ;
         
+        cmdPrint = contains(argDeclCmdPrint) ;
+
         cmdLoad = contains(argDeclCmdLoad) ;
         if ( cmdLoad )
             loadFile = getValue(argDeclCmdLoad) ;
         
-        cmdPrint = contains(argDeclCmdPrint) ;
-        
+        cmdCreate = contains(argDeclCmdCreate) ;
+        cmdDrop = contains(argDeclCmdDrop) ;
     }
 
     @Override
@@ -86,9 +132,6 @@ public class sdbtuple extends CmdArgsDB
     
     private void execOne(String tableName)
     {
-        if ( ! cmdPrint & ! cmdLoad )
-            cmdError("Nothing to do!", true) ;
-        
         if ( cmdPrint ) execPrint(tableName) ;
         if ( cmdLoad ) execLoad(tableName) ;
     }

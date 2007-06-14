@@ -16,8 +16,8 @@ import arq.cmdline.ModBase;
 
 public class ModData extends ModBase
 {
-    ArgDecl argDeclLoad = new ArgDecl(ArgDecl.HasValue, "data", "load") ;
-    List <String> filesToLoad = new ArrayList<String>() ;
+    private ArgDecl argDeclLoad = new ArgDecl(ArgDecl.HasValue, "data", "load") ;
+    private List <String> filesToLoad = new ArrayList<String>() ;
     
     public ModData() {}
     
