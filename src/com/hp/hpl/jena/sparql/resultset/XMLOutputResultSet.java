@@ -13,13 +13,14 @@ import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.query.*;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
-import com.hp.hpl.jena.sparql.util.RefBoolean;
 
 /** XML Output (ResultSet format)
  * 
@@ -33,7 +34,7 @@ public class XMLOutputResultSet
 {
     static boolean outputExplicitUnbound = false ;
     
-    static RefBoolean outputGraphBNodeLabels = new RefBoolean(ARQ.outputGraphBNodeLabels, false) ;
+    boolean outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels) ;
 
     int index = 0 ;                     // First index is 1 
     String stylesheetURL = null ;
@@ -190,7 +191,7 @@ public class XMLOutputResultSet
         {
             String label ;
             
-            if ( outputGraphBNodeLabels.getValue() )
+            if ( outputGraphBNodeLabels )
                 label = r.asNode().getBlankNodeId().getLabelString() ;
             else
             {

@@ -21,7 +21,6 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.util.RefBoolean;
 
 /**
  * JSON Output as a JSON object
@@ -35,7 +34,7 @@ public class JSONObjectResult implements ResultSetProcessor, JSONResults
 {
     static boolean outputExplicitUnbound = false;
 
-    static RefBoolean outputGraphBNodeLabels = new RefBoolean(ARQ.outputGraphBNodeLabels, false);
+    boolean outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels);
     int bNodeCounter = 0;
     Map bNodeMap = new HashMap();
     
@@ -139,7 +138,7 @@ public class JSONObjectResult implements ResultSetProcessor, JSONResults
         {
             String label;
             
-            if (outputGraphBNodeLabels.getValue())
+            if (outputGraphBNodeLabels)
                 label = resource.asNode().getBlankNodeId().getLabelString();
             else {
                 if (!bNodeMap.containsKey(resource))

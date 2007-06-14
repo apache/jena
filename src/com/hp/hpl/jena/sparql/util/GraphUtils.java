@@ -25,10 +25,7 @@ public class GraphUtils
 {
     static Log log = LogFactory.getLog(GraphUtils.class) ;
     
-    private static RefBoolean usePlainGraph = null ;
-    static {
-        usePlainGraph = new RefBoolean(ARQ.strictGraph) ;
-    }
+    private static RefBoolean usePlainGraph = new RefBoolean(ARQ.strictGraph) ;
 
     // These functions control creating models for datasets.
     

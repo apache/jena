@@ -26,7 +26,8 @@ public class Context
     protected List callbacks = new ArrayList() ;
     
     /** Create an empty context */
-    public Context() { }
+    public Context()
+    { }
     
     /** Create a context and initialize it with a copy of the named values of another one.
      *  Shallow copy: the values them selves are not copied
@@ -110,6 +111,7 @@ public class Context
     public void setAll(Context other)
     {
         context.putAll(other.context) ;
+        callbacks.addAll(other.callbacks) ;
     }
     
     // -- true/false

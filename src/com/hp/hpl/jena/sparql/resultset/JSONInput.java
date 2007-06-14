@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 import com.hp.hpl.jena.sparql.util.GraphUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
 import com.hp.hpl.jena.sparql.util.NodeUtils;
-import com.hp.hpl.jena.sparql.util.RefBoolean;
 import com.hp.hpl.jena.util.FileUtils;
 
 /**
@@ -102,7 +101,7 @@ public class JSONInput extends SPARQLResult
         QuerySolution current = null;
         List variables = new ArrayList();
         Binding binding = null; // Current binding
-        RefBoolean inputGraphLabels = new RefBoolean(ARQ.inputGraphBNodeLabels, false);
+        boolean inputGraphLabels = ARQ.isTrue(ARQ.inputGraphBNodeLabels) ;
 
         LabelToNodeMap bNodes = LabelToNodeMap.createBNodeMap() ;
 
@@ -283,7 +282,7 @@ public class JSONInput extends SPARQLResult
                     {
                         String label = jbinding.getString(dfValue) ;
                         Node node = null ;
-                        if ( inputGraphLabels.getValue() )
+                        if ( inputGraphLabels )
                             node = Node.createAnon(new AnonId(label)) ;
                         else
                             node = bNodes.asNode(label) ;

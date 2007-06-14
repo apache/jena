@@ -142,7 +142,8 @@ class XMLInputStAX extends SPARQLResult
         XMLStreamReader parser = null ;
         List variables = new ArrayList() ;
         Binding binding = null ;            // Current binding
-        RefBoolean inputGraphLabels = new RefBoolean(ARQ.inputGraphBNodeLabels, false) ;
+        //RefBoolean inputGraphLabels = new RefBoolean(ARQ.inputGraphBNodeLabels, false) ;
+        boolean inputGraphLabels = ARQ.isTrue(ARQ.inputGraphBNodeLabels) ; 
         
         LabelToNodeMap bNodes = LabelToNodeMap.createBNodeMap() ;
         
@@ -415,7 +416,8 @@ class XMLInputStAX extends SPARQLResult
                     {
                         String label = parser.getElementText() ;
                         Node node = null ;
-                        if ( inputGraphLabels.getValue() )
+                        //if ( inputGraphLabels.getValue() )
+                        if ( inputGraphLabels )
                             node = Node.createAnon(new AnonId(label)) ;
                         else
                             node = bNodes.asNode(label) ;

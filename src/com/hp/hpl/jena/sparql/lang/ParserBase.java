@@ -14,10 +14,10 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.vocabulary.RDF;
-
 import com.hp.hpl.jena.n3.JenaURIException;
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException;
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -27,10 +27,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.TripleCollector;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap;
-import com.hp.hpl.jena.sparql.util.RefBoolean;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QueryParseException;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ParserBase
 {
@@ -216,7 +213,8 @@ public class ParserBase
     }
     
     final static String bNodeLabelStart = "_:" ;
-    RefBoolean skolomizedBNodes = new RefBoolean(ARQ.constantBNodeLabels) ;
+    
+    boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
     
     protected Node createNodeFromURI(String s, int line, int column)
     {
@@ -225,7 +223,7 @@ public class ParserBase
         String uriStr = s ;     // Mutated
         
         // Is it a bNode label? i.e. <_:xyz>
-        if ( skolomizedBNodes.getValue() && s.startsWith(bNodeLabelStart) )
+        if ( skolomizedBNodes && s.startsWith(bNodeLabelStart) )
         {
             s = s.substring(bNodeLabelStart.length()) ;
             Node n = Node.createAnon(new AnonId(s)) ;
