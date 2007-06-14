@@ -36,19 +36,21 @@ public class sdbtuple extends CmdArgsDB
     private static ModTuple modTuple = new ModTuple() ;
     
     // Commands
-    private static ArgDecl argDeclCmdPrint = new ArgDecl(false, "print") ;
-    private static ArgDecl argDeclCmdLoad = new ArgDecl(true, "load") ;
-    private static ArgDecl argDeclCmdCreate = new ArgDecl(true, "create") ;
-    private static ArgDecl argDeclCmdDrop = new ArgDecl(true, "drop") ;
+    private static ArgDecl  argDeclCmdPrint    = new ArgDecl(false, "print") ;
+    private static ArgDecl  argDeclCmdLoad     = new ArgDecl(true, "load") ;
+    private static ArgDecl  argDeclCmdCreate   = new ArgDecl(false, "create") ;
+    private static ArgDecl  argDeclCmdDrop     = new ArgDecl(false, "drop") ;
+    private static ArgDecl  argDeclCmdTruncate = new ArgDecl(false, "truncate") ;
 
     // Indexes?
     
     private static ArgDecl argDeclCmdTable= new ArgDecl(true, "table") ;
     
-    boolean cmdPrint = false ;
-    boolean cmdLoad = false ;
-    boolean cmdCreate = false ;
-    boolean cmdDrop = false ;
+    boolean cmdPrint        = false ;
+    boolean cmdLoad         = false ;
+    boolean cmdCreate       = false ;
+    boolean cmdDrop         = false ;
+    boolean cmdTruncate     = false ;
     
     String loadFile = null ;
     
@@ -65,20 +67,7 @@ public class sdbtuple extends CmdArgsDB
         add(argDeclCmdPrint, "--load", "Load a tuple table") ;
         add(argDeclCmdPrint, "--create", "Create a tuple table") ;
         add(argDeclCmdPrint, "--drop", "Drop a tuple table") ;
-    }
-    
-    @Override
-    protected void execCmd(List<String> positionalArgs)
-    {
-        int count = countBool(cmdPrint, cmdLoad, cmdCreate, cmdDrop) ;
-
-        if ( count == 0 )
-            cmdError("Nothing to do!", true) ;
-        if ( count > 1 )
-            cmdError("Too much to do!", true) ;
-        
-        for ( String tableName : tables )
-            execOne(tableName) ;
+        add(argDeclCmdPrint, "--truncate", "Truncate a tuple table") ;
     }
     
     private int countBool(boolean...bools)
@@ -111,11 +100,12 @@ public class sdbtuple extends CmdArgsDB
         
         cmdCreate = contains(argDeclCmdCreate) ;
         cmdDrop = contains(argDeclCmdDrop) ;
+        cmdTruncate = contains(argDeclCmdTruncate) ;
     }
 
     @Override
     protected String getSummary()
-    { return getCommandName()+" --sdb <SPEC> [--print|--??] [--table TableName] TableName..." ; }
+    { return getCommandName()+" --sdb <SPEC> [--print|--load|--create|--drop] [--table TableName] TableName..." ; }
 
     @Override
     protected String getCommandName() { return Utils.className(this) ; }
@@ -130,10 +120,32 @@ public class sdbtuple extends CmdArgsDB
     
     // ---- Execution
     
+    @Override
+    protected void execCmd(List<String> positionalArgs)
+    {
+        int count = countBool(cmdPrint, cmdLoad, cmdCreate, cmdDrop, cmdTruncate) ;
+    
+        if ( count == 0 )
+            cmdError("No command : nothing to do!", true) ;
+        if ( count > 1 )
+            cmdError("Too many commands : too much to do!", true) ;
+        
+        if ( tables.size() != 1 )
+            // May relax this ...
+            cmdError("Can only operate on one table", true) ;
+        
+        for ( String tableName : tables )
+            execOne(tableName) ;
+    }
+
     private void execOne(String tableName)
     {
         if ( cmdPrint ) execPrint(tableName) ;
         if ( cmdLoad ) execLoad(tableName) ;
+        if ( cmdCreate ) cmdError("Tuple create - not implemented (yet)", true) ;
+        if ( cmdDrop ) cmdError("Tuple drop - not implemented (yet)", true) ;
+        if ( cmdTruncate ) cmdError("Tuple truncate - not implemented (yet)", true) ;
+            
     }
 
     private void execPrint(String tableName)

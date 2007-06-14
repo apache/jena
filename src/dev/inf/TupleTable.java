@@ -78,7 +78,7 @@ public class TupleTable
     
     //public void format
     //public void drop
-    //public void drop
+    //public void create
     //public load
     
     public List<Var> getVars() 
