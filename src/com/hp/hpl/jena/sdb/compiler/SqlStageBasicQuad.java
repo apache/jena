@@ -9,7 +9,6 @@ package com.hp.hpl.jena.sdb.compiler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sdb.SDBException;
 import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList;
@@ -35,13 +34,6 @@ public class SqlStageBasicQuad implements SqlStage
     {
         SqlExprList conditions = new SqlExprList() ;
         boolean defaultGraph = quad.getGraph().equals(Quad.defaultGraph) ;
-        
-        // CHECKING
-        if ( ! defaultGraph )
-        {
-            log.fatal("Non-default graph") ;
-            throw new SDBException("Non-default graph") ;
-        }
         
         // The default graph table may be a specialized quad table,
         // or it may be the same as the quad table with a known name.

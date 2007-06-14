@@ -35,7 +35,7 @@ public class RunSDB
         SDBConnection.logSQLExceptions = true ;
         
         //sdb.sdbload.main("--sdb=sdb.ttl", "--graph=http://example/g1", "D.ttl") ;
-        sdb.sdbdump.main("--sdb=sdb.ttl", "--graph=http://ex/g1") ;
+        sdb.sdbdump.main("--sdb=sdb.ttl", "--graph=http://ex/g1", "--out=TTL") ;
         System.exit(0) ;
         
         //SDBConnection.logSQLQueries = true ;
