@@ -9,11 +9,34 @@ package com.hp.hpl.jena.n3.turtle;
 import com.hp.hpl.jena.graph.Triple;
 
 
-public interface TripleHandler
+public class TurtleEventDump implements TurtleEventHandler
 {
-    public void triple(int line, int col, Triple triple) ;
-    public void startFormula(int line, int col) ;
-    public void endFormula(int line, int col) ;
+    
+    public void triple(int line, int col, Triple triple)
+    {
+        System.out.print(mark(line, col)) ;
+        System.out.println(triple.toString()) ;
+    }
+    
+    public void startFormula(int line, int col)
+    {
+        System.out.print(mark(line, col)) ;
+        System.out.println("{") ;
+    }
+    
+    public void endFormula(int line, int col)
+    {
+        System.out.print(mark(line, col)) ;
+        System.out.println("}") ;
+    }
+
+    private String mark(int line, int col) { return "["+line+", "+col+"]" ; }
+
+    public void prefix(int line, int col, String prefix, String iri)
+    { 
+        System.out.print(mark(line, col)) ;
+        System.out.println(prefix+" => "+iri) ;
+    }
 }
 
 /*

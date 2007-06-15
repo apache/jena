@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -8,14 +8,20 @@ package com.hp.hpl.jena.n3.turtle;
 
 import com.hp.hpl.jena.graph.Triple;
 
-
-public interface TripleCollector
+/**
+ * @author Andy Seaborne
+ * @version $Id: TurtleEventNull.java,v 1.1 2007-06-15 18:32:04 andy_seaborne Exp $
+ */
+public class TurtleEventNull implements TurtleEventHandler
 {
-    public void addTriple(Triple t) ;
+    public void triple(int line, int col, Triple triple)  {}
+    public void startFormula(int line, int col)           {}
+    public void endFormula(int line, int col)             {}
+    public void prefix(int line, int col, String prefix, String iri) {}
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,31 +1,24 @@
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
 package com.hp.hpl.jena.n3.turtle;
 
-import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
 
 
-public class TripleInserter implements TripleHandler
+public interface TurtleEventHandler
 {
-    Graph graph = null ;
-    public TripleInserter(Graph graph) { this.graph = graph ; }
-    
-    public void triple(int line, int col, Triple triple) { graph.add(triple) ; }
-
-    public void startFormula(int line, int col)
-    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
-
-    public void endFormula(int line, int col)
-    { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
+    public void triple(int line, int col, Triple triple) ;
+    public void prefix(int line, int col, String prefix, String iri) ;
+    public void startFormula(int line, int col) ;
+    public void endFormula(int line, int col) ;
 }
 
 /*
- * (c) Copyright 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

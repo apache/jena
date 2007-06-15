@@ -32,6 +32,8 @@ public class ParserTurtle
         }
     }
     
+    //private ParserTurtle() {}
+    
     public void parse(Graph graph, String baseURI, InputStream in)
     {
         Reader reader = FileUtils.asUTF8(in) ;
@@ -43,10 +45,9 @@ public class ParserTurtle
         // Nasty things happen if the reader is not UTF-8.
         try {
             TurtleParser parser = new TurtleParser(reader) ;
-            parser.setTripleHandler(new TripleInserter(graph)) ;
+            parser.setEventHandler(new TurtleEventInserter(graph)) ;
             parser.setBaseURI(baseURI) ;
             parser.parse() ;
-            graph.getPrefixMapping().withDefaultMappings(parser.getPrefixMapping()) ;
         }
         catch (ParseException ex)
         { throw new TurtleParseException(ex.getMessage()) ; }

@@ -8,7 +8,7 @@ package jena;
 
 import java.io.Reader;
 
-import com.hp.hpl.jena.n3.turtle.TripleDump;
+import com.hp.hpl.jena.n3.turtle.TurtleEventDump;
 import com.hp.hpl.jena.n3.turtle.TurtleParseException;
 import com.hp.hpl.jena.n3.turtle.parser.ParseException;
 import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError;
@@ -26,7 +26,7 @@ public class turtle
 
         try {
             TurtleParser parser = new TurtleParser(reader) ;
-            parser.setTripleHandler(new TripleDump()) ;
+            parser.setEventHandler(new TurtleEventDump()) ;
             parser.setBaseURI(filename) ;
             parser.parse() ;
         }

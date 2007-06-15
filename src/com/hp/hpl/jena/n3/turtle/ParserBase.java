@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -40,19 +40,17 @@ public class ParserBase
     
     // Resolver
     protected IRIResolver resolver = null ;
-//    protected String baseURI = null ;
-//    protected String getBaseURI() { return baseURI ; }
     
-    public void   setBaseURI(String u) { resolver = new IRIResolver(u) ; }
-    
-    protected PrefixMapping pmap = new PrefixMappingImpl() ; 
-    public    PrefixMapping getPrefixMapping() { return pmap ; }
+    protected String getBaseURI()       { return resolver.getBaseIRI() ; }
+    public void setBaseURI(String u)    { resolver = new IRIResolver(u) ; }
     
     // label => bNode for construct templates patterns
     LabelToNodeMap bNodeLabels = new LabelToNodeMap() ;
+    PrefixMapping prefixMapping = new PrefixMappingImpl() ;
+    public PrefixMapping getPrefixMapping() { return prefixMapping ; }
     
-    TripleHandler handler = null ; 
-    public void setTripleHandler(TripleHandler h) { handler = h ; }
+    TurtleEventHandler handler = null ; 
+    public void setEventHandler(TurtleEventHandler h) { handler = h ; }
     
     protected void emitTriple(int line, int col, Triple triple)
     {
@@ -65,9 +63,10 @@ public class ParserBase
     protected void endFormula(int line, int col)
     {handler.endFormula(line, col) ; }
     
-    protected void setPrefix(String prefix, String uri)
+    protected void setPrefix(int line, int col, String prefix, String uri)
     {
-        pmap.setNsPrefix(prefix, uri) ;
+        getPrefixMapping().setNsPrefix(prefix, uri) ;
+        handler.prefix(line, col, prefix, uri) ;
     }
     
     protected int makePositiveInteger(String lexicalForm)
@@ -373,7 +372,7 @@ public class ParserBase
 }
 
 /*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

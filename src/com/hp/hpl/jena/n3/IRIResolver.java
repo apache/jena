@@ -32,6 +32,8 @@ public class IRIResolver
 //            throw new JenaURIException("Null base IRI") ;
     }
 
+    public String getBaseIRI() { return baseStr ; }
+    
     public String resolve(String relURI)
     {
         return RelURI.resolve(relURI, baseStr) ;

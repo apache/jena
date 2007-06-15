@@ -60,7 +60,7 @@ void Directive() : { Token t ; Node n ; }
     // Looks like a LANTAG
     <PREFIX> t = <QNAME_NS> n = Q_IRI_REF()
     { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-      setPrefix(s, n.getURI()) ; }
+      setPrefix(t.beginLine, t.beginColumn, s, n.getURI()) ; }
 }
 
 // -------- PATH
