@@ -91,11 +91,16 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
             // V_1_lex, etc etc
             
             int j = p.lastIndexOf(splitMarker) ;
-            String x = p.substring(0, j) ;
-            if ( currentPrefix != null && ! x.equals(currentPrefix) )
-                out.println() ;
-            
-            currentPrefix = x ;
+            if ( j == -1 )
+                currentPrefix = null ;
+            else
+            {
+                String x = p.substring(0, j) ;
+                if ( currentPrefix != null && ! x.equals(currentPrefix) )
+                    out.println() ;
+                
+                currentPrefix = x ;
+            }
             out.print(c.cdr().asString()) ;
             
             if ( aliasVar != null )

@@ -1,0 +1,10 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example/> .
+
+:xx :q 10 .
+:xx :q 20 .
+
+## :C1 rdfs:subClassOf :C2 .
+## :C2 rdfs:subClassOf :C3 .
+## :C8 rdfs:subClassOf :C9 .

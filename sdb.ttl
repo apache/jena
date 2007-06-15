@@ -4,9 +4,13 @@
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
 _:c rdf:type sdb:SDBConnection ;
-    sdb:sdbType        "derby" ;
-    sdb:sdbName        "DB/SDB2" ;
-    sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
+##     sdb:sdbType        "derby" ;
+##     sdb:sdbName        "DB/SDB2" ;
+##     sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
+    sdb:sdbType        "postgresql" ;
+    sdb:sdbHost        "localhost" ;
+    sdb:sdbName        "SDB2" ;
+    sdb:driver         "org.postgresql.Driver" ;
     .
 
 [] rdf:type sdb:Store ;

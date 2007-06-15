@@ -16,6 +16,7 @@ import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModBase;
 
 import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 import dev.inf.TupleTable;
@@ -46,11 +47,11 @@ public class sdbtuple extends CmdArgsDB
     
     private static ArgDecl argDeclCmdTable= new ArgDecl(true, "table") ;
     
-    boolean cmdPrint        = false ;
-    boolean cmdLoad         = false ;
-    boolean cmdCreate       = false ;
-    boolean cmdDrop         = false ;
-    boolean cmdTruncate     = false ;
+    private boolean         cmdPrint           = false ;
+    private boolean         cmdLoad            = false ;
+    private boolean         cmdCreate          = false ;
+    private boolean         cmdDrop            = false ;
+    private boolean         cmdTruncate        = false ;
     
     String loadFile = null ;
     
@@ -62,19 +63,20 @@ public class sdbtuple extends CmdArgsDB
         super(argv) ;
         getUsage().startCategory("Tuple") ;
         add(argDeclCmdTable, "--table=TableName", "Tuple table to operate on (incldues positional arguments as well)") ;
-        
         add(argDeclCmdPrint, "--print", "Print a tuple table") ;
-        add(argDeclCmdPrint, "--load", "Load a tuple table") ;
-        add(argDeclCmdPrint, "--create", "Create a tuple table") ;
-        add(argDeclCmdPrint, "--drop", "Drop a tuple table") ;
-        add(argDeclCmdPrint, "--truncate", "Truncate a tuple table") ;
+        add(argDeclCmdLoad, "--load", "Load a tuple table") ;
+        add(argDeclCmdCreate, "--create", "Create a tuple table") ;
+        add(argDeclCmdDrop, "--drop", "Drop a tuple table") ;
+        add(argDeclCmdTruncate, "--truncate", "Truncate a tuple table") ;
     }
     
     private int countBool(boolean...bools)
     {
         int count = 0 ; 
         for ( int i = 0 ; i < bools.length ; i++ )
+        {
             if ( bools[i] ) count++ ;
+        }
         return count ;
     }
     
@@ -140,18 +142,26 @@ public class sdbtuple extends CmdArgsDB
 
     private void execOne(String tableName)
     {
-        if ( cmdPrint ) execPrint(tableName) ;
-        if ( cmdLoad ) execLoad(tableName) ;
-        if ( cmdCreate ) cmdError("Tuple create - not implemented (yet)", true) ;
-        if ( cmdDrop ) cmdError("Tuple drop - not implemented (yet)", true) ;
-        if ( cmdTruncate ) cmdError("Tuple truncate - not implemented (yet)", true) ;
-            
+        if ( cmdPrint )     execPrint(tableName) ;
+        if ( cmdLoad )      execLoad(tableName) ;
+        if ( cmdCreate )    cmdError("Tuple create - not implemented (yet)", true) ;
+        if ( cmdDrop )      cmdError("Tuple drop - not implemented (yet)", true) ;
+        if ( cmdTruncate )  cmdError("Tuple truncate - not implemented (yet)", true) ;
     }
 
     private void execPrint(String tableName)
     {
         Store store = getStore() ;
-        TupleTable table = new TupleTable(store, tableName) ;
+        TupleTable table = null ;
+        if ( tableName.equalsIgnoreCase(store.getNodeTableDesc().getTableName()))
+        {
+            // A hack.
+            // Need to chage SQLBridge to work on Node tables directly (no special build of value getters)
+            TableDesc desc = new TableDesc(tableName, store.getNodeTableDesc().getNodeRefColName()) ; 
+            table = new TupleTable(store, desc) ;
+        }
+        else
+            table = new TupleTable(store, tableName) ;
         divider() ;
         table.dump() ;
     }
@@ -160,8 +170,12 @@ public class sdbtuple extends CmdArgsDB
     {
         cmdError("Tuple load - not implemented (yet)", true) ;
         Store store = getStore() ;
-        TupleTable table = new TupleTable(store, tableName) ;
-        
+
+        TupleTable table = null ;
+        if ( tableName.equalsIgnoreCase(store.getNodeTableDesc().getTableName()))
+            cmdError("Can't load the node table as a tupole table" );
+        else
+            table = new TupleTable(store, tableName) ;
     }
 
 }

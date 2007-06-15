@@ -33,7 +33,8 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        
+        sdb.sdbtuple.main("--sdb=sdb.ttl", "--print", "Nodes") ;
+        System.exit(0) ;
         //sdb.sdbload.main("--sdb=sdb.ttl", "--graph=http://example/g1", "D.ttl") ;
         sdb.sdbdump.main("--sdb=sdb.ttl", "--graph=http://ex/g1", "--out=TTL") ;
         System.exit(0) ;

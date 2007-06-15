@@ -90,7 +90,7 @@ public class TupleTable
     {
         SDBRequest request = new SDBRequest(store, null) ;
         String tableName = desc.getTableName() ;
-
+        
         SQLBridge b = store.getSQLBridgeFactory().create(request, sqlTable, vars) ;
         b.build() ;
 

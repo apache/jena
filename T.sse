@@ -1,0 +1,9 @@
+(trans-class
+  (<http://example/C1> <http://example/C1>)
+  (<http://example/C1> <http://example/C2>)
+  (<http://example/C3> <http://example/C3>)
+  (<http://example/C2> <http://example/C3>)
+  (<http://example/C2> <http://example/C2>)
+  (<http://example/C8> <http://example/C8>)
+  (<http://example/C8> <http://example/C9>)
+  (<http://example/C9> <http://example/C9>))

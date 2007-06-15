@@ -5,6 +5,8 @@ SDB ToDo list (and general notes)
 ** Subclass loading.
 ** OpSlice
 
++ Database to store Node_Variables?
+
 + Web site (on jena.hpl?)
 + Tranasactions - cleanup.
 + Graph => Quad
