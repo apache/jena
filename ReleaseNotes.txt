@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-Post 2.5.2
+==== Jena 2.5.3
 
 Statement.Util
     o The interface Statement has grown a Util class containing
