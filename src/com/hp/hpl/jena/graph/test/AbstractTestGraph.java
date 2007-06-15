@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.74 2007-06-05 09:43:20 jeremy_carroll Exp $i
+  $Id: AbstractTestGraph.java,v 1.75 2007-06-15 14:52:54 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -689,7 +689,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testRemoveSomeEvent()
         {
         Graph g = getAndRegister( L );
-        Node S = node( "S" ), P = node( "?P" ), O = node( "??" );
+        Node S = node( "S" ), P = node( "??" ), O = node( "??" );
         g.getBulkUpdateHandler().remove( S, P, O );
         Object event = GraphEvents.remove( S, P, O );
         L.assertHas( new Object[] { "someEvent", g, event } );        
