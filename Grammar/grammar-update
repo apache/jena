@@ -1,7 +1,7 @@
 #!/bin/bash
 # Parser builder
 
-GRAMMAR="${GRAMMAR:-"sparul.jj"}"
+GRAMMAR="${GRAMMAR:-"sparql-update.jj"}"
 BASE="com/hp/hpl/jena/sparql/"
 # --------------------------------------------------------
 
@@ -87,7 +87,7 @@ for G in "$@"
   do
   case "$G" in
   $GRAMMAR)
-    grammar sparul.jj modify/lang/parser SPARULParser
+    grammar sparql-update.jj modify/lang/parser SPARQLUpdateParser
     ;;
   *)    echo "**** Unknown grammar: $G" 1>&2
     ;;

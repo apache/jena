@@ -14,7 +14,7 @@ options
 //  DEBUG_TOKEN_MANAGER   = true ;
 }
 
-PARSER_BEGIN(SPARULParser)
+PARSER_BEGIN(SPARQLUpdateParser)
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
@@ -28,10 +28,10 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.modify.op.* ;
 
-public class SPARULParser extends SPARULParserBase
+public class SPARQLUpdateParser extends SPARQLUpdateParserBase
 {
 }
-PARSER_END(SPARULParser)
+PARSER_END(SPARQLUpdateParser)
 
 // SPARQUL parts.
 
@@ -51,7 +51,7 @@ TOKEN [IGNORE_CASE] :
 | <ABORT:       "abort" >
 }
 
-void SPARUL() : {}
+void SPARQLUpdate() : {}
 {
     Prologue()
     ( 

@@ -1,7 +1,7 @@
 
 DOCUMENT START
 NON-TERMINALS
-	SPARUL	:=	Prologue ( ( Update | Manage ) )* <EOF>
+	SPARQLUpdate	:=	Prologue ( ( Update | Manage ) )* <EOF>
 	Update	:=	( ( Modify | Insert | Delete ) ( WhereClause )? )
 		|	( ( Load | Clear ) )
 	Modify	:=	<MODIFY> ( GraphIRI )* <DELETE> ConstructTemplate <INSERT> ConstructTemplate
