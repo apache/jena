@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.sparql.modify.lang.ParserSPARUL;
+import com.hp.hpl.jena.sparql.modify.lang.ParserSPARQLUpdate;
 import com.hp.hpl.jena.sparql.modify.op.UpdateCreate;
 import com.hp.hpl.jena.sparql.modify.op.UpdateInsert;
 import com.hp.hpl.jena.sparql.modify.op.UpdateLoad;
@@ -124,7 +124,7 @@ public class DEV
             str = FileManager.get().readWholeFileAsUTF8(System.in);
         else
             str = FileManager.get().readWholeFileAsUTF8(argv[0]) ;
-        ParserSPARUL p = new ParserSPARUL() ;
+        ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, str) ;
         System.out.println("Finished parsing") ;
@@ -132,7 +132,7 @@ public class DEV
         System.out.print(serialForm) ;
         
         // Check
-        p = new ParserSPARUL() ;
+        p = new ParserSPARQLUpdate() ;
         update = new UpdateRequest() ;
         p.parse(update, serialForm) ;
         

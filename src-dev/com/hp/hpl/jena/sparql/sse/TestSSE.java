@@ -62,6 +62,13 @@ public class TestSSE extends TestCase
     public void testLit_10() { parseBad("''@") ; }
     public void testLit_11() { testNode("'''abc\ndef'''") ; }
     
+    // ^^parsing is broken.
+    public void testTypedLit_1() { testNode("\"123\"^^<http://example/type>") ; }
+    public void testTypedLit_2() { testNode("'123'^^<http://example/type>") ; }
+    public void testTypedLit_3() { testNode("'123'^^xsd:integer") ; }
+
+    public void testTypedLit_4() { testNode("'123'^^xsd:integer") ; }
+
     public void testNum_1() { testNode("1") ; }
     public void testNum_2() { testNode("1.1") ; }
     public void testNum_3() { testNode("1.0e6") ; }

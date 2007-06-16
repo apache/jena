@@ -14,20 +14,21 @@ import org.apache.commons.logging.LogFactory;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.modify.lang.parser.SPARULParser;
+
+import com.hp.hpl.jena.sparql.modify.lang.parser.SPARQLUpdateParser;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 
-public class ParserSPARUL //extends Parser
+public class ParserSPARQLUpdate
 {
     public UpdateRequest parse(UpdateRequest update, String queryString)
     {
-        SPARULParser parser = null ;
+        SPARQLUpdateParser parser = null ;
         Reader in = new StringReader(queryString) ;
         try {
-            parser = new SPARULParser(in) ;
+            parser = new SPARQLUpdateParser(in) ;
             parser.setUpdateRequest(update) ;
-            parser.SPARUL() ;
+            parser.SPARQLUpdate() ;
             //validateParsedUpdate(update) ;
             return update ;
         }

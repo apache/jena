@@ -11,9 +11,9 @@ import com.hp.hpl.jena.update.UpdateRequest;
 
 
 
-public class SPARULParserBase
+public class SPARQLUpdateParserBase
     extends ParserUpdateBase
-    implements SPARULParserConstants
+    implements SPARQLUpdateParserConstants
 {
     private UpdateRequest request = null ;
 

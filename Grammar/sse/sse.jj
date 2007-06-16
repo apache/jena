@@ -113,7 +113,6 @@ Item Term() : { Token t ; Node node ; Item item ; }
     }
  | node = GraphTerm()
     // Not quite right for line/col - this is the last token
-
     { item = Item.createNode(node, token.beginLine, token.beginColumn) ;
       item = itemNode(item) ;
       return item ;

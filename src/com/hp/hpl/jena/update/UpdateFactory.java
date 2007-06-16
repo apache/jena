@@ -6,7 +6,7 @@
 
 package com.hp.hpl.jena.update;
 
-import com.hp.hpl.jena.sparql.modify.lang.ParserSPARUL;
+import com.hp.hpl.jena.sparql.modify.lang.ParserSPARQLUpdate;
 import com.hp.hpl.jena.util.FileManager;
 
 
@@ -16,7 +16,7 @@ public class UpdateFactory
     
     public static UpdateRequest create(String str)
     { 
-        ParserSPARUL p = new ParserSPARUL() ;
+        ParserSPARQLUpdate p = new ParserSPARQLUpdate() ;
         UpdateRequest update = new UpdateRequest() ;
         p.parse(update, str) ;
         return update ;
