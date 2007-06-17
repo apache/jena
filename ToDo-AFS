@@ -26,6 +26,9 @@ SDB ToDo list (and general notes)
 + Pattern/Inf tables:
   Data:
     Q: { :s a ?t }  D: :s a :C1 . :s a :C2 .  : SC: (:C1, :C2) => duplicates
+    Could reduce the input to exclude :s a :C2.
+    But if schema changes?
+    Else need SELECT DISTINCT subquery.
   Reduce data?  is there always a minimum?  No - but synthetic?
   Or nested SELECT DISTINCT in SQL.
 
