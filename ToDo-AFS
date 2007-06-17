@@ -1,18 +1,17 @@
 SDB ToDo list (and general notes)
 =================================
 
+** StoreConfig
+   locally cache
+   List of tables - all table creation to be noted.
+   Prefixes.
 ** StoreLoader interface
 ** Subclass loading.
 ** OpSlice
 
-+ Database to store Node_Variables?
++ SPARQL/Update input and control
 
-+ Web site (on jena.hpl?)
-+ Tranasactions - cleanup.
-+ Graph => Quad
-+ Graph => Tuple loader.
-+ Sort out StoreFactory and SDBFactory. 
-  StoreFactory : have an open registry?
++ Transactions - cleanup.
 
 + Add a formatter option to test if DB setup already
 
@@ -21,8 +20,6 @@ SDB ToDo list (and general notes)
 + Do OpSlice - test out a modifier code path.
 
 + GraphSDB : query handler
-
-+ Tuple loader
 
 + QueryEngineSDB has duplication with QueryEngineMain - eliminate!
 
@@ -70,4 +67,3 @@ SDB ToDo list (and general notes)
     With no URIs, much shorter.
     Full text indexing where available?
   Isolate QC2.insertValueGetter
-    
