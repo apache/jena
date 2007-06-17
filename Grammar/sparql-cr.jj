@@ -784,7 +784,7 @@ Node BlankNode() : { Token t = null ; }
 Node IRI_REF() : { Token t ; }
 {
   t = <IRIref>
-  { return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ; }
+  { return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 // ------------------------------------------

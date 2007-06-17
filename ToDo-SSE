@@ -2,9 +2,6 @@
 
 + Builder tidying and testing
 
-+ use a Prologue as part of a ParseHandler.
-  Get "'123'^^<>" right
-
 + Expr: (exists (pattern ...))
   
 + (group (vars) aggregate)
@@ -13,7 +10,4 @@
   (assign ((?x expr) (?y expr)) --  (:= ?x expr) [is this SELECT/project?]
      (project ...))
      (project (?x ?y (?z expr)) ...)
-
-+ Datatype URI is a Node - clean up?
-  Not just SSE.
   
