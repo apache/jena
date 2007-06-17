@@ -435,8 +435,7 @@ public class SSE_Parser extends ParserSSEBase implements SSE_ParserConstants {
   final public Node PrefixedName() throws ParseException {
                         Token t ;
     t = jj_consume_token(PNAME);
-     String uri = resolvePName(t.image, t.beginLine, t.beginColumn) ;
-     Node node = createNodeFromURI(uri, t.beginLine, t.beginColumn) ;
+     Node node = createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;
      {if (true) return node ;}
     throw new Error("Missing return statement in function");
   }

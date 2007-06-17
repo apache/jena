@@ -6,9 +6,8 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import org.apache.commons.logging.LogFactory;
-
 import com.hp.hpl.jena.graph.Node;
+
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.lang.ParserBase;
@@ -24,27 +23,38 @@ public class ParserSSEBase extends ParserBase
     {
         return varAlloc.allocVar() ;
     }
+
+    // --------
+    // ParserBase assumes a fixed Prologue.
+    // Override all the resolving calls.
+    // createNodeFromQuotedURI (calls createNodeFromURI)
+    // createNodeFromURI
+    // createNodeFromPrefixedName
+
+    //@Override
+    protected Node createNodeFromURI(String iri, int line, int column)
+    {
+        String x = handler.resolveIRI(iri) ;
+        if ( x == null )
+            throwParseException("Can't resolve '"+iri+"'", line, column) ;
+        return Node.createURI(x) ;
+    }
     
     //@Override
-    protected Node createNodeFromPrefixedName(String s, int line, int column)
+    protected Node createNodeFromPrefixedName(String pname, int line, int column)
     {
-        LogFactory.getLog(ParserSSEBase.class).warn("Call to createNodeFromPrefixedName") ;
-        return Node.createURI(":"+s) ;
+        String x = handler.resolvePName(pname) ;
+        if ( x == null )
+            throwParseException("Can't resolve '"+pname+"'", line, column) ;
+        return Node.createURI(x) ;
     }
+    // --------
     
     public void parseStart()
     { handler.parseStart() ; }
     
     public void parseFinish()
     { handler.parseFinish() ; }
-    
-    protected String resolvePName(String pname, int line, int column)
-    { 
-        String x = handler.resolvePName(pname) ;
-        if ( x == null )
-            throwParseException("Can't resolve '"+pname+"'", line, column) ;
-        return x ;
-    }
     
     protected void listStart(Item list)
     { 

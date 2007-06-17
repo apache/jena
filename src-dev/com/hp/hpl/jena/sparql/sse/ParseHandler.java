@@ -12,6 +12,7 @@ public interface ParseHandler
     public void parseFinish() ;
     
     public String resolvePName(String pname) ;
+    public String resolveIRI(String iri) ;
     
     public void listStart(Item list) ;
     public Item listFinish(Item list) ;

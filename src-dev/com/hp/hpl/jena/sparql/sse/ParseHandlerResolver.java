@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.PrefixMapping2;
  * @version $Id$
  */
 
-public class  ParseHandlerResolver implements ParseHandler 
+public class ParseHandlerResolver implements ParseHandler 
 {
     /*  Both forms have a common structure.
      *    Exactly 3 items long.
@@ -80,9 +80,7 @@ public class  ParseHandlerResolver implements ParseHandler
     public void parseFinish()
     {
         if ( depth != 0 )
-        {
             LogFactory.getLog(ParseHandlerResolver.class).warn("Stack error: depth ="+depth+" at end of parse run") ;
-        }
     }
     
     public String resolvePName(String pname)
@@ -98,6 +96,11 @@ public class  ParseHandlerResolver implements ParseHandler
             return null ;
         uri = resolver.resolve(uri) ;
         return uri ;
+    }
+    
+    public String resolveIRI(String iri)
+    {
+        return resolver.resolve(iri) ;
     }
     
     public void listStart(Item listItem) { depth++ ; }
@@ -192,18 +195,18 @@ public class  ParseHandlerResolver implements ParseHandler
     
     public Item itemWord(Item item)     { return item ; }
     
-    public Item itemNode(Item item)
-    {
-        Node n = item.getNode() ; 
-        if ( n.isURI() )
-        {
-            String x = n.getURI() ;
-            x = resolver.resolve(x) ;
-            n = Node.createURI(x) ;
-            return Item.createNode(n, item.getLine(), item.getColumn()) ;
-        }
-        return item ;
-    }
+    public Item itemNode(Item item)     { return item ; } 
+//    {
+//        Node n = item.getNode() ; 
+//        if ( n.isURI() )
+//        {
+//            String x = n.getURI() ;
+//            x = resolver.resolve(x) ;
+//            n = Node.createURI(x) ;
+//            return Item.createNode(n, item.getLine(), item.getColumn()) ;
+//        }
+//        return item ;
+//    }
 
     // ----------------
     

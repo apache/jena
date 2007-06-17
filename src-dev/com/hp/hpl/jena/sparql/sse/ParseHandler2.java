@@ -71,6 +71,12 @@ public class ParseHandler2 implements ParseHandler
         handler1.resolvePName(pname) ;
         return handler2.resolvePName(pname) ;
     }
+
+    public String resolveIRI(String iri)
+    {
+        handler1.resolveIRI(iri) ;
+        return handler2.resolveIRI(iri) ;
+    }
 }
 
 /*

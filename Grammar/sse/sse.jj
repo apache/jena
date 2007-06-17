@@ -208,8 +208,7 @@ Node PrefixedName() : { Token t ; }
 {
   t = <PNAME>
   {
-     String uri = resolvePName(t.image,  t.beginLine, t.beginColumn) ;
-     Node node = createNodeFromURI(uri, t.beginLine, t.beginColumn) ;
+     Node node = createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;
      return node ;
   }
 }
