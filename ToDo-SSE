@@ -11,3 +11,5 @@
      (project ...))
      (project (?x ?y (?z expr)) ...)
   
++ IRI/PrefixedName => Node : make this String
+  Applies through out parser system.
