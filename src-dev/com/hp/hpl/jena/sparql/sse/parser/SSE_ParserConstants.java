@@ -17,30 +17,30 @@ public interface SSE_ParserConstants {
   int BLANK_NODE_LABEL = 6;
   int VAR1 = 7;
   int VAR2 = 8;
-  int LANGTAG = 9;
-  int A2Z = 10;
-  int A2ZN = 11;
-  int DIGITS = 12;
-  int INTEGER = 13;
-  int DECIMAL = 14;
-  int DOUBLE = 15;
-  int EXPONENT = 16;
-  int QUOTE_3D = 17;
-  int QUOTE_3S = 18;
-  int ECHAR = 19;
-  int STRING_LITERAL1 = 20;
-  int STRING_LITERAL2 = 21;
-  int STRING_LITERAL_LONG1 = 22;
-  int STRING_LITERAL_LONG2 = 23;
-  int LPAREN = 24;
-  int RPAREN = 25;
-  int LBRACE = 26;
-  int RBRACE = 27;
-  int LBRACKET = 28;
-  int RBRACKET = 29;
-  int DATATYPE = 30;
-  int AT = 31;
-  int HOOK = 32;
+  int DIGITS = 9;
+  int INTEGER = 10;
+  int DECIMAL = 11;
+  int DOUBLE = 12;
+  int EXPONENT = 13;
+  int QUOTE_3D = 14;
+  int QUOTE_3S = 15;
+  int ECHAR = 16;
+  int STRING_LITERAL1 = 17;
+  int STRING_LITERAL2 = 18;
+  int STRING_LITERAL_LONG1 = 19;
+  int STRING_LITERAL_LONG2 = 20;
+  int LPAREN = 21;
+  int RPAREN = 22;
+  int LBRACE = 23;
+  int RBRACE = 24;
+  int LBRACKET = 25;
+  int RBRACKET = 26;
+  int HOOK = 27;
+  int DATATYPE = 28;
+  int LANGTAG = 29;
+  int AT = 30;
+  int A2Z = 31;
+  int A2ZN = 32;
   int PN_CHARS_BASE = 33;
   int PN_CHARS_U = 34;
   int PN_CHARS = 35;
@@ -52,6 +52,7 @@ public interface SSE_ParserConstants {
   int UNKNOWN = 41;
 
   int DEFAULT = 0;
+  int LITERAL = 1;
 
   String[] tokenImage = {
     "<EOF>",
@@ -63,9 +64,6 @@ public interface SSE_ParserConstants {
     "<BLANK_NODE_LABEL>",
     "<VAR1>",
     "<VAR2>",
-    "<LANGTAG>",
-    "<A2Z>",
-    "<A2ZN>",
     "<DIGITS>",
     "<INTEGER>",
     "<DECIMAL>",
@@ -84,9 +82,12 @@ public interface SSE_ParserConstants {
     "\"}\"",
     "\"[\"",
     "\"]\"",
-    "\"^^\"",
-    "\"@\"",
     "\"?\"",
+    "\"^^\"",
+    "<LANGTAG>",
+    "\"@\"",
+    "<A2Z>",
+    "<A2ZN>",
     "<PN_CHARS_BASE>",
     "<PN_CHARS_U>",
     "<PN_CHARS>",

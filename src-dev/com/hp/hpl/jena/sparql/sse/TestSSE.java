@@ -11,19 +11,32 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.vocabulary.XSD;
+
 import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.util.NodeUtils;
 
 public class TestSSE extends TestCase
 {
+    static PrefixMapping pmap = new PrefixMappingImpl() ;
+    static { 
+        pmap.setNsPrefix("xsd", XSD.getURI()) ;
+        pmap.setNsPrefix("ex", "http://example/") ;
+    }
+    
     static Node int1 = Node.createLiteral("1", null, XSDDatatype.XSDinteger) ;
     static Node int2 = Node.createLiteral("2", null, XSDDatatype.XSDinteger) ;
     static Node int3 = Node.createLiteral("3", null, XSDDatatype.XSDinteger) ;
     static Node strLangEN = Node.createLiteral("xyz", "en", null) ;
+
+    static Node typeLit1 = NodeUtils.createLiteralNode("123", null, "http://example/type") ;
+    static Node node1 = Node.create("http://example/node1") ;
     
     static Item int1i = Item.createNode(int1) ;
     static Item int2i = Item.createNode(int2) ;
     static Item int3i = Item.createNode(int3) ;
-
     
     public static TestSuite suite()
     {
@@ -62,13 +75,6 @@ public class TestSSE extends TestCase
     public void testLit_10() { parseBad("''@") ; }
     public void testLit_11() { testNode("'''abc\ndef'''") ; }
     
-    // ^^parsing is broken.
-    public void testTypedLit_1() { testNode("\"123\"^^<http://example/type>") ; }
-    public void testTypedLit_2() { testNode("'123'^^<http://example/type>") ; }
-    public void testTypedLit_3() { testNode("'123'^^xsd:integer") ; }
-
-    public void testTypedLit_4() { testNode("'123'^^xsd:integer") ; }
-
     public void testNum_1() { testNode("1") ; }
     public void testNum_2() { testNode("1.1") ; }
     public void testNum_3() { testNode("1.0e6") ; }
@@ -89,11 +95,21 @@ public class TestSSE extends TestCase
     // ---- Nodes
     
     public void testNode_1()    { testNode("3", int3) ; }
-    
+    public void testNode_2()    { testNode("ex:node1", node1) ; } 
+    public void testTypedLit_1() { testNode("\"123\"^^<http://example/type>", typeLit1) ; }
+    public void testTypedLit_2() { testNode("'123'^^<http://example/type>", typeLit1) ; }
+    public void testTypedLit_3() { testNode("'3'^^xsd:integer", int3) ; }
+
+    public void testTypedLit_4() { testNode("'3'^^<"+XSDDatatype.XSDinteger.getURI()+">", int3) ; }
+
     // --- Words
     
     public void testWord_1()    { testWord("word") ; }
     public void testWord_2()    { testWord("+") ; }
+    public void testWord_3()    { testWord("^^") ; }
+    public void testWord_4()    { testWord("^^<foo>") ; }
+    public void testWord_5()    { testWord("@") ; }
+    public void testWord_6()    { testWord("@en") ; }
     
     // ---- Lists
     
@@ -193,7 +209,7 @@ public class TestSSE extends TestCase
     
     private void testNode(String str, Node result)
     {
-        Node node = SSE.parseNode(str) ;
+        Node node = SSE.parseNode(str, pmap) ;
         assertEquals(result, node) ;
     }
 

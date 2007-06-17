@@ -117,12 +117,6 @@ Item Term() : { Token t ; Node node ; Item item ; }
       item = itemNode(item) ;
       return item ;
     }
- | 
-   t = <PNAME>
-   { item = Item.createWord(t.image, t.beginLine, t.beginColumn) ;
-     item = itemPName(item) ;
-     return item ;
-   }
 }
 
 Item TermOrList() : { Item item ; }
@@ -158,18 +152,21 @@ Node Var() : { Token t ; Var v ; }
   { return createVariable() ; }
 }
 
-Node RDFLiteral() : { Token t ; String lex = null ; }
+Node RDFLiteral() : { Token t ; String lex = null ; Node dt = null ; }
 {
   lex = String()
+  { token_source.SwitchTo(LITERAL) ; }
   // Optional lang tag and datatype.
   { String lang = null ; Node uri = null ; String qname = null ; }
   (
     ( t = <LANGTAG>  { lang = stripChars(t.image, 1) ; } )
   |
     <DATATYPE> 
-    uri = IRIref()
+    { token_source.SwitchTo(DEFAULT) ; }
+    dt = IRIref()
   )?
-    { return makeNode(lex, lang, uri) ; }
+    { token_source.SwitchTo(DEFAULT) ; }
+    { return makeNode(lex, lang, dt) ; }
 } 
 
 Node NumericLiteral() : { Token t ; }
@@ -204,19 +201,18 @@ String String() : { Token t ; String lex ; }
 Node IRIref() : { Node n ; }
 {
   n = IRI_REF() { return n ; }
+| n = PrefixedName() { return n ; }
 }
 
-// Node IRIref() : { Node n ; }
-// {
-//   n = IRI_REF() { return n ; }
-// | n = PrefixedName() { return n ; }
-// }
-// 
-// String PrefixedName() : { Token t ; Node n ; }
-// {
-//   t = <PNAME>
-//     { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
-// }
+Node PrefixedName() : { Token t ; }
+{
+  t = <PNAME>
+  {
+     String uri = resolvePName(t.image,  t.beginLine, t.beginColumn) ;
+     Node node = createNodeFromURI(uri, t.beginLine, t.beginColumn) ;
+     return node ;
+  }
+}
 
 Node BlankNode() :  { Token t = null ; }
 {
@@ -231,7 +227,7 @@ Node BlankNode() :  { Token t = null ; }
 Node IRI_REF() : { Token t ; }
 {
   t = <IRIref>
-  { return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ; }
+  { return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 // No whitespace skipping.

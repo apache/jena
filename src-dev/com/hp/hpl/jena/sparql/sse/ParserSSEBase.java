@@ -38,6 +38,14 @@ public class ParserSSEBase extends ParserBase
     public void parseFinish()
     { handler.parseFinish() ; }
     
+    protected String resolvePName(String pname, int line, int column)
+    { 
+        String x = handler.resolvePName(pname) ;
+        if ( x == null )
+            throwParseException("Can't resolve '"+pname+"'", line, column) ;
+        return x ;
+    }
+    
     protected void listStart(Item list)
     { 
         handler.listStart(list) ;
@@ -65,12 +73,6 @@ public class ParserSSEBase extends ParserBase
         return item2 != null ? item2 : item ; 
     }
 
-    protected Item itemPName(Item item)
-    { 
-        Item item2 = handler.itemPName(item) ; 
-        return item2 != null ? item2 : item ; 
-    }
-    
     protected void throwParseException(String msg, int line, int column)
     {
         throw new SSEParseException("Line " + line + ", column " + column + ": " + msg,

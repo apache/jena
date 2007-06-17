@@ -12,7 +12,7 @@ package com.hp.hpl.jena.sparql.sse;
  * @version $Id$
  */
 
-public class ParseHandler2
+public class ParseHandler2 implements ParseHandler
 {
     private ParseHandler handler1 ;
     private ParseHandler handler2 ;
@@ -29,10 +29,10 @@ public class ParseHandler2
         handler2.listStart(list) ;
     }
     
-    public void listFinish(Item list)
+    public Item listFinish(Item list)
     {
         handler1.listFinish(list) ;
-        handler2.listFinish(list) ;
+        return handler2.listFinish(list) ;
     }
     
     public void listAdd(Item list, Item elt)
@@ -53,15 +53,24 @@ public class ParseHandler2
         handler1.itemWord(item) ;
         return handler2.itemWord(item) ;
     }
-    
 
-    public Item itemPName(Item item)
+    public void parseFinish()
     {
-        handler1.itemPName(item) ;
-        return handler2.itemPName(item) ;
+        handler1.parseFinish() ;
+        handler2.parseFinish() ;
     }
-    
 
+    public void parseStart()
+    {
+        handler1.parseStart() ;
+        handler2.parseStart() ;
+    }
+
+    public String resolvePName(String pname)
+    {
+        handler1.resolvePName(pname) ;
+        return handler2.resolvePName(pname) ;
+    }
 }
 
 /*

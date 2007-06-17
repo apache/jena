@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.sse;
 
 
 
-public class  ParseHandlerDebug implements ParseHandler 
+public class ParseHandlerDebug implements ParseHandler 
 {
     int count = 0 ;
     
@@ -18,12 +18,9 @@ public class  ParseHandlerDebug implements ParseHandler
     public void parseFinish()
     { System.out.println(">>>>") ; }
 
-    public Item itemNode(Item item)
-    {
-        return null ;
-    }
+    public String resolvePName(String pname) { return pname ; }
 
-    public Item itemPName(Item item)
+    public Item itemNode(Item item)
     {
         return null ;
     }

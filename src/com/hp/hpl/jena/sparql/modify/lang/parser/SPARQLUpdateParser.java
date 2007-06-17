@@ -1923,7 +1923,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   final public Node Q_IRI_REF() throws ParseException {
                      Token t ;
     t = jj_consume_token(Q_IRIref);
-    {if (true) return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ;}
+    {if (true) return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
 

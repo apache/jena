@@ -783,7 +783,7 @@ Node BlankNode() : { Token t = null ; }
 Node Q_IRI_REF() : { Token t ; }
 {
   t = <Q_IRIref>
-  { return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ; }
+  { return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 // ------------------------------------------

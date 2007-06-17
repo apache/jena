@@ -24,9 +24,6 @@ TOKEN:
 |  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
 |  <VAR1: <HOOK> <VARNAME> >
 |  <VAR2: "$" <VARNAME> >
-|  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
-|  <#A2Z: ["a"-"z","A"-"Z"]>
-|  <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
 }
 
 TOKEN :
@@ -47,7 +44,7 @@ TOKEN :
 | <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
 | < STRING_LITERAL1: 
       // Single quoted string
-      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" > 
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" >
 | < STRING_LITERAL2:
     // Double quoted string
       "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
@@ -73,11 +70,18 @@ TOKEN :
 
 | < LBRACKET:  "[" >
 | < RBRACKET:  "]" >
+| < HOOK:     "?" >
+}
 
-| < DATATYPE: "^^">
+<LITERAL> TOKEN :
+{
+  < DATATYPE: "^^" >
+|  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* > : DEFAULT
 | < #AT: "@">
+|  <#A2Z: ["a"-"z","A"-"Z"]>
+|  <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
 
-| < HOOK:      "?" >
+
 }
 
 TOKEN:

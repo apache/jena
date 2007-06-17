@@ -11,6 +11,8 @@ public interface ParseHandler
     public void parseStart() ;
     public void parseFinish() ;
     
+    public String resolvePName(String pname) ;
+    
     public void listStart(Item list) ;
     public Item listFinish(Item list) ;
     
@@ -18,7 +20,6 @@ public interface ParseHandler
     
     public Item itemWord(Item item) ;
     public Item itemNode(Item item) ;
-    public Item itemPName(Item item) ;
 }
 
 /*

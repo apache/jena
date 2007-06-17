@@ -10,8 +10,8 @@ public class  ParseHandlerPlain implements ParseHandler
 {
     public void parseStart()                    { return ; }
     public void parseFinish()                   { return ; }
+    public String resolvePName(String pname)    { return pname ; }
     public Item itemNode(Item item)             { return item ; }
-    public Item itemPName(Item item)            { return item ; }
     public Item itemWord(Item item)             { return item ; }
     public void listAdd(Item item, Item elt)    { item.getList().add(elt); }
     public Item listFinish(Item item)           { return item ; }

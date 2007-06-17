@@ -216,9 +216,14 @@ public class ParserBase
     
     boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
     
-    protected Node createNodeFromURI(String s, int line, int column)
+    protected Node createNodeFromQuotedURI(String s, int line, int column)
     {
         s = stripQuotes(s) ;
+        return createNodeFromURI(s, line, column) ;
+    }
+    
+    protected Node createNodeFromURI(String s, int line, int column)
+    {
         //s = unescapeCodePoint(s, line, column) ;
         String uriStr = s ;     // Mutated
         

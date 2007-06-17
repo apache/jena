@@ -2243,7 +2243,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Node IRI_REF() throws ParseException {
                    Token t ;
     t = jj_consume_token(IRIref);
-    {if (true) return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ;}
+    {if (true) return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
 

@@ -85,7 +85,21 @@ public class  ParseHandlerResolver implements ParseHandler
         }
     }
     
-
+    public String resolvePName(String pname)
+    { 
+        if ( prefixMap == null )
+            return null ;
+        
+        if ( ! pname.contains(":") )
+            return null ;
+        
+        String uri = prefixMap.expandPrefix(pname) ;
+        if ( uri == null || uri.equals(pname) )
+            return null ;
+        uri = resolver.resolve(uri) ;
+        return uri ;
+    }
+    
     public void listStart(Item listItem) { depth++ ; }
 
     public Item listFinish(Item listItem)
@@ -190,41 +204,6 @@ public class  ParseHandlerResolver implements ParseHandler
         }
         return item ;
     }
-
-    public Item itemPName(Item item)
-    { 
-        if ( inDecl ) return item ;
-
-        String lex = item.getWord() ;
-        Node node = resolve(lex, prefixMap, item) ;
-        if ( node == null )
-            BuilderBase.broken(item, "Internal error") ;
-        item = Item.createNode(node, item.getLine(), item.getColumn()) ;
-        return item ;
-    }
-    
-    // ----------------
-    
-    // Returns a word if resolved - else null.
-    private static Node resolve(String word, PrefixMapping pmap, ItemLocation location)
-    {
-        if ( pmap == null )
-            return null ;
-        
-        if ( ! word.contains(":") )
-            return null ;
-        
-        String uri = pmap.expandPrefix(word) ;
-        if ( uri == null || uri.equals(word) )
-        {
-            // Unresolved in some way.  
-            BuilderBase.broken(location, "Can't resolve prefixed name: "+uri) ;
-            // OR Make into a funny node
-            return Node.createURI(":"+word) ;
-        }
-        return Node.createURI(uri) ;
-    }
-    
 
     // ----------------
     

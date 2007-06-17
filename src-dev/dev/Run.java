@@ -6,11 +6,6 @@
 
 package dev;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.Reader;
-
 import arq.qexpr;
 import arq.qparse;
 import arq.sparql;
@@ -18,20 +13,13 @@ import arq.sparql;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
 
 import com.hp.hpl.jena.sparql.algebra.Table;
 import com.hp.hpl.jena.sparql.algebra.table.TableWriter;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain;
 import com.hp.hpl.jena.sparql.sse.Item;
-import com.hp.hpl.jena.sparql.sse.ParseHandlerResolver;
 import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.sse.SSEParseException;
-import com.hp.hpl.jena.sparql.sse.parser.ParseException;
-import com.hp.hpl.jena.sparql.sse.parser.SSE_Parser;
-import com.hp.hpl.jena.sparql.sse.parser.TokenMgrError;
 
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.query.larq.IndexBuilderString;
@@ -55,30 +43,9 @@ public class Run
         
     private static void codeSSE()
     {
-        String filename = "Q.sse" ;
-        SSE_Parser p = null ;
-        try
-        {
-
-            InputStream in = new FileInputStream(filename) ;
-            Reader reader = FileUtils.asUTF8(in) ;
-            p = new SSE_Parser(reader) ;
-            p.setHandler(new ParseHandlerResolver()) ;
-            Item item =  p.parse() ;
-            System.out.println(item) ;
-        } 
-        catch (ParseException ex)
-        { throw new SSEParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn) ; }
-        catch (TokenMgrError tErr)
-        { 
-            // Last valid token : not the same as token error message - but this should not happen
-            int col = p.token.endColumn ;
-            int line = p.token.endLine ;
-            throw new SSEParseException(tErr.getMessage(), line, col) ;
-        }
-        catch (FileNotFoundException ex)
-        { throw new NotFoundException("Not found: "+filename) ; }
-        //catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
+        dev.sse.main(new String[]{"('a'^^<>)"}) ;
+        System.exit(0) ;
+        
         System.exit(0) ;
         
         // ----

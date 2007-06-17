@@ -2,8 +2,9 @@
 
 + Builder tidying and testing
 
-+ (base (prefix ...)) form 
-  
++ use a Prologue as part of a ParseHandler.
+  Get "'123'^^<>" right
+
 + Expr: (exists (pattern ...))
   
 + (group (vars) aggregate)
@@ -13,4 +14,6 @@
      (project ...))
      (project (?x ?y (?z expr)) ...)
 
-+ BuilderDataset
++ Datatype URI is a Node - clean up?
+  Not just SSE.
+  
