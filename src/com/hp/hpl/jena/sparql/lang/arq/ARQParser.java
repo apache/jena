@@ -64,19 +64,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void BaseDecl() throws ParseException {
-                    Node n ;
+                    String iri ;
     jj_consume_token(BASE);
-    n = IRI_REF();
-    getQuery().setBaseURI(n.getURI()) ;
+    iri = IRI_REF();
+    getQuery().setBaseURI(iri) ;
   }
 
   final public void PrefixDecl() throws ParseException {
-                      Token t ; Node n ;
+                      Token t ; String iri ;
     jj_consume_token(PREFIX);
     t = jj_consume_token(PNAME_NS);
-    n = IRI_REF();
+    iri = IRI_REF();
         String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getQuery().setPrefix(s, n.getURI()) ;
+        getQuery().setPrefix(s, iri) ;
   }
 
 // ---- Query type clauses
@@ -275,27 +275,24 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void DefaultGraphClause() throws ParseException {
-                              Node n ;
-    n = SourceSelector();
+                              String iri ;
+    iri = SourceSelector();
     // This checks for duplicates
-    getQuery().addGraphURI(n.getURI()) ;
+    getQuery().addGraphURI(iri) ;
   }
 
   final public void NamedGraphClause() throws ParseException {
-                            Node n ;
+                            String iri ;
     jj_consume_token(NAMED);
-    n = SourceSelector();
+    iri = SourceSelector();
     // This checks for duplicates
-    getQuery().addNamedGraphURI(n.getURI()) ;
+    getQuery().addNamedGraphURI(iri) ;
   }
 
-  final public Node SourceSelector() throws ParseException {
-                          Node n ;
-    n = IRIref();
-    if ( ! n.isURI() )
-        {if (true) throw new QueryParseException("Not an URI: "+n.toString(),
-                                      token.beginLine, token.beginColumn) ;}
-    {if (true) return n ;}
+  final public String SourceSelector() throws ParseException {
+                            String iri ;
+    iri = IRIref();
+                   {if (true) return iri ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -887,10 +884,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Expr FunctionCall() throws ParseException {
-                        Node fname ; ExprList a ;
+                        String fname ; ExprList a ;
     fname = IRIref();
     a = ArgList();
-      {if (true) return new E_Function(fname.getURI(), a) ;}
+      {if (true) return new E_Function(fname, a) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1369,7 +1366,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
 // Property (if no bNodes) + DESCRIBE
   final public Node VarOrIRIref() throws ParseException {
-                      Node n = null ;
+                      Node n = null ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR1:
     case VAR2:
@@ -1378,7 +1375,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      n = IRIref();
+      iri = IRIref();
+                                 n = createNode(iri) ;
       break;
     default:
       jj_la1[56] = jj_gen;
@@ -1408,13 +1406,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Node GraphTerm() throws ParseException {
-                     Node n ;
+                     Node n ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      n = IRIref();
-                 {if (true) return n ;}
+      iri = IRIref();
+                   {if (true) return createNode(iri) ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -1993,8 +1991,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
   final public Expr IRIrefOrFunction() throws ParseException {
-                           Node gn ; ExprList a = null ;
-    gn = IRIref();
+                            String iri ; ExprList a = null ;
+    iri = IRIref();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
     case NIL:
@@ -2004,15 +2002,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_la1[75] = jj_gen;
       ;
     }
-      if ( a == null ) {if (true) return asExpr(gn) ;}
-      {if (true) return new E_Function(gn.getURI(), a) ;}
+      if ( a == null ) {if (true) return asExpr(createNode(iri)) ;}
+      {if (true) return new E_Function(iri, a) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Node RDFLiteral() throws ParseException {
                       Token t ; String lex = null ;
     lex = String();
-    String lang = null ; Node uri = null ;
+    String lang = null ; String uri = null ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LANGTAG:
     case DATATYPE:
@@ -2182,17 +2180,17 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node IRIref() throws ParseException {
-                  Node n ;
+  final public String IRIref() throws ParseException {
+                    String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
-      n = IRI_REF();
-                  {if (true) return n ;}
+      iri = IRI_REF();
+                    {if (true) return iri ;}
       break;
     case PNAME_NS:
     case PNAME_LN:
-      n = PrefixedName();
-                       {if (true) return n ;}
+      iri = PrefixedName();
+                         {if (true) return iri ;}
       break;
     default:
       jj_la1[84] = jj_gen;
@@ -2202,16 +2200,16 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node PrefixedName() throws ParseException {
-                        Token t ;
+  final public String PrefixedName() throws ParseException {
+                          Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case PNAME_LN:
       t = jj_consume_token(PNAME_LN);
-      {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
+      {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     case PNAME_NS:
       t = jj_consume_token(PNAME_NS);
-      {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
+      {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
       jj_la1[85] = jj_gen;
@@ -2240,10 +2238,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node IRI_REF() throws ParseException {
-                   Token t ;
+  final public String IRI_REF() throws ParseException {
+                     Token t ;
     t = jj_consume_token(IRIref);
-    {if (true) return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ;}
+    {if (true) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
 

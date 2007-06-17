@@ -53,18 +53,18 @@ void Prologue() : {}
   ( PrefixDecl() )*
 }
 
-void BaseDecl() : { Node n ; }
+void BaseDecl() : { String iri ; }
 {
-  <BASE> n = IRI_REF()
-  { getQuery().setBaseURI(n.getURI()) ; }
+  <BASE> iri = IRI_REF()
+  { getQuery().setBaseURI(iri) ; }
 }
 
 
-void PrefixDecl() : { Token t ; Node n ; }
+void PrefixDecl() : { Token t ; String iri ; }
 {
-    <PREFIX> t = <PNAME_NS> n = IRI_REF()
+    <PREFIX> t = <PNAME_NS> iri = IRI_REF()
       { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getQuery().setPrefix(s, n.getURI()) ; }
+        getQuery().setPrefix(s, iri) ; }
 }
 
 // ---- Query type clauses
@@ -133,33 +133,28 @@ void DatasetClause() : {}
   ( DefaultGraphClause() | NamedGraphClause() )
 }
 
-void DefaultGraphClause() : { Node n ; }
+void DefaultGraphClause() : { String iri ; }
 {
-  n = SourceSelector()
+  iri = SourceSelector()
   {
     // This checks for duplicates
-    getQuery().addGraphURI(n.getURI()) ;
+    getQuery().addGraphURI(iri) ;
   }
 }
 
-void NamedGraphClause() : { Node n ; }
+void NamedGraphClause() : { String iri ; }
 {
   <NAMED>
-  n = SourceSelector()
+  iri = SourceSelector()
   {
     // This checks for duplicates
-    getQuery().addNamedGraphURI(n.getURI()) ;
+    getQuery().addNamedGraphURI(iri) ;
   }
 }
 
-Node SourceSelector() : { Node n ; }
+String SourceSelector() : { String iri ; }
 {
-  n = IRIref()
-  { if ( ! n.isURI() )
-        throw new QueryParseException("Not an URI: "+n.toString(),
-                                      token.beginLine, token.beginColumn) ;
-    return n ;
-  }
+  iri = IRIref() { return iri ; }
 }
 
 
@@ -360,10 +355,10 @@ Expr Constraint() : { Expr c ; }
 }
 
 
-Expr FunctionCall() : { Node fname ; ExprList a ; }
+Expr FunctionCall() : { String fname ; ExprList a ; }
 {
   fname = IRIref() a = ArgList()
-    { return new E_Function(fname.getURI(), a) ; }
+    { return new E_Function(fname, a) ; }
 }
 
 ExprList ArgList() : { Expr expr ; ExprList args = new ExprList() ; }
@@ -537,9 +532,9 @@ Node VarOrTerm() : {Node n = null ; }
 }
 
 // Property (if no bNodes) + DESCRIBE
-Node VarOrIRIref() : {Node n = null ; }
+Node VarOrIRIref() : {Node n = null ; String iri ; }
 {
-  ( n = Var() | n = IRIref() )
+  ( n = Var() | iri = IRIref() { n = createNode(iri) ; } )
   { return n ; }
 }
 
@@ -549,9 +544,9 @@ Node Var() : { Token t ;}
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
 }
 
-Node GraphTerm() : { Node n ; }
+Node GraphTerm() : { Node n ; String iri ; }
 {
-  n = IRIref() { return n ; }
+  iri = IRIref() { return createNode(iri) ; }
 | n = RDFLiteral() { return n ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
@@ -757,12 +752,12 @@ void Aggregate() : { Expr expr ; ExprList args ; }
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr IRIrefOrFunction() : {Node gn ; ExprList a = null ; }
+Expr IRIrefOrFunction() : { String iri ; ExprList a = null ; }
 {
-  gn = IRIref()
+  iri = IRIref()
   ( a = ArgList() )?
-    { if ( a == null ) return asExpr(gn) ;
-      return new E_Function(gn.getURI(), a) ;
+    { if ( a == null ) return asExpr(createNode(iri)) ;
+      return new E_Function(iri, a) ;
     }
 }
 
@@ -770,7 +765,7 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
 {
   lex = String()
   // Optional lang tag and datatype.
-  { String lang = null ; Node uri = null ; }
+  { String lang = null ; String uri = null ; }
   (
     ( t = <LANGTAG> { lang = stripChars(t.image, 1) ; } )
   |
@@ -833,20 +828,20 @@ String String() : { Token t ; String lex ; }
     }
 }
 
-Node IRIref() : { Node n ; }
+String IRIref() : { String iri ; }
 {
-  n = IRI_REF() { return n ; }
+  iri = IRI_REF() { return iri ; }
 |
-  n = PrefixedName() { return n ; }
+  iri = PrefixedName() { return iri ; }
 }
 
-Node PrefixedName() : { Token t ; }
+String PrefixedName() : { Token t ; }
 {
   ( t = <PNAME_LN>
-    { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
+    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
   |
     t = <PNAME_NS>
-    { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
+    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
   )
 }
 
@@ -860,10 +855,10 @@ Node BlankNode() : { Token t = null ; }
 
 }
 
-Node IRI_REF() : { Token t ; }
+String IRI_REF() : { Token t ; }
 {
   t = <IRIref>
-  { return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ; }
+  { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 // ------------------------------------------

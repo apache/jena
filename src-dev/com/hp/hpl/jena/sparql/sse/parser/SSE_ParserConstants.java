@@ -13,43 +13,44 @@ public interface SSE_ParserConstants {
   int SINGLE_LINE_COMMENT1 = 2;
   int SINGLE_LINE_COMMENT2 = 3;
   int IRIref = 4;
-  int PNAME = 5;
-  int BLANK_NODE_LABEL = 6;
-  int VAR1 = 7;
-  int VAR2 = 8;
-  int DIGITS = 9;
-  int INTEGER = 10;
-  int DECIMAL = 11;
-  int DOUBLE = 12;
-  int EXPONENT = 13;
-  int QUOTE_3D = 14;
-  int QUOTE_3S = 15;
-  int ECHAR = 16;
-  int STRING_LITERAL1 = 17;
-  int STRING_LITERAL2 = 18;
-  int STRING_LITERAL_LONG1 = 19;
-  int STRING_LITERAL_LONG2 = 20;
-  int LPAREN = 21;
-  int RPAREN = 22;
-  int LBRACE = 23;
-  int RBRACE = 24;
-  int LBRACKET = 25;
-  int RBRACKET = 26;
-  int HOOK = 27;
-  int DATATYPE = 28;
-  int LANGTAG = 29;
-  int AT = 30;
-  int A2Z = 31;
-  int A2ZN = 32;
-  int PN_CHARS_BASE = 33;
-  int PN_CHARS_U = 34;
-  int PN_CHARS = 35;
-  int PN_PREFIX = 36;
-  int PN_LOCAL = 37;
-  int VARNAME = 38;
-  int WORD = 39;
-  int OP = 40;
-  int UNKNOWN = 41;
+  int PNAME_NS = 5;
+  int PNAME_LN = 6;
+  int BLANK_NODE_LABEL = 7;
+  int VAR1 = 8;
+  int VAR2 = 9;
+  int DIGITS = 10;
+  int INTEGER = 11;
+  int DECIMAL = 12;
+  int DOUBLE = 13;
+  int EXPONENT = 14;
+  int QUOTE_3D = 15;
+  int QUOTE_3S = 16;
+  int ECHAR = 17;
+  int STRING_LITERAL1 = 18;
+  int STRING_LITERAL2 = 19;
+  int STRING_LITERAL_LONG1 = 20;
+  int STRING_LITERAL_LONG2 = 21;
+  int LPAREN = 22;
+  int RPAREN = 23;
+  int LBRACE = 24;
+  int RBRACE = 25;
+  int LBRACKET = 26;
+  int RBRACKET = 27;
+  int HOOK = 28;
+  int DATATYPE = 29;
+  int LANGTAG = 30;
+  int AT = 31;
+  int A2Z = 32;
+  int A2ZN = 33;
+  int PN_CHARS_BASE = 34;
+  int PN_CHARS_U = 35;
+  int PN_CHARS = 36;
+  int PN_PREFIX = 37;
+  int PN_LOCAL = 38;
+  int VARNAME = 39;
+  int WORD = 40;
+  int OP = 41;
+  int UNKNOWN = 42;
 
   int DEFAULT = 0;
   int LITERAL = 1;
@@ -60,7 +61,8 @@ public interface SSE_ParserConstants {
     "<SINGLE_LINE_COMMENT1>",
     "<SINGLE_LINE_COMMENT2>",
     "<IRIref>",
-    "<PNAME>",
+    "<PNAME_NS>",
+    "<PNAME_LN>",
     "<BLANK_NODE_LABEL>",
     "<VAR1>",
     "<VAR2>",

@@ -111,7 +111,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public UpdateModify Modify() throws ParseException {
-  UpdateModify up = new UpdateModify() ; Node iri ; Template template ;
+  UpdateModify up = new UpdateModify() ; String iri ; Template template ;
     jj_consume_token(MODIFY);
     label_2:
     while (true) {
@@ -124,7 +124,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         break label_2;
       }
       iri = GraphIRI();
-                         up.addGraphName(iri.getURI()) ;
+                         up.addGraphName(iri) ;
     }
     jj_consume_token(DELETE);
     template = ConstructTemplate();
@@ -137,14 +137,14 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public UpdatePattern Delete() throws ParseException {
-  UpdateDelete up = new UpdateDelete() ; Node iri ; Template template ;
+  UpdateDelete up = new UpdateDelete() ; String iri ; Template template ;
     jj_consume_token(DELETE);
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case FROM:
         ;
         break;
@@ -161,7 +161,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
       }
       iri = IRIref();
-                                up.addGraphName(iri.getURI()) ;
+                                up.addGraphName(iri) ;
     }
     template = ConstructTemplate();
                                      up.setDeleteTemplate(template) ;
@@ -170,15 +170,15 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public UpdatePattern Insert() throws ParseException {
-  UpdateInsert up = new UpdateInsert() ; Node iri ; Template template ;
+  UpdateInsert up = new UpdateInsert() ; String iri ; Template template ;
     jj_consume_token(INSERT);
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTO:
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
         ;
         break;
       default:
@@ -194,7 +194,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
       }
       iri = IRIref();
-                                up.addGraphName(iri.getURI()) ;
+                                up.addGraphName(iri) ;
     }
     template = ConstructTemplate();
                                      up.setInsertTemplate(template) ;
@@ -202,8 +202,8 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     throw new Error("Missing return statement in function");
   }
 
-  final public Node GraphIRI() throws ParseException {
-                    Node iri ;
+  final public String GraphIRI() throws ParseException {
+                      String iri ;
     jj_consume_token(GRAPH);
     iri = IRIref();
                              {if (true) return iri ;}
@@ -211,16 +211,16 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public UpdateLoad Load() throws ParseException {
-                      UpdateLoad up = new UpdateLoad() ; Node iri ;
+                      UpdateLoad up = new UpdateLoad() ; String iri ;
     jj_consume_token(LOAD);
     label_5:
     while (true) {
       iri = IRIref();
-                              up.addLoadIRI(iri.getURI()) ;
+                              up.addLoadIRI(iri) ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
         ;
         break;
       default:
@@ -232,7 +232,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     case INTO:
       jj_consume_token(INTO);
       iri = IRIref();
-                             up.setGraphName(iri.getURI()) ;
+                             up.setGraphName(iri) ;
       break;
     default:
       jj_la1[12] = jj_gen;
@@ -243,12 +243,12 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public UpdateClear Clear() throws ParseException {
-                        UpdateClear up = new UpdateClear(); Node iri ;
+                        UpdateClear up = new UpdateClear(); String iri ;
     jj_consume_token(CLEAR);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case GRAPH:
       iri = GraphIRI();
-                         up.setGraphName(iri.getURI()) ;
+                         up.setGraphName(iri) ;
       break;
     default:
       jj_la1[13] = jj_gen;
@@ -276,7 +276,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public UpdateCreate Create() throws ParseException {
-                          boolean silent = false ; Node iri ;
+                          boolean silent = false ; String iri ;
     jj_consume_token(CREATE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SILENT:
@@ -293,7 +293,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public UpdateDrop Drop() throws ParseException {
-                      boolean silent = false ; Node iri ;
+                      boolean silent = false ; String iri ;
     jj_consume_token(DROP);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SILENT:
@@ -355,19 +355,19 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public void BaseDecl() throws ParseException {
-                    Node n ;
+                    String iri ;
     jj_consume_token(BASE);
-    n = Q_IRI_REF();
-    getPrologue().setBaseURI(n.getURI()) ;
+    iri = IRI_REF();
+    getPrologue().setBaseURI(iri) ;
   }
 
   final public void PrefixDecl() throws ParseException {
-                      Token t ; Node n ;
+                      Token t ; String iri ;
     jj_consume_token(PREFIX);
-    t = jj_consume_token(QNAME_NS);
-    n = Q_IRI_REF();
+    t = jj_consume_token(PNAME_NS);
+    iri = IRI_REF();
         String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getPrologue().setPrefix(s, n.getURI()) ;
+        getPrologue().setPrefix(s, iri) ;
   }
 
   final public Element WhereClause() throws ParseException {
@@ -392,9 +392,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     jj_consume_token(LBRACE);
         startGroup(elg) ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -463,9 +463,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         ;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -512,9 +512,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     case DOT:
       jj_consume_token(DOT);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -648,9 +648,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     case SAME_TERM:
       c = BuiltInCall();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       c = FunctionCall();
       break;
     default:
@@ -663,10 +663,10 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public Expr FunctionCall() throws ParseException {
-                        Node fname ; ExprList a ;
+                        String fname ; ExprList a ;
     fname = IRIref();
     a = ArgList();
-      {if (true) return new E_Function(fname.getURI(), a) ;}
+      {if (true) return new E_Function(fname, a) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -710,9 +710,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       TemplateGroup g = new TemplateGroup() ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -752,9 +752,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     case DOT:
       jj_consume_token(DOT);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -794,9 +794,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   final public void TriplesSameSubject(TripleCollector acc) throws ParseException {
                                                  Node s ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -849,9 +849,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       }
       jj_consume_token(SEMICOLON);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case VAR1:
       case VAR2:
       case KW_A:
@@ -867,9 +867,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
 
   final public void PropertyList(Node s, TripleCollector acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
     case KW_A:
@@ -929,9 +929,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   final public Node Verb() throws ParseException {
                Node p ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
       p = VarOrIRIref();
@@ -997,9 +997,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       insert(acc, mark, cell, nRDFfirst, n) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME_LN:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -1040,9 +1040,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   final public Node GraphNode(TripleCollector acc) throws ParseException {
                                         Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -1086,9 +1086,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     case VAR2:
       n = Var();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case TRUE:
     case FALSE:
@@ -1120,16 +1120,17 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
 
 // Property (if no bNodes) + DESCRIBE
   final public Node VarOrIRIref() throws ParseException {
-                      Node n = null ;
+                      Node n = null ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR1:
     case VAR2:
       n = Var();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
-      n = IRIref();
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
+      iri = IRIref();
+                                 n = createNode(iri) ;
       break;
     default:
       jj_la1[45] = jj_gen;
@@ -1165,13 +1166,13 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
   }
 
   final public Node GraphTerm() throws ParseException {
-                     Node n ;
+                     Node n ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
-      n = IRIref();
-                 {if (true) return n ;}
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
+      iri = IRIref();
+                   {if (true) return createNode(iri) ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -1443,9 +1444,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       expr = PrimaryExpression();
                                          {if (true) return new E_UnaryMinus(expr) ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
     case BOUND:
@@ -1507,9 +1508,9 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       expr = BuiltInCall();
                            {if (true) return expr ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME_LN:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       expr = IRIrefOrFunction();
                                 {if (true) return expr ;}
       break;
@@ -1673,8 +1674,8 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
   final public Expr IRIrefOrFunction() throws ParseException {
-                           Node gn ; ExprList a = null ;
-    gn = IRIref();
+                           String iri ; ExprList a = null ;
+    iri = IRIref();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
     case NIL:
@@ -1684,15 +1685,15 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       jj_la1[60] = jj_gen;
       ;
     }
-      if ( a == null ) {if (true) return asExpr(gn) ;}
-      {if (true) return new E_Function(gn.getURI(), a) ;}
+      if ( a == null ) {if (true) return asExpr(createNode(iri)) ;}
+      {if (true) return new E_Function(iri, a) ;}
     throw new Error("Missing return statement in function");
   }
 
   final public Node RDFLiteral() throws ParseException {
                       Token t ; String lex = null ;
     lex = String();
-    String lang = null ; Node uri = null ;
+    String lang = null ; String iri = null ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LANGTAG:
     case DATATYPE:
@@ -1703,7 +1704,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
         break;
       case DATATYPE:
         jj_consume_token(DATATYPE);
-        uri = IRIref();
+        iri = IRIref();
         break;
       default:
         jj_la1[61] = jj_gen;
@@ -1715,7 +1716,7 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
       jj_la1[62] = jj_gen;
       ;
     }
-      {if (true) return makeNode(lex, lang, uri) ;}
+      {if (true) return makeNode(lex, lang, iri) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1862,17 +1863,17 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     throw new Error("Missing return statement in function");
   }
 
-  final public Node IRIref() throws ParseException {
-                  Node n ;
+  final public String IRIref() throws ParseException {
+                    String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-      n = Q_IRI_REF();
-                    {if (true) return n ;}
+    case IRIref:
+      iri = IRI_REF();
+                    {if (true) return iri ;}
       break;
-    case QNAME_NS:
-    case QNAME_LN:
-      n = QName();
-                {if (true) return n ;}
+    case PNAME_NS:
+    case PNAME_LN:
+      iri = PrefixedName();
+                         {if (true) return iri ;}
       break;
     default:
       jj_la1[69] = jj_gen;
@@ -1882,16 +1883,16 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     throw new Error("Missing return statement in function");
   }
 
-  final public Node QName() throws ParseException {
-                 Token t ;
+  final public String PrefixedName() throws ParseException {
+                          Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case QNAME_LN:
-      t = jj_consume_token(QNAME_LN);
-      {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
+    case PNAME_LN:
+      t = jj_consume_token(PNAME_LN);
+      {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
-    case QNAME_NS:
-      t = jj_consume_token(QNAME_NS);
-      {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
+    case PNAME_NS:
+      t = jj_consume_token(PNAME_NS);
+      {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
       jj_la1[70] = jj_gen;
@@ -1920,10 +1921,10 @@ public class SPARQLUpdateParser extends SPARQLUpdateParserBase implements SPARQL
     throw new Error("Missing return statement in function");
   }
 
-  final public Node Q_IRI_REF() throws ParseException {
+  final public String IRI_REF() throws ParseException {
                      Token t ;
-    t = jj_consume_token(Q_IRIref);
-    {if (true) return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ;}
+    t = jj_consume_token(IRIref);
+    {if (true) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
 

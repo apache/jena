@@ -23,9 +23,9 @@ public interface SPARQLUpdateParserConstants {
   int ABORT = 12;
   int WS = 18;
   int SINGLE_LINE_COMMENT = 19;
-  int Q_IRIref = 20;
-  int QNAME_NS = 21;
-  int QNAME_LN = 22;
+  int IRIref = 20;
+  int PNAME_NS = 21;
+  int PNAME_LN = 22;
   int BLANK_NODE_LABEL = 23;
   int VAR1 = 24;
   int VAR2 = 25;
@@ -113,11 +113,11 @@ public interface SPARQLUpdateParserConstants {
   int SLASH = 107;
   int DATATYPE = 108;
   int AT = 109;
-  int NCCHAR1P = 110;
-  int NCCHAR1 = 111;
-  int NCCHAR = 112;
-  int NCNAME_PREFIX = 113;
-  int NCNAME = 114;
+  int PN_CHARS_BASE = 110;
+  int PN_CHARS_U = 111;
+  int PN_CHARS = 112;
+  int PN_PREFIX = 113;
+  int PN_LOCAL = 114;
   int VARNAME = 115;
   int UNKNOWN = 116;
 
@@ -144,9 +144,9 @@ public interface SPARQLUpdateParserConstants {
     "\"\\f\"",
     "<WS>",
     "<SINGLE_LINE_COMMENT>",
-    "<Q_IRIref>",
-    "<QNAME_NS>",
-    "<QNAME_LN>",
+    "<IRIref>",
+    "<PNAME_NS>",
+    "<PNAME_LN>",
     "<BLANK_NODE_LABEL>",
     "<VAR1>",
     "<VAR2>",
@@ -234,11 +234,11 @@ public interface SPARQLUpdateParserConstants {
     "\"/\"",
     "\"^^\"",
     "\"@\"",
-    "<NCCHAR1P>",
-    "<NCCHAR1>",
-    "<NCCHAR>",
-    "<NCNAME_PREFIX>",
-    "<NCNAME>",
+    "<PN_CHARS_BASE>",
+    "<PN_CHARS_U>",
+    "<PN_CHARS>",
+    "<PN_PREFIX>",
+    "<PN_LOCAL>",
     "<VARNAME>",
     "<UNKNOWN>",
   };

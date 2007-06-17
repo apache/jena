@@ -81,22 +81,22 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
   }
 
   final public void BaseDecl() throws ParseException {
-                    Node n ;
+                    String iri ;
     jj_consume_token(LPAREN);
     jj_consume_token(BASE);
-    n = Q_IRI_REF();
-    getQuery().setBaseURI(n.getURI()) ;
+    iri = IRI_REF();
+    getQuery().setBaseURI(iri) ;
     jj_consume_token(RPAREN);
   }
 
   final public void PrefixDecl() throws ParseException {
-                      Token t ; Node n ;
+                      Token t ; String iri ;
     jj_consume_token(LPAREN);
     jj_consume_token(PREFIX);
-    t = jj_consume_token(QNAME_NS);
-    n = Q_IRI_REF();
+    t = jj_consume_token(PNAME_NS);
+    iri = IRI_REF();
         String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getQuery().setPrefix(s, n.getURI()) ;
+        getQuery().setPrefix(s, iri) ;
     jj_consume_token(RPAREN);
   }
 
@@ -175,9 +175,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     jj_consume_token(DESCRIBE);
       getQuery().setQueryDescribeType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
       label_4:
@@ -185,9 +185,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
         n = VarOrIRIref();
                           getQuery().addDescribeNode(n) ;
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case Q_IRIref:
-        case QNAME_NS:
-        case QNAME:
+        case IRIref:
+        case PNAME_NS:
+        case PNAME_LN:
         case VAR1:
         case VAR2:
           ;
@@ -220,9 +220,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     jj_consume_token(LPAREN);
     jj_consume_token(FROM);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       DefaultGraphClause();
       break;
     case NAMED:
@@ -237,25 +237,22 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
   }
 
   final public void DefaultGraphClause() throws ParseException {
-                              Node n ;
-    n = SourceSelector();
-    getQuery().addGraphURI(n.getURI()) ;
+                              String iri ;
+    iri = SourceSelector();
+    getQuery().addGraphURI(iri) ;
   }
 
   final public void NamedGraphClause() throws ParseException {
-                            Node n ;
+                            String iri ;
     jj_consume_token(NAMED);
-    n = SourceSelector();
-    getQuery().addNamedGraphURI(n.getURI()) ;
+    iri = SourceSelector();
+    getQuery().addNamedGraphURI(iri) ;
   }
 
-  final public Node SourceSelector() throws ParseException {
-                          Node n ;
-    n = IRIref();
-    if ( ! n.isURI() )
-        {if (true) throw new QueryParseException("Not an URI: "+n.toString(),
-                                      token.beginLine, token.beginColumn) ;}
-    {if (true) return n ;}
+  final public String SourceSelector() throws ParseException {
+                            String iri ;
+    iri = IRIref();
+                    {if (true) return iri ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -574,9 +571,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       jj_consume_token(RPAREN);
      {if (true) return e ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -657,9 +654,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       jj_consume_token(PLUS);
       n1 = P_Expression();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -688,9 +685,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       jj_consume_token(MINUS);
       n1 = P_Expression();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -732,9 +729,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       e = P_Expression();
       {if (true) return new E_LogicalNot(e) ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BOUND:
     case STR:
     case DTYPE:
@@ -763,7 +760,7 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
   }
 
   final public Expr P_Function() throws ParseException {
-                      Expr e ; Node fname ; ExprList a ;
+                      Expr e ; String fname ; ExprList a ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case BOUND:
     case STR:
@@ -779,12 +776,12 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       e = P_BuiltInCall();
                         {if (true) return e ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       fname = IRIref();
       a = P_ArgList();
-      {if (true) return new E_Function(fname.getURI(), a) ;}
+      {if (true) return new E_Function(fname, a) ;}
       break;
     default:
       jj_la1[22] = jj_gen;
@@ -799,9 +796,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Q_IRIref:
-      case QNAME_NS:
-      case QNAME:
+      case IRIref:
+      case PNAME_NS:
+      case PNAME_LN:
       case BLANK_NODE_LABEL:
       case VAR1:
       case VAR2:
@@ -904,9 +901,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     expr = P_Expression();
     patExpr = P_Expression();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case VAR1:
     case VAR2:
@@ -1139,9 +1136,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       n = PrimaryExpression();
                                       {if (true) return new E_UnaryMinus(n) ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case VAR1:
     case VAR2:
     case BOUND:
@@ -1197,9 +1194,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       expr = BuiltInCall();
                            {if (true) return expr ;}
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
       expr = IRIrefOrFunction();
                                  {if (true) return expr ;}
       break;
@@ -1355,10 +1352,10 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
   }
 
   final public Expr FunctionCall() throws ParseException {
-                        Node fname ; ExprList a ;
+                        String fname ; ExprList a ;
     fname = IRIref();
     a = ArgList();
-      {if (true) return new E_Function(fname.getURI(), a) ;}
+      {if (true) return new E_Function(fname, a) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1400,8 +1397,8 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
   final public Expr IRIrefOrFunction() throws ParseException {
-                           Node gn ; ExprList a = null ;
-    gn = IRIref();
+                           String iri ; ExprList a = null ;
+    iri = IRIref();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
     case NIL:
@@ -1411,23 +1408,24 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       jj_la1[40] = jj_gen;
       ;
     }
-      if ( a == null ) {if (true) return asExpr(gn) ;}
-      {if (true) return new E_Function(gn.getURI(), a) ;}
+      if ( a == null ) {if (true) return asExpr(createNode(iri)) ;}
+      {if (true) return new E_Function(iri, a) ;}
     throw new Error("Missing return statement in function");
   }
 
 // ---- Basic terms
   final public Node VarOrIRIref() throws ParseException {
-                      Node n = null ;
+                      Node n = null ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR1:
     case VAR2:
       n = Var();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
-      n = IRIref();
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
+      iri = IRIref();
+                                 n = createNode(iri) ;
       break;
     default:
       jj_la1[41] = jj_gen;
@@ -1450,9 +1448,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     case VAR2:
       n = Var();
       break;
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
     case BLANK_NODE_LABEL:
     case TRUE:
     case FALSE:
@@ -1495,13 +1493,13 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
   }
 
   final public Node GraphTerm() throws ParseException {
-                     Node n ;
+                     Node n ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-    case QNAME_NS:
-    case QNAME:
-      n = IRIref();
-                          {if (true) return n ;}
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
+      iri = IRIref();
+                            {if (true) return createNode(iri) ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -1541,7 +1539,7 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
   final public Node RDFLiteral() throws ParseException {
                       Token t ; String lex = null ;
     lex = String();
-    String lang = null ; Node uri = null ;
+    String lang = null ; String iri = null ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LANGTAG:
     case DATATYPE:
@@ -1552,7 +1550,7 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
         break;
       case DATATYPE:
         jj_consume_token(DATATYPE);
-        uri = IRIref();
+        iri = IRIref();
         break;
       default:
         jj_la1[45] = jj_gen;
@@ -1564,7 +1562,7 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
       jj_la1[46] = jj_gen;
       ;
     }
-      {if (true) return makeNode(lex, lang, uri) ;}
+      {if (true) return makeNode(lex, lang, iri) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1635,17 +1633,17 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     throw new Error("Missing return statement in function");
   }
 
-  final public Node IRIref() throws ParseException {
-                  Node n ;
+  final public String IRIref() throws ParseException {
+                    String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case Q_IRIref:
-      n = Q_IRI_REF();
-                    {if (true) return n ;}
+    case IRIref:
+      iri = IRI_REF();
+                    {if (true) return iri ;}
       break;
-    case QNAME_NS:
-    case QNAME:
-      n = QName();
-                {if (true) return n ;}
+    case PNAME_NS:
+    case PNAME_LN:
+      iri = PrefixedName();
+                         {if (true) return iri ;}
       break;
     default:
       jj_la1[50] = jj_gen;
@@ -1655,16 +1653,16 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     throw new Error("Missing return statement in function");
   }
 
-  final public Node QName() throws ParseException {
-                 Token t ;
+  final public String PrefixedName() throws ParseException {
+                          Token t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case QNAME:
-      t = jj_consume_token(QNAME);
-      {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
+    case PNAME_LN:
+      t = jj_consume_token(PNAME_LN);
+      {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
-    case QNAME_NS:
-      t = jj_consume_token(QNAME_NS);
-      {if (true) return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ;}
+    case PNAME_NS:
+      t = jj_consume_token(PNAME_NS);
+      {if (true) return resolvePName(t.image, t.beginLine, t.beginColumn) ;}
       break;
     default:
       jj_la1[51] = jj_gen;
@@ -1693,10 +1691,10 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     throw new Error("Missing return statement in function");
   }
 
-  final public Node Q_IRI_REF() throws ParseException {
+  final public String IRI_REF() throws ParseException {
                      Token t ;
-    t = jj_consume_token(Q_IRIref);
-    {if (true) return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ;}
+    t = jj_consume_token(IRIref);
+    {if (true) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1763,6 +1761,17 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     finally { jj_save(8, xla); }
   }
 
+  final private boolean jj_3R_24() {
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_16() {
+    if (jj_scan_token(LPAREN)) return true;
+    if (jj_scan_token(FROM)) return true;
+    return false;
+  }
+
   final private boolean jj_3_9() {
     if (jj_3R_23()) return true;
     return false;
@@ -1781,12 +1790,6 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     jj_scanpos = xsp;
     if (jj_3R_24()) return true;
     }
-    return false;
-  }
-
-  final private boolean jj_3R_16() {
-    if (jj_scan_token(LPAREN)) return true;
-    if (jj_scan_token(FROM)) return true;
     return false;
   }
 
@@ -1817,20 +1820,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     return false;
   }
 
-  final private boolean jj_3R_19() {
-    if (jj_scan_token(LPAREN)) return true;
-    if (jj_scan_token(ORDER)) return true;
-    return false;
-  }
-
   final private boolean jj_3R_17() {
     if (jj_scan_token(LPAREN)) return true;
     if (jj_scan_token(BASE)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_8() {
-    if (jj_3R_23()) return true;
     return false;
   }
 
@@ -1839,19 +1831,24 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     return false;
   }
 
-  final private boolean jj_3_7() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
   final private boolean jj_3_2() {
     if (jj_3R_17()) return true;
     return false;
   }
 
-  final private boolean jj_3R_20() {
+  final private boolean jj_3R_19() {
     if (jj_scan_token(LPAREN)) return true;
-    if (jj_scan_token(DISTINCT)) return true;
+    if (jj_scan_token(ORDER)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_8() {
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_7() {
+    if (jj_3R_22()) return true;
     return false;
   }
 
@@ -1860,8 +1857,9 @@ public class PrefixParser extends PrefixParserBase implements PrefixParserConsta
     return false;
   }
 
-  final private boolean jj_3R_24() {
-    if (jj_3R_22()) return true;
+  final private boolean jj_3R_20() {
+    if (jj_scan_token(LPAREN)) return true;
+    if (jj_scan_token(DISTINCT)) return true;
     return false;
   }
 

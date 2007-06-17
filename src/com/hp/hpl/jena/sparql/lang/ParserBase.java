@@ -139,11 +139,11 @@ public class ParserBase
 //        return makeNodeDecimal(lexicalForm) ;
 //    }
 
-    protected Node makeNode(String lexicalForm, String langTag, Node datatype)
-    {
-        String uri = (datatype==null) ? null : datatype.getURI() ;
-        return makeNode(lexicalForm, langTag,  uri) ;
-    }
+//    protected Node makeNode(String lexicalForm, String langTag, Node datatype)
+//    {
+//        String uri = (datatype==null) ? null : datatype.getURI() ;
+//        return makeNode(lexicalForm, langTag,  uri) ;
+//    }
     
     protected Node makeNode(String lexicalForm, String langTag, String datatypeURI)
     {
@@ -204,54 +204,111 @@ public class ParserBase
         // Check \ u did not put in any illegals. 
         return Var.alloc(s) ;
     }
+
+    // ---- IRIs and Nodes
     
-    protected Node createNodeFromPrefixedName(String qname, int line, int column)
+    final static String bNodeLabelStart = "_:" ;
+    
+    boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
+
+    
+//    protected Node createNodeFromPrefixedName(String qname, int line, int column)
+//    {
+//        //s = unescapeCodePoint(s, line, column) ;
+//        
+//        String s = getPrologue().expandPrefixedName(qname) ;
+//        if ( s == null )
+//        {
+//            String msg = "Line " + line + ", column " + column;
+//            throw new QNameException(msg+": Unresolved prefixed name: "+qname, line, column) ; 
+//        }
+//        return Node.createURI(s) ;
+//    }
+    
+    
+    protected String resolveQuotedIRI(String iriStr ,int line, int column)
     {
-        //s = unescapeCodePoint(s, line, column) ;
+        iriStr = stripQuotes(iriStr) ;
+        return resolveIRI(iriStr, line, column) ;
+    }
+
+    
+    protected String resolveIRI(String iriStr ,int line, int column)
+    {
+        if ( isBNodeIRI(iriStr) )
+            return iriStr ;
         
+        if ( getPrologue() != null )
+        {
+            if ( getPrologue().getResolver() != null )
+                try {
+                    iriStr = getPrologue().getResolver().resolve(iriStr) ;
+                } catch (JenaURIException ex)
+                { throwParseException(ex.getMessage(), line, column) ; }
+        }
+        return iriStr ;
+    }
+    
+    protected String resolvePName(String qname, int line, int column)
+    {
         String s = getPrologue().expandPrefixedName(qname) ;
         if ( s == null )
         {
             String msg = "Line " + line + ", column " + column;
             throw new QNameException(msg+": Unresolved prefixed name: "+qname, line, column) ; 
         }
-        return Node.createURI(s) ;
+        return s ;
     }
     
-    final static String bNodeLabelStart = "_:" ;
-    
-    boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
-    
-    protected Node createNodeFromQuotedURI(String s, int line, int column)
+    protected Node createNode(String iri)
     {
-        s = stripQuotes(s) ;
-        return createNodeFromURI(s, line, column) ;
-    }
-    
-    protected Node createNodeFromURI(String s, int line, int column)
-    {
-        //s = unescapeCodePoint(s, line, column) ;
-        String uriStr = s ;     // Mutated
-        
         // Is it a bNode label? i.e. <_:xyz>
-        if ( skolomizedBNodes && s.startsWith(bNodeLabelStart) )
+        if ( isBNodeIRI(iri) )
         {
-            s = s.substring(bNodeLabelStart.length()) ;
+            String s = iri.substring(bNodeLabelStart.length()) ;
             Node n = Node.createAnon(new AnonId(s)) ;
             return n ;
         }
-        
-        if ( getPrologue() != null )
-        {
-            if ( getPrologue().getResolver() != null )
-                try {
-                    uriStr = getPrologue().getResolver().resolve(uriStr) ;
-                } catch (JenaURIException ex)
-                { throwParseException(ex.getMessage(), line, column) ; }
-        }
-        return Node.createURI(uriStr) ;
+        return Node.createURI(iri) ;
     }
     
+    protected boolean isBNodeIRI(String iri)
+    {
+        return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
+    }
+    
+    
+    
+//    protected Node createNodeFromQuotedURI(String s, int line, int column)
+//    {
+//        s = stripQuotes(s) ;
+//        return createNodeFromURI(s, line, column) ;
+//    }
+//    
+//    protected Node createNodeFromURI(String s, int line, int column)
+//    {
+//        //s = unescapeCodePoint(s, line, column) ;
+//        String uriStr = s ;     // Mutated
+//        
+//        // Is it a bNode label? i.e. <_:xyz>
+//        if ( skolomizedBNodes && s.startsWith(bNodeLabelStart) )
+//        {
+//            s = s.substring(bNodeLabelStart.length()) ;
+//            Node n = Node.createAnon(new AnonId(s)) ;
+//            return n ;
+//        }
+//        
+//        if ( getPrologue() != null )
+//        {
+//            if ( getPrologue().getResolver() != null )
+//                try {
+//                    uriStr = getPrologue().getResolver().resolve(uriStr) ;
+//                } catch (JenaURIException ex)
+//                { throwParseException(ex.getMessage(), line, column) ; }
+//        }
+//        return Node.createURI(uriStr) ;
+//    }
+//    
     // -------- Basic Graph Patterns and Blank Node label scopes
     
     // A BasicGraphPattern is any sequence of TripleBlocks, separated by filters,

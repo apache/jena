@@ -11,9 +11,9 @@ public interface PrefixParserConstants {
   int EOF = 0;
   int WS = 6;
   int SINGLE_LINE_COMMENT = 7;
-  int Q_IRIref = 8;
-  int QNAME_NS = 9;
-  int QNAME = 10;
+  int IRIref = 8;
+  int PNAME_NS = 9;
+  int PNAME_LN = 10;
   int BLANK_NODE_LABEL = 11;
   int VAR1 = 12;
   int VAR2 = 13;
@@ -102,11 +102,11 @@ public interface PrefixParserConstants {
   int SLASH = 96;
   int DATATYPE = 97;
   int AT = 98;
-  int NCCHAR1p = 99;
-  int NCCHAR1 = 100;
-  int NCCHAR = 101;
-  int NCNAME_PREFIX = 102;
-  int NCNAME = 103;
+  int PN_CHARS_BASE = 99;
+  int PN_CHARS_U = 100;
+  int PN_CHARS = 101;
+  int PN_PREFIX = 102;
+  int PN_LOCAL = 103;
   int VARNAME = 104;
   int UNKNOWN = 105;
 
@@ -121,9 +121,9 @@ public interface PrefixParserConstants {
     "\"\\f\"",
     "<WS>",
     "<SINGLE_LINE_COMMENT>",
-    "<Q_IRIref>",
-    "<QNAME_NS>",
-    "<QNAME>",
+    "<IRIref>",
+    "<PNAME_NS>",
+    "<PNAME_LN>",
     "<BLANK_NODE_LABEL>",
     "<VAR1>",
     "<VAR2>",
@@ -212,11 +212,11 @@ public interface PrefixParserConstants {
     "\"/\"",
     "\"^^\"",
     "\"@\"",
-    "<NCCHAR1p>",
-    "<NCCHAR1>",
-    "<NCCHAR>",
-    "<NCNAME_PREFIX>",
-    "<NCNAME>",
+    "<PN_CHARS_BASE>",
+    "<PN_CHARS_U>",
+    "<PN_CHARS>",
+    "<PN_PREFIX>",
+    "<PN_LOCAL>",
     "<VARNAME>",
     "<UNKNOWN>",
   };

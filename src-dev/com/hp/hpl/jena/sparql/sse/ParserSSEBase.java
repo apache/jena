@@ -6,8 +6,6 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import com.hp.hpl.jena.graph.Node;
-
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.core.VarAlloc;
 import com.hp.hpl.jena.sparql.lang.ParserBase;
@@ -26,29 +24,38 @@ public class ParserSSEBase extends ParserBase
 
     // --------
     // ParserBase assumes a fixed Prologue.
-    // Override all the resolving calls.
-    // createNodeFromQuotedURI (calls createNodeFromURI)
-    // createNodeFromURI
-    // createNodeFromPrefixedName
+    // resolveQuotedIRI (uses resolveIRI)
+    // resolveIRI
+    // resolvePrefixedName
 
-    //@Override
-    protected Node createNodeFromURI(String iri, int line, int column)
+//    protected String resolveQuotedIRI(String iriStr ,int line, int column)
+//    {
+//        iriStr = stripQuotes(iriStr) ;
+//        return resolveIRI(iriStr, line, column) ;
+//    }
+
+    
+    protected String resolveIRI(String iriStr ,int line, int column)
     {
-        String x = handler.resolveIRI(iri) ;
-        if ( x == null )
-            throwParseException("Can't resolve '"+iri+"'", line, column) ;
-        return Node.createURI(x) ;
+        if ( isBNodeIRI(iriStr) )
+            return iriStr ;
+        return handler.resolveIRI(iriStr) ;
     }
     
-    //@Override
-    protected Node createNodeFromPrefixedName(String pname, int line, int column)
+    protected String resolvePName(String pname, int line, int column)
     {
-        String x = handler.resolvePName(pname) ;
-        if ( x == null )
-            throwParseException("Can't resolve '"+pname+"'", line, column) ;
-        return Node.createURI(x) ;
+        return handler.resolvePName(pname) ;
     }
-    // --------
+    
+    // ---- Labeled bnodes is always ON.
+    
+    final static String bNodeLabelStart = "_:" ;
+    protected boolean isBNodeIRI(String iri)
+    {
+        return iri.startsWith(bNodeLabelStart) ;
+    }
+    
+    // ----
     
     public void parseStart()
     { handler.parseStart() ; }

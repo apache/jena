@@ -20,7 +20,8 @@ SPECIAL_TOKEN :
 TOKEN:
 {
    <IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
-|  <PNAME: (<PN_PREFIX>)? ":" (<PN_LOCAL>)? >
+|  <PNAME_NS: (<PN_PREFIX>)? ":" >
+|  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
 |  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
 |  <VAR1: <HOOK> <VARNAME> >
 |  <VAR2: "$" <VARNAME> >

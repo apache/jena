@@ -56,20 +56,20 @@ void Prolog() : {}
   ( LOOKAHEAD(2) PrefixDecl() )*
 }
 
-void BaseDecl() : { Node n ; }
+void BaseDecl() : { String iri ; }
 {
   <LPAREN>
-  <BASE> n = Q_IRI_REF()
-  { getQuery().setBaseURI(n.getURI()) ; }
+  <BASE> iri = IRI_REF()
+  { getQuery().setBaseURI(iri) ; }
   <RPAREN>
 }
 
-void PrefixDecl() : { Token t ; Node n ; }
+void PrefixDecl() : { Token t ; String iri ; }
 {
   <LPAREN>
-    <PREFIX> t = <QNAME_NS> n = Q_IRI_REF()
+    <PREFIX> t = <PNAME_NS> iri = IRI_REF()
       { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
-        getQuery().setPrefix(s, n.getURI()) ; }
+        getQuery().setPrefix(s, iri) ; }
   <RPAREN>
 }
 
@@ -136,27 +136,22 @@ void DatasetClause() : {}
   <RPAREN>
 }
 
-void DefaultGraphClause() : { Node n ; }
+void DefaultGraphClause() : { String iri ; }
 {
-  n = SourceSelector() 
-  { getQuery().addGraphURI(n.getURI()) ; }
+  iri = SourceSelector() 
+  { getQuery().addGraphURI(iri) ; }
 }
 
-void NamedGraphClause() : { Node n ; }
+void NamedGraphClause() : { String iri ; }
 {
   <NAMED>
-  n = SourceSelector()
-  { getQuery().addNamedGraphURI(n.getURI()) ; }
+  iri = SourceSelector()
+  { getQuery().addNamedGraphURI(iri) ; }
 }
 
-Node SourceSelector() : { Node n ; }
+String SourceSelector() : { String iri ; }
 {
-  n = IRIref()
-  { if ( ! n.isURI() )
-        throw new QueryParseException("Not an URI: "+n.toString(),
-                                      token.beginLine, token.beginColumn) ;
-    return n ;
-  }
+   iri = IRIref() { return iri ; }
 }
 
 
@@ -410,12 +405,12 @@ Expr P_GeneralFunctionCall() : {Expr n1 = null; Expr n2 = null ; Expr e ; Node n
   <EXPR> e = Expression() { return e ; }
 }
 
-Expr P_Function() : { Expr e ; Node fname ; ExprList a ; }
+Expr P_Function() : { Expr e ; String fname ; ExprList a ; }
 {
   e = P_BuiltInCall() { return e ; }
 |
   fname = IRIref() a = P_ArgList()
-    { return new E_Function(fname.getURI(), a) ; }  
+    { return new E_Function(fname, a) ; }  
 }
 
 ExprList P_ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
@@ -648,10 +643,10 @@ Expr RegexExpression() :
       { return new E_Regex(expr, patExpr, flagsExpr) ; }
 }
 
-Expr FunctionCall() : { Node fname ; ExprList a ; }
+Expr FunctionCall() : { String fname ; ExprList a ; }
 {
   fname = IRIref() a = ArgList()
-    { return new E_Function(fname.getURI(), a) ; }
+    { return new E_Function(fname, a) ; }
 }
 
 ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
@@ -672,20 +667,20 @@ ExprList ArgList() : { Expr expr ;  ExprList args = new ExprList() ; }
 // The case of "q:name()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr IRIrefOrFunction() : {Node gn ; ExprList a = null ; }
+Expr IRIrefOrFunction() : {String iri ; ExprList a = null ; }
 {
-  gn = IRIref()
+  iri = IRIref()
   ( a = ArgList() )?
-    { if ( a == null ) return asExpr(gn) ;
-      return new E_Function(gn.getURI(), a) ;
+    { if ( a == null ) return asExpr(createNode(iri)) ;
+      return new E_Function(iri, a) ;
     }
 }
 
 // ---- Basic terms
 
-Node VarOrIRIref() : {Node n = null ; }
+Node VarOrIRIref() : {Node n = null ; String iri ; }
 {
-  ( n = Var() | n = IRIref() )
+  ( n = Var() | iri = IRIref() { n = createNode(iri) ; } )
   { return n ; }
 } 
 
@@ -707,9 +702,9 @@ Node Var() : { Token t ;}
     ( t = <VAR1> | t = <VAR2> )
     { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
 }
-Node GraphTerm() : { Node n ; }
+Node GraphTerm() : { Node n ; String iri ; }
 {
-  n = IRIref()          { return n ; }
+  iri = IRIref()          { return createNode(iri) ; }
 | 
   n = RDFLiteral()      { return n ; }
 |
@@ -728,13 +723,13 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
 {
   lex = String()
   // Optional lang tag and datatype.
-  { String lang = null ; Node uri = null ; }
+  { String lang = null ; String iri = null ; }
   (
     ( t = <LANGTAG>  { lang = stripChars(t.image, 1) ; } )
   |
-    ( <DATATYPE> uri = IRIref() )
+    ( <DATATYPE> iri = IRIref() )
   )?
-    { return makeNode(lex, lang, uri) ; }
+    { return makeNode(lex, lang, iri) ; }
 } 
 
 Node NumericLiteral() : { Token t ; }
@@ -766,20 +761,20 @@ String String() : { Token t ; }
     }
 }
 
-Node IRIref() : { Node n ; }
+String IRIref() : { String iri ; }
 {
-  n = Q_IRI_REF() { return n ; }
+  iri = IRI_REF() { return iri ; }
 |
-  n = QName() { return n ; }
+  iri = PrefixedName() { return iri ; }
 }
 
-Node QName() : { Token t ; }
+String PrefixedName() : { Token t ; }
 {
-  ( t = <QNAME>
-    { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
+  ( t = <PNAME_LN>
+    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
   |
-    t = <QNAME_NS>
-    { return createNodeFromPrefixedName(t.image, t.beginLine, t.beginColumn) ; }
+    t = <PNAME_NS>
+    { return resolvePName(t.image, t.beginLine, t.beginColumn) ; }
   )
 }
 
@@ -793,10 +788,10 @@ Node BlankNode() :  { Token t = null ; }
 
 }
 
-Node Q_IRI_REF() : { Token t ; }
+String IRI_REF() : { Token t ; }
 {
-  t = <Q_IRIref>
-  { return createNodeFromQuotedURI(t.image, t.beginLine, t.beginColumn) ; }
+  t = <IRIref>
+  { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 // ------------------------------------------
@@ -816,14 +811,11 @@ SPECIAL_TOKEN :
 TOKEN:
 {
    // Includes # for relative URIs
-   <Q_IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
-
-|  <QNAME_NS: (<NCNAME_PREFIX>)? ":" >
-|  <QNAME: (<NCNAME_PREFIX>)? ":" (<NCNAME>)? >
-
-|  <BLANK_NODE_LABEL: "_:" <NCNAME> >
-//|  <BLANK_NODE_ID: "_!:" <NCNAME> >
-
+   <IRIref: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", 
+                      "\u0000"-"\u0020"])* ">" >
+|  <PNAME_NS: (<PN_PREFIX>)? ":" >
+|  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
+|  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
 |  <VAR1: "?" <VARNAME> >
 |  <VAR2: "$" <VARNAME> >
 |  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
@@ -1007,12 +999,10 @@ TOKEN :
 | < AT: "@">
 }
 
-// See XML chars.txt for notes
-
 TOKEN:
 {
   // XML 1.1 NCNameStartChar without "_"
-  <#NCCHAR1p:
+  <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
           ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
           ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
@@ -1021,23 +1011,21 @@ TOKEN:
           >
           // [#x10000-#xEFFFF]
 |
-  <#NCCHAR1: <NCCHAR1p> | "_" >
-
-// No trailing DOTs in qnames.
+  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
 |
-  // #NCCHAR without "."
-  <#NCCHAR: (<NCCHAR1> | "-" | ["0"-"9"] | "\u00B7" |
+// No DOT
+  <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |
               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
 |
-  // NCNAME but no leading "_", no trailing ".", can have dot inside prefix name.
-  <#NCNAME_PREFIX: <NCCHAR1p> ((<NCCHAR>|".")* <NCCHAR>)?  >
+  // No leading "_", no trailing ".", can have dot inside prefix name.
+  <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |
   // With a leading "_", no dot at end of local name.
-  <#NCNAME: <NCCHAR1> ((<NCCHAR>|".")* <NCCHAR>)?  >
+  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |
   // NCNAME without "-" and ".", allowing leading digits.
-  <#VARNAME: ( <NCCHAR1> | ["0"-"9"] )
-             ( <NCCHAR1> | ["0"-"9"] | "\u00B7" |
+  <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
+             ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
 }
 

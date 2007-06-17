@@ -11,5 +11,5 @@
      (project ...))
      (project (?x ?y (?z expr)) ...)
   
-+ IRI/PrefixedName => Node : make this String
++ IRI/PrefixedName => Node : make this String (no - allows for _:abc)
   Applies through out parser system.
