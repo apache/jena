@@ -4,17 +4,10 @@
 ++ ** Document "update API"
 -----
 
-+ GRAPH and quads - check scoping of any filter in the pattern part that involves the graph variable.
-  Couple to linearize with masked variables for increased indexing performance?
-
-+ DatasetImpl and DataSourceImpl 
-    Revisit.
-      
 + DateTime arithmetic and durations
   http://www.w3.org/TR/xpath-functions/#dateTime-arithmetic
 
-+ Aggregates
-  QueryIterGroup
++ Aggregates: QueryIterGroup
   Parsing : 
      SELECT list is expressions always (inv vars)
      Ordered Map [LinkedHashMap?] from name (generated if necessary) to expression.
@@ -23,9 +16,6 @@
 + Quads - independent quads?  Or retain blocking structure?
 
 + Remote update over HTTP
-
-+ Improvements - are these measurable?
-  If a stage generates no new bindings, don't allocation a BindingMap unnecessarility.
 
 + testing QE/ref and QE/main in the same run
   ?? use a factory list, including tests with no recorded results.
@@ -42,17 +32,13 @@
   
 + REDUCED tests :-(
 
-+ Serilization: 
-    redo "prefix" to be SSE compatible.
-
-+ Property function to property path expression
-
-+ testing QE1 and QE2 and QE3 in the same test run
-
 + Commands
   + qtest to use modules (and qexpr)
     ModVersion
 
++ DatasetImpl and DataSourceImpl 
+    Revisit.
+      
 == Algebra
 
 + OpWalker - only used for getting vars, and that needs to truncate a walk.
