@@ -19,7 +19,9 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.sql.JDBC;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
+import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.test.SDBTestSuite1;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
@@ -33,58 +35,22 @@ public class RunSDB
     public static void main(String[]argv)
     {
         SDBConnection.logSQLExceptions = true ;
-        sdb.sdbtuple.main("--sdb=sdb.ttl", "--print", "Nodes") ;
-        System.exit(0) ;
-        //sdb.sdbload.main("--sdb=sdb.ttl", "--graph=http://example/g1", "D.ttl") ;
-        sdb.sdbdump.main("--sdb=sdb.ttl", "--graph=http://ex/g1", "--out=TTL") ;
-        System.exit(0) ;
+//        sdb.sdbtuple.main("--sdb=sdb.ttl", "--print", "Nodes") ;
+//        System.exit(0) ;
         
         //SDBConnection.logSQLQueries = true ;
         //SDBConnection.logSQLStatements = true ;
         
-        //QBuilder.main(null) ; System.exit(0) ;
-        
-        //runQuery() ;
-        
-        //runQuery("Q.rq", null, "Store/sdb-hsqldb-file.ttl") ;
-        //runQuery("Q.rq") ;
-        
-        //runQuad() ;
         //runPrint() ;
         //runScript() ;
         
         //runInMem("Q.rq", "D.ttl") ;
-        run() ;
-        //runTest() ;
+        //run() ;
+        runTest() ;
         System.err.println("Nothing ran!") ;
         System.exit(0) ;
     }
 
-    public static void runQuery()
-    {
-        runQuery("Q.rq") ;
-        System.exit(0) ;
-    }
-        
-    public static void runQuery(String queryFile)
-    {
-        runQuery(queryFile, null) ;
-        System.exit(0) ;
-    }
-        
-
-    public static void runQuery(String queryFile, String dataFile)
-    {
-        runQuery(queryFile, dataFile, "sdb.ttl") ;
-        System.exit(0) ;
-    }
-    
-    public static void runQuery(String queryFile, String dataFile, String sdbFile)
-    {
-        _runQuery(queryFile, dataFile, sdbFile) ;
-        System.exit(0) ;
-    }
-     
     private static void _runQuery(String queryFile, String dataFile, String sdbFile)
         {
 
@@ -141,9 +107,8 @@ public class RunSDB
             SimpleTestRunner.runAndReport(ts) ;
             System.exit(0) ;
         }
-        String[] a = { "--sdb=sdb.ttl", "--dbName=DB/test2", 
-            "testing/Algebra/manifest.ttl",
-            "testing/Structure/manifest.ttl"
+        String[] a = { "--sdb=sdb.ttl",
+            "testing/Graph/manifest.ttl",
             } ;
 
         sdb.sdbtest.main(a) ;
@@ -188,8 +153,19 @@ public class RunSDB
     
     public static void run()
     {
-        String args = "--sdb=sdb.ttl" ;
-        sdbdump(args) ;
+        Store store = StoreFactory.create("sdb.ttl") ;
+        
+        Model model1 = SDBFactory.connectDefaultModel(store); 
+        FileManager.get().readModel(model1, "D.ttl") ;
+        
+//        sdb.sdbtuple.main("--sdb=sdb.ttl", "Nodes") ;
+        
+        store.getTableFormatter().format() ;
+        store = StoreFactory.create("sdb.ttl") ;
+        Model model3 = SDBFactory.connectDefaultModel(store); 
+        FileManager.get().readModel(model3, "D.ttl") ;
+        
+        sdb.sdbtuple.main("--sdb=sdb.ttl", "Nodes") ;
         System.exit(0) ;
     }
 }

@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sdb.junit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,7 +54,8 @@ public class QueryTestSDB extends TestCase
     // Assumes that tests run serially
     
     static String currentTestName = null ;
-    static String lastFileLoaded = null ;
+    static List<String> lastDftLoaded = new ArrayList<String>() ;
+    static List<String> lastNamedLoaded = new ArrayList<String>() ;
     
     boolean skipThisTest = false ;
     
@@ -67,26 +71,34 @@ public class QueryTestSDB extends TestCase
         
         currentTestName = getName() ;
         
-        if ( item.getDefaultGraphURIs().size() != 1 || item.getNamedGraphURIs().size() != 0 )
-            fail("Only one data graph supported") ;
-        String dataFileName = (String)item.getDefaultGraphURIs().get(0) ;
+        @SuppressWarnings("unchecked")
+        final List<String> filenamesDft = (List<String>)item.getDefaultGraphURIs() ;
+        @SuppressWarnings("unchecked")
+        final List<String> filenamesNamed = (List<String>)item.getNamedGraphURIs() ;
         
-        if ( lastFileLoaded == null || !lastFileLoaded.equals(dataFileName) )
+        // Same as last time - skip.
+        if ( lastDftLoaded.equals(filenamesDft) && lastNamedLoaded.equals(filenamesNamed) )
         {
-            log.debug("File loaded: "+dataFileName) ;
-            final String filename = dataFileName ;
-            // swap data in a transaction
-
-            store.getConnection().executeInTransaction(new Command(){
-                public Object execute()
-                {
-                    store.getTableFormatter().truncate() ;
-                    StoreUtils.load(store, filename) ;
-                    return null ;
-                }}) ;
-            
-            lastFileLoaded = dataFileName ;
+            System.err.println("Same - no reload") ;
+            return ;
         }
+        System.err.println("Different - load") ;
+
+        // Truncate outside a transaction.
+        store.getTableFormatter().truncate() ;
+        store.getConnection().executeInTransaction(new Command(){
+            public Object execute()
+            {
+                // Default graph
+                for ( String fn : filenamesDft )
+                    StoreUtils.load(store, fn) ;    
+                // Named graphs
+                for ( String fn : filenamesNamed )
+                    StoreUtils.load(store, fn, fn) ;    
+                return null ;
+            }}) ;
+        lastDftLoaded = filenamesDft ;
+        lastNamedLoaded = filenamesNamed ;
     }
     
     @Override
@@ -104,8 +116,8 @@ public class QueryTestSDB extends TestCase
             return ;
         }
         
-        if ( item.getDefaultGraphURIs().size() != 1 || item.getNamedGraphURIs().size() != 0 )
-            fail("Only one data graph supported") ;
+//        if ( item.getDefaultGraphURIs().size() != 1 || item.getNamedGraphURIs().size() != 0 )
+//            fail("Only one data graph supported") ;
         
         Query query = QueryFactory.read(item.getQueryFile()) ;
             

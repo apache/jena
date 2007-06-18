@@ -52,7 +52,6 @@ public class ModGraph extends ModBase
         else
             return SDBFactory.connectNamedModel(store, graphName) ;
     }
-    
 }
 
 /*

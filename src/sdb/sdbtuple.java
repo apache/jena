@@ -38,7 +38,7 @@ public class sdbtuple extends CmdArgsDB
     
     // Commands
     private static ArgDecl  argDeclCmdPrint    = new ArgDecl(false, "print") ;
-    private static ArgDecl  argDeclCmdLoad     = new ArgDecl(true, "load") ;
+    private static ArgDecl  argDeclCmdLoad     = new ArgDecl(true,  "load") ;
     private static ArgDecl  argDeclCmdCreate   = new ArgDecl(false, "create") ;
     private static ArgDecl  argDeclCmdDrop     = new ArgDecl(false, "drop") ;
     private static ArgDecl  argDeclCmdTruncate = new ArgDecl(false, "truncate") ;
@@ -128,7 +128,8 @@ public class sdbtuple extends CmdArgsDB
         int count = countBool(cmdPrint, cmdLoad, cmdCreate, cmdDrop, cmdTruncate) ;
     
         if ( count == 0 )
-            cmdError("No command : nothing to do!", true) ;
+            //cmdError("No command : nothing to do!", true) ;
+            cmdPrint = true ;
         if ( count > 1 )
             cmdError("Too many commands : too much to do!", true) ;
         

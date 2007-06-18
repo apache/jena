@@ -62,8 +62,15 @@ public class TupleTable
     {
         List<String> colVars = new ArrayList<String>() ;
         try {
+//            java.sql.Connection sqlConn = store.getConnection().getSqlConnection() ;
+//            DatabaseMetaData md = sqlConn.getMetaData() ;
+//            ResultSet rs = md.getTables(null, null, null, null);
+//            RS.printResultSet(rs) ;
+//            rs.close();
+            
+            // Need to portable get the column names. 
             java.sql.ResultSet tableData = 
-                store.getConnection().execQuery("SELECT * FROM "+tableName+" LIMIT 1") ;
+                store.getConnection().execQuery("SELECT * FROM "+tableName) ;
             java.sql.ResultSetMetaData meta = tableData.getMetaData() ;
             int N = meta.getColumnCount() ;
             for ( int i = 1 ; i <= N ; i++ )
