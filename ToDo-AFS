@@ -7,7 +7,7 @@ SDB ToDo list (and general notes)
    Prefixes.
 ** StoreLoader interface
 ** Subclass loading.
-** OpSlice
+** OpSlice. OpUnion
 
 + SPARQL/Update input and control
 

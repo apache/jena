@@ -16,4 +16,5 @@
 
         <Algebra/manifest.ttl>
         <Structure/manifest.ttl>
+        <Graph/manifest.ttl>
     ) .

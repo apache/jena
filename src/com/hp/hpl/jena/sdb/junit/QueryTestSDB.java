@@ -78,11 +78,7 @@ public class QueryTestSDB extends TestCase
         
         // Same as last time - skip.
         if ( lastDftLoaded.equals(filenamesDft) && lastNamedLoaded.equals(filenamesNamed) )
-        {
-            System.err.println("Same - no reload") ;
             return ;
-        }
-        System.err.println("Different - load") ;
 
         // Truncate outside a transaction.
         store.getTableFormatter().truncate() ;
