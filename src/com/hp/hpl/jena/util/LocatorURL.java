@@ -16,7 +16,7 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.14 2007-01-17 10:44:25 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.15 2007-06-18 16:10:42 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
@@ -69,15 +69,29 @@ public class LocatorURL implements Locator
             log.warn("Malformed URL: " + filenameOrURI);
             return null;
         }
+        // IOExceptions that occur sometimes.
+        catch (java.net.UnknownHostException ex)
+        {
+            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+                log.trace("LocatorURL: not found (UnknownHostException): "+filenameOrURI) ;
+            return null ;
+        }
+        catch (java.net.ConnectException ex)
+        { 
+            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+                log.trace("LocatorURL: not found (ConnectException): "+filenameOrURI) ;
+            return null ;
+        }
+        catch (java.net.SocketException ex)
+        {
+            if ( FileManager.logAllLookups && log.isTraceEnabled() )
+                log.trace("LocatorURL: not found (SocketException): "+filenameOrURI) ;
+            return null ;
+        }
+        // And IOExceptions we don't expect
         catch (IOException ex)
         {
-            if ( ex instanceof ConnectException || ex instanceof java.net.SocketException )
-            {
-                if ( FileManager.logAllLookups && log.isTraceEnabled() )
-                    log.trace("LocatorURL: not found: "+filenameOrURI) ;
-            }
-            else
-                log.warn("I/O Exception opening URL: " + filenameOrURI+"  "+ex.getMessage(), ex);
+            log.warn("I/O Exception opening URL: " + filenameOrURI+"  "+ex.getMessage(), ex);
             return null;
         }
     }
