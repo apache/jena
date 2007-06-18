@@ -29,8 +29,15 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.Store;
 
 @RunWith(AllTests.class)
+
+// static suite() becomes in JUnit 4:... 
+//@RunWith(Suite.class) and SuiteClasses(TestClass1.class, ...)
+
 public class SDBTestSuite2 extends TestSuite
 {
+    // Better:
+    // @RunWith(Parameterized.class) and parameters are sdb files or Stores 
+    
     // This NEEDS tidying up!
     // Use Store/test/sdb-???.ttl files
     
