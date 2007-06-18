@@ -103,12 +103,6 @@ public class SlotCompilerIndex extends SlotCompiler2
         for ( Quad quad : quadBlock )
         {
             if ( ! quad.getGraph().equals(Quad.defaultGraph) )
-            {
-                log.fatal("Non-default graph") ;
-                throw new SDBException("Non-default graph") ;
-            }
-            if ( false )
-                // Not quadding currently.
                 acc(constants, vars, quad.getGraph()) ;
             acc(constants, vars, quad.getSubject()) ;
             acc(constants, vars, quad.getPredicate()) ;
