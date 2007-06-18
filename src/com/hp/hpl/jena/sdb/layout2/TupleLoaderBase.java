@@ -141,6 +141,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 			throw new SDBException("Exception flushing", e);
 		} finally {
 			tupleNum = 0;
+			seenNodes = new HashSet<Long>();
 		}
 	}
 	
