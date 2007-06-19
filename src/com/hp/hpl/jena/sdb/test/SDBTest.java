@@ -15,9 +15,12 @@ import org.junit.runners.Suite;
     SDBTestSuite1.class,
     SDBTestSuite2.class
 } )
+
 public class SDBTest
 {
-    public static final String testDirSDB = "testing/" ;
+    public static final String testDirSDB    = "testing/" ;
+    public static final String manifest      = SDBTest.testDirSDB + "manifest-sdb.ttl" ;
+    public static final String storeDescBase = SDBTest.testDirSDB+"StoreDesc/" ;
 }
 
 /*
