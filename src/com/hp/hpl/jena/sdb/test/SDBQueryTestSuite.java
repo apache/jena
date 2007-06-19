@@ -37,7 +37,7 @@ public class SDBQueryTestSuite extends TestSuite
     // @RunWith(Parameterized.class) and parameters are sdb files or Stores
     // But does not allow for programmatic construction of a test suite.
 
-    static boolean includeHash      = true ;
+    static boolean includeHash      = false ;
     static boolean includeIndex     = true ;
     
     static boolean includeDerby     = true ;
@@ -57,6 +57,8 @@ public class SDBQueryTestSuite extends TestSuite
         for ( Pair<Store, String> p : stores() )
         {
             TestSuite ts2 = makeSuite(p.getLeft(), p.getRight()) ;
+            //ts2.setName(ts2.getName()+" - "+p.getRight()) ;
+            ts2.setName(p.getRight()) ;
             addTest(ts2) ;
         }
     }
