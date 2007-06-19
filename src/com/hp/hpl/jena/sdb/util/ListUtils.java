@@ -42,6 +42,15 @@ public class ListUtils extends Alg
 
         return filter(list, RemoveNulls) ;
     }
+    
+    public static <T> Iterable<T> concat(List<? extends T> list1, List<? extends T> list2)
+    {
+        // Quick impl.
+        List<T> x = new ArrayList<T>() ;
+        if ( list1 != null ) x.addAll(list1) ;
+        if ( list2 != null ) x.addAll(list2) ;
+        return x ;
+    }
 }
 
 /*
