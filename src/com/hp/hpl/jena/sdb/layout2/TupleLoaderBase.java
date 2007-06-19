@@ -61,6 +61,10 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		if (getClearTempTuples() != null) clearTupleLoader = conn.prepareStatement(getClearTempTuples());
 	}
 	
+	public int getArity() {
+		return this.getTableWidth();
+	}
+	
 	public void load(Node... row) {
 		if (!amLoading) {
 			flush();
@@ -68,7 +72,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		}
 		
 		if (row.length != this.getTableWidth())
-			throw new SDBException("Tuple size mismatch");
+			throw new IllegalArgumentException("Tuple size mismatch");
 		
 		try {
 			for (int i = 0; i < row.length; i++) {
@@ -93,7 +97,7 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		}
 		
 		if (row.length != this.getTableWidth())
-			throw new SDBException("Tuple size mismatch");
+			throw new IllegalArgumentException("Tuple size mismatch");
 		
 		try {
 			for (int i = 0; i < row.length; i++) {

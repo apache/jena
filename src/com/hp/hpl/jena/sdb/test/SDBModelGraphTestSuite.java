@@ -10,6 +10,13 @@ import junit.framework.TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
+import com.hp.hpl.jena.sdb.test.graph.TestHSQLIndexGraph;
+import com.hp.hpl.jena.sdb.test.graph.TestMySQLGraph;
+import com.hp.hpl.jena.sdb.test.graph.TestPgSQLGraph;
+import com.hp.hpl.jena.sdb.test.model.TestHSQLModel;
+import com.hp.hpl.jena.sdb.test.model.TestMySQLModel;
+import com.hp.hpl.jena.sdb.test.model.TestPgSQLModel;
+
 @RunWith(AllTests.class)
 public class SDBModelGraphTestSuite extends TestSuite
 {
@@ -30,7 +37,7 @@ public class SDBModelGraphTestSuite extends TestSuite
         if ( includeHSQL )
         {
         	ts.addTestSuite(TestHSQLModel.class);
-        	ts.addTestSuite(TestHSQLGraph.class);
+        	ts.addTestSuite(TestHSQLIndexGraph.class);
         }
         
         if ( includePGSQL )

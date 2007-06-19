@@ -261,11 +261,13 @@ public class LoaderTuplesNodes
 
 	private void checkThreadStatus()
     {
-    	if (threadException.get() != null)
+		Throwable e = threadException.getAndSet(null);
+    	if (e != null)
         {
-        	Throwable e = threadException.getAndSet(null);
         	if (e instanceof SQLException)
         		throw new SDBExceptionSQL("Loader thread exception", (SQLException) e);
+        	else if (e instanceof RuntimeException)
+        		throw (RuntimeException) e;
         	else
         		throw new SDBException("Loader thread exception", e);
         }

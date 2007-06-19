@@ -4,7 +4,7 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test;
+package com.hp.hpl.jena.sdb.test.graph;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
@@ -12,9 +12,9 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestHSQLIndexGraph extends AbstractTestGraph {
+public class TestHSQLIndexQuadGraph extends AbstractTestGraph {
 
-	public TestHSQLIndexGraph(String arg0) {
+	public TestHSQLIndexQuadGraph(String arg0) {
 		super(arg0);
 	}
 	
@@ -22,7 +22,7 @@ public class TestHSQLIndexGraph extends AbstractTestGraph {
 	public Graph getGraph()
 	{
 		Store store = StoreCreator.getIndexHSQL();
-		return SDBFactory.connectDefaultGraph(store);
+		return SDBFactory.connectNamedGraph(store, "http://example.com/graph");
 	}
 }
 

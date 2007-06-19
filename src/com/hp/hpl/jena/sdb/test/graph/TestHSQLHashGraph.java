@@ -4,22 +4,26 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test;
+package com.hp.hpl.jena.sdb.test.graph;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.test.AbstractTestModel;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.test.AbstractTestGraph;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestSQLServerModel extends AbstractTestModel {
+public class TestHSQLHashGraph extends AbstractTestGraph {
 
-	public TestSQLServerModel(String arg0) {
+	public TestHSQLHashGraph(String arg0) {
 		super(arg0);
 	}
-
+	
 	@Override
-	public Model getModel() {
-		return ModelPool.get().getIndexSQLServer();
+	public Graph getGraph()
+	{
+		Store store = StoreCreator.getHashHSQL();
+		return SDBFactory.connectDefaultGraph(store);
 	}
-
 }
 
 /*

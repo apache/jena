@@ -4,21 +4,25 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test;
+package com.hp.hpl.jena.sdb.test.graph;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestHSQLGraph extends AbstractTestGraph {
+public class TestHSQLIndexGraph extends AbstractTestGraph {
 
-	public TestHSQLGraph(String arg0) {
+	public TestHSQLIndexGraph(String arg0) {
 		super(arg0);
 	}
 	
 	@Override
 	public Graph getGraph()
 	{
-		return ModelPool.get().getIndexHSQL().getGraph();
+		Store store = StoreCreator.getIndexHSQL();
+		return SDBFactory.connectDefaultGraph(store);
 	}
 }
 

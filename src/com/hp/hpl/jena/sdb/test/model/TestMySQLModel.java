@@ -4,20 +4,24 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test;
+package com.hp.hpl.jena.sdb.test.model;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.test.AbstractTestModel;
+import com.hp.hpl.jena.sdb.SDBFactory;
+import com.hp.hpl.jena.sdb.store.Store;
+import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestHSQLModel extends AbstractTestModel {
+public class TestMySQLModel extends AbstractTestModel {
 
-	public TestHSQLModel(String arg0) {
+	public TestMySQLModel(String arg0) {
 		super(arg0);
 	}
 
 	@Override
 	public Model getModel() {
-		return ModelPool.get().getIndexHSQL();
+		Store store = StoreCreator.getIndexMySQL();
+		return SDBFactory.connectDefaultModel(store);
 	}
 
 }
