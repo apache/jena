@@ -7,10 +7,11 @@
 package com.hp.hpl.jena.sdb.test;
 
 import junit.framework.TestSuite;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.AllTests;
 
-import com.hp.hpl.jena.sdb.test.graph.TestHSQLIndexGraph;
+import com.hp.hpl.jena.sdb.test.graph.TestHSQLGraph;
 import com.hp.hpl.jena.sdb.test.graph.TestMySQLGraph;
 import com.hp.hpl.jena.sdb.test.graph.TestPgSQLGraph;
 import com.hp.hpl.jena.sdb.test.model.TestHSQLModel;
@@ -29,21 +30,21 @@ public class SDBModelGraphTestSuite extends TestSuite
     	
         if ( includeMySQL )
         {
-        	ts.addTestSuite(TestMySQLModel.class);
-        	ts.addTestSuite(TestMySQLGraph.class);
+        	ts.addTestSuite(TestMySQLModel.TestMySQLHashModel.class);
+        	ts.addTestSuite(TestMySQLGraph.TestMySQLHashGraph.class);
         }
         
         
         if ( includeHSQL )
         {
-        	ts.addTestSuite(TestHSQLModel.class);
-        	ts.addTestSuite(TestHSQLIndexGraph.class);
+        	ts.addTestSuite(TestHSQLModel.TestHSQLHashModel.class);
+        	ts.addTestSuite(TestHSQLGraph.TestHSQLHashGraph.class);
         }
         
         if ( includePGSQL )
         {
-        	ts.addTestSuite(TestPgSQLModel.class);
-        	ts.addTestSuite(TestPgSQLGraph.class);
+        	ts.addTestSuite(TestPgSQLModel.TestPgSQLHashModel.class);
+        	ts.addTestSuite(TestPgSQLGraph.TestPgSQLHashGraph.class);
         }
         
         return ts;

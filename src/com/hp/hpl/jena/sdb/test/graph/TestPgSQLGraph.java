@@ -12,17 +12,58 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestPgSQLGraph extends AbstractTestGraph {
+public class TestPgSQLGraph {
 
-	public TestPgSQLGraph(String arg0) {
-		super(arg0);
+	public static class TestPgSQLIndexGraph extends AbstractTestGraph {
+		public TestPgSQLIndexGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getIndexPgSQL();
+			return SDBFactory.connectDefaultGraph(store);
+		}
 	}
 	
-	@Override
-	public Graph getGraph()
-	{
-		Store store = StoreCreator.getIndexPgSQL();
-		return SDBFactory.connectDefaultGraph(store);
+	public static class TestPgSQLIndexQuadGraph extends AbstractTestGraph {
+		public TestPgSQLIndexQuadGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getIndexPgSQL();
+			return SDBFactory.connectNamedGraph(store, "http://example.com/graph");
+		}
+	}
+	
+	public static class TestPgSQLHashGraph extends AbstractTestGraph {
+		public TestPgSQLHashGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getHashPgSQL();
+			return SDBFactory.connectDefaultGraph(store);
+		}
+	}
+	
+	public static class TestPgSQLHashQuadGraph extends AbstractTestGraph {
+		public TestPgSQLHashQuadGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getHashPgSQL();
+			return SDBFactory.connectNamedGraph(store, "http://example.com/graph");
+		}
 	}
 }
 

@@ -4,26 +4,85 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.test.graph;
+package com.hp.hpl.jena.sdb.test.model;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
+import junit.framework.TestSuite;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.test.AbstractTestModel;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestHSQLHashGraph extends AbstractTestGraph {
-
-	public TestHSQLHashGraph(String arg0) {
-		super(arg0);
+public class TestDerbyModel {
+	
+	public static junit.framework.Test suite() {
+    	TestSuite ts = new TestSuite();
+    	
+    	ts.addTestSuite(TestDerbyIndexModel.class);
+    	ts.addTestSuite(TestDerbyIndexQuadModel.class);
+    	ts.addTestSuite(TestDerbyHashModel.class);
+    	ts.addTestSuite(TestDerbyHashQuadModel.class);
+    	
+    	return ts;
 	}
 	
-	@Override
-	public Graph getGraph()
-	{
-		Store store = StoreCreator.getHashHSQL();
-		return SDBFactory.connectDefaultGraph(store);
+	public static class TestDerbyIndexModel extends AbstractTestModel {
+
+		public TestDerbyIndexModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getIndexDerby();
+			return SDBFactory.connectDefaultModel(store);
+		}
+		
 	}
+	
+	public static class TestDerbyIndexQuadModel extends AbstractTestModel {
+
+		public TestDerbyIndexQuadModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getIndexDerby();
+			return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+		}
+		
+	}
+	
+	public static class TestDerbyHashModel extends AbstractTestModel {
+
+		public TestDerbyHashModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getHashDerby();
+			return SDBFactory.connectDefaultModel(store);
+		}
+		
+	}
+	
+	public static class TestDerbyHashQuadModel extends AbstractTestModel {
+
+		public TestDerbyHashQuadModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getHashDerby();
+			return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+		}
+		
+	}
+	
 }
 
 /*

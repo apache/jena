@@ -12,16 +12,62 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestMySQLModel extends AbstractTestModel {
+public class TestMySQLModel {
 
-	public TestMySQLModel(String arg0) {
-		super(arg0);
+	public static class TestMySQLIndexModel extends AbstractTestModel {
+
+		public TestMySQLIndexModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getIndexMySQL();
+			return SDBFactory.connectDefaultModel(store);
+		}
+		
 	}
+	
+	public static class TestMySQLIndexQuadModel extends AbstractTestModel {
 
-	@Override
-	public Model getModel() {
-		Store store = StoreCreator.getIndexMySQL();
-		return SDBFactory.connectDefaultModel(store);
+		public TestMySQLIndexQuadModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getIndexMySQL();
+			return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+		}
+		
+	}
+	
+	public static class TestMySQLHashModel extends AbstractTestModel {
+
+		public TestMySQLHashModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getHashMySQL();
+			return SDBFactory.connectDefaultModel(store);
+		}
+		
+	}
+	
+	public static class TestMySQLHashQuadModel extends AbstractTestModel {
+
+		public TestMySQLHashQuadModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getHashMySQL();
+			return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+		}
+		
 	}
 
 }

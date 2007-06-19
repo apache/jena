@@ -146,6 +146,32 @@
     </junit>
   </target>
 
+  <target name="test-hsqldb" depends="jar">
+    <junit printsummary="on">
+      <classpath>
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+        <fileset dir="jdbc" includes="*.jar"/>
+      </classpath>
+      <test name="com.hp.hpl.jena.sdb.test.graph.TestHSQLGraph"/>
+      <test name="com.hp.hpl.jena.sdb.test.model.TestHSQLModel"/>
+	  <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateHSQLHash"/>
+	  <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateHSQLIndex"/>
+    </junit>
+  </target>
+	
+  <target name="test-derby" depends="jar">
+    <junit printsummary="on">
+      <classpath>
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+        <fileset dir="jdbc" includes="*.jar"/>
+      </classpath>
+      <test name="com.hp.hpl.jena.sdb.test.graph.TestDerbyGraph"/>
+      <test name="com.hp.hpl.jena.sdb.test.model.TestDerbyModel"/>
+      <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateDerbyHash"/>
+      <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateDerbyIndex"/>
+    </junit>
+  </target>
+	
   <!-- Section: Javadoc -->
 
   <target name="javadoc-all" />

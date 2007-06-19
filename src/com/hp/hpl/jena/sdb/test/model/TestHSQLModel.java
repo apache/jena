@@ -6,40 +6,83 @@
 
 package com.hp.hpl.jena.sdb.test.model;
 
+import junit.framework.TestSuite;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.test.AbstractTestModel;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestHSQLModel extends AbstractTestModel {
-
-	public TestHSQLModel(String arg0) {
-		super(arg0);
-	}
-
-	@Override
-	public Model getModel() {
-		Store store = StoreCreator.getIndexHSQL();
-		return SDBFactory.connectDefaultModel(store);
-	}
-
-
-
-public static class TestHSQLIndexQuadModel extends AbstractTestModel {
-
-	public TestHSQLIndexQuadModel(String name) {
-		super(name);
-	}
-
-	@Override
-	public Model getModel() {
-		Store store = StoreCreator.getIndexHSQL();
-		return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+public class TestHSQLModel extends TestSuite {
+	
+	public static junit.framework.Test suite() {
+    	TestSuite ts = new TestSuite();
+    	
+    	ts.addTestSuite(TestHSQLIndexModel.class);
+    	ts.addTestSuite(TestHSQLIndexQuadModel.class);
+    	ts.addTestSuite(TestHSQLHashModel.class);
+    	ts.addTestSuite(TestHSQLHashQuadModel.class);
+    	
+    	return ts;
 	}
 	
-}
+	public static class TestHSQLIndexModel extends AbstractTestModel {
 
+		public TestHSQLIndexModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getIndexHSQL();
+			return SDBFactory.connectDefaultModel(store);
+		}
+		
+	}
+	
+	public static class TestHSQLIndexQuadModel extends AbstractTestModel {
+
+		public TestHSQLIndexQuadModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getIndexHSQL();
+			return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+		}
+		
+	}
+	
+	public static class TestHSQLHashModel extends AbstractTestModel {
+
+		public TestHSQLHashModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getHashHSQL();
+			return SDBFactory.connectDefaultModel(store);
+		}
+		
+	}
+	
+	public static class TestHSQLHashQuadModel extends AbstractTestModel {
+
+		public TestHSQLHashQuadModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getHashHSQL();
+			return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+		}
+		
+	}
+	
 }
 
 /*

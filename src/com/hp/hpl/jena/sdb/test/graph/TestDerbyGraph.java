@@ -6,23 +6,77 @@
 
 package com.hp.hpl.jena.sdb.test.graph;
 
+import junit.framework.TestSuite;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestHSQLIndexGraph extends AbstractTestGraph {
-
-	public TestHSQLIndexGraph(String arg0) {
-		super(arg0);
+public class TestDerbyGraph {
+	
+	public static junit.framework.Test suite() {
+    	TestSuite ts = new TestSuite();
+    	
+    	ts.addTestSuite(TestDerbyIndexGraph.class);
+    	ts.addTestSuite(TestDerbyIndexQuadGraph.class);
+    	ts.addTestSuite(TestDerbyHashGraph.class);
+    	ts.addTestSuite(TestDerbyHashQuadGraph.class);
+    	
+    	return ts;
 	}
 	
-	@Override
-	public Graph getGraph()
-	{
-		Store store = StoreCreator.getIndexHSQL();
-		return SDBFactory.connectDefaultGraph(store);
+	public static class TestDerbyIndexGraph extends AbstractTestGraph {
+		public TestDerbyIndexGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getIndexDerby();
+			return SDBFactory.connectDefaultGraph(store);
+		}
+	}
+	
+	public static class TestDerbyIndexQuadGraph extends AbstractTestGraph {
+		public TestDerbyIndexQuadGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getIndexDerby();
+			return SDBFactory.connectNamedGraph(store, "http://example.com/graph");
+		}
+	}
+	
+	public static class TestDerbyHashGraph extends AbstractTestGraph {
+		public TestDerbyHashGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getHashDerby();
+			return SDBFactory.connectDefaultGraph(store);
+		}
+	}
+	
+	public static class TestDerbyHashQuadGraph extends AbstractTestGraph {
+		public TestDerbyHashQuadGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getHashDerby();
+			return SDBFactory.connectNamedGraph(store, "http://example.com/graph");
+		}
 	}
 }
 

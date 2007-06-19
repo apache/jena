@@ -12,16 +12,62 @@ import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestPgSQLModel extends AbstractTestModel {
+public class TestPgSQLModel {
 
-	public TestPgSQLModel(String arg0) {
-		super(arg0);
+	public static class TestPgSQLIndexModel extends AbstractTestModel {
+
+		public TestPgSQLIndexModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getIndexPgSQL();
+			return SDBFactory.connectDefaultModel(store);
+		}
+		
 	}
+	
+	public static class TestPgSQLIndexQuadModel extends AbstractTestModel {
 
-	@Override
-	public Model getModel() {
-		Store store = StoreCreator.getIndexPgSQL();
-		return SDBFactory.connectDefaultModel(store);
+		public TestPgSQLIndexQuadModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getIndexPgSQL();
+			return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+		}
+		
+	}
+	
+	public static class TestPgSQLHashModel extends AbstractTestModel {
+
+		public TestPgSQLHashModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getHashPgSQL();
+			return SDBFactory.connectDefaultModel(store);
+		}
+		
+	}
+	
+	public static class TestPgSQLHashQuadModel extends AbstractTestModel {
+
+		public TestPgSQLHashQuadModel(String name) {
+			super(name);
+		}
+		
+		@Override
+		public Model getModel() {
+			Store store = StoreCreator.getHashPgSQL();
+			return SDBFactory.connectNamedModel(store, "http://example.com/graph");
+		}
+		
 	}
 
 }

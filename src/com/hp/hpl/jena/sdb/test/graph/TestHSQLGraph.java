@@ -6,23 +6,77 @@
 
 package com.hp.hpl.jena.sdb.test.graph;
 
+import junit.framework.TestSuite;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.sdb.SDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
-public class TestHSQLIndexQuadGraph extends AbstractTestGraph {
+public class TestHSQLGraph extends TestSuite {
 
-	public TestHSQLIndexQuadGraph(String arg0) {
-		super(arg0);
+	public static junit.framework.Test suite() {
+    	TestSuite ts = new TestSuite();
+    	
+    	ts.addTestSuite(TestHSQLIndexGraph.class);
+    	ts.addTestSuite(TestHSQLIndexQuadGraph.class);
+    	ts.addTestSuite(TestHSQLHashGraph.class);
+    	ts.addTestSuite(TestHSQLHashQuadGraph.class);
+    	
+    	return ts;
 	}
 	
-	@Override
-	public Graph getGraph()
-	{
-		Store store = StoreCreator.getIndexHSQL();
-		return SDBFactory.connectNamedGraph(store, "http://example.com/graph");
+	public static class TestHSQLIndexGraph extends AbstractTestGraph {
+		public TestHSQLIndexGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getIndexHSQL();
+			return SDBFactory.connectDefaultGraph(store);
+		}
+	}
+	
+	public static class TestHSQLIndexQuadGraph extends AbstractTestGraph {
+		public TestHSQLIndexQuadGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getIndexHSQL();
+			return SDBFactory.connectNamedGraph(store, "http://example.com/graph");
+		}
+	}
+	
+	public static class TestHSQLHashGraph extends AbstractTestGraph {
+		public TestHSQLHashGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getHashHSQL();
+			return SDBFactory.connectDefaultGraph(store);
+		}
+	}
+	
+	public static class TestHSQLHashQuadGraph extends AbstractTestGraph {
+		public TestHSQLHashQuadGraph(String arg0) {
+			super(arg0);
+		}
+		
+		@Override
+		public Graph getGraph()
+		{
+			Store store = StoreCreator.getHashHSQL();
+			return SDBFactory.connectNamedGraph(store, "http://example.com/graph");
+		}
 	}
 }
 
