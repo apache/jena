@@ -6,7 +6,12 @@
 
 package dev;
 
-import static sdb.SDBCmd.* ;
+import static sdb.SDBCmd.sdbconfig;
+import static sdb.SDBCmd.sdbload;
+import static sdb.SDBCmd.sdbquery;
+import static sdb.SDBCmd.setExitOnError;
+import static sdb.SDBCmd.setSDBConfig;
+import static sdb.SDBCmd.sparql;
 import junit.framework.TestSuite;
 import arq.cmd.CmdUtils;
 
@@ -27,6 +32,8 @@ import com.hp.hpl.jena.sparql.junit.SimpleTestRunner;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 import com.hp.hpl.jena.util.FileManager;
+
+
 
 
 public class RunSDB

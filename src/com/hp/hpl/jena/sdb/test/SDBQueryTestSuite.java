@@ -43,10 +43,10 @@ public class SDBQueryTestSuite extends TestSuite
     static boolean formatStores     = false ;
     
     static boolean includeDerby     = true ;
-    static boolean includeMySQL     = false ;
-    static boolean includePGSQL     = false ;
-    static boolean includeHSQL      = false ;
+    static boolean includePGSQL     = true ;
+    static boolean includeHSQL      = true ;
     static boolean includeSQLServer = false ;
+    static boolean includeMySQL     = false ;
     
     // Old style (JUnit3) but it allows programmatic
     // construction of the test suite hierarchy from a script.
@@ -111,8 +111,8 @@ public class SDBQueryTestSuite extends TestSuite
 
         if ( includeSQLServer )
         {
-            if ( includeHash )  worker(stores, "MS-SQL-e/Hash",  storeDescBase+"mssql-e-hash.ttl") ;
-            if ( includeIndex ) worker(stores, "MS-SQL-e/Index", storeDescBase+"mssql-e-index.ttl") ;
+            if ( includeHash )  worker(stores, "MS-SQL-e/Hash",  storeDescBase+"ms-sql-e-hash.ttl") ;
+            if ( includeIndex ) worker(stores, "MS-SQL-e/Index", storeDescBase+"ms-sql-e-index.ttl") ;
         }
         
         if ( includeHSQL )

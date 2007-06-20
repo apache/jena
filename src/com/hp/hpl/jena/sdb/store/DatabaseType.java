@@ -41,6 +41,7 @@ public enum DatabaseType implements Named {
         if ( databaseTypeName.equalsIgnoreCase("Oracle10") )      return Oracle10 ;
         if ( databaseTypeName.equalsIgnoreCase("SQLServer") )     return SQLServer ;
         if ( databaseTypeName.equalsIgnoreCase("MSSQLServer") )   return SQLServer ;
+        if ( databaseTypeName.equalsIgnoreCase("MSSQLServerExpress") )   return SQLServer ;
         
         if ( databaseTypeName.equalsIgnoreCase("hsqldb") )        return HSQLDB ;
         if ( databaseTypeName.equalsIgnoreCase("hsql") )          return HSQLDB ;
