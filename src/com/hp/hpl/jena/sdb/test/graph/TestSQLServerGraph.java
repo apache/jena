@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.test.graph;
 
+import junit.framework.TestSuite;
+
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -13,7 +15,18 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
 public class TestSQLServerGraph {
-
+	
+	public static junit.framework.Test suite() {
+    	TestSuite ts = new TestSuite();
+    	
+    	ts.addTestSuite(TestSQLServerIndexGraph.class);
+    	ts.addTestSuite(TestSQLServerIndexQuadGraph.class);
+    	ts.addTestSuite(TestSQLServerHashGraph.class);
+    	ts.addTestSuite(TestSQLServerHashQuadGraph.class);
+    	
+    	return ts;
+	}
+	
 	public static class TestSQLServerIndexGraph extends AbstractTestGraph {
 		public TestSQLServerIndexGraph(String arg0) {
 			super(arg0);

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,12 +51,6 @@ public abstract class TestStoreUpdateBase {
 		this.store = getStore();
 		this.loader = (StoreLoaderPlus) store.getLoader();
 		this.nodeT = store.getNodeTableDesc();
-	}
-	
-	@After public void destroy() {
-		store.getTableFormatter().format();
-		store.close();
-		store.getConnection().close();
 	}
 	
 	@Test public void loadOneRemoveOne()

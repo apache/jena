@@ -30,30 +30,39 @@ import com.hp.hpl.jena.sdb.store.Store;
  */
 public class StoreCreator {
 	
+	private static StoreTriplesNodesHashPGSQL sdbpgh;
+	private static StoreTriplesNodesHashPGSQL sdbpgi;
+	private static StoreTriplesNodesHashMySQL sdbmsh;
+	private static StoreTriplesNodesIndexMySQL sdbmsi;
+
 	public static Store getIndexMySQL() {
-		JDBC.loadDriverMySQL();
+		if (sdbmsi == null) {
+			JDBC.loadDriverMySQL();
+			
+			SDBConnection sdb = SDBFactory.createConnection(
+				"jdbc:mysql://localhost/sdb_test", "jena", "swara");
 		
-		SDBConnection sdb = SDBFactory.createConnection(
-					"jdbc:mysql://localhost/sdb_test", "jena", "swara");
+			sdbmsi = new StoreTriplesNodesIndexMySQL(sdb);
+		}
 		
-		Store store = new StoreTriplesNodesIndexMySQL(sdb);
+		sdbmsi.getTableFormatter().format();
 		
-		store.getTableFormatter().format();
-		
-		return store;
+		return sdbmsi;
 	}
 	
 	public static Store getHashMySQL() {
-		JDBC.loadDriverMySQL();
-
-		SDBConnection sdb = SDBFactory.createConnection(
+		if (sdbmsh == null) {
+			JDBC.loadDriverMySQL();
+			
+			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:mysql://localhost/sdb_test", "jena", "swara");
 		
-		Store store = new StoreTriplesNodesHashMySQL(sdb);
-
-		store.getTableFormatter().format();
+			sdbmsh = new StoreTriplesNodesHashMySQL(sdb);
+		}
 		
-		return store;
+		sdbmsh.getTableFormatter().format();
+		
+		return sdbmsh;
 	}
 	
 	public static Store getIndexHSQL() {
@@ -83,29 +92,29 @@ public class StoreCreator {
 	}
 	
 	public static Store getIndexPgSQL() {
-		JDBC.loadDriverPGSQL();
-
-		SDBConnection sdb = SDBFactory.createConnection(
+		if (sdbpgi == null) {
+			JDBC.loadDriverPGSQL();
+			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
+			sdbpgi = new StoreTriplesNodesHashPGSQL(sdb);
+		}
 		
-		Store store = new StoreTriplesNodesIndexPGSQL(sdb);
-		
-		store.getTableFormatter().format();
+		sdbpgi.getTableFormatter().format();
 			
-		return store;
+		return sdbpgi;
 	}
 	
 	public static Store getHashPgSQL() {
-		JDBC.loadDriverPGSQL();
-		
-		SDBConnection sdb = SDBFactory.createConnection(
+		if (sdbpgh == null) {
+			JDBC.loadDriverPGSQL();
+			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
+			sdbpgh = new StoreTriplesNodesHashPGSQL(sdb);
+		}
 		
-		Store store = new StoreTriplesNodesHashPGSQL(sdb);
-		
-		store.getTableFormatter().format();
+		sdbpgh.getTableFormatter().format();
 			
-		return store;
+		return sdbpgh;
 	}
 	
 	public static Store getIndexSQLServer() {

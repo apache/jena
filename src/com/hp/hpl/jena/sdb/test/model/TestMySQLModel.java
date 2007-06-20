@@ -6,6 +6,8 @@
 
 package com.hp.hpl.jena.sdb.test.model;
 
+import junit.framework.TestSuite;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.test.AbstractTestModel;
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -13,7 +15,18 @@ import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.test.StoreCreator;
 
 public class TestMySQLModel {
-
+	
+	public static junit.framework.Test suite() {
+    	TestSuite ts = new TestSuite();
+    	
+    	ts.addTestSuite(TestMySQLIndexModel.class);
+    	ts.addTestSuite(TestMySQLIndexQuadModel.class);
+    	ts.addTestSuite(TestMySQLHashModel.class);
+    	ts.addTestSuite(TestMySQLHashQuadModel.class);
+    	
+    	return ts;
+	}
+	
 	public static class TestMySQLIndexModel extends AbstractTestModel {
 
 		public TestMySQLIndexModel(String name) {
