@@ -6,7 +6,7 @@
 _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType       "MySQL" ;
     sdb:sdbHost       "localhost" ;
-    sdb:sdbName       "test2-hash" ;
+    sdb:sdbName       "test2-index" ;
     sdb:driver        "com.mysql.jdbc.Driver" ;
     .
 

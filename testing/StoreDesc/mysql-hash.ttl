@@ -3,7 +3,7 @@
 @prefix ja:       <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
-:c rdf:type sdb:SDBConnection ;
+_:c rdf:type sdb:SDBConnection ;
     sdb:sdbType       "MySQL" ;
     sdb:sdbHost       "localhost" ;
     sdb:sdbName       "test2-hash" ;
@@ -14,4 +14,4 @@
     sdb:layout     "layout2" ;
     sdb:connection _:c ;
     sdb:engine     "InnoDB" ;
-.
+    .

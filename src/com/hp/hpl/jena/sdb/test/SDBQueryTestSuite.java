@@ -42,10 +42,10 @@ public class SDBQueryTestSuite extends TestSuite
     
     static boolean formatStores     = false ;
     
-    static boolean includeDerby     = true ;
-    static boolean includePGSQL     = true ;
-    static boolean includeHSQL      = true ;
-    static boolean includeSQLServer = false ;
+    static boolean includeDerby     = false ;
+    static boolean includePGSQL     = false ;
+    static boolean includeHSQL      = false ;
+    static boolean includeSQLServer = true ;
     static boolean includeMySQL     = false ;
     
     // Old style (JUnit3) but it allows programmatic

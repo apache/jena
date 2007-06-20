@@ -98,7 +98,7 @@ public class JDBC
         if ( type.equals("mssqlserver") || type.equals("sqlserver") )
         {
             //jdbc:sqlserver://localhost;databaseName=sdb_layout1
-            String s = String.format("jdbc:%s://%s;databaseName=%s", type, host, dbName) ;
+            String s = String.format("jdbc:%s://%s;databaseName=%s", "sqlserver", host, dbName) ;
             return s ;
         }
         

@@ -4,14 +4,28 @@
 @prefix sdb:      <http://jena.hpl.hp.com/2007/sdb#> .
 
 _:c rdf:type sdb:SDBConnection ;
-     sdb:sdbType        "derby" ;
-     sdb:sdbName        "DB/SDB2" ;
-     sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
+
+##      sdb:sdbType        "derby" ;
+##      sdb:sdbName        "DB/SDB2" ;
+##      sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
 
 ##     sdb:sdbType        "postgresql" ;
 ##     sdb:sdbHost        "localhost" ;
 ##     sdb:sdbName        "SDB2" ;
 ##     sdb:driver         "org.postgresql.Driver" ;
+
+##     sdb:sdbType        "MSSQLServerExpress" ;
+##     sdb:sdbHost        "localhost" ;
+##     sdb:sdbName        "test2-hash" ;
+##     sdb:driver         "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+
+    sdb:sdbType        "MSSQLServer" ;
+    sdb:sdbHost        "sweb-sdb-3" ;
+    sdb:sdbUser           "jena" ;
+    sdb:sdbPassword       "SW@ra0101" ;
+    sdb:sdbName        "test2-hash" ;
+    sdb:driver         "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+
 
     .
 
