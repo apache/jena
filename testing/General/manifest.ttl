@@ -45,5 +45,4 @@
        [  mf:name   "Vars-5" ;
           mf:action [ qt:query <vars-5.rq> ; qt:data <data-1.ttl> ] ;
        ]
-    
     ).
