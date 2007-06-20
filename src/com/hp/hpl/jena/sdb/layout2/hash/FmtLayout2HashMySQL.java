@@ -70,7 +70,7 @@ public class FmtLayout2HashMySQL extends FmtLayout2
                                  "    s BIGINT  NOT NULL ,",
                                  "    p BIGINT  NOT NULL ,",
                                  "    o BIGINT  NOT NULL ,",
-                                 "    PRIMARY KEY (s, p, o)",
+                                 "    PRIMARY KEY (g, s, p, o)",
                                  ") ENGINE="+engineType.getEngineName()                
                     )) ;
         } catch (SQLException ex)
