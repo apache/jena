@@ -6,7 +6,8 @@
 
 package com.hp.hpl.jena.sdb.util.alg;
 
-public interface Action <T> { void apply(T item) ; }
+public interface Action <T>
+{ void apply(T item) ; }
 
 /*
  * (c) Copyright 2007 Hewlett-Packard Development Company, LP

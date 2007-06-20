@@ -6,6 +6,9 @@
 
 package com.hp.hpl.jena.sdb.core;
 
+import static com.hp.hpl.jena.sdb.util.Alg.map;
+import static com.hp.hpl.jena.sdb.util.Alg.toSet;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -13,10 +16,9 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.util.SetUtils;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
+import com.hp.hpl.jena.sparql.core.Var;
 
 public class ScopeRename implements Scope
 {
@@ -47,7 +49,7 @@ public class ScopeRename implements Scope
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = scope.findScopes() ;
-        x = SetUtils.convert(x, converter) ;
+        x = toSet(map(x, converter)) ;
         return x ;
     }
 

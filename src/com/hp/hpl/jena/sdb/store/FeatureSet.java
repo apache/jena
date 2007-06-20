@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import com.hp.hpl.jena.sparql.util.IndentedWriter;
 import com.hp.hpl.jena.sparql.util.Printable;
 import com.hp.hpl.jena.sparql.util.PrintableBase;
-import com.hp.hpl.jena.sdb.util.ListUtils;
+import com.hp.hpl.jena.sdb.util.Alg;
 
 /** A set of features (order retained */
 
@@ -48,7 +48,7 @@ public class FeatureSet extends PrintableBase implements Printable, Iterable<Fea
 
     public void output(IndentedWriter out)
     {
-        ListUtils.print(out, features) ;
+        out.print(Alg.asString(features)) ;
     }
 }
 

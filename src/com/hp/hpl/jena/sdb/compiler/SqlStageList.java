@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import com.hp.hpl.jena.sdb.util.ListUtils;
+import com.hp.hpl.jena.sdb.util.Alg;
 
 public class SqlStageList extends ArrayList<SqlStage>
 {
@@ -37,7 +37,7 @@ public class SqlStageList extends ArrayList<SqlStage>
         if ( isEmpty() )
             str = str + " (empty)" ;
         else
-            str = str + " "+ListUtils.toString(this, " // " ) ;
+            str = str + " "+ Alg.asString(this, " // " ) ;
         //str = str + "\n" ;
         return str ;
     }

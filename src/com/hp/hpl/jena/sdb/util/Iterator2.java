@@ -6,50 +6,71 @@
 
 package com.hp.hpl.jena.sdb.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import com.hp.hpl.jena.sdb.util.alg.Filter;
-import com.hp.hpl.jena.sdb.util.alg.Transform;
+/** Iterator2 : the concatenation of two iterators.
+ * 
+ * @author Andy Seaborne
+ * @version $Id$
+ */
 
-public class ListUtils extends Alg
+public class Iterator2<T> implements Iterator<T>, Iterable<T>
 {
-    // These create a return object so have to be typed to the relevant kind (List/Set)
-    
-    public static <T> List<T> filter(List<? extends T> list, Filter<T> f)
+    private Iterator<? extends T> iter1 ;
+    private Iterator<? extends T> iter2 ;
+
+    public Iterator2(Iterator<? extends T> iter1, Iterator<? extends T> iter2)
     {
-        List<T> x = new ArrayList<T>() ;
-        for ( T item : list )
-            if ( f.accept(item) )
-                x.add(item) ;
-        return x ;
-    }
-    
-    public static <T, R> List<R> convert(List<? extends T> list, Transform<T, R> converter)
-    {
-        List<R> x = new ArrayList<R>() ;
-        for ( T item : list)
-            x.add(converter.convert(item) ) ;
-        return x ;
+        this.iter1 = iter1 ;
+        this.iter2 = iter2 ;
     }
 
-    public static <T> List<T> removeNulls(List<? extends T> list)
-    { 
-        Filter<T> RemoveNulls = new Filter<T>()
+    public boolean hasNext()
+    {
+        if ( iter1 != null )
         {
-            public boolean accept(T item) { return item != null ; } 
-        } ;
-
-        return filter(list, RemoveNulls) ;
+            if ( iter1.hasNext() ) return true ;
+            // Iter1 ends
+            iter1 = null ;
+        }
+        
+        if ( iter2 != null )
+        {
+            if ( iter2.hasNext() ) return true ;
+            // Iter2 ends
+            iter2 = null ;
+        }
+        return false ; 
     }
-    
-    public static <T> Iterable<T> concat(List<? extends T> list1, List<? extends T> list2)
+
+    public T next()
     {
-        // Quick impl.
-        List<T> x = new ArrayList<T>() ;
-        if ( list1 != null ) x.addAll(list1) ;
-        if ( list2 != null ) x.addAll(list2) ;
-        return x ;
+        if ( iter1 != null )
+            return iter1.next();
+        if ( iter2 != null )
+            return iter2.next();
+        throw new NoSuchElementException("Iterator2.next") ;
+    }
+
+    public void remove()
+    { 
+        if ( iter1 != null )
+        {
+            iter1.remove();
+            return ;
+        }
+        if ( iter2 != null )
+        {
+            iter2.remove();
+            return ;
+        }
+        throw new NoSuchElementException("Iterator2.remove") ;
+        }
+
+    public Iterator<T> iterator()
+    {
+        return this ;
     }
 }
 

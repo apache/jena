@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlJoin;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlRestrict;
 import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
-import com.hp.hpl.jena.sdb.util.ListUtils;
+import static com.hp.hpl.jena.sdb.util.Alg.* ;
 import com.hp.hpl.jena.sdb.util.alg.Transform;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.core.Var;
@@ -214,7 +214,7 @@ public class QC
         // If part query, need all variables. 
         
         // Project variables
-        List<Var> vars = ListUtils.convert((List<String>)query.getResultVars(), StringToVar) ;
+        List<Var> vars = toList(map((List<String>)query.getResultVars(), StringToVar)) ;
         
         if ( vars.size() == 0 )
             // SELECT * {}

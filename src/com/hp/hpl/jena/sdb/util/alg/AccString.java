@@ -1,56 +1,39 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package com.hp.hpl.jena.sdb.util;
+package com.hp.hpl.jena.sdb.util.alg;
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class SetUtils// extends Alg
+public class AccString<T> implements Accumulate<T, String>
 {
-     // Set specific operations
-    
-    public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight)
-    {
-        Set<T> results = new HashSet<T>(setLeft) ;
-        results.retainAll(setRight) ;
-        return results ;
+    StringBuilder buffer = null ;
+    private String sep ;
+    private boolean first = true ;
+
+    public AccString(String sep) { this.sep = sep ; }
+    public AccString() { this(" ") ; }
+
+    public void accumulate(T item)
+    { 
+        if ( ! first )
+            buffer.append(sep) ;
+        buffer.append(item.toString()) ;
+        first = false ;
     }
 
-    public static <T> boolean intersectionP(Set<? extends T> s1, Set<? extends T> s2)
+    public String get()
     {
-        for( T elt : s1 )
-        {
-            if ( s2.contains(elt) ) 
-                return true ;
-        }
-        return false ;
+        return buffer.toString() ;
     }
 
-    public static <T> Set<T> union(Set<? extends T> s1, Set<? extends T> s2)
-    {
-        Set<T> s3 = new HashSet<T>(s1) ;
-        s3.addAll(s2) ;
-        return s3 ;
-    }
-
-
-    /** Return is s1 \ s2 */
-
-    public static <T> Set<T> difference(Set<? extends T> s1, Set<? extends T> s2)
-    {
-        Set<T> s3 = new HashSet<T>(s1) ;
-        s3.removeAll(s2) ;
-        return s3 ;
-    }
-}
-
+    public void start()
+    { buffer = new StringBuilder() ; first = true ; }
+} 
 
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -20,7 +20,7 @@ public class PrintAction <T extends Printable> implements Action<T>
     
     public void apply(Printable item)
     {
-        if ( ! first )
+        if ( ! first && sep != null )
             out.print(sep) ;
         first = false ;
         item.output(out) ;

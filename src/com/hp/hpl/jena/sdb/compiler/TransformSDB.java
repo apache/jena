@@ -6,9 +6,8 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static com.hp.hpl.jena.sdb.util.SetUtils.convert;
-import static com.hp.hpl.jena.sdb.util.SetUtils.filter;
-import static com.hp.hpl.jena.sdb.util.SetUtils.intersection;
+import static com.hp.hpl.jena.sdb.util.Alg.*;
+import static com.hp.hpl.jena.sdb.util.alg.SetUtils.* ;
 
 import java.util.List;
 import java.util.Set;
@@ -21,9 +20,15 @@ import com.hp.hpl.jena.sdb.core.AliasesSql;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.ScopeEntry;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
+
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.*;
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
+import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
+import com.hp.hpl.jena.sparql.algebra.op.OpTable;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
@@ -86,10 +91,10 @@ public class TransformSDB extends TransformCopy
         // Except we want it working on Sets. 
         
         Set<ScopeEntry> scopes = sqlLeft.getIdScope().findScopes() ;
-        Set<ScopeEntry> scopes2 = filter(scopes, ScopeEntry.OptionalFilter) ;
+        Set<ScopeEntry> scopes2 = toSet(filter(scopes, ScopeEntry.OptionalFilter)) ;
 
         // Separate and test!
-        Set<Var> leftOptVars = convert(scopes2, ScopeEntry.ToVar) ;             // Vars from left optionals.
+        Set<Var> leftOptVars = toSet(map(scopes2, ScopeEntry.ToVar)) ;             // Vars from left optionals.
         
         Set<Var> rightOptVars = sqlRight.getIdScope().getVars() ;               // Why is this the opt vars?
         Set<Var> coalesceVars = intersection(leftOptVars, rightOptVars) ;

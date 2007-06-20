@@ -21,10 +21,9 @@ import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
 
-import static com.hp.hpl.jena.sdb.util.ListUtils.concat ;
+import static com.hp.hpl.jena.sdb.util.Alg.append ;
 import static com.hp.hpl.jena.sdb.test.SDBTest.manifest;
 import static com.hp.hpl.jena.sdb.test.SDBTest.storeDescBase;
-//import static com.hp.hpl.jena.sdb.test.SDBTest.testDirSDB;
 
 @RunWith(AllTests.class)
 public class SDBQueryTestSuite extends TestSuite
@@ -57,7 +56,7 @@ public class SDBQueryTestSuite extends TestSuite
     private SDBQueryTestSuite()
     {
         super("SDB") ;
-        for ( Pair<Store, String> p : concat(stores1(), stores2()) )
+        for ( Pair<Store, String> p : append(stores1(), stores2()) )
         {
             TestSuite ts2 = makeSuite(p.getLeft(), p.getRight()) ;
             //ts2.setName(ts2.getName()+" - "+p.getRight()) ;

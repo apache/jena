@@ -15,7 +15,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 import com.hp.hpl.jena.sdb.core.*;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;
-import com.hp.hpl.jena.sdb.util.SetUtils;
+import com.hp.hpl.jena.sdb.util.alg.SetUtils;
 
 public class SqlCoalesce extends SqlNodeBase
 {
