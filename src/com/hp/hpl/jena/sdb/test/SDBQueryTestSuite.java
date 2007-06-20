@@ -41,6 +41,8 @@ public class SDBQueryTestSuite extends TestSuite
     static boolean includeHash      = false ;
     static boolean includeIndex     = true ;
     
+    static boolean formatStores     = false ;
+    
     static boolean includeDerby     = true ;
     static boolean includeMySQL     = false ;
     static boolean includePGSQL     = false ;
@@ -79,6 +81,10 @@ public class SDBQueryTestSuite extends TestSuite
     private static List<Pair<Store, String>> stores2() 
     {
         // Move this to an "sdb manifest" file.
+        // A list of configs/names
+        
+        //  [ :assembler <file:sdb.ttl> ; :rdfs:label "foobar" ] ;
+        
         
         List<Pair<Store, String>> stores = new ArrayList<Pair<Store, String>>() ;
 
@@ -122,14 +128,12 @@ public class SDBQueryTestSuite extends TestSuite
     private static void worker(List<Pair<Store, String>> data, String label, String storeDescFile)
     {
         Store store = StoreFactory.create(storeDescFile) ;
-        if ( StoreUtils.isHSQL(store) )
-            // HSQL (in memory) need formatting.
-            store.getTableFormatter().format() ;
+        if ( formatStores || StoreUtils.isHSQL(store) )
+            // HSQL (in memory) needs formatting always.
+            store.getTableFormatter().create() ;
         Pair<Store, String> e = new Pair<Store, String>(store, label) ;
         data.add(e) ;
     }
-        
-
 }
 
 /*
