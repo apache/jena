@@ -253,10 +253,7 @@ public class ParserBase
     {
         String s = getPrologue().expandPrefixedName(qname) ;
         if ( s == null )
-        {
-            String msg = "Line " + line + ", column " + column;
-            throw new QNameException(msg+": Unresolved prefixed name: "+qname, line, column) ; 
-        }
+            throwParseException("Unresolved prefixed name: "+qname, line, column) ;
         return s ;
     }
     
@@ -555,7 +552,6 @@ public class ParserBase
         }
         return x ;
     }
-    
     
     protected void throwParseException(String msg, int line, int column)
     {
