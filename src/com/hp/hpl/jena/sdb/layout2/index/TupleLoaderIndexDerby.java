@@ -1,7 +1,5 @@
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import java.sql.SQLException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,8 +15,9 @@ public class TupleLoaderIndexDerby extends TupleLoaderIndexBase {
 		super(connection, tableDesc, chunkSize);
 	}
 	
+	// A compromise. Derby's temporary tables are limited, but cleaning up afterwards is worse
 	public String[] getNodeColTypes() {
-		return new String[] {"BIGINT", "CLOB", "LONG VARCHAR", "LONG VARCHAR", "INT"};
+		return new String[] {"BIGINT", "VARCHAR (32672)", "VARCHAR(1024)", "VARCHAR(1024)", "INT"};
 	}
 	
 	public String getTupleColType() {
@@ -26,17 +25,27 @@ public class TupleLoaderIndexDerby extends TupleLoaderIndexBase {
 	}
 	
 	public String[] getCreateTempTable() {
-		return new String[] { "CREATE TABLE" , "" };
+		return new String[] { "DECLARE GLOBAL TEMPORARY TABLE" , "ON COMMIT DELETE ROWS NOT LOGGED" };
+	}
+	
+	// We have to qualify the temporary table names
+	@Override
+	public String getNodeLoader() {
+		return "SESSION." + super.getNodeLoader();
 	}
 	
 	@Override
-    public void close() {
-		super.close();
-    	try {
-			connection().exec("DROP TABLE " + getNodeLoader());
-			connection().exec("DROP TABLE " + getTupleLoader());
-		} catch (SQLException e) {
-			log.error("Error removing loader tables", e);
-		}
-    }
+	public String getTupleLoader() {
+		return "SESSION." + super.getTupleLoader();
+	}
+	
+	@Override
+	public String getClearTempNodes() {
+		return null;
+	}
+	
+	@Override
+	public String getClearTempTuples() {
+		return null;
+	}
 }

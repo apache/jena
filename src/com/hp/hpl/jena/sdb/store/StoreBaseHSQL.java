@@ -18,7 +18,7 @@ import com.hp.hpl.jena.sdb.util.StoreUtils;
 
 
 
-public class StoreBaseHSQL extends StoreBase
+public abstract class StoreBaseHSQL extends StoreBase
 {
     protected boolean currentlyOpen = true ;
     

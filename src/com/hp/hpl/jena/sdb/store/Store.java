@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.store;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
@@ -59,7 +60,10 @@ public interface Store
     
     /** Get the size of this store **/
     public long  getSize() ;
-
+    
+    /** Get the size of the graph corresponding to graphNode **/
+    public long getSize(Node graphNode);
+    
     /** Where the default graph is store */ 
     public TableDescTriples     getTripleTableDesc() ;
     /** Where the named graphs are in is store */ 

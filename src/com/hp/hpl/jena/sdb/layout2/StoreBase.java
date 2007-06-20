@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sdb.store.StoreLoader;
 
 
 
-public class StoreBase 
+public abstract class StoreBase 
     extends SDBConnectionHolder
     implements Store
 {

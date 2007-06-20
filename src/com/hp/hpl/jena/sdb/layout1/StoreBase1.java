@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sdb.layout1;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.compiler.QueryCompilerFactory;
 import com.hp.hpl.jena.sdb.core.sqlnode.GenerateSQL;
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
@@ -75,6 +76,11 @@ public class StoreBase1
     public long getSize()
     {
     	return TableUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
+    }
+    
+    /** Irrelevant for layout1 **/
+    public long getSize(Node node) {
+    	return getSize();
     }
     
     public TableDescNodes   getNodeTableDesc()                 { return null ; }

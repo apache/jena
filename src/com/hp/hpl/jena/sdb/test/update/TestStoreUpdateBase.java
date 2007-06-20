@@ -179,4 +179,23 @@ public abstract class TestStoreUpdateBase {
 		loader.addTuple(desc, node("One"));
 		loader.finishBulkUpdate();
 	}
+	
+	@Test public void sizes() {
+		TableDesc desc = store.getTripleTableDesc();
+		loader.startBulkUpdate();
+		loader.addTuple(desc, node("A"), node("A"), node("A"));
+		loader.addTuple(desc, node("B"), node("B"), node("B"));
+		loader.finishBulkUpdate();
+		desc = store.getQuadTableDesc();
+		loader.startBulkUpdate();
+		loader.addTuple(desc, node("A"), node("A"), node("A"), node("A"));
+		loader.addTuple(desc, node("B"), node("A"), node("A"), node("A"));
+		loader.addTuple(desc, node("B"), node("B"), node("B"), node("B"));
+		loader.addTuple(desc, node("B"), node("C"), node("C"), node("C"));
+		loader.finishBulkUpdate();
+		
+		assertEquals("Triple size right", 2l, store.getSize());
+		assertEquals("Quad size right", 1l, store.getSize(node("A")));
+		assertEquals("Quad size (2) right", 3l, store.getSize(node("B")));
+	}
 }

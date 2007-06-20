@@ -6,12 +6,18 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sdb.layout2.LoaderTuplesNodes;
+import com.hp.hpl.jena.sdb.layout2.NodeLayout2;
 import com.hp.hpl.jena.sdb.layout2.SQLBridgeFactory2;
 import com.hp.hpl.jena.sdb.layout2.TableDescQuads;
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
+import com.hp.hpl.jena.sdb.sql.SDBExceptionSQL;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 
 
@@ -34,6 +40,39 @@ public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
         
         ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
+
+    public long getSize(Node node) {
+    	System.err.println(node);
+		String lex = NodeLayout2.nodeToLex(node);
+        int typeId = NodeLayout2.nodeToType(node);
+
+        String lang = "";
+        String datatype = "";
+
+        if (node.isLiteral())
+        {
+            lang = node.getLiteralLanguage();
+            datatype = node.getLiteralDatatypeURI();
+            if (datatype == null)
+                datatype = "";
+        }
+
+        long hash = NodeLayout2.hash(lex, lang, datatype, typeId);
+        try {
+        	ResultSet res = getConnection().exec("SELECT id FROM Nodes WHERE hash = " + hash);
+        	int id = -1;
+        	if (res.next()) id = res.getInt(1);
+        	else {res.close(); return 0;} // no graph, size == 0
+        	res.close();
+        	res = getConnection().exec("SELECT COUNT(*) FROM " + getQuadTableDesc().getTableName() + " WHERE g = " + id);
+        	res.next();
+        	long result = res.getLong(1);
+        	res.close();
+        	return result;
+        } catch (SQLException e) {
+        	throw new SDBExceptionSQL("Failed to get graph size", e);
+        }
+	}
 }
 
 /*
