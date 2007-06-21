@@ -15,6 +15,7 @@ import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.junit.QueryTestSDBFactory;
 import com.hp.hpl.jena.sdb.store.Store;
+import static com.hp.hpl.jena.sdb.util.Alg.* ;
 import com.hp.hpl.jena.sdb.util.Pair;
 
 @RunWith(AllTests.class)
@@ -39,7 +40,7 @@ public class SDBQueryTestSuite extends TestSuite
             // PostgreSQL gets upset with comments in comments??
             ARQ.getContext().setFalse(SDB.annotateGeneratedSQL) ;
         
-        for ( Pair<Store, String> p : StoreList.stores() )
+        for ( Pair<Store, String> p : append(StoreList.stores1(), StoreList.stores2()) )
         {
             TestSuite ts2 = makeSuite(p.getLeft(), p.getRight()) ;
             //ts2.setName(ts2.getName()+" - "+p.getRight()) ;

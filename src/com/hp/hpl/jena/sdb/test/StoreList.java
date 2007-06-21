@@ -38,12 +38,12 @@ public class StoreList
         return toList(append(stores1(), stores2())) ;
     }
     
-    private static List<Pair<Store, String>> stores1()
+    public static List<Pair<Store, String>> stores1()
     {
         return null ;
     }
     
-    private static List<Pair<Store, String>> stores2() 
+    public static List<Pair<Store, String>> stores2() 
     {
         //  [ :assembler <file:sdb.ttl> ; :rdfs:label "foobar" ] ;
         
