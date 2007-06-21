@@ -57,8 +57,6 @@ public class Alg
     { return reduce(stream, new AccString<T>(sep)) ; }
 
     // ---- Core operations
-    // TODO Accumulate=>reduce?
-    // TODO stream concat
     // TODO stream merge (2 parallel streams , merge function , nulls for no entry).
     
     public static <T> Set<T> toSet(Iterable<T> stream) { return toSet(stream.iterator()); }
