@@ -36,6 +36,10 @@ public class StoreCreator {
 	private static StoreTriplesNodesIndexMySQL sdbmsi;
 	private static StoreTriplesNodesIndexSQLServer sdbssi;
 	private static StoreTriplesNodesHashSQLServer sdbssh;
+	private static StoreTriplesNodesIndexHSQL sdbhsi;
+	private static StoreTriplesNodesHashHSQL sdbhsh;
+	private static StoreTriplesNodesHashDerby sdbdh;
+	private static StoreTriplesNodesIndexDerby sdbdi;
 
 	public static Store getIndexMySQL() {
 		if (sdbmsi == null) {
@@ -45,9 +49,11 @@ public class StoreCreator {
 				"jdbc:mysql://localhost/sdb_test", "jena", "swara");
 		
 			sdbmsi = new StoreTriplesNodesIndexMySQL(sdb);
+			
+			sdbmsi.getTableFormatter().format();
 		}
 		
-		sdbmsi.getTableFormatter().format();
+		sdbmsi.getTableFormatter().truncate();
 		
 		return sdbmsi;
 	}
@@ -60,37 +66,47 @@ public class StoreCreator {
 				"jdbc:mysql://localhost/sdb_test", "jena", "swara");
 		
 			sdbmsh = new StoreTriplesNodesHashMySQL(sdb);
+			
+			sdbmsh.getTableFormatter().format();
 		}
 		
-		sdbmsh.getTableFormatter().format();
+		sdbmsh.getTableFormatter().truncate();
 		
 		return sdbmsh;
 	}
 	
 	public static Store getIndexHSQL() {
-		JDBC.loadDriverHSQL();
+		if (sdbhsi == null) {
+			JDBC.loadDriverHSQL();
 
-		SDBConnection sdb = SDBFactory.createConnection(
-				"jdbc:hsqldb:mem:aname", "sa", "");
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:hsqldb:mem:aname", "sa", "");
 
-		Store store = new StoreTriplesNodesIndexHSQL(sdb);
+			sdbhsi = new StoreTriplesNodesIndexHSQL(sdb);
 
-		store.getTableFormatter().format();
+			sdbhsi.getTableFormatter().format();
+		}
 		
-		return store;
+		sdbhsi.getTableFormatter().truncate();
+		
+		return sdbhsi;
 	}
 	
 	public static Store getHashHSQL() {
-		JDBC.loadDriverHSQL();
+		if (sdbhsh == null) {
+			JDBC.loadDriverHSQL();
 
-		SDBConnection sdb = SDBFactory.createConnection(
-				"jdbc:hsqldb:mem:bname", "sa", "");
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:hsqldb:mem:bname", "sa", "");
 
-		Store store = new StoreTriplesNodesHashHSQL(sdb);
+			sdbhsh = new StoreTriplesNodesHashHSQL(sdb);
 
-		store.getTableFormatter().format();
-
-		return store;
+			sdbhsh.getTableFormatter().format();
+		}
+		
+		sdbhsh.getTableFormatter().truncate();
+		
+		return sdbhsh;
 	}
 	
 	public static Store getIndexPgSQL() {
@@ -99,9 +115,10 @@ public class StoreCreator {
 			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
 			sdbpgi = new StoreTriplesNodesIndexPGSQL(sdb);
+			sdbpgi.getTableFormatter().format();
 		}
 		
-		sdbpgi.getTableFormatter().format();
+		sdbpgi.getTableFormatter().truncate();
 			
 		return sdbpgi;
 	}
@@ -112,9 +129,10 @@ public class StoreCreator {
 			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
 			sdbpgh = new StoreTriplesNodesHashPGSQL(sdb);
+			sdbpgh.getTableFormatter().format();
 		}
 		
-		sdbpgh.getTableFormatter().format();
+		sdbpgh.getTableFormatter().truncate();
 			
 		return sdbpgh;
 	}
@@ -127,9 +145,10 @@ public class StoreCreator {
 					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "sw@ra0101");
 			
 			sdbssi = new StoreTriplesNodesIndexSQLServer(sdb);
+			sdbssi.getTableFormatter().format();
 		}
 		
-		sdbssi.getTableFormatter().format();
+		sdbssi.getTableFormatter().truncate();
 		
 		return sdbssi;
 	}
@@ -142,39 +161,48 @@ public class StoreCreator {
 					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "sw@ra0101");
 			
 			sdbssh = new StoreTriplesNodesHashSQLServer(sdb);
+			sdbssh.getTableFormatter().format();
 		}
 
-		sdbssh.getTableFormatter().format();
+		sdbssh.getTableFormatter().truncate();
 		
 		return sdbssh;
 	}
 	
 	public static Store getHashDerby() {
-		JDBC.loadDriverDerby() ;
-		
-		String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
-		
-		SDBConnection sdb = new SDBConnection(url, null, null) ;
-        
-		Store store = new StoreTriplesNodesHashDerby(sdb);
+		if (sdbdh == null) {
+			JDBC.loadDriverDerby() ;
 			
-		store.getTableFormatter().format();
+			String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
 			
-		return store;
+			SDBConnection sdb = new SDBConnection(url, null, null) ;
+			
+			sdbdh = new StoreTriplesNodesHashDerby(sdb);
+			
+			sdbdh.getTableFormatter().format();
+		}
+		
+		sdbdh.getTableFormatter().truncate();
+			
+		return sdbdh;
 	}
 	
 	public static Store getIndexDerby() {
-		JDBC.loadDriverDerby() ;
-		
-		String url = JDBC.makeURL("derby", "localhost", "DB/test3") ;
-		
-		SDBConnection sdb = new SDBConnection(url, null, null) ;
-        
-		Store store = new StoreTriplesNodesIndexDerby(sdb);
+		if (sdbdi == null) {
+			JDBC.loadDriverDerby() ;
 			
-		store.getTableFormatter().format();
+			String url = JDBC.makeURL("derby", "localhost", "DB/test2") ;
 			
-		return store;
+			SDBConnection sdb = new SDBConnection(url, null, null) ;
+			
+			sdbdi = new StoreTriplesNodesIndexDerby(sdb);
+			
+			sdbdi.getTableFormatter().format();
+		}
+		
+		sdbdi.getTableFormatter().truncate();
+			
+		return sdbdi;
 	}
 }
 
