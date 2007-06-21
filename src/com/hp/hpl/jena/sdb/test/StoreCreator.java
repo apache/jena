@@ -142,13 +142,13 @@ public class StoreCreator {
 			JDBC.loadDriverSQLServer();
 
 			SDBConnection sdb = SDBFactory.createConnection(
-					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "sw@ra0101");
+					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "@ld1s1774");
 			
 			sdbssi = new StoreTriplesNodesIndexSQLServer(sdb);
 			sdbssi.getTableFormatter().format();
 		}
 		
-		sdbssi.getTableFormatter().truncate();
+		sdbssi.getTableFormatter().format();
 		
 		return sdbssi;
 	}
@@ -158,13 +158,13 @@ public class StoreCreator {
 			JDBC.loadDriverSQLServer();
 
 			SDBConnection sdb = SDBFactory.createConnection(
-					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "sw@ra0101");
+					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "@ld1s1774");
 			
 			sdbssh = new StoreTriplesNodesHashSQLServer(sdb);
 			sdbssh.getTableFormatter().format();
 		}
 
-		sdbssh.getTableFormatter().truncate();
+		sdbssh.getTableFormatter().format();
 		
 		return sdbssh;
 	}
