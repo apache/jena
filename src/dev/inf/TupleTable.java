@@ -50,7 +50,7 @@ public class TupleTable
         
         sqlTable = new SqlTable(desc.getTableName(), desc.getTableName()) ;
         vars = new ArrayList<Var>() ;
-        for (String colName : Iter.wrap(desc.colNames()) )
+        for (String colName : Iter.iter(desc.colNames()) )
         {
             Var var = Var.alloc(colName) ;
             vars.add(var) ;

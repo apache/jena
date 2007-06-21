@@ -7,10 +7,17 @@
 package com.hp.hpl.jena.sdb.util;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import com.hp.hpl.jena.sdb.util.alg.Accumulate;
+import com.hp.hpl.jena.sdb.util.alg.Action;
+import com.hp.hpl.jena.sdb.util.alg.Filter;
+import com.hp.hpl.jena.sdb.util.alg.Transform;
 
 public class Iter<T> implements Iterable<T>
 {
-    public static <T> Iter<T> wrap(Iterator<T> iterator) { return new Iter<T>(iterator) ; }
+    public static <T> Iter<T> iter(Iterator<T> iterator) { return new Iter<T>(iterator) ; }
     
     @SuppressWarnings("unchecked")
     public static <T> Iter<T> convert(Iterator iterator) { return new Iter<T>((Iterator<T>)iterator) ; }
@@ -18,6 +25,45 @@ public class Iter<T> implements Iterable<T>
     private Iterator<T> iterator ;
     public Iter(Iterator<T> iterator) { this.iterator = iterator ; }
     public Iterator<T>  iterator() { return iterator ; }
+    
+    // .map/.reduce/.appy/.filter/.append
+    // .asList/.asSet
+    // Calls to Alg?
+ 
+    public Set<T> toSet()
+    {
+        return Alg.toSet(iterator) ;
+    }
+
+    public List<T> toList()
+    {
+        return Alg.toList(iterator) ;
+    }
+
+    public Iter<T> filter(Filter<T> filter)
+    {
+        return iter(Alg.filter(iterator, filter)) ;
+    }
+
+    public <R> Iter<R> map(Transform<T, R> converter)
+    {
+        return iter(Alg.map(iterator, converter)) ;
+    }
+
+    public <R> R reduce(Accumulate<T, R> aggregator)
+    {
+        return Alg.reduce(iterator, aggregator) ;
+    }
+
+    public void apply(Action<T> action)
+    {
+        Alg.apply(iterator, action) ;
+    }
+
+    public Iter<T> append(Iter< ? extends T> iter)
+    {
+        return iter(new Iterator2<T>(iterator, iter.iterator())) ;
+    }
 }
 
 /*
