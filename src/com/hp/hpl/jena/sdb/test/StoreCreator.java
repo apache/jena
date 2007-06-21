@@ -34,6 +34,8 @@ public class StoreCreator {
 	private static StoreTriplesNodesIndexPGSQL sdbpgi;
 	private static StoreTriplesNodesHashMySQL sdbmsh;
 	private static StoreTriplesNodesIndexMySQL sdbmsi;
+	private static StoreTriplesNodesIndexSQLServer sdbssi;
+	private static StoreTriplesNodesHashSQLServer sdbssh;
 
 	public static Store getIndexMySQL() {
 		if (sdbmsi == null) {
@@ -118,29 +120,33 @@ public class StoreCreator {
 	}
 	
 	public static Store getIndexSQLServer() {
-		JDBC.loadDriverSQLServer();
+		if (sdbssi == null) {
+			JDBC.loadDriverSQLServer();
 
-		SDBConnection sdb = SDBFactory.createConnection(
-				"jdbc:sqlserver://localhost;databaseName=sdb2", "mtx", "mtx01");
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "sw@ra0101");
+			
+			sdbssi = new StoreTriplesNodesIndexSQLServer(sdb);
 		
-		Store store = new StoreTriplesNodesIndexSQLServer(sdb);
+			sdbssi.getTableFormatter().format();
+		}
 		
-		store.getTableFormatter().format();
-		
-		return store;
+		return sdbssi;
 	}
 	
 	public static Store getHashSQLServer() {
-		JDBC.loadDriverSQLServer();
+		if (sdbssh == null) {
+			JDBC.loadDriverSQLServer();
 
-		SDBConnection sdb = SDBFactory.createConnection(
-					"jdbc:sqlserver://localhost;databaseName=sdb2", "mtx", "mtx01");
-
-		Store store = new StoreTriplesNodesHashSQLServer(sdb);
-
-		store.getTableFormatter().format();
+			SDBConnection sdb = SDBFactory.createConnection(
+					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "sw@ra0101");
+			
+			sdbssh = new StoreTriplesNodesHashSQLServer(sdb);
 		
-		return store;
+			sdbssh.getTableFormatter().format();
+		}
+		
+		return sdbssh;
 	}
 	
 	public static Store getHashDerby() {
