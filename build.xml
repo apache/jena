@@ -148,6 +148,7 @@
 
   <target name="test-hsqldb" depends="jar">
     <junit printsummary="on">
+      <formatter type="plain"/>
       <classpath>
         <fileset dir="${lib.dir}" includes="*.jar"/>
         <fileset dir="jdbc" includes="*.jar"/>
@@ -155,12 +156,13 @@
       <test name="com.hp.hpl.jena.sdb.test.graph.TestHSQLGraph"/>
       <test name="com.hp.hpl.jena.sdb.test.model.TestHSQLModel"/>
 	  <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateHSQLHash"/>
-	  <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateHSQLIndex"/>
+      <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateHSQLIndex"/>
     </junit>
   </target>
 	
   <target name="test-derby" depends="jar">
     <junit printsummary="on">
+      <formatter type="plain"/>
       <classpath>
         <fileset dir="${lib.dir}" includes="*.jar"/>
         <fileset dir="jdbc" includes="*.jar"/>
@@ -171,7 +173,49 @@
       <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateDerbyIndex"/>
     </junit>
   </target>
-	
+  
+  <target name="test-pgsql" depends="jar">
+    <junit printsummary="on">
+      <formatter type="plain"/>
+      <classpath>
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+        <fileset dir="jdbc" includes="*.jar"/>
+      </classpath>
+      <test name="com.hp.hpl.jena.sdb.test.graph.TestPgSQLGraph"/>
+      <test name="com.hp.hpl.jena.sdb.test.model.TestPgSQLModel"/>
+      <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdatePgSQLHash"/>
+      <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdatePgSQLIndex"/>
+    </junit>
+  </target>
+
+  <target name="test-mysql" depends="jar">
+      <junit printsummary="on">
+        <formatter type="plain"/>
+        <classpath>
+          <fileset dir="${lib.dir}" includes="*.jar"/>
+          <fileset dir="jdbc" includes="*.jar"/>
+        </classpath>
+        <test name="com.hp.hpl.jena.sdb.test.graph.TestMySQLGraph"/>
+        <test name="com.hp.hpl.jena.sdb.test.model.TestMySQLModel"/>
+        <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateMySQLHash"/>
+        <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateMySQLIndex"/>
+      </junit>
+    </target>
+  
+  <target name="test-sqlserver" depends="jar">
+      <junit printsummary="on">
+        <formatter type="plain"/>
+        <classpath>
+          <fileset dir="${lib.dir}" includes="*.jar"/>
+          <fileset dir="jdbc" includes="*.jar"/>
+        </classpath>
+        <test name="com.hp.hpl.jena.sdb.test.graph.TestSQLServerGraph"/>
+        <test name="com.hp.hpl.jena.sdb.test.model.TestSQLServerModel"/>
+        <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateSQLServerHash"/>
+        <test name="com.hp.hpl.jena.sdb.test.update.TestStoreUpdateSQLServerIndex"/>
+      </junit>
+    </target>
+  
   <!-- Section: Javadoc -->
 
   <target name="javadoc-all" />
