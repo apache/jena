@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sdb.store.Store;
 public class StoreCreator {
 	
 	private static StoreTriplesNodesHashPGSQL sdbpgh;
-	private static StoreTriplesNodesHashPGSQL sdbpgi;
+	private static StoreTriplesNodesIndexPGSQL sdbpgi;
 	private static StoreTriplesNodesHashMySQL sdbmsh;
 	private static StoreTriplesNodesIndexMySQL sdbmsi;
 
@@ -96,7 +96,7 @@ public class StoreCreator {
 			JDBC.loadDriverPGSQL();
 			SDBConnection sdb = SDBFactory.createConnection(
 				"jdbc:postgresql://localhost/sdb_test", "jena", "swara");
-			sdbpgi = new StoreTriplesNodesHashPGSQL(sdb);
+			sdbpgi = new StoreTriplesNodesIndexPGSQL(sdb);
 		}
 		
 		sdbpgi.getTableFormatter().format();

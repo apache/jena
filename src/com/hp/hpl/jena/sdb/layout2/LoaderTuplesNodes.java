@@ -336,12 +336,20 @@ public class LoaderTuplesNodes
             		TupleChange tuple = queue.take();
             		if (tuple == flushSignal)
             		{
-            			commitTuples(); // force commit
-            			synchronized (threadFlushing) { threadFlushing.notify(); } 
+            			synchronized (threadFlushing) {
+            				try {
+            					commitTuples();
+            				} catch (Throwable e) { handleIssue(e); }
+            				
+            				threadFlushing.notify();
+            			}
             		}
             		else if (tuple == finishSignal)
             		{
-            			commitTuples(); // force commit
+            			try {
+            				commitTuples(); // force commit
+            			} catch (Throwable e) { handleIssue(e); }
+            			
             			break;
             		}
             		else
@@ -351,19 +359,23 @@ public class LoaderTuplesNodes
             	}
             	catch (Throwable e)
             	{
-            		try
-            		{
-						connection().getSqlConnection().rollback();
-					} 
-            		catch (SQLException e1) 
-            		{
-						log.error("Problem rolling back", e1);
-					}
-            		log.error("Error in thread: " + e.getMessage(), e);
-            		threadException.set(e);
+            		handleIssue(e);
             	}
             }
         }
+
+		private void handleIssue(Throwable e) {
+			try
+    		{
+				connection().getSqlConnection().rollback();
+			} 
+    		catch (SQLException e1) 
+    		{
+				log.error("Problem rolling back", e1);
+			}
+    		log.error("Error in thread: " + e.getMessage(), e);
+    		threadException.set(e);
+		}
     }
 }
 
