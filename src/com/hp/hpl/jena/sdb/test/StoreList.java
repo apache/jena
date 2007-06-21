@@ -57,7 +57,7 @@ public class StoreList
     {
         //  [ :assembler <file:sdb.ttl> ; :rdfs:label "foobar" ] ;
         // SELECT * {
-        //  ?x rdf:type ?C ; :list [ :listMember [ :assembler ?desc ; :rdfs:label ?label ] ] }
+        //  ?x rdf:type %s ; :list [ :listMember [ :description ?desc ; :rdfs:label ?label ] ] }
         
         List<Pair<Store, String>> stores = new ArrayList<Pair<Store, String>>() ;
 
