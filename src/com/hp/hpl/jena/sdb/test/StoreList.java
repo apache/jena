@@ -13,13 +13,23 @@ import static com.hp.hpl.jena.sdb.util.Alg.toList;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
+
+import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.store.Store;
 import com.hp.hpl.jena.sdb.store.StoreFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
 import com.hp.hpl.jena.sdb.util.StoreUtils;
+import com.hp.hpl.jena.sdb.util.Vocab;
 
 public class StoreList
 {
+    static Property description = Vocab.property(SDB.namespace, "description") ;
+    static Property list = Vocab.property(SDB.namespace, "list") ;
+    static Resource storeListClass = Vocab.property(SDB.namespace, "StoreList") ;
+    
+    
     // The list of stores to test.
     // TODO Read from an RDF file.
     static boolean includeHash      = true ;
