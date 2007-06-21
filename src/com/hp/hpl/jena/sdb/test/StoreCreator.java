@@ -127,9 +127,9 @@ public class StoreCreator {
 					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "sw@ra0101");
 			
 			sdbssi = new StoreTriplesNodesIndexSQLServer(sdb);
-		
-			sdbssi.getTableFormatter().format();
 		}
+		
+		sdbssi.getTableFormatter().format();
 		
 		return sdbssi;
 	}
@@ -142,9 +142,9 @@ public class StoreCreator {
 					"jdbc:sqlserver://localhost;databaseName=SWEB", "jena", "sw@ra0101");
 			
 			sdbssh = new StoreTriplesNodesHashSQLServer(sdb);
-		
-			sdbssh.getTableFormatter().format();
 		}
+
+		sdbssh.getTableFormatter().format();
 		
 		return sdbssh;
 	}
