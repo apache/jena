@@ -26,10 +26,6 @@ public class Iter<T> implements Iterable<T>
     public Iter(Iterator<T> iterator) { this.iterator = iterator ; }
     public Iterator<T>  iterator() { return iterator ; }
     
-    // .map/.reduce/.appy/.filter/.append
-    // .asList/.asSet
-    // Calls to Alg?
- 
     public Set<T> toSet()
     {
         return Alg.toSet(iterator) ;

@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.sdb.compiler;
 
 import static com.hp.hpl.jena.sdb.util.Alg.*;
-import static com.hp.hpl.jena.sdb.util.alg.SetUtils.* ;
+import static com.hp.hpl.jena.sdb.util.alg.SetUtils.*;
 
 import java.util.List;
 import java.util.Set;

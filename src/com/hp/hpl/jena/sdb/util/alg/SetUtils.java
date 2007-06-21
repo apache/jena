@@ -9,15 +9,9 @@ package com.hp.hpl.jena.sdb.util.alg;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.sdb.util.Alg;
-
-public class SetUtils extends Alg
+public class SetUtils// extends Alg
 {
-    // TODO Tidy up to use streams
-
-    // Set specific operations and functions returning something
-    // that need to know the concrete type of that thing.
-    // Hence not in general AlgUtils
+     // Set specific operations
     
     public static <T> Set<T> intersection(Set<? extends T> setLeft, Set<? extends T> setRight)
     {
@@ -51,14 +45,6 @@ public class SetUtils extends Alg
         Set<T> s3 = new HashSet<T>(s1) ;
         s3.removeAll(s2) ;
         return s3 ;
-    }
-
-    public static <T> Set<T> filter(Set<? extends T> s, Filter<T> f)
-    { return Alg.toSet(Alg.filter(s, f)) ; }
-
-    public static <T, R> Set<R> map(Set<? extends T> s, Transform<T, R> converter)
-    {
-        return Alg.toSet(Alg.map(s, converter)) ;
     }
 }
 
