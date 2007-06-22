@@ -9,6 +9,11 @@ SDB ToDo list (and general notes)
 ** Subclass loading.
 ** OpSlice. OpUnion
 
++ Tidy up and document DBtest
++ /General tests - unicode.
++ StoreList
++ SQLBridge : lang/datatype may be null => ""
+
 + SPARQL/Update input and control
 
 + Transactions - cleanup.

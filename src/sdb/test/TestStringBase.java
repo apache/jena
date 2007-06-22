@@ -55,10 +55,9 @@ public class TestStringBase extends TestDB
     public void text() throws Exception
     { runTextTest(testLabel+"/Text", baseString, params.get(ParamsVocab.VarcharCol), params.get(ParamsVocab.VarcharType)) ; }
 
-//    @Test
-//    public void binary() throws Exception
-//    { runBytesTest(testLabel+"/Binary", baseString, params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
-
+    @Test
+    public void binary() throws Exception
+    { runBytesTest(testLabel+"/Binary", baseString, params.get(ParamsVocab.BinaryCol), params.get(ParamsVocab.BinaryType)) ; }
 
     private void runTextTest(String label, String testString, String colName, String colType) throws Exception
     {
