@@ -1,60 +1,78 @@
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
 
-package arq.cmdline;
+package com.hp.hpl.jena.sparql.util;
 
-import com.hp.hpl.jena.sparql.util.Timer;
+import java.text.DecimalFormat;
+
+import com.hp.hpl.jena.sparql.ARQException;
 
 
-public class ModTime implements ArgModuleGeneral
+public class Timer
 {
-    protected final ArgDecl timeDecl = new ArgDecl(ArgDecl.NoValue, "time") ;
-    
-    protected Timer timer = new Timer() ;
-    
-    private boolean timing = false ;
-    
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.getUsage().startCategory("Time") ;
-        cmdLine.add(timeDecl, "--time", "Time the operation") ;
-    }
-    
-    public void checkCommandLine(CmdArgModule cmdLine)
-    {}
 
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        timing = cmdLine.contains(timeDecl) ;
-    }
-    
-    public boolean timingEnabled() { return timing ; }
-    
-    public void setTimingEnabled(boolean timingEnabled) { timing = timingEnabled ; }
-    
+    protected long timeFinish = -1 ;
+    protected boolean inTimer = false ;
+    protected long timeStart  = 0 ;
+
+    public Timer() { }
+
     public void startTimer()
-    { timer.startTimer() ; } 
-    
+    { 
+        if ( inTimer )
+            throw new ARQException("Already in timer") ;
+
+        timeStart = System.currentTimeMillis() ;
+        timeFinish = -1 ;
+        inTimer = true ;
+    }
+
     public long endTimer()
-    { return timer.endTimer() ; } 
-    
+    { 
+        if ( ! inTimer )
+            throw new ARQException("Not in timer") ;
+        timeFinish = System.currentTimeMillis() ;
+        inTimer = false ;
+        return getTimeInterval() ;
+    }
+
     public long readTimer() 
-    { return timer.readTimer() ; }
-    
+    {
+        if ( ! inTimer )
+            throw new ARQException("Not in timer") ;
+        return System.currentTimeMillis()-timeStart  ;
+    }
+
     public long getTimeInterval()
-    { return timer.getTimeInterval() ; }
-    
-    public String timeStr(long timeInterval)
-    { return Timer.timeStr(timeInterval) ; }
-    
+    {
+        if ( inTimer )
+            throw new ARQException("Still timing") ;
+        if ( timeFinish == -1 )
+            throw new ARQException("No valid interval") ;
+
+        return  timeFinish-timeStart ;
+    }
+
+    static public String timeStr(long timeInterval)
+    {
+        DecimalFormat f = new DecimalFormat("#0.###") ;
+        String s = f.format(timeInterval/1000.0) ;
+        return s ;
+        //Java5
+        //return format("%.3f", new Double(timeInterval/1000.0)) ;
+    }
+
+    protected String timeStr(long timePoint, long startTimePoint)
+    {
+        return timeStr(timePoint-startTimePoint) ;
+    }
 }
 
-
 /*
- * (c) Copyright 2006, 2007 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2007 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

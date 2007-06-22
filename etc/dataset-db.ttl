@@ -11,7 +11,7 @@
 <> rdf:type         ja:RDFDataset ;
     # Database-backed model
     ja:defaultGraph _:modelDB1 ;
-    # Memory model
+    # And also a memory model - can mix and match.
     ja:namedGraph [ ja:graphName <http://example/graph1> ;
                     ja:graph    :data1 ] ;
     .
@@ -27,11 +27,6 @@ _:modelDB1 rdf:type ja:RDBModel ;
     ] ;
     ## Add a model name - this is the name of the mode in the database
     ## It is NOT the name in the dataset (that comes from 
-    ## ja:namedGraph/ja:graphName
-    ## No model name means database-default
-    ## ja:modelName "http://example/model1" 
+    ## ja:namedGraph/ja:graphName)
+    ja:modelName "DEFAULT"
     . 
-
-:data1 rdf:type ja:MemoryModel ;
-    ja:content [ja:externalContent <D1.ttl>] ;
-    .
