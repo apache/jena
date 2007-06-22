@@ -82,6 +82,8 @@ public class ModStore extends ModBase
         jdbcDrivers.put("postgresql",  "org.postgresql.Driver");
         jdbcDrivers.put("hsqldb:file", "org.hsqldb.jdbcDriver");
         jdbcDrivers.put("hsqldb:mem",  "org.hsqldb.jdbcDriver");
+        jdbcDrivers.put("oracle10",      "oracle.jdbc.driver.OracleDriver");
+        jdbcDrivers.put("oracle:thin",      "oracle.jdbc.driver.OracleDriver");
     }
     
     // DB types to name Jena uses internally
